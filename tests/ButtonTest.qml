@@ -11,22 +11,13 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 5
 
-        TextButton {
-            width: 200
-            height: 100
-            color: "blue"
-            text: "text only"
-            hoverColor: "yellow"
-            pressColor: "orange"
-            onClicked: { print("clicked (whee)"); }
-        }
-
         Button {
             width: 200
             height: 100
             color: "blue"
-            text: "text only"
+            text: "text only (centered)"
             pressColor: "darkblue"
+            onClicked: print("clicked text-only button")
         }
 
         IconButton {
@@ -36,7 +27,7 @@ Rectangle {
             width: 200
             color: "#008800"
             pressColor: "#004400"
-            onClicked: print("hello hello?")
+            onClicked: print("Clicked icon-only button")
         }
         Button {
             icon: "call_icon.png"
@@ -44,32 +35,29 @@ Rectangle {
             width: 200
             color: "#008800"
             pressColor: "#004400"
-            onClicked: print("hello hello?")
+            onClicked: print("Clicked icon-only button")
             iconLocation: "top"
         }
         Button {
             icon: "call_icon.png"
-            //verticalMargin: 10
             height: 50
             width: 200
             color: "orange"
             pressColor: "yellow"
-            onClicked: print("pressed the coolest button ever!")
-            text: "right"
+            text: "icon on right"
             iconLocation: "right"
+            iconHeight: height - 10;
         }
         Row {
             spacing: 4
             Button {
                 icon: "call_icon.png"
-                //verticalMargin: 10
                 height: 100
                 width: 98
                 iconWidth: 50
                 color: "green"
                 pressColor: "orange"
-                onClicked: print("pressed the 2nd coolest button ever!")
-                text: "Call"
+                text: "Icon on top"
                 iconLocation: "top"
             } // Button
             Button {
@@ -78,22 +66,19 @@ Rectangle {
                 width: 98
                 iconWidth: 50
                 color: "red"
-                pressColor: "orange"
-                onClicked: print("pressed the 2nd coolest button ever!")
-                text: "aloha"
+                text: "Text on top"
                 iconLocation: "bottom"
             } // Button
         } // Row
         Button {
             icon: "call_icon.png"
-            //verticalMargin: 10
             height: 50
             width: 200
             color: "orange"
             pressColor: "yellow"
-            onClicked: print("pressed the coolest button ever!")
-            text: "left"
+            text: "icon on left"
             iconLocation: "left"
+            iconHeight: height - 10
         }
     } // column
 } // window

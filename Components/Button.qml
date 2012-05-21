@@ -25,6 +25,7 @@ ColoredButton {
     property alias fontSize: label.fontSize
     property alias fontColor: label.color
 
+
     /**
      * The location of the icon relative to the text.
      * top, bottom, left or right.
@@ -45,15 +46,17 @@ ColoredButton {
     TextCustom {
         id: label
         anchors.margins: 10
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: button.clicked()
+        fontSize: "medium"
     }
 
     function alignIconText() {
-        if (iconLocation=="top") {
+        if (button.icon=="") {
+            // no icon.
+            label.anchors.centerIn = button;
+        } else if (button.text=="") {
+
+        }
+        else if (iconLocation=="top") {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
@@ -64,13 +67,13 @@ ColoredButton {
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
         } else if (iconLocation=="right") {
-            icon.height = button.height - 10;
+            //icon.height = button.height - 10;
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
         } else if (iconLocation=="left") {
-            icon.height = button.height - 10;
+            //icon.height = button.height - 10;
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;

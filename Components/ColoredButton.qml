@@ -27,6 +27,8 @@ AbstractButton {
     property color hoverColor: color
 
     // TODO: gradient background color
+    // TODO: automatic pressColor
+    // TODO: remove hoverColor
 
     Rectangle {
         id: background
