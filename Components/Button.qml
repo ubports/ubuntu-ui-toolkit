@@ -16,24 +16,64 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass Button
+    \inqmlmodule UbuntuUIToolkit
+    \brief The Button class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The Button class is part of the \l{UbuntuUIToolkit} module.
+*/
 ColoredButton {
     id: button
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias icon: icon.source
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias text: label.text
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias iconWidth: icon.width
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias iconHeight: icon.height
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias fontSize: label.fontSize
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias fontColor: label.color
 
-    /**
-     * The location of the icon relative to the text.
-     * top, bottom, left or right.
-     * If only text or only an icon is defined, this
-     * property is ignored and the text or icon is
-     * centered horizontally and vertically in the button.
-     */
+    /*!
+       \preliminary
+
+       The location of the icon relative to the text.
+       top, bottom, left or right.
+       If only text or only an icon is defined, this
+       property is ignored and the text or icon is
+       centered horizontally and vertically in the button.
+    */
     property string iconLocation: "left"
 
+    /*!
+       \preliminary
+       DOCME
+    */
     signal clicked
 
     Image {
@@ -52,6 +92,9 @@ ColoredButton {
         onClicked: button.clicked()
     }
 
+    /*!
+       \internal
+    */
     function alignIconText() {
         if (iconLocation=="top") {
             icon.anchors.top = button.top;

@@ -16,9 +16,26 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass IconButton
+    \inqmlmodule UbuntuUIToolkit
+    \brief The IconButton class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The IconButton class is part of the \l{UbuntuUIToolkit} module.
+*/
 ColoredButton {
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias icon: icon.source
 
+    /*!
+       \preliminary
+       DOCME
+    */
     property int verticalMargin: 1;
 
     Image {
