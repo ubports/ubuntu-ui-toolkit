@@ -54,7 +54,7 @@ ColoredButton {
             // no icon.
             label.anchors.centerIn = button;
         } else if (button.text=="") {
-
+            icon.anchors.centerIn = button;
         }
         else if (iconLocation=="top") {
             icon.anchors.top = button.top;

@@ -16,6 +16,7 @@ Rectangle {
             height: 100
             color: "blue"
             text: "text only (centered)"
+            fontColor: "white"
             pressColor: "darkblue"
             onClicked: print("clicked text-only button")
         }
@@ -33,9 +34,10 @@ Rectangle {
             icon: "call_icon.png"
             height: 100
             width: 200
+            iconHeight: height - 20
             color: "#008800"
             pressColor: "#004400"
-            onClicked: print("Clicked icon-only button")
+            onClicked: print("Clicked icon-only button2")
             iconLocation: "top"
         }
         Button {
@@ -66,6 +68,7 @@ Rectangle {
                 width: 98
                 iconWidth: 50
                 color: "red"
+                pressColor: "darkred"
                 text: "Text on top"
                 iconLocation: "bottom"
             } // Button
