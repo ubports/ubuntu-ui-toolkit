@@ -15,12 +15,13 @@ Rectangle {
             width: 200
             height: 100
             color: "blue"
-            text: "text only (centered)"
-            fontColor: "white"
             pressColor: "darkblue"
+            borderWidth: 2
+            borderColor: "black"
+            text: "text only (centered)\nwith border"
+            textColor: "white"
             onClicked: print("clicked text-only button")
         }
-
         Button {
             icon: "call_icon.png"
             height: 100

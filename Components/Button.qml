@@ -18,12 +18,14 @@ import QtQuick 1.1
 
 ColoredButton {
     id: button
+
     property alias icon: icon.source
-    property alias text: label.text
     property alias iconWidth: icon.width
     property alias iconHeight: icon.height
-    property alias fontSize: label.fontSize
-    property alias fontColor: label.color
+
+    property alias text: label.text
+    property alias textSize: label.fontSize
+    property alias textColor: label.color
 
     /**
      * The location of the icon relative to the text.

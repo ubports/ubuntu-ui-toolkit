@@ -17,18 +17,15 @@
 import QtQuick 1.1
 
 AbstractButton {
-
     id: button
     property alias color: background.color
     property color borderColor
     property int borderWidth
     property real radius: 3.0
     property color pressColor: color
-    property color hoverColor: color
 
-    // TODO: gradient background color
+    // TODO: add hoverColor
     // TODO: automatic pressColor
-    // TODO: remove hoverColor
 
     Rectangle {
         id: background
@@ -45,5 +42,4 @@ AbstractButton {
             PropertyChanges { target: background; color: pressColor }
         }
     ]
-
 }
