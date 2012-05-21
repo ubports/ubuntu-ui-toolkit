@@ -25,7 +25,6 @@ ColoredButton {
     property alias fontSize: label.fontSize
     property alias fontColor: label.color
 
-
     /**
      * The location of the icon relative to the text.
      * top, bottom, left or right.

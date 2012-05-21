@@ -21,15 +21,6 @@ Rectangle {
             onClicked: print("clicked text-only button")
         }
 
-        IconButton {
-            icon: "call_icon.png"
-            verticalMargin: 10
-            height: 100
-            width: 200
-            color: "#008800"
-            pressColor: "#004400"
-            onClicked: print("Clicked icon-only button")
-        }
         Button {
             icon: "call_icon.png"
             height: 100
@@ -37,7 +28,7 @@ Rectangle {
             iconHeight: height - 20
             color: "#008800"
             pressColor: "#004400"
-            onClicked: print("Clicked icon-only button2")
+            onClicked: print("Clicked icon-only button")
             iconLocation: "top"
         }
         Button {
