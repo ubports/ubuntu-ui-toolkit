@@ -16,10 +16,34 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass TextButton
+    \inqmlmodule UbuntuUIToolkit
+    \brief The TextButton class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The TextButton class is part of the \l{UbuntuUIToolkit} module.
+*/
 ColoredButton {
     id: textButton
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias text: label.text
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias textColor: label.color
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias textSize: label.fontSize
 
     TextCustom {

@@ -16,6 +16,15 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass HLine
+    \inqmlmodule UbuntuUIToolkit
+    \brief The HLine class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The HLine class is part of the \l{UbuntuUIToolkit} module.
+*/
 Rectangle {
     height: 1
     color: "black"

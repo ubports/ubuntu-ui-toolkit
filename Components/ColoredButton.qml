@@ -16,14 +16,53 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass ColoredButton
+    \inqmlmodule UbuntuUIToolkit
+    \brief The ColoredButton class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The ColoredButton class is part of the \l{UbuntuUIToolkit} module.
+*/
 AbstractButton {
 
     id: button
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias color: background.color
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property color borderColor
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property int borderWidth
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property real radius: 3.0
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property color pressColor: color
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property color hoverColor: color
 
     // TODO: gradient background color
