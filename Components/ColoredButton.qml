@@ -49,12 +49,4 @@ AbstractButton {
             PropertyChanges { target: background; color: button.hoverColor }
         }
     ]
-
-    function assignDefaultColors() {
-        if (button.borderColor === ""||button.borderColor===undefined) button.borderColor = "pink";
- //       button.borderWidth = 2;
-
-    }
-
-    Component.onCompleted: assignDefaultColors()
 }
