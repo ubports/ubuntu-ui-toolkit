@@ -24,6 +24,8 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 
     The ColoredButton class is part of the \l{UbuntuUIToolkit} module.
+    It adds a colored background, border, and changes of background color
+    depending on the state, to the AbstractButton.
 */
 AbstractButton {
     id: button

@@ -24,6 +24,7 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 
     The Button class is part of the \l{UbuntuUIToolkit} module.
+    A button can have text, an icon, or both.
 */
 ColoredButton {
     id: button
