@@ -16,9 +16,26 @@
 
 import QtQuick 1.0
 
+/*!
+    \qmlclass AbstractButton
+    \inqmlmodule UbuntuUIToolkit
+    \brief The AbstractButton class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The AbstractButton class is part of the \l{UbuntuUIToolkit} module.
+*/
 FocusScope {
+    /*!
+       \preliminary
+       DOCME
+    */
     property bool enabled: true
 
+    /*!
+       \preliminary
+       DOCME
+    */
     /* Use to manually set the "pressed" state of the button. This is not
        necessary in the normal use case, but is useful when a child item eats
        the mouse events (e.g. a DragArea).
@@ -26,8 +43,16 @@ FocusScope {
        (see http://bugreports.qt.nokia.com/browse/QTBUG-13007). */
     property bool pressed: false
 
+    /*!
+       \preliminary
+       DOCME
+    */
     property alias mouseOver: mouse_area.containsMouse
 
+    /*!
+       \preliminary
+       DOCME
+    */
     signal clicked
 
     Accessible.role: Accessible.PushButton
@@ -58,7 +83,7 @@ FocusScope {
             return "pressed"
         else if(activeFocus)
             return "selected"
-        else if(mouse_area.containsMouse)
+        else if(mouseOver)
             return "hovered"
         else
             return "default"

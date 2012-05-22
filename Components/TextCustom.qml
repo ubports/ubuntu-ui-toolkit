@@ -17,10 +17,23 @@
 import QtQuick 1.1
 import "fontUtils.js" as FontUtils
 
-/* Custom Text factorising the font style. */
+/*!
+    \qmlclass TextCustom
+    \inqmlmodule UbuntuUIToolkit
+    \brief The TextCustom class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The TextCustom class is part of the \l{UbuntuUIToolkit} module.
+*/
 Text {
     color: "black"
 //    font.family: "UbuntuBeta"
+
+    /*!
+       \preliminary
+       DOCME
+    */
     property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
 }

@@ -16,26 +16,72 @@
 
 import QtQuick 1.1
 
+/*!
+    \qmlclass Button
+    \inqmlmodule UbuntuUIToolkit
+    \brief The Button class is DOCME
+
+    \b{This component is under heavy development.}
+
+    The Button class is part of the \l{UbuntuUIToolkit} module.
+*/
 ColoredButton {
     id: button
 
+    /*!
+       \preliminary
+       The source URL of the icon to display inside the button.
+       Leave this value blank for a text-only button.
+    */
     property alias icon: icon.source
-    property alias iconWidth: icon.width
-    property alias iconHeight: icon.height
 
+    /*!
+       \preliminary
+       The text to display in the button. If an icon was defined,
+       the text will be shown next to the icon, otherwise it will
+       be centered. Leave blank for an icon-only button.
+    */
     property alias text: label.text
+
+    /*!
+      \preliminary
+      The size of the text that is displayed in the button.
+    */
     property alias textSize: label.fontSize
+
+    /*!
+      \preliminary
+      The color of the text.
+    */
     property alias textColor: label.color
 
-    /**
-     * The location of the icon relative to the text.
-     * top, bottom, left or right.
-     * If only text or only an icon is defined, this
-     * property is ignored and the text or icon is
-     * centered horizontally and vertically in the button.
-     */
+    /*!
+       \preliminary
+       The width of the icon to display.
+    */
+    property alias iconWidth: icon.width
+
+    /*!
+       \preliminary
+       The height of the icon to display.
+    */
+    property alias iconHeight: icon.height
+
+    /*!
+       \preliminary
+
+       The location of the icon relative to the text.
+       top, bottom, left or right.
+       If only text or only an icon is defined, this
+       property is ignored and the text or icon is
+       centered horizontally and vertically in the button.
+    */
     property string iconLocation: "left"
 
+    /*!
+       \preliminary
+       DOCME
+    */
     signal clicked
 
     Image {
@@ -50,6 +96,9 @@ ColoredButton {
         fontSize: "medium"
     }
 
+    /*!
+       \internal
+    */
     function alignIconText() {
         if (button.icon=="") {
             // no icon.
