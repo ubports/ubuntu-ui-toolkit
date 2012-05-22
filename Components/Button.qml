@@ -68,13 +68,11 @@ ColoredButton {
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
         } else if (iconLocation=="right") {
-            //icon.height = button.height - 10;
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
         } else if (iconLocation=="left") {
-            //icon.height = button.height - 10;
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;
@@ -84,4 +82,3 @@ ColoredButton {
 
     Component.onCompleted: alignIconText()
 }
-

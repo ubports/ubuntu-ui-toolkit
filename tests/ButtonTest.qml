@@ -42,7 +42,7 @@ Rectangle {
             hoverColor: "yellow"
             text: "icon on right"
             iconLocation: "right"
-            iconHeight: height - 10;
+            iconHeight: height - 10
             borderWidth: 0
         }
         Row {
