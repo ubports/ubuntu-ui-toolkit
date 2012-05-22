@@ -14,8 +14,9 @@ Rectangle {
         Button {
             width: 200
             height: 100
-            color: "blue"
-            pressColor: "darkblue"
+            color: "#0000aa"
+            pressColor: "#000088"
+            hoverColor: "#0000cc"
             borderWidth: 2
             borderColor: "black"
             text: "text only (centered)\nwith border"
@@ -37,10 +38,12 @@ Rectangle {
             height: 50
             width: 200
             color: "orange"
-            pressColor: "yellow"
+            pressColor: "pink"
+            hoverColor: "yellow"
             text: "icon on right"
             iconLocation: "right"
             iconHeight: height - 10;
+            borderWidth: 0
         }
         Row {
             spacing: 4
@@ -50,7 +53,8 @@ Rectangle {
                 width: 98
                 iconWidth: 50
                 color: "green"
-                pressColor: "orange"
+                pressColor: "dark green"
+                hoverColor: "light green"
                 text: "Icon on top"
                 iconLocation: "top"
             } // Button

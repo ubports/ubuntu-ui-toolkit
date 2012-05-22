@@ -18,28 +18,43 @@ import QtQuick 1.1
 
 AbstractButton {
     id: button
-    property alias color: background.color
+    property color color: "blue"
     property color borderColor
-    property int borderWidth
+    property int borderWidth: 2.0
     property real radius: 3.0
     property color pressColor: color
-
-    // TODO: add hoverColor
-    // TODO: automatic pressColor
+    property color hoverColor: color
 
     Rectangle {
         id: background
         radius: parent.radius
         width: parent.width
         height: parent.height
+        color: button.color
         border.color: parent.borderColor
         border.width: parent.borderWidth
     } // background
 
     states: [
         State {
+            name: "default"
+            PropertyChanges { target: background; color: button.color }
+        },
+        State {
             name: "pressed"
-            PropertyChanges { target: background; color: pressColor }
+            PropertyChanges { target: background; color: button.pressColor }
+        },
+        State {
+            name: "hovered"
+            PropertyChanges { target: background; color: button.hoverColor }
         }
     ]
+
+    function assignDefaultColors() {
+        if (button.borderColor === ""||button.borderColor===undefined) button.borderColor = "pink";
+ //       button.borderWidth = 2;
+
+    }
+
+    Component.onCompleted: assignDefaultColors()
 }
