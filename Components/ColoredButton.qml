@@ -71,14 +71,14 @@ AbstractButton {
         radius: parent.radius
         width: parent.width
         height: parent.height
-        color: button.color
+        //color: button.color
         border.color: parent.borderColor
         border.width: parent.borderWidth
     } // background
 
     states: [
         State {
-            name: "default"
+            name: "idle"
             PropertyChanges { target: background; color: button.color }
         },
         State {

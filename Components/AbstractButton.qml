@@ -27,7 +27,7 @@ import QtQuick 1.0
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-FocusScope {
+Item {
     /*!
        \preliminary
        DOCME
@@ -50,44 +50,21 @@ FocusScope {
     */
     signal clicked
 
-    Accessible.role: Accessible.PushButton
-
     MouseArea {
         id: mouse_area
-
-        /* FIXME: workaround double click bug
-                  http://bugreports.qt.nokia.com/browse/QTBUG-12250 */
-        property bool double_clicked: false
 
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
-        onClicked: {
-            if(double_clicked)
-                double_clicked = false
-            else
-                parent.clicked()
-        }
-        onDoubleClicked: {
-            double_clicked = true
-        }
+        onClicked: parent.clicked
     }
 
     state: {
-        if(pressed || mouse_area.pressed)
+        if (mouse_area.pressed)
             return "pressed"
-        else if(activeFocus)
-            return "selected"
-        else if(mouse_area.containsMouse)
+        else if (mouse_area.containsMouse)
             return "hovered"
         else
-            return "default"
-    }
-
-    Keys.onPressed: {
-        if (event.key == Qt.Key_Return) {
-            clicked()
-            event.accepted = true;
-        }
+            return "idle"
     }
 }
