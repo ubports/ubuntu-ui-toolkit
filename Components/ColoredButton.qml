@@ -34,7 +34,7 @@ AbstractButton {
        \preliminary
        DOCME
     */
-    property color color: "blue"
+    property color color: "#0000cc"
 
     /*!
        \preliminary
@@ -58,13 +58,13 @@ AbstractButton {
        \preliminary
        DOCME
     */
-    property color pressColor: color
+    property color pressColor: Qt.darker(button.color, 1.2)
 
     /*!
        \preliminary
        DOCME
     */
-    property color hoverColor: color
+    property color hoverColor: Qt.lighter(button.color, 1.25)
 
     Rectangle {
         id: background
