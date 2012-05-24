@@ -101,7 +101,7 @@ ColoredButton {
     /*!
        \internal
     */
-    function alignIconText() {
+    function __alignIconText() {
         if (button.iconSource=="") {
             // no icon.
             label.anchors.centerIn = button;
@@ -131,5 +131,5 @@ ColoredButton {
         } // if textlocation
     } // alignIconText
 
-    Component.onCompleted: alignIconText()
+    Component.onCompleted: __alignIconText()
 }
