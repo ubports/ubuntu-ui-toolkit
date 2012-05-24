@@ -27,7 +27,7 @@ import QtQuick 1.1
     It adds a colored background, border, and changes of background color
     depending on the state, to the AbstractButton.
 */
-AbstractButton {
+Button {
     id: button
 
     /*!
@@ -67,6 +67,7 @@ AbstractButton {
     property color hoverColor: Qt.lighter(button.color, 1.25)
 
     Rectangle {
+        z:-1
         id: background
         radius: parent.radius
         width: parent.width

@@ -26,7 +26,7 @@ import QtQuick 1.1
     The Button class is part of the \l{UbuntuUIToolkit} module.
     A button can have text, an icon, or both.
 */
-ColoredButton {
+AbstractButton {
     id: button
 
     width: 150
@@ -63,13 +63,13 @@ ColoredButton {
        \preliminary
        The width of the icon to display.
     */
-    property alias iconWidth: icon.width
+  //  property alias iconWidth: icon.width
 
     /*!
        \preliminary
        The height of the icon to display.
     */
-    property alias iconHeight: icon.height
+  //  property alias iconHeight: icon.height
 
     /*!
        \preliminary
