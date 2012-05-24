@@ -31,7 +31,7 @@ Rectangle {
             color: "#008800"
             pressColor: "#004400"
             onClicked: print("Clicked icon-only button")
-            iconLocation: "top"
+            iconPosition: "top"
         }
         Button {
             icon: "call_icon.png"
@@ -41,7 +41,7 @@ Rectangle {
             pressColor: "pink"
             hoverColor: "yellow"
             text: "icon on right"
-            iconLocation: "right"
+            iconPosition: "right"
             iconHeight: height - 10
             borderWidth: 0
         }
@@ -56,7 +56,7 @@ Rectangle {
                 pressColor: "dark green"
                 hoverColor: "light green"
                 text: "Icon on top"
-                iconLocation: "top"
+                iconPosition: "top"
             } // Button
             Button {
                 icon: "call_icon.png"
@@ -66,7 +66,7 @@ Rectangle {
                 color: "red"
                 pressColor: "darkred"
                 text: "Text on top"
-                iconLocation: "bottom"
+                iconPosition: "bottom"
             } // Button
         } // Row
         Button {
@@ -76,7 +76,7 @@ Rectangle {
             color: "orange"
             pressColor: "yellow"
             text: "icon on left"
-            iconLocation: "left"
+            iconPosition: "left"
             iconHeight: height - 10
         }
     } // column

@@ -71,13 +71,13 @@ ColoredButton {
     /*!
        \preliminary
 
-       The location of the icon relative to the text.
+       The position of the icon relative to the text.
        top, bottom, left or right.
        If only text or only an icon is defined, this
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
     */
-    property string iconLocation: "left"
+    property string iconPosition: "left"
 
     /*!
        \preliminary
@@ -107,22 +107,22 @@ ColoredButton {
         } else if (button.text=="") {
             icon.anchors.centerIn = button;
         }
-        else if (iconLocation=="top") {
+        else if (iconPosition=="top") {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconLocation=="bottom") {
+        } else if (iconPosition=="bottom") {
             icon.anchors.bottom = button.bottom;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconLocation=="right") {
+        } else if (iconPosition=="right") {
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconLocation=="left") {
+        } else if (iconPosition=="left") {
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;
