@@ -89,6 +89,10 @@ ColoredButton {
         id: icon
         fillMode: Image.PreserveAspectFit
         anchors.margins: 10
+        height: {
+            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
+            else return button.height - label.implicitHeight - 30;
+        }
     }
 
     TextCustom {

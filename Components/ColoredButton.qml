@@ -34,7 +34,7 @@ AbstractButton {
        \preliminary
        DOCME
     */
-    property color color: "#0000cc"
+    property color color: "#aaaaaa"
 
     /*!
        \preliminary
