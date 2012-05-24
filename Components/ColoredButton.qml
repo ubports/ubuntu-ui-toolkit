@@ -67,7 +67,7 @@ Button {
     property color hoverColor: Qt.lighter(button.color, 1.25)
 
     Rectangle {
-        z:-1
+        z: -1
         id: background
         radius: parent.radius
         width: parent.width
