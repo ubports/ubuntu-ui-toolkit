@@ -48,7 +48,7 @@ Item {
        \preliminary
        DOCME
     */
-    signal pressed
+    signal clicked
 
     MouseArea {
         id: mouse_area
@@ -56,7 +56,7 @@ Item {
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
-        onPressed: parent.pressed()
+        onClicked: parent.clicked()
     }
 
     state: {

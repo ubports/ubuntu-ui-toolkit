@@ -37,7 +37,7 @@ ColoredButton {
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
     */
-    property alias icon: icon.source
+    property alias iconSource: icon.source
 
     /*!
        \preliminary
@@ -82,12 +82,6 @@ ColoredButton {
     */
     property string iconPosition: "left"
 
-    /*!
-       \preliminary
-       DOCME
-    */
-    signal clicked
-
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
@@ -96,8 +90,7 @@ ColoredButton {
             if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
             else return button.height - label.implicitHeight - 30;
         }
-        //width: if (iconPosition=="top"||iconPosition=="bottom") button.
-    }
+     }
 
     TextCustom {
         id: label
@@ -109,7 +102,7 @@ ColoredButton {
        \internal
     */
     function alignIconText() {
-        if (button.icon=="") {
+        if (button.iconSource=="") {
             // no icon.
             label.anchors.centerIn = button;
         } else if (button.text=="") {

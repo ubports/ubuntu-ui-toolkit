@@ -22,26 +22,26 @@ Rectangle {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
-                onPressed: print("pressed text-only button")
+                onClicked: print("clicked text-only button")
             }
             Button {
-                icon: "call_icon.png"
+                iconSource: "call_icon.png"
                 width: 200
                 height: 80
-                onPressed: print("pressed icon-only button")
+                onClicked: print("clicked icon-only button")
                 iconPosition: "top"
             }
             Row {
                 spacing: 4
                 Button {
-                    icon: "call_icon.png"
+                    iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Icon on top"
                     iconPosition: "top"
                 } // Button
                 Button {
-                    icon: "call_icon.png"
+                    iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Text on top"
@@ -51,12 +51,12 @@ Rectangle {
             Button {
                 width: 200
                 height: 100
-                icon: "call_icon.png"
+                iconSource: "call_icon.png"
                 text: "icon on right"
                 iconPosition: "right"
             }
             Button {
-                icon: "call_icon.png"
+                iconSource: "call_icon.png"
                 height: 50
                 width: 200
                 text: "smaller icon on left"
@@ -71,7 +71,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             Button {
-                icon: "call_icon.png";
+                iconSource: "call_icon.png";
                 iconPosition: "right";
                 color: "green";
                 text: "grass color";
