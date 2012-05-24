@@ -42,13 +42,13 @@ Item {
        This is a clumsy workaround for the lack of a MouseProxy element
        (see http://bugreports.qt.nokia.com/browse/QTBUG-13007).
     */
-    property bool pressed: false
+    //property bool pressed: false
 
     /*!
        \preliminary
        DOCME
     */
-    signal clicked
+    signal pressed
 
     MouseArea {
         id: mouse_area
@@ -56,7 +56,7 @@ Item {
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
-        onClicked: parent.clicked
+        onPressed: parent.pressed()
     }
 
     state: {

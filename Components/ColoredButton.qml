@@ -40,7 +40,7 @@ AbstractButton {
        \preliminary
        DOCME
     */
-    property color borderColor
+    property color borderColor: "black"
 
     /*!
       \preliminary

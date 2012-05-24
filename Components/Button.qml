@@ -29,6 +29,9 @@ import QtQuick 1.1
 ColoredButton {
     id: button
 
+    width: 150
+    height: 50
+
     /*!
        \preliminary
        The source URL of the icon to display inside the button.
@@ -93,6 +96,7 @@ ColoredButton {
             if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
             else return button.height - label.implicitHeight - 30;
         }
+        //width: if (iconPosition=="top"||iconPosition=="bottom") button.
     }
 
     TextCustom {
