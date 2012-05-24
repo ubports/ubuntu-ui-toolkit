@@ -22,13 +22,13 @@ Rectangle {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
-                onPressed: print("clicked text-only button")
+                onPressed: print("pressed text-only button")
             }
             Button {
                 icon: "call_icon.png"
                 width: 200
                 height: 80
-                onPressed: print("clicked icon-only button")
+                onPressed: print("pressed icon-only button")
                 iconPosition: "top"
             }
             Row {
@@ -82,13 +82,7 @@ Rectangle {
                 hoverColor: "yellow"
                 pressColor: "purple"
             }
-            Button {
-                text: "fixed color"
-                color: "orange"
-                hoverColor: color
-                pressColor: color
-            }
-
+            Button { text: "fixed color"; color: "orange"; hoverColor: color; pressColor: color }
             Button { text: "borderless blue"; color: "blue"; textColor: "white"; borderWidth: 0.0 }
             Button { text: "thick red border"; borderColor: "red"; borderWidth: 4.0 }
             Button { text: "large red text"; textSize: "large"; textColor: "red" }
