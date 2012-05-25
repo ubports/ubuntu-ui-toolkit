@@ -15,23 +15,36 @@
  */
 
 import QtQuick 1.1
-import "RelativePosition.js" as Pos
 
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class is DOCME
+    \brief The Button class adds an icon and text to the AbstractButton
 
     \b{This component is under heavy development.}
 
-    The Button class is part of the \l{UbuntuUIToolkit} module.
     A button can have text, an icon, or both.
 */
 AbstractButton {
     id: button
 
+    /*!
+      \preliminary
+      The dimensions of the button.
+    */
     width: 150
     height: 50
+
+    /*!
+      \preliminary
+      The relative positions of the icon with respect
+      to the text of the button.
+      TODO: make these readonly when readonly gets supported
+    */
+    property int leftOfText: 0
+    property int rightOfText: 1
+    property int aboveText: 2
+    property int belowText: 3
 
     /*!
        \preliminary
@@ -69,14 +82,14 @@ AbstractButton {
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
     */
-    property int iconPosition: Pos.LEFT
+    property int iconPosition: button.leftOfText
 
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
         anchors.margins: 10
         height: {
-            if (text===""||iconPosition==Pos.LEFT||iconPosition==Pos.RIGHT) return button.height - 20;
+            if (text===""||iconPosition==button.leftOfText||iconPosition==button.rightOfText) return button.height - 20;
             else return button.height - label.implicitHeight - 30;
         }
      }
@@ -96,22 +109,22 @@ AbstractButton {
             label.anchors.centerIn = button;
         } else if (button.text=="") {
             icon.anchors.centerIn = button;
-        } else if (iconPosition==Pos.TOP) {
+        } else if (iconPosition==button.aboveText) {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition==Pos.BOTTOM) {
+        } else if (iconPosition==button.belowText) {
             icon.anchors.bottom = button.bottom;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition==Pos.RIGHT) {
+        } else if (iconPosition==button.rightOfText) {
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconPosition==Pos.LEFT) {
+        } else if (iconPosition==button.leftOfText) {
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;

@@ -19,11 +19,10 @@ import QtQuick 1.1
 /*!
     \qmlclass AbstractButton
     \inqmlmodule UbuntuUIToolkit
-    \brief The AbstractButton class is DOCME
+    \brief The AbstractButton class defines the behavior of the button.
 
     \b{This component is under heavy development.}
 
-    The AbstractButton class is part of the \l{UbuntuUIToolkit} module.
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
@@ -38,17 +37,8 @@ Item {
 
     /*!
        \preliminary
-       Use to manually set the "pressed" state of the button. This is not
-       necessary in the normal use case, but is useful when a child item eats
-       the mouse events (e.g. a DragArea).
-       This is a clumsy workaround for the lack of a MouseProxy element
-       (see http://bugreports.qt.nokia.com/browse/QTBUG-13007).
-    */
-    //property bool pressed: false
-
-    /*!
-       \preliminary
-       DOCME
+       This handler is called when there is a mouse click on the button
+       and the button is not disabled.
     */
     signal clicked
 

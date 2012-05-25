@@ -1,6 +1,5 @@
 import QtQuick 1.1
 import "../Components"
-import "../Components/RelativePosition.js" as Pos
 
 Rectangle {
     id: window
@@ -30,7 +29,7 @@ Rectangle {
                 width: 200
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
-                iconPosition: Pos.TOP
+                iconPosition: aboveText
             }
             Row {
                 spacing: 4
@@ -39,14 +38,14 @@ Rectangle {
                     height: 100
                     width: 98
                     text: "Icon on top"
-                    iconPosition: Pos.TOP
+                    iconPosition: aboveText
                 } // ColoredButton
                 ColoredButton {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Text on top"
-                    iconPosition: Pos.BOTTOM
+                    iconPosition: belowText
                 } // ColoredButton
             } // Row
             ColoredButton {
@@ -54,14 +53,14 @@ Rectangle {
                 height: 100
                 iconSource: "call_icon.png"
                 text: "icon on right"
-                iconPosition: Pos.RIGHT
+                iconPosition: rightOfText
             }
             ColoredButton {
                 iconSource: "call_icon.png"
                 height: 50
                 width: 200
                 text: "smaller icon on left"
-                iconPosition: Pos.LEFT
+                iconPosition: leftOfText
             }
         } // Column
         Column {
@@ -73,7 +72,7 @@ Rectangle {
             }
             ColoredButton {
                 iconSource: "call_icon.png"
-                iconPosition: Pos.RIGHT
+                iconPosition: rightOfText
                 color: "green"
                 text: "grass color"
                 textColor: "white" }
@@ -89,7 +88,7 @@ Rectangle {
                 color: "pink"
                 hoverColor: "yellow"
                 pressColor: "purple"
-                onClicked: print("clicked disabled button")
+                onClicked: print("")
             }
             ColoredButton {
                 text: "fixed color"
@@ -105,11 +104,5 @@ Rectangle {
             ColoredButton { text: "huge text"; textSize: "xx-large"; color: "#abc" }
             ColoredButton { text: "small blue text"; textSize: "small"; textColor: "blue" }
         } // Column
-        //Column {
-        //    width: 200
-        //    Text {
-        //        text: "tadaa"
-        //    }
-        //} // Column
     } // Row
 } // window
