@@ -28,9 +28,11 @@ import QtQuick 1.1
     and the states.
 */
 Item {
+    id: button
+
     /*!
        \preliminary
-       DOCME
+       Set enabled to false to block the clicked signal and state changes.
     */
     property bool enabled: true
 
@@ -56,11 +58,13 @@ Item {
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
-        onClicked: parent.clicked()
+        onClicked: if (button.enabled) parent.clicked()
     }
 
     state: {
-        if (mouse_area.pressed)
+        if (!button.enabled)
+            return "disabled"
+        else if (mouse_area.pressed)
             return "pressed"
         else if (mouse_area.containsMouse)
             return "hovered"

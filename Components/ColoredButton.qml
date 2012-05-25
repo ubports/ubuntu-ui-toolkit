@@ -34,7 +34,7 @@ Button {
        \preliminary
        DOCME
     */
-    property color color: "#aaaaaa"
+    property color color: "#8888cc"
 
     /*!
        \preliminary
@@ -66,6 +66,12 @@ Button {
     */
     property color hoverColor: Qt.lighter(button.color, 1.25)
 
+    /*!
+      \preliminary
+      DOCME
+    */
+    property color disabledColor: "#888888"
+
     Rectangle {
         z: -1
         id: background
@@ -89,6 +95,11 @@ Button {
         State {
             name: "hovered"
             PropertyChanges { target: background; color: button.hoverColor }
+        },
+        State {
+            name: "disabled"
+            PropertyChanges { target: background; color: button.disabledColor }
         }
+
     ]
 }

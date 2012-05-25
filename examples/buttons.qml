@@ -83,7 +83,21 @@ Rectangle {
                 hoverColor: "yellow"
                 pressColor: "purple"
             }
-            ColoredButton { text: "fixed color"; color: "orange"; hoverColor: color; pressColor: color }
+            ColoredButton {
+                text: "disabled"
+                enabled: false
+                color: "pink"
+                hoverColor: "yellow"
+                pressColor: "purple"
+                onClicked: print("clicked disabled button")
+            }
+            ColoredButton {
+                text: "fixed color"
+                color: "orange"
+                hoverColor: color
+                pressColor: color
+                onClicked: print("clicked fixed color button")
+            }
             ColoredButton { text: "borderless blue"; color: "blue"; textColor: "white"; borderWidth: 0.0 }
             ColoredButton { text: "thick red border"; borderColor: "red"; borderWidth: 4.0 }
             ColoredButton { text: "large red text"; textSize: "large"; textColor: "red" }
