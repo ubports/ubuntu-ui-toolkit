@@ -36,17 +36,6 @@ AbstractButton {
     height: 50
 
     /*!
-      \preliminary
-      The relative positions of the icon with respect
-      to the text of the button.
-      TODO: make these readonly when readonly gets supported
-    */
-    property int leftOfText: 0
-    property int rightOfText: 1
-    property int aboveText: 2
-    property int belowText: 3
-
-    /*!
        \preliminary
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
@@ -81,6 +70,10 @@ AbstractButton {
        If only text or only an icon is defined, this
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
+
+       Currently this is a string value. We are waiting for
+       support for enums:
+       https://bugreports.qt-project.org/browse/QTBUG-14861
     */
     property string iconPosition: "left"
 
@@ -96,14 +89,21 @@ AbstractButton {
 
     TextCustom {
         id: label
-        anchors.margins: 10
         fontSize: "medium"
-    }
+     }
+
+    // this variable ensures that the anchors of the icon and label are
+    // automatically updated when button.iconPosition changes.
+    /*!
+      \internal
+    */
+    property int __anchorsDummy: __alignIconText(button.iconPosition);
 
     /*!
        \internal
     */
-    function __alignIconText() {
+    function __alignIconText(position) {
+        label.anchors.margins = 10
         if (button.iconSource=="") {
             // no icon.
             label.anchors.centerIn = button;
@@ -130,7 +130,6 @@ AbstractButton {
             label.anchors.left = icon.right;
             label.anchors.verticalCenter = button.verticalCenter;
         } // if textlocation
+        return 1;
     } // alignIconText
-
-    Component.onCompleted: __alignIconText()
 }
