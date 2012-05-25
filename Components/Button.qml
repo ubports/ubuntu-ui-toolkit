@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import "RelativePosition.js" as Pos
 
 /*!
     \qmlclass Button
@@ -61,18 +62,6 @@ AbstractButton {
 
     /*!
        \preliminary
-       The width of the icon to display.
-    */
-  //  property alias iconWidth: icon.width
-
-    /*!
-       \preliminary
-       The height of the icon to display.
-    */
-  //  property alias iconHeight: icon.height
-
-    /*!
-       \preliminary
 
        The position of the icon relative to the text.
        top, bottom, left or right.
@@ -80,14 +69,14 @@ AbstractButton {
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
     */
-    property string iconPosition: "left"
+    property int iconPosition: Pos.LEFT
 
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
         anchors.margins: 10
         height: {
-            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
+            if (text===""||iconPosition==Pos.LEFT||iconPosition==Pos.RIGHT) return button.height - 20;
             else return button.height - label.implicitHeight - 30;
         }
      }
@@ -107,23 +96,22 @@ AbstractButton {
             label.anchors.centerIn = button;
         } else if (button.text=="") {
             icon.anchors.centerIn = button;
-        }
-        else if (iconPosition=="top") {
+        } else if (iconPosition==Pos.TOP) {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition=="bottom") {
+        } else if (iconPosition==Pos.BOTTOM) {
             icon.anchors.bottom = button.bottom;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition=="right") {
+        } else if (iconPosition==Pos.RIGHT) {
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconPosition=="left") {
+        } else if (iconPosition==Pos.LEFT) {
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;

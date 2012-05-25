@@ -16,12 +16,7 @@
 
 .pragma library
 
-function sizeToPixels(size) {
-    switch (size) {
-        case "small": return 13
-        case "medium": return 15
-        case "large": return 17
-        case "x-large": return 20
-        case "xx-large": return 30
-    }
-}
+var LEFT = 0;
+var RIGHT = 1;
+var TOP = 2;
+var BOTTOM = 3;

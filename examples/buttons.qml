@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import "../Components"
+import "../Components/RelativePosition.js" as Pos
 
 Rectangle {
     id: window
@@ -9,7 +10,7 @@ Rectangle {
 
     Row {
         anchors.centerIn: parent
-        width: 650
+        width: 400
         spacing: 5
         Column {
             width: 210
@@ -29,7 +30,7 @@ Rectangle {
                 width: 200
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
-                iconPosition: "top"
+                iconPosition: Pos.TOP
             }
             Row {
                 spacing: 4
@@ -38,14 +39,14 @@ Rectangle {
                     height: 100
                     width: 98
                     text: "Icon on top"
-                    iconPosition: "top"
+                    iconPosition: Pos.TOP
                 } // ColoredButton
                 ColoredButton {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Text on top"
-                    iconPosition: "bottom"
+                    iconPosition: Pos.BOTTOM
                 } // ColoredButton
             } // Row
             ColoredButton {
@@ -53,14 +54,14 @@ Rectangle {
                 height: 100
                 iconSource: "call_icon.png"
                 text: "icon on right"
-                iconPosition: "right"
+                iconPosition: Pos.RIGHT
             }
             ColoredButton {
                 iconSource: "call_icon.png"
                 height: 50
                 width: 200
                 text: "smaller icon on left"
-                iconPosition: "left"
+                iconPosition: Pos.LEFT
             }
         } // Column
         Column {
@@ -71,10 +72,10 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             ColoredButton {
-                iconSource: "call_icon.png";
-                iconPosition: "right";
-                color: "green";
-                text: "grass color";
+                iconSource: "call_icon.png"
+                iconPosition: Pos.RIGHT
+                color: "green"
+                text: "grass color"
                 textColor: "white" }
             ColoredButton {
                 text: "changing colors"
@@ -90,11 +91,11 @@ Rectangle {
             ColoredButton { text: "huge text"; textSize: "xx-large"; color: "#abc" }
             ColoredButton { text: "small blue text"; textSize: "small"; textColor: "blue" }
         } // Column
-        Column {
-            width: 200
-            Text {
-                text: "tadaa"
-            }
-        } // Column
+        //Column {
+        //    width: 200
+        //    Text {
+        //        text: "tadaa"
+        //    }
+        //} // Column
     } // Row
 } // window
