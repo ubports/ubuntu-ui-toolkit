@@ -19,13 +19,36 @@ import QtQuick 1.1
 /*!
     \qmlclass ColoredButton
     \inqmlmodule UbuntuUIToolkit
-    \brief The ColoredButton class is DOCME
+    \brief The ColoredButton class adds a colored background to the Button.
 
     \b{This component is under heavy development.}
 
-    The ColoredButton class is part of the \l{UbuntuUIToolkit} module.
     It adds a colored background, border, and changes of background color
-    depending on the state, to the AbstractButton.
+    depending on the state, to the Button.
+
+    Examples:
+    \qml
+        Column {
+            width: 155
+            spacing: 5
+
+            ColoredButton {
+                text: "text only (centered)\nwith border"
+                onClicked: print("clicked text-only ColoredButton")
+            }
+            ColoredButton {
+                iconSource: "call_icon.png"
+                onClicked: print("clicked icon-only ColoredButton")
+                iconPosition: "top"
+            }
+            ColoredButton {
+                iconSource: "call_icon.png"
+                text: "Icon on right"
+                iconPosition: "right"
+                onClicked: print("clicked on ColoredButton with text and icon")
+            }
+        }
+    \endqml
 */
 Button {
     id: button

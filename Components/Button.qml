@@ -24,6 +24,8 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 
     A button can have text, an icon, or both.
+
+    Example: See ColoredButton for usage examples.
 */
 AbstractButton {
     id: button
@@ -39,6 +41,7 @@ AbstractButton {
        \preliminary
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
+       \qmlproperty url iconSource
     */
     property alias iconSource: icon.source
 
@@ -47,18 +50,21 @@ AbstractButton {
        The text to display in the button. If an icon was defined,
        the text will be shown next to the icon, otherwise it will
        be centered. Leave blank for an icon-only button.
+       \qmlproperty string text
     */
     property alias text: label.text
 
     /*!
       \preliminary
       The size of the text that is displayed in the button.
+      \qmlproperty string textSize
     */
     property alias textSize: label.fontSize
 
     /*!
       \preliminary
       The color of the text.
+      \qmlproperty color textColor
     */
     property alias textColor: label.color
 
