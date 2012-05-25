@@ -29,7 +29,7 @@ Rectangle {
                 width: 200
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
-                iconPosition: aboveText
+                iconPosition: "top"
             }
             Row {
                 spacing: 4
@@ -38,14 +38,14 @@ Rectangle {
                     height: 100
                     width: 98
                     text: "Icon on top"
-                    iconPosition: aboveText
+                    iconPosition: "top"
                 } // ColoredButton
                 ColoredButton {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Text on top"
-                    iconPosition: belowText
+                    iconPosition: "bottom"
                 } // ColoredButton
             } // Row
             ColoredButton {
@@ -53,14 +53,14 @@ Rectangle {
                 height: 100
                 iconSource: "call_icon.png"
                 text: "icon on right"
-                iconPosition: rightOfText
+                iconPosition: "right"
             }
             ColoredButton {
                 iconSource: "call_icon.png"
                 height: 50
                 width: 200
                 text: "smaller icon on left"
-                iconPosition: leftOfText
+                iconPosition: "left"
             }
         } // Column
         Column {
@@ -72,7 +72,7 @@ Rectangle {
             }
             ColoredButton {
                 iconSource: "call_icon.png"
-                iconPosition: rightOfText
+                iconPosition: "right"
                 color: "green"
                 text: "grass color"
                 textColor: "white" }

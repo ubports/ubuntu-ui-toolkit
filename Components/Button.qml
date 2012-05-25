@@ -82,14 +82,14 @@ AbstractButton {
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
     */
-    property int iconPosition: button.leftOfText
+    property string iconPosition: "left"
 
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
         anchors.margins: 10
         height: {
-            if (text===""||iconPosition==button.leftOfText||iconPosition==button.rightOfText) return button.height - 20;
+            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
             else return button.height - label.implicitHeight - 30;
         }
      }
@@ -109,22 +109,22 @@ AbstractButton {
             label.anchors.centerIn = button;
         } else if (button.text=="") {
             icon.anchors.centerIn = button;
-        } else if (iconPosition==button.aboveText) {
+        } else if (iconPosition=="top") {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition==button.belowText) {
+        } else if (iconPosition=="bottom") {
             icon.anchors.bottom = button.bottom;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition==button.rightOfText) {
+        } else if (iconPosition=="right") {
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconPosition==button.leftOfText) {
+        } else if (iconPosition=="left") {
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;
