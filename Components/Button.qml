@@ -90,19 +90,19 @@ AbstractButton {
     TextCustom {
         id: label
         fontSize: "medium"
-     }
+    }
 
     // this variable ensures that the anchors of the icon and label are
     // automatically updated when button.iconPosition changes.
     /*!
       \internal
     */
-    property int __anchorsDummy: __alignIconText(button.iconPosition);
+    property int __anchorsDummy: __alignIconText(button.iconPosition, button.iconSource, button.text);
 
     /*!
        \internal
     */
-    function __alignIconText(position) {
+    function __alignIconText(pos, src, txt) {
         label.anchors.margins = 10
         if (button.iconSource=="") {
             // no icon.
