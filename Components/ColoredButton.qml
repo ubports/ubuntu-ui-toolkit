@@ -100,6 +100,5 @@ Button {
             name: "disabled"
             PropertyChanges { target: background; color: button.disabledColor }
         }
-
     ]
 }
