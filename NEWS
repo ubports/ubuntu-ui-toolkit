@@ -1,0 +1,28 @@
+Ubuntu UI Toolkit 0.1
+#####################
+
+New Features
+************
+
+.. New AbstractButton, ColoredButton and Button components.
+
+Improvements
+************
+
+.. Improvements to existing commands, especially improved performance
+   or memory usage, or better results.
+
+Bug Fixes
+*********
+
+.. No bugs yet
+
+Documentation
+*************
+
+.. Button classes are now documented
+
+API Changes
+***********
+
+.. This is the first version

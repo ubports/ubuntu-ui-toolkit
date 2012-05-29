@@ -14,85 +14,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 
 /*!
-    \qmlclass AbstractButton
+    \qmlabstract AbstractButton
     \inqmlmodule UbuntuUIToolkit
-    \brief The AbstractButton class is DOCME
+    \brief The AbstractButton class defines the behavior of the button.
 
     \b{This component is under heavy development.}
 
-    The AbstractButton class is part of the \l{UbuntuUIToolkit} module.
+    This class defines the behavior of the button: it defines the MouseArea
+    and the states.
 */
-FocusScope {
+Item {
+    id: button
+
     /*!
        \preliminary
-       DOCME
+       Set enabled to false to block the clicked signal and state changes.
     */
     property bool enabled: true
 
     /*!
        \preliminary
-       DOCME
-    */
-    /* Use to manually set the "pressed" state of the button. This is not
-       necessary in the normal use case, but is useful when a child item eats
-       the mouse events (e.g. a DragArea).
-       This is a clumsy workaround for the lack of a MouseProxy element
-       (see http://bugreports.qt.nokia.com/browse/QTBUG-13007). */
-    property bool pressed: false
-
-    /*!
-       \preliminary
-       DOCME
-    */
-    property alias mouseOver: mouse_area.containsMouse
-
-    /*!
-       \preliminary
-       DOCME
+       This handler is called when there is a mouse click on the button
+       and the button is not disabled.
     */
     signal clicked
-
-    Accessible.role: Accessible.PushButton
 
     MouseArea {
         id: mouse_area
 
-        /* FIXME: workaround double click bug
-                  http://bugreports.qt.nokia.com/browse/QTBUG-12250 */
-        property bool double_clicked: false
-
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
-        onClicked: {
-            if(double_clicked)
-                double_clicked = false
-            else
-                parent.clicked()
-        }
-        onDoubleClicked: {
-            double_clicked = true
-        }
+        onClicked: if (button.enabled) parent.clicked()
     }
 
     state: {
-        if(pressed || mouse_area.pressed)
+        if (!button.enabled)
+            return "disabled"
+        else if (mouse_area.pressed)
             return "pressed"
-        else if(activeFocus)
-            return "selected"
-        else if(mouse_area.containsMouse)
+        else if (mouse_area.containsMouse)
             return "hovered"
         else
-            return "default"
-    }
-
-    Keys.onPressed: {
-        if (event.key == Qt.Key_Return) {
-            clicked()
-            event.accepted = true;
-        }
+            return "idle"
     }
 }

@@ -19,33 +19,57 @@ import QtQuick 1.1
 /*!
     \qmlclass ColoredButton
     \inqmlmodule UbuntuUIToolkit
-    \brief The ColoredButton class is DOCME
+    \brief The ColoredButton class adds a colored background to the Button.
 
     \b{This component is under heavy development.}
 
-    The ColoredButton class is part of the \l{UbuntuUIToolkit} module.
-*/
-AbstractButton {
+    It adds a colored background, border, and changes of background color
+    depending on the state, to the Button.
 
+    Examples:
+    \qml
+        Column {
+            width: 155
+            spacing: 5
+
+            ColoredButton {
+                text: "text only (centered)\nwith border"
+                onClicked: print("clicked text-only ColoredButton")
+            }
+            ColoredButton {
+                iconSource: "call_icon.png"
+                onClicked: print("clicked icon-only ColoredButton")
+                iconPosition: "top"
+            }
+            ColoredButton {
+                iconSource: "call_icon.png"
+                text: "Icon on right"
+                iconPosition: "right"
+                onClicked: print("clicked on ColoredButton with text and icon")
+            }
+        }
+    \endqml
+*/
+Button {
     id: button
 
     /*!
        \preliminary
        DOCME
     */
-    property alias color: background.color
+    property color color: "#8888cc"
 
     /*!
        \preliminary
        DOCME
     */
-    property color borderColor
+    property color borderColor: "black"
 
     /*!
-       \preliminary
-       DOCME
+      \preliminary
+      DOCME
     */
-    property int borderWidth
+    property int borderWidth: 2.0
 
     /*!
        \preliminary
@@ -57,30 +81,47 @@ AbstractButton {
        \preliminary
        DOCME
     */
-    property color pressColor: color
+    property color pressColor: Qt.darker(button.color, 1.2)
 
     /*!
        \preliminary
        DOCME
     */
-    property color hoverColor: color
+    property color hoverColor: Qt.lighter(button.color, 1.25)
 
-    // TODO: gradient background color
+    /*!
+      \preliminary
+      DOCME
+    */
+    property color disabledColor: "#888888"
 
     Rectangle {
+        z: -1
         id: background
         radius: parent.radius
         width: parent.width
         height: parent.height
+        color: button.color
         border.color: parent.borderColor
         border.width: parent.borderWidth
     } // background
 
     states: [
         State {
+            name: "idle"
+            PropertyChanges { target: background; color: button.color }
+        },
+        State {
             name: "pressed"
-            PropertyChanges { target: background; color: pressColor }
+            PropertyChanges { target: background; color: button.pressColor }
+        },
+        State {
+            name: "hovered"
+            PropertyChanges { target: background; color: button.hoverColor }
+        },
+        State {
+            name: "disabled"
+            PropertyChanges { target: background; color: button.disabledColor }
         }
     ]
-
 }

@@ -14,6 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+.pragma library
+
 function sizeToPixels(size) {
     switch (size) {
         case "small": return 13

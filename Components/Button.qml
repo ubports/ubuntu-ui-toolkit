@@ -19,108 +19,123 @@ import QtQuick 1.1
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class is DOCME
+    \brief The Button class adds an icon and text to the AbstractButton
 
     \b{This component is under heavy development.}
 
-    The Button class is part of the \l{UbuntuUIToolkit} module.
+    A button can have text, an icon, or both.
+
+    Example: See ColoredButton for usage examples.
 */
-ColoredButton {
+AbstractButton {
     id: button
 
     /*!
-       \preliminary
-       DOCME
+      \preliminary
+      The dimensions of the button.
     */
-    property alias icon: icon.source
+    width: 150
+    height: 50
+
     /*!
        \preliminary
-       DOCME
+       The source URL of the icon to display inside the button.
+       Leave this value blank for a text-only button.
+       \qmlproperty url iconSource
+    */
+    property alias iconSource: icon.source
+
+    /*!
+       \preliminary
+       The text to display in the button. If an icon was defined,
+       the text will be shown next to the icon, otherwise it will
+       be centered. Leave blank for an icon-only button.
+       \qmlproperty string text
     */
     property alias text: label.text
+
     /*!
-       \preliminary
-       DOCME
+      \preliminary
+      The size of the text that is displayed in the button.
+      \qmlproperty string textSize
     */
-    property alias iconWidth: icon.width
+    property alias textSize: label.fontSize
+
     /*!
-       \preliminary
-       DOCME
+      \preliminary
+      The color of the text.
+      \qmlproperty color textColor
     */
-    property alias iconHeight: icon.height
-    /*!
-       \preliminary
-       DOCME
-    */
-    property alias fontSize: label.fontSize
-    /*!
-       \preliminary
-       DOCME
-    */
-    property alias fontColor: label.color
+    property alias textColor: label.color
 
     /*!
        \preliminary
 
-       The location of the icon relative to the text.
+       The position of the icon relative to the text.
        top, bottom, left or right.
        If only text or only an icon is defined, this
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
-    */
-    property string iconLocation: "left"
 
-    /*!
-       \preliminary
-       DOCME
+       Currently this is a string value. We are waiting for
+       support for enums:
+       https://bugreports.qt-project.org/browse/QTBUG-14861
     */
-    signal clicked
+    property string iconPosition: "left"
 
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
         anchors.margins: 10
-    }
+        height: {
+            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
+            else return button.height - label.implicitHeight - 30;
+        }
+     }
 
     TextCustom {
         id: label
-        anchors.margins: 10
+        fontSize: "medium"
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: button.clicked()
-    }
+    // this variable ensures that the anchors of the icon and label are
+    // automatically updated when button.iconPosition changes.
+    /*!
+      \internal
+    */
+    property int __anchorsDummy: __alignIconText(button.iconPosition, button.iconSource, button.text);
 
     /*!
        \internal
     */
-    function alignIconText() {
-        if (iconLocation=="top") {
+    function __alignIconText(pos, src, txt) {
+        label.anchors.margins = 10
+        if (button.iconSource=="") {
+            // no icon.
+            label.anchors.centerIn = button;
+        } else if (button.text=="") {
+            icon.anchors.centerIn = button;
+        } else if (iconPosition=="top") {
             icon.anchors.top = button.top;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.top = icon.bottom;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconLocation=="bottom") {
+        } else if (iconPosition=="bottom") {
             icon.anchors.bottom = button.bottom;
             icon.anchors.horizontalCenter = button.horizontalCenter;
             label.anchors.bottom = icon.top;
             label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconLocation=="right") {
-            icon.height = button.height - 10;
+        } else if (iconPosition=="right") {
             icon.anchors.right = button.right;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.right = icon.left;
             label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconLocation=="left") {
-            icon.height = button.height - 10;
+        } else if (iconPosition=="left") {
             icon.anchors.left = button.left;
             icon.anchors.verticalCenter = button.verticalCenter;
             label.anchors.left = icon.right;
             label.anchors.verticalCenter = button.verticalCenter;
         } // if textlocation
+        return 1;
     } // alignIconText
-
-    Component.onCompleted: alignIconText()
 }
-
