@@ -3,7 +3,7 @@
 import QmlProject 1.1
 
 Project {
-    mainFile: "examples/buttons.qml"
+    mainFile: "examples/tabs.qml"
 
     /* Include .qml, .js, and image files from current directory and subdirectories */
     QmlFiles {

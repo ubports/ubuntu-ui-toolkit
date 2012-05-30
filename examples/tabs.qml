@@ -7,43 +7,46 @@ Rectangle {
     width: 800
     height: 600
 
-    Toolbar {
-        id: toolbar
-        align: "top"
-    }
-
-    Tabs {
-        toolbar: toolbar
-        align: "center"
-
-        TabPage {
-            tabButton.text: "first tab" // text on the tabbutton
-            TextCustom { anchors.centerIn: parent; text: "page content" }
+    Row {
+        id: buttonRow
+        anchors.horizontalCenter: window.horizontalCenter
+        TabButton {
+            text: "Tab 1"
+            tab: tab1
         }
-        TabPage {
-            tabButton.text: "second tab"
-            tabButton.color: "green"
-            tabButton.activeColor: "yellow"
-
-            TextCustom { anchors.centerIn: parent; text: "empty page" }
+        TabButton {
+            text: "Tab 2"
+            tab: tab2
         }
-        TabPage {
-            tabButton { name: "third"; color: "orange"; activeColor: "blue"; activeHeight: 50 }
-
-            // whatever can be on a page
+        TabButton {
+            text: "Tab 3"
+            tab: tab3
         }
+    } // Row
 
-        TabButton { text: "first tab" }
-        TabPage {
-            Button { anchors.centerIn: parent; width: 200; height: 100; text: "just a button" }
-        } // TabPage
-        TabButton { text: "second tab" }
-        TabPage {
-            TextCustom { anchors.centerIn: parent; text: "empty page" }
-        } // TabPage
-        TabButton { text: "third!" }
-        TabPage {
-            TextCustom { anchors.centerIn: parent; text: "and another page" }
-        } // TabPage
-    } // Tabs
+   TabGroup {
+       currentTab: tab1
+       anchors.top: buttonRow.bottom
+       anchors.horizontalCenter: window.horizontalCenter
+
+       Rectangle {
+           anchors.horizontalCenter: parent.horizontalCenter
+           id: tab1
+           width: 50; height: 100
+           color: "green"
+       }
+
+       Rectangle {
+           id: tab2
+           width: 50; height: 100
+           color: "black"
+       }
+
+       Rectangle {
+           id: tab3
+           width: 50; height: 100
+           color: "orange"
+       }
+   }
+
 } // window
