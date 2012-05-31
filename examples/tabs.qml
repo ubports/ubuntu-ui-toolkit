@@ -15,37 +15,59 @@ Rectangle {
             tab: tab1
         }
         TabButton {
-            text: "Tab 2"
+            text: "Tab 2a"
             tab: tab2
+            width: 80
+        }
+        TabButton {
+            text: "Tab 2b"
+            tab: tab2
+            width: 80
         }
         TabButton {
             text: "Tab 3"
             tab: tab3
         }
+        TabButton {
+            text: "No tab"
+        }
+        TabButton {
+            text: "Invalid"
+            tab: notATab
+        }
     } // Row
-
-   TabGroup {
-       //currentTab: tab1
+    TabGroup {
+       currentTab: tab1
        anchors.top: buttonRow.bottom
        anchors.horizontalCenter: window.horizontalCenter
 
-       Rectangle {
-           anchors.horizontalCenter: parent.horizontalCenter
+       Item {
            id: tab1
-           width: 50; height: 100
-           color: "green"
+           anchors.fill: parent
+           Text {
+               anchors.centerIn: parent
+               text: "This is the first tab."
+           }
        }
-
-       Rectangle {
+       Item {
            id: tab2
-           width: 50; height: 100
-           color: "black"
+           anchors.fill: parent
+           Text {
+               anchors.centerIn: parent
+               text: "Tab number two."
+           }
        }
-
        Rectangle {
            id: tab3
-           width: 50; height: 100
-           color: "orange"
+           anchors.fill: parent
+           Text {
+               anchors.centerIn: parent
+               text: "Colorful tab 3"
+           }
+           color: "lightblue"
        }
+   }
+   Item {
+       id: notATab
    }
 } // window

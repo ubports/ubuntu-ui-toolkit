@@ -34,7 +34,7 @@ ColoredButton {
       \preliminary
       True if tab is the selected tab of its tabgroup, false otherwise.
      */
-    property bool selected: false
+    property bool selected: (__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
 
     /*!
       \preliminary
@@ -45,15 +45,7 @@ ColoredButton {
     /*!
       \internal
      */
-    // TODO: check the type of tab.parent? (here or in __selectTab)
     property Item __tabGroup: tab !== null ? tab.parent : null
-
-    onSelectedChanged: print("selected changed for tab "+text)
-
-    Connections {
-        target: __tabGroup
-        onCurrentTabChanged: selected = (__tabGroup.currentTab == tab)
-    }
 
     onClicked: __selectTab()
 
@@ -64,7 +56,9 @@ ColoredButton {
     */
     function __selectTab() {
         if ( (__tabGroup != null) && (tab != null) ) {
-            __tabGroup.currentTab = tab;
+            if ("currentTab" in __tabGroup) { // make sure __tabGroup is of type TabGroup
+                __tabGroup.currentTab = tab;
+            } // if
         } // if
     } // function
 
