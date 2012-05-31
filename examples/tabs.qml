@@ -23,6 +23,8 @@ Rectangle {
             text: "Tab 2b"
             tab: tab2
             width: 80
+            // This button has the same tab as the previous TabButton.
+            // When the tab is active, both buttons will appear selected.
         }
         TabButton {
             text: "Tab 3"
@@ -30,12 +32,17 @@ Rectangle {
         }
         TabButton {
             text: "No tab"
+            // no associated tab. The button will be visible
+            // but does not select a tab when clicked.
         }
         TabButton {
             text: "Invalid"
             tab: notATab
+            // no valid tab. The button will be visible
+            // but does not select a tab when clicked.
         }
     } // Row
+
     TabGroup {
        currentTab: tab1
        anchors.top: buttonRow.bottom
@@ -68,6 +75,8 @@ Rectangle {
        }
    }
    Item {
+       // this Item cannot be used as a tab because its
+       // parent is not a TabGroup.
        id: notATab
    }
 } // window

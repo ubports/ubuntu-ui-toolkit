@@ -45,7 +45,7 @@ ColoredButton {
     /*!
       \internal
      */
-    property Item __tabGroup: tab !== null ? tab.parent : null
+    property Item __tabGroup: __getTabGroup()
 
     onClicked: __selectTab()
 
@@ -56,11 +56,26 @@ ColoredButton {
     */
     function __selectTab() {
         if ( (__tabGroup != null) && (tab != null) ) {
-            if ("currentTab" in __tabGroup) { // make sure __tabGroup is of type TabGroup
                 __tabGroup.currentTab = tab;
-            } // if
         } // if
     } // function
+
+    /*!
+      \internal
+      If the tab has a parent that is a valid TabGroup, then that TabGroup is returned.
+      Otherwise null is returned.
+     */
+    function __getTabGroup() {
+        var result = null;
+        if (tab !== null) {
+            if (tab.parent !== null) {
+                if ("currentTab" in tab.parent) {
+                    result = tab.parent;
+                }
+            }
+        }
+        return result;
+    }
 
     states: [
         State {
