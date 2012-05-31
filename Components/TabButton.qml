@@ -22,7 +22,7 @@ import QtQuick 1.1
     \brief A special Button class for controlling tabs
 */
 ColoredButton {
-    id: button
+    id: tabbutton
 
     /*!
       \preliminary
@@ -31,10 +31,29 @@ ColoredButton {
     property Item tab
 
     /*!
+      \preliminary
+      True if tab is the selected tab of its tabgroup, false otherwise.
+     */
+    property bool selected: false
+
+    /*!
+      \preliminary
+      The color of the button when it is selected.
+     */
+    property color selectedColor: "green"
+
+    /*!
       \internal
      */
     // TODO: check the type of tab.parent? (here or in __selectTab)
     property Item __tabGroup: tab !== null ? tab.parent : null
+
+    onSelectedChanged: print("selected changed for tab "+text)
+
+    Connections {
+        target: __tabGroup
+        onCurrentTabChanged: selected = (__tabGroup.currentTab == tab)
+    }
 
     onClicked: __selectTab()
 
@@ -48,4 +67,16 @@ ColoredButton {
             __tabGroup.currentTab = tab;
         } // if
     } // function
+
+    states: [
+        State {
+            name: "selected"
+            PropertyChanges { target: background; color: tabbutton.selectedColor }
+        }
+    ]
+
+    state: {
+        if (tabbutton.selected) return "selected";
+        else return __getAbstractButtonState();
+    }
 }

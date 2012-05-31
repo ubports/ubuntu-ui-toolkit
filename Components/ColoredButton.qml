@@ -95,9 +95,11 @@ Button {
     */
     property color disabledColor: "#888888"
 
+    property alias background: rectbg
+
     Rectangle {
         z: -1
-        id: background
+        id: rectbg
         radius: parent.radius
         width: parent.width
         height: parent.height

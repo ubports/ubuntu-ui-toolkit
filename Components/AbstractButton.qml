@@ -51,7 +51,7 @@ Item {
         onClicked: if (button.enabled) parent.clicked()
     }
 
-    state: {
+    function __getAbstractButtonState() {
         if (!button.enabled)
             return "disabled"
         else if (mouse_area.pressed)
@@ -60,5 +60,9 @@ Item {
             return "hovered"
         else
             return "idle"
+    }
+
+    state: {
+        return __getAbstractButtonState();
     }
 }
