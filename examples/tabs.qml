@@ -29,6 +29,7 @@ Rectangle {
         TabButton {
             text: "Tab 3"
             tab: tab3
+            selectedColor: "cyan"
         }
         TabButton {
             text: "No tab"
@@ -75,7 +76,7 @@ Rectangle {
        }
    }
    Item {
-       // this Item cannot be used as a tab because its
+       // this Item is not a valid tab because its
        // parent is not a TabGroup.
        id: notATab
    }

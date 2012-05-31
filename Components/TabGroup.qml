@@ -28,6 +28,12 @@ import QtQuick 1.1
 
 Item {
     id: tabGroup
+
+    /*!
+      \preliminary
+      The tab that is currently selected. This variable may be undefined
+      if no tab is selected, and its value is updated by clicking on a TabButton.
+     */
     property Item currentTab
 
     width: parent ? parent.width : 0
@@ -36,6 +42,9 @@ Item {
     onChildrenChanged: __update()
     onCurrentTabChanged: __update()
 
+    /*!
+      \internal
+     */
     function __update() {
         for (var i=0; i < children.length; i++) {
             var child = children[i];

@@ -40,10 +40,11 @@ ColoredButton {
       \preliminary
       The color of the button when it is selected.
      */
-    property color selectedColor: "green"
+    property color selectedColor: "white"
 
     /*!
       \internal
+      The parent of the tab property. Must be of type TabGroup.
      */
     property Item __tabGroup: __getTabGroup()
 
