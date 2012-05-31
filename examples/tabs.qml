@@ -25,7 +25,7 @@ Rectangle {
     } // Row
 
    TabGroup {
-       currentTab: tab1
+       //currentTab: tab1
        anchors.top: buttonRow.bottom
        anchors.horizontalCenter: window.horizontalCenter
 
@@ -48,5 +48,4 @@ Rectangle {
            color: "orange"
        }
    }
-
 } // window

@@ -32,4 +32,17 @@ Item {
 
     width: parent ? parent.width : 0
     height: parent ? parent.height : 0
+
+    onChildrenChanged: __update()
+    onCurrentTabChanged: __update()
+
+    function __update() {
+        for (var i=0; i < children.length; i++) {
+            var child = children[i];
+            var newVis = (child == currentTab);
+            if (newVis != child.visible) {
+                child.visible = newVis;
+            } // if
+        } // for
+    } // function __update
 }
