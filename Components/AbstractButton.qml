@@ -51,6 +51,9 @@ Item {
         onClicked: if (button.enabled) parent.clicked()
     }
 
+    /*!
+      \internal
+     */
     function __getAbstractButtonState() {
         if (!button.enabled)
             return "disabled"
