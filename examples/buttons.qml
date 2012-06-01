@@ -12,6 +12,7 @@ Rectangle {
         width: 400
         spacing: 5
         Column {
+
             width: 210
             spacing: 5
             Text {
@@ -22,7 +23,8 @@ Rectangle {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
-                onClicked: print("clicked text-only ColoredButton")
+                onClicked: print("clicked text-only Button")
+                ButtonBackground { }
             }
             Button {
                 iconSource: "call_icon.png"
@@ -30,6 +32,7 @@ Rectangle {
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
                 iconPosition: "top"
+                ButtonBackground { }
             }
             Row {
                 spacing: 4
@@ -39,6 +42,7 @@ Rectangle {
                     width: 98
                     text: "Icon on top"
                     iconPosition: "top"
+                    ButtonBackground { }
                 } // ColoredButton
                 Button {
                     iconSource: "call_icon.png"
@@ -46,7 +50,8 @@ Rectangle {
                     width: 98
                     text: "Text on top"
                     iconPosition: "bottom"
-                } // ColoredButton
+                    ButtonBackground {}
+                } // Button
             } // Row
             Button {
                 width: 200
@@ -54,6 +59,7 @@ Rectangle {
                 iconSource: "call_icon.png"
                 text: "icon on right"
                 iconPosition: "right"
+                ButtonBackground {}
             }
             Button {
                 iconSource: "call_icon.png"
@@ -61,6 +67,7 @@ Rectangle {
                 width: 200
                 text: "smaller icon on left"
                 iconPosition: "left"
+                ButtonBackground {}
             }
         } // Column
         Column {
@@ -73,44 +80,42 @@ Rectangle {
             Button {
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                //bg.color: "green"
+                ButtonBackground { color: "green" }
                 text: "grass color"
                 textColor: "white" }
             Button {
                 text: "changing colors"
-                //color: "pink"
-                //bg.hoverColor: "yellow"
-                /*
-                bg: ButtonBackground {
-                    button: parent
+                ButtonBackground {
                     color: "pink"
                     hoverColor: "yellow"
                     pressColor: "purple"
-                }*/
-
-                //pressColor: "purple"
+                }
             }
-            ColoredButton {
+            Button {
                 text: "disabled"
                 enabled: false
-                color: "pink"
-                hoverColor: "yellow"
-                pressColor: "purple"
-                onClicked: print("")
+                ButtonBackground {
+                    color: "pink"
+                    hoverColor: "yellow"
+                    pressColor: "purple"
+                }
+                onClicked: print("this function is never called because the button is no enabled.")
             }
-            ColoredButton {
+            Button {
                 text: "fixed color"
-                color: "orange"
-                hoverColor: color
-                pressColor: color
+                ButtonBackground {
+                    color: "orange"
+                    hoverColor: color
+                    pressColor: color
+                }
                 onClicked: print("clicked fixed color button")
             }
-            ColoredButton { text: "borderless blue"; color: "blue"; textColor: "white"; borderWidth: 0.0 }
-            ColoredButton { text: "thick red border"; borderColor: "red"; borderWidth: 4.0 }
-            ColoredButton { text: "large red text"; textSize: "large"; textColor: "red" }
-            ColoredButton { text: "larger text"; textSize: "x-large"; textColor: "white"; color: "#123" }
-            ColoredButton { text: "huge text"; textSize: "xx-large"; color: "#abc" }
-            ColoredButton { text: "small blue text"; textSize: "small"; textColor: "blue" }
+            Button { text: "borderless blue"; ButtonBackground { color: "blue"; borderWidth: 0.0 } textColor: "white" }
+            Button { text: "thick red border"; ButtonBackground { borderColor: "red"; borderWidth: 4.0 } }
+            Button { text: "large red text"; textSize: "large"; textColor: "red"; ButtonBackground {} }
+            Button { text: "larger text"; textSize: "x-large"; textColor: "white"; ButtonBackground { color: "#123" } }
+            Button { text: "huge text"; textSize: "xx-large"; ButtonBackground { color: "#abc" } }
+            Button { text: "small blue text"; textSize: "small"; textColor: "blue"; ButtonBackground {} }
         } // Column
     } // Row
 } // window

@@ -23,11 +23,10 @@ import QtQuick 1.1
 */
 Item {
     id: bg
-
-    anchors.fill: parent
     z: -1
 
-    property Item button;
+    property Item button: parent ? parent : null
+    anchors.fill: button
 
     /*!
        \preliminary
@@ -103,5 +102,5 @@ Item {
         }
     ]
 
-    state: button.state
+    state: button ? button.state : "undefined"
 }

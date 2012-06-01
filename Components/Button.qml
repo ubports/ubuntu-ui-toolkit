@@ -98,11 +98,14 @@ AbstractButton {
         fontSize: "medium"
     }
 
-    property alias bg: buttonbg
-    ButtonBackground {
+    //property alias bg: buttonbg
+    //property ButtonBackground bg //
+    /*
+    ButtonBackground
         id: buttonbg
         button: parent
     }
+    */
     //property ButtonBackground bg
 
     // this variable ensures that the anchors of the icon and label are
