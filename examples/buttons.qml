@@ -18,13 +18,13 @@ Rectangle {
                 text: "text and icons"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
-            ColoredButton {
+            Button {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
                 onClicked: print("clicked text-only ColoredButton")
             }
-            ColoredButton {
+            Button {
                 iconSource: "call_icon.png"
                 width: 200
                 height: 80
@@ -33,14 +33,14 @@ Rectangle {
             }
             Row {
                 spacing: 4
-                ColoredButton {
+                Button {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Icon on top"
                     iconPosition: "top"
                 } // ColoredButton
-                ColoredButton {
+                Button {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
@@ -48,14 +48,14 @@ Rectangle {
                     iconPosition: "bottom"
                 } // ColoredButton
             } // Row
-            ColoredButton {
+            Button {
                 width: 200
                 height: 100
                 iconSource: "call_icon.png"
                 text: "icon on right"
                 iconPosition: "right"
             }
-            ColoredButton {
+            Button {
                 iconSource: "call_icon.png"
                 height: 50
                 width: 200
@@ -70,17 +70,25 @@ Rectangle {
                 text: "color and text-size"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
-            ColoredButton {
+            Button {
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                color: "green"
+                //bg.color: "green"
                 text: "grass color"
                 textColor: "white" }
-            ColoredButton {
+            Button {
                 text: "changing colors"
-                color: "pink"
-                hoverColor: "yellow"
-                pressColor: "purple"
+                //color: "pink"
+                //bg.hoverColor: "yellow"
+                /*
+                bg: ButtonBackground {
+                    button: parent
+                    color: "pink"
+                    hoverColor: "yellow"
+                    pressColor: "purple"
+                }*/
+
+                //pressColor: "purple"
             }
             ColoredButton {
                 text: "disabled"

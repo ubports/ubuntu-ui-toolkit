@@ -98,6 +98,13 @@ AbstractButton {
         fontSize: "medium"
     }
 
+    property alias bg: buttonbg
+    ButtonBackground {
+        id: buttonbg
+        button: parent
+    }
+    //property ButtonBackground bg
+
     // this variable ensures that the anchors of the icon and label are
     // automatically updated when button.iconPosition changes.
     /*!
