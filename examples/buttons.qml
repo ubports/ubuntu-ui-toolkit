@@ -24,7 +24,10 @@ Rectangle {
                 height: 80
                 text: "text only (centered)\nwith border"
                 onClicked: print("clicked text-only Button")
-                ButtonBackground { }
+                //ButtonBackground { }
+              //  background.color: "orange"
+                //background: ButtonBackground { color: "pink" }
+                //background.color: "orange"
             }
             Button {
                 iconSource: "call_icon.png"
@@ -32,7 +35,7 @@ Rectangle {
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
                 iconPosition: "top"
-                ButtonBackground { }
+                //ButtonBackground { }
             }
             Row {
                 spacing: 4
