@@ -17,9 +17,12 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass ButtonBackground
+    \qmlclass TabBackground
     \inqmlmodule UbuntuUIToolkit
-    \brief TODO
+    \brief The TabBackground extends the ButtonBackground
+        with an additional "selected" state and associated
+        selectedColor, which will be the color of the
+        TabButton when it's associated tab is selected.
 */
 ButtonBackground {
     id: tabbutton

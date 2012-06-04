@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass TabButton
     \inqmlmodule UbuntuUIToolkit
-    \brief A special button class for controlling tabs
+    \brief A special button class for controlling tabs.
 */
 Button {
     id: tabbutton
@@ -27,6 +27,7 @@ Button {
     /*!
       \preliminary
       The tab that will be activated by this button.
+      The parent of the tab Item must be a TabGroup.
      */
     property Item tab
 
@@ -72,11 +73,6 @@ Button {
         return result;
     }
 
-    state: {
-        if (tabbutton.selected) return "selected";
-        else return __getAbstractButtonState();
-    }
-
     // These aliases are needed because we cannot define
     // grouped properties. See ColoredButton.qml for links to bug reports.
     /*!
@@ -97,6 +93,11 @@ Button {
       \qmlproperty color selectedColor
     */
     property alias selectedColor: background.selectedColor
+
+    state: {
+        if (tabbutton.selected) return "selected";
+        else return __getAbstractButtonState();
+    }
 
     TabBackground {
         id: background

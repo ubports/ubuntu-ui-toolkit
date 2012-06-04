@@ -19,7 +19,10 @@ import QtQuick 1.1
 /*!
     \qmlclass ButtonBackground
     \inqmlmodule UbuntuUIToolkit
-    \brief TODO
+    \brief Provides a button with a background using a Rectangle.
+
+    The Rectangle is configurable and changes color when the user
+    hovers or presses the button, or when the button is disabled.
 */
 Item {
     id: bg

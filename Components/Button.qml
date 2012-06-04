@@ -40,6 +40,7 @@ import QtQuick 1.1
                 iconSource: "call_icon.png"
                 onClicked: print("clicked icon-only Button")
                 iconPosition: "top"
+                color: "green"
             }
             Button {
                 iconSource: "call_icon.png"

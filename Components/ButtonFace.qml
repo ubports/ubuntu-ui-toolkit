@@ -23,9 +23,9 @@ import QtQuick 1.1
 
     \b{This component is under heavy development.}
 
-    A button can have text, an icon, or both.
+    A ButtonFace can have text, an icon, or both.
 
-    Example: See Button for usage examples.
+    See Button for usage examples.
 */
 ButtonBehavior {
     id: button
