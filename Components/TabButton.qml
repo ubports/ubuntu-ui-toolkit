@@ -21,7 +21,7 @@ import QtQuick 1.1
     \inqmlmodule UbuntuUIToolkit
     \brief A special Button class for controlling tabs
 */
-ColoredButton {
+Button {
     id: tabbutton
 
     /*!
@@ -40,7 +40,7 @@ ColoredButton {
       \preliminary
       The color of the button when it is selected.
      */
-    property color selectedColor: "white"
+ //   property color selectedColor: "white"
 
     /*!
       \internal
@@ -78,15 +78,20 @@ ColoredButton {
         return result;
     }
 
+    /*
     states: [
         State {
             name: "selected"
             PropertyChanges { target: background; color: tabbutton.selectedColor }
         }
     ]
-
+*/
     state: {
         if (tabbutton.selected) return "selected";
         else return __getAbstractButtonState();
+    }
+
+    TabBackground {
+        id: background
     }
 }

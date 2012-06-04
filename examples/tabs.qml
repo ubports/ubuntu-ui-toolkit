@@ -29,7 +29,7 @@ Rectangle {
         TabButton {
             text: "Tab 3"
             tab: tab3
-            selectedColor: "cyan"
+        //    selectedColor: "cyan"
         }
         TabButton {
             text: "No tab"

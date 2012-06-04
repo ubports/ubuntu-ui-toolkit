@@ -19,23 +19,18 @@ Rectangle {
                 text: "text and icons"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
-            Button {
+            ColoredButton {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
                 onClicked: print("clicked text-only Button")
-                //ButtonBackground { }
-              //  background.color: "orange"
-                //background: ButtonBackground { color: "pink" }
-                //background.color: "orange"
             }
-            Button {
+            ColoredButton {
                 iconSource: "call_icon.png"
                 width: 200
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
                 iconPosition: "top"
-                //ButtonBackground { }
             }
             Row {
                 spacing: 4
@@ -47,13 +42,12 @@ Rectangle {
                     iconPosition: "top"
                     ButtonBackground { }
                 } // ColoredButton
-                Button {
+                ColoredButton {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
                     text: "Text on top"
                     iconPosition: "bottom"
-                    ButtonBackground {}
                 } // Button
             } // Row
             Button {
@@ -86,13 +80,11 @@ Rectangle {
                 ButtonBackground { color: "green" }
                 text: "grass color"
                 textColor: "white" }
-            Button {
+            ColoredButton {
                 text: "changing colors"
-                ButtonBackground {
-                    color: "pink"
-                    hoverColor: "yellow"
-                    pressColor: "purple"
-                }
+                color: "pink"
+                hoverColor: "yellow"
+                pressColor: "purple"
             }
             Button {
                 text: "disabled"

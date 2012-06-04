@@ -50,80 +50,23 @@ import QtQuick 1.1
         }
     \endqml
 */
+
 Button {
     id: button
 
     /*!
-       \preliminary
-       DOCME
-    */
-    property color color: "#8888cc"
-
-    /*!
-       \preliminary
-       DOCME
-    */
-    property color borderColor: "black"
-
-    /*!
       \preliminary
-      DOCME
+      The properties of the background of the button
     */
-    property int borderWidth: 2.0
+    property alias color: background.color
+    property alias borderColor: background.borderColor
+    property alias borderWidth: background.borderWidth
+    property alias radius: background.radius
+    property alias pressColor: background.pressColor
+    property alias hoverColor: background.hoverColor
+    property alias disabledColor: background.disabledColor
 
-    /*!
-       \preliminary
-       DOCME
-    */
-    property real radius: 3.0
-
-    /*!
-       \preliminary
-       DOCME
-    */
-    property color pressColor: Qt.darker(button.color, 1.2)
-
-    /*!
-       \preliminary
-       DOCME
-    */
-    property color hoverColor: Qt.lighter(button.color, 1.25)
-
-    /*!
-      \preliminary
-      DOCME
-    */
-    property color disabledColor: "#888888"
-
-    property alias background: rectbg
-
-    Rectangle {
-        z: -1
-        id: rectbg
-        radius: parent.radius
-        width: parent.width
-        height: parent.height
-        color: button.color
-        border.color: parent.borderColor
-        border.width: parent.borderWidth
-    } // background
-
-    states: [
-        State {
-            name: "idle"
-            PropertyChanges { target: background; color: button.color }
-        },
-        State {
-            name: "pressed"
-            PropertyChanges { target: background; color: button.pressColor }
-        },
-        State {
-            name: "hovered"
-            PropertyChanges { target: background; color: button.hoverColor }
-        },
-        State {
-            name: "disabled"
-            PropertyChanges { target: background; color: button.disabledColor }
-        }
-    ]
+    ButtonBackground {
+        id: background
+    }
 }

@@ -108,10 +108,10 @@ AbstractButton {
     */
     //property ButtonBackground bg
 
-    //property ButtonBackground background: ButtonBackground { color: "green" }
+    //property ButtonBackground backg: ButtonBackground { color: "green" }
 
-    //property alias backg:
-    ButtonBackground { id: bg; color: "yellow" }
+    //property alias backg: bg
+    //ButtonBackground { id: bg; color: "yellow" }
     // this variable ensures that the anchors of the icon and label are
     // automatically updated when button.iconPosition changes.
     /*!
