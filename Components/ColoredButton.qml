@@ -66,6 +66,8 @@ Button {
     property alias hoverColor: background.hoverColor
     property alias disabledColor: background.disabledColor
 
+    //property ButtonBackground background: ButtonBackground  { } // this doesn't work.
+
     ButtonBackground {
         id: background
     }

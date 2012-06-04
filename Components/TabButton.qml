@@ -37,12 +37,6 @@ Button {
     property bool selected: (__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
 
     /*!
-      \preliminary
-      The color of the button when it is selected.
-     */
- //   property color selectedColor: "white"
-
-    /*!
       \internal
       The parent of the tab property. Must be of type TabGroup.
      */
@@ -78,18 +72,29 @@ Button {
         return result;
     }
 
-    /*
-    states: [
-        State {
-            name: "selected"
-            PropertyChanges { target: background; color: tabbutton.selectedColor }
-        }
-    ]
-*/
     state: {
         if (tabbutton.selected) return "selected";
         else return __getAbstractButtonState();
     }
+
+    /*!
+      \preliminary
+      The properties of the background of the button
+    */
+    property alias color: background.color
+    property alias borderColor: background.borderColor
+    property alias borderWidth: background.borderWidth
+    property alias radius: background.radius
+    property alias pressColor: background.pressColor
+    property alias hoverColor: background.hoverColor
+    property alias disabledColor: background.disabledColor
+
+    /*
+      \preliminary
+      The color of the button when the associated tab is selected.
+      \qmlproperty color selectedColor
+    */
+    property alias selectedColor: background.selectedColor
 
     TabBackground {
         id: background

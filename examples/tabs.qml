@@ -29,18 +29,22 @@ Rectangle {
         TabButton {
             text: "Tab 3"
             tab: tab3
-        //    selectedColor: "cyan"
+            selectedColor: "cyan"
         }
         TabButton {
             text: "No tab"
             // no associated tab. The button will be visible
             // but does not select a tab when clicked.
+            hoverColor: "yellow"
+            pressColor: "red"
         }
         TabButton {
             text: "Invalid"
             tab: notATab
             // no valid tab. The button will be visible
             // but does not select a tab when clicked.
+            hoverColor: "yellow"
+            pressColor: "red"
         }
     } // Row
 
