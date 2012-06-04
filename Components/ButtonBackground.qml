@@ -70,7 +70,7 @@ Item {
     */
     property color disabledColor: "#888888"
 
-    property alias background: rectbg
+    //property alias background: rectbg
 
     Rectangle {
         //z: -1

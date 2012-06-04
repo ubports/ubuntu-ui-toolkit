@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass TabButton
     \inqmlmodule UbuntuUIToolkit
-    \brief A special Button class for controlling tabs
+    \brief A special button class for controlling tabs
 */
 Button {
     id: tabbutton
@@ -77,6 +77,8 @@ Button {
         else return __getAbstractButtonState();
     }
 
+    // These aliases are needed because we cannot define
+    // grouped properties. See ColoredButton.qml for links to bug reports.
     /*!
       \preliminary
       The properties of the background of the button

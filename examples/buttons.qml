@@ -19,13 +19,13 @@ Rectangle {
                 text: "text and icons"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
-            ColoredButton {
+            Button {
                 width: 200
                 height: 80
                 text: "text only (centered)\nwith border"
                 onClicked: print("clicked text-only Button")
             }
-            ColoredButton {
+            Button {
                 iconSource: "call_icon.png"
                 width: 200
                 height: 80
@@ -40,9 +40,8 @@ Rectangle {
                     width: 98
                     text: "Icon on top"
                     iconPosition: "top"
-                    ButtonBackground { }
                 } // ColoredButton
-                ColoredButton {
+                Button {
                     iconSource: "call_icon.png"
                     height: 100
                     width: 98
@@ -56,7 +55,6 @@ Rectangle {
                 iconSource: "call_icon.png"
                 text: "icon on right"
                 iconPosition: "right"
-                ButtonBackground {}
             }
             Button {
                 iconSource: "call_icon.png"
@@ -64,7 +62,6 @@ Rectangle {
                 width: 200
                 text: "smaller icon on left"
                 iconPosition: "left"
-                ButtonBackground {}
             }
         } // Column
         Column {
@@ -77,10 +74,10 @@ Rectangle {
             Button {
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                ButtonBackground { color: "green" }
+                color: "green"
                 text: "grass color"
                 textColor: "white" }
-            ColoredButton {
+            Button {
                 text: "changing colors"
                 color: "pink"
                 hoverColor: "yellow"
@@ -89,28 +86,24 @@ Rectangle {
             Button {
                 text: "disabled"
                 enabled: false
-                ButtonBackground {
-                    color: "pink"
-                    hoverColor: "yellow"
-                    pressColor: "purple"
-                }
+                color: "pink"
+                hoverColor: "yellow"
+                pressColor: "purple"
                 onClicked: print("this function is never called because the button is no enabled.")
             }
             Button {
                 text: "fixed color"
-                ButtonBackground {
-                    color: "orange"
-                    hoverColor: color
-                    pressColor: color
-                }
+                color: "orange"
+                hoverColor: color
+                pressColor: color
                 onClicked: print("clicked fixed color button")
             }
-            Button { text: "borderless blue"; ButtonBackground { color: "blue"; borderWidth: 0.0 } textColor: "white" }
-            Button { text: "thick red border"; ButtonBackground { borderColor: "red"; borderWidth: 4.0 } }
-            Button { text: "large red text"; textSize: "large"; textColor: "red"; ButtonBackground {} }
-            Button { text: "larger text"; textSize: "x-large"; textColor: "white"; ButtonBackground { color: "#123" } }
-            Button { text: "huge text"; textSize: "xx-large"; ButtonBackground { color: "#abc" } }
-            Button { text: "small blue text"; textSize: "small"; textColor: "blue"; ButtonBackground {} }
+            Button { text: "borderless blue"; color: "blue"; borderWidth: 0.0; textColor: "white" }
+            Button { text: "thick red border"; borderColor: "red"; borderWidth: 4.0 }
+            Button { text: "large red text"; textSize: "large"; textColor: "red" }
+            Button { text: "larger text"; textSize: "x-large"; textColor: "white"; color: "#123" }
+            Button { text: "huge text"; textSize: "xx-large"; color: "#abc" }
+            Button { text: "small blue text"; textSize: "small"; textColor: "blue" }
         } // Column
     } // Row
 } // window
