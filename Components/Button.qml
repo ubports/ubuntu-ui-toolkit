@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class adds a colored background to the Button.
+    \brief The Button class adds a colored background to the ButtonFace.
 
     \b{This component is under heavy development.}
 
