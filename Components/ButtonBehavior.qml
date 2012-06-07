@@ -58,7 +58,7 @@ Item {
     /*!
       \internal
      */
-    function __getAbstractButtonState() {
+    function __getState() {
         if (!button.enabled)
             return "disabled"
         else if (mouse_area.pressed)
@@ -70,6 +70,6 @@ Item {
     }
 
     state: {
-        return __getAbstractButtonState();
+        return __getState();
     }
 }
