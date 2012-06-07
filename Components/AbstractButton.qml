@@ -17,9 +17,9 @@
 import QtQuick 1.1
 
 /*!
-    \qmlabstract ButtonBehavior
+    \qmlabstract AbstractButton
     \inqmlmodule UbuntuUIToolkit
-    \brief The ButtonBehavior class defines the behavior of the button.
+    \brief The AbstractButton class defines the behavior of the button.
 
     \b{This component is under heavy development.}
 

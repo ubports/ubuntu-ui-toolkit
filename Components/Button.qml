@@ -19,12 +19,12 @@ import QtQuick 1.1
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class adds an icon and text to the ButtonBehavior,
+    \brief The Button class adds an icon and text to the AbstractButton,
             as well as a background for the button using ButtonBackground.
 
     \b{This component is under heavy development.}
 
-    A ButtonFace can have text, an icon, or both.
+    A Button can have text, an icon, or both.
     The background of the button can change depending on the Button's state.
 
     Examples:
@@ -52,7 +52,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-ButtonBehavior {
+AbstractButton {
     id: button
 
     /*!
