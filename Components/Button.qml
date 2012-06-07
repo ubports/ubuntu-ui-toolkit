@@ -55,26 +55,9 @@ import QtQuick 1.1
 ButtonFace {
     id: button
 
-    /*!
+    /*
       \preliminary
-      The properties of the background of the button
-    */
-    property alias color: background.color
-    property alias borderColor: background.borderColor
-    property alias borderWidth: background.borderWidth
-    property alias radius: background.radius
-    property alias pressColor: background.pressColor
-    property alias hoverColor: background.hoverColor
-    property alias disabledColor: background.disabledColor
-
-    // This doesn't work, so instead we define the aliases above.
-    // We do the same in TabButton. See also:
-    // https://bugreports.qt-project.org/browse/QTBUG-20200
-    // https://bugreports.qt-project.org/browse/QTBUG-15269
-    // It may be fixed in Qt5.
-    //property ButtonBackground background: ButtonBackground { }
-
-    ButtonBackground {
-        id: background
-    }
+      Give the button a background, which is a Rectangle.
+     */
+    property ButtonBackground background: ButtonBackground { parent: button }
 }

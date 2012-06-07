@@ -74,35 +74,48 @@ Rectangle {
             Button {
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                color: "green"
+                background.color: "green"
                 text: "grass color"
                 textColor: "white" }
             Button {
                 text: "changing colors"
-                color: "pink"
-                hoverColor: "yellow"
-                pressColor: "purple"
+                background {
+                    color: "pink"
+                    hoverColor: "yellow"
+                    pressColor: "purple"
+                }
             }
             Button {
                 text: "disabled"
                 enabled: false
-                color: "pink"
-                hoverColor: "yellow"
-                pressColor: "purple"
+                background {
+                    color: "pink"
+                    hoverColor: "yellow"
+                    pressColor: "purple"
+                }
                 onClicked: print("this function is never called because the button is no enabled.")
             }
             Button {
                 text: "fixed color"
-                color: "orange"
-                hoverColor: color
-                pressColor: color
+                background {
+                    color: "orange"
+                    hoverColor: background.color
+                    pressColor: background.color
+                }
                 onClicked: print("clicked fixed color button")
             }
-            Button { text: "borderless blue"; color: "blue"; borderWidth: 0.0; textColor: "white" }
-            Button { text: "thick red border"; borderColor: "red"; borderWidth: 4.0 }
+            Button {
+                text: "borderless blue";
+                background { color: "blue"; borderWidth: 0.0 }
+                textColor: "white"
+            }
+            Button {
+                text: "thick red border";
+                background { borderColor: "red"; borderWidth: 4.0 }
+                }
             Button { text: "large red text"; textSize: "large"; textColor: "red" }
-            Button { text: "larger text"; textSize: "x-large"; textColor: "white"; color: "#123" }
-            Button { text: "huge text"; textSize: "xx-large"; color: "#abc" }
+            Button { text: "larger text"; textSize: "x-large"; textColor: "white"; background.color: "#123" }
+            Button { text: "huge text"; textSize: "xx-large"; background.color: "#abc" }
             Button { text: "small blue text"; textSize: "small"; textColor: "blue" }
         } // Column
     } // Row
