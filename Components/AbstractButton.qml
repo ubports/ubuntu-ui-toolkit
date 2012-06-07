@@ -48,10 +48,17 @@ Item {
         enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
+
+        // the check for button.enabled is not really needed since if
+        // it is false, mouse_area.enabled is also false.
+        // But this makes the behavior more clear.
         onClicked: if (button.enabled) parent.clicked()
     }
 
-    state: {
+    /*!
+      \internal
+     */
+    function __getState() {
         if (!button.enabled)
             return "disabled"
         else if (mouse_area.pressed)
@@ -60,5 +67,9 @@ Item {
             return "hovered"
         else
             return "idle"
+    }
+
+    state: {
+        return __getState();
     }
 }

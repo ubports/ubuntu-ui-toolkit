@@ -19,13 +19,38 @@ import QtQuick 1.1
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class adds an icon and text to the AbstractButton
+    \brief The Button class adds an icon and text to the AbstractButton,
+            as well as a background for the button using ButtonBackground.
 
     \b{This component is under heavy development.}
 
-    A button can have text, an icon, or both.
+    A Button can have text, an icon, or both.
+    The background of the button can change depending on the Button's state.
 
-    Example: See ColoredButton for usage examples.
+    Examples:
+    \qml
+        Column {
+            width: 155
+            spacing: 5
+
+            Button {
+                text: "text only (centered)\nwith border"
+                onClicked: print("clicked text-only Button")
+            }
+            Button {
+                iconSource: "call_icon.png"
+                onClicked: print("clicked icon-only Button")
+                iconPosition: "top"
+                color: "green"
+            }
+            Button {
+                iconSource: "call_icon.png"
+                text: "Icon on right"
+                iconPosition: "right"
+                onClicked: print("clicked on Button with text and icon")
+            }
+        }
+    \endqml
 */
 AbstractButton {
     id: button
@@ -82,6 +107,12 @@ AbstractButton {
        https://bugreports.qt-project.org/browse/QTBUG-14861
     */
     property string iconPosition: "left"
+
+    /*
+      \preliminary
+      Give the button a background, which is a Rectangle.
+     */
+    property ButtonBackground background: ButtonBackground { parent: button }
 
     Image {
         id: icon

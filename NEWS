@@ -1,28 +1,31 @@
+=====================
 Ubuntu UI Toolkit 0.1
-#####################
+=====================
 
 New Features
-************
+------------
 
-.. New AbstractButton, ColoredButton and Button components.
+- New AbstractButton component.
+- New ButtonBackground component.
+- New Button component.
 
 Improvements
-************
+------------
 
-.. Improvements to existing commands, especially improved performance
+- Improvements to existing commands, especially improved performance
    or memory usage, or better results.
 
 Bug Fixes
-*********
+---------
 
-.. No bugs yet
+- No bugs yet.
 
 Documentation
-*************
+-------------
 
-.. Button classes are now documented
+- Button classes are now documented.
 
 API Changes
-***********
+-----------
 
-.. This is the first version
+- This is the first version.
