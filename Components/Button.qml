@@ -17,7 +17,7 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass ButtonFace
+    \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
     \brief The Button class adds an icon and text to the ButtonBehavior,
             as well as a background for the button using ButtonBackground.
