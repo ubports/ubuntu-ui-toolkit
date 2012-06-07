@@ -76,7 +76,6 @@ Item {
     //property alias background: rectbg
 
     Rectangle {
-        //z: -1
         id: rectbg
         radius: parent.radius
         width: parent.width
