@@ -65,14 +65,14 @@ ButtonWithForeground {
 
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
-    textColor: __luminance(base.color) <= 0.8 ? "white" : "#757373"
+    textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
 
     function __luminance(hexcolor){
         hexcolor = String(hexcolor)
         var r = parseInt(hexcolor.substr(1,2),16);
         var g = parseInt(hexcolor.substr(3,2),16);
         var b = parseInt(hexcolor.substr(5,2),16);
-        return ((r*299)+(g*587)+(b*114))/1000/255;
+        return ((r*212)+(g*715)+(b*73))/1000/255;
     }
 
     Item {
