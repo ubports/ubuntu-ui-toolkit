@@ -40,7 +40,6 @@ import QtQuick 1.1
             Button {
                 iconSource: "call_icon.png"
                 onClicked: print("clicked icon-only Button")
-                iconPosition: "top"
                 color: "green"
             }
             Button {
@@ -96,8 +95,9 @@ AbstractButton {
     /*!
        \preliminary
 
-       The position of the icon relative to the text.
-       top, bottom, left or right.
+       The position of the icon relative to the text. Options
+       are "left" and "right". The default value is "left".
+
        If only text or only an icon is defined, this
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
@@ -134,28 +134,6 @@ AbstractButton {
         id: positioner
 
         states: [
-            State {
-                name: "top"
-                AnchorChanges {
-                    target: icon;
-                    anchors { top: button.top; horizontalCenter: button.horizontalCenter }
-                }
-                AnchorChanges {
-                    target: label;
-                    anchors { top: icon.bottom; horizontalCenter: button.horizontalCenter }
-                }
-            },
-            State {
-                name: "bottom"
-                AnchorChanges {
-                    target: icon;
-                    anchors { bottom: button.bottom; horizontalCenter: button.horizontalCenter }
-                }
-                AnchorChanges {
-                    target: label;
-                    anchors { bottom: icon.top; horizontalCenter: button.horizontalCenter }
-                }
-            },
             State {
                 name: "right"
                 AnchorChanges {
