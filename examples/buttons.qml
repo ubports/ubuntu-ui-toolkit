@@ -30,25 +30,8 @@ Rectangle {
                 width: 200
                 height: 80
                 onClicked: print("clicked icon-only ColoredButton")
-                iconPosition: "top"
+                iconPosition: "right"
             }
-            Row {
-                spacing: 4
-                Button {
-                    iconSource: "call_icon.png"
-                    height: 100
-                    width: 98
-                    text: "Icon on top"
-                    iconPosition: "top"
-                } // ColoredButton
-                Button {
-                    iconSource: "call_icon.png"
-                    height: 100
-                    width: 98
-                    text: "Text on top"
-                    iconPosition: "bottom"
-                } // Button
-            } // Row
             Button {
                 width: 200
                 height: 100

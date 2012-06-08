@@ -23,7 +23,6 @@ Rectangle {
         width: 250
         height: 80
         onClicked: print("click!")
-        iconPosition: "top"
     }
 
     Row {
@@ -42,22 +41,10 @@ Rectangle {
             onClicked: showIcon = !showIcon
         }
         Button {
-            width: 100
-            text: "Icon Top"
-            onClicked: button.iconPosition = "top"
-        }
-        Button {
-            width: 100
-            text: "Icon Bottom"
-            onClicked: button.iconPosition = "bottom"
-        }
-        Button {
-            width: 100
             text: "Icon Left"
             onClicked: button.iconPosition = "left"
         }
         Button {
-            width: 100
             text: "Icon Right"
             onClicked: button.iconPosition = "right"
         }
