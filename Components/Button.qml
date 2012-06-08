@@ -15,159 +15,123 @@
  */
 
 import QtQuick 1.1
+import Qt.labs.shaders 1.0
 
 /*!
     \qmlclass Button
     \inqmlmodule UbuntuUIToolkit
-    \brief The Button class adds an icon and text to the AbstractButton,
-            as well as a background for the button using ButtonBackground.
+    \brief The Button class is DOCME
 
     \b{This component is under heavy development.}
 
-    A Button can have text, an icon, or both.
-    The background of the button can change depending on the Button's state.
-
     Examples:
     \qml
-        Column {
-            width: 155
-            spacing: 5
+        Button {
+            text: "Send"
+            onClicked: print("clicked text-only Button")
+        }
 
-            Button {
-                text: "text only (centered)\nwith border"
-                onClicked: print("clicked text-only Button")
-            }
-            Button {
-                iconSource: "call_icon.png"
-                onClicked: print("clicked icon-only Button")
-                color: "green"
-            }
-            Button {
-                iconSource: "call_icon.png"
-                text: "Icon on right"
-                iconPosition: "right"
-                onClicked: print("clicked on Button with text and icon")
-            }
+        Button {
+            iconSource: "call_icon.png"
+            color: "green"
+            onClicked: print("clicked icon-only Button")
+        }
+
+        Button {
+            iconSource: "call_icon.png"
+            text: "Icon on left"
+            iconPosition: "left"
+            onClicked: print("clicked text and icon Button")
         }
     \endqml
 */
-AbstractButton {
+ButtonWithForeground {
     id: button
 
-    /*!
-      \preliminary
-      The dimensions of the button.
-    */
-    width: 150
-    height: 50
+    width: 87
+    height: 39
 
     /*!
        \preliminary
-       The source URL of the icon to display inside the button.
-       Leave this value blank for a text-only button.
-       \qmlproperty url iconSource
+       DOCME
     */
-    property alias iconSource: icon.source
+    property color color: "#e3e5e8"
 
     /*!
        \preliminary
-       The text to display in the button. If an icon was defined,
-       the text will be shown next to the icon, otherwise it will
-       be centered. Leave blank for an icon-only button.
-       \qmlproperty string text
+       DOCME
     */
-    property alias text: label.text
+    property color pressedColor: color
 
-    /*!
-      \preliminary
-      The size of the text that is displayed in the button.
-      \qmlproperty string textSize
-    */
-    property alias textSize: label.fontSize
+    // pick either a clear or dark text color depending on the luminance of the
+    // background color to maintain good contrast (works in most cases)
+    textColor: luminance(base.color) <= 0.8 ? "white" : "#757373"
 
-    /*!
-      \preliminary
-      The color of the text.
-      \qmlproperty color textColor
-    */
-    property alias textColor: label.color
-
-    /*!
-       \preliminary
-
-       The position of the icon relative to the text. Options
-       are "left" and "right". The default value is "left".
-
-       If only text or only an icon is defined, this
-       property is ignored and the text or icon is
-       centered horizontally and vertically in the button.
-
-       Currently this is a string value. We are waiting for
-       support for enums:
-       https://bugreports.qt-project.org/browse/QTBUG-14861
-    */
-    property string iconPosition: "left"
-
-    /*
-      \preliminary
-      Give the button a background, which is a Rectangle.
-     */
-    property ButtonBackground background: ButtonBackground { parent: button }
-
-    Image {
-        id: icon
-        fillMode: Image.PreserveAspectFit
-        anchors.margins: 10
-        height: {
-            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
-            else return button.height - label.implicitHeight - 30;
-        }
-     }
-
-    TextCustom {
-        id: label
-        anchors.margins: 10
-        fontSize: "medium"
+    function luminance(hexcolor){
+        hexcolor = String(hexcolor)
+        var r = parseInt(hexcolor.substr(1,2),16);
+        var g = parseInt(hexcolor.substr(3,2),16);
+        var b = parseInt(hexcolor.substr(5,2),16);
+        return ((r*299)+(g*587)+(b*114))/1000/255;
     }
 
-    Item { //placed in here to keep state property private
-        id: positioner
+    Item {
+        z: -1
+        anchors.fill: parent
 
-        states: [
-            State {
-                name: "right"
-                AnchorChanges {
-                    target: icon;
-                    anchors { right: button.right; verticalCenter: button.verticalCenter }
-                }
-                AnchorChanges {
-                    target: label;
-                    anchors { right: icon.left; verticalCenter: button.verticalCenter }
-                }
-            },
-            State {
-                name: "left"
-                AnchorChanges {
-                    target: icon;
-                    anchors { left: button.left; verticalCenter: button.verticalCenter }
-                }
-                AnchorChanges {
-                    target: label;
-                    anchors { left: icon.right; verticalCenter: button.verticalCenter }
-                }
-            },
-            State {
-                name: "center"
-                AnchorChanges {
-                    target: icon;
-                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
-                }
-                AnchorChanges {
-                    target: label;
-                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
-                }
+        // FIXME: think of using distance fields
+        BorderImage {
+            id: shape
+
+            anchors.fill: parent
+
+            horizontalTileMode: BorderImage.Stretch
+            verticalTileMode: BorderImage.Stretch
+            source: "artwork/ButtonShape.png"
+            border.left: 18; border.top: 15
+            border.right: 18; border.bottom: 15
+        }
+
+        // FIXME: might become a paper texture
+        Rectangle {
+            id: base
+
+            anchors.fill: shape
+            color: button.state != "pressed" ? button.color : button.pressedColor
+        }
+
+        // Composed with Overlay mode
+        Rectangle {
+            id: gradient
+
+            anchors.fill: shape
+            opacity: 0.8
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "white" }
+                GradientStop { position: 1.0; color: "black" }
             }
-        ]
-        state: (button.iconSource == "" || button.text == "") ? "center" : iconPosition
+        }
+
+        ButtonMaskEffect {
+            anchors.fill: shape
+            gradientStrength: button.state != "pressed" ? 1.0 : 0.0
+            Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
+
+            mask: ShaderEffectSource {sourceItem: shape; live: false; hideSource: true}
+            base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
+            gradient: ShaderEffectSource {sourceItem: gradient; live: false; hideSource: true}
+        }
+
+        // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
+        BorderImage {
+            id: border
+
+            anchors.fill: parent
+            horizontalTileMode: BorderImage.Stretch
+            verticalTileMode: BorderImage.Stretch
+            source: button.state == "pressed" ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+            border.left: 18; border.top: 19
+            border.right: 18; border.bottom: 19
+        }
     }
 }
