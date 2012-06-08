@@ -136,28 +136,58 @@ AbstractButton {
         states: [
             State {
                 name: "top"
-                AnchorChanges { target: icon; anchors {top: button.top; horizontalCenter: button.horizontalCenter}}
-                AnchorChanges { target: label; anchors {top: icon.bottom; horizontalCenter: button.horizontalCenter}}
+                AnchorChanges {
+                    target: icon;
+                    anchors { top: button.top; horizontalCenter: button.horizontalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { top: icon.bottom; horizontalCenter: button.horizontalCenter }
+                }
             },
             State {
                 name: "bottom"
-                AnchorChanges { target: icon; anchors {bottom: button.bottom; horizontalCenter: button.horizontalCenter}}
-                AnchorChanges { target: label; anchors {bottom: icon.top; horizontalCenter: button.horizontalCenter}}
+                AnchorChanges {
+                    target: icon;
+                    anchors { bottom: button.bottom; horizontalCenter: button.horizontalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { bottom: icon.top; horizontalCenter: button.horizontalCenter }
+                }
             },
             State {
                 name: "right"
-                AnchorChanges { target: icon; anchors {right: button.right; verticalCenter: button.verticalCenter}}
-                AnchorChanges { target: label; anchors {right: icon.left; verticalCenter: button.verticalCenter}}
+                AnchorChanges {
+                    target: icon;
+                    anchors { right: button.right; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { right: icon.left; verticalCenter: button.verticalCenter }
+                }
             },
             State {
                 name: "left"
-                AnchorChanges { target: icon; anchors {left: button.left; verticalCenter: button.verticalCenter}}
-                AnchorChanges { target: label; anchors {left: icon.right; verticalCenter: button.verticalCenter}}
+                AnchorChanges {
+                    target: icon;
+                    anchors { left: button.left; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { left: icon.right; verticalCenter: button.verticalCenter }
+                }
             },
             State {
                 name: "center"
-                AnchorChanges { target: icon; anchors {horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter}}
-                AnchorChanges { target: label; anchors {horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter}}
+                AnchorChanges {
+                    target: icon;
+                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                }
             }
         ]
         state: (button.iconSource == "" || button.text == "") ? "center" : iconPosition
