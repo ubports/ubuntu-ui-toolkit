@@ -37,6 +37,23 @@ ShaderEffectItem {
         uniform sampler2D gradient;
         uniform lowp float gradientStrength;
 
+        vec3 blend(vec3 baseVec, vec3 blendVec) {
+            vec3 e = vec3(1.0);
+            vec3 g = step(vec3(0.5), baseVec);
+
+            // a: baseVec[i]
+            // b: blendVec[i]
+            // a < 0.5 ==> g = 0
+            // a > 0.5 ==> g = 1
+
+            vec3 m = mix(g*(e-baseVec), (e-g)*baseVec, blendVec);
+            // a < 0.5 ==> m[i] = a*b
+            // a > 0.5 ==> m[i] = (1-a)*(1-b)
+            return mix(g, e-g, vec3(2.0)*m);
+            // a < 0.5 ==> return[i]:   2*m[i] = 2*a*b
+            // a > 0.5 ==> return[i]: 1-2*m[i] = 1-2*(1-a)*(1-b)
+        }
+
         void main(void)
         {
             lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
@@ -45,7 +62,8 @@ ShaderEffectItem {
                 lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
                 if (gradientStrength != 0.0) {
                     lowp vec4 gradientColor = texture2D(gradient, qt_TexCoord0.st);
-                    lowp vec4 result = vec4(BlendOverlay(baseColor, gradientColor), baseColor.a);
+                    //lowp vec4 result = vec4(BlendOverlay(baseColor, gradientColor), baseColor.a);
+                    lowp vec4 result = vec4(blend(baseColor.rgb, gradientColor.rgb), baseColor.a);
                     gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
                 } else {
                     gl_FragColor = baseColor * maskColor.a;
@@ -53,7 +71,6 @@ ShaderEffectItem {
             } else {
                 gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
             }
-
         }
         "
 }
