@@ -25,11 +25,6 @@ ShaderEffectItem {
 
     fragmentShader:
         "
-        #define Blend(base, blend, function) vec3(function(base.r, blend.r), function(base.g, blend.g), function(base.b, blend.b))
-
-        #define BlendOverlayFloat(base, blend) (base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)))
-        #define BlendOverlay(base, blend) Blend(base, blend, BlendOverlayFloat)
-
         varying highp vec2 qt_TexCoord0;
         uniform lowp float qt_Opacity;
         uniform sampler2D mask;
@@ -62,7 +57,6 @@ ShaderEffectItem {
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
             lowp vec4 gradientColor = texture2D(gradient, qt_TexCoord0.st);
-            //lowp vec4 result = vec4(BlendOverlay(baseColor, gradientColor), baseColor.a);
             lowp vec4 result = vec4(blend(baseColor.rgb, gradientColor.rgb), baseColor.a);
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
         }
