@@ -5,10 +5,11 @@ Rectangle {
     id: window
 
     width: 800
-    height: 600
+    height: 300
 
     property bool showText: true
     property bool showIcon: true
+    property bool iconLeft: true
 
     Button {
         id: button
@@ -20,6 +21,7 @@ Rectangle {
 
         iconSource: (showIcon) ? "call_icon.png" : ""
         text: (showText) ? "A few words of text": ""
+        iconPosition: (iconLeft) ? "left" : "right"
         width: 250
         height: 80
         onClicked: print("click!")
@@ -34,19 +36,19 @@ Rectangle {
 
         Button {
             text: (showText) ? "Remove text" : "Add text"
+            width: 180
             onClicked: showText = !showText
         }
         Button {
             text: (showIcon) ? "Remove icon" : "Add icon"
+            width: 180
             onClicked: showIcon = !showIcon
         }
         Button {
-            text: "Icon Left"
-            onClicked: button.iconPosition = "left"
-        }
-        Button {
-            text: "Icon Right"
-            onClicked: button.iconPosition = "right"
+            text: (iconLeft) ? "Icon right" : "Icon left"
+            width: 180
+            onClicked: iconLeft = !iconLeft
+            enabled: (showText && showIcon)
         }
     }
 } // window
