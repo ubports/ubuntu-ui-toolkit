@@ -20,7 +20,6 @@ import Qt.labs.shaders 1.0
 ShaderEffectItem {
     property variant mask
     property variant base
-    property variant gradient
     property real gradientStrength: 1.0
 
     fragmentShader:
@@ -29,7 +28,6 @@ ShaderEffectItem {
         uniform lowp float qt_Opacity;
         uniform sampler2D mask;
         uniform sampler2D base;
-        uniform sampler2D gradient;
         uniform lowp float gradientStrength;
 
         vec3 blendOverlay(vec3 base, vec3 blend)
@@ -44,7 +42,7 @@ ShaderEffectItem {
             if (maskColor.a == 0.0) discard;
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
-            lowp vec4 gradientColor = texture2D(gradient, qt_TexCoord0.st);
+            lowp vec3 gradientColor = vec3(0.8*qt_TexCoord0.t);
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb, gradientColor.rgb), baseColor.a);
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
         }
