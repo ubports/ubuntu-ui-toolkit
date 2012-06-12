@@ -42,6 +42,7 @@ ShaderEffectItem {
             if (maskColor.a == 0.0) discard;
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
+            // this is equivalent to using a linear gradient texture going from vec3(0.0) to vec3(1.0) with opacity 0.8
             lowp vec3 gradientColor = vec3(0.8*qt_TexCoord0.t);
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb, gradientColor.rgb), baseColor.a);
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
