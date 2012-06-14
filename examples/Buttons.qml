@@ -89,8 +89,8 @@ Rectangle {
             }
             Button {
                 iconSource: iconSrc
-                text: (showText) ? "Large red text" : ""
-                textSize: "large"
+                text: (showText) ? "Larger text" : ""
+                textSize: "x-large"
                 textColor: "red"
                 iconPosition: iconPos
                 width: 180
