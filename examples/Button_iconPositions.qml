@@ -20,28 +20,85 @@ import "../Components"
 Rectangle {
     id: window
 
-    width: 800
-    height: 300
+    width: 600
+    height: 400
 
     property bool showText: true
     property bool showIcon: true
     property bool iconLeft: true
 
-    Button {
-        id: button
+    property string iconSrc: (showIcon) ? "call_icon.png" : ""
+    property string iconPos: (iconLeft) ? "left" : "right"
+
+    Column {
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
             margins: 40
         }
 
-        iconSource: (showIcon) ? "call_icon.png" : ""
-        text: (showText) ? "A few words of text": ""
-        iconPosition: (iconLeft) ? "left" : "right"
-        width: 250
-        height: 80
-        onClicked: print("click!")
-    }
+        Row {
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Default" : ""
+                iconPosition: iconPos
+                width: 180
+                height: 50
+                onClicked: print("Clicked default button")
+            }
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Green" : ""
+                iconPosition: iconPos
+                color: "#37b301"
+                width: 180
+                height: 50
+                onClicked: print("Clicked green button")
+            }
+        } // Row
+        Row {
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Disabled" : ""
+                enabled: false
+                iconPosition: iconPos
+                width: 180
+                height: 50
+                onClicked: print("Clicked disabled button")
+            }
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Press me" : ""
+                iconPosition: iconPos
+                pressedColor: "#dd4f22"
+                width: 180
+                height: 50
+                onClicked: print("Clicked press-me button")
+            }
+        } // Row
+        Row {
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Small blue text" : ""
+                textSize: "small"
+                textColor: "blue"
+                iconPosition: iconPos
+                width: 180
+                height: 50
+                onClicked: print("Clicked small-text button")
+            }
+            Button {
+                iconSource: iconSrc
+                text: (showText) ? "Large red text" : ""
+                textSize: "large"
+                textColor: "red"
+                iconPosition: iconPos
+                width: 180
+                height: 50
+                onClicked: print("Clicked large-text button")
+            }
+        } // Row
+    } // Column
 
     Row {
         anchors {
@@ -52,17 +109,21 @@ Rectangle {
 
         Button {
             text: (showText) ? "Remove text" : "Add text"
-            width: 180
+            width: 120
+            color: "#448"
             onClicked: showText = !showText
+            textSize: "large"
         }
         Button {
             text: (showIcon) ? "Remove icon" : "Add icon"
-            width: 180
+            width: 120
+            color: "#448"
             onClicked: showIcon = !showIcon
         }
         Button {
             text: (iconLeft) ? "Icon right" : "Icon left"
-            width: 180
+            width: 120
+            color: "#448"
             onClicked: iconLeft = !iconLeft
             enabled: (showText && showIcon)
         }
