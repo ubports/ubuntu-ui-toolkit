@@ -73,25 +73,10 @@ Rectangle {
                 iconPosition: "left"
                 color: "#37b301"
             }
-
             Button {
                 text: "Call"
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                color: "#37b301"
-            }
-
-            Button {
-                text: "Call"
-                iconSource: "call_icon.png"
-                iconPosition: "top"
-                color: "#37b301"
-            }
-
-            Button {
-                text: "Call"
-                iconSource: "call_icon.png"
-                iconPosition: "bottom"
                 color: "#37b301"
             }
         }

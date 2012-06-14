@@ -69,8 +69,9 @@ AbstractButton {
     /*!
        \preliminary
 
-       The position of the icon relative to the text.
-       top, bottom, left or right.
+       The position of the icon relative to the text. Options
+       are "left" and "right". The default value is "left".
+
        If only text or only an icon is defined, this
        property is ignored and the text or icon is
        centered horizontally and vertically in the button.
@@ -96,50 +97,51 @@ AbstractButton {
 
     TextCustom {
         id: label
+        anchors.margins: 10
         anchors.verticalCenterOffset: -1
         fontSize: "large"
         font.italic: true
         opacity: button.enabled ? 1.0 : 0.5
     }
 
-    // this variable ensures that the anchors of the icon and label are
-    // automatically updated when button.iconPosition changes.
-    /*!
-      \internal
-    */
-    property int __anchorsDummy: __alignIconText(button.iconPosition, button.iconSource, button.text);
+    Item { //placed in here to keep state property private
+        id: positioner
 
-    /*!
-       \internal
-    */
-    function __alignIconText(pos, src, txt) {
-        label.anchors.margins = 10
-        if (button.iconSource=="") {
-            // no icon.
-            label.anchors.centerIn = button;
-        } else if (button.text=="") {
-            icon.anchors.centerIn = button;
-        } else if (iconPosition=="top") {
-            icon.anchors.top = button.top;
-            icon.anchors.horizontalCenter = button.horizontalCenter;
-            label.anchors.top = icon.bottom;
-            label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition=="bottom") {
-            icon.anchors.bottom = button.bottom;
-            icon.anchors.horizontalCenter = button.horizontalCenter;
-            label.anchors.bottom = icon.top;
-            label.anchors.horizontalCenter = button.horizontalCenter;
-        } else if (iconPosition=="right") {
-            icon.anchors.right = button.right;
-            icon.anchors.verticalCenter = button.verticalCenter;
-            label.anchors.right = icon.left;
-            label.anchors.verticalCenter = button.verticalCenter;
-        } else if (iconPosition=="left") {
-            icon.anchors.left = button.left;
-            icon.anchors.verticalCenter = button.verticalCenter;
-            label.anchors.left = icon.right;
-            label.anchors.verticalCenter = button.verticalCenter;
-        } // if textlocation
-        return 1;
-    } // alignIconText
+        states: [
+            State {
+                name: "right"
+                AnchorChanges {
+                    target: icon;
+                    anchors { right: button.right; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { right: icon.left; verticalCenter: button.verticalCenter }
+                }
+            },
+            State {
+                name: "left"
+                AnchorChanges {
+                    target: icon;
+                    anchors { left: button.left; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { left: icon.right; verticalCenter: button.verticalCenter }
+                }
+            },
+            State {
+                name: "center"
+                AnchorChanges {
+                    target: icon;
+                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                }
+                AnchorChanges {
+                    target: label;
+                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                }
+            }
+        ]
+        state: (button.iconSource == "" || button.text == "") ? "center" : iconPosition
+    }
 }

@@ -100,18 +100,6 @@ ButtonWithForeground {
             color: button.state != "pressed" ? button.color : button.pressedColor
         }
 
-        // Composed with Overlay mode
-        Rectangle {
-            id: gradient
-
-            anchors.fill: shape
-            opacity: 0.8
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "white" }
-                GradientStop { position: 1.0; color: "black" }
-            }
-        }
-
         ButtonMaskEffect {
             anchors.fill: shape
             gradientStrength: button.state != "pressed" ? 1.0 : 0.0
@@ -119,7 +107,6 @@ ButtonWithForeground {
 
             mask: ShaderEffectSource {sourceItem: shape; live: false; hideSource: true}
             base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
-            gradient: ShaderEffectSource {sourceItem: gradient; live: false; hideSource: true}
         }
 
         // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
