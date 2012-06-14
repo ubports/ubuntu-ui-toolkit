@@ -21,7 +21,7 @@ import QtQuick 1.1
     \inqmlmodule UbuntuUIToolkit
     \brief A special button class for controlling tabs.
 */
-Button {
+ButtonWithForeground {
     id: tabbutton
 
     /*!
@@ -43,7 +43,39 @@ Button {
      */
     property Item __tabGroup: __getTabGroup()
 
+    height: parent ? parent.height : 50
+
+    /*!
+      \internal
+      These properties keep track on whether the TabButton is the first or the
+      last in the current row or tabs. This changes their appearance (rounded
+      borders vs. straight corners for TabButtons that are not first or last).
+     */
+    property bool __isFirst: parent ? (parent.children[0] == tabbutton) : false
+    property bool __isLast: parent ? (parent.children[parent.children.length-1] == tabbutton) : false
+
     onClicked: __selectTab()
+
+    BorderImage {
+        id: background
+        z: -1
+
+        anchors.fill: parent
+        source: {
+            if (__isFirst) {
+                return selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
+            } else if (__isLast) {
+                return selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
+            } else {
+                return selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
+            }
+        }
+
+        border { left: __isFirst ? 9 : 1; top: __isFirst || __isLast ? 9 : 2; right: __isLast ? 10 : 2; bottom: 0 } // FIXME: take into account isFirst, isLast
+        horizontalTileMode: BorderImage.Stretch
+        verticalTileMode: BorderImage.Stretch
+    }
+
 
     /*!
       \internal
@@ -81,7 +113,7 @@ Button {
     states: [
         State {
             name: "selected"
-            PropertyChanges { target: tabbutton; color: "pink" }
+            //PropertyChanges { target: tabbutton; color: "pink" }
         }
 
     ]

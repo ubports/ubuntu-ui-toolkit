@@ -26,9 +26,13 @@ Rectangle {
     Row {
         id: buttonRow
         anchors.horizontalCenter: window.horizontalCenter
+        height: 40
         TabButton {
+            id: bla
             text: "Tab 1"
             tab: tab1
+           // isFirst: (parent.children[0] == bla)
+            height: parent.height
         }
         TabButton {
             text: "Tab 2a"
@@ -52,10 +56,12 @@ Rectangle {
             // but does not select a tab when clicked.
         }
         TabButton {
+            id: abl
             text: "Invalid"
             tab: notATab
             // no valid tab. The button will be visible
             // but does not select a tab when clicked.
+         //   isLast: (parent.children[parent.children.length-1] == abl)
         }
     } // Row
 
