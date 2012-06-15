@@ -103,7 +103,6 @@ Rectangle {
                 text: "Some"
                 color: "darkblue"
             }
-
             Button {
                 text: "small"
                 color: "purple"
