@@ -101,7 +101,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             Button {
                 text: "Some"
-                color: "darkblue"
+                color: "blue"
             }
             Button {
                 text: "small"
@@ -110,7 +110,7 @@ Rectangle {
             }
             Button {
                 text: "colorful"
-                color: "darkred"
+                color: "red"
 
             }
             Button {
