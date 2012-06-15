@@ -107,6 +107,7 @@ Rectangle {
             Button {
                 text: "small"
                 color: "purple"
+                pressedColor: "pink"
             }
             Button {
                 text: "colorful"
@@ -116,6 +117,7 @@ Rectangle {
             Button {
                 text: "buttons"
                 color: "orange"
+                pressedColor: "yellow"
             }
         } // Row
     } // Column
