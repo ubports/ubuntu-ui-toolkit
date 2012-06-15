@@ -145,7 +145,7 @@ Rectangle {
             Button {
                 iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
                 text: (flexibleButtons.showText) ? "..anchors" : ""
-                iconPosition: (flexibleButtons.showIcon) ? "left" : "right"
+                iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
                 color: "#37b301"
                 width: 180
                 height: 50
