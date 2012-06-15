@@ -21,55 +21,46 @@ Rectangle {
     id: window
 
     width: 600
-    height: 400
-
-    property bool showText: true
-    property bool showIcon: true
-    property bool iconLeft: true
-
-    property string iconSrc: (showIcon) ? "call_icon.png" : ""
-    property string iconPos: (iconLeft) ? "left" : "right"
+    height: 500
 
     Column {
+        id: buttons
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
-            margins: 40
+            margins: 20
         }
+        spacing: 1
 
         Row {
             Button {
-                iconSource: iconSrc
-                text: (showText) ? "Default" : ""
-                iconPosition: iconPos
+                iconSource: "call_icon.png"
+                text: "Default"
                 width: 180
                 height: 50
                 onClicked: print("Clicked default button")
             }
             Button {
-                iconSource: iconSrc
-                text: (showText) ? "Green" : ""
-                iconPosition: iconPos
+                iconSource: "call_icon.png"
+                text: "Disabled"
+                enabled: false
+                width: 180
+                height: 50
+                onClicked: print("Clicked disabled button")
+            }
+        } // Row
+        Row {
+            Button {
+                iconSource: "call_icon.png"
+                text: "Green"
                 color: "#37b301"
                 width: 180
                 height: 50
                 onClicked: print("Clicked green button")
             }
-        } // Row
-        Row {
             Button {
-                iconSource: iconSrc
-                text: (showText) ? "Disabled" : ""
-                enabled: false
-                iconPosition: iconPos
-                width: 180
-                height: 50
-                onClicked: print("Clicked disabled button")
-            }
-            Button {
-                iconSource: iconSrc
-                text: (showText) ? "Press me" : ""
-                iconPosition: iconPos
+                iconSource: "call_icon.png"
+                text: "Press me"
                 pressedColor: "#dd4f22"
                 width: 180
                 height: 50
@@ -78,54 +69,115 @@ Rectangle {
         } // Row
         Row {
             Button {
-                iconSource: iconSrc
-                text: (showText) ? "Small blue text" : ""
+                text: "Small blue text only"
                 textSize: "small"
                 textColor: "blue"
-                iconPosition: iconPos
                 width: 180
                 height: 50
-                onClicked: print("Clicked small-text button")
             }
             Button {
-                iconSource: iconSrc
-                text: (showText) ? "Larger text" : ""
+                text: "Larger red text"
                 textSize: "x-large"
                 textColor: "red"
-                iconPosition: iconPos
                 width: 180
                 height: 50
-                onClicked: print("Clicked large-text button")
+            }
+        } // Row
+        Row {
+            Button {
+                iconSource: "call_icon.png"
+                iconPosition: "right"
+                text: "Icon right"
+                width: 180
+                height: 50
+            }
+            Button {
+                iconSource: "call_icon.png"
+                width: 180
+                height: 50
+            }
+        } // Row
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            Button {
+                text: "Some"
+                color: "darkblue"
+            }
+
+            Button {
+                text: "small"
+                color: "purple"
+            }
+            Button {
+                text: "colorful"
+                color: "darkred"
+
+            }
+            Button {
+                text: "buttons"
+                color: "orange"
             }
         } // Row
     } // Column
 
-    Row {
+    Column {
+        id: flexibleButtons
         anchors {
-            bottom: parent.bottom
+            top: buttons.bottom
             horizontalCenter: parent.horizontalCenter
-            margins: 40
+            margins: 50
         }
+        spacing: 10
 
-        Button {
-            text: (showText) ? "Remove text" : "Add text"
-            width: 120
-            color: "#448"
-            onClicked: showText = !showText
-            textSize: "large"
-        }
-        Button {
-            text: (showIcon) ? "Remove icon" : "Add icon"
-            width: 120
-            color: "#448"
-            onClicked: showIcon = !showIcon
-        }
-        Button {
-            text: (iconLeft) ? "Icon right" : "Icon left"
-            width: 120
-            color: "#448"
-            onClicked: iconLeft = !iconLeft
-            enabled: (showText && showIcon)
-        }
-    }
+        property bool showText: true
+        property bool showIcon: true
+        property bool iconLeft: true
+
+        Row {
+            Button {
+                iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                text: (flexibleButtons.showText) ? "Flexible.." : ""
+                iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
+                width: 180
+                height: 50
+            }
+            Button {
+                iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                text: (flexibleButtons.showText) ? "..anchors" : ""
+                iconPosition: (flexibleButtons.showIcon) ? "left" : "right"
+                color: "#37b301"
+                width: 180
+                height: 50
+            }
+        } // Row
+        Row {
+            anchors {
+              //  bottom: parent.bottom
+              //  horizontalCenter: parent.horizontalCenter
+                margins: 400
+            }
+
+            Button {
+                text: (flexibleButtons.showText) ? "Remove text" : "Add text"
+                width: 120
+                color: "#888"
+                onClicked: flexibleButtons.showText = !flexibleButtons.showText
+                textSize: "large"
+            }
+            Button {
+                text: (flexibleButtons.showIcon) ? "Remove icon" : "Add icon"
+                width: 120
+                color: "#888"
+                onClicked: flexibleButtons.showIcon = !flexibleButtons.showIcon
+            }
+            Button {
+                text: (flexibleButtons.iconLeft) ? "Icon right" : "Icon left"
+                width: 120
+                color: "#888"
+                onClicked: flexibleButtons.iconLeft = !flexibleButtons.iconLeft
+                enabled: (flexibleButtons.showText && flexibleButtons.showIcon)
+            }
+        } // Row
+    } // Column
+
 } // window
