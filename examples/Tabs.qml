@@ -23,7 +23,7 @@ Rectangle {
     width: 800
     height: 600
 
-    color: "#aaf"
+    color: "#eee"
 
     Tabs {
         id: tabs
@@ -45,7 +45,6 @@ Rectangle {
         }
         Tab {
             text: "tab 3"
-            tabs: parent
             page:  Rectangle {
                 id: tab3
                 anchors.fill: parent

@@ -49,5 +49,14 @@ Item {
             bottom: tabs.bottom
         }
     }
-    // TODO: automatically select the first tab.
+
+    function __selectFirstTab() {
+        var numTabs = tabGroup.children.length;
+        if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
+    }
+
+    Component.onCompleted: {
+        __selectFirstTab();
+        print("completed Tabs with " + tabGroup.children.length + " tabs.");
+    }
 }

@@ -33,9 +33,9 @@ Item { // TODO: make QtObject, but then I cannot create a TabButton here
     property url pageSource
     property bool pagePreloaded
 
-    property Item tabs: tab.parent ? tab.parent : null
-    property Item __tabGroup: "tabGroup" in tabs ? tabs.tabGroup : null
-    property Row __buttonRow: "buttonRow" in tabs ? tabs.buttonRow : null
+    property Item __tabs: tab.parent ? tab.parent : null
+    property Item __tabGroup: "tabGroup" in __tabs ? __tabs.tabGroup : null
+    property Row __buttonRow: "buttonRow" in __tabs ? __tabs.buttonRow : null
 
     TabButton {
         parent: tab.__buttonRow
@@ -48,6 +48,7 @@ Item { // TODO: make QtObject, but then I cannot create a TabButton here
 
     Component.onCompleted: {
         if (page) page.parent = __tabGroup;
-        if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
+        //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
+        print("completed Tab "+text);
     }
 }
