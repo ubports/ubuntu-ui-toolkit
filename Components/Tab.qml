@@ -24,7 +24,7 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-Item { // TODO: make QtObject, but then I cannot create a TabButton here
+QtObject { // TODO: make QtObject, but then I cannot create a TabButton here
     id: tab
 
     property string text
@@ -33,10 +33,10 @@ Item { // TODO: make QtObject, but then I cannot create a TabButton here
     property url pageSource
     property bool pagePreloaded
 
-    property Item __tabs: tab.parent ? tab.parent : null
-    property Item __tabGroup: "tabGroup" in __tabs ? __tabs.tabGroup : null
-    property Row __buttonRow: "buttonRow" in __tabs ? __tabs.buttonRow : null
-
+//    property Item __tabs: tab.parent ? tab.parent : null
+//    property Item __tabGroup: "tabGroup" in __tabs ? __tabs.tabGroup : null
+//    property Row __buttonRow:] "buttonRow" in __tabs ? __tabs.buttonRow : null
+/*
     TabButton {
         parent: tab.__buttonRow
         id: button
@@ -51,4 +51,5 @@ Item { // TODO: make QtObject, but then I cannot create a TabButton here
         //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
         print("completed Tab "+text);
     }
+    */
 }

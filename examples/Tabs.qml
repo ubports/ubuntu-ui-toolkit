@@ -29,31 +29,33 @@ Rectangle {
         id: tabs
         anchors.fill: parent
 
-        Tab {
-            text: "tab 1"
-            page: Text {
-                anchors.centerIn: parent
-                text: "This is the first tab."
-            }
-        }
-        Tab {
-            text: "tab 2"
-            page: Text {
-                anchors.centerIn: parent
-                text: "Tab number two."
-            }
-        }
-        Tab {
-            text: "tab 3"
-            page:  Rectangle {
-                id: tab3
-                anchors.fill: parent
-                Text {
+        model: [
+            Tab {
+                text: "tab 1"
+                page: Text {
                     anchors.centerIn: parent
-                    text: "Colorful tab 3"
+                    text: "This is the first tab."
                 }
-                color: "lightblue"
-            } // Rectangle
-        } // Tab
+            },
+            Tab {
+                text: "tab 2"
+                page: Text {
+                    anchors.centerIn: parent
+                    text: "Tab number two."
+                }
+            },
+            Tab {
+                text: "tab 3"
+                page:  Rectangle {
+                    id: tab3
+                    anchors.fill: parent
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Colorful tab 3"
+                    }
+                    color: "lightblue"
+                } // Rectangle
+            } // Tab
+        ]
     } // Tabs
 } // window

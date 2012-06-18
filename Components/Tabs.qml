@@ -19,7 +19,44 @@ import QtQuick 1.1
 /*!
     \qmlclass Tabs
     \inqmlmodule UbuntuUIToolkit
-    \brief TODO
+    \brief The Tabs class provides an environment where multible Tab
+    children can be added, and the user is presented with a tab
+    bar with tab buttons to select different tab pages.
+
+    Examples:
+    \qml
+        Tabs {
+            id: tabs
+            anchors.fill: parent
+
+            Tab {
+                text: "tab 1"
+                page: Text {
+                    anchors.centerIn: parent
+                    text: "This is the first tab."
+                }
+            }
+            Tab {
+                text: "tab 2"
+                page: Text {
+                    anchors.centerIn: parent
+                    text: "Tab number two."
+                }
+            }
+            Tab {
+                text: "tab 3"
+                page:  Rectangle {
+                    id: tab3
+                    anchors.fill: parent
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Colorful tab 3"
+                    }
+                    color: "lightblue"
+                } // Rectangle
+            } // Tab
+        } // Tabs
+    \endqml
 
     \b{This component is under heavy development.}
 */
@@ -27,36 +64,85 @@ import QtQuick 1.1
 Item {
     id: tabs
 
-    // The row to add TabButtons to.
-    property Row buttonRow: buttonRow
-    property TabGroup tabGroup: tabGroup
+    onChildrenChanged: print("children changed")
+    //onResourcesChanged: print("bla")
 
-    Row {
-        id: buttonRow
-        height: 40
-        anchors {
-            top: tabs.top
-            horizontalCenter: tabs.horizontalCenter
+    Component.onCompleted: print("component completed with "+tabs.children.length+" children and "+tabs.resources.length+" resources.")
+
+
+    property list<Tab> model
+
+    Item {
+        // encapsulation.
+        id: tabVisuals
+        anchors.fill: parent
+
+        // Ideally, I would like to keep a list of children/resources that are of
+        // type Tab, however that is not possible, see bug reports:
+        // https://bugreports.qt-project.org/browse/QTBUG-14986
+        // https://bugreports.qt-project.org/browse/QTBUG-14645
+        //property list<Tab> model
+
+        function __tabsOnly(someList) {
+            return null;
         }
-    }
 
-    TabGroup {
-        id: tabGroup
-        anchors {
-            top: buttonRow.bottom
-            left: tabs.left
-            right: tabs.right
-            bottom: tabs.bottom
+        function __conditionalTab(tab) {
+            if (("text" in tab) && ("page" in tab)) {
+                return 2;
+
+            } else {
+                return null;
+            }
+
         }
-    }
 
-    function __selectFirstTab() {
-        var numTabs = tabGroup.children.length;
-        if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
-    }
+        Row {
+            id: buttonRow
+            height: 40
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+            }
 
-    Component.onCompleted: {
-        __selectFirstTab();
-        print("completed Tabs with " + tabGroup.children.length + " tabs.");
+            Repeater {
+                model: tabVisuals.theTabs
+
+               TabButton {
+                   //text: "i "+tabs.resources[index].text
+                   text: modelData.text
+                   //visible: "page" in modelData
+               }
+            }
+        }
+
+        TabGroup {
+            id: tabGroup
+            anchors {
+                top: buttonRow.bottom
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+/*
+            Repeater {
+                model: tabs.resources
+                Text {
+                    anchors.fill: tabGroup
+                    text: "page " + modelData.text
+                }
+             }
+            */
+        }
+
+        function __selectFirstTab() {
+            var numTabs = tabGroup.children.length;
+            if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
+        }
+
+        Component.onCompleted: {
+            __selectFirstTab();
+            print("completed Tabs with " + tabGroup.children.length + " tabs.");
+        }
     }
 }
