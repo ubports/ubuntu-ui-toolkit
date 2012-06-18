@@ -22,9 +22,13 @@ import QtQuick 1.1
     \brief TODO
 
     \b{This component is under heavy development.}
+
+    Examples: See Tabs.
 */
 
-QtObject { // TODO: make QtObject, but then I cannot create a TabButton here
+// Note: In this implementation, Tab cannot be a subclass of QtObject, because
+// we need its parent to get the TabGroup and button Row.
+Item {
     id: tab
 
     property string text
@@ -33,23 +37,28 @@ QtObject { // TODO: make QtObject, but then I cannot create a TabButton here
     property url pageSource
     property bool pagePreloaded
 
-//    property Item __tabs: tab.parent ? tab.parent : null
-//    property Item __tabGroup: "tabGroup" in __tabs ? __tabs.tabGroup : null
-//    property Row __buttonRow:] "buttonRow" in __tabs ? __tabs.buttonRow : null
-/*
-    TabButton {
-        parent: tab.__buttonRow
-        id: button
-        text: tab.text
-        tab: tab.page
-        width: 100
-        //height: 30
-    }
+    Item {
+        id: item
 
-    Component.onCompleted: {
-        if (page) page.parent = __tabGroup;
-        //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
-        print("completed Tab "+text);
+        property Item tabs: tab.parent ? tab.parent : null
+        property Item tabGroup: "tabGroup" in item.tabs ? item.tabs.tabGroup : null
+        property Row buttonRow: "buttonRow" in item.tabs ? item.tabs.buttonRow : null
+
+
+        TabButton {
+            parent: item.buttonRow
+            id: button
+            text: tab.text
+            iconSource: tab.iconSource
+            tab: tab.page
+            width: 100
+            //height: 30
+        }
+
+        Component.onCompleted: {
+            if (tab.page) tab.page.parent = item.tabGroup;
+            //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
+            print("completed Tab "+text);
+        }
     }
-    */
 }

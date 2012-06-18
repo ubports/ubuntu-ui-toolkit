@@ -35,7 +35,7 @@ ButtonWithForeground {
       \preliminary
       True if tab is the selected tab of its tabgroup, false otherwise.
      */
-    property bool selected: (__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
+    property bool __selected: (__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
 
     /*!
       \internal
@@ -63,15 +63,15 @@ ButtonWithForeground {
         anchors.fill: parent
         source: {
             if (__isFirst) {
-                return selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
+                return __selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
             } else if (__isLast) {
-                return selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
+                return __selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
             } else {
-                return selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
+                return __selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
             }
         }
 
-        border { left: __isFirst ? 9 : 1; top: __isFirst || __isLast ? 9 : 2; right: __isLast ? 10 : 2; bottom: 0 } // FIXME: take into account isFirst, isLast
+        border { left: __isFirst ? 9 : 1; top: __isFirst || __isLast ? 9 : 2; right: __isLast ? 10 : 2; bottom: 0 }
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
     }
@@ -105,16 +105,18 @@ ButtonWithForeground {
         return result;
     }
 
+    /*
     state: {
-        if (tabbutton.selected) return "selected";
+        if (tabbutton.__selected) return "selected";
         else return __getState();
     }
-
+    */
+    /*
     states: [
         State {
             name: "selected"
             //PropertyChanges { target: tabbutton; color: "pink" }
         }
-
     ]
+    */
 }

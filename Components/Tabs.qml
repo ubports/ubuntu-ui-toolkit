@@ -64,18 +64,16 @@ import QtQuick 1.1
 Item {
     id: tabs
 
-    onChildrenChanged: print("children changed")
-    //onResourcesChanged: print("resources changed")
-
-    Component.onCompleted: print("component completed with "+tabs.children.length+" children and "+tabs.resources.length+" resources.")
-
-
-    //property list<Tab> model
+    property Row buttonRow: tabVisuals.buttonRow
+    property TabGroup tabGroup: tabVisuals.tabGroup
 
     Item {
         // encapsulation.
         id: tabVisuals
         anchors.fill: parent
+
+        property Row buttonRow: buttonRow
+        property TabGroup tabGroup: tabGroup
 
         // Ideally, I would like to keep a list of children/resources that are of
         // type Tab, however that is not possible, see bug reports:
@@ -83,23 +81,11 @@ Item {
         // https://bugreports.qt-project.org/browse/QTBUG-14645
         //property list<Tab> model: __tabsOnly(tabs.resources)
 
-        property TabFilterModel filter: TabFilterModel {
-            proxyModel: tabs.resources
-        }
+        //property TabFilterModel filter: TabFilterModel {
+        //    proxyModel: tabs.resources
+        //}
 
-        function __tabsOnly(someList) {
-            return null;
-        }
-
-        function __conditionalTab(tab) {
-            if (("text" in tab) && ("page" in tab)) {
-                return 2;
-
-            } else {
-                return null;
-            }
-
-        }
+        //property ListModel tabModel: filter.model
 
         Row {
             id: buttonRow
@@ -107,16 +93,6 @@ Item {
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
-            }
-
-            Repeater {
-                model: tabVisuals.theTabs
-
-               TabButton {
-                   //text: "i "+tabs.resources[index].text
-                   text: modelData.text
-                   //visible: "page" in modelData
-               }
             }
         }
 
@@ -128,7 +104,7 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
             }
-/*
+            /*
             Repeater {
                 model: tabs.resources
                 Text {
@@ -139,14 +115,13 @@ Item {
             */
         }
 
-        function __selectFirstTab() {
+        function selectFirstTab() {
             var numTabs = tabGroup.children.length;
             if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
         }
 
         Component.onCompleted: {
-            __selectFirstTab();
-            print("completed Tabs with " + tabGroup.children.length + " tabs.");
+            selectFirstTab();
         }
     }
 }

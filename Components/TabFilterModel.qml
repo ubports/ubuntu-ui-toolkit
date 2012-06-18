@@ -23,24 +23,37 @@ import QtQuick 1.1
 */
 
 QtObject {
-    property list<QtObject> proxyModel
-    property list<QtObject> model: [ QtObject { } ] // cannot initialize empty list?
-    property int proxyCount: proxyModel ? proxyModel.count : 0 // ERROR: proxyModel.count is undefined
+    //property list<QtObject> proxyModel
+    property variant proxyModel
+    property ListModel model: ListModel { }
+    property int proxyCount: proxyModel ? proxyModel.length : 0
 
     function checkFilter(element) {
-        return true;
+        print("checkFilter("+element+")");
+        //if (element instanceof Item) return true; // not sure if this works
+        if ("page" in element) return true;
+        else return false;
     }
 
     function applyFilter() {
-        model.clear(); // ERROR: no clear() function.
-        for(var i=0; i < proxyModel.count; i++) {
-            var element = proxyModel.get(i)
+        print("applying filter")
+        model.clear();
+        for(var i=0; i < proxyCount; i++) {
+            print("filtering element "+i)
+            var element = proxyModel[i]
+            //print("element = "+element)         // element = null
             if (checkFilter(element)) {
-                model.append(element)
-            }
+                print("adding element")
+                var listElement = Qt.createComponent(ListElement);
+
+                model.append(listElement)
+           }
         }
     }
 
     onProxyModelChanged: applyFilter()
-    onProxyCountChanged: applyFilter()
+    onProxyCountChanged: {
+        print("proxy count changed to "+proxyCount)
+        applyFilter()
+    }
 }
