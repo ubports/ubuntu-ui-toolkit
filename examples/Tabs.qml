@@ -28,34 +28,31 @@ Rectangle {
     Tabs {
         id: tabs
         anchors.fill: parent
-
-        model: [
-            Tab {
-                text: "tab 1"
-                page: Text {
+        Tab {
+            text: "tab 1"
+            page: Text {
+                anchors.centerIn: parent
+                text: "This is the first tab."
+            }
+        }
+        Tab {
+            text: "tab 2"
+            page: Text {
+                anchors.centerIn: parent
+                text: "Tab number two."
+            }
+        }
+        Tab {
+            text: "tab 3"
+            page:  Rectangle {
+                id: tab3
+                anchors.fill: parent
+                Text {
                     anchors.centerIn: parent
-                    text: "This is the first tab."
+                    text: "Colorful tab 3"
                 }
-            },
-            Tab {
-                text: "tab 2"
-                page: Text {
-                    anchors.centerIn: parent
-                    text: "Tab number two."
-                }
-            },
-            Tab {
-                text: "tab 3"
-                page:  Rectangle {
-                    id: tab3
-                    anchors.fill: parent
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Colorful tab 3"
-                    }
-                    color: "lightblue"
-                } // Rectangle
-            } // Tab
-        ]
+                color: "lightblue"
+            } // Rectangle
+        } // Tab
     } // Tabs
 } // window

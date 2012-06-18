@@ -65,12 +65,12 @@ Item {
     id: tabs
 
     onChildrenChanged: print("children changed")
-    //onResourcesChanged: print("bla")
+    //onResourcesChanged: print("resources changed")
 
     Component.onCompleted: print("component completed with "+tabs.children.length+" children and "+tabs.resources.length+" resources.")
 
 
-    property list<Tab> model
+    //property list<Tab> model
 
     Item {
         // encapsulation.
@@ -81,7 +81,11 @@ Item {
         // type Tab, however that is not possible, see bug reports:
         // https://bugreports.qt-project.org/browse/QTBUG-14986
         // https://bugreports.qt-project.org/browse/QTBUG-14645
-        //property list<Tab> model
+        //property list<Tab> model: __tabsOnly(tabs.resources)
+
+        property TabFilterModel filter: TabFilterModel {
+            proxyModel: tabs.resources
+        }
 
         function __tabsOnly(someList) {
             return null;
