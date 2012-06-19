@@ -18,67 +18,179 @@ import QtQuick 1.1
 import "../Components"
 
 Rectangle {
-    width: 800
-    height: 600
+    id: window
 
-    color: "#cccccc"
+    width: 600
+    height: 500
 
-    Row {
-        anchors.fill: parent
-        anchors.margins: 50
-        spacing: 50
-
-        Column {
-            width: 200
-            spacing: 20
-
-            Button {
-                text: "Send"
-            }
-
-            Button {
-                text: "Send"
-                enabled: false
-            }
-
-            Button {
-                iconSource: "call_icon.png"
-                color: "#37b301"
-            }
-
-            Button {
-                text: "Edit"
-                pressedColor: "#dd4f22"
-            }
-
-            Button {
-                width: 150
-                text: "Send"
-            }
-
-            Button {
-                width: 200
-                height: 80
-                text: "Send"
-            }
+    Column {
+        id: buttons
+        anchors {
+            top: parent.top
+            horizontalCenter: parent.horizontalCenter
+            margins: 20
         }
+        spacing: 5
 
-        Column {
-            width: 200
-            spacing: 5
+        Rectangle {
+            color: "#000088"
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            height: 60
+            radius: 5
 
+            Row {
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+                Button {
+                    text: "Some"
+                    color: "blue"
+                }
+                Button {
+                    text: "small"
+                    color: "purple"
+                    pressedColor: "pink"
+                }
+                Button {
+                    text: "colorful"
+                    color: "#ff0000"
+                }
+                Button {
+                    text: "buttons"
+                    color: "orange"
+                    pressedColor: "#ffff00"
+                }
+            } // Row
+        } // Rectangle
+
+        Row {
             Button {
-                text: "Call"
                 iconSource: "call_icon.png"
-                iconPosition: "left"
-                color: "#37b301"
+                text: "Default"
+                width: 180
+                height: 50
+                onClicked: print("Clicked default button")
             }
             Button {
-                text: "Call"
+                iconSource: "call_icon.png"
+                text: "Disabled"
+                enabled: false
+                width: 180
+                height: 50
+                onClicked: print("Clicked disabled button")
+            }
+        } // Row
+        Row {
+            Button {
+                iconSource: "call_icon.png"
+                text: "Green"
+                color: "#37b301"
+                width: 180
+                height: 50
+                onClicked: print("Clicked green button")
+            }
+            Button {
+                iconSource: "call_icon.png"
+                text: "Press me"
+                pressedColor: "#dd4f22"
+                width: 180
+                height: 50
+                onClicked: print("Clicked press-me button")
+            }
+        } // Row
+        Row {
+            Button {
+                text: "Small blue text only"
+                textSize: "small"
+                textColor: "blue"
+                width: 180
+                height: 50
+            }
+            Button {
+                text: "Larger red text"
+                textSize: "x-large"
+                textColor: "red"
+                width: 180
+                height: 50
+            }
+        } // Row
+        Row {
+            Button {
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                color: "#37b301"
+                text: "Icon right"
+                width: 180
+                height: 50
             }
-        }
-    }
-}
+            Button {
+                iconSource: "call_icon.png"
+                width: 180
+                height: 50
+            }
+        } // Row
+
+        Rectangle {
+            color: "#000088"
+            width: parent.width
+            height: 140
+            radius: 5
+            anchors.margins: 50
+
+            Column {
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+                id: flexibleButtons
+                spacing: 5
+
+                property bool showText: true
+                property bool showIcon: true
+                property bool iconLeft: true
+
+                Row {
+                    Button {
+                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                        text: (flexibleButtons.showText) ? "Flexible.." : ""
+                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
+                        width: 170
+                        height: 70
+                    }
+                    Button {
+                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                        text: (flexibleButtons.showText) ? "..anchors" : ""
+                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
+                        color: "#37b301"
+                        width: 170
+                        height: 70
+                    }
+                } // Row
+                Row {
+                    anchors. horizontalCenter: parent.horizontalCenter
+                    Button {
+                        text: (flexibleButtons.showText) ? "Remove text" : "Add text"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.showText = !flexibleButtons.showText
+                        textSize: "large"
+                    }
+                    Button {
+                        text: (flexibleButtons.showIcon) ? "Remove icon" : "Add icon"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.showIcon = !flexibleButtons.showIcon
+                    }
+                    Button {
+                        text: (flexibleButtons.iconLeft) ? "Icon right" : "Icon left"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.iconLeft = !flexibleButtons.iconLeft
+                        enabled: (flexibleButtons.showText && flexibleButtons.showIcon)
+                    }
+                } // Row
+            } // Column
+        } // Rectangle
+    } // Column
+} // window
