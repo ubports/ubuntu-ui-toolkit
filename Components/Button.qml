@@ -110,7 +110,6 @@ ButtonWithForeground {
         }
 
         // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
-        /*
         BorderImage {
             id: border
 
@@ -121,6 +120,5 @@ ButtonWithForeground {
             border.left: 18; border.top: 19
             border.right: 18; border.bottom: 19
         }
-        */
     }
 }
