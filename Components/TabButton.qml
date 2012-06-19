@@ -29,19 +29,19 @@ ButtonWithForeground {
       The tab that will be activated by this button.
       The parent of the tab Item must be a TabGroup.
      */
-    property Item tab
+    property Item page
 
     /*!
       \preliminary
       True if tab is the selected tab of its tabgroup, false otherwise.
      */
-    property bool __selected: (__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
+    property bool __selected: false; //(__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
 
     /*!
       \internal
       The parent of the tab property. Must be of type TabGroup.
      */
-    property Item __tabGroup: __getTabGroup()
+    //property Item __tabGroup: __getTabGroup()
 
     height: parent ? parent.height : 50
 
@@ -54,7 +54,7 @@ ButtonWithForeground {
     property bool __isFirst: parent ? (parent.children[0] == tabbutton) : false
     property bool __isLast: parent ? (parent.children[parent.children.length-1] == tabbutton) : false
 
-    onClicked: __selectTab()
+    //onClicked: __selectTab()
 
     BorderImage {
         id: background
@@ -82,17 +82,19 @@ ButtonWithForeground {
       Make the tab associated with this TabButton the current
       tab in its parent TabGroup.
     */
+    /*
     function __selectTab() {
         if ( (__tabGroup != null) && (tab != null) ) {
                 __tabGroup.currentTab = tab;
         } // if
     } // function
-
+*/
     /*!
       \internal
       If the tab has a parent that is a valid TabGroup, then that TabGroup is returned.
       Otherwise null is returned.
      */
+    /*
     function __getTabGroup() {
         var result = null;
         if (tab !== null) {
@@ -104,7 +106,7 @@ ButtonWithForeground {
         }
         return result;
     }
-
+*/
     /*
     state: {
         if (tabbutton.__selected) return "selected";

@@ -41,12 +41,13 @@ QtObject {
         for(var i=0; i < proxyCount; i++) {
             print("filtering element "+i)
             var element = proxyModel[i]
-            //print("element = "+element)         // element = null
+            print("element = "+element)         // element = null
             if (checkFilter(element)) {
                 print("adding element")
-                var listElement = Qt.createComponent(ListElement);
-
-                model.append(listElement)
+                //var listElement = Qt.createComponent(ListElement);
+                //listElement.text = element.text;
+                //listElement.iconSource = element.iconSource;
+                model.append(element)
            }
         }
     }

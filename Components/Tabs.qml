@@ -15,6 +15,8 @@
  */
 
 import QtQuick 1.1
+import "tabs.js" as Tabs
+
 
 /*!
     \qmlclass Tabs
@@ -62,18 +64,18 @@ import QtQuick 1.1
 */
 
 Item {
-    id: tabs
+    //id: tabs
 
-    property Row buttonRow: tabVisuals.buttonRow
-    property TabGroup tabGroup: tabVisuals.tabGroup
+   // property Row buttonRow: tabVisuals.buttonRow
+    //property TabGroup tabGroup: tabVisuals.tabGroup
 
     Item {
         // encapsulation.
         id: tabVisuals
         anchors.fill: parent
 
-        property Row buttonRow: buttonRow
-        property TabGroup tabGroup: tabGroup
+     //   property Row buttonRow: buttonRow
+     //   property TabGroup tabGroup: tabGroup
 
         // Ideally, I would like to keep a list of children/resources that are of
         // type Tab, however that is not possible, see bug reports:
@@ -94,27 +96,39 @@ Item {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
+
+            Repeater {
+                model: Tabs.num()
+                TabButton {
+                    property Item tab: Tabs.get(index)
+                    text: tab.text
+                    iconSource: tab.iconSource
+                    page: tab.page
+                    width: 100
+                    onClicked: Tabs.select(index) // working
+                    __selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
+                    // seems like index and expressions are only evaluated once here
+                    //height: 30
+                }
+            }
         }
 
-        TabGroup {
-            id: tabGroup
+        Rectangle {
+            id: tabPageItem
+            color: "yellow"
             anchors {
                 top: buttonRow.bottom
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
             }
-            /*
-            Repeater {
-                model: tabs.resources
-                Text {
-                    anchors.fill: tabGroup
-                    text: "page " + modelData.text
-                }
-             }
-            */
         }
 
+    //    TabGroup {
+    //        id: tabGroup
+    //    }
+
+/*
         function selectFirstTab() {
             var numTabs = tabGroup.children.length;
             if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
@@ -122,6 +136,27 @@ Item {
 
         Component.onCompleted: {
             selectFirstTab();
+  //          print("#tabs in model = "+filterModel.model.count);
         }
+*/
+/*
+        property TabFilterModel filterModel: TabFilterModel {
+            proxyModel: tabs.resources
+
+        }
+*/
+
     }
+
+    onChildrenChanged: {
+    //Component.onCompleted: {
+        //Tabs.setPage(tabPageItem);
+        // TODO: only add new children, not to clear every time.
+        Tabs.clear();
+        for (var i=0; i < children.length; i++) {
+            var child = children[i];
+            Tabs.add(child);
+        } // for
+        Tabs.printAll();
+    } // onChildrenChanged
 }

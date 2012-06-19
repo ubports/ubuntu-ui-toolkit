@@ -38,13 +38,14 @@ Item {
     property bool pagePreloaded
 
     Item {
-        id: item
+        // hidden from API
+       // id: item
 
-        property Item tabs: tab.parent ? tab.parent : null
-        property Item tabGroup: "tabGroup" in item.tabs ? item.tabs.tabGroup : null
-        property Row buttonRow: "buttonRow" in item.tabs ? item.tabs.buttonRow : null
+       // property Item tabs: tab.parent ? tab.parent : null
+       // property Item tabGroup: "tabGroup" in item.tabs ? item.tabs.tabGroup : null
+       // property Row buttonRow: "buttonRow" in item.tabs ? item.tabs.buttonRow : null
 
-
+        /*
         TabButton {
             parent: item.buttonRow
             id: button
@@ -54,11 +55,14 @@ Item {
             width: 100
             //height: 30
         }
-
+        */
+/*
         Component.onCompleted: {
             if (tab.page) tab.page.parent = item.tabGroup;
             //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
             print("completed Tab "+text);
+            //tabs.Tabs.addTab(tab);
         }
+        */
     }
 }
