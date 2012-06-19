@@ -30,7 +30,40 @@ Rectangle {
             horizontalCenter: parent.horizontalCenter
             margins: 20
         }
-        spacing: 1
+        spacing: 5
+
+        Rectangle {
+            color: "#000088"
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            height: 60
+            radius: 5
+
+            Row {
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+                Button {
+                    text: "Some"
+                    color: "blue"
+                }
+                Button {
+                    text: "small"
+                    color: "purple"
+                    pressedColor: "pink"
+                }
+                Button {
+                    text: "colorful"
+                    color: "#ff0000"
+                }
+                Button {
+                    text: "buttons"
+                    color: "orange"
+                    pressedColor: "#ffff00"
+                }
+            } // Row
+        } // Rectangle
 
         Row {
             Button {
@@ -97,88 +130,67 @@ Rectangle {
                 height: 50
             }
         } // Row
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            Button {
-                text: "Some"
-                color: "blue"
-            }
-            Button {
-                text: "small"
-                color: "purple"
-                pressedColor: "pink"
-            }
-            Button {
-                text: "colorful"
-                color: "red"
 
-            }
-            Button {
-                text: "buttons"
-                color: "orange"
-                pressedColor: "yellow"
-            }
-        } // Row
+        Rectangle {
+            color: "#000088"
+            width: parent.width
+            height: 140
+            radius: 5
+            anchors.margins: 50
+
+            Column {
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
+                id: flexibleButtons
+                spacing: 5
+
+                property bool showText: true
+                property bool showIcon: true
+                property bool iconLeft: true
+
+                Row {
+                    Button {
+                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                        text: (flexibleButtons.showText) ? "Flexible.." : ""
+                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
+                        width: 170
+                        height: 70
+                    }
+                    Button {
+                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
+                        text: (flexibleButtons.showText) ? "..anchors" : ""
+                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
+                        color: "#37b301"
+                        width: 170
+                        height: 70
+                    }
+                } // Row
+                Row {
+                    anchors. horizontalCenter: parent.horizontalCenter
+                    Button {
+                        text: (flexibleButtons.showText) ? "Remove text" : "Add text"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.showText = !flexibleButtons.showText
+                        textSize: "large"
+                    }
+                    Button {
+                        text: (flexibleButtons.showIcon) ? "Remove icon" : "Add icon"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.showIcon = !flexibleButtons.showIcon
+                    }
+                    Button {
+                        text: (flexibleButtons.iconLeft) ? "Icon right" : "Icon left"
+                        width: 115
+                        color: "#888"
+                        onClicked: flexibleButtons.iconLeft = !flexibleButtons.iconLeft
+                        enabled: (flexibleButtons.showText && flexibleButtons.showIcon)
+                    }
+                } // Row
+            } // Column
+        } // Rectangle
     } // Column
-
-    Column {
-        id: flexibleButtons
-        anchors {
-            top: buttons.bottom
-            horizontalCenter: parent.horizontalCenter
-            margins: 50
-        }
-        spacing: 10
-
-        property bool showText: true
-        property bool showIcon: true
-        property bool iconLeft: true
-
-        Row {
-            Button {
-                iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                text: (flexibleButtons.showText) ? "Flexible.." : ""
-                iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
-                width: 180
-                height: 50
-            }
-            Button {
-                iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                text: (flexibleButtons.showText) ? "..anchors" : ""
-                iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
-                color: "#37b301"
-                width: 180
-                height: 50
-            }
-        } // Row
-        Row {
-            anchors {
-              //  bottom: parent.bottom
-              //  horizontalCenter: parent.horizontalCenter
-                margins: 400
-            }
-
-            Button {
-                text: (flexibleButtons.showText) ? "Remove text" : "Add text"
-                width: 120
-                color: "#888"
-                onClicked: flexibleButtons.showText = !flexibleButtons.showText
-                textSize: "large"
-            }
-            Button {
-                text: (flexibleButtons.showIcon) ? "Remove icon" : "Add icon"
-                width: 120
-                color: "#888"
-                onClicked: flexibleButtons.showIcon = !flexibleButtons.showIcon
-            }
-            Button {
-                text: (flexibleButtons.iconLeft) ? "Icon right" : "Icon left"
-                width: 120
-                color: "#888"
-                onClicked: flexibleButtons.iconLeft = !flexibleButtons.iconLeft
-                enabled: (flexibleButtons.showText && flexibleButtons.showIcon)
-            }
-        } // Row
-    } // Column
-
 } // window
