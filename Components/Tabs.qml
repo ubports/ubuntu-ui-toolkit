@@ -17,7 +17,6 @@
 import QtQuick 1.1
 import "tabs.js" as Tabs
 
-
 /*!
     \qmlclass Tabs
     \inqmlmodule UbuntuUIToolkit
@@ -64,7 +63,7 @@ import "tabs.js" as Tabs
 */
 
 Item {
-    //id: tabs
+    id: tabsMain
 
    // property Row buttonRow: tabVisuals.buttonRow
     //property TabGroup tabGroup: tabVisuals.tabGroup
@@ -99,16 +98,17 @@ Item {
 
             Repeater {
                 model: Tabs.num()
+                //model: tabsMain.resources
                 TabButton {
                     property Item tab: Tabs.get(index)
+                    //text: modelData.text
                     text: tab.text
                     iconSource: tab.iconSource
                     page: tab.page
                     width: 100
                     onClicked: Tabs.select(index) // working
-                    __selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
+                    //__selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
                     // seems like index and expressions are only evaluated once here
-                    //height: 30
                 }
             }
         }
@@ -122,11 +122,22 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
             }
+            Component.onCompleted: Tabs.pageItem = tabPageItem
         }
 
-    //    TabGroup {
-    //        id: tabGroup
-    //    }
+//        TabGroup {
+//            id: tabGroup
+//            anchors {
+//                top: buttonRow.bottom
+//                left: parent.left
+//                right: parent.right
+//                bottom: parent.bottom
+//            }
+
+//            Repeater {
+//                model: tabs.num()
+//            }
+//        }
 
 /*
         function selectFirstTab() {

@@ -64,6 +64,9 @@ function get(i) {
 function select(i) {
     print("selecting tab " +i);
     selectedIndex = i;
+    //tabPageItem.children.add
+    tabs[selectedIndex].page.parent = tabPageItem;
+    //tabs[selectedIndex].page.visible = true;
     for (var i=0; i < tabs.length; i++) {
        // tabs[i].visible = (selectedIndex == i);
     } // for i
@@ -81,4 +84,8 @@ function isSelected(index) {
 function setPageItem(item) {
     pageItem = item;
     return true;
+}
+
+function getSelectedPage() {
+    return tabs[selectedIndex].page;
 }
