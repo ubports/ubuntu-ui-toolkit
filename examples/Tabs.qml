@@ -39,10 +39,8 @@ Rectangle {
         Tab {
             text: "tab 2"
             iconSource: "call_icon.png"
-            page: Text {
-                anchors.centerIn: parent
-                text: "Tab number two."
-            }
+            pageSource: "Buttons.qml"
+            pagePreloaded: false
         }
         Tab {
             text: "tab 3"

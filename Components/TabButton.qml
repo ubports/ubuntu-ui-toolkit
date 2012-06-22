@@ -29,7 +29,7 @@ ButtonWithForeground {
       The tab that will be activated by this button.
       The parent of the tab Item must be a TabGroup.
      */
-    property Item page
+    //property Item page
 
     /*!
       \preliminary
@@ -45,20 +45,21 @@ ButtonWithForeground {
 
     height: parent ? parent.height : 50
 
-    /*!
-      \internal
-      These properties keep track on whether the TabButton is the first or the
-      last in the current row or tabs. This changes their appearance (rounded
-      borders vs. straight corners for TabButtons that are not first or last).
-     */
-    property bool __isFirst: parent ? (parent.children[0] == tabbutton) : false
-    property bool __isLast: parent ? (parent.children[parent.children.length-1] == tabbutton) : false
-
     //onClicked: __selectTab()
 
     BorderImage {
         id: background
         z: -1
+
+        property Item allTabs: tabbutton.parent
+        /*!
+          \internal
+          These properties keep track on whether the TabButton is the first or the
+          last in the current row or tabs. This changes their appearance (rounded
+          borders vs. straight corners for TabButtons that are not first or last).
+         */
+        property bool __isFirst: allTabs ? (allTabs.children[0] == tabbutton) : false
+        property bool __isLast: allTabs ? (allTabs.children[allTabs.children.length-1] == tabbutton) : false
 
         anchors.fill: parent
         source: {
@@ -71,11 +72,15 @@ ButtonWithForeground {
             }
         }
 
-        border { left: __isFirst ? 9 : 1; top: __isFirst || __isLast ? 9 : 2; right: __isLast ? 10 : 2; bottom: 0 }
+        border {
+            left: __isFirst ? 9 : 1
+            top: __isFirst || __isLast ? 9 : 2
+            right: __isLast ? 10 : 2
+            bottom: 0
+        }
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
     }
-
 
     /*!
       \internal

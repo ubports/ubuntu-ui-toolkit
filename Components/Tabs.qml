@@ -68,10 +68,21 @@ Item {
    // property Row buttonRow: tabVisuals.buttonRow
     //property TabGroup tabGroup: tabVisuals.tabGroup
 
+    // Keep the Tab items that the user defines separate
+    // from the other items that we create below.
+    default property alias children: tabItems.children
+    Item {
+        id: tabItems
+    }
+
     Item {
         // encapsulation.
         id: tabVisuals
         anchors.fill: parent
+
+        // The currently selected tab.
+        // -1 means that no tab is selected.
+        property int selectedTabIndex: -1
 
      //   property Row buttonRow: buttonRow
      //   property TabGroup tabGroup: tabGroup
@@ -97,16 +108,20 @@ Item {
             }
 
             Repeater {
-                model: Tabs.num()
+                //model: Tabs.num()
                 //model: tabsMain.resources
+                model: tabItems.children
                 TabButton {
-                    property Item tab: Tabs.get(index)
+                    //property Item tab: Tabs.get(index)
+                    property Item tab: modelData
                     //text: modelData.text
                     text: tab.text
                     iconSource: tab.iconSource
-                    page: tab.page
+                    //page: tab.page
                     width: 100
-                    onClicked: Tabs.select(index) // working
+                    __selected: (index == tabVisuals.selectedTabIndex)
+                    onClicked: tabVisuals.selectedTabIndex = index
+                    //onClicked: Tabs.select(index) // working
                     //__selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
                     // seems like index and expressions are only evaluated once here
                 }
@@ -122,9 +137,13 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
             }
-            Component.onCompleted: Tabs.pageItem = tabPageItem
+            //Component.onCompleted: Tabs.pageItem = tabPageItem
         }
 
+        onSelectedTabIndexChanged: {
+            tabItems.children[selectedTabIndex].page.parent = tabPageItem;
+            print("Selecting tab "+tabVisuals.selectedTabIndex);
+        }
 //        TabGroup {
 //            id: tabGroup
 //            anchors {

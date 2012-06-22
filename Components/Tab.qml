@@ -37,7 +37,12 @@ Item {
     property url pageSource
     property bool pagePreloaded
 
-    Item {
+    Loader {
+        id: loader
+
+    }
+
+   // Item {
         // hidden from API
        // id: item
 
@@ -64,5 +69,5 @@ Item {
             //tabs.Tabs.addTab(tab);
         }
         */
-    }
+    //}
 }
