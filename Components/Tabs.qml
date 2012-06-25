@@ -15,7 +15,6 @@
  */
 
 import QtQuick 1.1
-import "tabs.js" as Tabs
 
 /*!
     \qmlclass Tabs
@@ -65,9 +64,6 @@ import "tabs.js" as Tabs
 Item {
     id: tabsMain
 
-   // property Row buttonRow: tabVisuals.buttonRow
-    //property TabGroup tabGroup: tabVisuals.tabGroup
-
     // Keep the Tab items that the user defines separate
     // from the other items that we create below.
     default property alias children: tabItems.children
@@ -75,29 +71,14 @@ Item {
         id: tabItems
     }
 
+    // encapsulation
     Item {
-        // encapsulation.
         id: tabVisuals
         anchors.fill: parent
 
         // The currently selected tab.
         // -1 means that no tab is selected.
         property int selectedTabIndex: -1
-
-     //   property Row buttonRow: buttonRow
-     //   property TabGroup tabGroup: tabGroup
-
-        // Ideally, I would like to keep a list of children/resources that are of
-        // type Tab, however that is not possible, see bug reports:
-        // https://bugreports.qt-project.org/browse/QTBUG-14986
-        // https://bugreports.qt-project.org/browse/QTBUG-14645
-        //property list<Tab> model: __tabsOnly(tabs.resources)
-
-        //property TabFilterModel filter: TabFilterModel {
-        //    proxyModel: tabs.resources
-        //}
-
-        //property ListModel tabModel: filter.model
 
         Row {
             id: buttonRow
@@ -108,26 +89,17 @@ Item {
             }
 
             Repeater {
-                //model: Tabs.num()
-                //model: tabsMain.resources
                 model: tabItems.children
                 TabButton {
-                    //property Item tab: Tabs.get(index)
                     property Item tab: modelData
-                    //text: modelData.text
                     text: tab.text
                     iconSource: tab.iconSource
-                    //page: tab.page
                     width: 100
-                    __selected: (index == tabVisuals.selectedTabIndex)
-                    onClicked: tabVisuals.selectTab(index) //tabVisuals.selectedTabIndex = index
-                    //onClicked: Tabs.select(index) // working
-                    //__selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
-                    // seems like index and expressions are only evaluated once here
+                    selected: (index == tabVisuals.selectedTabIndex)
+                    onClicked: tabVisuals.selectTab(index)
                 }
-            }
-        }
-
+            } // Repeater
+        } // buttonRow
 
         // This is the item that will be the parent of the currently displayed page.
         Item {
@@ -138,68 +110,18 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
             }
-        }
+        } // pages
 
         function selectTab(index) {
-            if (tabVisuals.selectedTabIndex != -1) tabItems.children[tabVisuals.selectedTabIndex].getPage().visible = false;
+            if (tabVisuals.selectedTabIndex != -1) {
+                tabItems.children[tabVisuals.selectedTabIndex].getPage().visible = false;
+            }
             tabVisuals.selectedTabIndex = index;
             var page = tabItems.children[tabVisuals.selectedTabIndex].getPage();
             page.parent = pages;
             page.visible = true;
-            print("Selecting tab "+tabVisuals.selectedTabIndex);
         }
 
-//        onSelectedTabIndexChanged: {
-//            //tabItems.children[selectedTabIndex].page.parent = tabPageItem;
-//            var page = tabItems.children[selectedTabIndex].getPage();
-//            page.parent = pages;
-//            page.visible = true;
-//            print("Selecting tab "+tabVisuals.selectedTabIndex);
-//        }
-//        TabGroup {
-//            id: tabGroup
-//            anchors {
-//                top: buttonRow.bottom
-//                left: parent.left
-//                right: parent.right
-//                bottom: parent.bottom
-//            }
-
-//            Repeater {
-//                model: tabs.num()
-//            }
-//        }
-
-/*
-        function selectFirstTab() {
-            var numTabs = tabGroup.children.length;
-            if (numTabs > 0) tabGroup.currentTab = tabGroup.children[numTabs-1];
-        }
-
-        Component.onCompleted: {
-            selectFirstTab();
-  //          print("#tabs in model = "+filterModel.model.count);
-        }
-*/
-/*
-        property TabFilterModel filterModel: TabFilterModel {
-            proxyModel: tabs.resources
-
-        }
-*/
-
-    }
-
-
-//    onChildrenChanged: {
-//    //Component.onCompleted: {
-//        //Tabs.setPage(tabPageItem);
-//        // TODO: only add new children, not to clear every time.
-//        Tabs.clear();
-//        for (var i=0; i < children.length; i++) {
-//            var child = children[i];
-//            Tabs.add(child);
-//        } // for
-//        Tabs.printAll();
-//    } // onChildrenChanged
+        Component.onCompleted: tabVisuals.selectTab(0)
+    } // tabVisuals
 }

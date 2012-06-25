@@ -19,40 +19,71 @@ import QtQuick 1.1
 /*!
     \qmlclass Tab
     \inqmlmodule UbuntuUIToolkit
-    \brief TODO
+    \brief A child of a Tabs object that represents one tab.
 
     \b{This component is under heavy development.}
 
     Examples: See Tabs.
 */
-
-// Note: In this implementation, Tab cannot be a subclass of QtObject, because
-// we need its parent to get the TabGroup and button Row.
 Item {
     id: tab
 
+    /*!
+      \preliminary
+      The text that is shown on the tab button used to select this tab (optional).
+      Either text or iconSource, or both must be defined.
+     */
     property string text
-    property url iconSource
-    property Item page
-    property url pageSource
-    property bool pagePreloaded
 
-    // TODO: check for the correct type of the parent?
-    property Item __tabsItem: parent ? parent : null
+    /*!
+      \preliminary
+      The location of the icon that is displayed inside the button used to select this tab (optional).
+      Either text or iconSource, or both must be defined.
+     */
+    property url iconSource
+
+    /*!
+      \preliminary
+      The page that is shown when this tab is selected.
+      If no page is defined, a pageSource must be given.
+     */
+    property Item page
+
+    /*!
+      \preliminary
+      If nog page is defined, pageSource is used as the location of the QML file defining
+      the page that will be displayed when this tab is selected.
+     */
+    property url pageSource
+
+    /*!
+      If pageSource is used to define the page of this tab, pagePreloaded specifies whether
+      the page should be preloaded from the QML file when the application starts, or loading
+      is delayed until the tab is selected.
+     */
+    property bool pagePreloaded
 
     Loader {
         id: loader
 
         function loadPage() {
             loader.source = tab.pageSource;
-            //if (__tabsItem) loader.item.parent = __tabsItem.pp;
             loader.item.visible = false;
+        }
+
+        Component.onCompleted: {
+            if (tab.pagePreloaded) loader.loadPage();
         }
     }
 
+    /*!
+      \preliminary
+      Returns the page of this tab.
+      If the page property is defined directly, that property is returned.
+      Otherwise, the page will be loaded from the file specified by pageSource.
+     */
     function getPage() {
         if (tab.page) return tab.page;
-        if (!pageSource) return null;
         if (!loader.item) loader.loadPage();
         return loader.item;
     }
@@ -60,36 +91,6 @@ Item {
     Component.onCompleted: {
         if (tab.page) {
             tab.page.visible = false
-            //if (__tabsItem) tab.page.parent = __tabsItem.pp;
         }
     }
-
-   // Item {
-        // hidden from API
-       // id: item
-
-       // property Item tabs: tab.parent ? tab.parent : null
-       // property Item tabGroup: "tabGroup" in item.tabs ? item.tabs.tabGroup : null
-       // property Row buttonRow: "buttonRow" in item.tabs ? item.tabs.buttonRow : null
-
-        /*
-        TabButton {
-            parent: item.buttonRow
-            id: button
-            text: tab.text
-            iconSource: tab.iconSource
-            tab: tab.page
-            width: 100
-            //height: 30
-        }
-        */
-/*
-        Component.onCompleted: {
-            if (tab.page) tab.page.parent = item.tabGroup;
-            //if (__tabGroup.currentTab == undefined) __tabGroup.currentTab = page;
-            print("completed Tab "+text);
-            //tabs.Tabs.addTab(tab);
-        }
-        */
-    //}
 }

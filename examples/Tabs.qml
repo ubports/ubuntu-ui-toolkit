@@ -37,10 +37,10 @@ Rectangle {
             }
         }
         Tab {
-            text: "tab 2"
-            iconSource: "call_icon.png"
+            text: "buttons!"
+            //iconSource: "call_icon.png"
             pageSource: "Buttons.qml"
-            pagePreloaded: true
+            pagePreloaded: false
         }
         Tab {
             text: "tab 3"

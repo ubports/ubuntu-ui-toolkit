@@ -17,12 +17,12 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass TabButton
+    \qmlclass tabButton
     \inqmlmodule UbuntuUIToolkit
     \brief A special button class for controlling tabs.
 */
 ButtonWithForeground {
-    id: tabbutton
+    id: tabButton
 
     /*!
       \preliminary
@@ -35,40 +35,32 @@ ButtonWithForeground {
       \preliminary
       True if tab is the selected tab of its tabgroup, false otherwise.
      */
-    property bool __selected: false; //(__tabGroup !== null) ? (__tabGroup.currentTab == tab): false
-
-    /*!
-      \internal
-      The parent of the tab property. Must be of type TabGroup.
-     */
-    //property Item __tabGroup: __getTabGroup()
+    property bool selected: false;
 
     height: parent ? parent.height : 50
-
-    //onClicked: __selectTab()
 
     BorderImage {
         id: background
         z: -1
 
-        property Item allTabs: tabbutton.parent
+        property Item allTabs: tabButton.parent
         /*!
           \internal
-          These properties keep track on whether the TabButton is the first or the
+          These properties keep track on whether the tab button is the first or the
           last in the current row or tabs. This changes their appearance (rounded
-          borders vs. straight corners for TabButtons that are not first or last).
+          borders vs. straight corners for tabButtons that are not first or last).
          */
-        property bool __isFirst: allTabs ? (allTabs.children[0] == tabbutton) : false
-        property bool __isLast: allTabs ? (allTabs.children[allTabs.children.length-1] == tabbutton) : false
+        property bool __isFirst: allTabs ? (allTabs.children[0] == tabButton) : false
+        property bool __isLast: allTabs ? (allTabs.children[allTabs.children.length-1] == tabButton) : false
 
         anchors.fill: parent
         source: {
             if (__isFirst) {
-                return __selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
+                return tabButton.selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
             } else if (__isLast) {
-                return __selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
+                return tabButton.selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
             } else {
-                return __selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
+                return tabButton.selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
             }
         }
 
@@ -81,49 +73,4 @@ ButtonWithForeground {
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
     }
-
-    /*!
-      \internal
-      Make the tab associated with this TabButton the current
-      tab in its parent TabGroup.
-    */
-    /*
-    function __selectTab() {
-        if ( (__tabGroup != null) && (tab != null) ) {
-                __tabGroup.currentTab = tab;
-        } // if
-    } // function
-*/
-    /*!
-      \internal
-      If the tab has a parent that is a valid TabGroup, then that TabGroup is returned.
-      Otherwise null is returned.
-     */
-    /*
-    function __getTabGroup() {
-        var result = null;
-        if (tab !== null) {
-            if (tab.parent !== null) {
-                if ("currentTab" in tab.parent) {
-                    result = tab.parent;
-                }
-            }
-        }
-        return result;
-    }
-*/
-    /*
-    state: {
-        if (tabbutton.__selected) return "selected";
-        else return __getState();
-    }
-    */
-    /*
-    states: [
-        State {
-            name: "selected"
-            //PropertyChanges { target: tabbutton; color: "pink" }
-        }
-    ]
-    */
 }
