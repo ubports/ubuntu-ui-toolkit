@@ -7,8 +7,8 @@ New Features
 
 - New AbstractButton component.
 - New Button component.
-- New TabButton component.
-- New TabGroup component.
+- New Tab component.
+- New Tabs component.
 
 Improvements
 ------------
