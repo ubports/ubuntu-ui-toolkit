@@ -94,7 +94,7 @@ Item {
                     property Item tab: modelData
                     text: tab.text
                     iconSource: tab.iconSource
-                    width: 100
+                    width: paintedWidth + 20
                     selected: (index == tabVisuals.selectedTabIndex)
                     onClicked: tabVisuals.selectTab(index)
                 }

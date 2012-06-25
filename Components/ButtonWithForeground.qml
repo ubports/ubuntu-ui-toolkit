@@ -82,6 +82,12 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
+    /*!
+      \preliminary
+      The painted width of the foreground of the button.
+     */
+    property real paintedWidth: icon.paintedWidth + 10 + label.paintedWidth
+
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit

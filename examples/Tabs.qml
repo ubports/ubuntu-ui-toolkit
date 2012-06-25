@@ -38,7 +38,7 @@ Rectangle {
         }
         Tab {
             text: "buttons!"
-            //iconSource: "call_icon.png"
+            iconSource: "call_icon.png"
             pageSource: "Buttons.qml"
             pagePreloaded: false
         }
