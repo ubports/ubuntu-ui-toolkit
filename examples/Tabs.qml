@@ -23,7 +23,7 @@ Rectangle {
     width: 800
     height: 600
 
-    color: "#eee"
+    color: "#eeeeee"
 
     Tabs {
         id: tabs
@@ -40,7 +40,7 @@ Rectangle {
             text: "tab 2"
             iconSource: "call_icon.png"
             pageSource: "Buttons.qml"
-            pagePreloaded: false
+            pagePreloaded: true
         }
         Tab {
             text: "tab 3"

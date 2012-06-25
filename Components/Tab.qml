@@ -37,9 +37,31 @@ Item {
     property url pageSource
     property bool pagePreloaded
 
+    // TODO: check for the correct type of the parent?
+    property Item __tabsItem: parent ? parent : null
+
     Loader {
         id: loader
 
+        function loadPage() {
+            loader.source = tab.pageSource;
+            //if (__tabsItem) loader.item.parent = __tabsItem.pp;
+            loader.item.visible = false;
+        }
+    }
+
+    function getPage() {
+        if (tab.page) return tab.page;
+        if (!pageSource) return null;
+        if (!loader.item) loader.loadPage();
+        return loader.item;
+    }
+
+    Component.onCompleted: {
+        if (tab.page) {
+            tab.page.visible = false
+            //if (__tabsItem) tab.page.parent = __tabsItem.pp;
+        }
     }
 
    // Item {

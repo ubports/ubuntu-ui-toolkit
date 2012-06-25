@@ -120,7 +120,7 @@ Item {
                     //page: tab.page
                     width: 100
                     __selected: (index == tabVisuals.selectedTabIndex)
-                    onClicked: tabVisuals.selectedTabIndex = index
+                    onClicked: tabVisuals.selectTab(index) //tabVisuals.selectedTabIndex = index
                     //onClicked: Tabs.select(index) // working
                     //__selected: (index == Tabs.selectedIndex) //Tabs.isSelected(index) // not working
                     // seems like index and expressions are only evaluated once here
@@ -128,22 +128,34 @@ Item {
             }
         }
 
-        Rectangle {
-            id: tabPageItem
-            color: "yellow"
+
+        // This is the item that will be the parent of the currently displayed page.
+        Item {
+            id: pages
             anchors {
                 top: buttonRow.bottom
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
             }
-            //Component.onCompleted: Tabs.pageItem = tabPageItem
         }
 
-        onSelectedTabIndexChanged: {
-            tabItems.children[selectedTabIndex].page.parent = tabPageItem;
+        function selectTab(index) {
+            if (tabVisuals.selectedTabIndex != -1) tabItems.children[tabVisuals.selectedTabIndex].getPage().visible = false;
+            tabVisuals.selectedTabIndex = index;
+            var page = tabItems.children[tabVisuals.selectedTabIndex].getPage();
+            page.parent = pages;
+            page.visible = true;
             print("Selecting tab "+tabVisuals.selectedTabIndex);
         }
+
+//        onSelectedTabIndexChanged: {
+//            //tabItems.children[selectedTabIndex].page.parent = tabPageItem;
+//            var page = tabItems.children[selectedTabIndex].getPage();
+//            page.parent = pages;
+//            page.visible = true;
+//            print("Selecting tab "+tabVisuals.selectedTabIndex);
+//        }
 //        TabGroup {
 //            id: tabGroup
 //            anchors {
@@ -178,15 +190,16 @@ Item {
 
     }
 
-    onChildrenChanged: {
-    //Component.onCompleted: {
-        //Tabs.setPage(tabPageItem);
-        // TODO: only add new children, not to clear every time.
-        Tabs.clear();
-        for (var i=0; i < children.length; i++) {
-            var child = children[i];
-            Tabs.add(child);
-        } // for
-        Tabs.printAll();
-    } // onChildrenChanged
+
+//    onChildrenChanged: {
+//    //Component.onCompleted: {
+//        //Tabs.setPage(tabPageItem);
+//        // TODO: only add new children, not to clear every time.
+//        Tabs.clear();
+//        for (var i=0; i < children.length; i++) {
+//            var child = children[i];
+//            Tabs.add(child);
+//        } // for
+//        Tabs.printAll();
+//    } // onChildrenChanged
 }
