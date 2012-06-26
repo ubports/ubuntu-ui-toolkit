@@ -96,7 +96,7 @@ AbstractButton {
         sourceSize.height: height
         height: {
             if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
-            else return button.height - label.implicitHeight - 30;
+           // else return button.height - label.implicitHeight - 30;
         }
         opacity: button.enabled ? 1.0 : 0.5
      }
