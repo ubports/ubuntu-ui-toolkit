@@ -86,19 +86,58 @@ Item {
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
+            } // anchors
+
+            // maximumButtonWidth is the total space available for all tab buttons
+            // divided by the number of buttons.
+            // If minimumButtonWidth is larger than maximumButtonWidth, the buttonWidth
+            // will be minimumButtonWidth. Otherwise, the buttonWidth is the width the
+            // largest button needs to fit all its contents.
+            // Scrolling in case the buttons don't fit in the available space is currently
+            // not implemented.
+            property int buttonPadding: 12
+            property int minimumButtonWidth: 2*buttonPadding + 5
+            property int maximumButtonWidth: tabVisuals.width / repeater.count
+            property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
+            property int widestButtonContent
+            property int widestButtonWidth: 2*buttonPadding + widestButtonContent
+            property int buttonWidth
+            buttonWidth: {
+                if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
+                else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
             }
 
+            function updateWidestButtonContent() {
+                var button;
+                var widestContent = 0;
+                for (var i=0; i < buttonRow.children.length; i++) {
+                    button = buttonRow.children[i];
+                    if (button === repeater) continue;
+                    if (button.paintedForegroundWidth > widestContent) {
+                        widestContent = button.paintedForegroundWidth;
+                    }
+                } // for i
+                buttonRow.widestButtonContent = widestContent;
+            } // function updateWidestButtonContent
+
             Repeater {
+                id: repeater
+                onModelChanged: buttonRow.updateWidestButtonContent()
+                onCountChanged: buttonRow.updateWidestButtonContent()
+
                 model: tabItems.children
                 TabButton {
+                    id: tabButton
                     property Item tab: modelData
                     text: tab.text
                     iconSource: tab.iconSource
-                    width: paintedWidth + 20
+                    width: buttonRow.buttonWidth
                     selected: (index == tabVisuals.selectedTabIndex)
                     onClicked: tabVisuals.selectTab(index)
                 }
             } // Repeater
+
+            Component.onCompleted: buttonRow.updateWidestButtonContent()
         } // buttonRow
 
         // This is the item that will be the parent of the currently displayed page.

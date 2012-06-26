@@ -86,7 +86,7 @@ AbstractButton {
       \preliminary
       The painted width of the foreground of the button.
      */
-    property real paintedWidth: icon.paintedWidth + 10 + label.paintedWidth
+    property real paintedForegroundWidth: icon.paintedWidth + 10 + label.paintedWidth
 
     Image {
         id: icon
