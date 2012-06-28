@@ -28,6 +28,11 @@ Rectangle {
     Tabs {
         id: tabs
         anchors.fill: parent
+        buttonsExpanded: false
+        separator: Rectangle {
+            color: "darkgrey"
+            height: 3
+        }
         Tab {
             text: "tab 1"
             iconSource: "call_icon.png"
@@ -55,5 +60,5 @@ Rectangle {
             } // Rectangle
         } // Tab
     } // Tabs
-    //Component.onCompleted: tabs.selectedTabIndex = 1;
+    Component.onCompleted: tabs.selectedTabIndex = 1;
 } // window

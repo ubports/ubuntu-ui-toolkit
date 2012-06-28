@@ -80,6 +80,14 @@ Item {
      */
     property int selectedTabIndex: -1
 
+    /*!
+      \preliminary
+      If this optional property is specified, it will be positioned
+      between the bar with tab buttons, and the tab pages to act
+      as a separator.
+     */
+    property Item separator
+
     // Keep the Tab items that the user defines separate
     // from the other items that we create below.
     default property alias children: tabItems.children
@@ -95,6 +103,13 @@ Item {
         // The currently selected tab.
         // -1 means that no tab is selected.
         property int selectedTabIndex: -1
+
+        // The (optional) separator between buttonRow and pages.
+        property Item separator;
+
+        // needed to set the anchors in setSeparator()
+        property alias buttonRow: buttonRow
+        property alias pages: pages
 
         Row {
             id: buttonRow
@@ -180,8 +195,24 @@ Item {
                 page.visible = true;
             }
             tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
-        }
+        } // function selectTab
+
+        function setSeparator(newseparator) {
+            if (tabVisuals.separator) tabVisuals.separator.visible = false;
+            tabVisuals.separator = newseparator;
+            if (tabVisuals.separator) {
+                tabVisuals.separator.parent = tabVisuals;
+                tabVisuals.separator.visible = true;
+                tabVisuals.separator.anchors.top = tabVisuals.buttonRow.bottom;
+                tabVisuals.separator.anchors.left = tabVisuals.left;
+                tabVisuals.separator.anchors.right = tabVisuals.right;
+                tabVisuals.pages.anchors.top = tabVisuals.separator.bottom;
+            } else { // no separator
+                tabVisuals.pages.anchors.top = tabVisuals.buttonRow.bottom;
+            } // else
+        } // function setSeparator
     } // tabVisuals
 
     onSelectedTabIndexChanged: tabVisuals.selectTab(tabsMain.selectedTabIndex)
+    onSeparatorChanged: tabVisuals.setSeparator(tabsMain.separator)
 }
