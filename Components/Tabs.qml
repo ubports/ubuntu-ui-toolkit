@@ -64,6 +64,15 @@ import QtQuick 1.1
 Item {
     id: tabsMain
 
+    /*!
+      \preliminary
+      Setting this property to true will make the tabs buttons use
+      the maximum available space for the buttons.
+      If the value is false, the each button will use the width that
+      is required by the largest button.
+     */
+    property bool buttonsExpanded: false
+
     // Keep the Tab items that the user defines separate
     // from the other items that we create below.
     default property alias children: tabItems.children
@@ -104,6 +113,7 @@ Item {
             property int buttonWidth
             buttonWidth: {
                 if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
+                else if (tabsMain.buttonsExpanded) return buttonRow.maximumButtonWidth;
                 else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
             }
 
