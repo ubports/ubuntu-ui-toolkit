@@ -213,6 +213,7 @@ Item {
         } // function setSeparator
     } // tabVisuals
 
-    onSelectedTabIndexChanged: tabVisuals.selectTab(tabsMain.selectedTabIndex)
+    onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)
     onSeparatorChanged: tabVisuals.setSeparator(tabsMain.separator)
+    Component.onCompleted: tabVisuals.selectTab(tabsMain.selectedTabIndex)
 }

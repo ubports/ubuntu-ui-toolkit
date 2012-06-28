@@ -33,6 +33,7 @@ Rectangle {
             color: "darkgrey"
             height: 3
         }
+        selectedTabIndex: 0
         Tab {
             text: "tab 1"
             iconSource: "call_icon.png"
@@ -60,5 +61,4 @@ Rectangle {
             } // Rectangle
         } // Tab
     } // Tabs
-    Component.onCompleted: tabs.selectedTabIndex = 1;
 } // window
