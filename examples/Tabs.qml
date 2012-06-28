@@ -55,4 +55,5 @@ Rectangle {
             } // Rectangle
         } // Tab
     } // Tabs
+    //Component.onCompleted: tabs.selectedTabIndex = 1;
 } // window

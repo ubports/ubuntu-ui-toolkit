@@ -73,6 +73,13 @@ Item {
      */
     property bool buttonsExpanded: false
 
+    /*!
+      \preliminary
+      The index of the currently selected tab.
+      The first tab is 0, and -1 means that no tab is selected.
+     */
+    property int selectedTabIndex: -1
+
     // Keep the Tab items that the user defines separate
     // from the other items that we create below.
     default property alias children: tabItems.children
@@ -162,15 +169,19 @@ Item {
         } // pages
 
         function selectTab(index) {
+            if (index === tabVisuals.selectedTabIndex) return;
             if (tabVisuals.selectedTabIndex != -1) {
                 tabItems.children[tabVisuals.selectedTabIndex].getPage().visible = false;
             }
             tabVisuals.selectedTabIndex = index;
-            var page = tabItems.children[tabVisuals.selectedTabIndex].getPage();
-            page.parent = pages;
-            page.visible = true;
+            if (tabVisuals.selectedTabIndex != -1) {
+                var page = tabItems.children[tabVisuals.selectedTabIndex].getPage();
+                page.parent = pages;
+                page.visible = true;
+            }
+            tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
         }
-
-        Component.onCompleted: tabVisuals.selectTab(0)
     } // tabVisuals
+
+    onSelectedTabIndexChanged: tabVisuals.selectTab(tabsMain.selectedTabIndex)
 }
