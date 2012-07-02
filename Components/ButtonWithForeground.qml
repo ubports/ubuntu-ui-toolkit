@@ -103,7 +103,7 @@ AbstractButton {
         anchors.verticalCenterOffset: -1
         fontSize: "large"
         font.italic: true
-        opacity: button.enabled ? 1.0 : 0.5-
+        opacity: button.enabled ? 1.0 : 0.5
     }
 
     Item { //placed in here to keep state property private
