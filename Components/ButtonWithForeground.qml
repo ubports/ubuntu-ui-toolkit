@@ -103,7 +103,7 @@ AbstractButton {
         anchors.verticalCenterOffset: -1
         fontSize: "large"
         font.italic: true
-        opacity: button.enabled ? 1.0 : 0.5
+        opacity: button.enabled ? 1.0 : 0.5-
     }
 
     Item { //placed in here to keep state property private
@@ -114,33 +114,33 @@ AbstractButton {
                 name: "right"
                 AnchorChanges {
                     target: icon;
-                    anchors { right: button.right; }
+                    anchors.right: button.right
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { right: icon.left; }
+                    anchors.right: icon.left
                 }
             },
             State {
                 name: "left"
                 AnchorChanges {
                     target: icon;
-                    anchors { left: button.left; }
+                    anchors.left: button.left
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { left: icon.right; }
+                    anchors.left: icon.right
                 }
             },
             State {
                 name: "center"
                 AnchorChanges {
                     target: icon;
-                    anchors { horizontalCenter: button.horizontalCenter; }
+                    anchors.horizontalCenter: button.horizontalCenter
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { horizontalCenter: button.horizontalCenter; }
+                    anchors.horizontalCenter: button.horizontalCenter
                 }
             }
         ]
