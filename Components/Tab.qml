@@ -97,10 +97,4 @@ Item {
         if (!loader.item) loader.loadPage();
         return loader.item;
     }
-
-    Component.onCompleted: {
-        if (tab.page) {
-            tab.page.visible = false
-        }
-    }
 }
