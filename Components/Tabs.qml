@@ -26,9 +26,6 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            id: tabs
-            anchors.fill: parent
-
             Tab {
                 text: "tab 1"
                 page: Text {
