@@ -85,8 +85,10 @@ AbstractButton {
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
-        anchors.margins: 10
-        anchors.verticalCenter: button.verticalCenter
+        anchors {
+            margins: 10
+            verticalCenter: button.verticalCenter
+        }
         sourceSize.width: width
         sourceSize.height: height
         height: {
@@ -98,9 +100,11 @@ AbstractButton {
 
     TextCustom {
         id: label
-        anchors.margins: 10
-        anchors.verticalCenter: button.verticalCenter
-        anchors.verticalCenterOffset: -1
+        anchors {
+            margins: 10
+            verticalCenter: button.verticalCenter
+            verticalCenterOffset: -1
+        }
         fontSize: "large"
         font.italic: true
         opacity: button.enabled ? 1.0 : 0.5
