@@ -95,6 +95,12 @@ Item {
     property real buttonRowHeight: 28
 
     /*!
+      \preliminary
+      The padding on the left and right side of the row of buttons.
+    */
+    property real buttonRowPadding: 10
+
+    /*!
       \internal
       Keep the Tab items that the user defines separate
       from the other items that we create below.
@@ -122,6 +128,7 @@ Item {
 
         Row {
             id: buttonRow
+            width: parent.width - 2*tabs.buttonRowPadding
             height: tabs.buttonRowHeight
             anchors {
                 top: parent.top
@@ -136,7 +143,7 @@ Item {
             // not implemented.
             property int buttonPadding: 12
             property int minimumButtonWidth: 2*buttonPadding + 5
-            property int maximumButtonWidth: tabVisuals.width / repeater.count
+            property int maximumButtonWidth: buttonRow.width / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
             property int widestButtonContent
             property int widestButtonWidth: 2*buttonPadding + widestButtonContent
