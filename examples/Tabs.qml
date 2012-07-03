@@ -42,7 +42,7 @@ Rectangle {
             text: "buttons!"
             iconSource: "call_icon.png"
             pageSource: "Buttons.qml"
-            pagePreloaded: false
+            preloadPage: false
         }
         Tab {
             text: "no page"

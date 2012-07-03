@@ -58,11 +58,11 @@ Item {
 
     /*!
       \preliminary
-      If \l pageSource is used to define the page of this tab, pagePreloaded specifies whether
+      If \l pageSource is used to define the page of this tab, preloadPage specifies whether
       the page should be preloaded from the QML file when the application starts, or loading
       is delayed until the tab is selected.
      */
-    property bool pagePreloaded: false
+    property bool preloadPage: false
 
 
     /*!
@@ -84,12 +84,12 @@ Item {
         }
 
         Component.onCompleted: {
-            if (tab.pagePreloaded) loader.loadPage();
+            if (tab.preloadPage) loader.loadPage();
         }
 
         Connections {
             target: tab
-            onPagePreloadedChanged: if (tab.pagePreloaded) loader.loadPage()
+            onPreloadPageChanged: if (tab.preloadPage) loader.loadPage()
         }
     }
 
