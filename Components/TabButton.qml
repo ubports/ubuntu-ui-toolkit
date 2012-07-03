@@ -32,6 +32,7 @@ ButtonWithForeground {
     property bool selected: false;
 
     height: parent ? parent.height : 50
+    textColor: "#757373"
 
     BorderImage {
         id: background
