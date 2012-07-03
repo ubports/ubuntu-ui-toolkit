@@ -83,7 +83,7 @@ AbstractButton {
     property string iconPosition: "left"
 
     Item {
-        id: groupContents
+        id: foreground
         height: button.height
         width: contentsWidth()
         anchors.centerIn: button
@@ -92,7 +92,7 @@ AbstractButton {
 
         function contentsWidth() {
             var totalWidth = (button.iconSource == "" || button.text == "") ?
-                2*groupContents.margins : 3*groupContents.margins;
+                2*foreground.margins : 3*foreground.margins;
             if (button.iconSource != "") totalWidth += icon.paintedWidth;
             if (label.text != "") totalWidth += label.width;
             return totalWidth;
@@ -102,20 +102,20 @@ AbstractButton {
             id: icon
             fillMode: Image.PreserveAspectFit
             anchors {
-                margins: groupContents.margins
-                verticalCenter: groupContents.verticalCenter
+                margins: foreground.margins
+                verticalCenter: foreground.verticalCenter
             }
             sourceSize.width: width
             sourceSize.height: height
-            height: groupContents.height - 20
+            height: foreground.height - 20
             opacity: button.enabled ? 1.0 : 0.5
         }
 
         TextCustom {
             id: label
             anchors {
-                margins: groupContents.margins
-                verticalCenter: groupContents.verticalCenter
+                margins: foreground.margins
+                verticalCenter: foreground.verticalCenter
                 verticalCenterOffset: -1
             }
             fontSize: "large"
@@ -132,7 +132,7 @@ AbstractButton {
                 name: "right"
                 AnchorChanges {
                     target: icon;
-                    anchors.right: groupContents.right
+                    anchors.right: foreground.right
                 }
                 AnchorChanges {
                     target: label;
@@ -143,7 +143,7 @@ AbstractButton {
                 name: "left"
                 AnchorChanges {
                     target: icon;
-                    anchors.left: groupContents.left
+                    anchors.left: foreground.left
                 }
                 AnchorChanges {
                     target: label;
@@ -154,11 +154,11 @@ AbstractButton {
                 name: "center"
                 AnchorChanges {
                     target: icon;
-                    anchors.horizontalCenter: groupContents.horizontalCenter
+                    anchors.horizontalCenter: foreground.horizontalCenter
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.horizontalCenter: groupContents.horizontalCenter
+                    anchors.horizontalCenter: foreground.horizontalCenter
                 }
             }
         ]
