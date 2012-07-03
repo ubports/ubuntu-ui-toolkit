@@ -69,7 +69,7 @@ Item {
       \preliminary
       Indicates whether this tab is selected.
       Its value is automatically updated by the \l Tabs object.
-      TODO: Make readonly in QtQuick2
+      TODO: Make readonly when we switch to QtQuick2
     */
     property bool selected: false
 
