@@ -81,7 +81,6 @@ Item {
             // wait for the page to load
             while (loader.status == Loader.Loading) { }
             tab.page = loader.item;
-            if (loader.item) loader.item.visible = false;
         }
 
         Component.onCompleted: {
@@ -104,5 +103,9 @@ Item {
         if (tab.page) return tab.page;
         if (!loader.item) loader.loadPage();
         return loader.item;
+    }
+
+    onPageChanged: {
+        if (tab.page) tab.page.visible = tab.selected;
     }
 }
