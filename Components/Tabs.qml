@@ -202,6 +202,7 @@ Item {
             if (index === tabVisuals.selectedTabIndex) return;
             var page;
             if (tabVisuals.selectedTabIndex != -1) {
+                tabItems.children[tabVisuals.selectedTabIndex].selected = false;
                 page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
                 if (page) page.visible = false;
             }
