@@ -119,9 +119,6 @@ Item {
         // -1 means that no tab is selected.
         property int selectedTabIndex: -1
 
-        // The (optional) separator between buttonRow and pages.
-        property Item separator;
-
         // needed to set the anchors in setSeparator()
         property alias buttonRow: buttonRow
         property alias pages: pages
@@ -216,16 +213,14 @@ Item {
             tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
         }
 
-        function setSeparator(newseparator) {
-            if (tabVisuals.separator) tabVisuals.separator.visible = false;
-            tabVisuals.separator = newseparator;
-            if (tabVisuals.separator) {
-                tabVisuals.separator.parent = tabVisuals;
-                tabVisuals.separator.visible = true;
-                tabVisuals.separator.anchors.top = tabVisuals.buttonRow.bottom;
-                tabVisuals.separator.anchors.left = tabVisuals.left;
-                tabVisuals.separator.anchors.right = tabVisuals.right;
-                tabVisuals.pages.anchors.top = tabVisuals.separator.bottom;
+        function separatorChanged() {
+            if (tabsMain.separator) {
+                tabsMain.separator.parent = tabVisuals;
+                //tabsMain.separator.visible = true;
+                tabsMain.separator.anchors.top = tabVisuals.buttonRow.bottom;
+                tabsMain.separator.anchors.left = tabVisuals.left;
+                tabsMain.separator.anchors.right = tabVisuals.right;
+                tabVisuals.pages.anchors.top = tabsMain.separator.bottom;
             } else { // no separator
                 tabVisuals.pages.anchors.top = tabVisuals.buttonRow.bottom;
             }
@@ -234,12 +229,12 @@ Item {
         Connections {
             target: tabsMain
             onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)
-            onSeparatorChanged: tabVisuals.setSeparator(tabsMain.separator)
+            onSeparatorChanged: tabVisuals.separatorChanged()
         }
     } // tabVisuals
 
     Component.onCompleted: {
-        tabVisuals.setSeparator(tabsMain.separator);
+        tabVisuals.separatorChanged();
         tabVisuals.selectTab(tabsMain.selectedTabIndex);
     }
 }
