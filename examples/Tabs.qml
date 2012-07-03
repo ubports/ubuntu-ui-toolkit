@@ -30,8 +30,8 @@ Rectangle {
         anchors.fill: parent
         buttonsExpanded: true
         separator: Rectangle {
-            color: "darkgrey"
-            height: 3
+            color: "white"
+            height: 1
         }
         selectedTabIndex: 0
         Tab {
