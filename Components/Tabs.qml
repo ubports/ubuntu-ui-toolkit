@@ -94,6 +94,10 @@ Item {
     */
     property real buttonRowHeight: 28
 
+    // minimal width and height of 200 for showing the pages
+    width: 200
+    height: buttonRowHeight + 200
+
     /*!
       \preliminary
       The padding on the left and right side of the row of buttons.
