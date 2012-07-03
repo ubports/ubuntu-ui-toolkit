@@ -85,12 +85,12 @@ AbstractButton {
     Item {
         id: foreground
         height: button.height
-        width: contentsWidth()
+        width: foregroundWidth()
         anchors.centerIn: button
 
         property real margins: 10;
 
-        function contentsWidth() {
+        function foregroundWidth() {
             var totalWidth = (button.iconSource == "" || button.text == "") ?
                 2*foreground.margins : 3*foreground.margins;
             if (button.iconSource != "") totalWidth += icon.paintedWidth;
