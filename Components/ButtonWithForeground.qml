@@ -107,7 +107,7 @@ AbstractButton {
             }
             sourceSize.width: width
             sourceSize.height: height
-            height: foreground.height - 20
+            height: foreground.height - 2*foreground.margins
             opacity: button.enabled ? 1.0 : 0.5
         }
 
