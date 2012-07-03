@@ -28,7 +28,7 @@ Rectangle {
     Tabs {
         id: tabs
         anchors.fill: parent
-        buttonsExpanded: true
+        buttonsExpanded: false
         buttonRowHeight: 40
         Tab {
             text: "tab 1"
@@ -50,7 +50,7 @@ Rectangle {
 
         Tab {
             id: tab4
-            text: "tab 4"
+            text: "tab 4 select for icon"
             page:  Rectangle {
                 anchors.fill: parent
                 Text {

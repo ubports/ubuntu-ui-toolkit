@@ -128,7 +128,7 @@ Item {
 
         Row {
             id: buttonRow
-            width: parent.width - 2*tabs.buttonRowPadding
+            width: buttonRow.buttonWidth * repeater.count
             height: tabs.buttonRowHeight
             anchors {
                 top: parent.top
@@ -141,12 +141,10 @@ Item {
             // largest button needs to fit all its contents.
             // Scrolling in case the buttons don't fit in the available space is currently
             // not implemented.
-            property int buttonPadding: 12
-            property int minimumButtonWidth: 2*buttonPadding + 5
-            property int maximumButtonWidth: buttonRow.width / repeater.count
+            property int minimumButtonWidth: 20
+            property int maximumButtonWidth: (tabVisuals.width - 2*tabs.buttonRowPadding) / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
-            property int widestButtonContent
-            property int widestButtonWidth: 2*buttonPadding + widestButtonContent
+            property int widestButtonWidth
             property int buttonWidth
             buttonWidth: {
                 if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
@@ -154,23 +152,23 @@ Item {
                 else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
             }
 
-            function updateWidestButtonContent() {
+            function updateWidestButtonWidth() {
                 var button;
-                var widestContent = 0;
+                var widest = 0;
                 for (var i=0; i < buttonRow.children.length; i++) {
                     button = buttonRow.children[i];
                     if (button === repeater) continue;
-                    if (button.paintedForegroundWidth > widestContent) {
-                        widestContent = button.paintedForegroundWidth;
+                    if (button.implicitWidth > widest) {
+                        widest = button.implicitWidth;
                     }
                 } // for i
-                buttonRow.widestButtonContent = widestContent;
+                buttonRow.widestButtonWidth = widest;
             }
 
             Repeater {
                 id: repeater
-                onModelChanged: buttonRow.updateWidestButtonContent()
-                onCountChanged: buttonRow.updateWidestButtonContent()
+                onModelChanged: buttonRow.updateWidestButtonWidth()
+                onCountChanged: buttonRow.updateWidestButtonWidth()
 
                 model: tabItems.children
                 TabButton {
@@ -184,7 +182,7 @@ Item {
                 }
             }
 
-            Component.onCompleted: buttonRow.updateWidestButtonContent()
+            Component.onCompleted: buttonRow.updateWidestButtonWidth()
         } // buttonRow
 
         // This is the item that will be the parent of the currently displayed page.
