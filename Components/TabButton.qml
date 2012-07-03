@@ -26,7 +26,7 @@ ButtonWithForeground {
 
     /*!
       \preliminary
-      True iff the tab is selected.
+      True if the tab is selected.
       This value is automatically updated by the Tabs object.
      */
     property bool selected: false;
