@@ -29,10 +29,6 @@ Rectangle {
         id: tabs
         anchors.fill: parent
         buttonsExpanded: true
-        separator: Rectangle {
-            color: "white"
-            height: 1
-        }
         selectedTabIndex: 0
         Tab {
             text: "tab 1"

@@ -86,7 +86,10 @@ Item {
       between the bar with tab buttons, and the tab pages to act
       as a separator.
      */
-    property Item separator
+    property Item separator: Rectangle {
+            color: "white"
+            height: 1
+    }
 
     // Keep the Tab items that the user defines separate
     // from the other items that we create below.
@@ -214,5 +217,8 @@ Item {
 
     onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)
     onSeparatorChanged: tabVisuals.setSeparator(tabsMain.separator)
-    Component.onCompleted: tabVisuals.selectTab(tabsMain.selectedTabIndex)
+    Component.onCompleted: {
+        tabVisuals.setSeparator(tabsMain.separator);
+        tabVisuals.selectTab(tabsMain.selectedTabIndex);
+    }
 }
