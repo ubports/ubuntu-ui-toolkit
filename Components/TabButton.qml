@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass tabButton
     \inqmlmodule UbuntuUIToolkit
-    \brief A special button class for controlling tabs.
+    \brief Button used in Tab bars.
 */
 ButtonWithForeground {
     id: tabButton
