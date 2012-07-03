@@ -23,7 +23,7 @@ import QtQuick 1.1
 
     \b{This component is under heavy development.}
 
-    Examples: See Tabs.
+    Examples: See \l Tabs.
 */
 Item {
     id: tab
@@ -31,14 +31,14 @@ Item {
     /*!
       \preliminary
       The text that is shown on the tab button used to select this tab (optional).
-      Either text or iconSource, or both must be defined.
+      Either text or \l iconSource, or both must be defined.
      */
     property string text
 
     /*!
       \preliminary
       The location of the icon that is displayed inside the button used to select this tab (optional).
-      Either text or iconSource, or both must be defined.
+      Either \l text or iconSource, or both must be defined.
      */
     property url iconSource
 
@@ -58,7 +58,7 @@ Item {
 
     /*!
       \preliminary
-      If pageSource is used to define the page of this tab, pagePreloaded specifies whether
+      If \l pageSource is used to define the page of this tab, pagePreloaded specifies whether
       the page should be preloaded from the QML file when the application starts, or loading
       is delayed until the tab is selected.
      */
@@ -68,7 +68,7 @@ Item {
     /*!
       \preliminary
       Indicates whether this tab is selected.
-      Its value is automatically updated by the Tabs object.
+      Its value is automatically updated by the \l Tabs object.
     */
     property bool selected: false
 
