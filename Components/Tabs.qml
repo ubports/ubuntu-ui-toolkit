@@ -90,7 +90,7 @@ Item {
 
     /*!
       \preliminary
-      The height of the row with the buttons.
+      The height of the button row.
     */
     property real buttonRowHeight: 28
 
