@@ -85,18 +85,9 @@ AbstractButton {
     Item {
         id: foreground
         height: button.height
-        width: foregroundWidth()
         anchors.centerIn: button
 
         property real margins: 10;
-
-        function foregroundWidth() {
-            var totalWidth = (button.iconSource == "" || button.text == "") ?
-                2*foreground.margins : 3*foreground.margins;
-            if (button.iconSource != "") totalWidth += icon.paintedWidth;
-            if (label.text != "") totalWidth += label.width;
-            return totalWidth;
-        }
 
         Image {
             id: icon
@@ -138,6 +129,10 @@ AbstractButton {
                     target: label;
                     anchors.right: icon.left
                 }
+                PropertyChanges {
+                    target: foreground
+                    width: icon.width + label.width + 3*foreground.margins
+                }
             },
             State {
                 name: "left"
@@ -149,6 +144,10 @@ AbstractButton {
                     target: label;
                     anchors.left: icon.right
                 }
+                PropertyChanges {
+                    target: foreground
+                    width: icon.width + label.width + 3*foreground.margins
+                }
             },
             State {
                 name: "center"
@@ -159,6 +158,10 @@ AbstractButton {
                 AnchorChanges {
                     target: label;
                     anchors.horizontalCenter: foreground.horizontalCenter
+                }
+                PropertyChanges {
+                    target: foreground
+                    width: (button.iconSource == "") ? label.width + 2*foreground.margins: icon.width + 2*foreground.margins
                 }
             }
         ]
