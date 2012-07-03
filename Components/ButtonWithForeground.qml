@@ -90,8 +90,7 @@ AbstractButton {
 
     implicitWidth: foreground.implicitWidth + 2*horizontalPadding
 
-    Rectangle {
-        color: "black"
+    Item {
         id: foreground
         anchors.centerIn: button
 
