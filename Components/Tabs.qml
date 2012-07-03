@@ -65,7 +65,7 @@ Item {
       \preliminary
       Setting this property to true will make the tabs buttons use
       the maximum available space for the buttons.
-      If the value is false, the each button will use the width that
+      If the value is false, each button will use the width that
       is required by the largest button.
      */
     property bool buttonsExpanded: false
