@@ -215,7 +215,6 @@ Item {
         function separatorChanged() {
             if (tabsMain.separator) {
                 tabsMain.separator.parent = tabVisuals;
-                //tabsMain.separator.visible = true;
                 tabsMain.separator.anchors.top = tabVisuals.buttonRow.bottom;
                 tabsMain.separator.anchors.left = tabVisuals.left;
                 tabsMain.separator.anchors.right = tabVisuals.right;

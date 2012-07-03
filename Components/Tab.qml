@@ -78,8 +78,6 @@ Item {
 
         function loadPage() {
             loader.source = tab.pageSource;
-            // wait for the page to load
-            while (loader.status == Loader.Loading) { }
             tab.page = loader.item;
         }
 
