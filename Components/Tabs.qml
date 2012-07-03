@@ -115,10 +115,6 @@ Item {
         id: tabVisuals
         anchors.fill: parent
 
-        // The currently selected tab.
-        // -1 means that no tab is selected.
-        property int selectedTabIndex: -1
-
         // needed to set the anchors in setSeparator()
         property alias buttonRow: buttonRow
         property alias pages: pages
@@ -174,7 +170,7 @@ Item {
                     text: tab.text
                     iconSource: tab.iconSource
                     width: buttonRow.buttonWidth
-                    selected: (index == tabVisuals.selectedTabIndex)
+                    selected: (index == tabsMain.selectedTabIndex)
                     onClicked: tabVisuals.selectTab(index)
                 }
             }
@@ -194,23 +190,22 @@ Item {
         }
 
         function selectTab(index) {
-            if (index === tabVisuals.selectedTabIndex) return;
+            if (tabsMain.selectedTabIndex === index) return;
             var page;
-            if (tabVisuals.selectedTabIndex != -1) {
-                tabItems.children[tabVisuals.selectedTabIndex].selected = false;
-                page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
+            if (tabsMain.selectedTabIndex != -1) {
+                tabItems.children[tabsMain.selectedTabIndex].selected = false;
+                page = tabItems.children[tabsMain.selectedTabIndex].__getPage();
                 if (page) page.visible = false;
             }
-            tabVisuals.selectedTabIndex = index;
-            if (tabVisuals.selectedTabIndex != -1) {
-                tabItems.children[tabVisuals.selectedTabIndex].selected = true;
-                page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
+            tabsMain.selectedTabIndex = index;
+            if (tabsMain.selectedTabIndex != -1) {
+                tabItems.children[tabsMain.selectedTabIndex].selected = true;
+                page = tabItems.children[tabsMain.selectedTabIndex].__getPage();
                 if (page) {
                     page.parent = pages;
                     page.visible = true;
                 }
             }
-            tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
         }
 
         function separatorChanged() {
