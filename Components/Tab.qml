@@ -62,7 +62,7 @@ Item {
       the page should be preloaded from the QML file when the application starts, or loading
       is delayed until the tab is selected.
      */
-    property bool pagePreloaded
+    property bool pagePreloaded: false
 
 
     /*!
@@ -75,6 +75,8 @@ Item {
     Loader {
         id: loader
 
+        property bool preload: tab.pagePreloaded
+
         function loadPage() {
             loader.source = tab.pageSource;
             tab.page = loader.item;
@@ -82,8 +84,10 @@ Item {
         }
 
         Component.onCompleted: {
-            if (tab.pagePreloaded) loader.loadPage();
+            if (loader.preload) loader.loadPage();
         }
+
+        onPreloadChanged: if (loader.preload) loader.loadPage()
     }
 
     /*!
