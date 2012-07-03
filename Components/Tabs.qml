@@ -233,6 +233,8 @@ Item {
 
     Component.onCompleted: {
         tabVisuals.separatorChanged();
-        tabVisuals.selectTab(tabsMain.selectedTabIndex);
+        var index = tabsMain.selectedTabIndex;
+        tabsMain.selectedTabIndex = -1;
+        tabVisuals.selectTab(index);
     }
 }
