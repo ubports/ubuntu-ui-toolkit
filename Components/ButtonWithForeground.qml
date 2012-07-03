@@ -82,32 +82,49 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    Image {
-        id: icon
-        fillMode: Image.PreserveAspectFit
-        anchors {
-            margins: 10
-            verticalCenter: button.verticalCenter
-        }
-        sourceSize.width: width
-        sourceSize.height: height
-        height: {
-            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
-            else return button.height - label.implicitHeight - 30;
-        }
-        opacity: button.enabled ? 1.0 : 0.5
-     }
+    Item {
+        id: groupContents
+        height: button.height
+        width: contentsWidth()
+        anchors.centerIn: button
 
-    TextCustom {
-        id: label
-        anchors {
-            margins: 10
-            verticalCenter: button.verticalCenter
-            verticalCenterOffset: -1
+        property real margins: 10;
+
+        function contentsWidth() {
+            var totalWidth = (button.iconSource == "" || button.text == "") ?
+                2*groupContents.margins : 3*groupContents.margins;
+            if (button.iconSource != "") totalWidth += icon.paintedWidth;
+            if (label.text != "") totalWidth += label.width;
+            return totalWidth;
         }
-        fontSize: "large"
-        font.italic: true
-        opacity: button.enabled ? 1.0 : 0.5
+
+        Image {
+            id: icon
+            fillMode: Image.PreserveAspectFit
+            anchors {
+                margins: groupContents.margins
+                verticalCenter: groupContents.verticalCenter
+            }
+            sourceSize.width: width
+            sourceSize.height: height
+            height: {
+                if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
+                else return button.height - label.implicitHeight - 30;
+            }
+            opacity: button.enabled ? 1.0 : 0.5
+        }
+
+        TextCustom {
+            id: label
+            anchors {
+                margins: groupContents.margins
+                verticalCenter: groupContents.verticalCenter
+                verticalCenterOffset: -1
+            }
+            fontSize: "large"
+            font.italic: true
+            opacity: button.enabled ? 1.0 : 0.5
+        }
     }
 
     Item { //placed in here to keep state property private
@@ -118,7 +135,7 @@ AbstractButton {
                 name: "right"
                 AnchorChanges {
                     target: icon;
-                    anchors.right: button.right
+                    anchors.right: groupContents.right
                 }
                 AnchorChanges {
                     target: label;
@@ -129,7 +146,7 @@ AbstractButton {
                 name: "left"
                 AnchorChanges {
                     target: icon;
-                    anchors.left: button.left
+                    anchors.left: groupContents.left
                 }
                 AnchorChanges {
                     target: label;
@@ -140,11 +157,11 @@ AbstractButton {
                 name: "center"
                 AnchorChanges {
                     target: icon;
-                    anchors.horizontalCenter: button.horizontalCenter
+                    anchors.horizontalCenter: groupContents.horizontalCenter
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.horizontalCenter: button.horizontalCenter
+                    anchors.horizontalCenter: groupContents.horizontalCenter
                 }
             }
         ]
