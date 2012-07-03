@@ -75,7 +75,7 @@ Item {
       The index of the currently selected tab.
       The first tab is 0, and -1 means that no tab is selected.
      */
-    property int selectedTabIndex: -1
+    property int selectedTabIndex: 0
 
     /*!
       \preliminary
