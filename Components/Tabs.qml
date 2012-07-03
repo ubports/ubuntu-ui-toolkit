@@ -117,8 +117,7 @@ Item {
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
-            } // anchors
-
+            }
             // maximumButtonWidth is the total space available for all tab buttons
             // divided by the number of buttons.
             // If minimumButtonWidth is larger than maximumButtonWidth, the buttonWidth
@@ -150,7 +149,7 @@ Item {
                     }
                 } // for i
                 buttonRow.widestButtonContent = widestContent;
-            } // function updateWidestButtonContent
+            }
 
             Repeater {
                 id: repeater
@@ -167,7 +166,7 @@ Item {
                     selected: (index == tabVisuals.selectedTabIndex)
                     onClicked: tabVisuals.selectTab(index)
                 }
-            } // Repeater
+            }
 
             Component.onCompleted: buttonRow.updateWidestButtonContent()
         } // buttonRow
@@ -181,7 +180,7 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
             }
-        } // pages
+        }
 
         function selectTab(index) {
             if (index === tabVisuals.selectedTabIndex) return;
@@ -195,7 +194,7 @@ Item {
                 page.visible = true;
             }
             tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
-        } // function selectTab
+        }
 
         function setSeparator(newseparator) {
             if (tabVisuals.separator) tabVisuals.separator.visible = false;
@@ -209,8 +208,8 @@ Item {
                 tabVisuals.pages.anchors.top = tabVisuals.separator.bottom;
             } else { // no separator
                 tabVisuals.pages.anchors.top = tabVisuals.buttonRow.bottom;
-            } // else
-        } // function setSeparator
+            }
+        }
     } // tabVisuals
 
     onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)

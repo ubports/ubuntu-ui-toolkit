@@ -58,7 +58,7 @@ Rectangle {
                     text: "Colorful tab 3"
                 }
                 color: "lightblue"
-            } // Rectangle
-        } // Tab
+            }
+        }
     } // Tabs
 } // window
