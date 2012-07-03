@@ -69,25 +69,29 @@ Item {
       \preliminary
       Indicates whether this tab is selected.
       Its value is automatically updated by the \l Tabs object.
+      TODO: Make readonly in QtQuick2
     */
     property bool selected: false
 
     Loader {
         id: loader
 
-        property bool preload: tab.pagePreloaded
-
         function loadPage() {
             loader.source = tab.pageSource;
+            // wait for the page to load
+            while (loader.status == Loader.Loading) { }
             tab.page = loader.item;
             if (loader.item) loader.item.visible = false;
         }
 
         Component.onCompleted: {
-            if (loader.preload) loader.loadPage();
+            if (tab.pagePreloaded) loader.loadPage();
         }
 
-        onPreloadChanged: if (loader.preload) loader.loadPage()
+        Connections {
+            target: tab
+            onPagePreloadedChanged: if (tab.pagePreloaded) loader.loadPage()
+        }
     }
 
     /*!
