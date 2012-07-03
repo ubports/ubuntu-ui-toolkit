@@ -26,14 +26,8 @@ ButtonWithForeground {
 
     /*!
       \preliminary
-      The tab that will be activated by this button.
-      The parent of the tab Item must be a TabGroup.
-     */
-    //property Item page
-
-    /*!
-      \preliminary
-      True if tab is the selected tab of its tabgroup, false otherwise.
+      True iff the tab is selected.
+      This value is automatically updated by the Tabs object.
      */
     property bool selected: false;
 
