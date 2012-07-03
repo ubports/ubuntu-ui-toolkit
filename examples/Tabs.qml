@@ -29,6 +29,7 @@ Rectangle {
         id: tabs
         anchors.fill: parent
         buttonsExpanded: true
+        buttonRowHeight: 40
         selectedTabIndex: 0
         Tab {
             text: "tab 1"

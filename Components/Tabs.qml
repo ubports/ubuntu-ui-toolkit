@@ -89,6 +89,12 @@ Item {
     }
 
     /*!
+      \preliminary
+      The height of the row with the buttons.
+    */
+    property real buttonRowHeight: 28
+
+    /*!
       \internal
       Keep the Tab items that the user defines separate
       from the other items that we create below.
@@ -116,7 +122,7 @@ Item {
 
         Row {
             id: buttonRow
-            height: 40
+            height: tabs.buttonRowHeight
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
