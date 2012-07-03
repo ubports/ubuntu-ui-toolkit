@@ -161,7 +161,8 @@ AbstractButton {
                 }
                 PropertyChanges {
                     target: foreground
-                    width: (button.iconSource == "") ? label.width + 2*foreground.margins: icon.width + 2*foreground.margins
+                    // either icon.width or label.width equals 0
+                    width: icon.width + label.width + 2*foreground.margins
                 }
             }
         ]
