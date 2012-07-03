@@ -50,9 +50,9 @@ import QtQuick 1.1
                         text: "Colorful tab 3"
                     }
                     color: "lightblue"
-                } // Rectangle
-            } // Tab
-        } // Tabs
+                }
+            }
+        }
     \endqml
 
     \b{This component is under heavy development.}
