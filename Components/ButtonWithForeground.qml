@@ -85,7 +85,10 @@ AbstractButton {
     Image {
         id: icon
         fillMode: Image.PreserveAspectFit
-        anchors.margins: 10
+        anchors {
+            margins: 10
+            verticalCenter: button.verticalCenter
+        }
         sourceSize.width: width
         sourceSize.height: height
         height: {
@@ -97,8 +100,11 @@ AbstractButton {
 
     TextCustom {
         id: label
-        anchors.margins: 10
-        anchors.verticalCenterOffset: -1
+        anchors {
+            margins: 10
+            verticalCenter: button.verticalCenter
+            verticalCenterOffset: -1
+        }
         fontSize: "large"
         font.italic: true
         opacity: button.enabled ? 1.0 : 0.5
@@ -112,33 +118,33 @@ AbstractButton {
                 name: "right"
                 AnchorChanges {
                     target: icon;
-                    anchors { right: button.right; verticalCenter: button.verticalCenter }
+                    anchors.right: button.right
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { right: icon.left; verticalCenter: button.verticalCenter }
+                    anchors.right: icon.left
                 }
             },
             State {
                 name: "left"
                 AnchorChanges {
                     target: icon;
-                    anchors { left: button.left; verticalCenter: button.verticalCenter }
+                    anchors.left: button.left
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { left: icon.right; verticalCenter: button.verticalCenter }
+                    anchors.left: icon.right
                 }
             },
             State {
                 name: "center"
                 AnchorChanges {
                     target: icon;
-                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                    anchors.horizontalCenter: button.horizontalCenter
                 }
                 AnchorChanges {
                     target: label;
-                    anchors { horizontalCenter: button.horizontalCenter; verticalCenter: button.verticalCenter }
+                    anchors.horizontalCenter: button.horizontalCenter
                 }
             }
         ]
