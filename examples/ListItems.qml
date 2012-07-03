@@ -47,11 +47,26 @@ Rectangle {
             height: 60;
             width: parent.width;
             color: "yellow"
-            text: "yellow"
+            text: "Progression"
             iconSource: "call_icon.png"
             progression: true
             onClicked: print("Progressing...")
         }
+        DefaultListItem {
+            height: 60
+            width: parent.width;
+            text: "control and progress"
+            control: Button {
+                width: 100
+                height: 35
+                text: "button"
+                color: "pink"
+                onClicked: print("clickclick!")
+            }
+            progression: true // TODO: fix (not visible)
+            onClicked: print("progress")
+        }
+
         DefaultListItem { height: 60;
             width: parent.width;
             color: "green"
