@@ -189,9 +189,11 @@ Item {
             if (index === tabVisuals.selectedTabIndex) return;
             if (tabVisuals.selectedTabIndex != -1) {
                 tabItems.children[tabVisuals.selectedTabIndex].getPage().visible = false;
+                tabItems.children[tabVisuals.selectedTabIndex].selected = false;
             }
             tabVisuals.selectedTabIndex = index;
             if (tabVisuals.selectedTabIndex != -1) {
+                tabItems.children[tabVisuals.selectedTabIndex].selected = true;
                 var page = tabItems.children[tabVisuals.selectedTabIndex].getPage();
                 page.parent = pages;
                 page.visible = true;

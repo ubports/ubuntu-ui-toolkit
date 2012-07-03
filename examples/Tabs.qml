@@ -45,9 +45,9 @@ Rectangle {
             pagePreloaded: false
         }
         Tab {
+            id: tab3
             text: "tab 3"
             page:  Rectangle {
-                id: tab3
                 anchors.fill: parent
                 Text {
                     anchors.centerIn: parent
@@ -55,6 +55,7 @@ Rectangle {
                 }
                 color: "lightblue"
             }
+            iconSource: tab3.selected ? "call_icon.png" : ""
         }
     } // Tabs
 } // window

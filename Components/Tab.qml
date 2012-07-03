@@ -57,11 +57,20 @@ Item {
     property url pageSource
 
     /*!
+      \preliminary
       If pageSource is used to define the page of this tab, pagePreloaded specifies whether
       the page should be preloaded from the QML file when the application starts, or loading
       is delayed until the tab is selected.
      */
     property bool pagePreloaded
+
+
+    /*!
+      \preliminary
+      Indicates whether this tab is selected.
+      Its value is automatically updated by the Tabs object.
+    */
+    property bool selected: false
 
     Loader {
         id: loader
