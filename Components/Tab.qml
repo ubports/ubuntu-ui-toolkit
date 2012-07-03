@@ -51,7 +51,7 @@ Item {
 
     /*!
       \preliminary
-      If nog page is defined, pageSource is used as the location of the QML file defining
+      If no page is defined, pageSource is used as the location of the QML file defining
       the page that will be displayed when this tab is selected.
      */
     property url pageSource
@@ -86,12 +86,12 @@ Item {
     }
 
     /*!
-      \preliminary
+      \internal
       Returns the page of this tab.
       If the page property is defined directly, that property is returned.
       Otherwise, the page will be loaded from the file specified by pageSource.
      */
-    function getPage() {
+    function __getPage() {
         if (tab.page) return tab.page;
         if (!loader.item) loader.loadPage();
         return loader.item;
