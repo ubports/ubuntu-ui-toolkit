@@ -153,14 +153,14 @@ Rectangle {
                 Row {
                     Button {
                         iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                        text: (flexibleButtons.showText) ? "Flexible.." : ""
+                        text: (flexibleButtons.showText) ? "Flexible anchors" : ""
                         iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
                         width: 170
                         height: 70
                     }
                     Button {
                         iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                        text: (flexibleButtons.showText) ? "..anchors" : ""
+                        text: (flexibleButtons.showText) ? "Long text that does not fit in the button" : ""
                         iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
                         color: "#37b301"
                         width: 170

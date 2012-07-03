@@ -82,32 +82,62 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    Image {
-        id: icon
-        fillMode: Image.PreserveAspectFit
-        anchors {
-            margins: 10
-            verticalCenter: button.verticalCenter
-        }
-        sourceSize.width: width
-        sourceSize.height: height
-        height: {
-            if (text===""||iconPosition=="left"||iconPosition=="right") return button.height - 20;
-            else return button.height - label.implicitHeight - 30;
-        }
-        opacity: button.enabled ? 1.0 : 0.5
-     }
+    /*!
+      \preliminary
+      The padding on the left and right side of the button foreground.
+    */
+    property real horizontalPadding: 5
 
-    TextCustom {
-        id: label
-        anchors {
-            margins: 10
-            verticalCenter: button.verticalCenter
-            verticalCenterOffset: -1
+    implicitWidth: foreground.implicitWidth + 2*horizontalPadding
+
+    Item {
+        id: foreground
+        anchors.centerIn: button
+
+        property real maximumWidth: button.width - 2*button.horizontalPadding
+        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
+        property real verticalPadding: 5
+
+        width: icon.width + label.width + foreground.spacing
+        height: button.height - 2*foreground.verticalPadding
+        implicitWidth: icon.width + invisibleLabel.paintedWidth + foreground.spacing
+
+        Image {
+            id: icon
+            fillMode: Image.PreserveAspectFit
+            anchors.verticalCenter: foreground.verticalCenter
+            sourceSize {
+                width: icon.width
+                height: icon.height
+            }
+            height: foreground.height
+            opacity: button.enabled ? 1.0 : 0.5
         }
-        fontSize: "large"
-        font.italic: true
-        opacity: button.enabled ? 1.0 : 0.5
+
+        TextCustom {
+            id: label
+            anchors {
+                leftMargin: 0
+                verticalCenter: foreground.verticalCenter
+                verticalCenterOffset: -1
+            }
+            fontSize: "large"
+            font.italic: true
+            opacity: button.enabled ? 1.0 : 0.5
+            elide: Text.ElideRight
+
+            property real availableWidth: foreground.maximumWidth - icon.width - foreground.spacing
+            width: (invisibleLabel.paintedWidth < availableWidth) ? invisibleLabel.paintedWidth : availableWidth
+        }
+
+        /* Invisible label that is used for width computations */
+        TextCustom {
+            id: invisibleLabel
+            visible: false
+            text: label.text
+            font: label.font
+            fontSize: label.fontSize
+        }
     }
 
     Item { //placed in here to keep state property private
@@ -118,33 +148,33 @@ AbstractButton {
                 name: "right"
                 AnchorChanges {
                     target: icon;
-                    anchors.right: button.right
+                    anchors.right: foreground.right
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.right: icon.left
+                    anchors.left: foreground.left
                 }
             },
             State {
                 name: "left"
                 AnchorChanges {
                     target: icon;
-                    anchors.left: button.left
+                    anchors.left: foreground.left
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.left: icon.right
+                    anchors.right: foreground.right
                 }
             },
             State {
                 name: "center"
                 AnchorChanges {
                     target: icon;
-                    anchors.horizontalCenter: button.horizontalCenter
+                    anchors.horizontalCenter: foreground.horizontalCenter
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.horizontalCenter: button.horizontalCenter
+                    anchors.horizontalCenter: foreground.horizontalCenter
                 }
             }
         ]
