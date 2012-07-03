@@ -45,17 +45,21 @@ Rectangle {
             pagePreloaded: false
         }
         Tab {
-            id: tab3
-            text: "tab 3"
+            text: "no page"
+        }
+
+        Tab {
+            id: tab4
+            text: "tab 4"
             page:  Rectangle {
                 anchors.fill: parent
                 Text {
                     anchors.centerIn: parent
-                    text: "Colorful tab 3"
+                    text: "Colorful tab 4"
                 }
                 color: "lightblue"
             }
-            iconSource: tab3.selected ? "call_icon.png" : ""
+            iconSource: tab4.selected ? "call_icon.png" : ""
         }
     } // Tabs
 } // window

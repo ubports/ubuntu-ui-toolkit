@@ -193,16 +193,19 @@ Item {
 
         function selectTab(index) {
             if (index === tabVisuals.selectedTabIndex) return;
+            var page;
             if (tabVisuals.selectedTabIndex != -1) {
-                tabItems.children[tabVisuals.selectedTabIndex].__getPage().visible = false;
-                tabItems.children[tabVisuals.selectedTabIndex].selected = false;
+                page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
+                if (page) page.visible = false;
             }
             tabVisuals.selectedTabIndex = index;
             if (tabVisuals.selectedTabIndex != -1) {
                 tabItems.children[tabVisuals.selectedTabIndex].selected = true;
-                var page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
-                page.parent = pages;
-                page.visible = true;
+                page = tabItems.children[tabVisuals.selectedTabIndex].__getPage();
+                if (page) {
+                    page.parent = pages;
+                    page.visible = true;
+                }
             }
             tabsMain.selectedTabIndex = tabVisuals.selectedTabIndex;
         }

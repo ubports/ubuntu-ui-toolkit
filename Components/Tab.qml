@@ -80,7 +80,7 @@ Item {
         function loadPage() {
             loader.source = tab.pageSource;
             tab.page = loader.item;
-            loader.item.visible = false;
+            if (loader.item) loader.item.visible = false;
         }
 
         Component.onCompleted: {
