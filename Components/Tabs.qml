@@ -230,16 +230,13 @@ Item {
                 tabVisuals.pages.anchors.top = tabVisuals.buttonRow.bottom;
             }
         }
-    } // tabVisuals
 
-    Item {
-        // avoid the on* functions below to be overridden
-        id: encapsulator
-        property int selectedTabIndex: tabsMain.selectedTabIndex
-        property Item separator: tabsMain.separator
-        onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(encapsulator.selectedTabIndex)
-        onSeparatorChanged: tabVisuals.setSeparator(encapsulator.separator)
-    }
+        Connections {
+            target: tabsMain
+            onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)
+            onSeparatorChanged: tabVisuals.setSeparator(tabsMain.separator)
+        }
+    } // tabVisuals
 
     Component.onCompleted: {
         tabVisuals.setSeparator(tabsMain.separator);
