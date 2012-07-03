@@ -28,7 +28,7 @@ Rectangle {
     Tabs {
         id: tabs
         anchors.fill: parent
-        buttonsExpanded: false
+        buttonsExpanded: true
         separator: Rectangle {
             color: "darkgrey"
             height: 3
