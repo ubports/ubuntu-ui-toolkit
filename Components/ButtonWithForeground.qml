@@ -82,36 +82,62 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    Item {
+    /*!
+      \preliminary
+      The padding on the left and right side of the button foreground.
+    */
+    property real horizontalPadding: 5
+
+    implicitWidth: foreground.implicitWidth + 2*horizontalPadding
+
+    Rectangle {
+        color: "black"
         id: foreground
-        height: button.height
         anchors.centerIn: button
 
-        property real margins: 10;
+        property real maximumWidth: button.width - 2*button.horizontalPadding
+        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
+        property real verticalPadding: 5
+
+        width: icon.width + label.width + foreground.spacing
+        height: button.height - 2*foreground.verticalPadding
+        implicitWidth: icon.width + invisibleLabel.paintedWidth + foreground.spacing
 
         Image {
             id: icon
             fillMode: Image.PreserveAspectFit
-            anchors {
-                margins: foreground.margins
-                verticalCenter: foreground.verticalCenter
+            anchors.verticalCenter: foreground.verticalCenter
+            sourceSize {
+                width: icon.width
+                height: icon.height
             }
-            sourceSize.width: width
-            sourceSize.height: height
-            height: foreground.height - 2*foreground.margins
+            height: foreground.height
             opacity: button.enabled ? 1.0 : 0.5
         }
 
         TextCustom {
             id: label
             anchors {
-                margins: foreground.margins
+                leftMargin: 0
                 verticalCenter: foreground.verticalCenter
                 verticalCenterOffset: -1
             }
             fontSize: "large"
             font.italic: true
             opacity: button.enabled ? 1.0 : 0.5
+            elide: Text.ElideRight
+
+            property real availableWidth: foreground.maximumWidth - icon.width - foreground.spacing
+            width: (invisibleLabel.paintedWidth < availableWidth) ? invisibleLabel.paintedWidth : availableWidth
+        }
+
+        /* Invisible label that is used for width computations */
+        TextCustom {
+            id: invisibleLabel
+            visible: false
+            text: label.text
+            font: label.font
+            fontSize: label.fontSize
         }
     }
 
@@ -127,11 +153,7 @@ AbstractButton {
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.right: icon.left
-                }
-                PropertyChanges {
-                    target: foreground
-                    width: icon.width + label.width + 3*foreground.margins
+                    anchors.left: foreground.left
                 }
             },
             State {
@@ -142,11 +164,7 @@ AbstractButton {
                 }
                 AnchorChanges {
                     target: label;
-                    anchors.left: icon.right
-                }
-                PropertyChanges {
-                    target: foreground
-                    width: icon.width + label.width + 3*foreground.margins
+                    anchors.right: foreground.right
                 }
             },
             State {
@@ -158,11 +176,6 @@ AbstractButton {
                 AnchorChanges {
                     target: label;
                     anchors.horizontalCenter: foreground.horizontalCenter
-                }
-                PropertyChanges {
-                    target: foreground
-                    // either icon.width or label.width equals 0
-                    width: icon.width + label.width + 2*foreground.margins
                 }
             }
         ]
