@@ -88,15 +88,9 @@ Item {
             height: 1
     }
 
-    /*!
-      \preliminary
-      The height of the button row.
-    */
-    property real buttonRowHeight: 28
-
     // minimal width and height of 200 for showing the pages
     width: 200
-    height: buttonRowHeight + 200
+    height: buttonRow.height + 200
 
     /*!
       \internal
@@ -120,7 +114,7 @@ Item {
         Row {
             id: buttonRow
             width: buttonRow.buttonWidth * repeater.count
-            height: tabs.buttonRowHeight
+            height: 28
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
