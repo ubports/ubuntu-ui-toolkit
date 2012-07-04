@@ -23,53 +23,30 @@ Template {
     Column {
         spacing: 30
 
-        Row {
-            spacing: 10
-            height: 50
-
-            TextCustom {
-                text: "Standard"
-                color: "#757373"
-                width: 80
-                style: Text.Raised
-                styleColor: "white"
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        TemplateRow {
+            title: "Standard"
 
             Button {
                 text: "Call"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 text: "Call"
                 enabled: false
-                anchors.verticalCenter: parent.verticalCenter
             }
         }
 
-        Row {
-            spacing: 10
-
-            TextCustom {
-                text: "Colors"
-                color: "#757373"
-                style: Text.Raised
-                styleColor: "white"
-                width: 80
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        TemplateRow {
+            title: "Colors"
 
             Button {
                 text: "Call"
                 color: "#37b301"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 text: "Call"
                 pressedColor: "#dd4f22"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Rectangle {
@@ -77,7 +54,6 @@ Template {
                 width: childrenRect.width + 20
                 height: childrenRect.height + 20
                 color: "#3a3c41"
-                anchors.verticalCenter: parent.verticalCenter
 
                 Button {
                     text: "Call"
@@ -88,64 +64,40 @@ Template {
             }
         }
 
-        Row {
-            spacing: 10
-
-            TextCustom {
-                text: "Content"
-                color: "#757373"
-                width: 80
-                style: Text.Raised
-                styleColor: "white"
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        TemplateRow {
+            title: "Content"
 
             Button {
                 text: "Call"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 iconSource: "call_icon.png"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 text: "Call"
                 iconSource: "call_icon.png"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 text: "Call"
                 iconSource: "call_icon.png"
                 iconPosition: "right"
-                anchors.verticalCenter: parent.verticalCenter
             }
         }
 
-        Row {
-            spacing: 10
-
-            TextCustom {
-                text: "Scalability"
-                color: "#757373"
-                width: 80
-                style: Text.Raised
-                styleColor: "white"
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        TemplateRow {
+            title: "Scalability"
 
             Button {
                 text: "Call"
-                anchors.verticalCenter: parent.verticalCenter
             }
 
             Button {
                 text: "Call"
                 width: 140
                 height: 90
-                anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
