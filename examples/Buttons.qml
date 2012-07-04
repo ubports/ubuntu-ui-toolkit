@@ -183,14 +183,6 @@ Rectangle {
                     height: 90
                     anchors.verticalCenter: parent.verticalCenter
                 }
-    /*
-                Button {
-                    text: "Call"
-                    width: 40
-                    height: 28
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-    */
             }
         }
     }
