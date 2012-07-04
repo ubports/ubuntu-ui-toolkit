@@ -71,34 +71,38 @@ Rectangle {
                 width: parent.width
                 height: 500
                 Tab {
-                    text: "tab 1"
-                    iconSource: "call_icon.png"
-                    page: Text {
-                        anchors.centerIn: parent
-                        text: "This is the first tab."
-                    }
-                }
-                Tab {
-                    text: "buttons!"
-                    iconSource: "call_icon.png"
-                    pageSource: "Buttons.qml"
-                    preloadPage: false
-                }
-                Tab {
-                    text: "no page"
-                }
-                Tab {
-                    id: tab4
-                    text: "tab 4 select for icon"
-                    page:  Rectangle {
+                    text: "Tab 1"
+                    page: Rectangle {
+                        color: "#dddddd"
                         anchors.fill: parent
                         Text {
                             anchors.centerIn: parent
-                            text: "Colorful tab 4"
+                            text: "This is the first tab."
                         }
-                        color: "lightblue"
                     }
-                    iconSource: tab4.selected ? "call_icon.png" : ""
+                }
+                Tab {
+                    iconSource: "call_icon.png"
+                    page: Rectangle {
+                        color: "#aaaaaa"
+                        anchors.fill: parent
+                        Text {
+                            anchors.centerIn: parent
+                            text: "This is the second tab."
+                        }
+                    }
+                }
+                Tab {
+                    text: "Tab 3"
+                    iconSource: "call_icon.png"
+                    page:  Rectangle {
+                        color: "#888888"
+                        anchors.fill: parent
+                        Text {
+                            anchors.centerIn: parent
+                            text: "This is the third tab."
+                        }
+                    }
                 }
             } // Tabs
         }
