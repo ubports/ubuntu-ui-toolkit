@@ -44,15 +44,15 @@ Item {
 
     /*!
       \preliminary
-      The page that is shown when this tab is selected and no \l pageSource
-      is specified, or the specified page is still loading.
+      The page that is shown when this tab is selected.
+      If no page is specified, the page specified by \l pageSource will be loaded.
      */
-    property Item page
+    property Item page: (loader.item) ? loader.item : loadingPage
 
     /*!
       \preliminary
       pageSource is used as the location of the QML file defining
-      the page that will be displayed when this tab is selected.
+      the page that will be displayed when this tab is selected and no \l page was defined.
      */
     property url pageSource
 
@@ -66,6 +66,13 @@ Item {
 
     /*!
       \preliminary
+      This page is shown if no \l page was defined, and the page from \l pageSource
+      is still loading. If no loadingPage is specified, no page is displayed while loading.
+     */
+    property Item loadingPage
+
+    /*!
+      \preliminary
       Indicates whether this tab is selected.
       Its value is automatically updated by the \l Tabs object.
       TODO: Make readonly when we switch to QtQuick2
@@ -75,37 +82,38 @@ Item {
     Loader {
         id: loader
 
-        // Note: tab.page may be a "Loading" page that is shown until the loader finished loading.
-        property Item activePage: (loader.item) ? loader.item : tab.page
+        source: (status == Loader.Ready || tab.preloadPage || tab.selected) ? tab.pageSource : ""
 
-        property Item activePageParent
+        property Item pageParent
+        property Item previousPage
 
-        function update() {
-            if (tab.preloadPage || tab.selected) loader.source = tab.pageSource;
-            if (activePage) {
-                if (activePageParent) activePage.parent = activePageParent;
-                activePage.visible = tab.selected;
+        function updatePageVisibility() {
+            if (tab.page) {
+                if (pageParent) tab.page.parent = pageParent;
+                tab.page.visible = tab.selected;
             }
+        }
+
+        function hidePreviousPage() {
+            if (previousPage && previousPage != tab.page) previousPage.visible = false;
+            previousPage = tab.page;
         }
 
         Connections {
             target: tab
-            onPageChanged: loader.update()
-            onPreloadPageChanged: loader.update()
-            onPageSourceChanged: loader.update()
-            onSelectedChanged: loader.update()
+            onPageChanged: {
+                loader.hidePreviousPage();
+                loader.updatePageVisibility();
+            }
+            onSelectedChanged: loader.updatePageVisibility()
         }
-
-        onLoaded: update();
     }
 
     /*!
       \internal
       Set the parent of the page to show when this tab is selected.
     */
-    function __setPageParent(pageParent) {
-        loader.activePageParent = pageParent;
+    function __setPageParent(parentItem) {
+        loader.pageParent = parentItem;
     }
-
-    Component.onCompleted: loader.update()
 }

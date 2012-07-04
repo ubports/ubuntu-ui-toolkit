@@ -47,7 +47,6 @@ Rectangle {
         Tab {
             text: "no page"
         }
-
         Tab {
             id: tab4
             text: "tab 4 select for icon"
@@ -60,6 +59,12 @@ Rectangle {
                 color: "lightblue"
             }
             iconSource: tab4.selected ? "call_icon.png" : ""
+        }
+        Tab {
+            text: "loading only"
+            pageSource: "does_not_exist"
+            preloadPage: true
+            loadingPage: Text { text: "Please wait while the page is loading (forever)." }
         }
     } // Tabs
 } // window
