@@ -29,6 +29,10 @@ Template {
             Button {
                 text: "Call"
             }
+        }
+
+        TemplateRow {
+            title: "Disabled"
 
             Button {
                 text: "Call"
