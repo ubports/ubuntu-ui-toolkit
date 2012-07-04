@@ -180,7 +180,6 @@ Item {
                     onClicked: tabs.selectedTabIndex = index
                 }
             }
-
             Component.onCompleted: buttonRow.updateWidestButtonWidth()
         } // buttonRow
 
