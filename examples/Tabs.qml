@@ -63,7 +63,7 @@ Rectangle {
         }
         Tab {
             text: "loading only"
-            pageSource: "does_not_exist"
+            pageSource: "this_file_does_not_exist"
             preloadPage: true
             loadingPage: Text { text: "Please wait while the page is loading (forever)." }
         }

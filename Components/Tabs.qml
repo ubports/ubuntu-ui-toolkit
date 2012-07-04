@@ -59,7 +59,7 @@ import QtQuick 1.1
 */
 
 Item {
-    id: tabsMain
+    id: tabs
 
     /*!
       \preliminary
@@ -116,7 +116,7 @@ Item {
 
     // encapsulation
     Item {
-        id: tabVisuals
+        id: visuals
         anchors.fill: parent
 
         // needed to set the anchors in setSeparator()
@@ -139,13 +139,13 @@ Item {
             // Scrolling in case the buttons don't fit in the available space is currently
             // not implemented.
             property int minimumButtonWidth: 20
-            property int maximumButtonWidth: (tabVisuals.width - 2*tabs.buttonRowPadding) / repeater.count
+            property int maximumButtonWidth: (visuals.width - 2*tabs.buttonRowPadding) / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
             property int widestButtonWidth
             property int buttonWidth
             buttonWidth: {
                 if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
-                else if (tabsMain.buttonsExpanded) return buttonRow.maximumButtonWidth;
+                else if (tabs.buttonsExpanded) return buttonRow.maximumButtonWidth;
                 else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
             }
 
@@ -176,8 +176,8 @@ Item {
                     __isLast: index === (repeater.count-1)
                     iconSource: tab.iconSource
                     width: buttonRow.buttonWidth
-                    selected: (index === tabsMain.selectedTabIndex)
-                    onClicked: tabsMain.selectedTabIndex = index
+                    selected: (index === tabs.selectedTabIndex)
+                    onClicked: tabs.selectedTabIndex = index
                 }
             }
 
@@ -199,7 +199,7 @@ Item {
             var tab;
             for (var i = 0; i < tabItems.children.length; i++) {
                 tab = tabItems.children[i];
-                if (i == tabsMain.selectedTabIndex) {
+                if (i == tabs.selectedTabIndex) {
                     tab.__setPageParent(pages);
                     tab.selected = true;
                 } else {
@@ -209,26 +209,26 @@ Item {
         }
 
         function separatorChanged() {
-            if (tabsMain.separator) {
-                tabsMain.separator.parent = tabVisuals;
-                tabsMain.separator.anchors.top = tabVisuals.buttonRow.bottom;
-                tabsMain.separator.anchors.left = tabVisuals.left;
-                tabsMain.separator.anchors.right = tabVisuals.right;
-                tabVisuals.pages.anchors.top = tabsMain.separator.bottom;
+            if (tabs.separator) {
+                tabs.separator.parent = visuals;
+                tabs.separator.anchors.top = visuals.buttonRow.bottom;
+                tabs.separator.anchors.left = visuals.left;
+                tabs.separator.anchors.right = visuals.right;
+                visuals.pages.anchors.top = tabs.separator.bottom;
             } else { // no separator
-                tabVisuals.pages.anchors.top = tabVisuals.buttonRow.bottom;
+                visuals.pages.anchors.top = visuals.buttonRow.bottom;
             }
         }
 
         Connections {
-            target: tabsMain
-            onSelectedTabIndexChanged: tabVisuals.selectedTabChanged()
-            onSeparatorChanged: tabVisuals.separatorChanged()
+            target: tabs
+            onSelectedTabIndexChanged: visuals.selectedTabChanged()
+            onSeparatorChanged: visuals.separatorChanged()
         }
-    } // tabVisuals
+    } // visuals
 
     Component.onCompleted: {
-        tabVisuals.separatorChanged();
-        tabVisuals.selectedTabChanged();
+        visuals.separatorChanged();
+        visuals.selectedTabChanged();
     }
 }
