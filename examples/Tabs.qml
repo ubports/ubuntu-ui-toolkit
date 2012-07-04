@@ -17,99 +17,46 @@
 import QtQuick 1.1
 import "../Components"
 
-Rectangle {
-    width: 800
-    height: 600
+Template {
+    title: "Tabs"
 
-    color: "#e6e6e6"
-
-    Item {
-        id: page
-
-        anchors.fill: parent
-        anchors.margins: 35
-
-        Item {
-            id: header
-
-            height: childrenRect.height
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            TextCustom {
-                id: title
-
-                fontSize: "x-large"
-                text: "Tabs"
-                color: "#757373"
-                style: Text.Raised
-                styleColor: "white"
-            }
-
-            Rectangle {
-                id: underline
-
-                anchors.top: title.bottom
-                anchors.topMargin: 5
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: 1
-                color: "#757373"
+    Tabs {
+        Tab {
+            text: "Tab 1"
+            page: Rectangle {
+                color: "#eeeeee"
+                anchors.fill: parent
+                TextCustom {
+                    anchors.centerIn: parent
+                    text: "This is the first tab."
+                    color: "#757373"
+                }
             }
         }
-
-        Item {
-            id: content
-
-            anchors.top: header.bottom
-            anchors.topMargin: page.anchors.margins
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            Tabs {
-                id: tabs
-
+        Tab {
+            iconSource: "call_icon.png"
+            page: Rectangle {
+                color: "#e4e4e4"
                 anchors.fill: parent
-
-                Tab {
-                    text: "Tab 1"
-                    page: Rectangle {
-                        color: "#eeeeee"
-                        anchors.fill: parent
-                        TextCustom {
-                            anchors.centerIn: parent
-                            text: "This is the first tab."
-                            color: "#757373"
-                        }
-                    }
+                TextCustom {
+                    anchors.centerIn: parent
+                    text: "This is the second tab."
+                    color: "#757373"
                 }
-                Tab {
-                    iconSource: "call_icon.png"
-                    page: Rectangle {
-                        color: "#e4e4e4"
-                        anchors.fill: parent
-                        TextCustom {
-                            anchors.centerIn: parent
-                            text: "This is the second tab."
-                            color: "#757373"
-                        }
-                    }
+            }
+        }
+        Tab {
+            text: "Tab 3"
+            iconSource: "call_icon.png"
+            page:  Rectangle {
+                color: "#dddddd"
+                anchors.fill: parent
+                TextCustom {
+                    anchors.centerIn: parent
+                    text: "This is the third tab."
+                    color: "#757373"
                 }
-                Tab {
-                    text: "Tab 3"
-                    iconSource: "call_icon.png"
-                    page:  Rectangle {
-                        color: "#dddddd"
-                        anchors.fill: parent
-                        TextCustom {
-                            anchors.centerIn: parent
-                            text: "This is the third tab."
-                            color: "#757373"
-                        }
-                    }
-                }
-            } // Tabs
+            }
         }
     }
 }
