@@ -122,7 +122,7 @@ Rectangle {
                     Button {
                         text: "Call"
                         color: "#dd4f22"
-                        backgroundColor: darkBackground.color
+                        darkBorder: true
                         anchors.centerIn: parent
                     }
                 }
