@@ -117,7 +117,6 @@ AbstractButton {
         TextCustom {
             id: label
             anchors {
-                leftMargin: 0
                 verticalCenter: foreground.verticalCenter
                 verticalCenterOffset: -1
             }
