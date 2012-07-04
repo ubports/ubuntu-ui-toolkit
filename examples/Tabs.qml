@@ -18,45 +18,89 @@ import QtQuick 1.1
 import "../Components"
 
 Rectangle {
-    id: window
+    width: page.width + 2 * page.anchors.margins
+    height: page.height + 2 * page.anchors.margins
 
-    width: 800
-    height: 600
+    color: "#cccccc"
 
-    color: "#eeeeee"
+    Item {
+        id: page
 
-    Tabs {
-        id: tabs
-        anchors.fill: parent
-        Tab {
-            text: "tab 1"
-            iconSource: "call_icon.png"
-            page: Text {
-                anchors.centerIn: parent
-                text: "This is the first tab."
+        x: anchors.margins
+        y: anchors.margins
+        anchors.margins: 20
+        width: childrenRect.width
+        height: childrenRect.height
+
+        Item {
+            id: header
+
+            height: childrenRect.height
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            TextCustom {
+                id: title
+
+                fontSize: "x-large"
+                text: "Tabs"
+                color: "#757373"
+            }
+
+            Rectangle {
+                id: underline
+
+                anchors.top: title.bottom
+                anchors.topMargin: 5
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 1
+                color: "#757373"
             }
         }
-        Tab {
-            text: "buttons!"
-            iconSource: "call_icon.png"
-            pageSource: "Buttons.qml"
-            preloadPage: false
-        }
-        Tab {
-            text: "no page"
-        }
-        Tab {
-            id: tab4
-            text: "tab 4 select for icon"
-            page:  Rectangle {
-                anchors.fill: parent
-                Text {
-                    anchors.centerIn: parent
-                    text: "Colorful tab 4"
+
+        Column {
+            id: content
+
+            anchors.top: header.bottom
+            anchors.topMargin: 35
+            width: 600
+            spacing: 30
+            Tabs {
+                id: tabs
+                width: parent.width
+                height: 500
+                Tab {
+                    text: "tab 1"
+                    iconSource: "call_icon.png"
+                    page: Text {
+                        anchors.centerIn: parent
+                        text: "This is the first tab."
+                    }
                 }
-                color: "lightblue"
-            }
-            iconSource: tab4.selected ? "call_icon.png" : ""
+                Tab {
+                    text: "buttons!"
+                    iconSource: "call_icon.png"
+                    pageSource: "Buttons.qml"
+                    preloadPage: false
+                }
+                Tab {
+                    text: "no page"
+                }
+                Tab {
+                    id: tab4
+                    text: "tab 4 select for icon"
+                    page:  Rectangle {
+                        anchors.fill: parent
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Colorful tab 4"
+                        }
+                        color: "lightblue"
+                    }
+                    iconSource: tab4.selected ? "call_icon.png" : ""
+                }
+            } // Tabs
         }
-    } // Tabs
-} // window
+    }
+}
