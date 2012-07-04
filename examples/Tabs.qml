@@ -29,6 +29,7 @@ Rectangle {
         id: tabs
         anchors.fill: parent
         buttonsExpanded: false
+        buttonRowPadding: 100
         buttonRowHeight: 40
         Tab {
             text: "tab 1"

@@ -172,12 +172,12 @@ Item {
                     id: tabButton
                     property Item tab: modelData
                     text: tab.text
-                    __isFirst: index == 0
-                    __isLast: index == (repeater.count-1)
+                    __isFirst: index === 0
+                    __isLast: index === (repeater.count-1)
                     iconSource: tab.iconSource
                     width: buttonRow.buttonWidth
-                    selected: (index == tabsMain.selectedTabIndex)
-                    onClicked: tabVisuals.selectTab(index)
+                    selected: (index === tabsMain.selectedTabIndex)
+                    onClicked: tabsMain.selectedTabIndex = index
                 }
             }
 
@@ -195,14 +195,17 @@ Item {
             }
         }
 
-        function selectTab(index) {
-            if (tabsMain.selectedTabIndex != -1) tabItems.children[tabsMain.selectedTabIndex].selected = false;
-            if (index != -1) {
-                var tab = tabItems.children[index];
-                tab.__setPageParent(pages);
-                tab.selected = true;
+        function selectedTabChanged() {
+            var tab;
+            for (var i = 0; i < tabItems.children.length; i++) {
+                tab = tabItems.children[i];
+                if (i == tabsMain.selectedTabIndex) {
+                    tab.__setPageParent(pages);
+                    tab.selected = true;
+                } else {
+                    tab.selected = false;
+                }
             }
-            tabsMain.selectedTabIndex = index;
         }
 
         function separatorChanged() {
@@ -219,13 +222,13 @@ Item {
 
         Connections {
             target: tabsMain
-            onSelectedTabIndexChanged: if (Component.status == Component.Ready) tabVisuals.selectTab(tabsMain.selectedTabIndex)
+            onSelectedTabIndexChanged: tabVisuals.selectedTabChanged()
             onSeparatorChanged: tabVisuals.separatorChanged()
         }
     } // tabVisuals
 
     Component.onCompleted: {
         tabVisuals.separatorChanged();
-        tabVisuals.selectTab(tabsMain.selectedTabIndex);
+        tabVisuals.selectedTabChanged();
     }
 }
