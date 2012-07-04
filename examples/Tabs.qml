@@ -28,7 +28,7 @@ Rectangle {
 
         x: anchors.margins
         y: anchors.margins
-        anchors.margins: 20
+        anchors.margins: 35
         width: childrenRect.width
         height: childrenRect.height
 
@@ -63,7 +63,7 @@ Rectangle {
             id: content
 
             anchors.top: header.bottom
-            anchors.topMargin: 35
+            anchors.topMargin: page.anchors.margins
             width: 600
             spacing: 30
             Tabs {
