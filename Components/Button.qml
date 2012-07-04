@@ -63,6 +63,14 @@ ButtonWithForeground {
     */
     property color pressedColor: color
 
+    /*!
+       \preliminary
+       DOCME
+    */
+    property color backgroundColor: "white"
+
+    property bool __isDarkBackground: __luminance(backgroundColor) <= 0.72
+
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
     textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
@@ -87,7 +95,7 @@ ButtonWithForeground {
 
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: "artwork/ButtonShape.png"
+            source: button.__isDarkBackground ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
             border.left: 18; border.top: 15
             border.right: 18; border.bottom: 15
         }
@@ -116,9 +124,10 @@ ButtonWithForeground {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: button.state == "pressed" ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
-            border.left: 18; border.top: 19
-            border.right: 18; border.bottom: 19
+            source: if (button.__isDarkBackground) return button.state == "pressed" ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
+                    else return button.state == "pressed" ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+            border.left: 14; border.top: 17
+            border.right: 15; border.bottom: 18
         }
     }
 }
