@@ -18,19 +18,16 @@ import QtQuick 1.1
 import "../Components"
 
 Rectangle {
-    width: page.width + 2 * page.anchors.margins
-    height: page.height + 2 * page.anchors.margins
+    width: 800
+    height: 600
 
     color: "#e6e6e6"
 
     Item {
         id: page
 
-        x: anchors.margins
-        y: anchors.margins
+        anchors.fill: parent
         anchors.margins: 35
-        width: childrenRect.width
-        height: childrenRect.height
 
         Item {
             id: header
@@ -61,17 +58,20 @@ Rectangle {
             }
         }
 
-        Column {
+        Item {
             id: content
 
             anchors.top: header.bottom
             anchors.topMargin: page.anchors.margins
-            width: 600
-            spacing: 30
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+
             Tabs {
                 id: tabs
-                width: parent.width
-                height: 500
+
+                anchors.fill: parent
+
                 Tab {
                     text: "Tab 1"
                     page: Rectangle {
