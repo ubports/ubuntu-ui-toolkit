@@ -92,7 +92,7 @@ AbstractButton {
           \preliminary
           The padding on the left and right side of the button foreground.
         */
-        property real horizontalPadding: 5
+        property real horizontalPadding: 12
         property real maximumWidth: button.width - 2*foreground.horizontalPadding
         property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
         property real verticalPadding: 5

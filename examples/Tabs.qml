@@ -75,22 +75,24 @@ Rectangle {
                 Tab {
                     text: "Tab 1"
                     page: Rectangle {
-                        color: "#dddddd"
+                        color: "#eeeeee"
                         anchors.fill: parent
-                        Text {
+                        TextCustom {
                             anchors.centerIn: parent
                             text: "This is the first tab."
+                            color: "#757373"
                         }
                     }
                 }
                 Tab {
                     iconSource: "call_icon.png"
                     page: Rectangle {
-                        color: "#aaaaaa"
+                        color: "#e4e4e4"
                         anchors.fill: parent
-                        Text {
+                        TextCustom {
                             anchors.centerIn: parent
                             text: "This is the second tab."
+                            color: "#757373"
                         }
                     }
                 }
@@ -98,11 +100,12 @@ Rectangle {
                     text: "Tab 3"
                     iconSource: "call_icon.png"
                     page:  Rectangle {
-                        color: "#888888"
+                        color: "#dddddd"
                         anchors.fill: parent
-                        Text {
+                        TextCustom {
                             anchors.centerIn: parent
                             text: "This is the third tab."
+                            color: "#757373"
                         }
                     }
                 }
