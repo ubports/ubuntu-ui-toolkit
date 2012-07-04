@@ -82,19 +82,18 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    /*!
-      \preliminary
-      The padding on the left and right side of the button foreground.
-    */
-    property real horizontalPadding: 5
-
-    implicitWidth: foreground.implicitWidth + 2*horizontalPadding
+    implicitWidth: foreground.implicitWidth + 2*foreground.horizontalPadding
 
     Item {
         id: foreground
         anchors.centerIn: button
 
-        property real maximumWidth: button.width - 2*button.horizontalPadding
+        /*!
+          \preliminary
+          The padding on the left and right side of the button foreground.
+        */
+        property real horizontalPadding: 5
+        property real maximumWidth: button.width - 2*foreground.horizontalPadding
         property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
         property real verticalPadding: 5
 
