@@ -44,14 +44,14 @@ Item {
 
     /*!
       \preliminary
-      The page that is shown when this tab is selected.
-      If no page is defined, a pageSource must be given.
+      The page that is shown when this tab is selected and no \l pageSource
+      is specified, or the specified page is still loading.
      */
     property Item page
 
     /*!
       \preliminary
-      If no page is defined, pageSource is used as the location of the QML file defining
+      pageSource is used as the location of the QML file defining
       the page that will be displayed when this tab is selected.
      */
     property url pageSource
@@ -75,8 +75,8 @@ Item {
     Loader {
         id: loader
 
-        // instead of null, it would be possible to return a "Loading..." page
-        property Item activePage: (tab.page) ? tab.page : (loader.item) ? loader.item : null
+        // Note: tab.page may be a "Loading" page that is shown until the loader finished loading.
+        property Item activePage: (loader.item) ? loader.item : tab.page
 
         property Item activePageParent
 
