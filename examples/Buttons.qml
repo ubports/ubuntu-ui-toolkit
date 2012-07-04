@@ -21,14 +21,14 @@ Rectangle {
     width: page.width + 2 * page.anchors.margins
     height: page.height + 2 * page.anchors.margins
 
-    color: "#cccccc"
+    color: "#e6e6e6"
 
     Item {
         id: page
 
         x: anchors.margins
         y: anchors.margins
-        anchors.margins: 20
+        anchors.margins: 35
         width: childrenRect.width
         height: childrenRect.height
 
@@ -45,6 +45,8 @@ Rectangle {
                 fontSize: "x-large"
                 text: "Buttons"
                 color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
             }
 
             Rectangle {
@@ -63,7 +65,8 @@ Rectangle {
             id: content
 
             anchors.top: header.bottom
-            anchors.topMargin: 35
+            anchors.topMargin: page.anchors.margins
+
             width: 600
             spacing: 30
 
@@ -75,6 +78,8 @@ Rectangle {
                     text: "Standard"
                     color: "#757373"
                     width: 80
+                    style: Text.Raised
+                    styleColor: "white"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -96,6 +101,8 @@ Rectangle {
                 TextCustom {
                     text: "Colors"
                     color: "#757373"
+                    style: Text.Raised
+                    styleColor: "white"
                     width: 80
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -135,6 +142,8 @@ Rectangle {
                     text: "Content"
                     color: "#757373"
                     width: 80
+                    style: Text.Raised
+                    styleColor: "white"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -169,6 +178,8 @@ Rectangle {
                     text: "Scalability"
                     color: "#757373"
                     width: 80
+                    style: Text.Raised
+                    styleColor: "white"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
