@@ -194,22 +194,13 @@ Item {
         }
 
         function selectTab(index) {
-            if (tabsMain.selectedTabIndex === index) return;
-            var page;
-            if (tabsMain.selectedTabIndex != -1) {
-                tabItems.children[tabsMain.selectedTabIndex].selected = false;
-                page = tabItems.children[tabsMain.selectedTabIndex].__getPage();
-                if (page) page.visible = false;
+            if (tabsMain.selectedTabIndex != -1) tabItems.children[tabsMain.selectedTabIndex].selected = false;
+            if (index != -1) {
+                var tab = tabItems.children[index];
+                tab.__setPageParent(pages);
+                tab.selected = true;
             }
             tabsMain.selectedTabIndex = index;
-            if (tabsMain.selectedTabIndex != -1) {
-                tabItems.children[tabsMain.selectedTabIndex].selected = true;
-                page = tabItems.children[tabsMain.selectedTabIndex].__getPage();
-                if (page) {
-                    page.parent = pages;
-                    page.visible = true;
-                }
-            }
         }
 
         function separatorChanged() {
@@ -233,8 +224,6 @@ Item {
 
     Component.onCompleted: {
         tabVisuals.separatorChanged();
-        var index = tabsMain.selectedTabIndex;
-        tabsMain.selectedTabIndex = -1;
-        tabVisuals.selectTab(index);
+        tabVisuals.selectTab(tabsMain.selectedTabIndex);
     }
 }

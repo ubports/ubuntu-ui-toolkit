@@ -64,7 +64,6 @@ Item {
      */
     property bool preloadPage: false
 
-
     /*!
       \preliminary
       Indicates whether this tab is selected.
@@ -76,34 +75,33 @@ Item {
     Loader {
         id: loader
 
-        function loadPage() {
-            loader.source = tab.pageSource;
-            tab.page = loader.item;
-        }
+        // instead of null, it would be possible to return a "Loading..." page
+        property Item activePage: (tab.page) ? tab.page : (loader.item) ? loader.item : null
 
-        Component.onCompleted: {
-            if (tab.preloadPage) loader.loadPage();
+        property Item activePageParent
+
+        function update() {
+            if (tab.preloadPage || tab.selected) loader.source = tab.pageSource;
+            if (activePage) {
+                if (activePageParent) activePage.parent = activePageParent;
+                activePage.visible = tab.selected;
+            }
         }
 
         Connections {
             target: tab
-            onPreloadPageChanged: if (tab.preloadPage) loader.loadPage()
+            onPageChanged: loader.update()
+            onPreloadPageChanged: loader.update()
+            onPageSourceChanged: loader.update()
+            onSelectedChanged: loader.update()
         }
+
+        onLoaded: update();
     }
 
-    /*!
-      \internal
-      Returns the page of this tab.
-      If the page property is defined directly, that property is returned.
-      Otherwise, the page will be loaded from the file specified by pageSource.
-     */
-    function __getPage() {
-        if (tab.page) return tab.page;
-        if (!loader.item) loader.loadPage();
-        return loader.item;
+    function __setPageParent(pageParent) {
+        loader.activePageParent = pageParent;
     }
 
-    onPageChanged: {
-        if (tab.page) tab.page.visible = tab.selected;
-    }
+    Component.onCompleted: loader.update()
 }
