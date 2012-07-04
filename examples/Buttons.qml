@@ -18,179 +18,172 @@ import QtQuick 1.1
 import "../Components"
 
 Rectangle {
-    id: window
+    width: page.width + 2 * page.anchors.margins
+    height: page.height + 2 * page.anchors.margins
 
-    width: 600
-    height: 500
+    color: "#cccccc"
 
-    Column {
-        id: buttons
-        anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-            margins: 20
+    Item {
+        id: page
+
+        x: anchors.margins
+        y: anchors.margins
+        anchors.margins: 20
+        width: childrenRect.width
+        height: childrenRect.height
+
+        Item {
+            id: header
+
+            height: childrenRect.height
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            TextCustom {
+                id: title
+
+                fontSize: "x-large"
+                text: "Buttons"
+                color: "#757373"
+            }
+
+            Rectangle {
+                id: underline
+
+                anchors.top: title.bottom
+                anchors.topMargin: 5
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 1
+                color: "#757373"
+            }
         }
-        spacing: 5
 
-        Rectangle {
-            color: "#000088"
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
-            height: 60
-            radius: 5
+        Column {
+            id: content
+
+            anchors.top: header.bottom
+            anchors.topMargin: 35
+            width: 600
+            spacing: 30
 
             Row {
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
+                spacing: 10
+                height: 50
+
+                TextCustom {
+                    text: "Standard"
+                    color: "#757373"
+                    width: 80
+                    anchors.verticalCenter: parent.verticalCenter
                 }
+
                 Button {
-                    text: "Some"
-                    color: "blue"
+                    text: "Call"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
+
                 Button {
-                    text: "small"
-                    color: "purple"
-                    pressedColor: "pink"
+                    text: "Call"
+                    enabled: false
+                    anchors.verticalCenter: parent.verticalCenter
                 }
+            }
+
+            Row {
+                spacing: 10
+
+                TextCustom {
+                    text: "Colors"
+                    color: "#757373"
+                    width: 80
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
                 Button {
-                    text: "colorful"
-                    color: "#ff0000"
+                    text: "Call"
+                    color: "#37b301"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
+
                 Button {
-                    text: "buttons"
-                    color: "orange"
-                    pressedColor: "#ffff00"
+                    text: "Call"
+                    pressedColor: "#dd4f22"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
-            } // Row
-        } // Rectangle
 
-        Row {
-            Button {
-                iconSource: "call_icon.png"
-                text: "Default"
-                width: 180
-                height: 50
-                onClicked: print("Clicked default button")
-            }
-            Button {
-                iconSource: "call_icon.png"
-                text: "Disabled"
-                enabled: false
-                width: 180
-                height: 50
-                onClicked: print("Clicked disabled button")
-            }
-        } // Row
-        Row {
-            Button {
-                iconSource: "call_icon.png"
-                text: "Green"
-                color: "#37b301"
-                width: 180
-                height: 50
-                onClicked: print("Clicked green button")
-            }
-            Button {
-                iconSource: "call_icon.png"
-                text: "Press me"
-                pressedColor: "#dd4f22"
-                width: 180
-                height: 50
-                onClicked: print("Clicked press-me button")
-            }
-        } // Row
-        Row {
-            Button {
-                text: "Small blue text only"
-                textSize: "small"
-                textColor: "blue"
-                width: 180
-                height: 50
-            }
-            Button {
-                text: "Larger red text"
-                textSize: "x-large"
-                textColor: "red"
-                width: 180
-                height: 50
-            }
-        } // Row
-        Row {
-            Button {
-                iconSource: "call_icon.png"
-                iconPosition: "right"
-                text: "Icon right"
-                width: 180
-                height: 50
-            }
-            Button {
-                iconSource: "call_icon.png"
-                width: 180
-                height: 50
-            }
-        } // Row
+                Rectangle {
+                    id: darkBackground
+                    width: childrenRect.width + 20
+                    height: childrenRect.height + 20
+                    color: "#3a3c41"
+                    anchors.verticalCenter: parent.verticalCenter
 
-        Rectangle {
-            color: "#000088"
-            width: parent.width
-            height: 140
-            radius: 5
-            anchors.margins: 50
-
-            Column {
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
+                    Button {
+                        text: "Call"
+                        color: "#dd4f22"
+                        darkBorder: true
+                        anchors.centerIn: parent
+                    }
                 }
-                id: flexibleButtons
-                spacing: 5
+            }
 
-                property bool showText: true
-                property bool showIcon: true
-                property bool iconLeft: true
+            Row {
+                spacing: 10
 
-                Row {
-                    Button {
-                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                        text: (flexibleButtons.showText) ? "Flexible anchors" : ""
-                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
-                        width: 170
-                        height: 70
-                    }
-                    Button {
-                        iconSource: (flexibleButtons.showIcon) ? "call_icon.png" : ""
-                        text: (flexibleButtons.showText) ? "Long text that does not fit in the button" : ""
-                        iconPosition: (flexibleButtons.iconLeft) ? "left" : "right"
-                        color: "#37b301"
-                        width: 170
-                        height: 70
-                    }
-                } // Row
-                Row {
-                    anchors. horizontalCenter: parent.horizontalCenter
-                    Button {
-                        text: (flexibleButtons.showText) ? "Remove text" : "Add text"
-                        width: 115
-                        color: "#888"
-                        onClicked: flexibleButtons.showText = !flexibleButtons.showText
-                        textSize: "large"
-                    }
-                    Button {
-                        text: (flexibleButtons.showIcon) ? "Remove icon" : "Add icon"
-                        width: 115
-                        color: "#888"
-                        onClicked: flexibleButtons.showIcon = !flexibleButtons.showIcon
-                    }
-                    Button {
-                        text: (flexibleButtons.iconLeft) ? "Icon right" : "Icon left"
-                        width: 115
-                        color: "#888"
-                        onClicked: flexibleButtons.iconLeft = !flexibleButtons.iconLeft
-                        enabled: (flexibleButtons.showText && flexibleButtons.showIcon)
-                    }
-                } // Row
-            } // Column
-        } // Rectangle
-    } // Column
-} // window
+                TextCustom {
+                    text: "Content"
+                    color: "#757373"
+                    width: 80
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "Call"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    iconSource: "call_icon.png"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "Call"
+                    iconSource: "call_icon.png"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "Call"
+                    iconSource: "call_icon.png"
+                    iconPosition: "right"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row {
+                spacing: 10
+
+                TextCustom {
+                    text: "Scalability"
+                    color: "#757373"
+                    width: 80
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "Call"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "Call"
+                    width: 140
+                    height: 90
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+    }
+}
