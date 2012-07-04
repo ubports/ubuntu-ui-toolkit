@@ -99,12 +99,6 @@ Item {
     height: buttonRowHeight + 200
 
     /*!
-      \preliminary
-      The padding on the left and right side of the row of buttons.
-    */
-    property real buttonRowPadding: 10
-
-    /*!
       \internal
       Keep the Tab items that the user defines separate
       from the other items that we create below.
@@ -131,6 +125,13 @@ Item {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
+
+            /*!
+              \preliminary
+              The padding on the left and right side of the row of buttons.
+            */
+            property real horizontalPadding: 10
+
             // maximumButtonWidth is the total space available for all tab buttons
             // divided by the number of buttons.
             // If minimumButtonWidth is larger than maximumButtonWidth, the buttonWidth
@@ -139,7 +140,7 @@ Item {
             // Scrolling in case the buttons don't fit in the available space is currently
             // not implemented.
             property int minimumButtonWidth: 20
-            property int maximumButtonWidth: (visuals.width - 2*tabs.buttonRowPadding) / repeater.count
+            property int maximumButtonWidth: (visuals.width - 2*buttonRow.horizontalPadding) / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
             property int widestButtonWidth
             property int buttonWidth
