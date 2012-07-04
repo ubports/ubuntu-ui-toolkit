@@ -61,11 +61,5 @@ Rectangle {
             }
             iconSource: tab4.selected ? "call_icon.png" : ""
         }
-        Tab {
-            text: "loading only"
-            pageSource: "this_file_does_not_exist"
-            preloadPage: true
-            loadingPage: Text { text: "Please wait while the page is loading (forever)." }
-        }
     } // Tabs
 } // window

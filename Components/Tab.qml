@@ -47,7 +47,7 @@ Item {
       The page that is shown when this tab is selected.
       If no page is specified, the page specified by \l pageSource will be loaded.
      */
-    property Item page: (loader.item) ? loader.item : loadingPage
+    property Item page: loader.item
 
     /*!
       \preliminary
@@ -63,13 +63,6 @@ Item {
       is delayed until the tab is selected.
      */
     property bool preloadPage: false
-
-    /*!
-      \preliminary
-      This page is shown if no \l page was defined, and the page from \l pageSource
-      is still loading. If no loadingPage is specified, no page is displayed while loading.
-     */
-    property Item loadingPage
 
     /*!
       \preliminary
