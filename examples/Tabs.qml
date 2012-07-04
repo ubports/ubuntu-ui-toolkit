@@ -21,7 +21,7 @@ Rectangle {
     width: page.width + 2 * page.anchors.margins
     height: page.height + 2 * page.anchors.margins
 
-    color: "#e2e7ee"
+    color: "#e6e6e6"
 
     Item {
         id: page
