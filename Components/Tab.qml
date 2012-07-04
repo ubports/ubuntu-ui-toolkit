@@ -99,6 +99,10 @@ Item {
         onLoaded: update();
     }
 
+    /*!
+      \internal
+      Set the parent of the page to show when this tab is selected.
+    */
     function __setPageParent(pageParent) {
         loader.activePageParent = pageParent;
     }

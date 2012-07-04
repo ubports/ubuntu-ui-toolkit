@@ -34,25 +34,30 @@ ButtonWithForeground {
     height: parent ? parent.height : 50
     textColor: "#757373"
 
+    /*!
+       \internal
+       These properties keep track on whether the tab button is the first or the
+       last in the current row or tabs. This changes their appearance (rounded
+       borders vs. straight corners for tabButtons that are not first or last).
+     */
+    property bool __isFirst: false
+    /*!
+      \internal
+     */
+    property bool __isLast: false
+
+
     BorderImage {
         id: background
         z: -1
 
         property Item allTabs: tabButton.parent
-        /*!
-          \internal
-          These properties keep track on whether the tab button is the first or the
-          last in the current row or tabs. This changes their appearance (rounded
-          borders vs. straight corners for tabButtons that are not first or last).
-         */
-        property bool __isFirst: allTabs ? (allTabs.children[0] == tabButton) : false
-        property bool __isLast: allTabs ? (allTabs.children[allTabs.children.length-1] == tabButton) : false
 
         anchors.fill: parent
         source: {
-            if (__isFirst) {
+            if (tabButton.__isFirst) {
                 return tabButton.selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
-            } else if (__isLast) {
+            } else if (tabButton.__isLast) {
                 return tabButton.selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
             } else {
                 return tabButton.selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
@@ -60,9 +65,9 @@ ButtonWithForeground {
         }
 
         border {
-            left: __isFirst ? 9 : 1
-            top: __isFirst || __isLast ? 9 : 2
-            right: __isLast ? 10 : 2
+            left: tabButton.__isFirst ? 9 : 1
+            top: tabButton.__isFirst || tabButton.__isLast ? 9 : 2
+            right: tabButton.__isLast ? 10 : 2
             bottom: 0
         }
         horizontalTileMode: BorderImage.Stretch

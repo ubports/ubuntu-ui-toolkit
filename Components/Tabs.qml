@@ -172,6 +172,8 @@ Item {
                     id: tabButton
                     property Item tab: modelData
                     text: tab.text
+                    __isFirst: index == 0
+                    __isLast: index == (repeater.count-1)
                     iconSource: tab.iconSource
                     width: buttonRow.buttonWidth
                     selected: (index == tabsMain.selectedTabIndex)
