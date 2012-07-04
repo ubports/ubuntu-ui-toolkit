@@ -56,21 +56,12 @@ ButtonWithForeground {
         anchors.fill: parent
         source: {
             if (tabButton.__isFirst) {
-                return tabButton.selected ? "artwork/TabLeftSelected.png" : "artwork/TabLeftUnselected.png"
+                return tabButton.selected ? "artwork/TabLeftSelected.sci" : "artwork/TabLeftUnselected.sci"
             } else if (tabButton.__isLast) {
-                return tabButton.selected ? "artwork/TabRightSelected.png" : "artwork/TabRightUnselected.png"
+                return tabButton.selected ? "artwork/TabRightSelected.sci" : "artwork/TabRightUnselected.sci"
             } else {
-                return tabButton.selected ? "artwork/TabMiddleSelected.png" : "artwork/TabMiddleUnselected.png"
+                return tabButton.selected ? "artwork/TabMiddleSelected.sci" : "artwork/TabMiddleUnselected.sci"
             }
         }
-
-        border {
-            left: tabButton.__isFirst ? 9 : 1
-            top: tabButton.__isFirst || tabButton.__isLast ? 9 : 2
-            right: tabButton.__isLast ? 10 : 2
-            bottom: 0
-        }
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Stretch
     }
 }
