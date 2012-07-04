@@ -21,7 +21,7 @@ Rectangle {
     width: page.width + 2 * page.anchors.margins
     height: page.height + 2 * page.anchors.margins
 
-    color: "#cccccc"
+    color: "#e2e7ee"
 
     Item {
         id: page
@@ -45,6 +45,8 @@ Rectangle {
                 fontSize: "x-large"
                 text: "Tabs"
                 color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
             }
 
             Rectangle {
