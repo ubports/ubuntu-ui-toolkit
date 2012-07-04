@@ -79,12 +79,12 @@ Rectangle {
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     enabled: false
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -101,13 +101,13 @@ Rectangle {
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     color: "#37b301"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     pressedColor: "#dd4f22"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -120,7 +120,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
 
                     Button {
-                        text: "Send"
+                        text: "Call"
                         color: "#dd4f22"
                         backgroundColor: darkBackground.color
                         anchors.centerIn: parent
@@ -173,19 +173,19 @@ Rectangle {
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Button {
-                    text: "Send"
+                    text: "Call"
                     width: 140
                     height: 90
                     anchors.verticalCenter: parent.verticalCenter
                 }
     /*
                 Button {
-                    text: "Send"
+                    text: "Call"
                     width: 40
                     height: 28
                     anchors.verticalCenter: parent.verticalCenter
