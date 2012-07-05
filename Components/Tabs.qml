@@ -88,9 +88,9 @@ Item {
             height: 1
     }
 
-    // minimal width and height of 200 for showing the pages
+    // minimal width of 200
     width: 200
-    height: buttonRow.height + 200
+    height: buttonRow.height
 
     /*!
       \internal
