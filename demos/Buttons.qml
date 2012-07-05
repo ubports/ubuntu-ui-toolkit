@@ -55,11 +55,12 @@ Template {
 
             Rectangle {
                 id: darkBackground
-                width: childrenRect.width + 20
-                height: childrenRect.height + 20
+                width: darkButton.width + 20
+                height: darkButton.height + 20
                 color: "#3a3c41"
 
                 Button {
+                    id: darkButton
                     text: "Call"
                     color: "#dd4f22"
                     darkBorder: true
