@@ -30,9 +30,11 @@ Rectangle {
 
     Rectangle {
         width: 1
-        anchors.right: widgetList.right
-        anchors.top: widgetList.top
-        anchors.bottom: widgetList.bottom
+        anchors {
+            right: widgetList.right
+            top: widgetList.top
+            bottom: widgetList.bottom
+        }
         color: "#efefef"
     }
 
@@ -40,8 +42,10 @@ Rectangle {
         id: widgetList
 
         width: 150
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+        }
 
         property int selectedIndex: 0
         model: ["Buttons", "Tabs"]
@@ -64,10 +68,12 @@ Rectangle {
     Loader {
         id: widgetLoader
 
-        anchors.left: widgetList.right
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        anchors {
+            left: widgetList.right
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
         source: widgetList.model[widgetList.selectedIndex] + ".qml"
     }
 }

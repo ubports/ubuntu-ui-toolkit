@@ -41,15 +41,19 @@ Rectangle {
         id: page
 
         parent: template
-        anchors.fill: parent
-        anchors.margins: 35
+        anchors {
+            fill: parent
+            margins: 35
+        }
 
         Item {
             id: header
 
             height: childrenRect.height
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
 
             TextCustom {
                 id: title
@@ -64,10 +68,12 @@ Rectangle {
             Rectangle {
                 id: underline
 
-                anchors.top: title.bottom
-                anchors.topMargin: 5
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors {
+                    top: title.bottom
+                    topMargin: 5
+                    left: parent.left
+                    right: parent.right
+                }
                 height: 1
                 color: "#757373"
             }
