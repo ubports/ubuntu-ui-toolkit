@@ -25,54 +25,46 @@ Rectangle {
 
     Column {
         id: listitems
-        anchors {
-            fill: parent
-        }
-        //spacing: 5
+        anchors.fill: parent
 
-        DefaultListItem {
-            height: 60;
-            width: parent.width;
-            color: "blue"
-            text: "blue"
-            control: Button {
-                width: 100
-                height: 35
-                text: "control"
-                color: "pink"
-                onClicked: print("clicked control")
-            }
+        ListItem {
+            text: "Basic"
+            onClicked: print("Basic button clicked.")
         }
-        DefaultListItem {
-            height: 60;
-            width: parent.width;
-            color: "yellow"
-            text: "Progression"
+        ListItem {
+            text: "Icon"
             iconSource: "call_icon.png"
+        }
+        ListItem {
+            text: "Progression"
             progression: true
             onClicked: print("Progressing...")
         }
-        DefaultListItem {
-            height: 60
-            width: parent.width;
-            text: "control and progress"
-            control: Button {
-                width: 100
-                height: 35
-                text: "button"
-                color: "pink"
-                onClicked: print("clickclick!")
-            }
-            progression: true // TODO: fix (not visible)
-            onClicked: print("progress")
+        ListItem {
+            text: "Single value"
+            control: TextCustom { text: "Value 1" }
+            progression: true
         }
-
-        DefaultListItem { height: 60;
-            width: parent.width;
-            color: "green"
-            text: "green"
+        ListItem {
+            text: "Control"
+            control: Button {
+                text: "Button"
+                onClicked: print("click!")
+            }
+        }
+        ListItem {
+            text: "Split"
+            control: Button {
+                text: "Click"
+                onClicked: print("Button clicked")
+            }
+            progression: true
+            onClicked: print("Progress clicked")
+        }
+        ListItem {
+            text: "Selector"
+            control: TextCustom { text: "TODO"; color: "red" }
             progression: false
-            onClicked: print("This won't happen")
         }
     } // Column
 } // window
