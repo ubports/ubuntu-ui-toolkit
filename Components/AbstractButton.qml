@@ -42,6 +42,9 @@ Item {
     */
     signal clicked
 
+    Keys.onEnterPressed: clicked()
+    Keys.onReturnPressed: clicked()
+
     MouseArea {
         id: mouse_area
 
