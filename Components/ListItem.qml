@@ -33,8 +33,8 @@ Item {
     property Item control
     property bool progression: false
 
-    height: 60
-    width: (parent) ? parent.width : 0
+    height: 40 //middleVisuals.height
+    width: 380 //(parent) ? parent.width : 0
 
     signal clicked
 
@@ -46,32 +46,63 @@ Item {
         onClicked: (listItem.control && (listItem.progression == false)) ? listItem.control.clicked() : listItem.clicked()
     }
 
-    Item { // encapsulation
-        id: visuals
-        anchors.fill: parent
+    Item {
+        id: leftVisuals
 
-        TextCustom {
-            id: label
-            anchors {
-                margins: 10
-                verticalCenter: parent.verticalCenter
-                left: iconSource ? icon.right : parent.left
-            }
-        } // TextCustom
+        property bool hasIcon: listItem.iconSource != ""
+        width: hasIcon ? middleVisuals.height : 0
+        visible: hasIcon
+
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
 
         Image {
             id: icon
             visible: iconSource ? true : false
             fillMode: Image.PreserveAspectFit
             anchors {
-                // margins: 10
-                verticalCenter: parent.verticalCenter
+                centerIn: parent
             }
-            //sourceSize.width: width
-            //sourceSize.height: height
-            height: parent.height - 20
-            //x: 10
+            width: parent.width - 20
         } // Image
+    }
+
+    Item { // encapsulation
+        id: middleVisuals
+        height: 40
+        anchors {
+            left: leftVisuals.right
+            right: rightVisuals.left
+            //top: listItem.top
+            verticalCenter: parent.verticalCenter
+        }
+
+        TextCustom {
+            id: label
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: parent.left
+            }
+
+            Rectangle {
+                // for testing only
+                z: -1
+                anchors.fill: parent
+                color: "yellow"
+            }
+        } // TextCustom
+}
+
+    Item {
+        id: rightVisuals
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+        }
 
         property alias progressItem: progressItem
 
@@ -81,31 +112,20 @@ Item {
             fontSize: "xx-large"
             anchors {
                 right: parent.right
-                verticalCenter: visuals.verticalCenter
+                verticalCenter: parent.verticalCenter
             }
             visible: listItem.progression
         } // TextCustom
 
-        Rectangle {
-            id: background
-            z: -1
-            color: "#eeeeee"
-            anchors.fill: parent
-            border.width: 2
-            border.color: "black"
-            radius: 5
-        }
-
         property Item previousControl: null
         function controlChanged() {
-            if (visuals.previousControl) visuals.previousControl.visible = false;
-            print("control changed")
+            if (rightVisuals.previousControl) rightVisuals.previousControl.visible = false;
             if (listItem.control) {
-                listItem.control.parent = visuals;
-                listItem.control.anchors.verticalCenter = visuals.verticalCenter;
-                listItem.control.anchors.right = (listItem.progression) ? visuals.progressItem.left : visuals.right;
+                listItem.control.parent = rightVisuals;
+                listItem.control.anchors.verticalCenter = rightVisuals.verticalCenter
+                listItem.control.anchors.right = (listItem.progression) ? rightVisuals.progressItem.left : rightVisuals.right;
             }
-            visuals.previousControl = listItem.control;
+            rightVisuals.previousControl = listItem.control;
         }
 
         Connections {
@@ -114,5 +134,15 @@ Item {
         }
 
         Component.onCompleted: controlChanged()
-    } // visuals
+    }
+
+    Rectangle {
+        id: background
+        z: -1
+        color: "#eeeeee"
+        anchors.fill: parent
+        border.width: 2
+        border.color: "black"
+        radius: 5
+    }
 }

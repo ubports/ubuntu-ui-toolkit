@@ -21,7 +21,7 @@ Rectangle {
     id: window
 
     width: 400
-    height: 600
+    height: 700
 
     Column {
         id: listitems
@@ -42,7 +42,10 @@ Rectangle {
         }
         ListItem {
             text: "Single value"
-            control: TextCustom { text: "Value 1" }
+            control: TextCustom {
+                text: "Value 1"
+                elide: Text.ElideRight
+            }
             progression: true
         }
         ListItem {
@@ -50,6 +53,7 @@ Rectangle {
             control: Button {
                 text: "Button"
                 onClicked: print("click!")
+                height: 30
             }
         }
         ListItem {
@@ -57,6 +61,7 @@ Rectangle {
             control: Button {
                 text: "Click"
                 onClicked: print("Button clicked")
+                height: 30
             }
             progression: true
             onClicked: print("Progress clicked")
@@ -65,6 +70,14 @@ Rectangle {
             text: "Selector"
             control: TextCustom { text: "TODO"; color: "red" }
             progression: false
+        }
+        SubtitledListItem {
+            text: "Subtitle"
+            subtext: "Secondary label"
+        }
+        SubtitledListItem {
+            text: "Multiple lines subtitle"
+            subtext: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
         }
     } // Column
 } // window
