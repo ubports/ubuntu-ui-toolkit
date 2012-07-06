@@ -31,12 +31,6 @@ Item {
 
     /*!
        \preliminary
-       Set enabled to false to block the clicked signal and state changes.
-    */
-    property bool enabled: true
-
-    /*!
-       \preliminary
        This handler is called when there is a mouse click on the button
        and the button is not disabled.
     */
