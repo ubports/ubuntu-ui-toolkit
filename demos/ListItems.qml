@@ -111,10 +111,15 @@ Rectangle {
 //            control: TextCustom { text: "TODO"; color: "red" }
 //            progression: false
 //        }
-//        SubtitledListItem {
-//            text: "Subtitle"
-//            subtext: "Secondary label"
-//        }
+        SubtitledListItem {
+            text: "Label"
+            subtext: "Value 1, Value 2, Value 3, Value 4"
+        }
+        SubtitledListItem {
+            text: "Label"
+            subtext: "Value 1, Value 2, Value 3, Value 4"
+            progression: true
+        }
 //        SubtitledListItem {
 //            text: "Multiple lines subtitle"
 //            subtext: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
