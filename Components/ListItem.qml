@@ -44,6 +44,8 @@ Item {
     //property bool __hasSubLabel: subtext != ""
     property color __textColor: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
 
+    property bool __split: (listItem.control && (listItem.progression == true)) ? true : false
+
 
     height: 54
     width: 250
@@ -191,17 +193,39 @@ Item {
 
             property alias progressItem: progressItem
 
-            TextCustom {
+            Item {
                 id: progressItem
-                text: ">"
-                fontSize: "xx-large"
+                height: parent.height
+                width: height // square
                 anchors {
                     right: parent.right
-                    verticalCenter: parent.verticalCenter
+                    top: parent.top
+                    bottom: parent.bottom
                 }
-                visible: listItem.progression
+
+            Image {
+                id: progressIcon
+                source: "artwork/arrow_Progression.png"
+//                text: ">"
+//                fontSize: "xx-large"
+                anchors.centerIn: parent
+                    visible: listItem.progression
             } // TextCustom
 
+            Image {
+                id: progressionDivider
+                visible: listItem.__split
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                    bottomMargin: bottomSeparatorLine.height
+                    topMargin: topSeparatorLine.height
+                }
+                width: 1
+                source: "artwork/divider_Vertical.png"
+            }
+
+            }
             property Item previousControl: null
             function controlChanged() {
                 if (rightVisuals.previousControl) rightVisuals.previousControl.visible = false;

@@ -76,7 +76,6 @@ Rectangle {
                 text: "Status"
                 elide: Text.ElideRight
             }
-            progression: true
         }
 
         ListItem {
@@ -85,6 +84,7 @@ Rectangle {
                 text: "Status"
                 elide: Text.ElideRight
             }
+            progression: true
         }
 
         ListItem {
