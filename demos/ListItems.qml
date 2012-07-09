@@ -23,31 +23,70 @@ Rectangle {
     width: 400
     height: 700
 
+    color: "#e6e6e6"
+
     Column {
         id: listitems
         anchors.fill: parent
 
+//        ListItem {
+//            text: "Basic, no icon"
+//            onClicked: { print("Basic button clicked."); selected = !selected; }
+//        }
+//        ListItem {
+//            iconSource: "avatar_contacts_list.png"
+//            onClicked: selected = !selected
+//        }
+
         ListItem {
-            text: "Basic"
-            onClicked: print("Basic button clicked.")
+            text: "Fiennes"
+            iconSource: "avatar_contacts_list.png"
+            selected: false
+            onClicked: selected = !selected
         }
+
         ListItem {
-            text: "Icon"
-            iconSource: "call_icon.png"
+            text: "Disabled"
+            iconSource: "avatar_contacts_list.png"
+            onClicked: { print("Clicked disabled list item."); selected = !selected; }
+            enabled: false
         }
+
         ListItem {
-            text: "Progression"
-            progression: true
-            onClicked: print("Progressing...")
-        }
-        ListItem {
-            text: "Single value"
+            text: "Gambon"
+            iconSource: "avatar_contacts_list.png"
             control: TextCustom {
-                text: "Value 1"
+                text: "Status"
+                elide: Text.ElideRight
+            }
+            progression: true
+            onClicked: print("clicked Gambon")
+        }
+
+        ListItem {
+            text: "Caine"
+            iconSource: "avatar_contacts_list.png"
+            progression: true
+            onClicked: print("clicked Caine")
+        }
+
+        ListItem {
+            text: "Parameter"
+            control: TextCustom {
+                text: "Status"
                 elide: Text.ElideRight
             }
             progression: true
         }
+
+        ListItem {
+            text: "Parameter Split"
+            control: TextCustom {
+                text: "Status"
+                elide: Text.ElideRight
+            }
+        }
+
         ListItem {
             text: "Control"
             control: Button {
@@ -57,7 +96,7 @@ Rectangle {
             }
         }
         ListItem {
-            text: "Split"
+            text: "Control Split"
             control: Button {
                 text: "Click"
                 onClicked: print("Button clicked")
@@ -66,18 +105,19 @@ Rectangle {
             progression: true
             onClicked: print("Progress clicked")
         }
-        ListItem {
-            text: "Selector"
-            control: TextCustom { text: "TODO"; color: "red" }
-            progression: false
-        }
-        SubtitledListItem {
-            text: "Subtitle"
-            subtext: "Secondary label"
-        }
-        SubtitledListItem {
-            text: "Multiple lines subtitle"
-            subtext: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
-        }
+//        ListItem {
+//            text: "Selector"
+//            iconSource: "avatar_contacts_list.png"
+//            control: TextCustom { text: "TODO"; color: "red" }
+//            progression: false
+//        }
+//        SubtitledListItem {
+//            text: "Subtitle"
+//            subtext: "Secondary label"
+//        }
+//        SubtitledListItem {
+//            text: "Multiple lines subtitle"
+//            subtext: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
+//        }
     } // Column
 } // window
