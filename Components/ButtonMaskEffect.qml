@@ -30,11 +30,11 @@ ShaderEffectItem {
         uniform sampler2D base;
         uniform lowp float gradientStrength;
 
-        vec3 blendOverlay(vec3 base, vec3 blend)
-        {
-            bvec3 comparison = lessThan(base, vec3(0.5));
-            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, vec3(comparison));
-        }
+//        vec3 blendOverlay(vec3 base, vec3 blend)
+//        {
+//            bvec3 comparison = lessThan(base, vec3(0.5));
+//            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, vec3(comparison));
+//        }
 
         void main(void)
         {
