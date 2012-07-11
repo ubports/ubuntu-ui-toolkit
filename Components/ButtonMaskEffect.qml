@@ -46,7 +46,6 @@ ShaderEffectItem {
             lowp vec3 gradientColor = lowp vec3(0.8*qt_TexCoord0.t);
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb, gradientColor.rgb), baseColor.a);
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
-//            gl_FragColor = lowp vec4(1.0, 0.0, 0.0, 1.0);
         }
         "
 }
