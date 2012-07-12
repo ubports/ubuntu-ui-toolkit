@@ -30,64 +30,40 @@ Rectangle {
         id: listitems
         anchors.fill: parent
 
-//        ListItem {
-//            text: "Basic, no icon"
-//            onClicked: { print("Basic button clicked."); selected = !selected; }
-//        }
-//        ListItem {
-//            iconSource: "avatar_contacts_list.png"
-//            onClicked: selected = !selected
-//        }
-
         ListItem.Default {
             text: "Fiennes"
             iconSource: "avatar_contacts_list.png"
             selected: false
             onClicked: selected = !selected
         }
-
         ListItem.Default {
             text: "Disabled"
             iconSource: "avatar_contacts_list.png"
             onClicked: { print("Clicked disabled list item."); selected = !selected; }
             enabled: false
         }
-
-        ListItem.Default {
+        ListItem.SingleValue {
             text: "Gambon"
             iconSource: "avatar_contacts_list.png"
-            control: TextCustom {
-                text: "Status"
-                elide: Text.ElideRight
-            }
+            value: "Status"
             progression: true
             onClicked: print("clicked Gambon")
         }
-
         ListItem.Default {
             text: "Caine"
             iconSource: "avatar_contacts_list.png"
             progression: true
             onClicked: print("clicked Caine")
         }
-
         ListItem.SingleValue {
             text: "Parameter"
-            control: TextCustom {
-                text: "Status"
-                elide: Text.ElideRight
-            }
+            value: "Status"
         }
-
         ListItem.SingleValue {
             text: "Parameter Split"
-            control: TextCustom {
-                text: "Status"
-                elide: Text.ElideRight
-            }
+            value: "Status"
             progression: true
         }
-
         ListItem.Default {
             text: "Control"
             control: Button {
@@ -126,7 +102,7 @@ Rectangle {
             subText: "Button ---->"
             control: Button { text: "click me" }
         }
-        ListItem.Default {
+        ListItem.Default { // Subtitled?
             text: "Split"
             subText: "action and progress"
             control: Button { text: "button" }

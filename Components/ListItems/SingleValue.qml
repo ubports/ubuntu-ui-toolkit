@@ -15,7 +15,7 @@
  */
 
 import QtQuick 1.1
-import Qt.labs.shaders 1.0
+import ".."
 
 /*!
     \qmlclass SingleValue
@@ -28,5 +28,17 @@ import Qt.labs.shaders 1.0
 Default {
     id: listItem
 
-    property string value
+    property alias value: valueText.text
+
+    property color __valueColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
+
+    control: TextCustom {
+        id: valueText
+        elide: Text.ElideRight
+        opacity: listItem.enabled ? 1.0 : 0.5
+        fontSize: "medium"
+        style: Text.Raised
+        color: listItem.__valueColor
+        styleColor: "white"
+    }
 }

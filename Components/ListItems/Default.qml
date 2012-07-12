@@ -180,6 +180,7 @@ Item {
                     leftMargin: 5
                 }
 
+                fontSize: "large"
                 elide: Text.ElideRight
 
                 color: listItem.__textColor
