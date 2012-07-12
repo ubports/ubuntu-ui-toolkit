@@ -111,18 +111,29 @@ Rectangle {
 //            control: TextCustom { text: "TODO"; color: "red" }
 //            progression: false
 //        }
-        SubtitledListItem {
+        ListItem {
             text: "Label"
-            subtext: "Value 1, Value 2, Value 3, Value 4"
+            subText: "Value 1, Value 2, Value 3, Value 4"
         }
-        SubtitledListItem {
+        ListItem {
             text: "Label"
-            subtext: "Value 1, Value 2, Value 3, Value 4"
+            subText: "Value 1, Value 2, Value 3, Value 4"
             progression: true
         }
-//        SubtitledListItem {
+        ListItem {
+            text: "Action"
+            subText: "Button ---->"
+            control: Button { text: "click me" }
+        }
+        ListItem {
+            text: "Split"
+            subText: "action and progress"
+            control: Button { text: "button" }
+            progression: true
+        }
+//        ListItem { // not yet supported
 //            text: "Multiple lines subtitle"
-//            subtext: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
+//            subText: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
 //        }
     } // Column
 } // window

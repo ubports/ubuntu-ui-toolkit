@@ -33,6 +33,8 @@ Item {
     property Item control
     property bool progression: false
 
+    property alias subText: subtitle.text
+
     property bool selected: false
 
     property bool topSeparator: false
@@ -153,20 +155,32 @@ Item {
 
         Item { // encapsulation
             id: middleVisuals
-            height: 40
+
+            property bool hasSubText: listItem.subText != ""
+
+            height: hasSubText ? label.height + subtitle.height : label.height
             anchors {
                 left: leftVisuals.right
                 right: rightVisuals.left
                 verticalCenter: parent.verticalCenter
             }
 
+            Rectangle {
+                color: "white"
+                anchors.fill: parent
+                visible: listItem.__testing
+            }
+
             TextCustom {
                 id: label
                 anchors {
-                    verticalCenter: parent.verticalCenter
+                    //verticalCenter: parent.verticalCenter
+                    top: parent.top
                     left: parent.left
                     leftMargin: 5
                 }
+
+                elide: Text.ElideRight
 
                 color: listItem.__textColor
                 style: Text.Raised
@@ -181,6 +195,17 @@ Item {
                     visible: listItem.__testing
                 }
             } // TextCustom
+
+            TextCustom {
+                id: subtitle
+                anchors {
+                    bottom: parent.bottom
+                    left: parent.left
+                    leftMargin: 5
+                }
+                width: parent.width
+                elide: Text.ElideRight
+            }
         }
 
         Item {
@@ -189,6 +214,22 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
                 right: parent.right
+            }
+            //width: childrenRect.width
+
+            width: {
+                var w = 0
+                if (listItem.control) w += listItem.control.width;
+                if (listItem.progression) w += progressItem.width;
+                if (listItem.__split) w += progressionDivider.width;
+                return w;
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                visible: listItem.__testing
+                color: "blue"
+                width: 200
             }
 
             property alias progressItem: progressItem
@@ -203,28 +244,27 @@ Item {
                     bottom: parent.bottom
                 }
 
-            Image {
-                id: progressIcon
-                source: "artwork/arrow_Progression.png"
-//                text: ">"
-//                fontSize: "xx-large"
-                anchors.centerIn: parent
+                Image {
+                    id: progressIcon
+                    source: "artwork/arrow_Progression.png"
+                    //                text: ">"
+                    //                fontSize: "xx-large"
+                    anchors.centerIn: parent
                     visible: listItem.progression
-            } // TextCustom
+                } // TextCustom
 
-            Image {
-                id: progressionDivider
-                visible: listItem.__split
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                    bottomMargin: bottomSeparatorLine.height
-                    topMargin: topSeparatorLine.height
+                Image {
+                    id: progressionDivider
+                    visible: listItem.__split
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                        bottomMargin: bottomSeparatorLine.height
+                        topMargin: topSeparatorLine.height
+                    }
+                    width: 1
+                    source: "artwork/divider_Vertical.png"
                 }
-                width: 1
-                source: "artwork/divider_Vertical.png"
-            }
-
             }
             property Item previousControl: null
             function controlChanged() {
@@ -245,15 +285,15 @@ Item {
             Component.onCompleted: controlChanged()
         }
 
-//        Rectangle {
-//            id: background
-//            z: -1
-//            color: "#eeeeee"
-//            anchors.fill: parent
-//            border.width: 2
-//            border.color: "black"
-//            radius: 5
-//        }
+        //        Rectangle {
+        //            id: background
+        //            z: -1
+        //            color: "#eeeeee"
+        //            anchors.fill: parent
+        //            border.width: 2
+        //            border.color: "black"
+        //            radius: 5
+        //        }
 
     } // visuals
 }
