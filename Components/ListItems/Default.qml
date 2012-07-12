@@ -15,12 +15,12 @@
  */
 
 import QtQuick 1.1
-//import Qt.labs.shaders 1.0
+import ".."
 
 /*!
-    \qmlclass ListItem
+    \qmlclass Default
     \inqmlmodule UbuntuUIToolkit
-    \brief The ListItem class is DOCME
+    \brief The Default class is DOCME
 
     \b{This component is under heavy development.}
 

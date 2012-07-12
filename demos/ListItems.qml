@@ -15,7 +15,8 @@
  */
 
 import QtQuick 1.1
-import  "../Components"
+import "../Components"
+import "../Components/ListItems" as ListItem
 
 Rectangle {
     id: window
@@ -38,21 +39,21 @@ Rectangle {
 //            onClicked: selected = !selected
 //        }
 
-        ListItem {
+        ListItem.Default {
             text: "Fiennes"
             iconSource: "avatar_contacts_list.png"
             selected: false
             onClicked: selected = !selected
         }
 
-        ListItem {
+        ListItem.Default {
             text: "Disabled"
             iconSource: "avatar_contacts_list.png"
             onClicked: { print("Clicked disabled list item."); selected = !selected; }
             enabled: false
         }
 
-        ListItem {
+        ListItem.Default {
             text: "Gambon"
             iconSource: "avatar_contacts_list.png"
             control: TextCustom {
@@ -63,14 +64,14 @@ Rectangle {
             onClicked: print("clicked Gambon")
         }
 
-        ListItem {
+        ListItem.Default {
             text: "Caine"
             iconSource: "avatar_contacts_list.png"
             progression: true
             onClicked: print("clicked Caine")
         }
 
-        ListItem {
+        ListItem.SingleValue {
             text: "Parameter"
             control: TextCustom {
                 text: "Status"
@@ -78,7 +79,7 @@ Rectangle {
             }
         }
 
-        ListItem {
+        ListItem.SingleValue {
             text: "Parameter Split"
             control: TextCustom {
                 text: "Status"
@@ -87,7 +88,7 @@ Rectangle {
             progression: true
         }
 
-        ListItem {
+        ListItem.Default {
             text: "Control"
             control: Button {
                 text: "Button"
@@ -95,7 +96,7 @@ Rectangle {
                 height: 30
             }
         }
-        ListItem {
+        ListItem.Default {
             text: "Control Split"
             control: Button {
                 text: "Click"
@@ -105,33 +106,33 @@ Rectangle {
             progression: true
             onClicked: print("Progress clicked")
         }
-//        ListItem {
+//        ListItem.Selector {
 //            text: "Selector"
 //            iconSource: "avatar_contacts_list.png"
 //            control: TextCustom { text: "TODO"; color: "red" }
 //            progression: false
 //        }
-        ListItem {
+        ListItem.MultiValue {
             text: "Label"
             subText: "Value 1, Value 2, Value 3, Value 4"
         }
-        ListItem {
+        ListItem.MultiValue {
             text: "Label"
             subText: "Value 1, Value 2, Value 3, Value 4"
             progression: true
         }
-        ListItem {
+        ListItem.Default {
             text: "Action"
             subText: "Button ---->"
             control: Button { text: "click me" }
         }
-        ListItem {
+        ListItem.Default {
             text: "Split"
             subText: "action and progress"
             control: Button { text: "button" }
             progression: true
         }
-//        ListItem { // not yet supported
+//        ListItem.Default { // not yet supported
 //            text: "Multiple lines subtitle"
 //            subText: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
 //        }

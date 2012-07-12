@@ -18,15 +18,15 @@ import QtQuick 1.1
 import Qt.labs.shaders 1.0
 
 /*!
-    \qmlclass SubtitledListItem
+    \qmlclass SingleValue
     \inqmlmodule UbuntuUIToolkit
-    \brief The ListItem class is DOCME
+    \brief The SingleValue class is DOCME
 
     \b{This component is under heavy development.}
 
 */
-ListItem {
+Default {
     id: listItem
 
-    property string subtext //: subtitle.text
+    property string value
 }

@@ -15,33 +15,17 @@
  */
 
 import QtQuick 1.1
-import Qt.labs.shaders 1.0
 
 /*!
-    \qmlclass DefaultListItem
+    \qmlclass MultiValue
     \inqmlmodule UbuntuUIToolkit
-    \brief The DefaultListItem class is DOCME
+    \brief The MultiValue class is DOCME
 
     \b{This component is under heavy development.}
 
 */
-ListItem {
+Default {
     id: listItem
-    property Item control
 
-    anchors.margins: 10
-
-
-
-
-
-
-    Component.onCompleted: {
-        if (control) {
-            control.parent = listItem;
-            control.anchors.verticalCenter = listItem.verticalCenter;
-            control.anchors.right = listItem.right;
-            control.z = 1;
-        }
-    }
+    // valuesproperty string subtext //: subtitle.text
 }
