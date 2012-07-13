@@ -27,15 +27,14 @@ import ".."
 */
 Item {
     id: baseListItem
-
     width: 250
 
     signal clicked
-    //onClicked: selected = !selected
+
+    property bool selected: false
 
     property bool topSeparator: false
     property bool bottomSeparator: true
-
 
     AbstractButton {
         anchors.fill: parent
@@ -52,26 +51,28 @@ Item {
 
     Image {
         id: topSeparatorLine
-
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: visible ? 2 : 0
-        //source: "artwork/ListItemSeparator.png"
         source: "artwork/divider_Vertical.png"
         visible: listItem.topSeparator
     }
-
     Image {
         id: bottomSeparatorLine
-
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         height: visible ? 2 : 0
-        //source: "artwork/ListItemSeparator.png"
         source: "artwork/divider_Vertical.png"
         visible: listItem.bottomSeparator
     }
-
+    Image {
+        visible: baseListItem.selected
+        anchors.top: parent.top
+        anchors.topMargin: 2
+        anchors.right: parent.right
+        anchors.rightMargin: 2
+        source: "artwork/list_item_selected_triangle.png"
+    }
 }

@@ -27,120 +27,43 @@ import ".."
 */
 Base {
     id: listItem
+    height: 54
 
+    property alias iconSource: leftVisuals.source
     property alias text: label.text
-    property alias iconSource: icon.source
-    property Item control
-    property bool progression: false
+    property alias progression: progressItem.visible
 
-    property alias subText: subtitle.text
-
-    property bool selected: false
-
-    property bool __testing: false
-
-    property int __padding: 10
-    //property bool __hasSubLabel: subtext != ""
     property color __textColor: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
 
-    property bool __split: (listItem.control && (listItem.progression == true)) ? true : false
+    Row {
 
-
-    height: 54
-    width: 250
-
-
-    Item {
         id: visuals
-
         anchors.fill: parent
 
-        Image {
-            visible: listItem.selected
-            anchors.top: visuals.top
-            anchors.topMargin: 2
-            anchors.right: visuals.right
-            anchors.rightMargin: 2
-            source: "artwork/list_item_selected_triangle.png"
+        IconHelper {
+            id: leftVisuals
         }
 
+//        LabelHelper {
+//            id: label
+//            selected: listItem.selected
+//        }
 
-        Item {
-            id: leftVisuals
+        Item { // encapsulation
+            id: middleVisuals
 
-            //property bool hasIcon: listItem.iconSource != ""
-            visible: listItem.iconSource != ""
+            height: parent.height
+            width: parent.width - leftVisuals.width - progressItem.width
 
-            width: visible ? icon.width + 10 : 0
-            Rectangle {
-                // for testing only
-                visible: listItem.__testing
-                anchors.fill: parent;
-                color:"green"
-            }
 
-            anchors {
-                left: parent.left
-                top: parent.top
-                bottom: parent.bottom
-            }
-
-            Image {
-                id: icon
-                visible: parent.visible
-                width: visible ? 36 : 0
-                opacity: listItem.enabled ? 1.0 : 0.5
-                fillMode: Image.PreserveAspectFit
+            TextCustom {
+                id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
                     leftMargin: 5
                 }
-            } // Image
-
-            BorderImage {
-                id: iconFrame
-
-                //visible: !listItem.isIcon
-                visible: parent.visible
-                source: "artwork/ListItemFrame.png"
-                anchors.fill: icon
-                anchors.bottomMargin: -1
-                border.left: 3
-                border.right: 3
-                border.top: 3
-                border.bottom: 3
-                horizontalTileMode: BorderImage.Stretch
-                verticalTileMode: BorderImage.Stretch
-            }
-        }
-
-        Item { // encapsulation
-            id: middleVisuals
-
-            property bool hasSubText: listItem.subText != ""
-
-            height: hasSubText ? label.height + subtitle.height : label.height
-            anchors {
-                left: leftVisuals.right
-                right: rightVisuals.left
-                verticalCenter: parent.verticalCenter
-            }
-
-            Rectangle {
-                color: "white"
-                anchors.fill: parent
-                visible: listItem.__testing
-            }
-
-            TextCustom {
-                id: label
-                anchors {
-                    //verticalCenter: parent.verticalCenter
-                    top: parent.top
-                    left: parent.left
-                    leftMargin: 5
-                }
+                width: parent.width
 
                 fontSize: "large"
                 elide: Text.ElideRight
@@ -149,114 +72,13 @@ Base {
                 style: Text.Raised
                 styleColor: "white"
                 opacity: listItem.enabled ? 1.0 : 0.5
-
-                Rectangle {
-                    // for testing only
-                    z: -1
-                    anchors.fill: parent
-                    color: "yellow"
-                    visible: listItem.__testing
-                }
             } // TextCustom
-
-            TextCustom {
-                id: subtitle
-                anchors {
-                    bottom: parent.bottom
-                    left: parent.left
-                    leftMargin: 5
-                }
-                width: parent.width
-                elide: Text.ElideRight
-            }
         }
 
-        Item {
-            id: rightVisuals
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-                right: parent.right
-            }
-            //width: childrenRect.width
-
-            width: {
-                var w = 0
-                if (listItem.control) w += listItem.control.width;
-                if (listItem.progression) w += progressItem.width;
-                if (listItem.__split) w += progressionDivider.width;
-                return w;
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                visible: listItem.__testing
-                color: "blue"
-                width: 200
-            }
-
-            property alias progressItem: progressItem
-
-            Item {
-                id: progressItem
-                height: parent.height
-                width: height // square
-                anchors {
-                    right: parent.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-
-                Image {
-                    id: progressIcon
-                    source: "artwork/arrow_Progression.png"
-                    //                text: ">"
-                    //                fontSize: "xx-large"
-                    anchors.centerIn: parent
-                    visible: listItem.progression
-                } // TextCustom
-
-                Image {
-                    id: progressionDivider
-                    visible: listItem.__split
-                    anchors {
-                        top: parent.top
-                        bottom: parent.bottom
-                        bottomMargin: listItem.__bottomSeparatorHeight
-                        topMargin: listItem.__topSeparatorHeight
-                    }
-                    width: 1
-                    source: "artwork/divider_Vertical.png"
-                }
-            }
-            property Item previousControl: null
-            function controlChanged() {
-                if (rightVisuals.previousControl) rightVisuals.previousControl.visible = false;
-                if (listItem.control) {
-                    listItem.control.parent = rightVisuals;
-                    listItem.control.anchors.verticalCenter = rightVisuals.verticalCenter
-                    listItem.control.anchors.right = (listItem.progression) ? rightVisuals.progressItem.left : rightVisuals.right;
-                }
-                rightVisuals.previousControl = listItem.control;
-            }
-
-            Connections {
-                target: listItem
-                onControlChanged: controlChanged()
-            }
-
-            Component.onCompleted: controlChanged()
+        ProgressionHelper {
+            id: progressItem
         }
 
-        //        Rectangle {
-        //            id: background
-        //            z: -1
-        //            color: "#eeeeee"
-        //            anchors.fill: parent
-        //            border.width: 2
-        //            border.color: "black"
-        //            radius: 5
-        //        }
 
     } // visuals
 }

@@ -28,17 +28,17 @@ import ".."
 Default {
     id: listItem
 
-    property alias value: valueText.text
+//    property alias value: valueText.text
 
     property color __valueColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
 
-    control: TextCustom {
-        id: valueText
-        elide: Text.ElideRight
-        opacity: listItem.enabled ? 1.0 : 0.5
-        fontSize: "medium"
-        style: Text.Raised
-        color: listItem.__valueColor
-        styleColor: "white"
-    }
+//    control: TextCustom {
+//        id: valueText
+//        elide: Text.ElideRight
+//        opacity: listItem.enabled ? 1.0 : 0.5
+//        fontSize: "medium"
+//        style: Text.Raised
+//        color: listItem.__valueColor
+//        styleColor: "white"
+//    }
 }
