@@ -42,13 +42,13 @@ Rectangle {
             onClicked: { print("Clicked disabled list item."); selected = !selected; }
             enabled: false
         }
-//        ListItem.SingleValue {
-//            text: "Gambon"
-//            iconSource: "avatar_contacts_list.png"
-//            value: "Status"
-//            progression: true
-//            onClicked: print("clicked Gambon")
-//        }
+        ListItem.SingleValue {
+            text: "Gambon"
+            iconSource: "avatar_contacts_list.png"
+            value: "Status"
+            progression: true
+            onClicked: print("clicked Gambon")
+        }
         ListItem.Default {
             text: "Caine"
             iconSource: "avatar_contacts_list.png"

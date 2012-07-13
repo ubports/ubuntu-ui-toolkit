@@ -36,4 +36,13 @@ Text {
     */
     property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
+
+    Text {
+        id: invisibleLabel
+        visible: false
+        text: parent.text
+        font: parent.font
+    }
+
+    property alias implicitWidth: invisibleLabel.implicitWidth
 }

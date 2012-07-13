@@ -36,12 +36,22 @@ Selectable {
     Row {
         anchors.fill: parent
         IconHelper { id: iconHelper; height: parent.height }
-        LabelHelper {
-            id: label
+        Item {
             width: parent.width - iconHelper.width - progressionHelper.width
-            selected: listItem.selected
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: 20
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+            LabelHelper {
+                id: label
+                selected: listItem.selected
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 5
+                    left: parent.left
+                    right: parent.right
+                }
+            }
         }
         ProgressionHelper { id: progressionHelper }
     }

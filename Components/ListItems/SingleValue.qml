@@ -25,20 +25,51 @@ import ".."
     \b{This component is under heavy development.}
 
 */
-Default {
+Selectable {
     id: listItem
+    height: 54
 
-//    property alias value: valueText.text
+    property alias iconSource: iconHelper.source
+    property alias text: label.text
+    property alias progression: progressionHelper.visible
+    property alias value: valueLabel.text
 
-    property color __valueColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
-
-//    control: TextCustom {
-//        id: valueText
-//        elide: Text.ElideRight
-//        opacity: listItem.enabled ? 1.0 : 0.5
-//        fontSize: "medium"
-//        style: Text.Raised
-//        color: listItem.__valueColor
-//        styleColor: "white"
-//    }
+    Row {
+        anchors.fill: parent
+        IconHelper { id: iconHelper; height: parent.height }
+        Item {
+            width: parent.width - iconHelper.width - progressionHelper.width
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+            LabelHelper {
+                id: label
+                selected: listItem.selected
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 5
+                    left: parent.left
+                }
+                width: Math.min(label.implicitWidth, parent.width - 10)
+                height: implicitHeight
+//                Rectangle { color: "white"; height: 2; width: parent.implicitWidth; anchors.bottom: parent.bottom }
+            }
+            LabelHelper {
+                id: valueLabel
+                selected: listItem.selected
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    rightMargin: 5
+                }
+                width: Math.min(implicitWidth, parent.width - label.width - 15)
+                fontSize: "medium"
+            }
+        }
+        ProgressionHelper {
+            id: progressionHelper
+            split: true
+        }
+    }
 }
