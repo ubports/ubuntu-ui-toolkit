@@ -31,8 +31,6 @@ Item {
 
     signal clicked
 
-    property bool selected: false
-
     property bool topSeparator: false
     property bool bottomSeparator: true
 
@@ -66,13 +64,5 @@ Item {
         height: visible ? 2 : 0
         source: "artwork/divider_Vertical.png"
         visible: listItem.bottomSeparator
-    }
-    Image {
-        visible: baseListItem.selected
-        anchors.top: parent.top
-        anchors.topMargin: 2
-        anchors.right: parent.right
-        anchors.rightMargin: 2
-        source: "artwork/list_item_selected_triangle.png"
     }
 }

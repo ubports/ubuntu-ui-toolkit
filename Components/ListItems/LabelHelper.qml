@@ -18,31 +18,21 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass Default
+    \qmlclass LabelHelper
     \inqmlmodule UbuntuUIToolkit
-    \brief The Default class is DOCME
+    \brief
 
     \b{This component is under heavy development.}
 
 */
-Selectable {
-    id: listItem
-    height: 54
+TextCustom {
+    id: label
+    property bool selected: false
 
-    property alias iconSource: iconHelper.source
-    property alias text: label.text
-    property alias progression: progressionHelper.visible
-
-    Row {
-        anchors.fill: parent
-        IconHelper { id: iconHelper; height: parent.height }
-        LabelHelper {
-            id: label
-            width: parent.width - iconHelper.width - progressionHelper.width
-            selected: listItem.selected
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: 20
-        }
-        ProgressionHelper { id: progressionHelper }
-    }
-}
+    fontSize: "large"
+    elide: Text.ElideRight
+    color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
+    style: Text.Raised
+    styleColor: "white"
+    opacity: label.enabled ? 1.0 : 0.5
+} // TextCustom

@@ -18,31 +18,24 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass Default
+    \qmlclass Selectable
     \inqmlmodule UbuntuUIToolkit
-    \brief The Default class is DOCME
+    \brief The parent of all selectable list items
 
     \b{This component is under heavy development.}
 
 */
-Selectable {
-    id: listItem
-    height: 54
+Base {
+    id: selectableListIem
 
-    property alias iconSource: iconHelper.source
-    property alias text: label.text
-    property alias progression: progressionHelper.visible
+    property bool selected: false
 
-    Row {
-        anchors.fill: parent
-        IconHelper { id: iconHelper; height: parent.height }
-        LabelHelper {
-            id: label
-            width: parent.width - iconHelper.width - progressionHelper.width
-            selected: listItem.selected
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: 20
-        }
-        ProgressionHelper { id: progressionHelper }
+    Image {
+        visible: selectableListIem.selected
+        anchors.top: parent.top
+        anchors.topMargin: 2
+        anchors.right: parent.right
+        anchors.rightMargin: 2
+        source: "artwork/list_item_selected_triangle.png"
     }
 }
