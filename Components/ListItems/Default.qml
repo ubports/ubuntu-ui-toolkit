@@ -25,7 +25,7 @@ import ".."
     \b{This component is under heavy development.}
 
 */
-Item {
+Base {
     id: listItem
 
     property alias text: label.text
@@ -36,9 +36,6 @@ Item {
     property alias subText: subtitle.text
 
     property bool selected: false
-
-    property bool topSeparator: false
-    property bool bottomSeparator: true
 
     property bool __testing: false
 
@@ -52,46 +49,11 @@ Item {
     height: 54
     width: 250
 
-    signal clicked
-    //onClicked: selected = !selected
-
-    AbstractButton {
-        anchors.fill: parent
-        enabled: listItem.enabled
-        // NOTE: If there is a control, and progression == false,
-        // then the control must accept the clicked() signal.
-        // TODO: Check whether clicked() is there and don't call it if not.
-        onClicked: (listItem.control && (listItem.progression == false)) ? listItem.control.clicked() : listItem.clicked()
-    }
 
     Item {
         id: visuals
 
         anchors.fill: parent
-
-        Image {
-            id: topSeparatorLine
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: visible ? 2 : 0
-            //source: "artwork/ListItemSeparator.png"
-            source: "artwork/divider_Vertical.png"
-            visible: listItem.topSeparator
-        }
-
-        Image {
-            id: bottomSeparatorLine
-
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: visible ? 2 : 0
-            //source: "artwork/ListItemSeparator.png"
-            source: "artwork/divider_Vertical.png"
-            visible: listItem.bottomSeparator
-        }
 
         Image {
             visible: listItem.selected
@@ -260,8 +222,8 @@ Item {
                     anchors {
                         top: parent.top
                         bottom: parent.bottom
-                        bottomMargin: bottomSeparatorLine.height
-                        topMargin: topSeparatorLine.height
+                        bottomMargin: listItem.__bottomSeparatorHeight
+                        topMargin: listItem.__topSeparatorHeight
                     }
                     width: 1
                     source: "artwork/divider_Vertical.png"
