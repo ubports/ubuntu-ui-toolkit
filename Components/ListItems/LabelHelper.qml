@@ -35,4 +35,4 @@ TextCustom {
     style: Text.Raised
     styleColor: "white"
     opacity: label.enabled ? 1.0 : 0.5
-} // TextCustom
+}

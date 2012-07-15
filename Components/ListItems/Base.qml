@@ -41,6 +41,10 @@ Item {
      */
     property bool __isLast: false
 
+    BackgroundHelper {
+        anchors.fill: parent
+    }
+
     AbstractButton {
         anchors.fill: parent
         enabled: listItem.enabled
@@ -49,27 +53,5 @@ Item {
         // TODO: Check whether clicked() is there and don't call it if not.
         //onClicked: (listItem.control && (listItem.progression == false)) ? listItem.control.clicked() : listItem.clicked()
         onClicked: baseListItem.clicked()
-    }
-
-    property real __topSeparatorHeight: topSeparatorLine.height
-    property real __bottomSeparatorHeight: bottomSeparatorLine.height
-
-    Image {
-        id: topSeparatorLine
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: listItem.__isFirst
-    }
-    Image {
-        id: bottomSeparatorLine
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: true
     }
 }

@@ -69,7 +69,7 @@ Selectable {
         }
         ProgressionHelper {
             id: progressionHelper
-            split: true
+            showSplit: true
         }
     }
 }
