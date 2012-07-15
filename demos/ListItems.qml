@@ -39,7 +39,7 @@ Rectangle {
         ListItem.Default {
             text: "Disabled"
             iconSource: "avatar_contacts_list.png"
-            onClicked: { print("Clicked disabled list item."); selected = !selected; }
+            onClicked: { print("Clicked disabled list item."); selected = !selected; } // doesn't happen
             enabled: false
         }
         ListItem.SingleValue {
@@ -55,66 +55,22 @@ Rectangle {
             progression: true
             onClicked: print("clicked Caine")
         }
-//        ListItem.SingleValue {
-//            text: "Parameter"
-//            value: "Status"
-//        }
-//        ListItem.SingleValue {
-//            text: "Parameter Split"
-//            value: "Status"
-//            progression: true
-//        }
-//        ListItem.Default {
-//            text: "Control"
-//            control: Button {
-//                text: "Button"
-//                onClicked: print("click!")
-//                height: 30
-//            }
-//        }
-//        ListItem.Default {
-//            text: "Control Split"
-//            control: Button {
-//                text: "Click"
-//                onClicked: print("Button clicked")
-//                height: 30
-//            }
-//            progression: true
-//            onClicked: print("Progress clicked")
-//        }
-//        ListItem.Selector {
-//            text: "Selector"
-//            iconSource: "avatar_contacts_list.png"
-//            control: TextCustom { text: "TODO"; color: "red" }
-//            progression: false
-//        }
-//        ListItem.MultiValue {
-//            text: "Label"
-//            subText: "Value 1, Value 2, Value 3, Value 4"
-//        }
-//        ListItem.MultiValue {
-//            text: "Label"
-//            subText: "Value 1, Value 2, Value 3, Value 4"
-//            progression: true
-//        }
-//        ListItem.Default {
-//            text: "Action"
-//            subText: "Button ---->"
-//            control: Button { text: "click me" }
-//        }
-        ListItem.Default {
-            text: "very very very loooong text, doesn't even fit"
+        ListItem.MultiValue {
+            text: "Label"
+            values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+            onClicked: selected = !selected
         }
-
-//        ListItem.Default { // Subtitled?
-//            text: "Split"
-//            subText: "action and progress"
-//            control: Button { text: "button" }
-//            progression: true
-//        }
-//        ListItem.Default { // not yet supported
-//            text: "Multiple lines subtitle"
-//            subText: "The secondary label can have up to\nthree lines of text,\nand the listitem should scale automatically?"
-//        }
+        ListItem.MultiValue {
+            text: "Label"
+            values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+            progression: true
+        }
+        ListItem.MultiValue {
+            text: "Label"
+            iconSource: "avatar_contacts_list.png"
+            values: "progression"
+            progression: true
+            onClicked: print("YEAH!")
+        }
     } // Column
 } // window

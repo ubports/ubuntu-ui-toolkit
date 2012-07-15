@@ -43,7 +43,7 @@ Item {
 
     AbstractButton {
         anchors.fill: parent
-        enabled: listItem.enabled
+        enabled: baseListItem.enabled
         onClicked: baseListItem.clicked()
     }
 }

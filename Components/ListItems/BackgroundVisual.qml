@@ -27,6 +27,9 @@ import ".."
 Item {
     id: backgroundVisual
 
+    property bool showTopSeparator: false
+    property bool showBottomSeparator: true
+
     Image {
         id: topSeparatorLine
         anchors.top: parent.top
@@ -34,7 +37,7 @@ Item {
         anchors.right: parent.right
         height: visible ? 2 : 0
         source: "artwork/divider_Vertical.png"
-        visible: listItem.__isFirst
+        visible: backgroundVisual.showTopSeparator
     }
     Image {
         id: bottomSeparatorLine
@@ -43,7 +46,7 @@ Item {
         anchors.right: parent.right
         height: visible ? 2 : 0
         source: "artwork/divider_Vertical.png"
-        visible: true
+        visible: backgroundVisual.showBottomSeparator
     }
 
 }

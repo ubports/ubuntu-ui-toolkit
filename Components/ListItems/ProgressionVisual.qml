@@ -29,13 +29,7 @@ import ".."
 Item {
     id: progressionVisual
     height: parent.height
-    width: visible ? height : 0// square
-//    anchors {
-//        right: parent.right
-//        top: parent.top
-//        bottom: parent.bottom
-//    }
-
+    width: visible ? height : 0
     visible: false
 
     property alias showSplit: progressionDivider.visible
@@ -44,7 +38,7 @@ Item {
         id: progressIcon
         source: "artwork/arrow_Progression.png"
         anchors.centerIn: parent
-        visible: listItem.progression
+        visible: parent.visible
     }
 
     Image {
@@ -53,8 +47,7 @@ Item {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            //bottomMargin: listItem.__bottomSeparatorHeight
-            //topMargin: listItem.__topSeparatorHeight
+
         }
         width: 1
         source: "artwork/divider_Vertical.png"

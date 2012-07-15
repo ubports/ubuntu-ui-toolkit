@@ -33,7 +33,11 @@ Selectable {
     property alias text: label.text
     property alias progression: progressionHelper.visible
 
-    BackgroundVisual { anchors.fill: parent }
+    BackgroundVisual {
+        anchors.fill: parent
+        showBottomSeparator: true
+        showTopSeparator: listItem.__isFirst
+    }
 
     Row {
         anchors.fill: parent

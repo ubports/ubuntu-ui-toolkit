@@ -34,7 +34,11 @@ Selectable {
     property alias progression: progressionHelper.visible
     property alias value: valueLabel.text
 
-    BackgroundVisual { anchors.fill: parent }
+    BackgroundVisual {
+        anchors.fill: parent
+        showTopSeparator: listItem.__isFirst
+        showBottomSeparator: true
+    }
 
     Row {
         anchors.fill: parent
