@@ -58,7 +58,6 @@ Selectable {
                     left: parent.left
                 }
                 width: Math.min(label.implicitWidth, parent.width - 10)
-                height: implicitHeight
             }
             LabelVisual {
                 id: valueLabel
