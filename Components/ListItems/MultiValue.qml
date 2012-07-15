@@ -18,9 +18,9 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass SingleValue
+    \qmlclass MultiValue
     \inqmlmodule UbuntuUIToolkit
-    \brief The SingleValue class is DOCME
+    \brief The MultiValue class is DOCME
 
     \b{This component is under heavy development.}
 
@@ -32,7 +32,11 @@ Selectable {
     property alias iconSource: iconHelper.source
     property alias text: label.text
     property alias progression: progressionHelper.visible
-//    property alias value: valueLabel.text
+
+    /*!
+      \preliminary
+      A list of values
+     */
     property variant values
 
     BackgroundVisual {
