@@ -62,7 +62,7 @@ Selectable {
                     leftMargin: 5
                     left: parent.left
                 }
-                width: parent.width - 5
+                width: parent.width
                 height: implicitHeight
             }
             LabelVisual {
@@ -73,7 +73,7 @@ Selectable {
                     leftMargin: 5
                     left: parent.left
                 }
-                width: parent.width - 5
+                width: parent.width
                 fontSize: "medium"
                 text: {
                     var n = multiValueListItem.values.length;
@@ -92,7 +92,7 @@ Selectable {
         } // middleVisuals
         ProgressionVisual {
             id: progressionHelper
-            showSplit: true
+            showSplit: false
         }
     }
 }
