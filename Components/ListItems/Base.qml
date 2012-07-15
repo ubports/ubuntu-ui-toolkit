@@ -31,8 +31,15 @@ Item {
 
     signal clicked
 
-    property bool topSeparator: false
-    property bool bottomSeparator: true
+    /*!
+      \internal
+     */
+    property bool __isFirst: false
+
+    /*!
+      \internal
+     */
+    property bool __isLast: false
 
     AbstractButton {
         anchors.fill: parent
@@ -54,7 +61,7 @@ Item {
         anchors.right: parent.right
         height: visible ? 2 : 0
         source: "artwork/divider_Vertical.png"
-        visible: listItem.topSeparator
+        visible: listItem.__isFirst
     }
     Image {
         id: bottomSeparatorLine
@@ -63,6 +70,6 @@ Item {
         anchors.right: parent.right
         height: visible ? 2 : 0
         source: "artwork/divider_Vertical.png"
-        visible: listItem.bottomSeparator
+        visible: true
     }
 }

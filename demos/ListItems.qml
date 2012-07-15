@@ -26,7 +26,7 @@ Rectangle {
 
     color: "#e6e6e6"
 
-    Column {
+    ListItem.Container {
         id: listitems
         anchors.fill: parent
 
