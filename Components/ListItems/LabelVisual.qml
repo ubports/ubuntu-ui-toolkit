@@ -18,7 +18,7 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass LabelHelper
+    \qmlclass LabelVisual
     \inqmlmodule UbuntuUIToolkit
     \brief
 

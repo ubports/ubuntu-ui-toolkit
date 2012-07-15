@@ -34,16 +34,18 @@ Selectable {
     property alias progression: progressionHelper.visible
     property alias value: valueLabel.text
 
+    BackgroundVisual { anchors.fill: parent }
+
     Row {
         anchors.fill: parent
-        IconHelper { id: iconHelper; height: parent.height }
+        IconVisual { id: iconHelper; height: parent.height }
         Item {
             width: parent.width - iconHelper.width - progressionHelper.width
             anchors {
                 top: parent.top
                 bottom: parent.bottom
             }
-            LabelHelper {
+            LabelVisual {
                 id: label
                 selected: listItem.selected
                 anchors {
@@ -53,9 +55,8 @@ Selectable {
                 }
                 width: Math.min(label.implicitWidth, parent.width - 10)
                 height: implicitHeight
-//                Rectangle { color: "white"; height: 2; width: parent.implicitWidth; anchors.bottom: parent.bottom }
             }
-            LabelHelper {
+            LabelVisual {
                 id: valueLabel
                 selected: listItem.selected
                 anchors {
@@ -67,7 +68,7 @@ Selectable {
                 fontSize: "medium"
             }
         }
-        ProgressionHelper {
+        ProgressionVisual {
             id: progressionHelper
             showSplit: true
         }

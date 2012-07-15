@@ -33,16 +33,18 @@ Selectable {
     property alias text: label.text
     property alias progression: progressionHelper.visible
 
+    BackgroundVisual { anchors.fill: parent }
+
     Row {
         anchors.fill: parent
-        IconHelper { id: iconHelper; height: parent.height }
+        IconVisual { id: iconHelper; height: parent.height }
         Item {
             width: parent.width - iconHelper.width - progressionHelper.width
             anchors {
                 top: parent.top
                 bottom: parent.bottom
             }
-            LabelHelper {
+            LabelVisual {
                 id: label
                 selected: listItem.selected
                 anchors {
@@ -53,6 +55,6 @@ Selectable {
                 }
             }
         }
-        ProgressionHelper { id: progressionHelper }
+        ProgressionVisual { id: progressionHelper }
     }
 }

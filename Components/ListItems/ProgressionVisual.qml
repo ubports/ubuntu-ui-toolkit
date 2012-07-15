@@ -18,35 +18,45 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass BackgroundHelper
+    \qmlclass ProgressionVisual
     \inqmlmodule UbuntuUIToolkit
-    \brief
+    \brief The parent of all list items
 
     \b{This component is under heavy development.}
 
 */
+
 Item {
-    id: backgroundHelper
-//    property real __topSeparatorHeight: topSeparatorLine.height
-//    property real __bottomSeparatorHeight: bottomSeparatorLine.height
+    id: progressionVisual
+    height: parent.height
+    width: visible ? height : 0// square
+//    anchors {
+//        right: parent.right
+//        top: parent.top
+//        bottom: parent.bottom
+//    }
+
+    visible: false
+
+    property alias showSplit: progressionDivider.visible
 
     Image {
-        id: topSeparatorLine
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: listItem.__isFirst
-    }
-    Image {
-        id: bottomSeparatorLine
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: true
+        id: progressIcon
+        source: "artwork/arrow_Progression.png"
+        anchors.centerIn: parent
+        visible: listItem.progression
     }
 
+    Image {
+        id: progressionDivider
+        visible: false
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            //bottomMargin: listItem.__bottomSeparatorHeight
+            //topMargin: listItem.__topSeparatorHeight
+        }
+        width: 1
+        source: "artwork/divider_Vertical.png"
+    }
 }

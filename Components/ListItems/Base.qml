@@ -41,17 +41,9 @@ Item {
      */
     property bool __isLast: false
 
-    BackgroundHelper {
-        anchors.fill: parent
-    }
-
     AbstractButton {
         anchors.fill: parent
         enabled: listItem.enabled
-        // NOTE: If there is a control, and progression == false,
-        // then the control must accept the clicked() signal.
-        // TODO: Check whether clicked() is there and don't call it if not.
-        //onClicked: (listItem.control && (listItem.progression == false)) ? listItem.control.clicked() : listItem.clicked()
         onClicked: baseListItem.clicked()
     }
 }
