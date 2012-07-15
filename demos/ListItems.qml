@@ -39,7 +39,7 @@ Rectangle {
         ListItem.Default {
             text: "Disabled"
             iconSource: "avatar_contacts_list.png"
-            onClicked: { print("Clicked disabled list item."); selected = !selected; } // doesn't happen
+            onClicked: print("Clicked disabled list item.") // doesn't happen
             enabled: false
         }
         ListItem.SingleValue {
