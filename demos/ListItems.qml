@@ -19,8 +19,6 @@ import "../Components"
 import "../Components/ListItems" as ListItem
 
 Template {
-    id: window
-
     title: "List Items"
 
     Row {
@@ -32,7 +30,6 @@ Template {
                 top: parent.top
                 bottom: parent.bottom
             }
-
             ListItem.Default {
                 text: "Default selectable"
                 onClicked: selected = !selected
@@ -85,7 +82,6 @@ Template {
                 top: parent.top
                 bottom: parent.bottom
             }
-
             ListItem.Default {
                 text: "Default progression"
                 progression: true
