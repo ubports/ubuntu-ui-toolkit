@@ -55,6 +55,7 @@ import ".."
 Item {
     id: listItemContainer
     width: 250
+    height: listItems.height
 
     /*!
       \internal
