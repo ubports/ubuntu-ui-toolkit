@@ -20,22 +20,60 @@ import ".."
 /*!
     \qmlclass MultiValue
     \inqmlmodule UbuntuUIToolkit
-    \brief The MultiValue class is DOCME
-
+    \brief List item with multiple values.
     \b{This component is under heavy development.}
 
+    Examples:
+    \qml
+        Container {
+            MultiValue {
+                text: "Label"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                onClicked: selected = !selected
+            }
+            MultiValue {
+                text: "Label"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                progression: true
+            }
+            MultiValue {
+                text: "Label"
+                iconSource: "avatar_contacts_list.png"
+                values: "progression"
+                progression: true
+                onClicked: print("clicked")
+            }
+        }
+    \endqml
 */
 Selectable {
     id: multiValueListItem
     height: 54
 
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
+     */
     property alias iconSource: iconHelper.source
+
+    /*!
+      \preliminary
+      The text that is shown in the list item as a label.
+      \qmlproperty string text
+     */
     property alias text: label.text
+
+    /*!
+      \preliminary
+      Show or hide the progression symbol.
+      \qmlproperty bool progression
+     */
     property alias progression: progressionHelper.visible
 
     /*!
       \preliminary
-      A list of values
+      The list of values that will be shown under the label text
      */
     property variant values
 

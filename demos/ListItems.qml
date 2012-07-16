@@ -79,5 +79,5 @@ Rectangle {
             progression: true
             onClicked: print("YEAH!")
         }
-    } // Column
+    } // Container
 } // window

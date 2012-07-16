@@ -17,13 +17,6 @@
 import QtQuick 1.1
 import ".."
 
-/*!
-    \qmlclass BackgroundVisual
-    \inqmlmodule UbuntuUIToolkit
-    \brief
-
-    \b{This component is under heavy development.}
-*/
 Item {
     id: backgroundVisual
 
@@ -48,5 +41,4 @@ Item {
         source: "artwork/divider_Vertical.png"
         visible: backgroundVisual.showBottomSeparator
     }
-
 }

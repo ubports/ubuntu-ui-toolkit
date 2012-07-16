@@ -20,10 +20,37 @@ import ".."
 /*!
     \qmlclass Container
     \inqmlmodule UbuntuUIToolkit
-    \brief The parent of all list items
+    \brief The visual parent of all list items
+
+    \qml
+    Examples:
+        Container {
+            Default {
+                text: "Label"
+                iconSource: "icon.png"
+                selected: false
+                onClicked: selected = !selected
+            }
+            SingleValue {
+                text: "Label"
+                value: "Status"
+                progression: true
+            }
+            MultiValue {
+                text: "Label"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+            }
+            Default {
+                text: "Disabled"
+                iconSource: "icon.png"
+                enabled: false
+            }
+        }
+    \endqml
+
+    See \l Default, \l SingleValue and \l MultiValue for more examples.
 
     \b{This component is under heavy development.}
-
 */
 Item {
     id: listItemContainer

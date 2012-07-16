@@ -17,14 +17,7 @@
 import QtQuick 1.1
 import ".."
 
-/*!
-    \qmlclass Base
-    \inqmlmodule UbuntuUIToolkit
-    \brief The parent of all list items
-
-    \b{This component is under heavy development.}
-
-*/
+// parent class for all list items
 Item {
     id: baseListItem
     width: 250

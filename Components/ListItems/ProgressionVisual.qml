@@ -17,15 +17,6 @@
 import QtQuick 1.1
 import ".."
 
-/*!
-    \qmlclass ProgressionVisual
-    \inqmlmodule UbuntuUIToolkit
-    \brief The parent of all list items
-
-    \b{This component is under heavy development.}
-
-*/
-
 Item {
     id: progressionVisual
     height: parent.height

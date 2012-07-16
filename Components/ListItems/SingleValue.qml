@@ -20,7 +20,26 @@ import ".."
 /*!
     \qmlclass SingleValue
     \inqmlmodule UbuntuUIToolkit
-    \brief The SingleValue class is DOCME
+    \brief A list item with a single value
+
+    Examples:
+    \qml
+        Container {
+            SingleValue {
+                text: "Label"
+                value: "Status"
+                onClicked: selected = !selected
+            }
+            SingleValue {
+                text: "Label"
+                iconSource: "icon.png"
+                value: "Parameter"
+                progression: true
+                onClicked: print("clicked")
+
+            }
+        }
+    \endqml
 
     \b{This component is under heavy development.}
 
@@ -29,9 +48,31 @@ Selectable {
     id: listItem
     height: 54
 
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
+     */
     property alias iconSource: iconHelper.source
+
+    /*!
+      \preliminary
+      The text that is shown in the list item as a label.
+      \qmlproperty string text
+     */
     property alias text: label.text
+
+    /*!
+      \preliminary
+      Show or hide the progression symbol.
+      \qmlproperty bool progression
+     */
     property alias progression: progressionHelper.visible
+
+    /*!
+      \preliminary
+      The values that will be shown next to the label text
+     */
     property alias value: valueLabel.text
 
     BackgroundVisual {

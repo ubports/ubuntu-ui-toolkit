@@ -17,14 +17,6 @@
 import QtQuick 1.1
 import ".."
 
-/*!
-    \qmlclass LabelVisual
-    \inqmlmodule UbuntuUIToolkit
-    \brief
-
-    \b{This component is under heavy development.}
-
-*/
 TextCustom {
     id: label
     property bool selected: false

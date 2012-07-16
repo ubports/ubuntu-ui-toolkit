@@ -17,14 +17,7 @@
 import QtQuick 1.1
 import ".."
 
-/*!
-    \qmlclass Selectable
-    \inqmlmodule UbuntuUIToolkit
-    \brief The parent of all selectable list items
-
-    \b{This component is under heavy development.}
-
-*/
+// parent class for list items that can be selected
 Base {
     id: selectableListIem
 
