@@ -18,7 +18,7 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass IconHelper
+    \qmlclass iconVisual
     \inqmlmodule UbuntuUIToolkit
     \brief The parent of all list items
 
@@ -26,7 +26,7 @@ import ".."
 
 */
 Item {
-    id: iconHelper
+    id: iconVisual
 
     property alias source: icon.source
     visible: source != ""
@@ -37,7 +37,7 @@ Item {
         id: icon
         visible: parent.visible
         width: visible ? 36 : 0
-        opacity: iconHelper.enabled ? 1.0 : 0.5
+        opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
             verticalCenter: parent.verticalCenter
@@ -48,6 +48,7 @@ Item {
     BorderImage {
         id: iconFrame
         visible: parent.visible
+        opacity: iconVisual.enabled ? 1.0 : 0.5
         source: "artwork/ListItemFrame.png"
         anchors.fill: icon
         anchors.bottomMargin: -1
