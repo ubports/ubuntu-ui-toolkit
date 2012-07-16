@@ -42,13 +42,6 @@ Rectangle {
             onClicked: print("Clicked disabled list item.") // doesn't happen
             enabled: false
         }
-        ListItem.Default {
-            text: "very long list item text that will be elided"
-        }
-        ListItem.Default {
-            text: "very long list item text that will be elided"
-            progression: true
-        }
         ListItem.SingleValue {
             text: "Gambon"
             iconSource: "avatar_contacts_list.png"
@@ -93,6 +86,5 @@ Rectangle {
             text: "Too long text to fit."
             value: "Too long value to fit."
         }
-
     } // Container
 } // window
