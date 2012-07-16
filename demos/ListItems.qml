@@ -34,7 +34,7 @@ Template {
             }
 
             ListItem.Default {
-                text: "Basic selectable"
+                text: "Default selectable"
                 onClicked: selected = !selected
             }
             ListItem.SingleValue {
@@ -87,7 +87,7 @@ Template {
             }
 
             ListItem.Default {
-                text: "Basic progression"
+                text: "Default progression"
                 progression: true
             }
             ListItem.SingleValue {
