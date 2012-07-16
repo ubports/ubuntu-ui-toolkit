@@ -27,7 +27,6 @@ Rectangle {
     color: "#e6e6e6"
 
     ListItem.Container {
-        id: listitems
         anchors.fill: parent
 
         ListItem.Default {
@@ -39,7 +38,6 @@ Rectangle {
         ListItem.Default {
             text: "Disabled"
             iconSource: "avatar_contacts_list.png"
-            onClicked: print("Clicked disabled list item.") // doesn't happen
             enabled: false
         }
         ListItem.SingleValue {
