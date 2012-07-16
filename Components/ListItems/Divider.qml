@@ -17,28 +17,24 @@
 import QtQuick 1.1
 import ".."
 
-Item {
-    id: backgroundVisual
+/*!
+    \qmlclass Divider
+    \inqmlmodule UbuntuUIToolkit
+    \brief Header for grouping list items together
 
-    property bool showTopSeparator: false
-    property bool showBottomSeparator: true
+    Examples: see \l Header
+    \b{This component is under heavy development.}
+*/
+Base {
+    id: listItemDivider
+    height: 6
+
+    __isDivider: true
 
     Image {
-        id: topSeparatorLine
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: backgroundVisual.showTopSeparator
-    }
-    Image {
-        id: bottomSeparatorLine
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/divider_Vertical.png"
-        visible: backgroundVisual.showBottomSeparator
+        anchors.fill: parent
+        source: "artwork/divider_6px.png"
+        height: 6
+        width: parent.width
     }
 }

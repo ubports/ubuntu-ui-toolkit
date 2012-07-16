@@ -77,11 +77,11 @@ Selectable {
      */
     property variant values
 
-    BackgroundVisual {
-        anchors.fill: parent
-        showTopSeparator: multiValueListItem.__isFirst
-        showBottomSeparator: true
-    }
+//    BackgroundVisual {
+//        anchors.fill: parent
+//        showTopSeparator: multiValueListItem.__isFirst
+//        showBottomSeparator: true
+//    }
 
     Row {
         anchors.fill: parent

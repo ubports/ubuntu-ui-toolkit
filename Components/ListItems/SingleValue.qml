@@ -75,11 +75,11 @@ Selectable {
      */
     property alias value: valueLabel.text
 
-    BackgroundVisual {
-        anchors.fill: parent
-        showTopSeparator: listItem.__isFirst
-        showBottomSeparator: true
-    }
+//    BackgroundVisual {
+//        anchors.fill: parent
+//        showTopSeparator: listItem.__isFirst
+//        showBottomSeparator: true
+//    }
 
     Row {
         anchors.fill: parent

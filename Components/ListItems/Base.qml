@@ -24,19 +24,39 @@ Item {
 
     signal clicked
 
-    /*!
-      \internal
-     */
-    property bool __isFirst: false
-
-    /*!
-      \internal
-     */
-    property bool __isLast: false
-
     AbstractButton {
         anchors.fill: parent
         enabled: baseListItem.enabled
         onClicked: baseListItem.clicked()
+    }
+
+    property bool __showTopSeparator: false
+    property bool __showBottomSeparator: false
+
+    /*!
+      \internal
+      Override in divider classes that should never
+      draw the one-pixel divider at the top or bottom
+      of the list item.
+     */
+    property bool __isDivider: false
+
+    Image {
+        id: topSeparatorLine
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: visible ? 2 : 0
+        source: "artwork/divider_Horizontal.png"
+        visible: baseListItem.__showTopSeparator
+    }
+    Image {
+        id: bottomSeparatorLine
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: visible ? 2 : 0
+        source: "artwork/divider_Horizontal.png"
+        visible: baseListItem.__showBottomSeparator
     }
 }

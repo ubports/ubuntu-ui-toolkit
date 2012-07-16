@@ -69,17 +69,38 @@ Item {
             var num = listItems.children.length;
             if (num > 0) {
                 var item;
-                for (var i = 0; i < num; i++) {
+                for (var i = 0; i < num-1; i++) {
                     item = listItems.children[i];
-                    item.__isFirst = false;
-                    item.__isLast = false;
                     item.width = listItemContainer.width
+                    if (item.__isDivider || listItems.children[i+1].__isDivider) {
+                        item.__showBottomSeparator = false;
+                    } else {
+                        item.__showBottomSeparator = true;
+                    }
+                    item.__showTopSeparator = false;
                 } // for
-                listItems.children[0].__isFirst = true;
-                listItems.children[num-1].__isLast = true;
+                if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
             } // if
         } // function
 
         onChildrenChanged: updateChildren()
     }
+
+//    Repeater {
+//        model: listItems.children
+//        Image {
+//            id: bottomSeparatorLine
+//            width: listItemContainer.width
+//            height: 2
+//            x: modelData.x
+//            y: modelData.y
+////                anchors.bottom: parent.bottom
+////                anchors.left: parent.left
+////                anchors.right: parent.right
+////                //height: visible ? 2 : 0
+//            source: "artwork/divider_Horizontal.png"
+//            //visible: backgroundVisual.showBottomSeparator
+//        }
+//    }
+
 }
