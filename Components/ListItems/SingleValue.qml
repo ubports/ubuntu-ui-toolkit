@@ -98,7 +98,13 @@ Selectable {
                     leftMargin: 5
                     left: parent.left
                 }
-                width: Math.min(label.implicitWidth, parent.width - 10)
+                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
+            }
+            LabelVisual {
+                id: invisibleLabel
+                visible: false
+                text: label.text
+                elide: Text.ElideNone
             }
             LabelVisual {
                 id: valueLabel
@@ -108,8 +114,14 @@ Selectable {
                     right: parent.right
                     rightMargin: 5
                 }
-                width: Math.min(implicitWidth, parent.width - label.width - 15)
+                width: Math.min(invisibleValueLabel.implicitWidth, parent.width - label.width - 15)
                 fontSize: "medium"
+            }
+            LabelVisual {
+                id: invisibleValueLabel
+                text: valueLabel.text
+                visible: false
+                elide: Text.ElideNone
             }
         }
         ProgressionVisual {

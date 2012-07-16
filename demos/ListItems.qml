@@ -79,5 +79,20 @@ Rectangle {
             progression: true
             onClicked: print("YEAH!")
         }
+        ListItem.SingleValue {
+            text: "Short"
+            value: "Too long value to fit in list item"
+            progression: true
+        }
+        ListItem.SingleValue {
+            text: "Too long text to fit in list item"
+            value: "short"
+            progression: true
+        }
+        ListItem.SingleValue {
+            text: "Too long text to fit."
+            value: "Too long value to fit."
+        }
+
     } // Container
 } // window
