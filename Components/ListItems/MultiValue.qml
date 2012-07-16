@@ -77,12 +77,6 @@ Selectable {
      */
     property variant values
 
-//    BackgroundVisual {
-//        anchors.fill: parent
-//        showTopSeparator: multiValueListItem.__isFirst
-//        showBottomSeparator: true
-//    }
-
     Row {
         anchors.fill: parent
         IconVisual { id: iconHelper; height: parent.height }

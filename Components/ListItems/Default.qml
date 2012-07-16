@@ -67,12 +67,6 @@ Selectable {
      */
     property alias progression: progressionHelper.visible
 
-//    BackgroundVisual {
-//        anchors.fill: parent
-//        showBottomSeparator: true
-//        showTopSeparator: listItem.__isFirst
-//    }
-
     Row {
         anchors.fill: parent
         IconVisual { id: iconHelper; height: parent.height }
