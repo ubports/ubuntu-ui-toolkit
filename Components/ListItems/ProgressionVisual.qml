@@ -30,6 +30,7 @@ Item {
         source: "artwork/arrow_Progression.png"
         anchors.centerIn: parent
         visible: parent.visible
+        opacity: enabled ? 1.0 : 0.5
     }
 
     Image {

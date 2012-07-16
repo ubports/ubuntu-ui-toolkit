@@ -18,71 +18,118 @@ import QtQuick 1.1
 import "../Components"
 import "../Components/ListItems" as ListItem
 
-Rectangle {
+Template {
     id: window
 
-    width: 400
-    height: 700
+    title: "List Items"
 
-    color: "#e6e6e6"
+    Row {
+        spacing: 20
 
-    ListItem.Container {
-        anchors.fill: parent
+        ListItem.Container {
+            width: 250
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
 
-        ListItem.Default {
-            text: "Fiennes"
-            iconSource: "avatar_contacts_list.png"
-            selected: false
-            onClicked: selected = !selected
-        }
-        ListItem.Default {
-            text: "Disabled"
-            iconSource: "avatar_contacts_list.png"
-            enabled: false
-        }
-        ListItem.SingleValue {
-            text: "Gambon"
-            iconSource: "avatar_contacts_list.png"
-            value: "Status"
-            progression: true
-            onClicked: print("clicked Gambon")
-        }
-        ListItem.Default {
-            text: "Caine"
-            iconSource: "avatar_contacts_list.png"
-            progression: true
-            onClicked: print("clicked Caine")
-        }
-        ListItem.MultiValue {
-            text: "Label"
-            values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-            onClicked: selected = !selected
-        }
-        ListItem.MultiValue {
-            text: "Label"
-            values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-            progression: true
-        }
-        ListItem.MultiValue {
-            text: "Label"
-            iconSource: "avatar_contacts_list.png"
-            values: "progression"
-            progression: true
-            onClicked: print("YEAH!")
-        }
-        ListItem.SingleValue {
-            text: "Short"
-            value: "Too long value to fit in list item"
-            progression: true
-        }
-        ListItem.SingleValue {
-            text: "Too long text to fit in list item"
-            value: "short"
-            progression: true
-        }
-        ListItem.SingleValue {
-            text: "Too long text to fit."
-            value: "Too long value to fit."
-        }
-    } // Container
+            ListItem.Default {
+                text: "Basic selectable"
+                onClicked: selected = !selected
+            }
+            ListItem.SingleValue {
+                text: "Single value"
+                value: "Status"
+                onClicked: selected = !selected
+            }
+            ListItem.MultiValue {
+                text: "Multiple values"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                onClicked: selected = !selected
+            }
+            ListItem.MultiValue {
+                text: "Disabled"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                onClicked: selected = !selected
+                enabled: false
+            }
+            ListItem.Default {
+                text: "With icon"
+                iconSource: "avatar_contacts_list.png"
+                onClicked: selected = !selected
+            }
+            ListItem.SingleValue {
+                text: "Single value"
+                iconSource: "avatar_contacts_list.png"
+                value: "Status"
+                onClicked: selected = !selected
+            }
+            ListItem.MultiValue {
+                text: "Multiple values"
+                iconSource: "avatar_contacts_list.png"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                onClicked: selected = !selected
+            }
+            ListItem.MultiValue {
+                text: "Disabled"
+                iconSource: "avatar_contacts_list.png"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                onClicked: selected = !selected
+                enabled: false
+            }
+        } // Container
+
+        ListItem.Container {
+            width: 250
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            ListItem.Default {
+                text: "Basic progression"
+                progression: true
+            }
+            ListItem.SingleValue {
+                text: "Single value"
+                value: "Status"
+                progression: true
+            }
+            ListItem.MultiValue {
+                text: "Multiple values"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                progression: true
+            }
+            ListItem.MultiValue {
+                text: "Disabled"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                progression: true
+                enabled: false
+            }
+            ListItem.Default {
+                text: "With icon"
+                iconSource: "avatar_contacts_list.png"
+                progression: true
+            }
+            ListItem.SingleValue {
+                text: "Single value"
+                iconSource: "avatar_contacts_list.png"
+                value: "Status"
+                progression: true
+            }
+            ListItem.MultiValue {
+                text: "Multiple values"
+                iconSource: "avatar_contacts_list.png"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                progression: true
+            }
+            ListItem.MultiValue {
+                text: "Disabled"
+                iconSource: "avatar_contacts_list.png"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                progression: true
+                enabled: false
+            }
+        } // Container
+    }
 } // window

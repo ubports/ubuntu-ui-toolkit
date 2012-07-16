@@ -64,7 +64,6 @@ Item {
     default property alias children: listItems.children
     Column {
         id: listItems
-        width: 250
 
         function updateChildren() {
             var num = listItems.children.length;
@@ -74,6 +73,7 @@ Item {
                     item = listItems.children[i];
                     item.__isFirst = false;
                     item.__isLast = false;
+                    item.width = listItemContainer.width
                 } // for
                 listItems.children[0].__isFirst = true;
                 listItems.children[num-1].__isLast = true;
