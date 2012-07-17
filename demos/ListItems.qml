@@ -22,119 +22,112 @@ Template {
     title: "List Items"
 
     Row {
-        spacing: 20
+        spacing: 10
 
         Rectangle {
             color: "#eeeeee"
-            height: leftContainer.height + 10
-            width: leftContainer.width + 10
+            width: childrenRect.width
+            height: childrenRect.height
 
             ListItem.Container {
-                id: leftContainer
                 width: 250
-                anchors.centerIn: parent
 
-                ListItem.Header {
-                    text: "Selectable"
-                }
+                ListItem.Header { text: "Standard" }
+
                 ListItem.Default {
                     text: "Default"
-                    onClicked: selected = !selected
                 }
-                ListItem.SingleValue {
-                    text: "Single value"
-                    value: "Status"
-                    onClicked: selected = !selected
-                }
-                ListItem.MultiValue {
-                    text: "Multiple values"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    onClicked: selected = !selected
-                }
-                ListItem.Header { text: "With icons" }
                 ListItem.Default {
-                    text: "Default"
-                    iconSource: "avatar_contacts_list.png"
-                    onClicked: selected = !selected
-                }
-                ListItem.SingleValue {
-                    text: "Single value"
-                    iconSource: "avatar_contacts_list.png"
-                    value: "Status"
-                    onClicked: selected = !selected
-                }
-                ListItem.MultiValue {
-                    text: "Multiple values"
-                    iconSource: "avatar_contacts_list.png"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    onClicked: selected = !selected
-                }
-                ListItem.Divider { }
-                ListItem.SingleValue {
                     text: "Disabled"
-                    iconSource: "avatar_contacts_list.png"
-                    value: "Status"
                     enabled: false
                 }
-                ListItem.Divider { }
-            } // Container
+                ListItem.Default {
+                    text: "Selected"
+                    selected: true
+                }
+                ListItem.Default {
+                    text: "Progression"
+                    progression: true
+                }
+                ListItem.Default {
+                    text: "Icon"
+                    iconSource: "avatar_contacts_list.png"
+                }
+            }
         }
 
         Rectangle {
             color: "#eeeeee"
-            height: rightContainer.height + 10
-            width: rightContainer.width + 10
+            width: childrenRect.width
+            height: childrenRect.height
 
             ListItem.Container {
-                id: rightContainer
                 width: 250
-                anchors.centerIn: parent
 
-                ListItem.Header {
-                    text: "Progression"
-                }
-                ListItem.Default {
+                ListItem.Header { text: "Single value" }
+
+                ListItem.SingleValue {
                     text: "Default"
-                    progression: true
+                    value: "Value"
                 }
                 ListItem.SingleValue {
-                    text: "Single value"
-                    value: "Status"
-                    progression: true
-                }
-                ListItem.MultiValue {
-                    text: "Multiple values"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    progression: true
-                }
-                ListItem.Header { text: "With icons" }
-                ListItem.Default {
-                    text: "Default"
-                    iconSource: "avatar_contacts_list.png"
-                    progression: true
-                }
-                ListItem.SingleValue {
-                    text: "Single value"
-                    iconSource: "avatar_contacts_list.png"
-                    value: "Status"
-                    progression: true
-                }
-                ListItem.MultiValue {
-                    text: "Multiple values"
-                    iconSource: "avatar_contacts_list.png"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    progression: true
-                }
-                ListItem.Divider { }
-                ListItem.MultiValue {
                     text: "Disabled"
-                    iconSource: "avatar_contacts_list.png"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    progression: true
+                    value: "Value"
                     enabled: false
                 }
-                ListItem.Divider { }
-            } // Container
+                ListItem.SingleValue {
+                    text: "Selected"
+                    value: "Value"
+                    selected: true
+                }
+                ListItem.SingleValue {
+                    text: "Progression"
+                    value: "Value"
+                    progression: true
+                }
+                ListItem.SingleValue {
+                    text: "Icon"
+                    value: "Value"
+                    iconSource: "avatar_contacts_list.png"
+                }
+            }
+        }
+
+        Rectangle {
+            color: "#eeeeee"
+            width: childrenRect.width
+            height: childrenRect.height
+
+            ListItem.Container {
+                width: 250
+
+                ListItem.Header { text: "Multiple values" }
+
+                ListItem.MultiValue {
+                    text: "Default"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                }
+                ListItem.MultiValue {
+                    text: "Disabled"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    enabled: false
+                }
+                ListItem.MultiValue {
+                    text: "Selected"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    selected: true
+                }
+                ListItem.MultiValue {
+                    text: "Progression"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    progression: true
+                }
+                ListItem.MultiValue {
+                    text: "Icon"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    iconSource: "avatar_contacts_list.png"
+                }
+            }
         }
     }
-} // window
+}

@@ -18,7 +18,7 @@ import QtQuick 1.1
 import "../Components"
 
 Rectangle {
-    width: 800
+    width: 1000
     height: 600
 
     color: "#e6e6e6"
