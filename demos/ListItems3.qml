@@ -23,46 +23,6 @@ Template {
 
     Row {
         spacing: 10
-        Rectangle {
-            color: "#eeeeee"
-            width: childrenRect.width
-            height: childrenRect.height
-
-            ListItem.Container {
-                width: 250
-
-                ListItem.Header { text: "Multiple values" }
-
-                ListItem.MultiValue {
-                    text: "Default"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                }
-                ListItem.MultiValue {
-                    text: "Disabled"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    enabled: false
-                }
-                ListItem.MultiValue {
-                    text: "Selected"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    selected: true
-                }
-                ListItem.MultiValue {
-                    text: "Progression"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    progression: true
-                }
-                ListItem.MultiValue {
-                    text: "Icon"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    iconSource: "avatar_contacts_list.png"
-                }
-                ListItem.Header { text: "Caption" }
-                ListItem.Caption {
-                    text: "Any type of Item can be inserted in a List Item, which gives us a lot of flexibility."
-                }
-            }
-        }
 
         Rectangle {
             color: "#eeeeee"
@@ -72,7 +32,7 @@ Template {
             ListItem.Container {
                 width: 250
 
-                ListItem.Header { text: "Button" }
+                ListItem.Header { text: "Buttons" }
                 ListItem.Base {
                     height: 50
                     Button {
@@ -81,6 +41,33 @@ Template {
                         text:"click me"
                     }
                 }
+                ListItem.Base {
+                    height: 50
+                    Row {
+                        anchors.fill: parent
+                        Item {
+                            width: parent.width / 2
+                            height: parent.height
+                            Button {
+                                width: parent.width - 20
+                                text: "More"
+                                color: "#ccaaaa"
+                                anchors.centerIn: parent
+                            }
+                        }
+                        Item {
+                            width: parent.width / 2
+                            height: parent.height
+                            Button {
+                                width: parent.width - 20
+                                color: "#aaccaa"
+                                text: "buttons"
+                                anchors.centerIn: parent
+                            }
+                        }
+                    }
+                }
+
                 ListItem.Header { text: "Tabs" }
                 ListItem.Base {
                     height: 145
@@ -112,29 +99,13 @@ Template {
                                 color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
                             }
                         }
-                    }
+                    } // Tabs
+                } // ListItem.Base
+                ListItem.Header { text: "Caption" }
+                ListItem.Caption {
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
                 }
-                ListItem.Header { text: "Subtitled" }
-                ListItem.Subtitled {
-                    text: "Selected"
-                    selected: true
-                    subText: "One line of text"
-
-                }
-                ListItem.Subtitled {
-                    text: "Progression"
-                    subText: "This is a subtitled list item.\nUp to five lines of text can be used."
-                    progression: true
-                }
-                ListItem.Subtitled {
-                    text: "Icon (Disabled)"
-                    subText: "This is a multi-line subtitle."//" The icon is aligned at top."
-                    iconSource: "avatar_contacts_list.png"
-                    enabled: false
-                }
-
-            }
-        }
-
-    }
+            } // ListItem.Container
+        } // Rectangle
+    } // Row
 }

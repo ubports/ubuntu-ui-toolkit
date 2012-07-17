@@ -19,7 +19,7 @@ import "../Components"
 import "../Components/ListItems" as ListItem
 
 Template {
-    title: "Advanced List Items"
+    title: "Multi-line List Items"
 
     Row {
         spacing: 10
@@ -57,9 +57,11 @@ Template {
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     iconSource: "avatar_contacts_list.png"
                 }
-                ListItem.Header { text: "Caption" }
-                ListItem.Caption {
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
+                ListItem.Header { text: "Selector" }
+                ListItem.MultiValue {
+                    text: "TODO"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    progression: true
                 }
             }
         }
