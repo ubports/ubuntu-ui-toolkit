@@ -19,7 +19,7 @@ import "../Components"
 import "../Components/ListItems" as ListItem
 
 Template {
-    title: "List Items"
+    title: "Basic List Items"
 
     Row {
         spacing: 10
@@ -52,47 +52,6 @@ Template {
                 ListItem.Default {
                     text: "Icon"
                     iconSource: "avatar_contacts_list.png"
-                }
-                ListItem.Header { text: "Actions" }
-                ListItem.Base {
-                    height: 50
-                    Button {
-                        anchors.centerIn: parent
-                        width: parent.width - 20
-                        text:"click me"
-                    }
-                }
-                ListItem.Base {
-                    height: 100
-                    Tabs {
-                        height: parent.height - 20
-                        width: parent.width - 20
-                        anchors.centerIn: parent
-                        Tab {
-                            text: "Tab 1"
-                            page: TextCustom {
-                                anchors.centerIn: parent
-                                text: "Page one"
-                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                            }
-                        }
-                        Tab {
-                            text: "Tab 2"
-                            page: TextCustom {
-                                anchors.centerIn: parent
-                                text: "Page two"
-                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                            }
-                        }
-                        Tab {
-                            text: "Tab 3"
-                            page: TextCustom {
-                                anchors.centerIn: parent
-                                text: "Page three"
-                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -129,58 +88,6 @@ Template {
                 ListItem.SingleValue {
                     text: "Icon"
                     value: "Value"
-                    iconSource: "avatar_contacts_list.png"
-                }
-                ListItem.Header { text: "Subtitled" }
-                ListItem.Subtitled {
-                    text: "Selected"
-                    selected: true
-                    subText: ["One line of text"]
-
-                }
-                ListItem.Subtitled {
-                    text: "Progression"
-                    subText: ["This is a subtitled list item.",
-                        "Multiple lines of text are supported,",
-                        "but I must say, it looks ugly."
-                    ]
-                    progression: true
-                }
-            }
-        }
-
-        Rectangle {
-            color: "#eeeeee"
-            width: childrenRect.width
-            height: childrenRect.height
-
-            ListItem.Container {
-                width: 250
-
-                ListItem.Header { text: "Multiple values" }
-
-                ListItem.MultiValue {
-                    text: "Default"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                }
-                ListItem.MultiValue {
-                    text: "Disabled"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    enabled: false
-                }
-                ListItem.MultiValue {
-                    text: "Selected"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    selected: true
-                }
-                ListItem.MultiValue {
-                    text: "Progression"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    progression: true
-                }
-                ListItem.MultiValue {
-                    text: "Icon"
-                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     iconSource: "avatar_contacts_list.png"
                 }
             }
