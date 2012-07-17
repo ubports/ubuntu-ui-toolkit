@@ -60,7 +60,7 @@ Item {
     /*!
       \internal
       Keep the ListItemsthat the user defines separate
-      from the other items that we might create below.
+      from the other items that we create below.
     */
     default property alias children: listItems.children
     Column {
@@ -96,7 +96,7 @@ Item {
 
         Connections {
             target: listItemContainer
-            onWidthChanged: listItems.updateWidth()
+            onWidthChanged: updateWidth()
         }
     }
 }
