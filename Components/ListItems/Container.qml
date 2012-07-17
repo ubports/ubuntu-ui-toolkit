@@ -66,13 +66,12 @@ Item {
     Column {
         id: listItems
 
-        function updateChildren() {
+        function updateSeparators() {
             var num = listItems.children.length;
             if (num > 0) {
                 var item;
                 for (var i = 0; i < num-1; i++) {
                     item = listItems.children[i];
-                    item.width = listItemContainer.width
                     if (item.__isDivider || listItems.children[i+1].__isDivider) {
                         item.__showBottomSeparator = false;
                     } else {
@@ -81,27 +80,23 @@ Item {
                     item.__showTopSeparator = false;
                 } // for
                 if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
-            } // if
-        } // function
+            }
+        }
 
-        onChildrenChanged: updateChildren()
+        function updateWidth() {
+            for (var i=0; i < listItems.children.length; i++) {
+                listItems.children[i].width = listItemContainer.width;
+            }
+        }
+
+        onChildrenChanged: {
+            updateWidth();
+            updateSeparators();
+        }
+
+        Connections {
+            target: listItemContainer
+            onWidthChanged: listItems.updateWidth()
+        }
     }
-
-//    Repeater {
-//        model: listItems.children
-//        Image {
-//            id: bottomSeparatorLine
-//            width: listItemContainer.width
-//            height: 2
-//            x: modelData.x
-//            y: modelData.y
-////                anchors.bottom: parent.bottom
-////                anchors.left: parent.left
-////                anchors.right: parent.right
-////                //height: visible ? 2 : 0
-//            source: "artwork/divider_Horizontal.png"
-//            //visible: backgroundVisual.showBottomSeparator
-//        }
-//    }
-
 }
