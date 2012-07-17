@@ -53,6 +53,47 @@ Template {
                     text: "Icon"
                     iconSource: "avatar_contacts_list.png"
                 }
+                ListItem.Header { text: "Actions" }
+                ListItem.Base {
+                    height: 50
+                    Button {
+                        anchors.centerIn: parent
+                        width: parent.width - 20
+                        text:"click me"
+                    }
+                }
+                ListItem.Base {
+                    height: 100
+                    Tabs {
+                        height: parent.height - 20
+                        width: parent.width - 20
+                        anchors.centerIn: parent
+                        Tab {
+                            text: "Tab 1"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page one"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                        Tab {
+                            text: "Tab 2"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page two"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                        Tab {
+                            text: "Tab 3"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page three"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                    }
+                }
             }
         }
 
