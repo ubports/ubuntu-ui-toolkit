@@ -35,6 +35,7 @@ Item {
             verticalCenter: parent.verticalCenter
             left: parent.left
             leftMargin: 5
+            topMargin: 100
         }
     }
     BorderImage {

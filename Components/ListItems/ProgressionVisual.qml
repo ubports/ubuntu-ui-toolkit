@@ -39,7 +39,6 @@ Item {
         anchors {
             top: parent.top
             bottom: parent.bottom
-
         }
         width: 1
         source: "artwork/divider_Vertical.png"

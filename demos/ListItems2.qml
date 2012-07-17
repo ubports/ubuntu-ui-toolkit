@@ -136,17 +136,20 @@ Template {
                 ListItem.Subtitled {
                     text: "Selected"
                     selected: true
-                    subText: ["One line of text"]
+                    subText: "One line of text"
 
                 }
                 ListItem.Subtitled {
                     text: "Progression"
-                    subText: ["This is a subtitled list item.",
-                        "Multiple lines of text are supported."
-                    ]
+                    subText: "This is a subtitled list item.\nUp to five lines of text can be used."
                     progression: true
                 }
-
+                ListItem.Subtitled {
+                    text: "Icon (Disabled)"
+                    subText: "This is a multi-line subtitle."//" The icon is aligned at top."
+                    iconSource: "avatar_contacts_list.png"
+                    enabled: false
+                }
 
             }
         }

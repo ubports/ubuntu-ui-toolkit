@@ -58,12 +58,11 @@ Selectable {
     /*!
       \preliminary
       The list of strings that will be shown under the label text
+      \qmlproperty string subText
      */
-    property variant subText
+    property alias subText: subLabel.text
 
     Row {
-        // anchors.fill: parent
-        //height: childrenRect.height
         width: parent.width
         Item {
             width: iconHelper.width
@@ -83,37 +82,32 @@ Selectable {
                 id: label
                 selected: subtitledListItem.selected
                 anchors {
-                   // top: parent.top
                     leftMargin: 5
                     left: parent.left
                 }
-                width: parent.width
+                width: parent.width - 5
             }
 
-            Repeater {
-                model: subtitledListItem.subText
-                TextCustom {
-                    id: subLabel
-                    property bool selected: subtitledListItem.selected
-
-                    fontSize: "medium"
-                    color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                    style: Text.Raised
-                    styleColor: "white"
-                    opacity: label.enabled ? 1.0 : 0.5
-
-                    anchors {
-                        leftMargin: 5
-                        left: parent.left
-                    }
-
-                    width: parent.width
-                    text: modelData
-
-                    elide: Text.ElideRight
+            TextCustom {
+                id: subLabel
+                property bool selected: subtitledListItem.selected
+                anchors {
+                    leftMargin: 5
+                    left: parent.left
                 }
+
+                fontSize: "medium"
+                elide: Text.ElideRight
+                color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                style: Text.Raised
+                styleColor: "white"
+                opacity: label.enabled ? 1.0 : 0.5
+                width: parent.width - 5
+                wrapMode: Text.Wrap
+                maximumLineCount: 5
             }
         } // middleVisuals
+
         ProgressionVisual {
             id: progressionHelper
             showSplit: true
