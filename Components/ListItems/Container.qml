@@ -48,7 +48,7 @@ import ".."
         }
     \endqml
 
-    See \l Default, \l SingleValue and \l MultiValue for more examples.
+    See \l Base and its subclasses for more examples.
 
     \b{This component is under heavy development.}
 */

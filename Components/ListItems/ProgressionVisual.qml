@@ -20,7 +20,7 @@ import ".."
 Item {
     id: progressionVisual
     height: parent.height
-    width: visible ? height : 0
+    width: visible ? 54 : 0
     visible: false
 
     property alias showSplit: progressionDivider.visible

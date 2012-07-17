@@ -131,6 +131,21 @@ Template {
                     value: "Value"
                     iconSource: "avatar_contacts_list.png"
                 }
+                ListItem.Header { text: "Subtitled" }
+                ListItem.Subtitled {
+                    text: "Selected"
+                    selected: true
+                    subText: ["One line of text"]
+
+                }
+                ListItem.Subtitled {
+                    text: "Progression"
+                    subText: ["This is a subtitled list item.",
+                        "Multiple lines of text are supported,",
+                        "but I must say, it looks ugly."
+                    ]
+                    progression: true
+                }
             }
         }
 
