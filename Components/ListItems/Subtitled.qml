@@ -32,7 +32,7 @@ import ".."
 */
 Selectable {
     id: subtitledListItem
-    height: middleVisuals.height + 10//54
+    height: middleVisuals.height //+ 10//54
 
     /*!
       \preliminary
@@ -64,20 +64,23 @@ Selectable {
 
     Row {
         width: parent.width
+        anchors.topMargin: 50
+        anchors.margins: 10
         Item {
             width: iconHelper.width
             height: iconHelper.height
             IconVisual { id: iconHelper; height: 46 }
         }
         Column  {
+            anchors.topMargin: 50
             id: middleVisuals
             width: parent.width - iconHelper.width - progressionHelper.width
+            height: spacing.height + label.height + subLabel.height
             Item {
-                id: spacing
+                id: topSpacing
                 width: parent.width
                 height: 5
             }
-
             LabelVisual {
                 id: label
                 selected: subtitledListItem.selected
@@ -87,7 +90,6 @@ Selectable {
                 }
                 width: parent.width - 5
             }
-
             TextCustom {
                 id: subLabel
                 property bool selected: subtitledListItem.selected
@@ -105,6 +107,11 @@ Selectable {
                 width: parent.width - 5
                 wrapMode: Text.Wrap
                 maximumLineCount: 5
+            }
+            Item {
+                id: bottomSpacing
+                width: parent.width
+                height: 5
             }
         } // middleVisuals
 

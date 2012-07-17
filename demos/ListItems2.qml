@@ -58,26 +58,8 @@ Template {
                     iconSource: "avatar_contacts_list.png"
                 }
                 ListItem.Header { text: "Caption" }
-                ListItem.Base {
-                    height: framing.height + 10
-                    Rectangle {
-                        id: framing
-                        color: "#e0e0e0e0"
-                        width: parent.width - 10
-                        height: captionText.height + 10
-                        anchors.centerIn: parent
-                        radius: 5
-                        TextCustom {
-                            id: captionText
-                            anchors.centerIn: parent
-                            text: "Any type of Item can be inserted in a List Item, which gives us a lot of flexibility."
-                            width: parent.width - 10
-                            wrapMode: Text.Wrap
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                            height: paintedHeight
-                        }
-                    }
-
+                ListItem.Caption {
+                    text: "Any type of Item can be inserted in a List Item, which gives us a lot of flexibility."
                 }
             }
         }
