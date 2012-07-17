@@ -32,7 +32,7 @@ import ".."
 */
 Selectable {
     id: subtitledListItem
-    height: middleVisuals.height //+ 10//54
+    height: Math.max(middleVisuals.height, 54)
 
     /*!
       \preliminary
@@ -79,7 +79,7 @@ Selectable {
             Item {
                 id: topSpacing
                 width: parent.width
-                height: 5
+                height: 7
             }
             LabelVisual {
                 id: label
@@ -111,7 +111,7 @@ Selectable {
             Item {
                 id: bottomSpacing
                 width: parent.width
-                height: 5
+                height: 8
             }
         } // middleVisuals
 

@@ -59,7 +59,7 @@ Template {
                 }
                 ListItem.Header { text: "Caption" }
                 ListItem.Caption {
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
+                    text: "Any type of Item can be inserted in a List Item, which gives us a lot of flexibility."
                 }
             }
         }
@@ -72,41 +72,65 @@ Template {
             ListItem.Container {
                 width: 250
 
+                ListItem.Header { text: "Button" }
+                ListItem.Base {
+                    height: 50
+                    Button {
+                        anchors.centerIn: parent
+                        width: parent.width - 20
+                        text:"click me"
+                    }
+                }
+                ListItem.Header { text: "Tabs" }
+                ListItem.Base {
+                    height: 145
+                    Tabs {
+                        height: parent.height - 20
+                        width: parent.width - 20
+                        anchors.centerIn: parent
+                        Tab {
+                            text: "Tab 1"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page one"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                        Tab {
+                            text: "Tab 2"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page two"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                        Tab {
+                            text: "Tab 3"
+                            page: TextCustom {
+                                anchors.centerIn: parent
+                                text: "Page three"
+                                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                            }
+                        }
+                    }
+                }
                 ListItem.Header { text: "Subtitled" }
-                ListItem.Subtitled {
-                    text: "Default"
-                    subText: "Secondary label"
-                }
-                ListItem.Subtitled {
-                    text: "Disabled"
-                    enabled: false
-                    subText: "Secondary label"
-                }
                 ListItem.Subtitled {
                     text: "Selected"
                     selected: true
-                    subText: "Secondary label"
+                    subText: "One line of text"
+
                 }
                 ListItem.Subtitled {
                     text: "Progression"
-                    subText: "Secondary label"
+                    subText: "This is a subtitled list item.\nUp to five lines of text can be used."
                     progression: true
                 }
-
                 ListItem.Subtitled {
-                    text: "Icon"
-                    subText: "Secondary label"
+                    text: "Icon (Disabled)"
+                    subText: "This is a multi-line subtitle."//" The icon is aligned at top."
                     iconSource: "avatar_contacts_list.png"
-                }
-                ListItem.Subtitled {
-                    text: "Multiple lines"
-                    subText: "This is a multi-line subText.\nUp to 5 lines are supported."
-                }
-                ListItem.Subtitled {
-                    text: "Multiple lines"
-                    subText: "It also works well with icons and progression."
-                    iconSource: "avatar_contacts_list.png"
-                    progression: true
+                    enabled: false
                 }
 
             }

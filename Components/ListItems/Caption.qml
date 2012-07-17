@@ -46,6 +46,12 @@ Base {
      */
     property alias text: captionText.text
 
+    /*!
+      \preliminary
+      Specify how the text inside the caption must be aligned.
+      \qmlproperty enumeration horizontalAlignment
+     */
+    property alias horizontalAlignment: captionText.horizontalAlignment
     Rectangle {
         id: framing
         color: "#e0e0e0e0"
@@ -60,6 +66,7 @@ Base {
             wrapMode: Text.Wrap
             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
             height: paintedHeight
+            horizontalAlignment: Text.AlignJustify
         }
     }
 }
