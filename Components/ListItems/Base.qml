@@ -76,6 +76,10 @@ Item {
     id: baseListItem
     width: 250
 
+    /*!
+      \preliminary
+      When the list item is clicked.
+     */
     signal clicked
 
     AbstractButton {

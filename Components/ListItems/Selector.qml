@@ -56,7 +56,18 @@ Base {
     id: selector
     height: column.height
 
+    /*!
+      \preliminary
+      The text that is shown in the list item as a label.
+      \qmlproperty string text
+     */
     property alias text: label.text
+
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
+     */
     property alias iconSource: iconHelper.source
 
     /*!

@@ -36,7 +36,6 @@ import ".."
                 value: "Parameter"
                 progression: true
                 onClicked: print("clicked")
-
             }
         }
     \endqml
