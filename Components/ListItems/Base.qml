@@ -68,6 +68,8 @@ import ".."
             }
         }
     \endqml
+
+    See the documentation of the derived classes of Base for more examples.
     \b{This component is under heavy development.}
 */
 Item {

@@ -23,14 +23,42 @@ import ".."
     \brief List item where the user can select one of multiple values.
     \b{This component is under heavy development.}
 
-    Examples: TODO
+    Examples:
+    \qml
+        ListItem.Container {
+            width: 250
+
+            ListItem.Header { text: "Selectors" }
+            ListItem.Selector {
+                text: "Standard"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+            }
+            ListItem.Selector {
+                text: "Disabled"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                selectedIndex: 2
+                enabled: false
+            }
+            ListItem.Selector {
+                text: "Expanded"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                selectedIndex: 1
+                expanded: true
+            }
+            ListItem.Selector {
+                text: "Icon"
+                iconSource: "avatar_contacts_list.png"
+                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+            }
+        }
+    \endqml
 */
 Base {
     id: selector
     height: column.height
 
-    property alias text: selectorMain.text
-    property alias iconSource: selectorMain.iconSource
+    property alias text: label.text
+    property alias iconSource: iconHelper.source
 
     /*!
       \preliminary
@@ -53,24 +81,97 @@ Base {
     Column {
         id: column
 
-        SingleValue {
+        Base {
             id: selectorMain
-            value: selector.values[selector.selectedIndex]
-            progression: true // TODO: replace by accordion icon
+            height: 54
+            __showTopSeparator: false
+            __showBottomSeparator: false
             onClicked: selector.expanded = !selector.expanded
-            __showTopSeparator:  false // selectors shows this if needed
-            __showBottomSeparator: false //selector.expanded // otherwise, selector shows
-        }
+
+            IconVisual { id: iconHelper; height: parent.height }
+            Item {
+                width: parent.width - iconHelper.width - accordion.width
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                    left: iconHelper.right
+                }
+                LabelVisual {
+                    id: label
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: 5
+                        left: parent.left
+                    }
+                    width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
+                }
+                LabelVisual {
+                    id: invisibleLabel
+                    visible: false
+                    text: label.text
+                    elide: Text.ElideNone
+                }
+                LabelVisual {
+                    id: valueLabel
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        right: parent.right
+                        rightMargin: 5
+                    }
+                    width: Math.min(invisibleValueLabel.implicitWidth, parent.width - label.width - 15)
+                    fontSize: "medium"
+                    text: selector.values[selector.selectedIndex]
+                    font.bold: selector.expanded
+                }
+                LabelVisual {
+                    id: invisibleValueLabel
+                    text: valueLabel.text
+                    visible: false
+                    elide: Text.ElideNone
+                }
+            } // Item
+            Item {
+                id: accordion
+                width: 30
+                height: parent.height
+                anchors.right: parent.right
+                Image {
+                    id: accordionIcon
+                    anchors.centerIn: parent
+                    source: "artwork/arrow_Progression.png"
+                    opacity: enabled ? 1.0 : 0.5
+                    rotation: expanded ? 270 : 90
+                    width: implicitWidth / 1.5
+                    height: implicitHeight / 1.5
+
+                    states: [State {
+                            name: "expanded"
+                            when: selector.expanded
+                            PropertyChanges { target: accordionIcon; rotation: 270 }
+                        }, State {
+                            name: "closed"
+                            when: !selector.expanded
+                            PropertyChanges { target: accordionIcon; rotation: 90 }
+                        }
+                    ]
+
+                    transitions: Transition {
+                        PropertyAnimation {
+                            target: accordionIcon
+                            properties: "rotation"
+                            duration: 100
+                        }
+                    }
+                }
+            }
+        } // Base
 
         Repeater {
-            visible: selector.expanded
-            height: visible ? 54 : 0
             model: selector.values
-
             Base {
                 id: valueBase
-                visible: selector.expanded
-                height: visible ? 40 : 0
+                height: selector.expanded ? 40 : 0
+                visible: valueBase.height > 0
 
                 onClicked: selector.selectedIndex = index
 
@@ -89,9 +190,36 @@ Base {
                     }
                     font.italic: true
                     font.bold: index === selector.selectedIndex
+                    property real heightMargin: valueBase.height - implicitHeight
+                    visible: heightMargin > 0
+                    opacity: heightMargin < 10 ? heightMargin/10 : 1
                 }
-                __showTopSeparator: true // TODO: show different (smaller) separator
+                __showTopSeparator: true // TODO: show different (less wide) separator?
+
+                states: [State {
+                        name: "expanded"
+                        when: selector.expanded
+                        PropertyChanges {
+                            target: valueBase
+                            height: 40
+                        }
+                    }, State {
+                        name: "closed"
+                        when: !selector.expanded
+                        PropertyChanges {
+                            target: valueBase
+                            height: 0
+                        }
+                    }
+                ]
+                transitions: Transition {
+                    PropertyAnimation {
+                        target: valueBase
+                        properties: "height"
+                        duration: 100
+                    }
+                }
             } // Base
         } // Repeater
-    }
+    } // Column
 }
