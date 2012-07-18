@@ -50,7 +50,7 @@ Template {
                             height: parent.height
                             Button {
                                 width: parent.width - 20
-                                text: "More"
+                                text: "Call"
                                 color: "#37b301"
                                 anchors.centerIn: parent
                             }
@@ -61,7 +61,7 @@ Template {
                             Button {
                                 width: parent.width - 20
                                 color: "#dd4f22"
-                                text: "buttons"
+                                iconSource: "call_icon.png"
                                 anchors.centerIn: parent
                             }
                         }
@@ -104,6 +104,39 @@ Template {
                 ListItem.Header { text: "Caption" }
                 ListItem.Caption {
                     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
+                }
+            } // ListItem.Container
+        } // Rectangle
+
+        Rectangle {
+            color: "#eeeeee"
+            width: childrenRect.width
+            height: childrenRect.height
+
+            ListItem.Container {
+                width: 250
+
+                ListItem.Header { text: "Selectors" }
+                ListItem.Selector {
+                    text: "Standard"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                }
+                ListItem.Selector {
+                    text: "Disabled"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    selectedIndex: 2
+                    enabled: false
+                }
+                ListItem.Selector {
+                    text: "Expanded"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                    selectedIndex: 1
+                    expanded: true
+                }
+                ListItem.Selector {
+                    text: "Icon"
+                    iconSource: "avatar_contacts_list.png"
+                    values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 }
             } // ListItem.Container
         } // Rectangle
