@@ -51,7 +51,7 @@ Template {
                             Button {
                                 width: parent.width - 20
                                 text: "More"
-                                color: "#ccaaaa"
+                                color: "#37b301"
                                 anchors.centerIn: parent
                             }
                         }
@@ -60,7 +60,7 @@ Template {
                             height: parent.height
                             Button {
                                 width: parent.width - 20
-                                color: "#aaccaa"
+                                color: "#dd4f22"
                                 text: "buttons"
                                 anchors.centerIn: parent
                             }
