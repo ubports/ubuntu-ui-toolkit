@@ -124,7 +124,6 @@ Template {
                 ListItem.Selector {
                     text: "Disabled"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                    selectedIndex: 2
                     enabled: false
                 }
                 ListItem.Selector {

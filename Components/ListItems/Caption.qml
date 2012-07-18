@@ -54,7 +54,7 @@ Base {
     property alias horizontalAlignment: captionText.horizontalAlignment
     Rectangle {
         id: framing
-        color: "#e0e0e0e0"
+        color: "#e0e0e0"
         width: parent.width - 10
         height: captionText.height + 10
         anchors.centerIn: parent
