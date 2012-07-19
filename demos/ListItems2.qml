@@ -105,9 +105,7 @@ Template {
                     iconSource: "avatar_contacts_list.png"
                     progression: true
                 }
-
-            }
-        }
-
+            } // Container
+        } // Rectangle
     }
 }

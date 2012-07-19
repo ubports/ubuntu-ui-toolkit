@@ -22,8 +22,8 @@ import ".."
     \inqmlmodule UbuntuUIToolkit
     \brief The visual parent of all list items
 
-    \qml
     Examples:
+    \qml
         Container {
             Default {
                 text: "Label"

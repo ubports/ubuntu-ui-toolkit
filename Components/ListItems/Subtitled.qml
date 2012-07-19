@@ -25,9 +25,42 @@ import ".."
 
     Examples:
     \qml
-        Container {
-            TODO
-        }
+        ListItem.Container {
+            ListItem.Subtitled {
+                text: "Default"
+                subText: "Secondary label"
+            }
+            ListItem.Subtitled {
+                text: "Disabled"
+                enabled: false
+                subText: "Secondary label"
+            }
+            ListItem.Subtitled {
+                text: "Selected"
+                selected: true
+                subText: "Secondary label"
+            }
+            ListItem.Subtitled {
+                text: "Progression"
+                subText: "Secondary label"
+                progression: true
+            }
+            ListItem.Subtitled {
+                text: "Icon"
+                subText: "Secondary label"
+                iconSource: "avatar_contacts_list.png"
+            }
+            ListItem.Subtitled {
+                text: "Multiple lines"
+                subText: "This is a multi-line subText.\nUp to 5 lines are supported."
+            }
+            ListItem.Subtitled {
+                text: "Multiple lines"
+                subText: "It also works well with icons and progression."
+                iconSource: "avatar_contacts_list.png"
+                progression: true
+            }
+        } // Container
     \endqml
 */
 Selectable {
