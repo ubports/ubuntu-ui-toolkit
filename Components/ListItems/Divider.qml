@@ -20,7 +20,7 @@ import ".."
 /*!
     \qmlclass Divider
     \inqmlmodule UbuntuUIToolkit 0.1
-    \brief Header for grouping list items together
+    \brief Divider for grouping list items together
 
     Examples: see \l Header
     \b{This component is under heavy development.}
