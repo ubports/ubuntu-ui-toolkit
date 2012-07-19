@@ -49,9 +49,9 @@ Base {
     /*!
       \preliminary
       Specify how the text inside the caption must be aligned.
-      \qmlproperty enumeration horizontalAlignment
+      \qmlproperty enumeration horizontalTextAlignment
      */
-    property alias horizontalAlignment: captionText.horizontalAlignment
+    property alias horizontalTextAlignment: captionText.horizontalAlignment
     Rectangle {
         id: framing
         color: "#e0e0e0"

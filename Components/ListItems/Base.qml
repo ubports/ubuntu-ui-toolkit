@@ -18,9 +18,12 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass Default
+    \qmlclass Base
     \inqmlmodule UbuntuUIToolkit
-    \brief The Default list item class.
+    \brief The default list item class.
+    The Base class can be used for generic list items, containing
+    other components such as buttons. For specific types of list items,
+    see its subclasses.
 
     Examples:
     \qml

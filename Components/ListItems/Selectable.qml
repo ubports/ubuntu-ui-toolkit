@@ -17,10 +17,21 @@
 import QtQuick 1.1
 import ".."
 
-// parent class for list items that can be selected
+/*!
+  \qmlclass Selectable
+  \inqmlmodule UbuntuUIToolkit
+  \brief A base list item that has a selected state.
+
+  This class is inherited by several types of selectable list items
+  and should not be used directly.
+ */
 Base {
     id: selectableListIem
 
+    /*!
+      \preliminary
+      Specifies whether the list item is selected.
+     */
     property bool selected: false
 
     Image {
