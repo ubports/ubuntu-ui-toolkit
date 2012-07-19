@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass SingleValue
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief A list item with a single value
 
     Examples:

@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass Default
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief The Default list item class.
 
     Examples:

@@ -19,7 +19,7 @@ import ".."
 
 /*!
   \qmlclass Selectable
-  \inqmlmodule UbuntuUIToolkit
+  \inqmlmodule UbuntuUIToolkit 0.1
   \brief A base list item that has a selected state.
 
   This class is inherited by several types of selectable list items

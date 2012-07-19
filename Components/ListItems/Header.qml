@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass Header
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief Header for grouping list items together
 
     Examples:

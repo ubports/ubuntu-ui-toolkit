@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass MultiValue
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief List item with multiple values.
     \b{This component is under heavy development.}
 

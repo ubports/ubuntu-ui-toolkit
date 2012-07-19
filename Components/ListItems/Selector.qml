@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass Selector
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief List item where the user can select one of multiple values.
     \b{This component is under heavy development.}
 

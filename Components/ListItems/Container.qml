@@ -19,7 +19,7 @@ import ".."
 
 /*!
     \qmlclass Container
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief The visual parent of all list items
 
     Examples:
