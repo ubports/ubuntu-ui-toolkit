@@ -28,8 +28,7 @@ import ".."
     Examples:
     \qml
         Container {
-            ListItem.Header { text: "Actions" }
-            ListItem.Base {
+            Base {
                 height: 50
                 Button {
                     anchors.centerIn: parent
@@ -37,7 +36,7 @@ import ".."
                     text:"click me"
                 }
             }
-            ListItem.Base {
+            Base {
                 height: 100
                 Tabs {
                     height: parent.height - 20
