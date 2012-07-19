@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass tabButton
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief Button used in Tab bars.
 */
 ButtonWithForeground {
