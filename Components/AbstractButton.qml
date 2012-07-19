@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlabstract AbstractButton
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief The AbstractButton class defines the behavior of the button.
 
     \b{This component is under heavy development.}
@@ -28,12 +28,6 @@ import QtQuick 1.1
 */
 Item {
     id: button
-
-    /*!
-       \preliminary
-       Set enabled to false to block the clicked signal and state changes.
-    */
-    property bool enabled: true
 
     /*!
        \preliminary

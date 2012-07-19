@@ -30,10 +30,10 @@ ShaderEffectItem {
         uniform sampler2D base;
         uniform lowp float gradientStrength;
 
-        vec3 blendOverlay(vec3 base, vec3 blend)
+        lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)
         {
             bvec3 comparison = lessThan(base, vec3(0.5));
-            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, vec3(comparison));
+            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, lowp vec3(comparison));
         }
 
         void main(void)
@@ -43,7 +43,7 @@ ShaderEffectItem {
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
             // this is equivalent to using a vertical linear gradient texture going from vec3(0.0) to vec3(1.0) with opacity 0.8
-            lowp vec3 gradientColor = vec3(0.8*qt_TexCoord0.t);
+            lowp vec3 gradientColor = lowp vec3(0.8*qt_TexCoord0.t);
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb, gradientColor.rgb), baseColor.a);
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
         }
