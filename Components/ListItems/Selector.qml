@@ -25,29 +25,27 @@ import ".."
 
     Examples:
     \qml
-        ListItem.Container {
+        Container {
             width: 250
-
-            ListItem.Header { text: "Selectors" }
-            ListItem.Selector {
+            Selector {
                 text: "Standard"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            ListItem.Selector {
+            Selector {
                 text: "Disabled"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            ListItem.Selector {
+            Selector {
                 text: "Expanded"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                selectedIndex: 1
                 expanded: true
             }
-            ListItem.Selector {
+            Selector {
                 text: "Icon"
                 iconSource: "avatar_contacts_list.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                selectedIndex: 2
             }
         }
     \endqml
