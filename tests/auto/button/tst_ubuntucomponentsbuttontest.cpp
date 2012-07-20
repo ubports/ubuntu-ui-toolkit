@@ -42,8 +42,7 @@ private slots:
 };
 
 void tst_ubuntucomponentsbuttontest::initTestCase() {
-    int retval = loadAndCreateComponentObject();
-    QVERIFY(retval==NO_ERRORS);
+    loadAndCreateComponentObject();
 }
 
 void tst_ubuntucomponentsbuttontest::cleanupTestCase() {
@@ -51,60 +50,74 @@ void tst_ubuntucomponentsbuttontest::cleanupTestCase() {
 }
 
 void tst_ubuntucomponentsbuttontest::text() {
-    QVERIFY(checkPropertyAndExpectedType("text",QVariant::String));
+    QString propertyName("text");
+    QString initialValue("Hello World");
+    QString newValue("World Hello!");
 
-    QCOMPARE(componentObject()->property("text").toString(), QString("Hello World"));
-    componentObject()->setProperty("text","World Hello!");
-    QCOMPARE(componentObject()->property("text").toString(), QString("World Hello!"));
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName,initialValue);
+    setPropertyValue(propertyName,newValue);
+    checkPropertyValue(propertyName,newValue);
 }
 
 void tst_ubuntucomponentsbuttontest::iconSource() {
-    QVERIFY(checkPropertyAndExpectedType("iconSource",QVariant::Url));
+    QString propertyName("iconSource");
+    QUrl initialValue("icon.png");
+    QUrl newValue("icon2.png");
 
-    QCOMPARE(QFileInfo(componentObject()->property("iconSource").toString()).fileName(), QString("icon.png"));
-    componentObject()->setProperty("iconSource","icon2.png");
-    QCOMPARE(componentObject()->property("iconSource").toString(), QString("icon2.png"));
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName,initialValue);
+    setPropertyValue(propertyName,newValue);
+    checkPropertyValue(propertyName,newValue);
 }
 
 void tst_ubuntucomponentsbuttontest::enabled() {
-    QVERIFY(checkPropertyAndExpectedType("enabled",QVariant::Bool));
+    QString propertyName("enabled");
+    QBool initialValue(false);
+    QBool newValue(true);
 
-    QCOMPARE(componentObject()->property("enabled").toBool(), false);
-    componentObject()->setProperty("enabled",true);
-    QCOMPARE(componentObject()->property("enabled").toBool(), true);
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName, QVariant(initialValue));
+    setPropertyValue(propertyName, QVariant(newValue));
+    checkPropertyValue(propertyName,QVariant(newValue));
 }
 
 void tst_ubuntucomponentsbuttontest::textColor() {
-    QVERIFY(checkPropertyAndExpectedType("textColor",QVariant::Color));
+    QString propertyName("textColor");
+    QColor initialValue = QColor::fromRgb(255,0,0,0);
+    QColor newValue = QColor::fromRgb(0,0,255,0);
 
-    QCOMPARE(componentObject()->property("textColor").toString(), QString("#ff0000"));
-    componentObject()->setProperty("textColor",QString("#0000ff"));
-    QCOMPARE(componentObject()->property("textColor").toString(),QString("#0000ff"));
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName,initialValue);
+    setPropertyValue(propertyName,newValue);
+    checkPropertyValue(propertyName,newValue);
 }
 
 void tst_ubuntucomponentsbuttontest::textSize() {
-    QVERIFY(checkPropertyAndExpectedType("textSize",QVariant::String));
+    QString propertyName("textSize");
+    QString initialValue("x-large");
+    QString newValue("medium");
 
-    QCOMPARE(componentObject()->property("textSize").toString(), QString("x-large"));
-    componentObject()->setProperty("textSize","medium");
-    QCOMPARE(componentObject()->property("textSize").toString(), QString("medium"));
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName, initialValue);
+    setPropertyValue(propertyName, newValue);
+    checkPropertyValue(propertyName, newValue);
 }
 
 void tst_ubuntucomponentsbuttontest::iconPosition() {
-    QVERIFY(checkPropertyAndExpectedType("iconPosition",QVariant::String));
+    QString propertyName("iconPosition");
+    QString initialValue("right");
+    QString newValue("left");
 
-    QCOMPARE(componentObject()->property("iconPosition").toString(),  QString("right"));
-    componentObject()->setProperty("iconPosition",QString("left"));
-    QCOMPARE(componentObject()->property("iconPosition").toString(), QString("left"));
+    checkPropertyExistsAndExpectedType(propertyName,QVariant(initialValue).type());
+    checkPropertyValue(propertyName, initialValue);
+    setPropertyValue(propertyName, newValue);
+    checkPropertyValue(propertyName, newValue);
 }
 
 void tst_ubuntucomponentsbuttontest::clicked() {
-    QSignalSpy signalSpy(componentObject(), SIGNAL(clicked()));
-    QMetaObject::invokeMethod(componentObject() ,"clicked",Qt::DirectConnection);
-    QCOMPARE(signalSpy.count(), 1);
-    QVERIFY(signalSpy.isValid());
+    checkSimpleSignal(SIGNAL(clicked()),"clicked");
 }
-
 
 QTEST_MAIN(tst_ubuntucomponentsbuttontest)
 

@@ -10,3 +10,4 @@ SOURCES += tst_ubuntucomponentsbuttontest.cpp
 
 OTHER_FILES += \
     tst_ubuntucomponentsbuttontest.qml
+

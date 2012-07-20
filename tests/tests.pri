@@ -8,3 +8,6 @@ TEMPLATE = app
 
 HEADERS += ../../shared/ubuntucomponentstestcase.h
 
+SOURCES += \
+    ../../shared/ubuntucomponentstestcase.cpp
+
