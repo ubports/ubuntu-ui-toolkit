@@ -28,16 +28,22 @@ public:
     }
     
 private slots:
+
+// init
     void initTestCase();
 
+// check properties
     void textColor();
     void textSize();
     void text();
     void iconPosition();
     void enabled();
     void iconSource();
+
+// check signals
     void clicked();
 
+// cleanup
     void cleanupTestCase();
 };
 
