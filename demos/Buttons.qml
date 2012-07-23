@@ -15,7 +15,7 @@
  */
 
 import QtQuick 1.1
-import "../Components"
+import Ubuntu.Components 0.1
 
 Template {
     title: "Buttons"

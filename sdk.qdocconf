@@ -1,5 +1,5 @@
 project = Ubuntu User Interface Toolkit
-sourcedirs = Components
+sourcedirs = modules/Ubuntu/Components
 sources.fileextensions = "*.qml *.qdoc"
 outputdir = html
 outputformats = HTML
