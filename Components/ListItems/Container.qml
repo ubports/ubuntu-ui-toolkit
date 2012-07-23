@@ -25,7 +25,7 @@ import ".."
     Examples:
     \qml
         Container {
-            Default {
+            Standard {
                 text: "Label"
                 iconSource: "icon.png"
                 selected: false
@@ -40,7 +40,7 @@ import ".."
                 text: "Label"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            Default {
+            Standard {
                 text: "Disabled"
                 iconSource: "icon.png"
                 enabled: false

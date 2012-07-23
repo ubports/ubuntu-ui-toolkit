@@ -34,22 +34,22 @@ Template {
 
                 ListItem.Header { text: "Standard" }
 
-                ListItem.Default {
+                ListItem.Standard {
                     text: "Default"
                 }
-                ListItem.Default {
+                ListItem.Standard {
                     text: "Disabled"
                     enabled: false
                 }
-                ListItem.Default {
+                ListItem.Standard {
                     text: "Selected"
                     selected: true
                 }
-                ListItem.Default {
+                ListItem.Standard {
                     text: "Progression"
                     progression: true
                 }
-                ListItem.Default {
+                ListItem.Standard {
                     text: "Icon"
                     iconSource: "avatar_contacts_list.png"
                 }

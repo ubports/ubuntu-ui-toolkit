@@ -18,23 +18,23 @@ import QtQuick 1.1
 import ".."
 
 /*!
-    \qmlclass Default
+    \qmlclass Standard
     \inqmlmodule UbuntuUIToolkit 0.1
-    \brief The Default list item class.
+    \brief The standard list item class.
 
     Examples:
     \qml
         Container {
-            Default {
-                text: "Selectable default list item"
+            Standard {
+                text: "Selectable standard list item"
                 selected: false
                 onClicked: selected = !selected
                }
-            Default {
+            Standard {
                 text: "List item with icon"
                 iconSource: "icon.png"
             }
-            Default {
+            Standard {
                 text: "With a progression arrow"
                 progression: true
             }
