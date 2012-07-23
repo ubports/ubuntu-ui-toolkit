@@ -4,6 +4,6 @@ HLine 0.1 HLine.qml
 Tab 0.1 Tab.qml
 Tabs 0.1 Tabs.qml
 TextCustom 0.1 TextCustom.qml
-internal AbstractButton AbstractButton.qml
+AbstractButton 0.1 AbstractButton.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml

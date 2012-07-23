@@ -15,8 +15,8 @@
  */
 
 import QtQuick 1.1
-import "../Components"
-import "../Components/ListItems" as ListItem
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     title: "Basic List Items"

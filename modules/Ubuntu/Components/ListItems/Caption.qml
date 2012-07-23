@@ -15,7 +15,7 @@
  */
 
 import QtQuick 1.1
-import ".."
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass Default
