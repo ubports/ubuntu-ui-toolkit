@@ -18,16 +18,13 @@ import QtQuick 1.1
 
 /*!
     \qmlclass HLine
-    \inqmlmodule UbuntuUIToolkit
-    \brief The HLine class is DOCME
+    \inqmlmodule UbuntuUIToolkit 0.1
+    \brief A horizontal line.
 
     \b{This component is under heavy development.}
-
-    The HLine class is part of the \l{UbuntuUIToolkit} module.
 */
 Rectangle {
     height: 1
     color: "black"
-    // TODO: check if parent exists
-    width: parent.width
+    width: parent ? parent.width : 100
 }
