@@ -19,12 +19,10 @@ import "fontUtils.js" as FontUtils
 
 /*!
     \qmlclass TextCustom
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief The TextCustom class is DOCME
 
     \b{This component is under heavy development.}
-
-    The TextCustom class is part of the \l{UbuntuUIToolkit} module.
 */
 Text {
     color: "black"

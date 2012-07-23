@@ -19,29 +19,29 @@ import Qt.labs.shaders 1.0
 
 /*!
     \qmlclass Button
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief The Button class is DOCME
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        Button {
-            text: "Send"
-            onClicked: print("clicked text-only Button")
-        }
-
-        Button {
-            iconSource: "call_icon.png"
-            color: "green"
-            onClicked: print("clicked icon-only Button")
-        }
-
-        Button {
-            iconSource: "call_icon.png"
-            text: "Icon on left"
-            iconPosition: "left"
-            onClicked: print("clicked text and icon Button")
+        Column {
+            Button {
+                text: "Send"
+                onClicked: print("clicked text-only Button")
+            }
+            Button {
+                iconSource: "call_icon.png"
+                color: "green"
+                onClicked: print("clicked icon-only Button")
+            }
+            Button {
+                iconSource: "call_icon.png"
+                text: "Icon on left"
+                iconPosition: "left"
+                onClicked: print("clicked text and icon Button")
+            }
         }
     \endqml
 */
@@ -53,26 +53,33 @@ ButtonWithForeground {
 
     /*!
        \preliminary
-       DOCME
+       The foreground color of the button in idle state.
     */
     property color color: "#e3e5e8"
 
     /*!
        \preliminary
-       DOCME
+       The color when the button is pressed.
     */
     property color pressedColor: color
 
     /*!
        \preliminary
-       DOCME
+       Specify whether the layer behind the button has a dark color.
+       This will change the visuals/shading of the button.
     */
     property bool darkBorder: false
 
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
+    /*!
+      \internal
+     */
     textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
 
+    /*!
+      \internal
+     */
     function __luminance(hexcolor){
         hexcolor = String(hexcolor)
         var r = parseInt(hexcolor.substr(1,2),16);

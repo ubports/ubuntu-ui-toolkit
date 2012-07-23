@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass Tab
-    \inqmlmodule UbuntuUIToolkit
+    \inqmlmodule UbuntuUIToolkit 0.1
     \brief A child of a Tabs object that represents one tab.
 
     \b{This component is under heavy development.}
