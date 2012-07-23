@@ -5,4 +5,5 @@ Tab 0.1 Tab.qml
 Tabs 0.1 Tabs.qml
 TextCustom 0.1 TextCustom.qml
 internal AbstractButton AbstractButton.qml
-internal TabButton.qml TabButton.qml
+internal TabButton TabButton.qml
+internal ButtonMaskEffect ButtonMaskEffect.qml
