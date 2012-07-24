@@ -87,6 +87,7 @@ Base {
 
     Column {
         id: column
+        width: parent.width
 
         Base {
             id: selectorMain

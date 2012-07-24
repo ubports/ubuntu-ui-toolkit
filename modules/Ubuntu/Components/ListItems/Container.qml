@@ -65,6 +65,7 @@ Item {
     default property alias children: listItems.children
     Column {
         id: listItems
+        width: parent.width
 
         function updateSeparators() {
             var num = listItems.children.length;
@@ -83,20 +84,6 @@ Item {
             }
         }
 
-        function updateWidth() {
-            for (var i=0; i < listItems.children.length; i++) {
-                listItems.children[i].width = listItemContainer.width;
-            }
-        }
-
-        onChildrenChanged: {
-            listItems.updateWidth();
-            listItems.updateSeparators();
-        }
-
-        Connections {
-            target: listItemContainer
-            onWidthChanged: listItems.updateWidth()
-        }
+        onChildrenChanged: listItems.updateSeparators();
     }
 }

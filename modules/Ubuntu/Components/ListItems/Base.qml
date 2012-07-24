@@ -77,7 +77,7 @@ import Ubuntu.Components 0.1
 */
 Item {
     id: baseListItem
-    width: 250
+    width: parent ? parent.width : 250
 
     /*!
       \preliminary
