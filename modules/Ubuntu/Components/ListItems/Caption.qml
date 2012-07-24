@@ -18,14 +18,14 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Default
+    \qmlclass Caption
     \inqmlmodule UbuntuUIToolkit 0.1
-    \brief The Default list item class.
+    \brief List item that shows a piece of text.
 
     Examples:
     \qml
         Container {
-            Default {
+            Standard {
                 text: "Default list item."
             }
             Caption {
@@ -46,12 +46,6 @@ Base {
      */
     property alias text: captionText.text
 
-    /*!
-      \preliminary
-      Specify how the text inside the caption must be aligned.
-      \qmlproperty enumeration horizontalTextAlignment
-     */
-    property alias horizontalTextAlignment: captionText.horizontalAlignment
     Rectangle {
         id: framing
         color: "#e0e0e0"
