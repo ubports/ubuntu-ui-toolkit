@@ -70,40 +70,45 @@ Selectable {
      */
     property variant values
 
-    Row {
+    Item {
         anchors.fill: parent
         IconVisual {
             id: iconHelper;
             anchors {
                 top: parent.top
                 bottom: parent.bottom
+                left: parent.left
             }
         }
         Item {
             id: middleVisuals
-            width: parent.width - iconHelper.width - progressionHelper.width
             height: label.height + valueLabel.height
-            anchors.verticalCenter: parent.verticalCenter
-
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: iconHelper.right
+                right: progressionHelper.left
+            }
             LabelVisual {
                 id: label
                 selected: multiValueListItem.selected
                 anchors {
                     top: parent.top
-                    leftMargin: 5
                     left: parent.left
+                    right: parent.right
+                    leftMargin: 5
+                    rightMargin: 5
                 }
-                width: parent.width
             }
             LabelVisual {
                 id: valueLabel
                 selected: multiValueListItem.selected
                 anchors {
                     top: label.bottom
-                    leftMargin: 5
                     left: parent.left
+                    right: parent.right
+                    leftMargin: 5
+                    rightMargin: 5
                 }
-                width: parent.width
                 fontSize: "medium"
                 text: concatenatedValues(multiValueListItem.values)
 
@@ -124,6 +129,11 @@ Selectable {
             id: progressionHelper
             visible: multiValueListItem.progression
             showSplit: false
+            anchors {
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
         }
     }
 }

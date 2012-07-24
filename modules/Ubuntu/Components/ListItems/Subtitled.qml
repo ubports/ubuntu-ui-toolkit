@@ -94,39 +94,52 @@ Selectable {
      */
     property alias subText: subLabel.text
 
-    Row {
+    Item {
         width: parent.width
         height: parent.height
 
-        Item {
-            width: iconHelper.width
-            height: iconHelper.height
-            IconVisual { id: iconHelper; height: 46 }
-        }
-        Column  {
-            id: middleVisuals
-            width: parent.width - iconHelper.width - progressionHelper.width
-            height: spacing.height + label.height + subLabel.height
-            Item {
-                id: topSpacing
-                width: parent.width
-                height: 7
+        IconVisual {
+            id: iconHelper
+            height: 46
+            anchors {
+                leftMargin: 5
+                topMargin: 5
+                left: parent.left
+                top: parent.top
             }
+        }
+        Item  {
+            id: middleVisuals
+            anchors {
+                left: iconHelper.right
+                right: progressionHelper.left
+            }
+            height: childrenRect.height + 12 // margins
+
             LabelVisual {
                 id: label
                 selected: subtitledListItem.selected
                 anchors {
-                    leftMargin: 5
+                    top: parent.top
                     left: parent.left
+                    right: parent.right
+                    leftMargin: 5
+                    rightMargin: 5
+                    bottomMargin: 5
+                    topMargin: 7
                 }
-                width: parent.width - 5
             }
             TextCustom {
                 id: subLabel
                 property bool selected: subtitledListItem.selected
                 anchors {
                     leftMargin: 5
+                    bottomMargin: 5
+                    rightMargin: 5
+
                     left: parent.left
+                    right: parent.right
+                    top: label.bottom
                 }
 
                 fontSize: "medium"
@@ -135,14 +148,8 @@ Selectable {
                 style: Text.Raised
                 styleColor: "white"
                 opacity: label.enabled ? 1.0 : 0.5
-                width: parent.width - 5
                 wrapMode: Text.Wrap
                 maximumLineCount: 5
-            }
-            Item {
-                id: bottomSpacing
-                width: parent.width
-                height: 8
             }
         } // middleVisuals
 
@@ -150,6 +157,10 @@ Selectable {
             id: progressionHelper
             visible: subtitledListItem.progression
             showSplit: true
+            anchors {
+                verticalCenter: parent.verticalCenter
+                right: parent.right
+            }
         }
     }
 }

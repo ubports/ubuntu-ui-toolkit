@@ -49,17 +49,21 @@ Base {
     Rectangle {
         id: framing
         color: "#e0e0e0"
-        width: parent.width - 10
-        height: captionText.height + 10
-        anchors.centerIn: parent
         radius: 5
+        anchors {
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+            margins: 5
+        }
+        height: captionText.height + 10
+
         TextCustom {
             id: captionText
             anchors.centerIn: parent
             width: parent.width - 10
             wrapMode: Text.Wrap
             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-            height: paintedHeight
             horizontalAlignment: Text.AlignHCenter
         }
     }

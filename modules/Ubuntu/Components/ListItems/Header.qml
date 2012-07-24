@@ -36,7 +36,7 @@ import QtQuick 1.1
 */
 Base {
     id: listItemHeader
-    height: image.implicitHeight
+    height: image.height
 
     /*!
       \preliminary
@@ -50,7 +50,10 @@ Base {
     Image {
         id: image
         source: "artwork/divider_24px.png"
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
     }
 
     LabelVisual {

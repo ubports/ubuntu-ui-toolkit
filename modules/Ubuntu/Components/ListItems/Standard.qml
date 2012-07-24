@@ -66,29 +66,32 @@ Selectable {
      */
     property bool progression: false
 
-    Row {
-        anchors.fill: parent
-        IconVisual { id: iconHelper; height: parent.height }
-        Item {
-            width: parent.width - iconHelper.width - progressionHelper.width
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-            }
-            LabelVisual {
-                id: label
-                selected: listItem.selected
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    leftMargin: 5
-                    left: parent.left
-                    right: parent.right
-                }
-            }
+
+    IconVisual {
+        id: iconHelper
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
         }
-        ProgressionVisual {
-            id: progressionHelper
-            visible: listItem.progression
+    }
+    LabelVisual {
+        id: label
+        selected: listItem.selected
+        anchors {
+            verticalCenter: parent.verticalCenter
+            leftMargin: 5
+            left: iconHelper.right
+            right: progressionHelper.left
+        }
+    }
+    ProgressionVisual {
+        id: progressionHelper
+        visible: listItem.progression
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
         }
     }
 }

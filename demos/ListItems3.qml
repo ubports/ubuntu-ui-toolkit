@@ -118,7 +118,7 @@ Template {
 
                 ListItem.Header { text: "Selectors" }
                 ListItem.Selector {
-                    text: "Standard"
+                    text: "Default"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 }
                 ListItem.Selector {

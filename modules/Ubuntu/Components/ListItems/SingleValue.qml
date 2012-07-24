@@ -72,53 +72,51 @@ Selectable {
      */
     property alias value: valueLabel.text
 
-    Row {
-        anchors.fill: parent
-        IconVisual { id: iconHelper; height: parent.height }
-        Item {
-            width: parent.width - iconHelper.width - progressionHelper.width
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-            }
-            LabelVisual {
-                id: label
-                selected: listItem.selected
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    leftMargin: 5
-                    left: parent.left
-                }
-                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
-            }
-            LabelVisual {
-                id: invisibleLabel
-                visible: false
-                text: label.text
-                elide: Text.ElideNone
-            }
-            LabelVisual {
-                id: valueLabel
-                selected: listItem.selected
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    right: parent.right
-                    rightMargin: 5
-                }
-                width: Math.min(invisibleValueLabel.implicitWidth, parent.width - label.width - 15)
-                fontSize: "medium"
-            }
-            LabelVisual {
-                id: invisibleValueLabel
-                text: valueLabel.text
-                visible: false
-                elide: Text.ElideNone
-            }
+    IconVisual {
+        id: iconHelper;
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
         }
-        ProgressionVisual {
-            id: progressionHelper
-            visible: listItem.progression
-            showSplit: true
+    }
+    LabelVisual {
+        id: label
+        selected: listItem.selected
+        anchors {
+            verticalCenter: parent.verticalCenter
+            leftMargin: 5
+            left: iconHelper.right
+        }
+        width: Math.min(invisibleLabel.implicitWidth, listItem.width - iconHelper.width - progressionHelper.width)
+    }
+    LabelVisual {
+        id: invisibleLabel
+        visible: false
+        text: label.text
+        elide: Text.ElideNone
+    }
+    LabelVisual {
+        id: valueLabel
+        selected: listItem.selected
+        anchors {
+            verticalCenter: parent.verticalCenter
+            right: progressionHelper.left
+            rightMargin: 5
+            left: label.right
+            leftMargin: 5
+        }
+        horizontalAlignment: Text.AlignRight
+        fontSize: "medium"
+    }
+    ProgressionVisual {
+        id: progressionHelper
+        visible: listItem.progression
+        showSplit: true
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
         }
     }
 }

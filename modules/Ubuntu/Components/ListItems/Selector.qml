@@ -89,7 +89,10 @@ Base {
 
     Column {
         id: column
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
 
         Base {
             id: selectorMain
@@ -98,53 +101,51 @@ Base {
             __showBottomSeparator: false
             onClicked: selector.expanded = !selector.expanded
 
-            IconVisual { id: iconHelper; height: parent.height }
-            Item {
-                width: parent.width - iconHelper.width - accordion.width
+            IconVisual {
+                id: iconHelper
                 anchors {
+                    left: parent.left
                     top: parent.top
                     bottom: parent.bottom
+                }
+            }
+            LabelVisual {
+                id: label
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 5
                     left: iconHelper.right
                 }
-                LabelVisual {
-                    id: label
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        leftMargin: 5
-                        left: parent.left
-                    }
-                    width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
+                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
+            }
+            LabelVisual {
+                id: invisibleLabel
+                visible: false
+                text: label.text
+                elide: Text.ElideNone
+            }
+            LabelVisual {
+                id: valueLabel
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: accordion.left
+                    rightMargin: 5
+                    leftMargin: 5
+                    left: label.right
                 }
-                LabelVisual {
-                    id: invisibleLabel
-                    visible: false
-                    text: label.text
-                    elide: Text.ElideNone
-                }
-                LabelVisual {
-                    id: valueLabel
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        right: parent.right
-                        rightMargin: 5
-                    }
-                    width: Math.min(invisibleValueLabel.implicitWidth, parent.width - label.width - 15)
-                    fontSize: "medium"
-                    text: selector.values[selector.selectedIndex]
-                    font.bold: selector.expanded
-                }
-                LabelVisual {
-                    id: invisibleValueLabel
-                    text: valueLabel.text
-                    visible: false
-                    elide: Text.ElideNone
-                }
-            } // Item
+                fontSize: "medium"
+                text: selector.values[selector.selectedIndex]
+                font.bold: selector.expanded
+                horizontalAlignment: Text.AlignRight
+            }
             Item {
                 id: accordion
                 width: 30
-                height: parent.height
-                anchors.right: parent.right
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                }
                 Image {
                     id: accordionIcon
                     anchors.centerIn: parent
@@ -206,7 +207,7 @@ Base {
                 }
                 __showTopSeparator: true // TODO: show different (less wide) separator?
 
-                states: [State {
+                states: [ State {
                         name: "expanded"
                         when: selector.expanded
                         PropertyChanges {

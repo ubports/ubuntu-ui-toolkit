@@ -33,6 +33,9 @@ Base {
     Image {
         id: image
         source: "artwork/divider_6px.png"
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
     }
 }

@@ -65,7 +65,11 @@ Item {
     default property alias children: listItems.children
     Column {
         id: listItems
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
 
         function updateSeparators() {
             var num = listItems.children.length;
