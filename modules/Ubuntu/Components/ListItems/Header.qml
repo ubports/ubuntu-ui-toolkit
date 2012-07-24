@@ -36,7 +36,7 @@ import QtQuick 1.1
 */
 Base {
     id: listItemHeader
-    height: 24
+    height: image.implicitHeight
 
     /*!
       \preliminary
@@ -48,9 +48,8 @@ Base {
     __isDivider: true
 
     Image {
-        anchors.fill: parent
+        id: image
         source: "artwork/divider_24px.png"
-        height: 24
         width: parent.width
     }
 
