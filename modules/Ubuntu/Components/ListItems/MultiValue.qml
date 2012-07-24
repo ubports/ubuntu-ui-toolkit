@@ -32,13 +32,8 @@ import QtQuick 1.1
             }
             MultiValue {
                 text: "Label"
+                iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                progression: true
-            }
-            MultiValue {
-                text: "Label"
-                iconSource: "avatar_contacts_list.png"
-                values: "progression"
                 progression: true
                 onClicked: print("clicked")
             }
