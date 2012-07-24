@@ -16,6 +16,8 @@
 
 import QtQuick 1.1
 
+// Internal helper class for the visuals of
+// the progression symbol.
 Item {
     id: progressionVisual
     height: parent.height

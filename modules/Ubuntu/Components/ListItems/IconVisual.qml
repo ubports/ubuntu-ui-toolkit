@@ -16,6 +16,8 @@
 
 import QtQuick 1.1
 
+// internal helper class to create the visuals
+// for the icon.
 Item {
     id: iconVisual
 

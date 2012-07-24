@@ -17,6 +17,7 @@
 import QtQuick 1.1
 import Ubuntu.Components 0.1
 
+// internal helper class for text inside the list items.
 TextCustom {
     id: label
     property bool selected: false
