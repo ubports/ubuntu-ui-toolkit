@@ -61,9 +61,8 @@ Selectable {
     /*!
       \preliminary
       Show or hide the progression symbol.
-      \qmlproperty bool progression
      */
-    property alias progression: progressionHelper.visible
+    property bool progression: false
 
     /*!
       \preliminary
@@ -123,6 +122,7 @@ Selectable {
         } // middleVisuals
         ProgressionVisual {
             id: progressionHelper
+            visible: multiValueListItem.progression
             showSplit: false
         }
     }

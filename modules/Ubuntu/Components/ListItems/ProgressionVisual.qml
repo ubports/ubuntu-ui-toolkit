@@ -22,9 +22,8 @@ Item {
     id: progressionVisual
     height: parent.height
     width: visible ? 54 : 0
-    visible: false
 
-    property alias showSplit: progressionDivider.visible
+    property bool showSplit: false
 
     Image {
         id: progressIcon
@@ -35,7 +34,7 @@ Item {
 
     Image {
         id: progressionDivider
-        visible: false
+        visible: progressionVisual.showSplit
         anchors {
             top: parent.top
             bottom: parent.bottom
