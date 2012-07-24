@@ -120,9 +120,11 @@ Item {
     }
     Image {
         id: bottomSeparatorLine
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
         height: visible ? 2 : 0
         source: "artwork/divider_Horizontal.png"
         visible: baseListItem.__showBottomSeparator
