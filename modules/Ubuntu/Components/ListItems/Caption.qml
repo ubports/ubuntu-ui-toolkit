@@ -60,7 +60,7 @@ Base {
             wrapMode: Text.Wrap
             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
             height: paintedHeight
-            horizontalAlignment: Text.AlignJustify
+            horizontalAlignment: Text.AlignHCenter
         }
     }
 }
