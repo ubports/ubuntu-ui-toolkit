@@ -19,7 +19,9 @@ import QtQuick 1.1
 /*!
     \qmlclass Selector
     \inqmlmodule UbuntuUIToolkit 0.1
-    \brief List item where the user can select one of multiple values.
+    \brief List item displaying single selected value when not expanded,
+    where expanding it opens a listing of all the possible values for selection.
+
     \b{This component is under heavy development.}
 
     Examples:
