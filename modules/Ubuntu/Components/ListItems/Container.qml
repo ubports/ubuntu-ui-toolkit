@@ -89,13 +89,13 @@ Item {
         }
 
         onChildrenChanged: {
-            updateWidth();
-            updateSeparators();
+            listItems.updateWidth();
+            listItems.updateSeparators();
         }
 
         Connections {
             target: listItemContainer
-            onWidthChanged: updateWidth()
+            onWidthChanged: listItems.updateWidth()
         }
     }
 }
