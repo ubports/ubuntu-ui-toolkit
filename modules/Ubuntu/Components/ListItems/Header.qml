@@ -25,11 +25,11 @@ import QtQuick 1.1
     \qml
         Container {
             Header { text: "Title" }
-            Default { text: "Item one" }
-            Default { text: "Item two" }
+            Standard { text: "Item one" }
+            Standard { text: "Item two" }
             Divider { }
-            Default { text: "Item three" }
-            Default { text: "Item four" }
+            Standard { text: "Item three" }
+            Standard { text: "Item four" }
         }
     \endqml
     \b{This component is under heavy development.}
