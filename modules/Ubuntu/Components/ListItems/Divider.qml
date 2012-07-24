@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass Divider
     \inqmlmodule UbuntuUIToolkit 0.1
-    \brief Divider for grouping list items together
+    \brief Divider to break up list items into groups.
 
     Examples: see \l Header
     \b{This component is under heavy development.}
