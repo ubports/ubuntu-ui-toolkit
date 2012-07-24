@@ -33,7 +33,7 @@ import Ubuntu.Components 0.1
                 Button {
                     anchors.centerIn: parent
                     width: parent.width - 20
-                    text:"click me"
+                    text: "click me"
                 }
             }
             Base {
