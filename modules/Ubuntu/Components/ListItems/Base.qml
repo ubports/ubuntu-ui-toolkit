@@ -22,8 +22,9 @@ import Ubuntu.Components 0.1
     \inqmlmodule UbuntuUIToolkit 0.1
     \brief The default list item class.
     The Base class can be used for generic list items, containing
-    other components such as buttons. For specific types of list items,
-    see its subclasses.
+    other components such as buttons. It draws an upper and lower
+    divider, and can take mouse clicks.
+    For specific types of list items, see its subclasses.
 
     Examples:
     \qml
