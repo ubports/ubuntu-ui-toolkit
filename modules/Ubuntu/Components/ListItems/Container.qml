@@ -58,8 +58,9 @@ Item {
 
     /*!
       \internal
-      Keep the ListItemsthat the user defines separate
-      from the other items that we create below.
+      Keep the ListItems that the user defines separate
+      from the other items that we create below, and
+      ensure the listItems column is their parent.
     */
     default property alias children: listItems.children
     Column {
@@ -77,7 +78,7 @@ Item {
                         item.__showBottomSeparator = true;
                     }
                     item.__showTopSeparator = false;
-                } // for
+                }
                 if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
             }
         }
