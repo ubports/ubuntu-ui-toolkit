@@ -73,7 +73,13 @@ Selectable {
 
     Row {
         anchors.fill: parent
-        IconVisual { id: iconHelper; height: parent.height }
+        IconVisual {
+            id: iconHelper;
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+        }
         Item {
             id: middleVisuals
             width: parent.width - iconHelper.width - progressionHelper.width
