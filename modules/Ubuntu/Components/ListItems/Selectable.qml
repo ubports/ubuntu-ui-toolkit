@@ -35,10 +35,12 @@ Base {
 
     Image {
         visible: selectableListIem.selected
-        anchors.top: parent.top
-        anchors.topMargin: 2
-        anchors.right: parent.right
-        anchors.rightMargin: 2
+        anchors {
+            top: parent.top
+            topMargin: 2
+            right: parent.right
+            rightMargin: 2
+        }
         source: "artwork/list_item_selected_triangle.png"
     }
 }
