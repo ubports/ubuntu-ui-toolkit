@@ -106,16 +106,16 @@ Selectable {
                 }
                 width: parent.width
                 fontSize: "medium"
-                text: {
-                    var n = multiValueListItem.values.length;
-                    var result;
+                text: concatenatedValues(multiValueListItem.values)
+
+                function concatenatedValues(values) {
+                    var n = values.length;
+                    var result = "";
                     if (n > 0) {
-                        result = multiValueListItem.values[0];
+                        result = values[0];
                         for (var i = 1; i < n; i++) {
-                            result = result + ", " + multiValueListItem.values[i];
+                            result = result + ", " + values[i];
                         }
-                    } else {
-                        result = "void";
                     }
                     return result;
                 }
