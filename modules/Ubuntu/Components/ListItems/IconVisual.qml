@@ -39,6 +39,7 @@ Item {
             topMargin: 100
         }
     }
+
     BorderImage {
         id: iconFrame
         visible: parent.visible
@@ -46,10 +47,12 @@ Item {
         source: "artwork/ListItemFrame.png"
         anchors.fill: icon
         anchors.bottomMargin: -1
-        border.left: 3
-        border.right: 3
-        border.top: 3
-        border.bottom: 3
+        border {
+            left: 3
+            right: 3
+            top: 3
+            bottom: 3
+        }
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
     }
