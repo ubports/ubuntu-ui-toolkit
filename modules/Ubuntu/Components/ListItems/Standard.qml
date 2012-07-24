@@ -86,6 +86,6 @@ Selectable {
                 }
             }
         }
-        ProgressionVisual {id: progressionHelper }
+        ProgressionVisual { id: progressionHelper }
     }
 }

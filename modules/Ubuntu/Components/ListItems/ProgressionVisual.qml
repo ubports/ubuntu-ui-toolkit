@@ -28,7 +28,6 @@ Item {
         id: progressIcon
         source: "artwork/arrow_Progression.png"
         anchors.centerIn: parent
-        visible: parent.visible
         opacity: enabled ? 1.0 : 0.5
     }
 
@@ -41,5 +40,6 @@ Item {
         }
         width: 1
         source: "artwork/divider_Vertical.png"
+        opacity: enabled ? 1.0 : 0.5
     }
 }

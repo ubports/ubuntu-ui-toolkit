@@ -97,15 +97,14 @@ Selectable {
 
     Row {
         width: parent.width
-        anchors.topMargin: 50
-        anchors.margins: 10
+        height: parent.height
+
         Item {
             width: iconHelper.width
             height: iconHelper.height
             IconVisual { id: iconHelper; height: 46 }
         }
         Column  {
-            anchors.topMargin: 50
             id: middleVisuals
             width: parent.width - iconHelper.width - progressionHelper.width
             height: spacing.height + label.height + subLabel.height
