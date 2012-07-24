@@ -53,22 +53,15 @@ Base {
         width: parent.width
     }
 
-    Item {
-        width: parent.width
+    LabelVisual {
+        id: label
+        font.italic: true
+        fontSize: "medium"
         anchors {
-            top: parent.top
-            bottom: parent.bottom
-        }
-        LabelVisual {
-            id: label
-            font.italic: true
-            fontSize: "medium"
-            anchors {
-                verticalCenter: parent.verticalCenter
-                leftMargin: 10
-                left: parent.left
-                right: parent.right
-            }
+            verticalCenter: parent.verticalCenter
+            leftMargin: 10
+            left: parent.left
+            right: parent.right
         }
     }
 }
