@@ -34,64 +34,19 @@ Template {
 
                 ListItem.Header { text: "Controls" }
                 ListItem.Standard {
+                    text: "Label"
                     control: Button {
-                        //anchors.centerIn: parent
-                        //anchors.fill: parent
-                        //width: parent.width - 20
-                        width: 240
-                        anchors {
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
-
+                        width: 100
                         text: "click me"
+                        anchors.centerIn: parent
+                        onClicked: print("clicked button")
                     }
+                    onClicked: control.clicked()
                 }
                 ListItem.Standard {
                     control: Button {
-                        id: button
-                        width: 100
-                        iconSource: "call_icon.png"
-                        anchors.centerIn: parent
-                    }
-                    text: "Label"
-                    onClicked: button.clicked()
-                    iconSource: "avatar_contacts_list.png"
-                    progression: true
-                }
-
-                ListItem.Base {
-                    height: 50
-                    Button {
-                        anchors.centerIn: parent
-                        width: parent.width - 20
-                        text: "click me"
-                    }
-                }
-                ListItem.Base {
-                    height: 50
-                    Row {
+                        text: "Big control"
                         anchors.fill: parent
-                        Item {
-                            width: parent.width / 2
-                            height: parent.height
-                            Button {
-//                                width: parent.width - 20
-                                text: "Call"
-                                color: "#37b301"
-                                anchors.centerIn: parent
-                            }
-                        }
-                        Item {
-                            width: parent.width / 2
-                            height: parent.height
-                            Button {
-                                width: parent.width - 20
-                                color: "#dd4f22"
-                                iconSource: "call_icon.png"
-                                anchors.centerIn: parent
-                            }
-                        }
                     }
                 }
 

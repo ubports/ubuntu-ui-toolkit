@@ -39,6 +39,21 @@ import QtQuick 1.1
                 text: "With a progression arrow"
                 progression: true
             }
+            ListItem.Standard {
+                text: "Control"
+                control: Button {
+                    text: "Click me"
+                    width: 150
+                    onClicked: print("Clicked")
+                }
+                onClicked: control.clicked()
+            }
+            ListItem.Standard {
+                control: Button {
+                    text: "Full control"
+                    anchors.fill: parent
+                }
+            }
         }
     \endqml
     \b{This component is under heavy development.}
@@ -67,7 +82,16 @@ Selectable {
      */
     property bool progression: false
 
-    // TODO: doc
+    /*!
+      \preliminary
+      An optional control that is displayed inside the list item.
+      If \l text is specified, then the width of the control must be fixed
+      in order to determine the layout of the list item.
+      If no \l text is given, the control's parent will fill the full
+      space available inside the list item, taking into account a possible
+      icon and progression, and the control may be anchored to fill its parent.
+      \qmlproperty Item control
+    */
     property alias control: controlContainer.control
 
     IconVisual {
@@ -85,27 +109,21 @@ Selectable {
             verticalCenter: parent.verticalCenter
             leftMargin: 5
             left: iconHelper.right
-//            right: progressionHelper.left
             right: controlContainer.left
         }
     }
     Item {
         id: controlContainer
         property Item control
-//        visible: control ? true : false
-        //height: parent.height
-        width: control ? control.width : 0
-//        height: 30
-//        Rectangle { color: "yellow"; anchors.fill: controlContainer; z: -1 }
+        // use the width of the control if there is (possibly elided) text,
+        // or full width available if there is no text.
+        width: label.text ? childrenRect.width : undefined
         anchors {
-//            left: label.right
+            left: label.text ? undefined : iconHelper.right
             right: progressionHelper.left
-            leftMargin: 5
-            rightMargin: 5
             top: parent.top
             bottom: parent.bottom
-            topMargin: 5
-            bottomMargin: 5
+            margins: 5
         }
         onControlChanged: control.parent = controlContainer
     }
