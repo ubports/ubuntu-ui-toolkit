@@ -44,7 +44,7 @@ import QtQuick 1.1
             }
             Selector {
                 text: "Icon"
-                iconSource: "avatar_contacts_list.png"
+                iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
@@ -149,7 +149,8 @@ Base {
                 Image {
                     id: accordionIcon
                     anchors.centerIn: parent
-                    source: "artwork/arrow_Progression.png"
+                    // TODO: Replace this placeholder graphic with the official one.
+                    source: "artwork/ListItemProgressionArrow.png"
                     opacity: enabled ? 1.0 : 0.5
                     rotation: expanded ? 270 : 90
                     width: implicitWidth / 1.5

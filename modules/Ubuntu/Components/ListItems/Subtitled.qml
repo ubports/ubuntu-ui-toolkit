@@ -48,7 +48,7 @@ import Ubuntu.Components 0.1
             Subtitled {
                 text: "Icon"
                 subText: "Secondary label"
-                iconSource: "avatar_contacts_list.png"
+                iconSource: "icon.png"
             }
             Subtitled {
                 text: "Multiple lines"
@@ -57,7 +57,7 @@ import Ubuntu.Components 0.1
             Subtitled {
                 text: "Multiple lines"
                 subText: "It also works well with icons and progression."
-                iconSource: "avatar_contacts_list.png"
+                iconSource: "icon.png"
                 progression: true
             }
         }

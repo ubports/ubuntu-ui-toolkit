@@ -32,7 +32,7 @@ Base {
 
     Image {
         id: image
-        source: "artwork/divider_6px.png"
+        source: "artwork/ListItemDivider6px.png"
         anchors {
             left: parent.left
             right: parent.right

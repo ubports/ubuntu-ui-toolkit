@@ -115,7 +115,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         height: visible ? 2 : 0
-        source: "artwork/divider_Horizontal.png"
+        source: "artwork/ListItemDividerHorizontal.png"
         visible: baseListItem.__showTopSeparator
     }
     Image {
@@ -126,7 +126,7 @@ Item {
             right: parent.right
         }
         height: visible ? 2 : 0
-        source: "artwork/divider_Horizontal.png"
+        source: "artwork/ListItemDividerHorizontal.png"
         visible: baseListItem.__showBottomSeparator
     }
 }

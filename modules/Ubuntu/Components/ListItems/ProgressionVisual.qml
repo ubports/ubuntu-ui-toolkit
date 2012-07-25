@@ -27,7 +27,7 @@ Item {
 
     Image {
         id: progressIcon
-        source: "artwork/arrow_Progression.png"
+        source: "artwork/ListItemProgressionArrow.png"
         anchors.centerIn: parent
         opacity: enabled ? 1.0 : 0.5
     }
@@ -40,7 +40,7 @@ Item {
             bottom: parent.bottom
         }
         width: 1
-        source: "artwork/divider_Vertical.png"
+        source: "artwork/ListItemDividerVertical.png"
         opacity: enabled ? 1.0 : 0.5
     }
 }

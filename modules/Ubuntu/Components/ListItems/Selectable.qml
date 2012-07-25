@@ -41,6 +41,6 @@ Base {
             right: parent.right
             rightMargin: 2
         }
-        source: "artwork/list_item_selected_triangle.png"
+        source: "artwork/ListItemSelectedTriangle.png"
     }
 }
