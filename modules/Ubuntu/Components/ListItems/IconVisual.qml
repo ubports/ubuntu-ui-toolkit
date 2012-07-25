@@ -28,8 +28,7 @@ Item {
 
     Image {
         id: icon
-        visible: parent.visible
-        width: visible ? 36 : 0
+        width: 36
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
