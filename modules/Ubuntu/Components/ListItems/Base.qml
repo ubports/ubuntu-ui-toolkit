@@ -33,10 +33,9 @@ import Ubuntu.Components 0.1
         ListItem.Container {
             ListItem.Base {
                 height: 50
-                Button {
+                Text {
+                    text: "Hello world
                     anchors.centerIn: parent
-                    width: parent.width - 20
-                    text: "click me"
                 }
             }
             ListItem.Base {
