@@ -155,7 +155,8 @@ Base {
                     width: implicitWidth / 1.5
                     height: implicitHeight / 1.5
 
-                    states: [State {
+                    states: [
+                        State {
                             name: "expanded"
                             when: selector.expanded
                             PropertyChanges { target: accordionIcon; rotation: 270 }
@@ -203,6 +204,7 @@ Base {
                     font.bold: index === selector.selectedIndex
                     property real heightMargin: valueBase.height - implicitHeight
                     visible: heightMargin > 0
+                    // fade in/out the values when expanding/contracting the selector.
                     opacity: heightMargin < 10 ? heightMargin/10 : 1
                 }
                 __showTopSeparator: true // TODO: show different (less wide) separator?
