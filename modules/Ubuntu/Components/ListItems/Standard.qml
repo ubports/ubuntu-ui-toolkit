@@ -67,6 +67,8 @@ Selectable {
      */
     property bool progression: false
 
+    // TODO: doc
+    property alias control: controlContainer.control
 
     IconVisual {
         id: iconHelper
@@ -83,8 +85,29 @@ Selectable {
             verticalCenter: parent.verticalCenter
             leftMargin: 5
             left: iconHelper.right
-            right: progressionHelper.left
+//            right: progressionHelper.left
+            right: controlContainer.left
         }
+    }
+    Item {
+        id: controlContainer
+        property Item control
+//        visible: control ? true : false
+        //height: parent.height
+        width: control ? control.width : 0
+//        height: 30
+//        Rectangle { color: "yellow"; anchors.fill: controlContainer; z: -1 }
+        anchors {
+//            left: label.right
+            right: progressionHelper.left
+            leftMargin: 5
+            rightMargin: 5
+            top: parent.top
+            bottom: parent.bottom
+            topMargin: 5
+            bottomMargin: 5
+        }
+        onControlChanged: control.parent = controlContainer
     }
     ProgressionVisual {
         id: progressionHelper
@@ -94,5 +117,6 @@ Selectable {
             top: parent.top
             bottom: parent.bottom
         }
+        showSplit: control ? true : false
     }
 }

@@ -32,13 +32,40 @@ Template {
             ListItem.Container {
                 width: 250
 
-                ListItem.Header { text: "Buttons" }
+                ListItem.Header { text: "Controls" }
+                ListItem.Standard {
+                    control: Button {
+                        //anchors.centerIn: parent
+                        //anchors.fill: parent
+                        //width: parent.width - 20
+                        width: 240
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+
+                        text: "click me"
+                    }
+                }
+                ListItem.Standard {
+                    control: Button {
+                        id: button
+                        width: 100
+                        iconSource: "call_icon.png"
+                        anchors.centerIn: parent
+                    }
+                    text: "Label"
+                    onClicked: button.clicked()
+                    iconSource: "avatar_contacts_list.png"
+                    progression: true
+                }
+
                 ListItem.Base {
                     height: 50
                     Button {
                         anchors.centerIn: parent
                         width: parent.width - 20
-                        text:"click me"
+                        text: "click me"
                     }
                 }
                 ListItem.Base {
@@ -49,7 +76,7 @@ Template {
                             width: parent.width / 2
                             height: parent.height
                             Button {
-                                width: parent.width - 20
+//                                width: parent.width - 20
                                 text: "Call"
                                 color: "#37b301"
                                 anchors.centerIn: parent
