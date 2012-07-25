@@ -26,7 +26,7 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems as ListItem
+        import Ubuntu.Components.ListItems 0.1 as ListItem
         ListItem.Container {
             width: 250
             ListItem.Selector {

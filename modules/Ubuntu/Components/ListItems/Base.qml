@@ -28,8 +28,8 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components
-        import Ubuntu.Components.ListItems as ListItem
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1 as ListItem
         ListItem.Container {
             ListItem.Base {
                 height: 50
