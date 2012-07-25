@@ -50,7 +50,7 @@ import QtQuick 1.1
             }
             ListItem.Standard {
                 control: Button {
-                    text: "Full control"
+                    text: "Big control"
                     anchors.fill: parent
                 }
             }
