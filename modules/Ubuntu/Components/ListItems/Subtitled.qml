@@ -129,9 +129,9 @@ Selectable {
                     topMargin: 7
                 }
             }
-            TextCustom {
+            LabelVisual {
                 id: subLabel
-                property bool selected: subtitledListItem.selected
+                selected: subtitledListItem.selected
                 anchors {
                     leftMargin: 5
                     bottomMargin: 5
@@ -141,13 +141,7 @@ Selectable {
                     right: parent.right
                     top: label.bottom
                 }
-
                 fontSize: "medium"
-                elide: Text.ElideRight
-                color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                style: Text.Raised
-                styleColor: "white"
-                opacity: label.enabled ? 1.0 : 0.5
                 wrapMode: Text.Wrap
                 maximumLineCount: 5
             }
