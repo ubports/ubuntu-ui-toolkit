@@ -23,13 +23,14 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
-            Header { text: "Title" }
-            Standard { text: "Item one" }
-            Standard { text: "Item two" }
-            Divider { }
-            Standard { text: "Item three" }
-            Standard { text: "Item four" }
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Header { text: "Title" }
+            ListItem.Standard { text: "Item one" }
+            ListItem.Standard { text: "Item two" }
+            ListItem.Divider { }
+            ListItem.Standard { text: "Item three" }
+            ListItem.Standard { text: "Item four" }
         }
     \endqml
     \b{This component is under heavy development.}

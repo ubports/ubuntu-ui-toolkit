@@ -24,17 +24,18 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
-            Standard {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Standard {
                 text: "Selectable standard list item"
                 selected: false
                 onClicked: selected = !selected
                }
-            Standard {
+            ListItem.Standard {
                 text: "List item with icon"
                 iconSource: "icon.png"
             }
-            Standard {
+            ListItem.Standard {
                 text: "With a progression arrow"
                 progression: true
             }

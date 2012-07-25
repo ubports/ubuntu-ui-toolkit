@@ -23,23 +23,24 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
-            Standard {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Standard {
                 text: "Label"
                 iconSource: "icon.png"
                 selected: false
                 onClicked: selected = !selected
             }
-            SingleValue {
+            ListItem.SingleValue {
                 text: "Label"
                 value: "Status"
                 progression: true
             }
-            MultiValue {
+            ListItem.MultiValue {
                 text: "Label"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            Standard {
+            ListItem.Standard {
                 text: "Disabled"
                 iconSource: "icon.png"
                 enabled: false

@@ -23,13 +23,14 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
-            SingleValue {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.SingleValue {
                 text: "Label"
                 value: "Status"
                 onClicked: selected = !selected
             }
-            SingleValue {
+            ListItem.SingleValue {
                 text: "Label"
                 iconSource: "icon.png"
                 value: "Parameter"

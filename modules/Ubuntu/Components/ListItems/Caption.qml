@@ -24,11 +24,12 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        Container {
-            Standard {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Standard {
                 text: "Default list item."
             }
-            Caption {
+            ListItem.Caption {
                 text: "This is a caption text, which can span multiple lines."
             }
         }

@@ -26,23 +26,24 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
             width: 250
-            Selector {
+            ListItem.Selector {
                 text: "Standard"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            Selector {
+            ListItem.Selector {
                 text: "Disabled"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            Selector {
+            ListItem.Selector {
                 text: "Expanded"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            Selector {
+            ListItem.Selector {
                 text: "Icon"
                 iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]

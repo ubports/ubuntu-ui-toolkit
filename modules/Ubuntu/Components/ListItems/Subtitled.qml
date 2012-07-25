@@ -25,36 +25,37 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        Container {
-            Subtitled {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Subtitled {
                 text: "Default"
                 subText: "Secondary label"
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Disabled"
                 enabled: false
                 subText: "Secondary label"
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Selected"
                 selected: true
                 subText: "Secondary label"
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Progression"
                 subText: "Secondary label"
                 progression: true
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Icon"
                 subText: "Secondary label"
                 iconSource: "icon.png"
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Multiple lines"
                 subText: "This is a multi-line subText.\nUp to 5 lines are supported."
             }
-            Subtitled {
+            ListItem.Subtitled {
                 text: "Multiple lines"
                 subText: "It also works well with icons and progression."
                 iconSource: "icon.png"

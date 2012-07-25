@@ -24,13 +24,14 @@ import QtQuick 1.1
 
     Examples:
     \qml
-        Container {
-            MultiValue {
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.MultiValue {
                 text: "Label"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 onClicked: selected = !selected
             }
-            MultiValue {
+            ListItem.MultiValue {
                 text: "Label"
                 iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]

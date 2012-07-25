@@ -28,8 +28,10 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        Container {
-            Base {
+        import Ubuntu.Components
+        import Ubuntu.Components.ListItems as ListItem
+        ListItem.Container {
+            ListItem.Base {
                 height: 50
                 Button {
                     anchors.centerIn: parent
@@ -37,7 +39,7 @@ import Ubuntu.Components 0.1
                     text: "click me"
                 }
             }
-            Base {
+            ListItem.Base {
                 height: 100
                 Tabs {
                     height: parent.height - 20
