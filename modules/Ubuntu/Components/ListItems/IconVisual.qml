@@ -40,7 +40,6 @@ Item {
 
     BorderImage {
         id: iconFrame
-        visible: parent.visible
         opacity: iconVisual.enabled ? 1.0 : 0.5
         source: "artwork/ListItemFrame.png"
         anchors.fill: icon
