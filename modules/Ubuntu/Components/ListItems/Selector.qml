@@ -178,7 +178,7 @@ Base {
                     }
                 }
             }
-        } // Base
+        }
 
         Repeater {
             model: selector.values
@@ -234,7 +234,7 @@ Base {
                         duration: 100
                     }
                 }
-            } // Base
-        } // Repeater
-    } // Column
+            }
+        }
+    }
 }

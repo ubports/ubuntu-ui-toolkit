@@ -124,8 +124,8 @@ Selectable {
                     }
                     return result;
                 }
-            } // valueLabel
-        } // middleVisuals
+            }
+        }
         ProgressionVisual {
             id: progressionHelper
             visible: multiValueListItem.progression
