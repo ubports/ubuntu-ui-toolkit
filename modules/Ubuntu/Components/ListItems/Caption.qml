@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 /*!
     \qmlclass Caption
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item that shows a piece of text.
 
     Examples:

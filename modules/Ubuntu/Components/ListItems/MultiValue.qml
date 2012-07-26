@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass MultiValue
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item displaying multiple values.
     \b{This component is under heavy development.}
 

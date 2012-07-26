@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass Standard
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief The standard list item class. It shows a basic list item
         with a label (text), and optionally an icon and a progression arrow.
 

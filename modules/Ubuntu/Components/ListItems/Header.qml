@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass Header
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief Header for grouping list items together
 
     Examples:

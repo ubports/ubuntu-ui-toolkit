@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass Selector
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
 

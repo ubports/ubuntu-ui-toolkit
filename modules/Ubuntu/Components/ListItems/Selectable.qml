@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
   \qmlclass Selectable
-  \inqmlmodule UbuntuUIToolkit 0.1
+  \inqmlmodule Ubuntu.Components.ListItems 0.1
   \brief A base list item that has a selected state.
 
   This class is inherited by several types of selectable list items

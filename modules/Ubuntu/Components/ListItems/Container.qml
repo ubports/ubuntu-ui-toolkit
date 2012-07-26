@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlclass Container
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief The visual parent of all list items
 
     Examples:
