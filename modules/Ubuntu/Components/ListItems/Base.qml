@@ -34,7 +34,7 @@ import Ubuntu.Components 0.1
             ListItem.Base {
                 height: 50
                 Text {
-                    text: "Hello world
+                    text: "Hello world"
                     anchors.centerIn: parent
                 }
             }
