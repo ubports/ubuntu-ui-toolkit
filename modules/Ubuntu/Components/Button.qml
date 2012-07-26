@@ -32,12 +32,12 @@ import Qt.labs.shaders 1.0
                 onClicked: print("clicked text-only Button")
             }
             Button {
-                iconSource: "call_icon.png"
+                iconSource: "icon.png"
                 color: "green"
                 onClicked: print("clicked icon-only Button")
             }
             Button {
-                iconSource: "call_icon.png"
+                iconSource: "icon.png"
                 text: "Icon on left"
                 iconPosition: "left"
                 onClicked: print("clicked text and icon Button")
