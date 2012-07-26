@@ -18,7 +18,7 @@ import QtQuick 1.1
 
 /*!
     \qmlabstract AbstractButton
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components 0.1
     \brief The AbstractButton class defines the behavior of the button.
 
     \b{This component is under heavy development.}
