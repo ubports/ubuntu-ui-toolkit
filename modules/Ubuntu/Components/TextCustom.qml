@@ -19,7 +19,7 @@ import "fontUtils.js" as FontUtils
 
 /*!
     \qmlclass TextCustom
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components 0.1
     \brief The TextCustom class is DOCME
 
     \b{This component is under heavy development.}

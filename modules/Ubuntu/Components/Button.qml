@@ -19,7 +19,7 @@ import Qt.labs.shaders 1.0
 
 /*!
     \qmlclass Button
-    \inqmlmodule UbuntuUIToolkit 0.1
+    \inqmlmodule Ubuntu.Components 0.1
     \brief The Button class is DOCME
 
     \b{This component is under heavy development.}
