@@ -81,14 +81,14 @@ Template {
                                 color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
                             }
                         }
-                    } // Tabs
-                } // ListItem.Base
+                    }
+                }
                 ListItem.Header { text: "Caption" }
                 ListItem.Caption {
                     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
                 }
-            } // ListItem.Container
-        } // Rectangle
+            }
+        }
 
         Rectangle {
             color: "#eeeeee"
@@ -119,7 +119,7 @@ Template {
                     iconSource: "avatar_contacts_list.png"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 }
-            } // ListItem.Container
-        } // Rectangle
-    } // Row
+            }
+        }
+    }
 }
