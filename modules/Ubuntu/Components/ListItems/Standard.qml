@@ -24,6 +24,7 @@ import QtQuick 1.1
 
     Examples:
     \qml
+        import UbuntuComponents 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         ListItem.Container {
             ListItem.Standard {
