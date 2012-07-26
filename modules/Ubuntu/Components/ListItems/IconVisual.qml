@@ -22,7 +22,7 @@ Item {
     id: iconVisual
 
     property alias source: icon.source
-    visible: source != ""
+    visible: source != "" && icon.status == Image.Ready
 
     width: visible ? icon.width + 10 : 0
 
