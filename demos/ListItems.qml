@@ -20,11 +20,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     title: "List Items"
-
     Item {
-       // spacing: 10
-        //width: childrenRect.
-
         Rectangle {
             color: "#eeeeee"
             width: childrenRect.width
@@ -178,7 +174,6 @@ Template {
             }
             ListItem.Container {
                 width: 250
-
                 ListItem.Header { text: "Multiple values" }
                 ListItem.MultiValue {
                     text: "Default"
@@ -217,7 +212,6 @@ Template {
                 left: typesRectangle.right
                 margins: 10
             }
-
             ListItem.Container {
                 width: 250
                 ListItem.Header { text: "Subtitled" }
@@ -269,7 +263,6 @@ Template {
             }
             ListItem.Container {
                 width: 250
-
                 ListItem.Header { text: "Controls" }
                 ListItem.Standard {
                     text: "Label"
@@ -339,7 +332,6 @@ Template {
             }
             ListItem.Container {
                 width: 250
-
                 ListItem.Header { text: "Grouping" }
                 ListItem.Header { text: "Header" }
                 ListItem.Standard { text: "Item 1a" }
@@ -366,7 +358,6 @@ Template {
             }
             ListItem.Container {
                 width: 250
-
                 ListItem.Header { text: "Selectors" }
                 ListItem.Selector {
                     text: "Default"
