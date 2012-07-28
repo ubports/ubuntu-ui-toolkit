@@ -21,14 +21,20 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
     title: "List Items"
 
-    Row {
-        spacing: 10
+    Item {
+       // spacing: 10
+        //width: childrenRect.
 
         Rectangle {
             color: "#eeeeee"
             width: childrenRect.width
             height: childrenRect.height
-
+            id: typesRectangle
+            anchors {
+                top: parent.top
+                left: parent.left
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
                 id: listItemTypes
@@ -90,7 +96,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Standard"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
@@ -121,7 +131,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Single value"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
@@ -157,7 +171,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Multiple values"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
@@ -194,6 +212,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Subtitled"
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
 
             ListItem.Container {
                 width: 250
@@ -239,7 +262,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Controls"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
@@ -305,7 +332,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Grouping and caption"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
@@ -328,7 +359,11 @@ Template {
             width: childrenRect.width
             height: childrenRect.height
             visible: listItemTypes.selectedType === "Selector"
-
+            anchors {
+                top: parent.top
+                left: typesRectangle.right
+                margins: 10
+            }
             ListItem.Container {
                 width: 250
 
