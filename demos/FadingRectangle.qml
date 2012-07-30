@@ -20,7 +20,6 @@ import Ubuntu.Components 0.1
 Rectangle {
     id: rect
     color: "#eeeeee"
-//    color: "yellow"
     property bool selected: false
 //    visible: selected
 
@@ -38,6 +37,7 @@ Rectangle {
             PropertyChanges {
                 target: rect
                 opacity: 1
+                z: 0
             }
         }, State {
             name: "unselected"
@@ -45,13 +45,14 @@ Rectangle {
             PropertyChanges {
                 target: rect
                 opacity: 0
+                z: -1
             }
         }
     ]
     transitions: Transition {
         NumberAnimation {
             properties: "opacity"
-            duration: 400
+            duration: 5000
         }
     }
 }
