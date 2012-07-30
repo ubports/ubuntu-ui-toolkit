@@ -42,7 +42,7 @@ Template {
                 // FIXME: It would be nicer to generate the list below
                 // using a ListView or Repeater, but that won't work well until
                 // the following bug is fixed:
-                // https://bugs.launchpad.net/tavastia/+bug/1030272
+                // https://bugs.launchpad.net/tavastia/+bug/1030297
                 ListItem.Standard {
                     text: "Standard"
                     progression: true
