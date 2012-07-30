@@ -45,9 +45,9 @@ Base {
     Image {
         visible: selectableListItem.selected
         anchors {
-            top: parent.top
+            top: parent.__body.top
             topMargin: 2
-            right: parent.right
+            right: parent.__body.right
             rightMargin: 2
         }
         source: "artwork/ListItemSelectedTriangle.png"
