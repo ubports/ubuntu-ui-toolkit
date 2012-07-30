@@ -35,56 +35,59 @@ Template {
                 width: 250
                 id: listItemTypes
 
+                property variant typeList: ["Standard", "Single value", "Multiple values",
+                    "Value selector", "Subtitled", "Controls", "Grouping and caption"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
+                Repeater {
+                    model: listItemTypes.typeList.length
+                    ListItem.Standard {
+                        text: listItemTypes.typeList[index]
+                        selected: listItemTypes.selectedType === text
+                        onClicked: listItemTypes.selectedType = text
+                    }
+                }
 
                 // FIXME: It would be nicer to generate the list below
                 // using a ListView or Repeater, but that won't work well until
                 // the following bug is fixed:
                 // https://bugs.launchpad.net/tavastia/+bug/1030297
-                ListItem.Standard {
-                    text: "Standard"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Single value"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Multiple values"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Subtitled"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Controls"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Grouping and caption"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
-                ListItem.Standard {
-                    text: "Selector"
-                    progression: true
-                    selected: listItemTypes.selectedType === text
-                    onClicked: listItemTypes.selectedType = text
-                }
+//                ListItem.Standard {
+//                    text: "Standard"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Single value"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Multiple values"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Value selector"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Subtitled"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Controls"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
+//                ListItem.Standard {
+//                    text: "Grouping and caption"
+//                    selected: listItemTypes.selectedType === text
+//                    onClicked: listItemTypes.selectedType = text
+//                }
             }
         }
         Rectangle {
@@ -268,7 +271,7 @@ Template {
                     text: "Label"
                     control: Button {
                         width: 100
-                        text: "control"
+                        text: "Control"
                         anchors.centerIn: parent
                         onClicked: print("clicked button")
                     }
@@ -279,7 +282,7 @@ Template {
                     text: "Disabled"
                     control: Button {
                         width: 100
-                        text: "control"
+                        text: "Control"
                         anchors.centerIn: parent
                     }
                 }
@@ -288,7 +291,7 @@ Template {
                     text: "Selected"
                     control: Button {
                         width: 100
-                        text: "control"
+                        text: "Control"
                         anchors.centerIn: parent
                     }
                 }
@@ -296,7 +299,7 @@ Template {
                     text: "Split"
                     control: Button {
                         width: 100
-                        text: "control"
+                        text: "Control"
                         anchors.centerIn: parent
                     }
                     progression: true
@@ -307,7 +310,7 @@ Template {
                     iconSource: "avatar_contacts_list.png"
                     control: Button {
                         width: 100
-                        text: "control"
+                        text: "Control"
                         anchors.centerIn: parent
                     }
                 }
@@ -333,7 +336,6 @@ Template {
             ListItem.Container {
                 width: 250
                 ListItem.Header { text: "Grouping" }
-                ListItem.Header { text: "Header" }
                 ListItem.Standard { text: "Item 1a" }
                 ListItem.Standard { text: "Item 1b" }
                 ListItem.Divider { }
@@ -350,7 +352,7 @@ Template {
             color: "#eeeeee"
             width: childrenRect.width
             height: childrenRect.height
-            visible: listItemTypes.selectedType === "Selector"
+            visible: listItemTypes.selectedType === "Value selector"
             anchors {
                 top: parent.top
                 left: typesRectangle.right
@@ -358,23 +360,23 @@ Template {
             }
             ListItem.Container {
                 width: 250
-                ListItem.Header { text: "Selectors" }
-                ListItem.Selector {
+                ListItem.Header { text: "Value selectors" }
+                ListItem.ValueSelector {
                     text: "Default"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 }
-                ListItem.Selector {
+                ListItem.ValueSelector {
                     text: "Disabled"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     enabled: false
                 }
-                ListItem.Selector {
+                ListItem.ValueSelector {
                     text: "Expanded"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     selectedIndex: 1
                     expanded: true
                 }
-                ListItem.Selector {
+                ListItem.ValueSelector {
                     text: "Icon"
                     iconSource: "avatar_contacts_list.png"
                     values: ["Value 1", "Value 2", "Value 3", "Value 4"]

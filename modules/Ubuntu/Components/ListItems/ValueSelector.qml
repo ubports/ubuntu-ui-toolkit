@@ -17,7 +17,7 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass Selector
+    \qmlclass ValueSelector
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
@@ -29,21 +29,21 @@ import QtQuick 1.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         ListItem.Container {
             width: 250
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Standard"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Disabled"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Expanded"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Icon"
                 iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]

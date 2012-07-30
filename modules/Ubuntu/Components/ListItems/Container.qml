@@ -72,20 +72,51 @@ Item {
             top: parent.top
         }
 
+        function childAtIndex(index) {
+            var indexInChildren = 0
+            for(var i=0; i<children.length; i++) {
+                if (children[i] != repeater) {
+                    if (indexInChildren == index) return children[i]
+                    indexInChildren++
+                }
+            }
+            return undefined
+        }
+
+        function listItemAtIndex(index) {
+            var indexInChildren = 0
+            var item;
+            for (var i=0; i < listItems.children.length; i++) {
+                item = listItems.children[i];
+                if (item.__isDivider !== undefined) {
+                    if (indexInChildren === index) return listItems.children[i];
+                    indexInChildren++;
+                }
+            }
+            return undefined;
+        }
+
         function updateSeparators() {
             var num = listItems.children.length;
             if (num > 0) {
                 var item;
                 for (var i = 0; i < num-1; i++) {
-                    item = listItems.children[i];
-                    if (item.__isDivider || listItems.children[i+1].__isDivider) {
-                        item.__showBottomSeparator = false;
-                    } else {
-                        item.__showBottomSeparator = true;
+                    //                    item = listItems.children[i];
+                    item = listItemAtIndex(i);
+                    if (item !== undefined) {
+                        if (item.__isDivider || listItems.children[i+1].__isDivider) {
+                            item.__showBottomSeparator = false;
+                        }
+                        else if ((listItemAtIndex(i+1) !== undefined) && listItemAtIndex(i+1).__isDivider) {
+                            item._showBottomSeparator = false;
+                        } else {
+                            item.__showBottomSeparator = true;
+                        }
+                        item.__showTopSeparator = false;
                     }
-                    item.__showTopSeparator = false;
                 }
-                if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
+//                if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
+                if (!listItemAtIndex(0).__isDivider) listItemAtIndex(0).__showTopSeparator = true;
             }
         }
 
