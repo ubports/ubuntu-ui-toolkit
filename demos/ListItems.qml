@@ -20,6 +20,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     title: "List Items"
+
     Item {
         Rectangle {
             color: "#eeeeee"
@@ -55,16 +56,8 @@ Template {
                 left: typesRectangle.right
                 leftMargin: 15
             }
-
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Standard"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Standard"
                 ListItem.Container {
                     width: 250
 
@@ -90,15 +83,8 @@ Template {
                     }
                 }
             }
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Single value"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Single value"
                 ListItem.Container {
                     width: 250
 
@@ -129,15 +115,8 @@ Template {
                     }
                 }
             }
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Multiple values"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Multiple values"
                 ListItem.Container {
                     width: 250
                     ListItem.Header { text: "Multiple values" }
@@ -167,16 +146,8 @@ Template {
                     }
                 }
             }
-
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Subtitled"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Subtitled"
                 ListItem.Container {
                     width: 250
                     ListItem.Header { text: "Subtitled" }
@@ -216,15 +187,8 @@ Template {
                     }
                 }
             }
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Controls"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Controls"
                 ListItem.Container {
                     width: 250
                     ListItem.Header { text: "Controls" }
@@ -283,16 +247,8 @@ Template {
                     }
                 }
             }
-
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Grouping and caption"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Grouping and caption"
                 ListItem.Container {
                     width: 250
                     ListItem.Header { text: "Grouping" }
@@ -307,16 +263,8 @@ Template {
                     }
                 }
             }
-
-            Rectangle {
-                color: "#eeeeee"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: listItemTypes.selectedType === "Value selector"
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Value selector"
                 ListItem.Container {
                     width: 250
                     ListItem.Header { text: "Value selectors" }
