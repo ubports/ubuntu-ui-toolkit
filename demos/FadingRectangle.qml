@@ -52,7 +52,7 @@ Rectangle {
     transitions: Transition {
         NumberAnimation {
             properties: "opacity"
-            duration: 5000
+            duration: 200
         }
     }
 }
