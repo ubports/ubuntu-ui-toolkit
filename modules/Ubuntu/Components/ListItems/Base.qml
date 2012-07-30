@@ -130,4 +130,17 @@ Item {
         source: "artwork/ListItemDividerHorizontal.png"
         visible: baseListItem.__showBottomSeparator
     }
+    /*!
+      \internal
+     */
+    property alias __body: body
+    Item {
+        id: body
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: topSeparatorLine.bottom
+            bottom: bottomSeparatorLine.top
+        }
+    }
 }
