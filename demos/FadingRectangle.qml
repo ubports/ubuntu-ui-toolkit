@@ -21,7 +21,6 @@ Rectangle {
     id: rect
     color: "#eeeeee"
     property bool selected: false
-//    visible: selected
 
     opacity: selected ? 1 : 0
     anchors {
