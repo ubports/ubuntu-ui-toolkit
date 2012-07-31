@@ -203,7 +203,7 @@ Base {
                         verticalCenter: parent.verticalCenter
                     }
                     font.italic: true
-                    font.bold: selected
+                    font.bold: valueBase.selected
                     property real heightMargin: valueBase.height - implicitHeight
                     visible: heightMargin > 0
                     // fade in/out the values when expanding/contracting the selector.
