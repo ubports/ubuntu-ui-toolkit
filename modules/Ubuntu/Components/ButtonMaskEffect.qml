@@ -46,6 +46,7 @@ ShaderEffectItem {
             lowp vec4 gradientColor = lowp vec4(qt_TexCoord0.ttt, 1.0) * 0.8;
             // FIXME: Because blendOverlay gives incorrect results when we use pre-multiplied alpha,
             // we remove the pre-multiplication before calling blendOverlay, and multiply again afterwards.
+            // It works, but is not very elegant.
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb/baseColor.a, gradientColor.rgb/gradientColor.a), 1.0);
             result *= qt_Opacity * gradientColor.a * baseColor.a;
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
