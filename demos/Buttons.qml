@@ -20,6 +20,36 @@ import Ubuntu.Components 0.1
 Template {
     title: "Buttons"
 
+    id: root
+    opacity: 1.0
+
+    states: [ State {
+            name: "visible"
+            when: button1.state !== "pressed"
+            PropertyChanges {
+                target: root
+                opacity: 1
+                z: 1
+            }
+        }, State {
+            name: "invisible"
+            when: button1.state === "pressed"
+            PropertyChanges {
+                target: root
+                opacity: 0
+                z: -1
+            }
+        }
+    ]
+    transitions: Transition {
+//        NumberAnimation {
+        PropertyAnimation {
+            target: root
+            properties: "opacity"
+            duration: 1200
+        }
+    }
+
     Column {
         spacing: 30
 
@@ -28,6 +58,7 @@ Template {
 
             Button {
                 text: "Call"
+                id: button1
             }
         }
 
