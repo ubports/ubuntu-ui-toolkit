@@ -1,0 +1,23 @@
+Source: qt-components-ubuntu
+Priority: extra
+Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+Build-Depends: debhelper (>= 8.0.0), qt4-qmake, libqt4-dev
+Standards-Version: 3.9.2
+Section: libs
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/qt-components-ubuntu.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/qt-components-ubuntu.git;a=summary
+
+#Package: qt-components-ubuntu-dev
+#Section: libdevel
+#Architecture: any
+#Depends: qt-components-ubuntuBROKEN (= ${binary:Version})
+#Description: <insert up to 60 chars description>
+# <insert long description, indented with spaces>
+
+Package: qt-components-ubuntu
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

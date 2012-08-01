@@ -1,0 +1,5 @@
+qt-components-ubuntu (0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>  Wed, 01 Aug 2012 11:39:58 -0400
