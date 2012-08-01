@@ -7,3 +7,4 @@ TextCustom 0.1 TextCustom.qml
 AbstractButton 0.1 AbstractButton.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
+PageStack 0.1 PageStack.qml
