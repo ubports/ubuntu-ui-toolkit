@@ -21,7 +21,7 @@ Template {
     title: "Tabs"
 
     Tabs {
-        Tab {
+        Page {
             text: "Tab 1"
             page: Rectangle {
                 color: "#eeeeee"
@@ -33,7 +33,7 @@ Template {
                 }
             }
         }
-        Tab {
+        Page {
             iconSource: "call_icon.png"
             page: Rectangle {
                 color: "#e4e4e4"
@@ -45,7 +45,7 @@ Template {
                 }
             }
         }
-        Tab {
+        Page {
             text: "Tab 3"
             iconSource: "call_icon.png"
             page:  Rectangle {

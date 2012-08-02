@@ -26,23 +26,23 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            Tab {
-                text: "tab 1"
-                page: Text {
+            Page {
+                title: "tab 1"
+                contents: Text {
                     anchors.centerIn: parent
                     text: "This is the first tab."
                 }
             }
-            Tab {
-                text: "tab 2"
-                page: Text {
+            Page {
+                title: "tab 2"
+                contents: Text {
                     anchors.centerIn: parent
                     text: "Tab number two."
                 }
             }
-            Tab {
-                text: "tab 3"
-                page:  Rectangle {
+            Page {
+                title: "tab 3"
+                contents:  Rectangle {
                     id: tab3
                     anchors.fill: parent
                     Text {
