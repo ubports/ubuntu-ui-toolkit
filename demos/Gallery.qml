@@ -49,7 +49,7 @@ Rectangle {
 
         property int selectedIndex: 0
 
-        model: ["Buttons", "Tabs", "ListItems", "Drilldown"]
+        model: ["Buttons", "Tabs", "ListItems", "PageStack", "Drilldown"]
 
         delegate: ButtonWithForeground {
             text: modelData
