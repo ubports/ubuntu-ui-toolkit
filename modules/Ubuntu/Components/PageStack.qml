@@ -30,7 +30,7 @@ Item {
 
     property Page rootPage
 
-    property bool showToolBar: true
+    property bool showToolBar: true //pageStack.stackSize > 1
 
     function push(page) {
         if (page.__isPage !== true) return;
@@ -41,6 +41,7 @@ Item {
         // for Drilldowns:
         if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
         pageStack.stackSize = Stack.stack.size;
+        toolBarTitle.text = page.title;
     }
 
     function pop() {
@@ -50,6 +51,7 @@ Item {
         }
         Stack.stack.top.active = true;
         pageStack.stackSize = Stack.stack.size;
+        toolBarTitle.text = Stack.stack.top.title;
     }
 
     property int stackSize: 0
@@ -64,8 +66,9 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 40
+        height: visible ? 40 : 0
         Button {
+            id: backButton
             anchors {
                 left: parent.left
                 top: parent.top
@@ -74,13 +77,28 @@ Item {
             }
             text: "Back"
             darkBorder: true
-            visible: pageStack.stackSize > 1
+            visible: true
+            enabled: pageStack.stackSize > 1
             onClicked: pageStack.pop()
+        }
+        TextCustom {
+//            text: Stack.stack.top.title
+            id: toolBarTitle
+            anchors {
+                left: backButton.right
+                top: parent.top
+                bottom: parent.bottom
+                margins: 5
+                right: parent.right
+            }
+            color: "white"
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
         }
     }
 
     Rectangle {
-        color: "yellow"
+        color: "#eeeeee"
         id: pageContents
         anchors {
             left: parent.left
