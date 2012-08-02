@@ -9,3 +9,4 @@ PageContainer 0.1 PageContainer.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 PageStack 0.1 PageStack.qml
+Drilldown 0.1 Drilldown.qml

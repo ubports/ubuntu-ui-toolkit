@@ -80,6 +80,4 @@ Template {
             } // rectangle
         }
     }
-
-
 }
