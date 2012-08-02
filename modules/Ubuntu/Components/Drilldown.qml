@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import "ListItems" as ListItem
 
 /*!
     \qmlclass Drilldown
@@ -27,4 +28,18 @@ import QtQuick 1.1
 */
 Page {
     id: drilldown
+
+    default property alias children: pageContainer.children
+    PageContainer {
+        id: pageContainer
+    }
+
+    ListItem.Container {
+        Repeater {
+            model: pageContainer.pages
+            ListItem.Standard {
+                text: modelData.title
+            }
+        }
+    }
 }
