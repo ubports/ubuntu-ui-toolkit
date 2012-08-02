@@ -82,6 +82,12 @@ Item {
      */
     property Item contentsParent
 
+    /*!
+      \internal
+      Used in other classes to determine whether an object is a Page.
+     */
+    property bool __isPage: true
+
     Loader {
         id: loader
 

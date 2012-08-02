@@ -30,8 +30,8 @@ Template {
         Repeater {
             model: tabs.numerations
             Page {
-                title: tabs.showTitle[index] ? "Tab "+ (index + 1) : undefined
-                iconSource: tabs.showIcon[index] ? "call_icon.png" : undefined
+                title: tabs.showTitle[index] ? "Tab "+ (index + 1) : ""
+                iconSource: tabs.showIcon[index] ? "call_icon.png" : ""
                 contents: Rectangle {
                     color: tabs.colors[index]
                     anchors.fill: parent
@@ -43,43 +43,5 @@ Template {
                 }
             }
         }
-
-//        Page {
-//            title: "Tab 1"
-//            contents: Rectangle {
-//                color: "#eeeeee"
-//                anchors.fill: parent
-//                TextCustom {
-//                    anchors.centerIn: parent
-//                    text: "This is the first tab."
-//                    color: "#757373"
-//                }
-//            }
-//        }
-//        Page {
-//            iconSource: "call_icon.png"
-//            contents: Rectangle {
-//                color: "#e4e4e4"
-//                anchors.fill: parent
-//                TextCustom {
-//                    anchors.centerIn: parent
-//                    text: "This is the second tab."
-//                    color: "#757373"
-//                }
-//            }
-//        }
-//        Page {
-//            title: "Tab 3"
-//            iconSource: "call_icon.png"
-//            contents:  Rectangle {
-//                color: "#dddddd"
-//                anchors.fill: parent
-//                TextCustom {
-//                    anchors.centerIn: parent
-//                    text: "This is the third tab."
-//                    color: "#757373"
-//                }
-//            }
-//        }
     }
 }

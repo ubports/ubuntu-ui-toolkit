@@ -58,7 +58,8 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-Item {
+//Item {
+PageContainer {
     id: tabs
 
     /*!
@@ -92,16 +93,6 @@ Item {
     width: 200
     height: buttonRow.height
 
-    /*!
-      \internal
-      Keep the Tab items that the user defines separate
-      from the other items that we create below.
-    */
-    default property alias children: tabItems.children
-    Item {
-        id: tabItems
-    }
-
     // encapsulation
     Item {
         id: visuals
@@ -109,7 +100,9 @@ Item {
 
         // needed to set the anchors in setSeparator()
         property alias buttonRow: buttonRow
-        property alias pages: pages
+        property alias contentsContainer: contentsContainer
+
+        //Rectangle { color: "red"; anchors.fill: parent; }
 
         Row {
             id: buttonRow
@@ -162,14 +155,14 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabItems.children
+                model: tabs.pages
                 TabButton {
                     id: tabButton
-                    property Item tab: modelData
-                    text: tab.title
+                    property Item page: modelData
+                    text: modelData.title
                     __isFirst: index === 0
-                    __isLast: index === (repeater.count-1)
-                    iconSource: tab.iconSource
+                    __isLast: index === (repeater.count - 1)
+                    iconSource: modelData.iconSource
                     width: buttonRow.buttonWidth
                     selected: (index === tabs.selectedTabIndex)
                     onClicked: tabs.selectedTabIndex = index
@@ -180,7 +173,7 @@ Item {
 
         // This is the item that will be the parent of the currently displayed page.
         Item {
-            id: pages
+            id: contentsContainer
             anchors {
                 top: buttonRow.bottom
                 left: parent.left
@@ -191,10 +184,10 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabItems.children.length; i++) {
-                tab = tabItems.children[i];
+            for (var i = 0; i < tabs.pages.length; i++) {
+                tab = tabs.pages[i]
                 if (i == tabs.selectedTabIndex) {
-                    tab.contentsParent = pages;
+                    tab.contentsParent = contentsContainer;
                     tab.active = true;
                 } else {
                     tab.active = false;
@@ -208,9 +201,9 @@ Item {
                 tabs.separator.anchors.top = visuals.buttonRow.bottom;
                 tabs.separator.anchors.left = visuals.left;
                 tabs.separator.anchors.right = visuals.right;
-                visuals.pages.anchors.top = tabs.separator.bottom;
+                visuals.contentsContainer.anchors.top = tabs.separator.bottom;
             } else { // no separator
-                visuals.pages.anchors.top = visuals.buttonRow.bottom;
+                visuals.contentsContainer.anchors.top = visuals.buttonRow.bottom;
             }
         }
 
