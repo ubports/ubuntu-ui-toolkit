@@ -16,17 +16,19 @@
 
 function Stack() {
     var elements = new Array();
+    this.size = 0;
+    this.top = undefined;
 
     this.push = function(element) {
              elements.push(element);
+             this.size++;
+             this.top = element;
          };
 
     this.pop = function() {
              elements.pop();
-         };
-
-    this.top = function() {
-             return elements[elements.length-1];
+             this.size--;
+             this.top = elements[this.size-1];
          };
 }
 

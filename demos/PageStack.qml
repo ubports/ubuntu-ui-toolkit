@@ -24,28 +24,67 @@ Template {
         id: pageStack
         anchors.fill: parent
 
-        Rectangle {
+        rootPage: Page {
+            title: "lala (ignored)"
+            contents:
+                Column {
+                anchors.centerIn: parent
+                Text {
+                    text: "This is the root page!"
+                }
+                Row {
+                    Button {
+                        text: "Orange"
+                        onClicked: pageStack.push(orange)
+                    }
+                    Button {
+                        text: "blue"
+                        onClicked: pageStack.push(blue)
+
+                    }
+                }
+            }
+        }
+        Page {
             id: orange
-            color: "orange"
-            width: 100
-            height: 100
+            title: "Orange"
+            contents: Rectangle {
+                color: "orange"
+                width: 250
+                height: 250
+                anchors.centerIn: parent
+                Button {
+                    text: "go back"
+                    anchors.centerIn: parent
+                    onClicked: pageStack.pop()
+                }
+            }
         }
 
-        Rectangle {
+        Page {
             id: blue
-            color: "blue"
-            radius: 5
-            width: 150
-            height: 150
+            title: "Blue"
+            contents: Rectangle {
+                color: "darkblue"
+                radius: 5
+                width: 150
+                height: 150
+                anchors.centerIn: parent
+                Button {
+                    text: "back"
+                    anchors.centerIn: parent
+                    onClicked: pageStack.pop()
+                    darkBorder: true
+                }
+            }
         }
 
         Component.onCompleted: {
-            pageStack.push(orange);
-            pageStack.push(blue);
-            pageStack.pop();
+            //            pageStack.push(rootPage); // TODO: check for rootPage
+            //            pageStack.push(orange);
+            //            pageStack.push(blue);
+            //            pageStack.pop();
+            //            pageStack.pop();
         }
     }
-
-
-
 }

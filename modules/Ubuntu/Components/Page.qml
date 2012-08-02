@@ -96,6 +96,7 @@ Item {
         property Item previousContents
 
         function updateContentsVisibility() {
+            print("Updating visibility for " + page.title);
             if (page.contents) {
                 if (page.contentsParent) page.contents.parent = page.contentsParent;
                 page.contents.visible = page.active;

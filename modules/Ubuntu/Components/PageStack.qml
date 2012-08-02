@@ -28,28 +28,51 @@ import "stack.js" as Stack
 Item {
     id: pageStack
 
+    property Page rootPage
+
     /*!
       \internal
       To give the children the correct parent, which can be used
       for anchoring.
     */
-    default property alias children: pages.children
+//    default property alias children: pages.children
 
     function push(page) {
+        if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
-        pages.stackUpdated();
+        //pages.stackUpdated();
+        page.contentsParent = pageContents;
+        page.active = true; //(page === Stack.stack.top());
     }
 
     function pop() {
-        Stack.stack.pop();
-        pages.stackUpdated();
+        if (Stack.stack.size > 1) {
+            Stack.stack.top.active = false;
+            Stack.stack.pop();
+            //pages.stackUpdated();
+        }
+        Stack.stack.top.active = true;
+    }
+
+    // toolbar placeholder
+    Rectangle {
+        id: toolBar
+        color: "darkgrey"
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: 20
     }
 
     Item {
-        id: pages
+        id: pageContents
         anchors {
-            fill: parent
-            topMargin: 50 // TODO: later use ToolBar.height
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            top: toolBar.bottom
         }
 
         // In QtQuick1, this is impossible.
@@ -60,17 +83,7 @@ Item {
         // FIXME: After switching to QtQuick2, we can simply use a stack
         // variable as pages.stack
 
-        property Item currentPage
-
-        function stackUpdated() {
-            if (pages.currentPage) pages.currentPage.visible = false;
-            pages.currentPage = Stack.stack.top();
-            if (pages.currentPage) {
-//                pages.currentPage.parent = pages;
-                pages.currentPage.visible = true;
-                pages.currentPage.anchors.verticalCenter = pages.verticalCenter;
-                pages.currentPage.anchors.right = pages.currentPage.parent.right;
-            }
-        }
     }
+
+    Component.onCompleted: pageStack.push(rootPage)
 }
