@@ -84,7 +84,7 @@ Item {
 
     /*!
       \internal
-      Used in other classes to determine whether an object is a Page.
+      Used in PageContainer to determine whether an object is a Page.
      */
     property bool __isPage: true
 
