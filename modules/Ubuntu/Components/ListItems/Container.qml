@@ -72,17 +72,6 @@ Item {
             top: parent.top
         }
 
-        function childAtIndex(index) {
-            var indexInChildren = 0
-            for(var i=0; i<children.length; i++) {
-                if (children[i] != repeater) {
-                    if (indexInChildren == index) return children[i]
-                    indexInChildren++
-                }
-            }
-            return undefined
-        }
-
         function listItemAtIndex(index) {
             var indexInChildren = 0
             var item;
