@@ -30,26 +30,18 @@ Item {
 
     property Page rootPage
 
-    /*!
-      \internal
-      To give the children the correct parent, which can be used
-      for anchoring.
-    */
-//    default property alias children: pages.children
-
     function push(page) {
+        if (page.__isPage !== true) return;
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
-        //pages.stackUpdated();
         page.contentsParent = pageContents;
-        page.active = true; //(page === Stack.stack.top());
+        page.active = true;
     }
 
     function pop() {
         if (Stack.stack.size > 1) {
             Stack.stack.top.active = false;
             Stack.stack.pop();
-            //pages.stackUpdated();
         }
         Stack.stack.top.active = true;
     }
@@ -63,7 +55,7 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 20
+        height: 27
     }
 
     Item {
@@ -82,8 +74,6 @@ Item {
         // and can be accessed as Stack.stack
         // FIXME: After switching to QtQuick2, we can simply use a stack
         // variable as pages.stack
-
     }
-
     Component.onCompleted: pageStack.push(rootPage)
 }

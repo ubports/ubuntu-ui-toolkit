@@ -65,6 +65,7 @@ Template {
             id: blue
             title: "Blue"
             contents: Rectangle {
+                id: pink
                 color: "darkblue"
                 radius: 5
                 width: 150
@@ -75,16 +76,10 @@ Template {
                     anchors.centerIn: parent
                     onClicked: pageStack.pop()
                     darkBorder: true
-                }
-            }
-        }
-
-        Component.onCompleted: {
-            //            pageStack.push(rootPage); // TODO: check for rootPage
-            //            pageStack.push(orange);
-            //            pageStack.push(blue);
-            //            pageStack.pop();
-            //            pageStack.pop();
+                } // button
+            } // rectangle
         }
     }
+
+
 }
