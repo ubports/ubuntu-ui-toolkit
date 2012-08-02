@@ -38,14 +38,14 @@ Item {
     /*!
       \preliminary
       The location of the icon that is displayed inside the button used to select this page (optional).
-      Either \l text or iconSource, or both must be defined.
+      Either \l title or iconSource, or both must be defined.
      */
     property url iconSource
 
     /*!
       \preliminary
       The Item that is shown when this page is active.
-      If no contents is specified, the contents specified by \l pageSource will be loaded.
+      If no contents is specified, the contents specified by \l contentsSource will be loaded.
      */
     property Item contents: loader.item
 

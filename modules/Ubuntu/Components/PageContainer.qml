@@ -16,7 +16,17 @@
 
 import QtQuick 1.1
 
-// internal class
+/*!
+    \qmlclass PageContainer
+    \inqmlmodule Ubuntu.Components 0.1
+    \brief A container for Page objects.
+    This class contains a \l pages property that is automatically updated
+    to contain all of the container's children that are of type Page.
+
+    \b{This component is under heavy development.}
+
+    Examples: See subclasses.
+*/
 Item {
     id: pageContainer
 
@@ -37,8 +47,12 @@ Item {
     /*!
       \preliminary
       The list of all the children that are a Page.
+      It is automatically updated when children are added or removed.
      */
     property list<Page> pages
 
+    /*!
+      \internal
+     */
     onChildrenChanged: __updatePages()
 }
