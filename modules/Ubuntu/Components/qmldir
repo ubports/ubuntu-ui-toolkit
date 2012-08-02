@@ -1,10 +1,11 @@
 Button 0.1 Button.qml
 ButtonWithForeground 0.1 ButtonWithForeground.qml
 HLine 0.1 HLine.qml
-Tab 0.1 Tab.qml
+Page 0.1 Page.qml
 Tabs 0.1 Tabs.qml
 TextCustom 0.1 TextCustom.qml
 AbstractButton 0.1 AbstractButton.qml
+PageContainer 0.1 PageContainer.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 PageStack 0.1 PageStack.qml

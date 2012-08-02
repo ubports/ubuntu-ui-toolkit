@@ -26,23 +26,23 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            Tab {
-                text: "tab 1"
-                page: Text {
+            Page {
+                title: "tab 1"
+                contents: Text {
                     anchors.centerIn: parent
                     text: "This is the first tab."
                 }
             }
-            Tab {
-                text: "tab 2"
-                page: Text {
+            Page {
+                title: "tab 2"
+                contents: Text {
                     anchors.centerIn: parent
                     text: "Tab number two."
                 }
             }
-            Tab {
-                text: "tab 3"
-                page:  Rectangle {
+            Page {
+                title: "tab 3"
+                contents:  Rectangle {
                     id: tab3
                     anchors.fill: parent
                     Text {
@@ -58,7 +58,7 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-Item {
+PageContainer {
     id: tabs
 
     /*!
@@ -92,16 +92,6 @@ Item {
     width: 200
     height: buttonRow.height
 
-    /*!
-      \internal
-      Keep the Tab items that the user defines separate
-      from the other items that we create below.
-    */
-    default property alias children: tabItems.children
-    Item {
-        id: tabItems
-    }
-
     // encapsulation
     Item {
         id: visuals
@@ -109,7 +99,7 @@ Item {
 
         // needed to set the anchors in setSeparator()
         property alias buttonRow: buttonRow
-        property alias pages: pages
+        property alias contentsContainer: contentsContainer
 
         Row {
             id: buttonRow
@@ -162,14 +152,14 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabItems.children
+                model: tabs.pages
                 TabButton {
                     id: tabButton
-                    property Item tab: modelData
-                    text: tab.text
+                    property Item page: modelData
+                    text: modelData.title
                     __isFirst: index === 0
-                    __isLast: index === (repeater.count-1)
-                    iconSource: tab.iconSource
+                    __isLast: index === (repeater.count - 1)
+                    iconSource: modelData.iconSource
                     width: buttonRow.buttonWidth
                     selected: (index === tabs.selectedTabIndex)
                     onClicked: tabs.selectedTabIndex = index
@@ -180,7 +170,7 @@ Item {
 
         // This is the item that will be the parent of the currently displayed page.
         Item {
-            id: pages
+            id: contentsContainer
             anchors {
                 top: buttonRow.bottom
                 left: parent.left
@@ -191,13 +181,13 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabItems.children.length; i++) {
-                tab = tabItems.children[i];
+            for (var i = 0; i < tabs.pages.length; i++) {
+                tab = tabs.pages[i]
                 if (i == tabs.selectedTabIndex) {
-                    tab.__setPageParent(pages);
-                    tab.selected = true;
+                    tab.contentsParent = contentsContainer;
+                    tab.active = true;
                 } else {
-                    tab.selected = false;
+                    tab.active = false;
                 }
             }
         }
@@ -208,9 +198,9 @@ Item {
                 tabs.separator.anchors.top = visuals.buttonRow.bottom;
                 tabs.separator.anchors.left = visuals.left;
                 tabs.separator.anchors.right = visuals.right;
-                visuals.pages.anchors.top = tabs.separator.bottom;
+                visuals.contentsContainer.anchors.top = tabs.separator.bottom;
             } else { // no separator
-                visuals.pages.anchors.top = visuals.buttonRow.bottom;
+                visuals.contentsContainer.anchors.top = visuals.buttonRow.bottom;
             }
         }
 
