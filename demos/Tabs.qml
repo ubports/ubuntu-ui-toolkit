@@ -21,42 +21,65 @@ Template {
     title: "Tabs"
 
     Tabs {
-        Page {
-            title: "Tab 1"
-            contents: Rectangle {
-                color: "#eeeeee"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the first tab."
-                    color: "#757373"
+        id: tabs
+        property variant numerations: ["first", "second", "third"]
+        property variant colors: ["#eeeeee", "#e4e4e4", "#dddddd"]
+        property variant showIcon: [false, true, true]
+        property variant showTitle: [true, false, true]
+
+        Repeater {
+            model: tabs.numerations
+            Page {
+                title: tabs.showTitle[index] ? "Tab "+ (index + 1) : undefined
+                iconSource: tabs.showIcon[index] ? "call_icon.png" : undefined
+                contents: Rectangle {
+                    color: tabs.colors[index]
+                    anchors.fill: parent
+                    TextCustom {
+                        anchors.centerIn: parent
+                        text: "This is the " + modelData + " tab."
+                        color: "#757373"
+                    }
                 }
             }
         }
-        Page {
-            iconSource: "call_icon.png"
-            contents: Rectangle {
-                color: "#e4e4e4"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the second tab."
-                    color: "#757373"
-                }
-            }
-        }
-        Page {
-            title: "Tab 3"
-            iconSource: "call_icon.png"
-            contents:  Rectangle {
-                color: "#dddddd"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the third tab."
-                    color: "#757373"
-                }
-            }
-        }
+
+//        Page {
+//            title: "Tab 1"
+//            contents: Rectangle {
+//                color: "#eeeeee"
+//                anchors.fill: parent
+//                TextCustom {
+//                    anchors.centerIn: parent
+//                    text: "This is the first tab."
+//                    color: "#757373"
+//                }
+//            }
+//        }
+//        Page {
+//            iconSource: "call_icon.png"
+//            contents: Rectangle {
+//                color: "#e4e4e4"
+//                anchors.fill: parent
+//                TextCustom {
+//                    anchors.centerIn: parent
+//                    text: "This is the second tab."
+//                    color: "#757373"
+//                }
+//            }
+//        }
+//        Page {
+//            title: "Tab 3"
+//            iconSource: "call_icon.png"
+//            contents:  Rectangle {
+//                color: "#dddddd"
+//                anchors.fill: parent
+//                TextCustom {
+//                    anchors.centerIn: parent
+//                    text: "This is the third tab."
+//                    color: "#757373"
+//                }
+//            }
+//        }
     }
 }
