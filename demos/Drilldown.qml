@@ -23,21 +23,35 @@ Template {
     PageStack {
         id: pageStack
         anchors.fill: parent
+        showToolBar: true
 
         rootPage: Drilldown {
             title: "Colors"
             //anchors.fill: parent
-            Page {
-                title: "Orange"
-                contents: Rectangle { anchors.fill: parent; color: "orange" }
+            __pageStack: pageStack
+            Drilldown {
+                title: "Dark"
+                __pageStack: pageStack
+                Page {
+                    title: "BLACK"
+                    contents: Rectangle { anchors.fill: parent; color: "#111111" }
+                }
             }
-            Page {
-                title: "Blue"
-                contents: Rectangle { anchors.fill: parent; color: "blue" }
-            }
-            Page {
-                title: "Green"
-                contents: Rectangle { anchors.fill: parent; color: "green" }
+            Drilldown {
+                title: "Bright"
+                __pageStack: pageStack
+                Page {
+                    title: "Orange"
+                    contents: Rectangle { anchors.fill: parent; color: "orange" }
+                }
+                Page {
+                    title: "Blue"
+                    contents: Rectangle { anchors.fill: parent; color: "blue" }
+                }
+                Page {
+                    title: "Green"
+                    contents: Rectangle { anchors.fill: parent; color: "green" }
+                }
             }
         }
     }
