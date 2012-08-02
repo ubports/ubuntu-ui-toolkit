@@ -85,8 +85,15 @@ Item {
             return undefined;
         }
 
+        function numListItems() {
+            var num = 0;
+            for (var i=0; i < listItems.children.length; i++)
+                if (listItems.children[i].__isDivider !== undefined) num++
+            return num;
+        }
+
         function updateSeparators() {
-            var num = listItems.children.length;
+            var num = numListItems();
             if (num > 0) {
                 var item;
                 for (var i = 0; i < num-1; i++) {
