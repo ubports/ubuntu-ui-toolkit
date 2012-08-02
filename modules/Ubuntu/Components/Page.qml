@@ -17,96 +17,95 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass Tab
+    \qmlclass Page
     \inqmlmodule Ubuntu.Components 0.1
-    \brief A child of a Tabs object that represents one tab.
+    \brief A page that can be included in Tabs object.
 
     \b{This component is under heavy development.}
 
     Examples: See \l Tabs.
 */
 Item {
-    id: tab
+    id: page
 
     /*!
       \preliminary
-      The text that is shown on the tab button used to select this tab (optional).
+      The title that is shown on the tab button used to select this tab (optional).
       Either text or \l iconSource, or both must be defined.
      */
-    property string text
+    property string title
 
     /*!
       \preliminary
-      The location of the icon that is displayed inside the button used to select this tab (optional).
+      The location of the icon that is displayed inside the button used to select this page (optional).
       Either \l text or iconSource, or both must be defined.
      */
     property url iconSource
 
     /*!
       \preliminary
-      The page that is shown when this tab is selected.
-      If no page is specified, the page specified by \l pageSource will be loaded.
+      The Item that is shown when this page is active.
+      If no contents is specified, the contents specified by \l pageSource will be loaded.
      */
-    property Item page: loader.item
+    property Item contents: loader.item
 
     /*!
       \preliminary
-      pageSource is used as the location of the QML file defining
-      the page that will be displayed when this tab is selected and no \l page was defined.
+      conentsSource is used as the location of the QML file defining
+      the contents that will be displayed when this page is active and no \l contents was defined.
      */
-    property url pageSource
+    property url contentsSource
 
     /*!
       \preliminary
-      If \l pageSource is used to define the page of this tab, preloadPage specifies whether
-      the page should be preloaded from the QML file when the application starts, or loading
-      is delayed until the tab is selected.
+      If \l contentsSource is used to define the page of this tab, preloadContents specifies whether
+      the contents should be preloaded from the QML file when the application starts, or loading
+      is delayed until the contents is active.
      */
-    property bool preloadPage: false
+    property bool preloadContents: false
 
     /*!
       \preliminary
-      Indicates whether this tab is selected.
+      Indicates whether this page is active.
       Its value is automatically updated by the \l Tabs object.
-      TODO: Make readonly when we switch to QtQuick2
     */
-    property bool selected: false
+    property bool active: false
 
     Loader {
         id: loader
 
-        source: (status == Loader.Ready || tab.preloadPage || tab.selected) ? tab.pageSource : ""
+        source: (status == Loader.Ready || page.preloadContents || page.active) ? page.contentsSource : ""
 
-        property Item pageParent
-        property Item previousPage
+        property Item contentsParent
+        property Item previousContents
 
-        function updatePageVisibility() {
-            if (tab.page) {
-                if (pageParent) tab.page.parent = pageParent;
-                tab.page.visible = tab.selected;
+        function updateContentsVisibility() {
+            if (page.contents) {
+                if (contentsParent) page.contents.parent = contentsParent;
+                page.contents.visible = page.active;
             }
         }
 
-        function hidePreviousPage() {
-            if (previousPage && previousPage != tab.page) previousPage.visible = false;
-            previousPage = tab.page;
+        function hidePreviousContents() {
+            if (previouscontents && previousContents !== page.contents) previousContents.visible = false;
+            previousContents = page.contents;
         }
 
         Connections {
-            target: tab
-            onPageChanged: {
-                loader.hidePreviousPage();
-                loader.updatePageVisibility();
+            target: page
+            onContentsChanged: {
+                loader.hidePreviousContents();
+                loader.updateContentsVisibility();
             }
-            onSelectedChanged: loader.updatePageVisibility()
+            onActiveChanged: loader.updateContentsVisibility()
         }
     }
 
     /*!
       \internal
-      Set the parent of the page to show when this tab is selected.
+      Set the parent of the page to show when this tab is active.
     */
     function __setPageParent(parentItem) {
-        loader.pageParent = parentItem;
+        loader.contentsParent = parentItem;
     }
 }

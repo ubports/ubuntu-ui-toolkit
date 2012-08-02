@@ -166,7 +166,7 @@ Item {
                 TabButton {
                     id: tabButton
                     property Item tab: modelData
-                    text: tab.text
+                    text: tab.title
                     __isFirst: index === 0
                     __isLast: index === (repeater.count-1)
                     iconSource: tab.iconSource
@@ -195,9 +195,9 @@ Item {
                 tab = tabItems.children[i];
                 if (i == tabs.selectedTabIndex) {
                     tab.__setPageParent(pages);
-                    tab.selected = true;
+                    tab.active = true;
                 } else {
-                    tab.selected = false;
+                    tab.active = false;
                 }
             }
         }
