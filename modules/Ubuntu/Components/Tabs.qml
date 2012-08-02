@@ -194,7 +194,7 @@ Item {
             for (var i = 0; i < tabItems.children.length; i++) {
                 tab = tabItems.children[i];
                 if (i == tabs.selectedTabIndex) {
-                    tab.__setPageParent(pages);
+                    tab.contentsParent = pages;
                     tab.active = true;
                 } else {
                     tab.active = false;

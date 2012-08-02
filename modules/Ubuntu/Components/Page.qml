@@ -71,17 +71,24 @@ Item {
     */
     property bool active: false
 
+    /*!
+      \preliminary
+      Specifies the visual parent of the \l contents Item.
+      The parent of \l contents is set when the page is made active
+      (after it is automatically loaded from \l contentsSource, if applicable).
+     */
+    property Item contentsParent
+
     Loader {
         id: loader
 
         source: (status == Loader.Ready || page.preloadContents || page.active) ? page.contentsSource : ""
 
-        property Item contentsParent
         property Item previousContents
 
         function updateContentsVisibility() {
             if (page.contents) {
-                if (contentsParent) page.contents.parent = contentsParent;
+                if (page.contentsParent) page.contents.parent = page.contentsParent;
                 page.contents.visible = page.active;
             }
         }
@@ -99,13 +106,5 @@ Item {
             }
             onActiveChanged: loader.updateContentsVisibility()
         }
-    }
-
-    /*!
-      \internal
-      Set the parent of the page to show when this tab is active.
-    */
-    function __setPageParent(parentItem) {
-        loader.contentsParent = parentItem;
     }
 }
