@@ -102,8 +102,6 @@ PageContainer {
         property alias buttonRow: buttonRow
         property alias contentsContainer: contentsContainer
 
-        //Rectangle { color: "red"; anchors.fill: parent; }
-
         Row {
             id: buttonRow
             width: buttonRow.buttonWidth * repeater.count
