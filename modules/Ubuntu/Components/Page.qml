@@ -68,6 +68,7 @@ Item {
       \preliminary
       Indicates whether this page is active.
       Its value is automatically updated by the \l Tabs object.
+      TODO:  make internal and prefix with __?
     */
     property bool active: false
 
@@ -76,6 +77,8 @@ Item {
       Specifies the visual parent of the \l contents Item.
       The parent of \l contents is set when the page is made active
       (after it is automatically loaded from \l contentsSource, if applicable).
+      This value is automatically updated by the \l Tabs object.
+      TODO: make internal and prefix with __?
      */
     property Item contentsParent
 
