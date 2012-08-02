@@ -30,4 +30,5 @@ function Stack() {
          };
 }
 
+// needed because I cannot create a JS as a property in QML1
 var stack = new Stack();
