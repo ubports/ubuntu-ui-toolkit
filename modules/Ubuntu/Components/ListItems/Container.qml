@@ -104,11 +104,9 @@ Item {
                         item.__showTopSeparator = false;
                     }
                 }
-//                if (!listItems.children[0].__isDivider) listItems.children[0].__showTopSeparator = true;
                 if (!listItemAtIndex(0).__isDivider) listItemAtIndex(0).__showTopSeparator = true;
             }
         }
-
         onChildrenChanged: listItems.updateSeparators();
     }
 }
