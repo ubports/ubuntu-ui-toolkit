@@ -30,12 +30,17 @@ Item {
 
     property Page rootPage
 
+    property bool showToolBar: true
+
     function push(page) {
         if (page.__isPage !== true) return;
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         page.active = true;
+        // for Drilldowns:
+        if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
+        pageStack.stackSize = Stack.stack.size;
     }
 
     function pop() {
@@ -44,21 +49,38 @@ Item {
             Stack.stack.pop();
         }
         Stack.stack.top.active = true;
+        pageStack.stackSize = Stack.stack.size;
     }
+
+    property int stackSize: 0
 
     // toolbar placeholder
     Rectangle {
         id: toolBar
-        color: "darkgrey"
+        visible: pageStack.showToolBar
+        color: "#222222"
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
-        height: 27
+        height: 40
+        Button {
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+                margins: 5
+            }
+            text: "Back"
+            darkBorder: true
+            visible: pageStack.stackSize > 1
+            onClicked: pageStack.pop()
+        }
     }
 
-    Item {
+    Rectangle {
+        color: "yellow"
         id: pageContents
         anchors {
             left: parent.left
@@ -66,6 +88,7 @@ Item {
             bottom: parent.bottom
             top: toolBar.bottom
         }
+//        anchors.fill: parent
 
         // In QtQuick1, this is impossible.
         // QtQuick2 introduces var type that can be JS variables (not possible for variant).

@@ -26,6 +26,7 @@ Template {
 
         rootPage: Drilldown {
             title: "Colors"
+            //anchors.fill: parent
             Page {
                 title: "Orange"
                 contents: Rectangle { anchors.fill: parent; color: "orange" }

@@ -29,16 +29,40 @@ import "ListItems" as ListItem
 Page {
     id: drilldown
 
+    /*!
+      \internal
+      The \l PageStack to push and pop pages to.
+     */
+    property PageStack __pageStack
+
     default property alias children: pageContainer.children
     PageContainer {
         id: pageContainer
     }
 
-    ListItem.Container {
-        Repeater {
-            model: pageContainer.pages
-            ListItem.Standard {
-                text: modelData.title
+    contents: Rectangle {
+        width: 250
+        color: "#eeeeee"
+        height: Math.min(listItemContainer.height, parent.height)
+//        anchors {
+//            top: toolBar.bottom
+//            left: parent.left
+//            right: parent.right
+//        }
+
+        ListItem.Container {
+            id: listItemContainer
+            width: 250
+            height: 300
+            anchors.fill: parent
+            Repeater {
+                model: pageContainer.pages
+                ListItem.Standard {
+                    text: modelData.title
+                    iconSource: modelData.iconSource
+                    progression: true
+                    onClicked: __pageStack.push(modelData)
+                }
             }
         }
     }
