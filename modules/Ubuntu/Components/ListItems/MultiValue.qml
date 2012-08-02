@@ -74,7 +74,7 @@ Selectable {
     Item {
         anchors.fill: parent
         IconVisual {
-            id: iconHelper;
+            id: iconHelper
             anchors {
                 top: parent.top
                 bottom: parent.bottom

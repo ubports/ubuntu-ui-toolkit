@@ -101,12 +101,10 @@ Selectable {
 
         IconVisual {
             id: iconHelper
-            height: 46
             anchors {
-                leftMargin: 5
-                topMargin: 5
-                left: parent.left
                 top: parent.top
+                bottom: parent.bottom
+                left: parent.left
             }
         }
         Item  {
@@ -127,7 +125,7 @@ Selectable {
                     leftMargin: 5
                     rightMargin: 5
                     bottomMargin: 5
-                    topMargin: 7
+                    topMargin: 8
                 }
             }
             LabelVisual {

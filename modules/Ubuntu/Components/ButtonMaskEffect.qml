@@ -43,8 +43,12 @@ ShaderEffectItem {
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
             // this is equivalent to using a vertical linear gradient texture going from vec3(0.0) to vec3(1.0) with opacity 0.8
-            lowp vec3 gradientColor = lowp vec3(0.8*qt_TexCoord0.t);
-            lowp vec4 result = vec4(blendOverlay(baseColor.rgb, gradientColor.rgb), baseColor.a);
+            lowp vec4 gradientColor = lowp vec4(qt_TexCoord0.ttt, 1.0) * 0.8;
+            // FIXME: Because blendOverlay gives incorrect results when we use pre-multiplied alpha,
+            // we remove the pre-multiplication before calling blendOverlay, and multiply again afterwards.
+            // It works, but is not very elegant.
+            lowp vec4 result = vec4(blendOverlay(baseColor.rgb/baseColor.a, gradientColor.rgb), 1.0);
+            result *= qt_Opacity * baseColor.a;
             gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
         }
         "

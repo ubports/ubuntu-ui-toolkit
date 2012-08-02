@@ -17,7 +17,7 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass Selector
+    \qmlclass ValueSelector
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
@@ -29,21 +29,21 @@ import QtQuick 1.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         ListItem.Container {
             width: 250
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Standard"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Disabled"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Expanded"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            ListItem.Selector {
+            ListItem.ValueSelector {
                 text: "Icon"
                 iconSource: "icon.png"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
@@ -182,12 +182,12 @@ Base {
 
         Repeater {
             model: selector.values
-            Base {
+            Selectable {
                 id: valueBase
                 height: selector.expanded ? 40 : 0
                 visible: valueBase.height > 0
-
                 onClicked: selector.selectedIndex = index
+                selected: index === selector.selectedIndex
 
                 Rectangle {
                     color: "#e0e0e0"
@@ -203,7 +203,7 @@ Base {
                         verticalCenter: parent.verticalCenter
                     }
                     font.italic: true
-                    font.bold: index === selector.selectedIndex
+                    font.bold: valueBase.selected
                     property real heightMargin: valueBase.height - implicitHeight
                     visible: heightMargin > 0
                     // fade in/out the values when expanding/contracting the selector.
