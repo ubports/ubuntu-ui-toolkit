@@ -1,7 +1,7 @@
 Source: qt-components-ubuntu
 Priority: extra
 Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
-Build-Depends: debhelper (>= 8.0.0), qt4-qmake, libqt4-dev
+Build-Depends: debhelper (>= 8.0.0), qt4-qmake, libqt4-dev, libqt4-declarative-shaders
 Standards-Version: 3.9.2
 Section: libs
 Homepage: <insert the upstream URL, if relevant>
