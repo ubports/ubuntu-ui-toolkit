@@ -27,7 +27,6 @@ Template {
 
         Drilldown {
             title: "Colors"
-            //anchors.fill: parent
             Drilldown {
                 title: "Dark"
                 Page {
@@ -41,9 +40,21 @@ Template {
                     title: "Orange"
                     contents: Rectangle { anchors.fill: parent; color: "orange" }
                 }
-                Page {
-                    title: "Blue"
-                    contents: Rectangle { anchors.fill: parent; color: "blue" }
+                Drilldown {
+                    id: blues
+                    title: "Blueish"
+                    property variant names: ["aqua", "navy",
+                        "steelblue", "lightsteelblue", "cornflowerblue", "turquoise"]
+                    // XXX TODO: When I add the following to the list,
+                    //  it gets *very* slow. Find out why.
+                        //"midnightblue", "slateblue", "royalblue", "powderblue"]
+                    Repeater {
+                        model: blues.names
+                        Page {
+                            title: modelData
+                            contents: Rectangle { anchors.fill: parent; color: modelData }
+                        }
+                    }
                 }
                 Page {
                     title: "Green"

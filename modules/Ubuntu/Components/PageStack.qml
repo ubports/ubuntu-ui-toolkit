@@ -28,9 +28,7 @@ import "stack.js" as Stack
 PageContainer {
     id: pageStack
 
-//    property Page rootPage
-
-    property bool showToolBar: false //true //pageStack.stackSize > 1
+    property bool showToolBar: false
 
     function push(page) {
         if (page.__isPage !== true) return;
@@ -38,8 +36,6 @@ PageContainer {
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         page.active = true;
-        // for Drilldowns:
-//        if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
 
         pageStack.stackSize = Stack.stack.size;
         toolBarTitle.text = page.title;
@@ -123,8 +119,8 @@ PageContainer {
         for (var i=0; i < pageStack.pages.length; i++) {
             pageStack.push(pageStack.pages[i]);
         }
+        print("Pushed " + pageStack.pages.length + " pages to the stack.");
     }
 
     Component.onCompleted: pageStack.__pushAllPages()
-
 }
