@@ -25,10 +25,10 @@ import "stack.js" as Stack
     Examples: TODO
 */
 
-Item {
+PageContainer {
     id: pageStack
 
-    property Page rootPage
+//    property Page rootPage
 
     property bool showToolBar: false //true //pageStack.stackSize > 1
 
@@ -117,5 +117,14 @@ Item {
         // FIXME: After switching to QtQuick2, we can simply use a stack
         // variable as pages.stack
     }
-    Component.onCompleted: pageStack.push(rootPage)
+//    Component.onCompleted: pageStack.push(rootPage)
+
+    function __pushAllPages() {
+        for (var i=0; i < pageStack.pages.length; i++) {
+            pageStack.push(pageStack.pages[i]);
+        }
+    }
+
+    Component.onCompleted: pageStack.__pushAllPages()
+
 }

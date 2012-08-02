@@ -26,7 +26,7 @@ import "ListItems" as ListItem
 
     Examples: TODO
 */
-Page {
+PageContainer {
     id: drilldown
 
     /*!
@@ -56,10 +56,10 @@ Page {
 //    onParentChanged: findPageStack()
 //    Component.onCompleted: findPageStack()
 
-    default property alias children: pageContainer.children
-    PageContainer {
-        id: pageContainer
-    }
+//    default property alias children: pageContainer.children
+//    PageContainer {
+//        id: pageContainer
+//    }
 
     contents: Rectangle {
         width: 250
@@ -72,7 +72,7 @@ Page {
             height: 300
             anchors.fill: parent
             Repeater {
-                model: pageContainer.pages
+                model: drilldown.pages
                 ListItem.Standard {
                     id: listItem
                     text: modelData.title

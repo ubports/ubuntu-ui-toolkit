@@ -25,13 +25,11 @@ Template {
         anchors.fill: parent
         showToolBar: true
 
-        rootPage: Drilldown {
+        Drilldown {
             title: "Colors"
             //anchors.fill: parent
-            __pageStack: pageStack
             Drilldown {
                 title: "Dark"
-                __pageStack: pageStack
                 Page {
                     title: "BLACK"
                     contents: Rectangle { anchors.fill: parent; color: "#111111" }
@@ -39,7 +37,6 @@ Template {
             }
             Drilldown {
                 title: "Bright"
-                __pageStack: pageStack
                 Page {
                     title: "Orange"
                     contents: Rectangle { anchors.fill: parent; color: "orange" }

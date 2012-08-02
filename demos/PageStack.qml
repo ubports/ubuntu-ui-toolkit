@@ -20,11 +20,9 @@ import Ubuntu.Components 0.1
 Template {
     title: "PageStack"
 
-    PageStack {
-        id: pageStack
-        anchors.fill: parent
-
-        rootPage: Page {
+    Item {
+        Page {
+            id: firstPage
             title: "lala (ignored)"
             contents:
                 Column {
@@ -44,40 +42,47 @@ Template {
                     }
                 }
             }
-        }
-        Page {
-            id: orange
-            title: "Orange"
-            contents: Rectangle {
-                color: "orange"
-                width: 250
-                height: 250
-                anchors.centerIn: parent
-                Button {
-                    text: "go back"
+
+            Page {
+                id: orange
+                title: "Orange"
+                contents: Rectangle {
+                    color: "orange"
+                    width: 250
+                    height: 250
                     anchors.centerIn: parent
-                    onClicked: pageStack.pop()
+                    Button {
+                        text: "go back"
+                        anchors.centerIn: parent
+                        onClicked: pageStack.pop()
+                    }
                 }
+            }
+
+            Page {
+                id: blue
+                title: "Blue"
+                contents: Rectangle {
+                    id: pink
+                    color: "darkblue"
+                    radius: 5
+                    width: 150
+                    height: 150
+                    anchors.centerIn: parent
+                    Button {
+                        text: "back"
+                        anchors.centerIn: parent
+                        onClicked: pageStack.pop()
+                        darkBorder: true
+                    } // button
+                } // rectangle
             }
         }
 
-        Page {
-            id: blue
-            title: "Blue"
-            contents: Rectangle {
-                id: pink
-                color: "darkblue"
-                radius: 5
-                width: 150
-                height: 150
-                anchors.centerIn: parent
-                Button {
-                    text: "back"
-                    anchors.centerIn: parent
-                    onClicked: pageStack.pop()
-                    darkBorder: true
-                } // button
-            } // rectangle
+        PageStack {
+            id: pageStack
+            anchors.fill: parent
+            Component.onCompleted: push(firstPage)
         }
     }
 }
