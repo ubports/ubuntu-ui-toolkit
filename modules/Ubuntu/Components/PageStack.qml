@@ -25,40 +25,31 @@ import "stack.js" as Stack
     Examples: TODO
 */
 
-//PageContainer {
-//Item {
-Rectangle {
+Item {
     id: pageStack
-    color: "pink"
-//    anchors.fill: parent
 
     property bool showToolBar: true
 
     default property Item rootPage
-    onRootPageChanged: {
-//      rootPage.parent = pageContents
-//      rootPage.anchors.fill = pageContents
-        push(rootPage);
-//        //= header.bottom
-//        //        content.anchors.topMargin = page.anchors.margins
-//        //        content.anchors.bottom = page.bottom
-//        //        content.anchors.left = page.left
-//        //        content.anchors.right = page.right
-    }
+    onRootPageChanged: pageStack.push(rootPage)
+
+    //        // In QtQuick1, this is impossible.
+    //        // QtQuick2 introduces var type that can be JS variables (not possible for variant).
+    //        //property var stack: new Stack.Stack()
+    //        // Instead of this, the variable is created in stack.js,
+    //        // and can be accessed as Stack.stack
+    //        // FIXME: After switching to QtQuick2, we can simply use a stack
+    //        // variable as pages.stack
 
     function push(page) {
-        print("push "+page);
         if (page.__isPage !== true) return;
-        print("title: "+page.title);
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
-        print("aa")
+        // for the drilldown:
+        if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
         page.active = true;
-        print("bb")
-
-        pageStack.stackSize = Stack.stack.size;
-        toolBarTitle.text = page.title;
+        toolBar.update();
     }
 
     function pop() {
@@ -67,11 +58,14 @@ Rectangle {
             Stack.stack.pop();
         }
         Stack.stack.top.active = true;
-        pageStack.stackSize = Stack.stack.size;
-        toolBarTitle.text = Stack.stack.top.title;
+        toolBar.update();
     }
 
-    property int stackSize: 0
+    /*!
+      \internal
+      Used to determine whether the back button is active.
+     */
+    property int __stackSize: 0
 
     Item {
         parent: pageStack
@@ -79,6 +73,21 @@ Rectangle {
         // toolbar placeholder
         Rectangle {
             id: toolBar
+
+            function update() {
+                var stackSize = Stack.stack.size;
+                if (stackSize > 0) {
+                    if (stackSize > 1) {
+                        backButton.enabled = true;
+                    } else {
+                        backButton.enabled = false;
+                    }
+                    toolBarTitle.text = Stack.stack.top.title;
+                } else {
+                    backButton.enabled = false
+                }
+            }
+
             visible: pageStack.showToolBar
             color: "#222222"
             anchors {
@@ -98,11 +107,10 @@ Rectangle {
                 text: "Back"
                 darkBorder: true
                 visible: true
-                enabled: pageStack.stackSize > 1
+                enabled: pageStack.__stackSize > 1
                 onClicked: pageStack.pop()
             }
             TextCustom {
-                //            text: Stack.stack.top.title
                 id: toolBarTitle
                 anchors {
                     left: backButton.right
@@ -118,7 +126,7 @@ Rectangle {
         }
 
         Rectangle {
-            color: "yellow"//"#eeeeee"
+            color: "#eeeeee"
             id: pageContents
             anchors {
                 left: parent.left
@@ -127,25 +135,5 @@ Rectangle {
                 top: toolBar.bottom
             }
         }
-//        //        anchors.fill: parent
-
-//        // In QtQuick1, this is impossible.
-//        // QtQuick2 introduces var type that can be JS variables (not possible for variant).
-//        //property var stack: new Stack.Stack()
-//        // Instead of this, the variable is created in stack.js,
-//        // and can be accessed as Stack.stack
-//        // FIXME: After switching to QtQuick2, we can simply use a stack
-//        // variable as pages.stack
-//    }
-////        Component.onCompleted: pageStack.push(rootPage)
-
-//    //    function __pushAllPages() {
-//    //        for (var i=0; i < pageStack.pages.length; i++) {
-//    //            pageStack.push(pageStack.pages[i]);
-//    //        }
-//    //        print("Pushed " + pageStack.pages.length + " pages to the stack.");
-//    //    }
-
-//    //    Component.onCompleted: pageStack.__pushAllPages()
     }
 }

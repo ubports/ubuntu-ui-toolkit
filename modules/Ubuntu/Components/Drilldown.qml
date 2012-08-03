@@ -30,19 +30,20 @@ PageContainer {
     id: drilldown
 
     function __push(page) {
-        // Parent must be either a Drilldown or PageStack.
-        if (!parent) return;
-        if (parent.hasOwnProperty("stackSize")) parent.push(page);
-        else parent.__push(page);
+        if (__pageStack) __pageStack.push(page);
     }
 
+    /*!
+      \internal
+      Set by the page stack when the drilldown is pushed
+     */
+    property PageStack __pageStack
+
     contents: ListItem.Container {
-//        id: listItemContainer
         anchors.fill: parent
         Repeater {
             model: drilldown.pages
             ListItem.Standard {
-//                id: listItem
                 text: modelData.title
                 iconSource: modelData.iconSource
                 progression: true
@@ -50,6 +51,4 @@ PageContainer {
             }
         }
     }
-
-    Component.onCompleted: print("The drilldown with name "+drilldown.title+" has "+drilldown.pages.length+ "children.")
 }

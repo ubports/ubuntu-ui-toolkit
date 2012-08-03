@@ -28,7 +28,7 @@ Template {
 
         Page {
             id: firstPage
-            title: "lala (ignored)"
+            title: "Optional title"
             contents: Column {
                 anchors.centerIn: parent
                 Text {

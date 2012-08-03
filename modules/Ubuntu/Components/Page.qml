@@ -103,12 +103,11 @@ Item {
             if (page.contents) {
                 if (page.contentsParent) page.contents.parent = page.contentsParent;
                 page.contents.visible = page.active;
-                print("Updated visibility for " + page.title + " to "+ page.active);
             }
         }
 
         function hidePreviousContents() {
-            if (previouscontents && previousContents !== page.contents) previousContents.visible = false;
+            if (previousContents && previousContents !== page.contents) previousContents.visible = false;
             previousContents = page.contents;
         }
     }

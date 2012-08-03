@@ -37,13 +37,11 @@ Page {
     function __updatePages() {
         var pageArray = new Array();
         var item;
-        print("checking "+pageContainer.children.length+ " children.");
         for (var i=0; i < pageContainer.children.length; i++) {
             item = pageContainer.children[i];
             if (item.__isPage === true) pageArray.push(item);
         }
         pageContainer.pages = pageArray;
-        print("Added "+pages.length+" pages out of "+pageContainer.children.length+" children.");
     }
 
     /*!
