@@ -37,7 +37,7 @@ Base {
         id: background
 
         visible: selectableListItem.selected
-        anchors.fill: selectableListItem.__body
+        anchors.fill: parent
         color: "white"
         opacity: 0.7
     }
@@ -45,9 +45,9 @@ Base {
     Image {
         visible: selectableListItem.selected
         anchors {
-            top: parent.__body.top
+            top: parent.top
             topMargin: 2
-            right: parent.__body.right
+            right: parent.right
             rightMargin: 2
         }
         source: "artwork/ListItemSelectedTriangle.png"

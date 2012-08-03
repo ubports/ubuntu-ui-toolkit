@@ -52,75 +52,7 @@ import QtQuick 1.1
 
     \b{This component is under heavy development.}
 */
-Item {
+Column {
     id: listItemContainer
     width: 250
-    height: listItems.height
-
-    /*!
-      \internal
-      Keep the ListItems that the user defines separate
-      from the other items that we create below, and
-      ensure the listItems column is their parent.
-    */
-    default property alias children: listItems.children
-    Column {
-        id: listItems
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-
-        function listItemAtIndex(index) {
-            var indexInChildren = 0
-            var item;
-            for (var i=0; i < listItems.children.length; i++) {
-                item = listItems.children[i];
-                if (item.__isDivider !== undefined) {
-                    if (indexInChildren === index) return listItems.children[i];
-                    indexInChildren++;
-                }
-            }
-            return undefined;
-        }
-
-        function numListItems() {
-            var num = 0;
-            for (var i=0; i < listItems.children.length; i++) {
-//                print(i+": "+listItems.children[i]);
-                if (listItems.children[i].__isDivider !== undefined) {
-                    print("listItem "+num+" text: "+listItems.children[i].text);
-                    num++;
-                }
-            }
-            print("num children: "+listItems.children.length);
-            print("num LIs: "+num);
-            return num;
-        }
-
-        function updateSeparators() {
-            var num = numListItems();
-            if (num > 0) {
-                var item;
-                for (var i = 0; i < num-1; i++) {
-                    //                    item = listItems.children[i];
-                    item = listItemAtIndex(i);
-                    if (item !== undefined) {
-                        if (item.__isDivider || listItems.children[i+1].__isDivider) {
-                            item.__showBottomSeparator = false;
-                        }
-                        else if ((listItemAtIndex(i+1) !== undefined) && listItemAtIndex(i+1).__isDivider) {
-                            item._showBottomSeparator = false;
-                        } else {
-                            item.__showBottomSeparator = true;
-                        }
-                        item.__showTopSeparator = false;
-                    }
-                }
-                if (!listItemAtIndex(0).__isDivider) listItemAtIndex(0).__showTopSeparator = true;
-            }
-        }
-        onChildrenChanged: listItems.updateSeparators();
-    }
 }

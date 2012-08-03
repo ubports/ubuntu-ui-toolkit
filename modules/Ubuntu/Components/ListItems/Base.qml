@@ -94,21 +94,52 @@ Item {
 
     /*!
       \internal
+      Override in divider classes that should never
+      draw the one-pixel divider at the top or bottom
+      of the list item.
+     */
+    property bool __isDivider: false
+
+    /*!
+      \internal
      */
     property bool __showTopSeparator: false
 
     /*!
       \internal
      */
-    property bool __showBottomSeparator: false
+    property bool __showBottomSeparator: __separateAtBottom()
 
     /*!
       \internal
-      Override in divider classes that should never
-      draw the one-pixel divider at the top or bottom
-      of the list item.
+      Retun the index of the given item in the list of
+      parent's children.
      */
-    property bool __isDivider: false
+    function __childIndexOf(item) {
+        if (!parent) return undefined;
+        var index = parent.children.length - 1;
+        while (index >= 0 && item !== parent.children[index]) {
+            index--;
+        }
+        if (index === -1) return undefined;
+        return index;
+    }
+
+    /*!
+      \internal
+      Determine whether the bottom separator must be shown.
+      This is always the case, if the next item in the list of children
+      is not a divider.
+     */
+    function __separateAtBottom() {
+        var index = baseListItem.__childIndexOf(baseListItem);
+        if (index === undefined) return true;
+        // index is defined:
+         if (index < parent.children.length - 1) {
+            if (parent.children[index+1].__isDivider) return false;
+        }
+        return true;
+    }
 
     Image {
         id: topSeparatorLine
@@ -130,10 +161,13 @@ Item {
         source: "artwork/ListItemDividerHorizontal.png"
         visible: baseListItem.__showBottomSeparator
     }
+
     /*!
       \internal
+      Reparent so that the visuals of the children do not
+      occlude the separator lines.
      */
-    property alias __body: body
+    default property alias children: body.children
     Item {
         id: body
         anchors {

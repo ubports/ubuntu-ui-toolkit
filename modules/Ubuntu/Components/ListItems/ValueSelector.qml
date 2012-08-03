@@ -93,6 +93,8 @@ Base {
         anchors {
             left: parent.left
             right: parent.right
+            topMargin: 2 //parent.__topSeparatorLine.height
+            bottomMargin: 2 //parent.__bottomSeparatorLine.height
         }
 
         Base {
@@ -189,9 +191,12 @@ Base {
                 onClicked: selector.selectedIndex = index
                 selected: index === selector.selectedIndex
 
+                __showBottomSeparator: index === selector.values.length - 1
+                __showTopSeparator: true // TODO: show different (less wide) separator?
+
                 Rectangle {
                     color: "#e0e0e0"
-                    anchors.fill: valueBase
+                    anchors.fill: parent
                     z: -1
                 }
 
@@ -209,7 +214,6 @@ Base {
                     // fade in/out the values when expanding/contracting the selector.
                     opacity: heightMargin < 10 ? heightMargin/10 : 1
                 }
-                __showTopSeparator: true // TODO: show different (less wide) separator?
 
                 states: [ State {
                         name: "expanded"
