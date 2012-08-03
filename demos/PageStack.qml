@@ -20,12 +20,16 @@ import Ubuntu.Components 0.1
 Template {
     title: "PageStack"
 
-    Item {
+
+    PageStack {
+        id: pageStack
+        anchors.fill: parent
+        //            Component.onCompleted: push(firstPage)
+
         Page {
             id: firstPage
             title: "lala (ignored)"
-            contents:
-                Column {
+            contents: Column {
                 anchors.centerIn: parent
                 Text {
                     text: "This is the root page!"
@@ -77,12 +81,6 @@ Template {
                     } // button
                 } // rectangle
             }
-        }
-
-        PageStack {
-            id: pageStack
-            anchors.fill: parent
-            Component.onCompleted: push(firstPage)
         }
     }
 }

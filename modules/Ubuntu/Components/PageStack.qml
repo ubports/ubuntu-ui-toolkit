@@ -25,17 +25,37 @@ import "stack.js" as Stack
     Examples: TODO
 */
 
-PageContainer {
+//PageContainer {
+//Item {
+Rectangle {
     id: pageStack
+    color: "pink"
+//    anchors.fill: parent
 
-    property bool showToolBar: false
+    property bool showToolBar: true
+
+    default property Item rootPage
+    onRootPageChanged: {
+//      rootPage.parent = pageContents
+//      rootPage.anchors.fill = pageContents
+        push(rootPage);
+//        //= header.bottom
+//        //        content.anchors.topMargin = page.anchors.margins
+//        //        content.anchors.bottom = page.bottom
+//        //        content.anchors.left = page.left
+//        //        content.anchors.right = page.right
+    }
 
     function push(page) {
+        print("push "+page);
         if (page.__isPage !== true) return;
+        print("title: "+page.title);
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
+        print("aa")
         page.active = true;
+        print("bb")
 
         pageStack.stackSize = Stack.stack.size;
         toolBarTitle.text = page.title;
@@ -53,74 +73,79 @@ PageContainer {
 
     property int stackSize: 0
 
-    // toolbar placeholder
-    Rectangle {
-        id: toolBar
-        visible: pageStack.showToolBar
-        color: "#222222"
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: visible ? 40 : 0
-        Button {
-            id: backButton
+    Item {
+        parent: pageStack
+        anchors.fill: parent
+        // toolbar placeholder
+        Rectangle {
+            id: toolBar
+            visible: pageStack.showToolBar
+            color: "#222222"
             anchors {
                 left: parent.left
-                top: parent.top
-                bottom: parent.bottom
-                margins: 5
-            }
-            text: "Back"
-            darkBorder: true
-            visible: true
-            enabled: pageStack.stackSize > 1
-            onClicked: pageStack.pop()
-        }
-        TextCustom {
-//            text: Stack.stack.top.title
-            id: toolBarTitle
-            anchors {
-                left: backButton.right
-                top: parent.top
-                bottom: parent.bottom
-                margins: 5
                 right: parent.right
+                top: parent.top
             }
-            color: "white"
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignVCenter
+            height: visible ? 40 : 0
+            Button {
+                id: backButton
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                    margins: 5
+                }
+                text: "Back"
+                darkBorder: true
+                visible: true
+                enabled: pageStack.stackSize > 1
+                onClicked: pageStack.pop()
+            }
+            TextCustom {
+                //            text: Stack.stack.top.title
+                id: toolBarTitle
+                anchors {
+                    left: backButton.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    margins: 5
+                    right: parent.right
+                }
+                color: "white"
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+            }
         }
-    }
 
-    Rectangle {
-        color: "#eeeeee"
-        id: pageContents
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            top: toolBar.bottom
+        Rectangle {
+            color: "yellow"//"#eeeeee"
+            id: pageContents
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                top: toolBar.bottom
+            }
         }
-//        anchors.fill: parent
+//        //        anchors.fill: parent
 
-        // In QtQuick1, this is impossible.
-        // QtQuick2 introduces var type that can be JS variables (not possible for variant).
-        //property var stack: new Stack.Stack()
-        // Instead of this, the variable is created in stack.js,
-        // and can be accessed as Stack.stack
-        // FIXME: After switching to QtQuick2, we can simply use a stack
-        // variable as pages.stack
+//        // In QtQuick1, this is impossible.
+//        // QtQuick2 introduces var type that can be JS variables (not possible for variant).
+//        //property var stack: new Stack.Stack()
+//        // Instead of this, the variable is created in stack.js,
+//        // and can be accessed as Stack.stack
+//        // FIXME: After switching to QtQuick2, we can simply use a stack
+//        // variable as pages.stack
+//    }
+////        Component.onCompleted: pageStack.push(rootPage)
+
+//    //    function __pushAllPages() {
+//    //        for (var i=0; i < pageStack.pages.length; i++) {
+//    //            pageStack.push(pageStack.pages[i]);
+//    //        }
+//    //        print("Pushed " + pageStack.pages.length + " pages to the stack.");
+//    //    }
+
+//    //    Component.onCompleted: pageStack.__pushAllPages()
     }
-//    Component.onCompleted: pageStack.push(rootPage)
-
-    function __pushAllPages() {
-        for (var i=0; i < pageStack.pages.length; i++) {
-            pageStack.push(pageStack.pages[i]);
-        }
-        print("Pushed " + pageStack.pages.length + " pages to the stack.");
-    }
-
-    Component.onCompleted: pageStack.__pushAllPages()
 }

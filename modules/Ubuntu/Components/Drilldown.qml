@@ -50,4 +50,6 @@ PageContainer {
             }
         }
     }
+
+    Component.onCompleted: print("The drilldown with name "+drilldown.title+" has "+drilldown.pages.length+ "children.")
 }

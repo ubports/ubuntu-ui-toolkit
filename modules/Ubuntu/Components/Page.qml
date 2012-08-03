@@ -90,8 +90,12 @@ Item {
 
     Loader {
         id: loader
-
         source: (status == Loader.Ready || page.preloadContents || page.active) ? page.contentsSource : ""
+    }
+
+    // encapsulation
+    Item {
+        id: pageFunctions
 
         property Item previousContents
 
@@ -107,14 +111,12 @@ Item {
             if (previouscontents && previousContents !== page.contents) previousContents.visible = false;
             previousContents = page.contents;
         }
-
-        Connections {
-            target: page
-            onContentsChanged: {
-                loader.hidePreviousContents();
-                loader.updateContentsVisibility();
-            }
-            onActiveChanged: loader.updateContentsVisibility()
-        }
     }
+
+    onContentsChanged: {
+        pageFunctions.hidePreviousContents();
+        pageFunctions.updateContentsVisibility();
+    }
+
+    onActiveChanged: pageFunctions.updateContentsVisibility()
 }
