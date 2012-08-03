@@ -118,7 +118,7 @@ ButtonWithForeground {
             gradientStrength: button.state != "pressed" ? 1.0 : 0.0
             Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
 
-            mask: ShaderEffectSource {sourceItem: shape; live: false; hideSource: true}
+            mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
             base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
         }
 
