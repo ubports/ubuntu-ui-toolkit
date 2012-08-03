@@ -44,11 +44,11 @@ Template {
                     id: blues
                     title: "Blueish"
                     property variant names: ["aqua", "navy",
-                        "steelblue", "lightsteelblue", "cornflowerblue", "turquoise",
+                        "steelblue", "lightsteelblue"]//, "cornflowerblue", "turquoise",
                     // XXX TODO: When I add the following to the list,
                     //  it gets *very* slow. Find out why.
-                        "midnightblue", "slateblue", "royalblue", "powderblue",
-                        "blue", "blue", "blue", "blue", "blue", "blue", "blue"]
+//                        "midnightblue", "slateblue", "royalblue", "powderblue",
+//                        "blue", "blue", "blue", "blue", "blue", "blue", "blue"]
 
                     Repeater {
                         model: blues.names

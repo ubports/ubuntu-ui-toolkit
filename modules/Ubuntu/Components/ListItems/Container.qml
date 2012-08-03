@@ -87,8 +87,15 @@ Item {
 
         function numListItems() {
             var num = 0;
-            for (var i=0; i < listItems.children.length; i++)
-                if (listItems.children[i].__isDivider !== undefined) num++
+            for (var i=0; i < listItems.children.length; i++) {
+//                print(i+": "+listItems.children[i]);
+                if (listItems.children[i].__isDivider !== undefined) {
+                    print("listItem "+num+" text: "+listItems.children[i].text);
+                    num++;
+                }
+            }
+            print("num children: "+listItems.children.length);
+            print("num LIs: "+num);
             return num;
         }
 

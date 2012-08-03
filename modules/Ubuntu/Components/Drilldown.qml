@@ -37,12 +37,12 @@ PageContainer {
     }
 
     contents: ListItem.Container {
-        id: listItemContainer
+//        id: listItemContainer
         anchors.fill: parent
         Repeater {
             model: drilldown.pages
             ListItem.Standard {
-                id: listItem
+//                id: listItem
                 text: modelData.title
                 iconSource: modelData.iconSource
                 progression: true
