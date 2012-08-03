@@ -42,6 +42,7 @@ Page {
             if (item.__isPage === true) pageArray.push(item);
         }
         pageContainer.pages = pageArray;
+        print("Added "+pages.length+" pages.");
     }
 
     /*!
@@ -54,5 +55,6 @@ Page {
     /*!
       \internal
      */
-    onChildrenChanged: __updatePages()
+    //onChildrenChanged: __updatePages()
+    Component.onCompleted: __updatePages()
 }

@@ -46,7 +46,7 @@ PageContainer {
                 text: modelData.title
                 iconSource: modelData.iconSource
                 progression: true
-                onClicked: drilldown.__push(modelData)
+//                onClicked: drilldown.__push(modelData)
             }
         }
     }
