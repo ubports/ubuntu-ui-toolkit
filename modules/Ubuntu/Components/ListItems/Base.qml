@@ -108,7 +108,7 @@ Item {
     /*!
       \internal
      */
-    property bool __showBottomSeparator: __banana()
+    property bool __showBottomSeparator: __separateAtBottom()
 
     /*!
       \internal
@@ -131,7 +131,7 @@ Item {
       This is always the case, if the next item in the list of children
       is not a divider.
      */
-    function __banana() {
+    function __separateAtBottom() {
         var index = baseListItem.__childIndexOf(baseListItem);
         if (index === undefined) return true;
         // index is defined:
