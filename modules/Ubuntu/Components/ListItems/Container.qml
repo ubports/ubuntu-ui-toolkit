@@ -52,10 +52,11 @@ import QtQuick 1.1
 
     \b{This component is under heavy development.}
 */
-Item {
+//Item {
+Column {
     id: listItemContainer
     width: 250
-    height: listItems.height
+//    height: listItems.height
 
     /*!
       \internal
@@ -63,57 +64,86 @@ Item {
       from the other items that we create below, and
       ensure the listItems column is their parent.
     */
-    default property alias children: listItems.children
-    Column {
-        id: listItems
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
+//    default property alias children: listItems.children
+//    default property alias children: listItems.allChildren
+//    Column {
+//        id: listItems
+//        anchors {
+//            left: parent.left
+//            right: parent.right
+//            top: parent.top
+//        }
 
-        function listItemAtIndex(index) {
-            var indexInChildren = 0
-            var item;
-            for (var i=0; i < listItems.children.length; i++) {
-                item = listItems.children[i];
-                if (item.__isDivider !== undefined) {
-                    if (indexInChildren === index) return listItems.children[i];
-                    indexInChildren++;
-                }
-            }
-            return undefined;
-        }
+////        function listItemAtIndex(index) {
+////            var indexInChildren = 0
+////            var item;
+////            for (var i=0; i < listItems.children.length; i++) {
+////                item = listItems.children[i];
+////                if (item.__isDivider !== undefined) {
+////                    if (indexInChildren === index) return listItems.children[i];
+////                    indexInChildren++;
+////                }
+////            }
+////            return undefined;
+////        }
 
-        function numListItems() {
-            var num = 0;
-            for (var i=0; i < listItems.children.length; i++)
-                if (listItems.children[i].__isDivider !== undefined) num++
-            return num;
-        }
+////        function numListItems() {
+////            var num = 0;
+////            for (var i=0; i < listItems.children.length; i++)
+////                if (listItems.children[i].__isDivider !== undefined) num++
+////            return num;
+////        }
 
-        function updateSeparators() {
-            var num = numListItems();
-            if (num > 0) {
-                var item;
-                for (var i = 0; i < num-1; i++) {
-                    //                    item = listItems.children[i];
-                    item = listItemAtIndex(i);
-                    if (item !== undefined) {
-                        if (item.__isDivider || listItems.children[i+1].__isDivider) {
-                            item.__showBottomSeparator = false;
-                        }
-                        else if ((listItemAtIndex(i+1) !== undefined) && listItemAtIndex(i+1).__isDivider) {
-                            item._showBottomSeparator = false;
-                        } else {
-                            item.__showBottomSeparator = true;
-                        }
-                        item.__showTopSeparator = false;
-                    }
-                }
-                if (!listItemAtIndex(0).__isDivider) listItemAtIndex(0).__showTopSeparator = true;
-            }
-        }
-        onChildrenChanged: listItems.updateSeparators();
-    }
+////        function updateSeparators() {
+////            var num = numListItems();
+////            if (num > 0) {
+////                var item;
+////                for (var i = 0; i < num-1; i++) {
+////                    //                    item = listItems.children[i];
+////                    item = listItemAtIndex(i);
+////                    if (item !== undefined) {
+////                        if (item.__isDivider || listItems.children[i+1].__isDivider) {
+////                            item.__showBottomSeparator = false;
+////                        }
+////                        else if ((listItemAtIndex(i+1) !== undefined) && listItemAtIndex(i+1).__isDivider) {
+////                            item._showBottomSeparator = false;
+////                        } else {
+////                            item.__showBottomSeparator = true;
+////                        }
+////                        item.__showTopSeparator = false;
+////                    }
+////                }
+////                if (!listItemAtIndex(0).__isDivider) listItemAtIndex(0).__showTopSeparator = true;
+////            }
+////        }
+////        onChildrenChanged: listItems.updateSeparators();
+
+////        property list<Base> listItemChildren
+
+//        property list<Item> allChildren
+
+//        function updateListItems() {
+//            print("Updating list items");
+//            var listItemsArray = new Array();
+//            var item;
+////            for (var i=0; i < listItemContainer.children.length; i++) {
+//            for (var i=0; i < listItems.allChildren.length; i++) {
+//                item = listItemContainer.allChildren[i];
+//                if (item.__isDivider !== undefined) {
+//                    listItemsArray.push(item);
+//                    item.parent = listItems;
+//                    print("adding li: "+item.text)
+//                }
+//            }
+//            print("finished loop");
+////            listItems.children = listItemsArray;
+////            listItemChildren = listItemsArray;
+//            print("Done updating list items");
+//        }
+
+//        Connections {
+////            target: listItemContainer
+//            onAllChildrenChanged: listItems.updateListItems()
+//        }
+//    }
 }
