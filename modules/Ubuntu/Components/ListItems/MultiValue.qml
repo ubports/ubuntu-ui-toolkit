@@ -25,7 +25,7 @@ import QtQuick 1.1
     Examples:
     \qml
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        ListItem.Container {
+        Column {
             ListItem.MultiValue {
                 text: "Label"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
@@ -74,7 +74,7 @@ Selectable {
     Item {
         anchors.fill: parent
         IconVisual {
-            id: iconHelper;
+            id: iconHelper
             anchors {
                 top: parent.top
                 bottom: parent.bottom

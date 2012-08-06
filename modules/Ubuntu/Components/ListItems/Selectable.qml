@@ -25,7 +25,7 @@ import QtQuick 1.1
   and should not be used directly.
  */
 Base {
-    id: selectableListIem
+    id: selectableListItem
 
     /*!
       \preliminary
@@ -33,14 +33,12 @@ Base {
      */
     property bool selected: false
 
-    Image {
-        visible: selectableListIem.selected
-        anchors {
-            top: parent.top
-            topMargin: 2
-            right: parent.right
-            rightMargin: 2
-        }
-        source: "artwork/ListItemSelectedTriangle.png"
+    Rectangle {
+        id: background
+
+        visible: selectableListItem.selected
+        anchors.fill: parent
+        color: "white"
+        opacity: 0.7
     }
 }
