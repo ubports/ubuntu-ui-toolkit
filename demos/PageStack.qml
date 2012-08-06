@@ -51,7 +51,7 @@ Template {
                     color: "orange"
                     width: 250
                     height: 250
-                    anchors.centerIn: parent
+                     anchors.centerIn: parent
                     Button {
                         text: "go back"
                         anchors.centerIn: parent
