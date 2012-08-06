@@ -58,7 +58,7 @@ Item {
 
     /*!
       \preliminary
-      If \l contentsSource is used to define the page of this tab, preloadContents specifies whether
+      If \l contentsSource is used to define the contents of this page, preloadContents specifies whether
       the contents should be preloaded from the QML file when the application starts, or loading
       is delayed until the contents is active.
      */
