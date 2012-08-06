@@ -21,9 +21,9 @@ Template {
     title: "Tabs"
 
     Tabs {
-        Tab {
-            text: "Tab 1"
-            page: Rectangle {
+        Page {
+            title: "Tab 1"
+            contents: Rectangle {
                 color: "#eeeeee"
                 anchors.fill: parent
                 TextCustom {
@@ -33,9 +33,9 @@ Template {
                 }
             }
         }
-        Tab {
+        Page {
             iconSource: "call_icon.png"
-            page: Rectangle {
+            contents: Rectangle {
                 color: "#e4e4e4"
                 anchors.fill: parent
                 TextCustom {
@@ -45,10 +45,10 @@ Template {
                 }
             }
         }
-        Tab {
-            text: "Tab 3"
+        Page {
+            title: "Tab 3"
             iconSource: "call_icon.png"
-            page:  Rectangle {
+            contents:  Rectangle {
                 color: "#dddddd"
                 anchors.fill: parent
                 TextCustom {
