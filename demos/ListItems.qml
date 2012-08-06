@@ -31,7 +31,7 @@ Template {
                 top: parent.top
                 left: parent.left
             }
-            ListItem.Container {
+            Column {
                 width: 250
                 id: listItemTypes
 
@@ -58,7 +58,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Standard"
-                ListItem.Container {
+                Column {
                     width: 250
 
                     ListItem.Header { text: "Standard" }
@@ -85,7 +85,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Single value"
-                ListItem.Container {
+                Column {
                     width: 250
 
                     ListItem.Header { text: "Single value" }
@@ -117,7 +117,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Multiple values"
-                ListItem.Container {
+                Column {
                     width: 250
                     ListItem.Header { text: "Multiple values" }
                     ListItem.MultiValue {
@@ -148,7 +148,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Subtitled"
-                ListItem.Container {
+                Column {
                     width: 250
                     ListItem.Header { text: "Subtitled" }
                     ListItem.Subtitled {
@@ -189,7 +189,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Controls"
-                ListItem.Container {
+                Column {
                     width: 250
                     ListItem.Header { text: "Controls" }
                     ListItem.Standard {
@@ -249,7 +249,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Grouping and caption"
-                ListItem.Container {
+                Column {
                     width: 250
                     ListItem.Header { text: "Grouping" }
                     ListItem.Standard { text: "Item 1a" }
@@ -265,7 +265,7 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Value selector"
-                ListItem.Container {
+                Column {
                     width: 250
                     ListItem.Header { text: "Value selectors" }
                     ListItem.ValueSelector {

@@ -39,7 +39,7 @@ PageContainer {
      */
     property PageStack __pageStack
 
-    contents: ListItem.Container {
+    contents: Column {
         anchors.fill: parent
         Repeater {
             model: drilldown.pages

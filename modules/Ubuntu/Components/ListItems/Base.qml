@@ -30,7 +30,7 @@ import Ubuntu.Components 0.1
     \qml
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        ListItem.Container {
+        Column {
             ListItem.Base {
                 height: 50
                 Text {

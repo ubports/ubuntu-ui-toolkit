@@ -27,7 +27,7 @@ import QtQuick 1.1
     Examples:
     \qml
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        ListItem.Container {
+        Column {
             width: 250
             ListItem.ValueSelector {
                 text: "Standard"
@@ -93,8 +93,8 @@ Base {
         anchors {
             left: parent.left
             right: parent.right
-            topMargin: 2 //parent.__topSeparatorLine.height
-            bottomMargin: 2 //parent.__bottomSeparatorLine.height
+            topMargin: 2
+            bottomMargin: 2
         }
 
         Base {

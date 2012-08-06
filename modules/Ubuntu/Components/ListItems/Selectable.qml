@@ -41,15 +41,4 @@ Base {
         color: "white"
         opacity: 0.7
     }
-
-    Image {
-        visible: selectableListItem.selected
-        anchors {
-            top: parent.top
-            topMargin: 2
-            right: parent.right
-            rightMargin: 2
-        }
-        source: "artwork/ListItemSelectedTriangle.png"
-    }
 }

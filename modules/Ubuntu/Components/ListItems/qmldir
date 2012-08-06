@@ -1,6 +1,5 @@
 Base 0.1 Base.qml
 Caption 0.1 Caption.qml
-Container 0.1 Container.qml
 Divider 0.1 Divider.qml
 Header 0.1 Header.qml
 internal IconVisual IconVisual.qml
