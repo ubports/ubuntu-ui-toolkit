@@ -25,7 +25,7 @@ import Ubuntu.Components 0.1
     Examples:
     \qml
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        ListItem.Container {
+        Column {
             ListItem.Standard {
                 text: "Default list item."
             }

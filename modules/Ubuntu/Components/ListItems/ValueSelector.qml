@@ -27,7 +27,7 @@ import QtQuick 1.1
     Examples:
     \qml
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        ListItem.Container {
+        Column {
             width: 250
             ListItem.ValueSelector {
                 text: "Standard"
