@@ -20,11 +20,9 @@ import Ubuntu.Components 0.1
 Template {
     title: "PageStack"
 
-
     PageStack {
         id: pageStack
         anchors.fill: parent
-        //            Component.onCompleted: push(firstPage)
 
         Page {
             id: firstPage
@@ -42,7 +40,6 @@ Template {
                     Button {
                         text: "blue"
                         onClicked: pageStack.push(blue)
-
                     }
                 }
             }
@@ -78,9 +75,10 @@ Template {
                         anchors.centerIn: parent
                         onClicked: pageStack.pop()
                         darkBorder: true
-                    } // button
-                } // rectangle
+                    }
+                }
             }
+
         }
     }
 }

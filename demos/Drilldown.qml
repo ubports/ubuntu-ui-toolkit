@@ -22,7 +22,6 @@ Template {
 
     PageStack {
         id: pageStack
-//        anchors.fill: parent
         showToolBar: true
         width: 250
         anchors {
@@ -30,7 +29,6 @@ Template {
             left: parent.left
             bottom: parent.bottom
         }
-
         Drilldown {
             title: "Colors"
             Drilldown {
