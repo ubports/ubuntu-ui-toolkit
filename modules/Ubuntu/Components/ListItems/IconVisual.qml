@@ -25,7 +25,7 @@ Item {
     visible: source != "" && icon.status == Image.Ready
 
     width: visible ? icon.width + 10 : 0
-    height: icon.height + 5
+    height: icon.height + icon.anchors.topMargin
 
     Image {
         id: icon
