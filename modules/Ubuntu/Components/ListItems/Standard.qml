@@ -49,7 +49,6 @@ import QtQuick 1.1
                 }
                 progression: true
                 onClicked: control.clicked()
-                onProgressionClicked: print("Progress!")
             }
             ListItem.Standard {
                 control: Button {
@@ -96,12 +95,6 @@ Selectable {
       \qmlproperty Item control
     */
     property alias control: controlContainer.control
-
-    /*!
-      \preliminary
-      When the list item has a progression with a split, and the progression is clicked.
-     */
-    signal progressionClicked
 
     IconVisual {
         id: iconHelper
