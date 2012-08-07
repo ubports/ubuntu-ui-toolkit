@@ -188,7 +188,10 @@ Base {
                 id: valueBase
                 height: selector.expanded ? 40 : 0
                 visible: valueBase.height > 0
-                onClicked: selector.selectedIndex = index
+                onClicked: {
+                    selector.selectedIndex = index
+                    selector.expanded = false
+                }
                 selected: index === selector.selectedIndex
 
                 __showBottomSeparator: index === selector.values.length - 1
