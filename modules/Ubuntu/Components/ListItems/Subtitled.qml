@@ -103,7 +103,6 @@ Selectable {
             id: iconHelper
             anchors {
                 top: parent.top
-                bottom: parent.bottom
                 left: parent.left
             }
         }
