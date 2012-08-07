@@ -36,7 +36,7 @@ Template {
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
-                    "Value selector", "Subtitled", "Controls", "Grouping and caption"]
+                    "Value selector", "Subtitled", "Controls", "Grouping & caption"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
@@ -248,16 +248,15 @@ Template {
                 }
             }
             FadingRectangle {
-                selected: listItemTypes.selectedType === "Grouping and caption"
+                selected: listItemTypes.selectedType === "Grouping & caption"
                 Column {
                     width: 250
-                    ListItem.Header { text: "Grouping" }
+                    ListItem.Header { text: "Group Header, Divider & Caption" }
                     ListItem.Standard { text: "Item 1a" }
                     ListItem.Standard { text: "Item 1b" }
                     ListItem.Divider { }
                     ListItem.Standard { text: "Item 2a" }
                     ListItem.Standard { text: "Item 2b" }
-                    ListItem.Header { text: "Caption" }
                     ListItem.Caption {
                         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
                     }
