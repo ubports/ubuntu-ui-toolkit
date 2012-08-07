@@ -28,7 +28,7 @@ import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         Column {
             ListItem.Subtitled {
-                text: "Default"
+                text: "Idle"
                 subText: "Secondary label"
             }
             ListItem.Subtitled {

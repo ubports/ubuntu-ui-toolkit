@@ -63,7 +63,7 @@ Template {
 
                     ListItem.Header { text: "Standard" }
                     ListItem.Standard {
-                        text: "Default"
+                        text: "Idle"
                     }
                     ListItem.Standard {
                         text: "Disabled"
@@ -90,7 +90,7 @@ Template {
 
                     ListItem.Header { text: "Single value" }
                     ListItem.SingleValue {
-                        text: "Default"
+                        text: "Idle"
                         value: "Value"
                     }
                     ListItem.SingleValue {
@@ -121,7 +121,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Multiple values" }
                     ListItem.MultiValue {
-                        text: "Default"
+                        text: "Idle"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                     ListItem.MultiValue {
@@ -152,7 +152,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Subtitled" }
                     ListItem.Subtitled {
-                        text: "Default"
+                        text: "Idle"
                         subText: "Secondary label"
                     }
                     ListItem.Subtitled {
@@ -269,7 +269,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Value selectors" }
                     ListItem.ValueSelector {
-                        text: "Default"
+                        text: "Idle"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                     ListItem.ValueSelector {
