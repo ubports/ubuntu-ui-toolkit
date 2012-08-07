@@ -145,6 +145,5 @@ Selectable {
             bottom: parent.bottom
         }
         showSplit: control ? true : false
-        onClicked: listItem.progressionClicked();
     }
 }
