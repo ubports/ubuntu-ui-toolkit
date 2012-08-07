@@ -200,7 +200,6 @@ Template {
                             anchors.centerIn: parent
                             onClicked: print("clicked button")
                         }
-                        onClicked: control.clicked()
                     }
                     ListItem.Standard {
                         enabled: false
@@ -226,9 +225,10 @@ Template {
                             width: 100
                             text: "Control"
                             anchors.centerIn: parent
+                            onClicked: print("Button clicked!")
                         }
                         progression: true
-                        onClicked: control.clicked()
+                        onClicked: print("Progression clicked!")
                     }
                     ListItem.Standard {
                         text: "Icon"
