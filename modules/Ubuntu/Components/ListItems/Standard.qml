@@ -139,4 +139,20 @@ Selectable {
         }
         showSplit: control ? true : false
     }
+    MouseArea {
+        id: controlArea
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+            right: (listItem.progression && progressionHelper.showSplit) ? progressionHelper.left : parent.right
+        }
+        enabled: control !== null
+
+        Connections {
+            target: controlArea
+            ignoreUnknownSignals: true
+            onClicked: control.clicked()
+        }
+    }
 }
