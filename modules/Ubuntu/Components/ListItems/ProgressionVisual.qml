@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import Ubuntu.Components 0.1
 
 // Internal helper class for the visuals of
 // the progression symbol.
@@ -41,5 +42,17 @@ Item {
         width: 1
         source: "artwork/ListItemDividerVertical.png"
         opacity: enabled ? 1.0 : 0.5
+    }
+
+    /*!
+      \preliminary
+      When showSplit is true and the progression symbol is clicked.
+     */
+    signal clicked
+
+    AbstractButton {
+        anchors.fill: parent
+        enabled: progressionVisual.enabled && progressionVisual.showSplit
+        onClicked: progressionVisual.clicked()
     }
 }
