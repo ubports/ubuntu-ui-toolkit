@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass Standard
@@ -148,11 +149,18 @@ Selectable {
             right: (listItem.progression && progressionHelper.showSplit) ? progressionHelper.left : parent.right
         }
         enabled: control !== null
+        onClicked: control.clicked() //print("mousearea clicked")
 
         Connections {
-            target: controlArea
-            ignoreUnknownSignals: true
-            onClicked: control.clicked()
+            target: listItem
+            onControlChanged: controlArea.clicked.connect(control.clicked)
+//            target: controlArea
+//            ignoreUnknownSignals: true
+//            onClicked: control.clicked()
+        }
+
+        Component.onCompleted: {
+//            controlArea.clicked.connect(control.clicked);
         }
     }
 }

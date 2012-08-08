@@ -27,6 +27,7 @@ import QtQuick 1.1
     and the states.
 */
 Item {
+//MouseArea {
     id: button
 
     /*!
@@ -59,8 +60,10 @@ Item {
         if (!button.enabled)
             return "disabled"
         else if (mouse_area.pressed)
+//        else if (button.pressed)
             return "pressed"
         else if (mouse_area.containsMouse)
+//        else if (button.pressed)
             return "hovered"
         else
             return "idle"
