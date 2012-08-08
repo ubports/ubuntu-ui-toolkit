@@ -112,7 +112,7 @@ Selectable {
                 left: iconHelper.right
                 right: progressionHelper.left
             }
-            height: childrenRect.height + 12 // margins
+            height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 
             LabelVisual {
                 id: label
@@ -123,7 +123,6 @@ Selectable {
                     right: parent.right
                     leftMargin: 5
                     rightMargin: 5
-                    bottomMargin: 5
                     topMargin: 8
                 }
             }
@@ -132,7 +131,7 @@ Selectable {
                 selected: subtitledListItem.selected
                 anchors {
                     leftMargin: 5
-                    bottomMargin: 5
+                    bottomMargin: 8
                     rightMargin: 5
 
                     left: parent.left
