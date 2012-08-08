@@ -93,7 +93,10 @@ Selectable {
       If no \l text is given, the control's parent will fill the full
       space available inside the list item, taking into account a possible
       icon and progression, and the control may be anchored to fill its parent.
-      \qmlproperty Item control
+      \qmlproperty Item control.
+      The mouseArea of the control will be set to the full Standard list item if
+      there is no \l progression, or only the part left of the split, if there is a
+      \l progression.
     */
     property alias control: controlContainer.control
 
@@ -129,7 +132,6 @@ Selectable {
             margins: 5
         }
         onControlChanged: {
-            print("container: control changed to "+control);
             control.parent = controlContainer
             control.mouseArea = controlArea
         }
