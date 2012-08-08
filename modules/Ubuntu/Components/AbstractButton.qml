@@ -27,7 +27,6 @@ import QtQuick 1.1
     and the states.
 */
 Item {
-    //MouseArea {
     id: button
 
     /*!
@@ -41,20 +40,16 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
-      \internal
+      \preliminary
+      The mouse area of the abstract button.
+      May be assigned a different mouse area if, for example, the area where
+      the control is shown is not the same as the area where it accepts mouse
+      events. This is used in list items with controls.
      */
     property MouseArea mouseArea: defaultMouseArea
     MouseArea {
         id: defaultMouseArea
-
-        //        enabled: parent.enabled
-        //        hoverEnabled: parent.enabled
         anchors.fill: parent
-
-        // the check for button.enabled is not really needed since if
-        // it is false, mouse_area.enabled is also false.
-        // But this makes the behavior more clear.
-        //        onClicked: if (button.enabled) parent.clicked()
     }
 
     function updateMouseArea() {
@@ -64,7 +59,6 @@ Item {
     }
 
     onMouseAreaChanged: updateMouseArea()
-
 
     /*!
       \internal
