@@ -48,12 +48,34 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: ["Buttons", "Tabs", "ListItems"]
+        model: [{"label": "Buttons", "source": "Buttons.qml"},
+                {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
+                {"label": "List Items", "source": "ListItems.qml"},
+                {"label": "Drilldown", "source": ""},
+                {"label": "Switch", "source": ""},
+                {"label": "Checkbox", "source": ""},
+                {"label": "Activity Indicator", "source": ""},
+                {"label": "Progress Bar", "source": ""},
+                {"label": "Slider", "source": ""},
+                {"label": "Text Input", "source": ""},
+                {"label": "Scrollbar", "source": ""},
+                {"label": "Popovers", "source": ""},
+                {"label": "Toolbars", "source": ""},
+                {"label": "Sheets & Dialogues", "source": ""},
+                {"label": "Grid View", "source": ""},
+                {"label": "On Screen Keyboard", "source": ""},
+                {"label": "Date Picker", "source": ""},
+                {"label": "Time Picker", "source": ""},
+                {"label": "Tabs (Non Segmented)", "source": ""},
+               ]
 
         delegate: ButtonWithForeground {
-            text: modelData
+            height: 48
+            textSize: "medium"
+            text: modelData.label
             textColor: "#757373"
             onClicked: widgetList.selectedIndex = index
+            enabled: modelData.source != ""
 
             Rectangle {
                 anchors.fill: parent
@@ -74,6 +96,6 @@ Rectangle {
             top: parent.top
             bottom: parent.bottom
         }
-        source: widgetList.model[widgetList.selectedIndex] + ".qml"
+        source: widgetList.model[widgetList.selectedIndex].source
     }
 }
