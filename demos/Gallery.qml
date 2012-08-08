@@ -61,7 +61,7 @@ Rectangle {
                 {"label": "Scrollbar", "source": ""},
                 {"label": "Popovers", "source": ""},
                 {"label": "Toolbars", "source": ""},
-                {"label": "Sheets", "source": ""},
+                {"label": "Sheets & Dialogues", "source": ""},
                 {"label": "Grid View", "source": ""},
                 {"label": "On Screen Keyboard", "source": ""},
                 {"label": "Date Picker", "source": ""},
