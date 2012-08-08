@@ -76,7 +76,7 @@ import Ubuntu.Components 0.1
     See the documentation of the derived classes of Base for more examples.
     \b{This component is under heavy development.}
 */
-Item {
+AbstractButton {
     id: baseListItem
     width: parent ? parent.width : 250
 
@@ -85,12 +85,6 @@ Item {
       When the list item is clicked.
      */
     signal clicked
-
-    AbstractButton {
-        anchors.fill: parent
-        enabled: baseListItem.enabled
-        onClicked: baseListItem.clicked()
-    }
 
     /*!
       \internal
