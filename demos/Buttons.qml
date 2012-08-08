@@ -28,6 +28,7 @@ Template {
 
             Button {
                 text: "Call"
+                onClicked: print("hmm")
             }
         }
 
@@ -37,6 +38,7 @@ Template {
             Button {
                 text: "Call"
                 enabled: false
+                onClicked: print("bla")
             }
         }
 

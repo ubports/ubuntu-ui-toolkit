@@ -128,7 +128,11 @@ Selectable {
             bottom: parent.bottom
             margins: 5
         }
-        onControlChanged: control.parent = controlContainer
+        onControlChanged: {
+            print("container: control changed to "+control);
+            control.parent = controlContainer
+            control.mouseArea = controlArea
+        }
     }
     ProgressionVisual {
         id: progressionHelper
@@ -149,18 +153,5 @@ Selectable {
             right: (listItem.progression && progressionHelper.showSplit) ? progressionHelper.left : parent.right
         }
         enabled: control !== null
-        onClicked: control.clicked() //print("mousearea clicked")
-
-        Connections {
-            target: listItem
-            onControlChanged: controlArea.clicked.connect(control.clicked)
-//            target: controlArea
-//            ignoreUnknownSignals: true
-//            onClicked: control.clicked()
-        }
-
-        Component.onCompleted: {
-//            controlArea.clicked.connect(control.clicked);
-        }
     }
 }

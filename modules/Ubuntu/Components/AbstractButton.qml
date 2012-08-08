@@ -27,7 +27,7 @@ import QtQuick 1.1
     and the states.
 */
 Item {
-//MouseArea {
+    //MouseArea {
     id: button
 
     /*!
@@ -40,18 +40,31 @@ Item {
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
 
+    /*!
+      \internal
+     */
+    property MouseArea mouseArea: defaultMouseArea
     MouseArea {
-        id: mouse_area
+        id: defaultMouseArea
 
-        enabled: parent.enabled
-        hoverEnabled: parent.enabled
+        //        enabled: parent.enabled
+        //        hoverEnabled: parent.enabled
         anchors.fill: parent
 
         // the check for button.enabled is not really needed since if
         // it is false, mouse_area.enabled is also false.
         // But this makes the behavior more clear.
-        onClicked: if (button.enabled) parent.clicked()
+        //        onClicked: if (button.enabled) parent.clicked()
     }
+
+    function updateMouseArea() {
+        if (button.mouseArea) {
+            button.mouseArea.clicked.connect(button.clicked);
+        }
+    }
+
+    onMouseAreaChanged: updateMouseArea()
+
 
     /*!
       \internal
@@ -59,11 +72,9 @@ Item {
     function __getState() {
         if (!button.enabled)
             return "disabled"
-        else if (mouse_area.pressed)
-//        else if (button.pressed)
+        else if (button.mouseArea.pressed)
             return "pressed"
-        else if (mouse_area.containsMouse)
-//        else if (button.pressed)
+        else if (button.mouseArea.containsMouse)
             return "hovered"
         else
             return "idle"
