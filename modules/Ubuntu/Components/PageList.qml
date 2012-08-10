@@ -29,32 +29,32 @@ import "ListItems" as ListItem
 PageContainer {
     id: pageList
 
-    function __push(page) {
-        if (__pageStack) __pageStack.push(page);
-    }
-
     /*!
-      \internal
-      Set by the page stack when the drilldown is pushed
+      \preliminary
+      The page stack to which pages will be pushed.
      */
-    property PageStack __pageStack
-
-    //    active: true
+    property PageStack pageStack
 
     height: childrenRect.height
     Column {
-//        anchors.fill: parent
-//        width: parent ? parent.width : undefined
-        anchors.left: parent.left
-        anchors.right: parent.right
+        id: container
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
         height: childrenRect.height
+
+        function pushToStack(page) {
+            if (pageList.pageStack) pageList.pageStack.push(page);
+        }
+
         Repeater {
             model: pageList.pages
             ListItem.Standard {
                 text: modelData.title
                 iconSource: modelData.iconSource
                 progression: true
-                onClicked: pageList.__push(modelData)
+                onClicked: container.pushToStack(modelData)
             }
         }
     }

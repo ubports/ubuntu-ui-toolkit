@@ -37,7 +37,7 @@ Page {
       \internal
       Set by the page stack when the drilldown is pushed
      */
-    property alias __pageStack: pageList.__pageStack // TODO: move to page?
+    property alias __pageStack: pageList.pageStack // TODO: move to page?
 
     //    active: true
 
