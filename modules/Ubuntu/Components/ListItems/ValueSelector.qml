@@ -109,7 +109,6 @@ Base {
                 anchors {
                     left: parent.left
                     top: parent.top
-                    bottom: parent.bottom
                 }
             }
             LabelVisual {
