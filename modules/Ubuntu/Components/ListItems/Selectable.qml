@@ -26,19 +26,4 @@ import QtQuick 1.1
  */
 Base {
     id: selectableListItem
-
-    /*!
-      \preliminary
-      Specifies whether the list item is selected.
-     */
-    property bool selected: false
-
-    Rectangle {
-        id: background
-
-        visible: selectableListItem.selected
-        anchors.fill: parent
-        color: "white"
-        opacity: 0.7
-    }
 }

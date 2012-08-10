@@ -86,6 +86,22 @@ AbstractButton {
      */
     signal clicked
 
+
+    /*!
+      \preliminary
+      Specifies whether the list item is selected.
+     */
+    property bool selected: false
+
+    Rectangle {
+        id: background
+
+        visible: baseListItem.selected
+        anchors.fill: parent
+        color: "white"
+        opacity: 0.7
+    }
+
     /*!
       \internal
       Override in divider classes that should never
