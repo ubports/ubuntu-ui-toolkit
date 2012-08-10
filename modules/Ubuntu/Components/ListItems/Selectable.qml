@@ -26,4 +26,5 @@ import QtQuick 1.1
  */
 Base {
     id: selectableListItem
+
 }
