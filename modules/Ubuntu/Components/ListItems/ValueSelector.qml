@@ -216,7 +216,7 @@ Base {
                 height: valueRepeater.valueHeight
                 width: parent.width
 
-                Selectable {
+                Base {
                     id: valueBase
                     height: parent.height
                     visible: valueBase.height > 0
