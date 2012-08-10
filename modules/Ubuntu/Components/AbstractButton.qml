@@ -57,10 +57,7 @@ Item {
         hoverEnabled: parent.enabled
         anchors.fill: parent
 
-        // the check for button.enabled is not really needed since if
-        // it is false, mouse_area.enabled is also false.
-        // But this makes the behavior more clear.
-        onClicked: if (button.enabled) parent.clicked()
+        onClicked: parent.clicked()
 
         onPressed: button.pressed = true
         onReleased: button.pressed = false
