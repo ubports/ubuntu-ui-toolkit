@@ -39,10 +39,21 @@ Item {
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
 
+    /*!
+      \preliminary
+      True if the user presses a mouse button in the button's mouse area.
+     */
+    property bool pressed
+
+    /*!
+      \preliminary
+      True if the mouse cursor hovers over the button's mouse area.
+     */
+    property bool hovered
+
     MouseArea {
         id: mouse_area
 
-        enabled: parent.enabled
         hoverEnabled: parent.enabled
         anchors.fill: parent
 
@@ -50,23 +61,10 @@ Item {
         // it is false, mouse_area.enabled is also false.
         // But this makes the behavior more clear.
         onClicked: if (button.enabled) parent.clicked()
-    }
 
-    /*!
-      \internal
-     */
-    function __getState() {
-        if (!button.enabled)
-            return "disabled"
-        else if (mouse_area.pressed)
-            return "pressed"
-        else if (mouse_area.containsMouse)
-            return "hovered"
-        else
-            return "idle"
-    }
-
-    state: {
-        return __getState();
+        onPressed: button.pressed = true
+        onReleased: button.pressed = false
+        onEntered: button.hovered = true
+        onExited: button.hovered = false
     }
 }
