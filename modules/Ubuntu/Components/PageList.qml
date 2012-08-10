@@ -26,8 +26,8 @@ import "ListItems" as ListItem
 
     Examples: TODO
 */
-Page {
-    id: drilldown
+PageContainer {
+    id: pageList
 
     function __push(page) {
         if (__pageStack) __pageStack.push(page);
@@ -37,20 +37,25 @@ Page {
       \internal
       Set by the page stack when the drilldown is pushed
      */
-    property alias __pageStack: pageList.__pageStack // TODO: move to page?
+    property PageStack __pageStack
 
     //    active: true
 
     height: childrenRect.height
-    //    contents: Column {
-    //        anchors.fill: parent
-    //        width: parent ? parent.width : undefined
-
-    default property alias children: pageList.children
-
-    contents: PageList {
-        id: pageList
-        anchors.fill: parent
+    Column {
+//        anchors.fill: parent
+//        width: parent ? parent.width : undefined
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: childrenRect.height
+        Repeater {
+            model: pageList.pages
+            ListItem.Standard {
+                text: modelData.title
+                iconSource: modelData.iconSource
+                progression: true
+                onClicked: pageList.__push(modelData)
+            }
+        }
     }
 }
-//}

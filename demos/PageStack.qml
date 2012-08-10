@@ -51,7 +51,7 @@ Template {
                     color: "orange"
                     width: 250
                     height: 250
-                     anchors.centerIn: parent
+                    anchors.centerIn: parent
                     Button {
                         text: "go back"
                         anchors.centerIn: parent
@@ -60,25 +60,27 @@ Template {
                 }
             }
 
-            Page {
-                id: blue
-                title: "Blue"
-                contents: Rectangle {
-                    id: pink
-                    color: "darkblue"
-                    radius: 5
-                    width: 150
-                    height: 150
-                    anchors.centerIn: parent
-                    Button {
-                        text: "back"
+//            Component {
+//                id:  blue
+                Page {
+                    id: blue
+                    title: "Blue"
+                    contents: Rectangle {
+                        id: pink
+                        color: "darkblue"
+                        radius: 5
+                        width: 150
+                        height: 150
                         anchors.centerIn: parent
-                        onClicked: pageStack.pop()
-                        darkBorder: true
+                        Button {
+                            text: "back"
+                            anchors.centerIn: parent
+                            onClicked: pageStack.pop()
+                            darkBorder: true
+                        }
                     }
                 }
-            }
-
+//            }
         }
     }
 }

@@ -31,7 +31,7 @@ Item {
     property bool showToolBar: true
 
     default property Item rootPage
-    onRootPageChanged: pageStack.push(rootPage)
+    onRootPageChanged: pageStack.push(rootPage) // TODO: clear the stack, and then push.
 
     //        // In QtQuick1, this is impossible.
     //        // QtQuick2 introduces var type that can be JS variables (not possible for variant).

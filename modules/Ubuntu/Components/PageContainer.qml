@@ -27,7 +27,7 @@ import QtQuick 1.1
 
     Examples: See subclasses.
 */
-Page {
+Item {
     id: pageContainer
 
     /*!
