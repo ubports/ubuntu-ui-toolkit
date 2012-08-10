@@ -18,7 +18,7 @@ import QtQuick 1.1
 import "ListItems" as ListItem
 
 /*!
-    \qmlclass Drilldown
+    \qmlclass PageContainer
     \inqmlmodule Ubuntu.Components 0.1
     \brief TODO
 
@@ -29,11 +29,22 @@ import "ListItems" as ListItem
 PageContainer {
     id: pageList
 
+    anchors {
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+    }
+
     /*!
       \preliminary
       The page stack to which pages will be pushed.
      */
     property PageStack pageStack
+
+    /*!
+      \preliminary
+      Optional title to be shown above the list of pages.
+     */
+    property string title
 
     height: childrenRect.height
     Column {
@@ -46,6 +57,11 @@ PageContainer {
 
         function pushToStack(page) {
             if (pageList.pageStack) pageList.pageStack.push(page);
+        }
+
+        ListItem.Header {
+            text: pageList.title
+            visible: text != ""
         }
 
         Repeater {
