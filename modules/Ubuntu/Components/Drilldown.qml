@@ -39,18 +39,11 @@ Page {
      */
     property alias __pageStack: pageList.pageStack // TODO: move to page?
 
-    //    active: true
-
     height: childrenRect.height
-    //    contents: Column {
-    //        anchors.fill: parent
-    //        width: parent ? parent.width : undefined
 
     default property alias children: pageList.children
-
     contents: PageList {
         id: pageList
         anchors.fill: parent
     }
 }
-//}
