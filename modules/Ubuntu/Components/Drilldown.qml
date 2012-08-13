@@ -38,7 +38,8 @@ Page {
       Set by the page stack when the drilldown is pushed
      */
 //    property alias __pageStack: pageList.pageStack // TODO: move to page?
-    property alias pageStack: pageList.pageStack
+//    property alias pageStack: pageList.pageStack
+    property PageStack pageStack
 //    onPageStackChanged: pageList.pageStack = pageStack
 
     height: childrenRect.height
@@ -47,7 +48,7 @@ Page {
 
     PageList {
         id: pageList
-        anchors.fill: parent
+//        anchors.fill: parent
         pageStack: drilldown.pageStack
     }
 

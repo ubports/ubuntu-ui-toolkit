@@ -26,7 +26,6 @@ Template {
 
         Drilldown {
             title: "Colors"
-            pageStack: pageStack
             Page {
                 title: "Red"
                 contents: Rectangle {
@@ -43,11 +42,27 @@ Template {
             }
             Page {
                 title: "blue"
+                contents: Rectangle {
+                    anchors.fill: parent
+                    color: "blue"
+                }
             }
             Drilldown {
                 title: "others"
-                Page { title: "orange" }
-                Page { title: "pink" }
+                Page {
+                    title: "orange"
+                    contents: Rectangle {
+                        anchors.fill: parent
+                        color: "orange"
+                    }
+                }
+                Page {
+                    title: "pink"
+                    contents: Rectangle {
+                        anchors.fill: parent
+                        color: "pink"
+                    }
+                }
             }
         }
     }
