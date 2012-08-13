@@ -26,41 +26,13 @@ import "ListItems" as ListItem
 
     Examples: TODO
 */
-Item {
+PageContainer {
     id: pageList
 
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
     }
-
-    /*!
-      \internal
-      Update the pages list.
-     */
-    function __updatePages() {
-        var pageArray = new Array();
-        var item;
-        for (var i=0; i < pageList.children.length; i++) {
-            item = pageList.children[i];
-            if (item.__isPage === true) pageArray.push(item);
-        }
-        pageList.__pages = pageArray;
-    }
-
-    /*!
-      \preliminary
-      The list of all the children that are a Page.
-      It is automatically updated when children are added or removed.
-     */
-    property list<Page> __pages
-
-
-    /*!
-      \internal
-     */
-//    onChildrenChanged: __updatePages()
-    Component.onCompleted: __updatePages()
 
     /*!
       \preliminary
@@ -93,7 +65,7 @@ Item {
         }
 
         Repeater {
-            model: pageList.__pages
+            model: pageList.pages
             ListItem.Standard {
                 text: modelData.title
                 iconSource: modelData.iconSource

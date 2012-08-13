@@ -42,6 +42,7 @@ Page {
     height: childrenRect.height
 
     default property alias children: pageList.children
+
     contents: PageList {
         id: pageList
         anchors.fill: parent
