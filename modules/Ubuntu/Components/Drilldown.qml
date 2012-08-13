@@ -48,7 +48,6 @@ Page {
 
     PageList {
         id: pageList
-//        anchors.fill: parent
         pageStack: drilldown.pageStack
     }
 
