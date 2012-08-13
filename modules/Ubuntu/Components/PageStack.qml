@@ -47,7 +47,7 @@ Item {
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         // for the drilldown:
-        if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
+//        if (page.hasOwnProperty("__pageStack")) page.__pageStack = pageStack;
         page.active = true;
         toolBar.update();
     }

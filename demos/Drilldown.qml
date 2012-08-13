@@ -26,11 +26,20 @@ Template {
 
         Drilldown {
             title: "Colors"
+            pageStack: pageStack
             Page {
                 title: "Red"
+                contents: Rectangle {
+                    anchors.fill: parent
+                    color: "red"
+                }
             }
             Page {
                 title: "green"
+                contents: Rectangle {
+                    anchors.fill: parent
+                    color: "green"
+                }
             }
             Page {
                 title: "blue"

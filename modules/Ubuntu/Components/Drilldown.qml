@@ -29,22 +29,27 @@ import "ListItems" as ListItem
 Page {
     id: drilldown
 
-    function __push(page) {
-        if (__pageStack) __pageStack.push(page);
-    }
+//    function __push(page) {
+//        if (__pageStack) __pageStack.push(page);
+//    }
 
     /*!
       \internal
       Set by the page stack when the drilldown is pushed
      */
-    property alias __pageStack: pageList.pageStack // TODO: move to page?
+//    property alias __pageStack: pageList.pageStack // TODO: move to page?
+    property alias pageStack: pageList.pageStack
+//    onPageStackChanged: pageList.pageStack = pageStack
 
     height: childrenRect.height
 
     default property alias children: pageList.children
 
-    contents: PageList {
+    PageList {
         id: pageList
         anchors.fill: parent
+        pageStack: drilldown.pageStack
     }
+
+    contents: pageList
 }
