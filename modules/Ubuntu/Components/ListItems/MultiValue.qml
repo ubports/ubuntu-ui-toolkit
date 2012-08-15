@@ -41,7 +41,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-Selectable {
+Base {
     id: multiValueListItem
     height: 54
 

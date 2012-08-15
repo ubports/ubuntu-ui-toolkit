@@ -59,7 +59,7 @@ import QtQuick 1.1
     \endqml
     \b{This component is under heavy development.}
 */
-Selectable {
+Base {
     id: listItem
     height: 54
 

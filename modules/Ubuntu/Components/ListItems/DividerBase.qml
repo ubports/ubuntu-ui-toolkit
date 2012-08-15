@@ -16,29 +16,10 @@
 
 import QtQuick 1.1
 
-/*!
-  \qmlclass Selectable
-  \inqmlmodule Ubuntu.Components.ListItems 0.1
-  \brief A base list item that has a selected state.
+// internal superclass of Header and Divider
+Item {
+    id: listItemDividerBase
+    width: parent ? parent.width : 250
 
-  This class is inherited by several types of selectable list items
-  and should not be used directly.
- */
-Base {
-    id: selectableListItem
-
-    /*!
-      \preliminary
-      Specifies whether the list item is selected.
-     */
-    property bool selected: false
-
-    Rectangle {
-        id: background
-
-        visible: selectableListItem.selected
-        anchors.fill: parent
-        color: "white"
-        opacity: 0.7
-    }
+    property bool __isDivider: true
 }
