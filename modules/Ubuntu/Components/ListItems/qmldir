@@ -1,4 +1,5 @@
 Base 0.1 Base.qml
+internal DividerBase DividerBase.qml
 Caption 0.1 Caption.qml
 Divider 0.1 Divider.qml
 Header 0.1 Header.qml

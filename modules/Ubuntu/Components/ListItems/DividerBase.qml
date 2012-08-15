@@ -16,24 +16,10 @@
 
 import QtQuick 1.1
 
-/*!
-    \qmlclass Divider
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
-    \brief Divider to break up list items into groups.
+// internal superclass of Header and Divider
+Item {
+    id: listItemDividerBase
+    width: parent ? parent.width : 250
 
-    Examples: see \l Header
-    \b{This component is under heavy development.}
-*/
-DividerBase {
-    id: listItemDivider
-    height: image.implicitHeight
-
-    Image {
-        id: image
-        source: "artwork/ListItemDivider6px.png"
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-    }
+    property bool __isDivider: true
 }
