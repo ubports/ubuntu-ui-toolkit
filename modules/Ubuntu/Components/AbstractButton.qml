@@ -63,43 +63,32 @@ Item {
     MouseArea {
         id: defaultMouseArea
         anchors.fill: parent
-
-        onClicked: parent.clicked()
-
-        onPressed: button.pressed = true
-        onReleased: button.pressed = false
-        onEntered: button.hovered = true
-        onExited: button.hovered = false
-
     }
 
-    function updateMouseArea() {
-        if (button.mouseArea) {
-            button.mouseArea.clicked.connect(button.clicked);
+    onMouseAreaChanged: hiddenFunctions.updateMouseArea()
 
+    Item {
+        id: hiddenFunctions
+
+        function updateMouseArea() {
+            if (button.mouseArea) {
+                button.mouseArea.clicked.connect(button.clicked);
+                button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
+                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaEntered);
+                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaEntered);
+            }
+        }
+
+        function mouseAreaPressed() {
+            button.pressed = mouseArea.pressed;
+        }
+
+        function mouseAreaEntered() {
+            button.hovered = true;
+        }
+
+        function mouseAreaExited() {
+            button.hovered = false;
         }
     }
-
-    onMouseAreaChanged: updateMouseArea()
-
-    //    /*!
-    //      \internal
-    //     */
-    //    function __getState() {
-    //        if (!button.enabled)
-    //            return "disabled"
-    //        else if (button.mouseArea.pressed)
-    //            return "pressed"
-    //        else if (button.mouseArea.containsMouse)
-    //            return "hovered"
-    //        else
-    //            return "idle"
-    //    }
-
-    //    state: {
-    //        return __getState();
-    //    }
-
-
-    //    }
 }
