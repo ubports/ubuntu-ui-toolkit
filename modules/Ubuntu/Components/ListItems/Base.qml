@@ -96,7 +96,7 @@ AbstractButton {
     Rectangle {
         id: background
 
-        visible: baseListItem.selected || baseListItem.pressed
+        visible: !baseListItem.__isDivider && (baseListItem.selected || baseListItem.pressed)
         anchors.fill: parent
         color: "white"
         opacity: 0.7
