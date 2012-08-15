@@ -74,8 +74,8 @@ Item {
             if (button.mouseArea) {
                 button.mouseArea.clicked.connect(button.clicked);
                 button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
-                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaEntered);
-                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaEntered);
+                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
+                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
             }
         }
 
@@ -83,12 +83,8 @@ Item {
             button.pressed = mouseArea.pressed;
         }
 
-        function mouseAreaEntered() {
-            button.hovered = true;
-        }
-
-        function mouseAreaExited() {
-            button.hovered = false;
+        function mouseAreaHovered() {
+            button.hovered = mouseArea.containsMouse;
         }
     }
 }
