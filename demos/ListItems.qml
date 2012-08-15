@@ -36,7 +36,7 @@ Template {
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
-                    "Value selector", "Subtitled", "Controls", "Grouping and caption"]
+                    "Value selector", "Subtitled", "Controls", "Grouping & caption"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
@@ -63,7 +63,7 @@ Template {
 
                     ListItem.Header { text: "Standard" }
                     ListItem.Standard {
-                        text: "Default"
+                        text: "Idle"
                     }
                     ListItem.Standard {
                         text: "Disabled"
@@ -90,7 +90,7 @@ Template {
 
                     ListItem.Header { text: "Single value" }
                     ListItem.SingleValue {
-                        text: "Default"
+                        text: "Idle"
                         value: "Value"
                     }
                     ListItem.SingleValue {
@@ -121,7 +121,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Multiple values" }
                     ListItem.MultiValue {
-                        text: "Default"
+                        text: "Idle"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                     ListItem.MultiValue {
@@ -152,7 +152,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Subtitled" }
                     ListItem.Subtitled {
-                        text: "Default"
+                        text: "Idle"
                         subText: "Secondary label"
                     }
                     ListItem.Subtitled {
@@ -248,16 +248,15 @@ Template {
                 }
             }
             FadingRectangle {
-                selected: listItemTypes.selectedType === "Grouping and caption"
+                selected: listItemTypes.selectedType === "Grouping & caption"
                 Column {
                     width: 250
-                    ListItem.Header { text: "Grouping" }
+                    ListItem.Header { text: "Group Header, Divider & Caption" }
                     ListItem.Standard { text: "Item 1a" }
                     ListItem.Standard { text: "Item 1b" }
                     ListItem.Divider { }
                     ListItem.Standard { text: "Item 2a" }
                     ListItem.Standard { text: "Item 2b" }
-                    ListItem.Header { text: "Caption" }
                     ListItem.Caption {
                         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
                     }
@@ -269,7 +268,7 @@ Template {
                     width: 250
                     ListItem.Header { text: "Value selectors" }
                     ListItem.ValueSelector {
-                        text: "Default"
+                        text: "Idle"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                     ListItem.ValueSelector {

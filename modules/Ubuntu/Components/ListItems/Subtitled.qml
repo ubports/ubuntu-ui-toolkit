@@ -28,7 +28,7 @@ import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         Column {
             ListItem.Subtitled {
-                text: "Default"
+                text: "Idle"
                 subText: "Secondary label"
             }
             ListItem.Subtitled {
@@ -103,7 +103,6 @@ Selectable {
             id: iconHelper
             anchors {
                 top: parent.top
-                bottom: parent.bottom
                 left: parent.left
             }
         }
@@ -113,7 +112,7 @@ Selectable {
                 left: iconHelper.right
                 right: progressionHelper.left
             }
-            height: childrenRect.height + 12 // margins
+            height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 
             LabelVisual {
                 id: label
@@ -124,7 +123,6 @@ Selectable {
                     right: parent.right
                     leftMargin: 5
                     rightMargin: 5
-                    bottomMargin: 5
                     topMargin: 8
                 }
             }
@@ -133,7 +131,7 @@ Selectable {
                 selected: subtitledListItem.selected
                 anchors {
                     leftMargin: 5
-                    bottomMargin: 5
+                    bottomMargin: 8
                     rightMargin: 5
 
                     left: parent.left

@@ -47,34 +47,59 @@ Item {
       events. This is used in list items with controls.
      */
     property MouseArea mouseArea: defaultMouseArea
+
+    /*!
+     \preliminary
+      True if the user presses a mouse button in the button's mouse area.
+     */
+    property bool pressed
+
+    /*!
+      \preliminary
+      True if the mouse cursor hovers over the button's mouse area.
+     */
+    property bool hovered
+
     MouseArea {
         id: defaultMouseArea
         anchors.fill: parent
+
+        onClicked: parent.clicked()
+
+        onPressed: button.pressed = true
+        onReleased: button.pressed = false
+        onEntered: button.hovered = true
+        onExited: button.hovered = false
+
     }
 
     function updateMouseArea() {
         if (button.mouseArea) {
             button.mouseArea.clicked.connect(button.clicked);
+
         }
     }
 
     onMouseAreaChanged: updateMouseArea()
 
-    /*!
-      \internal
-     */
-    function __getState() {
-        if (!button.enabled)
-            return "disabled"
-        else if (button.mouseArea.pressed)
-            return "pressed"
-        else if (button.mouseArea.containsMouse)
-            return "hovered"
-        else
-            return "idle"
-    }
+    //    /*!
+    //      \internal
+    //     */
+    //    function __getState() {
+    //        if (!button.enabled)
+    //            return "disabled"
+    //        else if (button.mouseArea.pressed)
+    //            return "pressed"
+    //        else if (button.mouseArea.containsMouse)
+    //            return "hovered"
+    //        else
+    //            return "idle"
+    //    }
 
-    state: {
-        return __getState();
-    }
+    //    state: {
+    //        return __getState();
+    //    }
+
+
+    //    }
 }

@@ -25,6 +25,7 @@ Item {
     visible: source != "" && icon.status == Image.Ready
 
     width: visible ? icon.width + 10 : 0
+    height: icon.height + icon.anchors.topMargin
 
     Image {
         id: icon
@@ -32,7 +33,8 @@ Item {
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
-            verticalCenter: parent.verticalCenter
+            top: parent.top
+            topMargin: 8
             left: parent.left
             leftMargin: 5
         }
