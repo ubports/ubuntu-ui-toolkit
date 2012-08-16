@@ -135,16 +135,6 @@ Base {
             control.mouseArea = controlArea
         }
     }
-    ProgressionVisual {
-        id: progressionHelper
-        visible: listItem.progression
-        anchors {
-            right: parent.right
-            top: parent.top
-            bottom: parent.bottom
-        }
-        showSplit: control ? true : false
-    }
     MouseArea {
         id: controlArea
         anchors {
@@ -154,5 +144,15 @@ Base {
             right: progressionHelper.left
         }
         enabled: control !== null
+    }
+    ProgressionVisual {
+        id: progressionHelper
+        visible: listItem.progression
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
+        showSplit: control ? true : false
     }
 }
