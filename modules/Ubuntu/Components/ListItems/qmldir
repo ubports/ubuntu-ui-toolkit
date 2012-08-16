@@ -1,4 +1,5 @@
 Base 0.1 Base.qml
+internal DividerBase DividerBase.qml
 Caption 0.1 Caption.qml
 Divider 0.1 Divider.qml
 Header 0.1 Header.qml
@@ -6,7 +7,6 @@ internal IconVisual IconVisual.qml
 internal LabelVisual LabelVisual.qml
 MultiValue 0.1 MultiValue.qml
 internal ProgressionVisual ProgressionVisual.qml
-Selectable 0.1 Selectable.qml
 ValueSelector 0.1 ValueSelector.qml
 SingleValue 0.1 SingleValue.qml
 Standard 0.1 Standard.qml

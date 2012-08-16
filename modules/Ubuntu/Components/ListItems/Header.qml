@@ -35,7 +35,7 @@ import QtQuick 1.1
     \endqml
     \b{This component is under heavy development.}
 */
-Base {
+DividerBase {
     id: listItemHeader
     height: image.height
 
@@ -45,8 +45,6 @@ Base {
       \qmlproperty string text
      */
     property alias text: label.text
-
-    __isDivider: true
 
     Image {
         id: image

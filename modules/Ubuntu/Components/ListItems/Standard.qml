@@ -61,7 +61,7 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-Selectable {
+Base {
     id: listItem
     height: 54
 

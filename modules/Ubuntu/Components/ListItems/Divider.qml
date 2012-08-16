@@ -24,11 +24,9 @@ import QtQuick 1.1
     Examples: see \l Header
     \b{This component is under heavy development.}
 */
-Base {
+DividerBase {
     id: listItemDivider
     height: image.implicitHeight
-
-    __isDivider: true
 
     Image {
         id: image
