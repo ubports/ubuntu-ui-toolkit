@@ -151,7 +151,7 @@ Base {
             top: parent.top
             bottom: parent.bottom
             left: parent.left
-            right: (listItem.progression && progressionHelper.showSplit) ? progressionHelper.left : parent.right
+            right: progressionHelper.left
         }
         enabled: control !== null
     }
