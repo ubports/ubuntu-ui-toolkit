@@ -93,10 +93,18 @@ AbstractButton {
      */
     property bool selected: false
 
-    Rectangle {
-        id: background
+    /*!
+      \preliminary
+      Highlight the list item when it is pressed.
+      This is used to disable the highlighting of the full list item
+      when it has a split.
+    */
+    property bool highlightWhenPressed: true
 
-        visible: baseListItem.selected || baseListItem.pressed
+    Rectangle {
+        id: highlight
+
+        visible: baseListItem.selected || (baseListItem.highlightWhenPressed && baseListItem.pressed)
         anchors.fill: parent
         color: "white"
         opacity: 0.7

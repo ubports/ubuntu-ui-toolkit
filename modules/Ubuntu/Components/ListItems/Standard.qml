@@ -100,6 +100,25 @@ Base {
     */
     property alias control: controlContainer.control
 
+    // If there is a split, disable full list item highlighting on pressed,
+    // and introduce two Rectangles that higlight the list item only on one
+    // side of the split.
+    highlightWhenPressed: !progressionHelper.showSplit
+    Rectangle {
+        id: controlHighlight
+        visible: progressionHelper.showSplit && controlArea.pressed
+        anchors.fill: controlArea
+        color: "white"
+        opacity: 0.7
+    }
+    Rectangle {
+        id: progressionHighlight
+        visible: progressionHelper.showSplit && listItem.pressed
+        anchors.fill: progressionHelper
+        color: "white"
+        opacity: 0.7
+    }
+
     IconVisual {
         id: iconHelper
         anchors {
@@ -131,8 +150,8 @@ Base {
             margins: 5
         }
         onControlChanged: {
-            control.parent = controlContainer
-            control.mouseArea = controlArea
+            control.parent = controlContainer;
+            control.mouseArea = controlArea;
         }
     }
     MouseArea {
