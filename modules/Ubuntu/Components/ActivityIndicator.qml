@@ -28,6 +28,7 @@ import QtQuick 1.1
 
     Example:
     \qml
+    Item {
         ActivityIndicator {
             id: activity
 
@@ -40,6 +41,7 @@ import QtQuick 1.1
             text: (activity.active) ? "Deactivate" : "Activate"
             onClicked: activity.active = !activity.active
         }
+    }
     \endqml
 */
 Item {
