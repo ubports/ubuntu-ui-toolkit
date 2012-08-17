@@ -35,11 +35,6 @@ import QtQuick 1.1
             text: (activity.active) ? "Deactivate" : "Activate"
             onClicked: activity.active = !activity.active
         }
-        Button {
-            id: toggleStalled
-            text: (activity.stalled) ? "Resume" : "Stall"
-            onClicked: activity.stalled = !activity.stalled
-        }
     \endqml
 */
 Item {
@@ -51,19 +46,10 @@ Item {
     /*!
        \preliminary
        Presents whether there is activity to be visualized or not. The default value is false.
-       When activated (set to true), an animation is shown indicating an ongoing activity. Ones
-       is set to false (deactivated) the finished() signal is triggered.
+       When activated (set to true), an animation is shown indicating an ongoing activity, and
+       the started() signal is emitted. Upon deactivation the finished() signal is emitted.
     */
     property bool active: false
-
-    /*!
-       \preliminary
-       Controls the stalled state of the indicator. Useful in long-running operations to indicate
-       that the operation got stuck or the connection is interruptive. Altering its value does have
-       effect only if the indicator is active. When the state is reset (set to false), the resumed()
-       signal is triggered.
-    */
-    property bool stalled: false
 
     /*!
        \preliminary
@@ -72,17 +58,12 @@ Item {
     signal started
     /*!
        \preliminary
-       Signal emitted when the indicator's stalled state gets reset. The indicator must be active.
-    */
-    signal resumed
-    /*!
-       \preliminary
        Signal emitted when the indicator gets deactivated.
     */
     signal finished
 
     // Yet we'll do the indication with image rotation animation
-    // timm we get the proper graphics and description from UX
+    // till we get the proper graphics and description from UX
     Image {
         id: animation
         anchors.fill: parent
@@ -94,53 +75,19 @@ Item {
         states: [
             State {
                 name: "on"
-                when: indicator.active && !indicator.stalled
-            },
-            State {
-                name: "stall"
-                extend: "on"
-                when: indicator.active && indicator.stalled
-                PropertyChanges {
-                    target: animation
-                    opacity: internals.stalledOpacity
-                }
+                when: indicator.active
             }
         ]
         transitions: [
             Transition {
                 from: ""
                 to: "on"
-                ScriptAction {
-                    script: {
-                        indicator.started()
-                        indicator.stalled = false
-                        internals.wasActive = true
-                    }
-                }
-            },
-            Transition {
-                from: "on"
-                to: "stall"
-                SequentialAnimation {
-                     loops: Animation.Infinite
-                     PropertyAnimation { property: "opacity"; duration: internals.animationDuration / 2}
-                     PropertyAnimation { properties: "opacity"; to: 1.0; duration: internals.animationDuration / 2}
-                }
-            },
-            Transition {
-                from: "stall"
-                to: "on"
-                ScriptAction { script: indicator.resumed(); }
+                ScriptAction { script: indicator.started() }
             },
             Transition {
                 from: "*"
                 to: ""
-                ScriptAction {
-                    script: if (internals.wasActive) {
-                                internals.reset()
-                                indicator.finished()
-                            }
-                }
+                ScriptAction { script: indicator.finished() }
             }
 
         ]
@@ -152,16 +99,8 @@ Item {
     // internal properties
     QtObject {
         id: internals
-        property bool wasActive: false
         // styling!
         property url payload: Qt.resolvedUrl("artwork/ActivityIndicator.png")
         property int animationDuration: 1000
-        property real stalledOpacity: 0.1
-
-        function reset()
-        {
-            wasActive = false
-            indicator.stalled = false
-        }
     }
 }

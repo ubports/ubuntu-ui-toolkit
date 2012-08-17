@@ -28,18 +28,12 @@ Template {
                 text: (indicator.active) ? "Deactivate" : "Activate"
                 onClicked: indicator.active = !indicator.active
             }
-            Button {
-                text: (indicator.stalled) ? "Resume" : "Stall"
-                onClicked: indicator.stalled = !indicator.stalled
-            }
         }
 
         ActivityIndicator {
             id: indicator
 
             onStarted: echoText.echo("started")
-            onStalledChanged: if (stalled) echoText.echo("stalled")
-            onResumed: echoText.echo("resumed")
             onFinished: echoText.echo("finished")
         }
 
