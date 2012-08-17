@@ -17,17 +17,22 @@
 import QtQuick 1.1
 
 /*!
-    /qmlclass ActivityIndicator
+    \qmlclass ActivityIndicator
     \inqmlmodule Ubuntu.Components 0.1
-    \brief The ActivityIndicator class is DOCME
+    \brief The ActivityIndicator component provides ability to visualize indetermined
+    term operations, e.g. busy indication, connection in progress indication, etc. The
+    graphics and their animation shown as indication is driven by themes.
+
 
     \b{This component is under heavy development.}
 
     Example:
     \qml
-
         ActivityIndicator {
             id: activity
+
+            onStarted: console.log("activity started")
+            onFinished: console.log("activity finished")
         }
 
         Button {
@@ -40,8 +45,8 @@ import QtQuick 1.1
 Item {
     id: indicator
 
-    width: height
-    height: 62
+    width: animation.sourceSize.width
+    height: animation.sourceSize.height
 
     /*!
        \preliminary
@@ -53,12 +58,12 @@ Item {
 
     /*!
        \preliminary
-       Signal emitted when the indicator gets activated.
+       This is a helper signal emitted when the indicator gets activated.
     */
     signal started
     /*!
        \preliminary
-       Signal emitted when the indicator gets deactivated.
+       This is a helper signal emitted when the indicator gets deactivated.
     */
     signal finished
 
@@ -67,9 +72,9 @@ Item {
     Image {
         id: animation
         anchors.fill: parent
-        source: internals.payload
+        source: internals.source
+        smooth: internals.smooth
         visible: indicator.active & indicator.enabled
-        fillMode: Image.Stretch
         NumberAnimation on rotation {running: indicator.active; from: 0; to: 360; loops: Animation.Infinite; duration: internals.animationDuration}
 
         states: [
@@ -91,16 +96,16 @@ Item {
             }
 
         ]
-
-        // for debuging purposes only
-        // onStateChanged: console.debug("ActivityIndicator animation state = " + state)
     }
 
     // internal properties
     QtObject {
         id: internals
-        // styling!
-        property url payload: Qt.resolvedUrl("artwork/ActivityIndicator.png")
+        // preliminary theming introduced to ease styling introduction
+        property url source: Qt.resolvedUrl("artwork/ActivityIndicator.png")
+        property bool smooth: true
         property int animationDuration: 1000
     }
+
+    //TODO: add flickable support - deactivate when out of screen
 }

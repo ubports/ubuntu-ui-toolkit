@@ -26,25 +26,16 @@ Template {
         Row {
             Button {
                 text: (indicator.active) ? "Deactivate" : "Activate"
+                width: 170
                 onClicked: indicator.active = !indicator.active
             }
         }
 
         ActivityIndicator {
             id: indicator
-
-            onStarted: echoText.echo("started")
-            onFinished: echoText.echo("finished")
+            width: 80
+            height: 80
         }
 
-        Text {
-            id: echoText
-            text: "Animation: Inactive"
-            function echo(msg) {
-                text = "AnimationIndicator: echo \"" + msg +"\""
-                console.debug(text)
-            }
-            Component.onCompleted: echo("ready")
-        }
     }
 }
