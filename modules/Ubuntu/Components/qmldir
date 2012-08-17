@@ -6,5 +6,6 @@ Tabs 0.1 Tabs.qml
 TextCustom 0.1 TextCustom.qml
 AbstractButton 0.1 AbstractButton.qml
 PageContainer 0.1 PageContainer.qml
+ActivityIndicator 0.1 ActivityIndicator.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
