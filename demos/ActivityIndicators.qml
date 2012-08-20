@@ -24,10 +24,16 @@ Template {
     Column {
         spacing: 5
         Row {
+            spacing: 5
             Button {
-                text: (indicator.active) ? "Deactivate" : "Activate"
+                text: (indicator.running) ? "Deactivate" : "Activate"
                 width: 170
-                onClicked: indicator.active = !indicator.active
+                onClicked: indicator.running = !indicator.running
+            }
+            Button {
+                text: (indicator.enabled) ? "Disable" : "Enable"
+                width: 170
+                onClicked: indicator.enabled = !indicator.enabled
             }
         }
 
@@ -36,6 +42,7 @@ Template {
             width: 80
             height: 80
         }
-
     }
+
+    Component.onCompleted: indicator.running = true
 }

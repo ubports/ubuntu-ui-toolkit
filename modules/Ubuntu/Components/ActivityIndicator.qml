@@ -19,10 +19,12 @@ import QtQuick 1.1
 /*!
     \qmlclass ActivityIndicator
     \inqmlmodule Ubuntu.Components 0.1
-    \brief The ActivityIndicator component provides ability to visualize indetermined
-    term operations, e.g. busy indication, connection in progress indication, etc. The
-    graphics and their animation shown as indication is driven by themes.
+    \brief The ActivityIndicator component visually indicates that a task of
+    unknown duration is in progress, e.g. busy indication, connection in progress
+    indication, etc.
 
+    Note: for time consuming Java script operations use WorkerScript, otherwise no
+    UI interaction will be possible and the ActicityIndicator amination will freeze.
 
     \b{This component is under heavy development.}
 
@@ -31,15 +33,12 @@ import QtQuick 1.1
     Item {
         ActivityIndicator {
             id: activity
-
-            onStarted: console.log("activity started")
-            onFinished: console.log("activity finished")
         }
 
         Button {
             id: toggleActive
-            text: (activity.active) ? "Deactivate" : "Activate"
-            onClicked: activity.active = !activity.active
+            text: (activity.running) ? "Deactivate" : "Activate"
+            onClicked: activity.running = !activity.running
         }
     }
     \endqml
@@ -56,7 +55,7 @@ Item {
        When activated (set to true), an animation is shown indicating an ongoing activity, and
        the started() signal is emitted. Upon deactivation the finished() signal is emitted.
     */
-    property bool active: false
+    property bool running: false
 
     /*!
        \preliminary
@@ -76,13 +75,17 @@ Item {
         anchors.fill: parent
         source: internals.source
         smooth: internals.smooth
-        visible: indicator.active & indicator.enabled
-        NumberAnimation on rotation {running: indicator.active; from: 0; to: 360; loops: Animation.Infinite; duration: internals.animationDuration}
+        visible: indicator.running && indicator.enabled
+        NumberAnimation on rotation {
+            running: animation.visible
+            from: 0; to: 360; loops: Animation.Infinite
+            duration: internals.animationDuration
+        }
 
         states: [
             State {
                 name: "on"
-                when: indicator.active
+                when: indicator.running
             }
         ]
         transitions: [
