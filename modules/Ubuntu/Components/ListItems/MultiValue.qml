@@ -41,7 +41,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-Selectable {
+Base {
     id: multiValueListItem
     height: 54
 
@@ -77,7 +77,6 @@ Selectable {
             id: iconHelper
             anchors {
                 top: parent.top
-                bottom: parent.bottom
                 left: parent.left
             }
         }

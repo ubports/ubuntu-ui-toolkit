@@ -110,12 +110,13 @@ ButtonWithForeground {
             id: base
 
             anchors.fill: shape
-            color: button.state != "pressed" ? button.color : button.pressedColor
+            color: button.pressed ? button.pressedColor : button.color
+
         }
 
         ButtonMaskEffect {
             anchors.fill: shape
-            gradientStrength: button.state != "pressed" ? 1.0 : 0.0
+            gradientStrength: button.pressed ? 0.0 : 1.0
             Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
 
             mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
@@ -129,8 +130,8 @@ ButtonWithForeground {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: if (button.darkBorder) return button.state == "pressed" ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
-                    else return button.state == "pressed" ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+            source: if (button.darkBorder) return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
+                    else return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
             border.left: 14; border.top: 17
             border.right: 15; border.bottom: 18
         }

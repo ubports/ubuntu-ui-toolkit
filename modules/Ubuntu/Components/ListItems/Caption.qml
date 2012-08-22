@@ -38,7 +38,7 @@ import Ubuntu.Components 0.1
 */
 Base {
     id: captionListItem
-    height: framing.height + 10
+    height: framing.height
 
     /*!
       \preliminary
@@ -50,12 +50,9 @@ Base {
     Rectangle {
         id: framing
         color: "#e0e0e0"
-        radius: 5
         anchors {
             left: parent.left
             right: parent.right
-            verticalCenter: parent.verticalCenter
-            margins: 5
         }
         height: captionText.height + 10
 
@@ -65,7 +62,8 @@ Base {
             width: parent.width - 10
             wrapMode: Text.Wrap
             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignLeft
+            fontSize: "small"
         }
     }
 }

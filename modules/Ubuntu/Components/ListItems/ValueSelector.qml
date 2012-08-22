@@ -109,7 +109,6 @@ Base {
                 anchors {
                     left: parent.left
                     top: parent.top
-                    bottom: parent.bottom
                 }
             }
             LabelVisual {
@@ -183,59 +182,67 @@ Base {
         }
 
         Repeater {
+            id: valueRepeater
+            property int valueHeight: selector.expanded ? 40 : 0
+
+            states: [ State {
+                    name: "expanded"
+                    when: selector.expanded
+                    PropertyChanges {
+                        target: valueRepeater
+                        valueHeight: 40
+                    }
+                }, State {
+                    name: "closed"
+                    when: !selector.expanded
+                    PropertyChanges {
+                        target: valueRepeater
+                        valueHeight: 0
+                    }
+                }
+            ]
+
+            transitions: Transition {
+                PropertyAnimation {
+                    target: valueRepeater
+                    properties: "valueHeight"
+                    duration: 100
+                }
+            }
+
             model: selector.values
-            Selectable {
-                id: valueBase
-                height: selector.expanded ? 40 : 0
-                visible: valueBase.height > 0
-                onClicked: selector.selectedIndex = index
-                selected: index === selector.selectedIndex
+            Rectangle {
+                color: "#e0e0e0"
+                height: valueRepeater.valueHeight
+                width: parent.width
 
-                __showBottomSeparator: index === selector.values.length - 1
-                __showTopSeparator: true // TODO: show different (less wide) separator?
-
-                Rectangle {
-                    color: "#e0e0e0"
-                    anchors.fill: parent
-                    z: -1
-                }
-
-                LabelVisual {
-                    text: modelData
-                    anchors {
-                        left: parent.left
-                        leftMargin: 24
-                        verticalCenter: parent.verticalCenter
+                Base {
+                    id: valueBase
+                    height: parent.height
+                    visible: valueBase.height > 0
+                    onClicked: {
+                        selector.selectedIndex = index
+                        selector.expanded = false
                     }
-                    font.italic: true
-                    font.bold: valueBase.selected
-                    property real heightMargin: valueBase.height - implicitHeight
-                    visible: heightMargin > 0
-                    // fade in/out the values when expanding/contracting the selector.
-                    opacity: heightMargin < 10 ? heightMargin/10 : 1
-                }
 
-                states: [ State {
-                        name: "expanded"
-                        when: selector.expanded
-                        PropertyChanges {
-                            target: valueBase
-                            height: 40
+                    selected: index === selector.selectedIndex
+
+                    __showBottomSeparator: index === selector.values.length - 1
+                    __showTopSeparator: true // TODO: show different (less wide) separator?
+
+                    LabelVisual {
+                        text: modelData
+                        anchors {
+                            left: parent.left
+                            leftMargin: 24
+                            verticalCenter: parent.verticalCenter
                         }
-                    }, State {
-                        name: "closed"
-                        when: !selector.expanded
-                        PropertyChanges {
-                            target: valueBase
-                            height: 0
-                        }
-                    }
-                ]
-                transitions: Transition {
-                    PropertyAnimation {
-                        target: valueBase
-                        properties: "height"
-                        duration: 100
+                        font.italic: true
+                        font.bold: valueBase.selected
+                        property real heightMargin: valueBase.height - implicitHeight
+                        visible: heightMargin > 0
+                        // fade in/out the values when expanding/contracting the selector.
+                        opacity: heightMargin < 10 ? heightMargin/10 : 1
                     }
                 }
             }
