@@ -54,7 +54,7 @@ Rectangle {
                 {"label": "Drilldown", "source": ""},
                 {"label": "Switch", "source": ""},
                 {"label": "Checkbox", "source": ""},
-                {"label": "Activity Indicator", "source": ""},
+                {"label": "Activity Indicator", "source": "ActivityIndicators.qml"},
                 {"label": "Progress Bar", "source": ""},
                 {"label": "Slider", "source": ""},
                 {"label": "Text Input", "source": ""},
