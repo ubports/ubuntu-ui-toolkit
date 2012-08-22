@@ -96,7 +96,7 @@ Item {
                 top: parent.top
             }
             height: visible ? 40 : 0
-            Button {
+            AbstractButton {
                 id: backButton
                 anchors {
                     left: parent.left
@@ -104,11 +104,40 @@ Item {
                     bottom: parent.bottom
                     margins: 5
                 }
-                text: "Back"
-                darkBorder: true
+                width: 30
                 visible: true
                 enabled: pageStack.__stackSize > 1
                 onClicked: pageStack.pop()
+                opacity: enabled ? 1.0 : 0.5
+
+                Image {
+                    anchors.centerIn: parent
+                    source: "ListItems/artwork/ListItemProgressionArrow.png"
+                    width: 40
+                    fillMode: Image.PreserveAspectFit
+                    rotation: 180
+                }
+
+                states: [
+                    State {
+                        name: "enabled"
+                        when: backButton.enabled
+                        PropertyChanges { target: backButton; opacity: 1.0 }
+                    }, State {
+                        name: "disabled"
+                        when: !backButton.enabled
+                        PropertyChanges { target: backButton; opacity: 0.5 }
+                    }
+                ]
+
+                transitions: Transition {
+                    PropertyAnimation {
+                        target: backButton
+                        properties: "opacity"
+                        duration: 100
+                    }
+                }
+
             }
             TextCustom {
                 id: toolBarTitle
