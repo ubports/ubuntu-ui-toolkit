@@ -112,7 +112,7 @@ Base {
     ProgressionVisual {
         id: progressionHelper
         visible: listItem.progression
-        showSplit: true
+        showSplit: false
         anchors {
             right: parent.right
             top: parent.top

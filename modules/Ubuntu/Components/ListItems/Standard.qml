@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass Standard
@@ -47,6 +48,7 @@ import QtQuick 1.1
                     width: 150
                     onClicked: print("Clicked")
                 }
+                progression: true
                 onClicked: control.clicked()
             }
             ListItem.Standard {
@@ -91,9 +93,31 @@ Base {
       If no \l text is given, the control's parent will fill the full
       space available inside the list item, taking into account a possible
       icon and progression, and the control may be anchored to fill its parent.
-      \qmlproperty Item control
+      \qmlproperty Item control.
+      The mouseArea of the control will be set to the full Standard list item if
+      there is no \l progression, or only the part left of the split, if there is a
+      \l progression.
     */
     property alias control: controlContainer.control
+
+    // If there is a split, disable full list item highlighting on pressed,
+    // and introduce two Rectangles that higlight the list item only on one
+    // side of the split.
+    highlightWhenPressed: !progressionHelper.showSplit
+    Rectangle {
+        id: controlHighlight
+        visible: progressionHelper.showSplit && controlArea.pressed
+        anchors.fill: controlArea
+        color: "white"
+        opacity: 0.7
+    }
+    Rectangle {
+        id: progressionHighlight
+        visible: progressionHelper.showSplit && listItem.pressed
+        anchors.fill: progressionHelper
+        color: "white"
+        opacity: 0.7
+    }
 
     IconVisual {
         id: iconHelper
@@ -125,7 +149,20 @@ Base {
             bottom: parent.bottom
             margins: 5
         }
-        onControlChanged: control.parent = controlContainer
+        onControlChanged: {
+            control.parent = controlContainer;
+            control.mouseArea = controlArea;
+        }
+    }
+    MouseArea {
+        id: controlArea
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+            right: progressionHelper.left
+        }
+        enabled: control !== null
     }
     ProgressionVisual {
         id: progressionHelper
