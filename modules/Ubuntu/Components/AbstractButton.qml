@@ -65,6 +65,10 @@ Item {
         anchors.fill: parent
     }
 
+    /*!
+      \internal
+      Connect the signals/slots of the new mouse area.
+     */
     onMouseAreaChanged: hiddenFunctions.updateMouseArea()
 
     Item {
