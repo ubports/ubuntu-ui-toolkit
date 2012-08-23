@@ -22,21 +22,18 @@ Template {
     id: indicators
 
     Column {
-        id: column1
         spacing: 30
 
         Button {
-            id: button1
-            text: (indicator.running) ? "Deactivate" : "Activate"
-            width: 170
+            id: button
+            text: (indicator.running) ? "Pause" : "Resume"
+            //width: 170
             onClicked: indicator.running = !indicator.running
         }
 
         ActivityIndicator {
             id: indicator
-            width: 80
-            height: 80
-            anchors.horizontalCenter: button1.horizontalCenter
+            anchors.horizontalCenter: button.horizontalCenter
         }
     }
 

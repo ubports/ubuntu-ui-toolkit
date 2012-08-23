@@ -43,7 +43,7 @@ import QtQuick 1.1
     }
     \endqml
 */
-Item {
+AnimatedItem {
     id: indicator
 
     width: animation.sourceSize.width
@@ -59,12 +59,13 @@ Item {
 
     /*!
        \preliminary
-       This is a helper signal emitted when the indicator gets activated.
+       Signal emitted when the indicator gets activated.
     */
     signal started
+
     /*!
        \preliminary
-       This is a helper signal emitted when the indicator gets deactivated.
+       Signal emitted when the indicator gets deactivated.
     */
     signal finished
 
@@ -77,7 +78,7 @@ Item {
         smooth: internals.smooth
         visible: indicator.running && indicator.enabled
         NumberAnimation on rotation {
-            running: animation.visible
+            running: animation.visible & indicator.onScreen
             from: 0; to: 360; loops: Animation.Infinite
             duration: internals.animationDuration
         }
@@ -107,10 +108,9 @@ Item {
     QtObject {
         id: internals
         // preliminary theming introduced to ease styling introduction
+        // TODO: image is not the final one, however might change with theming
         property url source: Qt.resolvedUrl("artwork/ActivityIndicator.png")
         property bool smooth: true
         property int animationDuration: 1000
     }
-
-    //TODO: add flickable support - deactivate when out of screen
 }
