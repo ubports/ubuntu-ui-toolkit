@@ -9,3 +9,4 @@ PageContainer 0.1 PageContainer.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
+internal AnimatedItem AnimatedItem.qml
