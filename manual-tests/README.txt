@@ -29,7 +29,8 @@ comprehensive `quick reference`_ is available.
 .. _reStructured Text: http://en.wikipedia.org/wiki/ReStructuredText
 .. _quick reference: http://docutils.sourceforge.net/docs/user/rst/quickref.html
 
-Tests have a header, actions (steps to follow), and an expected result. You can use the TEST_TEMPLATE.txt file as template for new tests.
+Tests have a header, actions (steps to follow), and an expected result.
+You can use the TEST_TEMPLATE.txt file as template for new tests.
 
 There can be multiple tests in a single file, but they should all be related,
 and the filename should indicate the tests it contains.
