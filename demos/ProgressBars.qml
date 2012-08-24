@@ -31,20 +31,50 @@ Template {
                 id: progress
                 objectName: "DeterminateProgressBar"
                 value: progress.minimumValue
-                minimumValue: -10.0
-                maximumValue: 1.0
+                minimumValue: 0.0
+                maximumValue: 100.0
 
-                NumberAnimation on value {
-                    from: progress.minimumValue
-                    to: progress.maximumValue
-                    running: progress.value < progress.maximumValue
-                    duration: 1000
+                SequentialAnimation on value {
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        from: progress.minimumValue
+                        to: progress.maximumValue
+                        duration: 2000
+                    }
+                    PauseAnimation {duration: 1000}
+                    ScriptAction { script: progress2.value = progress2.minimumValue; }
+                    PauseAnimation {duration: 2000}
                 }
             }
+        }
 
-            Button {
-                text: "Reset"
-                onClicked: progress.value = progress.minimumValue
+        TemplateRow {
+            title: "Mixed %"
+
+            ProgressBar {
+                id: progress2
+                objectName: "DeterminateProgressBar"
+                value: progress2.minimumValue
+                minimumValue: 0.0
+                maximumValue: 100.0
+
+                SequentialAnimation on value {
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        from: progress2.minimumValue
+                        to: progress2.maximumValue
+                        duration: 2000
+                    }
+                    PauseAnimation {duration: 1000}
+                    ScriptAction { script: progress2.indeterminate = true; }
+                    PauseAnimation {duration: 2000}
+                    ScriptAction {
+                        script: {
+                            progress2.indeterminate = false
+                            progress2.value = progress2.minimumValue
+                        }
+                    }
+                }
             }
         }
 

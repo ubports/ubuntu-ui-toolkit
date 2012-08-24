@@ -43,7 +43,7 @@ import Qt.labs.shaders 1.0
     }
     \endqml
 */
-Item {
+AnimatedItem {
     id: progressBar
 
     width: 200
@@ -95,11 +95,9 @@ Item {
             fillMode: Image.Tile
 
             property real xTemp
-            onXTempChanged: {
-                trackerIndeterminate.x = internals.trackerOffset + Math.round(trackerIndeterminate.xTemp)
-            }
+            x: internals.trackerOffset + Math.round(trackerIndeterminate.xTemp)
             NumberAnimation on xTemp {
-                running: progressBar.indeterminate && progressBar.visible
+                running: progressBar.indeterminate && progressBar.visible && progressBar.onScreen
                 loops: Animation.Infinite
                 from: -trackerIndeterminate.sourceSize.width
                 to: 0
