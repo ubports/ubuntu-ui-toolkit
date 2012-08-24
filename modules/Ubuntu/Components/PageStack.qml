@@ -28,19 +28,29 @@ import "stack.js" as Stack
 Item {
     id: pageStack
 
+    /*!
+      \preliminary
+      Show a toolbar at the top of the page stack which shows a back button
+      to pop the top, and the title of the current page on top.
+     */
     property bool showToolBar: true
+
 
     default property Item rootPage
     onRootPageChanged: pageStack.push(rootPage) // TODO: clear the stack, and then push.
 
-    //        // In QtQuick1, this is impossible.
-    //        // QtQuick2 introduces var type that can be JS variables (not possible for variant).
-    //        //property var stack: new Stack.Stack()
-    //        // Instead of this, the variable is created in stack.js,
-    //        // and can be accessed as Stack.stack
-    //        // FIXME: After switching to QtQuick2, we can simply use a stack
-    //        // variable as pages.stack
+    // In QtQuick1, this is impossible.
+    // QtQuick2 introduces var type that can be JS variables (not possible for variant).
+    //property var stack: new Stack.Stack()
+    // Instead of this, the variable is created in stack.js,
+    // and can be accessed as Stack.stack
+    // FIXME: After switching to QtQuick2, we can simply use a stack
+    // variable as pages.stack
 
+    /*!
+      \preliminary
+      Push a page to the stack.
+     */
     function push(page) {
         if (page.__isPage !== true) return;
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
@@ -52,6 +62,11 @@ Item {
         toolBar.update();
     }
 
+    /*!
+      \preliminary
+      Pop the top item from the stack if the stack size is at least 1.
+      Do not do anything if 0 or 1 items are on the stack.
+     */
     function pop() {
         if (Stack.stack.size > 1) {
             Stack.stack.top.active = false;
@@ -73,6 +88,14 @@ Item {
         // toolbar placeholder
         Rectangle {
             id: toolBar
+            visible: pageStack.showToolBar
+            color: "#222222"
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+            }
+            height: visible ? 40 : 0
 
             function update() {
                 var stackSize = Stack.stack.size;
@@ -88,14 +111,6 @@ Item {
                 }
             }
 
-            visible: pageStack.showToolBar
-            color: "#222222"
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-            }
-            height: visible ? 40 : 0
             AbstractButton {
                 id: backButton
                 anchors {
