@@ -1,0 +1,22 @@
+#Please use this template for adding new manual-tests to ensure a consistency.
+#Text to be changed is enclosed in <<>>
+#
+#Please also note that Tests should test ONE THING ONLY. If you want to test
+#more than one thing, write multiple tests. That helps us to automate them as
+#well as execute them manually.
+#
+#If you're testing purely visual changes, please make sure you link to a
+#reference image or add it to the bzr repository.
+
+<<Test Summary>>
+----------------------------------------------------
+<<Test Case Description>>
+
+Setup: 
+<<What needs to be done prior the test execution>>
+
+Actions:  
+<<Step by step description of the test-case>>
+
+Expected Result:
+<<What is the correct behaviour and correct outcome of "Actions">>
