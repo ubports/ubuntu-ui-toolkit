@@ -69,7 +69,8 @@ Item {
      */
     function pop() {
         if (Stack.stack.size > 1) {
-            Stack.stack.top.active = false;
+            Stack.
+            stack.top.active = false;
             Stack.stack.pop();
         }
         Stack.stack.top.active = true;

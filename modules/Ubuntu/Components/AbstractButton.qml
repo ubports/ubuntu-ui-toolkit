@@ -41,6 +41,15 @@ Item {
 
     /*!
       \preliminary
+      The mouse area of the abstract button.
+      May be assigned a different mouse area if, for example, the area where
+      the control is shown is not the same as the area where it accepts mouse
+      events. This is used in list items with controls.
+     */
+    property MouseArea mouseArea: defaultMouseArea
+
+    /*!
+     \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
     property bool pressed
@@ -52,16 +61,34 @@ Item {
     property bool hovered
 
     MouseArea {
-        id: mouse_area
-
-        hoverEnabled: parent.enabled
+        id: defaultMouseArea
         anchors.fill: parent
+    }
 
-        onClicked: parent.clicked()
+    /*!
+      \internal
+      Connect the signals/slots of the new mouse area.
+     */
+    onMouseAreaChanged: hiddenFunctions.updateMouseArea()
 
-        onPressed: button.pressed = true
-        onReleased: button.pressed = false
-        onEntered: button.hovered = true
-        onExited: button.hovered = false
+    Item {
+        id: hiddenFunctions
+
+        function updateMouseArea() {
+            if (button.mouseArea) {
+                button.mouseArea.clicked.connect(button.clicked);
+                button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
+                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
+                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
+            }
+        }
+
+        function mouseAreaPressed() {
+            button.pressed = mouseArea.pressed;
+        }
+
+        function mouseAreaHovered() {
+            button.hovered = mouseArea.containsMouse;
+        }
     }
 }
