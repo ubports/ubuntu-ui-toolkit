@@ -26,7 +26,7 @@ Template {
 
         Button {
             id: button
-            text: (indicator.running) ? "Show" : "Hide"
+            text: (indicator.running) ? "Hide" : "Show"
             onClicked: indicator.running = !indicator.running
         }
 
