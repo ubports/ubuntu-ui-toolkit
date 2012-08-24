@@ -77,17 +77,27 @@ AnimatedItem {
         source: internals.source
         smooth: internals.smooth
         visible: indicator.running && indicator.enabled
+
         NumberAnimation on rotation {
             running: animation.visible & indicator.onScreen
             from: 0; to: 360; loops: Animation.Infinite
             duration: internals.animationDuration
         }
 
+
         states: [
             State {
                 name: "on"
                 when: indicator.running
+            },
+            State {
+                name: ""
+                PropertyChanges {
+                    target: animation
+                    rotation: 0.0
+                }
             }
+
         ]
         transitions: [
             Transition {

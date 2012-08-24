@@ -26,8 +26,7 @@ Template {
 
         Button {
             id: button
-            text: (indicator.running) ? "Pause" : "Resume"
-            //width: 170
+            text: (indicator.running) ? "Show" : "Hide"
             onClicked: indicator.running = !indicator.running
         }
 

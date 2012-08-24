@@ -18,6 +18,8 @@
     \qmlclass AnimatedItem
     \inqmlmodule Ubuntu.Components 0.1
     \brief The AnimatedItem drives the animated components behavior inside a Flickable.
+    Reports whether the component whos parent is a Flickable is in the visible area or not,
+    so derived components can pause animations whill off-screen.
 
 */
 
@@ -34,18 +36,21 @@ Item {
     QtObject {
         id: internal
         property Flickable flickable
+
+        // returns whether the component is in teh visible area of the flickable
+        function checkOnScreen()
+        {
+            var pos = root.mapToItem(flickable, 0, 0)
+            root.onScreen = (pos.y + root.height >= 0) && (pos.y <= internal.flickable.height) &&
+                            (pos.x + root.width >= 0) && (pos.x <= internal.flickable.width)
+        }
     }
 
     Connections {
         target: internal.flickable
 
-        onMovementStarted: root.onScreen = true
-
-        onMovementEnded: {
-            var pos = mapToItem(internal.flickable, 0, 0)
-            root.onScreen = (pos.y + root.height >= 0) || (pos.y <= internal.flickable.height) ||
-                            (pos.x + root.width >= 0) || (pos.x <= internal.flickable.width)
-        }
+        onContentXChanged: internal.checkOnScreen()
+        onContentYChanged: internal.checkOnScreen()
     }
 
     Component.onCompleted: {
