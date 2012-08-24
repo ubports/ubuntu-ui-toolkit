@@ -42,7 +42,7 @@ Template {
                         duration: 2000
                     }
                     PauseAnimation {duration: 1000}
-                    ScriptAction { script: progress2.value = progress2.minimumValue; }
+                    ScriptAction { script: progress.value = progress.minimumValue; }
                     PauseAnimation {duration: 2000}
                 }
             }
