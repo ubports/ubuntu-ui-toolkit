@@ -96,14 +96,14 @@ Item {
 
             property real xTemp
             onXTempChanged: {
-                trackerIndeterminate.x = internals.trackerOffset + Math.round(trackerIndeterminate.xTemp) * 4
+                trackerIndeterminate.x = internals.trackerOffset + Math.round(trackerIndeterminate.xTemp)
             }
             NumberAnimation on xTemp {
                 running: progressBar.indeterminate && progressBar.visible
                 loops: Animation.Infinite
                 from: -trackerIndeterminate.sourceSize.width
                 to: 0
-                duration: (1000 * trackerIndeterminate.sourceSize.width / 10)
+                duration: (300 * trackerIndeterminate.sourceSize.width / 10)
             }
         }
 

@@ -27,11 +27,6 @@ Template {
         TemplateRow {
             title: "Known %"
 
-            Button {
-                text: "Reset"
-                onClicked: progress.value = progress.minimumValue
-            }
-
             ProgressBar {
                 id: progress
                 objectName: "DeterminateProgressBar"
@@ -45,6 +40,11 @@ Template {
                     running: progress.value < progress.maximumValue
                     duration: 1000
                 }
+            }
+
+            Button {
+                text: "Reset"
+                onClicked: progress.value = progress.minimumValue
             }
         }
 
