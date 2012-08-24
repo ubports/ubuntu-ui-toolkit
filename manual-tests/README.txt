@@ -29,21 +29,19 @@ and the filename should indicate the tests it contains.
 
 Example:
 
-Test Dash
+Test Button
 ---------
-This test shows that the dash appears when the super key is pushed.
+This test shows that the button emits a signal when pressed
 
 Setup:
-#. start an ubuntu (unity) session by logging in
+#. start Gallery.qml in qmlviewer
 
 Actions:
-#. Start with a clear screen
-#. Press the <super> key
+#. Select Buttons
+#. Click with LMB the QML Button next to the Label which says "Standard"
 
 Expected Result:
-  The dash appears, and focus is in the search box.  The icons on the laucher
-  are desaturated except for the ubuntu button at the top.  The icons in the
-  panel go white.
+  QML Button emits signal clicked() when LMB is released. QML Button is in pressedColor while LMB is pressed.
 
 
 Directory Structure
@@ -55,5 +53,5 @@ directories to organise them.
 =========
 Glossary
 =========
-Tap - to press the indicated key and release it, within a timeframe of 50ms.
-Pip - one pip is defined as a single filled in arrow to the left of a launcher icon.
+LMB = Left Mouse Button
+
