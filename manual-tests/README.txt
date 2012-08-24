@@ -38,10 +38,12 @@ Setup:
 
 Actions:
 #. Select Buttons
-#. Click with LMB the QML Button next to the Label which says "Standard"
+#. Press and hold LMB on top of the QML Button next to the Label which says "Standard"
+#. Release LMB
 
 Expected Result:
-  QML Button emits signal clicked() when LMB is released. QML Button is in pressedColor while LMB is pressed.
+  QML Button is in pressedColor while LMB is pressed.
+  QML Button emits signal clicked() when LMB is released.
 
 
 Directory Structure
