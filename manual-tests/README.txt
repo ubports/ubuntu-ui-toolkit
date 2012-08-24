@@ -10,7 +10,14 @@ doesn't mean that there isn't value in creating a test for it, just that the
 test needs to be executed by a person until it is converted into an automated
 test.
 
-However please be very discriminatory about your manual tests. It's highly likely that you can automate whatever it is you're testing, and doing so will be of much more value to the quality of Unity. Manual tests are a last resort. They should not be written lightly, and should give you a feeling of shame. If you're to the point where you believe you need a manual test, then please come talk to the QA team and we will see if we can find an automatable solution.
+However please be very discriminatory about your manual tests. 
+It's highly likely that you can automate whatever it is you're testing, 
+and doing so will be of much more value to the quality of UI Toolkit.
+Manual tests are a last resort. They should not be written lightly,
+and should give you a feeling of shame.
+
+If you're to the point where you believe you need a manual test,
+then please come talk to the QA team and we will see if we can find an automatable solution.
 
 
 Format
