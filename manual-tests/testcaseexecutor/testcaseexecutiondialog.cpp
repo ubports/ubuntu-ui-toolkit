@@ -1,6 +1,9 @@
 #include "testcaseexecutiondialog.h"
 #include "ui_testcaseexecutiondialog.h"
 
+#include <QGLWidget>
+
+
 TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testdata, QUrl qmlFile, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::TestCaseExecutionDialog),
@@ -24,6 +27,17 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testd
     tmpQmlFile.close();
 
     m_declarativeView->engine()->addImportPath("..");
+    QGLFormat format = QGLFormat::defaultFormat();
+    format.setSampleBuffers(false);
+    format.setSwapInterval(1);
+
+    QGLWidget *glWidget = new QGLWidget(format);
+    glWidget->setAttribute(Qt::WA_TranslucentBackground, false);
+    m_declarativeView->setAttribute(Qt::WA_TranslucentBackground, false);
+    m_declarativeView->setAttribute(Qt::WA_NoSystemBackground, true);
+    m_declarativeView->setAttribute(Qt::WA_OpaquePaintEvent, true);
+    m_declarativeView->setViewport(glWidget);
+    m_declarativeView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     m_declarativeView->setSource(QUrl::fromLocalFile(tmpQmlFile.fileName()));
     m_declarativeView->show();
     m_declarativeView->viewport()->setFocusPolicy(Qt::StrongFocus);

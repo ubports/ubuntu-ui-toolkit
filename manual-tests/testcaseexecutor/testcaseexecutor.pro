@@ -1,4 +1,4 @@
-QT += declarative testlib
+QT += declarative testlib opengl
 
 TARGET = ../testcase
 
