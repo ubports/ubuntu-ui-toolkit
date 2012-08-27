@@ -20,7 +20,7 @@ import QtQuick 1.1
     \qmlclass ProgressBar
     \inqmlmodule Ubuntu.Components 0.1
     \brief The ProgressBar component visually indicates the progress of a process of
-    determinate or indeterminate length.
+    determinate or indeterminate duration.
 
     \b{This component is under heavy development.}
 
