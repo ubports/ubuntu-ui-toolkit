@@ -55,9 +55,17 @@ Template {
                     id: theList
                     anchors.fill: parent
 
+//                    Caption {
+//                        text: "Switch on/off all wireless communication"
+//                    }
                     Standard {
-                        // TODO
                         text: "Flight mode"
+                        // TODO: replace by switch when that component is available.
+                        control: Button {
+                            property bool isOn: false
+                            text: isOn ? "Off" : "On"
+                            onClicked: isOn = !isOn
+                        }
                     }
                     Standard {
                         // TODO
