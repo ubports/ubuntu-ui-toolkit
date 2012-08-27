@@ -19,7 +19,6 @@ import Ubuntu.Components 0.1
 
 Template {
     title: "Progress Bar"
-    objectName: "ProgressBarsTemplate"
 
     Column {
         spacing: 30
@@ -29,10 +28,7 @@ Template {
 
             ProgressBar {
                 id: progress
-                objectName: "DeterminateProgressBar"
                 value: progress.minimumValue
-                minimumValue: 0.0
-                maximumValue: 100.0
 
                 SequentialAnimation on value {
                     loops: Animation.Infinite
@@ -53,10 +49,7 @@ Template {
 
             ProgressBar {
                 id: progress2
-                objectName: "DeterminateProgressBar"
                 value: progress2.minimumValue
-                minimumValue: 0.0
-                maximumValue: 100.0
 
                 SequentialAnimation on value {
                     loops: Animation.Infinite
@@ -82,7 +75,6 @@ Template {
             title: "Unknown %"
 
             ProgressBar {
-                objectName: "IndeterminateProgressBar"
                 indeterminate: true
             }
         }

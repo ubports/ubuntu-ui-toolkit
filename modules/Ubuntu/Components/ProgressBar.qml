@@ -15,15 +15,12 @@
  */
 
 import QtQuick 1.1
-import Qt.labs.shaders 1.0
-
 
 /*!
     \qmlclass ProgressBar
     \inqmlmodule Ubuntu.Components 0.1
-    \brief The ProgressBar component visually indicates the progress of a task of
-    unknown duration, e.g. download progress, or any determinate activity progress.
-    It can also indicate activities when the actual status of the progress is unknown.
+    \brief The ProgressBar component visually indicates the progress of a process of
+    determinate or indeterminate length.
 
     \b{This component is under heavy development.}
 
@@ -51,7 +48,7 @@ AnimatedItem {
 
     /*!
       \preliminary
-      Specifies whether the progress duration is unknown. When set, altering
+      Specifies whether the progress interval is unknown. When set, altering
       other properties do not have any effect on the component's behavior.
       By default the property is set to false.
     */
@@ -80,8 +77,13 @@ AnimatedItem {
         id: frame
         anchors.fill: parent
         source: internals.barSource
-        border.left: 2; border.top: 2
-        border.right: 2; border.bottom: 2
+        border {
+            left: 2
+            top: 2
+            right: 2
+            bottom: 2
+        }
+
         smooth: true
         clip: true
         Image {
@@ -94,9 +96,9 @@ AnimatedItem {
             smooth: true
             fillMode: Image.Tile
 
-            property real xTemp
-            x: internals.trackerOffset + Math.round(trackerIndeterminate.xTemp)
-            NumberAnimation on xTemp {
+            property real animatedX
+            x: internals.trackerOffset + Math.round(trackerIndeterminate.animatedX)
+            NumberAnimation on animatedX {
                 running: progressBar.indeterminate && progressBar.visible && progressBar.onScreen
                 loops: Animation.Infinite
                 from: -trackerIndeterminate.sourceSize.width
@@ -108,11 +110,10 @@ AnimatedItem {
         BorderImage {
             id: tracker
             visible: !progressBar.indeterminate
-            anchors.fill: frame
-            anchors.margins: internals.trackerOffset
 
             source: internals.knownTrackerSource
             anchors {
+                fill: frame
                 leftMargin: internals.trackerOffset
                 topMargin: internals.trackerOffset
                 bottomMargin: internals.trackerOffset
@@ -134,11 +135,8 @@ AnimatedItem {
         {
             if (progressBar.indeterminate)
                 return 0
-            var normalValue = progressBar.value
-            if (normalValue < progressBar.minimumValue)
-                normalValue = progressBar.minimumValue
-            if (normalValue > progressBar.maximumValue)
-                normalValue = progressBar.maximumValue
+            var normalValue = Math.max(progressBar.value, progressBar.minimumValue)
+            normalValue = Math.min(normalValue, progressBar.maximumValue)
             var area = Math.abs(progressBar.maximumValue - progressBar.minimumValue)
             var progress = Math.abs((normalValue + Math.abs(progressBar.minimumValue)) / area)
             var trackerW = progressBar.width - 2 * trackerOffset
