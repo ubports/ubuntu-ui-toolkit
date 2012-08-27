@@ -18,11 +18,11 @@ public:
 
 protected slots:
     void on_pushButton_clicked();
+    void on_pushButtonQuit_clicked();
     
 private:
     QDeclarativeView* m_declarativeView;
     Ui::TestCaseExecutionDialog *ui;
-    QTemporaryFile tmpQmlFile;
 };
 
 #endif // TESTCASEEXECUTIONDIALOG_H

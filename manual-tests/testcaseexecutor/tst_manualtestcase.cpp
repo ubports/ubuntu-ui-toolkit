@@ -30,21 +30,10 @@ void tst_manualtestcase::list() {
 }
 
 void tst_manualtestcase::runTest(QString testcase, QString testdata, QString qmlFile) {
-
     TestCaseExecutionDialog testcaseExecutor(testcase,testdata,QUrl::fromLocalFile(qmlFile));
 
     int result = testcaseExecutor.exec();
-    switch (result) {
-    case 1:
-        qDebug() << testcase << "was PASSED";
-        QVERIFY(true);
-        break;
-    default:
-        qDebug() << testcase << "was FAILED!";
-        QVERIFY(false);
-        break;
-    }
-
+    QVERIFY((result==1));
 }
 
 QTEST_MAIN(tst_manualtestcase)

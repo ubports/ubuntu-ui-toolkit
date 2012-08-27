@@ -15,6 +15,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
+    <widget class="QPushButton" name="pushButtonQuit">
+     <property name="text">
+      <string>Quit manual testing</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>QML</string>

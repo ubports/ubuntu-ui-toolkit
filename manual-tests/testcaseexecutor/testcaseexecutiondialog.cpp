@@ -22,11 +22,14 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testd
     }
 
     ui->plainTextEdit_2->setPlainText(data);
+
+    QTemporaryFile tmpQmlFile;
     tmpQmlFile.open();
     tmpQmlFile.write(data.toAscii());
     tmpQmlFile.close();
+    qDebug() << "using temporary file" << tmpQmlFile.fileName();
 
-    m_declarativeView->engine()->addImportPath("..");
+    m_declarativeView->engine()->addImportPath("../modules/");
     QGLFormat format = QGLFormat::defaultFormat();
     format.setSampleBuffers(false);
     format.setSwapInterval(1);
@@ -44,6 +47,7 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testd
 }
 
 void TestCaseExecutionDialog::on_pushButton_clicked() {
+    QTemporaryFile tmpQmlFile;
     tmpQmlFile.open();
     tmpQmlFile.write(ui->plainTextEdit_2->toPlainText().toAscii());
     tmpQmlFile.close();
@@ -54,4 +58,9 @@ void TestCaseExecutionDialog::on_pushButton_clicked() {
 TestCaseExecutionDialog::~TestCaseExecutionDialog()
 {
     delete ui;
+}
+
+
+void TestCaseExecutionDialog::on_pushButtonQuit_clicked() {
+    QApplication::quit();
 }
