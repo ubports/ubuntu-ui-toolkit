@@ -24,43 +24,80 @@ Template {
         id: pageStack
         anchors.fill: parent
 
-        Drilldown {
-            title: "Colors"
-            Page {
-                title: "Red"
-                contents: Rectangle {
-                    anchors.fill: parent
-                    color: "red"
+        Page {
+            title: "Settings"
+            contents: Column {
+                anchors.fill: parent
+
+                Standard {
+                    // TODO
+                    text: "Flight mode"
                 }
-            }
-            Page {
-                title: "green"
-                contents: Rectangle {
-                    anchors.fill: parent
-                    color: "green"
+                Standard {
+                    // TODO
+                    text: "Internet connection"
+                    progression: true
                 }
-            }
-            Page {
-                title: "blue"
-                contents: Rectangle {
-                    anchors.fill: parent
-                    color: "blue"
+                Standard {
+                    // TODO
+                    text: "Mobile network"
+                    progression: true
                 }
-            }
-            Drilldown {
-                title: "others"
-                Page {
-                    title: "orange"
-                    contents: Rectangle {
+                Standard {
+                    // TODO
+                    control: Button {
                         anchors.fill: parent
-                        color: "orange"
+                        text: "Brightness"
                     }
                 }
-                Page {
-                    title: "pink"
-                    contents: Rectangle {
-                        anchors.fill: parent
-                        color: "pink"
+                PageList {
+                    Page {
+                        title: "Device"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Bluetooth"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Sounds and vibration"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Wallpaper"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Time and language"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Applications"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Notifications"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Security"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Sync and backup"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Accessories"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "About product"
+                        iconSource: "avatar_contacts_list.png"
+                    }
+                    Page {
+                        title: "Reset"
+                        iconSource: "avatar_contacts_list.png"
                     }
                 }
             }
