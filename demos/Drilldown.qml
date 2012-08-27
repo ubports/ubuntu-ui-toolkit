@@ -20,84 +20,146 @@ import Ubuntu.Components.ListItems 0.1
 Template {
     title: "Drilldown"
 
-    PageStack {
-        id: pageStack
-        anchors.fill: parent
+    Flickable {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+//            horizontalCenter: parent.horizontalCenter
+        }
+        width: 500
 
-        Page {
-            title: "Settings"
-            contents: Column {
-                anchors.fill: parent
+        contentWidth: 500
+        contentHeight: theList.childrenRect.height
+        boundsBehavior: Flickable.DragAndOvershootBounds
 
-                Standard {
-                    // TODO
-                    text: "Flight mode"
-                }
-                Standard {
-                    // TODO
-                    text: "Internet connection"
-                    progression: true
-                }
-                Standard {
-                    // TODO
-                    text: "Mobile network"
-                    progression: true
-                }
-                Standard {
-                    // TODO
-                    control: Button {
-                        anchors.fill: parent
-                        text: "Brightness"
+
+        PageStack {
+            id: pageStack
+            anchors.fill: parent
+
+            Page {
+                title: "Settings"
+                //            contents: Flickable {
+                //                anchors {
+                //                    top: parent.top
+                //                    bottom: parent.bottom
+                //                    horizontalCenter: parent.horizontalCenter
+                //                }
+                //                width: 500
+
+                //                contentWidth: 500
+                //                contentHeight: theList.childrenRect.height
+                //                boundsBehavior: Flickable.DragAndOvershootBounds
+
+                contents: Column {
+                    id: theList
+                    anchors.fill: parent
+
+                    Standard {
+                        // TODO
+                        text: "Flight mode"
                     }
-                }
-                PageList {
-                    Page {
-                        title: "Device"
-                        iconSource: "avatar_contacts_list.png"
+                    Standard {
+                        // TODO
+                        text: "Internet connection"
+                        progression: true
                     }
-                    Page {
-                        title: "Bluetooth"
-                        iconSource: "avatar_contacts_list.png"
+                    Standard {
+                        // TODO
+                        text: "Mobile network"
+                        progression: true
                     }
-                    Page {
-                        title: "Sounds and vibration"
-                        iconSource: "avatar_contacts_list.png"
+                    Standard {
+                        // TODO
+                        control: Button {
+                            anchors.fill: parent
+                            text: "Brightness"
+                        }
                     }
-                    Page {
-                        title: "Wallpaper"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Time and language"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Applications"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Notifications"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Security"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Sync and backup"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Accessories"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "About product"
-                        iconSource: "avatar_contacts_list.png"
-                    }
-                    Page {
-                        title: "Reset"
-                        iconSource: "avatar_contacts_list.png"
+                    PageList {
+                        pageStack: pageStack
+                        Page {
+                            title: "Device"
+                            iconSource: "avatar_contacts_list.png"
+
+                            contents: Column {
+                                anchors.fill: parent
+                                PageList {
+                                    pageStack: pageStack
+                                    Page {
+                                        title: "Call"
+                                    }
+                                    Page {
+                                        title: "SIM card"
+                                    }
+                                    Page {
+                                        title: "Battery"
+                                    }
+                                    Page {
+                                        title: "Display"
+                                    }
+                                    Page {
+                                        title: "Data storage"
+                                    }
+                                    Page {
+                                        title: "NFC"
+                                    }
+                                    Page {
+                                        title: "GPS and positioning"
+                                    }
+                                    Page {
+                                        title: "Counters"
+                                    }
+                                    Page {
+                                        title: "Media sharing settings"
+                                    }
+                                }
+                            }
+                        }
+                        Page {
+                            title: "Bluetooth"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Sounds and vibration"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Wallpaper"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Time and language"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Applications"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Notifications"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Security"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Sync and backup"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Accessories"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "About product"
+                            iconSource: "avatar_contacts_list.png"
+                        }
+                        Page {
+                            title: "Reset"
+                            iconSource: "avatar_contacts_list.png"
+                        }
                     }
                 }
             }
