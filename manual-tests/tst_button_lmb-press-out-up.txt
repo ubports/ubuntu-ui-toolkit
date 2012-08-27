@@ -2,8 +2,8 @@ QML Button Mouse Events - LMB press, out, release
 ----------------------------------------------------
 Move mouse on top of the button, then press, move out, then release
 
-Setup: 
-qmlviewer -opengl button.qml
+Setup:
+N/A
 
 Actions:  
 #. Move mouse in

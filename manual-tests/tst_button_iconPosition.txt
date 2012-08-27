@@ -2,8 +2,8 @@ QML Button Mouse Events - iconPosition
 ----------------------------------------------------
 button iconPosition
 
-Setup: 
-qmlviewer -opengl button.qml
+Setup:
+N/A
 
 Actions:  
 #. Set iconSource
