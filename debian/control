@@ -1,7 +1,7 @@
 Source: qt-components-ubuntu
 Priority: extra
 Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
-Build-Depends: debhelper (>= 8.0.0), libqt4-dev, qt4-qmake
+Build-Depends: debhelper (>= 8.0.0), qt4-qmake, libqt4-dev
 Standards-Version: 3.9.2
 Section: libs
 Homepage: https://launchpad.net/tavastia
@@ -14,7 +14,7 @@ Description: Qt Components for Ubuntu
  The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
 
 Package: qt-components-ubuntu-demos
-Section: libs
+Section: devel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-declarative-shaders, qt4-qmlviewer
 Description: Demos for Qt Components for Ubuntu
