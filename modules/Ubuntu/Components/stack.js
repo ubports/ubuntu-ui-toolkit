@@ -25,7 +25,7 @@ function Stack() {
         this.top = undefined;
     }
 
-//    this.clear();
+    this.clear();
 
     this.push = function(element) {
              elements.push(element);
