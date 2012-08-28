@@ -35,7 +35,7 @@ Item {
       Update the pages list.
      */
     function __updatePages() {
-        var pageArray = new Array();
+        var pageArray = []
         var item;
         for (var i=0; i < pageContainer.children.length; i++) {
             item = pageContainer.children[i];
