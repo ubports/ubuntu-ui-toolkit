@@ -60,27 +60,24 @@ Template {
                 }
             }
 
-//            Component {
-//                id:  blue
-                Page {
-                    id: blue
-                    title: "Blue"
-                    contents: Rectangle {
-                        id: pink
-                        color: "darkblue"
-                        radius: 5
-                        width: 150
-                        height: 150
+            Page {
+                id: blue
+                title: "Blue"
+                contents: Rectangle {
+                    id: pink
+                    color: "darkblue"
+                    radius: 5
+                    width: 150
+                    height: 150
+                    anchors.centerIn: parent
+                    Button {
+                        text: "back"
                         anchors.centerIn: parent
-                        Button {
-                            text: "back"
-                            anchors.centerIn: parent
-                            onClicked: pageStack.pop()
-                            darkBorder: true
-                        }
+                        onClicked: pageStack.pop()
+                        darkBorder: true
                     }
                 }
-//            }
+            }
         }
     }
 }

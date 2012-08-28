@@ -18,19 +18,14 @@
 // make its variables private, and force calls
 // to Stack to make use of the functions we define.
 function Stack() {
-//    var elements = new Array();
-//    this.size = 0;
-//    this.top = undefined;
-
-    var elements;
-
+    var elements; // = new Array();
     this.clear = function() {
-        elements = new Array();
+        elements = [];
         this.size = 0;
         this.top = undefined;
     }
 
-    this.clear();
+//    this.clear();
 
     this.push = function(element) {
              elements.push(element);

@@ -54,6 +54,5 @@ Item {
     /*!
       \internal
      */
-//    onChildrenChanged: __updatePages()
     Component.onCompleted: __updatePages()
 }

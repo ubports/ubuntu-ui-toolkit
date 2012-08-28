@@ -20,11 +20,53 @@ import "ListItems" as ListItem
 /*!
     \qmlclass PageContainer
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO
+    \brief Helper class that generates a set of \l Standard
+        ListItems that link to the pages that were defined
+        as children of this PageContainer.
 
     \b{This component is under heavy development.}
 
-    Examples: TODO
+    Examples:
+    \qml
+    PageStack {
+        id: pageStack
+        anchors.fill: parent
+
+        Page {
+            id: firstPage
+            title: "Colors"
+            contents: Column {
+                anchors.fill: parent
+
+                PageList {
+                    pageStack: pageStack
+
+                    Page {
+                        title: "Red"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "red"
+                        }
+                    }
+                    Page {
+                        title: "Green"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "green"
+                        }
+                    }
+                    Page {
+                        title: "Blue"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "blue"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    \endqml
 */
 PageContainer {
     id: pageList
@@ -40,12 +82,6 @@ PageContainer {
      */
     property PageStack pageStack
 
-    /*!
-      \preliminary
-      Optional title to be shown above the list of pages.
-     */
-    property string title
-
     height: childrenRect.height
     Column {
         id: container
@@ -57,11 +93,6 @@ PageContainer {
 
         function pushToStack(page) {
             if (pageList.pageStack) pageList.pageStack.push(page);
-        }
-
-        ListItem.Header {
-            text: pageList.title
-            visible: text != ""
         }
 
         Repeater {

@@ -31,47 +31,28 @@ Template {
                 anchors.fill: parent
 
                 PageList {
-                    title: "Light"
-                    pageStack: pageStack
-
-                    property variant colorList: ["white", "yellow", "pink", "lightgrey"]
-                    Repeater {
-                        model: parent.colorList
-                        Page {
-                            title: modelData
-                            contents: Rectangle { anchors.fill: parent; color: modelData }
-                        }
-                    }
-                }
-                PageList {
-                    title: "Dark"
                     pageStack: pageStack
 
                     Page {
-                        title: "brown"
-                        contents: Rectangle { anchors.fill: parent; color: "brown" }
-                    }
-                    Page {
-                        title: "blue"
-                        contents: PageList {
-                            pageStack: pageStack
-                            Page {
-                                title: "Navy"
-                                contents: Rectangle { anchors.fill: parent; color: "navy" }
-                            }
-                            Page {
-                                title: "Steelblue"
-                                contents: Rectangle { anchors.fill: parent; color: "steelblue" }
-                            }
-                            Page {
-                                title: "sky"
-                                contents: Rectangle { anchors.fill: parent; color: "skyblue" }
-                            }
+                        title: "Red"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "red"
                         }
                     }
                     Page {
-                        title: "black"
-                        contents: Rectangle { anchors.fill: parent; color: "black" }
+                        title: "Green"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "green"
+                        }
+                    }
+                    Page {
+                        title: "Blue"
+                        contents: Rectangle {
+                            anchors.fill: parent
+                            color: "blue"
+                        }
                     }
                 }
             }

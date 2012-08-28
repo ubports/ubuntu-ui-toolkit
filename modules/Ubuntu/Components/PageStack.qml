@@ -20,9 +20,71 @@ import "stack.js" as Stack
 /*!
     \qmlclass PageStack
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO
+    \brief A stack of \l Page items which can be popped, and new Pages can be pushed.
 
-    Examples: TODO
+    Example:
+    \qml
+    PageStack {
+        id: pageStack
+        anchors.fill: parent
+
+        Page {
+            id: firstPage
+            title: "Optional title"
+            contents: Column {
+                anchors.centerIn: parent
+                Text {
+                    text: "This is the root page!"
+                }
+                Row {
+                    Button {
+                        text: "Orange"
+                        onClicked: pageStack.push(orange)
+                    }
+                    Button {
+                        text: "blue"
+                        onClicked: pageStack.push(blue)
+                    }
+                }
+            }
+
+            Page {
+                id: orange
+                title: "Orange"
+                contents: Rectangle {
+                    color: "orange"
+                    width: 250
+                    height: 250
+                    anchors.centerIn: parent
+                    Button {
+                        text: "go back"
+                        anchors.centerIn: parent
+                        onClicked: pageStack.pop()
+                    }
+                }
+            }
+
+            Page {
+                id: blue
+                title: "Blue"
+                contents: Rectangle {
+                    id: pink
+                    color: "darkblue"
+                    radius: 5
+                    width: 150
+                    height: 150
+                    anchors.centerIn: parent
+                    Button {
+                        text: "back"
+                        anchors.centerIn: parent
+                        onClicked: pageStack.pop()
+                        darkBorder: true
+                    }
+                }
+            }
+        }
+    }
+    \endqml
 */
 
 Item {
@@ -38,7 +100,10 @@ Item {
 
 
     default property Item rootPage
-    onRootPageChanged: pageStack.push(rootPage) // TODO: clear the stack, and then push.
+    onRootPageChanged: {
+        Stack.stack.clear();
+        pageStack.push(rootPage);
+    }
 
     // In QtQuick1, this is impossible.
     // QtQuick2 introduces var type that can be JS variables (not possible for variant).
@@ -70,8 +135,7 @@ Item {
      */
     function pop() {
         if (Stack.stack.size > 1) {
-            Stack.
-            stack.top.active = false;
+            Stack.stack.top.active = false;
             Stack.stack.pop();
         }
         Stack.stack.top.active = true;
@@ -86,14 +150,7 @@ Item {
 
     Item {
         parent: pageStack
-//        anchors.fill: parent
-        anchors {
-            top: parent.top
-            left: parent.left
-            bottom: parent.bottom
-            right: parent.right
-        }
-//        width: 250
+        anchors.fill: parent
 
         // toolbar placeholder
         Rectangle {
