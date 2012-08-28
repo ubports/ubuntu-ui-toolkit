@@ -20,7 +20,6 @@ import Ubuntu.Components.ListItems 0.1
 Template {
     title: "Drilldown"
 
-
     Item {
         // wrapper item because the template controls the anchors
         anchors.fill: parent
