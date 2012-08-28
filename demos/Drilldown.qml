@@ -16,7 +16,7 @@
 
 import QtQuick 1.1
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Components.ListItems 0.1 as LI
 Template {
     title: "Drilldown"
 
@@ -49,7 +49,7 @@ Template {
                 contents: Column {
                     anchors.fill: parent
 
-                    Standard {
+                    LI.Standard {
                         text: "Flight mode"
                         // TODO: replace by switch when that component is available.
                         control: onOffButton.createObject(parent)
@@ -79,28 +79,28 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                Standard {
+                                LI.Standard {
                                     text: "Bluetooth"
                                     control: onOffButton.createObject(parent)
                                 }
-                                Header {
+                                LI.Header {
                                     text: "My device"
                                 }
-                                Subtitled {
+                                LI.Subtitled {
                                     progression: true
                                     text: "Name and information"
                                     subText: "My device name"
                                 }
-                                Standard {
+                                LI.Standard {
                                     text: "Visibility"
                                     control: onOffButton.createObject(parent)
                                 }
-                                Divider { }
-                                Standard {
+                                LI.Divider { }
+                                LI.Standard {
                                     text: "Buetooth devices"
                                     progression: true
                                 }
-                                Standard {
+                                LI.Standard {
                                     text: "Always show Buetooth in status menu"
                                     control: onOffButton.createObject(parent)
                                 }
@@ -113,44 +113,44 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                Standard {
+                                LI.Standard {
                                     control: Button { text: "Profile"; anchors.fill: parent }
                                 }
-                                Standard {
+                                LI.Standard {
                                     control: Button { text: "Volume"; anchors.fill: parent }
                                 }
-                                Header { text: "Vibration profile" }
-                                Standard {
+                                LI.Header { text: "Vibration profile" }
+                                LI.Standard {
                                     text: "Ringing"
                                     control: onOffButton.createObject(parent)
                                 }
-                                Standard {
+                                LI.Standard {
                                     text: "Beep"
                                     control: onOffButton.createObject(parent)
                                 }
-                                Standard {
+                                LI.Standard {
                                     text: "Silent"
                                     control: onOffButton.createObject(parent)
                                 }
-                                Header {
+                                LI.Header {
                                     text: "Alert tones"
                                 }
-                                Subtitled {
+                                LI.Subtitled {
                                     text: "Ringtone"
                                     subText: "Canonical tune"
                                     progression: true
                                 }
-                                Subtitled {
+                                LI.Subtitled {
                                     text: "Internet call alert"
                                     subText: "Canonical tune"
                                     progression: true
                                 }
-                                Subtitled {
+                                LI.Subtitled {
                                     text: "Mail alert tone"
                                     subText: "Email 1"
                                     progression: true
                                 }
-                                Subtitled {
+                                LI.Subtitled {
                                     text: "Message alert tone"
                                     subText: "Message 1"
                                     progression: true
@@ -163,22 +163,22 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                Subtitled {
+                                LI.Subtitled {
                                     text: "Time and date"
                                     subText: "28-08-12 12:05"
                                     progression: true
                                 }
-                                SingleValue {
+                                LI.SingleValue {
                                     text: "Language"
                                     value: "English (United Kingdom)"
                                     progression: true
                                 }
-                                SingleValue {
+                                LI.SingleValue {
                                     text: "Regional format"
                                     value: "Netherlands"
                                     progression: true
                                 }
-                                Standard {
+                                LI.Standard {
                                     text: "Text input"
                                     progression: true
                                 }
@@ -190,7 +190,7 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                Standard {
+                                LI.Standard {
                                     control: Button {
                                         text: "Manage applications"
                                         anchors.fill: parent
@@ -202,7 +202,7 @@ Template {
                                         title: "Installations"
                                         contents: Column {
                                             anchors.fill: parent
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Allow installations from\nnon-Store sources"
                                                 control: onOffButton.createObject(parent)
                                             }
@@ -212,23 +212,23 @@ Template {
                                         title: "Calendar"
                                         contents: Column {
                                             anchors.fill: parent
-                                            Header { text: "General" }
-                                            ValueSelector {
+                                            LI.Header { text: "General" }
+                                            LI.ValueSelector {
                                                 text: "Week starts on"
                                                 values: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                                             }
-                                            MultiValue {
+                                            LI.MultiValue {
                                                 text: "Calendar working week"
                                                 values: ["Mon", "Tue", "Wed", "Thu", "Fri"]
                                                 progression: true
                                             }
-                                            Header { text: "Events" }
-                                            SingleValue {
+                                            LI.Header { text: "Events" }
+                                            LI.SingleValue {
                                                 text: "Default reminder displayed"
                                                 value: "15 minutes before"
                                                 progression: true
                                             }
-                                            SingleValue {
+                                            LI.SingleValue {
                                                 text: "Default calendar"
                                                 value: "Personal"
                                             }
@@ -238,15 +238,15 @@ Template {
                                         title: "Contacts"
                                         contents: Column {
                                             anchors.fill: parent
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Prefer avatars from"
                                                 values: ["No preference", "Google Talk", "Skype"]
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Show names"
                                                 values: ["First name - Last name", "Last name - First name"]
                                             }
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Prefer nickname"
                                                 control: onOffButton.createObject(parent)
                                             }
@@ -256,15 +256,15 @@ Template {
                                         title: "Feeds"
                                         contents: Column {
                                             anchors.fill: parent
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Show Items"
                                                 values: ["All items", "Unread items only"]
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Update feeds"
                                                 values: ["Manually only", "Automatically in WLAN", "Always automatically"]
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "No. of items to keep"
                                                 values: ["Latest 50", "Latest 100", "Latest 200", "Latest 500"]
                                                 selectedIndex: 1
@@ -275,11 +275,11 @@ Template {
                                         title: "Gallery"
                                         contents: Column {
                                             anchors.fill: parent
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Face recognition"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            Caption {
+                                            LI.Caption {
                                                 text: "Save names to your photos using automatic face recognition"
                                             }
                                         }
@@ -288,46 +288,46 @@ Template {
                                         title: "Mail"
                                         contents: Column {
                                             anchors.fill: parent
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Favorite folders"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Recent messages"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Threads"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            Caption {
+                                            LI.Caption {
                                                 text: "Handle your messages as threads"
                                             }
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Send messages as plain text"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Default mailbox"
                                                 values: ["Gmail", "Yahoo mail", "Hotmail"]
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Message preview"
                                                 values: ["None", "1 line", "2 lines"]
                                                 selectedIndex: 2
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Show HTML messages as"
                                                 values: ["HTML", "Plain text"]
                                             }
-                                            Standard {
+                                            LI.Standard {
                                                 text: "Download images"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            Caption {
+                                            LI.Caption {
                                                 text: "Download images automatically"
                                             }
-                                            ValueSelector {
+                                            LI.ValueSelector {
                                                 text: "Send messages"
                                                 values: ["Immediately", "On next sync"]
                                             }
