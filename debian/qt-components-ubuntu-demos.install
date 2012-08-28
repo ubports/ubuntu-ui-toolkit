@@ -1,0 +1,3 @@
+demos opt/qt-components-ubuntu
+launch_demos.sh opt/qt-components-ubuntu
+qt-components-ubuntu-demos.desktop usr/share/applications
