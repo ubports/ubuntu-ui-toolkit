@@ -370,7 +370,23 @@ Template {
                                             Caption {
                                                 text: "Download images automatically"
                                             }
+                                            ValueSelector {
+                                                text: "Send messages"
+                                                values: ["Immediately", "On next sync"]
+                                            }
                                         }
+                                    }
+                                    Page {
+                                        title: "Messages"
+                                    }
+                                    Page {
+                                        title: "Music"
+                                    }
+                                    Page {
+                                        title: "Videos"
+                                    }
+                                    Page {
+                                        title: "Web"
                                     }
                                 }
                             }
