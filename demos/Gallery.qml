@@ -51,8 +51,6 @@ Rectangle {
         model: [{"label": "Buttons", "source": "Buttons.qml"},
                 {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
                 {"label": "List Items", "source": "ListItems.qml"},
-                {"label": "PageStack (temp)", "source": "PageStack.qml"},
-                {"label": "PageList (temp)", "source": "PageList.qml"},
                 {"label": "Drilldown", "source": "Drilldown.qml"},
                 {"label": "Switch", "source": ""},
                 {"label": "Checkbox", "source": ""},
