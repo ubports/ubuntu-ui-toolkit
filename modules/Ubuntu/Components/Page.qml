@@ -94,7 +94,7 @@ Item {
     }
 
     // encapsulation
-    Item {
+    QtObject {
         id: pageFunctions
 
         property Item previousContents
