@@ -18,7 +18,7 @@ import QtQuick 1.1
 import "ListItems" as ListItem
 
 /*!
-    \qmlclass PageContainer
+    \qmlclass PageList
     \inqmlmodule Ubuntu.Components 0.1
     \brief Helper class that generates a set of \l Standard
         ListItems that link to the pages that were defined
