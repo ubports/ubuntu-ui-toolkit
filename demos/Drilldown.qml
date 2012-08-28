@@ -20,54 +20,49 @@ import Ubuntu.Components.ListItems 0.1
 Template {
     title: "Drilldown"
 
-    Flickable {
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-//            horizontalCenter: parent.horizontalCenter
-        }
-        width: 500
+//    Flickable {
+//        anchors {
+//            top: parent.top
+//            bottom: parent.bottom
+////            horizontalCenter: parent.horizontalCenter
+//        }
+//        width: 500
 
-        contentWidth: 500
-        contentHeight: theList.childrenRect.height
-        boundsBehavior: Flickable.DragAndOvershootBounds
-        flickableDirection: Flickable.VerticalFlick
-        clip: true
-
+//        contentWidth: 500
+//        contentHeight: theList.childrenRect.height
+//        boundsBehavior: Flickable.DragAndOvershootBounds
+//        flickableDirection: Flickable.VerticalFlick
+//        clip: true
 
         PageStack {
             id: pageStack
-            anchors.fill: parent
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            width: 100
 
             Page {
-                title: "Settings"
-                //            contents: Flickable {
-                //                anchors {
-                //                    top: parent.top
-                //                    bottom: parent.bottom
-                //                    horizontalCenter: parent.horizontalCenter
-                //                }
-                //                width: 500
+                Component {
+                    id: onOffButton
+                    Button {
+                        property bool isOn: false
+                        text: isOn ? "Off" : "On"
+                        onClicked: isOn = !isOn
+                    }
+                }
 
-                //                contentWidth: 500
-                //                contentHeight: theList.childrenRect.height
-                //                boundsBehavior: Flickable.DragAndOvershootBounds
+                title: "Settings"
 
                 contents: Column {
-                    id: theList
                     anchors.fill: parent
 
-//                    Caption {
-//                        text: "Switch on/off all wireless communication"
-//                    }
                     Standard {
                         text: "Flight mode"
                         // TODO: replace by switch when that component is available.
-                        control: Button {
-                            property bool isOn: false
-                            text: isOn ? "Off" : "On"
-                            onClicked: isOn = !isOn
-                        }
+                        control: onOffButton.createObject(parent)
                     }
                     Standard {
                         // TODO
@@ -129,10 +124,86 @@ Template {
                         Page {
                             title: "Bluetooth"
                             iconSource: "avatar_contacts_list.png"
+
+                            contents: Column {
+                                anchors.fill: parent
+                                Standard {
+                                    text: "Bluetooth"
+                                    control: onOffButton.createObject(parent)
+                                }
+                                Header {
+                                    text: "My device"
+                                }
+                                Subtitled {
+                                    progression: true
+                                    text: "Name and information"
+                                    subText: "My device name"
+                                }
+                                Standard {
+                                    text: "Visibility"
+                                    control: onOffButton.createObject(parent)
+                                }
+                                Divider { }
+                                Standard {
+                                    text: "Buetooth devices"
+                                    progression: true
+                                }
+                                Standard {
+                                    text: "Always show Buetooth in status menu"
+                                    control: onOffButton.createObject(parent)
+                                }
+
+                            }
                         }
                         Page {
                             title: "Sounds and vibration"
                             iconSource: "avatar_contacts_list.png"
+
+                            contents: Column {
+                                anchors.fill: parent
+                                Standard {
+                                    control: Button { text: "Profile"; anchors.fill: parent }
+                                }
+                                Standard {
+                                    control: Button { text: "Volume"; anchors.fill: parent }
+                                }
+                                Header { text: "Vibration profile" }
+                                Standard {
+                                    text: "Ringing"
+                                    control: onOffButton.createObject(parent)
+                                }
+                                Standard {
+                                    text: "Beep"
+                                    control: onOffButton.createObject(parent)
+                                }
+                                Standard {
+                                    text: "Silent"
+                                    control: onOffButton.createObject(parent)
+                                }
+                                Header {
+                                    text: "Alert tones"
+                                }
+                                Subtitled {
+                                    text: "Ringtone"
+                                    subText: "Canonical tune"
+                                    progression: true
+                                }
+                                Subtitled {
+                                    text: "Internet call alert"
+                                    subText: "Canonical tune"
+                                    progression: true
+                                }
+                                Subtitled {
+                                    text: "Mail alert tone"
+                                    subText: "Email 1"
+                                    progression: true
+                                }
+                                Subtitled {
+                                    text: "Message alert tone"
+                                    subText: "Message 1"
+                                    progression: true
+                                }
+                            }
                         }
                         Page {
                             title: "Wallpaper"
@@ -141,6 +212,29 @@ Template {
                         Page {
                             title: "Time and language"
                             iconSource: "avatar_contacts_list.png"
+
+                            contents: Column {
+                                anchors.fill: parent
+                                Subtitled {
+                                    text: "Time and date"
+                                    subText: "28-08-12 12:05"
+                                    progression: true
+                                }
+                                Subtitled {
+                                    text: "Language"
+                                    subText: "English (United Kingdom)"
+                                    progression: true
+                                }
+                                Subtitled {
+                                    text: "Regional format"
+                                    subText: "Netherlands"
+                                    progression: true
+                                }
+                                Standard {
+                                    text: "Text input"
+                                    progression: true
+                                }
+                            }
                         }
                         Page {
                             title: "Applications"
@@ -172,7 +266,7 @@ Template {
                         }
                     }
                 }
-            }
+//            }
         }
     }
 }
