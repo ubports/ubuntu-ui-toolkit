@@ -337,7 +337,7 @@ Template {
                                     Page { title: "Messages" }
                                     Page { title: "Music" }
                                     Page { title: "Videos" }
-                                    Page { title: "Web"                                     }
+                                    Page { title: "Web" }
                                 }
                             }
                         }
