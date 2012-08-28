@@ -10,6 +10,4 @@ HEADERS += plugin.h
 
 SOURCES += plugin.cpp
 
-installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
-target.path = $$installPath
-INSTALLS += target
+include(deployment.pri)
