@@ -55,23 +55,6 @@ Template {
                         // TODO: replace by switch when that component is available.
                         control: onOffButton.createObject(parent)
                     }
-//                    Standard {
-//                        // TODO
-//                        text: "Internet connection"
-//                        progression: true
-//                    }
-//                    Standard {
-//                        // TODO
-//                        text: "Mobile network"
-//                        progression: true
-//                    }
-//                    Standard {
-//                        // TODO
-//                        control: Button {
-//                            anchors.fill: parent
-//                            text: "Brightness"
-//                        }
-//                    }
                     PageList {
                         pageStack: stack
                         Page {
@@ -82,33 +65,15 @@ Template {
                                 anchors.fill: parent
                                 PageList {
                                     pageStack: stack
-                                    Page {
-                                        title: "Call"
-                                    }
-                                    Page {
-                                        title: "SIM card"
-                                    }
-                                    Page {
-                                        title: "Battery"
-                                    }
-                                    Page {
-                                        title: "Display"
-                                    }
-                                    Page {
-                                        title: "Data storage"
-                                    }
-                                    Page {
-                                        title: "NFC"
-                                    }
-                                    Page {
-                                        title: "GPS and positioning"
-                                    }
-                                    Page {
-                                        title: "Counters"
-                                    }
-                                    Page {
-                                        title: "Media sharing settings"
-                                    }
+                                    Page { title: "Call" }
+                                    Page { title: "SIM card" }
+                                    Page { title: "Battery" }
+                                    Page { title: "Display" }
+                                    Page { title: "Data storage" }
+                                    Page { title: "NFC" }
+                                    Page { title: "GPS and positioning" }
+                                    Page { title: "Counters" }
+                                    Page { title: "Media sharing settings" }
                                 }
                             }
                         }
@@ -196,10 +161,6 @@ Template {
                                 }
                             }
                         }
-//                        Page {
-//                            title: "Wallpaper"
-//                            iconSource: "avatar_contacts_list.png"
-//                        }
                         Page {
                             title: "Time and language"
                             iconSource: "avatar_contacts_list.png"
@@ -376,18 +337,10 @@ Template {
                                             }
                                         }
                                     }
-                                    Page {
-                                        title: "Messages"
-                                    }
-                                    Page {
-                                        title: "Music"
-                                    }
-                                    Page {
-                                        title: "Videos"
-                                    }
-                                    Page {
-                                        title: "Web"
-                                    }
+                                    Page { title: "Messages" }
+                                    Page { title: "Music" }
+                                    Page { title: "Videos" }
+                                    Page { title: "Web"                                     }
                                 }
                             }
                         }
