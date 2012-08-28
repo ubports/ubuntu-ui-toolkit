@@ -12,5 +12,4 @@ ProgressBar 0.1 ProgressBar.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 PageStack 0.1 PageStack.qml
-Drilldown 0.1 Drilldown.qml
 internal AnimatedItem AnimatedItem.qml
