@@ -122,8 +122,6 @@ Item {
         if (Stack.stack.size > 0) Stack.stack.top.active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
-        // for the drilldown:
-        if (page.hasOwnProperty("pageStack")) page.pageStack = pageStack;
         page.active = true;
         toolBar.update();
     }
