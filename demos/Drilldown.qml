@@ -20,29 +20,20 @@ import Ubuntu.Components.ListItems 0.1
 Template {
     title: "Drilldown"
 
-//    Flickable {
-//        anchors {
-//            top: parent.top
-//            bottom: parent.bottom
-////            horizontalCenter: parent.horizontalCenter
-//        }
-//        width: 500
 
-//        contentWidth: 500
-//        contentHeight: theList.childrenRect.height
-//        boundsBehavior: Flickable.DragAndOvershootBounds
-//        flickableDirection: Flickable.VerticalFlick
-//        clip: true
+    Item {
+        // wrapper item because the template controls the anchors
+        anchors.fill: parent
 
         PageStack {
-            id: pageStack
+            id: stack
             anchors {
-                left: parent.left
                 top: parent.top
                 bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
             }
 
-            width: 100
+            width: 300
 
             Page {
                 Component {
@@ -64,25 +55,25 @@ Template {
                         // TODO: replace by switch when that component is available.
                         control: onOffButton.createObject(parent)
                     }
-                    Standard {
-                        // TODO
-                        text: "Internet connection"
-                        progression: true
-                    }
-                    Standard {
-                        // TODO
-                        text: "Mobile network"
-                        progression: true
-                    }
-                    Standard {
-                        // TODO
-                        control: Button {
-                            anchors.fill: parent
-                            text: "Brightness"
-                        }
-                    }
+//                    Standard {
+//                        // TODO
+//                        text: "Internet connection"
+//                        progression: true
+//                    }
+//                    Standard {
+//                        // TODO
+//                        text: "Mobile network"
+//                        progression: true
+//                    }
+//                    Standard {
+//                        // TODO
+//                        control: Button {
+//                            anchors.fill: parent
+//                            text: "Brightness"
+//                        }
+//                    }
                     PageList {
-                        pageStack: pageStack
+                        pageStack: stack
                         Page {
                             title: "Device"
                             iconSource: "avatar_contacts_list.png"
@@ -90,7 +81,7 @@ Template {
                             contents: Column {
                                 anchors.fill: parent
                                 PageList {
-                                    pageStack: pageStack
+                                    pageStack: stack
                                     Page {
                                         title: "Call"
                                     }
@@ -205,10 +196,10 @@ Template {
                                 }
                             }
                         }
-                        Page {
-                            title: "Wallpaper"
-                            iconSource: "avatar_contacts_list.png"
-                        }
+//                        Page {
+//                            title: "Wallpaper"
+//                            iconSource: "avatar_contacts_list.png"
+//                        }
                         Page {
                             title: "Time and language"
                             iconSource: "avatar_contacts_list.png"
@@ -220,14 +211,14 @@ Template {
                                     subText: "28-08-12 12:05"
                                     progression: true
                                 }
-                                Subtitled {
+                                SingleValue {
                                     text: "Language"
-                                    subText: "English (United Kingdom)"
+                                    value: "English (United Kingdom)"
                                     progression: true
                                 }
-                                Subtitled {
+                                SingleValue {
                                     text: "Regional format"
-                                    subText: "Netherlands"
+                                    value: "Netherlands"
                                     progression: true
                                 }
                                 Standard {
@@ -239,6 +230,150 @@ Template {
                         Page {
                             title: "Applications"
                             iconSource: "avatar_contacts_list.png"
+
+                            contents: Column {
+                                anchors.fill: parent
+                                Standard {
+                                    control: Button {
+                                        text: "Manage applications"
+                                        anchors.fill: parent
+                                    }
+                                }
+                                PageList {
+                                    pageStack: stack
+                                    Page {
+                                        title: "Installations"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            Standard {
+                                                text: "Allow installations from\nnon-Store sources"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                        }
+                                    }
+                                    Page {
+                                        title: "Calendar"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            Header { text: "General" }
+                                            ValueSelector {
+                                                text: "Week starts on"
+                                                values: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                                            }
+                                            MultiValue {
+                                                text: "Calendar working week"
+                                                values: ["Mon", "Tue", "Wed", "Thu", "Fri"]
+                                                progression: true
+                                            }
+                                            Header { text: "Events" }
+                                            SingleValue {
+                                                text: "Default reminder displayed"
+                                                value: "15 minutes before"
+                                                progression: true
+                                            }
+                                            SingleValue {
+                                                text: "Default calendar"
+                                                value: "Personal"
+                                            }
+                                        }
+                                    }
+                                    Page {
+                                        title: "Contacts"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            ValueSelector {
+                                                text: "Prefer avatars from"
+                                                values: ["No preference", "Google Talk", "Skype"]
+                                            }
+                                            ValueSelector {
+                                                text: "Show names"
+                                                values: ["First name - Last name", "Last name - First name"]
+                                            }
+                                            Standard {
+                                                text: "Prefer nickname"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                        }
+                                    }
+                                    Page {
+                                        title: "Feeds"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            ValueSelector {
+                                                text: "Show Items"
+                                                values: ["All items", "Unread items only"]
+                                            }
+                                            ValueSelector {
+                                                text: "Update feeds"
+                                                values: ["Manually only", "Automatically in WLAN", "Always automatically"]
+                                            }
+                                            ValueSelector {
+                                                text: "No. of items to keep"
+                                                values: ["Latest 50", "Latest 100", "Latest 200", "Latest 500"]
+                                                selectedIndex: 1
+                                            }
+                                        }
+                                    }
+                                    Page {
+                                        title: "Gallery"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            Standard {
+                                                text: "Face recognition"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            Caption {
+                                                text: "Save names to your photos using automatic face recognition"
+                                            }
+                                        }
+                                    }
+                                    Page {
+                                        title: "Mail"
+                                        contents: Column {
+                                            anchors.fill: parent
+                                            Standard {
+                                                text: "Favorite folders"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            Standard {
+                                                text: "Recent messages"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            Standard {
+                                                text: "Threads"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            Caption {
+                                                text: "Handle your messages as threads"
+                                            }
+                                            Standard {
+                                                text: "Send messages as plain text"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            ValueSelector {
+                                                text: "Default mailbox"
+                                                values: ["Gmail", "Yahoo mail", "Hotmail"]
+                                            }
+                                            ValueSelector {
+                                                text: "Message preview"
+                                                values: ["None", "1 line", "2 lines"]
+                                                selectedIndex: 2
+                                            }
+                                            ValueSelector {
+                                                text: "Show HTML messages as"
+                                                values: ["HTML", "Plain text"]
+                                            }
+                                            Standard {
+                                                text: "Download images"
+                                                control: onOffButton.createObject(parent)
+                                            }
+                                            Caption {
+                                                text: "Download images automatically"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Page {
                             title: "Notifications"
@@ -266,7 +401,7 @@ Template {
                         }
                     }
                 }
-//            }
+            }
         }
     }
 }

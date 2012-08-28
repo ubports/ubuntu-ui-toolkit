@@ -28,6 +28,7 @@ import "stack.js" as Stack
 Item {
     id: pageStack
 
+    width: 200
     /*!
       \preliminary
       Show a toolbar at the top of the page stack which shows a back button
@@ -85,7 +86,15 @@ Item {
 
     Item {
         parent: pageStack
-        anchors.fill: parent
+//        anchors.fill: parent
+        anchors {
+            top: parent.top
+            left: parent.left
+            bottom: parent.bottom
+            right: parent.right
+        }
+//        width: 250
+
         // toolbar placeholder
         Rectangle {
             id: toolBar

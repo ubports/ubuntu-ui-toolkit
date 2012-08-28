@@ -32,7 +32,7 @@ Rectangle {
         content.anchors.topMargin = page.anchors.margins
         content.anchors.bottom = page.bottom
         content.anchors.left = page.left
-        content.anchors.right = page.right
+//        content.anchors.right = page.right
     }
 
     color: "#e6e6e6"
