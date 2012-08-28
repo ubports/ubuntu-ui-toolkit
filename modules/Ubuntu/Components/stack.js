@@ -14,10 +14,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// By defining Stack as a function, we can
+// make its variables private, and force calls
+// to Stack to make use of the functions we define.
 function Stack() {
-    var elements = new Array();
-    this.size = 0;
-    this.top = undefined;
+//    var elements = new Array();
+//    this.size = 0;
+//    this.top = undefined;
+
+    var elements;
+
+    this.clear = function() {
+        elements = new Array();
+        this.size = 0;
+        this.top = undefined;
+    }
+
+    this.clear();
 
     this.push = function(element) {
              elements.push(element);
