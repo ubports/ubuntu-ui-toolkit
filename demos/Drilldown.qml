@@ -16,7 +16,7 @@
 
 import QtQuick 1.1
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as LI
+import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
     title: "Drilldown"
 
@@ -49,7 +49,7 @@ Template {
                 contents: Column {
                     anchors.fill: parent
 
-                    LI.Standard {
+                    ListItem.Standard {
                         text: "Flight mode"
                         // TODO: replace by switch when that component is available.
                         control: onOffButton.createObject(parent)
@@ -79,28 +79,28 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Bluetooth"
                                     control: onOffButton.createObject(parent)
                                 }
-                                LI.Header {
+                                ListItem.Header {
                                     text: "My device"
                                 }
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     progression: true
                                     text: "Name and information"
                                     subText: "My device name"
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Visibility"
                                     control: onOffButton.createObject(parent)
                                 }
-                                LI.Divider { }
-                                LI.Standard {
+                                ListItem.Divider { }
+                                ListItem.Standard {
                                     text: "Buetooth devices"
                                     progression: true
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Always show Buetooth in status menu"
                                     control: onOffButton.createObject(parent)
                                 }
@@ -113,44 +113,44 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                LI.Standard {
+                                ListItem.Standard {
                                     control: Button { text: "Profile"; anchors.fill: parent }
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     control: Button { text: "Volume"; anchors.fill: parent }
                                 }
-                                LI.Header { text: "Vibration profile" }
-                                LI.Standard {
+                                ListItem.Header { text: "Vibration profile" }
+                                ListItem.Standard {
                                     text: "Ringing"
                                     control: onOffButton.createObject(parent)
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Beep"
                                     control: onOffButton.createObject(parent)
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Silent"
                                     control: onOffButton.createObject(parent)
                                 }
-                                LI.Header {
+                                ListItem.Header {
                                     text: "Alert tones"
                                 }
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     text: "Ringtone"
                                     subText: "Canonical tune"
                                     progression: true
                                 }
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     text: "Internet call alert"
                                     subText: "Canonical tune"
                                     progression: true
                                 }
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     text: "Mail alert tone"
                                     subText: "Email 1"
                                     progression: true
                                 }
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     text: "Message alert tone"
                                     subText: "Message 1"
                                     progression: true
@@ -163,22 +163,22 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                LI.Subtitled {
+                                ListItem.Subtitled {
                                     text: "Time and date"
                                     subText: "28-08-12 12:05"
                                     progression: true
                                 }
-                                LI.SingleValue {
+                                ListItem.SingleValue {
                                     text: "Language"
                                     value: "English (United Kingdom)"
                                     progression: true
                                 }
-                                LI.SingleValue {
+                                ListItem.SingleValue {
                                     text: "Regional format"
                                     value: "Netherlands"
                                     progression: true
                                 }
-                                LI.Standard {
+                                ListItem.Standard {
                                     text: "Text input"
                                     progression: true
                                 }
@@ -190,7 +190,7 @@ Template {
 
                             contents: Column {
                                 anchors.fill: parent
-                                LI.Standard {
+                                ListItem.Standard {
                                     control: Button {
                                         text: "Manage applications"
                                         anchors.fill: parent
@@ -202,7 +202,7 @@ Template {
                                         title: "Installations"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Allow installations from\nnon-Store sources"
                                                 control: onOffButton.createObject(parent)
                                             }
@@ -212,23 +212,23 @@ Template {
                                         title: "Calendar"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.Header { text: "General" }
-                                            LI.ValueSelector {
+                                            ListItem.Header { text: "General" }
+                                            ListItem.ValueSelector {
                                                 text: "Week starts on"
                                                 values: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                                             }
-                                            LI.MultiValue {
+                                            ListItem.MultiValue {
                                                 text: "Calendar working week"
                                                 values: ["Mon", "Tue", "Wed", "Thu", "Fri"]
                                                 progression: true
                                             }
-                                            LI.Header { text: "Events" }
-                                            LI.SingleValue {
+                                            ListItem.Header { text: "Events" }
+                                            ListItem.SingleValue {
                                                 text: "Default reminder displayed"
                                                 value: "15 minutes before"
                                                 progression: true
                                             }
-                                            LI.SingleValue {
+                                            ListItem.SingleValue {
                                                 text: "Default calendar"
                                                 value: "Personal"
                                             }
@@ -238,15 +238,15 @@ Template {
                                         title: "Contacts"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Prefer avatars from"
                                                 values: ["No preference", "Google Talk", "Skype"]
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Show names"
                                                 values: ["First name - Last name", "Last name - First name"]
                                             }
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Prefer nickname"
                                                 control: onOffButton.createObject(parent)
                                             }
@@ -256,15 +256,15 @@ Template {
                                         title: "Feeds"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Show Items"
                                                 values: ["All items", "Unread items only"]
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Update feeds"
                                                 values: ["Manually only", "Automatically in WLAN", "Always automatically"]
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "No. of items to keep"
                                                 values: ["Latest 50", "Latest 100", "Latest 200", "Latest 500"]
                                                 selectedIndex: 1
@@ -275,11 +275,11 @@ Template {
                                         title: "Gallery"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Face recognition"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.Caption {
+                                            ListItem.Caption {
                                                 text: "Save names to your photos using automatic face recognition"
                                             }
                                         }
@@ -288,46 +288,46 @@ Template {
                                         title: "Mail"
                                         contents: Column {
                                             anchors.fill: parent
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Favorite folders"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Recent messages"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Threads"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.Caption {
+                                            ListItem.Caption {
                                                 text: "Handle your messages as threads"
                                             }
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Send messages as plain text"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Default mailbox"
                                                 values: ["Gmail", "Yahoo mail", "Hotmail"]
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Message preview"
                                                 values: ["None", "1 line", "2 lines"]
                                                 selectedIndex: 2
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Show HTML messages as"
                                                 values: ["HTML", "Plain text"]
                                             }
-                                            LI.Standard {
+                                            ListItem.Standard {
                                                 text: "Download images"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            LI.Caption {
+                                            ListItem.Caption {
                                                 text: "Download images automatically"
                                             }
-                                            LI.ValueSelector {
+                                            ListItem.ValueSelector {
                                                 text: "Send messages"
                                                 values: ["Immediately", "On next sync"]
                                             }
