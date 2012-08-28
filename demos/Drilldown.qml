@@ -31,6 +31,8 @@ Template {
         contentWidth: 500
         contentHeight: theList.childrenRect.height
         boundsBehavior: Flickable.DragAndOvershootBounds
+        flickableDirection: Flickable.VerticalFlick
+        clip: true
 
 
         PageStack {
