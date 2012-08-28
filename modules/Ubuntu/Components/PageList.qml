@@ -35,32 +35,29 @@ import "ListItems" as ListItem
         Page {
             id: firstPage
             title: "Colors"
-            contents: Column {
+            contents: PageList {
                 anchors.fill: parent
+                pageStack: pageStack
 
-                PageList {
-                    pageStack: pageStack
-
-                    Page {
-                        title: "Red"
-                        contents: Rectangle {
-                            anchors.fill: parent
-                            color: "red"
-                        }
+                Page {
+                    title: "Red"
+                    contents: Rectangle {
+                        anchors.fill: parent
+                        color: "red"
                     }
-                    Page {
-                        title: "Green"
-                        contents: Rectangle {
-                            anchors.fill: parent
-                            color: "green"
-                        }
+                }
+                Page {
+                    title: "Green"
+                    contents: Rectangle {
+                        anchors.fill: parent
+                        color: "green"
                     }
-                    Page {
-                        title: "Blue"
-                        contents: Rectangle {
-                            anchors.fill: parent
-                            color: "blue"
-                        }
+                }
+                Page {
+                    title: "Blue"
+                    contents: Rectangle {
+                        anchors.fill: parent
+                        color: "blue"
                     }
                 }
             }
