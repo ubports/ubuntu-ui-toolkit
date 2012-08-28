@@ -1,11 +1,7 @@
 TEMPLATE = lib
 TARGET = UbuntuComponents
 QT += declarative core gui
-CONFIG += qt plugin link_pkgconfig no_keywords
-
-unix {
-    CONFIG += link_pkgconfig
-}
+CONFIG += qt plugin no_keywords
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components

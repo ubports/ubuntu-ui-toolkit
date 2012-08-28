@@ -1,5 +1,4 @@
 /*
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,6 +12,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
 #ifndef UBUNTU_COMPONENTS_PLUGIN_H
@@ -29,7 +30,6 @@ class UbuntuComponentsPlugin : public QDeclarativeExtensionPlugin
 public:
     void registerTypes(const char *uri);
     void initializeEngine(QDeclarativeEngine *engine, const char *uri);
-    QDeclarativePropertyMap* uiConstants();
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
