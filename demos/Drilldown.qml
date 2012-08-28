@@ -61,20 +61,17 @@ Template {
                             title: "Device"
                             iconSource: "avatar_contacts_list.png"
 
-                            contents: Column {
-                                anchors.fill: parent
-                                PageList {
-                                    pageStack: stack
-                                    Page { title: "Call" }
-                                    Page { title: "SIM card" }
-                                    Page { title: "Battery" }
-                                    Page { title: "Display" }
-                                    Page { title: "Data storage" }
-                                    Page { title: "NFC" }
-                                    Page { title: "GPS and positioning" }
-                                    Page { title: "Counters" }
-                                    Page { title: "Media sharing settings" }
-                                }
+                            contents: PageList {
+                                pageStack: stack
+                                Page { title: "Call" }
+                                Page { title: "SIM card" }
+                                Page { title: "Battery" }
+                                Page { title: "Display" }
+                                Page { title: "Data storage" }
+                                Page { title: "NFC" }
+                                Page { title: "GPS and positioning" }
+                                Page { title: "Counters" }
+                                Page { title: "Media sharing settings" }
                             }
                         }
                         Page {
