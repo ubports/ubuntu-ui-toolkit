@@ -29,7 +29,18 @@ import "fontUtils.js" as FontUtils
     Item {
         TextField {
             id: input
+            placeholderText: "hint text"
+        }
 
+        TextField {
+            id: inputWithClear
+            hasClearButton: true
+            alwaysShowClearButton: false
+        }
+
+        TextField {
+            id: autoClear
+            clearContentOnEditingStart: true
         }
     }
     \endqml
@@ -37,8 +48,8 @@ import "fontUtils.js" as FontUtils
 FocusScope {
     id: control
 
-    implicitWidth: 180
-    implicitHeight: 30//editor.childrenRect.height
+    implicitWidth: 200
+    implicitHeight: 30
 
     /*!
       \preliminary
@@ -146,6 +157,12 @@ FocusScope {
         editor.selectWord()
     }
 
+    // ensure focus propagation
+    function forceActiveFocus()
+    {
+        editor.forceActiveFocus()
+    }
+
 
     //internals
     QtObject {
@@ -161,6 +178,23 @@ FocusScope {
         function rightMargin()
         {
             return (clearButton.visible) ? clearButton.width + clearButtonSpacing : 0
+        }
+
+        function showInputPanel()
+        {
+            if (control.customInputPanel != undefined) {
+                // TODO implement once we have the SIP ready
+            } else {
+                editor.openSoftwareInputPanel()
+            }
+        }
+        function hideInputPanel()
+        {
+            if (control.customInputPanel != undefined) {
+                // TODO implement once we have the SIP ready
+            } else {
+                editor.closeSoftwareInputPanel()
+            }
         }
     }
 
@@ -190,6 +224,7 @@ FocusScope {
             smooth: true
             fillMode: Image.PreserveAspectFit
             width: sourceSize.width
+
             MouseArea {
                 enabled: control.hasClearButton
                 anchors{
@@ -225,53 +260,34 @@ FocusScope {
             // FocusScope will forward focus to this component
             focus: true
             anchors {
-                //fill: parent
                 left: parent.left
                 right: parent.right
                 leftMargin: internal.frameBorders[0]
-                //topMargin: internal.frameBorders[1]
                 rightMargin: internal.frameBorders[2] + internal.rightMargin()
-                //bottomMargin: internal.frameBorders[3]
                 verticalCenter: parent.verticalCenter
             }
             color: internal.textColor
             clip: true
-            // font family to be defined
+            // TODO: font family to be defined
             font.pixelSize: FontUtils.sizeToPixels(internal.fontFize)
+
+            // OSK/SIP handling
             activeFocusOnPress: false
-        }
-        MouseArea {
-            id: virtualKbdHandler
-            anchors.fill: parent
-            onClicked: {
-                if (!editor.activeFocus) {
-                    editor.forceActiveFocus()
-                    if (control.customInputPanel != undefined)
-                        control.customInputPanel.visible = true
-                    else
-                        editor.openSoftwareInputPanel()
-                }
+            onActiveFocusChanged: {
+                if (activeFocus) {
+                    internal.showInputPanel()
+                    if (clearContentOnEditingStart)
+                        editor.text = ""
+                } else
+                    internal.hideInputPanel()
+            }
+            MouseArea {
+                id: virtualKbdHandler
+                anchors.fill: parent
+                onClicked: if (!control.activeFocus) control.forceActiveFocus()
             }
         }
-
     }
 
-    // OSK/SIP handling
-    onFocusChanged: {
-        if (!focus) {
-            console.debug("focus lost: "+control.objectName)
-            if (customInputPanel != undefined)
-                customInputPanel.visible = false
-            else
-                editor.closeSoftwareInputPanel()
-        } else {
-            console.debug("focus: "+control.objectName)
-            if (clearContentOnEditingStart)
-                editor.text = ""
-        }
-    }
-
-    Component.onCompleted: {
-        editor.accepted.connect(control.accepted)
-    }
+    Component.onCompleted: editor.accepted.connect(control.accepted)
 }

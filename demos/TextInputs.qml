@@ -24,11 +24,10 @@ Template {
     Column {
         spacing: 30
         TemplateRow {
-            title: "One line"
+            title: "Simple"
 
             TextField {
-                objectName: "SimpleText"
-                placeholderText: "sample text field with a pretty long hint text"
+                placeholderText: "simple text field"
             }
         }
 
@@ -36,8 +35,7 @@ Template {
             title: "Clear button"
 
             TextField {
-                objectName: "AlwaysShownClear"
-                placeholderText: "sample text field"
+                placeholderText: "clear always shown"
                 hasClearButton: true
             }
         }
@@ -46,8 +44,7 @@ Template {
             title: "Clear button"
 
             TextField {
-                objectName: "ClearShownOnFocus"
-                placeholderText: "the clear button will be shown when activated and text entered"
+                placeholderText: "type text to show clear button"
                 hasClearButton: true
                 alwaysShowClearButton: false
             }
@@ -57,7 +54,6 @@ Template {
             title: "Autoclear"
 
             TextField {
-                objectName: "AutoClearOnFocus"
                 placeholderText: "hint text"
                 text: "This content will be cleared once focused"
                 hasClearButton: true
