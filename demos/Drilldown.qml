@@ -164,113 +164,88 @@ Template {
                         Page {
                             title: "Applications"
 
-                            contents: Column {
-                                anchors.fill: parent
-                                ListItem.Standard {
-                                    control: Button {
-                                        text: "Manage applications"
+                            contents: PageList {
+                                anchors.fill:  parent
+                                pageStack: stack
+                                Page {
+                                    title: "Installations"
+                                    contents: Column {
                                         anchors.fill: parent
+                                        ListItem.Standard {
+                                            text: "Allow installations from\nnon-Store sources"
+                                            control: onOffButton.createObject(parent)
+                                        }
                                     }
                                 }
-                                PageList {
-                                    pageStack: stack
-                                    Page {
-                                        title: "Installations"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.Standard {
-                                                text: "Allow installations from\nnon-Store sources"
-                                                control: onOffButton.createObject(parent)
-                                            }
+                                Page {
+                                    title: "Contacts"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.ValueSelector {
+                                            text: "Prefer avatars from"
+                                            values: ["No preference", "Google Talk", "Skype"]
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Show names"
+                                            values: ["First name - Last name", "Last name - First name"]
+                                        }
+                                        ListItem.Standard {
+                                            text: "Prefer nickname"
+                                            control: onOffButton.createObject(parent)
                                         }
                                     }
-                                    Page {
-                                        title: "Calendar"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.Header { text: "General" }
-                                            ListItem.ValueSelector {
-                                                text: "Week starts on"
-                                                values: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-                                            }
-                                            ListItem.Header { text: "Events" }
-                                            ListItem.ValueSelector{
-                                                text: "Default reminder displayed"
-                                                values: ["None", "0 minutes before", "10 minutes before", "15 minutes before", "1 hour before"]
-                                                selectedIndex: 3
-                                            }
+                                }
+                                Page {
+                                    title: "Feeds"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.ValueSelector {
+                                            text: "Show Items"
+                                            values: ["All items", "Unread items only"]
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Update feeds"
+                                            values: ["Manually only", "Automatically in WLAN", "Always automatically"]
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "No. of items to keep"
+                                            values: ["Latest 50", "Latest 100", "Latest 200", "Latest 500"]
+                                            selectedIndex: 1
                                         }
                                     }
-                                    Page {
-                                        title: "Contacts"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.ValueSelector {
-                                                text: "Prefer avatars from"
-                                                values: ["No preference", "Google Talk", "Skype"]
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Show names"
-                                                values: ["First name - Last name", "Last name - First name"]
-                                            }
-                                            ListItem.Standard {
-                                                text: "Prefer nickname"
-                                                control: onOffButton.createObject(parent)
-                                            }
+                                }
+                                Page {
+                                    title: "Mail"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.Standard {
+                                            text: "Favorite folders"
+                                            control: onOffButton.createObject(parent)
                                         }
-                                    }
-                                    Page {
-                                        title: "Feeds"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.ValueSelector {
-                                                text: "Show Items"
-                                                values: ["All items", "Unread items only"]
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Update feeds"
-                                                values: ["Manually only", "Automatically in WLAN", "Always automatically"]
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "No. of items to keep"
-                                                values: ["Latest 50", "Latest 100", "Latest 200", "Latest 500"]
-                                                selectedIndex: 1
-                                            }
+                                        ListItem.Standard {
+                                            text: "Recent messages"
+                                            control: onOffButton.createObject(parent)
                                         }
-                                    }
-                                    Page {
-                                        title: "Mail"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.Standard {
-                                                text: "Favorite folders"
-                                                control: onOffButton.createObject(parent)
-                                            }
-                                            ListItem.Standard {
-                                                text: "Recent messages"
-                                                control: onOffButton.createObject(parent)
-                                            }
-                                            ListItem.Standard {
-                                                text: "Threads"
-                                                control: onOffButton.createObject(parent)
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Default mailbox"
-                                                values: ["Gmail", "Yahoo mail", "Hotmail"]
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Message preview"
-                                                values: ["None", "1 line", "2 lines"]
-                                                selectedIndex: 2
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Show HTML messages as"
-                                                values: ["HTML", "Plain text"]
-                                            }
-                                            ListItem.Standard {
-                                                text: "Download images"
-                                                control: onOffButton.createObject(parent)
-                                            }
+                                        ListItem.Standard {
+                                            text: "Threads"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Default mailbox"
+                                            values: ["Gmail", "Yahoo mail", "Hotmail"]
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Message preview"
+                                            values: ["None", "1 line", "2 lines"]
+                                            selectedIndex: 2
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Show HTML messages as"
+                                            values: ["HTML", "Plain text"]
+                                        }
+                                        ListItem.Standard {
+                                            text: "Download images"
+                                            control: onOffButton.createObject(parent)
                                         }
                                     }
                                 }
