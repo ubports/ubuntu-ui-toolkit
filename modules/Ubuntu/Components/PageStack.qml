@@ -96,8 +96,7 @@ Item {
       Show a toolbar at the top of the page stack which shows a back button
       to pop the top, and the title of the current page on top.
      */
-    property bool showToolBar: true
-
+    property alias showToolbar: toolbar.visible
 
     default property Item rootPage
     onRootPageChanged: {
@@ -123,7 +122,7 @@ Item {
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         page.active = true;
-        toolBar.update();
+        contents.updateToolbar();
     }
 
     /*!
@@ -137,101 +136,23 @@ Item {
             Stack.stack.pop();
         }
         Stack.stack.top.active = true;
-        toolBar.update();
+        contents.updateToolbar();
     }
 
-    /*!
-      \internal
-      Used to determine whether the back button is active.
-     */
-    property int __stackSize: 0
-
     Item {
+        id: contents
         parent: pageStack
         anchors.fill: parent
 
-        // toolbar placeholder
-        Rectangle {
-            id: toolBar
-            visible: pageStack.showToolBar
-            color: "#222222"
+        Toolbar {
+            id: toolbar
             anchors {
                 left: parent.left
                 right: parent.right
                 top: parent.top
             }
-            height: visible ? 40 : 0
 
-            function update() {
-                var stackSize = Stack.stack.size;
-                if (stackSize > 0) {
-                    if (stackSize > 1) {
-                        backButton.enabled = true;
-                    } else {
-                        backButton.enabled = false;
-                    }
-                    toolBarTitle.text = Stack.stack.top.title;
-                } else {
-                    backButton.enabled = false
-                }
-            }
-
-            AbstractButton {
-                id: backButton
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                    margins: 5
-                }
-                width: 30
-                visible: true
-                enabled: pageStack.__stackSize > 1
-                onClicked: pageStack.pop()
-                opacity: enabled ? 1.0 : 0.5
-
-                Image {
-                    anchors.centerIn: parent
-                    source: "ListItems/artwork/ListItemProgressionArrow.png"
-                    width: 40
-                    fillMode: Image.PreserveAspectFit
-                    rotation: 180
-                }
-
-                states: [
-                    State {
-                        name: "enabled"
-                        when: backButton.enabled
-                        PropertyChanges { target: backButton; opacity: 1.0 }
-                    }, State {
-                        name: "disabled"
-                        when: !backButton.enabled
-                        PropertyChanges { target: backButton; opacity: 0.5 }
-                    }
-                ]
-
-                transitions: Transition {
-                    PropertyAnimation {
-                        target: backButton
-                        properties: "opacity"
-                        duration: 100
-                    }
-                }
-
-            }
-            TextCustom {
-                id: toolBarTitle
-                anchors {
-                    left: backButton.right
-                    top: parent.top
-                    bottom: parent.bottom
-                    margins: 5
-                    right: parent.right
-                }
-                color: "white"
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
-            }
+            pageStack: pageStack
         }
 
         Rectangle {
@@ -241,7 +162,21 @@ Item {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                top: toolBar.bottom
+                top: toolbar.bottom
+            }
+        }
+
+        function updateToolbar() {
+            var stackSize = Stack.stack.size;
+            if (stackSize > 1) {
+                toolbar.showBackButton = true
+            } else {
+                toolbar.showBackButton = false
+            }
+            if (stackSize > 0) {
+                toolbar.title = Stack.stack.top.title;
+            } else {
+                toolbar.title = undefined;
             }
         }
     }

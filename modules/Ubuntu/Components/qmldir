@@ -11,5 +11,6 @@ ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
+internal Toolbar Toolbar.qml
 PageStack 0.1 PageStack.qml
 internal AnimatedItem AnimatedItem.qml
