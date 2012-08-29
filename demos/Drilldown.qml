@@ -58,67 +58,83 @@ Template {
                         pageStack: stack
                         Page {
                             title: "Device"
-                            iconSource: "avatar_contacts_list.png"
 
                             contents: PageList {
                                 pageStack: stack
-                                Page { title: "Call" }
-                                Page { title: "SIM card" }
-                                Page { title: "Battery" }
-                                Page { title: "Display" }
-                                Page { title: "Data storage" }
-                                Page { title: "NFC" }
-                                Page { title: "GPS and positioning" }
-                                Page { title: "Counters" }
-                                Page { title: "Media sharing settings" }
-                            }
-                        }
-                        Page {
-                            title: "Bluetooth"
-                            iconSource: "avatar_contacts_list.png"
-
-                            contents: Column {
-                                anchors.fill: parent
-                                ListItem.Standard {
-                                    text: "Bluetooth"
-                                    control: onOffButton.createObject(parent)
+                                Page {
+                                    title: "Call"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.Standard {
+                                            text: "Call waiting"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                        ListItem.Standard {
+                                            text: "Noise cancellation"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Send my caller ID"
+                                            values: ["Set by network", "Yes", "No"]
+                                        }
+                                    }
                                 }
-                                ListItem.Header {
-                                    text: "My device"
+                                Page {
+                                    title: "Battery"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.Caption {
+                                            text: "Battery level: 18%\n\nRemaining talk time: 1 hour 34 minutes\nRemaining standby time: 20 hours 58 minutes"
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Power saving mode"
+                                            values: ["Off", "On", "Automatic"]
+                                        }
+                                        ListItem.Caption {
+                                            text: "Battery condition: Good"
+                                        }
+                                    }
                                 }
-                                ListItem.Subtitled {
-                                    progression: true
-                                    text: "Name and information"
-                                    subText: "My device name"
+                                Page {
+                                    title: "Display"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.ValueSelector {
+                                            text: "Display time-out"
+                                            values: ["15 seconds", "30 seconds", "1 minute", "2 minutes", "3 minutes"]
+                                            selectedIndex: 1
+                                        }
+                                        ListItem.Standard {
+                                            text: "Stand-by screen"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                        ListItem.ValueSelector {
+                                            text: "Colour profile"
+                                            values: ["Normal", "Vivid", "Subdued"]
+                                        }
+                                    }
                                 }
-                                ListItem.Standard {
-                                    text: "Visibility"
-                                    control: onOffButton.createObject(parent)
+                                Page {
+                                    title: "NFC"
+                                    contents: Column {
+                                        anchors.fill: parent
+                                        ListItem.Standard {
+                                            text: "NFC"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                        ListItem.Standard {
+                                            text: "Confirm sharing and\nconnecting"
+                                            control: onOffButton.createObject(parent)
+                                        }
+                                    }
                                 }
-                                ListItem.Divider { }
-                                ListItem.Standard {
-                                    text: "Buetooth devices"
-                                    progression: true
-                                }
-                                ListItem.Standard {
-                                    text: "Always show Buetooth in status menu"
-                                    control: onOffButton.createObject(parent)
-                                }
-
                             }
                         }
                         Page {
                             title: "Sounds and vibration"
-                            iconSource: "avatar_contacts_list.png"
 
                             contents: Column {
                                 anchors.fill: parent
-                                ListItem.Standard {
-                                    control: Button { text: "Profile"; anchors.fill: parent }
-                                }
-                                ListItem.Standard {
-                                    control: Button { text: "Volume"; anchors.fill: parent }
-                                }
                                 ListItem.Header { text: "Vibration profile" }
                                 ListItem.Standard {
                                     text: "Ringing"
@@ -135,58 +151,18 @@ Template {
                                 ListItem.Header {
                                     text: "Alert tones"
                                 }
-                                ListItem.Subtitled {
+                                ListItem.ValueSelector {
                                     text: "Ringtone"
-                                    subText: "Canonical tune"
-                                    progression: true
+                                    values: ["Canonical tune", "Linux tune", "Penguin tune"]
                                 }
-                                ListItem.Subtitled {
-                                    text: "Internet call alert"
-                                    subText: "Canonical tune"
-                                    progression: true
-                                }
-                                ListItem.Subtitled {
-                                    text: "Mail alert tone"
-                                    subText: "Email 1"
-                                    progression: true
-                                }
-                                ListItem.Subtitled {
+                                ListItem.ValueSelector{
                                     text: "Message alert tone"
-                                    subText: "Message 1"
-                                    progression: true
-                                }
-                            }
-                        }
-                        Page {
-                            title: "Time and language"
-                            iconSource: "avatar_contacts_list.png"
-
-                            contents: Column {
-                                anchors.fill: parent
-                                ListItem.Subtitled {
-                                    text: "Time and date"
-                                    subText: "28-08-12 12:05"
-                                    progression: true
-                                }
-                                ListItem.SingleValue {
-                                    text: "Language"
-                                    value: "English (United Kingdom)"
-                                    progression: true
-                                }
-                                ListItem.SingleValue {
-                                    text: "Regional format"
-                                    value: "Netherlands"
-                                    progression: true
-                                }
-                                ListItem.Standard {
-                                    text: "Text input"
-                                    progression: true
+                                    values: ["Beep", "Bleep", "Blip"]
                                 }
                             }
                         }
                         Page {
                             title: "Applications"
-                            iconSource: "avatar_contacts_list.png"
 
                             contents: Column {
                                 anchors.fill: parent
@@ -217,20 +193,11 @@ Template {
                                                 text: "Week starts on"
                                                 values: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                                             }
-                                            ListItem.MultiValue {
-                                                text: "Calendar working week"
-                                                values: ["Mon", "Tue", "Wed", "Thu", "Fri"]
-                                                progression: true
-                                            }
                                             ListItem.Header { text: "Events" }
-                                            ListItem.SingleValue {
+                                            ListItem.ValueSelector{
                                                 text: "Default reminder displayed"
-                                                value: "15 minutes before"
-                                                progression: true
-                                            }
-                                            ListItem.SingleValue {
-                                                text: "Default calendar"
-                                                value: "Personal"
+                                                values: ["None", "0 minutes before", "10 minutes before", "15 minutes before", "1 hour before"]
+                                                selectedIndex: 3
                                             }
                                         }
                                     }
@@ -272,19 +239,6 @@ Template {
                                         }
                                     }
                                     Page {
-                                        title: "Gallery"
-                                        contents: Column {
-                                            anchors.fill: parent
-                                            ListItem.Standard {
-                                                text: "Face recognition"
-                                                control: onOffButton.createObject(parent)
-                                            }
-                                            ListItem.Caption {
-                                                text: "Save names to your photos using automatic face recognition"
-                                            }
-                                        }
-                                    }
-                                    Page {
                                         title: "Mail"
                                         contents: Column {
                                             anchors.fill: parent
@@ -298,13 +252,6 @@ Template {
                                             }
                                             ListItem.Standard {
                                                 text: "Threads"
-                                                control: onOffButton.createObject(parent)
-                                            }
-                                            ListItem.Caption {
-                                                text: "Handle your messages as threads"
-                                            }
-                                            ListItem.Standard {
-                                                text: "Send messages as plain text"
                                                 control: onOffButton.createObject(parent)
                                             }
                                             ListItem.ValueSelector {
@@ -324,45 +271,10 @@ Template {
                                                 text: "Download images"
                                                 control: onOffButton.createObject(parent)
                                             }
-                                            ListItem.Caption {
-                                                text: "Download images automatically"
-                                            }
-                                            ListItem.ValueSelector {
-                                                text: "Send messages"
-                                                values: ["Immediately", "On next sync"]
-                                            }
                                         }
                                     }
-                                    Page { title: "Messages" }
-                                    Page { title: "Music" }
-                                    Page { title: "Videos" }
-                                    Page { title: "Web" }
                                 }
                             }
-                        }
-                        Page {
-                            title: "Notifications"
-                            iconSource: "avatar_contacts_list.png"
-                        }
-                        Page {
-                            title: "Security"
-                            iconSource: "avatar_contacts_list.png"
-                        }
-                        Page {
-                            title: "Sync and backup"
-                            iconSource: "avatar_contacts_list.png"
-                        }
-                        Page {
-                            title: "Accessories"
-                            iconSource: "avatar_contacts_list.png"
-                        }
-                        Page {
-                            title: "About product"
-                            iconSource: "avatar_contacts_list.png"
-                        }
-                        Page {
-                            title: "Reset"
-                            iconSource: "avatar_contacts_list.png"
                         }
                     }
                 }
