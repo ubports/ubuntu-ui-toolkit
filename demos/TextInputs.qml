@@ -18,7 +18,7 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Activity Indicator"
+    title: "Text Input"
     id: indicators
 
     Column {
