@@ -42,7 +42,7 @@ import "fontUtils.js" as FontUtils
 
         TextField {
             id: autoClear
-            clearContentOnEditingStart: true
+            clearsOnBeginEditing: true
         }
     }
     \endqml
@@ -81,7 +81,7 @@ FocusScope {
 
       Default is false.
     */
-    property bool clearContentOnEditingStart: false
+    property bool clearsOnBeginEditing: false
 
     /*!
       \preliminary
@@ -424,8 +424,10 @@ FocusScope {
         editor.selectWord()
     }
 
-
-    // ensure focus propagation
+    /*!
+      \internal
+       Ensure focus propagation
+    */
     function forceActiveFocus()
     {
         editor.forceActiveFocus()
@@ -441,6 +443,7 @@ FocusScope {
         property color textColor: "#757373"
         property string fontFize: "medium"
         property real clearButtonSpacing: 4.0
+        property bool textChanged: false
 
         function rightMargin()
         {
@@ -521,7 +524,7 @@ FocusScope {
                 bottomMargin: internal.frameBorders[3]
             }
             elide: Text.ElideRight
-            visible: (editor.text == "") && !editor.inputMethodComposing
+            visible: (editor.text == "") && !editor.activeFocus
         }
 
         // text input
@@ -541,15 +544,22 @@ FocusScope {
             // TODO: font family to be defined
             font.pixelSize: FontUtils.sizeToPixels(internal.fontFize)
 
+            onTextChanged: internal.textChanged = true
+
             // OSK/SIP handling
             activeFocusOnPress: false
             onActiveFocusChanged: {
                 if (activeFocus) {
                     internal.showInputPanel()
-                    if (clearContentOnEditingStart)
+                    internal.textChanged = false
+                    if (clearsOnBeginEditing)
                         editor.text = ""
-                } else
+                } else {
                     internal.hideInputPanel()
+                    // emit accepted signal is changed
+                    if (internal.textChanged)
+                        control.accepted()
+                }
             }
             MouseArea {
                 id: virtualKbdHandler

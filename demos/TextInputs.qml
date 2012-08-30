@@ -24,10 +24,15 @@ Template {
     Column {
         spacing: 30
         TemplateRow {
-            title: "Simple"
+            title: "Basic"
 
             TextField {
                 placeholderText: "simple text field"
+                onAccepted: editedText.text = text
+            }
+            TextCustom { text: "edited text:" }
+            TextCustom {
+                id: editedText
             }
         }
 
@@ -57,7 +62,7 @@ Template {
                 placeholderText: "hint text"
                 text: "This content will be cleared once focused"
                 hasClearButton: true
-                clearContentOnEditingStart: true
+                clearsOnBeginEditing: true
             }
         }
     }
