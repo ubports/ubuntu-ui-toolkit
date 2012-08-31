@@ -20,7 +20,6 @@
 #define UBUNTU_COMPONENTS_PLUGIN_H
 
 #include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativePropertyMap>
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
 class UbuntuComponentsPlugin : public QDeclarativeExtensionPlugin

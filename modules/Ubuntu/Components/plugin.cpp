@@ -18,12 +18,11 @@
 
 #include "plugin.h"
 
-#include <QFont>
-#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeExtensionPlugin>
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    QDeclarativeExtensionPlugin::registerTypes(uri);
+
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
