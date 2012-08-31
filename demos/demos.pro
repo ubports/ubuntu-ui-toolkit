@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-OTHER_FILES = $$system(ls *.qml) $$system(ls *.png)
+OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.js)
 
 other_files.path = /opt/qt-components-ubuntu/demos
 other_files.files = $$OTHER_FILES
