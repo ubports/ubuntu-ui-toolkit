@@ -50,8 +50,9 @@ Actions:
 #. Release LMB
 
 Expected Result:
-  QML Button is in pressedColor while LMB is pressed.
-  QML Button emits signal clicked() when LMB is released.
+#. Buttons page is visible
+#. QML Button is in pressedColor while LMB is pressed.
+#. QML Button emits signal clicked() when LMB is released.
 
 
 Directory Structure
@@ -65,3 +66,22 @@ Glossary
 =========
 LMB = Left Mouse Button
 
+
+=========
+HOW TO
+=========
+
+
+How To See Which Testcase Tests Which Part Of The QML Component? =
+----------
+open .map file in text editor
+
+
+How To Get The Testcase Executor Binary
+----------
+/compile_testcaseexecutor.sh
+
+
+How To Execute Tests
+----------
+./run_testcases.sh

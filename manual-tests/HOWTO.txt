@@ -1,8 +1,0 @@
-= How to see which test case tests which part of the qml component? =
-open .map file in text editor
-
-= How to get the testcase binary =
-./compile_testcaseexecutor.sh
-
-= How to execute tests =
-./run_testcases.sh
