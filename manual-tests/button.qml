@@ -3,6 +3,5 @@ import Ubuntu.Components 0.1
 
 Button {
    id: button
-   objectName: "button"
    text: "Hello World"
 }
