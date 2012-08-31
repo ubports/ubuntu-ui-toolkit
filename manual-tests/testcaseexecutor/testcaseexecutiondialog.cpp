@@ -4,15 +4,13 @@
 #include <QGLWidget>
 
 
-TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testdata, QUrl qmlFile, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::TestCaseExecutionDialog),
-    m_declarativeView(new QDeclarativeView)
-{
-    ui->setupUi(this);
-    ui->plainTextEdit->setPlainText(testdata);
+TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testdata, QUrl qmlFile, QWidget *parent) : QDialog(parent),
+                                                                                                                      m_declarativeView(new QDeclarativeView),
+                                                                                                                      m_ui(new Ui::TestCaseExecutionDialog) {
+    m_ui->setupUi(this);
+    m_ui->plainTextEdit->setPlainText(testdata);
     this->setWindowTitle(testcase);
-    ui->horizontalLayout->addWidget(m_declarativeView);
+    m_ui->horizontalLayout->addWidget(m_declarativeView);
 
     QFile qmldata(qmlFile.toLocalFile());
     QString data;
@@ -21,7 +19,7 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testd
         qmldata.close();
     }
 
-    ui->plainTextEdit_2->setPlainText(data);
+    m_ui->plainTextEdit_2->setPlainText(data);
 
     QTemporaryFile tmpQmlFile;
     tmpQmlFile.open();
@@ -49,15 +47,14 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testd
 void TestCaseExecutionDialog::on_pushButton_clicked() {
     QTemporaryFile tmpQmlFile;
     tmpQmlFile.open();
-    tmpQmlFile.write(ui->plainTextEdit_2->toPlainText().toAscii());
+    tmpQmlFile.write(m_ui->plainTextEdit_2->toPlainText().toAscii());
     tmpQmlFile.close();
     m_declarativeView->engine()->clearComponentCache();
     m_declarativeView->setSource(QUrl::fromLocalFile(tmpQmlFile.fileName()));
 }
 
-TestCaseExecutionDialog::~TestCaseExecutionDialog()
-{
-    delete ui;
+TestCaseExecutionDialog::~TestCaseExecutionDialog() {
+    delete m_ui;
 }
 
 

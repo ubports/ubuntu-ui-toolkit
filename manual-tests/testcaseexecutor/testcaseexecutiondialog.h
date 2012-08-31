@@ -5,7 +5,7 @@
 #include <QtDeclarative>
 
 namespace Ui {
-class TestCaseExecutionDialog;
+    class TestCaseExecutionDialog;
 }
 
 class TestCaseExecutionDialog : public QDialog
@@ -22,7 +22,7 @@ protected slots:
     
 private:
     QDeclarativeView* m_declarativeView;
-    Ui::TestCaseExecutionDialog *ui;
+    Ui::TestCaseExecutionDialog *m_ui;
 };
 
 #endif // TESTCASEEXECUTIONDIALOG_H

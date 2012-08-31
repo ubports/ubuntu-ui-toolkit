@@ -1,11 +1,11 @@
 #include "tst_manualtestcase.h"
-#include <QtTest>
 #include "testcaseexecutiondialog.h"
+
+#include <QDebug>
+#include <QtTest>
 #include <QDialogButtonBox>
 
-tst_manualtestcase::tst_manualtestcase(QObject *parent) :
-    QObject(parent)
-{
+tst_manualtestcase::tst_manualtestcase(QObject *parent) : QObject(parent) {
 
 }
 

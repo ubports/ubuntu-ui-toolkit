@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QDebug>
 
 class tst_manualtestcase : public QObject
 {
