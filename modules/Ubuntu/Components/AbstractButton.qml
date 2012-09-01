@@ -71,7 +71,7 @@ Item {
      */
     onMouseAreaChanged: hiddenFunctions.updateMouseArea()
 
-    Item {
+    QtObject {
         id: hiddenFunctions
 
         function updateMouseArea() {
