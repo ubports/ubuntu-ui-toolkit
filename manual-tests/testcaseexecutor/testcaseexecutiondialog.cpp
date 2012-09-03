@@ -4,9 +4,12 @@
 #include <QGLWidget>
 
 
-TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase, QString testdata, QUrl qmlFile, QWidget *parent) : QDialog(parent),
-                                                                                                                      m_declarativeView(new QDeclarativeView),
-                                                                                                                      m_ui(new Ui::TestCaseExecutionDialog) {
+TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase,
+                                                 QString testdata,
+                                                 QUrl qmlFile,
+                                                 QWidget *parent) : QDialog(parent),
+                                                                    m_declarativeView(new QDeclarativeView),
+                                                                    m_ui(new Ui::TestCaseExecutionDialog) {
     m_ui->setupUi(this);
     m_ui->plainTextEdit->setPlainText(testdata);
     this->setWindowTitle(testcase);
