@@ -22,7 +22,7 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-
+    Q_UNUSED(uri);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
