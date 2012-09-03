@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./testcase -vs -v1|egrep "QML|Declarative" |egrep -v "updateScene"
+./testcaseexecutor/testcase -vs -v1|egrep "QML|Declarative" |egrep -v "updateScene"

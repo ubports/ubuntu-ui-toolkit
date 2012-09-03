@@ -18,7 +18,7 @@
 
 QT += declarative testlib opengl
 
-TARGET = ../testcase
+TARGET = testcase
 
 CONFIG   += console
 CONFIG   -= app_bundle
