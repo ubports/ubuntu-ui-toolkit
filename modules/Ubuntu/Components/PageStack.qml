@@ -118,7 +118,7 @@ Item {
      */
     function push(page) {
         if (page.__isPage !== true) return;
-        if (Stack.stack.size > 0) Stack.stack.top.active = false;
+        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         page.active = true;
@@ -131,11 +131,11 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (Stack.stack.size > 1) {
-            Stack.stack.top.active = false;
+        if (Stack.stack.size() > 1) {
+            Stack.stack.top().active = false;
             Stack.stack.pop();
         }
-        Stack.stack.top.active = true;
+        Stack.stack.top().active = true;
         contents.updateToolbar();
     }
 
@@ -167,16 +167,16 @@ Item {
         }
 
         function updateToolbar() {
-            var stackSize = Stack.stack.size;
+            var stackSize = Stack.stack.size();
             if (stackSize > 1) {
                 toolbar.showBackButton = true
             } else {
                 toolbar.showBackButton = false
             }
             if (stackSize > 0) {
-                toolbar.title = Stack.stack.top.title;
+                toolbar.title = Stack.stack.top().title;
             } else {
-                toolbar.title = undefined;
+                toolbar.title = "";
             }
         }
     }

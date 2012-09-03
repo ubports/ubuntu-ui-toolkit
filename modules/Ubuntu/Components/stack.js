@@ -18,26 +18,29 @@
 // make its variables private, and force calls
 // to Stack to make use of the functions we define.
 function Stack() {
-    var elements; // = new Array();
+    var elements;
     this.clear = function() {
         elements = [];
-        this.size = 0;
-        this.top = undefined;
     }
 
     this.clear();
 
     this.push = function(element) {
-             elements.push(element);
-             this.size++;
-             this.top = element;
-         };
+        elements.push(element);
+    };
 
     this.pop = function() {
-             elements.pop();
-             this.size--;
-             this.top = elements[this.size-1];
-         };
+        elements.pop();
+    };
+
+    this.size = function() {
+        return elements.length;
+    }
+
+    this.top = function() {
+        if (this.size() < 1) return undefined;
+        return elements[elements.length-1];
+    }
 }
 
 // needed because I cannot create a JS as a property in QML1
