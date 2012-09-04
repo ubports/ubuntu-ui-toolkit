@@ -35,13 +35,5 @@ Template {
                 checked: true
             }
         }
-
-        TemplateRow {
-            title: "Colored"
-            CheckBox {
-                uncheckedColor: "#dd4f22"
-                checkedColor: "#097de0"
-            }
-        }
     }
 }

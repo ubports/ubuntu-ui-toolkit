@@ -36,12 +36,6 @@ import Qt.labs.shaders 1.0
             id: checkedByDefaultCheckBox
             checked: true
         }
-
-        CheckBox {
-            id: coloredCheckBox
-            checkedColor: green
-            uncheckedcolor: red
-        }
     }
     \endqml
 */
@@ -57,18 +51,6 @@ Item {
       is set to false.
     */
     property bool checked: false
-
-    /*!
-       \preliminary
-       The foreground color when the box is unchecked.
-    */
-    property color uncheckedColor: "#e3e5e8"
-
-    /*!
-       \preliminary
-       The foreground color when the box is checked.
-    */
-    property color checkedColor: "#8b8b8b"
 
     /*!
        \preliminary
@@ -120,7 +102,7 @@ Item {
 
             anchors.fill: shape
 
-            color: checkBox.checked ? checkBox.checkedColor : checkBox.uncheckedColor
+            color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
             Behavior on color {
                 ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
             }
@@ -172,6 +154,8 @@ Item {
         property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
         property url borderPressedSource: Qt.resolvedUrl("artwork/ButtonBorderPressed.png")
         property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
+        property color uncheckedColor: "#e3e5e8"
+        property color checkedColor: "#8b8b8b"
 
         function updateMouseArea() {
             if (checkBox.mouseArea) {
