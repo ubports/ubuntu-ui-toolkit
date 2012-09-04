@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=qmlviewer -opengl /usr/lib/ubuntu-demos/uitk/demos/Gallery.qml
+Path=/opt/qt-components-ubuntu/
+Name=Qt Components for Ubuntu - Gallery
+GenericName=Qt Components for Ubuntu gallery application
+Icon=/usr/lib/ubuntu-demos/uitk/demos/call_icon.png
+Terminal=false
+
