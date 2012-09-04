@@ -33,7 +33,6 @@ import Qt.labs.shaders 1.0
     \qml
     Item {
         CheckBox {
-            id: checkedByDefaultCheckBox
             checked: true
         }
     }
