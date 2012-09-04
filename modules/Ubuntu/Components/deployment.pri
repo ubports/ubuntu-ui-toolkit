@@ -11,13 +11,14 @@ JS_FILES = $$system(ls *.js)
 ARTWORK_FILES = $$system(find artwork -type f)
 
 # Components/Listitems
-LISTITEMS_FILES = $$system(find ListItems -type f)
+LISTITEMS_FILES = $$system(find ListItems -type f|grep -v artwork)
+LISTITEMS_ARTWORK_FILES = $$system(find ListItems -type f|grep artwork)
 
 # qmldir
 QMLDIR_FILE = qmldir
 
 # make found deployables visible in Qt Creator
-OTHER_FILES += $$QML_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$QMLDIR_FILE
+OTHER_FILES += $$QML_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$QMLDIR_FILE $$LISTITEMS_ARTWORK_FILES
 
 # define deployment for found deployables
 qmldir_file.path = $$installPath
@@ -30,5 +31,7 @@ artwork_files.path = $$installPath/artwork
 artwork_files.files = $$ARTWORK_FILES
 listitems_files.path = $$installPath/ListItems
 listitems_files.files = $$LISTITEMS_FILES
+listitems_artwork_files.path = $$installPath/ListItems/artwork
+listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
 
-INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files
+INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files
