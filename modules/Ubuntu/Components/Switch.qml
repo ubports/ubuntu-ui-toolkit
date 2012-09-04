@@ -141,7 +141,8 @@ Item {
 
         BorderImage {
             id: innerShape
-            x: outerShape.x + internals.spacing + (sweetch.checked ? ((outerShape.width - (2.0 * internals.spacing)) * 0.4) : 0.0)
+            x: outerShape.x + internals.spacing +
+                (sweetch.checked ? ((outerShape.width - (2.0 * internals.spacing)) * 0.4) : 0.0)
             y: outerShape.y + internals.spacing
             width: (outerShape.width - (2.0 * internals.spacing)) * 0.6
             // FIXME(loicm) Note sure why one pixel needs to be removed in order
