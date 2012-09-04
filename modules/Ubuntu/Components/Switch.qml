@@ -216,15 +216,13 @@ Item {
         property color thumbColor: "#8b8b8b"
 
         function updateMouseArea() {
-            if (sweetch.mouseArea) {
-                sweetch.mouseArea.clicked.connect(sweetch.clicked);
-                sweetch.mouseArea.pressedChanged.connect(internals.mouseAreaPressed);
-            }
+            if (sweetch.mouseArea)
+                sweetch.mouseArea.clicked.connect(internals.mouseAreaClicked);
         }
 
-        function mouseAreaPressed() {
-            if (sweetch.mouseArea.pressedButtons & Qt.LeftButton)
-                sweetch.checked = !sweetch.checked;
+        function mouseAreaClicked() {
+            sweetch.checked = !sweetch.checked;
+            sweetch.clicked();
         }
     }
 }
