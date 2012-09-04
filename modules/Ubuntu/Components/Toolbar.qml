@@ -25,7 +25,7 @@ import QtQuick 1.1
 Rectangle {
     id: toolbar
 
-    color: "#222222"
+    color: "#666666"
 
     height: visible ? 40 : 0
 
