@@ -8,6 +8,7 @@ AbstractButton 0.1 AbstractButton.qml
 PageContainer 0.1 PageContainer.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
+Switch 0.1 Switch.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 internal AnimatedItem AnimatedItem.qml
