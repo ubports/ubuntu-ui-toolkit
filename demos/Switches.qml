@@ -39,7 +39,7 @@ Template {
         TemplateRow {
             title: "Colored"
             Switch {
-                innerColor: "#097de0"
+                checkedColor: "#097de0"
             }
         }
     }

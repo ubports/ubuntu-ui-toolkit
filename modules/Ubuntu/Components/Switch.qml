@@ -62,15 +62,21 @@ Item {
 
     /*!
        \preliminary
-       The outer color of the Switch.
+       The background color when the switch is unchecked.
     */
-    property color outerColor: "#c4c4c4"
+    property color uncheckedColor: "#c4c4c4"
 
     /*!
        \preliminary
-       The inner color of the switch.
+       The background color when the switch is checked.
     */
-    property color innerColor: "#8b8b8b"
+    property color checkedColor: "#f37505"
+
+    /*!
+       \preliminary
+       The thumb color.
+    */
+    property color thumbColor: "#8b8b8b"
 
     /*!
        \preliminary
@@ -105,7 +111,7 @@ Item {
         anchors.fill: parent
 
         BorderImage {
-            id: outerShape
+            id: backgroundShape
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
@@ -114,20 +120,20 @@ Item {
         }
 
         Rectangle {
-            id: outerBase
-            anchors.fill: outerShape
-            color: sweetch.outerColor
+            id: backgroundBase
+            anchors.fill: parent
+            color: sweetch.checked ? sweetch.checkedColor : sweetch.uncheckedColor
         }
 
         ButtonMaskEffect {
-            anchors.fill: outerShape
+            anchors.fill: parent
             gradientStrength: 0.0
-            mask: ShaderEffectSource { sourceItem: outerShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: outerBase; live: true; hideSource: true }
+            mask: ShaderEffectSource { sourceItem: backgroundShape; live: true; hideSource: true }
+            base: ShaderEffectSource { sourceItem: backgroundBase; live: true; hideSource: true }
         }
 
         BorderImage {
-            id: outerBorder
+            id: backgroundBorder
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
@@ -135,48 +141,75 @@ Item {
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
         }
 
-        // FIXME(loicm) The radius of the inner BorderImage must be lower than
-        //     the radius of the outer BorderImage so that the perimeter can
+        Image {
+            id: checkMark
+            width: Math.min(parent.height - internals.iconSpacing,
+                            (parent.width * 0.5) - internals.iconSpacing)
+            height: checkMark.width
+            x: internals.iconHorizontalMargin
+            y: (parent.height - checkMark.height) * 0.5 - 1.0
+            fillMode: Image.PreserveAspectFit
+            source: internals.checkMarkSource
+            opacity: sweetch.checked ? 1.0 : 0.0
+
+            Behavior on opacity { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
+        }
+
+        Image {
+            id: ballot
+            width: Math.min(parent.height - internals.iconSpacing,
+                            (parent.width * 0.5) - internals.iconSpacing)
+            height: ballot.width
+            x: parent.width - ballot.width - internals.iconHorizontalMargin
+            y: (parent.height - ballot.height) * 0.5 - 1.0
+            fillMode: Image.PreserveAspectFit
+            source: internals.ballotSource
+            opacity: sweetch.checked ? 0.0 : 1.0
+
+            Behavior on opacity { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
+        }
+
+        // FIXME(loicm) The radius of the thumb BorderImage must be lower than
+        //     the radius of the background BorderImage so that the perimeter can
         //     look perfectly consistent.
 
         BorderImage {
-            id: innerShape
-            x: outerShape.x + internals.spacing +
-                (sweetch.checked ? ((outerShape.width - (2.0 * internals.spacing)) * 0.4) : 0.0)
-            y: outerShape.y + internals.spacing
-            width: (outerShape.width - (2.0 * internals.spacing)) * 0.6
+            id: thumbShape
+            x: backgroundShape.x + internals.thumbSpacing +
+               (sweetch.checked ? ((backgroundShape.width - (2.0 * internals.thumbSpacing))
+               * (1.0 - internals.thumbWidth)) : 0.0)
+            y: backgroundShape.y + internals.thumbSpacing
+            width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
             // FIXME(loicm) Note sure why one pixel needs to be removed in order
-            //     to see the outer shape at the bottom. I'll figure that out
-            //     while refactoring the code to correctly share common
+            //     to see the background shape at the bottom. I'll figure that
+            //     out while refactoring the code to correctly share common
             //     rendering code between the Button, CheckBox, Switch and
             //     ProgressBar components.
-            height: outerShape.height - (2.0 * internals.spacing) - 1.0
+            height: backgroundShape.height - (2.0 * internals.thumbSpacing) - 1.0
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
 
-            Behavior on x {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
+            Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
         }
 
         Rectangle {
-            id: innerBase
-            anchors.fill: innerShape
-            color: sweetch.innerColor
+            id: thumbBase
+            anchors.fill: thumbShape
+            color: sweetch.thumbColor
         }
 
         ButtonMaskEffect {
-            anchors.fill: innerShape
-            gradientStrength: 0.0
-            mask: ShaderEffectSource { sourceItem: innerShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: innerBase; live: true; hideSource: true }
+            anchors.fill: thumbShape
+            gradientStrength: 0.4
+            mask: ShaderEffectSource { sourceItem: thumbShape; live: true; hideSource: true }
+            base: ShaderEffectSource { sourceItem: thumbBase; live: true; hideSource: true }
         }
 
         BorderImage {
-            id: innerBorder
-            anchors.fill: innerShape
+            id: thumbBorder
+            anchors.fill: thumbShape
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.borderIdleSource
@@ -193,7 +226,10 @@ Item {
         property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
         property url borderPressedSource: Qt.resolvedUrl("artwork/ButtonBorderPressed.png")
         property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
-        property real spacing: 3.0
+        property real iconHorizontalMargin: 8.0
+        property real iconSpacing: 10.0
+        property real thumbWidth: 0.5    // In [0.0, 1.0].
+        property real thumbSpacing: 3.0
 
         function updateMouseArea() {
             if (sweetch.mouseArea) {
