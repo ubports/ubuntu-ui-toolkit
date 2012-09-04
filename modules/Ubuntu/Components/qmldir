@@ -1,3 +1,4 @@
+plugin UbuntuComponents
 Button 0.1 Button.qml
 ButtonWithForeground 0.1 ButtonWithForeground.qml
 HLine 0.1 HLine.qml
