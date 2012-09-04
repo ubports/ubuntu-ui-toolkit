@@ -70,7 +70,7 @@ Item {
        \preliminary
        The background color when the switch is checked.
     */
-    property color checkedColor: "#f37505"
+    property color checkedColor: uncheckedColor
 
     /*!
        \preliminary
