@@ -110,12 +110,7 @@ Item {
 
         ButtonMaskEffect {
             anchors.fill: shape
-
-            gradientStrength: checkBox.checked ? 0.0 : 1.0
-            Behavior on gradientStrength {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
-
+            gradientStrength: 0.0
             mask: ShaderEffectSource { sourceItem: shape; live: true; hideSource: true }
             base: ShaderEffectSource { sourceItem: base; live: true; hideSource: true }
         }
