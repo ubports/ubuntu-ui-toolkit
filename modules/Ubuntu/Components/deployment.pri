@@ -11,8 +11,8 @@ JS_FILES = $$system(ls *.js)
 ARTWORK_FILES = $$system(find artwork -type f)
 
 # Components/Listitems
-LISTITEMS_FILES = $$system(find ListItems -type f|grep -v artwork)
-LISTITEMS_ARTWORK_FILES = $$system(find ListItems -type f|grep artwork)
+LISTITEMS_FILES = $$system(find ListItems -maxdepth 1 -type f)
+LISTITEMS_ARTWORK_FILES = $$system(find ListItems/artwork -type f)
 
 # qmldir
 QMLDIR_FILE = qmldir
