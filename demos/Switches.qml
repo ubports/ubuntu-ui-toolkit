@@ -35,12 +35,5 @@ Template {
                 checked: true
             }
         }
-
-        TemplateRow {
-            title: "Colored"
-            Switch {
-                checkedColor: "#097de0"
-            }
-        }
     }
 }

@@ -61,24 +61,6 @@ Item {
 
     /*!
        \preliminary
-       The background color when the switch is unchecked.
-    */
-    property color uncheckedColor: "#c4c4c4"
-
-    /*!
-       \preliminary
-       The background color when the switch is checked.
-    */
-    property color checkedColor: uncheckedColor
-
-    /*!
-       \preliminary
-       The thumb color.
-    */
-    property color thumbColor: "#8b8b8b"
-
-    /*!
-       \preliminary
        This handler is called when the switch is clicked.
     */
     signal clicked
@@ -121,7 +103,7 @@ Item {
         Rectangle {
             id: backgroundBase
             anchors.fill: parent
-            color: sweetch.checked ? sweetch.checkedColor : sweetch.uncheckedColor
+            color: sweetch.checked ? internals.checkedColor : internals.uncheckedColor
         }
 
         ButtonMaskEffect {
@@ -196,7 +178,7 @@ Item {
         Rectangle {
             id: thumbBase
             anchors.fill: thumbShape
-            color: sweetch.thumbColor
+            color: internals.thumbColor
         }
 
         ButtonMaskEffect {
@@ -229,6 +211,9 @@ Item {
         property real iconSpacing: 10.0
         property real thumbWidth: 0.5    // In [0.0, 1.0].
         property real thumbSpacing: 3.0
+        property color uncheckedColor: "#c4c4c4"
+        property color checkedColor: uncheckedColor
+        property color thumbColor: "#8b8b8b"
 
         function updateMouseArea() {
             if (sweetch.mouseArea) {
