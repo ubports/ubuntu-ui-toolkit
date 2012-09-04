@@ -34,7 +34,7 @@ import Qt.labs.shaders 1.0
     Item {
         Switch {
             id: firstSwitch
-            innerColor: "#097de0"
+            checkedColor: "#097de0"
         }
     }
     \endqml
