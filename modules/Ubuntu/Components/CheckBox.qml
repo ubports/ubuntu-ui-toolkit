@@ -152,15 +152,13 @@ Item {
         property color checkedColor: "#8b8b8b"
 
         function updateMouseArea() {
-            if (checkBox.mouseArea) {
-                checkBox.mouseArea.clicked.connect(checkBox.clicked);
-                checkBox.mouseArea.pressedChanged.connect(internals.mouseAreaPressed);
-            }
+            if (checkBox.mouseArea)
+                checkBox.mouseArea.clicked.connect(internals.mouseAreaClicked);
         }
 
-        function mouseAreaPressed() {
-            if (checkBox.mouseArea.pressedButtons & Qt.LeftButton)
-                checkBox.checked = !checkBox.checked;
+        function mouseAreaClicked() {
+            checkBox.checked = !checkBox.checked;
+            checkBox.clicked();
         }
     }
 }
