@@ -1,13 +1,5 @@
-TEMPLATE = lib
-TARGET = UbuntuComponents
-QT += declarative core gui
-CONFIG += qt plugin no_keywords
+TEMPLATE = subdirs
 
-TARGET = $$qtLibraryTarget($$TARGET)
-uri = Ubuntu.Components
-
-HEADERS += plugin.h
-
-SOURCES += plugin.cpp
+SUBDIRS += plugin
 
 include(deployment.pri)
