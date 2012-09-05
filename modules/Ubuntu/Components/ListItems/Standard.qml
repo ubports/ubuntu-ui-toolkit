@@ -130,7 +130,7 @@ Base {
         property Item control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
-        width: childrenRect.width
+        width: control ? control.width : undefined
         anchors {
             right: progressionHelper.left
             top: parent.top
