@@ -191,13 +191,14 @@ Template {
                 selected: listItemTypes.selectedType === "Controls"
                 Component {
                     id: controlExample
-//                    Button {
-//                        width: 100
-//                        text: "Control"
-//                        anchors.centerIn: parent
-//                        onClicked: print("clicked button")
-//                    }
-                    Switch { }
+                    // TODO: Replace this button by a Switch once that
+                    // component is complete and has disabled visuals.
+                    Button {
+                        width: 100
+                        text: "Control"
+                        anchors.centerIn: parent
+                        onClicked: print("clicked button")
+                    }
                 }
                 Column {
                     width: 250
@@ -205,7 +206,7 @@ Template {
                     ListItem.Standard {
                         id: withcontrol
                         text: "Label"
-                        control: controlExample.createObject(parent)
+                            control: controlExample.createObject(parent)
 
                     }
                     ListItem.Standard {
@@ -231,20 +232,14 @@ Template {
                     }
                     ListItem.Header { text: "Single control" }
                     // TODO: Add more single controls (TextField, Slider) when they become available
-                    ListItem.Base {
-                        id: actionListItem
-                        height: actionButton.height + actionButton.anchors.topMargin + actionButton.anchors.bottomMargin
-
-                        Button {
-                            id: actionButton
+                    ListItem.SingleControl {
+                        control: Button {
                             text: "Button"
                             anchors {
                                 margins: 10
-                                centerIn: parent
+                                fill: parent
                             }
-                            width: actionListItem.width - actionButton.anchors.leftMargin - actionButton.anchors.rightMargin
-                            mouseArea: actionListItem.mouseArea
-                            onClicked: print("clickily")
+                            onClicked: print("Large button clicked")
                         }
                     }
 
@@ -275,14 +270,9 @@ Template {
                                     to: progress.minimumValue
                                     duration: 1000
                                 }
-
-//                                PauseAnimation {duration: 1000}
-//                                ScriptAction { script: progress.value = progress.minimumValue; }
-//                                PauseAnimation {duration: 2000}
                             }
                         }
                     }
-
                 }
             }
             FadingRectangle {
