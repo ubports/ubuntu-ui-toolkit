@@ -42,14 +42,13 @@ Rectangle {
             bottom: parent.bottom
             margins: 5
         }
-        width: visible ? 30 : 0
+        width: visible ? childrenRect.width : 0
         visible: false
         onClicked: if (toolbar.pageStack) pageStack.pop()
 
         Image {
             anchors.centerIn: parent
             source: "ListItems/artwork/ListItemProgressionArrow.png"
-            width: 40
             fillMode: Image.PreserveAspectFit
             rotation: 180
         }
