@@ -132,7 +132,6 @@ Base {
         // or full width available if there is no text.
         width: childrenRect.width
         anchors {
-//            left: label.text ? undefined : iconHelper.right
             right: progressionHelper.left
             top: parent.top
             bottom: parent.bottom

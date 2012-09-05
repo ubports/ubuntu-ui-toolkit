@@ -243,33 +243,26 @@ Template {
                         id: withButton
                         control: Button {
                             text: "Action"
-                            width: withButton.width - 10
+                            width: 150 //withButton.width - 10
                         }
                     }
                     ListItem.Base {
                         id: actionListItem
                         height: actionButton.height + actionButton.anchors.topMargin + actionButton.anchors.bottomMargin
-//                        MouseArea {
-//                            anchors.fill: parent
-//                            id: buttonMouseArea
-//                        }
 
                         Button {
                             id: actionButton
                             text: "Action"
                             anchors {
-//                                fill: parent
-                                margins: 5
+                                margins: 10
                                 centerIn: parent
                             }
                             width: actionListItem.width - actionButton.anchors.leftMargin - actionButton.anchors.rightMargin
-//                            height: 40
-//                            mouseArea: buttonMouseArea
                             mouseArea: actionListItem.mouseArea
+                            onClicked: print("clickily")
                         }
                     }
                     ListItem.Standard {
-//                        text: ""//whatever"
                         Component.onCompleted: {
                             text = "Doneeeeeeeeeeeeeee"
                         }
