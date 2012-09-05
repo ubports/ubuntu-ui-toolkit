@@ -10,8 +10,12 @@ PageContainer 0.1 PageContainer.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
 <<<<<<< TREE
+<<<<<<< TREE
 TextField 0.1 TextField.qml
 =======
+=======
+Switch 0.1 Switch.qml
+>>>>>>> MERGE-SOURCE
 CheckBox 0.1 CheckBox.qml
 >>>>>>> MERGE-SOURCE
 internal TabButton TabButton.qml
