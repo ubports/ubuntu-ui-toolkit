@@ -105,13 +105,9 @@ Item {
         pageStack.push(rootPage);
     }
 
-    // In QtQuick1, this is impossible.
-    // QtQuick2 introduces var type that can be JS variables (not possible for variant).
+    // FIXME: After switching to QtQuick2, use a var stack property and instead of
+    // Stack.stack in this class we can refer to that property.
     //property var stack: new Stack.Stack()
-    // Instead of this, the variable is created in stack.js,
-    // and can be accessed as Stack.stack
-    // FIXME: After switching to QtQuick2, we can simply use a stack
-    // variable as pages.stack
 
     /*!
       \preliminary
