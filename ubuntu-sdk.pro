@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += modules/qt-components-ubuntu.pro
+SUBDIRS += demos modules/qt-components-ubuntu.pro
