@@ -205,7 +205,6 @@ Item {
         property url ballotSource: Qt.resolvedUrl("artwork/Ballot.png")
         property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
         property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
-        property url borderPressedSource: Qt.resolvedUrl("artwork/ButtonBorderPressed.png")
         property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
         property real iconHorizontalMargin: 8.0
         property real iconSpacing: 10.0
