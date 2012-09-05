@@ -1,3 +1,4 @@
+plugin UbuntuComponents
 Button 0.1 Button.qml
 ButtonWithForeground 0.1 ButtonWithForeground.qml
 HLine 0.1 HLine.qml
@@ -8,7 +9,11 @@ AbstractButton 0.1 AbstractButton.qml
 PageContainer 0.1 PageContainer.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
+<<<<<<< TREE
 TextField 0.1 TextField.qml
+=======
+CheckBox 0.1 CheckBox.qml
+>>>>>>> MERGE-SOURCE
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 internal AnimatedItem AnimatedItem.qml
