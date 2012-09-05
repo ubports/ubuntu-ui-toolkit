@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = ../UbuntuComponents
+TARGET = UbuntuComponents
 QT += declarative core gui
 CONFIG += qt plugin no_keywords
 
@@ -9,3 +9,9 @@ uri = Ubuntu.Components
 HEADERS += plugin.h
 
 SOURCES += plugin.cpp
+
+# deployment rules for the plugin
+installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+target.path = $$installPath
+INSTALLS += target
+
