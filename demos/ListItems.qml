@@ -268,11 +268,17 @@ Template {
                                 NumberAnimation {
                                     from: progress.minimumValue
                                     to: progress.maximumValue
-                                    duration: 2000
+                                    duration: 1000
                                 }
-                                PauseAnimation {duration: 1000}
-                                ScriptAction { script: progress.value = progress.minimumValue; }
-                                PauseAnimation {duration: 2000}
+                                NumberAnimation {
+                                    from: progress.maximumValue
+                                    to: progress.minimumValue
+                                    duration: 1000
+                                }
+
+//                                PauseAnimation {duration: 1000}
+//                                ScriptAction { script: progress.value = progress.minimumValue; }
+//                                PauseAnimation {duration: 2000}
                             }
                         }
                     }
