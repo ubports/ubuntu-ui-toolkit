@@ -52,26 +52,6 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             rotation: 180
         }
-
-        states: [
-            State {
-                name: "enabled"
-                when: backButton.enabled
-                PropertyChanges { target: backButton; opacity: 1.0 }
-            }, State {
-                name: "disabled"
-                when: !backButton.enabled
-                PropertyChanges { target: backButton; opacity: 0.5 }
-            }
-        ]
-
-        transitions: Transition {
-            PropertyAnimation {
-                target: backButton
-                properties: "opacity"
-                duration: 100
-            }
-        }
     }
 
     TextCustom {
