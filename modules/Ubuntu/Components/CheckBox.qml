@@ -14,8 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME(loicm) The component copies code from Button.qml, though I guess it
-//     could be reused quite easily. I'll need to figure that out.
+// FIXME(loicm) The component copies code from Button.qml and
+//     AbstractButton.qml, though I guess it could be reused quite easily. I'll
+//     need to figure that out.
 
 import QtQuick 1.1
 import Qt.labs.shaders 1.0
