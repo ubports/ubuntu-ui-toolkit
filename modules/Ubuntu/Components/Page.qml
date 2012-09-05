@@ -31,7 +31,7 @@ Item {
     /*!
       \preliminary
       The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
+      Either ti tle or \l iconSource, or both must be defined.
      */
     property string title
 

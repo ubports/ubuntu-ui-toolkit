@@ -114,7 +114,10 @@ Item {
       Push a page to the stack.
      */
     function push(page) {
-        if (page.__isPage !== true) return;
+        if (page.__isPage !== true) {
+            print("WARNING: Trying to push an object to the PageStack that is not a Page. Ignoring.");
+            return;
+        }
         if (Stack.stack.size() > 0) Stack.stack.top().active = false;
         Stack.stack.push(page);
         page.contentsParent = pageContents;
@@ -131,7 +134,10 @@ Item {
         if (Stack.stack.size() > 1) {
             Stack.stack.top().active = false;
             Stack.stack.pop();
+        } else {
+            print("WARNING: Trying to pop a PageStack with "+Stack.stack.size()+" Pages. Ignoring.");
         }
+
         Stack.stack.top().active = true;
         contents.updateToolbar();
     }
