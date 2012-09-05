@@ -24,7 +24,8 @@ import Qt.labs.shaders 1.0
     \qmlclass CheckBox
     \inqmlmodule Ubuntu.Components 0.1
     \brief CheckBox is a component with two states, checked or unchecked. It can
-    be used to set boolean options.
+    be used to set boolean options. The behavior is the same as \l Switch, the
+    only difference is the graphical style.
 
     \b{This component is under heavy development.}
 

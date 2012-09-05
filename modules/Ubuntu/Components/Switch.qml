@@ -24,7 +24,7 @@ import Qt.labs.shaders 1.0
     \qmlclass Switch
     \inqmlmodule Ubuntu.Components 0.1
     \brief Switch is a component with two states, checked or unchecked. It can
-    be used to set boolean options. The behavior is the same as CheckBox, the
+    be used to set boolean options. The behavior is the same as \l CheckBox, the
     only difference is the graphical style.
 
     \b{This component is under heavy development.}
