@@ -28,11 +28,7 @@ Template {
 
             TextField {
                 placeholderText: "simple text field"
-                onAccepted: editedText.text = text
-            }
-            TextCustom { text: "edited text:" }
-            TextCustom {
-                id: editedText
+                hasClearButton: false
             }
         }
 
@@ -40,29 +36,63 @@ Template {
             title: "Clear button"
 
             TextField {
-                placeholderText: "clear always shown"
-                hasClearButton: true
+                placeholderText: "type to show clear button"
+                text: "sample text"
             }
         }
 
         TemplateRow {
-            title: "Clear button"
+            title: "Password"
 
             TextField {
-                placeholderText: "type text to show clear button"
-                hasClearButton: true
-                alwaysShowClearButton: false
+                placeholderText: "password with echo"
+                echoMode: TextInput.Password
+
             }
         }
 
         TemplateRow {
-            title: "Autoclear"
+            title: "Password"
 
             TextField {
-                placeholderText: "hint text"
-                text: "This content will be cleared once focused"
-                hasClearButton: true
-                clearsOnBeginEditing: true
+                placeholderText: "password no echo"
+                echoMode: TextInput.NoEcho
+
+            }
+        }
+
+        TemplateRow {
+            title: "Password"
+
+            TextField {
+                placeholderText: "password echo on editing"
+                echoMode: TextInput.PasswordEchoOnEdit
+
+            }
+        }
+
+        TemplateRow {
+            title: "Overlaid"
+
+            TextField {
+
+                leftView: Image {
+                    source: "call_icon.png"
+                    smooth: true
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("click")
+                    }
+                }
+                rightView: Image {
+                    source: "avatar_contacts_list.png"
+                    smooth: true
+                    height: parent.height - 4
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("clack")
+                    }
+                }
             }
         }
     }

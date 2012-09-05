@@ -30,19 +30,28 @@ import "fontUtils.js" as FontUtils
     \qml
     Item {
         TextField {
-            id: input
             placeholderText: "hint text"
         }
 
         TextField {
-            id: inputWithClear
             hasClearButton: true
             alwaysShowClearButton: false
         }
 
         TextField {
-            id: autoClear
             clearsOnBeginEditing: true
+        }
+
+        TextField {
+            leftView: Image {
+                height: parent.height
+                width: height
+                source: "something.png"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: doSomething()
+                }
+            }
         }
     }
     \endqml
@@ -50,12 +59,13 @@ import "fontUtils.js" as FontUtils
 FocusScope {
     id: control
 
-    implicitWidth: 200
-    implicitHeight: 30
+    //TODO check this!!!
+    width: 200
+    height: 30
 
     /*!
       \preliminary
-      Text that appear if there is no focus and no content on the component.
+      Text that appears when there is no focus and no content on the component.
     */
     property alias placeholderText: hint.text
 
@@ -63,31 +73,28 @@ FocusScope {
       \preliminary
       Specifies whether the control has a clear button on the right corner or not.
     */
-    property bool hasClearButton: false
-
-    /*!
-      \preliminary
-      This property controls the visibility of the clear button. If set, the button
-      will be shown no matter of its content and state. If reset, the button will be
-      shown only if the control is focused and there is some text in it.
-
-      Default is true.
-    */
-    property bool alwaysShowClearButton: true
-
-    /*!
-      \preliminary
-      Specifies whether to clear the editor's content when focused.
-
-      Default is false.
-    */
-    property bool clearsOnBeginEditing: false
+    property bool hasClearButton: true
 
     /*!
       \preliminary
       Component to be shown and used instead of the default On Screen Keyboard.
     */
     property Component customInputPanel
+
+    /*!
+      \preliminary
+      Overlaid component that can be set for the left side of the TextField,
+      e.g.showing a magnifier to implement search functionality.
+    */
+    property alias leftView: leftPane.data
+
+    /*!
+      \preliminary
+      Overlaid component that can be set for the right side of the TextField,
+      e.g.showing a CAPS LOCK or NUM LOCK indication. The overlaid components
+      will be placed right after the clear button.
+    */
+    property alias rightView: rightPane.data
 
     // aliased properties from TextInput
     /*!
@@ -101,32 +108,9 @@ FocusScope {
 
     /*!
       \preliminary
-      Returns true if the TextField is writable and the content of the clipboard
-      is suitable for pasting into the TextField.
-    */
-    property alias canPaste: editor.canPaste
-
-    /*!
-      \preliminary
       The position of the cursor in the TextField.
     */
     property alias cursorPosition: editor.cursorPosition
-
-    /*!
-      \preliminary
-      Set to true when the TextField shows a cursor.
-    */
-    property alias cursorVisible: editor.cursorVisible
-
-    /*!
-      \preliminary
-      This is the text displayed in the TextField.
-
-      If echoMode is set to TextInput::Normal, this holds the same value as the
-      TextInput::text property. Otherwise, this property holds the text visible to
-      the user, while the text property holds the actual entered text.
-    */
-    property alias displayText: editor.displayText
 
     /*!
       \preliminary
@@ -139,14 +123,6 @@ FocusScope {
         editing, otherwise displays asterisks.
     */
     property alias echoMode: editor.echoMode
-
-    /*!
-      \preliminary
-      Sets the horizontal alignment of the text within the TextField item's width and
-      height. By default, the text alignment follows the natural alignment of the text,
-      for example text that is read from left to right will be aligned to the left.
-    */
-    property alias horizontalAlignment: editor.horizontalAlignment
 
     /*!
       \preliminary
@@ -179,29 +155,6 @@ FocusScope {
 
     /*!
       \preliminary
-      Specifies how text should be selected using a mouse.
-
-      - TextInput.SelectCharacters - The selection is updated with individual
-        characters. (Default)
-      - TextInput.SelectWords - The selection is updated with whole words.
-
-      This property only applies when selectByMouse is true.
-    */
-    property alias mouseSelectionMode: editor.mouseSelectionMode
-
-    /*!
-      \preliminary
-      This is the character displayed when echoMode is set to Password or
-      PasswordEchoOnEdit. By default it is an asterisk.
-
-      If this property is set to a string with more than one character, the
-      first character is used. If the string is empty, the value is ignored
-      and the property is not set.
-    */
-    property alias passwordCharacter: editor.passwordCharacter
-
-    /*!
-      \preliminary
       Sets whether user input can modify the contents of the TextField.
 
       If readOnly is set to true, then user input will not affect the
@@ -209,16 +162,6 @@ FocusScope {
       will still work.
     */
     property alias readOnly: editor.readOnly
-
-    /*!
-      \preliminary
-      Defaults to false.
-
-      If true, the user can use the mouse to select text in some platform-specific
-      way. Note that for some platforms this may not be an appropriate interaction
-      (eg. may conflict with how the text needs to behave inside a Flickable).
-    */
-    property alias selectByMouse: editor.selectByMouse
 
     /*!
       \preliminary
@@ -243,20 +186,6 @@ FocusScope {
       selectAll(), or selectWord().
     */
     property alias selectionEnd: editor.selectionEnd
-
-    /*!
-      \preliminary
-      This property holds whether the text is smoothly scaled or transformed.
-
-      Smooth filtering gives better visual quality, but is slower. If the item
-      is displayed at its natural size, this property has no visual or performance
-      effect.
-
-      Note: Generally scaling artifacts are only visible if the item is stationary
-      on the screen. A common pattern when animating an item is to disable smooth
-      filtering at the beginning of the animation and reenable it at the conclusion.
-    */
-    property alias smooth: editor.smooth
 
     /*!
       \preliminary
@@ -329,29 +258,6 @@ FocusScope {
     function deselect()
     {
         editor.deselect()
-    }
-
-    /*!
-      \preliminary
-      Returns true if the natural reading direction of the editor text found between
-      positions start and end is right to left.
-    */
-    function isRightToLeft(start, end)
-    {
-        return editor.isRightToLeft(start, end)
-    }
-
-    /*!
-      \preliminary
-      Moves the cursor to position and updates the selection according to the optional
-      mode parameter. (To only move the cursor, set the cursorPosition property.)
-    */
-    function moveCursorSelection(position, mode)
-    {
-        if (mode == undefined)
-            editor.moveCursorSelection(position)
-        else
-            editor.moveCursorSelection(position, mode)
     }
 
     /*!
@@ -440,14 +346,25 @@ FocusScope {
         // array of borders in left, top, right, bottom order
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
-        property color textColor: "#757373"
+        property color textColor: "#323030"
+        property color hintColor: Qt.lighter(textColor, 1.5)
         property string fontFize: "medium"
         property real clearButtonSpacing: 4.0
         property bool textChanged: false
+        property real spacing: 5
+        //selection properties
+        property bool selectionMode: false
+        property int selectionStart: 0
+        property int selectionEnd: 0
+
+        function leftMargin()
+        {
+            return leftPane.width + 1
+        }
 
         function rightMargin()
         {
-            return (clearButton.visible) ? clearButton.width + clearButtonSpacing : 0
+            return ((clearButton.visible) ? clearButton.width + clearButtonSpacing + 1 : 0) + rightPane.width
         }
 
         function showInputPanel()
@@ -466,6 +383,11 @@ FocusScope {
                 editor.closeSoftwareInputPanel()
             }
         }
+        // reset selection
+        function resetEditorSelection(mouseX)
+        {
+            editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX)
+        }
     }
 
     // frame
@@ -481,19 +403,60 @@ FocusScope {
             bottom: internal.frameBorders[3]
         }
 
+        //left pane
+        Item {
+            id: leftPane
+            z: Number.MAX_VALUE
+            anchors {
+                left: parent.left
+                leftMargin: internal.spacing
+                verticalCenter: parent.verticalCenter
+            }
+            // the left pane width depends on its children width
+            height: parent.height
+            width: childrenRect.width
+            onChildrenChanged: {
+                // reparenting
+                for (var i = 0; i < children.length; i++) {
+                    children[i].parent = leftPane
+                    children[i].anchors.verticalCenter = verticalCenter
+                }
+            }
+        }
+
+        // right pane
+        Item {
+            id: rightPane
+            z: Number.MAX_VALUE
+            anchors {
+                right: parent.right
+                rightMargin: internal.spacing
+                verticalCenter: parent.verticalCenter
+            }
+            // the left pane width depends on its children width
+            height: parent.height
+            width: childrenRect.width
+            onChildrenChanged: {
+                // reparenting
+                for (var i = 0; i < children.length; i++) {
+                    children[i].parent = rightPane
+                    children[i].anchors.verticalCenter = verticalCenter
+                }
+            }
+        }
+
         //clear button
         Image {
             id: clearButton
             z: Number.MAX_VALUE
             anchors {
-                right: parent.right
-                rightMargin: 5
+                right: rightPane.left
+                rightMargin: internal.spacing
                 verticalCenter: parent.verticalCenter
             }
             source: (control.hasClearButton) ? internal.clearImage : ""
             visible: control.hasClearButton &&
-                        (control.alwaysShowClearButton ||
-                            (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing)))
+                        (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
             smooth: true
             fillMode: Image.PreserveAspectFit
             width: sourceSize.width
@@ -503,7 +466,7 @@ FocusScope {
                 anchors{
                     fill: parent
                     // need to enlarge the sensing area
-                    margins: -5
+                    margins: -internal.spacing
                 }
                 onClicked:editor.text = ""
             }
@@ -512,19 +475,20 @@ FocusScope {
         // hint text
         TextCustom {
             id: hint
-            color: Qt.lighter(internal.textColor, 1.3)
+            color: internal.hintColor
             font.italic: true
             verticalAlignment: Text.AlignVCenter
             fontSize: "medium"
             anchors {
                 fill: parent
-                leftMargin: internal.frameBorders[0]
+                leftMargin: internal.frameBorders[0] + internal.leftMargin()
                 topMargin: internal.frameBorders[1]
                 rightMargin: internal.frameBorders[2] + internal.rightMargin()
                 bottomMargin: internal.frameBorders[3]
             }
             elide: Text.ElideRight
-            visible: (editor.text == "") && !editor.activeFocus
+            // hint is shown till user types something in the field
+            visible: (editor.text == "") && !editor.inputMethodIsComposing
         }
 
         // text input
@@ -535,25 +499,25 @@ FocusScope {
             anchors {
                 left: parent.left
                 right: parent.right
-                leftMargin: internal.frameBorders[0]
+                leftMargin: internal.frameBorders[0] + internal.leftMargin()
                 rightMargin: internal.frameBorders[2] + internal.rightMargin()
                 verticalCenter: parent.verticalCenter
             }
             color: internal.textColor
             clip: true
+            //selectByMouse: true
+
             // TODO: font family to be defined
             font.pixelSize: FontUtils.sizeToPixels(internal.fontFize)
 
             onTextChanged: internal.textChanged = true
 
-            // OSK/SIP handling
+            // virtual keyboard/software input panel handling
             activeFocusOnPress: false
             onActiveFocusChanged: {
                 if (activeFocus) {
                     internal.showInputPanel()
                     internal.textChanged = false
-                    if (clearsOnBeginEditing)
-                        editor.text = ""
                 } else {
                     internal.hideInputPanel()
                     // emit accepted signal is changed
@@ -561,13 +525,62 @@ FocusScope {
                         control.accepted()
                 }
             }
+
+            // handle virtual keyboard and cursor positioning, as the MouseArea overrides
+            // those functionalities of the TextInput
             MouseArea {
                 id: virtualKbdHandler
                 anchors.fill: parent
-                onClicked: if (!control.activeFocus) control.forceActiveFocus()
+                hoverEnabled: true
+
+                onClicked: {
+                    // activate control
+                    if (!control.activeFocus) {
+                        control.forceActiveFocus()
+                        // set cursor position if no selection was previously set
+                        if (internal.selectionEnd == internal.selectionStart)
+                            editor.cursorPosition = editor.positionAt(mouse.x)
+                        else
+                            editor.select(internal.selectionStart, internal.selectionEnd)
+                    } else if (!internal.selectionMode){
+                        // reset selection and move cursor unde mouse click
+                        internal.resetEditorSelection(mouse.x)
+                    } else if (internal.selectionMode)
+                        // reset selection mode (onReleased is triggered prior to onClicked
+                        // and resetting selection mode there would cause to enter in the\
+                        // previous if-clause
+                        internal.selectionMode = false
+                }
+
+                onDoubleClicked: {
+                    // select word under doubletap
+                    if (!control.activeFocus)
+                        return
+                    editor.selectWord()
+                    // update selection boundaries, except cursorPosition
+                    internal.selectionEnd = editor.selectionEnd
+                    internal.selectionStart = editor.selectionStart
+
+                }
+                onPressed: {
+                    // don't do anything while the control is inactive
+                    if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
+                        return
+                    if (internal.selectionEnd == internal.selectionStart) {
+                        internal.resetEditorSelection(mouse.x)
+                        internal.selectionMode = true
+                    }
+
+                }
+                onPositionChanged: {
+                    if (!editor.activeFocus || !internal.selectionMode)
+                        return
+                    // update selectionEnd
+                    internal.selectionEnd = editor.positionAt(mouse.x)
+                    editor.select(internal.selectionStart, internal.selectionEnd)
+                }
             }
         }
     }
-
     Component.onCompleted: editor.accepted.connect(control.accepted)
 }
