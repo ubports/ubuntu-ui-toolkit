@@ -1,6 +1,6 @@
 Before running the demos, ensure that the QML_IMPORT_PATH
 variable is set so that the Ubuntu components can be found.
-   
+
 This can be done by running:
 source export_modules_dir.sh
 from the root directory of this repository
