@@ -51,12 +51,6 @@ import Ubuntu.Components 0.1
                 progression: true
                 onClicked: control.clicked()
             }
-            ListItem.Standard {
-                control: Button {
-                    text: "Big control"
-                    anchors.fill: parent
-                }
-            }
         }
     \endqml
     \b{This component is under heavy development.}
@@ -88,12 +82,9 @@ Base {
     /*!
       \preliminary
       An optional control that is displayed inside the list item.
-      If \l text is specified, then the width of the control must be fixed
-      in order to determine the layout of the list item.
-      If no \l text is given, the control's parent will fill the full
-      space available inside the list item, taking into account a possible
-      icon and progression, and the control may be anchored to fill its parent.
-      \qmlproperty Item control.
+      The width of the control must be specified in order to determine
+      the layout of the list item.
+
       The mouseArea of the control will be set to the full Standard list item if
       there is no \l progression, or only the part left of the split, if there is a
       \l progression.
@@ -103,22 +94,23 @@ Base {
     // If there is a split, disable full list item highlighting on pressed,
     // and introduce two Rectangles that higlight the list item only on one
     // side of the split.
-    highlightWhenPressed: !progressionHelper.showSplit
+    // If there is a control, the controlArea covers the listItem's mouseArea,
+    // so in that case use the highlights below when pressed
+    highlightWhenPressed: !listItem.control
     Rectangle {
         id: controlHighlight
-        visible: progressionHelper.showSplit && controlArea.pressed
+        visible: controlArea.pressed
         anchors.fill: controlArea
         color: "white"
         opacity: 0.7
     }
     Rectangle {
         id: progressionHighlight
-        visible: progressionHelper.showSplit && listItem.pressed
+        visible: listItem.pressed
         anchors.fill: progressionHelper
         color: "white"
         opacity: 0.7
     }
-
     IconVisual {
         id: iconHelper
         anchors {

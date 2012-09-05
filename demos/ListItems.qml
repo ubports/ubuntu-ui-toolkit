@@ -245,6 +245,31 @@ Template {
                             anchors.fill: parent
                         }
                     }
+                    ListItem.Base {
+                        height: 54
+//                        MouseArea {
+//                            anchors.fill: parent
+//                            id: buttonMouseArea
+//                        }
+
+                        Button {
+                            text: "Action"
+                            anchors {
+//                                fill: parent
+                                margins: 5
+                                centerIn: parent
+                            }
+                            width: 200
+                            height: 30
+//                            mouseArea: buttonMouseArea
+                        }
+                    }
+                    ListItem.Standard {
+                        text: "whatever"
+                        Component.onCompleted: {
+                            text = "Doneeeeeeeeeeeeeee"
+                        }
+                    }
                 }
             }
             FadingRectangle {
