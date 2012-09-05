@@ -63,6 +63,7 @@ Item {
     MouseArea {
         id: defaultMouseArea
         anchors.fill: parent
+        enabled: button.mouseArea === defaultMouseArea
     }
 
     /*!

@@ -21,7 +21,8 @@ import Ubuntu.Components 0.1
     \qmlclass Standard
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief The standard list item class. It shows a basic list item
-        with a label (text), and optionally an icon and a progression arrow.
+        with a label (text), and optionally an icon, a progression arrow,
+        and it can have a control.
 
     Examples:
     \qml
@@ -49,7 +50,6 @@ import Ubuntu.Components 0.1
                     onClicked: print("Clicked")
                 }
                 progression: true
-                onClicked: control.clicked()
             }
         }
     \endqml
@@ -91,9 +91,6 @@ Base {
     */
     property alias control: controlContainer.control
 
-    // If there is a split, disable full list item highlighting on pressed,
-    // and introduce two Rectangles that higlight the list item only on one
-    // side of the split.
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
     highlightWhenPressed: !listItem.control
@@ -133,9 +130,9 @@ Base {
         property Item control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
-        width: label.text ? childrenRect.width : undefined
+        width: childrenRect.width
         anchors {
-            left: label.text ? undefined : iconHelper.right
+//            left: label.text ? undefined : iconHelper.right
             right: progressionHelper.left
             top: parent.top
             bottom: parent.bottom
