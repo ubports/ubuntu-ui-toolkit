@@ -1,0 +1,19 @@
+QML Button Mouse Events - iconPosition
+----------------------------------------------------
+button iconPosition
+
+Setup:
+N/A
+
+Actions:  
+#. Set iconSource
+#. Set iconPosition to left
+#. Set iconPosition to right
+
+Expected Result:
+#. iconSource is set and icon is loaded
+#. icon to left of text
+#. icon to right of text
+
+Glossary:
+N/A

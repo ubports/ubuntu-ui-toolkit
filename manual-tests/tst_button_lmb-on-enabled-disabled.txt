@@ -1,0 +1,21 @@
+QML Button Mouse Events - LMB click on Enabled/disabled
+----------------------------------------------------
+Disable button, click button, Enable button, click button
+
+Setup: 
+N/A
+
+Actions:  
+#. Disable Button
+#. Click button
+#. Enable Button
+#. Click button
+
+Expected Result:
+#. button is disabled, color is <<TBA>>
+#. no clicked() signal is emitted
+#. color is color, button is enabled
+#. clicked() signal is emitted
+
+Glossary:
+MLB = Mouse Left Button
