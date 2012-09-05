@@ -191,12 +191,13 @@ Template {
                 selected: listItemTypes.selectedType === "Controls"
                 Component {
                     id: controlExample
-                    Button {
-                        width: 100
-                        text: "Control"
-                        anchors.centerIn: parent
-                        onClicked: print("clicked button")
-                    }
+//                    Button {
+//                        width: 100
+//                        text: "Control"
+//                        anchors.centerIn: parent
+//                        onClicked: print("clicked button")
+//                    }
+                    Switch { }
                 }
                 Column {
                     width: 250
