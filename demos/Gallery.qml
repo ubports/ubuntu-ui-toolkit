@@ -52,7 +52,7 @@ Rectangle {
                 {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
                 {"label": "List Items", "source": "ListItems.qml"},
                 {"label": "Drilldown", "source": ""},
-                {"label": "Switch", "source": ""},
+                {"label": "Switch", "source": "Switches.qml"},
                 {"label": "Check Box", "source": "CheckBoxes.qml"},
                 {"label": "Activity Indicator", "source": "ActivityIndicators.qml"},
                 {"label": "Progress Bar", "source": "ProgressBars.qml"},
