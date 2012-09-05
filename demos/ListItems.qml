@@ -232,6 +232,27 @@ Template {
                     ListItem.Header { text: "Single control" }
                     // TODO: Add more single controls (TextField, Slider) when they become available
                     ListItem.Base {
+                        id: actionListItem
+                        height: actionButton.height + actionButton.anchors.topMargin + actionButton.anchors.bottomMargin
+
+                        Button {
+                            id: actionButton
+                            text: "Button"
+                            anchors {
+                                margins: 10
+                                centerIn: parent
+                            }
+                            width: actionListItem.width - actionButton.anchors.leftMargin - actionButton.anchors.rightMargin
+                            mouseArea: actionListItem.mouseArea
+                            onClicked: print("clickily")
+                        }
+                    }
+
+                    ListItem.Caption {
+                        text: "More to come..."
+                    }
+
+                    ListItem.Base {
                         id: withProgress
                         height: progress.height + progress.anchors.topMargin + progress.anchors.bottomMargin
                         ProgressBar {
@@ -256,22 +277,6 @@ Template {
                         }
                     }
 
-                    ListItem.Base {
-                        id: actionListItem
-                        height: actionButton.height + actionButton.anchors.topMargin + actionButton.anchors.bottomMargin
-
-                        Button {
-                            id: actionButton
-                            text: "Button"
-                            anchors {
-                                margins: 10
-                                centerIn: parent
-                            }
-                            width: actionListItem.width - actionButton.anchors.leftMargin - actionButton.anchors.rightMargin
-                            mouseArea: actionListItem.mouseArea
-                            onClicked: print("clickily")
-                        }
-                    }
                 }
             }
             FadingRectangle {
