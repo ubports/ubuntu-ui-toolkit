@@ -130,8 +130,10 @@ ButtonWithForeground {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: if (button.darkBorder) return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
-                    else return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+            source: if (button.darkBorder)
+                        return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
+                    else
+                        return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
             border.left: 14; border.top: 17
             border.right: 15; border.bottom: 18
         }

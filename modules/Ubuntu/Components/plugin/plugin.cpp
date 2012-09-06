@@ -19,15 +19,25 @@
 #include "plugin.h"
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/qdeclarative.h>
+
+#include "style.h"
+#include "themeengine.h"
+#include "styleditem.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    Q_UNUSED(uri);
+    qmlRegisterType<Style>(uri, 0, 1, "Style");
+    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+    // add theme engine
+    engine->rootContext()->setContextProperty("theme", ThemeEngine::instance());
+    ThemeEngine::initialize(engine);
 }
 
 Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)

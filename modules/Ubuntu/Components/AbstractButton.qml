@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import "." 0.1
 
 /*!
     \qmlabstract AbstractButton
@@ -26,7 +27,8 @@ import QtQuick 1.1
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-Item {
+//Item {
+StyledItem {
     id: button
 
     /*!
