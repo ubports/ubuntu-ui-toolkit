@@ -32,7 +32,7 @@ import "ListItems" as ListItem
         id: pageStack
         anchors.fill: parent
 
-        Page {
+        initialPage: Page {
             id: firstPage
             title: "Colors"
             contents: PageList {
