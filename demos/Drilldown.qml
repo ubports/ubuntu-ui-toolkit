@@ -34,73 +34,73 @@ Template {
 
             width: 300
 
+            initialPage: rootPage
+
             Page {
+                id: rootPage
                 title: "Root page"
 
-                contents: Column {
-                    anchors.fill: parent
+                contents: PageList {
+                    pageStack: stack
+                    Page {
+                        title: "Page 1"
+                        contents: PageList {
+                            pageStack: stack
 
-                    PageList {
-                        pageStack: stack
-                        Page {
-                            title: "Page 1"
-                            contents: PageList {
-                                pageStack: stack
-
-                                Page {
-                                    title: "Page 1.1"
-                                    contents: TextCustom { text: "Example page 1.1" }
-                                }
-                                Page {
-                                    title: "Page 1.2"
-                                    contents: TextCustom { text: "Example page 1.2" }
-                                }
-                                Page {
-                                    title: "Page 1.3"
-                                    contents: TextCustom { text: "Example page 1.3" }
-                                }
+                            Page {
+                                title: "Page 1.1"
+                                contents: TextCustom { text: "Example page 1.1" }
+                            }
+                            Page {
+                                title: "Page 1.2"
+                                contents: TextCustom { text: "Example page 1.2" }
+                            }
+                            Page {
+                                title: "Page 1.3"
+                                contents: TextCustom { text: "Example page 1.3" }
                             }
                         }
-                        Page {
-                            title: "Page 2"
-                            contents: PageList {
-                                pageStack: stack
+                    }
+                    Page {
+                        title: "Page 2"
+                        contents: PageList {
+                            pageStack: stack
 
-                                Page {
-                                    title: "Page 2.1"
-                                    contents: TextCustom { text: "Example page 2.1" }
-                                }
-                                Page {
-                                    title: "Page 2.2"
-                                    contents: TextCustom { text: "Example page 2.2" }
-                                }
-                                Page {
-                                    title: "Page 2.3"
-                                    contents: TextCustom { text: "Example page 2.3" }
-                                }
+                            Page {
+                                title: "Page 2.1"
+                                contents: TextCustom { text: "Example page 2.1" }
+                            }
+                            Page {
+                                title: "Page 2.2"
+                                contents: TextCustom { text: "Example page 2.2" }
+                            }
+                            Page {
+                                title: "Page 2.3"
+                                contents: TextCustom { text: "Example page 2.3" }
                             }
                         }
-                        Page {
-                            title: "Page 3"
-                            contents: PageList {
-                                pageStack: stack
+                    }
+                    Page {
+                        title: "Page 3"
+                        contents: PageList {
+                            pageStack: stack
 
-                                Page {
-                                    title: "Page 3.1"
-                                    contents: TextCustom { text: "Example page 3.1" }
-                                }
-                                Page {
-                                    title: "Page 3.2"
-                                    contents: TextCustom { text: "Example page 3.2" }
-                                }
-                                Page {
-                                    title: "Page 3.3"
-                                    contents: TextCustom { text: "Example page 3.3" }
-                                }
+                            Page {
+                                title: "Page 3.1"
+                                contents: TextCustom { text: "Example page 3.1" }
+                            }
+                            Page {
+                                title: "Page 3.2"
+                                contents: TextCustom { text: "Example page 3.2" }
+                            }
+                            Page {
+                                title: "Page 3.3"
+                                contents: TextCustom { text: "Example page 3.3" }
                             }
                         }
                     }
                 }
+
             }
         }
     }

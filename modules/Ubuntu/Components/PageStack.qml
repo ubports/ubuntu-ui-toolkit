@@ -99,10 +99,11 @@ Item {
      */
     property alias showToolbar: toolbar.visible
 
-    default property Item rootPage
-    onRootPageChanged: {
+//    default property Item rootPage
+    property Item initialPage
+    onInitialPageChanged: {
         Stack.stack.clear();
-        pageStack.push(rootPage);
+        pageStack.push(initialPage);
     }
 
     // FIXME: After switching to QtQuick2, use a var stack property and instead of
