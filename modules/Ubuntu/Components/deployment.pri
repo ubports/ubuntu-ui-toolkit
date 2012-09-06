@@ -1,7 +1,5 @@
-# deployment rules for the plugin
+uri = Ubuntu.Components
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
-target.path = $$installPath
-INSTALLS += target
 
 # Components
 QML_FILES = $$system(ls *.qml)
