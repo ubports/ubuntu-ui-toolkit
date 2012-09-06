@@ -1,3 +1,4 @@
+plugin UbuntuComponents
 Button 0.1 Button.qml
 ButtonWithForeground 0.1 ButtonWithForeground.qml
 HLine 0.1 HLine.qml
@@ -9,6 +10,8 @@ PageContainer 0.1 PageContainer.qml
 PageList 0.1 PageList.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
+Switch 0.1 Switch.qml
+CheckBox 0.1 CheckBox.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 internal Toolbar Toolbar.qml

@@ -1,0 +1,23 @@
+QML Button Mouse Events - LMB Press, out, in, release
+----------------------------------------------------
+Move mouse on top of Button, then press, move out, move in, then release
+
+Setup: 
+N/A
+
+Actions:  
+#. Move mouse in
+#. Press MLB
+#. Move mouse out
+#. Move mouse in
+#. Release MLB
+
+Expected Result:
+#. mouseEnter emitted, state is hovered
+#. color is the pressedColor, no clicked() signal emitted, state is pressed
+#. color is the color, mouseLeave emitted, state is <<TBA>>
+#. color is the pressedColor, mouseEnter emitted, state is pressed
+#. color is the color, clicked() signal is emitted, state is <<TBA>>
+
+Glossary:
+MLB = Mouse Left Button
