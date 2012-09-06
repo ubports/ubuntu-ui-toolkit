@@ -204,10 +204,8 @@ Template {
                     width: 250
                     ListItem.Header { text: "Controls" }
                     ListItem.Standard {
-                        id: withcontrol
                         text: "Label"
                         control: controlExample.createObject(parent)
-
                     }
                     ListItem.Standard {
                         enabled: false
@@ -231,6 +229,7 @@ Template {
                         control: controlExample.createObject(parent)
                     }
                     ListItem.Header { text: "Single control" }
+
                     // TODO: Add more single controls (TextField, Slider) when they become available
                     ListItem.SingleControl {
                         control: Button {
