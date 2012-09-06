@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = UbuntuComponents
+TARGET = ../UbuntuComponents
 QT += declarative core gui
 CONFIG += qt plugin no_keywords
 
