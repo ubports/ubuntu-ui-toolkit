@@ -11,3 +11,4 @@ ValueSelector 0.1 ValueSelector.qml
 SingleValue 0.1 SingleValue.qml
 Standard 0.1 Standard.qml
 Subtitled 0.1 Subtitled.qml
+SingleControl 0.1 SingleControl.qml
