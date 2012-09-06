@@ -16,3 +16,8 @@ SOURCES += plugin.cpp \
     style.cpp \
     themeengine.cpp \
     styleditem.cpp
+
+# deployment rules for the plugin
+installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+target.path = $$installPath
+INSTALLS += target
