@@ -7,7 +7,15 @@
 # This special exception was added by Craig Small in version 0.37 of dh-make.
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
+DIST:=$(shell grep -e "^DISTRIB_CODENAME=" /etc/lsb-release|sed s/.*=//g)
+override_dh_install:
+ifeq ($(DIST),precise)
+	echo "usr/lib/qt4/imports" > debian/qt-components-ubuntu.install
+else
+	echo "usr/lib/*/qt4/imports" > debian/qt-components-ubuntu.install
+endif
+	dh_install --fail-missing
 
 %:
 	dh $@ 
