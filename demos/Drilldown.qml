@@ -34,10 +34,7 @@ Template {
 
             width: 300
 
-            initialPage: rootPage
-
-            Page {
-                id: rootPage
+            initialPage: Page {
                 title: "Root page"
 
                 contents: PageList {
@@ -100,7 +97,6 @@ Template {
                         }
                     }
                 }
-
             }
         }
     }
