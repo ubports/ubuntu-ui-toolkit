@@ -36,6 +36,7 @@ import Ubuntu.Components.ListItems 0.1
                     }
                     text: "Large button"
                 }
+            }
         }
     \endqml
 
