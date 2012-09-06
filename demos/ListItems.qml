@@ -206,7 +206,7 @@ Template {
                     ListItem.Standard {
                         id: withcontrol
                         text: "Label"
-                            control: controlExample.createObject(parent)
+                        control: controlExample.createObject(parent)
 
                     }
                     ListItem.Standard {
