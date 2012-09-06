@@ -55,4 +55,5 @@ Item {
       \internal
      */
     Component.onCompleted: __updatePages()
+    onChildrenChanged: if (Component.progress === Component.Ready)__updatePages()
 }
