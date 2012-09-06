@@ -29,6 +29,8 @@ import "stack.js" as Stack
         id: pageStack
         anchors.fill: parent
 
+        initialPage: firstPage
+
         Page {
             id: firstPage
             title: "Optional title"
@@ -48,39 +50,39 @@ import "stack.js" as Stack
                     }
                 }
             }
+        }
 
-            Page {
-                id: orange
-                title: "Orange"
-                contents: Rectangle {
-                    color: "orange"
-                    width: 250
-                    height: 250
+        Page {
+            id: orange
+            title: "Orange"
+            contents: Rectangle {
+                color: "orange"
+                width: 250
+                height: 250
+                anchors.centerIn: parent
+                Button {
+                    text: "go back"
                     anchors.centerIn: parent
-                    Button {
-                        text: "go back"
-                        anchors.centerIn: parent
-                        onClicked: pageStack.pop()
-                    }
+                    onClicked: pageStack.pop()
                 }
             }
+        }
 
-            Page {
-                id: blue
-                title: "Blue"
-                contents: Rectangle {
-                    id: pink
-                    color: "darkblue"
-                    radius: 5
-                    width: 150
-                    height: 150
+        Page {
+            id: blue
+            title: "Blue"
+            contents: Rectangle {
+                id: pink
+                color: "darkblue"
+                radius: 5
+                width: 150
+                height: 150
+                anchors.centerIn: parent
+                Button {
+                    text: "back"
                     anchors.centerIn: parent
-                    Button {
-                        text: "back"
-                        anchors.centerIn: parent
-                        onClicked: pageStack.pop()
-                        darkBorder: true
-                    }
+                    onClicked: pageStack.pop()
+                    darkBorder: true
                 }
             }
         }
@@ -99,7 +101,11 @@ Item {
      */
     property alias showToolbar: toolbar.visible
 
-//    default property Item rootPage
+
+    /*!
+      \preliminary
+      The initial page on the stack.
+     */
     property Item initialPage
     onInitialPageChanged: {
         Stack.stack.clear();
