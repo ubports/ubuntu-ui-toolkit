@@ -8,13 +8,23 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+
+# Get ubuntu distribution codename
 DIST:=$(shell grep -e "^DISTRIB_CODENAME=" /etc/lsb-release|sed s/.*=//g)
+
+# we need to override dh_install as libqt4-dev has a packaging bug in precise
 override_dh_install:
+
+# check if we have precise (12.04 LTS)
 ifeq ($(DIST),precise)
 	echo "usr/lib/qt4/imports" > debian/qt-components-ubuntu.install
+
+# some other
 else
 	echo "usr/lib/*/qt4/imports" > debian/qt-components-ubuntu.install
 endif
+
+# execute dh_install and fail if something was not packaged
 	dh_install --fail-missing
 
 %:
