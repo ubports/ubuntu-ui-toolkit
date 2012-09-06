@@ -140,7 +140,7 @@ Base {
         }
         onControlChanged: {
             control.parent = controlContainer;
-            control.mouseArea = controlArea;
+            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
         }
     }
     MouseArea {
