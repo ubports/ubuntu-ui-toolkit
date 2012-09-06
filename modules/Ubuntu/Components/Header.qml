@@ -17,20 +17,20 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass Toolbar
+    \qmlclass Header
     \inqmlmodule Ubuntu.Components 0.1
-    \brief Toolbar used by \l PageStack
+    \brief Header used by \l PageStack
 */
 
 Rectangle {
-    id: toolbar
+    id: header
 
     color: "#666666"
 
     height: visible ? 40 : 0
 
     property alias showBackButton: backButton.visible
-    property alias title: toolbarTitle.text
+    property alias title: headerTitle.text
 
     property Item pageStack
 
@@ -44,7 +44,7 @@ Rectangle {
         }
         width: visible ? backImage.width : 0
         visible: false
-        onClicked: if (toolbar.pageStack) pageStack.pop()
+        onClicked: if (header.pageStack) pageStack.pop()
 
         Image {
             id: backImage
@@ -56,7 +56,7 @@ Rectangle {
     }
 
     TextCustom {
-        id: toolbarTitle
+        id: headerTitle
         anchors {
             left: backButton.right
             top: parent.top

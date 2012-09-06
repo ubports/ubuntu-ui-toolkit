@@ -96,10 +96,10 @@ Item {
     width: parent ? parent.width : undefined
     /*!
       \preliminary
-      Show a toolbar at the top of the page stack which shows a back button
+      Show a header bar at the top of the page stack which shows a back button
       to pop the top, and the title of the current page on top.
      */
-    property alias showToolbar: toolbar.visible
+    property alias showHeader: header.visible
 
 
     /*!
@@ -129,7 +129,7 @@ Item {
         Stack.stack.push(page);
         page.contentsParent = pageContents;
         page.active = true;
-        contents.updateToolbar();
+        contents.updateHeader();
     }
 
     /*!
@@ -146,7 +146,7 @@ Item {
         }
 
         Stack.stack.top().active = true;
-        contents.updateToolbar();
+        contents.updateHeader();
     }
 
     Item {
@@ -154,8 +154,8 @@ Item {
         parent: pageStack
         anchors.fill: parent
 
-        Toolbar {
-            id: toolbar
+        Header {
+            id: header
             anchors {
                 left: parent.left
                 right: parent.right
@@ -172,21 +172,21 @@ Item {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                top: toolbar.bottom
+                top: header.bottom
             }
         }
 
-        function updateToolbar() {
+        function updateHeader() {
             var stackSize = Stack.stack.size();
             if (stackSize > 1) {
-                toolbar.showBackButton = true
+                header.showBackButton = true
             } else {
-                toolbar.showBackButton = false
+                header.showBackButton = false
             }
             if (stackSize > 0) {
-                toolbar.title = Stack.stack.top().title;
+                header.title = Stack.stack.top().title;
             } else {
-                toolbar.title = "";
+                header.title = "";
             }
         }
     }
