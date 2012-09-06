@@ -22,7 +22,8 @@ import Ubuntu.Components 0.1
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief The standard list item class. It shows a basic list item
         with a label (text), and optionally an icon, a progression arrow,
-        and it can have a control.
+        and it can have an embedded Item (\l control) that can be used
+        for including Buttons, Switches etc. inside the list item.
 
     Examples:
     \qml

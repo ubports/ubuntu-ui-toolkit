@@ -55,19 +55,18 @@ Base {
      */
     property Item control
 
-    // FIXME: Find out why this doesn't work with a QtObject
-    Item {
-        id: internals
 
-        function updateControl() {
-            if (control) {
-                control.parent = singleControlListItem;
-                control.anchors.centerIn = singleControlListItem;
-                control.mouseArea = singleControlListItem.mouseArea;
-            }
+    /*!
+      \internal
+     */
+    function __updateControl() {
+        if (control) {
+            control.parent = singleControlListItem;
+            control.anchors.centerIn = singleControlListItem;
+            control.mouseArea = singleControlListItem.mouseArea;
         }
     }
 
-    onControlChanged: internals.updateControl()
-    Component.onCompleted: internals.updateControl()
+    onControlChanged: __updateControl()
+    Component.onCompleted: __updateControl()
 }
