@@ -33,7 +33,6 @@ import "ListItems" as ListItem
         anchors.fill: parent
 
         initialPage: Page {
-            id: firstPage
             title: "Colors"
             contents: PageList {
                 anchors.fill: parent
