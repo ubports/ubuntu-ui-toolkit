@@ -58,7 +58,7 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-PageContainer {
+TabContainer {
     id: tabs
 
     /*!
@@ -152,7 +152,7 @@ PageContainer {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabs.pages
+                model: tabs.tabs
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -181,13 +181,13 @@ PageContainer {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabs.pages.length; i++) {
-                tab = tabs.pages[i]
+            for (var i = 0; i < tabs.tabs.length; i++) {
+                tab = tabs.tabs[i]
                 if (i == tabs.selectedTabIndex) {
-                    tab.contentsParent = contentsContainer;
-                    tab.active = true;
+                    tab.page.contentsParent = contentsContainer;
+                    tab.page.active = true;
                 } else {
-                    tab.active = false;
+                    tab.page.active = false;
                 }
             }
         }

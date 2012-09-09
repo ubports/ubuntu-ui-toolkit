@@ -21,40 +21,50 @@ Template {
     title: "Tabs"
 
     Tabs {
-        Page {
+        Tab {
             title: "Tab 1"
-            contents: Rectangle {
-                color: "#eeeeee"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the first tab."
-                    color: "#757373"
+            page: Page {
+                title: "Tab 1"
+                contents: Rectangle {
+                    color: "#eeeeee"
+                    anchors.fill: parent
+                    TextCustom {
+                        anchors.centerIn: parent
+                        text: "This is the first tab."
+                        color: "#757373"
+                    }
                 }
             }
         }
-        Page {
+        Tab {
             iconSource: "call_icon.png"
-            contents: Rectangle {
-                color: "#e4e4e4"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the second tab."
-                    color: "#757373"
+            page: Page {
+                iconSource: "call_icon.png"
+                contents: Rectangle {
+                    color: "#e4e4e4"
+                    anchors.fill: parent
+                    TextCustom {
+                        anchors.centerIn: parent
+                        text: "This is the second tab."
+                        color: "#757373"
+                    }
                 }
             }
         }
-        Page {
+        Tab {
             title: "Tab 3"
             iconSource: "call_icon.png"
-            contents:  Rectangle {
-                color: "#dddddd"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the third tab."
-                    color: "#757373"
+            page: Page {
+                title: "Tab 3"
+                iconSource: "call_icon.png"
+                contents:  Rectangle {
+                    color: "#dddddd"
+                    anchors.fill: parent
+                    TextCustom {
+                        anchors.centerIn: parent
+                        text: "This is the third tab."
+                        color: "#757373"
+                    }
                 }
             }
         }
