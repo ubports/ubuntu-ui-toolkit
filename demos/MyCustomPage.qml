@@ -8,7 +8,7 @@ Page {
         anchors.fill: parent ? parent : undefined
         TextCustom {
             anchors.centerIn: parent
-            text: "This is an external page.."
+            text: "This is an external page."
             color: "#757373"
         }
     }
