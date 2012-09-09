@@ -180,14 +180,14 @@ TabContainer {
         }
 
         function selectedTabChanged() {
-            var tab;
+            var page;
             for (var i = 0; i < tabs.tabs.length; i++) {
-                tab = tabs.tabs[i]
+                page = tabs.tabs[i].__pageObject
                 if (i == tabs.selectedTabIndex) {
-                    tab.page.contentsParent = contentsContainer;
-                    tab.page.active = true;
+                    page.contentsParent = contentsContainer;
+                    page.active = true;
                 } else {
-                    tab.page.active = false;
+                    page.active = false;
                 }
             }
         }

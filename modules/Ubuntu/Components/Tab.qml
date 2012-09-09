@@ -52,10 +52,16 @@ Item {
 
     property Page __pageObject
 
-    onPageChanged: tab.__pageObject = tab.__initPage(tab.page)
+    onPageChanged: {
+        var pageObject;
+        pageObject = tab.__initPage(tab.page);
+        tab.__pageObject = pageObject;
+    }
 
     // TODO: add properties?
     function __initPage(page) {
+        var containerComponent = tab; //Item.createComponent(tab);
+
         var pageComponent;
         if (page.createObject) {
             // page is defined as a component
@@ -72,13 +78,16 @@ Item {
                 throw new Error("Error while loading page: " + pageComponent.errorString());
             } else {
                 // TODO: add parent (container), and properties
-                pageObject = pageComponent.createObject();
+                pageObject = pageComponent.createObject(containerComponent);
             }
         } else {
             pageObject = page;
         }
 
-        // TODO: re-parent to the container?
-        return page;
+        if (pageObject.parent != containerComponent) {
+            pageObject.parent = containerComponent;
+        }
+
+        return pageObject;
     }
 }
