@@ -24,7 +24,6 @@ Template {
         Tab {
             title: "Tab 1"
             page: Page {
-                title: "Tab 1"
                 contents: Rectangle {
                     color: "#eeeeee"
                     anchors.fill: parent
@@ -39,7 +38,6 @@ Template {
         Tab {
             iconSource: "call_icon.png"
             page: Page {
-                iconSource: "call_icon.png"
                 contents: Rectangle {
                     color: "#e4e4e4"
                     anchors.fill: parent
@@ -55,8 +53,6 @@ Template {
             title: "Tab 3"
             iconSource: "call_icon.png"
             page: Page {
-                title: "Tab 3"
-                iconSource: "call_icon.png"
                 contents:  Rectangle {
                     color: "#dddddd"
                     anchors.fill: parent
