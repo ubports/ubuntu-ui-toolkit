@@ -95,7 +95,7 @@ Item {
             pageObject = page;
         }
 
-        if (pageObject.parent != containerComponent) {
+        if (pageObject.parent !== containerComponent) {
             pageObject.parent = containerComponent;
         }
 

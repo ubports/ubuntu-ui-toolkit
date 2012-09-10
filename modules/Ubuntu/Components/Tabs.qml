@@ -26,23 +26,23 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            Page {
+            Tab {
                 title: "tab 1"
-                contents: Text {
+                page: Text {
                     anchors.centerIn: parent
                     text: "This is the first tab."
                 }
             }
-            Page {
+            Tab {
                 title: "tab 2"
-                contents: Text {
+                page: Text {
                     anchors.centerIn: parent
                     text: "Tab number two."
                 }
             }
-            Page {
+            Tab {
                 title: "tab 3"
-                contents:  Rectangle {
+                page:  Rectangle {
                     id: tab3
                     anchors.fill: parent
                     Text {
@@ -58,7 +58,6 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-//TabContainer {
 Item {
     id: tabs
 
@@ -155,7 +154,7 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: contentsContainer.tabs
+                model: contentsContainer.children
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -172,7 +171,7 @@ Item {
         } // buttonRow
 
         // This is the item that will be the parent of the currently displayed page.
-        TabContainer {
+        Item {
             id: contentsContainer
             anchors {
                 top: buttonRow.bottom
@@ -184,12 +183,10 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < contentsContainer.tabs.length; i++) {
-                tab = contentsContainer.tabs[i]; //tabs.tabs[i];
+            for (var i = 0; i < contentsContainer.children.length; i++) {
+                tab = contentsContainer.children[i];
                 if (i == tabs.selectedTabIndex) {
-//                    if (tab.parent != contentsContainer) tab.parent = contentsContainer;
                     tab.active = true;
-//                    tab.__pageObject.contentsParent = contentsContainer;
                 } else {
                     tab.active = false;
                 }
