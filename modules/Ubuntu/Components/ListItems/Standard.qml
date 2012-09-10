@@ -92,6 +92,12 @@ Base {
     */
     property alias control: controlContainer.control
 
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+     */
+    property alias iconFrame: iconHelper.hasFrame
+
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
     highlightWhenPressed: !listItem.control
