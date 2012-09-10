@@ -29,26 +29,15 @@ import QtQuick 1.1
             Tab {
                 title: "tab 1"
                 page: Text {
-                    anchors.centerIn: parent
                     text: "This is the first tab."
                 }
             }
             Tab {
                 title: "tab 2"
-                iconSource: "icon.png"
-                page: Text {
-                    anchors.centerIn: parent
-                    text: "Tab number two."
-                }
-            }
-            Tab {
-                title: "tab 3"
                 page:  Rectangle {
-                    id: tab3
-                    anchors.fill: parent
                     Text {
                         anchors.centerIn: parent
-                        text: "Colorful tab 3"
+                        text: "Colorful tab."
                     }
                     color: "lightblue"
                 }

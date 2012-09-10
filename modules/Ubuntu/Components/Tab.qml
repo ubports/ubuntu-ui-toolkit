@@ -44,36 +44,54 @@ Item {
      */
     property url iconSource
 
-    property bool __isTab: true
-
     /*!
       \preliminary
       The contents of the page. This can also be a string referring to a Page qml file.
      */
     property variant page
 
+    /*!
+      \internal
+      Specifies whether this tab is the active one. Set by Tabs.
+    */
     property bool active: false
 
-    property Page __pageObject
+    /*!
+      \internal
+      The Item containing the contents of the tab. This can be the same
+      as \l page, if page is an Item, or it can be an object created
+      from a QML file if page is a url. Pages loaded from a file are
+      automatically destroyed when the tab is no longer active.
+    */
+    property Item __pageObject
 
     onPageChanged: {
-        tab.__pageObject = null
+        if (tab.__pageObject && tab.__pageObject !== page) {
+            tab.__pageObject.destroy();
+            tab.__pageObject = null;
+        }
         if (tab.active) tab.__pageObject = tab.__initPage(tab.page);
-        else tab.__pageObject = null;
     }
 
     onActiveChanged: {
         if (!__pageObject && tab.active) {
             __pageObject = __initPage(tab.page);
+            __pageObject.anchors.fill = tab;
         }
         if (__pageObject) __pageObject.visible = tab.active;
+        if (!tab.active &&  __pageObject && __pageObject !== page ) {
+            __pageObject.destroy();
+            __pageObject = null;
+        }
     }
 
-    // TODO: add properties?
+    /*!
+      \internal
+      Initialize __pageObject.
+     */
     function __initPage(page) {
-        var containerComponent = tab; //Item.createComponent(tab);
-
         var pageComponent;
+
         if (page.createObject) {
             // page is defined as a component
             pageComponent = page;
@@ -88,15 +106,14 @@ Item {
             if (pageComponent.status == Component.Error) {
                 throw new Error("Error while loading page: " + pageComponent.errorString());
             } else {
-                // TODO: add parent (container), and properties
-                pageObject = pageComponent.createObject(containerComponent);
+                pageObject = pageComponent.createObject(tab);
             }
         } else {
             pageObject = page;
         }
 
-        if (pageObject.parent !== containerComponent) {
-            pageObject.parent = containerComponent;
+        if (pageObject.parent !== tab) {
+            pageObject.parent = tab;
         }
 
         return pageObject;
