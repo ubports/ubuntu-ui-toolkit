@@ -36,7 +36,7 @@ Template {
                 TextField {
                     id: textField1
                     KeyNavigation.tab: textField2
-                    KeyNavigation.backtab: textField6
+                    KeyNavigation.backtab: textField5
 
                     placeholderText: "simple text field"
                     hasClearButton: false
@@ -78,20 +78,6 @@ Template {
                     KeyNavigation.tab: textField5
                     KeyNavigation.backtab: textField3
 
-                    placeholderText: "password no echo"
-                    echoMode: TextInput.NoEcho
-
-                }
-            }
-
-            TemplateRow {
-                title: "Password"
-
-                TextField {
-                    id: textField5
-                    KeyNavigation.tab: textField6
-                    KeyNavigation.backtab: textField4
-
                     placeholderText: "password echo on editing"
                     echoMode: TextInput.PasswordEchoOnEdit
 
@@ -102,21 +88,19 @@ Template {
                 title: "Overlaid"
 
                 TextField {
-                    id: textField6
+                    id: textField5
                     KeyNavigation.tab: textField1
-                    KeyNavigation.backtab: textField5
+                    KeyNavigation.backtab: textField4
 
                     primaryItem: ButtonWithForeground {
                         iconSource: "call_icon.png"
-                        width: height
-                        height: parent.height - 2
-                        onClicked: console.log("click")
+                        width: 20
                     }
 
                     secondaryItem: ButtonWithForeground {
                         iconSource: "avatar_contacts_list.png"
                         width: height
-                        height: parent.height - 2
+                        height: parent.height - 5
                     }
                 }
             }

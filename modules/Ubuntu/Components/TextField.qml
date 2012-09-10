@@ -22,7 +22,7 @@ import "fontUtils.js" as FontUtils
     \inqmlmodule Ubuntu.Components 0.1
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode
-    to an apropriate value enables TextInput to be used as password input field.
+    to an appropriate value enables TextField to be used as password input field.
 
     \b{This component is under heavy development.}
 
@@ -34,23 +34,22 @@ import "fontUtils.js" as FontUtils
         }
 
         TextField {
-            hasClearButton: true
-            alwaysShowClearButton: false
+            placeholderText: "without clear sign"
+            hasClearButton: false
         }
 
         TextField {
-            clearsOnBeginEditing: true
+            placeHolderText: "password"
+            echoMode: TextInput.Password
         }
 
         TextField {
-            primaryItem: Image {
+            placeholderText: "overlaid in front"
+            primaryItem: ButtonWithForeground {
                 height: parent.height
                 width: height
-                source: "something.png"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: doSomething()
-                }
+                iconSource: "something.png"
+                onClicked: doSomething()
             }
         }
     }
@@ -59,19 +58,18 @@ import "fontUtils.js" as FontUtils
 FocusScope {
     id: control
 
-    //TODO check this!!!
-    width: 200
-    height: 30
+    implicitWidth: 200
+    implicitHeight: hint.paintedHeight + internal.frameBorders[2] + internal.frameBorders[2]
 
     /*!
       \preliminary
-      Text that appears when there is no focus and no content on the component.
+      Text that appears when there is no focus and no content in the component.
     */
     property alias placeholderText: hint.text
 
     /*!
       \preliminary
-      Specifies whether the control has a clear button on the right corner or not.
+      Specifies whether the control has a clear button or not.
     */
     property bool hasClearButton: true
 
@@ -79,7 +77,7 @@ FocusScope {
       \preliminary
       Component to be shown and used instead of the default On Screen Keyboard.
     */
-    property Component customInputPanel
+    property Component customSoftwareInputPanel
 
     /*!
       \preliminary
@@ -375,7 +373,7 @@ FocusScope {
 
         function showInputPanel()
         {
-            if (control.customInputPanel != undefined) {
+            if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
                 editor.openSoftwareInputPanel()
@@ -383,7 +381,7 @@ FocusScope {
         }
         function hideInputPanel()
         {
-            if (control.customInputPanel != undefined) {
+            if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
                 editor.closeSoftwareInputPanel()
@@ -493,6 +491,7 @@ FocusScope {
                 bottomMargin: internal.frameBorders[3]
             }
             elide: Text.ElideRight
+            font.pixelSize: editor.font.pixelSize
             // hint is shown till user types something in the field
             visible: (editor.text == "") && !editor.inputMethodComposing
         }
