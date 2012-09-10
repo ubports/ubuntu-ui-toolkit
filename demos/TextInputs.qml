@@ -27,6 +27,10 @@ Template {
             title: "Basic"
 
             TextField {
+                id: textField1
+                KeyNavigation.tab: textField2
+                KeyNavigation.backtab: textField6
+
                 placeholderText: "simple text field"
                 hasClearButton: false
             }
@@ -36,6 +40,10 @@ Template {
             title: "Clear button"
 
             TextField {
+                id: textField2
+                KeyNavigation.tab: textField3
+                KeyNavigation.backtab: textField1
+
                 placeholderText: "type to show clear button"
                 text: "sample text"
             }
@@ -45,6 +53,10 @@ Template {
             title: "Password"
 
             TextField {
+                id: textField3
+                KeyNavigation.tab: textField4
+                KeyNavigation.backtab: textField2
+
                 placeholderText: "password with echo"
                 echoMode: TextInput.Password
 
@@ -55,6 +67,10 @@ Template {
             title: "Password"
 
             TextField {
+                id: textField4
+                KeyNavigation.tab: textField5
+                KeyNavigation.backtab: textField3
+
                 placeholderText: "password no echo"
                 echoMode: TextInput.NoEcho
 
@@ -65,6 +81,10 @@ Template {
             title: "Password"
 
             TextField {
+                id: textField5
+                KeyNavigation.tab: textField6
+                KeyNavigation.backtab: textField4
+
                 placeholderText: "password echo on editing"
                 echoMode: TextInput.PasswordEchoOnEdit
 
@@ -75,8 +95,11 @@ Template {
             title: "Overlaid"
 
             TextField {
+                id: textField6
+                KeyNavigation.tab: textField1
+                KeyNavigation.backtab: textField5
 
-                leftView: Image {
+                primaryItem: Image {
                     source: "call_icon.png"
                     smooth: true
                     MouseArea {
@@ -84,7 +107,7 @@ Template {
                         onClicked: console.log("click")
                     }
                 }
-                rightView: Image {
+                secondaryItem: Image {
                     source: "avatar_contacts_list.png"
                     smooth: true
                     height: parent.height - 4

@@ -43,7 +43,7 @@ import "fontUtils.js" as FontUtils
         }
 
         TextField {
-            leftView: Image {
+            primaryItem: Image {
                 height: parent.height
                 width: height
                 source: "something.png"
@@ -83,18 +83,18 @@ FocusScope {
 
     /*!
       \preliminary
-      Overlaid component that can be set for the left side of the TextField,
+      Overlaid component that can be set for the fore side of the TextField,
       e.g.showing a magnifier to implement search functionality.
     */
-    property alias leftView: leftPane.data
+    property alias primaryItem: leftPane.data
 
     /*!
       \preliminary
-      Overlaid component that can be set for the right side of the TextField,
+      Overlaid component that can be set for the rear side of the TextField,
       e.g.showing a CAPS LOCK or NUM LOCK indication. The overlaid components
       will be placed right after the clear button.
     */
-    property alias rightView: rightPane.data
+    property alias secondaryItem: rightPane.data
 
     // aliased properties from TextInput
     /*!
@@ -123,6 +123,12 @@ FocusScope {
         editing, otherwise displays asterisks.
     */
     property alias echoMode: editor.echoMode
+
+    /*!
+      \preliminary
+      Font used in the TextField.
+    */
+    property alias font: editor.font
 
     /*!
       \preliminary
@@ -342,12 +348,12 @@ FocusScope {
     //internals
     QtObject {
         id: internal
-        property url frameImage: Qt.resolvedUrl("artwork/TextFieldFrame.png")
+        property url frameImage: (editor.activeFocus && editor.enabled) ? Qt.resolvedUrl("artwork/TextFieldFrame.png") : Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
         // array of borders in left, top, right, bottom order
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
-        property color textColor: "#323030"
-        property color hintColor: Qt.lighter(textColor, 1.5)
+        property color textColor: (editor.enabled) ? "#323030" : "darkgray"
+        property color hintColor: "#B6B6B6"//Qt.lighter(textColor, 1.9)
         property string fontFize: "medium"
         property real clearButtonSpacing: 4.0
         property bool textChanged: false
