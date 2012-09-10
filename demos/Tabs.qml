@@ -49,13 +49,5 @@ Template {
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }
-
-        Tab {
-            title: "text only"
-            page: Text {
-                anchors.centerIn: parent
-                text: "Tab number four."
-            }
-        }
     }
 }
