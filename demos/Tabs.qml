@@ -52,23 +52,7 @@ Template {
         Tab {
             title: "Tab 3"
             iconSource: "call_icon.png"
-            page: Page {
-                title: "Tab 3"
-                iconSource: "call_icon.png"
-                contents:  Rectangle {
-                    color: "#dddddd"
-                    anchors.fill: parent
-                    TextCustom {
-                        anchors.centerIn: parent
-                        text: "This is the third tab."
-                        color: "#757373"
-                    }
-                }
-            }
-        }
-        Tab {
-            title: "Custom"
-            page: "/home/tim/dev/tavastia/taburl/demos/MyCustomPage.qml"
+            page: Qt.resolvedUrl("MyCustomPage.qml")
         }
     }
 }
