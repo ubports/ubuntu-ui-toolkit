@@ -9,3 +9,8 @@ uri = Ubuntu.Components
 HEADERS += plugin.h
 
 SOURCES += plugin.cpp
+
+contains(MEEGO_EDITION,harmattan) {
+    target.path = /opt/plugin/lib
+    INSTALLS += target
+}
