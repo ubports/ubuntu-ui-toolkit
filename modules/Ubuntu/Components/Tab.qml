@@ -48,7 +48,7 @@ Item {
 
     /*!
       \preliminary
-      TODO. URL (string) or a Page object.
+      The contents of the page. This can also be a string referring to a Page qml file.
      */
     property variant page
 
@@ -66,7 +66,7 @@ Item {
         if (!__pageObject && tab.active) {
             __pageObject = __initPage(tab.page);
         }
-        if (__pageObject) __pageObject.active = tab.active;
+        if (__pageObject) __pageObject.visible = tab.active;
     }
 
     // TODO: add properties?

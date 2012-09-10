@@ -36,14 +36,14 @@ Item {
       Its value is automatically updated by the \l Tabs object.
       TODO:  make internal and prefix with __?
     */
-    property bool active: false
+//    property bool active: false
 
-    onActiveChanged: visible = active
+//    onActiveChanged: visible = active
 
     /*!
       \internal
       Used in PageContainer to determine whether an Item is a Page.
      */
-    property bool __isPage: true
+//    property bool __isPage: true
 
 }

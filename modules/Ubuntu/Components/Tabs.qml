@@ -35,6 +35,7 @@ import QtQuick 1.1
             }
             Tab {
                 title: "tab 2"
+                iconSource: "icon.png"
                 page: Text {
                     anchors.centerIn: parent
                     text: "Tab number two."
