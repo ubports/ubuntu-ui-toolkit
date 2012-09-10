@@ -10,7 +10,8 @@ HEADERS += plugin.h
 
 SOURCES += plugin.cpp
 
-contains(MEEGO_EDITION,harmattan) {
-    target.path = /opt/plugin/lib
-    INSTALLS += target
-}
+# deployment rules for the plugin
+installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+target.path = $$installPath
+INSTALLS += target
+

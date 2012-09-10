@@ -103,7 +103,7 @@ Item {
         }
 
         function hidePreviousContents() {
-            if (previouscontents && previousContents !== page.contents) previousContents.visible = false;
+            if (previousContents && previousContents !== page.contents) previousContents.visible = false;
             previousContents = page.contents;
         }
 
