@@ -28,6 +28,8 @@ import QtQuick 1.1
 Item {
     id: tab
 
+    anchors.fill: parent ? parent : undefined
+
     /*!
       \preliminary
       The title that is shown on the tab button used to select this tab (optional).
@@ -50,12 +52,21 @@ Item {
      */
     property variant page
 
+    property bool active: false
+
     property Page __pageObject
 
     onPageChanged: {
-        var pageObject;
-        pageObject = tab.__initPage(tab.page);
-        tab.__pageObject = pageObject;
+        tab.__pageObject = null
+        if (tab.active) tab.__pageObject = tab.__initPage(tab.page);
+        else tab.__pageObject = null;
+    }
+
+    onActiveChanged: {
+        if (!__pageObject && tab.active) {
+            __pageObject = __initPage(tab.page);
+        }
+        if (__pageObject) __pageObject.active = tab.active;
     }
 
     // TODO: add properties?
@@ -88,6 +99,7 @@ Item {
             pageObject.parent = containerComponent;
         }
 
+        pageObject.contentsParent = tab;
         return pageObject;
     }
 }

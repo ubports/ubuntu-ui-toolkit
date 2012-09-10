@@ -58,8 +58,11 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-TabContainer {
+//TabContainer {
+Item {
     id: tabs
+
+    default property alias children: contentsContainer.children
 
     /*!
       \preliminary
@@ -152,7 +155,7 @@ TabContainer {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabs.tabs
+                model: contentsContainer.tabs
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -169,7 +172,7 @@ TabContainer {
         } // buttonRow
 
         // This is the item that will be the parent of the currently displayed page.
-        Item {
+        TabContainer {
             id: contentsContainer
             anchors {
                 top: buttonRow.bottom
@@ -180,14 +183,15 @@ TabContainer {
         }
 
         function selectedTabChanged() {
-            var page;
-            for (var i = 0; i < tabs.tabs.length; i++) {
-                page = tabs.tabs[i].__pageObject
+            var tab;
+            for (var i = 0; i < contentsContainer.tabs.length; i++) {
+                tab = contentsContainer.tabs[i]; //tabs.tabs[i];
                 if (i == tabs.selectedTabIndex) {
-                    page.contentsParent = contentsContainer;
-                    page.active = true;
+//                    if (tab.parent != contentsContainer) tab.parent = contentsContainer;
+                    tab.active = true;
+//                    tab.__pageObject.contentsParent = contentsContainer;
                 } else {
-                    page.active = false;
+                    tab.active = false;
                 }
             }
         }
