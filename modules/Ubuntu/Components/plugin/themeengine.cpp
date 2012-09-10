@@ -3,6 +3,9 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeComponent>
+#include <QtDeclarative/QDeclarativeItem>
+
+#include <QDebug>
 
 Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
 
@@ -27,12 +30,13 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     ThemeEngine *theme = themeEngine();
     theme->m_engine = engine;
     // load default theme, and build hash tree
-    theme->loadTheme("/usr/lib/qt4/imports/Ubuntu/Components/DefaultTheme.qml");
+    //theme->loadTheme("/usr/lib/qt4/imports/Ubuntu/Components/DefaultTheme.qml");
+    theme->loadTheme("modules/Ubuntu/Components/DefaultTheme.qml");
     // load active theme
     theme->loadTheme("demos/ActiveTheme.qml");
     // TODO: watch theme folders to detect system theme changes
 }
-Style *ThemeEngine::stateStyle(const QString &styleClass, const QString &state)
+Style *ThemeEngine::lookupStateStyle(const QString &styleClass, const QString &state)
 {
     ThemeEngine *theme = themeEngine();
     Style *ret = 0;
@@ -48,14 +52,45 @@ Style *ThemeEngine::stateStyle(const QString &styleClass, const QString &state)
     return ret;
 }
 
+QDeclarativeItem *ThemeEngine::root()
+{
+
+}
+
+QDeclarativeItem *ThemeEngine::item(const QString &id)
+{
+    QDeclarativeItem *ret = 0;
+
+    return ret;
+}
+
+
 void ThemeEngine::loadTheme(const QString &themeFile)
 {
     QDeclarativeComponent *themeComponent = new QDeclarativeComponent(m_engine, QUrl::fromLocalFile(themeFile));
-    QObject *themeObject = themeComponent->create(m_engine->rootContext());
+    // TODO: do this async
+    while (themeComponent->isLoading());
 
-    if (themeObject) {
-        // parse its children for Styles
-        buildStyleCache(themeObject);
+    if (!themeComponent->isError()) {
+        QObject *themeObject = themeComponent->create(m_engine->rootContext());
+        if (themeObject) {
+            // parse its children for Styles
+            buildStyleCache(themeObject);
+
+            // DEBUG: print theme hash
+            QHashIterator<QString, StyleStateHash> sh(m_styleCache);
+            while (sh.hasNext()) {
+                sh.next();
+                qDebug() << "Style" << sh.key();
+                QHashIterator<QString, Style*> st(sh.value());
+                while (st.hasNext()) {
+                    st.next();
+                    qDebug() << "   state:" << st.key() << "::" << st.value();
+                }
+            }
+        }
+    } else {
+        qDebug() << "Create theme ERROR:" << themeComponent->errorString();
     }
 }
 

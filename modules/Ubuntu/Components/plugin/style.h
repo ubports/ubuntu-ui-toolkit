@@ -27,7 +27,11 @@ class Style : public QObject, public QDeclarativeParserStatus
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
+    Q_PROPERTY(QString subClass READ subClass WRITE setSubClass NOTIFY subClassChanged)
+
     Q_PROPERTY(QStringList states READ states WRITE setStates NOTIFY statesChanged)
+    Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit Style(QObject *parent = 0);
 
@@ -37,17 +41,24 @@ public:
     // getter/setter is public so it can be accessed in ThemeEngine
     QStringList states() const;
     void setStates(const QStringList &states);
+    QString subClass() const;
+    void setSubClass(const QString &sclass);
 
 signals:
     void statesChanged();
+    void subClassChanged();
 
 public slots:
 
     QString styleClass() const;
 
 private:
+    QDeclarativeListProperty<QObject> data();
+
+    QList<QObject*> m_Data;
     QStringList m_states;
     QString m_styleClass;
+    QString m_subClass;
 };
 
 QML_DECLARE_TYPE(Style)

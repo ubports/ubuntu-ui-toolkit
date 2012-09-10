@@ -6,6 +6,7 @@
 
 class Style;
 class QDeclarativeEngine;
+class QDeclarativeItem;
 
 typedef QHash<QString, Style*> StyleStateHash;
 typedef QHash<QString, StyleStateHash> StyleHash;
@@ -19,8 +20,12 @@ public:
 
     static ThemeEngine* instance();
     static void initialize(QDeclarativeEngine *engine);
-    static Style *stateStyle(const QString &styleClass, const QString &state);
-    
+    static Style *lookupStateStyle(const QString &styleClass, const QString &state);
+
+    Q_INVOKABLE QDeclarativeItem *root();
+    Q_INVOKABLE QDeclarativeItem *item(const QString &id);
+
+    //utility function
 signals:
     
 public slots:

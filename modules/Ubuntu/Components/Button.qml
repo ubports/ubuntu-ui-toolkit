@@ -55,7 +55,7 @@ ButtonWithForeground {
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: "#e3e5e8"
+    property color color: style.color//"#e3e5e8"
 
     /*!
        \preliminary
@@ -87,6 +87,11 @@ ButtonWithForeground {
         var b = parseInt(hexcolor.substr(5,2),16);
         return ((r*212)+(g*715)+(b*73))/1000/255;
     }
+    //theming
+    onPressedChanged: {
+        state = pressed ? 'pressed' : ''
+        console.debug("button pressed= "+pressed+", state= "+state)
+    }
 
     Item {
         z: -1
@@ -100,7 +105,7 @@ ButtonWithForeground {
 
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: button.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            source: style.borderShape//button.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
             border.left: 18; border.top: 15
             border.right: 18; border.bottom: 15
         }
@@ -130,10 +135,9 @@ ButtonWithForeground {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: if (button.darkBorder)
-                        return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
-                    else
-                        return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+            source: style.borderImage
+            //source: if (button.darkBorder) return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
+            //        else return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
             border.left: 14; border.top: 17
             border.right: 15; border.bottom: 18
         }

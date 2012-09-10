@@ -29,7 +29,8 @@
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Style>(uri, 0, 1, "Style");
-    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
+    //qmlRegisterType<QDeclarativeItem, 1>(uri, 1, 1, "FakeItem");
+    qmlRegisterType<StyledItem>(uri, 1, 1, "StyledItem");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

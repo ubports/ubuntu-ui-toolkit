@@ -15,7 +15,10 @@ public:
     bool useCustomStyle;
     Style *activeStyle;
     QString styleClass;
+    QString uid;
     QList<Style*> customStyles;
+
+    void setUid(const QString &newUid);
 
     void _q_updateCurrentStyle(const QString &state);
 

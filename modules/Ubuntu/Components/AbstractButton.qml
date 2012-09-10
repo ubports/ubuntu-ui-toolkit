@@ -15,7 +15,7 @@
  */
 
 import QtQuick 1.1
-import "." 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract AbstractButton
@@ -93,4 +93,20 @@ StyledItem {
             button.hovered = mouseArea.containsMouse;
         }
     }
+/*
+    property alias state: stateGroup.state
+    StateGroup {
+        id: stateGroup
+        states: [
+            State {name: "idle"; extend:""},
+            State {name: "disabled"},
+            State {name: "active"},
+            State {name: "active-and-hovered"},
+            State {name: "hovered"},
+            State {name: "pressed"},
+            State {name: "press-and-hovered"}
+        ]
+        onStateChanged: console.debug("state is "+state)
+    }
+*/
 }

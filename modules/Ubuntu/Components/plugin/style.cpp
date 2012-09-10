@@ -81,3 +81,21 @@ void Style::setStates(const QStringList &states)
         emit statesChanged();
     }
 }
+
+QString Style::subClass() const
+{
+    return m_subClass;
+}
+void Style::setSubClass(const QString &sclass)
+{
+    if (m_subClass != sclass) {
+        m_subClass = sclass;
+        emit subClassChanged();
+    }
+}
+
+
+QDeclarativeListProperty<QObject> Style::data()
+{
+    return QDeclarativeListProperty<QObject>(this, m_Data);
+}

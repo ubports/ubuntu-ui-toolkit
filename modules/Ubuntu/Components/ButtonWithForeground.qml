@@ -32,7 +32,7 @@ AbstractButton {
       \preliminary
       The dimensions of the button.
     */
-    width: 150
+    //width: 150
     height: 50
 
     /*!
@@ -82,7 +82,8 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    implicitWidth: foreground.implicitWidth + 2*foreground.horizontalPadding
+    //implicitWidth: foreground.implicitWidth + 2*foreground.horizontalPadding
+    width: foreground.implicitWidth + 2*foreground.horizontalPadding
 
     Item {
         id: foreground
@@ -137,7 +138,7 @@ AbstractButton {
             fontSize: label.fontSize
         }
     }
-
+/*
     Item { //placed in here to keep state property private
         id: positioner
 
@@ -178,4 +179,5 @@ AbstractButton {
         ]
         state: (button.iconSource == "" || button.text == "") ? "center" : iconPosition
     }
+*/
 }
