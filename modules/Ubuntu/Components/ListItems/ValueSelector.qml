@@ -99,7 +99,7 @@ Base {
 
         Base {
             id: selectorMain
-            height: 54
+            height: 48
             __showTopSeparator: false
             __showBottomSeparator: false
             onClicked: selector.expanded = !selector.expanded
@@ -135,7 +135,7 @@ Base {
                     leftMargin: 5
                     left: label.right
                 }
-                fontSize: "medium"
+                fontSize: "small"
                 text: selector.values[selector.selectedIndex]
                 font.bold: selector.expanded
                 horizontalAlignment: Text.AlignRight
