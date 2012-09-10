@@ -19,101 +19,104 @@ import Ubuntu.Components 0.1
 
 Template {
     title: "Text Input"
-    id: indicators
+    id: page
 
-    Column {
-        spacing: 30
-        TemplateRow {
-            title: "Basic"
-
-            TextField {
-                id: textField1
-                KeyNavigation.tab: textField2
-                KeyNavigation.backtab: textField6
-
-                placeholderText: "simple text field"
-                hasClearButton: false
-            }
+    Item {
+        anchors.fill: parent
+        MouseArea {
+            anchors.fill: parent
+            onClicked: page.forceActiveFocus()
         }
+        Column {
+            spacing: 30
 
-        TemplateRow {
-            title: "Clear button"
+            TemplateRow {
+                title: "Basic"
 
-            TextField {
-                id: textField2
-                KeyNavigation.tab: textField3
-                KeyNavigation.backtab: textField1
+                TextField {
+                    id: textField1
+                    KeyNavigation.tab: textField2
+                    KeyNavigation.backtab: textField6
 
-                placeholderText: "type to show clear button"
-                text: "sample text"
+                    placeholderText: "simple text field"
+                    hasClearButton: false
+                }
             }
-        }
 
-        TemplateRow {
-            title: "Password"
+            TemplateRow {
+                title: "Clear button"
 
-            TextField {
-                id: textField3
-                KeyNavigation.tab: textField4
-                KeyNavigation.backtab: textField2
+                TextField {
+                    id: textField2
+                    KeyNavigation.tab: textField3
+                    KeyNavigation.backtab: textField1
 
-                placeholderText: "password with echo"
-                echoMode: TextInput.Password
-
+                    placeholderText: "type to show clear button"
+                    text: "sample text"
+                }
             }
-        }
 
-        TemplateRow {
-            title: "Password"
+            TemplateRow {
+                title: "Password"
 
-            TextField {
-                id: textField4
-                KeyNavigation.tab: textField5
-                KeyNavigation.backtab: textField3
+                TextField {
+                    id: textField3
+                    KeyNavigation.tab: textField4
+                    KeyNavigation.backtab: textField2
 
-                placeholderText: "password no echo"
-                echoMode: TextInput.NoEcho
+                    placeholderText: "password with echo"
+                    echoMode: TextInput.Password
 
+                }
             }
-        }
 
-        TemplateRow {
-            title: "Password"
+            TemplateRow {
+                title: "Password"
 
-            TextField {
-                id: textField5
-                KeyNavigation.tab: textField6
-                KeyNavigation.backtab: textField4
+                TextField {
+                    id: textField4
+                    KeyNavigation.tab: textField5
+                    KeyNavigation.backtab: textField3
 
-                placeholderText: "password echo on editing"
-                echoMode: TextInput.PasswordEchoOnEdit
+                    placeholderText: "password no echo"
+                    echoMode: TextInput.NoEcho
 
+                }
             }
-        }
 
-        TemplateRow {
-            title: "Overlaid"
+            TemplateRow {
+                title: "Password"
 
-            TextField {
-                id: textField6
-                KeyNavigation.tab: textField1
-                KeyNavigation.backtab: textField5
+                TextField {
+                    id: textField5
+                    KeyNavigation.tab: textField6
+                    KeyNavigation.backtab: textField4
 
-                primaryItem: Image {
-                    source: "call_icon.png"
-                    smooth: true
-                    MouseArea {
-                        anchors.fill: parent
+                    placeholderText: "password echo on editing"
+                    echoMode: TextInput.PasswordEchoOnEdit
+
+                }
+            }
+
+            TemplateRow {
+                title: "Overlaid"
+
+                TextField {
+                    id: textField6
+                    KeyNavigation.tab: textField1
+                    KeyNavigation.backtab: textField5
+
+                    primaryItem: ButtonWithForeground {
+                        iconSource: "call_icon.png"
+                        width: height
+                        height: parent.height - 2
                         onClicked: console.log("click")
                     }
-                }
-                secondaryItem: Image {
-                    source: "avatar_contacts_list.png"
-                    smooth: true
-                    height: parent.height - 4
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: console.log("clack")
+
+                    secondaryItem: ButtonWithForeground {
+                        iconSource: "avatar_contacts_list.png"
+                        width: height
+                        height: parent.height - 2
                     }
                 }
             }

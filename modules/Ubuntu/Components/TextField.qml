@@ -353,9 +353,9 @@ FocusScope {
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
         property color textColor: (editor.enabled) ? "#323030" : "darkgray"
-        property color hintColor: "#B6B6B6"//Qt.lighter(textColor, 1.9)
+        property color hintColor: "#B6B6B6"
         property string fontFize: "medium"
-        property real clearButtonSpacing: 4.0
+        property real clearButtonSpacing: 3.5
         property bool textChanged: false
         property real spacing: 5
         //selection properties
@@ -365,7 +365,7 @@ FocusScope {
 
         function leftMargin()
         {
-            return leftPane.width + 1
+            return (leftPane.width > 0) ?  leftPane.width : 0
         }
 
         function rightMargin()
@@ -494,7 +494,7 @@ FocusScope {
             }
             elide: Text.ElideRight
             // hint is shown till user types something in the field
-            visible: (editor.text == "") && !editor.inputMethodIsComposing
+            visible: (editor.text == "") && !editor.inputMethodComposing
         }
 
         // text input
@@ -511,7 +511,7 @@ FocusScope {
             }
             color: internal.textColor
             clip: true
-            //selectByMouse: true
+            passwordCharacter: "\u2022"
 
             // TODO: font family to be defined
             font.pixelSize: FontUtils.sizeToPixels(internal.fontFize)
