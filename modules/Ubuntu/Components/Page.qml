@@ -32,20 +32,6 @@ Item {
 
     /*!
       \preliminary
-      The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
-     */
-    property string title
-
-    /*!
-      \preliminary
-      The location of the icon that is displayed inside the button used to select this page (optional).
-      Either \l title or iconSource, or both must be defined.
-     */
-    property url iconSource
-
-    /*!
-      \preliminary
       The Item that is shown when this page is active.
       If no contents is specified, the contents specified by \l contentsSource will be loaded.
      */
