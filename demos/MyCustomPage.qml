@@ -2,7 +2,7 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 Page {
-    contents:  Rectangle {
+    Rectangle {
         color: "#dddddd"
         anchors.fill: parent ? parent : undefined
         TextCustom {

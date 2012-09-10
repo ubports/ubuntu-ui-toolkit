@@ -32,33 +32,13 @@ Item {
 
     /*!
       \preliminary
-      The Item that is shown when this page is active.
-      If no contents is specified, the contents specified by \l contentsSource will be loaded.
-     */
-    property Item contents: loader.item
-
-    /*!
-      \preliminary
-      conentsSource is used as the location of the QML file defining
-      the contents that will be displayed when this page is active and no \l contents was defined.
-     */
-    property url contentsSource
-
-    /*!
-      \preliminary
-      If \l contentsSource is used to define the contents of this page, preloadContents specifies whether
-      the contents should be preloaded from the QML file when the application starts, or loading
-      is delayed until the contents is active.
-     */
-    property bool preloadContents: false
-
-    /*!
-      \preliminary
       Indicates whether this page is active.
       Its value is automatically updated by the \l Tabs object.
       TODO:  make internal and prefix with __?
     */
     property bool active: false
+
+    onActiveChanged: visible = active
 
     /*!
       \internal
@@ -66,32 +46,4 @@ Item {
      */
     property bool __isPage: true
 
-    Loader {
-        id: loader
-
-        source: (status == Loader.Ready || page.preloadContents || page.active) ? page.contentsSource : ""
-
-        property Item previousContents
-
-        function updateContentsVisibility() {
-            if (page.contents) {
-                page.contents.parent = page.parent;
-                page.contents.visible = page.active;
-            }
-        }
-
-        function hidePreviousContents() {
-            if (previousContents && previousContents !== page.contents) previousContents.visible = false;
-            previousContents = page.contents;
-        }
-
-        Connections {
-            target: page
-            onContentsChanged: {
-                loader.hidePreviousContents();
-                loader.updateContentsVisibility();
-            }
-            onActiveChanged: loader.updateContentsVisibility()
-        }
-    }
 }

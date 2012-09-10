@@ -24,7 +24,7 @@ Template {
         Tab {
             title: "Tab 1"
             page: Page {
-                contents: Rectangle {
+                Rectangle {
                     color: "#eeeeee"
                     anchors.fill: parent
                     TextCustom {
@@ -38,7 +38,7 @@ Template {
         Tab {
             iconSource: "call_icon.png"
             page: Page {
-                contents: Rectangle {
+                Rectangle {
                     color: "#e4e4e4"
                     anchors.fill: parent
                     TextCustom {
