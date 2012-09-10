@@ -99,7 +99,6 @@ Item {
             pageObject.parent = containerComponent;
         }
 
-        pageObject.contentsParent = tab;
         return pageObject;
     }
 }

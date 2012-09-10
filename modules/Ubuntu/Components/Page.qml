@@ -28,6 +28,8 @@ import QtQuick 1.1
 Item {
     id: page
 
+    anchors.fill: parent ? parent : undefined
+
     /*!
       \preliminary
       The title that is shown on the tab button used to select this tab (optional).
@@ -73,16 +75,6 @@ Item {
     property bool active: false
 
     /*!
-      \preliminary
-      Specifies the visual parent of the \l contents Item.
-      The parent of \l contents is set when the page is made active
-      (after it is automatically loaded from \l contentsSource, if applicable).
-      This value is automatically updated by the \l Tabs object.
-      TODO: make internal and prefix with __?
-     */
-    property Item contentsParent
-
-    /*!
       \internal
       Used in PageContainer to determine whether an Item is a Page.
      */
@@ -97,7 +89,7 @@ Item {
 
         function updateContentsVisibility() {
             if (page.contents) {
-                if (page.contentsParent) page.contents.parent = page.contentsParent;
+                page.contents.parent = page.parent;
                 page.contents.visible = page.active;
             }
         }
