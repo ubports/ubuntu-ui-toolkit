@@ -43,8 +43,9 @@ Item {
 
     BorderImage {
         id: iconFrame
-        opacity: hasFrame ? (iconVisual.enabled ? 1.0 : 0.5) : 0.0
-        source: "artwork/ListItemFrame.png"
+        opacity: iconVisual.enabled ? 1.0 : 0.5
+        visible: iconVisual.hasFrame
+        source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         anchors.bottomMargin: -1
         border {
