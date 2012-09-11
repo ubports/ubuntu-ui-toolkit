@@ -45,11 +45,24 @@ import "fontUtils.js" as FontUtils
 
         TextField {
             placeholderText: "overlaid in front"
-            primaryItem: ButtonWithForeground {
+            primaryItem: Image {
                 height: parent.height
                 width: height
-                iconSource: "something.png"
-                onClicked: doSomething()
+                source: "magnifier.png"
+            }
+            secondaryItem: Row {
+                ButtonWithForeground {
+                    height: parent.height
+                    width: height
+                    iconSource: "caps-lock.png"
+                    onClicked: doSomething()
+                }
+                ButtonWithForeground {
+                    height: parent.height
+                    width: height
+                    iconSource: "num-lock.png"
+                    onClicked: doSomething()
+                }
             }
         }
     }
@@ -59,7 +72,10 @@ FocusScope {
     id: control
 
     implicitWidth: 200
-    implicitHeight: hint.paintedHeight + internal.frameBorders[2] + internal.frameBorders[2]
+    implicitHeight: hint.paintedHeight +
+                    internal.frameBorders[1] +
+                    internal.frameBorders[3] +
+                    internal.spacing
 
     /*!
       \preliminary
@@ -130,7 +146,7 @@ FocusScope {
 
     /*!
       \preliminary
-      Allows you to set an input mask on the TextField, restricting the allowable text
+      Allows you to set an input mask on the TextField, restricting the  text
       inputs. See QLineEdit::inputMask for further details, as the exact same mask strings
       are used by TextField.
     */
@@ -346,13 +362,15 @@ FocusScope {
     //internals
     QtObject {
         id: internal
-        property url frameImage: (editor.activeFocus && editor.enabled) ? Qt.resolvedUrl("artwork/TextFieldFrame.png") : Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
+        property url frameImage: (editor.activeFocus && editor.enabled) ?
+                                     Qt.resolvedUrl("artwork/TextFieldFrame.png") :
+                                     Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
         // array of borders in left, top, right, bottom order
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
         property color textColor: (editor.enabled) ? "#323030" : "darkgray"
         property color hintColor: "#B6B6B6"
-        property string fontFize: "medium"
+        property string fontSize: "medium"
         property real clearButtonSpacing: 3.5
         property bool textChanged: false
         property real spacing: 5
@@ -360,16 +378,6 @@ FocusScope {
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
-
-        function leftMargin()
-        {
-            return (leftPane.width > 0) ?  leftPane.width : 0
-        }
-
-        function rightMargin()
-        {
-            return ((clearButton.visible) ? clearButton.width + clearButtonSpacing + 1 : 0) + rightPane.width
-        }
 
         function showInputPanel()
         {
@@ -437,7 +445,7 @@ FocusScope {
                 rightMargin: internal.spacing
                 verticalCenter: parent.verticalCenter
             }
-            // the left pane width depends on its children width
+            // the right pane width depends on its children width
             height: parent.height
             width: childrenRect.width
             onChildrenChanged: {
@@ -450,30 +458,18 @@ FocusScope {
         }
 
         //clear button
-        Image {
+        ButtonWithForeground {
             id: clearButton
-            z: Number.MAX_VALUE
             anchors {
                 right: rightPane.left
                 rightMargin: internal.spacing
                 verticalCenter: parent.verticalCenter
             }
-            source: (control.hasClearButton) ? internal.clearImage : ""
+            iconSource: (control.hasClearButton) ? internal.clearImage : ""
+            width: visible ? 19 : 0 // TODO: no way to set the image size :(
             visible: control.hasClearButton &&
                         (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
-            smooth: true
-            fillMode: Image.PreserveAspectFit
-            width: sourceSize.width
-
-            MouseArea {
-                enabled: control.hasClearButton
-                anchors{
-                    fill: parent
-                    // need to enlarge the sensing area
-                    margins: -internal.spacing
-                }
-                onClicked:editor.text = ""
-            }
+            onClicked: editor.text = ""
         }
 
         // hint text
@@ -484,11 +480,11 @@ FocusScope {
             verticalAlignment: Text.AlignVCenter
             fontSize: "medium"
             anchors {
-                fill: parent
-                leftMargin: internal.frameBorders[0] + internal.leftMargin()
-                topMargin: internal.frameBorders[1]
-                rightMargin: internal.frameBorders[2] + internal.rightMargin()
-                bottomMargin: internal.frameBorders[3]
+                left: leftPane.right
+                right: clearButton.left
+                top: parent.top
+                bottom: parent.bottom
+                margins: internal.spacing
             }
             elide: Text.ElideRight
             font.pixelSize: editor.font.pixelSize
@@ -502,18 +498,15 @@ FocusScope {
             // FocusScope will forward focus to this component
             focus: true
             anchors {
-                left: parent.left
-                right: parent.right
-                leftMargin: internal.frameBorders[0] + internal.leftMargin()
-                rightMargin: internal.frameBorders[2] + internal.rightMargin()
+                left: leftPane.right
+                right: clearButton.left
+                margins: internal.spacing
                 verticalCenter: parent.verticalCenter
             }
             color: internal.textColor
             clip: true
             passwordCharacter: "\u2022"
-
-            // TODO: font family to be defined
-            font.pixelSize: FontUtils.sizeToPixels(internal.fontFize)
+            font.pixelSize: FontUtils.sizeToPixels(internal.fontSize)
 
             onTextChanged: internal.textChanged = true
 

@@ -96,7 +96,6 @@ Template {
                         iconSource: "call_icon.png"
                         width: 20
                     }
-
                     secondaryItem: ButtonWithForeground {
                         iconSource: "avatar_contacts_list.png"
                         width: height
