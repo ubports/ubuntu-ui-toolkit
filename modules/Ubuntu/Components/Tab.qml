@@ -76,7 +76,7 @@ Item {
 
             // TODO: If it is needed to support changing the page of the active
             // tab, an additional property must be introduced that keeps track of
-            // __pageObject must be destroyed.
+            // whether __pageObject must be destroyed.
         }
     }
 
