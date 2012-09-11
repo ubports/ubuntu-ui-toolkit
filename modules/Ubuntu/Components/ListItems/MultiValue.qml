@@ -43,7 +43,7 @@ import QtQuick 1.1
 */
 Base {
     id: multiValueListItem
-    height: 54
+    height: 48
 
     /*!
       \preliminary
@@ -109,7 +109,7 @@ Base {
                     leftMargin: 5
                     rightMargin: 5
                 }
-                fontSize: "medium"
+                fontSize: "small"
                 text: concatenatedValues(multiValueListItem.values)
 
                 function concatenatedValues(values) {

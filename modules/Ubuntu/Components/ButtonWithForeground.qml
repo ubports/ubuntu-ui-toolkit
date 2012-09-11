@@ -92,7 +92,7 @@ AbstractButton {
           \preliminary
           The padding on the left and right side of the button foreground.
         */
-        property real horizontalPadding: 12
+        property real horizontalPadding: 10
         property real maximumWidth: button.width - 2*foreground.horizontalPadding
         property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
         property real verticalPadding: 5
@@ -119,7 +119,7 @@ AbstractButton {
                 verticalCenter: foreground.verticalCenter
                 verticalCenterOffset: -1
             }
-            fontSize: "large"
+            fontSize: "medium"
             font.italic: true
             opacity: button.enabled ? 1.0 : 0.5
             elide: Text.ElideRight
