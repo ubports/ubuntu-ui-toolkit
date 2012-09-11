@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass Tab
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO
+    \brief Component to represent a single tab in a \l Tabs environment.
 
     \b{This component is under heavy development.}
 
@@ -47,12 +47,14 @@ Item {
     /*!
       \preliminary
       The contents of the page. This can also be a string referring to a Page qml file.
+      Deactivate the Tab before changing the page, to ensure proper destruction of the
+      old page object first, if needed.
      */
     property variant page
 
     /*!
       \internal
-      Specifies whether this tab is the active one. Set by Tabs.
+      Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
     property bool active: false
 
@@ -66,22 +68,46 @@ Item {
     property Item __pageObject
 
     onPageChanged: {
-        if (tab.__pageObject && tab.__pageObject !== page) {
-            tab.__pageObject.destroy();
-            tab.__pageObject = null;
+        if (tab.active) {
+            // It is now unclear whether __pageObject should be destroyed
+            // here, because possibly ((old)__pageObject !== (new)page), even if
+            // __pageObject was created here.
+            throw new Error("Deactivate tab before changing the page.");
+
+            // TODO: If it is needed to support changing the page of the active
+            // tab, an additional property must be introduced that keeps track of
+            // __pageObject must be destroyed.
         }
-        if (tab.active) tab.__pageObject = tab.__initPage(tab.page);
     }
 
     onActiveChanged: {
-        if (!__pageObject && tab.active) {
+        if (tab.active) __activate();
+        else __deactivate();
+    }
+
+    /*!
+      \internal
+      Create the page object if \l page is link, and make the page object visible.
+     */
+    function __activate() {
+        if (!__pageObject) {
             __pageObject = __initPage(tab.page);
             __pageObject.anchors.fill = tab;
         }
-        if (__pageObject) __pageObject.visible = tab.active;
-        if (!tab.active &&  __pageObject && __pageObject !== page ) {
-            __pageObject.destroy();
-            __pageObject = null;
+        __pageObject.visible = true;
+    }
+
+    /*!
+      \internal
+      Hide the page object, and destroy it if it is not equal to \l page.
+     */
+    function __deactivate() {
+        if (__pageObject) {
+            __pageObject.visible = false;
+            if (__pageObject !== page) {
+                __pageObject.destroy();
+                __pageObject = null;
+            }
         }
     }
 

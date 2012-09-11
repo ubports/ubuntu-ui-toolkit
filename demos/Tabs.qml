@@ -23,8 +23,7 @@ Template {
     Tabs {
         Tab {
             title: "Tab 1"
-            page:
-                Rectangle {
+            page: Rectangle {
                 color: "#eeeeee"
                 TextCustom {
                     anchors.centerIn: parent

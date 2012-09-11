@@ -42,6 +42,10 @@ import QtQuick 1.1
                     color: "lightblue"
                 }
             }
+            Tab {
+                title: "tab 3"
+                page: "MyCustomPage.qml"
+            }
         }
     \endqml
 
