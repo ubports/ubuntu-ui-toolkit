@@ -34,7 +34,7 @@ Item {
         fillMode: Image.PreserveAspectFit
         anchors {
             top: parent.top
-            topMargin: 8
+            topMargin: 5
             left: parent.left
             leftMargin: 5
         }
