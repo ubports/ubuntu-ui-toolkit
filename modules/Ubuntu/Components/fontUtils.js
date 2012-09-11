@@ -17,11 +17,18 @@
 .pragma library
 
 function sizeToPixels(size) {
+    var baseSize = 14
+    return Math.round(modularScale(size) * baseSize)
+}
+
+function modularScale(size) {
     switch (size) {
-        case "small": return 13
-        case "medium": return 15
-        case "large": return 17
-        case "x-large": return 20
-        case "xx-large": return 30
+        case "xx-small": return 0.606
+        case "x-small": return 0.707
+        case "small": return 0.857
+        case "medium": return 1.0
+        case "large": return 1.212
+        case "x-large": return 1.414
+        case "xx-large": return 1.714
     }
 }

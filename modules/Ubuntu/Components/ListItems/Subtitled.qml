@@ -66,7 +66,7 @@ import Ubuntu.Components 0.1
 */
 Base {
     id: subtitledListItem
-    height: Math.max(middleVisuals.height, 54)
+    height: Math.max(middleVisuals.height, 48)
 
     /*!
       \preliminary
@@ -123,7 +123,7 @@ Base {
                     right: parent.right
                     leftMargin: 5
                     rightMargin: 5
-                    topMargin: 8
+                    topMargin: 5
                 }
             }
             LabelVisual {
@@ -131,14 +131,14 @@ Base {
                 selected: subtitledListItem.selected
                 anchors {
                     leftMargin: 5
-                    bottomMargin: 8
+                    bottomMargin: 5
                     rightMargin: 5
 
                     left: parent.left
                     right: parent.right
                     top: label.bottom
                 }
-                fontSize: "medium"
+                fontSize: "small"
                 wrapMode: Text.Wrap
                 maximumLineCount: 5
             }
