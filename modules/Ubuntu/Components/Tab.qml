@@ -16,6 +16,7 @@
 
 import QtQuick 1.1
 
+import "Page.js" as Page
 /*!
     \qmlclass Tab
     \inqmlmodule Ubuntu.Components 0.1
@@ -81,67 +82,7 @@ Item {
     }
 
     onActiveChanged: {
-        if (tab.active) __activate();
-        else __deactivate();
-    }
-
-    /*!
-      \internal
-      Create the page object if \l page is link, and make the page object visible.
-     */
-    function __activate() {
-        if (!__pageObject) {
-            __pageObject = __initPage(tab.page);
-            __pageObject.anchors.fill = tab;
-        }
-        __pageObject.visible = true;
-    }
-
-    /*!
-      \internal
-      Hide the page object, and destroy it if it is not equal to \l page.
-     */
-    function __deactivate() {
-        if (__pageObject) {
-            __pageObject.visible = false;
-            if (__pageObject !== page) {
-                __pageObject.destroy();
-                __pageObject = null;
-            }
-        }
-    }
-
-    /*!
-      \internal
-      Initialize __pageObject.
-     */
-    function __initPage(page) {
-        var pageComponent;
-
-        if (page.createObject) {
-            // page is defined as a component
-            pageComponent = page;
-        }
-        else if (typeof page =="string") {
-            // page is defined as a string (url)
-            pageComponent = Qt.createComponent(page);
-        }
-
-        var pageObject;
-        if (pageComponent) {
-            if (pageComponent.status == Component.Error) {
-                throw new Error("Error while loading page: " + pageComponent.errorString());
-            } else {
-                pageObject = pageComponent.createObject(tab);
-            }
-        } else {
-            pageObject = page;
-        }
-
-        if (pageObject.parent !== tab) {
-            pageObject.parent = tab;
-        }
-
-        return pageObject;
+        if (tab.active) __pageObject = Page.activate(__pageObject, page, tab);
+        else __pageObject = Page.deactivate(__pageObject, page);
     }
 }
