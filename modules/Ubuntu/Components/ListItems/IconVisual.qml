@@ -23,6 +23,7 @@ Item {
 
     property alias source: icon.source
     visible: source != "" && icon.status == Image.Ready
+    property bool hasFrame: true
 
     width: visible ? icon.width + 10 : 0
     height: icon.height + icon.anchors.topMargin
@@ -34,7 +35,7 @@ Item {
         fillMode: Image.PreserveAspectFit
         anchors {
             top: parent.top
-            topMargin: 8
+            topMargin: 5
             left: parent.left
             leftMargin: 5
         }
@@ -43,7 +44,8 @@ Item {
     BorderImage {
         id: iconFrame
         opacity: iconVisual.enabled ? 1.0 : 0.5
-        source: "artwork/ListItemFrame.png"
+        visible: iconVisual.hasFrame
+        source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         anchors.bottomMargin: -1
         border {

@@ -189,60 +189,87 @@ Template {
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Controls"
+                Component {
+                    id: controlExample
+                    // TODO: Replace this button by a Switch once that
+                    // component is complete and has disabled visuals.
+                    Button {
+                        width: 100
+                        text: "Control"
+                        anchors.centerIn: parent
+                        onClicked: print("clicked button")
+                    }
+                }
                 Column {
                     width: 250
                     ListItem.Header { text: "Controls" }
                     ListItem.Standard {
                         text: "Label"
-                        control: Button {
-                            width: 100
-                            text: "Control"
-                            anchors.centerIn: parent
-                            onClicked: print("clicked button")
-                        }
+                        control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
                         enabled: false
                         text: "Disabled"
-                        control: Button {
-                            width: 100
-                            text: "Control"
-                            anchors.centerIn: parent
-                        }
+                        control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
                         selected: true
                         text: "Selected"
-                        control: Button {
-                            width: 100
-                            text: "Control"
-                            anchors.centerIn: parent
-                        }
+                        control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
                         text: "Split"
-                        control: Button {
-                            width: 100
-                            text: "Control"
-                            anchors.centerIn: parent
-                            onClicked: print("Button clicked!")
-                        }
+                        control: controlExample.createObject(parent)
                         progression: true
                         onClicked: print("Progression clicked!")
                     }
                     ListItem.Standard {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Header { text: "Single control" }
+
+                    // TODO: Add more single controls (TextField, Slider) when they become available
+                    ListItem.SingleControl {
                         control: Button {
-                            width: 100
-                            text: "Control"
-                            anchors.centerIn: parent
+                            text: "Button"
+                            anchors {
+                                margins: 10
+                                fill: parent
+                            }
+                            onClicked: print("Large button clicked")
                         }
                     }
-                    ListItem.Standard {
-                        control: Button {
-                            text: "Action"
-                            anchors.fill: parent
+
+                    ListItem.Caption {
+                        text: "More to come..."
+                    }
+
+                    ListItem.Base {
+                        id: withProgress
+                        height: progress.height + progress.anchors.topMargin + progress.anchors.bottomMargin
+                        ProgressBar {
+                            id: progress
+                            value: progress.minimumValue
+                            anchors {
+                                margins: 10
+                                centerIn: parent
+                            }
+
+                            SequentialAnimation on value {
+                                loops: Animation.Infinite
+                                NumberAnimation {
+                                    from: progress.minimumValue
+                                    to: progress.maximumValue
+                                    duration: 1000
+                                }
+                                NumberAnimation {
+                                    from: progress.maximumValue
+                                    to: progress.minimumValue
+                                    duration: 1000
+                                }
+                            }
                         }
                     }
                 }

@@ -22,7 +22,7 @@ TextCustom {
     id: label
     property bool selected: false
 
-    fontSize: "large"
+    fontSize: "medium"
     elide: Text.ElideRight
     color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
     style: Text.Raised

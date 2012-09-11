@@ -63,6 +63,9 @@ Item {
     MouseArea {
         id: defaultMouseArea
         anchors.fill: parent
+        // if mouseArea is given a new value, disable defaultMouseArea
+        // as it might occlude the newly assigned mouse area.
+        enabled: button.mouseArea === defaultMouseArea
     }
 
     /*!

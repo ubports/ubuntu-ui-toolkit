@@ -97,7 +97,8 @@ AbstractButton {
       \preliminary
       Highlight the list item when it is pressed.
       This is used to disable the highlighting of the full list item
-      when it has a split.
+      when custom highlighting needs to be implemented (for example in
+      ListItem.Standard which can have a split).
     */
     property bool highlightWhenPressed: true
 

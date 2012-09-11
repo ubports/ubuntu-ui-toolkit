@@ -22,7 +22,7 @@ Template {
 
     Item {
         PageStack {
-            id: stack
+            id: pageStack
             anchors {
                 top: parent.top
                 bottom: parent.bottom
@@ -31,69 +31,39 @@ Template {
 
             width: 300
 
-            initialPage: Page {
+            initialPage: page0
+
+            Page {
+                id: page0
                 title: "Root page"
-
-                contents: PageList {
-                    pageStack: stack
-                    Page {
-                        title: "Page 1"
-                        contents: PageList {
-                            pageStack: stack
-
-                            Page {
-                                title: "Page 1.1"
-                                contents: TextCustom { text: "Example page 1.1" }
-                            }
-                            Page {
-                                title: "Page 1.2"
-                                contents: TextCustom { text: "Example page 1.2" }
-                            }
-                            Page {
-                                title: "Page 1.3"
-                                contents: TextCustom { text: "Example page 1.3" }
-                            }
-                        }
+                contents: Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: "Page one"
+                        onClicked: pageStack.push(page1)
+                        progression: true
                     }
-                    Page {
-                        title: "Page 2"
-                        contents: PageList {
-                            pageStack: stack
-
-                            Page {
-                                title: "Page 2.1"
-                                contents: TextCustom { text: "Example page 2.1" }
-                            }
-                            Page {
-                                title: "Page 2.2"
-                                contents: TextCustom { text: "Example page 2.2" }
-                            }
-                            Page {
-                                title: "Page 2.3"
-                                contents: TextCustom { text: "Example page 2.3" }
-                            }
-                        }
-                    }
-                    Page {
-                        title: "Page 3"
-                        contents: PageList {
-                            pageStack: stack
-
-                            Page {
-                                title: "Page 3.1"
-                                contents: TextCustom { text: "Example page 3.1" }
-                            }
-                            Page {
-                                title: "Page 3.2"
-                                contents: TextCustom { text: "Example page 3.2" }
-                            }
-                            Page {
-                                title: "Page 3.3"
-                                contents: TextCustom { text: "Example page 3.3" }
-                            }
-                        }
+                    ListItem.Standard {
+                        text: "Page two"
+                        onClicked: pageStack.push(page2)
+                        progression: true
                     }
                 }
+            }
+
+            Page {
+                id: page1
+                title: "First page"
+                contents: Rectangle {
+                    anchors.fill: parent
+                    color: "darkblue"
+                }
+            }
+
+            Page {
+                id: page2
+                title: "Second page"
+                contentsSource: Qt.resolvedUrl("MyCustomPage.qml")
             }
         }
     }
