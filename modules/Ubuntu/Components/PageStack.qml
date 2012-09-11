@@ -23,70 +23,8 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
 
-    Example: TODO: update
+    Example: TODO
     \qml
-    PageStack {
-        id: pageStack
-        anchors.fill: parent
-
-        initialPage: firstPage
-
-        Page {
-            id: firstPage
-            title: "Optional title"
-            contents: Column {
-                anchors.centerIn: parent
-                Text {
-                    text: "This is the root page!"
-                }
-                Row {
-                    Button {
-                        text: "Orange"
-                        onClicked: pageStack.push(orange)
-                    }
-                    Button {
-                        text: "blue"
-                        onClicked: pageStack.push(blue)
-                    }
-                }
-            }
-        }
-
-        Page {
-            id: orange
-            title: "Orange"
-            contents: Rectangle {
-                color: "orange"
-                width: 250
-                height: 250
-                anchors.centerIn: parent
-                Button {
-                    text: "go back"
-                    anchors.centerIn: parent
-                    onClicked: pageStack.pop()
-                }
-            }
-        }
-
-        Page {
-            id: blue
-            title: "Blue"
-            contents: Rectangle {
-                id: pink
-                color: "darkblue"
-                radius: 5
-                width: 150
-                height: 150
-                anchors.centerIn: parent
-                Button {
-                    text: "back"
-                    anchors.centerIn: parent
-                    onClicked: pageStack.pop()
-                    darkBorder: true
-                }
-            }
-        }
-    }
     \endqml
 */
 

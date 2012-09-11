@@ -47,7 +47,7 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Page two"
-                        onClicked: pageStack.push(page2)
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                         progression: true
                     }
                 }
@@ -62,12 +62,6 @@ Template {
                     color: "darkblue"
                 }
             }
-
-//            Page {
-//                id: page2
-//                title: "Second page"
-//                contentsSource: Qt.resolvedUrl("MyCustomPage.qml")
-//            }
         }
     }
 }
