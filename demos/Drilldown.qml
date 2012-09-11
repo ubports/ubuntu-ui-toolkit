@@ -36,7 +36,9 @@ Template {
             Page {
                 id: page0
                 title: "Root page"
-                contents: Column {
+                anchors.fill: parent
+
+                Column {
                     anchors.fill: parent
                     ListItem.Standard {
                         text: "Page one"
@@ -54,17 +56,18 @@ Template {
             Page {
                 id: page1
                 title: "First page"
-                contents: Rectangle {
+                anchors.fill: parent
+                Rectangle {
                     anchors.fill: parent
                     color: "darkblue"
                 }
             }
 
-            Page {
-                id: page2
-                title: "Second page"
-                contentsSource: Qt.resolvedUrl("MyCustomPage.qml")
-            }
+//            Page {
+//                id: page2
+//                title: "Second page"
+//                contentsSource: Qt.resolvedUrl("MyCustomPage.qml")
+//            }
         }
     }
 }

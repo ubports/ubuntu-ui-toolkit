@@ -23,7 +23,7 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
 
-    Example:
+    Example: TODO: update
     \qml
     PageStack {
         id: pageStack
@@ -101,6 +101,7 @@ Item {
      */
     property alias showHeader: header.visible
 
+    default property alias children: pageContents.children
 
     /*!
       \preliminary
@@ -122,13 +123,14 @@ Item {
      */
     function push(page) {
         if (page.__isPage !== true) {
+            // TODO: remove this and support Items?
             print("WARNING: Trying to push an object to the PageStack that is not a Page. Ignoring.");
             return;
         }
-        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
+        if (Stack.stack.size() > 0) Stack.stack.top().visible = false;
         Stack.stack.push(page);
-        page.contentsParent = pageContents;
-        page.active = true;
+        page.parent = pageContents;
+        page.visible = true;
         contents.updateHeader();
     }
 
@@ -139,13 +141,14 @@ Item {
      */
     function pop() {
         if (Stack.stack.size() > 1) {
-            Stack.stack.top().active = false;
+            Stack.stack.top().visible = false;
             Stack.stack.pop();
         } else {
             print("WARNING: Trying to pop a PageStack with "+Stack.stack.size()+" Pages. Ignoring.");
         }
 
-        Stack.stack.top().active = true;
+        print("Making page with title "+Stack.stack.top().title+" visible.");
+        Stack.stack.top().visible = true;
         contents.updateHeader();
     }
 
@@ -173,6 +176,13 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
                 top: header.bottom
+            }
+
+            onChildrenChanged: {
+                for (var i=0; i < children.length; i++) {
+                    if (children[i] === Stack.stack.top()) children[i].visible = true;
+                    else children[i].visible = false;
+                }
             }
         }
 
