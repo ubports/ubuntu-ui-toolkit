@@ -48,7 +48,7 @@ QtObject {
     /*!
       \preliminary
       This variable will be true if \l object holds an object that was created
-      from the given reference in Page.js, and thus can be deleted there.
+      from the given reference, and thus can be destroyed when no the page is deactivated.
      */
     property bool canDestroy: false
 }

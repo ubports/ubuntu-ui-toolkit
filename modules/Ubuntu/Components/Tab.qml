@@ -57,23 +57,25 @@ Item {
       \internal
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
-    property bool active: false
+    property alias active: pageWrapper.active
 
     PageWrapper {
         id: pageWrapper
         reference: tab.page
         owner: tab
-    }
 
-    onPageChanged: {
-        if (tab.active) {
-            Page.deactivate(pageWrapper);
-            Page.activate(pageWrapper);
+        property bool active: false
+
+        onReferenceChanged: {
+            if (pageWrapper.active) {
+                Page.deactivate(pageWrapper);
+                Page.activate(pageWrapper);
+            }
         }
-    }
 
-    onActiveChanged: {
-        if (tab.active) pageWrapper.object = Page.activate(pageWrapper);
-        else pageWrapper.object = Page.deactivate(pageWrapper);
+        onActiveChanged: {
+            if (pageWrapper.active) pageWrapper.object = Page.activate(pageWrapper);
+            else pageWrapper.object = Page.deactivate(pageWrapper);
+        }
     }
 }
