@@ -44,4 +44,11 @@ QtObject {
       The parent Item of the page object.
      */
     property Item owner
+
+    /*!
+      \preliminary
+      This variable will be true if \l object holds an object that was created
+      from the given reference in Page.js, and thus can be deleted there.
+     */
+    property bool canDestroy: false
 }

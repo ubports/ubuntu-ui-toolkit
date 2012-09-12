@@ -18,14 +18,14 @@
   \internal
   Initialize __pageObject.
  */
-function initPage(pageWrapper) { //(page, owner) {
+function initPage(pageWrapper) {
     var pageComponent;
 
     if (pageWrapper.reference.createObject) {
         // page is defined as a component
         pageComponent = pageWrapper.reference;
     }
-    else if (typeof pageWrapper.reference =="string") {
+    else if (typeof pageWrapper.reference == "string") {
         // page is defined as a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }
@@ -36,9 +36,11 @@ function initPage(pageWrapper) { //(page, owner) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             pageObject = pageComponent.createObject(pageWrapper.owner);
+            pageWrapper.canDestroy = true;
         }
     } else {
         pageObject = pageWrapper.reference;
+        pageWrapper.canDestroy = false;
     }
 
     if (pageObject.parent !== pageWrapper.owner) {
@@ -52,10 +54,9 @@ function initPage(pageWrapper) { //(page, owner) {
   \internal
   Create the page object if \l page is link, and make the page object visible.
  */
-//function activate(pageObject, pageRef, owner) {
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        pageWrapper.object = initPage(pageWrapper); //(pageWrapper.reference, pageWrapper.owner);
+        pageWrapper.object = initPage(pageWrapper);
         pageWrapper.object.anchors.fill = pageWrapper.owner;
     }
     pageWrapper.object.visible = true;
@@ -69,9 +70,10 @@ function activate(pageWrapper) {
 function deactivate(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.visible = false;
-        if (pageWrapper.object !== pageWrapper.reference) {
+        if (pageWrapper.canDestroy) {
             pageWrapper.object.destroy();
-            pageWrapper.object = null; // FIXME: hmm how does this work?
+            pageWrapper.object = null;
+            pageWrapper.canDestroy = false;
         }
     }
     return pageWrapper.object;

@@ -67,23 +67,13 @@ Item {
 
     onPageChanged: {
         if (tab.active) {
-            // It is now unclear whether pageWrapper.object should be destroyed
-            // here, because possibly ((old)pageWrapper.object !== (new)pageWrapper.reference), even if
-            // pageWrapper.object was created here.
-            throw new Error("Deactivate tab before changing the page.");
-
-            // TODO: If it is needed to support changing the page of the active
-            // tab, an additional property must be introduced that keeps track of
-            // whether pageWrapper.object must be destroyed.
+            Page.deactivate(pageWrapper);
+            Page.activate(pageWrapper);
         }
     }
 
     onActiveChanged: {
-//        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
         if (tab.active) pageWrapper.object = Page.activate(pageWrapper);
-
-        //        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
         else pageWrapper.object = Page.deactivate(pageWrapper);
-//        else pageWrapper.object = Page.deactivate(pageWrapper.object, pageWrapper.reference);
     }
 }
