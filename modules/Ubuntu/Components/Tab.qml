@@ -51,7 +51,6 @@ Item {
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
-//    property variant page
     property variant page
 
     /*!
@@ -59,15 +58,6 @@ Item {
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
     property bool active: false
-
-    /*!
-      \internal
-      The Item containing the contents of the tab. This can be the same
-      as \l page, if page is an Item, or it can be an object created
-      from a QML file if page is a url. Pages loaded from a file are
-      automatically destroyed when the tab is no longer active.
-    */
-//    property alias __pageObject: pageWrapper.object
 
     PageWrapper {
         id: pageWrapper
@@ -77,21 +67,23 @@ Item {
 
     onPageChanged: {
         if (tab.active) {
-            // It is now unclear whether __pageObject should be destroyed
-            // here, because possibly ((old)__pageObject !== (new)page), even if
-            // __pageObject was created here.
+            // It is now unclear whether pageWrapper.object should be destroyed
+            // here, because possibly ((old)pageWrapper.object !== (new)pageWrapper.reference), even if
+            // pageWrapper.object was created here.
             throw new Error("Deactivate tab before changing the page.");
 
             // TODO: If it is needed to support changing the page of the active
             // tab, an additional property must be introduced that keeps track of
-            // whether __pageObject must be destroyed.
+            // whether pageWrapper.object must be destroyed.
         }
     }
 
     onActiveChanged: {
-        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
 //        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
-        else pageWrapper.object = Page.deactivate(pageWrapper.object, pageWrapper.reference);
+        if (tab.active) pageWrapper.object = Page.activate(pageWrapper);
+
+        //        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
+        else pageWrapper.object = Page.deactivate(pageWrapper);
 //        else pageWrapper.object = Page.deactivate(pageWrapper.object, pageWrapper.reference);
     }
 }

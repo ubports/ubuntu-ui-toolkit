@@ -18,16 +18,16 @@
   \internal
   Initialize __pageObject.
  */
-function init(page, owner) {
+function initPage(pageWrapper) { //(page, owner) {
     var pageComponent;
 
-    if (page.createObject) {
+    if (pageWrapper.reference.createObject) {
         // page is defined as a component
-        pageComponent = page;
+        pageComponent = pageWrapper.reference;
     }
-    else if (typeof page =="string") {
+    else if (typeof pageWrapper.reference =="string") {
         // page is defined as a string (url)
-        pageComponent = Qt.createComponent(page);
+        pageComponent = Qt.createComponent(pageWrapper.reference);
     }
 
     var pageObject;
@@ -35,14 +35,14 @@ function init(page, owner) {
         if (pageComponent.status == Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
-            pageObject = pageComponent.createObject(owner);
+            pageObject = pageComponent.createObject(pageWrapper.owner);
         }
     } else {
-        pageObject = page;
+        pageObject = pageWrapper.reference;
     }
 
-    if (pageObject.parent !== owner) {
-        pageObject.parent = owner;
+    if (pageObject.parent !== pageWrapper.owner) {
+        pageObject.parent = pageWrapper.owner;
     }
 
     return pageObject;
@@ -52,26 +52,27 @@ function init(page, owner) {
   \internal
   Create the page object if \l page is link, and make the page object visible.
  */
-function activate(pageObject, pageRef, owner) {
-    if (!pageObject) {
-        pageObject = init(pageRef, owner);
-        pageObject.anchors.fill = owner;
+//function activate(pageObject, pageRef, owner) {
+function activate(pageWrapper) {
+    if (!pageWrapper.object) {
+        pageWrapper.object = initPage(pageWrapper); //(pageWrapper.reference, pageWrapper.owner);
+        pageWrapper.object.anchors.fill = pageWrapper.owner;
     }
-    pageObject.visible = true;
-    return pageObject;
+    pageWrapper.object.visible = true;
+    return pageWrapper.object;
 }
 
 /*!
   \internal
   Hide the page object, and destroy it if it is not equal to \l page.
  */
-function deactivate(pageObject, pageRef) {
-    if (pageObject) {
-        pageObject.visible = false;
-        if (pageObject !== pageRef) {
-            pageObject.destroy();
-            pageObject = null; // FIXME: hmm how does this work?
+function deactivate(pageWrapper) {
+    if (pageWrapper.object) {
+        pageWrapper.object.visible = false;
+        if (pageWrapper.object !== pageWrapper.reference) {
+            pageWrapper.object.destroy();
+            pageWrapper.object = null; // FIXME: hmm how does this work?
         }
     }
-    return pageObject;
+    return pageWrapper.object;
 }
