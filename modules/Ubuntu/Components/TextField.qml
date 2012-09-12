@@ -110,6 +110,12 @@ FocusScope {
     */
     property alias secondaryItem: rightPane.data
 
+    /*!
+      \preliminary
+      Allows highlighting errors in the TextField.
+    */
+    property bool errorHighlight: !acceptableInput
+
     // aliased properties from TextInput
     /*!
       \preliminary
@@ -362,13 +368,18 @@ FocusScope {
     //internals
     QtObject {
         id: internal
-        property url frameImage: (editor.activeFocus && editor.enabled) ?
-                                     Qt.resolvedUrl("artwork/TextFieldFrame.png") :
-                                     Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
+        property url frameImage:
+            (control.errorHighlight && !editor.acceptableInput)  ?
+                ((editor.activeFocus && editor.enabled) ?
+                    Qt.resolvedUrl("artwork/TextFieldFrameError.png") :
+                    Qt.resolvedUrl("artwork/TextFieldFrameIdleError.png")) :
+                ((editor.activeFocus && editor.enabled) ?
+                    Qt.resolvedUrl("artwork/TextFieldFrame.png") :
+                    Qt.resolvedUrl("artwork/TextFieldFrameIdle.png"))
         // array of borders in left, top, right, bottom order
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
-        property color textColor: (editor.enabled) ? "#323030" : "darkgray"
+        property color textColor: (editor.enabled) ? "#757373" : "darkgray"
         property color hintColor: "#B6B6B6"
         property string fontSize: "medium"
         property real clearButtonSpacing: 3.5
@@ -457,6 +468,34 @@ FocusScope {
             }
         }
 
+        // cursor
+        Component {
+            id: cursor
+            Rectangle {
+                property bool timerShowCursor: true
+
+                id: customCursor
+                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                    topMargin: -parent.topMargin
+                    bottomMargin: -parent.bottomMargin
+                }
+                width: 1
+                visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
+                Timer {
+                    interval: 800
+                    running: (customCursor.parent.forceCursorVisible || customCursor.parent.activeFocus)
+                    repeat: true
+                    onTriggered: {
+                        interval = (interval == 800) ? 400 : 800
+                        customCursor.timerShowCursor = !customCursor.timerShowCursor
+                    }
+                }
+            }
+        }
+
         //clear button
         ButtonWithForeground {
             id: clearButton
@@ -507,8 +546,8 @@ FocusScope {
             clip: true
             passwordCharacter: "\u2022"
             font.pixelSize: FontUtils.sizeToPixels(internal.fontSize)
-
             onTextChanged: internal.textChanged = true
+            cursorDelegate: cursor
 
             // virtual keyboard/software input panel handling
             activeFocusOnPress: false
