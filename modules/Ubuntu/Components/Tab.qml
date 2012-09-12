@@ -51,6 +51,7 @@ Item {
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
+//    property variant page
     property variant page
 
     /*!
@@ -66,7 +67,13 @@ Item {
       from a QML file if page is a url. Pages loaded from a file are
       automatically destroyed when the tab is no longer active.
     */
-    property Item __pageObject
+//    property alias __pageObject: pageWrapper.object
+
+    PageWrapper {
+        id: pageWrapper
+        reference: tab.page
+        owner: tab
+    }
 
     onPageChanged: {
         if (tab.active) {
@@ -82,7 +89,9 @@ Item {
     }
 
     onActiveChanged: {
-        if (tab.active) __pageObject = Page.activate(__pageObject, page, tab);
-        else __pageObject = Page.deactivate(__pageObject, page);
+        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
+//        if (tab.active) pageWrapper.object = Page.activate(pageWrapper.object, pageWrapper.reference, pageWrapper.owner);
+        else pageWrapper.object = Page.deactivate(pageWrapper.object, pageWrapper.reference);
+//        else pageWrapper.object = Page.deactivate(pageWrapper.object, pageWrapper.reference);
     }
 }

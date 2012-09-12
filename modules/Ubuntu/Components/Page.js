@@ -66,7 +66,6 @@ function activate(pageObject, pageRef, owner) {
   Hide the page object, and destroy it if it is not equal to \l page.
  */
 function deactivate(pageObject, pageRef) {
-    print("deactivating "+pageObject.title);
     if (pageObject) {
         pageObject.visible = false;
         if (pageObject !== pageRef) {
@@ -76,4 +75,3 @@ function deactivate(pageObject, pageRef) {
     }
     return pageObject;
 }
-

@@ -16,6 +16,7 @@
 
 import QtQuick 1.1
 import "stack.js" as Stack
+import "Page.js" as PageUtils
 
 /*!
     \qmlclass PageStack
@@ -60,15 +61,18 @@ Item {
       Push a page to the stack.
      */
     function push(page) {
-        if (page.__isPage !== true) {
-            // TODO: remove this and support Items?
-            print("WARNING: Trying to push an object to the PageStack that is not a Page. Ignoring.");
-            return;
-        }
-        if (Stack.stack.size() > 0) Stack.stack.top().visible = false;
-        Stack.stack.push(page);
-        page.parent = pageContents;
-        page.visible = true;
+//        if (page.__isPage !== true) {
+//            // TODO: remove this and support Items?
+//            print("WARNING: Trying to push an object to the PageStack that is not a Page. Ignoring.");
+//            return;
+//        }
+//        if (Stack.stack.size() > 0) Stack.stack.top().visible = false;
+        if (Stack.stack.size() > 0) PageUtils.deactivate(Stack.stack.top(), null); // TODO: fix null
+//        Stack.stack.push(page);
+//        page.parent = pageContents;
+//        page.visible = true;
+        var aPage;
+        Stack.stack.push(PageUtils.activate(aPage, page, pageContents));
         contents.updateHeader();
     }
 
@@ -79,14 +83,17 @@ Item {
      */
     function pop() {
         if (Stack.stack.size() > 1) {
-            Stack.stack.top().visible = false;
+//            Stack.stack.top().visible = false;
+            PageUtils.deactivate(Stack.stack.top(), null); // TODO: fix null
             Stack.stack.pop();
         } else {
             print("WARNING: Trying to pop a PageStack with "+Stack.stack.size()+" Pages. Ignoring.");
         }
 
         print("Making page with title "+Stack.stack.top().title+" visible.");
-        Stack.stack.top().visible = true;
+//        Stack.stack.top().visible = true;
+        var aPage;
+        Stack.stack.push(PageUtils.activate(aPage, Stack.stack.top(), pageContents));
         contents.updateHeader();
     }
 
