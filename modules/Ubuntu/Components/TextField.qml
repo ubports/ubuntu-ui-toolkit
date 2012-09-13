@@ -72,8 +72,7 @@ FocusScope {
     id: control
 
     implicitWidth: 200
-    implicitHeight: hint.paintedHeight +
-                    3 * internal.spacing
+    implicitHeight: 25
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.

@@ -1,7 +1,7 @@
-border.left: 5
-border.top: 5
-border.bottom: 5
-border.right: 5
+border.left: 11
+border.top: 11
+border.bottom: 11
+border.right: 11
 source: TextFieldFrame.png
 horizontalTileRule: Stretch
 verticalTileRule: Stretch
