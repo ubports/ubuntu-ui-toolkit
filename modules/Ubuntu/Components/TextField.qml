@@ -367,7 +367,6 @@ FocusScope {
         id: internal
         property url frameImage: selectFrameSource()
         // array of borders in left, top, right, bottom order
-        //property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
         property color textColor: (editor.enabled) ? "#757373" : "darkgray"
         property color hintColor: "#B6B6B6"
@@ -421,14 +420,6 @@ FocusScope {
         anchors.fill: parent
         source: internal.frameImage
         smooth: true
-        /*
-        border {
-            left: internal.frameBorders[0]
-            top: internal.frameBorders[1]
-            right: internal.frameBorders[2]
-            bottom: internal.frameBorders[3]
-        }
-        */
 
         //left pane
         Item {
