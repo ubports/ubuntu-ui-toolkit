@@ -9,6 +9,7 @@ AbstractButton 0.1 AbstractButton.qml
 PageContainer 0.1 PageContainer.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
+TextField 0.1 TextField.qml
 Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 internal TabButton TabButton.qml
