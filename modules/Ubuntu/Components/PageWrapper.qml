@@ -15,17 +15,20 @@
  */
 
 import QtQuick 1.1
+import "Page.js" as PageUtils
 
 /*!
     \qmlclass PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO
+    \brief TODO: update all documentation in PageWrapper.
 
     \b{This component is under heavy development.}
 
     Examples: See \l Tabs.
 */
 QtObject {
+    id: pageWrapper
+
     /*!
       \preliminary
       The reference to the page object. This can be the page
@@ -51,4 +54,18 @@ QtObject {
       from the given reference, and thus can be destroyed when no the page is deactivated.
      */
     property bool canDestroy: false
+
+    property bool active: false
+
+    onActiveChanged: {
+        if (pageWrapper.active) PageUtils.activate(pageWrapper);
+        else PageUtils.deactivate(pageWrapper);
+    }
+
+//    onReferenceChanged: {
+//        if (pageWrapper.active) {
+//            PageUtils.deactivate(pageWrapper);
+//            PageUtils.activate(pageWrapper);
+//        }
+//    }
 }

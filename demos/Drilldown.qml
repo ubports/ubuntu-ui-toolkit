@@ -46,7 +46,7 @@ Template {
                         progression: true
                     }
                     ListItem.Standard {
-                        text: "Page two"
+                        text: "Page two (external)"
                         onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                         progression: true
                     }
@@ -57,9 +57,41 @@ Template {
                 id: page1
                 title: "First page"
                 anchors.fill: parent
+
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: "External page"
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: "Blue page"
+                        onClicked: pageStack.push(bluePage)
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: "Red rectangle"
+                        onClicked: pageStack.push(red)
+                        progression: true
+                    }
+                }
+            }
+
+            Rectangle {
+                id: red
+                anchors.fill: parent
+                color: "red"
+            }
+
+            Page {
+                id: bluePage
+                title: "All blue"
+                anchors.fill: parent
+
                 Rectangle {
                     anchors.fill: parent
-                    color: "darkblue"
+                    color: "blue"
                 }
             }
         }

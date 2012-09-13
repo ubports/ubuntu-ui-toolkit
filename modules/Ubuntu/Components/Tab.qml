@@ -48,34 +48,17 @@ Item {
     /*!
       \preliminary
       The contents of the page. This can also be a string referring to a Page qml file.
-      Deactivate the Tab before changing the page, to ensure proper destruction of the
-      old page object first, if needed.
      */
-    property variant page
+    property alias page: pageWrapper.reference
 
     /*!
       \internal
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
-    property alias active: pageWrapper.active
+    property alias __active: pageWrapper.active
 
     PageWrapper {
         id: pageWrapper
-        reference: tab.page
         owner: tab
-
-        property bool active: false
-
-        onReferenceChanged: {
-            if (pageWrapper.active) {
-                Page.deactivate(pageWrapper);
-                Page.activate(pageWrapper);
-            }
-        }
-
-        onActiveChanged: {
-            if (pageWrapper.active) pageWrapper.object = Page.activate(pageWrapper);
-            else pageWrapper.object = Page.deactivate(pageWrapper);
-        }
     }
 }

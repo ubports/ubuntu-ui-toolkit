@@ -14,6 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//.pragma library // FIXME: cannot refer to Component.Error if I use this.
+
 /*!
   \internal
   Initialize __pageObject.
@@ -57,15 +59,15 @@ function initPage(pageWrapper) {
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
         pageWrapper.object = initPage(pageWrapper);
+        // TODO: remove owner? Make pageWrapper child of owner?
         pageWrapper.object.anchors.fill = pageWrapper.owner;
     }
     pageWrapper.object.visible = true;
-    return pageWrapper.object;
 }
 
 /*!
   \internal
-  Hide the page object, and destroy it if it is not equal to \l page.
+  Hide the page object, and destroy it if needed.
  */
 function deactivate(pageWrapper) {
     if (pageWrapper.object) {
@@ -76,5 +78,4 @@ function deactivate(pageWrapper) {
             pageWrapper.canDestroy = false;
         }
     }
-    return pageWrapper.object;
 }

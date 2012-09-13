@@ -34,6 +34,7 @@ import QtQuick 1.1
             }
             Tab {
                 title: "tab 2"
+                iconSource: "icon.png"
                 page:  Rectangle {
                     Text {
                         anchors.centerIn: parent
@@ -180,9 +181,9 @@ Item {
             for (var i = 0; i < contentsContainer.children.length; i++) {
                 tab = contentsContainer.children[i];
                 if (i == tabs.selectedTabIndex) {
-                    tab.active = true;
+                    tab.__active = true;
                 } else {
-                    tab.active = false;
+                    tab.__active = false;
                 }
             }
         }

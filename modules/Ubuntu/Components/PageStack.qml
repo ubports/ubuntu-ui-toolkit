@@ -16,7 +16,6 @@
 
 import QtQuick 1.1
 import "stack.js" as Stack
-import "Page.js" as PageUtils
 
 /*!
     \qmlclass PageStack
@@ -40,7 +39,15 @@ Item {
      */
     property alias showHeader: header.visible
 
-    default property alias children: pageContents.children
+    /*!
+      \internal
+      This allows to define the pages inside the PageStack without showing them.
+     */
+    default property alias children: pages.children
+    Item {
+        id: pages
+        visible: false
+    }
 
     /*!
       \preliminary
@@ -57,22 +64,28 @@ Item {
     //property var stack: new Stack.Stack()
 
     /*!
+      \internal
+      Create a PageWrapper for the specified page.
+     */
+    function __createWrapper(page) {
+        var wrapperComponent = Qt.createComponent("PageWrapper.qml");
+        // TODO: cache the component?
+        var wrapperObject = wrapperComponent.createObject(pageStack);
+        wrapperObject.reference = page;
+        wrapperObject.owner = pageContents;
+        return wrapperObject;
+    }
+
+    /*!
       \preliminary
       Push a page to the stack.
      */
     function push(page) {
-//        if (page.__isPage !== true) {
-//            // TODO: remove this and support Items?
-//            print("WARNING: Trying to push an object to the PageStack that is not a Page. Ignoring.");
-//            return;
-//        }
-//        if (Stack.stack.size() > 0) Stack.stack.top().visible = false;
-        if (Stack.stack.size() > 0) PageUtils.deactivate(Stack.stack.top(), null); // TODO: fix null
-//        Stack.stack.push(page);
-//        page.parent = pageContents;
-//        page.visible = true;
-        var aPage;
-        Stack.stack.push(PageUtils.activate(aPage, page, pageContents));
+        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
+
+        Stack.stack.push(__createWrapper(page));
+        Stack.stack.top().active = true;
+
         contents.updateHeader();
     }
 
@@ -82,18 +95,15 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (Stack.stack.size() > 1) {
-//            Stack.stack.top().visible = false;
-            PageUtils.deactivate(Stack.stack.top(), null); // TODO: fix null
-            Stack.stack.pop();
-        } else {
+        if (Stack.stack.size() <= 1) {
             print("WARNING: Trying to pop a PageStack with "+Stack.stack.size()+" Pages. Ignoring.");
+            return;
         }
 
-        print("Making page with title "+Stack.stack.top().title+" visible.");
-//        Stack.stack.top().visible = true;
-        var aPage;
-        Stack.stack.push(PageUtils.activate(aPage, Stack.stack.top(), pageContents));
+        Stack.stack.top().active = false;
+        Stack.stack.pop();
+        Stack.stack.top().active = true;
+
         contents.updateHeader();
     }
 
@@ -109,7 +119,6 @@ Item {
                 right: parent.right
                 top: parent.top
             }
-
             pageStack: pageStack
         }
 
@@ -122,13 +131,6 @@ Item {
                 bottom: parent.bottom
                 top: header.bottom
             }
-
-            onChildrenChanged: {
-                for (var i=0; i < children.length; i++) {
-                    if (children[i] === Stack.stack.top()) children[i].visible = true;
-                    else children[i].visible = false;
-                }
-            }
         }
 
         function updateHeader() {
@@ -139,7 +141,9 @@ Item {
                 header.showBackButton = false
             }
             if (stackSize > 0) {
-                header.title = Stack.stack.top().title;
+                var item = Stack.stack.top().object;
+                if (item.__isPage === true) header.title = item.title;
+                else header.title = "";
             } else {
                 header.title = "";
             }
