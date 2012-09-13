@@ -73,10 +73,7 @@ FocusScope {
 
     implicitWidth: 200
     implicitHeight: hint.paintedHeight +
-                    internal.frameBorders[1] +
-                    internal.frameBorders[3] +
-                    internal.spacing
-
+                    3 * internal.spacing
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
@@ -370,7 +367,7 @@ FocusScope {
         id: internal
         property url frameImage: selectFrameSource()
         // array of borders in left, top, right, bottom order
-        property variant frameBorders: [10, 5, 10, 5]
+        //property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
         property color textColor: (editor.enabled) ? "#757373" : "darkgray"
         property color hintColor: "#B6B6B6"
@@ -387,12 +384,12 @@ FocusScope {
         {
             if (control.errorHighlight && !editor.acceptableInput) {
                 if (editor.activeFocus && editor.enabled)
-                    return Qt.resolvedUrl("artwork/TextFieldFrameError.png")
-                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.png")
+                    return Qt.resolvedUrl("artwork/TextFieldFrameError.sci")
+                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.sci")
             }
             if (editor.activeFocus && editor.enabled)
-                return Qt.resolvedUrl("artwork/TextFieldFrame.png")
-            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
+                return Qt.resolvedUrl("artwork/TextFieldFrame.sci")
+            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.sci")
         }
 
         function showInputPanel()
@@ -424,12 +421,14 @@ FocusScope {
         anchors.fill: parent
         source: internal.frameImage
         smooth: true
+        /*
         border {
             left: internal.frameBorders[0]
             top: internal.frameBorders[1]
             right: internal.frameBorders[2]
             bottom: internal.frameBorders[3]
         }
+        */
 
         //left pane
         Item {
