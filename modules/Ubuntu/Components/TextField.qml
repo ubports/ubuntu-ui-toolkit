@@ -39,7 +39,7 @@ import "fontUtils.js" as FontUtils
         }
 
         TextField {
-            placeHolderText: "password"
+            placeholderText: "password"
             echoMode: TextInput.Password
         }
 
@@ -368,14 +368,7 @@ FocusScope {
     //internals
     QtObject {
         id: internal
-        property url frameImage:
-            (control.errorHighlight && !editor.acceptableInput)  ?
-                ((editor.activeFocus && editor.enabled) ?
-                    Qt.resolvedUrl("artwork/TextFieldFrameError.png") :
-                    Qt.resolvedUrl("artwork/TextFieldFrameIdleError.png")) :
-                ((editor.activeFocus && editor.enabled) ?
-                    Qt.resolvedUrl("artwork/TextFieldFrame.png") :
-                    Qt.resolvedUrl("artwork/TextFieldFrameIdle.png"))
+        property url frameImage: selectFrameSource()
         // array of borders in left, top, right, bottom order
         property variant frameBorders: [10, 5, 10, 5]
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
@@ -389,6 +382,18 @@ FocusScope {
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
+
+        function selectFrameSource()
+        {
+            if (control.errorHighlight && !editor.acceptableInput) {
+                if (editor.activeFocus && editor.enabled)
+                    return Qt.resolvedUrl("artwork/TextFieldFrameError.png")
+                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.png")
+            }
+            if (editor.activeFocus && editor.enabled)
+                return Qt.resolvedUrl("artwork/TextFieldFrame.png")
+            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.png")
+        }
 
         function showInputPanel()
         {
@@ -429,7 +434,6 @@ FocusScope {
         //left pane
         Item {
             id: leftPane
-            z: Number.MAX_VALUE
             anchors {
                 left: parent.left
                 leftMargin: internal.spacing
@@ -450,7 +454,6 @@ FocusScope {
         // right pane
         Item {
             id: rightPane
-            z: Number.MAX_VALUE
             anchors {
                 right: parent.right
                 rightMargin: internal.spacing
