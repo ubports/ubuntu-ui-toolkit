@@ -44,13 +44,11 @@ function __initPage(pageWrapper) {
     } else {
         // page reference is an object
         pageObject = pageWrapper.reference;
+        pageObject.parent = pageWrapper.owner;
         pageWrapper.canDestroy = false;
     }
 
-    if (pageObject.parent !== pageWrapper.owner) {
-        pageObject.parent = pageWrapper.owner;
-    }
-    pageObject.anchors.fill = pageWrapper.owner; // FIXME: Do we always want this?
+    pageObject.anchors.fill = pageWrapper.owner; // TODO: Do we always want this?
 
     return pageObject;
 }
