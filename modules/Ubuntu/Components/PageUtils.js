@@ -49,8 +49,8 @@ function __initPage(pageWrapper) {
 
     if (pageObject.parent !== pageWrapper.owner) {
         pageObject.parent = pageWrapper.owner;
-        pageObject.anchors.fill = pageWrapper.owner;
     }
+    pageObject.anchors.fill = pageWrapper.owner; // FIXME: Do we always want this?
 
     return pageObject;
 }
