@@ -52,7 +52,8 @@ Base {
       \preliminary
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
-      The mouseArea of the control will be set to the mouseArea of this list item also.
+
+      FIXME: all mouse events of the list item will also be forwarded to the control.
      */
     property Item control
 
@@ -70,6 +71,7 @@ Base {
 
     /*!
       \internal
+      This handler is an implementation detail. Mark as internal to prevent QDoc publishing it
      */
     onControlChanged: __updateControl()
     Component.onCompleted: __updateControl()
