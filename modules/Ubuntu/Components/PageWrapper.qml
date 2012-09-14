@@ -76,4 +76,9 @@ QtObject {
             PageUtils.activate(pageWrapper);
         }
     }
+
+    /*!
+      \internal
+     */
+    onOwnerChanged: PageUtils.updateOwner(pageWrapper)
 }

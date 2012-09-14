@@ -79,3 +79,11 @@ function deactivate(pageWrapper) {
         }
     }
 }
+
+function updateOwner(pageWrapper) {
+    if (pageWrapper.object) {
+        pageWrapper.object.parent = pageWrapper.owner;
+        pageWrapper.object.anchors.fill = pageWrapper.owner;
+        pageWrapper.object.visible = pageWrapper.active;
+    }
+}
