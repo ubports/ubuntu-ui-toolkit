@@ -152,7 +152,7 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: contentsContainer.children
+                model: tabs.myChildren
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -181,8 +181,8 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < contentsContainer.children.length; i++) {
-                tab = contentsContainer.children[i];
+            for (var i = 0; i < tabs.myChildren.length; i++) {
+                tab = tabs.myChildren[i];
                 if (i == tabs.selectedTabIndex) {
                     tab.active = true;
                 } else {
