@@ -59,7 +59,7 @@ Item {
       \preliminary
       The children of the Tabs should be instances of Tab.
      */
-    default property alias children: contentsContainer.children
+    default property alias myChildren: contentsContainer.children
 
     /*!
       \preliminary
