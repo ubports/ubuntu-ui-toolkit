@@ -57,7 +57,7 @@ function __initPage(pageWrapper) {
 
 /*!
   \internal
-  Create the page object if \l page is link, and make the page object visible.
+  Create the page object if needed, and make the page object visible.
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
