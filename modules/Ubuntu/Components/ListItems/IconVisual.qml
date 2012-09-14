@@ -26,7 +26,6 @@ Item {
     property bool hasFrame: true
 
     width: visible ? icon.width + 2*icon.anchors.leftMargin : 0
-//    height: icon.height + icon.anchors.topMargin
 
     anchors {
         top: parent ? parent.top : undefined
@@ -36,12 +35,9 @@ Item {
 
     Image {
         id: icon
-//        width: 36
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
-//            top: parent.top
-//            topMargin: 5
             verticalCenter: parent.verticalCenter
             left: parent.left
             leftMargin: 5
@@ -55,7 +51,6 @@ Item {
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors {
             fill: icon
-//            bottomMargin: -1
         }
         border {
             left: 3
