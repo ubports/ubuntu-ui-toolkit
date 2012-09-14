@@ -15,16 +15,14 @@
  */
 
 import QtQuick 1.1
-import "Page.js" as PageUtils
+import "PageUtils.js" as PageUtils
 
 /*!
     \qmlclass PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO: update all documentation in PageWrapper.
+    \brief Internal class used by \l Tab
 
     \b{This component is under heavy development.}
-
-    Examples: See \l Tabs.
 */
 QtObject {
     id: pageWrapper
@@ -32,7 +30,7 @@ QtObject {
     /*!
       \preliminary
       The reference to the page object. This can be the page
-      itself, but also a url pointing to a QML file.
+      itself (which is an Item), but also a url pointing to a QML file.
      */
     property variant reference
 
@@ -57,15 +55,21 @@ QtObject {
 
     property bool active: false
 
+    /*!
+      \internal
+     */
     onActiveChanged: {
         if (pageWrapper.active) PageUtils.activate(pageWrapper);
         else PageUtils.deactivate(pageWrapper);
     }
 
-//    onReferenceChanged: {
-//        if (pageWrapper.active) {
-//            PageUtils.deactivate(pageWrapper);
-//            PageUtils.activate(pageWrapper);
-//        }
-//    }
+    /*!
+      \internal
+      */
+    onReferenceChanged: {
+        if (pageWrapper.active) {
+            PageUtils.deactivate(pageWrapper);
+            PageUtils.activate(pageWrapper);
+        }
+    }
 }

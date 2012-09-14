@@ -18,35 +18,38 @@
 
 /*!
   \internal
-  Initialize __pageObject.
+  Initialize pageWrapper.object.
  */
-function initPage(pageWrapper) {
+function __initPage(pageWrapper) {
     var pageComponent;
 
     if (pageWrapper.reference.createObject) {
-        // page is defined as a component
+        // page reference is a component
         pageComponent = pageWrapper.reference;
     }
     else if (typeof pageWrapper.reference == "string") {
-        // page is defined as a string (url)
+        // page reference is a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }
 
     var pageObject;
     if (pageComponent) {
-        if (pageComponent.status == Component.Error) {
+        if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
+            // create te object
             pageObject = pageComponent.createObject(pageWrapper.owner);
             pageWrapper.canDestroy = true;
         }
     } else {
+        // page reference is an object
         pageObject = pageWrapper.reference;
         pageWrapper.canDestroy = false;
     }
 
     if (pageObject.parent !== pageWrapper.owner) {
         pageObject.parent = pageWrapper.owner;
+        pageObject.anchors.fill = pageWrapper.owner;
     }
 
     return pageObject;
@@ -58,9 +61,7 @@ function initPage(pageWrapper) {
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        pageWrapper.object = initPage(pageWrapper);
-        // TODO: remove owner? Make pageWrapper child of owner?
-        pageWrapper.object.anchors.fill = pageWrapper.owner;
+        pageWrapper.object = __initPage(pageWrapper);
     }
     pageWrapper.object.visible = true;
 }
@@ -72,6 +73,7 @@ function activate(pageWrapper) {
 function deactivate(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.visible = false;
+
         if (pageWrapper.canDestroy) {
             pageWrapper.object.destroy();
             pageWrapper.object = null;
