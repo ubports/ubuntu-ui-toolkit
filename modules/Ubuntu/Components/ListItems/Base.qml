@@ -122,7 +122,7 @@ AbstractButton {
     /*!
       \internal
      */
-    property bool __showTopSeparator: false
+    property bool __showTopSeparator: __separateAtTop()
 
     /*!
       \internal
@@ -160,11 +160,27 @@ AbstractButton {
         return true;
     }
 
+    /*
+      \internal
+      Determine whether the top separator must be shown.
+      This is the case, if the list item is not a divider, and
+      it is the first in the list of the children.
+    */
+    function __separateAtTop() {
+        var index = baseListItem.__childIndexOf(baseListItem);
+        if (index === undefined) return true;
+        // index is defined:
+        if (baseListItem.__isDivider || index !== 0) return false;
+        return true;
+    }
+
     Image {
         id: topSeparatorLine
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
         height: visible ? 2 : 0
         source: "artwork/ListItemDividerHorizontal.png"
         visible: baseListItem.__showTopSeparator
