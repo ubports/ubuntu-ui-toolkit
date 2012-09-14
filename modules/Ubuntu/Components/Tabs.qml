@@ -56,10 +56,10 @@ Item {
     id: tabs
 
     /*!
-      \preliminary
+      \internal
       The children of the Tabs should be instances of Tab.
      */
-    default property alias myChildren: contentsContainer.children
+    default property alias tabChildren: contentsContainer.children
 
     /*!
       \preliminary
@@ -152,7 +152,7 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabs.myChildren
+                model: tabs.tabChildren
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -181,8 +181,8 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabs.myChildren.length; i++) {
-                tab = tabs.myChildren[i];
+            for (var i = 0; i < tabs.tabChildren.length; i++) {
+                tab = tabs.tabChildren[i];
                 if (i == tabs.selectedTabIndex) {
                     tab.active = true;
                 } else {
