@@ -56,7 +56,11 @@ import QtQuick 1.1
 Item {
     id: tabs
 
-    default property alias children: contentsContainer.children
+    /*!
+      \internal
+      The children of the Tabs should be instances of Tab.
+     */
+    default property alias tabChildren: contentsContainer.children
 
     /*!
       \preliminary
@@ -149,7 +153,7 @@ Item {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: contentsContainer.children
+                model: tabs.tabChildren
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -178,8 +182,8 @@ Item {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < contentsContainer.children.length; i++) {
-                tab = contentsContainer.children[i];
+            for (var i = 0; i < tabs.tabChildren.length; i++) {
+                tab = tabs.tabChildren[i];
                 if (i == tabs.selectedTabIndex) {
                     tab.__active = true;
                 } else {

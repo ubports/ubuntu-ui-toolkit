@@ -8,6 +8,7 @@ TextCustom 0.1 TextCustom.qml
 AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
+TextField 0.1 TextField.qml
 Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 internal TabButton TabButton.qml
