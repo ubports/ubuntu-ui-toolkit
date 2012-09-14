@@ -52,6 +52,7 @@ Base {
       \preliminary
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
+
       FIXME: all mouse events of the list item will also be forwarded to the control.
      */
     property Item control

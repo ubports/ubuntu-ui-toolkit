@@ -26,31 +26,25 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            Page {
+            Tab {
                 title: "tab 1"
-                contents: Text {
-                    anchors.centerIn: parent
+                page: Text {
                     text: "This is the first tab."
                 }
             }
-            Page {
+            Tab {
                 title: "tab 2"
-                contents: Text {
-                    anchors.centerIn: parent
-                    text: "Tab number two."
-                }
-            }
-            Page {
-                title: "tab 3"
-                contents:  Rectangle {
-                    id: tab3
-                    anchors.fill: parent
+                page:  Rectangle {
                     Text {
                         anchors.centerIn: parent
-                        text: "Colorful tab 3"
+                        text: "Colorful tab."
                     }
                     color: "lightblue"
                 }
+            }
+            Tab {
+                title: "tab 3"
+                page: "MyCustomPage.qml"
             }
         }
     \endqml
@@ -58,8 +52,14 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-PageContainer {
+Item {
     id: tabs
+
+    /*!
+      \internal
+      The children of the Tabs should be instances of Tab.
+     */
+    default property alias children: contentsContainer.children
 
     /*!
       \preliminary
@@ -152,7 +152,7 @@ PageContainer {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabs.pages
+                model: tabs.children
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -181,10 +181,9 @@ PageContainer {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabs.pages.length; i++) {
-                tab = tabs.pages[i]
+            for (var i = 0; i < tabs.children.length; i++) {
+                tab = tabs.children[i];
                 if (i == tabs.selectedTabIndex) {
-                    tab.contentsParent = contentsContainer;
                     tab.active = true;
                 } else {
                     tab.active = false;
