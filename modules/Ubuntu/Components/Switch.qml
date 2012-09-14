@@ -157,8 +157,8 @@ Item {
         // FIXME(loicm) The radius of the thumb BorderImage must be lower than
         //     the radius of the background BorderImage so that the perimeter can
         //     look perfectly consistent.
-        // FIXME(loicm) There are stretch pixels on the left of the thumb in the
-        //     checked state.
+        // FIXME(loicm) There are stretched pixels on the left of the thumb in
+        //     the checked state.
 
         BorderImage {
             id: thumbShape
