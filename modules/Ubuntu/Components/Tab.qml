@@ -46,7 +46,7 @@ Item {
 
     /*!
       \preliminary
-      The contents of the page. This can also be a string referring to a Page qml file.
+      The contents of the page. This can also be a string referring to a qml file.
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
