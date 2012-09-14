@@ -167,12 +167,7 @@ Item {
                * (1.0 - internals.thumbWidth)) : 0.0)
             y: backgroundShape.y + internals.thumbSpacing
             width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
-            // FIXME(loicm) Note sure why one pixel needs to be removed in order
-            //     to see the background shape at the bottom. I'll figure that
-            //     out while refactoring the code to correctly share common
-            //     rendering code between the Button, CheckBox, Switch and
-            //     ProgressBar components.
-            height: backgroundShape.height - (2.0 * internals.thumbSpacing) - 1.0
+            height: backgroundShape.height - (2.0 * internals.thumbSpacing)
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
