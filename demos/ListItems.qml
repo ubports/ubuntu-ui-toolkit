@@ -80,6 +80,7 @@ Template {
                     ListItem.Standard {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
+                        iconFrame: false
                     }
                 }
             }
