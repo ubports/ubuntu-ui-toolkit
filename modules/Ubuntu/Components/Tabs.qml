@@ -55,6 +55,10 @@ import QtQuick 1.1
 Item {
     id: tabs
 
+    /*!
+      \preliminary
+      The children of the Tabs should be instances of Tab.
+     */
     default property alias children: contentsContainer.children
 
     /*!

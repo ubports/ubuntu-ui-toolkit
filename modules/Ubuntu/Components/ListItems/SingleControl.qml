@@ -52,7 +52,7 @@ Base {
       \preliminary
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
-      The mouseArea of the control will be set to the \l mouseArea of this list item also.
+      The mouseArea of the control will be set to the mouseArea of this list item also.
      */
     property Item control
 
@@ -68,6 +68,9 @@ Base {
         }
     }
 
+    /*!
+      \internal
+     */
     onControlChanged: __updateControl()
     Component.onCompleted: __updateControl()
 }

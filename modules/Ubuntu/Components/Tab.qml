@@ -67,6 +67,9 @@ Item {
     */
     property Item __pageObject
 
+    /*!
+      \internal
+     */
     onPageChanged: {
         if (tab.active) {
             // It is now unclear whether __pageObject should be destroyed
@@ -80,6 +83,9 @@ Item {
         }
     }
 
+    /*!
+      \internal
+     */
     onActiveChanged: {
         if (tab.active) __activate();
         else __deactivate();
