@@ -38,7 +38,7 @@ QtObject {
       \preliminary
       The initialized page object, or null if the object needs to be created.
      */
-    property Item object
+    property Item object: null
 
     /*!
       \preliminary
