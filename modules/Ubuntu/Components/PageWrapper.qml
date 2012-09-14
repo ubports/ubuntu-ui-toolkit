@@ -53,6 +53,10 @@ QtObject {
      */
     property bool canDestroy: false
 
+    /*!
+      \preliminary
+      Determines whether the wrapped page is currently visible.
+     */
     property bool active: false
 
     /*!
