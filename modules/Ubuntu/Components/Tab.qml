@@ -128,7 +128,7 @@ Item {
             // page is defined as a component
             pageComponent = page;
         }
-        else if (typeof page =="string") {
+        else if (typeof page === "string") {
             // page is defined as a string (url)
             pageComponent = Qt.createComponent(page);
         }
