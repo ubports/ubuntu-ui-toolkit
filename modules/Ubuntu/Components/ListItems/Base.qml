@@ -162,7 +162,7 @@ AbstractButton {
 
     /*
       \internal
-      Determin whether the top separator must be shown.
+      Determine whether the top separator must be shown.
       This is the case, if the list item is not a divider, and
       it is the first in the list of the children.
     */
