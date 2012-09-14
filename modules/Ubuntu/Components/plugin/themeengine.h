@@ -1,3 +1,21 @@
+/*
+ * Copyright 2012 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ */
+
 #ifndef THEMEENGINE_H
 #define THEMEENGINE_H
 
@@ -7,9 +25,12 @@
 class Style;
 class QDeclarativeEngine;
 class QDeclarativeItem;
+class QDeclarativeComponent;
+class StyledItem;
 
-typedef QHash<QString, Style*> StyleStateHash;
-typedef QHash<QString, StyleStateHash> StyleHash;
+typedef QHash<QString, Style*> StyleHash;
+typedef QHash<QString, StyledItem*> InstanceHash;
+typedef QHashIterator<QString, StyledItem*> InstanceHashIterator;
 
 class ThemeEngine : public QObject
 {
@@ -20,25 +41,31 @@ public:
 
     static ThemeEngine* instance();
     static void initialize(QDeclarativeEngine *engine);
-    static Style *lookupStateStyle(const QString &styleClass, const QString &state);
+    static QDeclarativeItem* lookupTarget(const QString &instanceId);
+    static Style *lookupStyle(StyledItem *item, const QString &state = "");
+    static bool registerInstanceId(StyledItem *item, const QString &newId);
 
-    Q_INVOKABLE QDeclarativeItem *root();
-    Q_INVOKABLE QDeclarativeItem *item(const QString &id);
-
-    //utility function
+    //utility functions
+    static void styledItemPropertiesToSelector(StyledItem *item);
+    static void styledItemSelectorToProperties(StyledItem *item);
 signals:
     
 public slots:
+private slots:
+    void completeThemeLoading();
 
 private:
+    Style *findStyle(const QString &key, const QString &state);
     void loadTheme(const QString &themeFile);
     void buildStyleCache(QObject *style);
-    void updateStyle(StyleHash::const_iterator &item, const QString &styleClass, Style *style);
-    void addStyle(const QString &styleClass, Style *style);
+    QString prepareStyleSelector(Style *style);
 
 private: //members
     QDeclarativeEngine *m_engine;
     StyleHash m_styleCache;
+    InstanceHash m_instanceCache;
+    // needed for theme loading
+    QDeclarativeComponent *themeComponent;
 };
 
 #endif // THEMEENGINE_H

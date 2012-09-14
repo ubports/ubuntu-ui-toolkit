@@ -20,45 +20,59 @@
 #include <QObject>
 #include <qdeclarative.h>
 #include <QStringList>
+#include <QtDeclarative/QDeclarativeItem>
+#include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeParserStatus>
 
+class StylePrivate;
 class Style : public QObject, public QDeclarativeParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
-    Q_PROPERTY(QString subClass READ subClass WRITE setSubClass NOTIFY subClassChanged)
-
-    Q_PROPERTY(QStringList states READ states WRITE setStates NOTIFY statesChanged)
+    Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleClassChanged)
+    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY targetChanged)
+    Q_PROPERTY(QDeclarativeItem* target READ target NOTIFY targetChanged)
+    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
+    Q_PROPERTY(QStringList states READ states WRITE setStates NOTIFY statesChanged)
+    //Q_PROPERTY(QDeclarativeListProperty<QDeclarativeState> states READ styleStates)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit Style(QObject *parent = 0);
+    ~Style();
 
     void classBegin();
     void componentComplete();
 
-    // getter/setter is public so it can be accessed in ThemeEngine
-    QStringList states() const;
-    void setStates(const QStringList &states);
-    QString subClass() const;
-    void setSubClass(const QString &sclass);
-
 signals:
+    void styleClassChanged();
+    void targetChanged();
+    void delegateChanged();
     void statesChanged();
-    void subClassChanged();
 
 public slots:
 
+private: //getter/setters
     QString styleClass() const;
+    void setStyleClass(const QString &styleClass);
+    QString instanceId() const;
+    void setInstanceId(const QString &instanceId);
+    QDeclarativeItem* target() const;
+    QDeclarativeComponent *delegate() const;
+    void setDelegate(QDeclarativeComponent *delegate);
+    QDeclarativeListProperty<QObject> data();
+    QStringList states() const;
+    void setStates(const QStringList &states);
+    QDeclarativeListProperty<QDeclarativeState> styleStates();
 
 private:
-    QDeclarativeListProperty<QObject> data();
+    Q_DISABLE_COPY(Style)
+    Q_DECLARE_PRIVATE(Style)
+    friend class ThemeEngine;
+    friend class StyledItem;
+    QScopedPointer<StylePrivate> d_ptr;
 
-    QList<QObject*> m_Data;
-    QStringList m_states;
-    QString m_styleClass;
-    QString m_subClass;
 };
 
 QML_DECLARE_TYPE(Style)

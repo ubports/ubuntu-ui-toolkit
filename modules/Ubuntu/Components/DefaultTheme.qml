@@ -4,27 +4,37 @@ import Ubuntu.Components 0.1
 
 Item {
     ButtonStyle {
-        states: [""]
-        color: "#e3e5e8"
-        property bool dborder: false
-        borderShape: dborder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-        borderImage: dborder ? "artwork/ButtonBorderDarkIdle.png" : "artwork/ButtonBorderIdle.png"
+        styleClass: "DarkBorder"
+        color: "pink"//"#e3e5e8"
+        borderShape: "artwork/ButtonShapeDark.png"
+        borderImage: "artwork/ButtonBorderDarkIdle.png"
+        states: ["hovered", ""]
     }
     ButtonStyle {
+        styleClass: "DarkBorder"
+        color: "purple"//"#e3e5e8"
+        borderShape: "artwork/ButtonShapeDark.png"
+        borderImage: "artwork/ButtonBorderDarkIdle.png"
         states: ["pressed"]
-        color: "pink"
-        property bool dborder: false
+    }
 
-        Connections {
-            target: button
+    ButtonStyle {
+        color: "pink"//"#e3e5e8"
+        borderShape: "artwork/ButtonShape.png"
+        borderImage: "artwork/ButtonBorderIdle.png"
+        states: ["hovered", ""]
+    }
+    ButtonStyle {
+        color: "purple"//"#e3e5e8"
+        borderShape: "artwork/ButtonShape.png"
+        borderImage: "artwork/ButtonBorderIdle.png"
+        states: ["pressed"]
+    }
+    ButtonStyle {
+        instanceId: "callButton"
+        color: "purple"
 
-            onDarkBorderChanged: {
-                console.debug("dark border")
-            }
-            ignoreUnknownSignals: true
-        }
-
-        borderShape: dborder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-        borderImage: dborder ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+        borderShape: target.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+        borderImage: target.darkBorder ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
     }
 }

@@ -21,6 +21,7 @@
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/qdeclarative.h>
+#include <QtDeclarative/QDeclarativeItem>
 
 #include "style.h"
 #include "themeengine.h"
@@ -29,8 +30,12 @@
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Style>(uri, 0, 1, "Style");
-    //qmlRegisterType<QDeclarativeItem, 1>(uri, 1, 1, "FakeItem");
-    qmlRegisterType<StyledItem>(uri, 1, 1, "StyledItem");
+
+    // these need to be registered to QtQuick 1.1 otherwise the revisioned
+    // properties won't be accessible
+    const char *quick = "QtQuick";
+    qmlRegisterType<StyledItem, 1>(quick, 1, 1, "StyledItem");
+    qmlRegisterRevision<QDeclarativeItem, 1>(quick, 1, 1);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

@@ -87,11 +87,6 @@ ButtonWithForeground {
         var b = parseInt(hexcolor.substr(5,2),16);
         return ((r*212)+(g*715)+(b*73))/1000/255;
     }
-    //theming
-    onPressedChanged: {
-        state = pressed ? 'pressed' : ''
-        console.debug("button pressed= "+pressed+", state= "+state)
-    }
 
     Item {
         z: -1

@@ -15,6 +15,9 @@
  */
 
 #include "style.h"
+#include "style_p.h"
+#include "themeengine.h"
+
 
 /*!
   \class Style
@@ -23,10 +26,23 @@
 
 */
 
-Style::Style(QObject *parent) :
-    QObject(parent)
+StylePrivate::StylePrivate(Style *qq) :
+    q_ptr(qq),
+    target(0),
+    delegate(0)
 {
 }
+
+/*=============================================================================
+=============================================================================*/
+
+Style::Style(QObject *parent) :
+    QObject(parent),
+    d_ptr(new StylePrivate(this))
+{
+}
+Style::~Style()
+{}
 
 void Style::classBegin()
 {
@@ -35,67 +51,84 @@ void Style::classBegin()
 
 void Style::componentComplete()
 {
-    // build style class name
-    m_styleClass = metaObject()->className();
-    m_styleClass = m_styleClass.left(m_styleClass.indexOf("Style_QMLTYPE"));
-    // check parents
-    QObject *parent = this->parent();
-    while (parent) {
-        if (qobject_cast<Style*>(parent)) {
-            QString clname = parent->metaObject()->className();
-            clname = clname.left(clname.indexOf("Style_QMLTYPE"));
-            m_styleClass.prepend('.');
-            m_styleClass.prepend(clname);
-        }
-        parent = parent->parent();
+    // update target if set
+    Q_D(Style);
+    d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
+}
+
+QString Style::styleClass() const
+{
+    Q_D(const Style);
+    return d->styleClass;
+}
+void Style::setStyleClass(const QString &styleClass)
+{
+    Q_D(Style);
+    if (styleClass != d->styleClass) {
+        d->styleClass = styleClass;
+        emit styleClassChanged();
     }
 }
 
-/*!
-  \preliminary
-  Returns the class name of the style object. QML objects attach "_QMLTYPE_XXXX" to the class
-  name that needs to be removed in order to identify the actual type properly. The style class
-  name is built up with relation to their parents, meaning that if a style is encapsulated in
-  another style, the name will be a compound of the style's parent and itself.
-*/
-QString Style::styleClass() const
+QString Style::instanceId() const
 {
-    return m_styleClass;
+    Q_D(const Style);
+    return d->instanceId;
+}
+void Style::setInstanceId(const QString &instanceId)
+{
+    Q_D(Style);
+    if (instanceId != d->instanceId) {
+        d->instanceId = instanceId;
+        d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
+        emit targetChanged();
+    }
 }
 
-/*!
-  \internal
-*/
+QDeclarativeItem* Style::target() const
+{
+    Q_D(const Style);
+    return d->target;
+}
+
+QDeclarativeComponent *Style::delegate() const
+{
+    Q_D(const Style);
+    return d->delegate;
+}
+void Style::setDelegate(QDeclarativeComponent *delegate)
+{
+    Q_D(Style);
+    if (d->delegate != delegate) {
+        d->delegate = delegate;
+        emit delegateChanged();
+    }
+}
+
+QDeclarativeListProperty<QObject> Style::data()
+{
+    Q_D(Style);
+    return QDeclarativeListProperty<QObject>(this, d->data);
+}
+
 QStringList Style::states() const
 {
-    return m_states;
+    Q_D(const Style);
+    return d->states;
 }
-
-/*!
-  \internal
-*/
 void Style::setStates(const QStringList &states)
 {
-    if (m_states != states) {
-        m_states = states;
+    Q_D(Style);
+    if (d->states != states) {
+        d->states = states;
         emit statesChanged();
     }
 }
 
-QString Style::subClass() const
+QDeclarativeListProperty<QDeclarativeState> Style::styleStates()
 {
-    return m_subClass;
-}
-void Style::setSubClass(const QString &sclass)
-{
-    if (m_subClass != sclass) {
-        m_subClass = sclass;
-        emit subClassChanged();
-    }
+    Q_D(Style);
+    return QDeclarativeListProperty<QDeclarativeState>(this, d->styleStates);
 }
 
-
-QDeclarativeListProperty<QObject> Style::data()
-{
-    return QDeclarativeListProperty<QObject>(this, m_Data);
-}
+#include "moc_style.cpp"

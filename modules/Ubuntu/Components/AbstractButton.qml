@@ -15,7 +15,6 @@
  */
 
 import QtQuick 1.1
-import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract AbstractButton
@@ -27,8 +26,8 @@ import Ubuntu.Components 1.1
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-//Item {
 StyledItem {
+
     id: button
 
     /*!
@@ -87,26 +86,12 @@ StyledItem {
 
         function mouseAreaPressed() {
             button.pressed = mouseArea.pressed;
+            button.state = "pressed"
         }
 
         function mouseAreaHovered() {
             button.hovered = mouseArea.containsMouse;
+            button.state = "hovered"
         }
     }
-/*
-    property alias state: stateGroup.state
-    StateGroup {
-        id: stateGroup
-        states: [
-            State {name: "idle"; extend:""},
-            State {name: "disabled"},
-            State {name: "active"},
-            State {name: "active-and-hovered"},
-            State {name: "hovered"},
-            State {name: "pressed"},
-            State {name: "press-and-hovered"}
-        ]
-        onStateChanged: console.debug("state is "+state)
-    }
-*/
 }

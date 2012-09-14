@@ -10,7 +10,8 @@ HEADERS += plugin.h \
     style.h \
     themeengine.h \
     styleditem.h \
-    styleditem_p.h
+    styleditem_p.h \
+    style_p.h
 
 SOURCES += plugin.cpp \
     style.cpp \
