@@ -37,7 +37,6 @@ Template {
                 minimumValue: -1.0
                 maximumValue: 1.0
                 value: 0.0
-                //stepSize
                 live: true
                 onValueChanged: console.debug("Value: " + formatValue(value));
             }
