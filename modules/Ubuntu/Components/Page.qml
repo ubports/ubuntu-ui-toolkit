@@ -23,7 +23,7 @@ import QtQuick 1.1
 
     \b{This component is under heavy development.}
 
-    Examples: See \l Tabs.
+    Examples: See \l Tabs and \l PageStack.
 */
 Item {
     id: page

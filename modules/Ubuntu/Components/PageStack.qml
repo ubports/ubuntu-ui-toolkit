@@ -23,8 +23,42 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
 
-    Example: TODO
+    Example:
     \qml
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1 as ListItem
+
+        PageStack {
+            id: pageStack
+            anchors.fill: parent
+
+            initialPage: page0
+
+            Page {
+                id: page0
+                title: "Root page"
+                anchors.fill: parent
+
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: "Page one"
+                        onClicked: pageStack.push(page1)
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: "Page two (external)"
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                        progression: true
+                    }
+                }
+            }
+
+            Page {
+                id: page1
+                title: "First page"
+            }
+        }
     \endqml
 */
 
