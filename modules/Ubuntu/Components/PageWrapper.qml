@@ -18,6 +18,7 @@ import QtQuick 1.1
 import "PageUtils.js" as PageUtils
 
 /*!
+    \internal
     \qmlclass PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
     \brief Internal class used by \l Tab
