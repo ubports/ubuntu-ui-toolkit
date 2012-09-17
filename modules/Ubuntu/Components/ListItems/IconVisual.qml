@@ -25,7 +25,8 @@ Item {
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
 
-    width: visible ? icon.width + 2*icon.anchors.leftMargin : 0
+    property real leftRightIconMargin: 5
+    width: visible ? icon.width + 2*leftRightIconMargin : 0
 
     anchors {
         top: parent ? parent.top : undefined
@@ -40,7 +41,7 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: 5
+            leftMargin: iconVisual.leftRightIconMargin
         }
     }
 
