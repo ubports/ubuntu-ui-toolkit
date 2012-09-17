@@ -122,6 +122,13 @@ Item {
     property bool live: false
 
     /*!
+       \preliminary
+       This property is true while the thumb is dragged. This property is meant
+       to be read-only.
+    */
+    property bool pressed: false
+
+    /*!
       \preliminary
       The mouse area of the check box. May be assigned a different mouse area
       if, for example, the area where the control is shown is not the same as
@@ -207,7 +214,7 @@ Item {
 
         ButtonMaskEffect {
             anchors.fill: thumbShape
-            gradientStrength: p.dragged ? 0.2 : 0.4
+            gradientStrength: slider.pressed ? 0.2 : 0.4
             mask: ShaderEffectSource { sourceItem: thumbShape; live: true; hideSource: true }
             base: ShaderEffectSource { sourceItem: thumbBase; live: true; hideSource: true }
 
@@ -246,7 +253,6 @@ Item {
         property real thumbSpace: backgroundShape.width - (2.0 * p.thumbSpacing + p.thumbWidth)
         property color backgroundColor: "#c4c4c4"
         property color thumbColor: "#8b8b8b"
-        property bool dragged: false
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
         property real value: 0.0
@@ -283,7 +289,7 @@ Item {
                         // Button pressed inside the thumb.
                         p.dragInitMouseX = mouseX;
                         p.dragInitNormalizedValue = p.normalizedValue;
-                        p.dragged = true;
+                        slider.pressed = true;
                     } else if (mouseX > p.thumbSpacing &&
                                mouseX < backgroundShape.width - p.thumbSpacing) {
                         // Button pressed outside the thumb.
@@ -294,15 +300,15 @@ Item {
                                          slider.maximumValue);
                         p.dragInitMouseX = mouseX;
                         p.dragInitNormalizedValue = p.normalizedValue;
-                        p.dragged = true;
+                        slider.pressed = true;
                         if (slider.live) {
                             slider.value = p.value
                         }
                     }
                 }
-            } else if (p.dragged) {
+            } else if (slider.pressed) {
                 // Left button released.
-                p.dragged = false;
+                slider.pressed = false;
                 if (!slider.live) {
                     slider.value = p.value;
                 }
@@ -311,7 +317,7 @@ Item {
 
         function mouseAreaPositionchanged() {
             // Left button dragging.
-            if (p.dragged) {
+            if (slider.pressed) {
                 var normalizedOffsetX = (slider.mouseArea.mouseX - p.dragInitMouseX) / p.thumbSpace;
                 var v = p.clamp(p.dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
                 p.value = p.lerp(v, slider.minimumValue, slider.maximumValue);
