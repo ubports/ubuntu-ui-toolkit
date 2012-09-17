@@ -66,31 +66,24 @@ Template {
                         progression: true
                     }
                     ListItem.Standard {
-                        text: "Blue page"
-                        onClicked: pageStack.push(bluePage)
+                        text: "Root page (again)"
+                        onClicked: pageStack.push(page0)
                         progression: true
                     }
                     ListItem.Standard {
                         text: "Red rectangle"
-                        onClicked: pageStack.push(redRectangle)
+                        onClicked: pageStack.push(rect, {color: "red"})
                         progression: true
                     }
                 }
             }
 
-            Rectangle {
-                id: redRectangle
-                anchors.fill: parent
-                color: "red"
-            }
-
-            Page {
-                id: bluePage
-                title: "All blue"
-
+            Component {
+                id: rect
                 Rectangle {
+                    id: rectangle
                     anchors.fill: parent
-                    color: "blue"
+                    color: "green"
                 }
             }
         }

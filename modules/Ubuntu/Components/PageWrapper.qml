@@ -60,6 +60,8 @@ QtObject {
      */
     property bool active: false
 
+    property variant properties
+
     /*!
       \internal
      */

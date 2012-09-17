@@ -43,7 +43,7 @@ import "stack.js" as Stack
                     anchors.fill: parent
                     ListItem.Standard {
                         text: "Page one"
-                        onClicked: pageStack.push(page1)
+                        onClicked: pageStack.push(page1, {color: "red})
                         progression: true
                     }
                     ListItem.Standard {
@@ -54,9 +54,9 @@ import "stack.js" as Stack
                 }
             }
 
-            Page {
-                id: page1
-                title: "First page"
+            Rectangle {
+                id: rect
+                anchors.fill: parent
             }
         }
     \endqml
@@ -76,7 +76,7 @@ Item {
       \internal
       This allows to define the pages inside the PageStack without showing them.
      */
-    default property alias children: pages.children
+    children: pages.children
     Item {
         id: pages
         visible: false
@@ -100,23 +100,24 @@ Item {
       \internal
       Create a PageWrapper for the specified page.
      */
-    function __createWrapper(page) {
+    function __createWrapper(page, properties) {
         var wrapperComponent = Qt.createComponent("PageWrapper.qml");
         // TODO: cache the component?
         var wrapperObject = wrapperComponent.createObject(pageContents);
         wrapperObject.reference = page;
         wrapperObject.parent = pageContents;
+        wrapperObject.properties = properties;
         return wrapperObject;
     }
 
     /*!
       \preliminary
-      Push a page to the stack.
+      Push a page to the stack, and apply the given (optional) properties to the page.
      */
-    function push(page) {
+    function push(page, properties) {
         if (Stack.stack.size() > 0) Stack.stack.top().active = false;
 
-        Stack.stack.push(__createWrapper(page));
+        Stack.stack.push(__createWrapper(page, properties));
         Stack.stack.top().active = true;
 
         contents.updateHeader();
