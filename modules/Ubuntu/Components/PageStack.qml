@@ -70,7 +70,9 @@ Item {
       Show a header bar at the top of the page stack which shows a back button
       to pop the top, and the title of the current page on top.
      */
-    property alias showHeader: header.visible
+    // TODO: Decide on our approach to Toolbars. For now, we always show a
+    // header toolbar, but it is not part of the public API.
+    // property alias showHeader: header.visible
 
     /*!
       \internal
