@@ -29,6 +29,8 @@
 //     property). Don't forget to adapt the inverted property documentation
 //     accordingly. Note that UIKit doesn't have vertical sliders.
 
+// FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
+
 import QtQuick 1.1
 import Qt.labs.shaders 1.0
 
