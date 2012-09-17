@@ -74,11 +74,7 @@ Base {
     property alias value: valueLabel.text
 
     IconVisual {
-        id: iconHelper;
-        anchors {
-            left: parent.left
-            top: parent.top
-        }
+        id: iconHelper
     }
     LabelVisual {
         id: label

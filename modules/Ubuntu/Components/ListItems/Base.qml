@@ -86,7 +86,6 @@ AbstractButton {
      */
     signal clicked
 
-
     /*!
       \preliminary
       Specifies whether the list item is selected.

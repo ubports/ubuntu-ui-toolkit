@@ -25,19 +25,23 @@ Item {
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
 
-    width: visible ? icon.width + 10 : 0
-    height: icon.height + icon.anchors.topMargin
+    property real leftRightIconMargin: 5
+    width: visible ? icon.width + 2*leftRightIconMargin : 0
+
+    anchors {
+        top: parent ? parent.top : undefined
+        left: parent ? parent.left : undefined
+        bottom: parent ? parent.bottom : undefined
+    }
 
     Image {
         id: icon
-        width: 36
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
-            top: parent.top
-            topMargin: 5
+            verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: 5
+            leftMargin: iconVisual.leftRightIconMargin
         }
     }
 
@@ -47,7 +51,6 @@ Item {
         visible: iconVisual.hasFrame
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
-        anchors.bottomMargin: -1
         border {
             left: 3
             right: 3
