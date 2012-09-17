@@ -50,9 +50,7 @@ Item {
         opacity: iconVisual.enabled ? 1.0 : 0.5
         visible: iconVisual.hasFrame
         source: visible ? "artwork/ListItemFrame.png" : ""
-        anchors {
-            fill: icon
-        }
+        anchors.fill: icon
         border {
             left: 3
             right: 3
