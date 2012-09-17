@@ -72,14 +72,14 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Red rectangle"
-                        onClicked: pageStack.push(red)
+                        onClicked: pageStack.push(redRectangle)
                         progression: true
                     }
                 }
             }
 
             Rectangle {
-                id: red
+                id: redRectangle
                 anchors.fill: parent
                 color: "red"
             }
