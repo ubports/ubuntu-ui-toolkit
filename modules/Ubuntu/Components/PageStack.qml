@@ -65,7 +65,6 @@ import "stack.js" as Stack
 Item {
     id: pageStack
 
-    width: parent ? parent.width : undefined
     /*!
       \preliminary
       Show a header bar at the top of the page stack which shows a back button

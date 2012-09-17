@@ -48,7 +48,7 @@ function __initPage(pageWrapper) {
         pageWrapper.canDestroy = false;
     }
 
-    pageObject.anchors.fill = pageWrapper.parent; // TODO: Do we always want this?
+//    pageObject.anchors.fill = pageWrapper.parent; // TODO: Do we always want this?
 
     return pageObject;
 }
@@ -83,7 +83,7 @@ function deactivate(pageWrapper) {
 function updateParent(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.parent = pageWrapper.parent;
-        pageWrapper.object.anchors.fill = pageWrapper.parent;
+//        pageWrapper.object.anchors.fill = pageWrapper.parent;
         pageWrapper.object.visible = pageWrapper.active;
     }
 }

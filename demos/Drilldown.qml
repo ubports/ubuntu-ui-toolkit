@@ -87,7 +87,6 @@ Template {
             Page {
                 id: bluePage
                 title: "All blue"
-                anchors.fill: parent
 
                 Rectangle {
                     anchors.fill: parent

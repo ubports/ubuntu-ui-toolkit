@@ -28,6 +28,8 @@ import QtQuick 1.1
 Item {
     id: page
 
+    anchors.fill: parent ? parent : undefined
+
     /*!
       \preliminary
       The title that is shown on the tab button used to select this tab (optional).
