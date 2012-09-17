@@ -75,6 +75,12 @@ Item {
     // property alias showHeader: header.visible
 
     /*!
+      \preliminary
+      The current size of the stack
+     */
+    property int depth: 0
+
+    /*!
       \internal
       This allows to define the pages inside the PageStack without showing them.
      */
@@ -122,6 +128,8 @@ Item {
         Stack.stack.push(__createWrapper(page, properties));
         Stack.stack.top().active = true;
 
+        pageStack.depth = Stack.stack.size();
+
         contents.updateHeader();
     }
 
@@ -139,6 +147,8 @@ Item {
         Stack.stack.top().active = false;
         Stack.stack.pop();
         Stack.stack.top().active = true;
+
+        pageStack.depth = Stack.stack.size();
 
         contents.updateHeader();
     }
