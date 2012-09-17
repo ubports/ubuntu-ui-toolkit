@@ -83,4 +83,9 @@ QtObject {
       \internal
      */
     onParentChanged: Utils.updateParent(pageWrapper)
+
+    /*!
+      \internal
+     */
+    Component.onDestruction: Utils.deactivate(pageWrapper)
 }
