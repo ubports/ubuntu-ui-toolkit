@@ -50,104 +50,16 @@ Item {
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
-    property variant page
+    property alias page: pageWrapper.reference
 
     /*!
       \internal
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
-    property bool active: false
+    property alias __active: pageWrapper.active
 
-    /*!
-      \internal
-      The Item containing the contents of the tab. This can be the same
-      as \l page, if page is an Item, or it can be an object created
-      from a QML file if page is a url. Pages loaded from a file are
-      automatically destroyed when the tab is no longer active.
-    */
-    property Item __pageObject
-
-    /*!
-      \internal
-     */
-    onPageChanged: {
-        if (tab.active) {
-            // It is now unclear whether __pageObject should be destroyed
-            // here, because possibly ((old)__pageObject !== (new)page), even if
-            // __pageObject was created here.
-            throw new Error("Deactivate tab before changing the page.");
-
-            // TODO: If it is needed to support changing the page of the active
-            // tab, an additional property must be introduced that keeps track of
-            // whether __pageObject must be destroyed.
-        }
-    }
-
-    /*!
-      \internal
-     */
-    onActiveChanged: {
-        if (tab.active) __activate();
-        else __deactivate();
-    }
-
-    /*!
-      \internal
-      Create the page object if \l page is link, and make the page object visible.
-     */
-    function __activate() {
-        if (!__pageObject) {
-            __pageObject = __initPage(tab.page);
-            __pageObject.anchors.fill = tab;
-        }
-        __pageObject.visible = true;
-    }
-
-    /*!
-      \internal
-      Hide the page object, and destroy it if it is not equal to \l page.
-     */
-    function __deactivate() {
-        if (__pageObject) {
-            __pageObject.visible = false;
-            if (__pageObject !== page) {
-                __pageObject.destroy();
-                __pageObject = null;
-            }
-        }
-    }
-
-    /*!
-      \internal
-      Initialize __pageObject.
-     */
-    function __initPage(page) {
-        var pageComponent;
-
-        if (page.createObject) {
-            // page is defined as a component
-            pageComponent = page;
-        }
-        else if (typeof page === "string") {
-            // page is defined as a string (url)
-            pageComponent = Qt.createComponent(page);
-        }
-
-        var pageObject;
-        if (pageComponent) {
-            if (pageComponent.status == Component.Error) {
-                throw new Error("Error while loading page: " + pageComponent.errorString());
-            } else {
-                pageObject = pageComponent.createObject(tab);
-            }
-        } else {
-            pageObject = page;
-        }
-
-        if (pageObject.parent !== tab) {
-            pageObject.parent = tab;
-        }
-
-        return pageObject;
+    PageWrapper {
+        id: pageWrapper
+        parent: tab
     }
 }

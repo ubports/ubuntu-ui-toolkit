@@ -34,7 +34,8 @@ import QtQuick 1.1
             }
             Tab {
                 title: "tab 2"
-                page:  Rectangle {
+                iconSource: "icon.png"
+                page: Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: "Colorful tab."
@@ -81,7 +82,7 @@ Item {
       \preliminary
       If this optional property is specified, it will be positioned
       between the bar with tab buttons, and the tab pages to act
-      as a separator.
+      as a separator. By default, it is a 1-pixel height white rectangle.
      */
     property Item separator: Rectangle {
             color: "white"
@@ -143,7 +144,7 @@ Item {
                     if (button.implicitWidth > widest) {
                         widest = button.implicitWidth;
                     }
-                } // for i
+                }
                 buttonRow.widestButtonWidth = widest;
             }
 
@@ -153,6 +154,7 @@ Item {
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
                 model: tabs.children
+
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -166,7 +168,7 @@ Item {
                 }
             }
             Component.onCompleted: buttonRow.updateWidestButtonWidth()
-        } // buttonRow
+        }
 
         // This is the item that will be the parent of the currently displayed page.
         Item {
@@ -184,9 +186,9 @@ Item {
             for (var i = 0; i < tabs.children.length; i++) {
                 tab = tabs.children[i];
                 if (i == tabs.selectedTabIndex) {
-                    tab.active = true;
+                    tab.__active = true;
                 } else {
-                    tab.active = false;
+                    tab.__active = false;
                 }
             }
         }
@@ -198,7 +200,8 @@ Item {
                 tabs.separator.anchors.left = visuals.left;
                 tabs.separator.anchors.right = visuals.right;
                 visuals.contentsContainer.anchors.top = tabs.separator.bottom;
-            } else { // no separator
+            } else {
+                // no separator
                 visuals.contentsContainer.anchors.top = visuals.buttonRow.bottom;
             }
         }
@@ -208,7 +211,7 @@ Item {
             onSelectedTabIndexChanged: visuals.selectedTabChanged()
             onSeparatorChanged: visuals.separatorChanged()
         }
-    } // visuals
+    }
 
     Component.onCompleted: {
         visuals.separatorChanged();
