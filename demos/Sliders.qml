@@ -26,19 +26,31 @@ Template {
         TemplateRow {
             title: "Default"
             Slider {
-                onValueChanged: console.debug("Value: " + formatValue(value));
+                id: defaultSlider
+            }
+            TextCustom {
+                color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
+                text: '\'value\' is ' + defaultSlider.formatValue(defaultSlider.value)
             }
         }
 
         TemplateRow {
             title: "Live"
             Slider {
-                function formatValue(v) { return v.toFixed(2) }
+                id: liveSlider
+                live: true
                 minimumValue: -1.0
                 maximumValue: 1.0
                 value: 0.0
-                live: true
-                onValueChanged: console.debug("Value: " + formatValue(value));
+                function formatValue(v) { return v.toFixed(2) }
+            }
+            TextCustom {
+                color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
+                text: '\'value\' is ' + liveSlider.formatValue(liveSlider.value)
             }
         }
     }
