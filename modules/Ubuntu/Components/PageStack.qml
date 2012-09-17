@@ -86,7 +86,7 @@ Item {
       \preliminary
       The initial page on the stack.
      */
-    property Item initialPage
+    property variant initialPage
     onInitialPageChanged: {
         Stack.stack.clear();
         pageStack.push(initialPage);
