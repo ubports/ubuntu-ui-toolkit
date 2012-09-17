@@ -275,6 +275,7 @@ Item {
                         // Button pressed outside the thumb.
                         var normalizedPosition = (slider.mouseArea.mouseX - p.thumbSpacing -
                                                   p.thumbWidth * 0.5) / p.thumbSpace;
+                        normalizedPosition = p.clamp(normalizedPosition, 0.0, 1.0);
                         p.value = p.lerp(normalizedPosition, slider.minimumValue,
                                          slider.maximumValue);
                         p.dragInitMouseX = mouseX;
