@@ -38,17 +38,17 @@ function __initPage(pageWrapper) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create te object
-            pageObject = pageComponent.createObject(pageWrapper.owner);
+            pageObject = pageComponent.createObject(pageWrapper.parent);
             pageWrapper.canDestroy = true;
         }
     } else {
         // page reference is an object
         pageObject = pageWrapper.reference;
-        pageObject.parent = pageWrapper.owner;
+        pageObject.parent = pageWrapper.parent;
         pageWrapper.canDestroy = false;
     }
 
-    pageObject.anchors.fill = pageWrapper.owner; // TODO: Do we always want this?
+    pageObject.anchors.fill = pageWrapper.parent; // TODO: Do we always want this?
 
     return pageObject;
 }
@@ -80,10 +80,10 @@ function deactivate(pageWrapper) {
     }
 }
 
-function updateOwner(pageWrapper) {
+function updateParent(pageWrapper) {
     if (pageWrapper.object) {
-        pageWrapper.object.parent = pageWrapper.owner;
-        pageWrapper.object.anchors.fill = pageWrapper.owner;
+        pageWrapper.object.parent = pageWrapper.parent;
+        pageWrapper.object.anchors.fill = pageWrapper.parent;
         pageWrapper.object.visible = pageWrapper.active;
     }
 }

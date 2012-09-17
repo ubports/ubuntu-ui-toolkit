@@ -60,6 +60,6 @@ Item {
 
     PageWrapper {
         id: pageWrapper
-        owner: tab
+        parent: tab
     }
 }

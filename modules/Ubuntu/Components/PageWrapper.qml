@@ -45,7 +45,7 @@ QtObject {
       \preliminary
       The parent Item of the page object.
      */
-    property Item owner
+    property Item parent
 
     /*!
       \preliminary
@@ -81,5 +81,5 @@ QtObject {
     /*!
       \internal
      */
-    onOwnerChanged: PageUtils.updateOwner(pageWrapper)
+    onParentChanged: PageUtils.updateParent(pageWrapper)
 }
