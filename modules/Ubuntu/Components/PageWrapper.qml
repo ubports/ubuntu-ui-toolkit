@@ -60,6 +60,11 @@ QtObject {
      */
     property bool active: false
 
+    /*!
+      \preliminary
+      Properties are use to initialize a new object, or if reference
+      is already an object, properties are copied to the object when activated.
+     */
     property variant properties
 
     /*!
