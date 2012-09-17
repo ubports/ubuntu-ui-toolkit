@@ -15,7 +15,7 @@
  */
 
 import QtQuick 1.1
-import "PageUtils.js" as PageUtils
+import "PageWrapperUtils.js" as Utils
 
 /*!
     \internal
@@ -64,23 +64,23 @@ QtObject {
       \internal
      */
     onActiveChanged: {
-        if (pageWrapper.active) PageUtils.activate(pageWrapper);
-        else PageUtils.deactivate(pageWrapper);
+        if (pageWrapper.active) Utils.activate(pageWrapper);
+        else Utils.deactivate(pageWrapper);
     }
 
     /*!
       \internal
       */
     onReferenceChanged: {
-        PageUtils.deactivate(pageWrapper);
+        Utils.deactivate(pageWrapper);
         if (pageWrapper.object) pageWrapper.object = null;
         if (pageWrapper.active) {
-            PageUtils.activate(pageWrapper);
+            Utils.activate(pageWrapper);
         }
     }
 
     /*!
       \internal
      */
-    onParentChanged: PageUtils.updateParent(pageWrapper)
+    onParentChanged: Utils.updateParent(pageWrapper)
 }
