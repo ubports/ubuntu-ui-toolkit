@@ -17,21 +17,34 @@
 import QtQuick 1.1
 
 /*!
+    \internal
     \qmlclass Header
     \inqmlmodule Ubuntu.Components 0.1
     \brief Header used by \l PageStack
 */
-
 Rectangle {
     id: header
 
     color: "#666666"
-
     height: visible ? 40 : 0
 
+    /*!
+      \preliminary
+      Should a button to pop the current page from the stack be visible,
+      if there is more than one page currently on the stack?
+     */
     property alias showBackButton: backButton.visible
+
+    /*!
+      \preliminary
+      The text shown as the title in the Header
+     */
     property alias title: headerTitle.text
 
+    /*!
+      \preliminary
+      The PageStack to pop() when the back button is clicked.
+     */
     property Item pageStack
 
     AbstractButton {
