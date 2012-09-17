@@ -28,7 +28,6 @@ Template {
                 bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
             }
-
             width: 300
 
             initialPage: page0

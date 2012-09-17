@@ -93,7 +93,7 @@ Item {
 
     /*!
       \preliminary
-      The initial page on the stack.
+      The initial page on the stack. This page cannot be popped.
      */
     property variant initialPage
     onInitialPageChanged: {
