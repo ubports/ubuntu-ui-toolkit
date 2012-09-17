@@ -25,8 +25,9 @@
 //     number of decimals) or visually awkward since the text is hidden by the
 //     mouse cursor (or the finger) when dragged.
 
-// FIXME(loicm) Add support for vertical orientation (orientation property).
-//     Don't forget to adapt the inverted property documentation accordingly.
+// FIXME(loicm) Maybe add support for vertical orientation (orientation
+//     property). Don't forget to adapt the inverted property documentation
+//     accordingly. Note that UIKit doesn't have vertical sliders.
 
 import QtQuick 1.1
 import Qt.labs.shaders 1.0
