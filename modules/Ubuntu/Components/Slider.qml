@@ -66,11 +66,19 @@ Item {
     //     or maybe simply clamping the requested sizes.
     height: 42
 
-    /*!
-       \preliminary
-       Selects whether or not the minimum value starts from the right.
-    */
-    property bool inverted: false
+    // FIXME(loicm) Add Support for the inverted property. There's an ongoing
+    //     debate on whether we should use that property (like every other
+    //     toolkits) or add new enumerations to the orientation property and
+    //     get something like LeftToRight, RightToLeft, TopToBottom and
+    //     BottomToTop. The last proposition appears to have the advantage that
+    //     it's not culture centric (ie inverted for LeftToRight and RightToLeft
+    //     isn't natural for everybody).
+
+    // /*!
+    //    \preliminary
+    //    Selects whether or not the minimum value starts from the right.
+    // */
+    // property bool inverted: false
 
     /*!
        \preliminary
