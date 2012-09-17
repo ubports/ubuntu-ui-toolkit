@@ -55,7 +55,10 @@ import Qt.labs.shaders 1.0
 Item {
     id: slider
 
+    // FIXME(loicm) There are stretched pixels on the left of the thumb when
+    //     the width is an odd number.
     width: 300
+
     // FIXME(loicm) Button and other components have a default height of 39, I
     //     had to specify 42 here because under that value the BorderImage of
     //     the inner element gets cropped and starts to look ugly. A general
@@ -169,9 +172,6 @@ Item {
         // FIXME(loicm) The radius of the thumb BorderImage must be lower than
         //     the radius of the background BorderImage so that the perimeter can
         //     look perfectly consistent.
-
-        // FIXME(loicm) There are stretched pixels on the left of the thumb in
-        //     the checked state.
 
         BorderImage {
             id: thumbShape
