@@ -16,7 +16,6 @@
 
 import QtQuick 1.1
 
-import "Page.js" as Page
 /*!
     \qmlclass Tab
     \inqmlmodule Ubuntu.Components 0.1
@@ -61,6 +60,6 @@ Item {
 
     PageWrapper {
         id: pageWrapper
-        owner: tab
+        parent: tab
     }
 }

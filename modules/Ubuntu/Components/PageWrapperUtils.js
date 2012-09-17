@@ -18,49 +18,48 @@
 
 /*!
   \internal
-  Initialize __pageObject.
+  Initialize pageWrapper.object.
  */
-function initPage(pageWrapper) {
+function __initPage(pageWrapper) {
     var pageComponent;
 
     if (pageWrapper.reference.createObject) {
-        // page is defined as a component
+        // page reference is a component
         pageComponent = pageWrapper.reference;
     }
     else if (typeof pageWrapper.reference == "string") {
-        // page is defined as a string (url)
+        // page reference is a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }
 
     var pageObject;
     if (pageComponent) {
-        if (pageComponent.status == Component.Error) {
+        if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
-            pageObject = pageComponent.createObject(pageWrapper.owner);
+            // create te object
+            pageObject = pageComponent.createObject(pageWrapper.parent);
             pageWrapper.canDestroy = true;
         }
     } else {
+        // page reference is an object
         pageObject = pageWrapper.reference;
+        pageObject.parent = pageWrapper.parent;
         pageWrapper.canDestroy = false;
     }
 
-    if (pageObject.parent !== pageWrapper.owner) {
-        pageObject.parent = pageWrapper.owner;
-    }
+    pageObject.anchors.fill = pageWrapper.parent; // TODO: Do we always want this?
 
     return pageObject;
 }
 
 /*!
   \internal
-  Create the page object if \l page is link, and make the page object visible.
+  Create the page object if needed, and make the page object visible.
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        pageWrapper.object = initPage(pageWrapper);
-        // TODO: remove owner? Make pageWrapper child of owner?
-        pageWrapper.object.anchors.fill = pageWrapper.owner;
+        pageWrapper.object = __initPage(pageWrapper);
     }
     pageWrapper.object.visible = true;
 }
@@ -72,10 +71,19 @@ function activate(pageWrapper) {
 function deactivate(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.visible = false;
+
         if (pageWrapper.canDestroy) {
             pageWrapper.object.destroy();
             pageWrapper.object = null;
             pageWrapper.canDestroy = false;
         }
+    }
+}
+
+function updateParent(pageWrapper) {
+    if (pageWrapper.object) {
+        pageWrapper.object.parent = pageWrapper.parent;
+        pageWrapper.object.anchors.fill = pageWrapper.parent;
+        pageWrapper.object.visible = pageWrapper.active;
     }
 }

@@ -75,10 +75,6 @@ Base {
         anchors.fill: parent
         IconVisual {
             id: iconHelper
-            anchors {
-                top: parent.top
-                left: parent.left
-            }
         }
         Item {
             id: middleVisuals

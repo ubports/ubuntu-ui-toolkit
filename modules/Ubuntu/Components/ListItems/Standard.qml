@@ -117,10 +117,6 @@ Base {
     }
     IconVisual {
         id: iconHelper
-        anchors {
-            left: parent.left
-            top: parent.top
-        }
     }
     LabelVisual {
         id: label

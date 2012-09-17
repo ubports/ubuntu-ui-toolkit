@@ -15,16 +15,15 @@
  */
 
 import QtQuick 1.1
-import "Page.js" as PageUtils
+import "PageWrapperUtils.js" as Utils
 
 /*!
+    \internal
     \qmlclass PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
-    \brief TODO: update all documentation in PageWrapper.
+    \brief Internal class used by \l Tab
 
     \b{This component is under heavy development.}
-
-    Examples: See \l Tabs.
 */
 QtObject {
     id: pageWrapper
@@ -32,7 +31,7 @@ QtObject {
     /*!
       \preliminary
       The reference to the page object. This can be the page
-      itself, but also a url pointing to a QML file.
+      itself (which is an Item), but also a url pointing to a QML file.
      */
     property variant reference
 
@@ -40,13 +39,13 @@ QtObject {
       \preliminary
       The initialized page object, or null if the object needs to be created.
      */
-    property Item object
+    property Item object: null
 
     /*!
       \preliminary
       The parent Item of the page object.
      */
-    property Item owner
+    property Item parent
 
     /*!
       \preliminary
@@ -55,17 +54,38 @@ QtObject {
      */
     property bool canDestroy: false
 
+    /*!
+      \preliminary
+      Determines whether the wrapped page is currently visible.
+     */
     property bool active: false
 
+    /*!
+      \internal
+     */
     onActiveChanged: {
-        if (pageWrapper.active) PageUtils.activate(pageWrapper);
-        else PageUtils.deactivate(pageWrapper);
+        if (pageWrapper.active) Utils.activate(pageWrapper);
+        else Utils.deactivate(pageWrapper);
     }
 
-//    onReferenceChanged: {
-//        if (pageWrapper.active) {
-//            PageUtils.deactivate(pageWrapper);
-//            PageUtils.activate(pageWrapper);
-//        }
-//    }
+    /*!
+      \internal
+      */
+    onReferenceChanged: {
+        Utils.deactivate(pageWrapper);
+        if (pageWrapper.object) pageWrapper.object = null;
+        if (pageWrapper.active) {
+            Utils.activate(pageWrapper);
+        }
+    }
+
+    /*!
+      \internal
+     */
+    onParentChanged: Utils.updateParent(pageWrapper)
+
+    /*!
+      \internal
+     */
+    Component.onDestruction: Utils.deactivate(pageWrapper)
 }
