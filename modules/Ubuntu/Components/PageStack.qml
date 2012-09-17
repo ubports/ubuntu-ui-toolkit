@@ -78,6 +78,7 @@ Item {
       \preliminary
       The current size of the stack
      */
+    // FIXME: Make readonly (in QtQuick2)
     property int depth: 0
 
     /*!
