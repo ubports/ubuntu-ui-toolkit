@@ -51,11 +51,15 @@ ButtonWithForeground {
     width: 87
     height: 39
 
+    // this shouldn't be needed as by default there is a style component attached to it
+    // we set this to have ListItems.Standard working yet
+    styleClass: "Button"
+
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: style.color//"#e3e5e8"
+    property color color: styleItem.color//"#e3e5e8"
 
     /*!
        \preliminary
@@ -100,7 +104,7 @@ ButtonWithForeground {
 
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: style.borderShape//button.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            source: styleItem.borderShape//button.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
             border.left: 18; border.top: 15
             border.right: 18; border.bottom: 15
         }
@@ -130,7 +134,7 @@ ButtonWithForeground {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: style.borderImage
+            source: styleItem.borderImage
             //source: if (button.darkBorder) return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
             //        else return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
             border.left: 14; border.top: 17

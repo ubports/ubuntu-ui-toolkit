@@ -3,38 +3,24 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 Item {
-    ButtonStyle {
-        styleClass: "DarkBorder"
-        color: "pink"//"#e3e5e8"
-        borderShape: "artwork/ButtonShapeDark.png"
-        borderImage: "artwork/ButtonBorderDarkIdle.png"
-        states: ["hovered", ""]
-    }
-    ButtonStyle {
-        styleClass: "DarkBorder"
-        color: "purple"//"#e3e5e8"
-        borderShape: "artwork/ButtonShapeDark.png"
-        borderImage: "artwork/ButtonBorderDarkIdle.png"
-        states: ["pressed"]
+
+    Style {
+        styleClass: "Button"
+        //selector: ".Button"
+        style: ButtonStyle {
+            color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
+            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            borderImage: if (control.darkBorder) return control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
+                    else return control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+        }
     }
 
-    ButtonStyle {
-        color: "pink"//"#e3e5e8"
-        borderShape: "artwork/ButtonShape.png"
-        borderImage: "artwork/ButtonBorderIdle.png"
-        states: ["hovered", ""]
-    }
-    ButtonStyle {
-        color: "purple"//"#e3e5e8"
-        borderShape: "artwork/ButtonShape.png"
-        borderImage: "artwork/ButtonBorderIdle.png"
-        states: ["pressed"]
-    }
-    ButtonStyle {
-        instanceId: "callButton"
-        color: "purple"
-
-        borderShape: target.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-        borderImage: target.darkBorder ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
+    // sample for hierarchy
+    Style {
+        styleClass: ".Toolbar"
+        Style {
+            styleClass: ".TheButton"
+            instanceId: "quit"
+        }
     }
 }

@@ -63,6 +63,7 @@ StyledItem {
 
     MouseArea {
         id: defaultMouseArea
+        hoverEnabled: true
         anchors.fill: parent
     }
 

@@ -22,6 +22,8 @@
 #include "style_p.h"
 #include "themeengine.h"
 #include <QDeclarativeProperty>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 
 /*!
   \preliminary
@@ -39,27 +41,47 @@
 StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     q_ptr(qq),
     privateStyle(false),
-    activeStyle(0)
+    activeStyle(0),
+    styleItem(0)
 {
 }
 
-void StyledItemPrivate::_q_updateCurrentStyle(const QString &state)
+void StyledItemPrivate::updateCurrentStyle()
 {
+    Q_Q(StyledItem);
     // do not do anything till the component gets complete?
     //if (!componentCompleted) return;
 
-    Style *tmp = 0;
-    if (privateStyle) {
-        tmp = activeStyle;
-    } else {
-        Q_Q(StyledItem);
-        tmp = ThemeEngine::lookupStyle(q, state);
+    bool emitSignal = false;
+
+    // in case of private style is in use, no need to change anything
+    if (!privateStyle) {
+        // check whether we have different style for the state
+        Style *tmp = ThemeEngine::lookupStyle(q);
+        if (activeStyle != tmp) {
+            styleItem = 0;
+            activeStyle = tmp;
+            emitSignal = true;
+        }
     }
-    if ((tmp != activeStyle) && tmp) {
-        Q_Q(StyledItem);
-        activeStyle = tmp;
+    if (!styleItem && activeStyle) {
+        QDeclarativeContext *context = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
+        context->setContextProperty("control", q);
+        styleItem = activeStyle->style()->create(context);
+    }
+
+    if (emitSignal)
         emit q->styleChanged();
-    }
+}
+
+void StyledItemPrivate::_q_reloadTheme()
+{
+    if (privateStyle)
+        return;
+    // update style if theme is used
+    activeStyle = 0;
+    styleItem = 0;
+    updateCurrentStyle();
 }
 
 /*-----------------------------------------------------------------------------
@@ -68,7 +90,7 @@ StyledItem::StyledItem(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     d_ptr(new StyledItemPrivate(this))
 {
-    QObject::connect(this, SIGNAL(stateChanged(const QString &)), this, SLOT(_q_updateCurrentStyle(const QString &)));
+    QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
 }
 
 StyledItem::~StyledItem()
@@ -86,8 +108,8 @@ void StyledItem::componentComplete()
             ThemeEngine::styledItemPropertiesToSelector(this);
     }
 
-    // set the default style
-    d->_q_updateCurrentStyle("");
+    // activate style
+    d->updateCurrentStyle();
 }
 
 QString StyledItem::instanceId() const
@@ -99,10 +121,11 @@ void StyledItem::setInstanceId(const QString &instanceId)
 {
     Q_D(StyledItem);
     if (instanceId != d->instanceId) {
+        // this might not be necessary... let's see
         if (ThemeEngine::registerInstanceId(this, instanceId)) {
             d->instanceId = instanceId;
             ThemeEngine::styledItemPropertiesToSelector(this);
-            d->_q_updateCurrentStyle(QString());
+            d->updateCurrentStyle();
         } else {
             qWarning() << "instance" << instanceId << "already registered!";
         }
@@ -120,7 +143,7 @@ void StyledItem::setStyleClass(const QString &styleClass)
     if (d->styleClass != styleClass) {
         d->styleClass = styleClass;
         ThemeEngine::styledItemPropertiesToSelector(this);
-        d->_q_updateCurrentStyle(QString());
+        d->updateCurrentStyle();
     }
 }
 
@@ -135,7 +158,7 @@ void StyledItem::setSelector(const QString &selector)
     if (d->localSelector != selector) {
         d->localSelector = selector;
         ThemeEngine::styledItemSelectorToProperties(this);
-        d->_q_updateCurrentStyle(QString());
+        d->updateCurrentStyle();
     }
 }
 
@@ -149,11 +172,20 @@ void StyledItem::setActiveStyle(Style *style)
 {
     Q_D(StyledItem);
     if (d->activeStyle != style) {
+
         d->privateStyle = (style != 0);
-        d->_q_updateCurrentStyle(QString());
+
+        d->activeStyle = style;
+        d->updateCurrentStyle();
         emit styleChanged();
     }
 }
 
+QObject *StyledItem::styleItem() const
+{
+    Q_D(const StyledItem);
+    qDebug() << d->styleClass << d->componentCompleted;
+    return d->styleItem;
+}
 
 #include "moc_styleditem.cpp"

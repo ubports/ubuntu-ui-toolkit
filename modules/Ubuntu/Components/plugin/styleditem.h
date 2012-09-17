@@ -34,6 +34,7 @@ class StyledItem : public QDeclarativeItem
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
     Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
     Q_PROPERTY(Style *style READ activeStyle WRITE setActiveStyle NOTIFY styleChanged FINAL)
+    Q_PROPERTY(QObject *styleItem READ styleItem NOTIFY styleChanged)
 
 public:
     StyledItem(QDeclarativeItem *parent = 0);
@@ -56,12 +57,13 @@ private: // getter/setter
     void setSelector(const QString &selector);
     Style *activeStyle() const;
     void setActiveStyle(Style *style);
+    QObject *styleItem() const;
 
 private: //members
     Q_DECLARE_PRIVATE(StyledItem)
     QScopedPointer<StyledItemPrivate> d_ptr;
     friend class ThemeEngine;
-    Q_PRIVATE_SLOT(d_func(), void _q_updateCurrentStyle(const QString &))
+    Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
 };
 
 QML_DECLARE_TYPE(StyledItem)

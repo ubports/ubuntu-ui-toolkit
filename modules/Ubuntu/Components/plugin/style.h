@@ -21,50 +21,46 @@
 #include <qdeclarative.h>
 #include <QStringList>
 #include <QtDeclarative/QDeclarativeItem>
-#include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeParserStatus>
 
 class StylePrivate;
+class QDeclarativeComponent;
 class Style : public QObject, public QDeclarativeParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
-    Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleClassChanged)
-    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY targetChanged)
-    Q_PROPERTY(QDeclarativeItem* target READ target NOTIFY targetChanged)
-    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+    Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
+    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
+    Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
+    Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
-    Q_PROPERTY(QStringList states READ states WRITE setStates NOTIFY statesChanged)
-    //Q_PROPERTY(QDeclarativeListProperty<QDeclarativeState> states READ styleStates)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    explicit Style(QObject *parent = 0);
+    Style(QObject *parent = 0);
     ~Style();
 
     void classBegin();
     void componentComplete();
 
 signals:
-    void styleClassChanged();
-    void targetChanged();
-    void delegateChanged();
-    void statesChanged();
+    void styleChanged();
 
 public slots:
 
-private: //getter/setters
+public: //getter/setters
     QString styleClass() const;
     void setStyleClass(const QString &styleClass);
     QString instanceId() const;
     void setInstanceId(const QString &instanceId);
-    QDeclarativeItem* target() const;
+    QString selector() const;
+    void setSelector(const QString &selector);
+    QDeclarativeComponent *style() const;
+    void setStyle(QDeclarativeComponent *style);
     QDeclarativeComponent *delegate() const;
     void setDelegate(QDeclarativeComponent *delegate);
     QDeclarativeListProperty<QObject> data();
-    QStringList states() const;
-    void setStates(const QStringList &states);
-    QDeclarativeListProperty<QDeclarativeState> styleStates();
 
 private:
     Q_DISABLE_COPY(Style)

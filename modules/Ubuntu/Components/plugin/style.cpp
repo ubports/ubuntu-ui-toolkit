@@ -17,7 +17,7 @@
 #include "style.h"
 #include "style_p.h"
 #include "themeengine.h"
-
+#include <QDeclarativeEngine>
 
 /*!
   \class Style
@@ -28,7 +28,7 @@
 
 StylePrivate::StylePrivate(Style *qq) :
     q_ptr(qq),
-    target(0),
+    style(0),
     delegate(0)
 {
 }
@@ -36,13 +36,15 @@ StylePrivate::StylePrivate(Style *qq) :
 /*=============================================================================
 =============================================================================*/
 
+
 Style::Style(QObject *parent) :
     QObject(parent),
     d_ptr(new StylePrivate(this))
-{
-}
+{}
+
 Style::~Style()
 {}
+
 
 void Style::classBegin()
 {
@@ -52,9 +54,10 @@ void Style::classBegin()
 void Style::componentComplete()
 {
     // update target if set
-    Q_D(Style);
-    d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
+    //Q_D(Style);
+    //d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
 }
+
 
 QString Style::styleClass() const
 {
@@ -66,7 +69,7 @@ void Style::setStyleClass(const QString &styleClass)
     Q_D(Style);
     if (styleClass != d->styleClass) {
         d->styleClass = styleClass;
-        emit styleClassChanged();
+        emit styleChanged();
     }
 }
 
@@ -80,15 +83,36 @@ void Style::setInstanceId(const QString &instanceId)
     Q_D(Style);
     if (instanceId != d->instanceId) {
         d->instanceId = instanceId;
-        d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
-        emit targetChanged();
+        emit styleChanged();
     }
 }
 
-QDeclarativeItem* Style::target() const
+QString Style::selector() const
 {
     Q_D(const Style);
-    return d->target;
+    return d->selector;
+}
+void Style::setSelector(const QString &selector)
+{
+    Q_D(Style);
+    if (d->selector != selector) {
+        d->selector = selector;
+        emit styleChanged();
+    }
+}
+
+QDeclarativeComponent *Style::style() const
+{
+    Q_D(const Style);
+    return d->style;
+}
+void Style::setStyle(QDeclarativeComponent *style)
+{
+    Q_D(Style);
+    if (d->style != style) {
+        d->style = style;
+        emit styleChanged();
+    }
 }
 
 QDeclarativeComponent *Style::delegate() const
@@ -101,7 +125,7 @@ void Style::setDelegate(QDeclarativeComponent *delegate)
     Q_D(Style);
     if (d->delegate != delegate) {
         d->delegate = delegate;
-        emit delegateChanged();
+        emit styleChanged();
     }
 }
 
@@ -109,26 +133,6 @@ QDeclarativeListProperty<QObject> Style::data()
 {
     Q_D(Style);
     return QDeclarativeListProperty<QObject>(this, d->data);
-}
-
-QStringList Style::states() const
-{
-    Q_D(const Style);
-    return d->states;
-}
-void Style::setStates(const QStringList &states)
-{
-    Q_D(Style);
-    if (d->states != states) {
-        d->states = states;
-        emit statesChanged();
-    }
-}
-
-QDeclarativeListProperty<QDeclarativeState> Style::styleStates()
-{
-    Q_D(Style);
-    return QDeclarativeListProperty<QDeclarativeState>(this, d->styleStates);
 }
 
 #include "moc_style.cpp"

@@ -12,14 +12,13 @@ public:
 
     Style *q_ptr;
 
-    QDeclarativeItem *target;
+    QDeclarativeComponent *style;
     QDeclarativeComponent *delegate;
     QList<QObject*> data;
-    QList<QDeclarativeState*> styleStates;
     // by default it is the style className, can be modified with styleClass property
     QString styleClass;
     QString instanceId;
-    QStringList states;
+    QString selector;
 
 };
 

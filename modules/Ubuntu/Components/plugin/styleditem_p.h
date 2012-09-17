@@ -33,6 +33,7 @@ public:
     bool privateStyle;
     bool componentCompleted;
     Style *activeStyle;
+    QObject *styleItem;
     QString styleClass;
     QString localSelector;
     QString instanceId;
@@ -40,7 +41,8 @@ public:
     // style identification
     QString hierarchy;
 
-    void _q_updateCurrentStyle(const QString &state);
+    void updateCurrentStyle();
+    void _q_reloadTheme();
 
 };
 

@@ -59,15 +59,7 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     // TODO: watch theme folders to detect system theme changes
 }
 
-QDeclarativeItem* ThemeEngine::lookupTarget(const QString &instanceId)
-{
-    ThemeEngine *engine = themeEngine();
-    QDeclarativeItem *ret = 0;
-    // TODO: implement
-    return ret;
-}
-
-Style *ThemeEngine::lookupStyle(StyledItem *item, const QString &state)
+Style *ThemeEngine::lookupStyle(StyledItem *item)
 {
     ThemeEngine *theme = themeEngine();
     StyledItemPrivate *pitem = item->d_func();
@@ -81,7 +73,7 @@ Style *ThemeEngine::lookupStyle(StyledItem *item, const QString &state)
             StyledItem *plItem = qobject_cast<StyledItem*>(pl);
             if (plItem) {
                 // prepend parent's localSelector
-                pitem->hierarchy.prepend('.');
+                //pitem->hierarchy.prepend('.');
                 if (plItem->d_ptr->hierarchy.isEmpty())
                     // use localSelector
                     pitem->hierarchy.prepend(plItem->d_ptr->localSelector);
@@ -94,7 +86,8 @@ Style *ThemeEngine::lookupStyle(StyledItem *item, const QString &state)
             }
         }
         // we have the hierarchy, now find a style for it and fix the hierarchy till we find a style
-        ret = theme->findStyle(pitem->hierarchy, state);
+        ret = theme->findStyle(pitem->hierarchy);
+        // TODO: rework beneath
         while (!ret && !pitem->hierarchy.isEmpty()) {
             // the key is bad, cut from the top till we have what
             int sepIndex = pitem->hierarchy.indexOf('.');
@@ -102,7 +95,7 @@ Style *ThemeEngine::lookupStyle(StyledItem *item, const QString &state)
                 pitem->hierarchy = pitem->hierarchy.right(
                             pitem->hierarchy.length() - sepIndex - 1);
                 // and try to find a style with this
-                ret = theme->findStyle(pitem->hierarchy, state);
+                ret = theme->findStyle(pitem->hierarchy);
             } else {
                 // there's nothing to cut, so clear the hierarchy, the style was not found
                 pitem->hierarchy = QString();
@@ -111,7 +104,7 @@ Style *ThemeEngine::lookupStyle(StyledItem *item, const QString &state)
 
     } else {
         // hierarchy is built and there was a style found based on that, so just lookup for the match
-        ret = theme->findStyle(pitem->hierarchy, state);
+        ret = theme->findStyle(pitem->hierarchy);
     }
 
     return ret;
@@ -147,11 +140,10 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 }
 
 
-Style *ThemeEngine::findStyle(const QString &key, const QString &state)
+Style *ThemeEngine::findStyle(const QString &key)
 {
-    QString skey = QString("%1-%2").arg(key).arg(state);
-    StyleHash::const_iterator sh = m_styleCache.find(skey);
-    if ((sh != m_styleCache.end()) && (sh.key() == skey))
+    StyleHash::const_iterator sh = m_styleCache.find(key);
+    if ((sh != m_styleCache.end()) && (sh.key() == key))
         return sh.value();
     return 0;
 }
@@ -171,25 +163,27 @@ void ThemeEngine::loadTheme(const QString &themeFile)
 void ThemeEngine::completeThemeLoading()
 {
     if (!themeComponent->isError()) {
-        QObject *themeObject = themeComponent->create(m_engine->rootContext());
+        QObject *themeObject = themeComponent->create();
         if (themeObject) {
             // parse its children for Styles
             buildStyleCache(themeObject);
 
             // DEBUG: print theme hash
-            /*
+
             QHashIterator<QString, Style*> sh(m_styleCache);
             while (sh.hasNext()) {
                 sh.next();
                 qDebug() << "Style" << sh.key() << "::" << sh.value();
             }
-            */
+
         }
     } else {
         qWarning() << themeComponent->errors();
     }
     // reset component
     themeComponent = 0;
+    // emit theme changed signal so StyledItems get updated
+    emit themeChanged();
 }
 
 // parses theme for style objects
@@ -200,10 +194,14 @@ void ThemeEngine::buildStyleCache(QObject *style)
     foreach (Style *pl, styles) {
         // check if we have the style registered already
         selector = prepareStyleSelector(pl);
+        m_styleCache.insert(selector, pl);
+        buildStyleCache(pl);
+        /*
         // add the style to the cache appending states
         foreach (const QString &state, pl->d_ptr->states) {
-            m_styleCache.insert(QString("%1-%2").arg(selector).arg(state), pl);
+            m_styleCache.insert(QString("%1:%2").arg(selector).arg(state), pl);
         }
+        */
     }
 }
 
@@ -213,22 +211,26 @@ void ThemeEngine::buildStyleCache(QObject *style)
 */
 QString ThemeEngine::prepareStyleSelector(Style *style)
 {
-    QString selector = style->d_ptr->styleClass;
+    QString selector = style->d_ptr->selector;
+    if (selector.isEmpty())
+        selector = style->d_ptr->styleClass;
     if (selector.isEmpty()) {
         // there's no subclass, use Style meta-class name
         selector = style->metaObject()->className();
         selector = selector.left(selector.indexOf("Style_QMLTYPE"));
     }
-    // add use instanceId
+    if (!selector.startsWith('.'))
+        selector.prepend('.');
+
+    // add instanceId
     if (!style->d_ptr->instanceId.isEmpty()) {
-        selector.append(':');
+        selector.append('#');
         selector.append(style->d_ptr->instanceId);
     }
     // add the rest of the style parents recursively
     for (QObject *parent = style->parent(); parent; parent = parent->parent()) {
         Style *ps = qobject_cast<Style*>(parent);
         if (ps) {
-            selector.prepend('.');
             selector.prepend(prepareStyleSelector(ps));
             break;
         }
@@ -241,6 +243,7 @@ void ThemeEngine::styledItemPropertiesToSelector(StyledItem *item)
     if (!item)
         return;
     ThemeEngine *engine = themeEngine();
+    //StyledItemPrivate *pitem = ;
 
     // check if styleClass is specified
     if (!item->d_ptr->styleClass.isEmpty())
@@ -252,9 +255,12 @@ void ThemeEngine::styledItemPropertiesToSelector(StyledItem *item)
         // update styleClass too so next time we don't need to enter here
         item->d_ptr->styleClass = item->d_ptr->localSelector;
     }
+    if (!item->d_ptr->localSelector.startsWith('.'))
+        item->d_ptr->localSelector.prepend('.');
+
     // check if we have instanceID set
     if (!item->d_ptr->instanceId.isEmpty()) {
-        item->d_ptr->localSelector.append(':');
+        item->d_ptr->localSelector.append('#');
         item->d_ptr->localSelector.append(item->d_ptr->instanceId);
     }
 
@@ -262,14 +268,16 @@ void ThemeEngine::styledItemPropertiesToSelector(StyledItem *item)
 
 void ThemeEngine::styledItemSelectorToProperties(StyledItem *item)
 {
+    //StyledItemPrivate *item->d_ptr = item ? item->d_ptr : 0;
     if (!item || (item && item->d_ptr->localSelector.isEmpty()))
         return;
     ThemeEngine *engine = themeEngine();
     // check instanceId
     item->d_ptr->instanceId = item->d_ptr->localSelector.right(
-                item->d_ptr->localSelector.length() - item->d_ptr->localSelector.indexOf(':') - 1);
+                item->d_ptr->localSelector.length() - item->d_ptr->localSelector.indexOf('#') - 1);
     // set styleClass
     item->d_ptr->styleClass = item->d_ptr->localSelector;
     item->d_ptr->styleClass.remove(item->d_ptr->instanceId);
+    item->d_ptr->styleClass.remove('#');
 }
 

@@ -41,21 +41,21 @@ public:
 
     static ThemeEngine* instance();
     static void initialize(QDeclarativeEngine *engine);
-    static QDeclarativeItem* lookupTarget(const QString &instanceId);
-    static Style *lookupStyle(StyledItem *item, const QString &state = "");
+    static Style *lookupStyle(StyledItem *item);
     static bool registerInstanceId(StyledItem *item, const QString &newId);
 
     //utility functions
     static void styledItemPropertiesToSelector(StyledItem *item);
     static void styledItemSelectorToProperties(StyledItem *item);
 signals:
-    
+    void themeChanged();
+
 public slots:
 private slots:
     void completeThemeLoading();
 
 private:
-    Style *findStyle(const QString &key, const QString &state);
+    Style *findStyle(const QString &key);
     void loadTheme(const QString &themeFile);
     void buildStyleCache(QObject *style);
     QString prepareStyleSelector(Style *style);
