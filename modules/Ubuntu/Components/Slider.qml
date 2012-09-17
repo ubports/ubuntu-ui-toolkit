@@ -82,13 +82,16 @@ Item {
 
     /*!
        \preliminary
-       The minimum value from the continuous range of values.
+       The minimum value from the continuous range of values. If this value is
+       greater than maximumValue, the component will be in an inconsistent
+       state.
     */
     property real minimumValue: 0.0
 
     /*!
        \preliminary
-       The maximum value from the continuous range of values.
+       The maximum value from the continuous range of values. If this value is
+       lesser than minimumValue, the component will be in an inconsistent state.
     */
     property real maximumValue: 100.0
 
