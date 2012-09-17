@@ -51,7 +51,7 @@ Rectangle {
         model: [{"label": "Buttons", "source": "Buttons.qml"},
                 {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
                 {"label": "List Items", "source": "ListItems.qml"},
-                {"label": "Drilldown", "source": ""},
+                {"label": "Drilldown", "source": "Drilldown.qml"},
                 {"label": "Switch", "source": "Switches.qml"},
                 {"label": "Check Box", "source": "CheckBoxes.qml"},
                 {"label": "Activity Indicator", "source": "ActivityIndicators.qml"},
