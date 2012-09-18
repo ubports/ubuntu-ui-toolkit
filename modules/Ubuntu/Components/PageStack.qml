@@ -157,7 +157,7 @@ Item {
     Item {
         id: contents
         parent: pageStack
-        anchors.fill: parent
+        anchors.fill: pageStack
 
         Header {
             id: header
