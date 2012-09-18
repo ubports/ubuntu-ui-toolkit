@@ -140,7 +140,17 @@ Item {
         Stack.stack.top().active = true;
 
         pageStack.depth = Stack.stack.size();
+        contents.updateHeader();
+    }
 
+    /*!
+      \preliminary
+      Deactivate the active page and clear the stack.
+     */
+    function clear() {
+        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
+        Stack.stack.clear();
+        pageStack.depth = 0;
         contents.updateHeader();
     }
 
