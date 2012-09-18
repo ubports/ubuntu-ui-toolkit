@@ -35,7 +35,6 @@ Template {
             Page {
                 id: page0
                 title: "Root page"
-                anchors.fill: parent
 
                 Column {
                     anchors.fill: parent
@@ -55,7 +54,6 @@ Template {
             Page {
                 id: page1
                 title: "First page"
-                anchors.fill: parent
 
                 Column {
                     anchors.fill: parent
