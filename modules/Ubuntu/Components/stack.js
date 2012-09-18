@@ -14,9 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// By defining Stack as a function, we can
-// make its variables private, and force calls
-// to Stack to make use of the functions we define.
+// By defining Stack as a function, we can make its variables private,
+// and force calls to Stack to make use of the functions we define.
 function Stack() {
     var elements;
     this.clear = function() {
