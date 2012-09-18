@@ -19,7 +19,7 @@ import QtQuick 1.1
 /*!
     \qmlclass Page
     \inqmlmodule Ubuntu.Components 0.1
-    \brief A page that can be included in Tabs object.
+    \brief A page that can be included in \l Tab object or pushed on a \l PageStack
 
     \b{This component is under heavy development.}
 
@@ -36,13 +36,6 @@ Item {
       Either title or \l iconSource, or both must be defined.
      */
     property string title
-
-    /*!
-      \preliminary
-      The location of the icon that is displayed inside the button used to select this page (optional).
-      Either \l title or iconSource, or both must be defined.
-     */
-    property url iconSource
 
     /*!
       \internal
