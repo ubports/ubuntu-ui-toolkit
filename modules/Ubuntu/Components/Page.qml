@@ -32,8 +32,7 @@ Item {
 
     /*!
       \preliminary
-      The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
+      The title of the page. May be shown in a \l PageStack header (optional).
      */
     property string title
 
