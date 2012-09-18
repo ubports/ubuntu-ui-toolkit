@@ -37,8 +37,13 @@ function __initPage(pageWrapper) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
-            // create te object
-            pageObject = pageComponent.createObject(pageWrapper.parent);
+            // create the object
+            if (pageWrapper.properties) {
+                // initialize the object with the given properties
+                pageObject = pageComponent.createObject(pageWrapper.parent, pageWrapper.properties);
+            } else {
+                pageObject = pageComponent.createObject(pageWrapper.parent);
+            }
             pageWrapper.canDestroy = true;
         }
     } else {
@@ -46,10 +51,14 @@ function __initPage(pageWrapper) {
         pageObject = pageWrapper.reference;
         pageObject.parent = pageWrapper.parent;
         pageWrapper.canDestroy = false;
+
+        // copy the properties to the page object
+        for (var prop in pageWrapper.properties) {
+            if (pageWrapper.properties.hasOwnProperty(prop)) {
+                pageObject[prop] = pageWrapper.properties[prop];
+            }
+        }
     }
-
-    pageObject.anchors.fill = pageWrapper.parent; // TODO: Do we always want this?
-
     return pageObject;
 }
 
@@ -83,7 +92,6 @@ function deactivate(pageWrapper) {
 function updateParent(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.parent = pageWrapper.parent;
-        pageWrapper.object.anchors.fill = pageWrapper.parent;
         pageWrapper.object.visible = pageWrapper.active;
     }
 }

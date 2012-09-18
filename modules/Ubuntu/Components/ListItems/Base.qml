@@ -159,7 +159,7 @@ AbstractButton {
         return true;
     }
 
-    /*
+    /*!
       \internal
       Determine whether the top separator must be shown.
       This is the case, if the list item is not a divider, and

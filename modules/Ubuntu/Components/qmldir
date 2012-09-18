@@ -13,6 +13,8 @@ Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
+Page 0.1 Page.qml
+PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
