@@ -30,7 +30,7 @@ Template {
             }
             width: 300
 
-            initialPage: page0
+            Component.onCompleted: push(page0)
 
             Page {
                 id: page0

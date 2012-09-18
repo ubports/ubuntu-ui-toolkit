@@ -32,7 +32,7 @@ import "stack.js" as Stack
             id: pageStack
             anchors.fill: parent
 
-            initialPage: page0
+            Component.onCompleted: pageStack.push(page0)
 
             Page {
                 id: page0
@@ -91,16 +91,6 @@ Item {
         visible: false
     }
 
-    /*!
-      \preliminary
-      The initial page on the stack. This page cannot be popped.
-     */
-    property variant initialPage
-    onInitialPageChanged: {
-        Stack.stack.clear();
-        pageStack.push(initialPage);
-    }
-
     // FIXME: After switching to QtQuick2, use a var stack property and instead of
     // Stack.stack in this class we can refer to that property.
     //property var stack: new Stack.Stack()
@@ -140,8 +130,8 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (Stack.stack.size() <= 1) {
-            print("WARNING: Trying to pop a PageStack with "+Stack.stack.size()+" Pages. Ignoring.");
+        if (Stack.stack.size() < 1) {
+            print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
 
