@@ -120,7 +120,6 @@ Item {
         Stack.stack.top().active = true;
 
         pageStack.depth = Stack.stack.size();
-
         contents.updateHeader();
     }
 
