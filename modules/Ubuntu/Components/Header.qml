@@ -53,9 +53,9 @@ Rectangle {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            margins: 5
+            margins: 2
         }
-        width: visible ? backImage.width : 0
+        width: visible ? backImage.width + 20 : 0
         visible: false
         onClicked: if (header.pageStack) pageStack.pop()
 
