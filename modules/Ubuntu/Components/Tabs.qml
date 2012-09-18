@@ -45,7 +45,7 @@ import QtQuick 1.1
             }
             Tab {
                 title: "tab 3"
-                page: "MyCustomPage.qml"
+                page: Qt.resolvedUrl("MyCustomPage.qml")
             }
         }
     \endqml
