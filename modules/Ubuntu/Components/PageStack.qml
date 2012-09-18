@@ -169,8 +169,7 @@ Item {
             pageStack: pageStack
         }
 
-        Rectangle {
-            color: "#eeeeee"
+        Item {
             id: pageContents
             anchors {
                 left: parent.left

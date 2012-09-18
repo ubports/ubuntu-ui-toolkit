@@ -21,6 +21,11 @@ Template {
     title: "Drilldown"
 
     Item {
+        Rectangle {
+            color: "#eeeeee"
+            anchors.fill: pageStack
+        }
+
         PageStack {
             id: pageStack
             anchors {
