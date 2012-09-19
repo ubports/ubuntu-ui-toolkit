@@ -99,7 +99,7 @@ Empty {
             bottomMargin: 2
         }
 
-        StandardBase {
+        Base {
             id: selectorMain
             height: 48
             __showTopSeparator: false

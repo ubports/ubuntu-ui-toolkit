@@ -107,7 +107,7 @@ Empty {
     // Children will take care of highlighting
     __highlighted: false
 
-    StandardBase {
+    Base {
         id: controlArea
 
         __showTopSeparator: false

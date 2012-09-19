@@ -64,7 +64,7 @@ import Ubuntu.Components 0.1
         }
     \endqml
 */
-StandardBase {
+Base {
     id: subtitledListItem
     height: Math.max(middleVisuals.height, 48)
 
