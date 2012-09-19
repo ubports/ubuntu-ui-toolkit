@@ -41,4 +41,11 @@ Item {
       Used in PageContainer to determine whether an Item is a Page.
      */
     property bool __isPage: true
+
+    /*!
+      \preliminary
+      The \l PageStack that this Page has been pushed on, or null if it is not
+      part of a PageStack. This value is automatically updated by the \l PageStack.
+     */
+    property PageStack pageStack
 }

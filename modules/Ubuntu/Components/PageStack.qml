@@ -83,6 +83,12 @@ Item {
     property int depth: 0
 
     /*!
+      \preliminary
+      The currently active page
+     */
+    property Item currentPage
+
+    /*!
       \internal
       This allows to define the pages inside the PageStack without showing them.
      */
@@ -107,6 +113,7 @@ Item {
         wrapperObject.reference = page;
         wrapperObject.parent = pageContents;
         wrapperObject.properties = properties;
+        wrapperObject.pageStack = pageStack;
         return wrapperObject;
     }
 
@@ -120,8 +127,7 @@ Item {
         Stack.stack.push(__createWrapper(page, properties));
         Stack.stack.top().active = true;
 
-        pageStack.depth = Stack.stack.size();
-        contents.updateHeader();
+        __stackUpdated();
     }
 
     /*!
@@ -135,12 +141,12 @@ Item {
             return;
         }
 
+        Stack.stack.top().pageStack = null;
         Stack.stack.top().active = false;
         Stack.stack.pop();
         Stack.stack.top().active = true;
 
-        pageStack.depth = Stack.stack.size();
-        contents.updateHeader();
+        __stackUpdated();
     }
 
     /*!
@@ -150,7 +156,16 @@ Item {
     function clear() {
         if (Stack.stack.size() > 0) Stack.stack.top().active = false;
         Stack.stack.clear();
-        pageStack.depth = 0;
+        __stackUpdated();
+    }
+
+    /*!
+      \internal
+     */
+    function __stackUpdated() {
+        pageStack.depth = Stack.stack.size();
+        if (pageStack.depth > 0) currentPage = Stack.stack.top().object;
+        else currentPage = null;
         contents.updateHeader();
     }
 

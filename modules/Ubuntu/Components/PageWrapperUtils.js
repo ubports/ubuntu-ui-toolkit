@@ -59,6 +59,11 @@ function __initPage(pageWrapper) {
             }
         }
     }
+
+    if (pageObject.__isPage) {
+        pageObject.pageStack = pageWrapper.pageStack;
+    }
+
     return pageObject;
 }
 
@@ -93,5 +98,11 @@ function updateParent(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.parent = pageWrapper.parent;
         pageWrapper.object.visible = pageWrapper.active;
+    }
+}
+
+function updatePageStack(pageWrapper) {
+    if (pageWrapper.object) {
+        pageWrapper.object.pageStack = pageWrapper.pageStack;
     }
 }
