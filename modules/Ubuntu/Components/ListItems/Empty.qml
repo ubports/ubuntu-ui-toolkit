@@ -18,10 +18,10 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Base
+    \qmlclass Empty
     \inqmlmodule Ubuntu.Components.ListItems 0.1
-    \brief The default list item class.
-    The Base class can be used for generic list items, containing
+    \brief A list item with no contents.
+    The Empty class can be used for generic list items, containing
     other components such as buttons. It draws an upper and lower
     divider, is selectable, and can take mouse clicks.
     For specific types of list items, see its subclasses.
@@ -31,14 +31,14 @@ import Ubuntu.Components 0.1
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         Column {
-            ListItem.Base {
+            ListItem.Empty {
                 height: 50
                 Text {
                     text: "Hello world"
                     anchors.centerIn: parent
                 }
             }
-            ListItem.Base {
+            ListItem.Empty {
                 height: 100
                 Tabs {
                     height: parent.height - 20
@@ -73,7 +73,7 @@ import Ubuntu.Components 0.1
         }
     \endqml
 
-    See the documentation of the derived classes of Base for more examples.
+    See the documentation of the derived classes of Empty for more examples.
     \b{This component is under heavy development.}
 */
 AbstractButton {

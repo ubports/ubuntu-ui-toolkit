@@ -43,7 +43,7 @@ import Ubuntu.Components.ListItems 0.1
     \b{This component is under heavy development.}
 */
 // TODO: Add more examples when more types of controls become available.
-Base {
+Empty {
     id: singleControlListItem
 
     height: control ? control.height + control.anchors.topMargin + control.anchors.bottomMargin : undefined

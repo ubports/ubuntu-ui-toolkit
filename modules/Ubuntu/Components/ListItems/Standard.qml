@@ -56,7 +56,7 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-Base {
+Empty {
     id: listItem
     height: 48
 
@@ -156,7 +156,7 @@ Base {
 
     }
 
-    Base {
+    Empty {
         id: progressionItem
         visible: listItem.__showSplit
         width: visible ? progressionHelper.width : 0

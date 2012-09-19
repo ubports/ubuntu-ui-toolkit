@@ -18,7 +18,6 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 /*!
-    \internal
     \qmlclass StandardBase
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief Parent class of various list item classes that can have
@@ -27,7 +26,7 @@ import Ubuntu.Components 0.1
     Examples: See subclasses
     \b{This component is under heavy development.}
 */
-Base {
+Empty {
     id: listItem
     height: 48
 

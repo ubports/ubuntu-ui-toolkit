@@ -52,7 +52,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-Base {
+Empty {
     id: selector
     height: column.height
 
@@ -213,7 +213,7 @@ Base {
                 height: valueRepeater.valueHeight
                 width: parent.width
 
-                Base {
+                Empty {
                     id: valueBase
                     height: parent.height
                     visible: valueBase.height > 0
