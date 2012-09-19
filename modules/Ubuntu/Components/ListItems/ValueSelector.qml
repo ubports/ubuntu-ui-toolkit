@@ -68,7 +68,7 @@ Base {
       The location of the icon to show in the list item (optional).
       \qmlproperty url iconSource
      */
-    property alias iconSource: iconHelper.source
+    property alias iconSource: selectorMain.iconSource
 
     /*!
       \preliminary
@@ -97,22 +97,20 @@ Base {
             bottomMargin: 2
         }
 
-        Base {
+        StandardBase {
             id: selectorMain
             height: 48
             __showTopSeparator: false
             __showBottomSeparator: false
+            progression: false
             onClicked: selector.expanded = !selector.expanded
 
-            IconVisual {
-                id: iconHelper
-            }
             LabelVisual {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
                     leftMargin: 5
-                    left: iconHelper.right
+                    left: selectorMain.__leftAnchor
                 }
                 width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
             }
@@ -140,7 +138,7 @@ Base {
                 id: accordion
                 width: 30
                 anchors {
-                    right: parent.right
+                    right: selectorMain.__rightAnchor
                     top: parent.top
                     bottom: parent.bottom
                 }
