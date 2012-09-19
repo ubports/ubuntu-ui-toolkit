@@ -79,6 +79,8 @@ StandardBase {
     */
     property alias control: controlContainer.control
 
+    showSplit: control ? true : false
+
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
     highlightWhenPressed: !listItem.control
@@ -133,15 +135,4 @@ StandardBase {
         }
         enabled: control !== null
     }
-//    ProgressionVisual {
-//        id: progressionHelper
-//        visible: listItem.progression
-//        anchors {
-//            right: parent.right
-//            top: parent.top
-//            bottom: parent.bottom
-//        }
-//        showSplit: control ? true : false
-//    }
-    showSplit: control ? true : false
 }
