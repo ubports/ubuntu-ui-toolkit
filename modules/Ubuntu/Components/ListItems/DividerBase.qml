@@ -18,8 +18,6 @@ import QtQuick 1.1
 
 // internal superclass of Header and Divider
 Item {
-    id: listItemDividerBase
     width: parent ? parent.width : 250
-
     property bool __isDivider: true
 }

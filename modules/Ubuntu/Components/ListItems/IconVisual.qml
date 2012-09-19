@@ -19,8 +19,6 @@ import QtQuick 1.1
 // internal helper class to create the visuals
 // for the icon.
 Item {
-    id: iconVisual
-
     property alias source: icon.source
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
@@ -36,19 +34,18 @@ Item {
 
     Image {
         id: icon
-        opacity: iconVisual.enabled ? 1.0 : 0.5
+        opacity: parent.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: iconVisual.leftRightIconMargin
+            leftMargin: parent.leftRightIconMargin
         }
     }
 
     BorderImage {
-        id: iconFrame
-        opacity: iconVisual.enabled ? 1.0 : 0.5
-        visible: iconVisual.hasFrame
+        opacity: parent.enabled ? 1.0 : 0.5
+        visible: parent.hasFrame
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         border {

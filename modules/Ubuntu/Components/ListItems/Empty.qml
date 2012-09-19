@@ -77,7 +77,7 @@ import Ubuntu.Components 0.1
     \b{This component is under heavy development.}
 */
 AbstractButton {
-    id: baseListItem
+    id: emptyListItem
     width: parent ? parent.width : 250
 
     /*!
@@ -97,7 +97,7 @@ AbstractButton {
 
     Rectangle {
         id: highlight
-        visible: baseListItem.__highlighted
+        visible: emptyListItem.__highlighted
         anchors.fill: parent
         color: "white"
         opacity: 0.7
@@ -143,7 +143,7 @@ AbstractButton {
       is not a divider.
      */
     function __separateAtBottom() {
-        var index = baseListItem.__childIndexOf(baseListItem);
+        var index = emptyListItem.__childIndexOf(emptyListItem);
         if (index === undefined) return true;
         // index is defined:
          if (index < parent.children.length - 1) {
@@ -159,10 +159,10 @@ AbstractButton {
       it is the first in the list of the children.
     */
     function __separateAtTop() {
-        var index = baseListItem.__childIndexOf(baseListItem);
+        var index = emptyListItem.__childIndexOf(emptyListItem);
         if (index === undefined) return true;
         // index is defined:
-        if (baseListItem.__isDivider || index !== 0) return false;
+        if (emptyListItem.__isDivider || index !== 0) return false;
         return true;
     }
 
@@ -175,7 +175,7 @@ AbstractButton {
         }
         height: visible ? 2 : 0
         source: "artwork/ListItemDividerHorizontal.png"
-        visible: baseListItem.__showTopSeparator
+        visible: emptyListItem.__showTopSeparator
     }
     Image {
         id: bottomSeparatorLine
@@ -186,7 +186,7 @@ AbstractButton {
         }
         height: visible ? 2 : 0
         source: "artwork/ListItemDividerHorizontal.png"
-        visible: baseListItem.__showBottomSeparator
+        visible: emptyListItem.__showBottomSeparator
     }
 
     /*!

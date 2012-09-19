@@ -153,7 +153,6 @@ Empty {
                 if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea.mouseArea;
             }
         }
-
     }
 
     Empty {

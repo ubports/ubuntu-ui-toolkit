@@ -27,7 +27,7 @@ import Ubuntu.Components 0.1
     \b{This component is under heavy development.}
 */
 Empty {
-    id: listItem
+    id: baseListItem
     height: 48
 
     /*!
@@ -70,7 +70,7 @@ Empty {
 
     ProgressionVisual {
         id: progressionHelper
-        visible: listItem.progression
+        visible: baseListItem.progression
         anchors {
             right: parent.right
             top: parent.top

@@ -60,7 +60,6 @@ Base {
 
 
     Item {
-        id: middleVisuals
         height: label.height + valueLabel.height
         anchors {
             verticalCenter: parent.verticalCenter
