@@ -113,6 +113,7 @@ Item {
         wrapperObject.reference = page;
         wrapperObject.parent = pageContents;
         wrapperObject.properties = properties;
+        wrapperObject.pageStack = pageStack;
         return wrapperObject;
     }
 
@@ -140,6 +141,7 @@ Item {
             return;
         }
 
+        Stack.stack.top().pageStack = null;
         Stack.stack.top().active = false;
         Stack.stack.pop();
         Stack.stack.top().active = true;

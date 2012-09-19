@@ -68,6 +68,12 @@ QtObject {
     property variant properties
 
     /*!
+      \preliminary
+      The \l PageStack that the \l Page is part of, if any (null otherwise).
+     */
+    property PageStack pageStack
+
+    /*!
       \internal
      */
     onActiveChanged: {
@@ -90,6 +96,11 @@ QtObject {
       \internal
      */
     onParentChanged: Utils.updateParent(pageWrapper)
+
+    /*!
+      \internal
+     */
+    onPageStackChanged: Utils.updatePageStack(pageWrapper)
 
     /*!
       \internal
