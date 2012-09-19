@@ -59,6 +59,7 @@ Base {
 
     IconVisual {
         id: iconHelper
+        anchors.leftMargin: 20
     }
     property alias iconHelper: iconHelper
     property alias progressionHelper: progressionHelper

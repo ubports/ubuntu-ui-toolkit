@@ -58,7 +58,7 @@ import Ubuntu.Components 0.1
 */
 StandardBase {
     id: listItem
-    height: 48
+    height: 25
 
     /*!
       \preliminary

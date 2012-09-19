@@ -25,7 +25,7 @@ Item {
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
 
-    property real leftRightIconMargin: 5
+    property real leftRightIconMargin: 10
     width: visible ? icon.width + 2*leftRightIconMargin : 0
 
     property real topBottomIconMargin: 2
