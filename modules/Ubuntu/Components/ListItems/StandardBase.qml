@@ -47,6 +47,7 @@ Base {
     /*!
       \preliminary
       Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
      */
     property alias iconFrame: iconHelper.hasFrame
 

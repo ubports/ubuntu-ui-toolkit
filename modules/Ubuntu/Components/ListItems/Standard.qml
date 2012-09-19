@@ -67,7 +67,18 @@ Base {
      */
     property alias text: label.text
 
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
+     */
     property alias iconSource: controlArea.iconSource
+
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
     property alias iconFrame: controlArea.iconFrame
 
     /*!
@@ -82,19 +93,19 @@ Base {
     */
     property alias control: controlContainer.control
 
+    /*!
+      \preliminary
+      Show or hide the progression symbol.
+     */
     property bool progression: false
 
+    /*!
+      \internal
+     */
     property bool __showSplit: (control !== null) && progression
 
+    // Children will take care of highlighting
     __highlighted: false
-
-    // If there is a control, the controlArea covers the listItem's mouseArea,
-    // so in that case use the highlights below when pressed
-//    highlightWhenPressed: !listItem.control
-
-//    mouseArea: __showSplit ? progressionItem.mouseArea : controlArea.mouseArea
-
-    mouseArea: progressionItem.mouseArea
 
     StandardBase {
         id: controlArea
@@ -109,6 +120,8 @@ Base {
             right: progressionItem.left
         }
 
+        // if __showSplit, use the control's onClicked to define
+        // the action when clicking on the controlArea.
         onClicked: if (!__showSplit) listItem.clicked()
 
         selected: listItem.selected
@@ -137,7 +150,6 @@ Base {
             }
             onControlChanged: {
                 control.parent = controlContainer;
-                //            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
                 if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea.mouseArea;
             }
         }
@@ -146,6 +158,7 @@ Base {
 
     Base {
         id: progressionItem
+        visible: listItem.__showSplit
         width: visible ? progressionHelper.width : 0
         anchors {
             top: parent.top
@@ -156,6 +169,8 @@ Base {
         __showTopSeparator: false
         __showBottomSeparator: false
 
+        onClicked: listItem.clicked()
+
         ProgressionVisual {
             id: progressionHelper
             anchors {
@@ -163,10 +178,7 @@ Base {
                 bottom: parent.bottom
                 right: parent.right
             }
-//            visible: listItem.showSplit
             showSplit: true
-//            visible: false
         }
-        visible: listItem.__showSplit
     }
 }
