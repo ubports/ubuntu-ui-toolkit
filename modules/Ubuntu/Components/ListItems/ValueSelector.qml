@@ -88,6 +88,8 @@ Base {
      */
     property bool expanded: false
 
+    __highlighted: false
+
     Column {
         id: column
         anchors {
@@ -104,13 +106,14 @@ Base {
             __showBottomSeparator: false
             progression: false
             onClicked: selector.expanded = !selector.expanded
+            selected: selector.selected
 
             LabelVisual {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
                     leftMargin: 5
-                    left: selectorMain.__leftAnchor
+                    left: parent.left
                 }
                 width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
             }
@@ -138,7 +141,7 @@ Base {
                 id: accordion
                 width: 30
                 anchors {
-                    right: selectorMain.__rightAnchor
+                    right: parent.right
                     top: parent.top
                     bottom: parent.bottom
                 }

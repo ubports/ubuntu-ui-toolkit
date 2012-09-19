@@ -50,39 +50,23 @@ Base {
      */
     property alias iconFrame: iconHelper.hasFrame
 
-    /*!
-      \preliminary
-      Show a split between the progessions symbol and the
-      left part of the list item.
-     */
-    property alias showSplit: progressionHelper.showSplit
-
     IconVisual {
         id: iconHelper
     }
-    property alias iconHelper: iconHelper
-    property alias progressionHelper: progressionHelper
 
     /*!
       \internal
-      Anchor for the left-side of the contents of the list item.
-      Used in subclasses of StandardBase.
      */
-    property alias __leftAnchor: iconHelper.right
-
-    /*!
-      \internal
-      Anchor for the right-side of the contents of the list item.
-      Used in subclasses of StandardBase.
-     */
-    property alias __rightAnchor: progressionHelper.left
-
-    /*!
-      \internal
-      Width of the list item minus the width of the icon and progression symbol.
-      Used in subclasses of StandardBase.
-     */
-    property real __middleWidth: listItem.width - iconHelper.width - progressionHelper.width
+    property alias children: middle.children
+    Item {
+        id: middle
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: iconHelper.right
+            right: progressionHelper.left
+        }
+    }
 
     ProgressionVisual {
         id: progressionHelper

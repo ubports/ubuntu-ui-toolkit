@@ -216,6 +216,7 @@ Template {
                         selected: true
                         text: "Selected"
                         control: controlExample.createObject(parent)
+                        onClicked: print("Selected clicked!")
                     }
                     ListItem.Standard {
                         text: "Split"

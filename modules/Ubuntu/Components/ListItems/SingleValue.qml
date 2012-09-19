@@ -66,9 +66,9 @@ StandardBase {
         anchors {
             verticalCenter: parent.verticalCenter
             leftMargin: 5
-            left: __leftAnchor
+            left: parent.left
         }
-        width: Math.min(invisibleLabel.implicitWidth, __middleWidth)
+        width: Math.min(invisibleLabel.implicitWidth, parent.width)
     }
     LabelVisual {
         id: invisibleLabel
@@ -81,7 +81,7 @@ StandardBase {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            right: __rightAnchor
+            right: parent.right
             rightMargin: 5
             left: label.right
             leftMargin: 5

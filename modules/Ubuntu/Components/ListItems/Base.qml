@@ -82,29 +82,22 @@ AbstractButton {
 
     /*!
       \preliminary
-      When the list item is clicked.
-     */
-    signal clicked
-
-    /*!
-      \preliminary
       Specifies whether the list item is selected.
      */
     property bool selected: false
 
     /*!
-      \preliminary
-      Highlight the list item when it is pressed.
-      This is used to disable the highlighting of the full list item
+      \internal
+      Highlight the list item.
+      This can be set to false to disable highlighting of the full list item
       when custom highlighting needs to be implemented (for example in
       ListItem.Standard which can have a split).
-    */
-    property bool highlightWhenPressed: true
+     */
+    property bool __highlighted: selected || pressed
 
     Rectangle {
         id: highlight
-
-        visible: baseListItem.selected || (baseListItem.highlightWhenPressed && baseListItem.pressed)
+        visible: baseListItem.__highlighted
         anchors.fill: parent
         color: "white"
         opacity: 0.7
