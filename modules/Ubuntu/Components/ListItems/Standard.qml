@@ -56,16 +56,9 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-Base {
+StandardBase {
     id: listItem
     height: 48
-
-    /*!
-      \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    property alias iconSource: iconHelper.source
 
     /*!
       \preliminary
@@ -73,12 +66,6 @@ Base {
       \qmlproperty string text
      */
     property alias text: label.text
-
-    /*!
-      \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
 
     /*!
       \preliminary
@@ -91,12 +78,6 @@ Base {
       \l progression.
     */
     property alias control: controlContainer.control
-
-    /*!
-      \preliminary
-      Show or hide the frame around the icon
-     */
-    property alias iconFrame: iconHelper.hasFrame
 
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
@@ -115,16 +96,13 @@ Base {
         color: "white"
         opacity: 0.7
     }
-    IconVisual {
-        id: iconHelper
-    }
     LabelVisual {
         id: label
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
             leftMargin: 5
-            left: iconHelper.right
+            left: __leftAnchor
             right: controlContainer.left
         }
     }
@@ -135,7 +113,7 @@ Base {
         // or full width available if there is no text.
         width: control ? control.width : undefined
         anchors {
-            right: progressionHelper.left
+            right: __rightAnchor
             top: parent.top
             bottom: parent.bottom
             margins: 5
@@ -155,14 +133,15 @@ Base {
         }
         enabled: control !== null
     }
-    ProgressionVisual {
-        id: progressionHelper
-        visible: listItem.progression
-        anchors {
-            right: parent.right
-            top: parent.top
-            bottom: parent.bottom
-        }
-        showSplit: control ? true : false
-    }
+//    ProgressionVisual {
+//        id: progressionHelper
+//        visible: listItem.progression
+//        anchors {
+//            right: parent.right
+//            top: parent.top
+//            bottom: parent.bottom
+//        }
+//        showSplit: control ? true : false
+//    }
+    showSplit: control ? true : false
 }
