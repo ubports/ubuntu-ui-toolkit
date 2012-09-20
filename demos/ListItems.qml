@@ -227,6 +227,7 @@ Template {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
                         control: controlExample.createObject(parent)
+                        showSeparator: false
                     }
                     ListItem.Header { text: "Single control" }
 
@@ -280,7 +281,10 @@ Template {
                     width: 250
                     ListItem.Header { text: "Group Header, Divider & Caption" }
                     ListItem.Standard { text: "Item 1a" }
-                    ListItem.Standard { text: "Item 1b" }
+                    ListItem.Standard {
+                        text: "Item 1b"
+                        showSeparator: false
+                    }
                     ListItem.Divider { }
                     ListItem.Standard { text: "Item 2a" }
                     ListItem.Standard { text: "Item 2b" }
