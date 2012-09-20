@@ -76,7 +76,7 @@ AnimatedItem {
             visible: internals.active
             NumberAnimation on rotation {
                 running: internals.active & indicator.onScreen
-                from: 360; to: 0; loops: Animation.Infinite
+                from: 0; to: 360; loops: Animation.Infinite
                 duration: internals.animationDuration
             }
         }
