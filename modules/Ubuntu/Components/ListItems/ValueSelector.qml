@@ -124,10 +124,10 @@ Empty {
                 id: valueLabel
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    left: label.right
                     right: accordion.left
                     rightMargin: 5
                     leftMargin: 5
+                    left: label.right
                 }
                 fontSize: "small"
                 text: selector.values[selector.selectedIndex]
