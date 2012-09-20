@@ -116,10 +116,21 @@ AbstractButton {
       Method to automatically determine if the bottom separator line should be drawn.
       This always returns true, unless item is a delegate in a ListView. If in a ListView
       it will return false only when:
-       - if there is a section.delegate below this item
-       - if this is the final item in the list, and no ListView.footer is set.
+       + if there is a section.delegate below this item (as separator line and section
+         delegate should not both appear)
+       + if this is the final item in the list, and no ListView.footer is set (to encourage
+         use of ListView.footer)
      */
     function __showSeparator() {
+        // if we're not in ListView, always show bottom separator line
+        if (ListView.view !== null) {
+
+            // if we're last item in ListView and footer is not set, show line
+            if (index === ListView.view.model.count - 1 && !ListView.footer) return false;
+
+            // if section.delegate between this item and the next
+            if (ListView.section !== ListView.nextSection) return false;
+        }
         return true;
     }
 
