@@ -56,9 +56,16 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-Empty {
+Base {
     id: listItem
     height: 48
+
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
+     */
+    property alias iconSource: iconHelper.source
 
     /*!
       \preliminary
@@ -69,17 +76,9 @@ Empty {
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
+      Show or hide the progression symbol.
      */
-    property alias iconSource: controlArea.iconSource
-
-    /*!
-      \preliminary
-      Show or hide the frame around the icon
-      \qmlproperty bool iconFrame
-     */
-    property alias iconFrame: controlArea.iconFrame
+    property bool progression: false
 
     /*!
       \preliminary
@@ -95,87 +94,75 @@ Empty {
 
     /*!
       \preliminary
-      Show or hide the progression symbol.
+      Show or hide the frame around the icon
      */
-    property bool progression: false
+    property alias iconFrame: iconHelper.hasFrame
 
-    /*!
-      \internal
-     */
-    property bool __showSplit: (control !== null) && progression
-
-    // Children will take care of highlighting
-    __highlighted: false
-
-    Base {
-        id: controlArea
-
-        __showTopSeparator: false
-        __showBottomSeparator: false
-
-        anchors {
-            top: parent.top
-            left: parent.left
-            bottom: parent.bottom
-            right: progressionItem.left
-        }
-
-        // if __showSplit, use the control's onClicked to define
-        // the action when clicking on the controlArea.
-        onClicked: if (!__showSplit) listItem.clicked()
-
+    // If there is a control, the controlArea covers the listItem's mouseArea,
+    // so in that case use the highlights below when pressed
+    highlightWhenPressed: !listItem.control
+    Rectangle {
+        id: controlHighlight
+        visible: controlArea.pressed
+        anchors.fill: controlArea
+        color: "white"
+        opacity: 0.7
+    }
+    Rectangle {
+        id: progressionHighlight
+        visible: listItem.pressed
+        anchors.fill: progressionHelper
+        color: "white"
+        opacity: 0.7
+    }
+    IconVisual {
+        id: iconHelper
+    }
+    LabelVisual {
+        id: label
         selected: listItem.selected
-        progression: listItem.progression && !listItem.__showSplit
-        LabelVisual {
-            id: label
-            selected: listItem.selected
-            anchors {
-                verticalCenter: parent.verticalCenter
-                leftMargin: 5
-                left: parent.left
-                right: controlContainer.left
-            }
-        }
-        Item {
-            id: controlContainer
-            property Item control
-            width: control ? control.width : 0
-            anchors {
-                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-                margins: 5
-            }
-            onControlChanged: {
-                control.parent = controlContainer;
-                if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea.mouseArea;
-            }
+        anchors {
+            verticalCenter: parent.verticalCenter
+            leftMargin: 5
+            left: iconHelper.right
+            right: controlContainer.left
         }
     }
-
-    Empty {
-        id: progressionItem
-        visible: listItem.__showSplit
-        width: visible ? progressionHelper.width : 0
+    Item {
+        id: controlContainer
+        property Item control
+        // use the width of the control if there is (possibly elided) text,
+        // or full width available if there is no text.
+        width: control ? control.width : undefined
+        anchors {
+            right: progressionHelper.left
+            top: parent.top
+            bottom: parent.bottom
+            margins: 5
+        }
+        onControlChanged: {
+            control.parent = controlContainer;
+            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
+        }
+    }
+    MouseArea {
+        id: controlArea
         anchors {
             top: parent.top
             bottom: parent.bottom
+            left: parent.left
+            right: progressionHelper.left
+        }
+        enabled: control !== null
+    }
+    ProgressionVisual {
+        id: progressionHelper
+        visible: listItem.progression
+        anchors {
             right: parent.right
+            top: parent.top
+            bottom: parent.bottom
         }
-
-        __showTopSeparator: false
-        __showBottomSeparator: false
-
-        onClicked: listItem.clicked()
-
-        ProgressionVisual {
-            id: progressionHelper
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-                right: parent.right
-            }
-            showSplit: true
-        }
+        showSplit: control ? true : false
     }
 }
