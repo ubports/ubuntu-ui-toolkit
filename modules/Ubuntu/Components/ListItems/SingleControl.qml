@@ -43,7 +43,7 @@ import Ubuntu.Components.ListItems 0.1
     \b{This component is under heavy development.}
 */
 // TODO: Add more examples when more types of controls become available.
-Base {
+Empty {
     id: singleControlListItem
 
     height: control ? control.height + control.anchors.topMargin + control.anchors.bottomMargin : undefined
@@ -52,8 +52,6 @@ Base {
       \preliminary
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
-
-      FIXME: all mouse events of the list item will also be forwarded to the control.
      */
     property Item control
 

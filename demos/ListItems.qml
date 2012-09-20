@@ -246,7 +246,7 @@ Template {
                         text: "More to come..."
                     }
 
-                    ListItem.Base {
+                    ListItem.Empty {
                         id: withProgress
                         height: progress.height + progress.anchors.topMargin + progress.anchors.bottomMargin
                         ProgressBar {

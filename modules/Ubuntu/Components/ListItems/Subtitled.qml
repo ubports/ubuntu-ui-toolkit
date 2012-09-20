@@ -64,7 +64,7 @@ import Ubuntu.Components 0.1
         }
     \endqml
 */
-StandardBase {
+Base {
     id: subtitledListItem
     height: Math.max(middleVisuals.height, 48)
 
@@ -85,8 +85,9 @@ StandardBase {
     Item  {
         id: middleVisuals
         anchors {
-            left: __leftAnchor
-            right: __rightAnchor
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
         }
         height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 
