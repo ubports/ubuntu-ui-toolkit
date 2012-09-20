@@ -118,18 +118,19 @@ AbstractButton {
       it will return false only when:
        + if there is a section.delegate below this item (as separator line and section
          delegate should not both appear)
-       + if this is the final item in the list, and no ListView.footer is set (to encourage
-         use of ListView.footer)
+       + if this is the final item in the list, and ListView.footer is set (again as
+         separator line won't look well with footer below it)
      */
     function __showSeparator() {
         // if we're not in ListView, always show bottom separator line
         if (ListView.view !== null) {
 
-            // if we're last item in ListView and footer is not set, show line
-            if (index === ListView.view.model.count - 1 && !ListView.footer) return false;
+            // if we're last item in ListView, show separator if no footer is defined
+            // and hide it if footer defined
+            if (index === ListView.view.model.count - 1) return !ListView.footer;
 
-            // if section.delegate between this item and the next
-            if (ListView.section !== ListView.nextSection) return false;
+            // if section.delegate is positioned between this item and the next
+            else if (ListView.section !== ListView.nextSection) return false;
         }
         return true;
     }
