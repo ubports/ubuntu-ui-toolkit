@@ -86,7 +86,6 @@ AnimatedItem {
     QtObject {
         id: internals
         property bool active: indicator.running && indicator.enabled
-        property real ratioX: (animation.sourceSize.width / 2 - center.sourceSize.width / 2)
         // preliminary theming introduced to ease styling introduction
         property url centralSource: Qt.resolvedUrl("artwork/ActivityIndicatorCentre.png")
         property url movingSource: Qt.resolvedUrl("artwork/ActivityIndicatorMoving.png")
