@@ -60,9 +60,7 @@ function __initPage(pageWrapper) {
         }
     }
 
-    if (pageObject.__isPage) {
-        pageObject.pageStack = pageWrapper.pageStack;
-    }
+    updatePageStack(pageWrapper)
 
     return pageObject;
 }
@@ -102,7 +100,10 @@ function updateParent(pageWrapper) {
 }
 
 function updatePageStack(pageWrapper) {
-    if (pageWrapper.object) {
-        pageWrapper.object.pageStack = pageWrapper.pageStack;
+    var pageObject = pageWrapper.object
+    if (pageObject) {
+        if (pageObject.__isPage) {
+            pageObject.pageStack = pageWrapper.pageStack;
+        }
     }
 }
