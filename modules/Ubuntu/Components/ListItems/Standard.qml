@@ -139,9 +139,7 @@ Empty {
         Item {
             id: controlContainer
             property Item control
-            // use the width of the control if there is (possibly elided) text,
-            // or full width available if there is no text.
-            width: control ? control.width : undefined
+            width: control ? control.width : 0
             anchors {
                 right: parent.right
                 top: parent.top
