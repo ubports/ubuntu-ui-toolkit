@@ -88,16 +88,6 @@ Item {
      */
     property Item currentPage
 
-    /*!
-      \internal
-      This allows to define the pages inside the PageStack without showing them.
-     */
-    children: pages.children
-    Item {
-        id: pages
-        visible: false
-    }
-
     // FIXME: After switching to QtQuick2, use a var stack property and instead of
     // Stack.stack in this class we can refer to that property.
     //property var stack: new Stack.Stack()
