@@ -36,7 +36,8 @@ Template {
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
-                    "Value selector", "Subtitled", "Controls", "Grouping & caption"]
+                    "Value selector", "Subtitled", "Controls", "Grouping & caption",
+                    "List with Sections"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
@@ -80,6 +81,36 @@ Template {
                     ListItem.Standard {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
+                    }
+                }
+            }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "List with Sections"
+                Column {
+                    width: 250
+
+                    ListModel {
+                        id: testModel
+                        ListElement { name: "Banana" }
+                        ListElement { name: "Orange"; type: "fruit"}
+                        ListElement { name: "Apple"; type: "fruit" }
+                        ListElement { name: "Tomato"; type: "fruit" }
+
+                        ListElement { name: "Carrot"; type: "veg" }
+                        ListElement { name: "Potato"; type: "veg" }
+                    }
+
+                    ListView {
+                        model: testModel
+                        width: parent.width
+                        height: 60*count
+                        delegate: ListItem.Standard {
+                            text: name
+                        }
+                        header: ListItem.Header { text: "List with Sections" }
+                        section.property: "type"
+                        section.criteria: ViewSection.FullString
+                        section.delegate: ListItem.Header { text: section }
                     }
                 }
             }
