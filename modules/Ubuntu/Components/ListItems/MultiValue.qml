@@ -58,7 +58,6 @@ Base {
      */
     property variant values
 
-
     Item {
         height: label.height + valueLabel.height
         anchors {
