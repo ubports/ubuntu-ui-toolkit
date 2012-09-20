@@ -37,19 +37,20 @@ Item {
 
     Image {
         id: icon
-        opacity: parent.enabled ? 1.0 : 0.5
+        opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: parent.leftRightIconMargin
+            leftMargin: iconVisual.leftRightIconMargin
         }
         height: Math.min(sourceSize.height, iconVisual.height - 2*iconVisual.topBottomIconMargin)
     }
 
     BorderImage {
-        opacity: parent.enabled ? 1.0 : 0.5
-        visible: parent.hasFrame
+        id: iconFrame
+        opacity: iconVisual.enabled ? 1.0 : 0.5
+        visible: iconVisual.hasFrame
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         border {
