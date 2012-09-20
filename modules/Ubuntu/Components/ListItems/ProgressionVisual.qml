@@ -19,18 +19,21 @@ import QtQuick 1.1
 // Internal helper class for the visuals of
 // the progression symbol.
 Item {
+    id: progressionVisual
     width: visible ? 48 : 0
 
     property bool showSplit: false
 
     Image {
+        id: progressIcon
         source: "artwork/ListItemProgressionArrow.png"
         anchors.centerIn: parent
         opacity: enabled ? 1.0 : 0.5
     }
 
     Image {
-        visible: parent.showSplit
+        id: progressionDivider
+        visible: progressionVisual.showSplit
         anchors {
             top: parent.top
             bottom: parent.bottom
