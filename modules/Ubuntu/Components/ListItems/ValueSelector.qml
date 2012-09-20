@@ -88,8 +88,6 @@ Empty {
      */
     property bool expanded: false
 
-    __highlighted: false
-
     Column {
         id: column
         anchors {

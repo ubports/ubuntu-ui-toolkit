@@ -87,17 +87,17 @@ AbstractButton {
     property bool selected: false
 
     /*!
-      \internal
-      Highlight the list item.
-      This can be set to false to disable highlighting of the full list item
+      \preliminary
+      Highlight the list item when it is pressed.
+      This is used to disable the highlighting of the full list item
       when custom highlighting needs to be implemented (for example in
       ListItem.Standard which can have a split).
-     */
-    property bool __highlighted: selected || pressed
+    */
+    property bool highlightWhenPressed: true
 
     Rectangle {
         id: highlight
-        visible: emptyListItem.__highlighted
+        visible: emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)
         anchors.fill: parent
         color: "white"
         opacity: 0.7
