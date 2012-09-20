@@ -46,9 +46,6 @@ import QtQuick 1.1
 AnimatedItem {
     id: indicator
 
-    width: animation.sourceSize.width
-    height: animation.sourceSize.height
-
     /*!
        \preliminary
        Presents whether there is activity to be visualized or not. The default value is false.
@@ -57,69 +54,42 @@ AnimatedItem {
     */
     property bool running: false
 
-    /*!
-       \preliminary
-       Signal emitted when the indicator gets activated.
-    */
-    signal started
-
-    /*!
-       \preliminary
-       Signal emitted when the indicator gets deactivated.
-    */
-    signal finished
-
-    // Yet we'll do the indication with image rotation animation
-    // till we get the proper graphics and description from UX
+    // use one of the image size for the implicit size
+    implicitWidth: center.sourceSize.width
+    implicitHeight: center.sourceSize.height
+    // embedd visuals
     Image {
-        id: animation
+        id: center
         anchors.fill: parent
-        source: internals.source
+
+        fillMode: Image.PreserveAspectFit
+        source: internals.centralSource
         smooth: internals.smooth
-        visible: indicator.running && indicator.enabled
+        visible: internals.active
 
-        NumberAnimation on rotation {
-            running: animation.visible & indicator.onScreen
-            from: 0; to: 360; loops: Animation.Infinite
-            duration: internals.animationDuration
+        Image {
+            id: animation
+            fillMode: Image.PreserveAspectFit
+            anchors.fill: parent
+            source: internals.movingSource
+            smooth: internals.smooth
+            visible: internals.active
+            NumberAnimation on rotation {
+                running: internals.active & indicator.onScreen
+                from: 360; to: 0; loops: Animation.Infinite
+                duration: internals.animationDuration
+            }
         }
-
-
-        states: [
-            State {
-                name: "on"
-                when: indicator.running
-            },
-            State {
-                name: ""
-                PropertyChanges {
-                    target: animation
-                    rotation: 0.0
-                }
-            }
-
-        ]
-        transitions: [
-            Transition {
-                from: ""
-                to: "on"
-                ScriptAction { script: indicator.started() }
-            },
-            Transition {
-                from: "*"
-                to: ""
-                ScriptAction { script: indicator.finished() }
-            }
-
-        ]
     }
 
     // internal properties
     QtObject {
         id: internals
+        property bool active: indicator.running && indicator.enabled
+        property real ratioX: (animation.sourceSize.width / 2 - center.sourceSize.width / 2)
         // preliminary theming introduced to ease styling introduction
-        // TODO: image is not the final one, however might change with theming
-        property url source: Qt.resolvedUrl("artwork/ActivityIndicator.png")
+        property url centralSource: Qt.resolvedUrl("artwork/ActivityIndicatorCentre.png")
+        property url movingSource: Qt.resolvedUrl("artwork/ActivityIndicatorMoving.png")
         property bool smooth: true
         property int animationDuration: 1000
     }
