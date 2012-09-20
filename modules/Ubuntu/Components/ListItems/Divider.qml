@@ -25,7 +25,9 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 DividerBase {
+    id: listItemDivider
     height: image.implicitHeight
+
     Image {
         id: image
         source: "artwork/ListItemDivider6px.png"
