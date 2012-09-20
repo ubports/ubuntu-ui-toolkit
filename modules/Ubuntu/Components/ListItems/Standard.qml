@@ -58,7 +58,8 @@ import Ubuntu.Components 0.1
 */
 Empty {
     id: listItem
-    height: 25
+//    height: 25
+    height: 48
 
     /*!
       \preliminary
@@ -80,6 +81,13 @@ Empty {
       \qmlproperty bool iconFrame
      */
     property alias iconFrame: controlArea.iconFrame
+
+    /*!
+      \preliminary
+      The margins on left and right side of the icon
+      \qmlproperty real leftRightIconMargin
+     */
+    property alias leftRightIconMargin: controlArea.leftRightIconMargin
 
     /*!
       \preliminary

@@ -39,20 +39,26 @@ Empty {
 
     /*!
       \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
-
-    /*!
-      \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
     property alias iconFrame: iconHelper.hasFrame
 
+    /*!
+      \preliminary
+      The margins on left and right side of the icon
+      \qmlproperty real leftRightIconMargin
+     */
+    property alias leftRightIconMargin: iconHelper.leftRightIconMargin
+
+    /*!
+      \preliminary
+      Show or hide the progression symbol.
+     */
+    property bool progression: false
+
     IconVisual {
         id: iconHelper
-        anchors.leftMargin: 20
     }
 
     /*!
