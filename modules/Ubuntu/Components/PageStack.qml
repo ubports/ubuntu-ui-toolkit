@@ -23,6 +23,8 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
         The page on top of the stack is the visible one.
+        Any non-Page Item that you want to use with PageStack should be created
+        with its visible property set to false.
 
     Example:
     \qml
@@ -58,6 +60,7 @@ import "stack.js" as Stack
             Rectangle {
                 id: rect
                 anchors.fill: parent
+                visible: false
             }
         }
     \endqml
@@ -87,16 +90,6 @@ Item {
       The currently active page
      */
     property Item currentPage
-
-    /*!
-      \internal
-      This allows to define the pages inside the PageStack without showing them.
-     */
-    children: pages.children
-    Item {
-        id: pages
-        visible: false
-    }
 
     // FIXME: After switching to QtQuick2, use a var stack property and instead of
     // Stack.stack in this class we can refer to that property.
