@@ -71,13 +71,6 @@ Empty {
     property alias iconSource: selectorMain.iconSource
 
     /*!
-      \preliminary
-      Show or hide the frame around the icon
-      \qmlproperty bool iconFrame
-     */
-    property alias iconFrame: selectorMain.iconFrame
-
-    /*!
       \internal
       The margins on the left side of the icon.
       \qmlproperty real leftIconMargin
