@@ -13,13 +13,9 @@ public:
     Style *q_ptr;
 
     QDeclarativeComponent *style;
-    QDeclarativeComponent *delegate;
-    QList<QObject*> data;
-    // by default it is the style className, can be modified with styleClass property
-    QString styleClass;
-    QString instanceId;
+    QDeclarativeComponent *visuals;
+    QList<Style*> data;
     QString selector;
-
 };
 
 #endif // STYLE_P_H

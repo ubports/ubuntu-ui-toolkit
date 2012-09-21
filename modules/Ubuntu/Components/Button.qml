@@ -15,7 +15,6 @@
  */
 
 import QtQuick 1.1
-import Qt.labs.shaders 1.0
 
 /*!
     \qmlclass Button
@@ -92,53 +91,4 @@ ButtonWithForeground {
         return ((r*212)+(g*715)+(b*73))/1000/255;
     }
 
-    Item {
-        z: -1
-        anchors.fill: parent
-
-        // FIXME: think of using distance fields
-        BorderImage {
-            id: shape
-
-            anchors.fill: parent
-
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: styleItem.borderShape//button.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            border.left: 18; border.top: 15
-            border.right: 18; border.bottom: 15
-        }
-
-        // FIXME: might become a paper texture
-        Rectangle {
-            id: base
-
-            anchors.fill: shape
-            color: button.pressed ? button.pressedColor : button.color
-
-        }
-
-        ButtonMaskEffect {
-            anchors.fill: shape
-            gradientStrength: button.pressed ? 0.0 : 1.0
-            Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
-
-            mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
-            base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
-        }
-
-        // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
-        BorderImage {
-            id: border
-
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: styleItem.borderImage
-            //source: if (button.darkBorder) return button.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png"
-            //        else return button.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png"
-            border.left: 14; border.top: 17
-            border.right: 15; border.bottom: 18
-        }
-    }
 }

@@ -15,9 +15,22 @@
  */
 
 import QtQuick 1.1
+import Ubuntu.Components 0.1
 
-Item {
-    property color color
-    property url borderShape
-    property url borderImage
+Template {
+    title: "Theming"
+
+    Column {
+        spacing: 30
+
+        TemplateRow {
+            title: "Standard"
+
+            Button {
+                styleClass: "button"
+                text: "Call"
+            }
+        }
+
+    }
 }

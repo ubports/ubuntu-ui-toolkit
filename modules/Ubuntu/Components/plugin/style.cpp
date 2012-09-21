@@ -29,13 +29,12 @@
 StylePrivate::StylePrivate(Style *qq) :
     q_ptr(qq),
     style(0),
-    delegate(0)
+    visuals(0)
 {
 }
 
 /*=============================================================================
 =============================================================================*/
-
 
 Style::Style(QObject *parent) :
     QObject(parent),
@@ -53,39 +52,19 @@ void Style::classBegin()
 
 void Style::componentComplete()
 {
-    // update target if set
-    //Q_D(Style);
-    //d->target = ThemeEngine::instance()->lookupTarget(d->instanceId);
 }
 
-
-QString Style::styleClass() const
-{
-    Q_D(const Style);
-    return d->styleClass;
-}
-void Style::setStyleClass(const QString &styleClass)
+Style::StyleTypes Style::styleType()
 {
     Q_D(Style);
-    if (styleClass != d->styleClass) {
-        d->styleClass = styleClass;
-        emit styleChanged();
-    }
+    StyleTypes ret = 0;
+    if (d->style)
+        ret |= ConfigurationStyle;
+    if (d->visuals)
+        ret |= VisualStyle;
+    return ret;
 }
 
-QString Style::instanceId() const
-{
-    Q_D(const Style);
-    return d->instanceId;
-}
-void Style::setInstanceId(const QString &instanceId)
-{
-    Q_D(Style);
-    if (instanceId != d->instanceId) {
-        d->instanceId = instanceId;
-        emit styleChanged();
-    }
-}
 
 QString Style::selector() const
 {
@@ -101,7 +80,7 @@ void Style::setSelector(const QString &selector)
     }
 }
 
-QDeclarativeComponent *Style::style() const
+QDeclarativeComponent *Style::style()
 {
     Q_D(const Style);
     return d->style;
@@ -115,24 +94,25 @@ void Style::setStyle(QDeclarativeComponent *style)
     }
 }
 
-QDeclarativeComponent *Style::delegate() const
+QDeclarativeComponent *Style::visuals()
 {
     Q_D(const Style);
-    return d->delegate;
+    return d->visuals;
 }
-void Style::setDelegate(QDeclarativeComponent *delegate)
+
+void Style::setVisuals(QDeclarativeComponent *visuals)
 {
     Q_D(Style);
-    if (d->delegate != delegate) {
-        d->delegate = delegate;
+    if (d->visuals != visuals) {
+        d->visuals = visuals;
         emit styleChanged();
     }
 }
 
-QDeclarativeListProperty<QObject> Style::data()
+QDeclarativeListProperty<Style> Style::data()
 {
     Q_D(Style);
-    return QDeclarativeListProperty<QObject>(this, d->data);
+    return QDeclarativeListProperty<Style>(this, d->data);
 }
 
 #include "moc_style.cpp"

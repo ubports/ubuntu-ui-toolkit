@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QVector>
 
 class Style;
 class QDeclarativeEngine;
@@ -28,9 +29,27 @@ class QDeclarativeItem;
 class QDeclarativeComponent;
 class StyledItem;
 
-typedef QHash<QString, Style*> StyleHash;
 typedef QHash<QString, StyledItem*> InstanceHash;
-typedef QHashIterator<QString, StyledItem*> InstanceHashIterator;
+
+class StylePathNode {
+    public:
+    enum Relationship {Child, Descendant, Sibling};
+    StylePathNode(const QString &styleClass, const QString &styleId, Relationship relationship);
+    bool operator==(const StylePathNode &other);
+    QString styleClass;
+    QString styleId;
+    Relationship relationship;
+};
+typedef QList<StylePathNode> StylePath;
+
+class StyleComponent {
+    public:
+    StyleComponent(StylePath stylePath, Style *style);
+    StylePath stylePath;
+    Style *style;
+    bool operator==(const StyleComponent &other);
+};
+typedef QList<StyleComponent> StyleCache;
 
 class ThemeEngine : public QObject
 {
@@ -40,29 +59,30 @@ public:
     ~ThemeEngine();
 
     static ThemeEngine* instance();
+    static QDeclarativeEngine *engine();
     static void initialize(QDeclarativeEngine *engine);
     static Style *lookupStyle(StyledItem *item);
     static bool registerInstanceId(StyledItem *item, const QString &newId);
 
-    //utility functions
-    static void styledItemPropertiesToSelector(StyledItem *item);
-    static void styledItemSelectorToProperties(StyledItem *item);
 signals:
     void themeChanged();
 
 public slots:
+    void loadTheme(const QString &themeFile);
 private slots:
     void completeThemeLoading();
 
 private:
-    Style *findStyle(const QString &key);
-    void loadTheme(const QString &themeFile);
-    void buildStyleCache(QObject *style);
-    QString prepareStyleSelector(Style *style);
+    void buildStyleCache(QObject *theme);
+    QList<StylePath> parseSelector(Style *style, const StylePath &parentPath) const;
+    QString stylePathToString(const StylePath &path) const;
+    StylePath getStylePath(const StyledItem *obj) const;
+    StyleComponent match(const StylePath &srcStylePath);
 
 private: //members
     QDeclarativeEngine *m_engine;
-    StyleHash m_styleCache;
+    StyleCache m_styleCache;
+    QVector<int> m_maybeMatchList;
     InstanceHash m_instanceCache;
     // needed for theme loading
     QDeclarativeComponent *themeComponent;

@@ -27,7 +27,6 @@ class StyledItemPrivate {
 
 public:
     StyledItemPrivate(StyledItem *qq);
-    //~StyledItemPrivate(){}
 
     StyledItem *q_ptr;
     bool privateStyle;
@@ -35,13 +34,16 @@ public:
     Style *activeStyle;
     QObject *styleItem;
     QString styleClass;
-    QString localSelector;
     QString instanceId;
 
     // style identification
-    QString hierarchy;
+    QString styleKey;
 
-    void updateCurrentStyle();
+    // internal members
+    QDeclarativeContext *componentContext;
+    QDeclarativeItem *visualsItem;
+
+    void updateCurrentStyle(bool forceUpdate = false);
     void _q_reloadTheme();
 
 };

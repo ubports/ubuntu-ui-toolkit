@@ -32,9 +32,8 @@ class StyledItem : public QDeclarativeItem
 
     Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
-    Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
-    Q_PROPERTY(Style *style READ activeStyle WRITE setActiveStyle NOTIFY styleChanged FINAL)
     Q_PROPERTY(QObject *styleItem READ styleItem NOTIFY styleChanged)
+    Q_PROPERTY(QDeclarativeItem *visualsItem READ visualsItem  NOTIFY styleChanged)
 
 public:
     StyledItem(QDeclarativeItem *parent = 0);
@@ -53,11 +52,10 @@ private: // getter/setter
     void setInstanceId(const QString &instanceId);
     QString styleClass() const;
     void setStyleClass(const QString &styleClass);
-    QString selector() const;
-    void setSelector(const QString &selector);
     Style *activeStyle() const;
     void setActiveStyle(Style *style);
     QObject *styleItem() const;
+    QDeclarativeItem *visualsItem() const;
 
 private: //members
     Q_DECLARE_PRIVATE(StyledItem)

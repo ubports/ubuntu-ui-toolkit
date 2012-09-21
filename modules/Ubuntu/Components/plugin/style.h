@@ -18,31 +18,40 @@
 #define STYLE_H
 
 #include <QObject>
-#include <qdeclarative.h>
 #include <QStringList>
+#include <qdeclarative.h>
 #include <QtDeclarative/QDeclarativeItem>
 #include <QtDeclarative/QDeclarativeParserStatus>
 
-class StylePrivate;
+#include <QLibrary>
+
+class StylePrivate; class QLibrary;
 class QDeclarativeComponent;
 class Style : public QObject, public QDeclarativeParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
-    Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
-    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
+    Q_PROPERTY(QDeclarativeComponent *visuals READ visuals WRITE setVisuals NOTIFY styleChanged)
+    Q_PROPERTY(QDeclarativeListProperty<Style> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
+    Q_FLAGS(StyleType StyleTypes)
 public:
+    enum StyleType {
+        ConfigurationStyle = 0x01,
+        VisualStyle = 0x02
+    };
+    Q_DECLARE_FLAGS(StyleTypes, StyleType)
+
     Style(QObject *parent = 0);
     ~Style();
 
     void classBegin();
     void componentComplete();
+
+    StyleTypes styleType();
 
 signals:
     void styleChanged();
@@ -50,17 +59,13 @@ signals:
 public slots:
 
 public: //getter/setters
-    QString styleClass() const;
-    void setStyleClass(const QString &styleClass);
-    QString instanceId() const;
-    void setInstanceId(const QString &instanceId);
     QString selector() const;
     void setSelector(const QString &selector);
-    QDeclarativeComponent *style() const;
+    QDeclarativeComponent *style();
     void setStyle(QDeclarativeComponent *style);
-    QDeclarativeComponent *delegate() const;
-    void setDelegate(QDeclarativeComponent *delegate);
-    QDeclarativeListProperty<QObject> data();
+    QDeclarativeComponent *visuals();
+    void setVisuals(QDeclarativeComponent *visuals);
+    QDeclarativeListProperty<Style> data();
 
 private:
     Q_DISABLE_COPY(Style)
@@ -68,8 +73,10 @@ private:
     friend class ThemeEngine;
     friend class StyledItem;
     QScopedPointer<StylePrivate> d_ptr;
-
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Style::StyleTypes)
+
 
 QML_DECLARE_TYPE(Style)
 

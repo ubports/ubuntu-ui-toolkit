@@ -41,18 +41,21 @@
 StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     q_ptr(qq),
     privateStyle(false),
+    componentCompleted(false),
     activeStyle(0),
-    styleItem(0)
+    styleItem(0),
+    componentContext(0),
+    visualsItem(0)
 {
 }
 
-void StyledItemPrivate::updateCurrentStyle()
+void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 {
     Q_Q(StyledItem);
     // do not do anything till the component gets complete?
     //if (!componentCompleted) return;
 
-    bool emitSignal = false;
+    bool styleChanged = forceUpdate;
 
     // in case of private style is in use, no need to change anything
     if (!privateStyle) {
@@ -61,16 +64,51 @@ void StyledItemPrivate::updateCurrentStyle()
         if (activeStyle != tmp) {
             styleItem = 0;
             activeStyle = tmp;
-            emitSignal = true;
+            styleChanged = true;
         }
     }
-    if (!styleItem && activeStyle) {
-        QDeclarativeContext *context = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
-        context->setContextProperty("control", q);
-        styleItem = activeStyle->style()->create(context);
+    if (styleChanged && activeStyle) {
+        //styleItem = activeStyle->style()->create(componentContext);
+        // check if we have the context
+        if (!componentContext) {
+            componentContext = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
+            componentContext->setContextProperty("control", q);
+        }
+
+        if (!styleItem && activeStyle->style()) {
+            styleItem = activeStyle->style()->create(componentContext);
+        }
+
+        // do not mandate yet the existence of visuals
+        if (!visualsItem) {
+            QDeclarativeComponent *visuals = activeStyle->visuals();
+            if (!visuals) {
+                // use meta class name to search for the visuals selector
+                qDebug() << "YUMM";
+            }
+            if (visuals) {
+                // create visuals component
+                visualsItem = qobject_cast<QDeclarativeItem*>(visuals->create(componentContext));
+                if (visualsItem) {
+                    visualsItem->setParentItem(q);
+
+                    // If style item contains a property "contentItem" that points
+                    // to an item, reparent all children into it:
+                    QVariant contentVariant = visualsItem->property("contentItem");
+                    QDeclarativeItem *contentItem = qvariant_cast<QDeclarativeItem *>(contentVariant);
+                    if (contentItem) {
+                        foreach (QObject *child, q->children()) {
+                            QDeclarativeItem *childItem = qobject_cast<QDeclarativeItem *>(child);
+                            if (childItem)
+                                childItem->setParentItem(contentItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    if (emitSignal)
+    if (styleChanged)
         emit q->styleChanged();
 }
 
@@ -102,12 +140,6 @@ void StyledItem::componentComplete()
     Q_D(StyledItem);
     d->componentCompleted = true;
 
-    if (!d->privateStyle) {
-        // check if the selector is built, if not, build it!
-        if (d->localSelector.isEmpty())
-            ThemeEngine::styledItemPropertiesToSelector(this);
-    }
-
     // activate style
     d->updateCurrentStyle();
 }
@@ -124,7 +156,6 @@ void StyledItem::setInstanceId(const QString &instanceId)
         // this might not be necessary... let's see
         if (ThemeEngine::registerInstanceId(this, instanceId)) {
             d->instanceId = instanceId;
-            ThemeEngine::styledItemPropertiesToSelector(this);
             d->updateCurrentStyle();
         } else {
             qWarning() << "instance" << instanceId << "already registered!";
@@ -142,22 +173,6 @@ void StyledItem::setStyleClass(const QString &styleClass)
     Q_D(StyledItem);
     if (d->styleClass != styleClass) {
         d->styleClass = styleClass;
-        ThemeEngine::styledItemPropertiesToSelector(this);
-        d->updateCurrentStyle();
-    }
-}
-
-QString StyledItem::selector() const
-{
-    Q_D(const StyledItem);
-    return d->localSelector;
-}
-void StyledItem::setSelector(const QString &selector)
-{
-    Q_D(StyledItem);
-    if (d->localSelector != selector) {
-        d->localSelector = selector;
-        ThemeEngine::styledItemSelectorToProperties(this);
         d->updateCurrentStyle();
     }
 }
@@ -176,16 +191,21 @@ void StyledItem::setActiveStyle(Style *style)
         d->privateStyle = (style != 0);
 
         d->activeStyle = style;
-        d->updateCurrentStyle();
-        emit styleChanged();
+        d->updateCurrentStyle(true);
     }
 }
 
 QObject *StyledItem::styleItem() const
 {
     Q_D(const StyledItem);
-    qDebug() << d->styleClass << d->componentCompleted;
     return d->styleItem;
 }
+
+QDeclarativeItem *StyledItem::visualsItem() const
+{
+    Q_D(const StyledItem);
+    return d->visualsItem;
+}
+
 
 #include "moc_styleditem.cpp"

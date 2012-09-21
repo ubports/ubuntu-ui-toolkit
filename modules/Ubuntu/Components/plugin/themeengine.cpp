@@ -30,6 +30,31 @@
 
 Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
 
+/*=============================================================================
+=============================================================================*/
+
+StylePathNode::StylePathNode(const QString &styleClass, const QString &styleId, Relationship relationship) :
+    styleClass(styleClass), styleId(styleId), relationship(relationship)
+{
+}
+
+bool StylePathNode::operator==(const StylePathNode &other)
+{
+    return styleClass == other.styleClass && styleId == other.styleId && relationship == other.relationship;
+}
+
+StyleComponent::StyleComponent(StylePath stylePath, Style *style) :
+    stylePath(stylePath), style(style)
+{
+}
+
+bool StyleComponent::operator==(const StyleComponent &other)
+{
+    return stylePath == other.stylePath;
+}
+
+/*=============================================================================
+=============================================================================*/
 
 ThemeEngine::ThemeEngine(QObject *parent) :
     QObject(parent),
@@ -47,6 +72,12 @@ ThemeEngine* ThemeEngine::instance()
     return themeEngine();
 }
 
+QDeclarativeEngine *ThemeEngine::engine()
+{
+    return themeEngine()->m_engine;
+}
+
+
 void ThemeEngine::initialize(QDeclarativeEngine *engine)
 {
     ThemeEngine *theme = themeEngine();
@@ -54,60 +85,23 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     // load default theme, and build hash tree
     //theme->loadTheme("/usr/lib/qt4/imports/Ubuntu/Components/DefaultTheme.qml");
     theme->loadTheme("modules/Ubuntu/Components/DefaultTheme.qml");
-    // load active theme
-    theme->loadTheme("demos/ActiveTheme.qml");
     // TODO: watch theme folders to detect system theme changes
 }
 
 Style *ThemeEngine::lookupStyle(StyledItem *item)
 {
     ThemeEngine *theme = themeEngine();
-    StyledItemPrivate *pitem = item->d_func();
-    Style *ret = 0;
 
-    // check whether we have the hierarchy set
-    if (pitem->hierarchy.isEmpty()) {
-        // build hierarchy now
-        pitem->hierarchy = pitem->localSelector;
-        for (QDeclarativeItem *pl = item->parentItem(); pl; pl = pl ->parentItem()) {
-            StyledItem *plItem = qobject_cast<StyledItem*>(pl);
-            if (plItem) {
-                // prepend parent's localSelector
-                //pitem->hierarchy.prepend('.');
-                if (plItem->d_ptr->hierarchy.isEmpty())
-                    // use localSelector
-                    pitem->hierarchy.prepend(plItem->d_ptr->localSelector);
-                else {
-                    // use parent's hierarchy to speed up
-                    pitem->hierarchy.prepend(plItem->d_ptr->hierarchy);
-                    // and stop here
-                    break;
-                }
-            }
-        }
-        // we have the hierarchy, now find a style for it and fix the hierarchy till we find a style
-        ret = theme->findStyle(pitem->hierarchy);
-        // TODO: rework beneath
-        while (!ret && !pitem->hierarchy.isEmpty()) {
-            // the key is bad, cut from the top till we have what
-            int sepIndex = pitem->hierarchy.indexOf('.');
-            if (sepIndex >= 0) {
-                pitem->hierarchy = pitem->hierarchy.right(
-                            pitem->hierarchy.length() - sepIndex - 1);
-                // and try to find a style with this
-                ret = theme->findStyle(pitem->hierarchy);
-            } else {
-                // there's nothing to cut, so clear the hierarchy, the style was not found
-                pitem->hierarchy = QString();
-            }
-        }
+    if (theme->m_styleCache.isEmpty())
+        return 0;
 
-    } else {
-        // hierarchy is built and there was a style found based on that, so just lookup for the match
-        ret = theme->findStyle(pitem->hierarchy);
-    }
+    StylePath path = theme->getStylePath(item);
+    qDebug() << __FUNCTION__ << theme->stylePathToString(path);
+    const StyleComponent styleComponent = theme->match(path);
 
-    return ret;
+    qDebug() << "Component:" << theme->stylePathToString(path)
+             << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
+    return styleComponent.style;
 }
 
 /*!
@@ -125,8 +119,7 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
         // remove the previous occurence
         engine->m_instanceCache.remove(item->d_ptr->instanceId);
     } else {
-        InstanceHash::const_iterator i = engine->m_instanceCache.find(newId);
-        if (i.key() == newId)
+        if (engine->m_instanceCache.contains(newId))
             ret = false;
         else {
             // remove the previous occurence
@@ -140,19 +133,10 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 }
 
 
-Style *ThemeEngine::findStyle(const QString &key)
-{
-    StyleHash::const_iterator sh = m_styleCache.find(key);
-    if ((sh != m_styleCache.end()) && (sh.key() == key))
-        return sh.value();
-    return 0;
-}
-
 
 void ThemeEngine::loadTheme(const QString &themeFile)
 {
     themeComponent = new QDeclarativeComponent(m_engine, QUrl::fromLocalFile(themeFile));
-    // TODO: do this async!!
     if (themeComponent->isLoading())
         QObject::connect(themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
                          this, SLOT(completeThemeLoading()));
@@ -165,119 +149,251 @@ void ThemeEngine::completeThemeLoading()
     if (!themeComponent->isError()) {
         QObject *themeObject = themeComponent->create();
         if (themeObject) {
-            // parse its children for Styles
             buildStyleCache(themeObject);
 
-            // DEBUG: print theme hash
+            // DEBUG: print theme cache
 
-            QHashIterator<QString, Style*> sh(m_styleCache);
+            QListIterator<StyleComponent> sh(m_styleCache);
             while (sh.hasNext()) {
-                sh.next();
-                qDebug() << "Style" << sh.key() << "::" << sh.value();
+                qDebug() << "Style" << stylePathToString(sh.next().stylePath);
             }
+
 
         }
     } else {
         qWarning() << themeComponent->errors();
     }
+
+    // resize match list
+    m_maybeMatchList.resize(m_styleCache.size());
+
     // reset component
     themeComponent = 0;
     // emit theme changed signal so StyledItems get updated
     emit themeChanged();
 }
 
-// parses theme for style objects
-void ThemeEngine::buildStyleCache(QObject *style)
+// parses theme for style objects and builds up the cache from it
+void ThemeEngine::buildStyleCache(QObject *theme)
 {
-    QList<Style*> styles = style->findChildren<Style*>();
-    QString selector;
-    foreach (Style *pl, styles) {
-        // check if we have the style registered already
-        selector = prepareStyleSelector(pl);
-        m_styleCache.insert(selector, pl);
-        buildStyleCache(pl);
-        /*
-        // add the style to the cache appending states
-        foreach (const QString &state, pl->d_ptr->states) {
-            m_styleCache.insert(QString("%1:%2").arg(selector).arg(state), pl);
-        }
-        */
+    // parse its children for Styles
+    QList<Style*> styles = theme->findChildren<Style*>();
+
+    // the hierarchy is not set well, as all child-styles under other style
+    // elements are listed under themeObject; therefore we need to check
+    // whether each style element is not having a Style as its parent
+    foreach (Style *style, styles) {
+        if (qobject_cast<Style*>(style->parent()))
+            continue;
+
+        if (style->d_ptr->selector.isEmpty())
+            continue;
+        //StylePath basePath;
+        QList<StylePath> pathList = parseSelector(style, StylePath());
+        foreach (const StylePath &path, pathList)
+            m_styleCache.append(StyleComponent(path, style));
     }
 }
 
-/*
-  Prepares the selector for the theme engine based on the hierarchy, class and instanceId.
-  This selector will be used by the theme engine style cache.
-*/
-QString ThemeEngine::prepareStyleSelector(Style *style)
+/**
+  Parses and returns the path described by \a selector as a list of
+  styleClass and styleId pairs.
+  Current support (ref: www.w3.org/TR/selector.html):
+    - Type selectors, e.g: "Button"
+    - Descendant selectors, e.g: "Dialog Button"
+    - Child selectors, e.g: "Dialog > Button"
+    - ID selectors, e.g: "Button#mySpecialButton"
+    - Grouping, e.g: "Button#foo, Checkbox, #bar"
+  */
+QList<StylePath> ThemeEngine::parseSelector(Style *style, const StylePath &parentPath) const
 {
-    QString selector = style->d_ptr->selector;
-    if (selector.isEmpty())
-        selector = style->d_ptr->styleClass;
-    if (selector.isEmpty()) {
-        // there's no subclass, use Style meta-class name
-        selector = style->metaObject()->className();
-        selector = selector.left(selector.indexOf("Style_QMLTYPE"));
-    }
-    if (!selector.startsWith('.'))
-        selector.prepend('.');
+    QList<StylePath> pathList;
+    QStringList groupList = style->d_ptr->selector.split(",");
+    StylePathNode::Relationship nextRelationShip = StylePathNode::Descendant;
 
-    // add instanceId
-    if (!style->d_ptr->instanceId.isEmpty()) {
-        selector.append('#');
-        selector.append(style->d_ptr->instanceId);
+    foreach (QString group, groupList) {
+        StylePath stylePath(parentPath);
+        QStringList tokens = group.simplified().split(QRegExp("\\b"));
+
+        foreach (QString token, tokens) {
+            if (token.isEmpty() || token == " ")
+                continue;
+            if (token == ">") {
+                nextRelationShip = StylePathNode::Child;
+            } else {
+                QString styleClass;
+                QString styleId;
+                int idIndex = token.indexOf('#');
+                if (idIndex != -1) {
+                    styleId = token.mid(idIndex + 1);
+                    if (idIndex > 1 && token[0] == '.')
+                        styleClass = token.mid(1, idIndex - 1);
+                } else if (token[0] == '.') {
+                    styleClass = token.mid(1);
+                } else
+                    styleClass = token;
+                if (!styleClass.isEmpty() || !styleId.isEmpty())
+                    stylePath.append(StylePathNode(styleClass, styleId, nextRelationShip));
+                nextRelationShip = StylePathNode::Descendant;
+            }
+        }
+        pathList.append(stylePath);
+        // check its children to the selector
+        foreach (Style *child, style->d_ptr->data)
+            pathList << parseSelector(child, stylePath);
     }
-    // add the rest of the style parents recursively
-    for (QObject *parent = style->parent(); parent; parent = parent->parent()) {
-        Style *ps = qobject_cast<Style*>(parent);
-        if (ps) {
-            selector.prepend(prepareStyleSelector(ps));
+    return pathList;
+}
+
+QString ThemeEngine::stylePathToString(const StylePath &path) const
+{
+    QString result;
+    foreach (StylePathNode node, path) {
+        if (node.relationship == StylePathNode::Child)
+            result += "> ";
+        else if (node.relationship == StylePathNode::Sibling)
+            result += "+ ";
+        if (!node.styleClass.isEmpty())
+            result += "." + node.styleClass;
+        if (!node.styleId.isEmpty())
+            result += "#" + node.styleId;
+        result += " ";
+    }
+    return result.simplified();
+}
+
+/**
+  Traverses and returns the path from \a obj up to root as
+  a list of styleClass and styleId pairs
+  */
+StylePath ThemeEngine::getStylePath(const StyledItem *obj) const
+{
+    StylePath stylePath;
+    while (obj) {
+        QString styleClass = obj->d_ptr->styleClass;
+
+        // if styleClass is not defined, use the component's meta class name
+        if (styleClass.isEmpty()) {
+            styleClass = obj->metaObject()->className();
+            styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
+        }
+        QString styleId = obj->d_ptr->instanceId;
+        if (!styleClass.isEmpty() || !styleId.isEmpty()) {
+            stylePath.prepend(StylePathNode(styleClass, styleId, StylePathNode::Descendant));
+        }
+
+        // get the next StyledItem, we don't care the rest
+        QDeclarativeItem *parent = obj->parentItem();
+        while (parent && !qobject_cast<StyledItem*>(parent)) {
+            parent = parent->parentItem();
+        }
+        if (!parent)
             break;
+        obj = qobject_cast<StyledItem*>(parent);
+    }
+    return stylePath;
+}
+
+/**
+  Tries to match \a path against the style paths found from parsing
+  the style selectors
+  */
+StyleComponent ThemeEngine::match(const StylePath &srcStylePath)
+{
+    const int styleMapSize = m_styleCache.size();
+    int bestMatchIndex = -1;
+    // _maybeMatchList contains, for each selector in the style, the number of currently
+    // matched path nodes in srcStylePath. The count will increase for the selectors as we
+    // start matching, and the one that ends up with the highest count would normally be
+    // the best.
+    m_maybeMatchList.fill(0);
+
+    int firstMapIndex = 0;
+    int lastMapIndex = styleMapSize - 1;
+    int lastMapIndexSoFar = 0;
+    bool firstMapIndexFound = false;
+
+    // Starting from the end of the path, traverse all path nodes in srcStylePath
+    // and match them to the path nodes found in the style map:
+    for (int pathIndex=0; pathIndex<srcStylePath.size(); ++pathIndex) {
+        const StylePathNode srcNode = srcStylePath[srcStylePath.size() - pathIndex - 1];
+
+        int pendingMatchesInRange = lastMapIndex - firstMapIndex + 1;
+        for (int mapIndex=firstMapIndex; mapIndex<=lastMapIndex; ++mapIndex) {
+            if (m_maybeMatchList[mapIndex] < 0) {
+                // The current selector is already marked as done, meaning it
+                // is not pending anymore, and we can bail out early. If the count
+                // reaches zero, then _all_ of the remaining pending selectors have
+                // been marked as done, and we can return:
+                if (--pendingMatchesInRange == 0)
+                    return bestMatchIndex == -1 ? StyleComponent(StylePath(), 0) : m_styleCache[bestMatchIndex];
+                continue;
+            }
+
+            const StyleComponent styleComponent = m_styleCache[mapIndex];
+            const StylePath stylePath = styleComponent.stylePath;
+            const StylePathNode node = stylePath[stylePath.size() - m_maybeMatchList[mapIndex] - 1];
+            const bool classMatch = node.styleClass.isEmpty() || (node.styleClass == srcNode.styleClass);
+            const bool idMatch = node.styleId.isEmpty() || (node.styleId == srcNode.styleId);
+
+            if (classMatch && idMatch) {
+                if (pathIndex == 0) {
+                    // First round. Find the range where the styleClass we're looking
+                    // for is defined to avoid traversing the whole map for each iteration:
+                    // Todo: put this range in a hash lookup for the styleClass up front.
+                    lastMapIndexSoFar = mapIndex;
+                    if (!firstMapIndexFound) {
+                        firstMapIndexFound = true;
+                        firstMapIndex = mapIndex;
+                    }
+                }
+
+                if (pathIndex < stylePath.size() - 1) {
+                    // Still matching, but more nodes to check. Continue to next iteration.
+                    ++m_maybeMatchList[mapIndex];
+                } else {
+                    // INVARIANT: current selector is traversed to the end, and is a match.
+                    // If it is the best possible match remains to see, but start by comparing
+                    // it against the one we (might) already got:
+                    if (bestMatchIndex == -1) {
+                        bestMatchIndex = mapIndex;
+                    } else if (m_maybeMatchList[mapIndex] > -m_maybeMatchList[bestMatchIndex]-1) {
+                        // Longer matched paths are better than shorter paths:
+                        bestMatchIndex = mapIndex;
+                    } else if (!node.styleClass.isEmpty() && !node.styleId.isEmpty()) {
+                        // If both class and id are specified, style selectors defined
+                        // later in the list (qml file) are better then the ones on top:
+                        bestMatchIndex = mapIndex;
+                    } else {
+                        // Id match is evaluated higher than class match:
+                        StylePath p = m_styleCache[bestMatchIndex].stylePath;
+                        if (p[p.size() - pathIndex - 1].styleId.isEmpty())
+                            bestMatchIndex = mapIndex;
+                    }
+
+                    // Mark as done:
+                    m_maybeMatchList[mapIndex] = -m_maybeMatchList[mapIndex] - 1;
+                }
+                continue;
+            }
+
+            if (pathIndex > 0) {
+                const StylePathNode prevNode = stylePath[stylePath.size() - m_maybeMatchList[mapIndex]];
+                if (prevNode.relationship == StylePathNode::Descendant) {
+                    // The style node didnt match the current source node, but
+                    // we still see it as a possible match since the previous node
+                    // accepts any matching anchestor, which might show up later.
+                    continue;
+                }
+            }
+
+            // Current styleComponent is no longer considered a possible match. We
+            // mark it as done by making the traverse value negative, and subtract
+            // -1 to avoid confusion in case it was 0 from before:
+            m_maybeMatchList[mapIndex] = -m_maybeMatchList[mapIndex] - 1;
         }
-    }
-    return selector;
-}
-
-void ThemeEngine::styledItemPropertiesToSelector(StyledItem *item)
-{
-    if (!item)
-        return;
-    ThemeEngine *engine = themeEngine();
-    //StyledItemPrivate *pitem = ;
-
-    // check if styleClass is specified
-    if (!item->d_ptr->styleClass.isEmpty())
-        item->d_ptr->localSelector = item->d_ptr->styleClass;
-    else {
-        // use metaclass name
-        item->d_ptr->localSelector = item->metaObject()->className();
-        item->d_ptr->localSelector = item->d_ptr->localSelector.left(item->d_ptr->localSelector.indexOf("_QMLTYPE"));
-        // update styleClass too so next time we don't need to enter here
-        item->d_ptr->styleClass = item->d_ptr->localSelector;
-    }
-    if (!item->d_ptr->localSelector.startsWith('.'))
-        item->d_ptr->localSelector.prepend('.');
-
-    // check if we have instanceID set
-    if (!item->d_ptr->instanceId.isEmpty()) {
-        item->d_ptr->localSelector.append('#');
-        item->d_ptr->localSelector.append(item->d_ptr->instanceId);
+        lastMapIndex = lastMapIndexSoFar;
     }
 
+    return bestMatchIndex == -1 ? StyleComponent(StylePath(), 0) : m_styleCache[bestMatchIndex];
 }
-
-void ThemeEngine::styledItemSelectorToProperties(StyledItem *item)
-{
-    //StyledItemPrivate *item->d_ptr = item ? item->d_ptr : 0;
-    if (!item || (item && item->d_ptr->localSelector.isEmpty()))
-        return;
-    ThemeEngine *engine = themeEngine();
-    // check instanceId
-    item->d_ptr->instanceId = item->d_ptr->localSelector.right(
-                item->d_ptr->localSelector.length() - item->d_ptr->localSelector.indexOf('#') - 1);
-    // set styleClass
-    item->d_ptr->styleClass = item->d_ptr->localSelector;
-    item->d_ptr->styleClass.remove(item->d_ptr->instanceId);
-    item->d_ptr->styleClass.remove('#');
-}
-

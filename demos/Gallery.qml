@@ -48,7 +48,8 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": "Buttons", "source": "Buttons.qml"},
+        model: [{"label": "Theming", "source": "Theming.qml"},
+                {"label": "Buttons", "source": "Buttons.qml"},
                 {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
                 {"label": "List Items", "source": "ListItems.qml"},
                 {"label": "Drilldown", "source": ""},
