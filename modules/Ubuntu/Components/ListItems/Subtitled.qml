@@ -87,7 +87,6 @@ Base {
         anchors {
             left: parent.left
             right: parent.right
-            verticalCenter: parent.verticalCenter
         }
         height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 
