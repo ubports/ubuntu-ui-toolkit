@@ -72,6 +72,13 @@ Empty {
 
     /*!
       \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: selectorMain.iconFrame
+
+    /*!
+      \preliminary
       The list of values that will be shown under the label text
      */
     property variant values
