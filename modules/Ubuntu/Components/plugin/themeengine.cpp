@@ -96,11 +96,11 @@ Style *ThemeEngine::lookupStyle(StyledItem *item)
         return 0;
 
     StylePath path = theme->getStylePath(item);
-    qDebug() << __FUNCTION__ << theme->stylePathToString(path);
     const StyleComponent styleComponent = theme->match(path);
-
+/*
     qDebug() << "Component:" << theme->stylePathToString(path)
              << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
+*/
     return styleComponent.style;
 }
 
@@ -152,13 +152,12 @@ void ThemeEngine::completeThemeLoading()
             buildStyleCache(themeObject);
 
             // DEBUG: print theme cache
-
+/*
             QListIterator<StyleComponent> sh(m_styleCache);
             while (sh.hasNext()) {
                 qDebug() << "Style" << stylePathToString(sh.next().stylePath);
             }
-
-
+*/
         }
     } else {
         qWarning() << themeComponent->errors();

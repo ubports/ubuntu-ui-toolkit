@@ -23,10 +23,29 @@ Item{
     Style {
         // this style component defines the default visuals of a Button control
         selector: ".Button"
+        style: ButtonStyle {
+            color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
+            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
+                    : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+        }
         visuals: Component {
             Item {
                 z: -1
                 anchors.fill: control
+                function __luminance(hexcolor){
+                    hexcolor = String(hexcolor)
+                    var r = parseInt(hexcolor.substr(1,2),16);
+                    var g = parseInt(hexcolor.substr(3,2),16);
+                    var b = parseInt(hexcolor.substr(5,2),16);
+                    return ((r*212)+(g*715)+(b*73))/1000/255;
+                }
+
+                Binding {
+                    target: control
+                    property: "textColor"
+                    value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
+                }
 
                 // FIXME: think of using distance fields
                 BorderImage {
@@ -73,7 +92,7 @@ Item{
             }
         }
     }
-
+/*
     Style {
         // this style component defines the custom properties applied on the component
         selector: ".button"
@@ -84,4 +103,5 @@ Item{
                     : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
         }
     }
+*/
 }
