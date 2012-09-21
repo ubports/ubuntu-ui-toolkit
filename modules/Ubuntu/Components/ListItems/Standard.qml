@@ -89,12 +89,14 @@ Empty {
       The mouseArea of the control will be set to the full Standard list item if
       there is no \l progression, or only the part left of the split, if there is a
       \l progression.
+      \qmlproperty Item control
     */
     property alias control: controlContainer.control
 
     /*!
       \preliminary
       Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
      */
     property alias iconFrame: iconHelper.hasFrame
 
