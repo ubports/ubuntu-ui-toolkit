@@ -20,6 +20,7 @@ import QtQuick 1.1
 // for the icon.
 Item {
     id: iconVisual
+
     property alias source: icon.source
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
