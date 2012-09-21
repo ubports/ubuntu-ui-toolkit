@@ -81,11 +81,12 @@ Empty {
     property bool progression: false
 
     /*!
-      \preliminary
-      The margins on left and right side of the icon
+      \internal
+      The margins on left and right side of the icon.
       \qmlproperty real leftRightIconMargin
      */
-    property alias leftRightIconMargin: iconHelper.leftRightIconMargin
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftRightIconMargin: iconHelper.leftRightIconMargin
 
     /*!
       \preliminary

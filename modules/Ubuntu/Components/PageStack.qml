@@ -23,6 +23,8 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
         The page on top of the stack is the visible one.
+        Any non-Page Item that you want to use with PageStack should be created
+        with its visible property set to false.
 
     Example:
     \qml
@@ -58,6 +60,7 @@ import "stack.js" as Stack
             Rectangle {
                 id: rect
                 anchors.fill: parent
+                visible: false
             }
         }
     \endqml
@@ -83,14 +86,10 @@ Item {
     property int depth: 0
 
     /*!
-      \internal
-      This allows to define the pages inside the PageStack without showing them.
+      \preliminary
+      The currently active page
      */
-    children: pages.children
-    Item {
-        id: pages
-        visible: false
-    }
+    property Item currentPage
 
     // FIXME: After switching to QtQuick2, use a var stack property and instead of
     // Stack.stack in this class we can refer to that property.
@@ -107,6 +106,7 @@ Item {
         wrapperObject.reference = page;
         wrapperObject.parent = pageContents;
         wrapperObject.properties = properties;
+        wrapperObject.pageStack = pageStack;
         return wrapperObject;
     }
 
@@ -120,8 +120,7 @@ Item {
         Stack.stack.push(__createWrapper(page, properties));
         Stack.stack.top().active = true;
 
-        pageStack.depth = Stack.stack.size();
-        contents.updateHeader();
+        __stackUpdated();
     }
 
     /*!
@@ -135,12 +134,12 @@ Item {
             return;
         }
 
+        Stack.stack.top().pageStack = null;
         Stack.stack.top().active = false;
         Stack.stack.pop();
         Stack.stack.top().active = true;
 
-        pageStack.depth = Stack.stack.size();
-        contents.updateHeader();
+        __stackUpdated();
     }
 
     /*!
@@ -150,7 +149,16 @@ Item {
     function clear() {
         if (Stack.stack.size() > 0) Stack.stack.top().active = false;
         Stack.stack.clear();
-        pageStack.depth = 0;
+        __stackUpdated();
+    }
+
+    /*!
+      \internal
+     */
+    function __stackUpdated() {
+        pageStack.depth = Stack.stack.size();
+        if (pageStack.depth > 0) currentPage = Stack.stack.top().object;
+        else currentPage = null;
         contents.updateHeader();
     }
 

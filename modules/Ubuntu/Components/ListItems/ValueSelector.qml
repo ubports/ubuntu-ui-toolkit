@@ -78,11 +78,12 @@ Empty {
     property alias iconFrame: selectorMain.iconFrame
 
     /*!
-      \preliminary
-      The margins on left and right side of the icon
+      \internal
+      The margins on left and right side of the icon.
       \qmlproperty real leftRightIconMargin
      */
-    property alias leftRightIconMargin: selectorMain.leftRightIconMargin
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftRightIconMargin: selectorMain.__leftRightIconMargin
 
     /*!
       \preliminary
