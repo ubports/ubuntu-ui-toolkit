@@ -36,8 +36,8 @@ Template {
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
-                    "Value selector", "Subtitled", "Controls", "Grouping & caption",
-                    "List with Sections"]
+                    "Value selector", "Subtitled", "Controls", "Captions and Dividers",
+                    "Grouped List"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
@@ -85,7 +85,7 @@ Template {
                 }
             }
             FadingRectangle {
-                selected: listItemTypes.selectedType === "List with Sections"
+                selected: listItemTypes.selectedType === "Grouped List"
                 Column {
                     width: 250
 
@@ -107,7 +107,7 @@ Template {
                         delegate: ListItem.Standard {
                             text: name
                         }
-                        header: ListItem.Header { text: "List with Sections" }
+                        header: ListItem.Header { text: "Grouped List" }
                         section.property: "type"
                         section.criteria: ViewSection.FullString
                         section.delegate: ListItem.Header { text: section }
@@ -307,10 +307,10 @@ Template {
                 }
             }
             FadingRectangle {
-                selected: listItemTypes.selectedType === "Grouping & caption"
+                selected: listItemTypes.selectedType === "Captions and Dividers"
                 Column {
                     width: 250
-                    ListItem.Header { text: "Group Header, Divider & Caption" }
+                    ListItem.Header { text: "Captions and Dividers" }
                     ListItem.Standard { text: "Item 1a" }
                     ListItem.Standard {
                         text: "Item 1b"
