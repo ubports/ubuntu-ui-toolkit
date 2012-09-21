@@ -39,6 +39,12 @@ Empty {
 
     /*!
       \preliminary
+      Show or hide the progression symbol.
+     */
+    property bool progression: false
+
+    /*!
+      \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
@@ -59,13 +65,6 @@ Empty {
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: iconHelper.leftIconMargin
-
-
-    /*!
-      \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
 
     IconVisual {
         id: iconHelper
