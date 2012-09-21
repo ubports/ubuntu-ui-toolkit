@@ -82,11 +82,20 @@ Empty {
 
     /*!
       \internal
-      The margins on left and right side of the icon.
-      \qmlproperty real leftRightIconMargin
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftRightIconMargin: iconHelper.leftRightIconMargin
+    property alias __leftIconMargin: iconHelper.leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: iconHelper.rightIconMargin
+
 
     /*!
       \preliminary
