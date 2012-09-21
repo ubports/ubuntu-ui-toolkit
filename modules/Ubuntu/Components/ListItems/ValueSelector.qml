@@ -52,7 +52,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-Base {
+Empty {
     id: selector
     height: column.height
 
@@ -68,7 +68,7 @@ Base {
       The location of the icon to show in the list item (optional).
       \qmlproperty url iconSource
      */
-    property alias iconSource: iconHelper.source
+    property alias iconSource: selectorMain.iconSource
 
     /*!
       \preliminary
@@ -103,16 +103,14 @@ Base {
             __showTopSeparator: false
             __showBottomSeparator: false
             onClicked: selector.expanded = !selector.expanded
+            selected: selector.selected
 
-            IconVisual {
-                id: iconHelper
-            }
             LabelVisual {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
                     leftMargin: 5
-                    left: iconHelper.right
+                    left: parent.left
                 }
                 width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
             }
@@ -212,7 +210,7 @@ Base {
                 height: valueRepeater.valueHeight
                 width: parent.width
 
-                Base {
+                Empty {
                     id: valueBase
                     height: parent.height
                     visible: valueBase.height > 0

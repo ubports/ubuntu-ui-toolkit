@@ -56,7 +56,7 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-Base {
+Empty {
     id: listItem
     height: 48
 
@@ -101,6 +101,7 @@ Base {
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
     highlightWhenPressed: !listItem.control
+
     Rectangle {
         id: controlHighlight
         visible: controlArea.pressed
