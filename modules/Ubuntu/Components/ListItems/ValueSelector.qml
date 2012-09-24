@@ -86,7 +86,6 @@ Empty {
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: selectorMain.__rightIconMargin
 
-
     /*!
       \preliminary
       The list of values that will be shown under the label text

@@ -64,7 +64,7 @@ Empty {
       \qmlproperty real rightIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: iconHelper.leftIconMargin
+    property alias __rightIconMargin: iconHelper.rightIconMargin
 
     IconVisual {
         id: iconHelper
