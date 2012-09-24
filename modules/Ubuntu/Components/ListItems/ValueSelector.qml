@@ -71,6 +71,22 @@ Empty {
     property alias iconSource: selectorMain.iconSource
 
     /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: selectorMain.__leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: selectorMain.__rightIconMargin
+
+    /*!
       \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
