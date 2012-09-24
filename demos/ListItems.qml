@@ -85,6 +85,7 @@ Template {
                 }
             }
             FadingRectangle {
+                id: container
                 selected: listItemTypes.selectedType === "Grouped List"
                 Column {
                     width: 250
@@ -103,7 +104,10 @@ Template {
                     ListView {
                         model: testModel
                         width: parent.width
-                        height: 60*count
+                        // All but 2 items are 50 pixels height, the others are 48 highlight
+                        // and there are 3 headings at 24 pixels high
+                        height: 50 * count - 2 * 2 + 3 * 24
+
                         delegate: ListItem.Standard {
                             text: name
                         }

@@ -45,7 +45,6 @@ import QtQuick 1.1
 */
 Base {
     id: listItem
-    height: 48
 
     /*!
       \preliminary

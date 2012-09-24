@@ -66,7 +66,7 @@ import Ubuntu.Components 0.1
 */
 Base {
     id: subtitledListItem
-    height: Math.max(middleVisuals.height, 48)
+    __height: Math.max(middleVisuals.height, 48)
 
     /*!
       \preliminary
