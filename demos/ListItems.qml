@@ -104,7 +104,7 @@ Template {
                     ListView {
                         model: testModel
                         width: parent.width
-                        // All but 2 items are 50 pixels height, the others are 48 highlight
+                        // All but 2 items are 50 pixels height, the others are 48 high
                         // and there are 3 headings at 24 pixels high
                         height: 50 * count - 2 * 2 + 3 * 24
 
