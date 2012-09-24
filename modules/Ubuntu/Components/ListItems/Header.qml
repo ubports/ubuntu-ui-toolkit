@@ -35,25 +35,21 @@ import QtQuick 1.1
     \endqml
     \b{This component is under heavy development.}
 */
-Item {
-    width: parent ? parent.width : 250
-    height: image.height
+
+Image {
+    id: image
+    source: "artwork/ListItemDivider24px.png"
+    anchors {
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+    }
 
     /*!
-      \preliminary
-      The text that is shown as the header text.
-      \qmlproperty string text
-     */
+     \preliminary
+     The text that is shown as the header text.
+     \qmlproperty string text
+    */
     property alias text: label.text
-
-    Image {
-        id: image
-        source: "artwork/ListItemDivider24px.png"
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-    }
 
     LabelVisual {
         id: label
