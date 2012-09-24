@@ -36,9 +36,10 @@ import Ubuntu.Components 0.1
     \endqml
     \b{This component is under heavy development.}
 */
-DividerBase {
+Item {
     id: captionListItem
     height: framing.height
+    width: parent ? parent.width : 250
 
     /*!
       \preliminary

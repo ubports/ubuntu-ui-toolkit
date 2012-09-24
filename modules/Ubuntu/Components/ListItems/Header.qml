@@ -35,7 +35,8 @@ import QtQuick 1.1
     \endqml
     \b{This component is under heavy development.}
 */
-DividerBase {
+Item {
+    width: parent ? parent.width : 250
     height: image.height
 
     /*!

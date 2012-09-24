@@ -24,16 +24,12 @@ import QtQuick 1.1
     Examples: see \l Header
     \b{This component is under heavy development.}
 */
-DividerBase {
-    id: listItemDivider
-    height: image.implicitHeight
-
-    Image {
-        id: image
-        source: "artwork/ListItemDivider6px.png"
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+Image {
+    id: image
+    source: "artwork/ListItemDivider6px.png"
+    anchors {
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
     }
+    height: sourceSize.height
 }
