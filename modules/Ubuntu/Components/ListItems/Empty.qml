@@ -23,7 +23,7 @@ import Ubuntu.Components 0.1
     \brief A list item with no contents.
     The Empty class can be used for generic list items, containing other
     components such as buttons. It is selectable, and can take mouse clicks.
-    It will attempt to detect if a dividing line at the bottom of the item
+    It will attempt to detect if a thin dividing line at the bottom of the item
     is suitable, but this behaviour can be over-ridden (using \l showDivider).
     For specific types of list items, see its subclasses.
 
@@ -106,7 +106,7 @@ AbstractButton {
 
     /*!
       \preliminary
-      Set to show or hide the bottom divider line. This line is shown by default
+      Set to show or hide the thin bottom divider line. This line is shown by default
       except in cases where this item is the delegate of a ListView.
      */
     property bool showDivider: __showDivider()
@@ -116,10 +116,10 @@ AbstractButton {
       Method to automatically determine if the bottom divider line should be drawn.
       This always returns true, unless item is a delegate in a ListView. If in a ListView
       it will return false only when:
-       + if there is a section.delegate below this item (as separator line and section
+       + if there is a section.delegate below this item (as thin divider line and section
          delegate should not both appear)
-       + if this is the final item in the list, and ListView.footer is set (again as
-         separator line won't look well with footer below it)
+       + if this is the final item in the list, and ListView.footer is set (again as thin
+         divider line won't look well with footer below it)
      */
     function __showDivider() {
         // if we're not in ListView, always show a thin dividing line at the bottom
