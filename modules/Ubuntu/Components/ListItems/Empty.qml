@@ -23,9 +23,8 @@ import Ubuntu.Components 0.1
     \brief A list item with no contents.
     The Empty class can be used for generic list items, containing other
     components such as buttons. It is selectable, and can take mouse clicks.
-    It will attempt to detect if a thin dividing line (using the \l ThinDivider
-    component) at the bottom of the item is suitable, but this behaviour can
-    be over-ridden (using \l showDivider).
+    It will attempt to detect if a thin dividing line at the bottom of the
+    item is suitable, but this behaviour can be over-ridden (using \l showDivider).
     For specific types of list items, see its subclasses.
 
     Examples:
@@ -107,8 +106,8 @@ AbstractButton {
 
     /*!
       \preliminary
-      Set to show or hide the thin bottom divider line. This line is shown by default
-      except in cases where this item is the delegate of a ListView.
+      Set to show or hide the thin bottom divider line (drawn by the \l ThinDivider component).
+      This line is shown by default except in cases where this item is the delegate of a ListView.
      */
     property bool showDivider: __showDivider()
 
