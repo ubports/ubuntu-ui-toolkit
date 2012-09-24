@@ -22,6 +22,7 @@ def get_module_include_path():
             '..',
             '..',
             '..',
+            '..',
             'modules')
         )
 

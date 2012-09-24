@@ -66,6 +66,7 @@ Item {
         // if mouseArea is given a new value, disable defaultMouseArea
         // as it might occlude the newly assigned mouse area.
         enabled: button.mouseArea === defaultMouseArea
+	hoverEnabled: true
     }
 
     /*!
