@@ -25,7 +25,6 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 Image {
-    id: image
     source: "artwork/ListItemDivider6px.png"
     anchors {
         left: parent ? parent.left : undefined

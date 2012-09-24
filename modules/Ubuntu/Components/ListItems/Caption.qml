@@ -37,7 +37,6 @@ import Ubuntu.Components 0.1
     \b{This component is under heavy development.}
 */
 Item {
-    id: captionListItem
     height: framing.height
     width: parent ? parent.width : 250
 
