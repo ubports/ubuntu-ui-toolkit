@@ -17,7 +17,7 @@
 import QtQuick 1.1
 
 /*!
-    \qmlclass ItemSeparator
+    \qmlclass ThinDivider
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief Narrow line used as a divider between ListItems.
 
@@ -31,14 +31,14 @@ import QtQuick 1.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         Column {
             width: 250
-            ListItem.ItemSeparator {} //can be used as header for list
+            ListItem.ThinDivider {} //can be used as header for list
             ListItem.Standard {
-                text: "List Item without separator line"
+                text: "List Item without thin divider line"
                 showSeparator: false
             }
-            ListItem.ItemSeparator {} // manually inserted separator line
+            ListItem.ThinDivider {} // manually inserted divider line
             ListItem.Standard {
-                text: "ListItem with separator line"
+                text: "ListItem with thin divider line"
             }
         }
     \endqml

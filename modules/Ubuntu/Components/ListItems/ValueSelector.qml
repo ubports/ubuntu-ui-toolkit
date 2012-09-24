@@ -172,7 +172,7 @@ Empty {
                     }
                 }
             }
-            ItemSeparator {
+            ThinDivider {
                 anchors.bottom: parent.bottom
                 visible: valueRepeater.valueHeight > 0
             }

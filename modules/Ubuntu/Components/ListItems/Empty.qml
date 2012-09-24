@@ -135,7 +135,7 @@ AbstractButton {
         return true;
     }
 
-    ItemSeparator {
+    ThinDivider {
         id: bottomSeparatorLine
         anchors.bottom: parent.bottom
         visible: showSeparator
