@@ -21,9 +21,10 @@ import Ubuntu.Components 0.1
     \qmlclass Empty
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief A list item with no contents.
-    The Empty class can be used for generic list items, containing
-    other components such as buttons. It draws an upper and lower
-    divider, is selectable, and can take mouse clicks.
+    The Empty class can be used for generic list items, containing other
+    components such as buttons. It is selectable, and can take mouse clicks.
+    It will attempt to detect if a thin dividing line at the bottom of the
+    item is suitable, but this behaviour can be over-ridden (using \l showDivider).
     For specific types of list items, see its subclasses.
 
     Examples:
@@ -104,95 +105,46 @@ AbstractButton {
     }
 
     /*!
-      \internal
-      Override in divider classes that should never
-      draw the one-pixel divider at the top or bottom
-      of the list item.
+      \preliminary
+      Set to show or hide the thin bottom divider line (drawn by the \l ThinDivider component).
+      This line is shown by default except in cases where this item is the delegate of a ListView.
      */
-    property bool __isDivider: false
+    property bool showDivider: __showDivider()
 
     /*!
       \internal
+      Method to automatically determine if the bottom divider line should be drawn.
+      This always returns true, unless item is a delegate in a ListView. If in a ListView
+      it will return false only when:
+       + if there is a section.delegate below this item (as thin divider line and section
+         delegate should not both appear)
+       + if this is the final item in the list, and ListView.footer is set (again as thin
+         divider line won't look well with footer below it)
      */
-    property bool __showTopSeparator: __separateAtTop()
+    function __showDivider() {
+        // if we're not in ListView, always show a thin dividing line at the bottom
+        if (ListView.view !== null) {
 
-    /*!
-      \internal
-     */
-    property bool __showBottomSeparator: __separateAtBottom()
+            // if we're last item in ListView, show divider if no footer is defined
+            // and hide it if footer defined
+            if (index === ListView.view.model.count - 1) return !ListView.footer;
 
-    /*!
-      \internal
-      Retun the index of the given item in the list of
-      parent's children.
-     */
-    function __childIndexOf(item) {
-        if (!parent) return undefined;
-        var index = parent.children.length - 1;
-        while (index >= 0 && item !== parent.children[index]) {
-            index--;
-        }
-        if (index === -1) return undefined;
-        return index;
-    }
-
-    /*!
-      \internal
-      Determine whether the bottom separator must be shown.
-      This is always the case, if the next item in the list of children
-      is not a divider.
-     */
-    function __separateAtBottom() {
-        var index = emptyListItem.__childIndexOf(emptyListItem);
-        if (index === undefined) return true;
-        // index is defined:
-         if (index < parent.children.length - 1) {
-            if (parent.children[index+1].__isDivider) return false;
+            // if section.delegate is positioned between this item and the next
+            else if (ListView.section !== ListView.nextSection) return false;
         }
         return true;
     }
 
-    /*!
-      \internal
-      Determine whether the top separator must be shown.
-      This is the case, if the list item is not a divider, and
-      it is the first in the list of the children.
-    */
-    function __separateAtTop() {
-        var index = emptyListItem.__childIndexOf(emptyListItem);
-        if (index === undefined) return true;
-        // index is defined:
-        if (emptyListItem.__isDivider || index !== 0) return false;
-        return true;
-    }
-
-    Image {
-        id: topSeparatorLine
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-        height: visible ? 2 : 0
-        source: "artwork/ListItemDividerHorizontal.png"
-        visible: emptyListItem.__showTopSeparator
-    }
-    Image {
-        id: bottomSeparatorLine
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-        height: visible ? 2 : 0
-        source: "artwork/ListItemDividerHorizontal.png"
-        visible: emptyListItem.__showBottomSeparator
+    ThinDivider {
+        id: bottomDividerLine
+        anchors.bottom: parent.bottom
+        visible: showDivider
     }
 
     /*!
       \internal
-      Reparent so that the visuals of the children do not
-      occlude the separator lines.
+      Reparent so that the visuals of the children does not
+      occlude the bottom divider line.
      */
     default property alias children: body.children
     Item {
@@ -200,8 +152,8 @@ AbstractButton {
         anchors {
             left: parent.left
             right: parent.right
-            top: topSeparatorLine.bottom
-            bottom: bottomSeparatorLine.top
+            top: parent.top
+            bottom: bottomDividerLine.top
         }
     }
 }

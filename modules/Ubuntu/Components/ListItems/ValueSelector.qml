@@ -123,8 +123,7 @@ Empty {
         Base {
             id: selectorMain
             height: 48
-            __showTopSeparator: false
-            __showBottomSeparator: false
+            showDivider: false
             onClicked: selector.expanded = !selector.expanded
             selected: selector.selected
 
@@ -196,6 +195,10 @@ Empty {
                     }
                 }
             }
+            ThinDivider {
+                anchors.bottom: parent.bottom
+                visible: valueRepeater.valueHeight > 0
+            }
         }
 
         Repeater {
@@ -243,9 +246,6 @@ Empty {
                     }
 
                     selected: index === selector.selectedIndex
-
-                    __showBottomSeparator: index === selector.values.length - 1
-                    __showTopSeparator: true // TODO: show different (less wide) separator?
 
                     LabelVisual {
                         text: modelData

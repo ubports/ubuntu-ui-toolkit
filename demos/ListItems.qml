@@ -36,7 +36,8 @@ Template {
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
-                    "Value selector", "Subtitled", "Controls", "Grouping & caption"]
+                    "Value selector", "Subtitled", "Controls", "Captions and Dividers",
+                    "Grouped List"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: "Types of list items" }
@@ -80,6 +81,36 @@ Template {
                     ListItem.Standard {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
+                    }
+                }
+            }
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Grouped List"
+                Column {
+                    width: 250
+
+                    ListModel {
+                        id: testModel
+                        ListElement { name: "Banana" }
+                        ListElement { name: "Orange"; type: "fruit"}
+                        ListElement { name: "Apple"; type: "fruit" }
+                        ListElement { name: "Tomato"; type: "fruit" }
+
+                        ListElement { name: "Carrot"; type: "veg" }
+                        ListElement { name: "Potato"; type: "veg" }
+                    }
+
+                    ListView {
+                        model: testModel
+                        width: parent.width
+                        height: 60*count
+                        delegate: ListItem.Standard {
+                            text: name
+                        }
+                        header: ListItem.Header { text: "Grouped List" }
+                        section.property: "type"
+                        section.criteria: ViewSection.FullString
+                        section.delegate: ListItem.Header { text: section }
                     }
                 }
             }
@@ -227,6 +258,7 @@ Template {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
                         control: controlExample.createObject(parent)
+                        showDivider: false
                     }
                     ListItem.Header { text: "Single control" }
 
@@ -275,12 +307,15 @@ Template {
                 }
             }
             FadingRectangle {
-                selected: listItemTypes.selectedType === "Grouping & caption"
+                selected: listItemTypes.selectedType === "Captions and Dividers"
                 Column {
                     width: 250
-                    ListItem.Header { text: "Group Header, Divider & Caption" }
+                    ListItem.Header { text: "Captions and Dividers" }
                     ListItem.Standard { text: "Item 1a" }
-                    ListItem.Standard { text: "Item 1b" }
+                    ListItem.Standard {
+                        text: "Item 1b"
+                        showDivider: false
+                    }
                     ListItem.Divider { }
                     ListItem.Standard { text: "Item 2a" }
                     ListItem.Standard { text: "Item 2b" }
