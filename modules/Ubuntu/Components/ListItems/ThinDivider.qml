@@ -34,7 +34,7 @@ import QtQuick 1.1
             ListItem.ThinDivider {} //can be used as header for list
             ListItem.Standard {
                 text: "List Item without thin divider line"
-                showSeparator: false
+                showDivider: false
             }
             ListItem.ThinDivider {} // manually inserted divider line
             ListItem.Standard {

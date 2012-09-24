@@ -100,7 +100,7 @@ Empty {
         Base {
             id: selectorMain
             height: 48
-            showSeparator: false
+            showDivider: false
             onClicked: selector.expanded = !selector.expanded
             selected: selector.selected
 

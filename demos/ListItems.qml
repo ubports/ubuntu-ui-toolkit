@@ -258,7 +258,7 @@ Template {
                         text: "Icon"
                         iconSource: "avatar_contacts_list.png"
                         control: controlExample.createObject(parent)
-                        showSeparator: false
+                        showDivider: false
                     }
                     ListItem.Header { text: "Single control" }
 
@@ -314,7 +314,7 @@ Template {
                     ListItem.Standard { text: "Item 1a" }
                     ListItem.Standard {
                         text: "Item 1b"
-                        showSeparator: false
+                        showDivider: false
                     }
                     ListItem.Divider { }
                     ListItem.Standard { text: "Item 2a" }
