@@ -46,38 +46,33 @@ class EnabledButtonTests(TavastiaTestCase):
         self.assertThat(signal.num_emissions, Equals(1))
 
     def test_entered_signal_emitted(self):
-        """The entered() signal must be emitted when the mouse hovers the button.
-
-        Note: this test fails. It seems the entered() signal is never triggered.
-        A real bug?
-
-        """
+        """The hoveredChanged() signal must be emitted when the mouse hovers over
+        the button. Then the hovered property should be true"""
         btn = self.app.select_single('Button')
-        mouse_area = btn.get_children_by_type('QDeclarativeMouseArea')[0]
-        signal = mouse_area.watch_signal('entered()')
+        signal = btn.watch_signal('hoveredChanged()')
 
         self.mouse.move_to_object(btn)
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
+        self.assertThat(btn.hovered, Eventually(Equals(True)))
 
     def test_exited_signal_emitted(self):
-        """The exited() signal must be emitted when the mouse hovers the button.
-
-        Note: This test fails - it seems the exited() signal is never fired. This
-        seems like a but to me...
-
-        """
+        """The hoveredChanged() signal must be emitted when the mouse is hovering
+        over hovers the button, and is moved out. Then the hovered property should be 
+        false"""
         btn = self.app.select_single('Button')
+
+	# position mouse over button before starting to watch for signals
         self.mouse.move_to_object(btn)
-        mouse_area = btn.get_children_by_type('QDeclarativeMouseArea')[0]
-        signal = mouse_area.watch_signal('exited()')
+        signal = btn.watch_signal('hoveredChanged()')
 
         # assuming the WM will never put the window over 0,0:
         self.mouse.move(0,0)
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
+        self.assertThat(btn.hovered, Equals(False))
 
     def test_can_press_button(self):
         """Test that when we click and hold the button down it's pressed property is set."""
@@ -101,7 +96,7 @@ class DisabledButtonTests(TavastiaTestCase):
     Button {
        id: button
        text: "Disabled button"
-       enabled: False
+       enabled: false
     }
     """)
 
