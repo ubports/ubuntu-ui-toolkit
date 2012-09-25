@@ -25,6 +25,9 @@
 //     number of decimals) or visually awkward since the text is hidden by the
 //     mouse cursor (or the finger) when dragged.
 
+// FIXME(loicm) An animation should be added when the user clicks on an area
+//     outside the thumb to smoothly move it under the mouse.
+
 // FIXME(loicm) Maybe add support for vertical orientation (orientation
 //     property). Don't forget to adapt the inverted property documentation
 //     accordingly. Note that UIKit doesn't have vertical sliders.
