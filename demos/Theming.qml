@@ -24,13 +24,34 @@ Template {
         spacing: 30
 
         TemplateRow {
+            Button {
+                text: "Theme #1"
+                width: 100
+                onClicked: theme.loadTheme("SampleTheme1.qml")
+            }
+            Button {
+                text: "Theme #2"
+                width: 100
+                onClicked: theme.loadTheme("SampleTheme2.qml")
+            }
+        }
+
+        TemplateRow {
             title: "Standard"
+
+            Button {
+                //styleClass: "button"
+                text: "Call"
+            }
+        }
+
+        TemplateRow {
+            title: "Custom props"
 
             Button {
                 styleClass: "button"
                 text: "Call"
             }
         }
-
     }
 }

@@ -13,11 +13,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 1.1
 
-QtObject {
-    property color color
-    property url borderShape
-    property url borderImage
+Item {
+    property url include
 }

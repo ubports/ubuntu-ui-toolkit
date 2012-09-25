@@ -72,7 +72,4 @@ ButtonWithForeground {
        This will change the visuals/shading of the button.
     */
     property bool darkBorder: false
-
-    // pick either a clear or dark text color depending on the luminance of the
-    // background color to maintain good contrast (works in most cases)
 }

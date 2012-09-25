@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QHash>
 #include <QVector>
+#include <QUrl>
+#include <QFileSystemWatcher>
 
 class Style;
 class QDeclarativeEngine;
@@ -54,38 +56,50 @@ typedef QList<StyleComponent> StyleCache;
 class ThemeEngine : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool debug READ debug WRITE setDebug)
 public:
     explicit ThemeEngine(QObject *parent = 0);
     ~ThemeEngine();
 
+public: //getter/setter
+    bool debug();
+    void setDebug(bool debug);
+
+public: // utility methods
+
     static ThemeEngine* instance();
     static QDeclarativeEngine *engine();
     static void initialize(QDeclarativeEngine *engine);
-    static Style *lookupStyle(StyledItem *item);
+    static Style *lookupStyle(StyledItem *item, bool forceClassName = false);
     static bool registerInstanceId(StyledItem *item, const QString &newId);
+
+    // public functions on instance
+    void buildStyleCache(QObject *theme);
+    QList<StylePath> parseSelector(Style *style, const StylePath &parentPath) const;
+    QString stylePathToString(const StylePath &path) const;
+    StylePath getStylePath(const StyledItem *obj, bool forceClassName) const;
+    StyleComponent match(const StylePath &srcStylePath);
 
 signals:
     void themeChanged();
 
 public slots:
-    void loadTheme(const QString &themeFile);
+    void loadTheme(const QUrl &themeFile);
+
 private slots:
     void completeThemeLoading();
-
-private:
-    void buildStyleCache(QObject *theme);
-    QList<StylePath> parseSelector(Style *style, const StylePath &parentPath) const;
-    QString stylePathToString(const StylePath &path) const;
-    StylePath getStylePath(const StyledItem *obj) const;
-    StyleComponent match(const StylePath &srcStylePath);
+    void changeTheme();
 
 private: //members
+    bool m_debug;
     QDeclarativeEngine *m_engine;
     StyleCache m_styleCache;
     QVector<int> m_maybeMatchList;
     InstanceHash m_instanceCache;
     // needed for theme loading
-    QDeclarativeComponent *themeComponent;
+    QDeclarativeComponent *m_themeComponent;
+    QFileSystemWatcher m_themeWatcher;
+    bool m_updateTheme;
 };
 
 #endif // THEMEENGINE_H

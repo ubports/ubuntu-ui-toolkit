@@ -18,6 +18,8 @@
 #include "style_p.h"
 #include "themeengine.h"
 #include <QDeclarativeEngine>
+#include <QDeclarativeContext>
+#include <QDeclarativeProperty>
 
 /*!
   \class Style
@@ -109,10 +111,10 @@ void Style::setVisuals(QDeclarativeComponent *visuals)
     }
 }
 
-QDeclarativeListProperty<Style> Style::data()
+QDeclarativeListProperty<QObject> Style::data()
 {
     Q_D(Style);
-    return QDeclarativeListProperty<Style>(this, d->data);
+    return QDeclarativeListProperty<QObject>(this, d->data);
 }
 
 #include "moc_style.cpp"

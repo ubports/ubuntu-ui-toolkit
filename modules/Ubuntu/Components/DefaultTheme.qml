@@ -18,7 +18,24 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 import Qt.labs.shaders 1.0
 
-Item{
+Theme{
+
+    // the item's children are stored in inverse order, so the last child under Item is
+    // the first one evaluated. Therefore all overloading style should be defined prior
+    // to the style to be overload
+
+    Style {
+        // this style component defines the custom properties applied on the component
+        // only the altered property is defined, the rest should be taken from the
+        // .Button style
+        selector: ".button"
+        style: ButtonStyle {
+            color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"//"#e3e5e8"
+            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
+                    : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+        }
+    }
 
     Style {
         // this style component defines the default visuals of a Button control
@@ -29,10 +46,14 @@ Item{
             borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
                     : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
         }
+
         visuals: Component {
             Item {
                 z: -1
                 anchors.fill: control
+
+                // pick either a clear or dark text color depending on the luminance of the
+                // background color to maintain good contrast (works in most cases)
                 function __luminance(hexcolor){
                     hexcolor = String(hexcolor)
                     var r = parseInt(hexcolor.substr(1,2),16);
@@ -92,16 +113,5 @@ Item{
             }
         }
     }
-/*
-    Style {
-        // this style component defines the custom properties applied on the component
-        selector: ".button"
-        style: ButtonStyle {
-            color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
-            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
-                    : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
-        }
-    }
-*/
+
 }

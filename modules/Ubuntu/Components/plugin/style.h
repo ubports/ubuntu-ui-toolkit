@@ -25,7 +25,7 @@
 
 #include <QLibrary>
 
-class StylePrivate; class QLibrary;
+class StylePrivate;
 class QDeclarativeComponent;
 class Style : public QObject, public QDeclarativeParserStatus
 {
@@ -33,9 +33,11 @@ class Style : public QObject, public QDeclarativeParserStatus
     Q_INTERFACES(QDeclarativeParserStatus)
 
     Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
+    Q_PROPERTY(QString extend READ extend WRITE setExtend NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeComponent *visuals READ visuals WRITE setVisuals NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeListProperty<Style> data READ data)
+    Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
+
     Q_CLASSINFO("DefaultProperty", "data")
     Q_FLAGS(StyleType StyleTypes)
 public:
@@ -61,11 +63,13 @@ public slots:
 public: //getter/setters
     QString selector() const;
     void setSelector(const QString &selector);
+    QString extend() const;
+    void setExtend(const QString &extend);
     QDeclarativeComponent *style();
     void setStyle(QDeclarativeComponent *style);
     QDeclarativeComponent *visuals();
     void setVisuals(QDeclarativeComponent *visuals);
-    QDeclarativeListProperty<Style> data();
+    QDeclarativeListProperty<QObject> data();
 
 private:
     Q_DISABLE_COPY(Style)

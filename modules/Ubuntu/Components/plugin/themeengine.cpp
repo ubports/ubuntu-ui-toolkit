@@ -58,8 +58,15 @@ bool StyleComponent::operator==(const StyleComponent &other)
 
 ThemeEngine::ThemeEngine(QObject *parent) :
     QObject(parent),
-    themeComponent(0)
+    m_debug(false),
+    m_engine(0),
+    m_themeComponent(0),
+    m_updateTheme(false)
 {
+
+    // TODO: watch theme file to detect changes
+    m_themeWatcher.addPath("demos/theme.cfg");
+    connect(&m_themeWatcher, SIGNAL(fileChanged(QString)), this, SLOT(changeTheme()));
 }
 
 ThemeEngine::~ThemeEngine()
@@ -83,24 +90,23 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     ThemeEngine *theme = themeEngine();
     theme->m_engine = engine;
     // load default theme, and build hash tree
-    //theme->loadTheme("/usr/lib/qt4/imports/Ubuntu/Components/DefaultTheme.qml");
-    theme->loadTheme("modules/Ubuntu/Components/DefaultTheme.qml");
-    // TODO: watch theme folders to detect system theme changes
+    //theme->loadTheme(QUrl::fromLocalFile("/usr/lib/qt4/imports/Ubuntu/Components/DefaultTheme.qml"));
+    theme->loadTheme(QUrl::fromLocalFile("modules/Ubuntu/Components/DefaultTheme.qml"));
 }
 
-Style *ThemeEngine::lookupStyle(StyledItem *item)
+Style *ThemeEngine::lookupStyle(StyledItem *item, bool forceClassName)
 {
     ThemeEngine *theme = themeEngine();
 
     if (theme->m_styleCache.isEmpty())
         return 0;
 
-    StylePath path = theme->getStylePath(item);
+    StylePath path = theme->getStylePath(item, forceClassName);
     const StyleComponent styleComponent = theme->match(path);
-/*
-    qDebug() << "Component:" << theme->stylePathToString(path)
-             << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
-*/
+    if (theme->m_debug) {
+        qDebug() << "Component:" << theme->stylePathToString(path)
+                 << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
+    }
     return styleComponent.style;
 }
 
@@ -133,12 +139,11 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 }
 
 
-
-void ThemeEngine::loadTheme(const QString &themeFile)
+void ThemeEngine::loadTheme(const QUrl &themeFile)
 {
-    themeComponent = new QDeclarativeComponent(m_engine, QUrl::fromLocalFile(themeFile));
-    if (themeComponent->isLoading())
-        QObject::connect(themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
+    m_themeComponent = new QDeclarativeComponent(m_engine, themeFile);
+    if (m_themeComponent->isLoading())
+        QObject::connect(m_themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
                          this, SLOT(completeThemeLoading()));
     else
         completeThemeLoading();
@@ -146,37 +151,63 @@ void ThemeEngine::loadTheme(const QString &themeFile)
 
 void ThemeEngine::completeThemeLoading()
 {
-    if (!themeComponent->isError()) {
-        QObject *themeObject = themeComponent->create();
+    if (!m_themeComponent->isError()) {
+        QObject *themeObject = m_themeComponent->create();
         if (themeObject) {
             buildStyleCache(themeObject);
 
             // DEBUG: print theme cache
-/*
-            QListIterator<StyleComponent> sh(m_styleCache);
-            while (sh.hasNext()) {
-                qDebug() << "Style" << stylePathToString(sh.next().stylePath);
+            if (m_debug) {
+                QListIterator<StyleComponent> sh(m_styleCache);
+                while (sh.hasNext()) {
+                    qDebug() << "Style" << stylePathToString(sh.next().stylePath);
+                }
             }
-*/
         }
     } else {
-        qWarning() << themeComponent->errors();
+        qWarning() << m_themeComponent->errors();
     }
 
     // resize match list
     m_maybeMatchList.resize(m_styleCache.size());
 
     // reset component
-    themeComponent = 0;
+    m_themeComponent = 0;
     // emit theme changed signal so StyledItems get updated
     emit themeChanged();
 }
+
+/*!
+  \internal
+  Reads the theme descriptor file and change the theme accordingly
+*/
+void ThemeEngine::changeTheme()
+{
+    // TODO: get the theme path and implement based on that
+}
+
 
 // parses theme for style objects and builds up the cache from it
 void ThemeEngine::buildStyleCache(QObject *theme)
 {
     // parse its children for Styles
     QList<Style*> styles = theme->findChildren<Style*>();
+
+    // check whether the team contains a resetCache property that woruls cause
+    // resetting of teh current cache
+    bool resetCache = theme->property("resetCache").toBool();
+    if (resetCache)
+        m_styleCache.clear();
+
+    // check whether the theme imports any other theme than the default one
+    // the default theme import is not needed as that one is loaded automatically
+    // by the engine
+    QUrl importTheme = theme->property("include").toUrl();
+    if (importTheme.isValid() && !importTheme.isEmpty()) {
+        // load the theme as an increment
+        m_updateTheme = true;
+        loadTheme(importTheme);
+    }
 
     // the hierarchy is not set well, as all child-styles under other style
     // elements are listed under themeObject; therefore we need to check
@@ -189,8 +220,9 @@ void ThemeEngine::buildStyleCache(QObject *theme)
             continue;
         //StylePath basePath;
         QList<StylePath> pathList = parseSelector(style, StylePath());
-        foreach (const StylePath &path, pathList)
+        foreach (const StylePath &path, pathList) {
             m_styleCache.append(StyleComponent(path, style));
+        }
     }
 }
 
@@ -238,8 +270,11 @@ QList<StylePath> ThemeEngine::parseSelector(Style *style, const StylePath &paren
         }
         pathList.append(stylePath);
         // check its children to the selector
-        foreach (Style *child, style->d_ptr->data)
-            pathList << parseSelector(child, stylePath);
+        foreach (QObject *child, style->d_ptr->data) {
+            Style *cs = qobject_cast<Style*>(child);
+            if (cs)
+                pathList << parseSelector(cs, stylePath);
+        }
     }
     return pathList;
 }
@@ -265,14 +300,14 @@ QString ThemeEngine::stylePathToString(const StylePath &path) const
   Traverses and returns the path from \a obj up to root as
   a list of styleClass and styleId pairs
   */
-StylePath ThemeEngine::getStylePath(const StyledItem *obj) const
+StylePath ThemeEngine::getStylePath(const StyledItem *obj, bool forceClassName) const
 {
     StylePath stylePath;
     while (obj) {
         QString styleClass = obj->d_ptr->styleClass;
 
         // if styleClass is not defined, use the component's meta class name
-        if (styleClass.isEmpty()) {
+        if (styleClass.isEmpty() || forceClassName) {
             styleClass = obj->metaObject()->className();
             styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
         }

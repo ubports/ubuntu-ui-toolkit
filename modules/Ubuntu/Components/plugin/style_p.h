@@ -14,8 +14,9 @@ public:
 
     QDeclarativeComponent *style;
     QDeclarativeComponent *visuals;
-    QList<Style*> data;
+    QList<QObject*> data;
     QString selector;
+    QString extendStyle;
 };
 
 #endif // STYLE_P_H

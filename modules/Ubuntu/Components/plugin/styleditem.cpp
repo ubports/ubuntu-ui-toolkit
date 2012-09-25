@@ -77,14 +77,18 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 
         if (!styleItem && activeStyle->style()) {
             styleItem = activeStyle->style()->create(componentContext);
+            if (styleItem)
+                styleItem->setParent(q);
         }
 
         // do not mandate yet the existence of visuals
         if (!visualsItem) {
             QDeclarativeComponent *visuals = activeStyle->visuals();
             if (!visuals) {
-                // use meta class name to search for the visuals selector
-                qDebug() << "YUMM";
+                // reset
+                Style *visualsStyle = ThemeEngine::lookupStyle(q, true);
+                if (visualsStyle)
+                    visuals = visualsStyle->visuals();
             }
             if (visuals) {
                 // create visuals component
@@ -200,6 +204,19 @@ QObject *StyledItem::styleItem() const
     Q_D(const StyledItem);
     return d->styleItem;
 }
+void StyledItem::setStyleItem(QObject *styleItem)
+{
+    Q_D(StyledItem);
+    d->styleItem = styleItem;
+    /*
+    if (d->activeStyle && d->activeStyle->style()) {
+        QDeclarativeContext *ctx = d->activeStyle->style()->creationContext();
+        if (ctx)
+            ctx->setContextProperty("control", this);
+    }
+    */
+}
+
 
 QDeclarativeItem *StyledItem::visualsItem() const
 {
