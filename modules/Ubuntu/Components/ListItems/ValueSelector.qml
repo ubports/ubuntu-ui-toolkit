@@ -52,7 +52,7 @@ import QtQuick 1.1
         }
     \endqml
 */
-Base {
+Empty {
     id: selector
     height: column.height
 
@@ -68,7 +68,30 @@ Base {
       The location of the icon to show in the list item (optional).
       \qmlproperty url iconSource
      */
-    property alias iconSource: iconHelper.source
+    property alias iconSource: selectorMain.iconSource
+
+    /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: selectorMain.__leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: selectorMain.__rightIconMargin
+
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: selectorMain.iconFrame
 
     /*!
       \preliminary
@@ -100,23 +123,16 @@ Base {
         Base {
             id: selectorMain
             height: 48
-            __showTopSeparator: false
-            __showBottomSeparator: false
+            showDivider: false
             onClicked: selector.expanded = !selector.expanded
+            selected: selector.selected
 
-            IconVisual {
-                id: iconHelper
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                }
-            }
             LabelVisual {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
                     leftMargin: 5
-                    left: iconHelper.right
+                    left: parent.left
                 }
                 width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
             }
@@ -179,6 +195,10 @@ Base {
                     }
                 }
             }
+            ThinDivider {
+                anchors.bottom: parent.bottom
+                visible: valueRepeater.valueHeight > 0
+            }
         }
 
         Repeater {
@@ -216,7 +236,7 @@ Base {
                 height: valueRepeater.valueHeight
                 width: parent.width
 
-                Base {
+                Empty {
                     id: valueBase
                     height: parent.height
                     visible: valueBase.height > 0
@@ -226,9 +246,6 @@ Base {
                     }
 
                     selected: index === selector.selectedIndex
-
-                    __showBottomSeparator: index === selector.values.length - 1
-                    __showTopSeparator: true // TODO: show different (less wide) separator?
 
                     LabelVisual {
                         text: modelData

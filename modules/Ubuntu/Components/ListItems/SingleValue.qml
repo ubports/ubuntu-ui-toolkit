@@ -49,13 +49,6 @@ Base {
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    property alias iconSource: iconHelper.source
-
-    /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
@@ -63,32 +56,19 @@ Base {
 
     /*!
       \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
-
-    /*!
-      \preliminary
       The values that will be shown next to the label text
      */
     property alias value: valueLabel.text
 
-    IconVisual {
-        id: iconHelper;
-        anchors {
-            left: parent.left
-            top: parent.top
-        }
-    }
     LabelVisual {
         id: label
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
             leftMargin: 5
-            left: iconHelper.right
+            left: parent.left
         }
-        width: Math.min(invisibleLabel.implicitWidth, listItem.width - iconHelper.width - progressionHelper.width)
+        width: Math.min(invisibleLabel.implicitWidth, parent.width)
     }
     LabelVisual {
         id: invisibleLabel
@@ -101,22 +81,12 @@ Base {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            right: progressionHelper.left
+            right: parent.right
             rightMargin: 5
             left: label.right
             leftMargin: 5
         }
         horizontalAlignment: Text.AlignRight
         fontSize: "medium"
-    }
-    ProgressionVisual {
-        id: progressionHelper
-        visible: listItem.progression
-        showSplit: false
-        anchors {
-            right: parent.right
-            top: parent.top
-            bottom: parent.bottom
-        }
     }
 }

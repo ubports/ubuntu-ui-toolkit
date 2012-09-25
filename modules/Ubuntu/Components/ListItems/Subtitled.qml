@@ -70,23 +70,10 @@ Base {
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    property alias iconSource: iconHelper.source
-
-    /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
     property alias text: label.text
-
-    /*!
-      \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
 
     /*!
       \preliminary
@@ -95,63 +82,42 @@ Base {
      */
     property alias subText: subLabel.text
 
-    Item {
-        width: parent.width
-        height: parent.height
+    Item  {
+        id: middleVisuals
+        anchors {
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+        }
+        height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 
-        IconVisual {
-            id: iconHelper
+        LabelVisual {
+            id: label
+            selected: subtitledListItem.selected
             anchors {
                 top: parent.top
                 left: parent.left
+                right: parent.right
+                leftMargin: 5
+                rightMargin: 5
+                topMargin: 5
             }
         }
-        Item  {
-            id: middleVisuals
+        LabelVisual {
+            id: subLabel
+            selected: subtitledListItem.selected
             anchors {
-                left: iconHelper.right
-                right: progressionHelper.left
-            }
-            height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
+                leftMargin: 5
+                bottomMargin: 5
+                rightMargin: 5
 
-            LabelVisual {
-                id: label
-                selected: subtitledListItem.selected
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                    leftMargin: 5
-                    rightMargin: 5
-                    topMargin: 5
-                }
-            }
-            LabelVisual {
-                id: subLabel
-                selected: subtitledListItem.selected
-                anchors {
-                    leftMargin: 5
-                    bottomMargin: 5
-                    rightMargin: 5
-
-                    left: parent.left
-                    right: parent.right
-                    top: label.bottom
-                }
-                fontSize: "small"
-                wrapMode: Text.Wrap
-                maximumLineCount: 5
-            }
-        } // middleVisuals
-
-        ProgressionVisual {
-            id: progressionHelper
-            visible: subtitledListItem.progression
-            showSplit: true
-            anchors {
-                verticalCenter: parent.verticalCenter
+                left: parent.left
                 right: parent.right
+                top: label.bottom
             }
+            fontSize: "small"
+            wrapMode: Text.Wrap
+            maximumLineCount: 5
         }
     }
 }

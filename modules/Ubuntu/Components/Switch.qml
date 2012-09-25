@@ -157,8 +157,8 @@ Item {
         // FIXME(loicm) The radius of the thumb BorderImage must be lower than
         //     the radius of the background BorderImage so that the perimeter can
         //     look perfectly consistent.
-        // FIXME(loicm) There are stretch pixels on the left of the thumb in the
-        //     checked state.
+        // FIXME(loicm) There are stretched pixels on the left of the thumb in
+        //     the checked state.
 
         BorderImage {
             id: thumbShape
@@ -167,12 +167,7 @@ Item {
                * (1.0 - internals.thumbWidth)) : 0.0)
             y: backgroundShape.y + internals.thumbSpacing
             width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
-            // FIXME(loicm) Note sure why one pixel needs to be removed in order
-            //     to see the background shape at the bottom. I'll figure that
-            //     out while refactoring the code to correctly share common
-            //     rendering code between the Button, CheckBox, Switch and
-            //     ProgressBar components.
-            height: backgroundShape.height - (2.0 * internals.thumbSpacing) - 1.0
+            height: backgroundShape.height - (2.0 * internals.thumbSpacing)
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
