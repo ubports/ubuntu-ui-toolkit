@@ -25,8 +25,9 @@ Item {
     visible: source != "" && icon.status == Image.Ready
     property bool hasFrame: true
 
-    property real leftRightIconMargin: 5
-    width: visible ? icon.width + 2*leftRightIconMargin : 0
+    property real leftIconMargin: 5
+    property real rightIconMargin: 5
+    width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
 
     anchors {
         top: parent ? parent.top : undefined
@@ -41,8 +42,9 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: iconVisual.leftRightIconMargin
+            leftMargin: iconVisual.leftIconMargin
         }
+        height: Math.min(sourceSize.height, iconVisual.height - 4) // top and bottom margin of 2
     }
 
     BorderImage {

@@ -80,6 +80,23 @@ Empty {
     property bool progression: false
 
     /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: iconHelper.leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: iconHelper.rightIconMargin
+
+
+    /*!
       \preliminary
       An optional control that is displayed inside the list item.
       The width of the control must be specified in order to determine
@@ -88,12 +105,14 @@ Empty {
       The mouseArea of the control will be set to the full Standard list item if
       there is no \l progression, or only the part left of the split, if there is a
       \l progression.
+      \qmlproperty Item control
     */
     property alias control: controlContainer.control
 
     /*!
       \preliminary
       Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
      */
     property alias iconFrame: iconHelper.hasFrame
 
