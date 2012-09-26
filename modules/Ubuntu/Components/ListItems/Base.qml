@@ -35,7 +35,7 @@ Empty {
       The location of the icon to show in the list item (optional).
       \qmlproperty url iconSource
      */
-    property alias iconSource: iconHelper.source
+    //    property alias iconSource: iconHelper.source
 
     /*!
       \preliminary
@@ -48,7 +48,7 @@ Empty {
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
-    property alias iconFrame: iconHelper.hasFrame
+    //    property alias iconFrame: iconHelper.hasFrame
 
     /*!
       \internal
@@ -56,7 +56,7 @@ Empty {
       \qmlproperty real leftIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftIconMargin: iconHelper.leftIconMargin
+    //    property alias __leftIconMargin: iconHelper.leftIconMargin
 
     /*!
       \internal
@@ -64,11 +64,32 @@ Empty {
       \qmlproperty real rightIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: iconHelper.rightIconMargin
+    //    property alias __rightIconMargin: iconHelper.rightIconMargin
 
-    Icon {
-        id: iconHelper
+    //    Icon {
+    //        id: iconHelper
+    //    }
+
+    property variant icon
+    property Item __leftItem
+    onIconChanged: {
+        if (__leftItem) {
+            __leftObject.visible = false;
+            if (__leftItem.pleaseCleanMeUp === true) __leftObject.destroy();
+            __leftItem = null;
+        }
+
+        if (typeof icon == "string") {
+            // leftItem is the url of an image
+            var objectstring = 'import Ubuntu.Components.ListItems 0.1; Icon { source: "'+icon+'" }';
+            __leftItem = Qt.createQmlObject(objectstring, baseListItem);
+            __leftItem.__pleaseCleanMeUp = true;
+        } else {
+            __leftItem = icon;
+            __leftItem.parent = baseListItem;
+        }
     }
+
 
     /*!
       \internal
@@ -79,8 +100,10 @@ Empty {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            left: iconHelper.right
+            //            left: iconHelper.right
+            left: parent.left
             right: progressionHelper.left
+            leftMargin: __leftItem ? __leftItem.width + __leftItem.anchors.leftMargin + __leftItem.anchors.rightMargin : 0
         }
     }
 

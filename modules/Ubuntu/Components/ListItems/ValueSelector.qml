@@ -68,7 +68,9 @@ Empty {
       The location of the icon to show in the list item (optional).
       \qmlproperty url iconSource
      */
-    property alias iconSource: selectorMain.iconSource
+//    property alias iconSource: selectorMain.iconSource
+
+    property alias icon: selectorMain.icon
 
     /*!
       \internal
@@ -76,7 +78,7 @@ Empty {
       \qmlproperty real leftIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftIconMargin: selectorMain.__leftIconMargin
+//    property alias __leftIconMargin: selectorMain.__leftIconMargin
 
     /*!
       \internal
@@ -84,14 +86,14 @@ Empty {
       \qmlproperty real rightIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: selectorMain.__rightIconMargin
+//    property alias __rightIconMargin: selectorMain.__rightIconMargin
 
     /*!
       \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
-    property alias iconFrame: selectorMain.iconFrame
+//    property alias iconFrame: selectorMain.iconFrame
 
     /*!
       \preliminary
