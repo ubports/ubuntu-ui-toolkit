@@ -37,7 +37,7 @@ import Ubuntu.Components 0.1
                }
             ListItem.Standard {
                 text: "List item with icon"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
             }
             ListItem.Standard {
                 text: "With a progression arrow"
