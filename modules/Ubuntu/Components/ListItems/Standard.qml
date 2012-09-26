@@ -62,6 +62,14 @@ Empty {
 
     /*!
       \preliminary
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item.
+      \qmlproperty variant icon
+    */
+    property variant icon
+
+    /*!
+      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
@@ -106,12 +114,10 @@ Empty {
     }
 
     /*!
-      \preliminary
-      The location of the icon to show in the list item (optional), or an Item that is
-      shown on the left side inside the list item.
-      \qmlproperty variant icon
-    */
-    property variant icon
+      \internal
+      The internal representation of the icon. Can be equal to \l icon if that is
+      an item, or an initialized IconVisual if \l icon is a url.
+     */
     property Item __leftItem
     onIconChanged: {
         if (__leftItem) {

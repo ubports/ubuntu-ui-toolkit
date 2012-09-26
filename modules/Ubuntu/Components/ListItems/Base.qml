@@ -32,17 +32,23 @@ Empty {
 
     /*!
       \preliminary
-      Show or hide the progression symbol.
-     */
-    property bool progression: false
-
-    /*!
-      \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
       shown on the left side inside the list item.
       \qmlproperty variant icon
     */
     property variant icon
+
+    /*!
+      \preliminary
+      Show or hide the progression symbol.
+     */
+    property bool progression: false
+
+    /*!
+      \internal
+      The internal representation of the icon. Can be equal to \l icon if that is
+      an item, or an initialized IconVisual if \l icon is a url.
+     */
     property Item __leftItem
     onIconChanged: {
         if (__leftItem) {
@@ -61,7 +67,6 @@ Empty {
             __leftItem.parent = baseListItem;
         }
     }
-
 
     /*!
       \internal
