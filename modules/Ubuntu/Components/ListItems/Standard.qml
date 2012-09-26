@@ -135,9 +135,10 @@ Empty {
         color: "white"
         opacity: 0.7
     }
-    IconVisual {
+    Icon {
         id: iconHelper
     }
+
     LabelVisual {
         id: label
         selected: listItem.selected

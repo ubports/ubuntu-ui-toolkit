@@ -66,7 +66,7 @@ Empty {
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: iconHelper.rightIconMargin
 
-    IconVisual {
+    Icon {
         id: iconHelper
     }
 
