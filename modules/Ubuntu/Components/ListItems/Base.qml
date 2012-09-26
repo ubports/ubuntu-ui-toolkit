@@ -58,10 +58,8 @@ Empty {
         }
 
         if (typeof icon == "string") {
-            // leftItem is the url of an image
-            var objectstring = 'import Ubuntu.Components.ListItems 0.1; IconVisual { source: "'+icon+'" }';
-            __leftItem = Qt.createQmlObject(objectstring, baseListItem);
-            __leftItem.__pleaseCleanMeUp = true;
+            // icon is the url of an image
+            __leftItem = Qt.createQmlObject('IconVisual { source: "'+icon+'"; __pleaseCleanMeUp: true }', baseListItem);
         } else {
             __leftItem = icon;
             __leftItem.parent = baseListItem;
