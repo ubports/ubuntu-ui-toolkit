@@ -121,8 +121,8 @@ Empty {
     property Item __leftItem
     onIconChanged: {
         if (__leftItem) {
-            __leftObject.visible = false;
-            if (__leftItem.pleaseCleanMeUp === true) __leftObject.destroy();
+            __leftItem.visible = false;
+            if (__leftItem.pleaseCleanMeUp === true) __leftItem.destroy();
             __leftItem = null;
         }
 
