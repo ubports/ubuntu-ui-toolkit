@@ -62,13 +62,6 @@ Empty {
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    //    property alias iconSource: iconHelper.source
-
-    /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
@@ -79,23 +72,6 @@ Empty {
       Show or hide the progression symbol.
      */
     property bool progression: false
-
-    /*!
-      \internal
-      The margins on the left side of the icon.
-      \qmlproperty real leftIconMargin
-     */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    //    property alias __leftIconMargin: iconHelper.leftIconMargin
-
-    /*!
-      \internal
-      The margins on the right side of the icon.
-      \qmlproperty real rightIconMargin
-     */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    //    property alias __rightIconMargin: iconHelper.rightIconMargin
-
 
     /*!
       \preliminary
@@ -109,13 +85,6 @@ Empty {
       \qmlproperty Item control
     */
     property alias control: controlContainer.control
-
-    /*!
-      \preliminary
-      Show or hide the frame around the icon
-      \qmlproperty bool iconFrame
-     */
-    //    property alias iconFrame: iconHelper.hasFrame
 
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
