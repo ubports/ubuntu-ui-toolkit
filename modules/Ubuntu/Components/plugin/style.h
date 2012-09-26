@@ -25,63 +25,50 @@
 
 #include <QLibrary>
 
-class StylePrivate;
+class StyleRulePrivate;
 class QDeclarativeComponent;
-class Style : public QObject, public QDeclarativeParserStatus
+class StyleRule : public QObject, public QDeclarativeParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
 
-    Q_PROPERTY(QString selector READ selector WRITE setSelector NOTIFY styleChanged)
-    Q_PROPERTY(QString extend READ extend WRITE setExtend NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeComponent *visuals READ visuals WRITE setVisuals NOTIFY styleChanged)
+    Q_PROPERTY(QString selector READ selector WRITE setSelector)
+    Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle)
+    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate)
+/*
     Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
-
     Q_CLASSINFO("DefaultProperty", "data")
-    Q_FLAGS(StyleType StyleTypes)
+*/
 public:
-    enum StyleType {
-        ConfigurationStyle = 0x01,
-        VisualStyle = 0x02
-    };
-    Q_DECLARE_FLAGS(StyleTypes, StyleType)
-
-    Style(QObject *parent = 0);
-    ~Style();
+    StyleRule(QObject *parent = 0);
+    ~StyleRule();
 
     void classBegin();
     void componentComplete();
 
-    StyleTypes styleType();
-
 signals:
-    void styleChanged();
+    // the signal is emitted once the rule is completed
+    void ruleChanged();
 
 public slots:
 
 public: //getter/setters
     QString selector() const;
     void setSelector(const QString &selector);
-    QString extend() const;
-    void setExtend(const QString &extend);
     QDeclarativeComponent *style();
     void setStyle(QDeclarativeComponent *style);
-    QDeclarativeComponent *visuals();
-    void setVisuals(QDeclarativeComponent *visuals);
+    QDeclarativeComponent *delegate();
+    void setDelegate(QDeclarativeComponent *delegate);
     QDeclarativeListProperty<QObject> data();
 
 private:
-    Q_DISABLE_COPY(Style)
-    Q_DECLARE_PRIVATE(Style)
+    Q_DISABLE_COPY(StyleRule)
+    Q_DECLARE_PRIVATE(StyleRule)
     friend class ThemeEngine;
     friend class StyledItem;
-    QScopedPointer<StylePrivate> d_ptr;
+    QScopedPointer<StyleRulePrivate> d_ptr;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Style::StyleTypes)
-
-
-QML_DECLARE_TYPE(Style)
+QML_DECLARE_TYPE(StyleRule)
 
 #endif // STYLE_H

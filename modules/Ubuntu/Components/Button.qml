@@ -50,15 +50,11 @@ ButtonWithForeground {
     width: 87
     height: 39
 
-    // this shouldn't be needed as by default there is a style component attached to it
-    // we set this to have ListItems.Standard working yet
-    styleClass: "Button"
-
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: styleItem.color//"#e3e5e8"
+    property color color: styleObject.color//"#e3e5e8"
 
     /*!
        \preliminary

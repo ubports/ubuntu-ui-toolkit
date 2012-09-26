@@ -22,98 +22,79 @@
 #include <QDeclarativeProperty>
 
 /*!
-  \class Style
-  \brief Style class is the root component of every styling component in UITK.
-  It is a helper
+  \class StyleRule
+  \brief StyleRule component is used to define styling elements for the UITK.
 
 */
 
-StylePrivate::StylePrivate(Style *qq) :
+StyleRulePrivate::StyleRulePrivate(StyleRule *qq) :
     q_ptr(qq),
     style(0),
-    visuals(0)
+    delegate(0)
 {
 }
 
 /*=============================================================================
 =============================================================================*/
 
-Style::Style(QObject *parent) :
+StyleRule::StyleRule(QObject *parent) :
     QObject(parent),
-    d_ptr(new StylePrivate(this))
+    d_ptr(new StyleRulePrivate(this))
 {}
 
-Style::~Style()
+StyleRule::~StyleRule()
 {}
 
 
-void Style::classBegin()
+void StyleRule::classBegin()
 {
 
 }
 
-void Style::componentComplete()
+void StyleRule::componentComplete()
 {
+    // emit changed signal; this is needed when developer defines a private StyleRule
+    // for a control
+    emit ruleChanged();
 }
 
-Style::StyleTypes Style::styleType()
+QString StyleRule::selector() const
 {
-    Q_D(Style);
-    StyleTypes ret = 0;
-    if (d->style)
-        ret |= ConfigurationStyle;
-    if (d->visuals)
-        ret |= VisualStyle;
-    return ret;
-}
-
-
-QString Style::selector() const
-{
-    Q_D(const Style);
+    Q_D(const StyleRule);
     return d->selector;
 }
-void Style::setSelector(const QString &selector)
+void StyleRule::setSelector(const QString &selector)
 {
-    Q_D(Style);
-    if (d->selector != selector) {
-        d->selector = selector;
-        emit styleChanged();
-    }
+    Q_D(StyleRule);
+    d->selector = selector;
 }
 
-QDeclarativeComponent *Style::style()
+QDeclarativeComponent *StyleRule::style()
 {
-    Q_D(const Style);
+    Q_D(const StyleRule);
     return d->style;
 }
-void Style::setStyle(QDeclarativeComponent *style)
+void StyleRule::setStyle(QDeclarativeComponent *style)
 {
-    Q_D(Style);
-    if (d->style != style) {
-        d->style = style;
-        emit styleChanged();
-    }
+    Q_D(StyleRule);
+    d->style = style;
 }
 
-QDeclarativeComponent *Style::visuals()
+QDeclarativeComponent *StyleRule::delegate()
 {
-    Q_D(const Style);
-    return d->visuals;
+    Q_D(const StyleRule);
+    return d->delegate;
 }
 
-void Style::setVisuals(QDeclarativeComponent *visuals)
+void StyleRule::setDelegate(QDeclarativeComponent *delegate)
 {
-    Q_D(Style);
-    if (d->visuals != visuals) {
-        d->visuals = visuals;
-        emit styleChanged();
-    }
+    Q_D(StyleRule);
+    d->delegate = delegate;
 }
 
-QDeclarativeListProperty<QObject> Style::data()
+QDeclarativeListProperty<QObject> StyleRule::data()
 {
-    Q_D(Style);
+    Q_D(StyleRule);
     return QDeclarativeListProperty<QObject>(this, d->data);
 }
 

@@ -26,31 +26,26 @@ import QtQuick 1.1
     Examples:
     \qml
         Tabs {
-            Page {
+            Tab {
                 title: "tab 1"
-                contents: Text {
-                    anchors.centerIn: parent
+                page: Text {
                     text: "This is the first tab."
                 }
             }
-            Page {
+            Tab {
                 title: "tab 2"
-                contents: Text {
-                    anchors.centerIn: parent
-                    text: "Tab number two."
-                }
-            }
-            Page {
-                title: "tab 3"
-                contents:  Rectangle {
-                    id: tab3
-                    anchors.fill: parent
+                iconSource: "icon.png"
+                page: Rectangle {
                     Text {
                         anchors.centerIn: parent
-                        text: "Colorful tab 3"
+                        text: "Colorful tab."
                     }
                     color: "lightblue"
                 }
+            }
+            Tab {
+                title: "tab 3"
+                page: Qt.resolvedUrl("MyCustomPage.qml")
             }
         }
     \endqml
@@ -58,8 +53,14 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 
-PageContainer {
+Item {
     id: tabs
+
+    /*!
+      \internal
+      The children of the Tabs should be instances of Tab.
+     */
+    default property alias children: contentsContainer.children
 
     /*!
       \preliminary
@@ -81,7 +82,7 @@ PageContainer {
       \preliminary
       If this optional property is specified, it will be positioned
       between the bar with tab buttons, and the tab pages to act
-      as a separator.
+      as a separator. By default, it is a 1-pixel height white rectangle.
      */
     property Item separator: Rectangle {
             color: "white"
@@ -143,7 +144,7 @@ PageContainer {
                     if (button.implicitWidth > widest) {
                         widest = button.implicitWidth;
                     }
-                } // for i
+                }
                 buttonRow.widestButtonWidth = widest;
             }
 
@@ -152,7 +153,8 @@ PageContainer {
                 onModelChanged: buttonRow.updateWidestButtonWidth()
                 onCountChanged: buttonRow.updateWidestButtonWidth()
 
-                model: tabs.pages
+                model: tabs.children
+
                 TabButton {
                     id: tabButton
                     property Item page: modelData
@@ -166,7 +168,7 @@ PageContainer {
                 }
             }
             Component.onCompleted: buttonRow.updateWidestButtonWidth()
-        } // buttonRow
+        }
 
         // This is the item that will be the parent of the currently displayed page.
         Item {
@@ -181,13 +183,12 @@ PageContainer {
 
         function selectedTabChanged() {
             var tab;
-            for (var i = 0; i < tabs.pages.length; i++) {
-                tab = tabs.pages[i]
+            for (var i = 0; i < tabs.children.length; i++) {
+                tab = tabs.children[i];
                 if (i == tabs.selectedTabIndex) {
-                    tab.contentsParent = contentsContainer;
-                    tab.active = true;
+                    tab.__active = true;
                 } else {
-                    tab.active = false;
+                    tab.__active = false;
                 }
             }
         }
@@ -199,7 +200,8 @@ PageContainer {
                 tabs.separator.anchors.left = visuals.left;
                 tabs.separator.anchors.right = visuals.right;
                 visuals.contentsContainer.anchors.top = tabs.separator.bottom;
-            } else { // no separator
+            } else {
+                // no separator
                 visuals.contentsContainer.anchors.top = visuals.buttonRow.bottom;
             }
         }
@@ -209,7 +211,7 @@ PageContainer {
             onSelectedTabIndexChanged: visuals.selectedTabChanged()
             onSeparatorChanged: visuals.separatorChanged()
         }
-    } // visuals
+    }
 
     Component.onCompleted: {
         visuals.separatorChanged();

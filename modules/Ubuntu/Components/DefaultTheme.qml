@@ -16,7 +16,6 @@
 
 import QtQuick 1.1
 import Ubuntu.Components 0.1
-import Qt.labs.shaders 1.0
 
 Theme{
 
@@ -24,94 +23,72 @@ Theme{
     // the first one evaluated. Therefore all overloading style should be defined prior
     // to the style to be overload
 
-    Style {
+    Rule {
         // this style component defines the custom properties applied on the component
         // only the altered property is defined, the rest should be taken from the
         // .Button style
         selector: ".button"
-        style: ButtonStyle {
-            color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"//"#e3e5e8"
-            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
+        style: QtObject {
+            property variant color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"//"#e3e5e8"
+            property variant borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            property variant borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
                     : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
         }
     }
 
-    Style {
+    Rule {
         // this style component defines the default visuals of a Button control
         selector: ".Button"
-        style: ButtonStyle {
-            color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
-            borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
+        style: QtObject {
+            property variant color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
+            property variant borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+            property variant borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
                     : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
         }
 
-        visuals: Component {
-            Item {
-                z: -1
-                anchors.fill: control
+        delegate: Component {ButtonStyle{}}
+    }
 
-                // pick either a clear or dark text color depending on the luminance of the
-                // background color to maintain good contrast (works in most cases)
-                function __luminance(hexcolor){
-                    hexcolor = String(hexcolor)
-                    var r = parseInt(hexcolor.substr(1,2),16);
-                    var g = parseInt(hexcolor.substr(3,2),16);
-                    var b = parseInt(hexcolor.substr(5,2),16);
-                    return ((r*212)+(g*715)+(b*73))/1000/255;
-                }
 
-                Binding {
-                    target: control
-                    property: "textColor"
-                    value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
-                }
+    // test rulez
+    Rule {
+        selector: ".tframe"
+        style: QtObject {
+            property color color: "tan"
+            property color border: "blue"
+        }
+    }
 
-                // FIXME: think of using distance fields
-                BorderImage {
-                    id: shape
+    Rule {
+        selector: ".tframe > .tbutton"
+        delegate: Rectangle {
+            z: -1
+            anchors.fill: parent
+            radius: 8
+            border.color: "pink"
+            border.width: 4
+            color: control.pressed ? "grey" : "yellow"
+            smooth: true
 
-                    anchors.fill: parent
-
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: styleItem.borderShape
-                    border.left: 18; border.top: 15
-                    border.right: 18; border.bottom: 15
-                }
-
-                // FIXME: might become a paper texture
-                Rectangle {
-                    id: base
-
-                    anchors.fill: shape
-                    color: control.pressed ? control.pressedColor : control.color
-
-                }
-
-                ButtonMaskEffect {
-                    anchors.fill: shape
-                    gradientStrength: control.pressed ? 0.0 : 1.0
-                    Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
-
-                    mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
-                    base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
-                }
-
-                // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
-                BorderImage {
-                    id: border
-
-                    anchors.fill: parent
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: styleItem.borderImage
-                    border.left: 14; border.top: 17
-                    border.right: 15; border.bottom: 18
-                }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: control.clicked()
             }
         }
+    }
+    Rule {
+        selector: ".tbox .tframe .tbutton"
+        style: Item{}
+    }
+
+    Rule {
+        selector: ".tframe > .tbutton#blah"
+        style: Item{}
+    }
+
+    Rule {
+        selector: ".ttoolbar > .tbutton"
+        style: Item {}
     }
 
 }

@@ -25,7 +25,7 @@
 #include <QUrl>
 #include <QFileSystemWatcher>
 
-class Style;
+class StyleRule;
 class QDeclarativeEngine;
 class QDeclarativeItem;
 class QDeclarativeComponent;
@@ -36,7 +36,9 @@ typedef QHash<QString, StyledItem*> InstanceHash;
 class StylePathNode {
     public:
     enum Relationship {Child, Descendant, Sibling};
+    StylePathNode();
     StylePathNode(const QString &styleClass, const QString &styleId, Relationship relationship);
+    QString toString() const;
     bool operator==(const StylePathNode &other);
     QString styleClass;
     QString styleId;
@@ -46,12 +48,32 @@ typedef QList<StylePathNode> StylePath;
 
 class StyleComponent {
     public:
-    StyleComponent(StylePath stylePath, Style *style);
+    StyleComponent(StylePath stylePath, StyleRule *style);
     StylePath stylePath;
-    Style *style;
+    StyleRule *style;
     bool operator==(const StyleComponent &other);
 };
 typedef QList<StyleComponent> StyleCache;
+
+
+class StyleTreeNode {
+public:
+    StyleTreeNode(StyleTreeNode *parent = 0);
+    StyleTreeNode(StyleTreeNode *parent, const StylePathNode &node, StyleRule *styleRule);
+    ~StyleTreeNode();
+    void addStyleRule(const StylePath &path, StyleRule *styleRule);
+    StyleRule *lookupStyleRule(const StylePath &path, bool strict = false);
+    StyleRule *testNode(StylePathNode &nextNode, const StylePath &sparePath, bool &strict);
+    void listTree(const QString &prefix = QString());
+
+public:
+    StyleTreeNode *parent;
+    StylePathNode styleNode;
+    StyleRule *styleRule;
+    // the key is the next CSS node's styleClass#styleId combination, without the relationship
+    // therefore we need a multi-hash that accepts multiple values for the same key
+    QHash<QString, StyleTreeNode*> children;
+};
 
 class ThemeEngine : public QObject
 {
@@ -70,14 +92,15 @@ public: // utility methods
     static ThemeEngine* instance();
     static QDeclarativeEngine *engine();
     static void initialize(QDeclarativeEngine *engine);
-    static Style *lookupStyle(StyledItem *item, bool forceClassName = false);
+    static StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
     static bool registerInstanceId(StyledItem *item, const QString &newId);
 
     // public functions on instance
     void buildStyleCache(QObject *theme);
-    QList<StylePath> parseSelector(Style *style, const StylePath &parentPath) const;
+    QList<StylePath> parseSelector(StyleRule *styleRule, const StylePath &parentPath) const;
     QString stylePathToString(const StylePath &path) const;
     StylePath getStylePath(const StyledItem *obj, bool forceClassName) const;
+    StyleRule *styleRuleForPath(const StylePath &path);
     StyleComponent match(const StylePath &srcStylePath);
 
 signals:
@@ -91,9 +114,10 @@ private slots:
     void changeTheme();
 
 private: //members
-    bool m_debug;
     QDeclarativeEngine *m_engine;
     StyleCache m_styleCache;
+    // suffix tree for the styles
+    StyleTreeNode *m_styleTree;
     QVector<int> m_maybeMatchList;
     InstanceHash m_instanceCache;
     // needed for theme loading

@@ -15,9 +15,75 @@
  */
 
 import QtQuick 1.1
+import Qt.labs.shaders 1.0
 
+/*
 QtObject {
     property color color
     property url borderShape
     property url borderImage
+}
+*/
+Item {
+    z: -1
+    anchors.fill: parent
+
+    // pick either a clear or dark text color depending on the luminance of the
+    // background color to maintain good contrast (works in most cases)
+    function __luminance(hexcolor){
+        hexcolor = String(hexcolor)
+        var r = parseInt(hexcolor.substr(1,2),16);
+        var g = parseInt(hexcolor.substr(3,2),16);
+        var b = parseInt(hexcolor.substr(5,2),16);
+        return ((r*212)+(g*715)+(b*73))/1000/255;
+    }
+
+    Binding {
+        target: control
+        property: "textColor"
+        value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
+    }
+
+    // FIXME: think of using distance fields
+    BorderImage {
+        id: shape
+
+        anchors.fill: parent
+
+        horizontalTileMode: BorderImage.Stretch
+        verticalTileMode: BorderImage.Stretch
+        source: control.styleObject.borderShape
+        border.left: 18; border.top: 15
+        border.right: 18; border.bottom: 15
+    }
+
+    // FIXME: might become a paper texture
+    Rectangle {
+        id: base
+
+        anchors.fill: shape
+        color: control.pressed ? control.pressedColor : control.color
+
+    }
+
+    ButtonMaskEffect {
+        anchors.fill: shape
+        gradientStrength: control.pressed ? 0.0 : 1.0
+        Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
+
+        mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
+        base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
+    }
+
+    // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
+    BorderImage {
+        id: border
+
+        anchors.fill: parent
+        horizontalTileMode: BorderImage.Stretch
+        verticalTileMode: BorderImage.Stretch
+        source: control.styleObject.borderImage
+        border.left: 14; border.top: 17
+        border.right: 15; border.bottom: 18
+    }
 }

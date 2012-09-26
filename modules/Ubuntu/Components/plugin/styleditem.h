@@ -22,7 +22,7 @@
 #include <QDeclarativeItem>
 #include <QDeclarativeListProperty>
 
-class Style;
+class StyleRule;
 
 class StyledItemPrivate;
 class StyledItem : public QDeclarativeItem
@@ -32,9 +32,9 @@ class StyledItem : public QDeclarativeItem
 
     Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
-    Q_PROPERTY(Style *style READ activeStyle NOTIFY styleChanged)
-    Q_PROPERTY(QObject *styleItem READ styleItem WRITE setStyleItem NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeItem *visualsItem READ visualsItem  NOTIFY styleChanged)
+    Q_PROPERTY(StyleRule *styleRule READ styleRule WRITE setStyleRule NOTIFY styleChanged)
+    Q_PROPERTY(QObject *styleObject READ styleObject NOTIFY styleChanged)
+    Q_PROPERTY(QDeclarativeItem *delegateItem READ delegateItem NOTIFY styleChanged)
 
 public:
     StyledItem(QDeclarativeItem *parent = 0);
@@ -53,11 +53,10 @@ private: // getter/setter
     void setInstanceId(const QString &instanceId);
     QString styleClass() const;
     void setStyleClass(const QString &styleClass);
-    Style *activeStyle() const;
-    void setActiveStyle(Style *style);
-    QObject *styleItem() const;
-    void setStyleItem(QObject *styleItem);
-    QDeclarativeItem *visualsItem() const;
+    StyleRule *styleRule() const;
+    void setStyleRule(StyleRule *style);
+    QObject *styleObject() const;
+    QDeclarativeItem *delegateItem() const;
 
 private: //members
     Q_DECLARE_PRIVATE(StyledItem)

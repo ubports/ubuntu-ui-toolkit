@@ -19,68 +19,23 @@ import QtQuick 1.1
 /*!
     \qmlclass Page
     \inqmlmodule Ubuntu.Components 0.1
-    \brief A page that can be included in Tabs object.
+    \brief A page that can be included in \l Tab object or pushed on a \l PageStack
 
     \b{This component is under heavy development.}
 
-    Examples: See \l Tabs.
+    Examples: See \l Tabs and \l PageStack.
 */
 Item {
     id: page
 
+    anchors.fill: parent ? parent : undefined
+    visible: false
+
     /*!
       \preliminary
-      The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
+      The title of the page. May be shown in a \l PageStack header (optional).
      */
     property string title
-
-    /*!
-      \preliminary
-      The location of the icon that is displayed inside the button used to select this page (optional).
-      Either \l title or iconSource, or both must be defined.
-     */
-    property url iconSource
-
-    /*!
-      \preliminary
-      The Item that is shown when this page is active.
-      If no contents is specified, the contents specified by \l contentsSource will be loaded.
-     */
-    property Item contents: loader.item
-
-    /*!
-      \preliminary
-      conentsSource is used as the location of the QML file defining
-      the contents that will be displayed when this page is active and no \l contents was defined.
-     */
-    property url contentsSource
-
-    /*!
-      \preliminary
-      If \l contentsSource is used to define the contents of this page, preloadContents specifies whether
-      the contents should be preloaded from the QML file when the application starts, or loading
-      is delayed until the contents is active.
-     */
-    property bool preloadContents: false
-
-    /*!
-      \preliminary
-      Indicates whether this page is active.
-      Its value is automatically updated by the \l Tabs object.
-      TODO:  make internal and prefix with __?
-    */
-    property bool active: false
-
-    /*!
-      \preliminary
-      Specifies the visual parent of the \l contents Item.
-      The parent of \l contents is set when the page is made active
-      (after it is automatically loaded from \l contentsSource, if applicable).
-      This value is automatically updated by the \l Tabs object.
-      TODO: make internal and prefix with __?
-     */
-    property Item contentsParent
 
     /*!
       \internal
@@ -88,32 +43,10 @@ Item {
      */
     property bool __isPage: true
 
-    Loader {
-        id: loader
-
-        source: (status == Loader.Ready || page.preloadContents || page.active) ? page.contentsSource : ""
-
-        property Item previousContents
-
-        function updateContentsVisibility() {
-            if (page.contents) {
-                if (page.contentsParent) page.contents.parent = page.contentsParent;
-                page.contents.visible = page.active;
-            }
-        }
-
-        function hidePreviousContents() {
-            if (previouscontents && previousContents !== page.contents) previousContents.visible = false;
-            previousContents = page.contents;
-        }
-
-        Connections {
-            target: page
-            onContentsChanged: {
-                loader.hidePreviousContents();
-                loader.updateContentsVisibility();
-            }
-            onActiveChanged: loader.updateContentsVisibility()
-        }
-    }
+    /*!
+      \preliminary
+      The \l PageStack that this Page has been pushed on, or null if it is not
+      part of a PageStack. This value is automatically updated by the \l PageStack.
+     */
+    property PageStack pageStack
 }

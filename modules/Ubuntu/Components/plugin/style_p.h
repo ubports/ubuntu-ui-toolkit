@@ -3,20 +3,19 @@
 
 #include "style.h"
 
-class StylePrivate
+class StyleRulePrivate
 {
-    Q_DECLARE_PUBLIC(Style)
+    Q_DECLARE_PUBLIC(StyleRule)
 
 public:
-    StylePrivate(Style *qq);
+    StyleRulePrivate(StyleRule *qq);
 
-    Style *q_ptr;
+    StyleRule *q_ptr;
 
     QDeclarativeComponent *style;
-    QDeclarativeComponent *visuals;
+    QDeclarativeComponent *delegate;
     QList<QObject*> data;
     QString selector;
-    QString extendStyle;
 };
 
 #endif // STYLE_P_H

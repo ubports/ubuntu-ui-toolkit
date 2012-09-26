@@ -31,17 +31,14 @@ public:
     StyledItem *q_ptr;
     bool privateStyle;
     bool componentCompleted;
-    Style *activeStyle;
-    QObject *styleItem;
+    StyleRule *styleRule;
+    QObject *styleObject;
     QString styleClass;
     QString instanceId;
 
-    // style identification
-    QString styleKey;
-
     // internal members
     QDeclarativeContext *componentContext;
-    QDeclarativeItem *visualsItem;
+    QDeclarativeItem *delegateItem;
 
     void updateCurrentStyle(bool forceUpdate = false);
     void _q_reloadTheme();

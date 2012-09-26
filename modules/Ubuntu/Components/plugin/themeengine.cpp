@@ -30,20 +30,40 @@
 
 Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
 
+static bool themeDebug = false;
+
 /*=============================================================================
 =============================================================================*/
 
+StylePathNode::StylePathNode() :
+    relationship(Descendant)
+{}
 StylePathNode::StylePathNode(const QString &styleClass, const QString &styleId, Relationship relationship) :
     styleClass(styleClass), styleId(styleId), relationship(relationship)
 {
 }
+
+QString StylePathNode::toString() const
+{
+    QString result;
+    if (relationship == StylePathNode::Child)
+        result += "> ";
+    else if (relationship == StylePathNode::Sibling)
+        result += "+ ";
+    if (!styleClass.isEmpty())
+        result += "." + styleClass;
+    if (!styleId.isEmpty())
+        result += "#" + styleId;
+    return result;
+}
+
 
 bool StylePathNode::operator==(const StylePathNode &other)
 {
     return styleClass == other.styleClass && styleId == other.styleId && relationship == other.relationship;
 }
 
-StyleComponent::StyleComponent(StylePath stylePath, Style *style) :
+StyleComponent::StyleComponent(StylePath stylePath, StyleRule *style) :
     stylePath(stylePath), style(style)
 {
 }
@@ -53,16 +73,160 @@ bool StyleComponent::operator==(const StyleComponent &other)
     return stylePath == other.stylePath;
 }
 
+StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
+    parent(parent), styleNode("", "", StylePathNode::Descendant), styleRule(0)
+{
+}
+
+StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const StylePathNode &node, StyleRule *styleRule) :
+    parent(parent), styleNode(node), styleRule(styleRule)
+{
+}
+
+StyleTreeNode::~StyleTreeNode()
+{
+    QHashIterator<QString, StyleTreeNode*> i(children);
+    while (i.hasNext()) {
+        delete i.next().value();
+    }
+}
+
+// parse path from the end; assumption is that we always start from the root
+void StyleTreeNode::addStyleRule(const StylePath &path, StyleRule *styleRule)
+{
+    StylePath sparePath = path;
+    StylePathNode nextNode = path.last();
+    QString nodeKey = nextNode.toString();
+
+    if (!sparePath.isEmpty())
+        sparePath.removeLast();
+
+    if (sparePath.isEmpty()) {
+        // last or only item in the path, add it as final node
+        // check if we have the node already, as it could be part of a previous path that
+        // had not yet have a style set
+        if (children.contains(nodeKey)) {
+            children.value(nodeKey)->styleRule = styleRule;
+        } else {
+            // new leaf
+            StyleTreeNode * node = new StyleTreeNode(this, nextNode, styleRule);
+            children.insert(nodeKey, node);
+        }
+    } else {
+        // check if we have the node in the hash
+        if (children.contains(nodeKey)) {
+            children.value(nodeKey)->addStyleRule(sparePath, styleRule);
+        } else {
+            // new node
+            StyleTreeNode *node = new StyleTreeNode(this, nextNode, 0);
+            children.insert(nodeKey, node);
+            node->addStyleRule(sparePath, styleRule);
+        }
+    }
+}
+
+/*!
+  \internal
+  Search for the style best matching the widget path. The path is parsed from the
+  tail as the styles are stored in the tree is stored in sufix form. The \a strict
+  parameter specifies whether the search should be strict on the relationship or not.
+*/
+StyleRule *StyleTreeNode::lookupStyleRule(const StylePath &path, bool strict)
+{
+    // the spare contains the remainder
+    if (themeDebug)
+        qDebug() << "enter" << __FUNCTION__ << themeEngine()->stylePathToString(path);
+    StylePath sparePath = path;
+    StylePathNode nextPathNode;
+    if (!sparePath.isEmpty()) {
+        nextPathNode = sparePath.last();
+        sparePath.removeLast();
+    }
+
+    // special case: root node forwards the lookup to its children
+    if (!parent) {
+        return testNode(nextPathNode, sparePath, strict);
+    } else {
+        // check whether we have a child that satisfies the node
+        // try to remove elements from the path, maybe we still can get a match
+        while (true) {
+            StyleRule *rule = testNode(nextPathNode, sparePath, strict);
+            if (rule)
+                return rule;
+            if (!sparePath.isEmpty()) {
+                nextPathNode = sparePath.last();
+                sparePath.removeLast();
+            } else
+                break;
+            if (themeDebug)
+                qDebug() << __FUNCTION__ << "items left in path:" << themeEngine()->stylePathToString(sparePath);
+        }
+    }
+
+    // we have consumed the path, return the style from the node/leaf
+    if (themeDebug)
+        qDebug() << __FUNCTION__ << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
+    return styleRule;
+}
+
+/*!
+  \internal
+  Test whether a child matches the criteria
+*/
+StyleRule *StyleTreeNode::testNode(StylePathNode &nextNode, const StylePath &sparePath, bool &strict)
+{
+    QString nodeKey = nextNode.toString();
+    if (themeDebug)
+        qDebug() << __FUNCTION__ << nodeKey;
+    if (children.contains(nodeKey)) {
+        return children.value(nodeKey)->lookupStyleRule(sparePath, strict);
+    } else if (!strict && (nextNode.relationship == StylePathNode::Child)){
+        // check if the searched node had Child relationship; if yes,
+        // change it to Descendant and look after the style again; if
+        // found, the lookup after this point should be strict
+        nextNode.relationship = StylePathNode::Descendant;
+        nodeKey = nextNode.toString();
+        if (themeDebug)
+            qDebug() << __FUNCTION__ << "no match, testing" << nodeKey;
+        strict = true;
+        if (children.contains(nodeKey)) {
+            return children.value(nodeKey)->lookupStyleRule(sparePath, strict);
+        }
+    }
+
+    return 0;
+}
+
+
+void StyleTreeNode::listTree(const QString &prefix)
+{
+    if (themeDebug) {
+        // go backwards to build the path
+        if (styleRule) {
+            QString path = '(' + styleNode.toString() + ')';
+            for (StyleTreeNode *pl = parent; pl; pl = pl->parent)
+                path.append(" (" + pl->styleNode.toString() + ')');
+            qDebug() << "node" << prefix << path << ":::" << styleRule->selector();
+        }
+        QHashIterator<QString, StyleTreeNode*> i(children);
+        while (i.hasNext()) {
+            i.next();
+            i.value()->listTree(prefix + " ");
+        }
+    }
+}
+
+
 /*=============================================================================
 =============================================================================*/
 
 ThemeEngine::ThemeEngine(QObject *parent) :
     QObject(parent),
-    m_debug(false),
     m_engine(0),
     m_themeComponent(0),
     m_updateTheme(false)
 {
+    m_styleTree = new StyleTreeNode(0);
 
     // TODO: watch theme file to detect changes
     m_themeWatcher.addPath("demos/theme.cfg");
@@ -72,7 +236,18 @@ ThemeEngine::ThemeEngine(QObject *parent) :
 ThemeEngine::~ThemeEngine()
 {
     // needed by the Q_GLOBAL_STATIC
+    delete m_styleTree;
 }
+bool ThemeEngine::debug()
+{
+    return themeDebug;
+}
+
+void ThemeEngine::setDebug(bool debug)
+{
+    themeDebug = debug;
+}
+
 
 ThemeEngine* ThemeEngine::instance()
 {
@@ -94,10 +269,11 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     theme->loadTheme(QUrl::fromLocalFile("modules/Ubuntu/Components/DefaultTheme.qml"));
 }
 
-Style *ThemeEngine::lookupStyle(StyledItem *item, bool forceClassName)
+StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 {
     ThemeEngine *theme = themeEngine();
 
+    /*
     if (theme->m_styleCache.isEmpty())
         return 0;
 
@@ -108,6 +284,12 @@ Style *ThemeEngine::lookupStyle(StyledItem *item, bool forceClassName)
                  << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
     }
     return styleComponent.style;
+*/
+    StylePath path = theme->getStylePath(item, forceClassName);
+    if (themeDebug) {
+        qDebug() << "ThemeEngine::lookupStyleRule- widget path" << theme->stylePathToString(path);
+    }
+    return theme->styleRuleForPath(path);
 }
 
 /*!
@@ -138,7 +320,10 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
     return ret;
 }
 
-
+/*!
+  \preliminary
+  Loads a QML theme into the system specified by the \a themeFile.
+*/
 void ThemeEngine::loadTheme(const QUrl &themeFile)
 {
     m_themeComponent = new QDeclarativeComponent(m_engine, themeFile);
@@ -149,6 +334,11 @@ void ThemeEngine::loadTheme(const QUrl &themeFile)
         completeThemeLoading();
 }
 
+/*!
+  \internal
+  Completes loading in case the theme file loading si asynchronous (i.e. the URL
+  is on the Web.
+*/
 void ThemeEngine::completeThemeLoading()
 {
     if (!m_themeComponent->isError()) {
@@ -157,12 +347,15 @@ void ThemeEngine::completeThemeLoading()
             buildStyleCache(themeObject);
 
             // DEBUG: print theme cache
-            if (m_debug) {
+            /*
+            if (themeDebug) {
                 QListIterator<StyleComponent> sh(m_styleCache);
                 while (sh.hasNext()) {
                     qDebug() << "Style" << stylePathToString(sh.next().stylePath);
                 }
             }
+            */
+            m_styleTree->listTree();
         }
     } else {
         qWarning() << m_themeComponent->errors();
@@ -179,29 +372,35 @@ void ThemeEngine::completeThemeLoading()
 
 /*!
   \internal
-  Reads the theme descriptor file and change the theme accordingly
+  Reads the theme descriptor file and changes the theme accordingly
 */
 void ThemeEngine::changeTheme()
 {
     // TODO: get the theme path and implement based on that
+    // Q: should we clean the style tree we have from the previous theme?
 }
 
-
-// parses theme for style objects and builds up the cache from it
+/*!
+  \internal
+  Parses theme for style rules and builds up the cache from it.
+*/
 void ThemeEngine::buildStyleCache(QObject *theme)
 {
     // parse its children for Styles
-    QList<Style*> styles = theme->findChildren<Style*>();
+    QList<StyleRule*> styles = theme->findChildren<StyleRule*>();
 
     // check whether the team contains a resetCache property that woruls cause
     // resetting of teh current cache
     bool resetCache = theme->property("resetCache").toBool();
-    if (resetCache)
-        m_styleCache.clear();
+    if (resetCache) {
+        //m_styleCache.clear();
+        delete m_styleTree;
+        m_styleTree = new StyleTreeNode(0);
+    }
 
     // check whether the theme imports any other theme than the default one
     // the default theme import is not needed as that one is loaded automatically
-    // by the engine
+    // by the engine - WE MAY REMOVE THIS
     QUrl importTheme = theme->property("include").toUrl();
     if (importTheme.isValid() && !importTheme.isEmpty()) {
         // load the theme as an increment
@@ -209,11 +408,11 @@ void ThemeEngine::buildStyleCache(QObject *theme)
         loadTheme(importTheme);
     }
 
-    // the hierarchy is not set well, as all child-styles under other style
-    // elements are listed under themeObject; therefore we need to check
-    // whether each style element is not having a Style as its parent
-    foreach (Style *style, styles) {
-        if (qobject_cast<Style*>(style->parent()))
+    // the rule hierarchy is not set well, as all child-rules under a rule
+    // are listed under the theme's roo tobject; therefore we need to check
+    // whether the rule element we work on doesn't have Rule as its parent
+    foreach (StyleRule *style, styles) {
+        if (qobject_cast<StyleRule*>(style->parent()))
             continue;
 
         if (style->d_ptr->selector.isEmpty())
@@ -221,7 +420,8 @@ void ThemeEngine::buildStyleCache(QObject *theme)
         //StylePath basePath;
         QList<StylePath> pathList = parseSelector(style, StylePath());
         foreach (const StylePath &path, pathList) {
-            m_styleCache.append(StyleComponent(path, style));
+            //m_styleCache.append(StyleComponent(path, style));
+            m_styleTree->addStyleRule(path, style);
         }
     }
 }
@@ -236,15 +436,15 @@ void ThemeEngine::buildStyleCache(QObject *theme)
     - ID selectors, e.g: "Button#mySpecialButton"
     - Grouping, e.g: "Button#foo, Checkbox, #bar"
   */
-QList<StylePath> ThemeEngine::parseSelector(Style *style, const StylePath &parentPath) const
+QList<StylePath> ThemeEngine::parseSelector(StyleRule *styleRule, const StylePath &parentPath) const
 {
     QList<StylePath> pathList;
-    QStringList groupList = style->d_ptr->selector.split(",");
+    QStringList groupList = styleRule->d_ptr->selector.split(",");
     StylePathNode::Relationship nextRelationShip = StylePathNode::Descendant;
 
     foreach (QString group, groupList) {
         StylePath stylePath(parentPath);
-        QStringList tokens = group.simplified().split(QRegExp("\\b"));
+        QStringList tokens = group.simplified().split(' ');
 
         foreach (QString token, tokens) {
             if (token.isEmpty() || token == " ")
@@ -270,8 +470,8 @@ QList<StylePath> ThemeEngine::parseSelector(Style *style, const StylePath &paren
         }
         pathList.append(stylePath);
         // check its children to the selector
-        foreach (QObject *child, style->d_ptr->data) {
-            Style *cs = qobject_cast<Style*>(child);
+        foreach (QObject *child, styleRule->d_ptr->data) {
+            StyleRule *cs = qobject_cast<StyleRule*>(child);
             if (cs)
                 pathList << parseSelector(cs, stylePath);
         }
@@ -283,15 +483,7 @@ QString ThemeEngine::stylePathToString(const StylePath &path) const
 {
     QString result;
     foreach (StylePathNode node, path) {
-        if (node.relationship == StylePathNode::Child)
-            result += "> ";
-        else if (node.relationship == StylePathNode::Sibling)
-            result += "+ ";
-        if (!node.styleClass.isEmpty())
-            result += "." + node.styleClass;
-        if (!node.styleId.isEmpty())
-            result += "#" + node.styleId;
-        result += " ";
+        result += " " + node.toString();
     }
     return result.simplified();
 }
@@ -303,8 +495,16 @@ QString ThemeEngine::stylePathToString(const StylePath &path) const
 StylePath ThemeEngine::getStylePath(const StyledItem *obj, bool forceClassName) const
 {
     StylePath stylePath;
+    QDeclarativeItem *parent;
+
     while (obj) {
         QString styleClass = obj->d_ptr->styleClass;
+        parent = obj->parentItem();
+
+        // if parent is alsoa StyledItem, we talk about Child relationship
+        // otherwise we talk about Descendant
+        StylePathNode::Relationship relation = qobject_cast<StyledItem*>(parent) ?
+                    StylePathNode::Child :StylePathNode::Descendant;
 
         // if styleClass is not defined, use the component's meta class name
         if (styleClass.isEmpty() || forceClassName) {
@@ -313,11 +513,10 @@ StylePath ThemeEngine::getStylePath(const StyledItem *obj, bool forceClassName) 
         }
         QString styleId = obj->d_ptr->instanceId;
         if (!styleClass.isEmpty() || !styleId.isEmpty()) {
-            stylePath.prepend(StylePathNode(styleClass, styleId, StylePathNode::Descendant));
+            stylePath.prepend(StylePathNode(styleClass, styleId, relation));
         }
 
         // get the next StyledItem, we don't care the rest
-        QDeclarativeItem *parent = obj->parentItem();
         while (parent && !qobject_cast<StyledItem*>(parent)) {
             parent = parent->parentItem();
         }
@@ -326,6 +525,18 @@ StylePath ThemeEngine::getStylePath(const StyledItem *obj, bool forceClassName) 
         obj = qobject_cast<StyledItem*>(parent);
     }
     return stylePath;
+}
+
+/*!
+  \internal
+  Wrapper function above the style tree lookup. Exposed for functional testing.
+*/
+StyleRule *ThemeEngine::styleRuleForPath(const StylePath &path)
+{
+    StyleRule *rule = themeEngine()->m_styleTree->lookupStyleRule(path);
+    qDebug() << "test: lookup path =" << themeEngine()->stylePathToString(path) <<
+                ", style rule found:" << ((rule) ? rule->selector() : "");
+    return rule;
 }
 
 /**

@@ -21,11 +21,11 @@ Template {
     title: "Tabs"
 
     Tabs {
-        Page {
+        Tab {
             title: "Tab 1"
-            contents: Rectangle {
-                color: "#eeeeee"
+            page: Rectangle {
                 anchors.fill: parent
+                color: "#eeeeee"
                 TextCustom {
                     anchors.centerIn: parent
                     text: "This is the first tab."
@@ -33,11 +33,11 @@ Template {
                 }
             }
         }
-        Page {
+        Tab {
             iconSource: "call_icon.png"
-            contents: Rectangle {
-                color: "#e4e4e4"
+            page: Rectangle {
                 anchors.fill: parent
+                color: "#e4e4e4"
                 TextCustom {
                     anchors.centerIn: parent
                     text: "This is the second tab."
@@ -45,18 +45,10 @@ Template {
                 }
             }
         }
-        Page {
+        Tab {
             title: "Tab 3"
             iconSource: "call_icon.png"
-            contents:  Rectangle {
-                color: "#dddddd"
-                anchors.fill: parent
-                TextCustom {
-                    anchors.centerIn: parent
-                    text: "This is the third tab."
-                    color: "#757373"
-                }
-            }
+            page: Qt.resolvedUrl("MyCustomPage.qml")
         }
     }
 }

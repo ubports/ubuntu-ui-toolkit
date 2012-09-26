@@ -14,32 +14,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
-
-// Internal helper class for the visuals of
-// the progression symbol.
-Item {
-    id: progressionVisual
-    width: visible ? 48 : 0
-
-    property bool showSplit: false
-
-    Image {
-        id: progressIcon
-        source: "artwork/ListItemProgressionArrow.png"
-        anchors.centerIn: parent
-        opacity: enabled ? 1.0 : 0.5
+// By defining Stack as a function, we can make its variables private,
+// and force calls to Stack to make use of the functions we define.
+function Stack() {
+    var elements;
+    this.clear = function() {
+        elements = [];
     }
 
-    Image {
-        id: progressionDivider
-        visible: progressionVisual.showSplit
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-        }
-        width: 1
-        source: "artwork/ListItemDividerVertical.png"
-        opacity: enabled ? 1.0 : 0.5
+    this.clear();
+
+    this.push = function(element) {
+        elements.push(element);
+    };
+
+    this.pop = function() {
+        elements.pop();
+    };
+
+    this.size = function() {
+        return elements.length;
+    }
+
+    this.top = function() {
+        if (this.size() < 1) return undefined;
+        return elements[elements.length-1];
     }
 }
+
+// needed because I cannot create a JS as a property in QML1
+var stack = new Stack();

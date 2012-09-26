@@ -20,179 +20,77 @@ import Ubuntu.Components 0.1
 /*!
     \qmlclass Base
     \inqmlmodule Ubuntu.Components.ListItems 0.1
-    \brief The default list item class.
-    The Base class can be used for generic list items, containing
-    other components such as buttons. It draws an upper and lower
-    divider, and can take mouse clicks.
-    For specific types of list items, see its subclasses.
+    \brief Parent class of various list item classes that can have
+        an icon and a progression symbol.
 
-    Examples:
-    \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
-        Column {
-            ListItem.Base {
-                height: 50
-                Text {
-                    text: "Hello world"
-                    anchors.centerIn: parent
-                }
-            }
-            ListItem.Base {
-                height: 100
-                Tabs {
-                    height: parent.height - 20
-                    width: parent.width - 20
-                    anchors.centerIn: parent
-                    Tab {
-                        text: "Tab 1"
-                        page: TextCustom {
-                            anchors.centerIn: parent
-                            text: "Page one"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
-                    }
-                    Tab {
-                        text: "Tab 2"
-                        page: TextCustom {
-                            anchors.centerIn: parent
-                            text: "Page two"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
-                    }
-                    Tab {
-                        text: "Tab 3"
-                        page: TextCustom {
-                            anchors.centerIn: parent
-                            text: "Page three"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
-                    }
-                }
-            }
-        }
-    \endqml
-
-    See the documentation of the derived classes of Base for more examples.
+    Examples: See subclasses
     \b{This component is under heavy development.}
 */
-AbstractButton {
+Empty {
     id: baseListItem
-    width: parent ? parent.width : 250
+    height: 48
 
     /*!
       \preliminary
-      When the list item is clicked.
+      The location of the icon to show in the list item (optional).
+      \qmlproperty url iconSource
      */
-    signal clicked
-
+    property alias iconSource: iconHelper.source
 
     /*!
       \preliminary
-      Specifies whether the list item is selected.
+      Show or hide the progression symbol.
      */
-    property bool selected: false
+    property bool progression: false
 
     /*!
       \preliminary
-      Highlight the list item when it is pressed.
-      This is used to disable the highlighting of the full list item
-      when it has a split.
-    */
-    property bool highlightWhenPressed: true
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: iconHelper.hasFrame
 
-    Rectangle {
-        id: highlight
+    /*!
+      \internal
+      The margin on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: iconHelper.leftIconMargin
 
-        visible: baseListItem.selected || (baseListItem.highlightWhenPressed && baseListItem.pressed)
-        anchors.fill: parent
-        color: "white"
-        opacity: 0.7
+    /*!
+      \internal
+      The margin on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: iconHelper.rightIconMargin
+
+    IconVisual {
+        id: iconHelper
     }
 
     /*!
       \internal
-      Override in divider classes that should never
-      draw the one-pixel divider at the top or bottom
-      of the list item.
      */
-    property bool __isDivider: false
-
-    /*!
-      \internal
-     */
-    property bool __showTopSeparator: false
-
-    /*!
-      \internal
-     */
-    property bool __showBottomSeparator: __separateAtBottom()
-
-    /*!
-      \internal
-      Retun the index of the given item in the list of
-      parent's children.
-     */
-    function __childIndexOf(item) {
-        if (!parent) return undefined;
-        var index = parent.children.length - 1;
-        while (index >= 0 && item !== parent.children[index]) {
-            index--;
-        }
-        if (index === -1) return undefined;
-        return index;
-    }
-
-    /*!
-      \internal
-      Determine whether the bottom separator must be shown.
-      This is always the case, if the next item in the list of children
-      is not a divider.
-     */
-    function __separateAtBottom() {
-        var index = baseListItem.__childIndexOf(baseListItem);
-        if (index === undefined) return true;
-        // index is defined:
-         if (index < parent.children.length - 1) {
-            if (parent.children[index+1].__isDivider) return false;
-        }
-        return true;
-    }
-
-    Image {
-        id: topSeparatorLine
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: visible ? 2 : 0
-        source: "artwork/ListItemDividerHorizontal.png"
-        visible: baseListItem.__showTopSeparator
-    }
-    Image {
-        id: bottomSeparatorLine
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-        height: visible ? 2 : 0
-        source: "artwork/ListItemDividerHorizontal.png"
-        visible: baseListItem.__showBottomSeparator
-    }
-
-    /*!
-      \internal
-      Reparent so that the visuals of the children do not
-      occlude the separator lines.
-     */
-    default property alias children: body.children
+    property alias children: middle.children
     Item {
-        id: body
+        id: middle
         anchors {
-            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+            left: iconHelper.right
+            right: progressionHelper.left
+        }
+    }
+
+    ProgressionVisual {
+        id: progressionHelper
+        visible: baseListItem.progression
+        anchors {
             right: parent.right
-            top: topSeparatorLine.bottom
-            bottom: bottomSeparatorLine.top
+            top: parent.top
+            bottom: parent.bottom
         }
     }
 }

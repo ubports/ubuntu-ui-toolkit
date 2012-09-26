@@ -53,5 +53,27 @@ Template {
                 text: "Call"
             }
         }
+        TemplateRow {
+            title: "Custom props"
+
+            StyledItem {
+                id: frame
+                width: 300
+                height: 100
+                styleClass: "tframe"
+                Rectangle {
+                    anchors.fill: parent
+                    border.color: frame.styleObject.border
+                    border.width: 2
+                    radius: 3
+                    color: frame.styleObject.color
+                }
+
+                Button {
+                    styleClass: "tbutton"
+                    text: "Call"
+                }
+            }
+        }
     }
 }

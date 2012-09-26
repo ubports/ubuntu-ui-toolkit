@@ -21,7 +21,9 @@ import Ubuntu.Components 0.1
     \qmlclass Standard
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief The standard list item class. It shows a basic list item
-        with a label (text), and optionally an icon and a progression arrow.
+        with a label (text), and optionally an icon, a progression arrow,
+        and it can have an embedded Item (\l control) that can be used
+        for including Buttons, Switches etc. inside the list item.
 
     Examples:
     \qml
@@ -49,21 +51,14 @@ import Ubuntu.Components 0.1
                     onClicked: print("Clicked")
                 }
                 progression: true
-                onClicked: control.clicked()
-            }
-            ListItem.Standard {
-                control: Button {
-                    text: "Big control"
-                    anchors.fill: parent
-                }
             }
         }
     \endqml
     \b{This component is under heavy development.}
 */
-Base {
+Empty {
     id: listItem
-    height: 54
+    height: 48
 
     /*!
       \preliminary
@@ -86,45 +81,62 @@ Base {
     property bool progression: false
 
     /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: iconHelper.leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: iconHelper.rightIconMargin
+
+
+    /*!
       \preliminary
       An optional control that is displayed inside the list item.
-      If \l text is specified, then the width of the control must be fixed
-      in order to determine the layout of the list item.
-      If no \l text is given, the control's parent will fill the full
-      space available inside the list item, taking into account a possible
-      icon and progression, and the control may be anchored to fill its parent.
-      \qmlproperty Item control.
+      The width of the control must be specified in order to determine
+      the layout of the list item.
+
       The mouseArea of the control will be set to the full Standard list item if
       there is no \l progression, or only the part left of the split, if there is a
       \l progression.
+      \qmlproperty Item control
     */
     property alias control: controlContainer.control
 
-    // If there is a split, disable full list item highlighting on pressed,
-    // and introduce two Rectangles that higlight the list item only on one
-    // side of the split.
-    highlightWhenPressed: !progressionHelper.showSplit
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: iconHelper.hasFrame
+
+    // If there is a control, the controlArea covers the listItem's mouseArea,
+    // so in that case use the highlights below when pressed
+    highlightWhenPressed: !listItem.control
+
     Rectangle {
         id: controlHighlight
-        visible: progressionHelper.showSplit && controlArea.pressed
+        visible: controlArea.pressed
         anchors.fill: controlArea
         color: "white"
         opacity: 0.7
     }
     Rectangle {
         id: progressionHighlight
-        visible: progressionHelper.showSplit && listItem.pressed
+        visible: listItem.pressed
         anchors.fill: progressionHelper
         color: "white"
         opacity: 0.7
     }
-
     IconVisual {
         id: iconHelper
-        anchors {
-            left: parent.left
-            top: parent.top
-        }
     }
     LabelVisual {
         id: label
@@ -141,9 +153,8 @@ Base {
         property Item control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
-        width: label.text ? childrenRect.width : undefined
+        width: control ? control.width : undefined
         anchors {
-            left: label.text ? undefined : iconHelper.right
             right: progressionHelper.left
             top: parent.top
             bottom: parent.bottom
@@ -151,7 +162,7 @@ Base {
         }
         onControlChanged: {
             control.parent = controlContainer;
-            control.mouseArea = controlArea;
+            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
         }
     }
     MouseArea {

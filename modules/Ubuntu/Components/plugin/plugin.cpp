@@ -29,7 +29,7 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Style>(uri, 0, 1, "Style");
+    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
 
     // these need to be registered to QtQuick 1.1 otherwise the revisioned
     // properties won't be accessible
@@ -43,7 +43,40 @@ void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const 
     QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
     // add theme engine
     engine->rootContext()->setContextProperty("theme", ThemeEngine::instance());
+
     ThemeEngine::initialize(engine);
+    // small tests, move these to unit test
+
+    StylePath path;
+    path.append(StylePathNode("toolbar", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("button", QString(), StylePathNode::Descendant));
+    ThemeEngine::instance()->styleRuleForPath(path);
+
+    path.clear();
+    path.append(StylePathNode("toolbar", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("column", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("button", QString(), StylePathNode::Descendant));
+    ThemeEngine::instance()->styleRuleForPath(path);
+
+    path.clear();
+    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tbutton", QString(), StylePathNode::Descendant));
+    ThemeEngine::instance()->styleRuleForPath(path);
+
+    path.clear();
+    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tframe", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tlayout", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tbutton", QString(), StylePathNode::Descendant));
+    ThemeEngine::instance()->styleRuleForPath(path);
+
+    path.clear();
+    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tframe", QString(), StylePathNode::Descendant));
+    path.append(StylePathNode("tbutton", QString(), StylePathNode::Child));
+    ThemeEngine::instance()->styleRuleForPath(path);
+
+    ThemeEngine::instance()->setDebug(false);
 }
 
 Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)

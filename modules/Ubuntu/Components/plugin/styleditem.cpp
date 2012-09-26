@@ -42,10 +42,10 @@ StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     q_ptr(qq),
     privateStyle(false),
     componentCompleted(false),
-    activeStyle(0),
-    styleItem(0),
+    styleRule(0),
+    styleObject(0),
     componentContext(0),
-    visualsItem(0)
+    delegateItem(0)
 {
 }
 
@@ -60,45 +60,50 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     // in case of private style is in use, no need to change anything
     if (!privateStyle) {
         // check whether we have different style for the state
-        Style *tmp = ThemeEngine::lookupStyle(q);
-        if (activeStyle != tmp) {
-            styleItem = 0;
-            activeStyle = tmp;
+        StyleRule *tmp = ThemeEngine::lookupStyleRule(q);
+        if (styleRule != tmp) {
+            styleObject = 0;
+            styleRule = tmp;
             styleChanged = true;
         }
     }
-    if (styleChanged && activeStyle) {
-        //styleItem = activeStyle->style()->create(componentContext);
+
+    // reset delegate if the style is updated and the new style has visuals
+    if (styleChanged && styleRule && styleRule->delegate())
+        delegateItem = 0;
+
+    if (styleChanged && styleRule) {
         // check if we have the context
         if (!componentContext) {
             componentContext = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
             componentContext->setContextProperty("control", q);
         }
 
-        if (!styleItem && activeStyle->style()) {
-            styleItem = activeStyle->style()->create(componentContext);
-            if (styleItem)
-                styleItem->setParent(q);
+        if (!styleObject && styleRule->style()) {
+            styleObject = styleRule->style()->create(componentContext);
+            if (styleObject) {
+                styleObject->setParent(q);
+            }
         }
 
         // do not mandate yet the existence of visuals
-        if (!visualsItem) {
-            QDeclarativeComponent *visuals = activeStyle->visuals();
+        if (!delegateItem) {
+            QDeclarativeComponent *visuals = styleRule->delegate();
             if (!visuals) {
                 // reset
-                Style *visualsStyle = ThemeEngine::lookupStyle(q, true);
-                if (visualsStyle)
-                    visuals = visualsStyle->visuals();
+                StyleRule *delegateStyle = ThemeEngine::lookupStyleRule(q, true);
+                if (delegateStyle)
+                    visuals = delegateStyle->delegate();
             }
             if (visuals) {
                 // create visuals component
-                visualsItem = qobject_cast<QDeclarativeItem*>(visuals->create(componentContext));
-                if (visualsItem) {
-                    visualsItem->setParentItem(q);
+                delegateItem = qobject_cast<QDeclarativeItem*>(visuals->create(componentContext));
+                if (delegateItem) {
+                    delegateItem->setParentItem(q);
 
                     // If style item contains a property "contentItem" that points
                     // to an item, reparent all children into it:
-                    QVariant contentVariant = visualsItem->property("contentItem");
+                    QVariant contentVariant = delegateItem->property("contentItem");
                     QDeclarativeItem *contentItem = qvariant_cast<QDeclarativeItem *>(contentVariant);
                     if (contentItem) {
                         foreach (QObject *child, q->children()) {
@@ -121,8 +126,8 @@ void StyledItemPrivate::_q_reloadTheme()
     if (privateStyle)
         return;
     // update style if theme is used
-    activeStyle = 0;
-    styleItem = 0;
+    styleRule = 0;
+    styleObject = 0;
     updateCurrentStyle();
 }
 
@@ -181,47 +186,34 @@ void StyledItem::setStyleClass(const QString &styleClass)
     }
 }
 
-Style *StyledItem::activeStyle() const
+StyleRule *StyledItem::styleRule() const
 {
     Q_D(const StyledItem);
-    return d->activeStyle;
+    return d->styleRule;
 }
 
-void StyledItem::setActiveStyle(Style *style)
+void StyledItem::setStyleRule(StyleRule *styleRule)
 {
     Q_D(StyledItem);
-    if (d->activeStyle != style) {
+    if (d->styleRule != styleRule) {
 
-        d->privateStyle = (style != 0);
+        d->privateStyle = (styleRule != 0);
 
-        d->activeStyle = style;
+        d->styleRule = styleRule;
         d->updateCurrentStyle(true);
     }
 }
 
-QObject *StyledItem::styleItem() const
+QObject *StyledItem::styleObject() const
 {
     Q_D(const StyledItem);
-    return d->styleItem;
-}
-void StyledItem::setStyleItem(QObject *styleItem)
-{
-    Q_D(StyledItem);
-    d->styleItem = styleItem;
-    /*
-    if (d->activeStyle && d->activeStyle->style()) {
-        QDeclarativeContext *ctx = d->activeStyle->style()->creationContext();
-        if (ctx)
-            ctx->setContextProperty("control", this);
-    }
-    */
+    return d->styleObject;
 }
 
-
-QDeclarativeItem *StyledItem::visualsItem() const
+QDeclarativeItem *StyledItem::delegateItem() const
 {
     Q_D(const StyledItem);
-    return d->visualsItem;
+    return d->delegateItem;
 }
 
 

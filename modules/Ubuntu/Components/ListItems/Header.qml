@@ -36,7 +36,6 @@ import QtQuick 1.1
     \b{This component is under heavy development.}
 */
 DividerBase {
-    id: listItemHeader
     height: image.height
 
     /*!
