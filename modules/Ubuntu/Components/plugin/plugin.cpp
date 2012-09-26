@@ -46,7 +46,7 @@ void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const 
 
     ThemeEngine::initialize(engine);
     // small tests, move these to unit test
-
+/*
     StylePath path;
     path.append(StylePathNode("toolbar", QString(), StylePathNode::Descendant));
     path.append(StylePathNode("button", QString(), StylePathNode::Descendant));
@@ -77,6 +77,7 @@ void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const 
     ThemeEngine::instance()->styleRuleForPath(path);
 
     ThemeEngine::instance()->setDebug(false);
+*/
 }
 
 Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)

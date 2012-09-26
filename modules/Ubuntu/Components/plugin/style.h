@@ -35,10 +35,6 @@ class StyleRule : public QObject, public QDeclarativeParserStatus
     Q_PROPERTY(QString selector READ selector WRITE setSelector)
     Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle)
     Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate)
-/*
-    Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data)
-    Q_CLASSINFO("DefaultProperty", "data")
-*/
 public:
     StyleRule(QObject *parent = 0);
     ~StyleRule();
@@ -59,7 +55,6 @@ public: //getter/setters
     void setStyle(QDeclarativeComponent *style);
     QDeclarativeComponent *delegate();
     void setDelegate(QDeclarativeComponent *delegate);
-    QDeclarativeListProperty<QObject> data();
 
 private:
     Q_DISABLE_COPY(StyleRule)

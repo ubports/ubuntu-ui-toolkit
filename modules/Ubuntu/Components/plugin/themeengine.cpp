@@ -48,8 +48,10 @@ QString StylePathNode::toString() const
     QString result;
     if (relationship == StylePathNode::Child)
         result += "> ";
+    /* we don't use this...
     else if (relationship == StylePathNode::Sibling)
         result += "+ ";
+    */
     if (!styleClass.isEmpty())
         result += "." + styleClass;
     if (!styleId.isEmpty())
@@ -63,15 +65,11 @@ bool StylePathNode::operator==(const StylePathNode &other)
     return styleClass == other.styleClass && styleId == other.styleId && relationship == other.relationship;
 }
 
-StyleComponent::StyleComponent(StylePath stylePath, StyleRule *style) :
-    stylePath(stylePath), style(style)
+uint qHash(const StylePath &key)
 {
+    return qHash(themeEngine()->stylePathToString(key));
 }
 
-bool StyleComponent::operator==(const StyleComponent &other)
-{
-    return stylePath == other.stylePath;
-}
 
 StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
     parent(parent), styleNode("", "", StylePathNode::Descendant), styleRule(0)
@@ -85,11 +83,17 @@ StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const StylePathNode &node, S
 
 StyleTreeNode::~StyleTreeNode()
 {
+    clear();
+}
+
+void StyleTreeNode::clear()
+{
     QHashIterator<QString, StyleTreeNode*> i(children);
     while (i.hasNext()) {
         delete i.next().value();
     }
 }
+
 
 // parse path from the end; assumption is that we always start from the root
 void StyleTreeNode::addStyleRule(const StylePath &path, StyleRule *styleRule)
@@ -197,7 +201,10 @@ StyleRule *StyleTreeNode::testNode(StylePathNode &nextNode, const StylePath &spa
     return 0;
 }
 
-
+/*!
+  \internal
+  For debugging purposes, lists the tree content.
+*/
 void StyleTreeNode::listTree(const QString &prefix)
 {
     if (themeDebug) {
@@ -216,6 +223,61 @@ void StyleTreeNode::listTree(const QString &prefix)
     }
 }
 
+/*=============================================================================
+=============================================================================*/
+void QmlTheme::loadQmlTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+{
+    themeComponent = new QDeclarativeComponent(engine, path);
+    this->styleTree = styleTree;
+    if (themeComponent->isLoading())
+        QObject::connect(themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
+                         themeEngine(), SLOT(completeThemeLoading()));
+    else
+        finalizeThemeLoading();
+}
+
+/*!
+  \internal
+  Finalizes theme loading. Parses theme for style rules and builds up the cache from it.
+*/
+void QmlTheme::finalizeThemeLoading()
+{
+    if (!themeComponent->isError()) {
+        QObject *theme = themeComponent->create();
+        if (theme) {
+            // parse its children for Styles
+            QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
+
+            foreach (StyleRule *rule, rules) {
+                const QString selector = rule->selector();
+                if (selector.isEmpty()) {
+                    qWarning() << "Rule without selector!";
+                    continue;
+                }
+                QList<StylePath> pathList = themeEngine()->parseSelector(selector);
+                foreach (const StylePath &path, pathList) {
+                    styleTree->addStyleRule(path, rule);
+                }
+            }
+
+            styleTree->listTree();
+        }
+    } else {
+        qWarning() << themeComponent->errors();
+    }
+
+    // reset component
+    themeComponent = 0;
+    styleTree = 0;
+}
+
+/*=============================================================================
+=============================================================================*/
+
+void CssTheme::loadCssTheme(const QString &file)
+{
+
+}
 
 /*=============================================================================
 =============================================================================*/
@@ -259,7 +321,9 @@ QDeclarativeEngine *ThemeEngine::engine()
     return themeEngine()->m_engine;
 }
 
-
+/*!
+  \preliminary
+*/
 void ThemeEngine::initialize(QDeclarativeEngine *engine)
 {
     ThemeEngine *theme = themeEngine();
@@ -269,27 +333,29 @@ void ThemeEngine::initialize(QDeclarativeEngine *engine)
     theme->loadTheme(QUrl::fromLocalFile("modules/Ubuntu/Components/DefaultTheme.qml"));
 }
 
+/*!
+  \preliminary
+*/
 StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 {
     ThemeEngine *theme = themeEngine();
-
-    /*
-    if (theme->m_styleCache.isEmpty())
-        return 0;
-
     StylePath path = theme->getStylePath(item, forceClassName);
-    const StyleComponent styleComponent = theme->match(path);
-    if (theme->m_debug) {
-        qDebug() << "Component:" << theme->stylePathToString(path)
-                 << ", matched style selector:" << theme->stylePathToString(styleComponent.stylePath);
+
+    // check whether we have the path cached
+    if (theme->m_styleCache.contains(path)) {
+        qDebug() << theme->stylePathToString(path) << "cached";
+        return theme->m_styleCache.value(path);
     }
-    return styleComponent.style;
-*/
-    StylePath path = theme->getStylePath(item, forceClassName);
+
     if (themeDebug) {
         qDebug() << "ThemeEngine::lookupStyleRule- widget path" << theme->stylePathToString(path);
     }
-    return theme->styleRuleForPath(path);
+    StyleRule *rule = theme->styleRuleForPath(path);
+    if (rule) {
+        // cache the rule
+        theme->m_styleCache.insert(path, rule);
+    }
+    return rule;
 }
 
 /*!
@@ -326,107 +392,42 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 */
 void ThemeEngine::loadTheme(const QUrl &themeFile)
 {
-    m_themeComponent = new QDeclarativeComponent(m_engine, themeFile);
-    if (m_themeComponent->isLoading())
-        QObject::connect(m_themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
-                         this, SLOT(completeThemeLoading()));
-    else
-        completeThemeLoading();
+    QString themePath = themeFile.path();
+    if (themePath.endsWith(".css")) {
+        m_cssThemeLoader.loadCssTheme(themePath);
+    } else if (themePath.endsWith(".qml")) {
+        m_qmlThemeLoader.loadQmlTheme(themeFile, m_engine, m_styleTree);
+    } else {
+        qWarning() << "Unknown theme URL" << themeFile.toString();
+    }
 }
 
 /*!
-  \internal
-  Completes loading in case the theme file loading si asynchronous (i.e. the URL
-  is on the Web.
+  \preliminary
+  Completes loading in case the theme file loading is asynchronous (i.e. the URL
+  is on the Web).
 */
 void ThemeEngine::completeThemeLoading()
 {
-    if (!m_themeComponent->isError()) {
-        QObject *themeObject = m_themeComponent->create();
-        if (themeObject) {
-            buildStyleCache(themeObject);
-
-            // DEBUG: print theme cache
-            /*
-            if (themeDebug) {
-                QListIterator<StyleComponent> sh(m_styleCache);
-                while (sh.hasNext()) {
-                    qDebug() << "Style" << stylePathToString(sh.next().stylePath);
-                }
-            }
-            */
-            m_styleTree->listTree();
-        }
-    } else {
-        qWarning() << m_themeComponent->errors();
-    }
-
-    // resize match list
-    m_maybeMatchList.resize(m_styleCache.size());
-
-    // reset component
-    m_themeComponent = 0;
+    m_qmlThemeLoader.finalizeThemeLoading();
     // emit theme changed signal so StyledItems get updated
     emit themeChanged();
 }
 
 /*!
-  \internal
+  \preliminary
   Reads the theme descriptor file and changes the theme accordingly
 */
 void ThemeEngine::changeTheme()
 {
     // TODO: get the theme path and implement based on that
     // Q: should we clean the style tree we have from the previous theme?
+
+    m_styleCache.clear();
 }
 
 /*!
   \internal
-  Parses theme for style rules and builds up the cache from it.
-*/
-void ThemeEngine::buildStyleCache(QObject *theme)
-{
-    // parse its children for Styles
-    QList<StyleRule*> styles = theme->findChildren<StyleRule*>();
-
-    // check whether the team contains a resetCache property that woruls cause
-    // resetting of teh current cache
-    bool resetCache = theme->property("resetCache").toBool();
-    if (resetCache) {
-        //m_styleCache.clear();
-        delete m_styleTree;
-        m_styleTree = new StyleTreeNode(0);
-    }
-
-    // check whether the theme imports any other theme than the default one
-    // the default theme import is not needed as that one is loaded automatically
-    // by the engine - WE MAY REMOVE THIS
-    QUrl importTheme = theme->property("include").toUrl();
-    if (importTheme.isValid() && !importTheme.isEmpty()) {
-        // load the theme as an increment
-        m_updateTheme = true;
-        loadTheme(importTheme);
-    }
-
-    // the rule hierarchy is not set well, as all child-rules under a rule
-    // are listed under the theme's roo tobject; therefore we need to check
-    // whether the rule element we work on doesn't have Rule as its parent
-    foreach (StyleRule *style, styles) {
-        if (qobject_cast<StyleRule*>(style->parent()))
-            continue;
-
-        if (style->d_ptr->selector.isEmpty())
-            continue;
-        //StylePath basePath;
-        QList<StylePath> pathList = parseSelector(style, StylePath());
-        foreach (const StylePath &path, pathList) {
-            //m_styleCache.append(StyleComponent(path, style));
-            m_styleTree->addStyleRule(path, style);
-        }
-    }
-}
-
-/**
   Parses and returns the path described by \a selector as a list of
   styleClass and styleId pairs.
   Current support (ref: www.w3.org/TR/selector.html):
@@ -436,14 +437,14 @@ void ThemeEngine::buildStyleCache(QObject *theme)
     - ID selectors, e.g: "Button#mySpecialButton"
     - Grouping, e.g: "Button#foo, Checkbox, #bar"
   */
-QList<StylePath> ThemeEngine::parseSelector(StyleRule *styleRule, const StylePath &parentPath) const
+QList<StylePath> ThemeEngine::parseSelector(const QString &selector) const
 {
     QList<StylePath> pathList;
-    QStringList groupList = styleRule->d_ptr->selector.split(",");
+    QStringList groupList = selector.split(",");
     StylePathNode::Relationship nextRelationShip = StylePathNode::Descendant;
 
     foreach (QString group, groupList) {
-        StylePath stylePath(parentPath);
+        StylePath stylePath;
         QStringList tokens = group.simplified().split(' ');
 
         foreach (QString token, tokens) {
@@ -469,12 +470,6 @@ QList<StylePath> ThemeEngine::parseSelector(StyleRule *styleRule, const StylePat
             }
         }
         pathList.append(stylePath);
-        // check its children to the selector
-        foreach (QObject *child, styleRule->d_ptr->data) {
-            StyleRule *cs = qobject_cast<StyleRule*>(child);
-            if (cs)
-                pathList << parseSelector(cs, stylePath);
-        }
     }
     return pathList;
 }
@@ -488,7 +483,8 @@ QString ThemeEngine::stylePathToString(const StylePath &path) const
     return result.simplified();
 }
 
-/**
+/*!
+  \internal
   Traverses and returns the path from \a obj up to root as
   a list of styleClass and styleId pairs
   */
@@ -535,111 +531,7 @@ StyleRule *ThemeEngine::styleRuleForPath(const StylePath &path)
 {
     StyleRule *rule = m_styleTree->lookupStyleRule(path);
     if (themeDebug)
-        qDebug() << "test: lookup path =" << stylePathToString(path) <<
+        qDebug() << "lookup path =" << stylePathToString(path) <<
                     ", style rule found:" << ((rule) ? rule->selector() : "");
     return rule;
-}
-
-/**
-  Tries to match \a path against the style paths found from parsing
-  the style selectors
-  */
-StyleComponent ThemeEngine::match(const StylePath &srcStylePath)
-{
-    const int styleMapSize = m_styleCache.size();
-    int bestMatchIndex = -1;
-    // _maybeMatchList contains, for each selector in the style, the number of currently
-    // matched path nodes in srcStylePath. The count will increase for the selectors as we
-    // start matching, and the one that ends up with the highest count would normally be
-    // the best.
-    m_maybeMatchList.fill(0);
-
-    int firstMapIndex = 0;
-    int lastMapIndex = styleMapSize - 1;
-    int lastMapIndexSoFar = 0;
-    bool firstMapIndexFound = false;
-
-    // Starting from the end of the path, traverse all path nodes in srcStylePath
-    // and match them to the path nodes found in the style map:
-    for (int pathIndex=0; pathIndex<srcStylePath.size(); ++pathIndex) {
-        const StylePathNode srcNode = srcStylePath[srcStylePath.size() - pathIndex - 1];
-
-        int pendingMatchesInRange = lastMapIndex - firstMapIndex + 1;
-        for (int mapIndex=firstMapIndex; mapIndex<=lastMapIndex; ++mapIndex) {
-            if (m_maybeMatchList[mapIndex] < 0) {
-                // The current selector is already marked as done, meaning it
-                // is not pending anymore, and we can bail out early. If the count
-                // reaches zero, then _all_ of the remaining pending selectors have
-                // been marked as done, and we can return:
-                if (--pendingMatchesInRange == 0)
-                    return bestMatchIndex == -1 ? StyleComponent(StylePath(), 0) : m_styleCache[bestMatchIndex];
-                continue;
-            }
-
-            const StyleComponent styleComponent = m_styleCache[mapIndex];
-            const StylePath stylePath = styleComponent.stylePath;
-            const StylePathNode node = stylePath[stylePath.size() - m_maybeMatchList[mapIndex] - 1];
-            const bool classMatch = node.styleClass.isEmpty() || (node.styleClass == srcNode.styleClass);
-            const bool idMatch = node.styleId.isEmpty() || (node.styleId == srcNode.styleId);
-
-            if (classMatch && idMatch) {
-                if (pathIndex == 0) {
-                    // First round. Find the range where the styleClass we're looking
-                    // for is defined to avoid traversing the whole map for each iteration:
-                    // Todo: put this range in a hash lookup for the styleClass up front.
-                    lastMapIndexSoFar = mapIndex;
-                    if (!firstMapIndexFound) {
-                        firstMapIndexFound = true;
-                        firstMapIndex = mapIndex;
-                    }
-                }
-
-                if (pathIndex < stylePath.size() - 1) {
-                    // Still matching, but more nodes to check. Continue to next iteration.
-                    ++m_maybeMatchList[mapIndex];
-                } else {
-                    // INVARIANT: current selector is traversed to the end, and is a match.
-                    // If it is the best possible match remains to see, but start by comparing
-                    // it against the one we (might) already got:
-                    if (bestMatchIndex == -1) {
-                        bestMatchIndex = mapIndex;
-                    } else if (m_maybeMatchList[mapIndex] > -m_maybeMatchList[bestMatchIndex]-1) {
-                        // Longer matched paths are better than shorter paths:
-                        bestMatchIndex = mapIndex;
-                    } else if (!node.styleClass.isEmpty() && !node.styleId.isEmpty()) {
-                        // If both class and id are specified, style selectors defined
-                        // later in the list (qml file) are better then the ones on top:
-                        bestMatchIndex = mapIndex;
-                    } else {
-                        // Id match is evaluated higher than class match:
-                        StylePath p = m_styleCache[bestMatchIndex].stylePath;
-                        if (p[p.size() - pathIndex - 1].styleId.isEmpty())
-                            bestMatchIndex = mapIndex;
-                    }
-
-                    // Mark as done:
-                    m_maybeMatchList[mapIndex] = -m_maybeMatchList[mapIndex] - 1;
-                }
-                continue;
-            }
-
-            if (pathIndex > 0) {
-                const StylePathNode prevNode = stylePath[stylePath.size() - m_maybeMatchList[mapIndex]];
-                if (prevNode.relationship == StylePathNode::Descendant) {
-                    // The style node didnt match the current source node, but
-                    // we still see it as a possible match since the previous node
-                    // accepts any matching anchestor, which might show up later.
-                    continue;
-                }
-            }
-
-            // Current styleComponent is no longer considered a possible match. We
-            // mark it as done by making the traverse value negative, and subtract
-            // -1 to avoid confusion in case it was 0 from before:
-            m_maybeMatchList[mapIndex] = -m_maybeMatchList[mapIndex] - 1;
-        }
-        lastMapIndex = lastMapIndexSoFar;
-    }
-
-    return bestMatchIndex == -1 ? StyleComponent(StylePath(), 0) : m_styleCache[bestMatchIndex];
 }

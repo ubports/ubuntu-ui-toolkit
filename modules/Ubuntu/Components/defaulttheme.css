@@ -1,0 +1,6 @@
+.button {
+    color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"
+    borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
+    borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
+                        : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+}

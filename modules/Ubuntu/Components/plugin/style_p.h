@@ -14,7 +14,6 @@ public:
 
     QDeclarativeComponent *style;
     QDeclarativeComponent *delegate;
-    QList<QObject*> data;
     QString selector;
 };
 

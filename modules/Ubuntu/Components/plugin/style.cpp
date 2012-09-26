@@ -92,10 +92,4 @@ void StyleRule::setDelegate(QDeclarativeComponent *delegate)
     d->delegate = delegate;
 }
 
-QDeclarativeListProperty<QObject> StyleRule::data()
-{
-    Q_D(StyleRule);
-    return QDeclarativeListProperty<QObject>(this, d->data);
-}
-
 #include "moc_style.cpp"
