@@ -533,9 +533,10 @@ StylePath ThemeEngine::getStylePath(const StyledItem *obj, bool forceClassName) 
 */
 StyleRule *ThemeEngine::styleRuleForPath(const StylePath &path)
 {
-    StyleRule *rule = themeEngine()->m_styleTree->lookupStyleRule(path);
-    qDebug() << "test: lookup path =" << themeEngine()->stylePathToString(path) <<
-                ", style rule found:" << ((rule) ? rule->selector() : "");
+    StyleRule *rule = m_styleTree->lookupStyleRule(path);
+    if (themeDebug)
+        qDebug() << "test: lookup path =" << stylePathToString(path) <<
+                    ", style rule found:" << ((rule) ? rule->selector() : "");
     return rule;
 }
 
