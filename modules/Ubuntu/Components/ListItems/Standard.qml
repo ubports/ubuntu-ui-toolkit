@@ -143,15 +143,9 @@ Empty {
         anchors {
             verticalCenter: parent.verticalCenter
             leftMargin: __leftItem ? __leftItem.width + __leftItem.anchors.leftMargin + __leftItem.anchors.rightMargin + 5 : 5
-            //            leftMargin: 5
-            //            left: leftItem ? leftItem.right : parent.left
             left: parent.left
-            //            left: (parent.children.length === 0) ? parent.left : parent.children[parent.children.length-1].right
-            //            left: parent.children[parent.children.]
             right: controlContainer.left
         }
-        //        x: leftItem ? leftItem.width : 0
-        x: -20
     }
     Item {
         id: controlContainer

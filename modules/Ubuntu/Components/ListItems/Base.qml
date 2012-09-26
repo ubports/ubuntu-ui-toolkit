@@ -77,7 +77,6 @@ Empty {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            //            left: iconHelper.right
             left: parent.left
             right: progressionHelper.left
             leftMargin: __leftItem ? __leftItem.width + __leftItem.anchors.leftMargin + __leftItem.anchors.rightMargin : 0
