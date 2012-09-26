@@ -242,8 +242,7 @@ Template {
                     ListItem.MultiValue {
                         text: "Icon"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-//                        iconSource: "avatar_contacts_list.png"
-                        icon: ListItem.Icon { source: "avatar_contacts_list.png" }
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                 }
             }

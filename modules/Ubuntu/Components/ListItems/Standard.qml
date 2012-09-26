@@ -150,7 +150,7 @@ Empty {
 
         if (typeof icon == "string") {
             // leftItem is the url of an image
-            var objectstring = 'import Ubuntu.Components.ListItems 0.1; Icon { source: "'+icon+'" }';
+            var objectstring = 'import Ubuntu.Components.ListItems 0.1; IconVisual { source: "'+icon+'" }';
             __leftItem = Qt.createQmlObject(objectstring, listItem);
             __leftItem.__pleaseCleanMeUp = true;
         } else {
