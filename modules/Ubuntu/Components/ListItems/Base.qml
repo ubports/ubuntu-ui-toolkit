@@ -38,10 +38,10 @@ Empty {
 
     /*!
       \preliminary
-        The location of the icon to show in the list item (optional).
-        \qmlproperty url iconSource
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item.
+      \qmlproperty variant icon
     */
-
     property variant icon
     property Item __leftItem
     onIconChanged: {

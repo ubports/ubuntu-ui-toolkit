@@ -104,10 +104,13 @@ Empty {
         color: "white"
         opacity: 0.7
     }
-    //    Icon {
-    //        id: iconHelper
-    //    }
 
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item.
+      \qmlproperty variant icon
+    */
     property variant icon
     property Item __leftItem
     onIconChanged: {
