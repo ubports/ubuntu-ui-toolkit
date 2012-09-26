@@ -69,6 +69,4 @@ Item {
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
     }
-
-//    Rectangle { color: "black"; anchors.fill: parent }
 }
