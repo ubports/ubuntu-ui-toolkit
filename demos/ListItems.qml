@@ -83,7 +83,6 @@ Template {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Standard {
-                        id: std
                         text: "Custom icon"
                         icon: Rectangle {
                             width: height
