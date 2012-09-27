@@ -117,31 +117,33 @@ Empty {
 
     /*!
       \internal
-      The internal representation of the icon. Can be equal to \l icon if that is
-      an item, or an initialized IconVisual if \l icon is a url.
+      The \l icon property is an Item. The value is false if \l icon is a string,
+      or when no icon was set.
      */
-    property Item __leftItem
+    property bool __iconIsItem: false
     onIconChanged: {
-        if (__leftItem) {
-            __leftItem.visible = false;
-            if (__leftItem.pleaseCleanMeUp === true) __leftItem.destroy();
-            __leftItem = null;
-        }
-
         if (typeof icon == "string") {
             // icon is the url of an image
-            __leftItem = Qt.createQmlObject('IconVisual { source: "'+icon+'"; __pleaseCleanMeUp: true }', listItem);
+            iconHelper.source = icon;
+            __iconIsItem = false;
         } else {
-            __leftItem = icon;
-            __leftItem.parent = listItem;
+            // icon is an Item.
+            __iconIsItem = true;
+            iconHelper.source = "";
+
+            icon.parent = listItem;
+            icon.anchors.left = listItem.left;
+            if (!icon.height) {
+                icon.anchors.top = listItem.top;
+                icon.anchors.bottom = listItem.bottom;
+                icon.anchors.margins = 5;
+            }
         }
 
-        __leftItem.anchors.left = listItem.left;
-        if (!__leftItem.height) {
-            __leftItem.anchors.top = listItem.top;
-            __leftItem.anchors.bottom = listItem.bottom;
-            __leftItem.anchors.margins = 5;
-        }
+    }
+
+    IconVisual {
+        id: iconHelper
     }
 
     LabelVisual {
@@ -149,8 +151,8 @@ Empty {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            leftMargin: __leftItem ? __leftItem.width + __leftItem.anchors.leftMargin + __leftItem.anchors.rightMargin + 5 : 5
-            left: parent.left
+            left: __iconIsItem ? parent.left : iconHelper.right
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + 5 : 5
             right: controlContainer.left
         }
     }

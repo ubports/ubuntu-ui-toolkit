@@ -48,31 +48,32 @@ Empty {
 
     /*!
       \internal
-      The internal representation of the icon. Can be equal to \l icon if that is
-      an item, or an initialized IconVisual if \l icon is a url.
+      The \l icon property is an Item. The value is false if \l icon is a string,
+      or when no icon was set.
      */
-    property Item __leftItem
+    property bool __iconIsItem: false
     onIconChanged: {
-        if (__leftItem) {
-            __leftItem.visible = false;
-            if (__leftItem.pleaseCleanMeUp === true) __leftItem.destroy();
-            __leftItem = null;
-        }
-
         if (typeof icon == "string") {
             // icon is the url of an image
-            __leftItem = Qt.createQmlObject('IconVisual { source: "'+icon+'"; __pleaseCleanMeUp: true }', baseListItem);
+            iconHelper.source = icon;
+            __iconIsItem = false;
         } else {
-            __leftItem = icon;
-            __leftItem.parent = baseListItem;
-        }
+            // icon is an Item.
+            __iconIsItem = true;
+            iconHelper.source = "";
 
-        __leftItem.anchors.left = baseListItem.left;
-        if (!__leftItem.height) {
-            __leftItem.anchors.top = baseListItem.top;
-            __leftItem.anchors.bottom = baseListItem.bottom;
-            __leftItem.anchors.margins = 5;
+            icon.parent = baseListItem;
+            icon.anchors.left = baseListItem.left;
+            if (!icon.height) {
+                icon.anchors.top = baseListItem.top;
+                icon.anchors.bottom = baseListItem.bottom;
+                icon.anchors.margins = 5;
+            }
         }
+    }
+
+    IconVisual {
+        id: iconHelper
     }
 
     /*!
@@ -84,9 +85,9 @@ Empty {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            left: parent.left
+            left: __iconIsItem ? parent.left : iconHelper.right
             right: progressionHelper.left
-            leftMargin: __leftItem ? __leftItem.width + __leftItem.anchors.leftMargin + __leftItem.anchors.rightMargin : 0
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin : 0
         }
     }
 
