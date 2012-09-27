@@ -83,11 +83,6 @@ Template {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Standard {
-                        text: "Icon"
-                        icon: ListItem.IconVisual { source: "avatar_contacts_list.png" }
-                    }
-
-                    ListItem.Standard {
                         text: "Custom icon"
                         icon: Rectangle {
                             anchors.margins: 5
