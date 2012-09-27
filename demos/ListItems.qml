@@ -83,14 +83,9 @@ Template {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Standard {
+                        id: std
                         text: "Custom icon"
                         icon: Rectangle {
-                            anchors {
-                                top: parent ? parent.top : undefined
-                                bottom: parent ? parent.bottom : undefined
-                                left: parent ? parent.left : undefined
-                                margins: 5
-                            }
                             width: height
                             color: "darkgrey"
                             Rectangle {
@@ -182,12 +177,6 @@ Template {
                         text: "Custom icon"
                         value: "Value"
                         icon: Rectangle {
-                            anchors {
-                                top: parent ? parent.top : undefined
-                                bottom: parent ? parent.bottom : undefined
-                                left: parent ? parent.left : undefined
-                                margins: 5
-                            }
                             width: height
                             color: "darkgrey"
                             Rectangle {

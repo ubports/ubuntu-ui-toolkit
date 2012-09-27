@@ -63,7 +63,9 @@ Empty {
     /*!
       \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
-      shown on the left side inside the list item.
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item with all margins 5.
       \qmlproperty variant icon
     */
     property variant icon
@@ -132,6 +134,13 @@ Empty {
         } else {
             __leftItem = icon;
             __leftItem.parent = listItem;
+        }
+
+        __leftItem.anchors.left = listItem.left;
+        if (!__leftItem.height) {
+            __leftItem.anchors.top = listItem.top;
+            __leftItem.anchors.bottom = listItem.bottom;
+            __leftItem.anchors.margins = 5;
         }
     }
 
