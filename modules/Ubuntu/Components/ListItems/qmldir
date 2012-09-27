@@ -3,7 +3,8 @@ Base 0.1 Base.qml
 Caption 0.1 Caption.qml
 Divider 0.1 Divider.qml
 Header 0.1 Header.qml
-internal IconVisual IconVisual.qml
+#internal IconVisual IconVisual.qml
+IconVisual 0.1 IconVisual.qml
 ItemSeparator 0.1 ItemSeparator.qml
 internal LabelVisual LabelVisual.qml
 MultiValue 0.1 MultiValue.qml
