@@ -29,13 +29,6 @@ Item {
     property real rightIconMargin: 5
     width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
 
-    /*!
-      \internal
-      Used by Base and Standard to determine whether this instance was
-      created there, and thus can also be destroyed there.
-     */
-    property bool __pleaseCleanMeUp: false
-
     anchors {
         top: parent ? parent.top : undefined
         left: parent ? parent.left : undefined
