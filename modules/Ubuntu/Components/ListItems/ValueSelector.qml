@@ -63,6 +63,37 @@ Empty {
      */
     property alias text: label.text
 
+    /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: selectorMain.__leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: selectorMain.__rightIconMargin
+
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: selectorMain.iconFrame
+
+    /*!
+      \preliminary
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item.
+      \qmlproperty variant icon
+    */
     property alias icon: selectorMain.icon
 
     /*!
