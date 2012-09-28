@@ -35,5 +35,12 @@ Template {
                 checked: true
             }
         }
+
+        TemplateRow {
+            title: "Disabled"
+            Switch {
+                enabled: false
+            }
+        }
     }
 }

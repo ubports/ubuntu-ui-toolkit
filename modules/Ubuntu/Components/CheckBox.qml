@@ -85,6 +85,8 @@ Item {
         z: -1
         anchors.fill: parent
 
+        opacity: enabled ? 1.0 : 0.5
+
         // FIXME: think of using distance fields
         BorderImage {
             id: shape
