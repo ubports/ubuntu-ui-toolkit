@@ -22,7 +22,8 @@ Item {
     id: iconVisual
 
     property alias source: icon.source
-    visible: source != "" && icon.status == Image.Ready
+    property alias fallbackSource: icon.fallbackSource
+    visible: source != ""
     property bool hasFrame: true
 
     property real leftIconMargin: 5
@@ -37,7 +38,7 @@ Item {
         bottom: parent ? parent.bottom : undefined
     }
 
-    Image {
+    ImageWithFallback {
         id: icon
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit

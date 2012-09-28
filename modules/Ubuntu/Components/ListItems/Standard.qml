@@ -69,6 +69,13 @@ Empty {
 
     /*!
       \preliminary
+      The location of the icon to show in the list item if iconSource failed to load (optional).
+      \qmlproperty url fallbackIconSource
+     */
+    property alias fallbackIconSource: iconHelper.fallbackSource
+
+    /*!
+      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
