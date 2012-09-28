@@ -155,8 +155,11 @@ Item {
         anchors.fill: parent
     }
 
-    onMouseAreaChanged: p.updateMouseArea()
-    onValueChanged: p.value = slider.value
+    /*! \internal */
+    onMouseAreaChanged: __updateMouseArea()
+
+    /*! \internal */
+    onValueChanged: __value = slider.value
 
     Item {
         id: main
@@ -167,14 +170,14 @@ Item {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: p.shapeSource
+            source: __shapeSource
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
         }
 
         Rectangle {
             id: backgroundBase
             anchors.fill: parent
-            color: p.backgroundColor
+            color: __backgroundColor
         }
 
         ButtonMaskEffect {
@@ -189,7 +192,7 @@ Item {
             anchors.fill: parent
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: p.borderIdleSource
+            source: __borderIdleSource
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
         }
 
@@ -199,20 +202,20 @@ Item {
 
         BorderImage {
             id: thumbShape
-            x: backgroundShape.x + p.thumbSpacing + p.normalizedValue * p.thumbSpace
-            y: backgroundShape.y + p.thumbSpacing
-            width: p.thumbWidth
-            height: backgroundShape.height - (2.0 * p.thumbSpacing)
+            x: backgroundShape.x + __thumbSpacing + __normalizedValue * __thumbSpace
+            y: backgroundShape.y + __thumbSpacing
+            width: __thumbWidth
+            height: backgroundShape.height - (2.0 * __thumbSpacing)
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: p.shapeSource
+            source: __shapeSource
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
         }
 
         Rectangle {
             id: thumbBase
             anchors.fill: thumbShape
-            color: p.thumbColor
+            color: __thumbColor
         }
 
         ButtonMaskEffect {
@@ -231,7 +234,7 @@ Item {
             anchors.fill: thumbShape
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
-            source: p.borderIdleSource
+            source: __borderIdleSource
             border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
             visible: true
         }
@@ -247,91 +250,115 @@ Item {
             fontSize: "medium"
             font.weight: Font.Bold
             color: "white"
-            text: slider.formatValue(p.clamp(p.value, slider.minimumValue, slider.maximumValue))
+            text: slider.formatValue(__clamp(__value, slider.minimumValue, slider.maximumValue))
         }
     }
 
-    QtObject {
-        id: p
+    // Private symbols.
 
-        property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
-        property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
-        property real thumbSpacing: 3.0
-        property real thumbWidth: 50.0
-        property real thumbSpace: backgroundShape.width - (2.0 * p.thumbSpacing + p.thumbWidth)
-        property color backgroundColor: "#c4c4c4"
-        property color thumbColor: "#8b8b8b"
-        property real dragInitMouseX: 0.0
-        property real dragInitNormalizedValue: 0.0
-        property real value: 0.0
-        property real normalizedValue: p.clamp((p.value - slider.minimumValue) /
-                                               (slider.maximumValue - slider.minimumValue),
-                                               0.0, 1.0)
+    /*! \internal */
+    property url __shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
+    
+    /*! \internal */
+    property url __borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
+    
+    /*! \internal */
+    property real __thumbSpacing: 3.0
+    
+    /*! \internal */
+    property real __thumbWidth: 50.0
+    
+    /*! \internal */
+    property real __thumbSpace: backgroundShape.width - (2.0 * __thumbSpacing + __thumbWidth)
+    
+    /*! \internal */
+    property color __backgroundColor: "#c4c4c4"
+    
+    /*! \internal */
+    property color __thumbColor: "#8b8b8b"
+    
+    /*! \internal */
+    property real __dragInitMouseX: 0.0
 
-        // FIXME(loicm) It would be useful to have these functions available
-        //     in a global set of common native (C++) functions. It's very
-        //     likely that we'll have more candidates along our dev process.
+    /*! \internal */
+    property real __dragInitNormalizedValue: 0.0
 
-        function clamp(x, min, max) {
+    /*! \internal */
+    property real __value: 0.0
+
+    /*! \internal */
+    property real __normalizedValue: __clamp((__value - slider.minimumValue) /
+                                             (slider.maximumValue - slider.minimumValue),
+                                             0.0, 1.0)
+
+    // FIXME(loicm) It would be useful to have these functions available in a
+    //     global set of common native (C++) functions. It's very likely that
+    //     we'll have more candidates along our dev process.
+
+    /*! \internal */
+    function __clamp(x, min, max) {
             return Math.max(min, Math.min(x, max));
-        }
+    }
 
-        function lerp(x, a, b) {
-            return ((1.0 - x) * a) + (x * b);
-        }
+    /*! \internal */
+    function __lerp(x, a, b) {
+        return ((1.0 - x) * a) + (x * b);
+    }
 
-        function updateMouseArea() {
-            if (slider.mouseArea) {
-                slider.mouseArea.pressedChanged.connect(p.mouseAreaPressed);
-                slider.mouseArea.positionChanged.connect(p.mouseAreaPositionchanged);
-            }
+    /*! \internal */
+    function __updateMouseArea() {
+        if (slider.mouseArea) {
+            slider.mouseArea.pressedChanged.connect(__mouseAreaPressed);
+            slider.mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
         }
+    }
 
-        function mouseAreaPressed() {
-            if (slider.mouseArea.pressedButtons == Qt.LeftButton) {
-                // Left button pressed.
-                var mouseX = slider.mouseArea.mouseX;
-                var mouseY = slider.mouseArea.mouseY;
-                if (mouseY >= thumbShape.y && mouseY <= thumbShape.y + thumbShape.height) {
-                    if (mouseX >= thumbShape.x && mouseX <= thumbShape.x + thumbShape.width) {
-                        // Button pressed inside the thumb.
-                        p.dragInitMouseX = mouseX;
-                        p.dragInitNormalizedValue = p.normalizedValue;
-                        slider.pressed = true;
-                    } else if (mouseX > p.thumbSpacing &&
-                               mouseX < backgroundShape.width - p.thumbSpacing) {
-                        // Button pressed outside the thumb.
-                        var normalizedPosition = (slider.mouseArea.mouseX - p.thumbSpacing -
-                                                  p.thumbWidth * 0.5) / p.thumbSpace;
-                        normalizedPosition = p.clamp(normalizedPosition, 0.0, 1.0);
-                        p.value = p.lerp(normalizedPosition, slider.minimumValue,
-                                         slider.maximumValue);
-                        p.dragInitMouseX = mouseX;
-                        p.dragInitNormalizedValue = p.normalizedValue;
-                        slider.pressed = true;
-                        if (slider.live) {
-                            slider.value = p.value
-                        }
+    /*! \internal */
+    function __mouseAreaPressed() {
+        if (slider.mouseArea.pressedButtons == Qt.LeftButton) {
+            // Left button pressed.
+            var mouseX = slider.mouseArea.mouseX;
+            var mouseY = slider.mouseArea.mouseY;
+            if (mouseY >= thumbShape.y && mouseY <= thumbShape.y + thumbShape.height) {
+                if (mouseX >= thumbShape.x && mouseX <= thumbShape.x + thumbShape.width) {
+                    // Button pressed inside the thumb.
+                    __dragInitMouseX = mouseX;
+                    __dragInitNormalizedValue = __normalizedValue;
+                    slider.pressed = true;
+                } else if (mouseX > __thumbSpacing &&
+                           mouseX < backgroundShape.width - __thumbSpacing) {
+                    // Button pressed outside the thumb.
+                    var normalizedPosition = (slider.mouseArea.mouseX - __thumbSpacing -
+                    __thumbWidth * 0.5) / __thumbSpace;
+                    normalizedPosition = __clamp(normalizedPosition, 0.0, 1.0);
+                    __value = __lerp(normalizedPosition, slider.minimumValue,
+                    slider.maximumValue);
+                    __dragInitMouseX = mouseX;
+                    __dragInitNormalizedValue = __normalizedValue;
+                    slider.pressed = true;
+                    if (slider.live) {
+                        slider.value = __value
                     }
                 }
-            } else if (slider.pressed) {
-                // Left button released.
-                slider.pressed = false;
-                if (!slider.live) {
-                    slider.value = p.value;
-                }
+            }
+        } else if (slider.pressed) {
+            // Left button released.
+            slider.pressed = false;
+            if (!slider.live) {
+                slider.value = __value;
             }
         }
+    }
 
-        function mouseAreaPositionchanged() {
-            // Left button dragging.
-            if (slider.pressed) {
-                var normalizedOffsetX = (slider.mouseArea.mouseX - p.dragInitMouseX) / p.thumbSpace;
-                var v = p.clamp(p.dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
-                p.value = p.lerp(v, slider.minimumValue, slider.maximumValue);
-                if (slider.live) {
-                    slider.value = p.value
-                }
+    /*! \internal */
+    function __mouseAreaPositionchanged() {
+        // Left button dragging.
+        if (slider.pressed) {
+            var normalizedOffsetX = (slider.mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
+            var v = __clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
+            __value = __lerp(v, slider.minimumValue, slider.maximumValue);
+            if (slider.live) {
+                slider.value = __value
             }
         }
     }
