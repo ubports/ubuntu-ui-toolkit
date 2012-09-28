@@ -27,6 +27,8 @@ Item {
 
     property real leftIconMargin: 5
     property real rightIconMargin: 5
+    property real topIconMargin: 5
+    property real bottomIconMargin: 5
     width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
 
     anchors {
@@ -44,7 +46,9 @@ Item {
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }
-        height: Math.min(sourceSize.height, iconVisual.height - 4) // top and bottom margin of 2
+        height: Math.min(sourceSize.height, iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
+        smooth: true
+        asynchronous: true
     }
 
     BorderImage {
