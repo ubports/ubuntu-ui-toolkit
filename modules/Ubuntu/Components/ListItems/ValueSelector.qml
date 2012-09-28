@@ -64,6 +64,16 @@ Empty {
     property alias text: label.text
 
     /*!
+      \preliminary
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item.
+      \qmlproperty variant icon
+    */
+    property alias icon: selectorMain.icon
+
+    /*!
       \internal
       The margins on the left side of the icon.
       \qmlproperty real leftIconMargin
@@ -85,16 +95,6 @@ Empty {
       \qmlproperty bool iconFrame
      */
     property alias iconFrame: selectorMain.iconFrame
-
-    /*!
-      \preliminary
-      The location of the icon to show in the list item (optional), or an Item that is
-      shown on the left side inside the list item. The icon will automatically be
-      anchored to the left side of the list item, and if its height is undefined, to the top
-      and bottom of the list item.
-      \qmlproperty variant icon
-    */
-    property alias icon: selectorMain.icon
 
     /*!
       \preliminary
