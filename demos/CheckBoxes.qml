@@ -35,5 +35,13 @@ Template {
                 checked: true
             }
         }
+
+        TemplateRow {
+            title: "Disabled"
+            CheckBox {
+                enabled: false
+            }
+        }
+
     }
 }

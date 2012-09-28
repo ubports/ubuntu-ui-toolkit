@@ -14,11 +14,7 @@ properties typed as variant.
 @qml-mapping(.button, ButtonStyle, ButtonDelegate)
 @qml-mapping(.Button, ButtonStyle, ButtonDelegate)
 @qml-import(Ubuntu.Components 0.1)
-/*
-@qml-mapping(.item, ItemStyle, ItemDelegate)
-@qml-mapping(.group, GroupRule, )
-@qml-mapping(.frame, , FrameDelegate)
-*/
+
 .Button {
     color: "#e3e5e8";
     shapeDark: "artwork/ButtonShapeDark.png";
@@ -46,6 +42,9 @@ properties typed as variant.
 }
 
 /*
+@qml-mapping(.item, ItemStyle, ItemDelegate)
+@qml-mapping(.group, GroupRule, )
+@qml-mapping(.frame, , FrameDelegate)
 .item {
     color: "blue";
     border: "tan";
