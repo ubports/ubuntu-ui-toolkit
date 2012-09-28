@@ -47,6 +47,7 @@ Item {
             leftMargin: iconVisual.leftIconMargin
         }
         height: Math.min(sourceSize.height, iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
+        smooth: true
     }
 
     BorderImage {
