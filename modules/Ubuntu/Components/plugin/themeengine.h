@@ -13,128 +13,58 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #ifndef THEMEENGINE_H
 #define THEMEENGINE_H
 
 #include <QObject>
-#include <QHash>
-#include <QVector>
 #include <QUrl>
-#include <QFileSystemWatcher>
+#include <qdeclarative.h>
 
 class StyleRule;
 class QDeclarativeEngine;
-class QDeclarativeItem;
-class QDeclarativeComponent;
 class StyledItem;
 
-typedef QHash<QString, StyledItem*> InstanceHash;
-
-class StylePathNode {
-    public:
-    enum Relationship {Child, Descendant, Sibling};
-    StylePathNode();
-    StylePathNode(const QString &styleClass, const QString &styleId, Relationship relationship);
-    QString toString() const;
-    bool operator==(const StylePathNode &other);
-    QString styleClass;
-    QString styleId;
-    Relationship relationship;
-};
-typedef QList<StylePathNode> StylePath;
-uint qHash(const StylePath &key);
-
-class StyleTreeNode {
-public:
-    StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const StylePathNode &node, StyleRule *styleRule);
-    ~StyleTreeNode();
-    void clear();
-    void addStyleRule(const StylePath &path, StyleRule *styleRule);
-    StyleRule *lookupStyleRule(const StylePath &path, bool strict = false);
-    StyleRule *testNode(StylePathNode &nextNode, const StylePath &sparePath, bool &strict);
-    void listTree(const QString &prefix = QString());
-
-public:
-    StyleTreeNode *parent;
-    StylePathNode styleNode;
-    StyleRule *styleRule;
-    // the key is the next CSS node's styleClass#styleId combination, without the relationship
-    // therefore we need a multi-hash that accepts multiple values for the same key
-    QHash<QString, StyleTreeNode*> children;
-};
-
-class QmlTheme {
-public:
-    QmlTheme() : themeComponent(0), styleTree(0){}
-
-    void loadQmlTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
-    void finalizeThemeLoading();
-private:
-    QDeclarativeComponent *themeComponent;
-    StyleTreeNode *styleTree;
-};
-
-class CssTheme {
-public:
-    CssTheme(){}
-    ~CssTheme(){}
-
-    void loadCssTheme(const QString &file);
-};
-
+class ThemeEnginePrivate;
 class ThemeEngine : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool debug READ debug WRITE setDebug)
+
+    Q_PROPERTY(QString error READ error NOTIFY errorChanged)
+    Q_PROPERTY(QString currentTheme READ currentTheme NOTIFY themeChanged)
 public:
-    explicit ThemeEngine(QObject *parent = 0);
+    ThemeEngine(QObject *parent = 0);
     ~ThemeEngine();
 
-public: //getter/setter
-    bool debug();
-    void setDebug(bool debug);
+    static bool initialize(QDeclarativeEngine *engine);
+    static ThemeEngine *instance();
 
-public: // utility methods
-
-    static ThemeEngine* instance();
-    static QDeclarativeEngine *engine();
-    static void initialize(QDeclarativeEngine *engine);
-    static StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
-    static bool registerInstanceId(StyledItem *item, const QString &newId);
-
-    // public functions on instance
-public:
-    QList<StylePath> parseSelector(const QString &selector) const;
-    QString stylePathToString(const StylePath &path) const;
-    StylePath getStylePath(const StyledItem *obj, bool forceClassName) const;
-    StyleRule *styleRuleForPath(const StylePath &path);
+    bool registerInstanceId(StyledItem *item, const QString &newId);
+    StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
 
 signals:
+    void errorChanged();
     void themeChanged();
 
 public slots:
     void loadTheme(const QUrl &themeFile);
 
-private slots:
-    void completeThemeLoading();
-    void changeTheme();
+    void setTheme(const QUrl &theme);
 
-private: //members
-    QFileSystemWatcher m_themeWatcher;
-    QDeclarativeEngine *m_engine;
-    // suffix tree for the styles
-    StyleTreeNode *m_styleTree;
-    QHash<StylePath, StyleRule*> m_styleCache;
-    InstanceHash m_instanceCache;
-    QmlTheme m_qmlThemeLoader;
-    CssTheme m_cssThemeLoader;
-    // needed for theme loading
-    QDeclarativeComponent *m_themeComponent;
-    bool m_updateTheme;
+private:
+    QString error() const;
+    QString currentTheme() const;
+
+    Q_DISABLE_COPY(ThemeEngine)
+    Q_DECLARE_PRIVATE(ThemeEngine)
+    QScopedPointer<ThemeEnginePrivate> d_ptr;
+
+    Q_PRIVATE_SLOT(d_func(), void _q_continueThemeLoading())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
 };
+
+QML_DECLARE_TYPE(ThemeEngine)
 
 #endif // THEMEENGINE_H

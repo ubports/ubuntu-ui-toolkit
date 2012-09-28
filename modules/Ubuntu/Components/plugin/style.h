@@ -12,6 +12,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #ifndef STYLE_H
@@ -59,8 +61,6 @@ public: //getter/setters
 private:
     Q_DISABLE_COPY(StyleRule)
     Q_DECLARE_PRIVATE(StyleRule)
-    friend class ThemeEngine;
-    friend class StyledItem;
     QScopedPointer<StyleRulePrivate> d_ptr;
 };
 

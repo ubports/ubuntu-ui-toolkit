@@ -25,13 +25,29 @@ import "fontUtils.js" as FontUtils
     \b{This component is under heavy development.}
 */
 Text {
-    color: "black"
+    //color: "black"
 //    font.family: "UbuntuBeta"
 
     /*!
        \preliminary
        DOCME
     */
-    property string fontSize: "medium"
+    //property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
+
+    property alias styleClass: styleRule.styleClass
+    property string fontSize: "medium"
+    color: "black"
+
+    // example of private implementation of using StyledItem privately
+    StyledItem {
+        id: styleRule
+        onStyleChanged: {
+            if (styleObject) {
+                font.family = styleObject.fontFamily
+                color = styleObject.color
+                fontSize = styleObject.fontSize
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #ifndef STYLEDITEM_H
@@ -48,7 +48,7 @@ signals:
     
 public slots:
 
-private: // getter/setter
+public: // getter/setter
     QString instanceId() const;
     void setInstanceId(const QString &instanceId);
     QString styleClass() const;
@@ -61,7 +61,7 @@ private: // getter/setter
 private: //members
     Q_DECLARE_PRIVATE(StyledItem)
     QScopedPointer<StyledItemPrivate> d_ptr;
-    friend class ThemeEngine;
+
     Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
 };
 

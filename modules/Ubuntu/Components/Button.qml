@@ -54,7 +54,7 @@ ButtonWithForeground {
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: styleObject.color//"#e3e5e8"
+    property color color: (styleObject) ? styleObject.color : "#e3e5e8"
 
     /*!
        \preliminary

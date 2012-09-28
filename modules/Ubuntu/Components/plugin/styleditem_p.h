@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #ifndef STYLEDITEM_P_H
@@ -42,7 +42,6 @@ public:
 
     void updateCurrentStyle(bool forceUpdate = false);
     void _q_reloadTheme();
-
 };
 
 #endif // STYLEDITEM_P_H

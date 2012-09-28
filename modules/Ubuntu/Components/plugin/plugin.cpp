@@ -41,10 +41,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+    ThemeEngine::initialize(engine);
     // add theme engine
     engine->rootContext()->setContextProperty("theme", ThemeEngine::instance());
 
-    ThemeEngine::initialize(engine);
     // small tests, move these to unit test
 /*
     StylePath path;

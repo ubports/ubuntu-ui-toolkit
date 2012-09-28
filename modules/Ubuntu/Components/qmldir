@@ -18,3 +18,7 @@ PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
+
+# styles
+ButtonStyle 0.1 ButtonStyle.qml
+ButtonDelegate 0.1 ButtonDelegate.qml

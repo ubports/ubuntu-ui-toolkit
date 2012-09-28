@@ -1,0 +1,25 @@
+/*
+
+    The theme extends the default one and redefines the delegate for the
+    .Button selector. The "demos" folder is added to the imports so the
+    theme pecific types can be utilized.
+*/
+
+@import("modules/Ubuntu/Components/defaulttheme.css")
+@qml-import("demos")
+@qml-mapping(.Button, ButtonStyle, TestFrameDelegate)
+
+
+.tframe {
+    color: "tan";
+    border: "blue"
+}
+
+.tbutton {
+    color: "white"
+}
+
+/* this is here just to include .tbutton's delegate */
+.tframe > .tbutton {
+}
+

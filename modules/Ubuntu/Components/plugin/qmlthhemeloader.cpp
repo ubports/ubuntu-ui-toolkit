@@ -1,0 +1,87 @@
+/*
+ * Copyright 2012 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ */
+
+#include "themeengine.h"
+#include "themeengine_p.h"
+#include "style.h"
+//#include "style_p.h"
+#include "styleditem.h"
+//#include "styleditem_p.h"
+#include <QtDeclarative/QDeclarativeEngine>
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeComponent>
+#include <QtDeclarative/QDeclarativeItem>
+
+/*=============================================================================
+  QML THEME LOADER
+=============================================================================*/
+/*!
+  \internal
+  Loads a QML theme and builds up the style rule tree.
+  */
+bool QmlTheme::loadQmlTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+{
+    themeComponent = new QDeclarativeComponent(engine, path);
+    this->styleTree = styleTree;
+    if (themeComponent->isLoading())
+        QObject::connect(themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
+                         ThemeEngine::instance(), SLOT(_q_continueThemeLoading));
+    else
+        return finalizeThemeLoading();
+    return true;
+}
+
+/*!
+  \internal
+  Finalizes theme loading. Parses theme for style rules and builds up the cache from it.
+*/
+bool QmlTheme::finalizeThemeLoading()
+{
+    bool ret = true;
+    if (!themeComponent->isError()) {
+        QObject *theme = themeComponent->create();
+        if (theme) {
+            // parse its children for Styles
+            QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
+
+            foreach (StyleRule *rule, rules) {
+                const QString selector = rule->selector();
+                if (selector.isEmpty()) {
+                    qWarning() << "Rule without selector!";
+                    continue;
+                }
+                QList<Selector> pathList = ThemeEnginePrivate::parseSelector(selector);
+                foreach (const Selector &path, pathList) {
+                    styleTree->addStyleRule(path, rule);
+                }
+            }
+
+            styleTree->listTree();
+        }
+    } else {
+        ThemeEnginePrivate::setError(themeComponent->errorString());
+        ret = false;
+    }
+
+    // reset component
+    themeComponent = 0;
+    styleTree = 0;
+    return ret;
+}
+
+

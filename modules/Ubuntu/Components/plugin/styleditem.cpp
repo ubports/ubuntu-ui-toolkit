@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #include "styleditem.h"
@@ -21,6 +21,7 @@
 #include "style.h"
 #include "style_p.h"
 #include "themeengine.h"
+#include "themeengine_p.h"
 #include <QDeclarativeProperty>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
@@ -60,7 +61,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     // in case of private style is in use, no need to change anything
     if (!privateStyle) {
         // check whether we have different style for the state
-        StyleRule *tmp = ThemeEngine::lookupStyleRule(q);
+        StyleRule *tmp = ThemeEngine::instance()->lookupStyleRule(q);
         if (styleRule != tmp) {
             styleObject = 0;
             styleRule = tmp;
@@ -91,7 +92,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
             QDeclarativeComponent *visuals = styleRule->delegate();
             if (!visuals) {
                 // reset
-                StyleRule *delegateStyle = ThemeEngine::lookupStyleRule(q, true);
+                StyleRule *delegateStyle = ThemeEngine::instance()->lookupStyleRule(q, true);
                 if (delegateStyle)
                     visuals = delegateStyle->delegate();
             }
@@ -127,7 +128,10 @@ void StyledItemPrivate::_q_reloadTheme()
         return;
     // update style if theme is used
     styleRule = 0;
+    delete styleObject;
+    delete delegateItem;
     styleObject = 0;
+    delegateItem = 0;
     updateCurrentStyle();
 }
 
@@ -163,7 +167,7 @@ void StyledItem::setInstanceId(const QString &instanceId)
     Q_D(StyledItem);
     if (instanceId != d->instanceId) {
         // this might not be necessary... let's see
-        if (ThemeEngine::registerInstanceId(this, instanceId)) {
+        if (ThemeEngine::instance()->registerInstanceId(this, instanceId)) {
             d->instanceId = instanceId;
             d->updateCurrentStyle();
         } else {

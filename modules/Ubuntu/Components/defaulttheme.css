@@ -1,6 +1,66 @@
-.button {
-    color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"
-    borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-    borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
-                        : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+/*
+qml-mapping defines the QML style and delegate QML documents that are used as base
+when building up the Rule components.
+
+Syntax:
+qml-mapping(css-tag, style-qml-type, delegate-qml-type)
+where
+   - css-tag is the tag used in CSS theme
+   - style -qml-type is the name of the QML document defining the style properties
+   - delegate-qml-type is the name of the QML document defining the widget delegate.
+If no style is given, theme engine will use QtObject for style and will declare all
+properties typed as variant.
+*/
+@qml-mapping(.button, ButtonStyle, ButtonDelegate)
+@qml-mapping(.Button, ButtonStyle, ButtonDelegate)
+@qml-import(Ubuntu.Components 0.1)
+/*
+@qml-mapping(.item, ItemStyle, ItemDelegate)
+@qml-mapping(.group, GroupRule, )
+@qml-mapping(.frame, , FrameDelegate)
+*/
+.Button {
+    color: "#e3e5e8";
+    shapeDark: "artwork/ButtonShapeDark.png";
+    shapeNormal: "artwork/ButtonShape.png";
+    borderIdle: "artwork/ButtonBorderIdle.png";
+    borderPressed: "artwork/ButtonBorderPressed.png";
+    borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
+    borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
 }
+
+.button {
+    color: "#a3e5e8";
+    shapeDark: "artwork/ButtonShapeDark.png";
+    shapeNormal: "artwork/ButtonShape.png";
+    borderIdle: "artwork/ButtonBorderIdle.png";
+    borderPressed: "artwork/ButtonBorderPressed.png";
+    borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
+    borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
+}
+
+.label {
+    fontFamily: "Times";
+    fontSize: "medium";
+    color: "red";
+}
+
+/*
+.item {
+    color: "blue";
+    border: "tan";
+    borderWidth: 2;
+}
+
+.toolbar .item {
+   color: "black";
+}
+
+.frame .group .item {
+    borderWidth: 1;
+}
+
+.frame .group .the, .frame .group .end, .group > .item {
+    whatever: dot-org;
+}
+*/

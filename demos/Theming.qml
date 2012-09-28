@@ -24,29 +24,42 @@ Template {
         spacing: 30
 
         TemplateRow {
-            Button {
-                text: "Theme #1"
-                width: 100
-                onClicked: theme.loadTheme("SampleTheme1.qml")
-            }
-            Button {
-                text: "Theme #2"
-                width: 100
-                onClicked: theme.loadTheme("SampleTheme2.qml")
+            title: "Current:"
+
+            TextCustom {
+                styleClass: "label"
+                text: theme.currentTheme
             }
         }
 
         TemplateRow {
-            title: "Standard"
+            Button {
+                text: "Theme #1"
+                width: 100
+                onClicked: theme.setTheme("demos/test-theme1.css")
+            }
+            Button {
+                text: "Theme #2"
+                width: 100
+                onClicked: theme.setTheme("demos/test-theme2.css")
+            }
+            Button {
+                text: "Default"
+                width: 100
+                onClicked: theme.setTheme("")
+            }
+        }
+
+        TemplateRow {
+            title: ".Button"
 
             Button {
-                //styleClass: "button"
                 text: "Call"
             }
         }
 
         TemplateRow {
-            title: "Custom props"
+            title: ".button"
 
             Button {
                 styleClass: "button"
@@ -54,24 +67,45 @@ Template {
             }
         }
         TemplateRow {
-            title: "Custom props"
+            title: "Custom"
 
             StyledItem {
                 id: frame
                 width: 300
                 height: 100
-                styleClass: "tframe"
-                Rectangle {
-                    anchors.fill: parent
-                    border.color: frame.styleObject.border
-                    border.width: 2
-                    radius: 3
-                    color: frame.styleObject.color
+                styleClass: "frame"
+                /*
+                styleRule: Rule {
+                    delegate: Rectangle {
+                        anchors.fill: parent
+                        border.color: "blue"
+                        border.width: 2
+                        radius: 3
+                        color: "#123654"
+                    }
                 }
+                */
 
                 Button {
-                    styleClass: "tbutton"
+                    x: 10; y: 10
                     text: "Call"
+                    styleRule: Rule {
+                        delegate: Item {
+                            z: -1
+                            anchors.fill: control
+                            clip: true
+                            Rectangle {
+                                id: shape
+                                anchors.fill: parent
+                                anchors.margins: -control.width
+                                rotation: control.pressed ? -45 : 45
+                                gradient: Gradient {
+                                    GradientStop { position: 0.0; color: "lightsteelblue" }
+                                    GradientStop { position: 1.0; color: control.hovered ? "blue" : "green" }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
