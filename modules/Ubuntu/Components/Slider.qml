@@ -238,7 +238,12 @@ Item {
 
         TextCustom {
             id: thumbValue
-            anchors.centerIn: thumbShape
+            anchors {
+                verticalCenter: thumbShape.verticalCenter
+                left: thumbShape.left
+                right: thumbShape.right
+            }
+            horizontalAlignment: Text.AlignHCenter
             fontSize: "medium"
             font.weight: Font.Bold
             color: "white"
