@@ -84,6 +84,22 @@ Empty {
     property bool progression: false
 
     /*!
+      \internal
+      The margins on the left side of the icon.
+      \qmlproperty real leftIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __leftIconMargin: iconHelper.leftIconMargin
+
+    /*!
+      \internal
+      The margins on the right side of the icon.
+      \qmlproperty real rightIconMargin
+     */
+    // FIXME: Remove this when the setting becomes part of the theming engine
+    property alias __rightIconMargin: iconHelper.rightIconMargin
+
+    /*!
       \preliminary
       An optional control that is displayed inside the list item.
       The width of the control must be specified in order to determine
@@ -95,6 +111,13 @@ Empty {
       \qmlproperty Item control
     */
     property alias control: controlContainer.control
+
+    /*!
+      \preliminary
+      Show or hide the frame around the icon
+      \qmlproperty bool iconFrame
+     */
+    property alias iconFrame: iconHelper.hasFrame
 
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
@@ -113,6 +136,10 @@ Empty {
         anchors.fill: progressionHelper
         color: "white"
         opacity: 0.7
+    }
+
+    IconVisual {
+        id: iconHelper
     }
 
     /*!
@@ -138,10 +165,6 @@ Empty {
                 icon.anchors.bottom = listItem.bottom;
             }
         }
-    }
-
-    IconVisual {
-        id: iconHelper
     }
 
     LabelVisual {
