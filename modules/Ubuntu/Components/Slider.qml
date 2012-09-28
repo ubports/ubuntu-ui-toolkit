@@ -36,6 +36,7 @@
 
 import QtQuick 1.1
 import Qt.labs.shaders 1.0
+import "mathUtils.js" as MathUtils
 
 /*!
     \qmlclass Slider
@@ -250,7 +251,8 @@ Item {
             fontSize: "medium"
             font.weight: Font.Bold
             color: "white"
-            text: slider.formatValue(__clamp(__value, slider.minimumValue, slider.maximumValue))
+            text: slider.formatValue(MathUtils.clamp(__value, slider.minimumValue,
+                                                     slider.maximumValue))
         }
     }
 
@@ -287,23 +289,9 @@ Item {
     property real __value: 0.0
 
     /*! \internal */
-    property real __normalizedValue: __clamp((__value - slider.minimumValue) /
-                                             (slider.maximumValue - slider.minimumValue),
-                                             0.0, 1.0)
-
-    // FIXME(loicm) It would be useful to have these functions available in a
-    //     global set of common native (C++) functions. It's very likely that
-    //     we'll have more candidates along our dev process.
-
-    /*! \internal */
-    function __clamp(x, min, max) {
-            return Math.max(min, Math.min(x, max));
-    }
-
-    /*! \internal */
-    function __lerp(x, a, b) {
-        return ((1.0 - x) * a) + (x * b);
-    }
+    property real __normalizedValue: MathUtils.clamp((__value - slider.minimumValue) /
+                                                     (slider.maximumValue - slider.minimumValue),
+                                                     0.0, 1.0)
 
     /*! \internal */
     function __updateMouseArea() {
@@ -330,8 +318,8 @@ Item {
                     // Button pressed outside the thumb.
                     var normalizedPosition = (slider.mouseArea.mouseX - __thumbSpacing -
                     __thumbWidth * 0.5) / __thumbSpace;
-                    normalizedPosition = __clamp(normalizedPosition, 0.0, 1.0);
-                    __value = __lerp(normalizedPosition, slider.minimumValue,
+                    normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
+                    __value = MathUtils.lerp(normalizedPosition, slider.minimumValue,
                     slider.maximumValue);
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
@@ -355,8 +343,8 @@ Item {
         // Left button dragging.
         if (slider.pressed) {
             var normalizedOffsetX = (slider.mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
-            var v = __clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
-            __value = __lerp(v, slider.minimumValue, slider.maximumValue);
+            var v = MathUtils.clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
+            __value = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
             if (slider.live) {
                 slider.value = __value
             }
