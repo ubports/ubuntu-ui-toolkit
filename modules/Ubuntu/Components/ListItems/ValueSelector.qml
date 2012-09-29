@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -69,6 +69,13 @@ Empty {
       \qmlproperty url iconSource
      */
     property alias iconSource: selectorMain.iconSource
+
+    /*!
+      \preliminary
+      The location of the icon to show in the list item if iconSource failed to load (optional).
+      \qmlproperty url fallbackIconSource
+     */
+    property alias fallbackIconSource: iconHelper.fallbackSource
 
     /*!
       \internal
