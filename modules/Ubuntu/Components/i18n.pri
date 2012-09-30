@@ -1,0 +1,3 @@
+INCLUDEPATH += i18n
+SOURCES += i18n/i18n.cpp
+HEADER += i18n/i18n.h
