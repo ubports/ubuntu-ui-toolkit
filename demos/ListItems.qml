@@ -92,7 +92,7 @@ Template {
 
                     ListModel {
                         id: testModel
-                        ListElement { name: "Banana" }
+                        ListElement { name: "Parsley" }
                         ListElement { name: "Orange"; type: "fruit"}
                         ListElement { name: "Apple"; type: "fruit" }
                         ListElement { name: "Tomato"; type: "fruit" }
