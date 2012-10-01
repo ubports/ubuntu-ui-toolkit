@@ -36,8 +36,8 @@ public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
 ////    static void registerTypes();
-//    Q_INVOKABLE QVariant translate(QVariant var); // TODO: use strings?
-    static QVariant translate(QVariant var);
+    Q_INVOKABLE QVariant translate(QVariant var); // TODO: use strings?
+//    static QVariant translate(QVariant var);
 };
 
 //QML_DECLARE_TYPE(UbuntuI18n)

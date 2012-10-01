@@ -21,11 +21,11 @@
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
 UbuntuI18n::UbuntuI18n(QObject* parent) {
-    // TODO
+    printf("Constructing UbuntuI18n object");
 }
 
 UbuntuI18n::~UbuntuI18n() {
-    // TODO
+    printf("Destroying UbuntuI18n object");
 }
 
 //void UbuntuI18n::registerTypes(const char *uri)
