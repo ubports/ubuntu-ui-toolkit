@@ -42,6 +42,13 @@ Empty {
 
     /*!
       \preliminary
+      The location of the icon to show in the list item if iconSource failed to load (optional).
+      \qmlproperty url fallbackIconSource
+     */
+    property alias fallbackIconSource: iconHelper.fallbackSource
+
+    /*!
+      \preliminary
       Show or hide the progression symbol.
      */
     property bool progression: false

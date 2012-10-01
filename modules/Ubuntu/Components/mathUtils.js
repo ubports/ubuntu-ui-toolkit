@@ -14,34 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
-import Ubuntu.Components 0.1
+.pragma library
 
-Template {
-    title: "Check Box"
+// FIXME(loicm) It would be better to have these functions available in a global
+//     set of common native C++ functions.
 
-    Column {
-        spacing: 30
+function clamp(x, min, max) {
+    return Math.max(min, Math.min(x, max));
+}
 
-        TemplateRow {
-            title: "Unchecked"
-            CheckBox {
-            }
-        }
-
-        TemplateRow {
-            title: "Checked"
-            CheckBox {
-                checked: true
-            }
-        }
-
-        TemplateRow {
-            title: "Disabled"
-            CheckBox {
-                enabled: false
-            }
-        }
-
-    }
+function lerp(x, a, b) {
+    return ((1.0 - x) * a) + (x * b);
 }

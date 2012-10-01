@@ -22,11 +22,14 @@ Item {
     id: iconVisual
 
     property alias source: icon.source
-    visible: source != "" && icon.status == Image.Ready
+    property alias fallbackSource: icon.fallbackSource
+    visible: source != ""
     property bool hasFrame: true
 
     property real leftIconMargin: 5
     property real rightIconMargin: 5
+    property real topIconMargin: 5
+    property real bottomIconMargin: 5
     width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
 
     anchors {
@@ -35,7 +38,7 @@ Item {
         bottom: parent ? parent.bottom : undefined
     }
 
-    Image {
+    ImageWithFallback {
         id: icon
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectFit
@@ -44,7 +47,9 @@ Item {
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }
-        height: Math.min(sourceSize.height, iconVisual.height - 4) // top and bottom margin of 2
+        height: Math.min(sourceSize.height, iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
+        smooth: true
+        asynchronous: true
     }
 
     BorderImage {

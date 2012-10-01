@@ -15,33 +15,29 @@
  */
 
 import QtQuick 1.1
-import Ubuntu.Components 0.1
 
-Template {
-    title: "Check Box"
+Image {
+    id: image
 
-    Column {
-        spacing: 30
+    property url fallbackSource
+    property bool fallbackRequired: false
 
-        TemplateRow {
-            title: "Unchecked"
-            CheckBox {
-            }
+    function isSourceDefined(sourceUrl) {
+        return sourceUrl != "" && sourceUrl != undefined
+    }
+
+    function tryLoadingFallbackSource() {
+        if (isSourceDefined(fallbackSource)) {
+            source = fallbackSource
         }
+    }
 
-        TemplateRow {
-            title: "Checked"
-            CheckBox {
-                checked: true
-            }
+    onSourceChanged: fallbackRequired = false
+    onFallbackSourceChanged: if (fallbackRequired) tryLoadingFallbackSource()
+    onStatusChanged: {
+        if (status == Image.Error && source != fallbackSource) {
+            fallbackRequired = true
+            tryLoadingFallbackSource()
         }
-
-        TemplateRow {
-            title: "Disabled"
-            CheckBox {
-                enabled: false
-            }
-        }
-
     }
 }
