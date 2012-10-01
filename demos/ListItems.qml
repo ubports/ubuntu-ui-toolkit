@@ -105,7 +105,7 @@ Template {
                         id: groupedList
                         model: testModel
                         width: parent.width
-                        /* Workaround for QML1 ListView bugs - all fixed in QML2:
+                        /* FIXME: This is workaround for QML1 ListView bugs - all fixed in QML2:
                              https://bugreports.qt-project.org/browse/QTBUG-17057
                              https://bugreports.qt-project.org/browse/QTBUG-19941
                          * We need to explicitly calculate the contentHeight for QML1
