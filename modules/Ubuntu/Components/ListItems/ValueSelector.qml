@@ -71,13 +71,6 @@ Empty {
     property alias iconSource: selectorMain.iconSource
 
     /*!
-      \preliminary
-      The location of the icon to show in the list item if iconSource failed to load (optional).
-      \qmlproperty url fallbackIconSource
-     */
-    property alias fallbackIconSource: iconHelper.fallbackSource
-
-    /*!
       \internal
       The margins on the left side of the icon.
       \qmlproperty real leftIconMargin
