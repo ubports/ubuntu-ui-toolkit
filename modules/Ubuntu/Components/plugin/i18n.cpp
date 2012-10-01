@@ -20,10 +20,18 @@
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
-void UbuntuI18n::registerTypes(const char *uri)
-{
-    Q_UNUSED(uri);
+UbuntuI18n::UbuntuI18n(QObject* parent) {
+    // TODO
 }
+
+UbuntuI18n::~UbuntuI18n() {
+    // TODO
+}
+
+//void UbuntuI18n::registerTypes(const char *uri)
+//{
+//    Q_UNUSED(uri);
+//}
 
 //void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 //{
@@ -35,5 +43,4 @@ QVariant UbuntuI18n::translate(QVariant var) {
     return "aloha";
 }
 
-Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuI18n)
-
+//Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuI18n)

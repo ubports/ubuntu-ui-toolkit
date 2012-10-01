@@ -19,10 +19,16 @@
 #include "plugin.h"
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/qdeclarative.h>
+#include <QtDeclarative/QDeclarativeItem>
+
+#include "i18n.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    Q_UNUSED(uri);
+//    Q_UNUSED(uri);
+    qmlRegisterType<UbuntuI18n>(uri, 0, 1, "Tim");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

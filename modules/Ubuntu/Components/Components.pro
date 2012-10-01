@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS += plugin i18n
+SUBDIRS += plugin
 
-include(deployment.pri i18n.pri)
+include(deployment.pri)
