@@ -102,11 +102,17 @@ Template {
                     }
 
                     ListView {
+                        id: groupedList
                         model: testModel
                         width: parent.width
-                        // All but 2 items are 50 pixels height, the others are 48 high
-                        // and there are 3 headings at 24 pixels high
-                        height: 50 * count - 2 * 2 + 3 * 24
+                        /* Workaround for QML1 ListView bugs - all fixed in QML2:
+                             https://bugreports.qt-project.org/browse/QTBUG-17057
+                             https://bugreports.qt-project.org/browse/QTBUG-19941
+                         * We need to explicitly calculate the contentHeight for QML1
+                         * So we have all but 2 items that are 50 pixels height, the others are 48
+                         * high and there are 3 headings at 24 pixels high
+                         */
+                        contentHeight: 50 * count - 2 * 2 + 3 * 24
                         interactive: false
 
                         delegate: ListItem.Standard {
@@ -116,6 +122,9 @@ Template {
                         section.property: "type"
                         section.criteria: ViewSection.FullString
                         section.delegate: ListItem.Header { text: section }
+                    }
+                    Component.onCompleted: {
+                        groupedList.height = groupedList.contentHeight;
                     }
                 }
             }
