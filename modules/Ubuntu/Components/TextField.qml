@@ -369,7 +369,7 @@ FocusScope {
         property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
         property color textColor: (editor.enabled) ? "#757373" : "darkgray"
         property color hintColor: "#B6B6B6"
-        property string fontSize: "medium"
+        property string fontSize: "small"
         property real clearButtonSpacing: 3.5
         property bool textChanged: false
         property real spacing: 5
@@ -509,7 +509,7 @@ FocusScope {
             color: internal.hintColor
             font.italic: true
             verticalAlignment: Text.AlignVCenter
-            fontSize: "medium"
+            fontSize: "small"
             anchors {
                 left: leftPane.right
                 right: clearButton.left

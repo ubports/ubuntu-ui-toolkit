@@ -18,30 +18,40 @@ import QtQuick 1.1
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Check Box"
+    title: "Slider"
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: "Unchecked"
-            CheckBox {
+            title: "Default"
+            Slider {
+                id: defaultSlider
+            }
+            TextCustom {
+                color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
+                text: '\'value\' is ' + defaultSlider.formatValue(defaultSlider.value)
             }
         }
 
         TemplateRow {
-            title: "Checked"
-            CheckBox {
-                checked: true
+            title: "Live"
+            Slider {
+                id: liveSlider
+                live: true
+                minimumValue: -1.0
+                maximumValue: 1.0
+                value: 0.0
+                function formatValue(v) { return v.toFixed(2) }
+            }
+            TextCustom {
+                color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
+                text: '\'value\' is ' + liveSlider.formatValue(liveSlider.value)
             }
         }
-
-        TemplateRow {
-            title: "Disabled"
-            CheckBox {
-                enabled: false
-            }
-        }
-
     }
 }

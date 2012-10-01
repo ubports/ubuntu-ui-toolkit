@@ -95,6 +95,8 @@ Item {
     Item {
         anchors.fill: parent
 
+        opacity: enabled ? 1.0 : 0.5
+
         BorderImage {
             id: backgroundShape
             anchors.fill: parent

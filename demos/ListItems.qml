@@ -227,13 +227,11 @@ Template {
                 selected: listItemTypes.selectedType === "Controls"
                 Component {
                     id: controlExample
-                    // TODO: Replace this button by a Switch once that
-                    // component is complete and has disabled visuals.
-                    Button {
-                        width: 100
-                        text: "Control"
-                        anchors.centerIn: parent
-                        onClicked: print("clicked button")
+                    Switch {
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
                     }
                 }
                 Column {
@@ -276,37 +274,6 @@ Template {
                                 fill: parent
                             }
                             onClicked: print("Large button clicked")
-                        }
-                    }
-
-                    ListItem.Caption {
-                        text: "More to come..."
-                    }
-
-                    ListItem.Empty {
-                        id: withProgress
-                        height: progress.height + progress.anchors.topMargin + progress.anchors.bottomMargin
-                        ProgressBar {
-                            id: progress
-                            value: progress.minimumValue
-                            anchors {
-                                margins: 10
-                                centerIn: parent
-                            }
-
-                            SequentialAnimation on value {
-                                loops: Animation.Infinite
-                                NumberAnimation {
-                                    from: progress.minimumValue
-                                    to: progress.maximumValue
-                                    duration: 1000
-                                }
-                                NumberAnimation {
-                                    from: progress.maximumValue
-                                    to: progress.minimumValue
-                                    duration: 1000
-                                }
-                            }
                         }
                     }
                 }

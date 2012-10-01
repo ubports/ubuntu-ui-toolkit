@@ -56,7 +56,7 @@ Rectangle {
                 {"label": "Check Box", "source": "CheckBoxes.qml"},
                 {"label": "Activity Indicator", "source": "ActivityIndicators.qml"},
                 {"label": "Progress Bar", "source": "ProgressBars.qml"},
-                {"label": "Slider", "source": ""},
+                {"label": "Slider", "source": "Sliders.qml"},
                 {"label": "Text Input", "source": "TextInputs.qml"},
                 {"label": "Scrollbar", "source": ""},
                 {"label": "Popovers", "source": ""},

@@ -14,10 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+.pragma library
 
-// internal superclass of Header and Divider
-Item {
-    id: listItemDividerBase
-    width: parent ? parent.width : 250
+// FIXME(loicm) It would be better to have these functions available in a global
+//     set of common native C++ functions.
+
+function clamp(x, min, max) {
+    return Math.max(min, Math.min(x, max));
+}
+
+function lerp(x, a, b) {
+    return ((1.0 - x) * a) + (x * b);
 }
