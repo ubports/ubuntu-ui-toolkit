@@ -20,6 +20,7 @@
 #define UBUNTU_COMPONENTS_I18N_H
 
 #include <QtDeclarative>
+#include <QDeclarativeListProperty>
 
 class UbuntuI18n : public QObject
 {
@@ -29,8 +30,9 @@ public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
 
-    // TODO: add domain property.
-    // TODO: remove domain from the tr() functions?
+//    Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
+    Q_PROPERTY(QString domain READ domain)
+//    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir NOTIFY localeDirChanged)
 
     /**
      * @brief Install the gettext catalog.
@@ -62,6 +64,23 @@ public:
      * @param domain The domain to use for the translation.
      */
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
+
+
+//    QString domain() const;
+//    QString localeDir() const;
+//    void setDomain(const QString& d);
+//    void setLocaleDir(const QString& ld);
+    QString domain();
+
+signals:
+
+//    void domainChanged();
+//    void localeDirChanged();
+
+private:
+
+    QString m_domain;
+//    QString localeDir;
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

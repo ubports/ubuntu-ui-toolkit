@@ -24,6 +24,8 @@
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     // nothing to do. Initialization is done in init().
+//    this->domain = "ubuntu-sdk";
+    this->m_domain = QString("ubuntu-sdk");
 }
 
 UbuntuI18n::~UbuntuI18n()
@@ -37,6 +39,35 @@ void UbuntuI18n::init(const char* domain, const char* localeDir)
     bindtextdomain(domain, localeDir);
     textdomain(domain);
 }
+
+//QString UbuntuI18n::domain() const {
+//    Q_D(const UbuntuI18n);
+//    return d->domain;
+//}
+
+//QString UbuntuI18n::localeDir() {
+//    return this->localeDir;
+//}
+
+//void UbuntuI18n::setDomain(QString d) {
+//    this->domain = d;
+//}
+
+QString UbuntuI18n::domain() {
+    return this->m_domain;
+}
+
+//void UbuntuI18n::setLocaleDir(QString ld) {
+//    this->localeDir = ld;
+//}
+
+//void UbuntuI18n::domainChanged() {
+//    this->init(this->domain, this->localeDir);
+//}
+
+//void UbuntuI18n::localeDirChanged() {
+//    this->init(this->domain, this->localeDir);
+//}
 
 QString UbuntuI18n::tr(const QString& text, const QString& domain)
 {
