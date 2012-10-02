@@ -29,15 +29,17 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
 //    Q_UNUSED(uri);
     printf("lalala registering type!");
-    qmlRegisterType<UbuntuI18n>(uri, 0, 1, "Tim"); // @uri Ubuntu.Components
+//    qmlRegisterType<UbuntuI18n>(uri, 0, 1, "I18n"); // @uri Ubuntu.Components
 //    qmlRegisterType<UbuntuI18n>("Ubuntu.Components", 0, 1, "Tim"); // @uri Ubuntu.Components
-
+//    qmlRegisterUncreateableType<UbuntuI18n>(uri, 0, 1, "I18n");
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever");
 }
 
-//void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
-//{
-//    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
-//}
+void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+{
+    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+    engine->rootContext()->setContextProperty("i18n", new UbuntuI18n());
+}
 
 Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)
 

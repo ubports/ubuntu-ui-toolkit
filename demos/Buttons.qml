@@ -25,7 +25,7 @@ Template {
         spacing: 30
 
         TemplateRow {
-            title: Tim.translate("Standard")
+            title: i18n.translate("Standard")
 
             Button {
                 text: "Call"
