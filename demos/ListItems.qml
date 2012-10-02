@@ -80,7 +80,36 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    ListItem.Standard {
+                        text: "Custom icon"
+                        icon: Rectangle {
+                            anchors.margins: 5
+                            width: height
+                            color: "darkgrey"
+                            Rectangle {
+                                anchors {
+                                    fill: parent
+                                    margins: 5
+                                }
+                                color: "lightgrey"
+                                Rectangle {
+                                    anchors {
+                                        fill: parent
+                                        margins: 5
+                                    }
+                                    color: "darkgrey"
+                                    Rectangle {
+                                        anchors {
+                                            fill: parent
+                                            margins: 5
+                                        }
+                                        color: "lightgrey"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -156,7 +185,37 @@ Template {
                     ListItem.SingleValue {
                         text: "Icon"
                         value: "Value"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    ListItem.SingleValue {
+                        text: "Custom icon"
+                        value: "Value"
+                        icon: Rectangle {
+                            anchors.margins: 5
+                            width: height
+                            color: "darkgrey"
+                            Rectangle {
+                                anchors {
+                                    fill: parent
+                                    margins: 5
+                                }
+                                color: "lightgrey"
+                                Rectangle {
+                                    anchors {
+                                        fill: parent
+                                        margins: 5
+                                    }
+                                    color: "darkgrey"
+                                    Rectangle {
+                                        anchors {
+                                            fill: parent
+                                            margins: 5
+                                        }
+                                        color: "lightgrey"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -187,7 +246,7 @@ Template {
                     ListItem.MultiValue {
                         text: "Icon"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                 }
             }
@@ -218,7 +277,7 @@ Template {
                     ListItem.Subtitled {
                         text: "Icon"
                         subText: "Secondary label"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Subtitled {
                         text: "Multiple lines"
@@ -227,7 +286,7 @@ Template {
                     ListItem.Subtitled {
                         text: "Multiple lines"
                         subText: "It also works well with icons and progression."
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         progression: true
                     }
                 }
@@ -268,7 +327,7 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         control: controlExample.createObject(parent)
                         showDivider: false
                     }
@@ -327,7 +386,7 @@ Template {
                     }
                     ListItem.ValueSelector {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                 }

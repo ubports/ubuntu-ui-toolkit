@@ -33,7 +33,7 @@ import QtQuick 1.1
             }
             ListItem.MultiValue {
                 text: "Label"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 progression: true
                 onClicked: print("clicked")

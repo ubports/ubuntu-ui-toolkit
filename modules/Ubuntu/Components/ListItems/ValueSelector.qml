@@ -45,7 +45,7 @@ import QtQuick 1.1
             }
             ListItem.ValueSelector {
                 text: "Icon"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
@@ -65,10 +65,13 @@ Empty {
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    property alias iconSource: selectorMain.iconSource
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item.
+      \qmlproperty variant icon
+    */
+    property alias icon: selectorMain.icon
 
     /*!
       \internal
