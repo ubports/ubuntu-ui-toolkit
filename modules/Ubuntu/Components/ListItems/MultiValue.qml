@@ -43,7 +43,6 @@ import QtQuick 1.1
 */
 Base {
     id: multiValueListItem
-    height: 48
 
     /*!
       \preliminary

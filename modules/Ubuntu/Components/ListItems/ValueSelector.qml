@@ -54,7 +54,7 @@ import QtQuick 1.1
 */
 Empty {
     id: selector
-    height: column.height
+    __height: column.height
 
     /*!
       \preliminary

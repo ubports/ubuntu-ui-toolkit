@@ -28,7 +28,6 @@ import Ubuntu.Components 0.1
 */
 Empty {
     id: baseListItem
-    height: 48
 
     /*!
       \preliminary
