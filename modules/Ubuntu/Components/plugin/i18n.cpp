@@ -42,10 +42,7 @@ void UbuntuI18n::init(const char* domain, const char* localeDir)
 
 QString UbuntuI18n::tr(QString text)
 {
-    if (text == "") return "no string?";
-//    QString newtext = QString::fromUtf8(dgettext("nl", "file"));// text.toUtf8()));
-    QString newtext = QString::fromUtf8(dgettext("ubuntu-sdk", "file"));// text.toUtf8()));
-
+//    if (text == "") return "no string?";
+    QString newtext = QString::fromUtf8(dgettext("ubuntu-sdk", text.toUtf8()));
     return newtext;
-//    return text;
 }
