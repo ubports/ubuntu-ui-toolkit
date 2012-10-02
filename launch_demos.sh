@@ -1,1 +1,1 @@
-qmlviewer -I modules -opengl demos/Gallery.qml
+qmlscene -I modules demos/Gallery.qml
