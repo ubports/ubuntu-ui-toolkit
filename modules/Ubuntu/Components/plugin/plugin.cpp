@@ -18,17 +18,12 @@
 
 #include "plugin.h"
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
-
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    Q_UNUSED(uri);
+    Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 }
 
-void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+    QQmlExtensionPlugin::initializeEngine(engine, uri);
 }
-
-Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)
-

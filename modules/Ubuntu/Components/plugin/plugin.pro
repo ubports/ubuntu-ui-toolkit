@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += declarative core gui
+QT += qml
 CONFIG += qt plugin no_keywords
 
 TARGET = $$qtLibraryTarget($$TARGET)
