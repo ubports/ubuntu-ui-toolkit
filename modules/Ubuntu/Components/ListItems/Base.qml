@@ -86,6 +86,10 @@ Empty {
       or when no icon was set.
      */
     property bool __iconIsItem: false
+
+    /*!
+      \internal
+     */
     onIconChanged: {
         if (typeof icon == "string") {
             // icon is the url of an image
