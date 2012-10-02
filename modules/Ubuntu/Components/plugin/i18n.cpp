@@ -21,11 +21,9 @@
 // libc
 #include <libintl.h>
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
-
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    // TODO: init
+    // nothing to do. Initialization is done in init().
 }
 
 UbuntuI18n::~UbuntuI18n()
@@ -40,9 +38,19 @@ void UbuntuI18n::init(const char* domain, const char* localeDir)
     textdomain(domain);
 }
 
-QString UbuntuI18n::tr(QString text)
+QString UbuntuI18n::tr(const QString& text, const QString& domain)
 {
-//    if (text == "") return "no string?";
-    QString newtext = QString::fromUtf8(dgettext("ubuntu-sdk", text.toUtf8()));
-    return newtext;
+    if (domain.isNull()) {
+        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
+    } else {
+        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
+    }
+}
+
+QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain) {
+    if (domain.isNull()) {
+        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+    } else {
+        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+    }
 }
