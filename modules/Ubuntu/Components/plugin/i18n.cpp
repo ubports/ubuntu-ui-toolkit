@@ -28,19 +28,7 @@ UbuntuI18n::~UbuntuI18n() {
     printf("Destroying UbuntuI18n object");
 }
 
-//void UbuntuI18n::registerTypes(const char *uri)
-//{
-//    Q_UNUSED(uri);
-//}
-
-//void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
-//{
-//    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
-//}
-
-QVariant UbuntuI18n::translate(QVariant var) {
-    if (var != "") return "yoyo";
-    return "aloha";
+QString UbuntuI18n::tr(QString text) {
+    if (text == "") return "no string?";
+    return text;
 }
-
-//Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuI18n)

@@ -25,22 +25,15 @@
 #include <QVariant> // TODO: replace by string
 #include <QObject>
 
-//class UbuntuComponentsPlugin : public QDeclarativeExtensionPlugin
 class UbuntuI18n : public QObject
 {
     Q_OBJECT
 
 public:
-////    void registerTypes(const char *uri);
-//    //void initializeEngine(QDeclarativeEngine *engine, const char *uri);
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
-////    static void registerTypes();
-    Q_INVOKABLE QVariant translate(QVariant var); // TODO: use strings?
-//    static QVariant translate(QVariant var);
+    Q_INVOKABLE QString tr(QString text);
 };
-
-//QML_DECLARE_TYPE(UbuntuI18n)
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 
