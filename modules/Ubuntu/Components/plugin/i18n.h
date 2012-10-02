@@ -22,7 +22,7 @@
 //#include <QtDeclarative/QDeclarativeEngine>
 //#include <QtDeclarative/QDeclarativeExtensionPlugin>
 #include <QtDeclarative> // TODO: be more specific?
-#include <QVariant> // TODO: replace by string
+//#include <QVariant> // TODO: replace by string
 #include <QObject>
 
 class UbuntuI18n : public QObject
@@ -32,6 +32,9 @@ class UbuntuI18n : public QObject
 public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
+
+    void init(const char* domain, const char* localeDir);
+
     Q_INVOKABLE QString tr(QString text);
 };
 

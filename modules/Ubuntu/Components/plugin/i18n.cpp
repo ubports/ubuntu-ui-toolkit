@@ -18,17 +18,34 @@
 
 #include "i18n.h"
 
+// libc
+#include <libintl.h>
+
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
-UbuntuI18n::UbuntuI18n(QObject* parent) {
-    printf("Constructing UbuntuI18n object");
+UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
+{
+    // TODO: init
 }
 
-UbuntuI18n::~UbuntuI18n() {
-    printf("Destroying UbuntuI18n object");
+UbuntuI18n::~UbuntuI18n()
+{
+    // nothing to do
 }
 
-QString UbuntuI18n::tr(QString text) {
+void UbuntuI18n::init(const char* domain, const char* localeDir)
+{
+    setlocale(LC_ALL, "");
+    bindtextdomain(domain, localeDir);
+    textdomain(domain);
+}
+
+QString UbuntuI18n::tr(QString text)
+{
     if (text == "") return "no string?";
-    return text;
+//    QString newtext = QString::fromUtf8(dgettext("nl", "file"));// text.toUtf8()));
+    QString newtext = QString::fromUtf8(dgettext("ubuntu-sdk", "file"));// text.toUtf8()));
+
+    return newtext;
+//    return text;
 }
