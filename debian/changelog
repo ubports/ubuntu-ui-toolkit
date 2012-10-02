@@ -1,3 +1,9 @@
+qt-components-ubuntu (0.1.1) UNRELEASED; urgency=low
+
+  * Ported to Qt 5.0 and QtQuick 2.0.
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 02 Oct 2012 22:58:12 +0100
+
 qt-components-ubuntu (0.1) unstable; urgency=low
 
   * Initial release
