@@ -19,8 +19,9 @@
 #ifndef UBUNTU_COMPONENTS_I18N_H
 #define UBUNTU_COMPONENTS_I18N_H
 
-#include <QtDeclarative>
-#include <QDeclarativeListProperty>
+#include <QObject>
+//#include <QtDeclarative>
+//#include <QDeclarativeListProperty>
 
 class UbuntuI18n : public QObject
 {
@@ -30,7 +31,7 @@ public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
 
-    Q_PROPERTY(QString domain READ domain WRITE setDomain) // NOTIFY domainChanged)
+    Q_PROPERTY(QString domain READ domain WRITE setDomain)
     Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir)
 
     /**
@@ -41,11 +42,11 @@ public:
 //    void init(const char* domain, const char* localeDir);
     void init(QString domain, QString localeDir);
 
-    /**
-     * Add an object named "i18n" to context.
-     *
-     * One can then get translations with i18n.tr("english text")
-     */
+//    /**
+//     * Add an object named "i18n" to context.
+//     *
+//     * One can then get translations with i18n.tr("english text")
+//     */
 //    void qmlInit(QDeclarativeContext* context);
 
     /**
@@ -65,7 +66,6 @@ public:
      */
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 
-
     QString domain();
     QString localeDir();
     void setDomain(QString domain);
@@ -82,5 +82,4 @@ private:
     QString _localeDir;
 };
 
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
-
+#endif // UBUNTU_COMPONENTS_I18N_H

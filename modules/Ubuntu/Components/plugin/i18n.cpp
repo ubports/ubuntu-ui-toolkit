@@ -32,7 +32,6 @@ UbuntuI18n::~UbuntuI18n()
     // nothing to do
 }
 
-//void UbuntuI18n::init(const char* domain, const char* localeDir)
 void UbuntuI18n::init(QString domain, QString localeDir)
 {
     setlocale(LC_ALL, "");
