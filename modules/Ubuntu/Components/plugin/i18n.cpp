@@ -23,9 +23,8 @@
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    // nothing to do. Initialization is done in init().
-//    this->domain = "ubuntu-sdk";
-    this->m_domain = QString("ubuntu-sdk");
+    _domain = QString("ubuntu-sdk");
+    _localeDir = QString("/usr/share/locale");
 }
 
 UbuntuI18n::~UbuntuI18n()
@@ -33,41 +32,31 @@ UbuntuI18n::~UbuntuI18n()
     // nothing to do
 }
 
-void UbuntuI18n::init(const char* domain, const char* localeDir)
+//void UbuntuI18n::init(const char* domain, const char* localeDir)
+void UbuntuI18n::init(QString domain, QString localeDir)
 {
     setlocale(LC_ALL, "");
-    bindtextdomain(domain, localeDir);
-    textdomain(domain);
+    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
+    textdomain(domain.toUtf8().constData());
 }
-
-//QString UbuntuI18n::domain() const {
-//    Q_D(const UbuntuI18n);
-//    return d->domain;
-//}
-
-//QString UbuntuI18n::localeDir() {
-//    return this->localeDir;
-//}
-
-//void UbuntuI18n::setDomain(QString d) {
-//    this->domain = d;
-//}
 
 QString UbuntuI18n::domain() {
-    return this->m_domain;
+    return _domain;
 }
 
-//void UbuntuI18n::setLocaleDir(QString ld) {
-//    this->localeDir = ld;
-//}
+QString UbuntuI18n::localeDir() {
+    return _localeDir;
+}
 
-//void UbuntuI18n::domainChanged() {
-//    this->init(this->domain, this->localeDir);
-//}
+void UbuntuI18n::setDomain(QString domain) {
+    _domain = domain;
+    this->init(_domain, _localeDir);
+}
 
-//void UbuntuI18n::localeDirChanged() {
-//    this->init(this->domain, this->localeDir);
-//}
+void UbuntuI18n::setLocaleDir(QString localeDir) {
+    _localeDir = localeDir;
+    this->init(_domain, _localeDir);
+}
 
 QString UbuntuI18n::tr(const QString& text, const QString& domain)
 {
@@ -78,7 +67,8 @@ QString UbuntuI18n::tr(const QString& text, const QString& domain)
     }
 }
 
-QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain) {
+QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain)
+{
     if (domain.isNull()) {
         return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
     } else {

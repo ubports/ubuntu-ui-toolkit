@@ -30,16 +30,16 @@ public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
 
-//    Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
-    Q_PROPERTY(QString domain READ domain)
-//    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir NOTIFY localeDirChanged)
+    Q_PROPERTY(QString domain READ domain WRITE setDomain) // NOTIFY domainChanged)
+    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir)
 
     /**
      * @brief Install the gettext catalog.
      * @param domain The domain of the catalog.
      * @param localeDir The path to the catalog.
      */
-    void init(const char* domain, const char* localeDir);
+//    void init(const char* domain, const char* localeDir);
+    void init(QString domain, QString localeDir);
 
     /**
      * Add an object named "i18n" to context.
@@ -66,11 +66,10 @@ public:
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 
 
-//    QString domain() const;
-//    QString localeDir() const;
-//    void setDomain(const QString& d);
-//    void setLocaleDir(const QString& ld);
     QString domain();
+    QString localeDir();
+    void setDomain(QString domain);
+    void setLocaleDir(QString localeDir);
 
 signals:
 
@@ -79,8 +78,8 @@ signals:
 
 private:
 
-    QString m_domain;
-//    QString localeDir;
+    QString _domain;
+    QString _localeDir;
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
