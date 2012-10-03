@@ -67,9 +67,6 @@ Item {
         // as it might occlude the newly assigned mouse area.
         enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
-
-//        Component.onCompleted: hiddenFunctions.updateMouseArea()
-        onClicked: if (enabled) print("clickily")
     }
 
     /*!
