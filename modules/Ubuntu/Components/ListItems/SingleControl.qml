@@ -80,11 +80,15 @@ Empty {
       This handler is an implementation detail. Mark as internal to prevent QDoc publishing it
      */
     onControlChanged: __updateControl()
-    Component.onCompleted: __updateControl()
+//    Component.onCompleted: __updateControl()
 
-//    onClicked: if (control) control.clicked(mouse)
-//    onActivatedChanged: if (control) control.activated = control.pressed
-//    onPressed: if (control) control.activated = true
-//    onReleased: if (control) control.activated = false
-//    onPressed: control.pressed = true
+    onClicked: if (control) control.clicked(mouse)
+    onDoubleClicked: if (control) control.doubleClicked(mouse)
+    onEntered: if (control) control.entered()
+    onExited: if (control) control.exited()
+    onPositionChanged: if (control) control.positionChanged(mouse)
+    onPressAndHold: if (control) control.pressAndHold(mouse)
+    onPressed: if (control) control.onPressed(mouse) // pressed is a bool property
+    onReleased: if (control) control.released(mouse)
+    onWheel: if (control) control.wheel(wheel)
 }
