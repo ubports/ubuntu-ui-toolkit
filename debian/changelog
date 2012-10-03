@@ -2,8 +2,9 @@ qt-components-ubuntu (0.1.1) UNRELEASED; urgency=low
 
   * Ported to Qt 5.0 and QtQuick 2.0.
   * Install QML plugin in usr/lib/*/qt5/imports 
+  * Prepend /opt/qt5/bin to PATH so that Qt5's qmake is used instead of Qt4's
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 03 Oct 2012 11:35:36 +0100
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 03 Oct 2012 12:08:21 +0100
 
 qt-components-ubuntu (0.1) unstable; urgency=low
 
