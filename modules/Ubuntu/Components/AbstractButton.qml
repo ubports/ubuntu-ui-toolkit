@@ -67,6 +67,9 @@ Item {
         // as it might occlude the newly assigned mouse area.
         enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
+
+//        Component.onCompleted: hiddenFunctions.updateMouseArea()
+        onClicked: if (enabled) print("clickily")
     }
 
     /*!
@@ -81,9 +84,13 @@ Item {
 
         function updateMouseArea() {
             if (button.mouseArea) {
+                defaultMouseArea.clicked.disconnect(button.clicked);
                 button.mouseArea.clicked.connect(button.clicked);
+                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
                 button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
+                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
+                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
             }
         }
