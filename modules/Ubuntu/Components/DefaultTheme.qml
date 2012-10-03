@@ -28,25 +28,31 @@ Theme{
         // only the altered property is defined, the rest should be taken from the
         // .Button style
         selector: ".button"
-        style: QtObject {
-            property variant color: control.pressed ? "green" : control.hovered ? "tan" : "#e3e5e8"//"#e3e5e8"
-            property variant borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            property variant borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
-                    : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+        style: ButtonStyle {
+            color: "#a3e5e8";
+            shapeDark: "artwork/ButtonShapeDark.png";
+            shapeNormal: "artwork/ButtonShape.png";
+            borderIdle: "artwork/ButtonBorderIdle.png";
+            borderPressed: "artwork/ButtonBorderPressed.png";
+            borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
+            borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
         }
     }
 
     Rule {
         // this style component defines the default visuals of a Button control
         selector: ".Button"
-        style: QtObject {
-            property variant color: control.pressed ? "purple" : control.hovered ? "cyan" : "pink"//"#e3e5e8"
-            property variant borderShape: control.darkBorder ? "artwork/ButtonShapeDark.png" : "artwork/ButtonShape.png"
-            property variant borderImage: (control.darkBorder) ? (control.pressed ? "artwork/ButtonBorderDarkPressed.png" : "artwork/ButtonBorderDarkIdle.png")
-                    : (control.pressed ? "artwork/ButtonBorderPressed.png" : "artwork/ButtonBorderIdle.png")
+        style: ButtonStyle {
+            color: "#e3e5e8";
+            shapeDark: "artwork/ButtonShapeDark.png";
+            shapeNormal: "artwork/ButtonShape.png";
+            borderIdle: "artwork/ButtonBorderIdle.png";
+            borderPressed: "artwork/ButtonBorderPressed.png";
+            borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
+            borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
         }
 
-        delegate: Component {ButtonStyle{}}
+        delegate: Component {ButtonDelegate{}}
     }
 
 
@@ -90,5 +96,4 @@ Theme{
         selector: ".ttoolbar > .tbutton"
         style: Item {}
     }
-
 }

@@ -19,7 +19,9 @@ SOURCES += plugin.cpp \
     themeengine.cpp \
     styleditem.cpp \
     cssthemeparser.cpp \
-    qmlthhemeloader.cpp
+    qmlthemeloader.cpp \
+    suffixtree.cpp \
+    themesettings.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

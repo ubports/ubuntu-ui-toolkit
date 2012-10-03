@@ -74,17 +74,6 @@ Template {
                 width: 300
                 height: 100
                 styleClass: "frame"
-                /*
-                styleRule: Rule {
-                    delegate: Rectangle {
-                        anchors.fill: parent
-                        border.color: "blue"
-                        border.width: 2
-                        radius: 3
-                        color: "#123654"
-                    }
-                }
-                */
 
                 Button {
                     x: 10; y: 10
@@ -92,16 +81,16 @@ Template {
                     styleRule: Rule {
                         delegate: Item {
                             z: -1
-                            anchors.fill: control
+                            anchors.fill: widget
                             clip: true
                             Rectangle {
                                 id: shape
                                 anchors.fill: parent
-                                anchors.margins: -control.width
-                                rotation: control.pressed ? -45 : 45
+                                anchors.margins: -widget.width
+                                rotation: widget.pressed ? -45 : 45
                                 gradient: Gradient {
                                     GradientStop { position: 0.0; color: "lightsteelblue" }
-                                    GradientStop { position: 1.0; color: control.hovered ? "blue" : "green" }
+                                    GradientStop { position: 1.0; color: widget.hovered ? "blue" : "green" }
                                 }
                             }
                         }

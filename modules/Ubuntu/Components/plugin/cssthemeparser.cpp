@@ -29,6 +29,8 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeComponent>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #include <QDebug>
 
@@ -36,9 +38,9 @@ const char *ruleTemplate =  \
 "import QtQuick 1.1\n" \
 "%1\n"
 "Rule {\n"
-"\tselector: \"%2\"\n"
-"\t%3\n"
-"\t%4\n"
+"    selector: \"%2\"\n"
+"    %3\n"
+"    %4\n"
 "}";
 
 /*!
@@ -124,94 +126,6 @@ QString CssTheme::readTillToken(QTextStream &stream, const QRegExp &tokens, cons
         // remove the last character as that is the token
         ret.remove(ret.length() - 1, 1);
     return ret;
-}
-
-/*!
-  \internal
-  Extracts the theme specified to be imported, and loads it.
-  */
-bool CssTheme::handleImport(CssTheme *css, QTextStream &stream)
-{
-    QString themeFile = css->readTillToken(stream, QRegExp("[)]"), QRegExp("[ \t\r\n\"]"));
-    return css->parseCssTheme(QUrl::fromLocalFile(themeFile));
-}
-
-/*!
-  \internal
-  Parses qml-mapping rule needed when defing the QML Rule pattern. The qml-mapping rule
-  syntax is as follows:
-  qml-mapping(css-tag, style-qml-type, delegate-qml-type)
-  where
-     - css-tag is the tag used in CSS theme
-     - style-qml-type is the name of the QML document defining the style properties
-     - delegate-qml-type is the name of the QML document defining the widget delegate.
-  If no style is given, theme engine will use QtObject for style and will declare all
-  properties typed as variant.
-
-  Example:
-  css.
-
-  @qml-mapping(button, ButonStyle, ButtonDelegate)
-
-  .button {
-     color: "blue"
-  }
-
-  .frame {
-     border: 2
-  }
-
-  will be translated as
-
-  Rule {
-    selector: ".button"
-    style: ButtonStyle {
-        color: "blue"
-    }
-    delegate: ButtonDelegate{}
-  }
-
-  Rule {
-    selector: ".frame"
-    style: QtObject {
-        property variant border: 2
-    }
-  }
-  */
-bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
-{
-    QString params = css->readTillToken(stream, QRegExp("[)]"), QRegExp("[ \t\r\n\"]"));
-    QStringList mapping = params.split(',');
-
-    // we should have 3 elements in the list! if we don't we have an error!
-    bool ret = (mapping.count() == 3);
-    if (!ret)
-        ThemeEnginePrivate::setError(QString("Mapping has %1 parameter(s), should have 3!").
-                                     arg(mapping.count()));
-    else
-        css->qmlMap.insert(mapping[0], qMakePair(mapping[1], mapping[2]));
-
-    return ret;
-}
-
-/*!
-  \internal
-  Callback handling qml-import tags. Adds the import sentence to the import list
-  that will be added to the template creating the style rule.
-  */
-bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
-{
-    QString param = css->readTillToken(stream, QRegExp("[)]"), QRegExp("[\t\r\n]")).simplified();
-
-    // check whether we have the import set
-    if (!css->imports.contains(param))
-        css->imports += QString("import %1\n").arg(param);
-    else {
-        ThemeEnginePrivate::setError(QString("QML import %1 allready added!").
-                                     arg(param));
-        return false;
-    }
-    return true;
 }
 
 /*!
@@ -305,8 +219,7 @@ bool CssTheme::parseCssTheme(const QUrl &url)
         QTextStream stream(&file);
 
         QString data;
-        QChar charData;
-        Selector selectorPath;
+
         // read stream character by character so we don't need to seek
         while (!stream.atEnd()) {
 
@@ -317,7 +230,7 @@ bool CssTheme::parseCssTheme(const QUrl &url)
 
             if (data[0] == '@') {
                 // rule!! read till the first token
-                data = readTillToken(stream, QRegExp("[({]"), QRegExp("[ \t]"));
+                data = readTillToken(stream, QRegExp("[({]"), QRegExp("[\t]")).simplified();
                 //lookup for the rule handler and continue parsing with it
                 ret = rules.contains(data);
                 if (ret)
@@ -427,19 +340,120 @@ bool CssTheme::buildStyleTree()
                 if (styleRule)
                     styleTree->addStyleRule(selector, styleRule);
                 else {
-                    ThemeEnginePrivate::setError(QString("Error on creating rule: \n%1").arg(ruleObject));
+                    ThemeEnginePrivate::setError(QString("Created element cannot be casted to Rule: \n%1\n%2")
+                                                 .arg(ruleObject)
+                                                 .arg(component.errorString()));
                     return false;
                 }
             } else {
-                ThemeEnginePrivate::setError(component.errorString());
+                ThemeEnginePrivate::setError(QString("Error on creating rule: \n%1\n%2")
+                                             .arg(ruleObject)
+                                             .arg(component.errorString()));
                 return false;
             }
         } else {
-            ThemeEnginePrivate::setError(component.errorString());
+            ThemeEnginePrivate::setError(QString("Error on creating rule: \n%1\n%2")
+                                         .arg(ruleObject)
+                                         .arg(component.errorString()));
             return false;
         }
     }
 
+    return true;
+}
+
+
+/*============================================================================*/
+
+/*!
+  \internal
+  Extracts the theme specified to be imported, and loads it.
+  */
+bool CssTheme::handleImport(CssTheme *css, QTextStream &stream)
+{
+    QString themeFile = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
+    // build the path relative to the current parsed file
+    QFile *file = qobject_cast<QFile*>(stream.device());
+    QFileInfo fi(*file);
+    themeFile.prepend('/').prepend(fi.dir().absolutePath());
+    return css->parseCssTheme(QUrl::fromLocalFile(themeFile));
+}
+
+/*!
+  \internal
+  Parses qml-mapping rule needed when defing the QML Rule pattern. The qml-mapping rule
+  syntax is as follows:
+  qml-mapping(css-tag, style-qml-type, delegate-qml-type)
+  where
+     - css-tag is the tag used in CSS theme
+     - style-qml-type is the name of the QML document defining the style properties
+     - delegate-qml-type is the name of the QML document defining the widget delegate.
+  If no style is given, theme engine will use QtObject for style and will declare all
+  properties typed as variant.
+
+  Example:
+  css.
+
+  @qml-mapping(button, ButonStyle, ButtonDelegate)
+
+  .button {
+     color: "blue"
+  }
+
+  .frame {
+     border: 2
+  }
+
+  will be translated as
+
+  Rule {
+    selector: ".button"
+    style: ButtonStyle {
+        color: "blue"
+    }
+    delegate: ButtonDelegate{}
+  }
+
+  Rule {
+    selector: ".frame"
+    style: QtObject {
+        property variant border: 2
+    }
+  }
+  */
+bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
+{
+    QString params = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
+    QStringList mapping = params.split(',');
+
+    // we should have 3 elements in the list! if we don't we have an error!
+    bool ret = (mapping.count() == 3);
+    if (!ret)
+        ThemeEnginePrivate::setError(QString("Mapping has %1 parameter(s), should have 3!").
+                                     arg(mapping.count()));
+    else
+        css->qmlMap.insert(mapping[0], qMakePair(mapping[1], mapping[2]));
+
+    return ret;
+}
+
+/*!
+  \internal
+  Callback handling qml-import tags. Adds the import sentence to the import list
+  that will be added to the template creating the style rule.
+  */
+bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
+{
+    QString param = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n]")).simplified();
+
+    // check whether we have the import set
+    if (!css->imports.contains(param))
+        css->imports += QString("import %1\n").arg(param);
+    else {
+        ThemeEnginePrivate::setError(QString("QML import %1 allready added!").
+                                     arg(param));
+        return false;
+    }
     return true;
 }
 
@@ -452,7 +466,7 @@ CssTheme::CssTheme() :
      engine(0), styleTree(0)
 {
     // fill the callback maps
-    rules["import"] = handleImport;
+    rules["import url"] = handleImport;
     rules["qml-mapping"] = handleQmlMapping;
     rules["qml-import"] = handleQmlImport;
 }

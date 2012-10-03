@@ -3,19 +3,34 @@ qml-mapping defines the QML style and delegate QML documents that are used as ba
 when building up the Rule components.
 
 Syntax:
-qml-mapping(css-tag, style-qml-type, delegate-qml-type)
+qml-mapping(css-selector, style-qml-type, delegate-qml-type)
 where
-   - css-tag is the tag used in CSS theme
+   - css-selector is the tag used in CSS theme
    - style -qml-type is the name of the QML document defining the style properties
    - delegate-qml-type is the name of the QML document defining the widget delegate.
 If no style is given, theme engine will use QtObject for style and will declare all
 properties typed as variant.
 */
-@qml-mapping(.button, ButtonStyle, ButtonDelegate)
-@qml-mapping(.Button, ButtonStyle, ButtonDelegate)
-@qml-import(Ubuntu.Components 0.1)
+@qml-mapping(.button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.Button, ButtonStyle, ButtonDelegate);
 
-.Button {
+/*
+qml-import defines the QML modules defining the style rules and delegates defined in
+a qml-mapping.
+
+Syntax:
+qml-import(<import-statement>)
+where
+   - import-statement is the module to be imported with the syntax defined in QML
+
+Examples:
+    @qml-import(Qt.labs.shaders 1.0) translates into import Qt.labs.shaders 1.0
+    @qml-import("demos") translates into import "demos"
+    @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
+*/
+@qml-import(Ubuntu.Components 0.1);
+
+.Button, .button {
     color: "#e3e5e8";
     shapeDark: "artwork/ButtonShapeDark.png";
     shapeNormal: "artwork/ButtonShape.png";
@@ -25,16 +40,12 @@ properties typed as variant.
     borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
 }
 
-.button {
-    color: "#a3e5e8";
-    shapeDark: "artwork/ButtonShapeDark.png";
-    shapeNormal: "artwork/ButtonShape.png";
-    borderIdle: "artwork/ButtonBorderIdle.png";
-    borderPressed: "artwork/ButtonBorderPressed.png";
-    borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
-    borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
-}
 
+/*
+    Label does not have any QML mapping, therefore the engine will not assign any
+    style rule or delegate to the Rule object. Instead a QtObject based style rule
+    wil be used with all declared properties as variant.
+*/
 .label {
     fontFamily: "Times";
     fontSize: "medium";

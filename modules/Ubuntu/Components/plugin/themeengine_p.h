@@ -30,6 +30,13 @@ class QDeclarativeComponent;
 
 typedef QHash<QString, StyledItem*> InstanceHash;
 
+extern const char *globalThemeConfigFile;
+extern const char *defaultThemeFile;
+extern const char *appUseGlobalThemeKey;
+extern const char *appThemeFileKey;
+
+extern bool themeDebug;
+
 #define SELECTOR_IGNORE_RELATIONSHIP    0x01
 #define SELECTOR_IGNORE_STYLEID         0x02
 #define SELECTOR_IGNORE_ALL             (SELECTOR_IGNORE_RELATIONSHIP | SELECTOR_IGNORE_STYLEID)
@@ -113,6 +120,21 @@ private:
     QHash<Selector, QHash<QString, QString> > selectorTable;
 };
 
+// theme settings management
+class ThemeSettings {
+public:
+    ThemeSettings(QObject *parent);
+    bool initialize();
+    QUrl themeFile() const;
+    QUrl setThemeFile(const QUrl &url, bool global);
+
+private:
+    QFileSystemWatcher configWatcher;
+    bool hasAppSettings;
+    bool hasGlobalSettings;
+    bool initialized;
+};
+
 // Private functionality of the theme engine
 class ThemeEnginePrivate
 {
@@ -123,8 +145,8 @@ public:
 
 public: //members
     ThemeEngine *q_ptr;
+
     bool initialized;
-    QFileSystemWatcher m_themeWatcher;
     QDeclarativeEngine *m_engine;
     // suffix tree for the styles
     StyleTreeNode *m_styleTree;
@@ -132,12 +154,14 @@ public: //members
     InstanceHash m_instanceCache;
     QmlTheme m_qmlThemeLoader;
     CssTheme m_cssThemeLoader;
+    ThemeSettings themeSettings;
     // needed for theme loading
     QString errorString;
     QUrl currentTheme;
 
     // public functions on instance
 public:
+    bool initialize(QDeclarativeEngine *engine);
     void loadTheme(const QUrl &themeFile);
     Selector getSelector(const StyledItem *obj, bool forceClassName) const;
     StyleRule *styleRuleForPath(const Selector &path);

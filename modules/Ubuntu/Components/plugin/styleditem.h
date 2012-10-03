@@ -30,8 +30,8 @@ class StyledItem : public QDeclarativeItem
     Q_OBJECT
     Q_DISABLE_COPY(StyledItem)
 
-    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
+    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(StyleRule *styleRule READ styleRule WRITE setStyleRule NOTIFY styleChanged)
     Q_PROPERTY(QObject *styleObject READ styleObject NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeItem *delegateItem READ delegateItem NOTIFY styleChanged)

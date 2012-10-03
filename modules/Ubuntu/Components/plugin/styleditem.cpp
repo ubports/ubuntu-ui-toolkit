@@ -26,6 +26,8 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 
+
+const char *widgetProperty = "widget";
 /*!
   \preliminary
   StyledItem class is a base class for all UI controls that use styling in their layout.
@@ -77,7 +79,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
         // check if we have the context
         if (!componentContext) {
             componentContext = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
-            componentContext->setContextProperty("control", q);
+            componentContext->setContextProperty(QLatin1String(widgetProperty), q);
         }
 
         if (!styleObject && styleRule->style()) {

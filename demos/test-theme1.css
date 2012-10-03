@@ -4,24 +4,19 @@
     defines delegate for .frame
 */
 
-@import("modules/Ubuntu/Components/defaulttheme.css")
-@qml-import("demos")
-@qml-mapping(.tbutton, ButtonStyle, TestFrameDelegate)
-@qml-mapping(.frame, , TestFrameDelegate)
+@import url("modules/Ubuntu/Components/defaulttheme.css");
+@qml-import("demos");
+@qml-mapping(.frame, , TestFrameDelegate);
 
 .Button {
-    color: control.hovered ? "tan" : "lightgray";
+    color: widget.hovered ? "tan" : "lightgray";
 }
 
 .button {
-    color: control.hovered ? "lightgray" : "#a3e5e8";
+    color: widget.hovered ? "lightgray" : "#a3e5e8";
 }
 
 .frame {
     color: "tan";
-}
-
-/* this is here just to include .tbutton's delegate */
-.frame > .tbutton {
 }
 

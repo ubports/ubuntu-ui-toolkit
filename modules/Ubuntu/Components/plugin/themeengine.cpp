@@ -25,216 +25,14 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeItem>
 
-#include <QSettings>
 #include <QDebug>
 
 Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
 
-static bool themeDebug = false;
-
-const char *themeConfigFile = "demos/theme.cfg";
-const char *defaultThemeFile = "modules/Ubuntu/Components/defaulttheme.css";
+bool themeDebug = false;
 
 /*=============================================================================
 =============================================================================*/
-
-SelectorNode::SelectorNode() :
-    relationship(Descendant)
-{}
-SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore) :
-    styleClass(styleClass), styleId(styleId), relationship(relationship), ignore(ignore)
-{
-}
-
-QString SelectorNode::toString() const
-{
-    QString result;
-    if (((ignore & SELECTOR_IGNORE_RELATIONSHIP) !=  SELECTOR_IGNORE_RELATIONSHIP) &&
-            (relationship == SelectorNode::Child))
-        result += "> ";
-    if (!styleClass.isEmpty())
-        result += "." + styleClass;
-    if (((ignore & SELECTOR_IGNORE_STYLEID) !=  SELECTOR_IGNORE_STYLEID) && !styleId.isEmpty())
-        result += "#" + styleId;
-    return result;
-}
-
-bool SelectorNode::operator==(const SelectorNode &other)
-{
-    bool ret = (styleClass == other.styleClass) &&
-               ((ignore & SELECTOR_IGNORE_STYLEID) ? true : styleId == other.styleId) &&
-               ((ignore & SELECTOR_IGNORE_RELATIONSHIP) ? true : relationship == other.relationship);
-    return ret;
-}
-
-/*!
-  \internal
-  Hash key for Selector. Uses the QString's hash function.
-  */
-uint qHash(const Selector &key)
-{
-    return qHash(ThemeEnginePrivate::selectorToString(key));
-}
-
-
-StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
-    parent(parent), styleNode("", "", SelectorNode::Descendant), styleRule(0)
-{
-}
-
-StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, StyleRule *styleRule) :
-    parent(parent), styleNode(node), styleRule(styleRule)
-{
-}
-
-StyleTreeNode::~StyleTreeNode()
-{
-    clear();
-}
-
-/*!
-  \internal
-  Clears the style tree except its content
-  */
-void StyleTreeNode::clear()
-{
-    QHashIterator<QString, StyleTreeNode*> i(children);
-    while (i.hasNext()) {
-        delete i.next().value();
-    }
-    children.clear();
-}
-
-/*!
-  \internal
-  Adds a style rule to the style tree based on the selector path specified.
-  */
-void StyleTreeNode::addStyleRule(const Selector &path, StyleRule *styleRule)
-{
-    Selector sparePath = path;
-    SelectorNode nextNode = path.last();
-    QString nodeKey = nextNode.toString();
-
-    if (!sparePath.isEmpty())
-        sparePath.removeLast();
-
-    if (sparePath.isEmpty()) {
-        // last or only item in the path, add it as final node
-        // check if we have the node already, as it could be part of a previous path that
-        // had not yet have a style set
-        if (children.contains(nodeKey)) {
-            children.value(nodeKey)->styleRule = styleRule;
-        } else {
-            // new leaf
-            StyleTreeNode * node = new StyleTreeNode(this, nextNode, styleRule);
-            children.insert(nodeKey, node);
-        }
-    } else {
-        // check if we have the node in the hash
-        if (children.contains(nodeKey)) {
-            children.value(nodeKey)->addStyleRule(sparePath, styleRule);
-        } else {
-            // new node
-            StyleTreeNode *node = new StyleTreeNode(this, nextNode, 0);
-            children.insert(nodeKey, node);
-            node->addStyleRule(sparePath, styleRule);
-        }
-    }
-}
-
-/*!
-  \internal
-  Search for the style best matching the widget path. The path is parsed from the
-  tail as the styles are stored in the tree is stored in sufix form. The \a strict
-  parameter specifies whether the search should be strict on the relationship or not.
-*/
-StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
-{
-    // the spare contains the remainder
-    if (themeDebug)
-        qDebug() << "enter" << __FUNCTION__ << ThemeEnginePrivate::selectorToString(path);
-    Selector sparePath = path;
-    SelectorNode nextPathNode;
-    if (!sparePath.isEmpty()) {
-        nextPathNode = sparePath.last();
-        sparePath.removeLast();
-    }
-
-    // special case: root node forwards the lookup to its children
-    if (!parent) {
-        return testNode(nextPathNode, sparePath, strict);
-    } else {
-        // check whether we have a child that satisfies the node
-        // try to remove elements from the path, maybe we still can get a match
-        while (true) {
-            StyleRule *rule = testNode(nextPathNode, sparePath, strict);
-            if (rule)
-                return rule;
-            if (!sparePath.isEmpty()) {
-                nextPathNode = sparePath.last();
-                sparePath.removeLast();
-            } else
-                break;
-            if (themeDebug)
-                qDebug() << __FUNCTION__ << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
-        }
-    }
-
-    // we have consumed the path, return the style from the node/leaf
-    if (themeDebug)
-        qDebug() << __FUNCTION__ << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
-    return styleRule;
-}
-
-/*!
-  \internal
-  Test whether a child matches the criteria
-*/
-StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict)
-{
-    QString nodeKey = nextNode.toString();
-    if (themeDebug)
-        qDebug() << __FUNCTION__ << nodeKey;
-    if (children.contains(nodeKey)) {
-        return children.value(nodeKey)->lookupStyleRule(sparePath, strict);
-    } else if (!strict && (nextNode.relationship == SelectorNode::Child)){
-        // check if the searched node had Child relationship; if yes,
-        // change it to Descendant and look after the style again; if
-        // found, the lookup after this point should be strict
-        nextNode.relationship = SelectorNode::Descendant;
-        nodeKey = nextNode.toString();
-        if (themeDebug)
-            qDebug() << __FUNCTION__ << "no match, testing" << nodeKey;
-        strict = true;
-        if (children.contains(nodeKey)) {
-            return children.value(nodeKey)->lookupStyleRule(sparePath, strict);
-        }
-    }
-
-    return 0;
-}
-
-/*!
-  \internal
-  For debugging purposes, lists the tree content.
-*/
-void StyleTreeNode::listTree(const QString &prefix)
-{
-    if (themeDebug) {
-        // go backwards to build the path
-        if (styleRule) {
-            QString path = '(' + styleNode.toString() + ')';
-            for (StyleTreeNode *pl = parent; pl; pl = pl->parent)
-                path.append(" (" + pl->styleNode.toString() + ')');
-            qDebug() << "node" << prefix << path << ":::" << styleRule->selector();
-        }
-        QHashIterator<QString, StyleTreeNode*> i(children);
-        while (i.hasNext()) {
-            i.next();
-            i.value()->listTree(prefix + " ");
-        }
-    }
-}
 
 /*=============================================================================
   THEMING ENGINE PRIVATES
@@ -244,11 +42,10 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
     initialized(false),
     m_engine(0),
-    m_styleTree(new StyleTreeNode(0))
+    m_styleTree(new StyleTreeNode(0)),
+    themeSettings(qq)
 {
-    // TODO: watch theme file to detect changes
-    m_themeWatcher.addPath(themeConfigFile);
-    QObject::connect(&m_themeWatcher, SIGNAL(fileChanged(QString)), q_ptr, SLOT(_q_updateTheme()));
+    //QObject::connect(&m_themeWatcher, SIGNAL(fileChanged(QString)), q_ptr, SLOT(_q_updateTheme()));
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
@@ -275,42 +72,38 @@ void ThemeEnginePrivate::_q_continueThemeLoading()
 */
 void ThemeEnginePrivate::_q_updateTheme()
 {
-    // get the theme path and implement based on that
-    // Q: should we clean the style tree we have from the previous theme?
+    const QUrl newTheme = themeSettings.themeFile();
 
-    // open configuration file
-    QSettings settings(themeConfigFile, QSettings::NativeFormat);
-    QVariant themeVariant = settings.value("theme");
-    QUrl newTheme = themeVariant.toUrl();
-    if (!newTheme.isValid()) {
-        qWarning() << "WARNING! Theme specified in configuration is invalid. Loading default.";
-        //newTheme = QUrl::fromLocalFile("modules/Ubuntu/Components/DefaultTheme.qml");
-        newTheme = QUrl::fromLocalFile(defaultThemeFile);
-    }
-
-    if (currentTheme != newTheme) {
-        currentTheme = newTheme;
+    if (newTheme.isValid() && (currentTheme != newTheme)) {
         loadTheme(newTheme);
-
-        // in case of error, load the default one
-        if (!errorString.isEmpty()) {
-            errorString.clear();
-            loadTheme(QUrl::fromLocalFile(defaultThemeFile));
-        }
-
     }
 }
 
 /*!
   \internal
-  Traverses and returns the path from \a obj up to root as
-  a list of styleClass and styleId pairs
+  Initializes engine.
+  */
+bool ThemeEnginePrivate::initialize(QDeclarativeEngine *engine)
+{
+    // set as initialized so we are able to load the theme
+    initialized = true;
+    m_engine = engine;
+
+    // load the tast theme configured
+    _q_updateTheme();
+    return initialized;
+}
+
+/*!
+  \internal
+  Loads the theme either using QmlTheme or CssTheme classes, depending on the
+  thee file type.
   */
 void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 {
     QString themePath = themeFile.path();
 
-    if (themePath.endsWith(".css")) {
+    if (themePath.endsWith(".css") || themePath.endsWith(".qthm")) {
         m_styleTree->clear();
         m_styleCache.clear();
 
@@ -334,8 +127,8 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 
 /*!
   \internal
-  Traverses and returns the path from \a obj up to root as
-  a list of styleClass and styleId pairs
+  Traverses and returns the path from \a obj up to root as a list of styleClass
+  and instanceId pairs
   */
 Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassName) const
 {
@@ -349,7 +142,7 @@ Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassN
         // if parent is alsoa StyledItem, we talk about Child relationship
         // otherwise we talk about Descendant
         SelectorNode::Relationship relation = qobject_cast<StyledItem*>(parent) ?
-                    SelectorNode::Child :SelectorNode::Descendant;
+                    SelectorNode::Child : SelectorNode::Descendant;
 
         // if styleClass is not defined, use the component's meta class name
         if (styleClass.isEmpty() || forceClassName) {
@@ -385,6 +178,7 @@ StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
     return rule;
 }
 
+
 /*=============================================================================
   Utility functions
 =============================================================================*/
@@ -398,8 +192,10 @@ void ThemeEnginePrivate::setError(const QString &error)
 {
     ThemeEngine *theme = themeEngine();
     theme->d_ptr->errorString = "Theme loading error!\n\t" + error;
+/*
     if (!theme->d_ptr->errorString.isEmpty())
         qWarning() << theme->d_ptr->errorString;
+*/
     emit theme->errorChanged();
 }
 
@@ -464,6 +260,7 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
     return pathList;
 }
 
+
 /*=============================================================================
   THEMING ENGINE PUBLIC API
 =============================================================================*/
@@ -490,13 +287,7 @@ bool ThemeEngine::initialize(QDeclarativeEngine *engine)
 {
     ThemeEngine *theme = themeEngine();
     if (!theme->d_ptr->initialized) {
-        theme->d_ptr->m_engine = engine;
-
-        // set as initialized so we are able to load the theme
-        theme->d_ptr->initialized = true;
-
-        // load the tast theme configured
-        theme->d_ptr->_q_updateTheme();
+        theme->d_ptr->initialize(engine);
     }
     return theme->d_ptr->initialized;
 }
@@ -557,7 +348,7 @@ StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
     }
 
     if (themeDebug) {
-        qDebug() << "ThemeEnginePrivate::lookupStyleRule- widget path" << ThemeEnginePrivate::selectorToString(path);
+        qDebug() << "ThemeEnginePrivate::lookupStyleRule - widget path" << ThemeEnginePrivate::selectorToString(path);
     }
     StyleRule *rule = d->styleRuleForPath(path);
     if (rule) {
@@ -580,12 +371,20 @@ void ThemeEngine::loadTheme(const QUrl &themeFile)
   \preliminary
   This is a helper slot provided for testing purposes and should not be considered
   as part of the final API.
-  Updates the "system theme" configuration file with the given \a theme.
+  Loads the \a theme file and stores it in the application's settings if possible.
+  If application theme can be stored in settings, it will
   */
-void ThemeEngine::setTheme(const QUrl &theme)
+void ThemeEngine::setTheme(const QUrl &theme, bool global)
 {
-    QSettings settings("demos/theme.cfg", QSettings::NativeFormat);
-    settings.setValue("theme", theme);
+    Q_D(ThemeEngine);
+    QUrl themeFile = d->themeSettings.setThemeFile(theme, global);
+    if (themeFile.isValid())
+        d->_q_updateTheme();
+    else if (d->errorString.isEmpty()) {
+        d->setError(QString("Error setting theme %1 as %2")
+                    .arg(theme.toString())
+                    .arg(global ? "global" : "private"));
+    }
 }
 
 /*!
@@ -597,6 +396,17 @@ QString ThemeEngine::error() const
     Q_D(const ThemeEngine);
     return d->errorString;
 }
+
+/*!
+  \internal
+  Property reset method for \a error property.
+  */
+void ThemeEngine::resetError()
+{
+    Q_D(ThemeEngine);
+    d->errorString = QString();
+}
+
 
 /*!
   \internal

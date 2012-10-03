@@ -32,7 +32,7 @@ class ThemeEngine : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString error READ error NOTIFY errorChanged)
+    Q_PROPERTY(QString error READ error RESET resetError NOTIFY errorChanged)
     Q_PROPERTY(QString currentTheme READ currentTheme NOTIFY themeChanged)
 public:
     ThemeEngine(QObject *parent = 0);
@@ -44,6 +44,11 @@ public:
     bool registerInstanceId(StyledItem *item, const QString &newId);
     StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
 
+    // getter/setters
+    QString error() const;
+    void resetError();
+    QString currentTheme() const;
+
 signals:
     void errorChanged();
     void themeChanged();
@@ -51,15 +56,16 @@ signals:
 public slots:
     void loadTheme(const QUrl &themeFile);
 
-    void setTheme(const QUrl &theme);
+    void setTheme(const QUrl &theme, bool global);
 
 private:
-    QString error() const;
-    QString currentTheme() const;
-
     Q_DISABLE_COPY(ThemeEngine)
     Q_DECLARE_PRIVATE(ThemeEngine)
     QScopedPointer<ThemeEnginePrivate> d_ptr;
+
+#ifdef QT_TESTLIB_LIB
+    friend class ThemeEnginePrivateTest;
+#endif
 
     Q_PRIVATE_SLOT(d_func(), void _q_continueThemeLoading())
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())

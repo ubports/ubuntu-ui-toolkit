@@ -17,12 +17,9 @@
 import QtQuick 1.1
 import Qt.labs.shaders 1.0
 
+
 /*
-QtObject {
-    property color color
-    property url borderShape
-    property url borderImage
-}
+  Style defined  in ButtonStyle
 */
 Item {
     z: -1
@@ -39,7 +36,7 @@ Item {
     }
 
     Binding {
-        target: control
+        target: widget
         property: "textColor"
         value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
     }
@@ -52,7 +49,7 @@ Item {
 
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        source: control.darkBorder ? Qt.resolvedUrl(control.styleObject.shapeDark) : Qt.resolvedUrl(control.styleObject.shapeNormal)
+        source: widget.darkBorder ? Qt.resolvedUrl(widget.styleObject.shapeDark) : Qt.resolvedUrl(widget.styleObject.shapeNormal)
         border.left: 18; border.top: 15
         border.right: 18; border.bottom: 15
     }
@@ -62,13 +59,13 @@ Item {
         id: base
 
         anchors.fill: shape
-        color: control.pressed ? control.pressedColor : control.color
+        color: widget.pressed ? widget.pressedColor : widget.color
 
     }
 
     ButtonMaskEffect {
         anchors.fill: shape
-        gradientStrength: control.pressed ? 0.0 : 1.0
+        gradientStrength: widget.pressed ? 0.0 : 1.0
         Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
 
         mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
@@ -82,9 +79,9 @@ Item {
         anchors.fill: parent
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        //source: control.styleObject.borderImage
-        source: (control.darkBorder) ? (control.pressed ? Qt.resolvedUrl(control.styleObject.borderDarkPressed) : Qt.resolvedUrl(control.styleObject.borderDarkIdle))
-                            : (control.pressed ? Qt.resolvedUrl(control.styleObject.borderPressed) : Qt.resolvedUrl(control.styleObject.borderIdle));
+        //source: widget.styleObject.borderImage
+        source: (widget.darkBorder) ? (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderDarkPressed) : Qt.resolvedUrl(widget.styleObject.borderDarkIdle))
+                            : (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderPressed) : Qt.resolvedUrl(widget.styleObject.borderIdle));
         border.left: 14; border.top: 17
         border.right: 15; border.bottom: 18
     }

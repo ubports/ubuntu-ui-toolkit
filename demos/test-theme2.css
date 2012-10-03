@@ -5,21 +5,15 @@
     theme pecific types can be utilized.
 */
 
-@import("modules/Ubuntu/Components/defaulttheme.css")
-@qml-import("demos")
-@qml-mapping(.Button, ButtonStyle, TestFrameDelegate)
+@import url("demos/test-theme1.css");
+@qml-mapping(.Button, ButtonStyle, TestFrameDelegate);
+@qml-mapping(.frame, , TestFrameDelegate);
 
-
-.tframe {
-    color: "tan";
+.frame {
+    color: "#aaaaff";
     border: "blue"
 }
 
-.tbutton {
-    color: "white"
+.Button {
+    color: widget.pressed ? "purple" : "lightgray";
 }
-
-/* this is here just to include .tbutton's delegate */
-.tframe > .tbutton {
-}
-
