@@ -43,8 +43,8 @@ import QtQuick 1.1
 AnimatedItem {
     id: progressBar
 
-    width: 200
-    height: frame.sourceSize.height
+    width: units.dp(200)
+    height: units.dp(10)
 
     /*!
       \preliminary
@@ -129,7 +129,7 @@ AnimatedItem {
         property url barSource: Qt.resolvedUrl("artwork/ProgressBarBackground.png")
         property url knownTrackerSource: Qt.resolvedUrl("artwork/ProgressBarTracker.png")
         property url unknownTrackerSource: Qt.resolvedUrl("artwork/ProgressBarTrackerIndeterminate.png")
-        property int trackerOffset: 1
+        property int trackerOffset: units.dp(1)
 
         function progress()
         {

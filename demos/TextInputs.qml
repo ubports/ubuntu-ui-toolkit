@@ -27,7 +27,7 @@ Template {
             onClicked: page.forceActiveFocus()
         }
         Column {
-            spacing: 30
+            spacing: units.dp(30)
 
             TemplateRow {
                 title: "Basic"
@@ -93,12 +93,12 @@ Template {
 
                     primaryItem: ButtonWithForeground {
                         iconSource: "call_icon.png"
-                        width: 20
+                        width: units.dp(20)
                     }
                     secondaryItem: ButtonWithForeground {
                         iconSource: "avatar_contacts_list.png"
                         width: height
-                        height: parent.height - 5
+                        height: parent.height - units.dp(5)
                     }
                 }
             }

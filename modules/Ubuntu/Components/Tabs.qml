@@ -86,11 +86,11 @@ Item {
      */
     property Item separator: Rectangle {
             color: "white"
-            height: 1
+            height: units.dp(1)
     }
 
     // minimal width of 200
-    width: 200
+    width: units.dp(200)
     height: buttonRow.height
 
     // encapsulation
@@ -105,7 +105,7 @@ Item {
         Row {
             id: buttonRow
             width: buttonRow.buttonWidth * repeater.count
-            height: 28
+            height: units.dp(28)
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
@@ -115,7 +115,7 @@ Item {
               \preliminary
               The padding on the left and right side of the row of buttons.
             */
-            property real horizontalPadding: 10
+            property real horizontalPadding: units.dp(10)
 
             // maximumButtonWidth is the total space available for all tab buttons
             // divided by the number of buttons.
@@ -124,7 +124,7 @@ Item {
             // largest button needs to fit all its contents.
             // Scrolling in case the buttons don't fit in the available space is currently
             // not implemented.
-            property int minimumButtonWidth: 20
+            property int minimumButtonWidth: units.dp(20)
             property int maximumButtonWidth: (visuals.width - 2*buttonRow.horizontalPadding) / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
             property int widestButtonWidth

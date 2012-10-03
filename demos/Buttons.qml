@@ -21,7 +21,7 @@ Template {
     title: "Buttons"
 
     Column {
-        spacing: 30
+        spacing: units.dp(30)
 
         TemplateRow {
             title: "Standard"
@@ -55,8 +55,8 @@ Template {
 
             Rectangle {
                 id: darkBackground
-                width: darkButton.width + 20
-                height: darkButton.height + 20
+                width: darkButton.width + units.dp(20)
+                height: darkButton.height + units.dp(20)
                 color: "#3a3c41"
 
                 Button {
@@ -101,8 +101,8 @@ Template {
 
             Button {
                 text: "Call"
-                width: 140
-                height: 90
+                width: units.dp(140)
+                height: units.dp(90)
             }
         }
     }

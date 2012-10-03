@@ -15,6 +15,7 @@
  */
 
 import QtQuick 1.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass ButtonWithForeground
@@ -32,8 +33,8 @@ AbstractButton {
       \preliminary
       The dimensions of the button.
     */
-    width: 150
-    height: 50
+    width: units.dp(150)
+    height: units.dp(50)
 
     /*!
        \preliminary
@@ -92,24 +93,19 @@ AbstractButton {
           \preliminary
           The padding on the left and right side of the button foreground.
         */
-        property real horizontalPadding: 10
+        property real horizontalPadding: units.dp(10)
         property real maximumWidth: button.width - 2*foreground.horizontalPadding
-        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : 10
-        property real verticalPadding: 5
+        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : units.dp(10)
+        property real verticalPadding: units.dp(5)
 
         width: icon.width + label.width + foreground.spacing
         height: button.height - 2*foreground.verticalPadding
         implicitWidth: icon.width + invisibleLabel.paintedWidth + foreground.spacing
 
-        Image {
+        ImageMipmap {
             id: icon
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: foreground.verticalCenter
-            sourceSize {
-                width: icon.width
-                height: icon.height
-            }
-            height: foreground.height
             opacity: button.enabled ? 1.0 : 0.5
         }
 
@@ -117,7 +113,7 @@ AbstractButton {
             id: label
             anchors {
                 verticalCenter: foreground.verticalCenter
-                verticalCenterOffset: -1
+                verticalCenterOffset: units.dp(-1)
             }
             fontSize: "medium"
             font.italic: true

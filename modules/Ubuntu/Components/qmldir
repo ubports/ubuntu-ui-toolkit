@@ -16,6 +16,8 @@ internal TabButton TabButton.qml
 internal ButtonMaskEffect ButtonMaskEffect.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
+ImageMipmap 0.1 ImageMipmap.qml
+Units 0.1 Units.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml

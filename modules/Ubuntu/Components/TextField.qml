@@ -71,8 +71,8 @@ import "fontUtils.js" as FontUtils
 FocusScope {
     id: control
 
-    implicitWidth: 200
-    implicitHeight: 25
+    implicitWidth: units.dp(200)
+    implicitHeight: units.dp(25)
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
@@ -370,9 +370,9 @@ FocusScope {
         property color textColor: (editor.enabled) ? "#757373" : "darkgray"
         property color hintColor: "#B6B6B6"
         property string fontSize: "small"
-        property real clearButtonSpacing: 3.5
+        property real clearButtonSpacing: units.dp(3.5)
         property bool textChanged: false
-        property real spacing: 5
+        property real spacing: units.dp(5)
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
@@ -474,7 +474,7 @@ FocusScope {
                     topMargin: -parent.topMargin
                     bottomMargin: -parent.bottomMargin
                 }
-                width: 1
+                width: units.dp(1)
                 visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
                 Timer {
                     interval: 800
@@ -497,7 +497,7 @@ FocusScope {
                 verticalCenter: parent.verticalCenter
             }
             iconSource: (control.hasClearButton) ? internal.clearImage : ""
-            width: visible ? 19 : 0 // TODO: no way to set the image size :(
+            width: visible ? units.dp(19) : 0 // TODO: no way to set the image size :(
             visible: control.hasClearButton &&
                         (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
             onClicked: editor.text = ""

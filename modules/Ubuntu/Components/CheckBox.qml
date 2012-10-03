@@ -42,8 +42,8 @@ import Qt.labs.shaders 1.0
 Item {
     id: checkBox
 
-    width: 49
-    height: 39
+    width: units.dp(49)
+    height: units.dp(39)
 
     /*!
       \preliminary
@@ -132,7 +132,7 @@ Item {
             id: checkMark
 
             anchors.fill: parent
-            anchors.margins: 5
+            anchors.margins: units.dp(5)
             fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.checkMarkSource

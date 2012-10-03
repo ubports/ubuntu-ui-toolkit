@@ -22,13 +22,13 @@ Row {
 
     property string title
 
-    spacing: 10
-    height: 50
+    spacing: units.dp(10)
+    height: units.dp(50)
 
     TextCustom {
         text: templateRow.title
         color: "#757373"
-        width: 80
+        width: units.dp(80)
         style: Text.Raised
         styleColor: "white"
     }

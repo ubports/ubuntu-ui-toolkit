@@ -71,8 +71,8 @@ Base {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                leftMargin: 5
-                rightMargin: 5
+                leftMargin: units.dp(5)
+                rightMargin: units.dp(5)
             }
         }
         LabelVisual {
@@ -82,8 +82,8 @@ Base {
                 top: label.bottom
                 left: parent.left
                 right: parent.right
-                leftMargin: 5
-                rightMargin: 5
+                leftMargin: units.dp(5)
+                rightMargin: units.dp(5)
             }
             fontSize: "small"
             text: concatenatedValues(multiValueListItem.values)

@@ -38,7 +38,7 @@ import Ubuntu.Components 0.1
 */
 Item {
     height: framing.height
-    width: parent ? parent.width : 250
+    width: parent ? parent.width : units.dp(250)
 
     /*!
       \preliminary
@@ -54,12 +54,12 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: captionText.height + 10
+        height: captionText.height + units.dp(10)
 
         TextCustom {
             id: captionText
             anchors.centerIn: parent
-            width: parent.width - 10
+            width: parent.width - units.dp(10)
             wrapMode: Text.Wrap
             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
             horizontalAlignment: Text.AlignLeft

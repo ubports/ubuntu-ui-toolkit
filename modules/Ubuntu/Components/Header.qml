@@ -26,7 +26,7 @@ Rectangle {
     id: header
 
     color: "#666666"
-    height: visible ? 40 : 0
+    height: visible ? units.dp(40) : 0
 
     /*!
       \preliminary
@@ -53,16 +53,16 @@ Rectangle {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            margins: 2
+            margins: units.dp(2)
         }
-        width: visible ? backImage.width + 20 : 0
+        width: visible ? backImage.width + units.dp(20) : 0
         visible: false
         onClicked: if (header.pageStack) pageStack.pop()
 
-        Image {
+        ImageMipmap {
             id: backImage
             anchors.centerIn: parent
-            source: "ListItems/artwork/ListItemProgressionArrow.png"
+            resource: "ListItems/artwork/ListItemProgressionArrow.png"
             fillMode: Image.PreserveAspectFit
             rotation: 180
         }
@@ -75,7 +75,7 @@ Rectangle {
             top: parent.top
             bottom: parent.bottom
             right: parent.right
-            margins: 5
+            margins: units.dp(5)
         }
         color: "white"
         horizontalAlignment: Text.AlignLeft

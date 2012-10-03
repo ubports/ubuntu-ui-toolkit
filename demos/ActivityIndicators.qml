@@ -22,7 +22,7 @@ Template {
     id: indicators
 
     Column {
-        spacing: 30
+        spacing: units.dp(30)
 
         Button {
             id: button

@@ -26,10 +26,10 @@ Item {
     visible: source != ""
     property bool hasFrame: true
 
-    property real leftIconMargin: 5
-    property real rightIconMargin: 5
-    property real topIconMargin: 5
-    property real bottomIconMargin: 5
+    property real leftIconMargin: units.dp(5)
+    property real rightIconMargin: units.dp(5)
+    property real topIconMargin: units.dp(5)
+    property real bottomIconMargin: units.dp(5)
     width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
 
     anchors {
@@ -47,7 +47,9 @@ Item {
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }
-        height: Math.min(sourceSize.height, iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
+        property real sourceAspectRatio: sourceSize.width / sourceSize.height
+        height: Math.min(units.dp(sourceSize.height), iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
+        width: sourceAspectRatio * height
         smooth: true
         asynchronous: true
     }

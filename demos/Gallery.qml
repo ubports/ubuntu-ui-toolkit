@@ -21,6 +21,14 @@ Rectangle {
     width: 800
     height: 600
 
+    focus: true
+    Keys.onUpPressed: units.bucket = Math.min(units.bucket + 1, 3)
+    Keys.onDownPressed: units.bucket = Math.max(units.bucket - 1, 0)
+
+    Units {
+        id: units
+    }
+
     color: "#e6e6e6"
 
     Rectangle {
@@ -29,7 +37,7 @@ Rectangle {
     }
 
     Rectangle {
-        width: 1
+        width: units.dp(1)
         anchors {
             right: widgetList.right
             top: widgetList.top
@@ -41,7 +49,7 @@ Rectangle {
     ListView {
         id: widgetList
 
-        width: 150
+        width: units.dp(150)
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -70,7 +78,7 @@ Rectangle {
                ]
 
         delegate: ButtonWithForeground {
-            height: 48
+            height: units.dp(48)
             textSize: "medium"
             text: modelData.label
             textColor: "#757373"
@@ -79,7 +87,7 @@ Rectangle {
 
             Rectangle {
                 anchors.fill: parent
-                anchors.margins: 1
+                anchors.margins: units.dp(1)
                 z: -1
                 color: "#e6dede"
                 visible: index == widgetList.selectedIndex

@@ -33,7 +33,7 @@ Template {
                 bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
             }
-            width: 300
+            width: units.dp(300)
 
             Component.onCompleted: push(page0)
 

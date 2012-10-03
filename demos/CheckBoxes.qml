@@ -21,7 +21,7 @@ Template {
     title: "Check Box"
 
     Column {
-        spacing: 30
+        spacing: units.dp(30)
 
         TemplateRow {
             title: "Unchecked"

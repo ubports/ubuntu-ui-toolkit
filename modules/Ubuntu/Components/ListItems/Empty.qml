@@ -79,7 +79,7 @@ import Ubuntu.Components 0.1
 */
 AbstractButton {
     id: emptyListItem
-    width: parent ? parent.width : 250
+    width: parent ? parent.width : units.dp(250)
     height: __height + bottomDividerLine.height
 
     /*!
@@ -110,7 +110,7 @@ AbstractButton {
       Defines the height of the ListItem, so correct height of this component, including divider
       line is calculated.
      */
-    property int __height: 48
+    property int __height: units.dp(48)
 
     /*!
       \preliminary

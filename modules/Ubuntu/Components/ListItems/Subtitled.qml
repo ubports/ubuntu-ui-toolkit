@@ -66,7 +66,7 @@ import Ubuntu.Components 0.1
 */
 Base {
     id: subtitledListItem
-    __height: Math.max(middleVisuals.height, 48)
+    __height: Math.max(middleVisuals.height, units.dp(48))
 
     /*!
       \preliminary
@@ -98,18 +98,18 @@ Base {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                leftMargin: 5
-                rightMargin: 5
-                topMargin: 5
+                leftMargin: units.dp(5)
+                rightMargin: units.dp(5)
+                topMargin: units.dp(5)
             }
         }
         LabelVisual {
             id: subLabel
             selected: subtitledListItem.selected
             anchors {
-                leftMargin: 5
-                bottomMargin: 5
-                rightMargin: 5
+                leftMargin: units.dp(5)
+                bottomMargin: units.dp(5)
+                rightMargin: units.dp(5)
 
                 left: parent.left
                 right: parent.right

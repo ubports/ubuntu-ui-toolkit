@@ -126,13 +126,13 @@ Empty {
         anchors {
             left: parent.left
             right: parent.right
-            topMargin: 2
-            bottomMargin: 2
+            topMargin: units.dp(2)
+            bottomMargin: units.dp(2)
         }
 
         Base {
             id: selectorMain
-            height: 48
+            height: units.dp(48)
             showDivider: false
             onClicked: selector.expanded = !selector.expanded
             selected: selector.selected
@@ -141,10 +141,10 @@ Empty {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    leftMargin: 5
+                    leftMargin: units.dp(5)
                     left: parent.left
                 }
-                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
+                width: Math.min(invisibleLabel.implicitWidth, parent.width - units.dp(10))
             }
             LabelVisual {
                 id: invisibleLabel
@@ -157,8 +157,8 @@ Empty {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: accordion.left
-                    rightMargin: 5
-                    leftMargin: 5
+                    rightMargin: units.dp(5)
+                    leftMargin: units.dp(5)
                     left: label.right
                 }
                 fontSize: "small"
@@ -168,7 +168,7 @@ Empty {
             }
             Item {
                 id: accordion
-                width: 30
+                width: units.dp(30)
                 anchors {
                     right: parent.right
                     top: parent.top
@@ -213,14 +213,14 @@ Empty {
 
         Repeater {
             id: valueRepeater
-            property int valueHeight: selector.expanded ? 40 : 0
+            property int valueHeight: selector.expanded ? units.dp(40) : 0
 
             states: [ State {
                     name: "expanded"
                     when: selector.expanded
                     PropertyChanges {
                         target: valueRepeater
-                        valueHeight: 40
+                        valueHeight: units.dp(40)
                     }
                 }, State {
                     name: "closed"
@@ -261,7 +261,7 @@ Empty {
                         text: modelData
                         anchors {
                             left: parent.left
-                            leftMargin: 24
+                            leftMargin: units.dp(24)
                             verticalCenter: parent.verticalCenter
                         }
                         font.italic: true

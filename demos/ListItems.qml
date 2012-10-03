@@ -32,7 +32,7 @@ Template {
                 left: parent.left
             }
             Column {
-                width: 250
+                width: units.dp(250)
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
@@ -55,12 +55,12 @@ Template {
             anchors {
                 top: parent.top
                 left: typesRectangle.right
-                leftMargin: 15
+                leftMargin: units.dp(15)
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Standard"
                 Column {
-                    width: 250
+                    width: units.dp(250)
 
                     ListItem.Header { text: "Standard" }
                     ListItem.Standard {
@@ -85,25 +85,25 @@ Template {
                     ListItem.Standard {
                         text: "Custom icon"
                         icon: Rectangle {
-                            anchors.margins: 5
+                            anchors.margins: units.dp(5)
                             width: height
                             color: "darkgrey"
                             Rectangle {
                                 anchors {
                                     fill: parent
-                                    margins: 5
+                                    margins: units.dp(5)
                                 }
                                 color: "lightgrey"
                                 Rectangle {
                                     anchors {
                                         fill: parent
-                                        margins: 5
+                                        margins: units.dp(5)
                                     }
                                     color: "darkgrey"
                                     Rectangle {
                                         anchors {
                                             fill: parent
-                                            margins: 5
+                                            margins: units.dp(5)
                                         }
                                         color: "lightgrey"
                                     }
@@ -117,7 +117,7 @@ Template {
                 id: container
                 selected: listItemTypes.selectedType === "Grouped List"
                 Column {
-                    width: 250
+                    width: units.dp(250)
 
                     ListModel {
                         id: testModel
@@ -141,7 +141,7 @@ Template {
                          * So we have all but 2 items that are 50 pixels height, the others are 48
                          * high and there are 3 headings at 24 pixels high
                          */
-                        contentHeight: 50 * count - 2 * 2 + 3 * 24
+                        contentHeight: units.dp(50) * count - 2 * units.dp(2) + 3 * units.dp(24)
                         interactive: false
 
                         delegate: ListItem.Standard {
@@ -160,7 +160,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Single value"
                 Column {
-                    width: 250
+                    width: units.dp(250)
 
                     ListItem.Header { text: "Single value" }
                     ListItem.SingleValue {
@@ -222,7 +222,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Multiple values"
                 Column {
-                    width: 250
+                    width: units.dp(250)
                     ListItem.Header { text: "Multiple values" }
                     ListItem.MultiValue {
                         text: "Idle"
@@ -253,7 +253,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Subtitled"
                 Column {
-                    width: 250
+                    width: units.dp(250)
                     ListItem.Header { text: "Subtitled" }
                     ListItem.Subtitled {
                         text: "Idle"
@@ -303,7 +303,7 @@ Template {
                     }
                 }
                 Column {
-                    width: 250
+                    width: units.dp(250)
                     ListItem.Header { text: "Controls" }
                     ListItem.Standard {
                         text: "Label"
@@ -338,7 +338,7 @@ Template {
                         control: Button {
                             text: "Button"
                             anchors {
-                                margins: 10
+                                margins: units.dp(10)
                                 fill: parent
                             }
                             onClicked: print("Large button clicked")
@@ -349,7 +349,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Captions and Dividers"
                 Column {
-                    width: 250
+                    width: units.dp(250)
                     ListItem.Header { text: "Captions and Dividers" }
                     ListItem.Standard { text: "Item 1a" }
                     ListItem.Standard {
@@ -367,7 +367,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Value selector"
                 Column {
-                    width: 250
+                    width: units.dp(250)
                     ListItem.Header { text: "Value selectors" }
                     ListItem.ValueSelector {
                         text: "Idle"

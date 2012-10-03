@@ -42,7 +42,7 @@ Rectangle {
         parent: template
         anchors {
             fill: parent
-            margins: 35
+            margins: units.dp(35)
         }
 
         Binding {
@@ -75,11 +75,11 @@ Rectangle {
 
                 anchors {
                     top: title.bottom
-                    topMargin: 5
+                    topMargin: units.dp(5)
                     left: parent.left
                     right: parent.right
                 }
-                height: 1
+                height: units.dp(1)
                 color: "#757373"
             }
         }

@@ -48,13 +48,13 @@ Item {
     //     as a guideline to prevent that?
     id: sweetch
 
-    width: 87
+    width: units.dp(87)
     // FIXME(loicm) Button and other components have a default height of 39, I
     //     had to specify 42 here because under that value the BorderImage of
     //     the inner element gets cropped and starts to look ugly. A general
     //     solution would need to be found in order to support arbitrary sizes,
     //     or maybe simply clamping the requested sizes.
-    height: 42
+    height: units.dp(42)
 
     /*!
       \preliminary
@@ -209,10 +209,10 @@ Item {
         property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
         property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
         property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
-        property real iconHorizontalMargin: 8.0
-        property real iconSpacing: 10.0
+        property real iconHorizontalMargin: units.dp(8.0)
+        property real iconSpacing: units.dp(10.0)
         property real thumbWidth: 0.5    // In [0.0, 1.0].
-        property real thumbSpacing: 3.0
+        property real thumbSpacing: units.dp(3.0)
         property color uncheckedColor: "#c4c4c4"
         property color checkedColor: uncheckedColor
         property color thumbColor: "#8b8b8b"

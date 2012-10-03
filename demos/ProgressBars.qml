@@ -21,7 +21,7 @@ Template {
     title: "Progress Bar"
 
     Column {
-        spacing: 30
+        spacing: units.dp(30)
 
         TemplateRow {
             title: "Known %"

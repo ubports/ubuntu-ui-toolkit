@@ -31,7 +31,7 @@ ButtonWithForeground {
      */
     property bool selected: false;
 
-    height: parent ? parent.height : 50
+    height: parent ? parent.height : units.dp(50)
     textColor: "#757373"
 
     /*!

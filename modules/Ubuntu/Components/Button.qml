@@ -48,8 +48,8 @@ import Qt.labs.shaders 1.0
 ButtonWithForeground {
     id: button
 
-    width: 87
-    height: 39
+    width: units.dp(87)
+    height: units.dp(39)
 
     /*!
        \preliminary
