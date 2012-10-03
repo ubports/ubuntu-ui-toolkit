@@ -19,6 +19,9 @@
 #include "plugin.h"
 
 //#include <QtDeclarative/QDeclarativeExtensionPlugin>
+//#include <QtQml/QQmlExtensionPlugin>
+#include <QtQml>
+//#include <QtQml/QQmlExtensionPlugin>
 //#include <QtDeclarative/QDeclarativeContext>
 //#include <QtDeclarative/qdeclarative.h>
 //#include <QtDeclarative/QDeclarativeItem>
@@ -27,15 +30,13 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-//    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever"); // TODO: give reason
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever"); // TODO: give reason
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-//    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
-//    UbuntuI18n* i = new UbuntuI18n();
-//    i->init("ubuntu-sdk", "/usr/share/locale");
-////    engine->rootContext()->setContextProperty("i18n", new UbuntuI18n());
-//    engine->rootContext()->setContextProperty("i18n", i);
     QQmlExtensionPlugin::initializeEngine(engine, uri);
+    UbuntuI18n* i = new UbuntuI18n();
+    i->init("ubuntu-sdk", "/usr/share/locale");
+    engine->rootContext()->setContextProperty("i18n", i);
 }
