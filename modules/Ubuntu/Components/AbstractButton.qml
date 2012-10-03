@@ -36,8 +36,8 @@ Item {
     */
     signal clicked(var mouse)
 
-//    Keys.onEnterPressed: clicked()
-//    Keys.onReturnPressed: clicked()
+    Keys.onEnterPressed: clicked()
+    Keys.onReturnPressed: clicked()
 
     /*!
       \preliminary
@@ -67,6 +67,9 @@ Item {
         // as it might occlude the newly assigned mouse area.
         enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
+
+//        Component.onCompleted: hiddenFunctions.updateMouseArea()
+        onClicked: if (enabled) print("clickily")
     }
 
     /*!
@@ -76,19 +79,18 @@ Item {
     onMouseAreaChanged: hiddenFunctions.updateMouseArea()
     Component.onCompleted: hiddenFunctions.updateMouseArea()
 
-
     QtObject {
         id: hiddenFunctions
 
         function updateMouseArea() {
             if (button.mouseArea) {
-//                defaultMouseArea.clicked.disconnect(button.clicked);
+                defaultMouseArea.clicked.disconnect(button.clicked);
                 button.mouseArea.clicked.connect(button.clicked);
-//                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
+                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
                 button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
-//                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
+                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
-//                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
+                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
             }
         }
