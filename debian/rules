@@ -9,7 +9,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# we need to override dh_install as libqt4-dev has a packaging bug in precise
 override_dh_install:
 
 # execute dh_install and fail if something was not packaged
