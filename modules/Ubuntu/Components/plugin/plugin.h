@@ -19,16 +19,17 @@
 #ifndef UBUNTU_COMPONENTS_PLUGIN_H
 #define UBUNTU_COMPONENTS_PLUGIN_H
 
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlExtensionPlugin>
 
-class UbuntuComponentsPlugin : public QDeclarativeExtensionPlugin
+class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
     void registerTypes(const char *uri);
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri);
+    void initializeEngine(QQmlEngine *engine, const char *uri);
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

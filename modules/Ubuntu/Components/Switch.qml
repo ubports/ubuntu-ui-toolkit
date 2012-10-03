@@ -21,8 +21,7 @@
 // FIXME(loicm) It would be nice to have a draggable thumb to toggle the switch,
 //     that needs to be validated with designers though.
 
-import QtQuick 1.1
-import Qt.labs.shaders 1.0
+import QtQuick 2.0
 
 /*!
     \qmlclass Switch

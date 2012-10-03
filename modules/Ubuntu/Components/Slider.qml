@@ -34,8 +34,7 @@
 
 // FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
 
-import QtQuick 1.1
-import Qt.labs.shaders 1.0
+import QtQuick 2.0
 import "mathUtils.js" as MathUtils
 
 /*!

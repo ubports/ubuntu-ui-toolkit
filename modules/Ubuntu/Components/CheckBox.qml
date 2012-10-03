@@ -18,8 +18,7 @@
 //     AbstractButton.qml, though I guess it could be reused quite easily. I'll
 //     need to figure that out.
 
-import QtQuick 1.1
-import Qt.labs.shaders 1.0
+import QtQuick 2.0
 
 /*!
     \qmlclass CheckBox
