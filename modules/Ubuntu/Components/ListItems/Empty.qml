@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
@@ -80,6 +80,7 @@ import Ubuntu.Components 0.1
 AbstractButton {
     id: emptyListItem
     width: parent ? parent.width : 250
+    height: __height + bottomDividerLine.height
 
     /*!
       \preliminary
@@ -103,6 +104,13 @@ AbstractButton {
         color: "white"
         opacity: 0.7
     }
+
+    /*!
+      \internal
+      Defines the height of the ListItem, so correct height of this component, including divider
+      line is calculated.
+     */
+    property int __height: 48
 
     /*!
       \preliminary

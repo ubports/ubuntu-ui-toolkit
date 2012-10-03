@@ -18,30 +18,24 @@
 
 #include "plugin.h"
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/QDeclarativeItem>
+//#include <QtDeclarative/QDeclarativeExtensionPlugin>
+//#include <QtDeclarative/QDeclarativeContext>
+//#include <QtDeclarative/qdeclarative.h>
+//#include <QtDeclarative/QDeclarativeItem>
 
 #include "i18n.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-//    Q_UNUSED(uri);
-//    qmlRegisterType<UbuntuI18n>(uri, 0, 1, "I18n"); // @uri Ubuntu.Components
-//    qmlRegisterType<UbuntuI18n>("Ubuntu.Components", 0, 1, "Tim"); // @uri Ubuntu.Components
-//    qmlRegisterUncreateableType<UbuntuI18n>(uri, 0, 1, "I18n");
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever"); // TODO: give reason
+//    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever"); // TODO: give reason
 }
 
-void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
-    UbuntuI18n* i = new UbuntuI18n();
-    i->init("ubuntu-sdk", "/usr/share/locale");
-//    engine->rootContext()->setContextProperty("i18n", new UbuntuI18n());
-    engine->rootContext()->setContextProperty("i18n", i);
+//    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+//    UbuntuI18n* i = new UbuntuI18n();
+//    i->init("ubuntu-sdk", "/usr/share/locale");
+////    engine->rootContext()->setContextProperty("i18n", new UbuntuI18n());
+//    engine->rootContext()->setContextProperty("i18n", i);
+    QQmlExtensionPlugin::initializeEngine(engine, uri);
 }
-
-Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)
-

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 
 /*!
     \qmlclass MultiValue
@@ -33,7 +33,7 @@ import QtQuick 1.1
             }
             ListItem.MultiValue {
                 text: "Label"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 progression: true
                 onClicked: print("clicked")
@@ -43,7 +43,6 @@ import QtQuick 1.1
 */
 Base {
     id: multiValueListItem
-    height: 48
 
     /*!
       \preliminary

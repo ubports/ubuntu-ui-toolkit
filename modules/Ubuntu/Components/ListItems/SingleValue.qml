@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 
 /*!
     \qmlclass SingleValue
@@ -32,7 +32,7 @@ import QtQuick 1.1
             }
             ListItem.SingleValue {
                 text: "Label"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
                 value: "Parameter"
                 progression: true
                 onClicked: print("clicked")
@@ -45,7 +45,6 @@ import QtQuick 1.1
 */
 Base {
     id: listItem
-    height: 48
 
     /*!
       \preliminary

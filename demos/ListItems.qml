@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
@@ -80,18 +80,48 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    ListItem.Standard {
+                        text: "Custom icon"
+                        icon: Rectangle {
+                            anchors.margins: 5
+                            width: height
+                            color: "darkgrey"
+                            Rectangle {
+                                anchors {
+                                    fill: parent
+                                    margins: 5
+                                }
+                                color: "lightgrey"
+                                Rectangle {
+                                    anchors {
+                                        fill: parent
+                                        margins: 5
+                                    }
+                                    color: "darkgrey"
+                                    Rectangle {
+                                        anchors {
+                                            fill: parent
+                                            margins: 5
+                                        }
+                                        color: "lightgrey"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
             FadingRectangle {
+                id: container
                 selected: listItemTypes.selectedType === "Grouped List"
                 Column {
                     width: 250
 
                     ListModel {
                         id: testModel
-                        ListElement { name: "Banana" }
+                        ListElement { name: "Parsley" }
                         ListElement { name: "Orange"; type: "fruit"}
                         ListElement { name: "Apple"; type: "fruit" }
                         ListElement { name: "Tomato"; type: "fruit" }
@@ -101,9 +131,19 @@ Template {
                     }
 
                     ListView {
+                        id: groupedList
                         model: testModel
                         width: parent.width
-                        height: 60*count
+                        /* FIXME: This is workaround for QML1 ListView bugs - all fixed in QML2:
+                             https://bugreports.qt-project.org/browse/QTBUG-17057
+                             https://bugreports.qt-project.org/browse/QTBUG-19941
+                         * We need to explicitly calculate the contentHeight for QML1
+                         * So we have all but 2 items that are 50 pixels height, the others are 48
+                         * high and there are 3 headings at 24 pixels high
+                         */
+                        contentHeight: 50 * count - 2 * 2 + 3 * 24
+                        interactive: false
+
                         delegate: ListItem.Standard {
                             text: name
                         }
@@ -111,6 +151,9 @@ Template {
                         section.property: "type"
                         section.criteria: ViewSection.FullString
                         section.delegate: ListItem.Header { text: section }
+                    }
+                    Component.onCompleted: {
+                        groupedList.height = groupedList.contentHeight;
                     }
                 }
             }
@@ -142,7 +185,37 @@ Template {
                     ListItem.SingleValue {
                         text: "Icon"
                         value: "Value"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    ListItem.SingleValue {
+                        text: "Custom icon"
+                        value: "Value"
+                        icon: Rectangle {
+                            anchors.margins: 5
+                            width: height
+                            color: "darkgrey"
+                            Rectangle {
+                                anchors {
+                                    fill: parent
+                                    margins: 5
+                                }
+                                color: "lightgrey"
+                                Rectangle {
+                                    anchors {
+                                        fill: parent
+                                        margins: 5
+                                    }
+                                    color: "darkgrey"
+                                    Rectangle {
+                                        anchors {
+                                            fill: parent
+                                            margins: 5
+                                        }
+                                        color: "lightgrey"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -173,7 +246,7 @@ Template {
                     ListItem.MultiValue {
                         text: "Icon"
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                 }
             }
@@ -204,7 +277,7 @@ Template {
                     ListItem.Subtitled {
                         text: "Icon"
                         subText: "Secondary label"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Subtitled {
                         text: "Multiple lines"
@@ -213,7 +286,7 @@ Template {
                     ListItem.Subtitled {
                         text: "Multiple lines"
                         subText: "It also works well with icons and progression."
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         progression: true
                     }
                 }
@@ -254,7 +327,7 @@ Template {
                     }
                     ListItem.Standard {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         control: controlExample.createObject(parent)
                         showDivider: false
                     }
@@ -313,7 +386,7 @@ Template {
                     }
                     ListItem.ValueSelector {
                         text: "Icon"
-                        iconSource: "avatar_contacts_list.png"
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                     }
                 }

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
@@ -49,7 +49,7 @@ import Ubuntu.Components 0.1
             ListItem.Subtitled {
                 text: "Icon"
                 subText: "Secondary label"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
             }
             ListItem.Subtitled {
                 text: "Multiple lines"
@@ -58,7 +58,7 @@ import Ubuntu.Components 0.1
             ListItem.Subtitled {
                 text: "Multiple lines"
                 subText: "It also works well with icons and progression."
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
                 progression: true
             }
         }
@@ -66,7 +66,7 @@ import Ubuntu.Components 0.1
 */
 Base {
     id: subtitledListItem
-    height: Math.max(middleVisuals.height, 48)
+    __height: Math.max(middleVisuals.height, 48)
 
     /*!
       \preliminary

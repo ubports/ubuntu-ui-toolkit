@@ -14,10 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
-import Qt.labs.shaders 1.0
+import QtQuick 2.0
 
-ShaderEffectItem {
+ShaderEffect {
     property variant mask
     property variant base
     property real gradientStrength: 1.0
@@ -43,13 +42,13 @@ ShaderEffectItem {
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
             // this is equivalent to using a vertical linear gradient texture going from vec3(0.0) to vec3(1.0) with opacity 0.8
-            lowp vec4 gradientColor = lowp vec4(qt_TexCoord0.ttt, 1.0) * 0.8;
+            lowp vec4 gradientColor = lowp vec4(vec3(1.0)-qt_TexCoord0.ttt, 1.0) * 0.8;
             // FIXME: Because blendOverlay gives incorrect results when we use pre-multiplied alpha,
             // we remove the pre-multiplication before calling blendOverlay, and multiply again afterwards.
             // It works, but is not very elegant.
             lowp vec4 result = vec4(blendOverlay(baseColor.rgb/baseColor.a, gradientColor.rgb), 1.0);
-            result *= qt_Opacity * baseColor.a;
-            gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a;
+            result *= baseColor.a;
+            gl_FragColor = mix(baseColor, result, gradientStrength) * maskColor.a * qt_Opacity;
         }
         "
 }

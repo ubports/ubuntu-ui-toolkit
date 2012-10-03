@@ -71,7 +71,7 @@ public:
     void setDomain(QString domain);
     void setLocaleDir(QString localeDir);
 
-signals:
+//signals:
 
 //    void domainChanged();
 //    void localeDirChanged();

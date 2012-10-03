@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
@@ -37,7 +37,7 @@ import Ubuntu.Components 0.1
                }
             ListItem.Standard {
                 text: "List item with icon"
-                iconSource: "icon.png"
+                icon: Qt.resolvedUrl("icon.png")
             }
             ListItem.Standard {
                 text: "With a progression arrow"
@@ -58,14 +58,16 @@ import Ubuntu.Components 0.1
 */
 Empty {
     id: listItem
-    height: 48
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
-     */
-    property alias iconSource: iconHelper.source
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item.
+      \qmlproperty variant icon
+    */
+    property variant icon
 
     /*!
       \preliminary
@@ -102,7 +104,6 @@ Empty {
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: iconHelper.rightIconMargin
-
 
     /*!
       \preliminary
@@ -142,16 +143,47 @@ Empty {
         color: "white"
         opacity: 0.7
     }
+
     IconVisual {
         id: iconHelper
     }
+
+    /*!
+      \internal
+      The \l icon property is an Item. The value is false if \l icon is a string,
+      or when no icon was set.
+     */
+    property bool __iconIsItem: false
+
+    /*!
+      \internal
+     */
+    onIconChanged: {
+        if (typeof icon == "string") {
+            // icon is the url of an image
+            iconHelper.source = icon;
+            __iconIsItem = false;
+        } else {
+            // icon is an Item.
+            __iconIsItem = true;
+            iconHelper.source = "";
+
+            icon.parent = listItem;
+            icon.anchors.left = listItem.left;
+            if (!icon.height) {
+                icon.anchors.top = listItem.top;
+                icon.anchors.bottom = listItem.bottom;
+            }
+        }
+    }
+
     LabelVisual {
         id: label
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            leftMargin: 5
-            left: iconHelper.right
+            left: __iconIsItem ? parent.left : iconHelper.right
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + 5 : 5
             right: controlContainer.left
         }
     }
