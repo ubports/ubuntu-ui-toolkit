@@ -47,7 +47,7 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 0
+        property int selectedIndex: 8
         model: [{"label": "Buttons", "source": "Buttons.qml"},
                 {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
                 {"label": "List Items", "source": "ListItems.qml"},

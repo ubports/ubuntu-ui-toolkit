@@ -34,7 +34,7 @@ Item {
        This handler is called when there is a mouse click on the button
        and the button is not disabled.
     */
-    signal clicked
+    signal clicked(var mouse)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
@@ -74,6 +74,7 @@ Item {
       Connect the signals/slots of the new mouse area.
      */
     onMouseAreaChanged: hiddenFunctions.updateMouseArea()
+    Component.onCompleted: hiddenFunctions.updateMouseArea()
 
     QtObject {
         id: hiddenFunctions
