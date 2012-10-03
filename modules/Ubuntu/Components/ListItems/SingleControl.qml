@@ -55,7 +55,6 @@ Empty {
      */
     property Item control
 
-
     /*!
       \internal
      */
@@ -63,8 +62,17 @@ Empty {
         if (control) {
             control.parent = singleControlListItem;
             control.anchors.centerIn = singleControlListItem;
-            control.mouseArea = singleControlListItem.mouseArea;
+//            control.mouseArea = singleControlListItem.mouseArea;
+            control.pressedChanged.connect(singleControlListItem.__updateActivation);
         }
+    }
+
+    activated: control ? control.activated : pressed
+    onPressedChanged: __updateActivation()
+
+    function __updateActivation() {
+//        singleControlListItem.activated = control.pressed || singleControlListItem.pressed;
+        if (control) control.activated = control.pressed || singleControlListItem.pressed
     }
 
     /*!
@@ -73,4 +81,10 @@ Empty {
      */
     onControlChanged: __updateControl()
     Component.onCompleted: __updateControl()
+
+//    onClicked: if (control) control.clicked(mouse)
+//    onActivatedChanged: if (control) control.activated = control.pressed
+//    onPressed: if (control) control.activated = true
+//    onReleased: if (control) control.activated = false
+//    onPressed: control.pressed = true
 }

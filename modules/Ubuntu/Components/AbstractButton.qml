@@ -26,7 +26,8 @@ import QtQuick 2.0
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-Item {
+//Item {
+MouseArea {
     id: button
 
     /*!
@@ -34,10 +35,14 @@ Item {
        This handler is called when there is a mouse click on the button
        and the button is not disabled.
     */
-    signal clicked(var mouse)
+//    signal clicked(var mouse)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
+
+    hoverEnabled: true
+
+    property bool activated: pressed
 
     /*!
       \preliminary
@@ -46,61 +51,71 @@ Item {
       the control is shown is not the same as the area where it accepts mouse
       events. This is used in list items with controls.
      */
-    property MouseArea mouseArea: defaultMouseArea
+//    property MouseArea mouseArea: defaultMouseArea
 
     /*!
      \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
-    property bool pressed
+//    property bool pressed
 
     /*!
       \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
-    property bool hovered
+    property bool hovered: containsMouse
 
-    MouseArea {
-        id: defaultMouseArea
-        anchors.fill: parent
-        // if mouseArea is given a new value, disable defaultMouseArea
-        // as it might occlude the newly assigned mouse area.
-        enabled: button.mouseArea === defaultMouseArea
-        hoverEnabled: true
+//    MouseArea {
+//        id: defaultMouseArea
+//        anchors.fill: parent
+//        // if mouseArea is given a new value, disable defaultMouseArea
+//        // as it might occlude the newly assigned mouse area.
+////        enabled: button.mouseArea === defaultMouseArea
+//        hoverEnabled: true
 
-//        Component.onCompleted: hiddenFunctions.updateMouseArea()
-        onClicked: if (enabled) print("clickily")
-    }
+////        Component.onCompleted: hiddenFunctions.updateMouseArea()
+////        onClicked: if (enabled) print("clickily")
+//        onClicked: button.clicked(mouse) //print("banana")
+//        onPressedChanged: button.pressed = defaultMouseArea.pressed
+//        onContainsMouseChanged: button.hovered = defaultMouseArea.containsMouse
+//    }
 
     /*!
       \internal
       Connect the signals/slots of the new mouse area.
      */
-    onMouseAreaChanged: hiddenFunctions.updateMouseArea()
-    Component.onCompleted: hiddenFunctions.updateMouseArea()
+//    onMouseAreaChanged: hiddenFunctions.updateMouseArea()
+//    Component.onCompleted: hiddenFunctions.updateMouseArea()
 
-    QtObject {
-        id: hiddenFunctions
+//    QtObject {
+//        id: hiddenFunctions
 
-        function updateMouseArea() {
-            if (button.mouseArea) {
-                defaultMouseArea.clicked.disconnect(button.clicked);
-                button.mouseArea.clicked.connect(button.clicked);
-                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
-                button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
-                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
-                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
-                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
-                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
-            }
-        }
+//        function updateMouseArea() {
+//            if (button.mouseArea === defaultMouseArea) {
+//                print("AAAAAAAA");
 
-        function mouseAreaPressed() {
-            button.pressed = mouseArea.pressed;
-        }
+//            } else {
+//                print("BBBBBBB");
+//            }
 
-        function mouseAreaHovered() {
-            button.hovered = mouseArea.containsMouse;
-        }
-    }
+//            if (button.mouseArea) {
+////                defaultMouseArea.clicked.disconnect(button.clicked);
+//                button.mouseArea.clicked.connect(button.clicked);
+////                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
+//                button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
+////                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
+//                button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
+////                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
+//                button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
+//            }
+//        }
+
+//        function mouseAreaPressed() {
+//            button.pressed = mouseArea.pressed;
+//        }
+
+//        function mouseAreaHovered() {
+//            button.hovered = mouseArea.containsMouse;
+//        }
+//    }
 }
