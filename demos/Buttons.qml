@@ -106,4 +106,9 @@ Template {
             }
         }
     }
+
+    Component.onCompleted: {
+        i18n.domain = "ubuntu-sdk-gallery";
+        i18n.localeDir = "/usr/share/locale";
+    }
 }
