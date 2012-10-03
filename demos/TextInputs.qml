@@ -22,7 +22,6 @@ Template {
     id: page
 
     Item {
-        anchors.fill: parent
         MouseArea {
             anchors.fill: parent
             onClicked: page.forceActiveFocus()
