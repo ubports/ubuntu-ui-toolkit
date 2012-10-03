@@ -41,7 +41,7 @@ Item {
     ImageWithFallback {
         id: icon
         opacity: iconVisual.enabled ? 1.0 : 0.5
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
