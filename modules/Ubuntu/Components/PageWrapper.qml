@@ -89,7 +89,7 @@ QtObject {
     onReferenceChanged: {
         Utils.deactivate(pageWrapper);
         if (pageWrapper.object) pageWrapper.object = null;
-        if (pageWrapper.active) {
+        if (pageWrapper.active && reference) {
             Utils.activate(pageWrapper);
         }
     }
