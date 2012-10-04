@@ -12,8 +12,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
 #include "i18n.h"
