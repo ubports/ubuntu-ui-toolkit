@@ -28,14 +28,23 @@ import Ubuntu.Components 0.1
 */
 Empty {
     id: baseListItem
-    height: 48
 
     /*!
       \preliminary
-      The location of the icon to show in the list item (optional).
-      \qmlproperty url iconSource
+      The location of the icon to show in the list item (optional), or an Item that is
+      shown on the left side inside the list item. The icon will automatically be
+      anchored to the left side of the list item, and if its height is undefined, to the top
+      and bottom of the list item.
+      \qmlproperty variant icon
+    */
+    property variant icon
+
+    /*!
+      \preliminary
+      The location of the icon to show in the list item if iconSource failed to load (optional).
+      \qmlproperty url fallbackIconSource
      */
-    property alias iconSource: iconHelper.source
+    property alias fallbackIconSource: iconHelper.fallbackSource
 
     /*!
       \preliminary
@@ -72,6 +81,35 @@ Empty {
 
     /*!
       \internal
+      The \l icon property is an Item. The value is false if \l icon is a string,
+      or when no icon was set.
+     */
+    property bool __iconIsItem: false
+
+    /*!
+      \internal
+     */
+    onIconChanged: {
+        if (typeof icon == "string") {
+            // icon is the url of an image
+            iconHelper.source = icon;
+            __iconIsItem = false;
+        } else {
+            // icon is an Item.
+            __iconIsItem = true;
+            iconHelper.source = "";
+
+            icon.parent = baseListItem;
+            icon.anchors.left = baseListItem.left;
+            if (!icon.height) {
+                icon.anchors.top = baseListItem.top;
+                icon.anchors.bottom = baseListItem.bottom;
+            }
+        }
+    }
+
+    /*!
+      \internal
      */
     property alias children: middle.children
     Item {
@@ -79,8 +117,9 @@ Empty {
         anchors {
             top: parent.top
             bottom: parent.bottom
-            left: iconHelper.right
+            left: __iconIsItem ? parent.left : iconHelper.right
             right: progressionHelper.left
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin : 0
         }
     }
 
