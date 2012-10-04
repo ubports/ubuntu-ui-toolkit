@@ -66,6 +66,8 @@ public:
      */
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 
+    // TODO: Add functions where a context is supplied.
+
     QString domain();
     QString localeDir();
     void setDomain(QString domain);
