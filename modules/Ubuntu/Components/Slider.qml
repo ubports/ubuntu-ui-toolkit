@@ -279,8 +279,6 @@ AbstractButton {
 
     /*! \internal */
     function __mouseAreaPressed() {
-        // FIXME: Instead of checking for the pressed button here, set acceptedButtons
-        //  and only check for pressed.
         if (slider.mouseArea.pressedButtons == Qt.LeftButton) {
             // Left button pressed.
             var mouseX = slider.mouseArea.mouseX;
