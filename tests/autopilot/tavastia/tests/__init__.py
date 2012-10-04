@@ -45,7 +45,6 @@ class TavastiaTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
             self.addCleanup(remove, qml_path)
 
             self.app = self.launch_test_application(
-                "qmlviewer",
-                "-opengl",
+                "qmlscene",
                 "-I", get_module_include_path(),
                 qml_path)

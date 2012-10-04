@@ -30,8 +30,8 @@ public:
 
     StyleRule *q_ptr;
 
-    QDeclarativeComponent *style;
-    QDeclarativeComponent *delegate;
+    QQmlComponent *style;
+    QQmlComponent *delegate;
     QString selector;
 };
 

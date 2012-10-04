@@ -21,10 +21,10 @@
 
 #include <QObject>
 #include <QUrl>
-#include <qdeclarative.h>
+#include <QtQml>
 
 class StyleRule;
-class QDeclarativeEngine;
+class QQmlEngine;
 class StyledItem;
 
 class ThemeEnginePrivate;
@@ -38,7 +38,7 @@ public:
     ThemeEngine(QObject *parent = 0);
     ~ThemeEngine();
 
-    static bool initialize(QDeclarativeEngine *engine);
+    static bool initialize(QQmlEngine *engine);
     static ThemeEngine *instance();
 
     bool registerInstanceId(StyledItem *item, const QString &newId);
@@ -49,11 +49,11 @@ public:
     void resetError();
     QString currentTheme() const;
 
-signals:
+Q_SIGNALS:
     void errorChanged();
     void themeChanged();
 
-public slots:
+public Q_SLOTS:
     bool loadTheme(const QUrl &themeFile);
 
     bool setTheme(const QString &theme, bool global = false);

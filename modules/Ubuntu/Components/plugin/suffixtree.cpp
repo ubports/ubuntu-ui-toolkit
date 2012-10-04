@@ -20,10 +20,10 @@
 #include "themeengine_p.h"
 #include "style.h"
 #include "styleditem.h"
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeComponent>
-#include <QtDeclarative/QDeclarativeItem>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
+#include <QtQuick/QQuickItem>
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree

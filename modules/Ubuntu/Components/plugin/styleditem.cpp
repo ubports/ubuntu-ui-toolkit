@@ -22,9 +22,8 @@
 #include "style_p.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include <QDeclarativeProperty>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
 
 
 const char *widgetProperty = "widget";
@@ -132,7 +131,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     if (styleChanged && currentRule) {
         // check if we have the context
         if (!componentContext) {
-            componentContext = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
+            componentContext = new QQmlContext(QQmlEngine::contextForObject(q));
             componentContext->setContextProperty(QLatin1String(widgetProperty), q);
         }
 
@@ -145,7 +144,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 
         // do not mandate yet the existence of visuals
         if (!delegateItem) {
-            QDeclarativeComponent *visuals = currentRule->delegate();
+            QQmlComponent *visuals = currentRule->delegate();
             if (!visuals) {
                 // reset
                 StyleRule *delegateStyle = ThemeEngine::instance()->lookupStyleRule(q, true);
@@ -154,17 +153,17 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
             }
             if (visuals) {
                 // create visuals component
-                delegateItem = qobject_cast<QDeclarativeItem*>(visuals->create(componentContext));
+                delegateItem = qobject_cast<QQuickItem*>(visuals->create(componentContext));
                 if (delegateItem) {
                     delegateItem->setParentItem(q);
 
                     // If style item contains a property "contentItem" that points
                     // to an item, reparent all children into it:
                     QVariant contentVariant = delegateItem->property("contentItem");
-                    QDeclarativeItem *contentItem = qvariant_cast<QDeclarativeItem *>(contentVariant);
+                    QQuickItem *contentItem = qvariant_cast<QQuickItem *>(contentVariant);
                     if (contentItem) {
-                        foreach (QObject *child, q->children()) {
-                            QDeclarativeItem *childItem = qobject_cast<QDeclarativeItem *>(child);
+                        Q_FOREACH (QObject *child, q->children()) {
+                            QQuickItem *childItem = qobject_cast<QQuickItem *>(child);
                             if (childItem)
                                 childItem->setParentItem(contentItem);
                         }
@@ -175,7 +174,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     }
 
     if (styleChanged)
-        emit q->styleChanged();
+        Q_EMIT q->styleChanged();
 }
 
 /*!
@@ -199,8 +198,8 @@ void StyledItemPrivate::_q_reloadTheme()
 /*!
   Creates a styledItem instance
   */
-StyledItem::StyledItem(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+StyledItem::StyledItem(QQuickItem *parent) :
+    QQuickItem(parent),
     d_ptr(new StyledItemPrivate(this))
 {
     QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
@@ -217,7 +216,7 @@ StyledItem::~StyledItem()
   */
 void StyledItem::componentComplete()
 {
-    QDeclarativeItem::componentComplete();
+    QQuickItem::componentComplete();
     Q_D(StyledItem);
     d->componentCompleted = true;
 
@@ -343,7 +342,7 @@ QObject *StyledItem::styleObject() const
 /*!
   \property StyledItem::delegateItem
   */
-QDeclarativeItem *StyledItem::delegateItem() const
+QQuickItem *StyledItem::delegateItem() const
 {
     Q_D(const StyledItem);
     return d->delegateItem;

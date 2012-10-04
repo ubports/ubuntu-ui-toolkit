@@ -20,10 +20,11 @@
 #include "themeengine_p.h"
 #include "style.h"
 #include "styleditem.h"
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeComponent>
-#include <QtDeclarative/QDeclarativeItem>
+#include <QString>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
+#include <QtQuick/QQuickItem>
 
 #include <QDebug>
 
@@ -89,7 +90,7 @@ void ThemeEnginePrivate::_q_continueThemeLoading()
     Q_Q(ThemeEngine);
     m_qmlThemeLoader.finalizeThemeLoading();
     // emit theme changed signal so StyledItems get updated
-    emit q->themeChanged();
+    Q_EMIT q->themeChanged();
 }
 
 /*!
@@ -104,7 +105,7 @@ void ThemeEnginePrivate::_q_updateTheme()
         // remove previous import paths and add the ones defined for the new theme
         QStringList importList = m_engine->importPathList();
         if (!importPaths.isEmpty()) {
-            foreach (const QString &import, importPaths)
+            Q_FOREACH (const QString &import, importPaths)
                 importList.removeAll(import);
         }
         importPaths = themeSettings.imports();
@@ -119,7 +120,7 @@ void ThemeEnginePrivate::_q_updateTheme()
   \internal
   Initializes engine.
   */
-bool ThemeEnginePrivate::initialize(QDeclarativeEngine *engine)
+bool ThemeEnginePrivate::initialize(QQmlEngine *engine)
 {
     // set as initialized so we are able to load the theme
     initialized = true;
@@ -153,11 +154,11 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
         setError("Unknown theme URL" + themeFile.toString());
     }
 
-    // if no error, set the current theme and emit themeChanged signal
+    // if no error, set the current theme and Q_EMIT themeChanged signal
     if (errorString.isEmpty()) {
         currentTheme = themeFile;
         Q_Q(ThemeEngine);
-        emit q->themeChanged();
+        Q_EMIT q->themeChanged();
     }
 }
 
@@ -172,7 +173,7 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassName) const
 {
     Selector selector;
-    QDeclarativeItem *parent;
+    QQuickItem *parent;
 
     while (obj) {
         QString styleClass = obj->styleClass();
@@ -235,7 +236,7 @@ void ThemeEnginePrivate::setError(const QString &error)
     if (themeDebug && !theme->d_ptr->errorString.isEmpty())
         qWarning() << theme->d_ptr->errorString;
 
-    emit theme->errorChanged();
+    Q_EMIT theme->errorChanged();
 }
 
 /*!
@@ -245,7 +246,7 @@ void ThemeEnginePrivate::setError(const QString &error)
 QString ThemeEnginePrivate::selectorToString(const Selector &path)
 {
     QString result;
-    foreach (SelectorNode node, path) {
+    Q_FOREACH (SelectorNode node, path) {
         result += " " + node.toString();
     }
     return result.simplified();
@@ -268,11 +269,11 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
     QStringList groupList = selectorString.split(",");
     SelectorNode::Relationship nextRelationShip = SelectorNode::Descendant;
 
-    foreach (QString group, groupList) {
+    Q_FOREACH (QString group, groupList) {
         Selector selector;
         QStringList tokens = group.simplified().split(' ');
 
-        foreach (QString token, tokens) {
+        Q_FOREACH (QString token, tokens) {
             if (token.isEmpty() || token == " ")
                 continue;
             if (token == ">") {
@@ -325,7 +326,7 @@ ThemeEngine::~ThemeEngine()
   Further calls of the function do not re-initialize the engine nor re-load the
   configured theme.
 */
-bool ThemeEngine::initialize(QDeclarativeEngine *engine)
+bool ThemeEngine::initialize(QQmlEngine *engine)
 {
     ThemeEngine *theme = themeEngine();
     if (!theme->d_ptr->initialized) {

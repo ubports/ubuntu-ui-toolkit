@@ -19,9 +19,8 @@
 #include "style.h"
 #include "style_p.h"
 #include "themeengine.h"
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include <QDeclarativeProperty>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 /*!
   \qmlclass Rule StyleRule
@@ -134,9 +133,9 @@ void StyleRule::classBegin()
 
 void StyleRule::componentComplete()
 {
-    // emit changed signal; this is needed when developer defines a private StyleRule
+    // Q_EMIT changed signal; this is needed when developer defines a private StyleRule
     // for a control
-    emit ruleChanged();
+    Q_EMIT ruleChanged();
 }
 
 /*!
@@ -180,7 +179,7 @@ void StyleRule::setSelector(const QString &selector)
 /*!
   \property StyleRule::style
   */
-QDeclarativeComponent *StyleRule::style()
+QQmlComponent *StyleRule::style()
 {
     Q_D(const StyleRule);
     return d->style;
@@ -189,7 +188,7 @@ QDeclarativeComponent *StyleRule::style()
 /*!
   Sets the style property
   */
-void StyleRule::setStyle(QDeclarativeComponent *style)
+void StyleRule::setStyle(QQmlComponent *style)
 {
     Q_D(StyleRule);
     d->style = style;
@@ -205,7 +204,7 @@ void StyleRule::setStyle(QDeclarativeComponent *style)
 /*!
   \property StyleRule::delegate
   */
-QDeclarativeComponent *StyleRule::delegate()
+QQmlComponent *StyleRule::delegate()
 {
     Q_D(const StyleRule);
     return d->delegate;
@@ -214,7 +213,7 @@ QDeclarativeComponent *StyleRule::delegate()
 /*!
   Sets the delegate property value
   */
-void StyleRule::setDelegate(QDeclarativeComponent *delegate)
+void StyleRule::setDelegate(QQmlComponent *delegate)
 {
     Q_D(StyleRule);
     d->delegate = delegate;

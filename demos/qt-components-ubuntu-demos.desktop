@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Exec=qmlviewer -opengl /usr/lib/ubuntu-demos/uitk/demos/Gallery.qml
+Exec=/opt/qt5/bin/qmlscene /usr/lib/ubuntu-demos/uitk/demos/Gallery.qml
 Path=/opt/qt-components-ubuntu/
 Name=Qt Components for Ubuntu - Gallery
 GenericName=Qt Components for Ubuntu gallery application

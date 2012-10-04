@@ -27,8 +27,8 @@
 #include <QStringList>
 #include "themeengine.h"
 
-class QDeclarativeItem;
-class QDeclarativeComponent;
+class QQuickItem;
+class QQmlComponent;
 
 typedef QHash<QString, StyledItem*> InstanceHash;
 
@@ -84,10 +84,10 @@ class QmlTheme {
 public:
     QmlTheme() : themeComponent(0), styleTree(0){}
 
-    bool loadTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
+    bool loadTheme(const QUrl &path, QQmlEngine *engine, StyleTreeNode *styleTree);
     bool finalizeThemeLoading();
 private:
-    QDeclarativeComponent *themeComponent;
+    QQmlComponent *themeComponent;
     StyleTreeNode *styleTree;
 };
 
@@ -99,7 +99,7 @@ public:
     CssTheme();
     ~CssTheme(){}
 
-    bool loadTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
+    bool loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *styleTree);
 private:
 
     QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
@@ -112,7 +112,7 @@ private:
     bool parseTheme(const QUrl &url);
     bool buildStyleTree();
 
-    QDeclarativeEngine *engine;
+    QQmlEngine *engine;
     StyleTreeNode *styleTree;
     QString imports;
     QHash<QString, CssThemeParserCallback> rules;
@@ -149,7 +149,7 @@ public: //members
     ThemeEngine *q_ptr;
 
     bool initialized;
-    QDeclarativeEngine *m_engine;
+    QQmlEngine *m_engine;
     // suffix tree for the styles
     StyleTreeNode *m_styleTree;
     QHash<Selector, StyleRule*> m_styleCache;
@@ -164,7 +164,7 @@ public: //members
 
     // public functions on instance
 public:
-    bool initialize(QDeclarativeEngine *engine);
+    bool initialize(QQmlEngine *engine);
     void loadTheme(const QUrl &themeFile);
     Selector getSelector(const StyledItem *obj, bool forceClassName) const;
     StyleRule *styleRuleForPath(const Selector &path);

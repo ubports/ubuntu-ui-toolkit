@@ -19,13 +19,14 @@
 #ifndef STYLEDITEM_H
 #define STYLEDITEM_H
 
-#include <QDeclarativeItem>
-#include <QDeclarativeListProperty>
+#include <QObject>
+#include <QScopedPointer>
+#include <QtQuick/QQuickItem>
 
 class StyleRule;
 
 class StyledItemPrivate;
-class StyledItem : public QDeclarativeItem
+class StyledItem : public QQuickItem
 {
     Q_OBJECT
     Q_DISABLE_COPY(StyledItem)
@@ -34,20 +35,20 @@ class StyledItem : public QDeclarativeItem
     Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
     Q_PROPERTY(StyleRule *privateStyle READ privateStyle WRITE setPrivateStyle RESET resetPrivateStyle NOTIFY styleChanged)
     Q_PROPERTY(QObject *styleObject READ styleObject NOTIFY styleChanged)
-    Q_PROPERTY(QDeclarativeItem *delegateItem READ delegateItem NOTIFY styleChanged)
+    Q_PROPERTY(QQuickItem *delegateItem READ delegateItem NOTIFY styleChanged)
 
 public:
-    StyledItem(QDeclarativeItem *parent = 0);
+    StyledItem(QQuickItem *parent = 0);
     ~StyledItem();
 
 protected:
     void componentComplete();
     
-signals:
+Q_SIGNALS:
 
     void styleChanged();
     
-public slots:
+public Q_SLOTS:
 
 public: // getter/setter
     QString instanceId() const;
@@ -58,7 +59,7 @@ public: // getter/setter
     void setPrivateStyle(StyleRule *style);
     void resetPrivateStyle();
     QObject *styleObject() const;
-    QDeclarativeItem *delegateItem() const;
+    QQuickItem *delegateItem() const;
 
 private: //members
     Q_DECLARE_PRIVATE(StyledItem)

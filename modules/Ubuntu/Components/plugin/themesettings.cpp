@@ -20,10 +20,6 @@
 #include "themeengine_p.h"
 #include "style.h"
 #include "styleditem.h"
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeComponent>
-#include <QtDeclarative/QDeclarativeItem>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>

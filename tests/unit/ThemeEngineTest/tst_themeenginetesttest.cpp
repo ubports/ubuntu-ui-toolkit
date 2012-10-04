@@ -1,8 +1,8 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeView>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickView>
 
 #include "themeengine.h"
 #include "themeengine_p.h"
@@ -38,7 +38,7 @@ private Q_SLOTS:
     void testCase_lookupStyleRule();
 
 private:
-    QDeclarativeView *view;
+    QQuickView *view;
 };
 
 ThemeEngineTest::ThemeEngineTest():
@@ -54,7 +54,7 @@ ThemeEngineTest::ThemeEngineTest():
 
 void ThemeEngineTest::initTestCase()
 {
-    view = new QDeclarativeView();
+    view = new QQuickView;
 
     // must register all the types as done in plugin; if used from plugin
     // declarative does not create the Rule objects but QObjects, and does
@@ -67,7 +67,7 @@ void ThemeEngineTest::initTestCase()
     // properties won't be accessible
     uri = "QtQuick";
     qmlRegisterType<StyledItem, 1>(uri, 1, 1, "StyledItem");
-    qmlRegisterRevision<QDeclarativeItem, 1>(uri, 1, 1);
+    qmlRegisterRevision<QQuickItem, 1>(uri, 1, 1);
 }
 
 void ThemeEngineTest::cleanupTestCase()

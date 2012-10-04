@@ -21,22 +21,22 @@
 
 #include <QObject>
 #include <QStringList>
-#include <qdeclarative.h>
-#include <QtDeclarative/QDeclarativeItem>
-#include <QtDeclarative/QDeclarativeParserStatus>
+#include <QtQuick/QQuickItem>
+#include <QtQml/QQmlParserStatus>
 
-#include <QLibrary>
+//#include <QLibrary>
 
 class StyleRulePrivate;
-class QDeclarativeComponent;
-class StyleRule : public QObject, public QDeclarativeParserStatus
+class QQmlComponent;
+class StyleRule : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
+    Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(QString selector READ selector WRITE setSelector)
-    Q_PROPERTY(QDeclarativeComponent *style READ style WRITE setStyle)
-    Q_PROPERTY(QDeclarativeComponent *delegate READ delegate WRITE setDelegate)
+    Q_PROPERTY(QQmlComponent *style READ style WRITE setStyle)
+    Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate)
+
 public:
     StyleRule(QObject *parent = 0);
     ~StyleRule();
@@ -44,19 +44,19 @@ public:
     void classBegin();
     void componentComplete();
 
-signals:
+Q_SIGNALS:
     // the signal is emitted once the rule is completed
     void ruleChanged();
 
-public slots:
+public Q_SLOTS:
 
 public: //getter/setters
     QString selector() const;
     void setSelector(const QString &selector);
-    QDeclarativeComponent *style();
-    void setStyle(QDeclarativeComponent *style);
-    QDeclarativeComponent *delegate();
-    void setDelegate(QDeclarativeComponent *delegate);
+    QQmlComponent *style();
+    void setStyle(QQmlComponent *style);
+    QQmlComponent *delegate();
+    void setDelegate(QQmlComponent *delegate);
 
 private:
     Q_DISABLE_COPY(StyleRule)

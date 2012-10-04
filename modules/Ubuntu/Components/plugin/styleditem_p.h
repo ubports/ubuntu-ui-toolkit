@@ -37,8 +37,8 @@ public:
 
     // internal members
     bool componentCompleted;
-    QDeclarativeContext *componentContext;
-    QDeclarativeItem *delegateItem;
+    QQmlContext *componentContext;
+    QQuickItem *delegateItem;
 
     void updateCurrentStyle(bool forceUpdate = false);
     void _q_reloadTheme();

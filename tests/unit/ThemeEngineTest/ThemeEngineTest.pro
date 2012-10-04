@@ -6,7 +6,7 @@
 
 QT       += testlib
 
-QT       += declarative core gui
+QT       += qml core gui
 
 TARGET = tst_themeenginetest
 CONFIG   += console

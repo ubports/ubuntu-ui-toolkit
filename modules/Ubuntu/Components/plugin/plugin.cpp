@@ -18,10 +18,8 @@
 
 #include "plugin.h"
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/QDeclarativeItem>
+#include <QtQml/QQmlContext>
+#include <QtQ/QQuickItem>
 
 #include "style.h"
 #include "themeengine.h"
@@ -29,56 +27,20 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
+    Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
 
-    // these need to be registered to QtQuick 1.1 otherwise the revisioned
+    // these need to be registered to QtQuick 2.0 otherwise the revisioned
     // properties won't be accessible
     const char *quick = "QtQuick";
-    qmlRegisterType<StyledItem, 1>(quick, 1, 1, "StyledItem");
-    qmlRegisterRevision<QDeclarativeItem, 1>(quick, 1, 1);
+    qmlRegisterType<StyledItem, 1>(quick, 2, 0, "StyledItem");
+    qmlRegisterRevision<QQuickItem, 1>(quick, 2, 0);
 }
 
-void UbuntuComponentsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+    QQmlExtensionPlugin::initializeEngine(engine, uri);
     ThemeEngine::initialize(engine);
     // add theme engine
     engine->rootContext()->setContextProperty("theme", ThemeEngine::instance());
-
-    // small tests, move these to unit test
-/*
-    StylePath path;
-    path.append(StylePathNode("toolbar", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("button", QString(), StylePathNode::Descendant));
-    ThemeEngine::instance()->styleRuleForPath(path);
-
-    path.clear();
-    path.append(StylePathNode("toolbar", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("column", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("button", QString(), StylePathNode::Descendant));
-    ThemeEngine::instance()->styleRuleForPath(path);
-
-    path.clear();
-    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tbutton", QString(), StylePathNode::Descendant));
-    ThemeEngine::instance()->styleRuleForPath(path);
-
-    path.clear();
-    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tframe", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tlayout", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tbutton", QString(), StylePathNode::Descendant));
-    ThemeEngine::instance()->styleRuleForPath(path);
-
-    path.clear();
-    path.append(StylePathNode("tbox", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tframe", QString(), StylePathNode::Descendant));
-    path.append(StylePathNode("tbutton", QString(), StylePathNode::Child));
-    ThemeEngine::instance()->styleRuleForPath(path);
-
-    ThemeEngine::instance()->setDebug(false);
-*/
 }
-
-Q_EXPORT_PLUGIN2(UbuntuComponents, UbuntuComponentsPlugin)
-

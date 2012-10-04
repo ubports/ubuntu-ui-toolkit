@@ -19,9 +19,9 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "style.h"
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeComponent>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
@@ -40,7 +40,7 @@
 */
 
 const char *ruleTemplate =  \
-"import QtQuick 1.1\n" \
+"import QtQuick 2.0\n" \
 "%1\n"
 "Rule {\n"
 "    selector: \"%2\"\n"
@@ -161,7 +161,7 @@ bool CssTheme::handleSelector(const Selector &selector, const QString &declarato
         // update the current hash
         properties = selectorTable.value(selector);
 
-    foreach (const QString &property, propertyList) {
+    Q_FOREACH (const QString &property, propertyList) {
         if (property.isEmpty())
             continue;
 
@@ -270,7 +270,7 @@ bool CssTheme::parseTheme(const QUrl &url)
             } else {
                 // load declarator and apply on each selector
                 data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
-                foreach (const Selector &selector, selectors) {
+                Q_FOREACH (const Selector &selector, selectors) {
                     ret = handleSelector(selector, data);
                     if (!ret) {
                         ThemeEnginePrivate::setError(
@@ -346,7 +346,7 @@ bool CssTheme::buildStyleTree()
                 .arg(delegate);
         //qDebug() << "ruleObject\n" << ruleObject;
 
-        QDeclarativeComponent component(engine);
+        QQmlComponent component(engine);
         component.setData(ruleObject.toAscii(), QUrl());
         if (!component.isError()) {
             QObject *rule = component.create();
@@ -486,7 +486,7 @@ CssTheme::CssTheme() :
     rules["qml-import"] = handleQmlImport;
 }
 
-bool CssTheme::loadTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+bool CssTheme::loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *styleTree)
 {
     bool ret = true;
     this->engine = engine;

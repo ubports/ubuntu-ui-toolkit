@@ -19,13 +19,11 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "style.h"
-//#include "style_p.h"
 #include "styleditem.h"
-//#include "styleditem_p.h"
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeComponent>
-#include <QtDeclarative/QDeclarativeItem>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
+#include <QtQuick/QQuickItem>
 
 /*!
   \internal
@@ -40,12 +38,12 @@
   \internal
   Loads a QML theme and builds up the style rule tree.
   */
-bool QmlTheme::loadTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+bool QmlTheme::loadTheme(const QUrl &path, QQmlEngine *engine, StyleTreeNode *styleTree)
 {
-    themeComponent = new QDeclarativeComponent(engine, path);
+    themeComponent = new QQmlComponent(engine, path);
     this->styleTree = styleTree;
     if (themeComponent->isLoading())
-        QObject::connect(themeComponent, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
+        QObject::connect(themeComponent, SIGNAL(statusChanged(QQmlComponent::Status)),
                          ThemeEngine::instance(), SLOT(_q_continueThemeLoading));
     else
         return finalizeThemeLoading();
@@ -65,14 +63,14 @@ bool QmlTheme::finalizeThemeLoading()
             // parse its children for Styles
             QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
 
-            foreach (StyleRule *rule, rules) {
+            Q_FOREACH (StyleRule *rule, rules) {
                 const QString selector = rule->selector();
                 if (selector.isEmpty()) {
                     qWarning() << "Rule without selector!";
                     continue;
                 }
                 QList<Selector> pathList = ThemeEnginePrivate::parseSelector(selector);
-                foreach (const Selector &path, pathList) {
+                Q_FOREACH (const Selector &path, pathList) {
                     styleTree->addStyleRule(path, rule);
                 }
             }
