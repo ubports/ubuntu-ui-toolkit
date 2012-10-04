@@ -350,9 +350,6 @@ Template {
                             width: parent.width - 10
                         }
                     }
-//                    ListItem.SingleControl {
-//                        height: 20
-//                    }
                 }
             }
             FadingRectangle {
