@@ -161,6 +161,7 @@ AbstractButton {
             left: parent.left
             right: parent.right
             top: parent.top
+            topMargin: (showDivider) ? bottomDividerLine.height : 0
             bottom: bottomDividerLine.top
         }
         clip: true
