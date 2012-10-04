@@ -98,4 +98,12 @@ Rectangle {
         }
         source: widgetList.model[widgetList.selectedIndex].source
     }
+
+    UnitsBucketSelector {
+        focus: true
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+        }
+    }
 }
