@@ -34,7 +34,7 @@ Item {
        This handler is called when there is a mouse click on the button
        and the button is not disabled.
     */
-    signal clicked(var mouse)
+    signal clicked
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
