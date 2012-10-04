@@ -26,13 +26,13 @@ Image {
     source: resource != "" ? __resolveResource(resource) : ""
 
     function __resolveResource(resourceUrl) {
-        // FIXME: refine algorithm: do not try to load the resource @bucketName
+        // FIXME: refine algorithm: do not try to load the resource @bucket
         // if the file does not exist; instead load the highest possible resolution
         var resourceString = resourceUrl.toString()
         var baseName = resourceString.substring(0, resourceString.length - 4)
         var extension = resourceString.substring(resourceString.length - 4, resourceString.length)
         image.__scaleFactor = units.scaleFactor
-        return baseName + "@" + units.bucketName + extension
+        return baseName + "@" + units.bucket + extension
     }
 
     smooth: true
