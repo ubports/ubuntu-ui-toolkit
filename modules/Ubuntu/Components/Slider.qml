@@ -120,6 +120,8 @@ AbstractButton {
     */
     property bool live: false
 
+    pressed: false
+
     /*!
       \preliminary
       This function is used by the value indicator to show the current value.
@@ -306,7 +308,8 @@ AbstractButton {
                 }
             }
         } else {
-            // Button released.
+            // Left button released.
+            slider.pressed = false;
             if (!slider.live) {
                 slider.value = __value;
             }
