@@ -288,7 +288,6 @@ AbstractButton {
                     // Button pressed inside the thumb.
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
                 } else if (mouseX > __thumbSpacing &&
                            mouseX < backgroundShape.width - __thumbSpacing) {
                     // Button pressed outside the thumb.
@@ -299,15 +298,13 @@ AbstractButton {
                     slider.maximumValue);
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
                     if (slider.live) {
                         slider.value = __value
                     }
                 }
             }
         } else {
-            // Left button released.
-            slider.pressed = false;
+            // Button released.
             if (!slider.live) {
                 slider.value = __value;
             }
