@@ -53,7 +53,8 @@ Empty {
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
      */
-    property AbstractButton control
+    property Item control
+
 
     /*!
       \internal
@@ -62,17 +63,8 @@ Empty {
         if (control) {
             control.parent = singleControlListItem;
             control.anchors.centerIn = singleControlListItem;
-//            control.mouseArea = singleControlListItem.mouseArea;
-            control.pressedChanged.connect(singleControlListItem.__updateActivation);
+            control.mouseArea = singleControlListItem.mouseArea;
         }
-    }
-
-    activated: control ? control.activated : pressed
-    onPressedChanged: __updateActivation()
-
-    function __updateActivation() {
-//        singleControlListItem.activated = control.pressed || singleControlListItem.pressed;
-        if (control) control.activated = control.pressed || singleControlListItem.pressed
     }
 
     /*!
@@ -80,15 +72,5 @@ Empty {
       This handler is an implementation detail. Mark as internal to prevent QDoc publishing it
      */
     onControlChanged: __updateControl()
-//    Component.onCompleted: __updateControl()
-
-    onClicked: control.clicked(mouse)
-//    onDoubleClicked: if (control) control.doubleClicked(mouse)
-//    onEntered: if (control) control.entered()
-//    onExited: if (control) control.exited()
-//    onPositionChanged: if (control) control.positionChanged(mouse)
-//    onPressAndHold: if (control) control.pressAndHold(mouse)
-//    onPressed: if (control) control.onPressed(mouse) // pressed is a bool property
-//    onReleased: if (control) control.released(mouse)
-//    onWheel: if (control) control.wheel(wheel)
+    Component.onCompleted: __updateControl()
 }

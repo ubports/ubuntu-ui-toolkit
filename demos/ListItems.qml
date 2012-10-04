@@ -77,10 +77,12 @@ Template {
                     ListItem.Standard {
                         text: "Progression"
                         progression: true
+                        onClicked: print("progression clicked!")
                     }
                     ListItem.Standard {
                         text: "Icon"
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                        onClicked: print("icon clicked! ")
                     }
                     ListItem.Standard {
                         text: "Custom icon"
@@ -186,6 +188,7 @@ Template {
                         text: "Icon"
                         value: "Value"
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                        onClicked: print("clicked icon")
                     }
                     ListItem.SingleValue {
                         text: "Custom icon"
@@ -300,7 +303,6 @@ Template {
                             top: parent.top
                             bottom: parent.bottom
                         }
-                        onClicked: print("clicked control")
                     }
                 }
                 Column {
@@ -343,17 +345,6 @@ Template {
                                 fill: parent
                             }
                             onClicked: print("Large button clicked")
-                        }
-                    }
-                    ListItem.SingleControl {
-                        control: Slider {
-                            live: true
-                            minimumValue: -1.0
-                            maximumValue: 1.0
-                            value: 0.0
-                                width: parent.width - 10
-                                anchors.margins: 10
-                            function formatValue(v) { return v.toFixed(2) }
                         }
                     }
                 }

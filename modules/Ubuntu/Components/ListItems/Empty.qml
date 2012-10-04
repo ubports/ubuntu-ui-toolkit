@@ -99,7 +99,7 @@ AbstractButton {
 
     Rectangle {
         id: highlight
-        visible: emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.activated)
+        visible: emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)
         anchors.fill: parent
         color: "white"
         opacity: 0.7
