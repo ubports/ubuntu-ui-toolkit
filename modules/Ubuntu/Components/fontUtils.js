@@ -14,8 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//.pragma library
-
 function sizeToPixels(size) {
     var baseSize = units.dp(14)
     return Math.round(modularScale(size) * baseSize)
