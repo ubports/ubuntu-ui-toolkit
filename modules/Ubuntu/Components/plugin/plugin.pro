@@ -6,6 +6,10 @@ CONFIG += qt plugin
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
+# configures setting patterns for demo target; comment out to use
+# release patterns
+DEFINES += TARGET_DEMO
+
 HEADERS += plugin.h \
     style.h \
     themeengine.h \

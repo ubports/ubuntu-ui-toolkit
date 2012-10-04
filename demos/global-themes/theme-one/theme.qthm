@@ -4,7 +4,7 @@
     defines delegate for .frame
 */
 
-@import url("modules/Ubuntu/Components/defaulttheme.css");
+@import url("../default.qthm");
 @qml-import("demos");
 @qml-mapping(.frame, , TestFrameDelegate);
 

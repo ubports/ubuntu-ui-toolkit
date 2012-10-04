@@ -75,6 +75,16 @@ void ThemeEnginePrivate::_q_updateTheme()
     const QUrl newTheme = themeSettings.themeFile();
 
     if (newTheme.isValid() && (currentTheme != newTheme)) {
+        // remove previous import paths and add the ones defined for the new theme
+        QStringList importList = m_engine->importPathList();
+        if (!importPaths.isEmpty()) {
+            foreach (const QString &import, importPaths)
+                importList.removeAll(import);
+        }
+        importPaths = themeSettings.imports();
+        importList << importPaths;
+        m_engine->setImportPathList(importList);
+        // load the theme
         loadTheme(newTheme);
     }
 }
@@ -192,10 +202,10 @@ void ThemeEnginePrivate::setError(const QString &error)
 {
     ThemeEngine *theme = themeEngine();
     theme->d_ptr->errorString = "Theme loading error!\n\t" + error;
-/*
-    if (!theme->d_ptr->errorString.isEmpty())
+
+    if (themeDebug && !theme->d_ptr->errorString.isEmpty())
         qWarning() << theme->d_ptr->errorString;
-*/
+
     emit theme->errorChanged();
 }
 
@@ -278,10 +288,13 @@ ThemeEngine::~ThemeEngine()
 
 /*!
   \preliminary
-  The function is used internally by the component plug-in to initialize the
+  The method is used internally by the component plug-in to initialize the
   theming engine. When called configures the engine with the given declarative
-  engine and loads the last theme configured. Returns true on successful initialization.
-  Further calls of the function do not re-initialize the engine.
+  engine and loads the last theme configured in the settings. Returns true on
+  successful initialization. Theme loading failure does not affect the success
+  of the initialization, however it is reflected in the \a error property.
+  Further calls of the function do not re-initialize the engine nor re-load the
+  configured theme.
 */
 bool ThemeEngine::initialize(QDeclarativeEngine *engine)
 {

@@ -196,7 +196,6 @@ void CssTheme::normalizeStyles()
                     baseProperty.next();
                     if (!propertyMap.contains(baseProperty.key())) {
                         propertyMap.insert(baseProperty.key(), baseProperty.value());
-                        //i.value().insert(baseProperty.key(), baseProperty.value());
                         propertyMapUpdated = true;
                     }
                 }
@@ -235,7 +234,7 @@ bool CssTheme::parseCssTheme(const QUrl &url)
                 ret = rules.contains(data);
                 if (ret)
                     ret = rules.value(data)(this, stream);
-               else
+                else
                     ThemeEnginePrivate::setError(QString("Unhandled rule: %1").arg(data));
                 if (!ret)
                     return ret;
@@ -246,7 +245,7 @@ bool CssTheme::parseCssTheme(const QUrl &url)
             }
 
             // seems we have a theme rule definition, so read till we hit a '{' token
-            data = readTillToken(stream, QRegExp("[{]"), QRegExp("[\t\r\n]")).simplified();
+            data += readTillToken(stream, QRegExp("[{]"), QRegExp("[\t\r\n]")).simplified();
             if (data.isEmpty())
                 continue;
 
@@ -272,7 +271,9 @@ bool CssTheme::parseCssTheme(const QUrl &url)
         }
     } else {
         ret = false;
-        ThemeEnginePrivate::setError(file.errorString());
+        ThemeEnginePrivate::setError(QString("%1: %2")
+                                     .arg(file.errorString())
+                                     .arg(file.fileName()));
     }
     return ret;
 }

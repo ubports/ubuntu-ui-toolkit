@@ -23,6 +23,8 @@
 #include <QHash>
 #include <QTextStream>
 #include <QRegExp>
+#include <QSettings>
+#include <QStringList>
 #include "themeengine.h"
 
 class QDeclarativeItem;
@@ -30,12 +32,10 @@ class QDeclarativeComponent;
 
 typedef QHash<QString, StyledItem*> InstanceHash;
 
-extern const char *globalThemeConfigFile;
-extern const char *defaultThemeFile;
+extern bool themeDebug;
+
 extern const char *appUseGlobalThemeKey;
 extern const char *appThemeFileKey;
-
-extern bool themeDebug;
 
 #define SELECTOR_IGNORE_RELATIONSHIP    0x01
 #define SELECTOR_IGNORE_STYLEID         0x02
@@ -127,12 +127,14 @@ public:
     bool initialize();
     QUrl themeFile() const;
     QUrl setThemeFile(const QUrl &url, bool global);
+    QStringList imports() const;
 
 private:
     QFileSystemWatcher configWatcher;
+    QSettings globalSettings;
+    QSettings appSettings;
     bool hasAppSettings;
     bool hasGlobalSettings;
-    bool initialized;
 };
 
 // Private functionality of the theme engine
@@ -152,6 +154,7 @@ public: //members
     StyleTreeNode *m_styleTree;
     QHash<Selector, StyleRule*> m_styleCache;
     InstanceHash m_instanceCache;
+    QStringList importPaths;
     QmlTheme m_qmlThemeLoader;
     CssTheme m_cssThemeLoader;
     ThemeSettings themeSettings;

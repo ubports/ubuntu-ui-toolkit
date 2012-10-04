@@ -25,33 +25,59 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeItem>
 
-#include <QSettings>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
-const char *globalThemeConfigFile = "demos/theme.cfg";
-const char *defaultThemeFile = "modules/Ubuntu/Components/defaulttheme.css";
+#ifdef TARGET_DEMO
+// qmlviewer stores its settings in $HOME/.config/Nokia/QtQmlViewer.conf
+// therefore it is possible to have application specific theme settings
+// for it!
+const char *PathFormat_GlobalThemeIniFile = "demos/theme.ini";
+
+// each application theme is in a separate folder, the application stores
+// the theme folder in the settings when using global theme defined styles
+const char *PathFormat_GlobalAppTheme = "demos/%1/%2/theme.qthm";
+
+// the global theme file, used when application does not define any particular
+// theme for itself
+const char *PathFormat_GlobalThemeFile = "demos/%1/default.qthm";
+#else
+const char *PathFormat_GlobalThemeIniFile = "%1/.qthm/theme.ini";
+
+const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2";
+const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qthm/theme.qthm";
+#endif
 
 const char *globalThemeKey = "theme";
+const char *importPathsKey = "imports";
 const char *appUseGlobalThemeKey = "UseSystemTheme";
 const char *appThemeFileKey = "ThemeFile";
 
-const char *globalThemePathFormat = "%1/qthm/apps/%2";
-const char *globalThemeFileFormat = "%1/qthm/default.qthm";
 
+/*!
+  \internal
+  Instanciates the settins and connects the file system watcher
+  */
 ThemeSettings::ThemeSettings(QObject *parent) :
     configWatcher(parent),
+#ifdef TARGET_DEMO
+    globalSettings(PathFormat_GlobalThemeIniFile, QSettings::IniFormat),
+#else
+    globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat),
+#endif
     hasAppSettings(false),
-    hasGlobalSettings(false),
-    initialized(false)
+    hasGlobalSettings(false)
 {
-    QSettings appSettings;
-    hasAppSettings = ((appSettings.status() == QSettings::NoError) &&
+    hasAppSettings = (QFile::exists(appSettings.fileName()) &&
             (appSettings.contains(appUseGlobalThemeKey) &&
              appSettings.contains(appThemeFileKey)));
+
     // check if we have system settings file
-    hasGlobalSettings = QFile::exists(globalThemeConfigFile);
+    hasGlobalSettings = QFile::exists(globalSettings.fileName()) &&
+            (globalSettings.status() == QSettings::NoError);
 
     if ((hasAppSettings && appSettings.value(appUseGlobalThemeKey).toBool()) || hasGlobalSettings)
-        configWatcher.addPath(globalThemeConfigFile);
+        configWatcher.addPath(globalSettings.fileName());
 
     QObject::connect(&configWatcher, SIGNAL(fileChanged(QString)), parent, SLOT(_q_updateTheme()));
 }
@@ -69,32 +95,29 @@ QUrl ThemeSettings::themeFile() const
 {
     QUrl result;
     if (hasAppSettings) {
-        QSettings settings;
-        bool useGlobalTheme = settings.value(appUseGlobalThemeKey).toBool();
+        bool useGlobalTheme = appSettings.value(appUseGlobalThemeKey).toBool();
         if (useGlobalTheme) {
-            QUrl appTheme = settings.value(appThemeFileKey).toUrl();
-            if (appTheme.isValid()) {
+            QString appTheme = appSettings.value(appThemeFileKey).toString();
+            if (!appTheme.isEmpty()) {
                 // build theme file so it is taken from the global area
-                QSettings global(globalThemeConfigFile);
-                result = global.value(globalThemeKey).toUrl();
-                result.setPath(QString(globalThemePathFormat)
-                               .arg(result.path())
-                               .arg(appTheme.path()));
+                result = QUrl::fromLocalFile(QString(PathFormat_GlobalAppTheme)
+                               .arg(globalSettings.value(globalThemeKey).toString())
+                               .arg(appTheme));
             }
         } else {
             // the theme specified in settings is a private one not dependent directly to
             // the global themes
-            result = settings.value(appThemeFileKey).toUrl();
+            result = QUrl::fromLocalFile(appSettings.value(appThemeFileKey).toString());
         }
-
     }
 
     // check if the application succeeded to set the URL, and if not, use the global defined
     // theme if possible
-    if (hasGlobalSettings && !result.isValid()) {
-        QSettings global(globalThemeConfigFile);
-        QString path = global.value(globalThemeKey).toUrl().path();
-        result.setPath(QString(globalThemeFileFormat).arg(path));
+    if (hasGlobalSettings && (!result.isValid() || result.path().isEmpty())) {
+        QString theme = globalSettings.value(globalThemeKey).toString();
+        result = QUrl::fromLocalFile(QString(PathFormat_GlobalThemeFile).arg(theme));
+        if (!QFile::exists(result.path()))
+            result = QUrl();
     }
 
     return result;
@@ -112,16 +135,49 @@ QUrl ThemeSettings::setThemeFile(const QUrl &url, bool global)
         ThemeEnginePrivate::setError("Invalid private URL given for theme!");
         return QUrl();
     }
-    QSettings settings;
-    if (!hasAppSettings && (settings.status() == QSettings::NoError)) {
+
+    if (!hasAppSettings && QFile::exists(appSettings.fileName())) {
         // application is configured to accept settings, so force app settings
         hasAppSettings = true;
     }
+
     if (hasAppSettings) {
-        settings.setValue(appUseGlobalThemeKey, global);
-        settings.setValue(appThemeFileKey, url);
-        // call themeFile() to return the correct URL
-        return themeFile();
+
+        // check whether the setting can be applied, if not, report error
+        bool prevGlobal = appSettings.value(appUseGlobalThemeKey).toBool();
+        QString prevTheme = appSettings.value(appThemeFileKey).toString();
+
+        appSettings.setValue(appUseGlobalThemeKey, global);
+        appSettings.setValue(appThemeFileKey, url.path());
+        QUrl theme = themeFile();
+        if (!theme.isValid() || !QFile::exists(theme.path())) {
+            // roll back settings
+            appSettings.setValue(appUseGlobalThemeKey, prevGlobal);
+            appSettings.setValue(appThemeFileKey, prevTheme);
+            ThemeEnginePrivate::setError("Invalid theme setting!");
+            return QUrl();
+        }
+
+        if ((hasAppSettings && !global) || hasGlobalSettings)
+            configWatcher.removePath(globalSettings.fileName());
+
+        return theme;
     }
     return QUrl();
+}
+
+/*!
+  \internal
+  Returns the QML import paths supporting the defined theme file.
+  */
+QStringList ThemeSettings::imports() const
+{
+    QStringList result;
+
+    if (hasGlobalSettings && appSettings.value(appUseGlobalThemeKey).toBool())
+        result += globalSettings.value(importPathsKey).toString().split(',');
+    if (hasAppSettings)
+        result += appSettings.value(importPathsKey).toString().split(',');
+
+    return result;
 }

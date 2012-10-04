@@ -36,17 +36,17 @@ Template {
             Button {
                 text: "Theme #1"
                 width: 100
-                onClicked: theme.setTheme("demos/test-theme1.css")
+                onClicked: theme.setTheme("theme-one", true)
             }
             Button {
                 text: "Theme #2"
                 width: 100
-                onClicked: theme.setTheme("demos/test-theme2.css")
+                onClicked: theme.setTheme("demos/private-theme.qthm", false)
             }
             Button {
                 text: "Default"
                 width: 100
-                onClicked: theme.setTheme("")
+                onClicked: theme.setTheme("", true)
             }
         }
 
