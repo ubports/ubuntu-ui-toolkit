@@ -147,7 +147,6 @@ AbstractButton {
         id: bottomDividerLine
         anchors.bottom: parent.bottom
         visible: showDivider
-        z: 1
     }
 
     /*!
@@ -158,7 +157,12 @@ AbstractButton {
     default property alias children: body.children
     Item {
         id: body
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            bottom: bottomDividerLine.top
+        }
         clip: true
     }
 }
