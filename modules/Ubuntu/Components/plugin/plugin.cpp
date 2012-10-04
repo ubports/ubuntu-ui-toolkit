@@ -19,7 +19,7 @@
 #include "plugin.h"
 
 #include <QtQml/QQmlContext>
-#include <QtQ/QQuickItem>
+#include <QtQuick/QQuickItem>
 
 #include "style.h"
 #include "themeengine.h"
