@@ -40,15 +40,6 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
-      \preliminary
-      The mouse area of the abstract button.
-      May be assigned a different mouse area if, for example, the area where
-      the control is shown is not the same as the area where it accepts mouse
-      events. This is used in list items with controls.
-     */
-//    property MouseArea mouseArea: defaultMouseArea
-
-    /*!
      \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
@@ -67,44 +58,12 @@ Item {
     property alias __mouseArea: mouseArea
 
     MouseArea {
-//        id: defaultMouseArea
         id: mouseArea
         anchors.fill: parent
         // if mouseArea is given a new value, disable defaultMouseArea
         // as it might occlude the newly assigned mouse area.
-//        enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
 
-        // FIXME: This is odd, but without it, the 'mouse' parameter gets
-        //  lost in button's clicked signal.
         onClicked: button.clicked(mouse)
     }
-
-    /*!
-      \internal
-      Connect the signals/slots of the new mouse area.
-     */
-//    onMouseAreaChanged: hiddenFunctions.updateMouseArea()
-//    Component.onCompleted: hiddenFunctions.updateMouseArea()
-
-//    QtObject {
-//        id: hiddenFunctions
-
-//        function updateMouseArea() {
-////            if (button.mouseArea) {
-////                mouseArea.clicked.connect(button.clicked);
-////                mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
-////                mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
-////                mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
-////            }
-//        }
-
-//        function mouseAreaPressed() {
-//            button.pressed = mouseArea.pressed;
-//        }
-
-//        function mouseAreaHovered() {
-//            button.hovered = mouseArea.containsMouse;
-//        }
-//    }
 }
