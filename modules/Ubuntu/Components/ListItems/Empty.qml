@@ -147,6 +147,7 @@ AbstractButton {
         id: bottomDividerLine
         anchors.bottom: parent.bottom
         visible: showDivider
+        z: 1
     }
 
     /*!
