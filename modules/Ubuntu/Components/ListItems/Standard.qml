@@ -189,7 +189,7 @@ Empty {
     }
     Item {
         id: controlContainer
-        property Item control
+        property AbstractButton control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined
@@ -201,7 +201,6 @@ Empty {
         }
         onControlChanged: {
             control.parent = controlContainer;
-//            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
         }
     }
     MouseArea {
