@@ -120,8 +120,6 @@ AbstractButton {
     */
     property bool live: false
 
-//    pressed: false
-
     /*!
       \preliminary
       This function is used by the value indicator to show the current value.
@@ -131,9 +129,6 @@ AbstractButton {
     function formatValue(v) {
         return v.toFixed(0)
     }
-
-    /*! \internal */
-//    onMouseAreaChanged: __updateMouseArea()
 
     /*! \internal */
     onValueChanged: __value = slider.value
@@ -273,10 +268,7 @@ AbstractButton {
 
     /*! \internal */
     function __updateMouseArea() {
-//        if (slider.mouseArea) {
-//            slider.__mouseArea.pressedChanged.connect(__mouseAreaPressed);
             slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
-//        }
     }
 
     onPressedChanged: __mouseAreaPressed()
