@@ -30,5 +30,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    static UnitsChangeListener unitsChangeListener(engine->rootContext());
+    static Units units;
+    engine->rootContext()->setContextProperty("units", &units);
+    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
+    QObject::connect(&units, SIGNAL(bucketChanged()),
+                     &unitsChangeListener, SLOT(updateContextProperty()));
 }

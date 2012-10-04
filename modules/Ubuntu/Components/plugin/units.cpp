@@ -67,20 +67,14 @@ void Units::setBucket(QString bucketName)
 }
 
 
-UnitsChangeListener::UnitsChangeListener(QQmlContext *context) : m_context(context)
+ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
+    m_context(context),
+    m_contextProperty(contextProperty)
 {
-    updateUnitsInstance();
 }
 
-void UnitsChangeListener::updateUnitsInstance()
+void ContextPropertyChangeListener::updateContextProperty()
 {
-    Units* units = new Units();
-    Units* oldUnits = m_context->contextProperty("units").value<Units*>();
-    // FIXME: do oldUnits require a delete?
-    if (oldUnits) {
-        units->setBucket(oldUnits->bucket());
-    }
-    m_context->setContextProperty("units", units);
-    QObject::connect(units, SIGNAL(bucketChanged()),
-                     this, SLOT(updateUnitsInstance()));
+    QVariant value = m_context->contextProperty(m_contextProperty);
+    m_context->setContextProperty(m_contextProperty, value);
 }
