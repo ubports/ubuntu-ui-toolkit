@@ -28,6 +28,20 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
+/*!
+  \brief
+  ThemeSettings class handles the selection of the application style based on
+  global and application settings.
+
+  If an application wants to declare style settings, it has to define the
+  following generig keys:
+  - UseSystemTheme: a boolean key specifying whether the global theme declares
+        theme fo rthe application, and the application is using that theme
+  - ThemeFile: a string value specifying the application theme name (not the entire
+        file) when the global theme is used, or if not, the private theme file of
+        the application
+  */
+
 #ifdef TARGET_DEMO
 // qmlviewer stores its settings in $HOME/.config/Nokia/QtQmlViewer.conf
 // therefore it is possible to have application specific theme settings
@@ -44,7 +58,7 @@ const char *PathFormat_GlobalThemeFile = "demos/%1/default.qthm";
 #else
 const char *PathFormat_GlobalThemeIniFile = "%1/.qthm/theme.ini";
 
-const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2";
+const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2/theme.qthm";
 const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qthm/theme.qthm";
 #endif
 

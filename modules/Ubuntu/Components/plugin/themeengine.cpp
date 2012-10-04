@@ -45,7 +45,6 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     m_styleTree(new StyleTreeNode(0)),
     themeSettings(qq)
 {
-    //QObject::connect(&m_themeWatcher, SIGNAL(fileChanged(QString)), q_ptr, SLOT(_q_updateTheme()));
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
