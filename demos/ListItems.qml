@@ -186,7 +186,6 @@ Template {
                         text: "Icon"
                         value: "Value"
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        onClicked: print("clicked icon")
                     }
                     ListItem.SingleValue {
                         text: "Custom icon"
