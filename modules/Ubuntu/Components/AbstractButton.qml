@@ -68,8 +68,9 @@ Item {
         enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
 
-//        Component.onCompleted: hiddenFunctions.updateMouseArea()
-        onClicked: if (enabled) print("clickily")
+        // FIXME: This is odd, but without it, the 'mouse' parameter gets
+        //  lost in button's clicked signal.
+        onClicked: { }
     }
 
     /*!
@@ -77,20 +78,15 @@ Item {
       Connect the signals/slots of the new mouse area.
      */
     onMouseAreaChanged: hiddenFunctions.updateMouseArea()
-    Component.onCompleted: hiddenFunctions.updateMouseArea()
 
     QtObject {
         id: hiddenFunctions
 
         function updateMouseArea() {
             if (button.mouseArea) {
-                defaultMouseArea.clicked.disconnect(button.clicked);
                 button.mouseArea.clicked.connect(button.clicked);
-                defaultMouseArea.pressedChanged.disconnect(hiddenFunctions.mouseAreaPressed);
                 button.mouseArea.pressedChanged.connect(hiddenFunctions.mouseAreaPressed);
-                defaultMouseArea.entered.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.entered.connect(hiddenFunctions.mouseAreaHovered);
-                defaultMouseArea.exited.disconnect(hiddenFunctions.mouseAreaHovered);
                 button.mouseArea.exited.connect(hiddenFunctions.mouseAreaHovered);
             }
         }
