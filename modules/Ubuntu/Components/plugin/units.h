@@ -31,12 +31,9 @@ Q_SIGNALS:
     void scaleFactorChanged();
     void bucketChanged();
 
-protected:
-    QString selectBucket(float density, QString formFactor);
-
 private:
-    QHash<QString, Bucket> m_densityBuckets;
-    Bucket m_bucket;
+    float m_scaleFactor;
+    QString m_bucket;
 };
 
 class QQmlContext;
