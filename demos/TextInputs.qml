@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Text Input"
+    title: i18n.tr("Text Input")
     id: page
 
     Item {
@@ -31,14 +31,14 @@ Template {
             spacing: 30
 
             TemplateRow {
-                title: "Basic"
+                title: i18n.tr("Basic")
 
                 TextField {
                     id: textField1
                     KeyNavigation.tab: textField2
                     KeyNavigation.backtab: textField5
 
-                    placeholderText: "simple text field"
+                    placeholderText: i18n.tr("simple text field")
                     hasClearButton: false
                 }
             }
@@ -51,41 +51,41 @@ Template {
                     KeyNavigation.tab: textField3
                     KeyNavigation.backtab: textField1
 
-                    placeholderText: "type to show clear button"
-                    text: "sample text"
+                    placeholderText: i18n.tr("type to show clear button")
+                    text: i18n.tr("sample text")
                 }
             }
 
             TemplateRow {
-                title: "Password"
+                title: i18n.tr("Password")
 
                 TextField {
                     id: textField3
                     KeyNavigation.tab: textField4
                     KeyNavigation.backtab: textField2
 
-                    placeholderText: "password with echo"
+                    placeholderText: i18n.tr("password with echo")
                     echoMode: TextInput.Password
 
                 }
             }
 
             TemplateRow {
-                title: "Password"
+                title: i18n.tr("Password")
 
                 TextField {
                     id: textField4
                     KeyNavigation.tab: textField5
                     KeyNavigation.backtab: textField3
 
-                    placeholderText: "password echo on editing"
+                    placeholderText: i18n.tr("password echo on editing")
                     echoMode: TextInput.PasswordEchoOnEdit
 
                 }
             }
 
             TemplateRow {
-                title: "Overlaid"
+                title: i18n.tr("Overlaid")
 
                 TextField {
                     id: textField5
