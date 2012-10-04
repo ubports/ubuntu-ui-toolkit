@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 Image {
     id: image
@@ -30,8 +31,7 @@ Image {
         var resourceString = resourceUrl.toString()
         var baseName = resourceString.substring(0, resourceString.length - 4)
         var extension = resourceString.substring(resourceString.length - 4, resourceString.length)
-        var scaleFactor = units.scaleFactor / units.bucketScaleFactor
-        image.__scaleFactor = scaleFactor
+        image.__scaleFactor = units.scaleFactor
         return baseName + "@" + units.bucketName + extension
     }
 

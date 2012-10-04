@@ -22,11 +22,15 @@ Rectangle {
     height: 600
 
     focus: true
-    Keys.onUpPressed: units.bucket = Math.min(units.bucket + 1, 3)
-    Keys.onDownPressed: units.bucket = Math.max(units.bucket - 1, 0)
-
-    Units {
-        id: units
+    property var buckets: ["mdpi", "hdpi", "xhdpi"]
+    property int bucketNumber: 0
+    Keys.onUpPressed: {
+        bucketNumber = Math.min(bucketNumber + 1, buckets.length-1)
+        units.bucket = buckets[bucketNumber]
+    }
+    Keys.onDownPressed: {
+        bucketNumber = Math.max(bucketNumber - 1, 0)
+        units.bucket = buckets[bucketNumber]
     }
 
     color: "#e6e6e6"

@@ -19,6 +19,7 @@
 //     need to figure that out.
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass CheckBox

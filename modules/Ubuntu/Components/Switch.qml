@@ -22,6 +22,7 @@
 //     that needs to be validated with designers though.
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 /*!
     \qmlclass Switch

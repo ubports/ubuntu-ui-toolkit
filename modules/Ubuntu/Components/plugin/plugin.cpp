@@ -16,14 +16,19 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
+#include <QtQml>
+
 #include "plugin.h"
+#include "units.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    qmlRegisterUncreatableType<Units>(uri, 0, 1, "Units", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
+    static UnitsChangeListener unitsChangeListener(engine->rootContext());
 }
