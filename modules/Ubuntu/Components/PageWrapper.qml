@@ -77,8 +77,10 @@ QtObject {
       \internal
      */
     onActiveChanged: {
-        if (pageWrapper.active) Utils.activate(pageWrapper);
-        else Utils.deactivate(pageWrapper);
+        if (reference) {
+            if (pageWrapper.active) Utils.activate(pageWrapper);
+            else Utils.deactivate(pageWrapper);
+        }
     }
 
     /*!
