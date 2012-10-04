@@ -55,7 +55,7 @@ QString Units::bucket()
 
 float Units::dp(float value)
 {
-    return qFloor(value * scaleFactor());
+    return qFloor(value * m_scaleFactor);
 }
 
 void Units::setBucket(QString bucketName)
