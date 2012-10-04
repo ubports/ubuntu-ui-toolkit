@@ -345,6 +345,17 @@ Template {
                             onClicked: print("Large button clicked")
                         }
                     }
+                    ListItem.SingleControl {
+                        control: Slider {
+                            live: true
+                            minimumValue: -1.0
+                            maximumValue: 1.0
+                            value: 0.0
+                                width: parent.width - 10
+                                anchors.margins: 10
+                            function formatValue(v) { return v.toFixed(2) }
+                        }
+                    }
                 }
             }
             FadingRectangle {

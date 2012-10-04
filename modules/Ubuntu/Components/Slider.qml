@@ -58,7 +58,8 @@ import "mathUtils.js" as MathUtils
     }
     \endqml
 */
-Item {
+//Item {
+AbstractButton {
     id: slider
 
     // FIXME(loicm) There are stretched pixels on the left of the thumb when
@@ -129,7 +130,7 @@ Item {
        This property is true while the thumb is dragged. This property is meant
        to be read-only.
     */
-    property bool pressed: false
+    property bool activated: false
 
     /*!
       \preliminary
@@ -138,7 +139,7 @@ Item {
       the area where it accepts mouse events. This is used in list items with
       controls.
      */
-    property MouseArea mouseArea: defaultMouseArea
+//    property MouseArea mouseArea: defaultMouseArea
 
     /*!
       \preliminary
@@ -150,13 +151,13 @@ Item {
         return v.toFixed(0)
     }
 
-    MouseArea {
-        id: defaultMouseArea
-        anchors.fill: parent
-    }
+    //    MouseArea {
+    //        id: defaultMouseArea
+    //        anchors.fill: parent
+    //    }
 
-    /*! \internal */
-    onMouseAreaChanged: __updateMouseArea()
+    //    /*! \internal */
+    //    onMouseAreaChanged: __updateMouseArea()
 
     /*! \internal */
     onValueChanged: __value = slider.value
@@ -220,7 +221,7 @@ Item {
 
         ButtonMaskEffect {
             anchors.fill: thumbShape
-            gradientStrength: slider.pressed ? 0.2 : 0.4
+            gradientStrength: slider.activated ? 0.2 : 0.4
             mask: ShaderEffectSource { sourceItem: thumbShape; live: true; hideSource: true }
             base: ShaderEffectSource { sourceItem: thumbBase; live: true; hideSource: true }
 
@@ -293,44 +294,47 @@ Item {
                                                      0.0, 1.0)
 
     /*! \internal */
-    function __updateMouseArea() {
-        if (slider.mouseArea) {
-            slider.mouseArea.pressedChanged.connect(__mouseAreaPressed);
-            slider.mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
-        }
-    }
+//    function __updateMouseArea() {
+//        if (slider.mouseArea) {
+//            slider.mouseArea.pressedChanged.connect(__mouseAreaPressed);
+//            slider.mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
+//        }
+//    }
+
+    onPressedChanged: __mouseAreaPressed()
+    onPositionChanged: __mouseAreaPositionchanged();
 
     /*! \internal */
     function __mouseAreaPressed() {
-        if (slider.mouseArea.pressedButtons == Qt.LeftButton) {
+        if (slider.pressedButtons == Qt.LeftButton) {
             // Left button pressed.
-            var mouseX = slider.mouseArea.mouseX;
-            var mouseY = slider.mouseArea.mouseY;
+            var mouseX = slider.mouseX;
+            var mouseY = slider.mouseY;
             if (mouseY >= thumbShape.y && mouseY <= thumbShape.y + thumbShape.height) {
                 if (mouseX >= thumbShape.x && mouseX <= thumbShape.x + thumbShape.width) {
                     // Button pressed inside the thumb.
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
+                    slider.activated = true;
                 } else if (mouseX > __thumbSpacing &&
                            mouseX < backgroundShape.width - __thumbSpacing) {
                     // Button pressed outside the thumb.
-                    var normalizedPosition = (slider.mouseArea.mouseX - __thumbSpacing -
+                    var normalizedPosition = (slider.mouseX - __thumbSpacing -
                     __thumbWidth * 0.5) / __thumbSpace;
                     normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
                     __value = MathUtils.lerp(normalizedPosition, slider.minimumValue,
                     slider.maximumValue);
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
+                    slider.activated = true;
                     if (slider.live) {
                         slider.value = __value
                     }
                 }
             }
-        } else if (slider.pressed) {
+        } else if (slider.activated) {
             // Left button released.
-            slider.pressed = false;
+            slider.activated = false;
             if (!slider.live) {
                 slider.value = __value;
             }
@@ -340,8 +344,9 @@ Item {
     /*! \internal */
     function __mouseAreaPositionchanged() {
         // Left button dragging.
-        if (slider.pressed) {
-            var normalizedOffsetX = (slider.mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
+        if (slider.activated) {
+//            var normalizedOffsetX = (slider.mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
+            var normalizedOffsetX = (slider.mouseX - __dragInitMouseX) / __thumbSpace;
             var v = MathUtils.clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
             __value = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
             if (slider.live) {

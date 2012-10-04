@@ -53,7 +53,7 @@ Empty {
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
      */
-    property Item control
+    property AbstractButton control
 
     /*!
       \internal
@@ -82,13 +82,13 @@ Empty {
     onControlChanged: __updateControl()
 //    Component.onCompleted: __updateControl()
 
-    onClicked: if (control) control.clicked(mouse)
-    onDoubleClicked: if (control) control.doubleClicked(mouse)
-    onEntered: if (control) control.entered()
-    onExited: if (control) control.exited()
-    onPositionChanged: if (control) control.positionChanged(mouse)
-    onPressAndHold: if (control) control.pressAndHold(mouse)
-    onPressed: if (control) control.onPressed(mouse) // pressed is a bool property
-    onReleased: if (control) control.released(mouse)
-    onWheel: if (control) control.wheel(wheel)
+    onClicked: control.clicked(mouse)
+//    onDoubleClicked: if (control) control.doubleClicked(mouse)
+//    onEntered: if (control) control.entered()
+//    onExited: if (control) control.exited()
+//    onPositionChanged: if (control) control.positionChanged(mouse)
+//    onPressAndHold: if (control) control.pressAndHold(mouse)
+//    onPressed: if (control) control.onPressed(mouse) // pressed is a bool property
+//    onReleased: if (control) control.released(mouse)
+//    onWheel: if (control) control.wheel(wheel)
 }
