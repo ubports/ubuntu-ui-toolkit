@@ -27,11 +27,11 @@ Item {
     visible: source != ""
     property bool hasFrame: true
 
+    property alias iconHeight: icon.height
+    property alias iconWidth: icon.width
     property real leftIconMargin: units.dp(5)
     property real rightIconMargin: units.dp(5)
-    property real topIconMargin: units.dp(5)
-    property real bottomIconMargin: units.dp(5)
-    width: visible ? icon.width + leftIconMargin + rightIconMargin : 0
+    width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
 
     anchors {
         top: parent ? parent.top : undefined
@@ -42,17 +42,17 @@ Item {
     ImageWithFallback {
         id: icon
         opacity: iconVisual.enabled ? 1.0 : 0.5
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }
-        property real sourceAspectRatio: sourceSize.width / sourceSize.height
-        height: Math.min(units.dp(sourceSize.height), iconVisual.height - iconVisual.topIconMargin - iconVisual.bottomIconMargin)
-        width: sourceAspectRatio * height
+        height: sourceSize.height
+        width: sourceSize.width
         smooth: true
         asynchronous: true
+        clip: true
     }
 
     BorderImage {

@@ -61,6 +61,20 @@ Empty {
 
     /*!
       \internal
+      Width of the icon to be displayed
+      \qmlproperty int __iconWidth
+    */
+    property alias __iconWidth: iconHelper.iconWidth
+
+    /*!
+      \internal
+      Height of the icon to be displayed
+      \qmlproperty int __iconHeight
+    */
+    property alias __iconHeight: iconHelper.iconHeight
+
+    /*!
+      \internal
       The margin on the left side of the icon.
       \qmlproperty real leftIconMargin
      */
