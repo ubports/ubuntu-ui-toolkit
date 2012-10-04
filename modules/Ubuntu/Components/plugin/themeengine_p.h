@@ -84,7 +84,7 @@ class QmlTheme {
 public:
     QmlTheme() : themeComponent(0), styleTree(0){}
 
-    bool loadQmlTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
+    bool loadTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
     bool finalizeThemeLoading();
 private:
     QDeclarativeComponent *themeComponent;
@@ -99,7 +99,7 @@ public:
     CssTheme();
     ~CssTheme(){}
 
-    bool loadCssTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
+    bool loadTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree);
 private:
 
     QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
@@ -109,7 +109,7 @@ private:
     static bool handleQmlImport(CssTheme *css, QTextStream &stream);
     bool handleSelector(const Selector &path, const QString &declarator);
     void normalizeStyles();
-    bool parseCssTheme(const QUrl &url);
+    bool parseTheme(const QUrl &url);
     bool buildStyleTree();
 
     QDeclarativeEngine *engine;
@@ -126,7 +126,7 @@ public:
     ThemeSettings(QObject *parent);
     bool initialize();
     QUrl themeFile() const;
-    QUrl setThemeFile(const QUrl &url, bool global);
+    QUrl setTheme(const QString &theme, bool global);
     QStringList imports() const;
 
 private:

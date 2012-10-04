@@ -29,17 +29,9 @@
 #include <QtCore/QDir>
 
 /*!
-  \brief
+  \internal
   ThemeSettings class handles the selection of the application style based on
   global and application settings.
-
-  If an application wants to declare style settings, it has to define the
-  following generig keys:
-  - UseSystemTheme: a boolean key specifying whether the global theme declares
-        theme fo rthe application, and the application is using that theme
-  - ThemeFile: a string value specifying the application theme name (not the entire
-        file) when the global theme is used, or if not, the private theme file of
-        the application
   */
 
 #ifdef TARGET_DEMO
@@ -143,10 +135,10 @@ QUrl ThemeSettings::themeFile() const
   will try to create those aswell. Returns the URL (full path) to the theme file. The
   application will use the default theme setup if the \a url is invalid.
   */
-QUrl ThemeSettings::setThemeFile(const QUrl &url, bool global)
+QUrl ThemeSettings::setTheme(const QString &theme, bool global)
 {
-    if (!url.isValid() && !global) {
-        ThemeEnginePrivate::setError("Invalid private URL given for theme!");
+    if (theme.isEmpty() && !global) {
+        ThemeEnginePrivate::setError("Invalid private file given for theme!");
         return QUrl();
     }
 
@@ -162,7 +154,7 @@ QUrl ThemeSettings::setThemeFile(const QUrl &url, bool global)
         QString prevTheme = appSettings.value(appThemeFileKey).toString();
 
         appSettings.setValue(appUseGlobalThemeKey, global);
-        appSettings.setValue(appThemeFileKey, url.path());
+        appSettings.setValue(appThemeFileKey, theme);
         QUrl theme = themeFile();
         if (!theme.isValid() || !QFile::exists(theme.path())) {
             // roll back settings

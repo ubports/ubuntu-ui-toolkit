@@ -125,10 +125,10 @@ void ThemeEngineTest::testCase_setTheme()
 {
     ThemeEngine::instance()->resetError();
     // should pass
-    ThemeEngine::instance()->setTheme(QUrl::fromLocalFile("../resources/test.qthm"), false);
+    ThemeEngine::instance()->setTheme("../resources/test.qthm", false);
     QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
     // should fail
-    ThemeEngine::instance()->setTheme(QUrl::fromLocalFile("../resources/base.qthm"), true);
+    ThemeEngine::instance()->setTheme("../resources/base.qthm", true);
     QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
 }
 

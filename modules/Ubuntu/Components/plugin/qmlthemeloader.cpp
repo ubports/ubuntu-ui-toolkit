@@ -27,6 +27,12 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeItem>
 
+/*!
+  \internal
+  The QmlTheme class loads a QML theme and builds up the ThemeEngine's Rule-element
+  suffix-tree.
+  */
+
 /*=============================================================================
   QML THEME LOADER
 =============================================================================*/
@@ -34,7 +40,7 @@
   \internal
   Loads a QML theme and builds up the style rule tree.
   */
-bool QmlTheme::loadQmlTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+bool QmlTheme::loadTheme(const QUrl &path, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
 {
     themeComponent = new QDeclarativeComponent(engine, path);
     this->styleTree = styleTree;

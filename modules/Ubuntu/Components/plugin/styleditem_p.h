@@ -29,14 +29,14 @@ public:
     StyledItemPrivate(StyledItem *qq);
 
     StyledItem *q_ptr;
-    bool privateStyle;
-    bool componentCompleted;
-    StyleRule *styleRule;
+    StyleRule *privateRule;
+    StyleRule *themeRule;
     QObject *styleObject;
     QString styleClass;
     QString instanceId;
 
     // internal members
+    bool componentCompleted;
     QDeclarativeContext *componentContext;
     QDeclarativeItem *delegateItem;
 

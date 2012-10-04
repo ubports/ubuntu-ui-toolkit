@@ -29,61 +29,115 @@
 
 const char *widgetProperty = "widget";
 /*!
-  \preliminary
-  StyledItem class is a base class for all UI controls that use styling in their layout.
-  The style to be used is selected based on the following principles:
-  - hierarchy
-  - classification
-  - instance identification
-  - property binding
+  \qmlclass StyledItem StyledItem
+  \brief StyledItem element provides support for widget styling.
 
-  By default, styled elements use the style definition from a theme that is attached to
-  them. This means that
+  Widgets with styling support can either use this element as base or can declare
+  it as internal element, depending on what is the base class to be extended. For
+  instance in case of a frame or button it is worth to use StyledItem as base element
+  and build the API above it, but in case of a Label elemen it is worth to declare
+  an internal StyledItem element so the published API will be based on Text element.
+
+  The style is selected based on the styleClass and instanceId properties. If neither
+  of these is defined, the framework will use the meta class name to identify the
+  style rule to be used.
+
+  A widget can use private styling by setting the style property locally. In this case
+  the widget won't react on theme changes and altering styleClass or instanceId properties
+  will not cause style changes either. Switch back to theme defined styles can be
+  achieved by clearing the style property.
+
+  \qml
+  // Button.qml
+  Item {
+      StyledItem {
+         id: root
+         public bool pressed: false
+         public bool hovered: false
+
+         signal clicked
+
+         MouseArea {
+            anchors.fill: parent
+            onClicked: control.clicked()
+         }
+      }
+  }
+  \endqml
+  In this example Button element is derived from StyledItem, and uses "Button" as
+  default style class to be selected.
+
+  \qml
+  // Label.qml
+  Item {
+      Text {
+         id: control
+         property alias styleClass: internal.styleClass
+         property alias instanceId: internal.instanceId
+         property alias style: internal.style
+         StyledItem {
+            id: internal
+            onStyleChanged: {
+               // update label's properties using style configuration
+            }
+         }
+      }
+  }
+  \endqml
+  In this example the Label element extends the default Text element with styling
+  by declaring the StyledItem element internally and exposing its styleClass and
+  instanceId properties.
 */
 
 StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     q_ptr(qq),
-    privateStyle(false),
-    componentCompleted(false),
-    styleRule(0),
+    privateRule(0),
+    themeRule(0),
     styleObject(0),
     componentContext(0),
-    delegateItem(0)
+    delegateItem(0),
+    componentCompleted(false)
 {
 }
 
+/*!
+  \internal
+  Updates the styleObject and delegateItem variables. The style update is forced
+  when the widget changes the style lookup from private to theme.
+*/
 void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 {
     Q_Q(StyledItem);
     // do not do anything till the component gets complete?
-    //if (!componentCompleted) return;
+    if (!componentCompleted) return;
 
     bool styleChanged = forceUpdate;
+    StyleRule *currentRule = privateRule;
 
     // in case of private style is in use, no need to change anything
-    if (!privateStyle) {
+    if (!privateRule) {
         // check whether we have different style for the state
-        StyleRule *tmp = ThemeEngine::instance()->lookupStyleRule(q);
-        if (styleRule != tmp) {
+        currentRule = ThemeEngine::instance()->lookupStyleRule(q);
+        if (themeRule != currentRule) {
             styleObject = 0;
-            styleRule = tmp;
+            themeRule = currentRule;
             styleChanged = true;
         }
     }
 
     // reset delegate if the style is updated and the new style has visuals
-    if (styleChanged && styleRule && styleRule->delegate())
+    if (styleChanged && currentRule && currentRule->delegate())
         delegateItem = 0;
 
-    if (styleChanged && styleRule) {
+    if (styleChanged && currentRule) {
         // check if we have the context
         if (!componentContext) {
             componentContext = new QDeclarativeContext(QDeclarativeEngine::contextForObject(q));
             componentContext->setContextProperty(QLatin1String(widgetProperty), q);
         }
 
-        if (!styleObject && styleRule->style()) {
-            styleObject = styleRule->style()->create(componentContext);
+        if (!styleObject && currentRule->style()) {
+            styleObject = currentRule->style()->create(componentContext);
             if (styleObject) {
                 styleObject->setParent(q);
             }
@@ -91,7 +145,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 
         // do not mandate yet the existence of visuals
         if (!delegateItem) {
-            QDeclarativeComponent *visuals = styleRule->delegate();
+            QDeclarativeComponent *visuals = currentRule->delegate();
             if (!visuals) {
                 // reset
                 StyleRule *delegateStyle = ThemeEngine::instance()->lookupStyleRule(q, true);
@@ -124,21 +178,27 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
         emit q->styleChanged();
 }
 
+/*!
+  \internal
+  Internal slot to update the style of an item. The slot is connected to the theme
+  engine's themeChanged() signal.
+  */
 void StyledItemPrivate::_q_reloadTheme()
 {
-    if (privateStyle)
-        return;
     // update style if theme is used
-    styleRule = 0;
+    themeRule = 0;
     delete styleObject;
     delete delegateItem;
     styleObject = 0;
     delegateItem = 0;
-    updateCurrentStyle();
+    updateCurrentStyle(true);
 }
 
 /*-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------*/
+/*!
+  Creates a styledItem instance
+  */
 StyledItem::StyledItem(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     d_ptr(new StyledItemPrivate(this))
@@ -146,9 +206,15 @@ StyledItem::StyledItem(QDeclarativeItem *parent) :
     QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
 }
 
+/*!
+  Destroys the StyledItem object
+  */
 StyledItem::~StyledItem()
 {}
 
+/*!
+  Updates the widget with the defined style.
+  */
 void StyledItem::componentComplete()
 {
     QDeclarativeItem::componentComplete();
@@ -159,11 +225,21 @@ void StyledItem::componentComplete()
     d->updateCurrentStyle();
 }
 
+/*!
+  \qmlproperty string StyledItem::instanceId
+  This property holds the widget unique identifier used in styling.
+  */
+/*!
+  \property StyledItem::instanceId
+  */
 QString StyledItem::instanceId() const
 {
     Q_D(const StyledItem);
     return d->instanceId;
 }
+/*!
+  Updates the instanceId property.
+  */
 void StyledItem::setInstanceId(const QString &instanceId)
 {
     Q_D(StyledItem);
@@ -178,11 +254,25 @@ void StyledItem::setInstanceId(const QString &instanceId)
     }
 }
 
+/*!
+  \qmlproperty string StyledItem::styleClass
+  This property holds the style class identifier used by the widget.
+  When the engine locates the style rule to be applied on the widget, it takes
+  the styleClass and instanceId properties. If none is specified, the meta class
+  name will be used to search for the style. This must be taken into account both
+  when defining themes and designing widgets and applications.
+  */
+/*!
+  \property StyledItem::styleClass
+  */
 QString StyledItem::styleClass() const
 {
     Q_D(const StyledItem);
     return d->styleClass;
 }
+/*!
+  Sets the styleClass property value.
+  */
 void StyledItem::setStyleClass(const QString &styleClass)
 {
     Q_D(StyledItem);
@@ -192,30 +282,67 @@ void StyledItem::setStyleClass(const QString &styleClass)
     }
 }
 
-StyleRule *StyledItem::styleRule() const
+/*!
+  \qmlproperty Rule StyledItem::privateStyle
+  This property holds the private style. When set, the widget will use the styling
+  defined in the rule, and altering styleClass and instanceId properties will not
+  have any effect on the widget styling. Widgets can be turned back to use theme
+  styling by resetting the property.
+  */
+/*!
+  \property StyledItem::privateStyle
+  Returns the private style component, null if the widget uses the theme style.
+  */
+StyleRule *StyledItem::privateStyle() const
 {
     Q_D(const StyledItem);
-    return d->styleRule;
+    return d->privateRule;
 }
 
-void StyledItem::setStyleRule(StyleRule *styleRule)
+/*!
+  Sets the private style for the widget.
+  */
+void StyledItem::setPrivateStyle(StyleRule *privateStyle)
 {
     Q_D(StyledItem);
-    if (d->styleRule != styleRule) {
-
-        d->privateStyle = (styleRule != 0);
-
-        d->styleRule = styleRule;
-        d->updateCurrentStyle(true);
+    if (d->privateRule != privateStyle) {
+        d->privateRule = privateStyle;
+        d->_q_reloadTheme();
     }
 }
 
+/*!
+  Resets the private style to the default, and the widget will use the theme styles.
+  */
+void StyledItem::resetPrivateStyle()
+{
+    Q_D(StyledItem);
+    d->privateRule = 0;
+    d->_q_reloadTheme();
+}
+
+/*!
+  \qmlproperty QtObject StyledItem::styleObject
+  The property holds the object containing the style configuration properties. This can
+  either be defined by a theme style rule or the private style.
+  */
+/*!
+  \property StyledItem::styleObject
+  */
 QObject *StyledItem::styleObject() const
 {
     Q_D(const StyledItem);
     return d->styleObject;
 }
 
+/*!
+  \property Item StyledItem::delegateItem
+  The property holds the Item containing the visuals of the widget defined by
+  one of the styles, theme or private.
+  */
+/*!
+  \property StyledItem::delegateItem
+  */
 QDeclarativeItem *StyledItem::delegateItem() const
 {
     Q_D(const StyledItem);

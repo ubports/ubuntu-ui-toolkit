@@ -54,9 +54,9 @@ signals:
     void themeChanged();
 
 public slots:
-    void loadTheme(const QUrl &themeFile);
+    bool loadTheme(const QUrl &themeFile);
 
-    void setTheme(const QUrl &theme, bool global = false);
+    bool setTheme(const QString &theme, bool global = false);
 
 private:
     Q_DISABLE_COPY(ThemeEngine)

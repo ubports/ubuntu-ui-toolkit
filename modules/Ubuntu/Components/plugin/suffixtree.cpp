@@ -25,14 +25,35 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeItem>
 
+/*
+  This file contains the Rule-element suffix-tree handling classes. The suffix-tree
+  contains all the rules defined for selectors in suffix format, meaning the selectors
+  are parsed and stored from the end to the beginning. Each node in the tree collects
+  its children nodes in a has table, where the key is the selector node converted to
+  a string.
+*/
+
 SelectorNode::SelectorNode() :
     relationship(Descendant)
 {}
+/*!
+    \intetnal
+    Creates an instance of a SelectorNode with a given styleClass, instanceId
+    and relationship. The ignore parameter configures the node so that during
+    string conversion and comparison ignores the relationship, the instanceId
+    or both. This feature is used when building up QTHM selectorTable.
+*/
 SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore) :
     styleClass(styleClass), styleId(styleId), relationship(relationship), ignore(ignore)
 {
 }
 
+/*!
+    \internal
+    Converts a SelectorNode into string using "<relation> .<styleClass>#<instanceId>"
+    format. A node can be configured so it ignores the relationship, instanceId or
+    both.
+  */
 QString SelectorNode::toString() const
 {
     QString result;

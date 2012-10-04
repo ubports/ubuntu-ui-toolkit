@@ -27,6 +27,33 @@
 
 #include <QDebug>
 
+/*!
+  \qmlclass Theme ThemeEngine
+  \brief The Theme element provides functionality to change the current theme.
+
+  Informs the application about errors during theme load through \a error property,
+  the current theme file through \a currentTheme property and notifies the widgets
+  and application about successful theme change through \a themeChanged() signal.
+
+  The theme can be changed from within the application either through \a loadTheme()
+  or through \a setTheme() functions. The difference between these two functions is
+  that while loadTheme() simply loads and applies a theme file, setTheme() stores it
+  into the application's settings.
+
+  In order to have application theming enabled, applications must define the following
+  setting keys in Generic section:
+  - UseSystemTheme: a boolean key specifying whether the global theme declares
+        theme fo rthe application, and the application is using that theme
+  - ThemeFile: a string value specifying the application theme name (not the entire
+        file) when the global theme is used, or if not, the private theme file of
+        the application
+
+  Not having these keys declared by an application will force the use of the global
+  theme. Setting keys should be defined prior the QML files are loaded, and
+  applications must define the organization name (domain in Mac OSX) and application
+  names as specified in QSettings documentation.
+*/
+
 Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
 
 bool themeDebug = false;
@@ -116,12 +143,12 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
         m_styleTree->clear();
         m_styleCache.clear();
 
-        m_cssThemeLoader.loadCssTheme(themePath, m_engine, m_styleTree);
+        m_cssThemeLoader.loadTheme(themePath, m_engine, m_styleTree);
     } else if (themePath.endsWith(".qml")) {
         m_styleTree->clear();
         m_styleCache.clear();
 
-        m_qmlThemeLoader.loadQmlTheme(themePath, m_engine, m_styleTree);
+        m_qmlThemeLoader.loadTheme(themePath, m_engine, m_styleTree);
     } else {
         setError("Unknown theme URL" + themeFile.toString());
     }
@@ -137,7 +164,10 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 /*!
   \internal
   Traverses and returns the path from \a obj up to root as a list of styleClass
-  and instanceId pairs
+  and instanceId pairs, setting the relationship between the selector nodes
+  depending on the relationship between the parent and child, i.e. if a certain
+  StyledItem's parent is also a StyledItem, the SelectorNode::Child relation,
+  otherwise SelectorNode::Descendant relation is used.
   */
 Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassName) const
 {
@@ -286,7 +316,7 @@ ThemeEngine::~ThemeEngine()
 }
 
 /*!
-  \preliminary
+  \internal
   The method is used internally by the component plug-in to initialize the
   theming engine. When called configures the engine with the given declarative
   engine and loads the last theme configured in the settings. Returns true on
@@ -305,7 +335,8 @@ bool ThemeEngine::initialize(QDeclarativeEngine *engine)
 }
 
 /*!
-  \preliminary
+  \internal
+  The method returns the singleton instance of the theme engine.
   */
 ThemeEngine *ThemeEngine::instance()
 {
@@ -316,7 +347,7 @@ ThemeEngine *ThemeEngine::instance()
 }
 
 /*!
-  \preliminary
+  \internal
   Checks whether the instance can be registerd to the given name, and registers it.
   Removes any previous registration.
 */
@@ -344,7 +375,10 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 }
 
 /*!
-  \preliminary
+  \internal
+  This method searches for a Rule element that matches the conditions for a
+  StyledItem. The selector searched is built up by traversing the \a item
+  parents and considering only StyledItem elements in the hierarchy.
   */
 StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 {
@@ -371,37 +405,49 @@ StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 }
 
 /*!
-  \preliminary
+  Loads a theme file from any location, and updates the \a currentTheme property
+  on success. The ocurred errors are reported in \a error property.
   */
-void ThemeEngine::loadTheme(const QUrl &themeFile)
+bool ThemeEngine::loadTheme(const QUrl &themeFile)
 {
     Q_D(ThemeEngine);
     d->loadTheme(themeFile);
+    return d->errorString.isEmpty();
 }
 
 /*!
-  \preliminary
-  This is a helper slot provided for testing purposes and should not be considered
-  as part of the final API.
-  Loads the \a theme file and stores it in the application's settings if possible.
-  If application theme can be stored in settings, it will
+  The function sets the theme file in the application's settings and loads the
+  theme.
+
+  Its parameters depend on what is about to be set.
+  - if the theme is global, then the \a theme specifies the theme folder as specified
+    in the global theme; if the \a theme is empty, the global theme's default will
+    be set and loaded (e.g. TestApp from Ambiance theme will lead to
+    /usr/shared/theme/Ambiance/qthm/TestApp/theme.qthm URL returned)
+  - if the theme is local (\a global set to false), the \a theme contains the full
+    path to the theme file to be used.
+
+  Returns the path to the theme file loaded or an invalid URL on failure. The \a error
+  will contain the error occurred.
   */
-void ThemeEngine::setTheme(const QUrl &theme, bool global)
+bool ThemeEngine::setTheme(const QString &theme, bool global)
 {
     Q_D(ThemeEngine);
-    QUrl themeFile = d->themeSettings.setThemeFile(theme, global);
+    QUrl themeFile = d->themeSettings.setTheme(theme, global);
     if (themeFile.isValid())
         d->_q_updateTheme();
     else if (d->errorString.isEmpty()) {
         d->setError(QString("Error setting theme %1 as %2")
-                    .arg(theme.toString())
+                    .arg(theme)
                     .arg(global ? "global" : "private"));
     }
+    return d->errorString.isEmpty();
 }
 
 /*!
-  \internal
-  Property getter, returns the error string set by the engine upon loading.
+  \qmlproperty string Theme::error
+  The property contains the error occurred upon loading. The error is not cleared
+  automatically and must be acknowledged after each operation.
   */
 QString ThemeEngine::error() const
 {
@@ -410,7 +456,6 @@ QString ThemeEngine::error() const
 }
 
 /*!
-  \internal
   Property reset method for \a error property.
   */
 void ThemeEngine::resetError()
@@ -421,8 +466,8 @@ void ThemeEngine::resetError()
 
 
 /*!
-  \internal
-  Property getter, returns the current theme file set.
+  \qmlproperty string Theme::currentTheme
+  This property holds the current theme file loaded.
   */
 QString ThemeEngine::currentTheme() const
 {

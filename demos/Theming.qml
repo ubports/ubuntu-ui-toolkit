@@ -78,10 +78,10 @@ Template {
                 Button {
                     x: 10; y: 10
                     text: "Call"
-                    styleRule: Rule {
+                    privateStyle: Rule {
                         delegate: Item {
                             z: -1
-                            anchors.fill: widget
+                            anchors.fill: parent
                             clip: true
                             Rectangle {
                                 id: shape

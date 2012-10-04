@@ -32,7 +32,7 @@ class StyledItem : public QDeclarativeItem
 
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
     Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
-    Q_PROPERTY(StyleRule *styleRule READ styleRule WRITE setStyleRule NOTIFY styleChanged)
+    Q_PROPERTY(StyleRule *privateStyle READ privateStyle WRITE setPrivateStyle RESET resetPrivateStyle NOTIFY styleChanged)
     Q_PROPERTY(QObject *styleObject READ styleObject NOTIFY styleChanged)
     Q_PROPERTY(QDeclarativeItem *delegateItem READ delegateItem NOTIFY styleChanged)
 
@@ -40,6 +40,7 @@ public:
     StyledItem(QDeclarativeItem *parent = 0);
     ~StyledItem();
 
+protected:
     void componentComplete();
     
 signals:
@@ -53,8 +54,9 @@ public: // getter/setter
     void setInstanceId(const QString &instanceId);
     QString styleClass() const;
     void setStyleClass(const QString &styleClass);
-    StyleRule *styleRule() const;
-    void setStyleRule(StyleRule *style);
+    StyleRule *privateStyle() const;
+    void setPrivateStyle(StyleRule *style);
+    void resetPrivateStyle();
     QObject *styleObject() const;
     QDeclarativeItem *delegateItem() const;
 

@@ -16,13 +16,6 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-/*!
-  \internal
-  CSS-like theme file parser
-
-
-*/
-
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "style.h"
@@ -33,6 +26,18 @@
 #include <QtCore/QDir>
 
 #include <QDebug>
+
+/*!
+  \internal
+  CSS-like theme file parser (QTHM parser)
+
+  The parsing steps are:
+  1. load file and build up selectorTable
+  2. normalize selectorTable by updating each selector with the non-overridden
+     properties from the base selector
+  3. build ThemeEngine's styleTree by creating Rule elements using the styles,
+     mappings and imports specified.
+*/
 
 const char *ruleTemplate =  \
 "import QtQuick 1.1\n" \
@@ -55,6 +60,11 @@ void normalizeSelector(Selector &selector)
         selector[i].ignore = 0;
 }
 
+/*!
+  \internal
+    Returns a subset from the given selector and configures it to ignore relation
+    and instanceId.
+  */
 Selector selectorSubset(const Selector &path, int elements)
 {
     Selector result;
@@ -209,7 +219,11 @@ void CssTheme::normalizeStyles()
     }
 }
 
-bool CssTheme::parseCssTheme(const QUrl &url)
+/*!
+  \internal
+  Parses a QTHM theme
+*/
+bool CssTheme::parseTheme(const QUrl &url)
 {
     bool ret = true;
     // open the file
@@ -377,7 +391,7 @@ bool CssTheme::handleImport(CssTheme *css, QTextStream &stream)
     QFile *file = qobject_cast<QFile*>(stream.device());
     QFileInfo fi(*file);
     themeFile.prepend('/').prepend(fi.dir().absolutePath());
-    return css->parseCssTheme(QUrl::fromLocalFile(themeFile));
+    return css->parseTheme(QUrl::fromLocalFile(themeFile));
 }
 
 /*!
@@ -472,14 +486,14 @@ CssTheme::CssTheme() :
     rules["qml-import"] = handleQmlImport;
 }
 
-bool CssTheme::loadCssTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
+bool CssTheme::loadTheme(const QUrl &url, QDeclarativeEngine *engine, StyleTreeNode *styleTree)
 {
     bool ret = true;
     this->engine = engine;
     this->styleTree = styleTree;
 
     // parses the theme
-    ret = parseCssTheme(url);
+    ret = parseTheme(url);
     if (ret) {
 
         normalizeStyles();
