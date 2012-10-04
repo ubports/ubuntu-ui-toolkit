@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import "fontUtils.js" as FontUtils
 
 /*!
@@ -227,7 +227,7 @@ FocusScope {
       between 11 and 31 into the text input:
 
       \qml
-      import QtQuick 1.0
+      import QtQuick 2.0
       TextInput{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
@@ -395,7 +395,7 @@ FocusScope {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                editor.openSoftwareInputPanel()
+                Qt.inputMethod.show()
             }
         }
         function hideInputPanel()
@@ -403,7 +403,7 @@ FocusScope {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                editor.closeSoftwareInputPanel()
+                Qt.inputMethod.hide()
             }
         }
         // reset selection

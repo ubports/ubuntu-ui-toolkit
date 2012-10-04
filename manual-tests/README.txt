@@ -42,7 +42,7 @@ Test Button
 This test shows that the button emits a signal when pressed
 
 Setup:
-#. start Gallery.qml in qmlviewer
+#. start Gallery.qml in qmlscene 
 
 Actions:
 #. Select Buttons

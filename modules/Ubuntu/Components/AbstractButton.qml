@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 
 /*!
     \qmlabstract AbstractButton
@@ -67,6 +67,10 @@ Item {
         // as it might occlude the newly assigned mouse area.
         enabled: button.mouseArea === defaultMouseArea
         hoverEnabled: true
+
+        // FIXME: This is odd, but without it, the 'mouse' parameter gets
+        //  lost in button's clicked signal.
+        onClicked: { }
     }
 
     /*!
