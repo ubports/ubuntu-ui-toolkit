@@ -295,12 +295,13 @@ Template {
                 selected: listItemTypes.selectedType === "Controls"
                 Component {
                     id: controlExample
-                    Switch {
-                        anchors {
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
-                    }
+//                    Switch {
+//                        anchors {
+//                            top: parent.top
+//                            bottom: parent.bottom
+//                        }
+//                    }
+                    Button { text: "yeah"; onClicked: print("click" +mouse.x) }
                 }
                 Column {
                     width: 250
@@ -342,6 +343,12 @@ Template {
                                 fill: parent
                             }
                             onClicked: print("Large button clicked")
+                        }
+                    }
+                    ListItem.SingleControl {
+                        control: Slider {
+                            anchors.margins: 5
+                            width: parent.width - 10
                         }
                     }
                 }

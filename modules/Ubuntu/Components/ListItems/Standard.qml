@@ -201,7 +201,7 @@ Empty {
         }
         onControlChanged: {
             control.parent = controlContainer;
-            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
+//            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
         }
     }
     MouseArea {
@@ -213,6 +213,9 @@ Empty {
             right: progressionHelper.left
         }
         enabled: control !== null
+
+        onClicked: control.clicked(mouse)
+        onPressedChanged: control.pressed = pressed
     }
     ProgressionVisual {
         id: progressionHelper

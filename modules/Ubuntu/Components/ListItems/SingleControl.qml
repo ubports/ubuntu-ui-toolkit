@@ -55,6 +55,9 @@ Empty {
      */
     property Item control
 
+    onClicked: control.clicked(mouse)
+    pressed: __mouseArea.pressed || control.__mouseArea.pressed
+    onPressedChanged: control.pressed = singleControlListItem.pressed
 
     /*!
       \internal
@@ -63,7 +66,7 @@ Empty {
         if (control) {
             control.parent = singleControlListItem;
             control.anchors.centerIn = singleControlListItem;
-            control.mouseArea = singleControlListItem.mouseArea;
+//            control.mouseArea = singleControlListItem.mouseArea;
         }
     }
 
@@ -72,5 +75,5 @@ Empty {
       This handler is an implementation detail. Mark as internal to prevent QDoc publishing it
      */
     onControlChanged: __updateControl()
-    Component.onCompleted: __updateControl()
+//    Component.onCompleted: __updateControl()
 }
