@@ -1,7 +1,7 @@
 Source: qt-components-ubuntu
 Priority: extra
 Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
-Build-Depends: debhelper (>= 8.0.0), qtbase, qtdeclarative
+Build-Depends: debhelper (>= 8.0.0), qtbase, qtdeclarative, libgl-dev, libgles2-mesa-dev
 Standards-Version: 3.9.2
 Section: libs
 Homepage: https://launchpad.net/tavastia
