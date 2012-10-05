@@ -88,6 +88,7 @@ Base {
             left: parent.left
             right: parent.right
             verticalCenter: parent.verticalCenter
+            verticalCenterOffset: __verticalCenterOffset
         }
         height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 

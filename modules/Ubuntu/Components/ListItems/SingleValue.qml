@@ -64,6 +64,7 @@ Base {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
+            verticalCenterOffset: __verticalCenterOffset
             leftMargin: 5
             left: parent.left
         }
@@ -80,6 +81,7 @@ Base {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
+            verticalCenterOffset: __verticalCenterOffset
             right: parent.right
             rightMargin: 5
             left: label.right
