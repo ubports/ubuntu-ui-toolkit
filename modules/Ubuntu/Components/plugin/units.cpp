@@ -3,7 +3,6 @@
 #include <QtCore>
 #include <QtQml/QQmlContext>
 
-Bucket ldpi = { "ldpi", 120, 0.75 };
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
 Bucket xhdpi = { "xhdpi", 320, 2.0 };
@@ -35,7 +34,6 @@ QString selectBucket(float density, QString formFactor)
 Units::Units(QObject *parent) :
     QObject(parent)
 {
-    g_densityBuckets[ldpi.name] = ldpi;
     g_densityBuckets[mdpi.name] = mdpi;
     g_densityBuckets[hdpi.name] = hdpi;
     g_densityBuckets[xhdpi.name] = xhdpi;
