@@ -31,19 +31,13 @@ Item {
     property real leftIconMargin: 5
     property real rightIconMargin: 5
     width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
-
-    anchors {
-        top: parent ? parent.top : undefined
-        left: parent ? parent.left : undefined
-        bottom: parent ? parent.bottom : undefined
-    }
+    height: icon.height
 
     ImageWithFallback {
         id: icon
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectCrop
         anchors {
-            verticalCenter: parent.verticalCenter
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }

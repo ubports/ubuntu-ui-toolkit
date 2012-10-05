@@ -91,6 +91,10 @@ Empty {
 
     IconVisual {
         id: iconHelper
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
+        }
     }
 
     /*!
