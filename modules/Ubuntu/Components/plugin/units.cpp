@@ -5,7 +5,7 @@
 
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
-Bucket xhdpi = { "xhdpi", 320, 2.0 };
+Bucket xhdpi = { "xhdpi", 340, 2.25 };
 QHash<QString, Bucket> g_densityBuckets;
 
 QString selectBucket(float density, QString formFactor)
