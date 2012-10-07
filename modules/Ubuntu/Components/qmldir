@@ -21,3 +21,5 @@ ImageMipmap 0.1 ImageMipmap.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
+FontUtils 0.1 fontUtils.js
+MathUtils 0.1 mathUtils.js
