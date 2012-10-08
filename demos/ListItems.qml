@@ -40,13 +40,13 @@ Template {
                     "Grouped List"]
                 property string selectedType: "Standard"
 
-                ListItem.Header { text: "Types of list items" }
+                ListItem.Header { text: i18n.tr("Types of list items") }
                 Repeater {
                     model: listItemTypes.typeList.length
                     ListItem.Standard {
                         text: i18n.tr(listItemTypes.typeList[index])
-                        selected: listItemTypes.selectedType === text
-                        onClicked: listItemTypes.selectedType = text
+                        selected: listItemTypes.selectedType === listItemTypes.typeList[index]
+                        onClicked: listItemTypes.selectedType = listItemTypes.typeList[index]
                     }
                 }
             }

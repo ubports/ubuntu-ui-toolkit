@@ -217,6 +217,9 @@ msgstr "Tijd kiezer"
 msgid "Toolbars"
 msgstr "Werkbalken"
 
+msgid "Types of list items"
+msgstr "Types lijst items"
+
 msgid "type to show clear button"
 msgstr "typen om de wis-knop weer te geven"
 

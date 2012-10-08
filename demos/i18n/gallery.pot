@@ -217,6 +217,9 @@ msgstr ""
 msgid "Toolbars"
 msgstr ""
 
+msgid "Types of list items"
+msgstr ""
+
 msgid "type to show clear button"
 msgstr ""
 
