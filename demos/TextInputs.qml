@@ -96,7 +96,7 @@ Template {
                         width: units.dp(20)
                     }
                     secondaryItem: ButtonWithForeground {
-                        iconSource: "avatar_contacts_list.png"
+                        iconSource: "small_avatar.png"
                         width: height
                         height: parent.height - units.dp(5)
                     }
