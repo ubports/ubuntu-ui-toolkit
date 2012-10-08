@@ -10,7 +10,7 @@
 #include "style.h"
 
 const char *lookupTestPattern1 =
-        "import QtQuick 1.1"
+        "import QtQuick 2.0"
         "import Ubuntu.Components 0.1"
         "StyledItem {"
         "   styleClass: \"testB\""
@@ -30,7 +30,6 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-    void testCase_nullInstance();
     void testCase_initializeEngine();
     void testCase_registerInstanceId();
     void testCase_loadTheme();
@@ -71,12 +70,6 @@ void ThemeEngineTest::cleanupTestCase()
     delete view;
 }
 
-void ThemeEngineTest::testCase_nullInstance()
-{
-    ThemeEngine *instance = ThemeEngine::instance(0);
-    QVERIFY2(!instance, "FAILURE");
-}
-
 void ThemeEngineTest::testCase_initializeEngine()
 {
     bool result = (ThemeEngine::instance(view->engine()) != 0);
@@ -109,11 +102,11 @@ void ThemeEngineTest::testCase_lookupStyleRule()
 void ThemeEngineTest::testCase_loadTheme()
 {
     ThemeEngine::instance()->resetError();
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../resources/test.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
     QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../resources/base.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
     QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../resources/null.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
     QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
 }
 
@@ -121,10 +114,10 @@ void ThemeEngineTest::testCase_setTheme()
 {
     ThemeEngine::instance()->resetError();
     // should pass
-    ThemeEngine::instance()->setTheme("../resources/test.qthm", false);
+    ThemeEngine::instance()->setTheme("../../resources/test.qthm", false);
     QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
     // should fail
-    ThemeEngine::instance()->setTheme("../resources/base.qthm", true);
+    ThemeEngine::instance()->setTheme("../../resources/base.qthm", true);
     QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
 }
 

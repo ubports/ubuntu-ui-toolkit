@@ -233,7 +233,7 @@ StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 void ThemeEnginePrivate::setError(const QString &error)
 {
     themeEngine->d_ptr->errorString = error;
-    if (/*themeDebug && */!themeEngine->d_ptr->errorString.isEmpty())
+    if (themeDebug && !themeEngine->d_ptr->errorString.isEmpty())
         qWarning() << themeEngine->d_ptr->errorString;
 
     Q_EMIT themeEngine->errorChanged();

@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS += demos modules/qt-components-ubuntu.pro
+SUBDIRS += demos modules/qt-components-ubuntu.pro tests/unit
 #zsombi: the test cases are out as it doesn't link...
 #SUBDIRS += tests/unit/unit-tests.pro
 

@@ -6,7 +6,7 @@
 
 QT       += testlib
 
-QT       += qml #core gui
+QT       += quick
 
 TARGET = tst_themeengineprivatetest
 CONFIG   += qt console no_keywords

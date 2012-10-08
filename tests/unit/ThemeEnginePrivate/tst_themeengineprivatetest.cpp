@@ -66,20 +66,20 @@ void ThemeEnginePrivateTest::cleanupTestCase()
 void ThemeEnginePrivateTest::testCase_loadTheme()
 {
     engine->errorString = QString();
-    engine->loadTheme(QUrl::fromLocalFile("../resources/test.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
     QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
 
-    engine->loadTheme(QUrl::fromLocalFile("../resources/base.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
     QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
 
-    engine->loadTheme(QUrl::fromLocalFile("../resources/null.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
     QVERIFY2(!engine->errorString.isEmpty(), "FAILURE");
 }
 
 void ThemeEnginePrivateTest::testCase_styleRuleForPath()
 {
     engine->errorString = QString();
-    engine->loadTheme(QUrl::fromLocalFile("../resources/test.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
     QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
 
     bool result = true;
