@@ -13,5 +13,3 @@ desktop_file.path = /usr/share/applications
 desktop_file.files = qt-components-ubuntu-demos.desktop
 
 INSTALLS += other_files desktop_file
-
-QML_IMPORT_PATH = ../modules
