@@ -120,8 +120,6 @@ AbstractButton {
     */
     property bool live: false
 
-    pressed: false
-
     /*!
       \preliminary
       This function is used by the value indicator to show the current value.
@@ -131,9 +129,6 @@ AbstractButton {
     function formatValue(v) {
         return v.toFixed(0)
     }
-
-    /*! \internal */
-    onMouseAreaChanged: __updateMouseArea()
 
     /*! \internal */
     onValueChanged: __value = slider.value
@@ -269,20 +264,21 @@ AbstractButton {
                                                      (slider.maximumValue - slider.minimumValue),
                                                      0.0, 1.0)
 
+    Component.onCompleted: __updateMouseArea()
+
     /*! \internal */
     function __updateMouseArea() {
-        if (slider.mouseArea) {
-            slider.mouseArea.pressedChanged.connect(__mouseAreaPressed);
-            slider.mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
-        }
+        slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
     }
+
+    onPressedChanged: __mouseAreaPressed()
 
     /*! \internal */
     function __mouseAreaPressed() {
-        if (slider.mouseArea.pressedButtons == Qt.LeftButton) {
+        if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
             // Left button pressed.
-            var mouseX = slider.mouseArea.mouseX;
-            var mouseY = slider.mouseArea.mouseY;
+            var mouseX = slider.__mouseArea.mouseX;
+            var mouseY = slider.__mouseArea.mouseY;
             if (mouseY >= thumbShape.y && mouseY <= thumbShape.y + thumbShape.height) {
                 if (mouseX >= thumbShape.x && mouseX <= thumbShape.x + thumbShape.width) {
                     // Button pressed inside the thumb.
@@ -291,7 +287,7 @@ AbstractButton {
                 } else if (mouseX > __thumbSpacing &&
                            mouseX < backgroundShape.width - __thumbSpacing) {
                     // Button pressed outside the thumb.
-                    var normalizedPosition = (slider.mouseArea.mouseX - __thumbSpacing -
+                    var normalizedPosition = (slider.__mouseArea.mouseX - __thumbSpacing -
                     __thumbWidth * 0.5) / __thumbSpace;
                     normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
                     __value = MathUtils.lerp(normalizedPosition, slider.minimumValue,
@@ -315,7 +311,7 @@ AbstractButton {
     function __mouseAreaPositionchanged() {
         // Left button dragging.
         if (slider.pressed) {
-            var normalizedOffsetX = (slider.mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
+            var normalizedOffsetX = (slider.__mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
             var v = MathUtils.clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
             __value = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
             if (slider.live) {
