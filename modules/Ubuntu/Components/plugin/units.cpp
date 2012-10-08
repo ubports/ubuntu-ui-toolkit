@@ -42,6 +42,17 @@ static float getenvFloat(const char* name, float defaultValue)
     return ok ? value : defaultValue;
 }
 
+static QString getenvString(const char* name, const QString& defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    QString value = QString::fromLocal8Bit(stringValue);
+    if (value.isEmpty()) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+}
+
 Units::Units(QObject *parent) :
     QObject(parent)
 {
@@ -50,10 +61,7 @@ Units::Units(QObject *parent) :
     g_densityBuckets[xhdpi.name] = xhdpi;
 
     float scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
-    QString bucket = QString::fromLocal8Bit(qgetenv(ENV_BUCKET));
-    if (bucket.isEmpty()) {
-        bucket = "mdpi";
-    }
+    QString bucket = getenvString(ENV_BUCKET, "mdpi");
 
     m_bucket = bucket;
     m_scaleFactor = scaleFactor;
