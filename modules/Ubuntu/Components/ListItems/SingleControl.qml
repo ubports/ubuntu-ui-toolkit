@@ -53,8 +53,11 @@ Empty {
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
      */
-    property Item control
+    property AbstractButton control
 
+    onClicked: control.clicked(mouse)
+    pressed: __mouseArea.pressed || control.__mouseArea.pressed
+    onPressedChanged: control.pressed = singleControlListItem.pressed
 
     /*!
       \internal
@@ -63,7 +66,6 @@ Empty {
         if (control) {
             control.parent = singleControlListItem;
             control.anchors.centerIn = singleControlListItem;
-            control.mouseArea = singleControlListItem.mouseArea;
         }
     }
 
@@ -72,5 +74,4 @@ Empty {
       This handler is an implementation detail. Mark as internal to prevent QDoc publishing it
      */
     onControlChanged: __updateControl()
-    Component.onCompleted: __updateControl()
 }
