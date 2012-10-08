@@ -1,4 +1,5 @@
 #include "units.h"
+#include "scalingimageprovider.h"
 
 #include <QtCore>
 #include <QtQml/QQmlContext>
@@ -14,9 +15,9 @@ struct Bucket {
     float scaleFactor;
 };
 
-Bucket mdpi = { "mdpi", 160, 1.0 };
-Bucket hdpi = { "hdpi", 240, 1.5 };
-Bucket xhdpi = { "xhdpi", 340, 2.25 };
+Bucket mdpi = { "", 160, 1.0 };
+Bucket hdpi = { "@1.5x", 240, 1.5 };
+Bucket xhdpi = { "@2.25x", 340, 2.25 };
 QList<Bucket> g_densityBuckets;
 
 float selectScaleFactor(float density, QString formFactor)
@@ -104,33 +105,33 @@ float Units::dp(float value)
 QString Units::resolveResource(const QUrl& value)
 {
     QFileInfo fileInfo(value.toLocalFile());
-    QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName() + "@";
+
+    if (!fileInfo.isFile()) {
+        return "";
+    }
+
+    QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
     QString path;
 
     path = prefix + suffixForScaleFactor(m_scaleFactor) + suffix;
     if (QFile::exists(path)) {
-        return path + "@x1";
+        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + "1";
     }
 
     path = prefix + xhdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + "@x" + QString::number(m_scaleFactor/xhdpi.scaleFactor);
+        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/xhdpi.scaleFactor);
     }
 
     path = prefix + hdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + "@x" + QString::number(m_scaleFactor/hdpi.scaleFactor);
+        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/hdpi.scaleFactor);
     }
 
     path = prefix + mdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + "@x" + QString::number(m_scaleFactor/mdpi.scaleFactor);
-    }
-
-    path = fileInfo.filePath();
-    if (QFile::exists(path)) {
-        return path + "@x" + QString::number(m_scaleFactor);
+        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/mdpi.scaleFactor);
     }
 
     return "";
