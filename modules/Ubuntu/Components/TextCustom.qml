@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import "fontUtils.js" as FontUtils
+import "." 0.1
 
 /*!
     \qmlclass TextCustom

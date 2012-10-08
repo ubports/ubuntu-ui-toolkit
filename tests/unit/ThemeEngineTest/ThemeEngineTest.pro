@@ -6,11 +6,11 @@
 
 QT       += testlib
 
-QT       += qml core gui
+QT       += qml #core gui
 
 TARGET = tst_themeenginetest
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG   += qt console no_keywords
+#CONFIG   -= app_bundle
 
 TEMPLATE = app
 

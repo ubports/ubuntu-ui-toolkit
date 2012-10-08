@@ -22,12 +22,14 @@
 #include <QObject>
 #include <QStringList>
 #include <QtQuick/QQuickItem>
+#include <QtQml>
 #include <QtQml/QQmlParserStatus>
 
 //#include <QLibrary>
 
 class StyleRulePrivate;
 class QQmlComponent;
+class QQmlEngine;
 class StyleRule : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -39,10 +41,17 @@ class StyleRule : public QObject, public QQmlParserStatus
 
 public:
     StyleRule(QObject *parent = 0);
+    StyleRule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent = 0);
     ~StyleRule();
 
     void classBegin();
     void componentComplete();
+
+    //create objects from style
+    QObject *createStyle(QQmlContext *context);
+    QQuickItem *createDelegate(QQmlContext *context);
+
+    //internal
 
 Q_SIGNALS:
     // the signal is emitted once the rule is completed
@@ -50,20 +59,22 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-public: //getter/setters
+public: //getters
     QString selector() const;
-    void setSelector(const QString &selector);
     QQmlComponent *style();
-    void setStyle(QQmlComponent *style);
     QQmlComponent *delegate();
+private: //setters
+    void setSelector(const QString &selector);
+    void setStyle(QQmlComponent *style);
     void setDelegate(QQmlComponent *delegate);
 
 private:
     Q_DISABLE_COPY(StyleRule)
     Q_DECLARE_PRIVATE(StyleRule)
     QScopedPointer<StyleRulePrivate> d_ptr;
+    Q_PRIVATE_SLOT(d_func(), void _q_componentCompleted(QQmlComponent::Status))
 };
 
-QML_DECLARE_TYPE(StyleRule)
+QML_DECLARE_TYPE(StyleRule);
 
 #endif // STYLE_H

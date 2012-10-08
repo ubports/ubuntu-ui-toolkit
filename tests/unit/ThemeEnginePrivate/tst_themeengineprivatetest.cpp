@@ -49,18 +49,13 @@ void ThemeEnginePrivateTest::initTestCase()
     // not give any error...
 
     char *uri = "Ubuntu.Components";
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-
-    // these need to be registered to QtQuick 1.1 otherwise the revisioned
-    // properties won't be accessible
-    uri = "QtQuick";
-    qmlRegisterType<StyledItem, 1>(uri, 1, 1, "StyledItem");
-    qmlRegisterRevision<QQuickItem, 1>(uri, 1, 1);
+    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 
     // engine privates can be created with its public class; therefore
     // we create an engine class and use its privates
-    ThemeEngine::initialize(view->engine());
-    engine = ThemeEngine::instance()->d_func();
+    engine = ThemeEngine::instance(view->engine())->d_func();
 }
 
 void ThemeEnginePrivateTest::cleanupTestCase()

@@ -22,6 +22,7 @@
 #include "styleditem.h"
 #include <QString>
 #include <QtQml/QQmlEngine>
+#include <QJSEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
@@ -55,9 +56,9 @@
   names as specified in QSettings documentation.
 */
 
-Q_GLOBAL_STATIC(ThemeEngine, themeEngine)
-
 bool themeDebug = false;
+
+ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
 /*=============================================================================
 =============================================================================*/
@@ -68,11 +69,11 @@ bool themeDebug = false;
 
 ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
-    initialized(false),
     m_engine(0),
     m_styleTree(new StyleTreeNode(0)),
     themeSettings(qq)
 {
+    themeEngine = q_ptr;
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
@@ -109,8 +110,10 @@ void ThemeEnginePrivate::_q_updateTheme()
                 importList.removeAll(import);
         }
         importPaths = themeSettings.imports();
-        importList << importPaths;
-        m_engine->setImportPathList(importList);
+        if (!importPaths.isEmpty()) {
+            importList << importPaths;
+            m_engine->setImportPathList(importList);
+        }
         // load the theme
         loadTheme(newTheme);
     }
@@ -123,12 +126,11 @@ void ThemeEnginePrivate::_q_updateTheme()
 bool ThemeEnginePrivate::initialize(QQmlEngine *engine)
 {
     // set as initialized so we are able to load the theme
-    initialized = true;
     m_engine = engine;
 
     // load the tast theme configured
     _q_updateTheme();
-    return initialized;
+    return true;
 }
 
 /*!
@@ -230,13 +232,11 @@ StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
   */
 void ThemeEnginePrivate::setError(const QString &error)
 {
-    ThemeEngine *theme = themeEngine();
-    theme->d_ptr->errorString = "Theme loading error!\n\t" + error;
+    themeEngine->d_ptr->errorString = error;
+    if (/*themeDebug && */!themeEngine->d_ptr->errorString.isEmpty())
+        qWarning() << themeEngine->d_ptr->errorString;
 
-    if (themeDebug && !theme->d_ptr->errorString.isEmpty())
-        qWarning() << theme->d_ptr->errorString;
-
-    Q_EMIT theme->errorChanged();
+    Q_EMIT themeEngine->errorChanged();
 }
 
 /*!
@@ -318,6 +318,10 @@ ThemeEngine::~ThemeEngine()
 
 /*!
   \internal
+  The method is used by the QML framework to register theme engine instance. It
+  is called upon first invocation of the type functionality. However the engine
+  itself is accessed earlier by the StyledItems therefore the instance must be
+  created before.
   The method is used internally by the component plug-in to initialize the
   theming engine. When called configures the engine with the given declarative
   engine and loads the last theme configured in the settings. Returns true on
@@ -326,25 +330,27 @@ ThemeEngine::~ThemeEngine()
   Further calls of the function do not re-initialize the engine nor re-load the
   configured theme.
 */
-bool ThemeEngine::initialize(QQmlEngine *engine)
+QObject *ThemeEngine::registerEngine(QQmlEngine *engine, QJSEngine *)
 {
-    ThemeEngine *theme = themeEngine();
-    if (!theme->d_ptr->initialized) {
-        theme->d_ptr->initialize(engine);
+    if (!ThemeEnginePrivate::themeEngine && engine) {
+        ThemeEnginePrivate::themeEngine = new ThemeEngine;
+        ThemeEnginePrivate::themeEngine->d_ptr->initialize(engine);
     }
-    return theme->d_ptr->initialized;
+    return ThemeEnginePrivate::themeEngine;
 }
 
 /*!
   \internal
-  The method returns the singleton instance of the theme engine.
+  The method returns the singleton instance of the theme engine. Usually the engine
+  is used from Qt earlier than from QML, therefore elements using it must pass their
+  QML engine instance so the theming engine can be initialized.
   */
-ThemeEngine *ThemeEngine::instance()
+ThemeEngine *ThemeEngine::instance(QQmlEngine *engine)
 {
-    ThemeEngine *ret = themeEngine();
-    if (!ret->d_func()->initialized)
-        ret = 0;
-    return ret;
+    // call register to make sure we have the instance
+    registerEngine(engine, 0);
+    Q_ASSERT_X(ThemeEnginePrivate::themeEngine, Q_FUNC_INFO, "THEME ENGINE NOT INITIALIZED");
+    return ThemeEnginePrivate::themeEngine;
 }
 
 /*!
@@ -384,8 +390,6 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 {
     Q_D(ThemeEngine);
-    if (!d->initialized)
-        return 0;
 
     Selector path = d->getSelector(item, forceClassName);
 
@@ -412,6 +416,7 @@ StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
 bool ThemeEngine::loadTheme(const QUrl &themeFile)
 {
     Q_D(ThemeEngine);
+    d->errorString = QString();
     d->loadTheme(themeFile);
     return d->errorString.isEmpty();
 }
@@ -434,6 +439,7 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 bool ThemeEngine::setTheme(const QString &theme, bool global)
 {
     Q_D(ThemeEngine);
+    d->errorString = QString();
     QUrl themeFile = d->themeSettings.setTheme(theme, global);
     if (themeFile.isValid())
         d->_q_updateTheme();

@@ -61,13 +61,9 @@ void ThemeEngineTest::initTestCase()
     // not give any error...
 
     char *uri = "Ubuntu.Components";
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-
-    // these need to be registered to QtQuick 1.1 otherwise the revisioned
-    // properties won't be accessible
-    uri = "QtQuick";
-    qmlRegisterType<StyledItem, 1>(uri, 1, 1, "StyledItem");
-    qmlRegisterRevision<QQuickItem, 1>(uri, 1, 1);
+    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
 
 void ThemeEngineTest::cleanupTestCase()
@@ -77,15 +73,15 @@ void ThemeEngineTest::cleanupTestCase()
 
 void ThemeEngineTest::testCase_nullInstance()
 {
-    ThemeEngine *instance = ThemeEngine::instance();
+    ThemeEngine *instance = ThemeEngine::instance(0);
     QVERIFY2(!instance, "FAILURE");
 }
 
 void ThemeEngineTest::testCase_initializeEngine()
 {
-    bool result = ThemeEngine::initialize(view->engine());
+    bool result = (ThemeEngine::instance(view->engine()) != 0);
     // theme loading might fail, however don't care about it
-    QVERIFY2(result && ThemeEngine::instance(), "Failure");
+    QVERIFY2(result, "Failure");
 }
 
 void ThemeEngineTest::testCase_registerInstanceId()

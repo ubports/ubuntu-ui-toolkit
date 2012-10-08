@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
@@ -28,7 +28,7 @@ Template {
 
             TextCustom {
                 styleClass: "label"
-                text: theme.currentTheme
+                text: Theme.currentTheme
             }
         }
 
@@ -36,17 +36,17 @@ Template {
             Button {
                 text: "Theme #1"
                 width: 100
-                onClicked: theme.setTheme("theme-one", true)
+                onClicked: Theme.setTheme("theme-one/theme.qthm", true)
             }
             Button {
                 text: "Theme #2"
                 width: 100
-                onClicked: theme.setTheme("demos/private-theme.qthm", false)
+                onClicked: Theme.setTheme("demos/private-theme.qthm", false)
             }
             Button {
                 text: "Default"
                 width: 100
-                onClicked: theme.setTheme("", true)
+                onClicked: Theme.setTheme("", true)
             }
         }
 
@@ -76,15 +76,17 @@ Template {
                 styleClass: "frame"
 
                 Button {
-                    x: 10; y: 10
-                    text: "Call"
-                    privateStyle: Rule {
+                    x: 10; y: 10; width: 150
+                    text: "Private style"
+                    style: Rule {
+                        selector: "privateRule"
                         delegate: Item {
                             z: -1
                             anchors.fill: parent
                             clip: true
                             Rectangle {
                                 id: shape
+                                z: -2
                                 anchors.fill: parent
                                 anchors.margins: -widget.width
                                 rotation: widget.pressed ? -45 : 45

@@ -28,19 +28,13 @@
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
-    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
 
-    // these need to be registered to QtQuick 2.0 otherwise the revisioned
-    // properties won't be accessible
-    const char *quick = "QtQuick";
-    qmlRegisterType<StyledItem, 1>(quick, 2, 0, "StyledItem");
-    qmlRegisterRevision<QQuickItem, 1>(quick, 2, 0);
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
+    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
+    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    ThemeEngine::initialize(engine);
-    // add theme engine
-    engine->rootContext()->setContextProperty("theme", ThemeEngine::instance());
 }

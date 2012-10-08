@@ -36,6 +36,7 @@ extern bool themeDebug;
 
 extern const char *appUseGlobalThemeKey;
 extern const char *appThemeFileKey;
+extern const char *systemThemePath;
 
 #define SELECTOR_IGNORE_RELATIONSHIP    0x01
 #define SELECTOR_IGNORE_STYLEID         0x02
@@ -100,6 +101,10 @@ public:
     ~CssTheme(){}
 
     bool loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *styleTree);
+
+    QQmlEngine *engine;
+    StyleTreeNode *styleTree;
+
 private:
 
     QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
@@ -112,8 +117,6 @@ private:
     bool parseTheme(const QUrl &url);
     bool buildStyleTree();
 
-    QQmlEngine *engine;
-    StyleTreeNode *styleTree;
     QString imports;
     QHash<QString, CssThemeParserCallback> rules;
     QHash<QString, QPair<QString, QString> > qmlMap;
@@ -147,8 +150,8 @@ public:
 
 public: //members
     ThemeEngine *q_ptr;
+    static ThemeEngine *themeEngine;
 
-    bool initialized;
     QQmlEngine *m_engine;
     // suffix tree for the styles
     StyleTreeNode *m_styleTree;

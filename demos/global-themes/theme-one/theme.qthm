@@ -5,7 +5,7 @@
 */
 
 @import url("../default.qthm");
-@qml-import("demos");
+@qml-import(app:/, demos 1.0);
 @qml-mapping(.frame, , TestFrameDelegate);
 
 .Button {

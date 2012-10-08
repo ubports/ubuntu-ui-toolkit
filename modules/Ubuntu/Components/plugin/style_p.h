@@ -27,12 +27,21 @@ class StyleRulePrivate
 
 public:
     StyleRulePrivate(StyleRule *qq);
+    StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule);
+    ~StyleRulePrivate();
 
     StyleRule *q_ptr;
 
     QQmlComponent *style;
     QQmlComponent *delegate;
     QString selector;
+    QString styleQml;
+    QString delegateQml;
+    bool qthmStyle;
+
+    void createComponent(QQmlEngine *engine, const QString &rule, QQmlComponent **component);
+    void completeComponent(QQmlComponent *sender);
+    void _q_componentCompleted(QQmlComponent::Status);
 };
 
 #endif // STYLE_P_H

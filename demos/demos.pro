@@ -2,7 +2,6 @@ TEMPLATE = subdirs
 
 OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.js)
 
-OTHER_FILES += theme.ini
 OTHER_FILES += *.qthm
 OTHER_FILES += global-themes/*.qthm
 OTHER_FILES += global-themes/theme-one/*.qthm

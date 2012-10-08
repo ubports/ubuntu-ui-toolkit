@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS += demos modules/qt-components-ubuntu.pro
+#zsombi: the test cases are out as it doesn't link...
 #SUBDIRS += tests/unit/unit-tests.pro
 
 test.target = test

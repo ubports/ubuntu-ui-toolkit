@@ -19,8 +19,9 @@
 #include "style.h"
 #include "style_p.h"
 #include "themeengine.h"
-#include <QQmlEngine>
-#include <QQmlContext>
+#include "themeengine_p.h"
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
 
 /*!
   \qmlclass Rule StyleRule
@@ -107,36 +108,182 @@
 StyleRulePrivate::StyleRulePrivate(StyleRule *qq) :
     q_ptr(qq),
     style(0),
-    delegate(0)
+    delegate(0),
+    qthmStyle(false)
 {
+}
+
+/*!
+  \internal
+  Alternate constructor used in QTHM styles, when style and delegate component creation may be delayed.
+  */
+StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule) :
+    q_ptr(qq),
+    style(0),
+    delegate(0),
+    selector(selector),
+    styleQml(styleRule),
+    delegateQml(delegateRule),
+    qthmStyle(true)
+{
+/*
+    qDebug() << "selector: " << selector;
+    qDebug() << "style:\n" << styleQml;
+    qDebug() << "delegate:\n" << delegateQml;
+*/
+    // create style component
+    if (!styleQml.isEmpty())
+        createComponent(engine, styleQml, &style);
+
+    // create delegate component
+    if (!delegateQml.isEmpty())
+        createComponent(engine, delegateQml, &delegate);
+}
+
+/*!
+  \internal
+  Destroys style and delegate components in cas ethe rule was created by a QTHM theme.
+  */
+StyleRulePrivate::~StyleRulePrivate()
+{
+    if (qthmStyle) {
+        if (!style)
+            delete style;
+        style = 0;
+        if (delegate)
+            delete delegate;
+        delegate = 0;
+    }
+}
+
+/*!
+  \internal
+  Initiates component creation for a given QML code
+  */
+void StyleRulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCode, QQmlComponent **component)
+{
+    *component = new QQmlComponent(engine);
+    (*component)->setData(qmlCode.toAscii(), QUrl());
+    if ((*component)->isLoading() && !(*component)->isError()) {
+        QObject::connect(*component, SIGNAL(statusChanged(QQmlComponent::Status)), q_ptr, SLOT(_q_componentCompleted(QQmlComponent::Status)));
+    } else
+        completeComponent(*component);
+}
+
+/*!
+  \internal
+  Completes (style or delegate) component creation. If both created style and
+  delegate components are ready, emits the ruleChanged signal to update StyledItems.
+  */
+void StyleRulePrivate::completeComponent(QQmlComponent *sender)
+{
+    Q_ASSERT_X(sender, Q_FUNC_INFO, "Cannot have NULL component");
+    if (sender->isError()) {
+        ThemeEnginePrivate::setError(QString("Error on creating rule for selector[%1]: \n%2\n%3")
+                                     .arg(selector)
+                                     .arg((sender == style) ? styleQml : delegateQml)
+                                     .arg(sender->errorString()));
+    } else if (!sender->isReady()) {
+        ThemeEnginePrivate::setError(QString("Component not ready for selector[%1] \n%2\n%3")
+                                     .arg(selector)
+                                     .arg((sender == style) ? styleQml : delegateQml)
+                                     .arg(sender->errorString()));
+    } else {
+        bool styleCompleted = false, delegateCompleted = false;
+        if (!style || (style && (style->status() == QQmlComponent::Ready)))
+            styleCompleted = true;
+        if (!delegate || (delegate && (delegate->status() == QQmlComponent::Ready)))
+            delegateCompleted = true;
+        if (styleCompleted && delegateCompleted) {
+            Q_Q(StyleRule);
+            Q_EMIT q->ruleChanged();
+        }
+    }
+}
+
+/*!
+  \internal
+  Slot completing the component (style or delegate) creation. Calls completeComponent
+  with the signal sender.
+  */
+void StyleRulePrivate::_q_componentCompleted(QQmlComponent::Status)
+{
+    Q_Q(StyleRule);
+    QQmlComponent *sender = qobject_cast<QQmlComponent*>(q->sender());
+    completeComponent(sender);
 }
 
 /*=============================================================================
 =============================================================================*/
 
 /*!
-  Creates the rule element
+  Creates the rule element. This is used when QML theme file format is loaded.
   */
 StyleRule::StyleRule(QObject *parent) :
     QObject(parent),
     d_ptr(new StyleRulePrivate(this))
 {}
 
+/*!
+  Creates rule element used when QTHM format themes are loaded. The style and delegate
+  components are created by the rule element as delayed completion can occur.
+  */
+StyleRule::StyleRule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent) :
+    QObject(parent),
+    d_ptr(new StyleRulePrivate(this, engine, selector, styleRule, delegateRule))
+{}
+
 StyleRule::~StyleRule()
 {}
 
-
 void StyleRule::classBegin()
 {
-
+    // from QQmlParserStatus
 }
 
 void StyleRule::componentComplete()
 {
-    // Q_EMIT changed signal; this is needed when developer defines a private StyleRule
-    // for a control
+    // trigger changed signal; this is needed when developer defines a private StyleRule
+    // for a widget so property bindings done with the rule are updated
     Q_EMIT ruleChanged();
 }
+
+/*!
+  \internal
+  Creates a style object in the \a context. Use this method instead of creating
+  style objects straight from the style component, as this one checks the readyness
+  of the style component of the rule.
+  */
+QObject *StyleRule::createStyle(QQmlContext *context)
+{
+    Q_D(StyleRule);
+    if (d->qthmStyle && d->style && (d->style->status() != QQmlComponent::Ready)) {
+        ThemeEnginePrivate::setError(QString("Style not ready for [%1]\n%2")
+                                     .arg(d->selector)
+                                     .arg(d->styleQml));
+        return 0;
+    }
+    return d->style ? d->style->create(context) : 0;
+}
+
+/*!
+  \internal
+  Creates the visuals item in the \a context. Use this method instead of creating
+  visuals straight from the delegate component, as this one checks the readyness
+  of the delegate component of the rule.
+  */
+QQuickItem *StyleRule::createDelegate(QQmlContext *context)
+{
+    Q_D(StyleRule);
+    if (d->qthmStyle && d->delegate && (d->delegate->status() != QQmlComponent::Ready)) {
+        ThemeEnginePrivate::setError(QString("Delegate not ready for [%1]\n%2")
+                                     .arg(d->selector)
+                                     .arg(d->delegateQml));
+        return 0;
+    }
+    return d->delegate ? qobject_cast<QQuickItem*>(d->delegate->create(context)) : 0;
+}
+
 
 /*!
   \qmlproperty string Rule::selector

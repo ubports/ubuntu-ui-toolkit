@@ -24,6 +24,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QCoreApplication>
 
 #include <QDebug>
 
@@ -37,16 +38,27 @@
      properties from the base selector
   3. build ThemeEngine's styleTree by creating Rule elements using the styles,
      mappings and imports specified.
+
+  TODOs:
+  - optimization
+  - merge steps 1 and 2
+  - export into QML theme file for comparison in between CSS-like and QML theme
+    loading
 */
 
 const char *ruleTemplate =  \
-"import QtQuick 2.0\n" \
-"%1\n"
-"Rule {\n"
-"    selector: \"%2\"\n"
-"    %3\n"
-"    %4\n"
-"}";
+        "import QtQuick 2.0\n"
+        "%1\n"
+        "Rule {\n"
+        "    selector: \"%2\"\n"
+        "    %3\n"
+        "    %4\n"
+        "}";
+
+const char *styleRuleComponent =  \
+        "import QtQuick 2.0\n"
+        "%1\n"
+        "%2\n";
 
 /*!
   \internal
@@ -89,7 +101,9 @@ QString CssTheme::readChar(QTextStream &stream, const QRegExp &bypassTokens)
 
         data += stream.read(1);
 
-        // skip comments by default
+        // skip comments by default; as we read character by character, it's easier to
+        // implement by checking the comment limitators than using QRegExp, which would
+        // ease our life if we'd work with strings.
         if (data[0] == '/') {
             if (data == "/*") {
                 // read till we get the comment's end mark
@@ -221,7 +235,8 @@ void CssTheme::normalizeStyles()
 
 /*!
   \internal
-  Parses a QTHM theme
+  Parses a QTHM theme. Reads the stream char-by-char to avoid seeking in the stream.
+  Seeking would be needed when reading entire line and parsing tags out of it.
 */
 bool CssTheme::parseTheme(const QUrl &url)
 {
@@ -294,17 +309,20 @@ bool CssTheme::parseTheme(const QUrl &url)
 
 bool CssTheme::buildStyleTree()
 {
+    Selector selector;
+    QString style;
+    QString delegate;
+    QString qmap;
+
     // go through the selector map and build the styles to each
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
     while (i.hasNext()) {
         i.next();
-        Selector selector = i.key();
+        selector = i.key();
         QHashIterator<QString, QString> properties(i.value());
-
-        QString style;
-        QString delegate;
         QPair<QString, QString> qmlTypes;
-        QString qmap = '.' + selector.last().styleClass;
+
+        qmap = '.' + selector.last().styleClass;
 
         if (qmlMap.contains(qmap))
             qmlTypes = qmlMap.value(qmap);
@@ -316,9 +334,9 @@ bool CssTheme::buildStyleTree()
             if (!qmlTypes.first.isEmpty()) {
                 // we have the mapping!!
                 style = qmlTypes.first;
-                style = "style: " + style + " {\n";
+                style = style + " {\n";
             } else {
-                style = "style: QtObject {\n";
+                style = "QtObject {\n";
                 propertyPrefix = "property variant";
             }
 
@@ -333,44 +351,33 @@ bool CssTheme::buildStyleTree()
 
         // delegate
         if (!qmlTypes.second.isEmpty())
-            delegate = QString("delegate: Component {%1{}}").arg(qmlTypes.second);
+            delegate += QString("%1{}").arg(qmlTypes.second);
 
         // normalize selector so we build the Rule with the proper one
         normalizeSelector(selector);
 
-        // create Rule object
-        QString ruleObject = QString(ruleTemplate)
-                .arg(imports)
-                .arg(ThemeEnginePrivate::selectorToString(selector))
-                .arg(style)
-                .arg(delegate);
-        //qDebug() << "ruleObject\n" << ruleObject;
+        // creating components from internal QML source is synchronous, unless
+        // one of the imported elements require threaded loading. Therefore we use
+        // StyleRule to create style and delegate components so StyleRule can handle
+        // asynchronous completion of those.
 
-        QQmlComponent component(engine);
-        component.setData(ruleObject.toAscii(), QUrl());
-        if (!component.isError()) {
-            QObject *rule = component.create();
-            if (rule) {
-                StyleRule *styleRule = qobject_cast<StyleRule*>(rule);
-                if (styleRule)
-                    styleTree->addStyleRule(selector, styleRule);
-                else {
-                    ThemeEnginePrivate::setError(QString("Created element cannot be casted to Rule: \n%1\n%2")
-                                                 .arg(ruleObject)
-                                                 .arg(component.errorString()));
-                    return false;
-                }
-            } else {
-                ThemeEnginePrivate::setError(QString("Error on creating rule: \n%1\n%2")
-                                             .arg(ruleObject)
-                                             .arg(component.errorString()));
-                return false;
-            }
-        } else {
-            ThemeEnginePrivate::setError(QString("Error on creating rule: \n%1\n%2")
-                                         .arg(ruleObject)
-                                         .arg(component.errorString()));
+        if (!style.isEmpty())
+            style = QString(styleRuleComponent).arg(imports).arg(style);
+        if (!delegate.isEmpty())
+            delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
+        StyleRule *rule = new StyleRule(engine,
+                                        ThemeEnginePrivate::selectorToString(selector),
+                                        style,
+                                        delegate);
+        // the error is reported in case the creation is synchronous, so capture it here
+        if (!ThemeEngine::instance(0)->error().isEmpty()) {
+            delete rule;
             return false;
+        } else {
+            // we either have a success or async component creation
+            styleTree->addStyleRule(selector, rule);
+            style.clear();
+            delegate.clear();
         }
     }
 
@@ -455,20 +462,44 @@ bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
 /*!
   \internal
   Callback handling qml-import tags. Adds the import sentence to the import list
-  that will be added to the template creating the style rule.
+  that will be added to the template creating the style rule, and the import path
+  to engine. The import path may be relative or absolute, and can contain "app"
+  and "sys" keywords, which result in application's current folder and global
+  theme's folder.
   */
 bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
 {
     QString param = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n]")).simplified();
 
+    QStringList import = param.split(',');
+    QString importPath = (import.count() <= 1) ? QString() : import[0];
+    QString importUrl = (import.count() < 2) ? import[0] : import[1];
+
     // check whether we have the import set
-    if (!css->imports.contains(param))
-        css->imports += QString("import %1\n").arg(param);
-    else {
+    if (!css->imports.contains(importUrl)) {
+        css->imports += QString("import %1\n").arg(importUrl.simplified());
+
+        if (!importPath.isEmpty()) {
+            if (importPath.startsWith("app:")) {
+                importPath.remove("app:");
+                if (!importPath.startsWith('/'))
+                    importPath.prepend('/');
+                importPath.prepend(QDir::currentPath());
+            } else if (importPath.startsWith("sys:")) {
+                importPath.remove("sys:");
+                if (!importPath.startsWith('/'))
+                    importPath.prepend('/');
+                importPath.prepend(systemThemePath);
+            }
+            css->engine->addImportPath(importPath);
+        }
+
+    } else {
         ThemeEnginePrivate::setError(QString("QML import %1 allready added!").
-                                     arg(param));
+                                     arg(import[1]));
         return false;
     }
+
     return true;
 }
 
@@ -509,4 +540,4 @@ bool CssTheme::loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *sty
     return ret;
 }
 
-
+//#include "moc_cssthemeparser.cpp"

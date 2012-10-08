@@ -28,26 +28,40 @@
   \internal
   ThemeSettings class handles the selection of the application style based on
   global and application settings.
+
+  User theme settings are stored in $HOME/.qthm/theme.ini file, which contains
+  the current global theme name and the QML import paths. These settings are
+  stored in "theme" and "imports" keywords.
+
+  System themes are stored under /usr/share/themes/<theme-name>/qthm folder,
+  where the common theme is named "default.qthm" and each application has its
+  own theme, which can be either in the qthm folder or under a subfolder.
+
+  OBS: we need to expose a QML element that handles these. Beside, applications
+  should set up the theme before the plugin gets loaded by QML.
   */
 
-#ifdef TARGET_DEMO
-// qmlviewer stores its settings in $HOME/.config/Nokia/QtQmlViewer.conf
+
+// qmlviewer/qmlscene stores its settings in $HOME/.config/Nokia/QtQmlViewer.conf
 // therefore it is possible to have application specific theme settings
 // for it!
-const char *PathFormat_GlobalThemeIniFile = "demos/theme.ini";
 
-// each application theme is in a separate folder, the application stores
-// the theme folder in the settings when using global theme defined styles
-const char *PathFormat_GlobalAppTheme = "demos/%1/%2/theme.qthm";
-
-// the global theme file, used when application does not define any particular
-// theme for itself
-const char *PathFormat_GlobalThemeFile = "demos/%1/default.qthm";
-#else
+// user's theme settings are stored in ~/.qthm/theme.ini file and here are
+// also stored the user specific themes
 const char *PathFormat_GlobalThemeIniFile = "%1/.qthm/theme.ini";
 
-const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2/theme.qthm";
-const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qthm/theme.qthm";
+#ifdef TARGET_DEMO
+// for SDK demo we use the demo folder to store both global and private themes
+const char *PathFormat_GlobalAppTheme = "demos/%1/%2";
+const char *PathFormat_GlobalThemeFile = "demos/%1/default.qthm";
+const char *systemThemePath = "demos";
+
+#else
+
+const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2";
+const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qthm/default.qthm";
+const char *systemThemePath = "/usr/share/themes";
+
 #endif
 
 const char *globalThemeKey = "theme";
@@ -62,11 +76,7 @@ const char *appThemeFileKey = "ThemeFile";
   */
 ThemeSettings::ThemeSettings(QObject *parent) :
     configWatcher(parent),
-#ifdef TARGET_DEMO
-    globalSettings(PathFormat_GlobalThemeIniFile, QSettings::IniFormat),
-#else
     globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat),
-#endif
     hasAppSettings(false),
     hasGlobalSettings(false)
 {
@@ -74,7 +84,17 @@ ThemeSettings::ThemeSettings(QObject *parent) :
             (appSettings.contains(appUseGlobalThemeKey) &&
              appSettings.contains(appThemeFileKey)));
 
-    // check if we have system settings file
+    // check if we have system settings file, if not, create one
+    if (!QFile::exists(globalSettings.fileName())) {
+        // create the file by writing the default theme
+#ifdef TARGET_DEMO
+        globalSettings.setValue(globalThemeKey, "global-themes");
+#else
+        // TODO: figure out how to get the default theme for the release
+        globalSettings.setValue(globalThemeKey, "Ambiance");
+#endif
+    }
+
     hasGlobalSettings = QFile::exists(globalSettings.fileName()) &&
             (globalSettings.status() == QSettings::NoError);
 
@@ -175,11 +195,18 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
 QStringList ThemeSettings::imports() const
 {
     QStringList result;
+    QString imports;
 
-    if (hasGlobalSettings && appSettings.value(appUseGlobalThemeKey).toBool())
-        result += globalSettings.value(importPathsKey).toString().split(',');
-    if (hasAppSettings)
-        result += appSettings.value(importPathsKey).toString().split(',');
+    if (hasGlobalSettings && appSettings.value(appUseGlobalThemeKey).toBool()) {
+        imports = globalSettings.value(importPathsKey).toString();
+        if (!imports.isEmpty())
+            result += imports.split(',');
+    }
+    if (hasAppSettings) {
+        imports = appSettings.value(importPathsKey).toString();
+        if (!imports.isEmpty())
+            result += imports.split(',');
+    }
 
     return result;
 }

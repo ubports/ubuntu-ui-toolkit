@@ -36,11 +36,13 @@ public:
     QString instanceId;
 
     // internal members
-    bool componentCompleted;
+    QQmlEngine *qmlEngine;
     QQmlContext *componentContext;
     QQuickItem *delegateItem;
+    bool componentCompleted;
 
     void updateCurrentStyle(bool forceUpdate = false);
+    bool registerInstanceId(const QString &id);
     void _q_reloadTheme();
 };
 

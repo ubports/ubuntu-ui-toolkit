@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import "." 0.1
 
 /*!
     \qmlabstract AbstractButton

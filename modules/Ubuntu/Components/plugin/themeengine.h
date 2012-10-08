@@ -25,6 +25,7 @@
 
 class StyleRule;
 class QQmlEngine;
+class QJSEngine;
 class StyledItem;
 
 class ThemeEnginePrivate;
@@ -34,12 +35,13 @@ class ThemeEngine : public QObject
 
     Q_PROPERTY(QString error READ error RESET resetError NOTIFY errorChanged)
     Q_PROPERTY(QString currentTheme READ currentTheme NOTIFY themeChanged)
-public:
+protected:
     ThemeEngine(QObject *parent = 0);
+public:
     ~ThemeEngine();
 
-    static bool initialize(QQmlEngine *engine);
-    static ThemeEngine *instance();
+    static QObject *registerEngine(QQmlEngine *engine, QJSEngine *);
+    static ThemeEngine *instance(QQmlEngine *engine = 0);
 
     bool registerInstanceId(StyledItem *item, const QString &newId);
     StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
@@ -71,6 +73,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
 };
 
-QML_DECLARE_TYPE(ThemeEngine)
+QML_DECLARE_TYPE(ThemeEngine);
 
 #endif // THEMEENGINE_H

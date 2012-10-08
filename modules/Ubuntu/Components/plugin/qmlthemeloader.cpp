@@ -42,10 +42,11 @@ bool QmlTheme::loadTheme(const QUrl &path, QQmlEngine *engine, StyleTreeNode *st
 {
     themeComponent = new QQmlComponent(engine, path);
     this->styleTree = styleTree;
-    if (themeComponent->isLoading())
+    if (themeComponent->isLoading()) {
+        // the QML engine should be initialized by now, so use 0 for accessing instance
         QObject::connect(themeComponent, SIGNAL(statusChanged(QQmlComponent::Status)),
-                         ThemeEngine::instance(), SLOT(_q_continueThemeLoading));
-    else
+                         ThemeEngine::instance(0), SLOT(_q_continueThemeLoading));
+    } else
         return finalizeThemeLoading();
     return true;
 }
