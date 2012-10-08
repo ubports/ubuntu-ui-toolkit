@@ -14,8 +14,7 @@ struct Bucket {
 class Units : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(float scaleFactor READ scaleFactor NOTIFY scaleFactorChanged)
-    Q_PROPERTY(QString bucket READ bucket WRITE setBucket NOTIFY bucketChanged)
+    Q_PROPERTY(float scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
 
 public:
     static Units& instance() {
@@ -29,18 +28,15 @@ public:
 
     // getters
     float scaleFactor();
-    QString bucket();
 
     // setters
-    void setBucket(QString bucketName);
+    void setScaleFactor(float scaleFactor);
 
 Q_SIGNALS:
     void scaleFactorChanged();
-    void bucketChanged();
 
 private:
     float m_scaleFactor;
-    QString m_bucket;
 };
 
 class QQmlContext;

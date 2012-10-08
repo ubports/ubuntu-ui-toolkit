@@ -18,8 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 FocusScope {
-    width: bucketList.width
-    height: bucketList.height
+    width: scaleFactorList.width
+    height: scaleFactorList.height
 
     opacity: 0.8
 
@@ -28,32 +28,32 @@ FocusScope {
         color: "#cccccc"
     }
 
-    property var buckets: ["mdpi", "hdpi", "xhdpi"]
+    property var scaleFactors: [1.0, 1.5, 2.25]
 
     ListView {
-        id: bucketList
+        id: scaleFactorList
 
         focus: true
         width: childrenRect.width
         height: units.dp(30)
         currentIndex: 0
-        onCurrentIndexChanged: units.bucket = buckets[currentIndex]
+        onCurrentIndexChanged: units.scaleFactor = scaleFactors[currentIndex]
 
         orientation: ListView.Horizontal
-        model: buckets
+        model: scaleFactors
         delegate: ButtonWithForeground {
             width: units.dp(55)
             height: ListView.view.height
             text: modelData
             textSize: "small"
             textColor: "#757373"
-            onClicked: bucketList.currentIndex = index
+            onClicked: scaleFactorList.currentIndex = index
 
             Rectangle {
                 anchors.fill: parent
                 z: -1
                 color: "#e6dede"
-                opacity: bucketList.currentIndex == index ? 1.0 : 0.0
+                opacity: scaleFactorList.currentIndex == index ? 1.0 : 0.0
                 Behavior on opacity {NumberAnimation {duration: 250; easing.type: Easing.OutQuart}}
             }
         }

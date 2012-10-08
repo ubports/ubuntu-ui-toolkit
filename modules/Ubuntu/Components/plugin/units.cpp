@@ -4,15 +4,14 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QFileInfo>
 
-#define ENV_BUCKET "BUCKET"
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
 
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
 Bucket xhdpi = { "xhdpi", 340, 2.25 };
-QHash<QString, Bucket> g_densityBuckets;
+QList<Bucket> g_densityBuckets;
 
-QString selectBucket(float density, QString formFactor)
+float selectBucket(float density, QString formFactor)
 {
     if (formFactor == "desktop") {
         density = density * 1.45;
@@ -21,17 +20,28 @@ QString selectBucket(float density, QString formFactor)
     }
 
     int smallestDelta = 99999;
-    QString selectedBucketName;
+    float selectedScaleFactor;
 
     Q_FOREACH (Bucket bucket, g_densityBuckets) {
         int delta = qAbs(bucket.density - density);
         if (delta < smallestDelta) {
             smallestDelta = delta;
-            selectedBucketName = bucket.name;
+            selectedScaleFactor = bucket.scaleFactor;
         }
     }
 
-    return selectedBucketName;
+    return selectedScaleFactor;
+}
+
+QString bucketForScaleFactor(float scaleFactor)
+{
+    Q_FOREACH (Bucket bucket, g_densityBuckets) {
+        if (scaleFactor <= bucket.scaleFactor) {
+            return bucket.name;
+        }
+    }
+
+    return g_densityBuckets.last().name;
 }
 
 static float getenvFloat(const char* name, float defaultValue)
@@ -42,29 +52,15 @@ static float getenvFloat(const char* name, float defaultValue)
     return ok ? value : defaultValue;
 }
 
-static QString getenvString(const char* name, const QString& defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    QString value = QString::fromLocal8Bit(stringValue);
-    if (value.isEmpty()) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-}
 
 Units::Units(QObject *parent) :
     QObject(parent)
 {
-    g_densityBuckets[mdpi.name] = mdpi;
-    g_densityBuckets[hdpi.name] = hdpi;
-    g_densityBuckets[xhdpi.name] = xhdpi;
+    g_densityBuckets.append(mdpi);
+    g_densityBuckets.append(hdpi);
+    g_densityBuckets.append(xhdpi);
 
-    float scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
-    QString bucket = getenvString(ENV_BUCKET, "mdpi");
-
-    m_bucket = bucket;
-    m_scaleFactor = scaleFactor;
+    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
 }
 
 float Units::scaleFactor()
@@ -72,9 +68,10 @@ float Units::scaleFactor()
     return m_scaleFactor;
 }
 
-QString Units::bucket()
+void Units::setScaleFactor(float scaleFactor)
 {
-    return m_bucket;
+    m_scaleFactor = scaleFactor;
+    Q_EMIT scaleFactorChanged();
 }
 
 float Units::dp(float value)
@@ -89,7 +86,7 @@ QString Units::resolveResource(const QUrl& value)
     QString suffix = "." + fileInfo.completeSuffix();
     QString path;
 
-    path = prefix + m_bucket + suffix;
+    path = prefix + bucketForScaleFactor(m_scaleFactor) + suffix;
     if (QFile::exists(path)) {
         return path + "@x1";
     }
@@ -115,14 +112,6 @@ QString Units::resolveResource(const QUrl& value)
     }
 
     return "";
-}
-
-void Units::setBucket(QString bucketName)
-{
-    m_bucket = bucketName;
-    m_scaleFactor = g_densityBuckets[bucketName].scaleFactor;
-    Q_EMIT scaleFactorChanged();
-    Q_EMIT bucketChanged();
 }
 
 

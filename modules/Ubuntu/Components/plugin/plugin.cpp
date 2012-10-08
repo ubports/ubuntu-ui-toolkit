@@ -33,7 +33,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     engine->rootContext()->setContextProperty("units", &Units::instance());
     static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
-    QObject::connect(&Units::instance(), SIGNAL(bucketChanged()),
+    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);

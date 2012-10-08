@@ -99,7 +99,7 @@ Rectangle {
         source: widgetList.model[widgetList.selectedIndex].source
     }
 
-    UnitsBucketSelector {
+    UnitsScaleFactorSelector {
         focus: true
         anchors {
             bottom: parent.bottom
