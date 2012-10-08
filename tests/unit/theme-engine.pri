@@ -1,3 +1,5 @@
+include( ../../qtversioncheck.pri )
+
 INCLUDEPATH += ../../../modules/Ubuntu/Components/plugin
 
 #themeing engine sources required

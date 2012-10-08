@@ -1,3 +1,5 @@
+include( ../../../qtversioncheck.pri )
+
 TEMPLATE = subdirs
 
 SUBDIRS += plugin
