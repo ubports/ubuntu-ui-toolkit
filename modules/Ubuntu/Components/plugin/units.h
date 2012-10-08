@@ -5,12 +5,6 @@
 #include <QtCore/QHash>
 #include <QtCore/QUrl>
 
-struct Bucket {
-    QString suffix;
-    int density;
-    float scaleFactor;
-};
-
 class Units : public QObject
 {
     Q_OBJECT

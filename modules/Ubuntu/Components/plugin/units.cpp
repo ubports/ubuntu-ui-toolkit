@@ -6,12 +6,18 @@
 
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
 
+struct Bucket {
+    QString suffix;
+    int density;
+    float scaleFactor;
+};
+
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
 Bucket xhdpi = { "xhdpi", 340, 2.25 };
 QList<Bucket> g_densityBuckets;
 
-float selectBucket(float density, QString formFactor)
+float selectScaleFactor(float density, QString formFactor)
 {
     if (formFactor == "desktop") {
         density = density * 1.45;
