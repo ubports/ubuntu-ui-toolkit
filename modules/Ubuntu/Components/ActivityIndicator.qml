@@ -61,14 +61,14 @@ AnimatedItem {
         id: center
 
         fillMode: Image.PreserveAspectFit
-        source: internals.centralSource
+        resource: internals.centralSource
         smooth: internals.smooth
         visible: internals.active
 
         ImageMipmap {
             id: animation
             fillMode: Image.PreserveAspectFit
-            source: internals.movingSource
+            resource: internals.movingSource
             smooth: internals.smooth
             visible: internals.active
             NumberAnimation on rotation {

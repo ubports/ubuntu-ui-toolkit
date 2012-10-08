@@ -39,7 +39,7 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
-        source: "artwork/ListItemDividerVertical.png"
+        resource: "artwork/ListItemDividerVertical.png"
         opacity: enabled ? 1.0 : 0.5
     }
 }
