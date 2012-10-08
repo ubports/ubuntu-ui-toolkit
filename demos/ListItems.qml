@@ -344,6 +344,12 @@ Template {
                             onClicked: print("Large button clicked")
                         }
                     }
+                    ListItem.SingleControl {
+                        control: Slider {
+                            anchors.margins: 5
+                            width: parent.width - 10
+                        }
+                    }
                 }
             }
             FadingRectangle {
