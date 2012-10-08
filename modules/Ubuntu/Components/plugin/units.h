@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtCore/QHash>
+#include <QtCore/QUrl>
 
 struct Bucket {
     QString name;
@@ -24,6 +25,7 @@ public:
 
     explicit Units(QObject *parent = 0);
     Q_INVOKABLE float dp(float value);
+    Q_INVOKABLE QString resolveResource(const QUrl& value);
 
     // getters
     float scaleFactor();

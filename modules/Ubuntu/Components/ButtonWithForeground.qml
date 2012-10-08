@@ -41,7 +41,7 @@ AbstractButton {
        Leave this value blank for a text-only button.
        \qmlproperty url iconSource
     */
-    property alias iconSource: icon.source
+    property alias iconSource: icon.resource
 
     /*!
        \preliminary

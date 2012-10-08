@@ -20,6 +20,7 @@
 
 #include "plugin.h"
 #include "units.h"
+#include "scalingimageprovider.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -34,4 +35,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
     QObject::connect(&Units::instance(), SIGNAL(bucketChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
+
+    engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);
 }

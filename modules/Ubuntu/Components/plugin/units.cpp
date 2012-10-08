@@ -2,6 +2,7 @@
 
 #include <QtCore>
 #include <QtQml/QQmlContext>
+#include <QtCore/QFileInfo>
 
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
@@ -54,6 +55,41 @@ QString Units::bucket()
 float Units::dp(float value)
 {
     return qFloor(value * m_scaleFactor);
+}
+
+QString Units::resolveResource(const QUrl& value)
+{
+    QFileInfo fileInfo(value.toLocalFile());
+    QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName() + "@";
+    QString suffix = "." + fileInfo.completeSuffix();
+    QString path;
+
+    path = prefix + m_bucket + suffix;
+    if (QFile::exists(path)) {
+        return path + "@x1";
+    }
+
+    path = prefix + xhdpi.name + suffix;
+    if (QFile::exists(path)) {
+        return path + "@x" + QString::number(m_scaleFactor/xhdpi.scaleFactor);
+    }
+
+    path = prefix + hdpi.name + suffix;
+    if (QFile::exists(path)) {
+        return path + "@x" + QString::number(m_scaleFactor/hdpi.scaleFactor);
+    }
+
+    path = prefix + mdpi.name + suffix;
+    if (QFile::exists(path)) {
+        return path + "@x" + QString::number(m_scaleFactor/mdpi.scaleFactor);
+    }
+
+    path = fileInfo.filePath();
+    if (QFile::exists(path)) {
+        return path + "@x" + QString::number(m_scaleFactor);
+    }
+
+    return "";
 }
 
 void Units::setBucket(QString bucketName)
