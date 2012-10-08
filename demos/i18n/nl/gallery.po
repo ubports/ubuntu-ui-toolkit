@@ -1,3 +1,15 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Tim Peeters <tim.peeters@canonical.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "Activity Indicator"
 msgstr "Activiteitsindicator"
 
@@ -199,8 +211,12 @@ msgstr "Tabbladen (gesegmenteerd)"
 msgid "Text Input"
 msgstr "Tekst invoer"
 
-msgid "This is a multi-line subText.\nUp to 5 lines are supported."
-msgstr "Dit is een subText van meerdere regels.\nMaximaal 5 regels worden ondersteund."
+msgid ""
+"This is a multi-line subText.\n"
+"Up to 5 lines are supported."
+msgstr ""
+"Dit is een subText van meerdere regels.\n"
+"Maximaal 5 regels worden ondersteund."
 
 msgid "This is an external page."
 msgstr "Dit is een externe pagina."
@@ -232,6 +248,43 @@ msgstr "Onbekend"
 msgid "Value"
 msgstr "Waarde"
 
+#, fuzzy
+msgid "Value selector"
+msgstr "Waarde keuzeschakelaars"
+
 msgid "Value selectors"
 msgstr "Waarde keuzeschakelaars"
 
+msgid "Parsley"
+msgstr "Peterselie"
+
+msgid "fruit"
+msgstr "fruit"
+
+msgid "Orange"
+msgstr "Sinaasappel"
+
+msgid "Apple"
+msgstr "Appel"
+
+msgid "Tomato"
+msgstr "Tomaat"
+
+msgid "veg"
+msgstr "Groente"
+
+msgid "Carrot"
+msgstr "Wortel"
+
+msgid "Potato"
+msgstr "Aardappel"
+
+msgid "Hide"
+msgstr "Verbergen"
+
+msgid "'value' is %n"
+msgstr "'waarde' is %n"
+
+#, fuzzy
+#~ msgid "Value slector"
+#~ msgstr "Waarde keuzeschakelaars"

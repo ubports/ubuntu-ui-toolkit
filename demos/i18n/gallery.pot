@@ -232,6 +232,39 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+msgid "Value selector"
+msgstr ""
+
 msgid "Value selectors"
+msgstr ""
+
+msgid "Parsley"
+msgstr ""
+
+msgid "fruit"
+msgstr ""
+
+msgid "Orange"
+msgstr ""
+
+msgid "Apple"
+msgstr ""
+
+msgid "Tomato"
+msgstr ""
+
+msgid "veg"
+msgstr ""
+
+msgid "Carrot"
+msgstr ""
+
+msgid "Potato"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "'value' is %n"
 msgstr ""
 
