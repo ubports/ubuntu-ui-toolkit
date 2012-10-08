@@ -14,10 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME(loicm) The component copies code from Button.qml and
-//     AbstractButton.qml, though I guess it could be reused quite easily. I'll
-//     need to figure that out.
-
 // FIXME(loicm) An option should be added to render the value text outside of
 //     the thumb, on top or bottom of the thumb (or left and right once we got
 //     support for vertical orientation). Moreover, having the value text inside
@@ -58,7 +54,7 @@ import "mathUtils.js" as MathUtils
     }
     \endqml
 */
-Item {
+AbstractButton {
     id: slider
 
     // FIXME(loicm) There are stretched pixels on the left of the thumb when
@@ -124,21 +120,7 @@ Item {
     */
     property bool live: false
 
-    /*!
-       \preliminary
-       This property is true while the thumb is dragged. This property is meant
-       to be read-only.
-    */
-    property bool pressed: false
-
-    /*!
-      \preliminary
-      The mouse area of the check box. May be assigned a different mouse area
-      if, for example, the area where the control is shown is not the same as
-      the area where it accepts mouse events. This is used in list items with
-      controls.
-     */
-    property MouseArea mouseArea: defaultMouseArea
+    pressed: false
 
     /*!
       \preliminary
@@ -148,11 +130,6 @@ Item {
      */
     function formatValue(v) {
         return v.toFixed(0)
-    }
-
-    MouseArea {
-        id: defaultMouseArea
-        anchors.fill: parent
     }
 
     /*! \internal */
@@ -311,7 +288,6 @@ Item {
                     // Button pressed inside the thumb.
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
                 } else if (mouseX > __thumbSpacing &&
                            mouseX < backgroundShape.width - __thumbSpacing) {
                     // Button pressed outside the thumb.
@@ -322,15 +298,13 @@ Item {
                     slider.maximumValue);
                     __dragInitMouseX = mouseX;
                     __dragInitNormalizedValue = __normalizedValue;
-                    slider.pressed = true;
                     if (slider.live) {
                         slider.value = __value
                     }
                 }
             }
-        } else if (slider.pressed) {
-            // Left button released.
-            slider.pressed = false;
+        } else {
+            // Button released.
             if (!slider.live) {
                 slider.value = __value;
             }

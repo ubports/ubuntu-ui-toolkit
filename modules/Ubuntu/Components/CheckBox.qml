@@ -14,10 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME(loicm) The component copies code from Button.qml and
-//     AbstractButton.qml, though I guess it could be reused quite easily. I'll
-//     need to figure that out.
-
 import QtQuick 2.0
 
 /*!
@@ -38,7 +34,7 @@ import QtQuick 2.0
     }
     \endqml
 */
-Item {
+AbstractButton {
     id: checkBox
 
     width: 49
@@ -52,33 +48,9 @@ Item {
     property bool checked: false
 
     /*!
-       \preliminary
-       This handler is called when the checkbox is clicked.
-    */
-    signal clicked
-
-    Keys.onEnterPressed: clicked()
-    Keys.onReturnPressed: clicked()
-
-    /*!
-      \preliminary
-      The mouse area of the check box. May be assigned a different mouse area
-      if, for example, the area where the control is shown is not the same as
-      the area where it accepts mouse events. This is used in list items with
-      controls.
-     */
-    property MouseArea mouseArea: defaultMouseArea
-
-    MouseArea {
-        id: defaultMouseArea
-        anchors.fill: parent
-    }
-
-    /*!
       \internal
-      Connect the signals/slots of the new mouse area.
      */
-    onMouseAreaChanged: internals.updateMouseArea()
+    onClicked: checked = !checked
 
     Item {
         z: -1
@@ -152,15 +124,5 @@ Item {
         property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
         property color uncheckedColor: "#e3e5e8"
         property color checkedColor: "#8b8b8b"
-
-        function updateMouseArea() {
-            if (checkBox.mouseArea)
-                checkBox.mouseArea.clicked.connect(internals.mouseAreaClicked);
-        }
-
-        function mouseAreaClicked() {
-            checkBox.checked = !checkBox.checked;
-            checkBox.clicked();
-        }
     }
 }
