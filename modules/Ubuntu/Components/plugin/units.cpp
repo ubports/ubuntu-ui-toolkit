@@ -103,12 +103,11 @@ float Units::dp(float value)
 
 QString Units::resolveResource(const QUrl& value)
 {
-    QFileInfo fileInfo(value.toLocalFile());
-
-    if (!fileInfo.isFile()) {
+    if (value.isEmpty()) {
         return "";
     }
 
+    QFileInfo fileInfo(value.toLocalFile());
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
     QString path;
