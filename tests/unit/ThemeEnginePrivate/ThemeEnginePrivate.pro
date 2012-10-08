@@ -10,7 +10,7 @@ QT       += quick
 
 TARGET = tst_themeengineprivatetest
 CONFIG   += qt console no_keywords
-#CONFIG   -= app_bundle
+CONFIG   -= app_bundle
 
 TEMPLATE = app
 

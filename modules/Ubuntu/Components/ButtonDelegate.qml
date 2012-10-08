@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-//import Qt.labs.shaders 1.0
 
 
 /*

@@ -26,7 +26,7 @@ import "." 0.1
     \b{This component is under heavy development.}
 */
 Text {
-    //color: "black"
+    color: "black"
 //    font.family: "UbuntuBeta"
 
     /*!
@@ -47,8 +47,6 @@ Text {
       The property holds the instance ID information if the widget used in styling
       */
     property alias instanceId: styleRule.instanceId
-
-    color: "black"
 
     // example of private implementation of using StyledItem privately
     StyledItem {

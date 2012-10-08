@@ -37,7 +37,7 @@ SelectorNode::SelectorNode() :
     relationship(Descendant)
 {}
 /*!
-    \intetnal
+    \internal
     Creates an instance of a SelectorNode with a given styleClass, instanceId
     and relationship. The ignore parameter configures the node so that during
     string conversion and comparison ignores the relationship, the instanceId

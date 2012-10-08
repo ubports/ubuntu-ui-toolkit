@@ -29,6 +29,7 @@
 #include <QDebug>
 
 /*!
+  \page QTHM file parser
   \internal
   CSS-like theme file parser (QTHM parser)
 

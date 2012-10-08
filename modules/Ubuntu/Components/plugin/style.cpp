@@ -24,7 +24,7 @@
 #include <QtQml/QQmlContext>
 
 /*!
-  \qmlclass Rule StyleRule
+  \qmltype Rule
   \brief The Rule element defines the styling rule to be applied when a widget
   satisfies the conditions specified by the rule. The condition is specified by
   the selector property, using the CSS selector syntax.
@@ -35,6 +35,10 @@
   component.
 
   \qml
+  // Snapshot of a theme file
+  import QtQuick 2.0
+  import Ubuntu.Components 0.1
+
   Item {
       Rule {
         selector: ".frame"
@@ -74,7 +78,7 @@
 
   Example:
   \qml
-  Item {
+
       Rule {
         selector: ".frame"
         style: QtObject {
@@ -99,7 +103,7 @@
             }
         }
       }
-  }
+
   \endqml
   In this example all widget content to which the style is applied will get
   reparented to the body item.
@@ -297,7 +301,7 @@ QQuickItem *StyleRule::createDelegate(QQmlContext *context)
   */
 
 /*!
-  \property StyleRule::selector
+  \internal
   Rule selector value
   */
 QString StyleRule::selector() const
@@ -324,7 +328,7 @@ void StyleRule::setSelector(const QString &selector)
   configured on the rule.
   */
 /*!
-  \property StyleRule::style
+  Rule style.
   */
 QQmlComponent *StyleRule::style()
 {
@@ -349,7 +353,7 @@ void StyleRule::setStyle(QQmlComponent *style)
   */
 
 /*!
-  \property StyleRule::delegate
+  Rule delegate.
   */
 QQmlComponent *StyleRule::delegate()
 {

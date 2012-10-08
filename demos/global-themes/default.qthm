@@ -48,7 +48,7 @@ Examples:
     wil be used with all declared properties as variant.
 */
 .label {
-    fontFamily: "Times";
+    fontFamily: "Ubuntu";
     fontSize: "medium";
     color: "red";
 }

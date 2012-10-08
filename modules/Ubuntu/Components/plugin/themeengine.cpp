@@ -30,8 +30,8 @@
 #include <QDebug>
 
 /*!
-  \qmlclass Theme ThemeEngine
-  \brief The Theme element provides functionality to change the current theme.
+  \page QtQuick_Theming_Enginre
+  The Theme element provides functionality to change the current theme.
 
   Informs the application about errors during theme load through \a error property,
   the current theme file through \a currentTheme property and notifies the widgets
@@ -128,7 +128,7 @@ bool ThemeEnginePrivate::initialize(QQmlEngine *engine)
     // set as initialized so we are able to load the theme
     m_engine = engine;
 
-    // load the tast theme configured
+    // load the last theme configured
     _q_updateTheme();
     return true;
 }

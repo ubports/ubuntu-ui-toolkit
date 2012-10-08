@@ -54,46 +54,4 @@ Theme{
 
         delegate: Component {ButtonDelegate{}}
     }
-
-
-    // test rulez
-    Rule {
-        selector: ".tframe"
-        style: QtObject {
-            property color color: "tan"
-            property color border: "blue"
-        }
-    }
-
-    Rule {
-        selector: ".tframe > .tbutton"
-        delegate: Rectangle {
-            z: -1
-            anchors.fill: parent
-            radius: 8
-            border.color: "pink"
-            border.width: 4
-            color: control.pressed ? "grey" : "yellow"
-            smooth: true
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: control.clicked()
-            }
-        }
-    }
-    Rule {
-        selector: ".tbox .tframe .tbutton"
-        style: Item{}
-    }
-
-    Rule {
-        selector: ".tframe > .tbutton#blah"
-        style: Item{}
-    }
-
-    Rule {
-        selector: ".ttoolbar > .tbutton"
-        style: Item {}
-    }
 }

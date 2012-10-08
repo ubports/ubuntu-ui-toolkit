@@ -28,13 +28,13 @@
 
 const char *widgetProperty = "widget";
 /*!
-  \qmlclass StyledItem StyledItem
+  \qmltype StyledItem
   \brief StyledItem element provides support for widget styling.
 
   Widgets with styling support can either use this element as base or can declare
   it as internal element, depending on what is the base class to be extended. For
   instance in case of a frame or button it is worth to use StyledItem as base element
-  and build the API above it, but in case of a Label elemen it is worth to declare
+  and build the API above it, but in case of a Label element it is worth to declare
   an internal StyledItem element so the published API will be based on Text element.
 
   The style is selected based on the styleClass and instanceId properties. If neither
@@ -48,19 +48,17 @@ const char *widgetProperty = "widget";
 
   \qml
   // Button.qml
-  Item {
-      StyledItem {
-         id: root
-         public bool pressed: false
-         public bool hovered: false
+  StyledItem {
+     id: root
+     property bool pressed: false
+     property bool hovered: false
 
-         signal clicked
+     signal clicked
 
-         MouseArea {
-            anchors.fill: parent
-            onClicked: control.clicked()
-         }
-      }
+     MouseArea {
+        anchors.fill: parent
+        onClicked: control.clicked()
+     }
   }
   \endqml
   In this example Button element is derived from StyledItem, and uses "Button" as
@@ -68,19 +66,17 @@ const char *widgetProperty = "widget";
 
   \qml
   // Label.qml
-  Item {
-      Text {
-         id: control
-         property alias styleClass: internal.styleClass
-         property alias instanceId: internal.instanceId
-         property alias style: internal.style
-         StyledItem {
-            id: internal
-            onStyleChanged: {
-               // update label's properties using style configuration
-            }
-         }
-      }
+  Text {
+     id: control
+     property alias styleClass: internal.styleClass
+     property alias instanceId: internal.instanceId
+     property alias style: internal.style
+     StyledItem {
+        id: internal
+        onStyleChanged: {
+           // update label's properties using style configuration
+        }
+     }
   }
   \endqml
   In this example the Label element extends the default Text element with styling
@@ -278,7 +274,7 @@ void StyledItem::componentComplete()
   This property holds the widget unique identifier used in styling.
   */
 /*!
-  \property StyledItem::instanceId
+  instanceId property.
   */
 QString StyledItem::instanceId() const
 {
@@ -309,7 +305,7 @@ void StyledItem::setInstanceId(const QString &instanceId)
   when defining themes and designing widgets and applications.
   */
 /*!
-  \property StyledItem::styleClass
+  styleClass property.
   */
 QString StyledItem::styleClass() const
 {
@@ -336,7 +332,6 @@ void StyledItem::setStyleClass(const QString &styleClass)
   styling by resetting the property.
   */
 /*!
-  \property StyledItem::style
   Returns the private style component, null if the widget uses the theme style.
   */
 StyleRule *StyledItem::style() const
@@ -373,7 +368,7 @@ void StyledItem::resetStyle()
   either be defined by a theme style rule or the private style.
   */
 /*!
-  \property StyledItem::styleObject
+  Returns the object created out of the style used.
   */
 QObject *StyledItem::styleObject() const
 {
@@ -382,12 +377,12 @@ QObject *StyledItem::styleObject() const
 }
 
 /*!
-  \property Item StyledItem::delegateItem
+  \qmlproperty Item StyledItem::delegateItem
   The property holds the Item containing the visuals of the widget defined by
   one of the styles, theme or private.
   */
 /*!
-  \property StyledItem::delegateItem
+  Returns the delegate Item created out of the style.
   */
 QQuickItem *StyledItem::delegateItem() const
 {

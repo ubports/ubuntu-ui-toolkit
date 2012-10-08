@@ -72,6 +72,7 @@ Rectangle {
 
         delegate: ButtonWithForeground {
             height: 48
+            width: ListView.view.width
             textSize: "medium"
             text: modelData.label
             textColor: "#757373"

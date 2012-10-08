@@ -25,6 +25,7 @@
 #include <QtCore/QDir>
 
 /*!
+  \page QtQuick_Theming_Enginre
   \internal
   ThemeSettings class handles the selection of the application style based on
   global and application settings.

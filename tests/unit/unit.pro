@@ -5,12 +5,12 @@ SUBDIRS += ThemeEngineTest \
     ThemeEnginePrivate
 
 themeengineprivatetest.target = themeengineprivatetest
-themeengineprivatetest.commands = cd ThemeEnginePrivate; ./tst_themeengineprivatetest
+themeengineprivatetest.commands = cd ThemeEnginePrivate; ./tst_themeengineprivatetest -platform minimal
 themeengineprivatetest.depends = 
 QMAKE_EXTRA_TARGETS += themeengineprivatetest
 
 themeenginetest.target = themeenginetest
-themeenginetest.commands = cd ThemeEngineTest; ./tst_themeenginetest
+themeenginetest.commands = cd ThemeEngineTest; ./tst_themeenginetest -platform minimal
 themeenginetest.depends = 
 QMAKE_EXTRA_TARGETS += themeenginetest
 
