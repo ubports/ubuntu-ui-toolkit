@@ -79,7 +79,6 @@ Template {
                     x: 10; y: 10; width: 150
                     text: "Private style"
                     style: Rule {
-                        selector: "privateRule"
                         delegate: Item {
                             z: -1
                             anchors.fill: parent

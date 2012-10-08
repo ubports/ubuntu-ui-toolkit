@@ -99,6 +99,10 @@ StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     componentCompleted(false)
 {
 }
+StyledItemPrivate::~StyledItemPrivate()
+{
+
+}
 
 /*!
   \internal
@@ -122,6 +126,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
         // check whether we have different style for the state
         currentRule = ThemeEngine::instance(qmlEngine)->lookupStyleRule(q);
         if (themeRule != currentRule) {
+            delete styleObject;
             styleObject = 0;
             themeRule = currentRule;
             styleChanged = true;
@@ -129,8 +134,10 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     }
 
     // reset delegate if the style is updated and the new style has visuals
-    if (styleChanged && currentRule && currentRule->delegate())
+    if (styleChanged && currentRule && currentRule->delegate()) {
+        delete delegateItem;
         delegateItem = 0;
+    }
 
     if (styleChanged && currentRule) {
         // check if we have the context
@@ -157,6 +164,8 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
                     delegateItem = delegateStyle->createDelegate(componentContext);
             }
             if (delegateItem) {
+                // set the styledItem as parent and parentItem too to avoid leaks
+                delegateItem->setParent(q);
                 delegateItem->setParentItem(q);
 
                 // If style item contains a property "contentItem" that points

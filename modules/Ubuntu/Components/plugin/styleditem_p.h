@@ -27,6 +27,7 @@ class StyledItemPrivate {
 
 public:
     StyledItemPrivate(StyledItem *qq);
+    ~StyledItemPrivate();
 
     StyledItem *q_ptr;
     StyleRule *privateRule;

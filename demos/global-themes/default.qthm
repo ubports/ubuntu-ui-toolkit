@@ -33,8 +33,9 @@ Examples:
 .Button, .button {
     color: "#e3e5e8";
     shapeDark: "artwork/ButtonShapeDark.png";
-    shapeNormal: "artwork/ButtonShape.png";
-    borderIdle: "artwork/ButtonBorderIdle.png";
+    shapeNormal: "artwork/ButtonShape.png"; /* leaks! */
+    borderIdle: "artwork/ButtonBorderIdle.png";  /* leaks! */
+    borderPressed: "artwork/ButtonBorderPressed.png";
     borderPressed: "artwork/ButtonBorderPressed.png";
     borderDarkIdle: "artwork/ButtonBorderDarkIdle.png";
     borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";

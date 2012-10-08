@@ -37,6 +37,7 @@ import QtQuick 2.0
 */
 
 Image {
+    height: 24
     source: "artwork/ListItemDivider24px.png"
     anchors {
         left: parent ? parent.left : undefined

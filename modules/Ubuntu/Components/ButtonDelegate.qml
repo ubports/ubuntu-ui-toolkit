@@ -79,7 +79,6 @@ Item {
         anchors.fill: parent
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        //source: widget.styleObject.borderImage
         source: (widget.darkBorder) ? (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderDarkPressed) : Qt.resolvedUrl(widget.styleObject.borderDarkIdle))
                             : (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderPressed) : Qt.resolvedUrl(widget.styleObject.borderIdle));
         border.left: 14; border.top: 17

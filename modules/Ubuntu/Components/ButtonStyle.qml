@@ -17,11 +17,11 @@
 import QtQuick 2.0
 
 QtObject {
-    property color color
-    property string shapeDark
-    property string shapeNormal
-    property string borderIdle
-    property string borderPressed
-    property string borderDarkIdle
-    property string borderDarkPressed
+    property color color: "transparent"
+    property string shapeDark: ""
+    property string shapeNormal: ""
+    property string borderIdle: ""
+    property string borderPressed: ""
+    property string borderDarkIdle: ""
+    property string borderDarkPressed: ""
 }
