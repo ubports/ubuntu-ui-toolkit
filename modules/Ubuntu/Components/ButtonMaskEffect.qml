@@ -32,7 +32,7 @@ ShaderEffect {
         lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)
         {
             bvec3 comparison = lessThan(base, vec3(0.5));
-            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, lowp vec3(comparison));
+            return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, vec3(comparison));
         }
 
         void main(void)
@@ -42,7 +42,7 @@ ShaderEffect {
 
             lowp vec4 baseColor = texture2D(base, qt_TexCoord0.st);
             // this is equivalent to using a vertical linear gradient texture going from vec3(0.0) to vec3(1.0) with opacity 0.8
-            lowp vec4 gradientColor = lowp vec4(vec3(1.0)-qt_TexCoord0.ttt, 1.0) * 0.8;
+            lowp vec4 gradientColor = vec4(vec3(1.0)-qt_TexCoord0.ttt, 1.0) * 0.8;
             // FIXME: Because blendOverlay gives incorrect results when we use pre-multiplied alpha,
             // we remove the pre-multiplication before calling blendOverlay, and multiply again afterwards.
             // It works, but is not very elegant.
