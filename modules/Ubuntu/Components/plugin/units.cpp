@@ -5,6 +5,8 @@
 #include <QtCore/QFileInfo>
 
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
+#define ENV_FORM_FACTOR "FORM_FACTOR"
+#define ENV_SCREEN_DENSITY "SCREEN_DENSITY"
 
 struct Bucket {
     QString suffix;
@@ -50,6 +52,17 @@ QString suffixForScaleFactor(float scaleFactor)
     return g_densityBuckets.last().suffix;
 }
 
+static QString getenvString(const char* name, const QString& defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    QString value = QString::fromLocal8Bit(stringValue);
+    if (value.isEmpty()) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+}
+
 static float getenvFloat(const char* name, float defaultValue)
 {
     QByteArray stringValue = qgetenv(name);
@@ -66,7 +79,10 @@ Units::Units(QObject *parent) :
     g_densityBuckets.append(hdpi);
     g_densityBuckets.append(xhdpi);
 
-    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
+    QString formFactor = getenvString(ENV_FORM_FACTOR, "desktop");
+    float screenDensity = getenvFloat(ENV_SCREEN_DENSITY, 113.0);;
+    float defaultScaleFactor = selectScaleFactor(screenDensity, formFactor);
+    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, defaultScaleFactor);
 }
 
 float Units::scaleFactor()
