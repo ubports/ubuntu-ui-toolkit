@@ -1,0 +1,234 @@
+msgid "Activity Indicator"
+msgstr "Activiteitsindicator"
+
+msgid "Basic"
+msgstr "Basis"
+
+msgid "Button"
+msgstr "Knop"
+
+msgid "Buttons"
+msgstr "Knoppen"
+
+msgid "Call"
+msgstr "Bellen"
+
+msgid "Captions and Dividers"
+msgstr "Bijschriften en verdelers"
+
+msgid "Check Box"
+msgstr "Selectievakje"
+
+msgid "Checked"
+msgstr "Aangevinkt"
+
+msgid "Colors"
+msgstr "Kleuren"
+
+msgid "Content"
+msgstr "Inhoud"
+
+msgid "Controls"
+msgstr "Controls"
+
+msgid "Custom icon"
+msgstr "Aangepast icoon"
+
+msgid "Date Picker"
+msgstr "Datum kiezer"
+
+msgid "Default"
+msgstr "Standaard"
+
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+msgid "Expanded"
+msgstr "Uitgebreid"
+
+msgid "External page"
+msgstr "Externe pagina"
+
+msgid "First page"
+msgstr "Eerste pagina"
+
+msgid "Grid View"
+msgstr "Rasterweergave"
+
+msgid "Grouped List"
+msgstr "Gegroepeerde lijst"
+
+msgid "Icon"
+msgstr "Icoon"
+
+msgid "Idle"
+msgstr "Inactief"
+
+msgid "It also works well with icons and progression."
+msgstr "Het werkt ook goed met icoontjes en voortgang."
+
+msgid "Item"
+msgstr "Item"
+
+msgid "Known"
+msgstr "Bekend"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Large button clicked"
+msgstr "Grote knop geklikt"
+
+msgid "List Items"
+msgstr "Lijstitems"
+
+msgid "Live"
+msgstr "Live"
+
+msgid "Mixed"
+msgstr "Gemengd"
+
+msgid "Multiple lines"
+msgstr "Meerdere regels"
+
+msgid "Multiple values"
+msgstr "Meerdere waardes"
+
+msgid "My custom page"
+msgstr "Mijn aangepaste pagina"
+
+msgid "On Screen Keyboard"
+msgstr "On-screen toetsenbord"
+
+msgid "Overlaid"
+msgstr "Bedekt"
+
+msgid "Page one"
+msgstr "Pagina een"
+
+msgid "Page Stack"
+msgstr "Page Stack"
+
+msgid "Page two (external)"
+msgstr "Pagina twee (extern)"
+
+msgid "Password"
+msgstr "Wachtwoord"
+
+msgid "password echo on editing"
+msgstr "wachtwoord weergeven tijdens bewerken"
+
+msgid "password with echo"
+msgstr "wachtwoord met weergave"
+
+msgid "Popovers"
+msgstr "Popovers"
+
+msgid "Progress Bar"
+msgstr "Voortgangsbalk"
+
+msgid "Progression"
+msgstr "Voortgang"
+
+msgid "Red rectangle"
+msgstr "Rode rechthoek"
+
+msgid "Root page"
+msgstr "Root pagina"
+
+msgid "Root page (again)"
+msgstr "Root pagina (opnieuw)"
+
+msgid "sample text"
+msgstr "voorbeeldtekst"
+
+msgid "Scalability"
+msgstr "Schaalbaarheid"
+
+msgid "Scrollbar"
+msgstr "Scrollbar"
+
+msgid "Secondary label"
+msgstr "Secundaire label"
+
+msgid "Selected"
+msgstr "Geselecteerd"
+
+msgid "Sheets & Dialogues"
+msgstr "Sheets en dialogen"
+
+msgid "Show"
+msgstr "Weergeven"
+
+msgid "simple text field"
+msgstr "eenvoudig tekstveld"
+
+msgid "Single control"
+msgstr "Enkele control"
+
+msgid "Single value"
+msgstr "Enkele waarde"
+
+msgid "Slider"
+msgstr "Schuif"
+
+msgid "Split"
+msgstr "Splitsing"
+
+msgid "Standard"
+msgstr "Standaard"
+
+msgid "Subtitled"
+msgstr "Ondertiteld"
+
+msgid "Switch"
+msgstr "Schakelaar"
+
+msgid "Tab"
+msgstr "Tab"
+
+msgid "Tabs"
+msgstr "Tabbladen"
+
+msgid "Tabs (Non Segmented)"
+msgstr "Tabbladen (niet gesegmenteerd)"
+
+msgid "Tabs (Segmented)"
+msgstr "Tabbladen (gesegmenteerd)"
+
+msgid "Text Input"
+msgstr "Tekst invoer"
+
+msgid "This is a multi-line subText.\nUp to 5 lines are supported."
+msgstr "Dit is een subText van meerdere regels.\nMaximaal 5 regels worden ondersteund."
+
+msgid "This is an external page."
+msgstr "Dit is een externe pagina."
+
+msgid "This is the first tab."
+msgstr "Dit is de eerste tab."
+
+msgid "This is the second tab."
+msgstr "Dit is de tweede tab."
+
+msgid "Time Picker"
+msgstr "Tijd kiezer"
+
+msgid "Toolbars"
+msgstr "Werkbalken"
+
+msgid "type to show clear button"
+msgstr "typen om de wis-knop weer te geven"
+
+msgid "Unchecked"
+msgstr "Uitgevinkt"
+
+msgid "Unknown"
+msgstr "Onbekend"
+
+msgid "Value"
+msgstr "Waarde"
+
+msgid "Value selectors"
+msgstr "Waarde keuzeschakelaars"
+
