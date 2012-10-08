@@ -248,9 +248,8 @@ msgstr "Onbekend"
 msgid "Value"
 msgstr "Waarde"
 
-#, fuzzy
 msgid "Value selector"
-msgstr "Waarde keuzeschakelaars"
+msgstr "Waarde keuzeschakelaar"
 
 msgid "Value selectors"
 msgstr "Waarde keuzeschakelaars"
