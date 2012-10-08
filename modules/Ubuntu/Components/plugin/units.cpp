@@ -33,15 +33,15 @@ float selectBucket(float density, QString formFactor)
     return selectedScaleFactor;
 }
 
-QString bucketForScaleFactor(float scaleFactor)
+QString suffixForScaleFactor(float scaleFactor)
 {
     Q_FOREACH (Bucket bucket, g_densityBuckets) {
         if (scaleFactor <= bucket.scaleFactor) {
-            return bucket.name;
+            return bucket.suffix;
         }
     }
 
-    return g_densityBuckets.last().name;
+    return g_densityBuckets.last().suffix;
 }
 
 static float getenvFloat(const char* name, float defaultValue)
@@ -86,22 +86,22 @@ QString Units::resolveResource(const QUrl& value)
     QString suffix = "." + fileInfo.completeSuffix();
     QString path;
 
-    path = prefix + bucketForScaleFactor(m_scaleFactor) + suffix;
+    path = prefix + suffixForScaleFactor(m_scaleFactor) + suffix;
     if (QFile::exists(path)) {
         return path + "@x1";
     }
 
-    path = prefix + xhdpi.name + suffix;
+    path = prefix + xhdpi.suffix + suffix;
     if (QFile::exists(path)) {
         return path + "@x" + QString::number(m_scaleFactor/xhdpi.scaleFactor);
     }
 
-    path = prefix + hdpi.name + suffix;
+    path = prefix + hdpi.suffix + suffix;
     if (QFile::exists(path)) {
         return path + "@x" + QString::number(m_scaleFactor/hdpi.scaleFactor);
     }
 
-    path = prefix + mdpi.name + suffix;
+    path = prefix + mdpi.suffix + suffix;
     if (QFile::exists(path)) {
         return path + "@x" + QString::number(m_scaleFactor/mdpi.scaleFactor);
     }

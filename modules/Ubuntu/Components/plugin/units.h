@@ -6,7 +6,7 @@
 #include <QtCore/QUrl>
 
 struct Bucket {
-    QString name;
+    QString suffix;
     int density;
     float scaleFactor;
 };
