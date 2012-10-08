@@ -8,16 +8,16 @@
 #define ENV_FORM_FACTOR "FORM_FACTOR"
 #define ENV_SCREEN_DENSITY "SCREEN_DENSITY"
 
-struct Bucket {
+struct Category {
     QString suffix;
     int density;
     float scaleFactor;
 };
 
-Bucket mdpi = { "", 160, 1.0 };
-Bucket hdpi = { "@1.5x", 240, 1.5 };
-Bucket xhdpi = { "@2.25x", 340, 2.25 };
-QList<Bucket> g_densityBuckets;
+Category mdpi = { "", 160, 1.0 };
+Category hdpi = { "@1.5x", 240, 1.5 };
+Category xhdpi = { "@2.25x", 340, 2.25 };
+QList<Category> g_densityCategories;
 
 float selectScaleFactor(float density, QString formFactor)
 {
@@ -30,11 +30,11 @@ float selectScaleFactor(float density, QString formFactor)
     int smallestDelta = 99999;
     float selectedScaleFactor;
 
-    Q_FOREACH (Bucket bucket, g_densityBuckets) {
-        int delta = qAbs(bucket.density - density);
+    Q_FOREACH (Category category, g_densityCategories) {
+        int delta = qAbs(category.density - density);
         if (delta < smallestDelta) {
             smallestDelta = delta;
-            selectedScaleFactor = bucket.scaleFactor;
+            selectedScaleFactor = category.scaleFactor;
         }
     }
 
@@ -43,13 +43,13 @@ float selectScaleFactor(float density, QString formFactor)
 
 QString suffixForScaleFactor(float scaleFactor)
 {
-    Q_FOREACH (Bucket bucket, g_densityBuckets) {
-        if (scaleFactor <= bucket.scaleFactor) {
-            return bucket.suffix;
+    Q_FOREACH (Category category, g_densityCategories) {
+        if (scaleFactor <= category.scaleFactor) {
+            return category.suffix;
         }
     }
 
-    return g_densityBuckets.last().suffix;
+    return g_densityCategories.last().suffix;
 }
 
 static QString getenvString(const char* name, const QString& defaultValue)
@@ -75,9 +75,9 @@ static float getenvFloat(const char* name, float defaultValue)
 Units::Units(QObject *parent) :
     QObject(parent)
 {
-    g_densityBuckets.append(mdpi);
-    g_densityBuckets.append(hdpi);
-    g_densityBuckets.append(xhdpi);
+    g_densityCategories.append(mdpi);
+    g_densityCategories.append(hdpi);
+    g_densityCategories.append(xhdpi);
 
     QString formFactor = getenvString(ENV_FORM_FACTOR, "desktop");
     float screenDensity = getenvFloat(ENV_SCREEN_DENSITY, 113.0);;
