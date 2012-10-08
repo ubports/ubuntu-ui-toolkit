@@ -148,10 +148,30 @@ Item {
                 buttonRow.widestButtonWidth = widest;
             }
 
+            Component.onCompleted: {
+                connectToButtonChanges()
+                updateWidestButtonWidth()
+            }
+
+            function connectToButtonChanges() {
+                var button;
+                for (var i=0; i < buttonRow.children.length; i++) {
+                    button = buttonRow.children[i];
+                    button.implicitWidthChanged.disconnect(buttonRow.updateWidestButtonWidth);
+                    button.implicitWidthChanged.connect(buttonRow.updateWidestButtonWidth);
+                }
+            }
+
             Repeater {
                 id: repeater
-                onModelChanged: buttonRow.updateWidestButtonWidth()
-                onCountChanged: buttonRow.updateWidestButtonWidth()
+                onModelChanged: {
+                    buttonRow.connectToButtonChanges()
+                    buttonRow.updateWidestButtonWidth()
+                }
+                onCountChanged: {
+                    buttonRow.connectToButtonChanges()
+                    buttonRow.updateWidestButtonWidth()
+                }
 
                 model: tabs.children
 
@@ -167,7 +187,6 @@ Item {
                     onClicked: tabs.selectedTabIndex = index
                 }
             }
-            Component.onCompleted: buttonRow.updateWidestButtonWidth()
         }
 
         // This is the item that will be the parent of the currently displayed page.
