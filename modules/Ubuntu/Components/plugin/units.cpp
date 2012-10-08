@@ -1,5 +1,4 @@
 #include "units.h"
-#include "scalingimageprovider.h"
 
 #include <QtCore>
 #include <QtQml/QQmlContext>
@@ -116,22 +115,22 @@ QString Units::resolveResource(const QUrl& value)
 
     path = prefix + suffixForScaleFactor(m_scaleFactor) + suffix;
     if (QFile::exists(path)) {
-        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + "1";
+        return QString("1") + "/" + path;
     }
 
     path = prefix + xhdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/xhdpi.scaleFactor);
+        return QString::number(m_scaleFactor/xhdpi.scaleFactor) + "/" + path;
     }
 
     path = prefix + hdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/hdpi.scaleFactor);
+        return QString::number(m_scaleFactor/hdpi.scaleFactor) + "/" + path;
     }
 
     path = prefix + mdpi.suffix + suffix;
     if (QFile::exists(path)) {
-        return path + SCALING_IMAGE_PROVIDER_SEPARATOR + QString::number(m_scaleFactor/mdpi.scaleFactor);
+        return QString::number(m_scaleFactor/mdpi.scaleFactor) + "/" + path;
     }
 
     return "";

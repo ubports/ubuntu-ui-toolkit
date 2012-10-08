@@ -11,14 +11,14 @@ QImage ScalingImageProvider::requestImage(const QString &id, QSize *size, const 
 {
     Q_UNUSED(requestedSize);
 
-    /* Accepts id of the form PATH SCALING_IMAGE_PROVIDER_SEPARATOR SCALE_FACTOR
+    /* Accepts id of the form SCALE_FACTOR/PATH
      * Examples:
-     * - arrow.png@scaledBy@1
-     * - arrow@2x@scaledBy@0.5
+     * - 1/arrow.png
+     * - 0.5/arrow.png
      */
-    int separatorPosition = id.lastIndexOf(SCALING_IMAGE_PROVIDER_SEPARATOR);
-    float scaleFactor = id.mid(separatorPosition+SCALING_IMAGE_PROVIDER_SEPARATOR.length()).toFloat();
-    QString path = id.left(separatorPosition);
+    int separatorPosition = id.indexOf("/");
+    float scaleFactor = id.left(separatorPosition).toFloat();
+    QString path = id.mid(separatorPosition+1);
     QFile file(path);
 
     if (file.open(QIODevice::ReadOnly)) {

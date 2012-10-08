@@ -4,8 +4,6 @@
 #include <QtQuick/QQuickImageProvider>
 #include <QtGui/QImage>
 
-#define SCALING_IMAGE_PROVIDER_SEPARATOR QString("@scaledBy@")
-
 class ScalingImageProvider : public QQuickImageProvider
 {
 public:
