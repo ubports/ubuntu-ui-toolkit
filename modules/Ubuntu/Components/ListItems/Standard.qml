@@ -91,6 +91,20 @@ Empty {
 
     /*!
       \internal
+      Width of the icon to be displayed
+      \qmlproperty int __iconWidth
+    */
+    property alias __iconWidth: iconHelper.iconWidth
+
+    /*!
+      \internal
+      Height of the icon to be displayed
+      \qmlproperty int __iconHeight
+    */
+    property alias __iconHeight: iconHelper.iconHeight
+
+    /*!
+      \internal
       The margins on the left side of the icon.
       \qmlproperty real leftIconMargin
      */
@@ -189,7 +203,7 @@ Empty {
     }
     Item {
         id: controlContainer
-        property Item control
+        property AbstractButton control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined
@@ -201,7 +215,6 @@ Empty {
         }
         onControlChanged: {
             control.parent = controlContainer;
-            if (control.hasOwnProperty("mouseArea")) control.mouseArea = controlArea;
         }
     }
     MouseArea {
@@ -213,6 +226,9 @@ Empty {
             right: progressionHelper.left
         }
         enabled: control !== null
+
+        onClicked: control.clicked(mouse)
+        onPressedChanged: control.pressed = pressed
     }
     ProgressionVisual {
         id: progressionHelper

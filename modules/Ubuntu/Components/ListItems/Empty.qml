@@ -163,5 +163,6 @@ AbstractButton {
             top: parent.top
             bottom: bottomDividerLine.top
         }
+        clip: true
     }
 }
