@@ -46,15 +46,6 @@
     loading
 */
 
-const char *ruleTemplate =  \
-        "import QtQuick 2.0\n"
-        "%1\n"
-        "Rule {\n"
-        "    selector: \"%2\"\n"
-        "    %3\n"
-        "    %4\n"
-        "}";
-
 const char *styleRuleComponent =  \
         "import QtQuick 2.0\n"
         "%1\n"
@@ -343,7 +334,7 @@ bool CssTheme::buildStyleTree()
             // add properties
             while (properties.hasNext()) {
                 properties.next();
-                style += QString("\t%1 %2: %3\n").arg(propertyPrefix).arg(properties.key()).arg(properties.value());
+                style += QString("   %1 %2: %3\n").arg(propertyPrefix).arg(properties.key()).arg(properties.value());
             }
             // append the closing brace
             style += '}';
