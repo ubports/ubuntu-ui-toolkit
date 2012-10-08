@@ -21,7 +21,7 @@
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    _domain = QString("ubuntu-sdk");
+    _domain = QString("gallery");
     _localeDir = QString("/usr/share/locale");
 }
 
@@ -33,8 +33,10 @@ UbuntuI18n::~UbuntuI18n()
 void UbuntuI18n::init(QString domain, QString localeDir)
 {
     setlocale(LC_ALL, "");
-    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
-    textdomain(domain.toUtf8().constData());
+//    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
+//    textdomain(domain.toUtf8().constData());
+    bindtextdomain("gallery", "/usr/share/locale");
+    textdomain("gallery");
 }
 
 QString UbuntuI18n::domain() {
