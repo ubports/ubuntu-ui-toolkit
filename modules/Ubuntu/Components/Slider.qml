@@ -268,7 +268,7 @@ AbstractButton {
 
     /*! \internal */
     function __updateMouseArea() {
-            slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
+        slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
     }
 
     onPressedChanged: __mouseAreaPressed()
