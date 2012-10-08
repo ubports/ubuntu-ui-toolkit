@@ -5,41 +5,16 @@
 #include <QtCore/QFileInfo>
 
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
-#define ENV_FORM_FACTOR "FORM_FACTOR"
-#define ENV_SCREEN_DENSITY "SCREEN_DENSITY"
 
 struct Category {
     QString suffix;
-    int density;
     float scaleFactor;
 };
 
-Category mdpi = { "", 160, 1.0 };
-Category hdpi = { "@1.5x", 240, 1.5 };
-Category xhdpi = { "@2.25x", 340, 2.25 };
+Category mdpi = { "", 1.0 };
+Category hdpi = { "@1.5x", 1.5 };
+Category xhdpi = { "@2.25x", 2.25 };
 QList<Category> g_densityCategories;
-
-float selectScaleFactor(float density, QString formFactor)
-{
-    if (formFactor == "desktop") {
-        density = density * 1.45;
-    } else {
-        density = density;
-    }
-
-    int smallestDelta = 99999;
-    float selectedScaleFactor;
-
-    Q_FOREACH (Category category, g_densityCategories) {
-        int delta = qAbs(category.density - density);
-        if (delta < smallestDelta) {
-            smallestDelta = delta;
-            selectedScaleFactor = category.scaleFactor;
-        }
-    }
-
-    return selectedScaleFactor;
-}
 
 QString suffixForScaleFactor(float scaleFactor)
 {
@@ -50,17 +25,6 @@ QString suffixForScaleFactor(float scaleFactor)
     }
 
     return g_densityCategories.last().suffix;
-}
-
-static QString getenvString(const char* name, const QString& defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    QString value = QString::fromLocal8Bit(stringValue);
-    if (value.isEmpty()) {
-        return defaultValue;
-    } else {
-        return value;
-    }
 }
 
 static float getenvFloat(const char* name, float defaultValue)
@@ -79,10 +43,7 @@ Units::Units(QObject *parent) :
     g_densityCategories.append(hdpi);
     g_densityCategories.append(xhdpi);
 
-    QString formFactor = getenvString(ENV_FORM_FACTOR, "desktop");
-    float screenDensity = getenvFloat(ENV_SCREEN_DENSITY, 113.0);;
-    float defaultScaleFactor = selectScaleFactor(screenDensity, formFactor);
-    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, defaultScaleFactor);
+    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
 }
 
 float Units::scaleFactor()
