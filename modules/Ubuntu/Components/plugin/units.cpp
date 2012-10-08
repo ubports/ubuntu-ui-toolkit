@@ -4,6 +4,9 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QFileInfo>
 
+#define ENV_BUCKET "BUCKET"
+#define ENV_SCALE_FACTOR "SCALE_FACTOR"
+
 Bucket mdpi = { "mdpi", 160, 1.0 };
 Bucket hdpi = { "hdpi", 240, 1.5 };
 Bucket xhdpi = { "xhdpi", 340, 2.25 };
@@ -31,6 +34,13 @@ QString selectBucket(float density, QString formFactor)
     return selectedBucketName;
 }
 
+static float getenvFloat(const char* name, float defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    bool ok;
+    float value = stringValue.toFloat(&ok);
+    return ok ? value : defaultValue;
+}
 
 Units::Units(QObject *parent) :
     QObject(parent)
@@ -39,7 +49,14 @@ Units::Units(QObject *parent) :
     g_densityBuckets[hdpi.name] = hdpi;
     g_densityBuckets[xhdpi.name] = xhdpi;
 
-    setBucket(selectBucket(113, "desktop"));
+    float scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
+    QString bucket = QString::fromLocal8Bit(qgetenv(ENV_BUCKET));
+    if (bucket.isEmpty()) {
+        bucket = "mdpi";
+    }
+
+    m_bucket = bucket;
+    m_scaleFactor = scaleFactor;
 }
 
 float Units::scaleFactor()
