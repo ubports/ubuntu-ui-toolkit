@@ -33,11 +33,21 @@ Text {
        \preliminary
        DOCME
     */
-    //property string fontSize: "medium"
+    property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
 
+    /*!
+      \preliminary
+      The property holds the style class information used by the widget.
+      */
     property alias styleClass: styleRule.styleClass
-    property string fontSize: "medium"
+
+    /*!
+      \preliminary
+      The property holds the instance ID information if the widget used in styling
+      */
+    property alias instanceId: styleRule.instanceId
+
     color: "black"
 
     // example of private implementation of using StyledItem privately
