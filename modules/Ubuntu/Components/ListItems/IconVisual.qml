@@ -21,7 +21,7 @@ import QtQuick 2.0
 Item {
     id: iconVisual
 
-    property alias source: icon.source
+    property alias source: icon.resource
     property alias fallbackSource: icon.fallbackSource
     visible: source != ""
     property bool hasFrame: true

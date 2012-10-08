@@ -15,8 +15,9 @@
  */
 
 import QtQuick 2.0
+import "../"
 
-Image {
+ImageMipmap {
     id: image
 
     property url fallbackSource
@@ -28,14 +29,14 @@ Image {
 
     function tryLoadingFallbackSource() {
         if (isSourceDefined(fallbackSource)) {
-            source = fallbackSource
+            resource = fallbackSource
         }
     }
 
     onSourceChanged: fallbackRequired = false
     onFallbackSourceChanged: if (fallbackRequired) tryLoadingFallbackSource()
     onStatusChanged: {
-        if (status == Image.Error && source != fallbackSource) {
+        if (status == Image.Error && resource != fallbackSource) {
             fallbackRequired = true
             tryLoadingFallbackSource()
         }
