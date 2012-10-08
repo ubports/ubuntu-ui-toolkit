@@ -17,6 +17,11 @@ class Units : public QObject
     Q_PROPERTY(QString bucket READ bucket WRITE setBucket NOTIFY bucketChanged)
 
 public:
+    static Units& instance() {
+        static Units instance;
+        return instance;
+    }
+
     explicit Units(QObject *parent = 0);
     Q_INVOKABLE float dp(float value);
 
