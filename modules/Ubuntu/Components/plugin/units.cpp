@@ -16,16 +16,6 @@ Category hdpi = { "@1.5x", 1.5 };
 Category xhdpi = { "@2.25x", 2.25 };
 QList<Category> g_densityCategories;
 
-QString suffixForScaleFactor(float scaleFactor)
-{
-    Q_FOREACH (Category category, g_densityCategories) {
-        if (scaleFactor <= category.scaleFactor) {
-            return category.suffix;
-        }
-    }
-
-    return g_densityCategories.last().suffix;
-}
 
 static float getenvFloat(const char* name, float defaultValue)
 {
@@ -94,6 +84,17 @@ QString Units::resolveResource(const QUrl& value)
     }
 
     return "";
+}
+
+QString Units::suffixForScaleFactor(float scaleFactor)
+{
+    Q_FOREACH (Category category, g_densityCategories) {
+        if (scaleFactor <= category.scaleFactor) {
+            return category.suffix;
+        }
+    }
+
+    return g_densityCategories.last().suffix;
 }
 
 

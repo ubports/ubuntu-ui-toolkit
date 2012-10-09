@@ -29,6 +29,9 @@ public:
 Q_SIGNALS:
     void scaleFactorChanged();
 
+protected:
+    QString suffixForScaleFactor(float scaleFactor);
+
 private:
     float m_scaleFactor;
 };
