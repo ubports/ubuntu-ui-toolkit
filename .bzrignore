@@ -9,3 +9,5 @@ modules/Ubuntu/Components/tests/units_test/units_test.moc
 modules/Ubuntu/Components/tests/scaling_image_provider_test/scaling_image_provider_test
 modules/Ubuntu/Components/tests/scaling_image_provider_test/scaling_image_provider_test.moc
 html
+*.moc
+tests/unit/tst_template/tst_template
