@@ -4,4 +4,6 @@ modules/Ubuntu/Components/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/moc_plugin.cpp
 modules/Ubuntu/Components/plugin/moc_units.cpp
+modules/Ubuntu/Components/tests/units_test/units_test
+modules/Ubuntu/Components/tests/units_test/units_test.moc
 html
