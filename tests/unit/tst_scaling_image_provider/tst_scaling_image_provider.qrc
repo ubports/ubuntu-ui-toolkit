@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/test/prefix">
+        <file>input.png</file>
+    </qresource>
+</RCC>

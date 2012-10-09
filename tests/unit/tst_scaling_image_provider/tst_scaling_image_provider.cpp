@@ -37,6 +37,19 @@ private Q_SLOTS:
         QCOMPARE(result, expected);
         QCOMPARE(returnedSize, expected.size());
     }
+
+    void qrcSupport() {
+        ScalingImageProvider provider;
+        QImage result;
+        QSize returnedSize;
+        QImage expected;
+
+        result = provider.requestImage("0.5/qrc:/test/prefix/input.png", &returnedSize, QSize());
+        expected = QImage("scaled_half.png");
+
+        QCOMPARE(result, expected);
+        QCOMPARE(returnedSize, expected.size());
+    }
 };
 
 QTEST_MAIN(tst_ScalingImageProvider)
