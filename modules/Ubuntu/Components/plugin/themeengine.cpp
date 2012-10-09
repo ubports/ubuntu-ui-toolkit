@@ -65,12 +65,14 @@ ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
 /*=============================================================================
 =============================================================================*/
-ThemeLoader::ThemeLoader(QQmlEngine *engine, QObject *) :
-    m_engine(engine)
+
+ThemeLoader::ThemeLoader() :
+    m_engine(0)
 {}
 
 ThemeLoader::~ThemeLoader()
 {}
+
 
 /*=============================================================================
   THEMING ENGINE PRIVATES
@@ -86,8 +88,8 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
 
     // register theme loaders
     // TODO: shouldn't these be in separate plugins?
-    themeLoaders[".qml"] = new QmlThemeLoader(m_engine, q_ptr);
-    themeLoaders[".qthm"] = new QthmThemeLoader(m_engine, q_ptr);
+    themeLoaders[".qml"] = new QmlThemeLoader(m_engine);
+    themeLoaders[".qthm"] = new QthmThemeLoader(m_engine);
 
     // invoke theme loading
     QMetaObject::invokeMethod(q_ptr, "_q_updateTheme", Qt::QueuedConnection);

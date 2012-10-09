@@ -7,9 +7,9 @@
 // QML theme loader
 class QmlThemeLoader : public QObject, public ThemeLoader {
     Q_OBJECT
-    Q_INTERFACES(ThemeLoader)
+   // Q_INTERFACES(ThemeLoader)
 public:
-    QmlThemeLoader(QQmlEngine *engine, QObject *parent = 0);
+    QmlThemeLoader(QQmlEngine *engine);
     virtual ~QmlThemeLoader(){}
     StyleTreeNode *loadTheme(const QUrl &path);
 

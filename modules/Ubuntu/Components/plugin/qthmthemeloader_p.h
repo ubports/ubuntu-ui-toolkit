@@ -11,7 +11,7 @@ typedef bool (*QthmThemeParserCallback)(QthmThemeLoader *loader, QTextStream &st
 class QthmThemeLoader : public ThemeLoader {
     Q_INTERFACES(ThemeLoader)
 public:
-    QthmThemeLoader(QQmlEngine *engine, QObject *parent = 0);
+    QthmThemeLoader(QQmlEngine *engine);
     virtual ~QthmThemeLoader(){}
     StyleTreeNode *loadTheme(const QUrl &path);
 

@@ -130,11 +130,6 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QStr
     delegateQml(delegateRule),
     qthmStyle(true)
 {
-/*
-    qDebug() << "selector: " << selector;
-    qDebug() << "style:\n" << styleQml;
-    qDebug() << "delegate:\n" << delegateQml;
-*/
     // create style component
     if (!styleQml.isEmpty())
         createComponent(engine, styleQml, &style);

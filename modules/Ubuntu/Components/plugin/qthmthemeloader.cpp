@@ -508,10 +508,10 @@ bool QthmThemeLoader::handleQmlImport(QthmThemeLoader *loader, QTextStream &stre
   CSS-LIKE THEME LOADER
 =============================================================================*/
 
-QthmThemeLoader::QthmThemeLoader(QQmlEngine *engine, QObject *parent):
-    ThemeLoader(engine, parent),
-     styleTree(0)
+QthmThemeLoader::QthmThemeLoader(QQmlEngine *engine):
+    styleTree(0)
 {
+    m_engine = engine;
     // fill the callback maps
     rules["import url"] = handleImport;
     rules["qml-mapping"] = handleQmlMapping;

@@ -37,12 +37,12 @@
   QML THEME LOADER
 =============================================================================*/
 
-QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine, QObject *parent) :
-    QObject(parent),
-    ThemeLoader(engine, parent),
+QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine) :
+    QObject(engine),
     themeComponent(0),
     async(false)
 {
+    m_engine = engine;
 }
 
 /*!
