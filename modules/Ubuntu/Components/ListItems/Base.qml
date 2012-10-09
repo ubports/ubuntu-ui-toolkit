@@ -89,20 +89,8 @@ Empty {
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: iconHelper.rightIconMargin
 
-    /*!
-      \internal
-      Offset from vertical center to position the ListItem contents
-     */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property int __verticalCenterOffset: 0
-
     IconVisual {
         id: iconHelper
-        anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
-        }
     }
 
     /*!

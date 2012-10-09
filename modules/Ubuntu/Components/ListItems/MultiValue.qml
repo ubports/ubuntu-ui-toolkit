@@ -61,7 +61,6 @@ Base {
         height: label.height + valueLabel.height
         anchors {
             verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
             left: parent.left
             right: parent.right
         }

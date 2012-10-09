@@ -155,7 +155,6 @@ Empty {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    verticalCenterOffset: selectorMain.__verticalCenterOffset
                     leftMargin: 5
                     left: parent.left
                 }
@@ -171,7 +170,6 @@ Empty {
                 id: valueLabel
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    verticalCenterOffset: selectorMain.__verticalCenterOffset
                     right: accordion.left
                     rightMargin: 5
                     leftMargin: 5
