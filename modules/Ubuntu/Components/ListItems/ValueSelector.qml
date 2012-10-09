@@ -159,13 +159,7 @@ Empty {
                     leftMargin: 5
                     left: parent.left
                 }
-                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
-            }
-            LabelVisual {
-                id: invisibleLabel
-                visible: false
-                text: label.text
-                elide: Text.ElideNone
+                width: Math.min(implicitWidth, parent.width - 10)
             }
             LabelVisual {
                 id: valueLabel
