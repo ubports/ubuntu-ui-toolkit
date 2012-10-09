@@ -9,3 +9,4 @@ html
 tests/unit/tst_template/tst_template
 tests/unit/tst_units/tst_units
 tests/unit/tst_scaling_image_provider/tst_scaling_image_provider
+qrc_tst_*.cpp
