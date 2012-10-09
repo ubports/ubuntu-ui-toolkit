@@ -40,6 +40,12 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
+      \preliminary
+      This handler is called when there is a long press.
+     */
+    signal pressAndHold(var mouse)
+
+    /*!
      \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
@@ -65,5 +71,6 @@ Item {
         hoverEnabled: true
 
         onClicked: button.clicked(mouse)
+        onPressAndHold: button.pressAndHold(mouse)
     }
 }
