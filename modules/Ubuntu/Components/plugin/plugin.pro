@@ -1,3 +1,5 @@
+include( ../../../../qtversioncheck.pri )
+
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
 QT += qml quick
