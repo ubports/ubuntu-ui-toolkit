@@ -44,7 +44,7 @@ private Q_SLOTS:
         QSize returnedSize;
         QImage expected;
 
-        result = provider.requestImage("0.5/qrc:/test/prefix/input.png", &returnedSize, QSize());
+        result = provider.requestImage("0.5/:/test/prefix/input.png", &returnedSize, QSize());
         expected = QImage("scaled_half.png");
 
         QCOMPARE(result, expected);
