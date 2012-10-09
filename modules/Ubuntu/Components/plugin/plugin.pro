@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml
+QT += qml quick
 CONFIG += qt plugin no_keywords
 
 TARGET = $$qtLibraryTarget($$TARGET)
