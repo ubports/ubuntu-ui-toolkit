@@ -58,7 +58,16 @@ QString Units::resolveResource(const QUrl& value)
         return "";
     }
 
-    QFileInfo fileInfo(value.toLocalFile());
+    QString localPath = value.toLocalFile();
+    if (localPath.isEmpty()) {
+        return "";
+    }
+
+    QFileInfo fileInfo(localPath);
+    if (fileInfo.exists() && !fileInfo.isFile()) {
+        return "";
+    }
+
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
     QString path;
