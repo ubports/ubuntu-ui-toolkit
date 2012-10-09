@@ -9,7 +9,7 @@ QT       += testlib
 QT       += quick qml
 
 TARGET = tst_themeengineprivatetest
-CONFIG   += qt console no_keywords
+CONFIG   += testcase console no_keywords
 CONFIG   -= app_bundle
 
 TEMPLATE = app

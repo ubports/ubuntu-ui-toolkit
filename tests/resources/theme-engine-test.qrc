@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>test.qthm</file>
+        <file>base.qthm</file>
+    </qresource>
+</RCC>

@@ -48,7 +48,7 @@ ThemeEngineTest::ThemeEngineTest():
     app->setApplicationName("UnitTests");
     QSettings settings;
     settings.setValue(appUseGlobalThemeKey, QVariant(false));
-    settings.setValue(appThemeFileKey, QVariant(""));
+    settings.setValue(appThemeFileKey, QVariant("qrc:/base.qthm"));
 }
 
 void ThemeEngineTest::initTestCase()
@@ -108,6 +108,8 @@ void ThemeEngineTest::testCase_loadTheme()
     QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
     ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
     QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qthm"));
+    QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
 }
 
 void ThemeEngineTest::testCase_setTheme()

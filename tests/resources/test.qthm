@@ -1,4 +1,4 @@
-@import url("base.qthm");
+@import url("qrc:/base.qthm");
 
 .baseA {
     test_base_A_A: "new:: test.qhtm/.baseA";

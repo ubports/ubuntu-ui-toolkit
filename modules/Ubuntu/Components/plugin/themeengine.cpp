@@ -304,11 +304,6 @@ ThemeEngine::ThemeEngine(QObject *parent) :
 {
 }
 
-ThemeEngine::~ThemeEngine()
-{
-    // needed by the Q_GLOBAL_STATIC
-}
-
 /*!
   \internal
   The method is used by the QML framework to register theme engine instance. It
@@ -411,7 +406,7 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 /*!
   The function sets the theme file in the application's settings and loads the
   theme.
-
+true
   Its parameters depend on what is about to be set.
   - if the theme is global, then the \a theme specifies the theme folder as specified
     in the global theme; if the \a theme is empty, the global theme's default will

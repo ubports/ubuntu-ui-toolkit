@@ -1,5 +1,3 @@
-include( ../../../../qtversioncheck.pri )
-
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
 QT += qml
@@ -36,3 +34,5 @@ SOURCES += plugin.cpp \
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
+
+RESOURCES +=

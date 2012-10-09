@@ -38,7 +38,6 @@ class ThemeEngine : public QObject
 protected:
     ThemeEngine(QObject *parent = 0);
 public:
-    ~ThemeEngine();
 
     static QObject *initializeEngine(QQmlEngine *engine, QJSEngine *);
     static ThemeEngine *instance();

@@ -219,8 +219,6 @@ void QthmThemeLoader::normalizeStyles()
         }
         if (propertyMapUpdated) {
             selectorTable.insert(selector, propertyMap);
-            // restart?
-            //i.toFront();
         }
     }
 }
@@ -234,7 +232,8 @@ bool QthmThemeLoader::parseTheme(const QUrl &url)
 {
     bool ret = true;
     // open the file
-    QFile file(url.path());
+    QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
+    QFile file(fname);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream stream(&file);
 
@@ -325,17 +324,19 @@ bool QthmThemeLoader::buildStyleTree()
 
             if (!qmlTypes.first.isEmpty()) {
                 // we have the mapping!!
-                style = qmlTypes.first;
-                style = style + " {\n";
+                style = qmlTypes.first + "{\n";
             } else {
-                style = "QtObject {\n";
+                style = "QtObject{\n";
                 propertyPrefix = "property variant";
             }
 
             // add properties
             while (properties.hasNext()) {
                 properties.next();
-                style += QString("   %1 %2: %3\n").arg(propertyPrefix).arg(properties.key()).arg(properties.value());
+                style += QString("   %1 %2: %3\n")
+                        .arg(propertyPrefix)
+                        .arg(properties.key())
+                        .arg(properties.value());
             }
             // append the closing brace
             style += '}';
@@ -390,14 +391,13 @@ bool QthmThemeLoader::handleImport(QthmThemeLoader *loader, QTextStream &stream)
     // if not, build the path relative to the current parsed file
     // Note: resource stored theme files must use absolute paths, or should have
     // qrc: scheme specified
-    if (!themeFile.startsWith('/')) {
+    if (themeFile.startsWith("qrc:"))
+        return loader->parseTheme(themeFile);
+    else if (!themeFile.startsWith('/')) {
         QFile *file = qobject_cast<QFile*>(stream.device());
         QFileInfo fi(*file);
         themeFile.prepend('/').prepend(fi.dir().absolutePath());
-    }
-    if (themeFile.startsWith("qrc:"))
-        return loader->parseTheme(themeFile);
-    else
+    } else
         return loader->parseTheme(QUrl::fromLocalFile(themeFile));
 }
 
