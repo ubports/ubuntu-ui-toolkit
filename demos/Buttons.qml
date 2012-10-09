@@ -108,7 +108,8 @@ Template {
     }
 
     Component.onCompleted: {
-        i18n.domain = "ubuntu-sdk-gallery";
+        i18n.domain = "nothing";
+//        i18n.domain = "gallery"
         i18n.localeDir = "/usr/share/locale";
     }
 }
