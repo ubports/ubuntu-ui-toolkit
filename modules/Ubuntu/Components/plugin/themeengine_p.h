@@ -25,10 +25,12 @@
 #include <QRegExp>
 #include <QSettings>
 #include <QStringList>
+#include <QObject>
 #include "themeengine.h"
 
 class QQuickItem;
 class QQmlComponent;
+class ThemeLoader;
 
 typedef QHash<QString, StyledItem*> InstanceHash;
 
@@ -46,6 +48,7 @@ extern const char *systemThemePath;
 class SelectorNode {
     public:
     enum Relationship {Child, Descendant, Sibling};
+    enum Sensitivity {IgnoreRelationship = 0x01, IgnoreStyleId = 0x02, IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
     SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore = 0);
     QString toString() const;
@@ -80,53 +83,10 @@ public:
     QHash<QString, StyleTreeNode*> children;
 };
 
-// QML theme loader
-class QmlTheme {
-public:
-    QmlTheme() : themeComponent(0), styleTree(0){}
-
-    bool loadTheme(const QUrl &path, QQmlEngine *engine, StyleTreeNode *styleTree);
-    bool finalizeThemeLoading();
-private:
-    QQmlComponent *themeComponent;
-    StyleTreeNode *styleTree;
-};
-
-// CSS-like theme loader
-class CssTheme;
-typedef bool (*CssThemeParserCallback)(CssTheme *css, QTextStream &stream);
-class CssTheme {
-public:
-    CssTheme();
-    ~CssTheme(){}
-
-    bool loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *styleTree);
-
-    QQmlEngine *engine;
-    StyleTreeNode *styleTree;
-
-private:
-
-    QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
-    QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
-    static bool handleImport(CssTheme *css, QTextStream &stream);
-    static bool handleQmlMapping(CssTheme *css, QTextStream &stream);
-    static bool handleQmlImport(CssTheme *css, QTextStream &stream);
-    bool handleSelector(const Selector &path, const QString &declarator);
-    void normalizeStyles();
-    bool parseTheme(const QUrl &url);
-    bool buildStyleTree();
-
-    QString imports;
-    QHash<QString, CssThemeParserCallback> rules;
-    QHash<QString, QPair<QString, QString> > qmlMap;
-    QHash<Selector, QHash<QString, QString> > selectorTable;
-};
-
 // theme settings management
 class ThemeSettings {
 public:
-    ThemeSettings(QObject *parent);
+    ThemeSettings(QObject *globalThemeObserver);
     bool initialize();
     QUrl themeFile() const;
     QUrl setTheme(const QString &theme, bool global);
@@ -137,7 +97,6 @@ private:
     QSettings globalSettings;
     QSettings appSettings;
     bool hasAppSettings;
-    bool hasGlobalSettings;
 };
 
 // Private functionality of the theme engine
@@ -158,8 +117,7 @@ public: //members
     QHash<Selector, StyleRule*> m_styleCache;
     InstanceHash m_instanceCache;
     QStringList importPaths;
-    QmlTheme m_qmlThemeLoader;
-    CssTheme m_cssThemeLoader;
+    QMap<QString, ThemeLoader*> themeLoaders;
     ThemeSettings themeSettings;
     // needed for theme loading
     QString errorString;
@@ -167,7 +125,6 @@ public: //members
 
     // public functions on instance
 public:
-    bool initialize(QQmlEngine *engine);
     void loadTheme(const QUrl &themeFile);
     Selector getSelector(const StyledItem *obj, bool forceClassName) const;
     StyleRule *styleRuleForPath(const Selector &path);
@@ -178,7 +135,6 @@ public:
     static QList<Selector> parseSelector(const QString &selectorString, unsigned char ignore = 0);
 
 // private slots
-    void _q_continueThemeLoading();
     void _q_updateTheme();
 };
 

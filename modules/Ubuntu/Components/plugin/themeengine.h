@@ -40,8 +40,8 @@ protected:
 public:
     ~ThemeEngine();
 
-    static QObject *registerEngine(QQmlEngine *engine, QJSEngine *);
-    static ThemeEngine *instance(QQmlEngine *engine = 0);
+    static QObject *initializeEngine(QQmlEngine *engine, QJSEngine *);
+    static ThemeEngine *instance();
 
     bool registerInstanceId(StyledItem *item, const QString &newId);
     StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
@@ -69,7 +69,6 @@ private:
     friend class ThemeEnginePrivateTest;
 #endif
 
-    Q_PRIVATE_SLOT(d_func(), void _q_continueThemeLoading())
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
 };
 

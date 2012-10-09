@@ -20,6 +20,9 @@
 #include "themeengine_p.h"
 #include "style.h"
 #include "styleditem.h"
+#include "themeloader_p.h"
+#include "qmlthemeloader_p.h"
+#include "qthmthemeloader_p.h"
 #include <QString>
 #include <QtQml/QQmlEngine>
 #include <QJSEngine>
@@ -62,6 +65,12 @@ ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
 /*=============================================================================
 =============================================================================*/
+ThemeLoader::ThemeLoader(QQmlEngine *engine, QObject *) :
+    m_engine(engine)
+{}
+
+ThemeLoader::~ThemeLoader()
+{}
 
 /*=============================================================================
   THEMING ENGINE PRIVATES
@@ -69,29 +78,24 @@ ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
 ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
-    m_engine(0),
+    m_engine(qobject_cast<QQmlEngine*>(qq->parent())),
     m_styleTree(new StyleTreeNode(0)),
     themeSettings(qq)
 {
     themeEngine = q_ptr;
+
+    // register theme loaders
+    // TODO: shouldn't these be in separate plugins?
+    themeLoaders[".qml"] = new QmlThemeLoader(m_engine, q_ptr);
+    themeLoaders[".qthm"] = new QthmThemeLoader(m_engine, q_ptr);
+
+    // invoke theme loading
+    QMetaObject::invokeMethod(q_ptr, "_q_updateTheme", Qt::QueuedConnection);
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
 {
     delete m_styleTree;
-}
-
-/*!
-  \internal
-  Completes loading in case the theme file loading is asynchronous (i.e. the URL
-  is on the Web).
-*/
-void ThemeEnginePrivate::_q_continueThemeLoading()
-{
-    Q_Q(ThemeEngine);
-    m_qmlThemeLoader.finalizeThemeLoading();
-    // emit theme changed signal so StyledItems get updated
-    Q_EMIT q->themeChanged();
 }
 
 /*!
@@ -121,46 +125,33 @@ void ThemeEnginePrivate::_q_updateTheme()
 
 /*!
   \internal
-  Initializes engine.
-  */
-bool ThemeEnginePrivate::initialize(QQmlEngine *engine)
-{
-    // set as initialized so we are able to load the theme
-    m_engine = engine;
-
-    // load the last theme configured
-    _q_updateTheme();
-    return true;
-}
-
-/*!
-  \internal
-  Loads the theme either using QmlTheme or CssTheme classes, depending on the
-  thee file type.
+  Loads the theme using the registered theme file format loaders. Aliased theme
+  files stored in the resources should contain the file format, otherwise the
+  engine canot detect the file format.
   */
 void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 {
-    QString themePath = themeFile.path();
+    QString fileType = themeFile.path();
 
-    if (themePath.endsWith(".css") || themePath.endsWith(".qthm")) {
-        m_styleTree->clear();
-        m_styleCache.clear();
+    fileType = fileType.right(fileType.length() - fileType.lastIndexOf('.'));
 
-        m_cssThemeLoader.loadTheme(themePath, m_engine, m_styleTree);
-    } else if (themePath.endsWith(".qml")) {
-        m_styleTree->clear();
-        m_styleCache.clear();
-
-        m_qmlThemeLoader.loadTheme(themePath, m_engine, m_styleTree);
+    if (themeLoaders.contains(fileType)) {
+        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(themeFile);
+        if (errorString.isEmpty()) {
+            // clear the previous style and use the loaded one
+            delete m_styleTree;
+            m_styleCache.clear();
+            m_styleTree = styleTree;
+            // emit themeChanged() to update style
+            currentTheme = themeFile;
+            Q_Q(ThemeEngine);
+            Q_EMIT q->themeChanged();
+        } else {
+            delete styleTree;
+            // continue using the previous style
+        }
     } else {
         setError("Unknown theme URL" + themeFile.toString());
-    }
-
-    // if no error, set the current theme and Q_EMIT themeChanged signal
-    if (errorString.isEmpty()) {
-        currentTheme = themeFile;
-        Q_Q(ThemeEngine);
-        Q_EMIT q->themeChanged();
     }
 }
 
@@ -320,36 +311,30 @@ ThemeEngine::~ThemeEngine()
   \internal
   The method is used by the QML framework to register theme engine instance. It
   is called upon first invocation of the type functionality. However the engine
-  itself is accessed earlier by the StyledItems therefore the instance must be
-  created before.
-  The method is used internally by the component plug-in to initialize the
-  theming engine. When called configures the engine with the given declarative
-  engine and loads the last theme configured in the settings. Returns true on
-  successful initialization. Theme loading failure does not affect the success
+  itself is accessed earlier by the StyledItems therefore the method is called
+  upon plugin's initialization.
+
+  When called configures the engine with the given declarative engine and loads
+  the last theme configured in the settings. Returns the theme engine's instance
+  on successful initialization. Theme loading failure does not affect the success
   of the initialization, however it is reflected in the \a error property.
   Further calls of the function do not re-initialize the engine nor re-load the
   configured theme.
 */
-QObject *ThemeEngine::registerEngine(QQmlEngine *engine, QJSEngine *)
+QObject *ThemeEngine::initializeEngine(QQmlEngine *engine, QJSEngine *)
 {
     if (!ThemeEnginePrivate::themeEngine && engine) {
-        ThemeEnginePrivate::themeEngine = new ThemeEngine;
-        ThemeEnginePrivate::themeEngine->d_ptr->initialize(engine);
+        ThemeEnginePrivate::themeEngine = new ThemeEngine(engine);
     }
     return ThemeEnginePrivate::themeEngine;
 }
 
 /*!
   \internal
-  The method returns the singleton instance of the theme engine. Usually the engine
-  is used from Qt earlier than from QML, therefore elements using it must pass their
-  QML engine instance so the theming engine can be initialized.
+  The method returns the singleton instance of the theme engine.
   */
-ThemeEngine *ThemeEngine::instance(QQmlEngine *engine)
+ThemeEngine *ThemeEngine::instance()
 {
-    // call register to make sure we have the instance
-    registerEngine(engine, 0);
-    Q_ASSERT_X(ThemeEnginePrivate::themeEngine, Q_FUNC_INFO, "THEME ENGINE NOT INITIALIZED");
     return ThemeEnginePrivate::themeEngine;
 }
 

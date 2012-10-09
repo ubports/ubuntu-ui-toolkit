@@ -18,6 +18,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
+#include "qthmthemeloader_p.h"
 #include "style.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
@@ -86,7 +87,7 @@ Selector selectorSubset(const Selector &path, int elements)
   parameter and comments. Returns a string which in the most cases contains a single character
   except when a '/' chracter was followed by a valid one, when returns two chars.
   */
-QString CssTheme::readChar(QTextStream &stream, const QRegExp &bypassTokens)
+QString QthmThemeLoader::readChar(QTextStream &stream, const QRegExp &bypassTokens)
 {
     QString data;
     while (!stream.atEnd()) {
@@ -131,9 +132,8 @@ QString CssTheme::readChar(QTextStream &stream, const QRegExp &bypassTokens)
   the limiting token reached should be included in the data read or not (default
   is not to include).
   */
-QString CssTheme::readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens, bool excludeToken)
+QString QthmThemeLoader::readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens, bool excludeToken)
 {
-    QString data;
     QString ret;
     while (!stream.atEnd() && !ret.contains(tokens)) {
         ret += readChar(stream, bypassTokens);
@@ -149,7 +149,7 @@ QString CssTheme::readTillToken(QTextStream &stream, const QRegExp &tokens, cons
   Parses the declarator of each selector. Resolves the "inheritance" between atomic
   selector items (the last items in a CSS selector component).
   */
-bool CssTheme::handleSelector(const Selector &selector, const QString &declarator)
+bool QthmThemeLoader::handleSelector(const Selector &selector, const QString &declarator)
 {
     QStringList propertyList = declarator.split(';');
 
@@ -189,7 +189,7 @@ bool CssTheme::handleSelector(const Selector &selector, const QString &declarato
   Normalizes the style table - copies the properties that were not overridden from the base
   styles into the derivates.
   */
-void CssTheme::normalizeStyles()
+void QthmThemeLoader::normalizeStyles()
 {
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
     while (i.hasNext()) {
@@ -230,7 +230,7 @@ void CssTheme::normalizeStyles()
   Parses a QTHM theme. Reads the stream char-by-char to avoid seeking in the stream.
   Seeking would be needed when reading entire line and parsing tags out of it.
 */
-bool CssTheme::parseTheme(const QUrl &url)
+bool QthmThemeLoader::parseTheme(const QUrl &url)
 {
     bool ret = true;
     // open the file
@@ -299,7 +299,7 @@ bool CssTheme::parseTheme(const QUrl &url)
     return ret;
 }
 
-bool CssTheme::buildStyleTree()
+bool QthmThemeLoader::buildStyleTree()
 {
     Selector selector;
     QString style;
@@ -357,12 +357,12 @@ bool CssTheme::buildStyleTree()
             style = QString(styleRuleComponent).arg(imports).arg(style);
         if (!delegate.isEmpty())
             delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
-        StyleRule *rule = new StyleRule(engine,
+        StyleRule *rule = new StyleRule(m_engine,
                                         ThemeEnginePrivate::selectorToString(selector),
                                         style,
                                         delegate);
         // the error is reported in case the creation is synchronous, so capture it here
-        if (!ThemeEngine::instance(0)->error().isEmpty()) {
+        if (!ThemeEngine::instance()->error().isEmpty()) {
             delete rule;
             return false;
         } else {
@@ -383,14 +383,22 @@ bool CssTheme::buildStyleTree()
   \internal
   Extracts the theme specified to be imported, and loads it.
   */
-bool CssTheme::handleImport(CssTheme *css, QTextStream &stream)
+bool QthmThemeLoader::handleImport(QthmThemeLoader *loader, QTextStream &stream)
 {
-    QString themeFile = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
-    // build the path relative to the current parsed file
-    QFile *file = qobject_cast<QFile*>(stream.device());
-    QFileInfo fi(*file);
-    themeFile.prepend('/').prepend(fi.dir().absolutePath());
-    return css->parseTheme(QUrl::fromLocalFile(themeFile));
+    QString themeFile = QthmThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
+    // check if the imported theme file is an absolute path or not;
+    // if not, build the path relative to the current parsed file
+    // Note: resource stored theme files must use absolute paths, or should have
+    // qrc: scheme specified
+    if (!themeFile.startsWith('/')) {
+        QFile *file = qobject_cast<QFile*>(stream.device());
+        QFileInfo fi(*file);
+        themeFile.prepend('/').prepend(fi.dir().absolutePath());
+    }
+    if (themeFile.startsWith("qrc:"))
+        return loader->parseTheme(themeFile);
+    else
+        return loader->parseTheme(QUrl::fromLocalFile(themeFile));
 }
 
 /*!
@@ -435,9 +443,9 @@ bool CssTheme::handleImport(CssTheme *css, QTextStream &stream)
     }
   }
   */
-bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
+bool QthmThemeLoader::handleQmlMapping(QthmThemeLoader *loader, QTextStream &stream)
 {
-    QString params = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
+    QString params = QthmThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
     QStringList mapping = params.split(',');
 
     // we should have 3 elements in the list! if we don't we have an error!
@@ -446,7 +454,7 @@ bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
         ThemeEnginePrivate::setError(QString("Mapping has %1 parameter(s), should have 3!").
                                      arg(mapping.count()));
     else
-        css->qmlMap.insert(mapping[0], qMakePair(mapping[1], mapping[2]));
+        loader->qmlMap.insert(mapping[0], qMakePair(mapping[1], mapping[2]));
 
     return ret;
 }
@@ -459,17 +467,17 @@ bool CssTheme::handleQmlMapping(CssTheme *css, QTextStream &stream)
   and "sys" keywords, which result in application's current folder and global
   theme's folder.
   */
-bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
+bool QthmThemeLoader::handleQmlImport(QthmThemeLoader *loader, QTextStream &stream)
 {
-    QString param = css->readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n]")).simplified();
+    QString param = QthmThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n]")).simplified();
 
     QStringList import = param.split(',');
     QString importPath = (import.count() <= 1) ? QString() : import[0];
     QString importUrl = (import.count() < 2) ? import[0] : import[1];
 
     // check whether we have the import set
-    if (!css->imports.contains(importUrl)) {
-        css->imports += QString("import %1\n").arg(importUrl.simplified());
+    if (!loader->imports.contains(importUrl)) {
+        loader->imports += QString("import %1\n").arg(importUrl.simplified());
 
         if (!importPath.isEmpty()) {
             if (importPath.startsWith("app:")) {
@@ -483,7 +491,7 @@ bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
                     importPath.prepend('/');
                 importPath.prepend(systemThemePath);
             }
-            css->engine->addImportPath(importPath);
+            loader->m_engine->addImportPath(importPath);
         }
 
     } else {
@@ -500,8 +508,9 @@ bool CssTheme::handleQmlImport(CssTheme *css, QTextStream &stream)
   CSS-LIKE THEME LOADER
 =============================================================================*/
 
-CssTheme::CssTheme() :
-     engine(0), styleTree(0)
+QthmThemeLoader::QthmThemeLoader(QQmlEngine *engine, QObject *parent):
+    ThemeLoader(engine, parent),
+     styleTree(0)
 {
     // fill the callback maps
     rules["import url"] = handleImport;
@@ -509,27 +518,25 @@ CssTheme::CssTheme() :
     rules["qml-import"] = handleQmlImport;
 }
 
-bool CssTheme::loadTheme(const QUrl &url, QQmlEngine *engine, StyleTreeNode *styleTree)
+StyleTreeNode * QthmThemeLoader::loadTheme(const QUrl &url)
 {
-    bool ret = true;
-    this->engine = engine;
-    this->styleTree = styleTree;
-
+    styleTree = 0;
     // parses the theme
-    ret = parseTheme(url);
-    if (ret) {
+    if (parseTheme(url)) {
 
         normalizeStyles();
         // build up the QML style tree
-        ret = buildStyleTree();
+        styleTree = new StyleTreeNode(0);
+        if (!buildStyleTree()) {
+            delete styleTree;
+            styleTree = 0;
+        }
 
-        // cean tables to free up memory
+        // cleanup
         imports.clear();
         qmlMap.clear();
         selectorTable.clear();
     }
 
-    return ret;
+    return styleTree;
 }
-
-//#include "moc_cssthemeparser.cpp"

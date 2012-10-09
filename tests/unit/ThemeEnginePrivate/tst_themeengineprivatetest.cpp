@@ -49,13 +49,13 @@ void ThemeEnginePrivateTest::initTestCase()
     // not give any error...
 
     char *uri = "Ubuntu.Components";
-    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::initializeEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 
     // engine privates can be created with its public class; therefore
     // we create an engine class and use its privates
-    engine = ThemeEngine::instance(view->engine())->d_func();
+    engine = qobject_cast<ThemeEngine*>(ThemeEngine::initializeEngine(view->engine(), 0))->d_func();
 }
 
 void ThemeEnginePrivateTest::cleanupTestCase()

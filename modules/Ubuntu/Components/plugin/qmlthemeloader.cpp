@@ -18,6 +18,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
+#include "qmlthemeloader_p.h"
 #include "style.h"
 #include "styleditem.h"
 #include <QtQml/QQmlEngine>
@@ -35,30 +36,41 @@
 /*=============================================================================
   QML THEME LOADER
 =============================================================================*/
+
+QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine, QObject *parent) :
+    QObject(parent),
+    ThemeLoader(engine, parent),
+    themeComponent(0),
+    async(false)
+{
+}
+
 /*!
   \internal
   Loads a QML theme and builds up the style rule tree.
   */
-bool QmlTheme::loadTheme(const QUrl &path, QQmlEngine *engine, StyleTreeNode *styleTree)
+StyleTreeNode *QmlThemeLoader::loadTheme(const QUrl &path)
 {
-    themeComponent = new QQmlComponent(engine, path);
-    this->styleTree = styleTree;
+    async = false;
+    themeComponent = new QQmlComponent(m_engine, path);
+    // create the root node
+    styleTree = new StyleTreeNode;
     if (themeComponent->isLoading()) {
         // the QML engine should be initialized by now, so use 0 for accessing instance
+        async = true;
         QObject::connect(themeComponent, SIGNAL(statusChanged(QQmlComponent::Status)),
-                         ThemeEngine::instance(0), SLOT(_q_continueThemeLoading));
+                         ThemeEngine::instance(), SLOT(_q_continueThemeLoading));
     } else
-        return finalizeThemeLoading();
-    return true;
+        finalizeThemeLoading();
+    return styleTree;
 }
 
 /*!
   \internal
   Finalizes theme loading. Parses theme for style rules and builds up the cache from it.
 */
-bool QmlTheme::finalizeThemeLoading()
+void QmlThemeLoader::finalizeThemeLoading()
 {
-    bool ret = true;
     if (!themeComponent->isError()) {
         QObject *theme = themeComponent->create();
         if (theme) {
@@ -78,16 +90,27 @@ bool QmlTheme::finalizeThemeLoading()
             }
 
             styleTree->listTree();
+
+            // emit themeChanged() using meta-object
+            if (async)
+                QMetaObject::invokeMethod(ThemeEngine::instance(), "themeChanged()", Qt::QueuedConnection);
         }
     } else {
-        ThemeEnginePrivate::setError(themeComponent->errorString());
-        ret = false;
+        ThemeEnginePrivate::setError(QString("Error loading style\n%1").
+                                     arg(themeComponent->errorString()));
+        // leave the root node as that might have been given already to the
+        // theme engine due to asynchronousity
+        if (async)
+            styleTree->clear();
+        else {
+            delete styleTree;
+            styleTree = 0;
+        }
     }
 
     // reset component
+    delete themeComponent;
     themeComponent = 0;
-    styleTree = 0;
-    return ret;
 }
 
 

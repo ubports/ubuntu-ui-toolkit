@@ -59,8 +59,8 @@ void ThemeEngineTest::initTestCase()
     // declarative does not create the Rule objects but QObjects, and does
     // not give any error...
 
-    char *uri = "Ubuntu.Components";
-    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
+    const char *uri = "Ubuntu.Components";
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::initializeEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
@@ -72,7 +72,7 @@ void ThemeEngineTest::cleanupTestCase()
 
 void ThemeEngineTest::testCase_initializeEngine()
 {
-    bool result = (ThemeEngine::instance(view->engine()) != 0);
+    bool result = (ThemeEngine::initializeEngine(view->engine(), 0) != 0);
     // theme loading might fail, however don't care about it
     QVERIFY2(result, "Failure");
 }

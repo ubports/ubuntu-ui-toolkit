@@ -25,7 +25,6 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
 
-
 const char *widgetProperty = "widget";
 /*!
   \qmltype StyledItem
@@ -89,7 +88,6 @@ StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     privateRule(0),
     themeRule(0),
     styleObject(0),
-    qmlEngine(0),
     componentContext(0),
     delegateItem(0),
     componentCompleted(false)
@@ -113,14 +111,11 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 
     bool styleChanged = forceUpdate;
     StyleRule *currentRule = privateRule;
-    QQmlContext *itemContext = QQmlEngine::contextForObject(q);
-    if (!qmlEngine)
-        qmlEngine = itemContext->engine();
 
     // in case of private style is in use, no need to change anything
     if (!privateRule) {
         // check whether we have different style for the state
-        currentRule = ThemeEngine::instance(qmlEngine)->lookupStyleRule(q);
+        currentRule = ThemeEngine::instance()->lookupStyleRule(q);
         if (themeRule != currentRule) {
             delete styleObject;
             styleObject = 0;
@@ -138,12 +133,11 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
     if (styleChanged && currentRule) {
         // check if we have the context
         if (!componentContext) {
-            componentContext = new QQmlContext(itemContext);
+            componentContext = new QQmlContext(QQmlEngine::contextForObject(q));
             componentContext->setContextProperty(QLatin1String(widgetProperty), q);
         }
 
         if (!styleObject && currentRule->style()) {
-            //styleObject = currentRule->style()->create(componentContext);
             styleObject = currentRule->createStyle(componentContext);
             if (styleObject) {
                 styleObject->setParent(q);
@@ -155,7 +149,7 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
             if (currentRule->delegate())
                 delegateItem = currentRule->createDelegate(componentContext);
             else {
-                StyleRule *delegateStyle = ThemeEngine::instance(qmlEngine)->lookupStyleRule(q, true);
+                StyleRule *delegateStyle = ThemeEngine::instance()->lookupStyleRule(q, true);
                 if (delegateStyle)
                     delegateItem = delegateStyle->createDelegate(componentContext);
             }
@@ -192,7 +186,7 @@ bool StyledItemPrivate::registerInstanceId(const QString &id)
 {
     bool result = true;
     Q_Q(StyledItem);
-    if (ThemeEngine::instance(qmlEngine)->registerInstanceId(q, id))
+    if (ThemeEngine::instance()->registerInstanceId(q, id))
         instanceId = id;
     else {
         QString className = q->metaObject()->className();
@@ -248,19 +242,12 @@ void StyledItem::componentComplete()
 
     QQuickItem::componentComplete();
 
-    // as theming is accessed earlier from Qt than from QML, we need to get the
-    // engine the component was created with and conclude all initializations
-    // that require an engine
-    if (!d->qmlEngine) {
-        QQmlContext *itemContext = QQmlEngine::contextForObject(this);
-        d->qmlEngine = itemContext->engine();
+    // connect to theme engine's themeChanged() signal to refresh style when
+    // theme is updated
+    QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
 
-        // connect to theme engine's themeChanged() signal to get
-        QObject::connect(ThemeEngine::instance(d_ptr->qmlEngine), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
-
-        // check whether setting instanceId is possible
-        d->registerInstanceId(d->instanceId);
-    }
+    // check whether setting instanceId is possible
+    d->registerInstanceId(d->instanceId);
 
     d->componentCompleted = true;
 

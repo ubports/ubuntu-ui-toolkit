@@ -29,7 +29,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::registerEngine);
+    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::initializeEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
@@ -37,4 +37,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
+    // call engine registration method to load the theme
+    ThemeEngine::initializeEngine(engine, 0);
 }

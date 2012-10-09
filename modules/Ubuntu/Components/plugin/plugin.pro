@@ -18,16 +18,19 @@ HEADERS += plugin.h \
     styleditem.h \
     styleditem_p.h \
     style_p.h \
-    themeengine_p.h
+    themeengine_p.h \
+    qmlthemeloader_p.h \
+    qthmthemeloader_p.h \
+    themeloader_p.h
 
 SOURCES += plugin.cpp \
     style.cpp \
     themeengine.cpp \
     styleditem.cpp \
-    cssthemeparser.cpp \
     qmlthemeloader.cpp \
     suffixtree.cpp \
-    themesettings.cpp
+    themesettings.cpp \
+    qthmthemeloader.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

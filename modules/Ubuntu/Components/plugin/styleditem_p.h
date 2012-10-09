@@ -37,7 +37,6 @@ public:
     QString instanceId;
 
     // internal members
-    QQmlEngine *qmlEngine;
     QQmlContext *componentContext;
     QQuickItem *delegateItem;
     bool componentCompleted;
