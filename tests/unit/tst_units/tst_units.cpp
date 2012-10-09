@@ -137,6 +137,17 @@ private Q_SLOTS:
         QCOMPARE(resolved, expected);
     }
 
+    void resolveExactMatchQrc() {
+        Units units;
+        QString resolved;
+        QString expected;
+
+        units.setScaleFactor(1.0);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/exact_match.png"));
+        expected = QString("1/:/test/prefix/exact_match.png");
+        QCOMPARE(resolved, expected);
+    }
+
     void resolveLowerScaleFactor() {
         Units units;
         QString resolved;
@@ -148,6 +159,17 @@ private Q_SLOTS:
         QCOMPARE(resolved, expected);
     }
 
+    void resolveLowerScaleFactorQrc() {
+        Units units;
+        QString resolved;
+        QString expected;
+
+        units.setScaleFactor(2.25);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/lower_scale.png"));
+        expected = QString("1.5/:/test/prefix/lower_scale@1.5x.png");
+        QCOMPARE(resolved, expected);
+    }
+
     void resolveHigherScaleFactor() {
         Units units;
         QString resolved;
@@ -156,6 +178,17 @@ private Q_SLOTS:
         units.setScaleFactor(1.5);
         resolved = units.resolveResource(QUrl::fromLocalFile("higher_scale.png"));
         expected = QString("0.666667/" + QDir::currentPath() + QDir::separator() + "higher_scale@2.25x.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveHigherScaleFactorQrc() {
+        Units units;
+        QString resolved;
+        QString expected;
+
+        units.setScaleFactor(1.5);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/higher_scale.png"));
+        expected = QString("0.666667/:/test/prefix/higher_scale@2.25x.png");
         QCOMPARE(resolved, expected);
     }
 };
