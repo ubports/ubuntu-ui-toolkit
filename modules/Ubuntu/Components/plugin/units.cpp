@@ -20,6 +20,7 @@
 
 #include <QtCore>
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlFile>
 #include <QtCore/QFileInfo>
 
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
@@ -70,25 +71,25 @@ float Units::dp(float value)
     return qFloor(value * m_scaleFactor);
 }
 
-QString Units::resolveResource(const QUrl& value)
+QString Units::resolveResource(const QUrl& url)
 {
-    if (value.isEmpty()) {
+    if (url.isEmpty()) {
         return "";
     }
 
-    QString localPath = value.toLocalFile();
-    if (localPath.isEmpty()) {
+    QString path = QQmlFile::urlToLocalFileOrQrc(url);
+
+    if (path.isEmpty()) {
         return "";
     }
 
-    QFileInfo fileInfo(localPath);
+    QFileInfo fileInfo(path);
     if (fileInfo.exists() && !fileInfo.isFile()) {
         return "";
     }
 
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
-    QString path;
 
     path = prefix + suffixForScaleFactor(m_scaleFactor) + suffix;
     if (QFile::exists(path)) {
