@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "scalingimageprovider.h"
 
-class ScalingImageProviderTest: public QObject
+class tst_ScalingImageProvider: public QObject
 {
     Q_OBJECT
 
@@ -39,6 +39,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(ScalingImageProviderTest)
+QTEST_MAIN(tst_ScalingImageProvider)
 
-#include "scaling_image_provider_test.moc"
+#include "tst_scaling_image_provider.moc"

@@ -4,10 +4,8 @@ modules/Ubuntu/Components/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/moc_plugin.cpp
 modules/Ubuntu/Components/plugin/moc_units.cpp
-modules/Ubuntu/Components/tests/units_test/units_test
-modules/Ubuntu/Components/tests/units_test/units_test.moc
-modules/Ubuntu/Components/tests/scaling_image_provider_test/scaling_image_provider_test
-modules/Ubuntu/Components/tests/scaling_image_provider_test/scaling_image_provider_test.moc
 html
 *.moc
 tests/unit/tst_template/tst_template
+tests/tst_units/tst_units
+tests/tst_scaling_image_provider/tst_scaling_image_provider

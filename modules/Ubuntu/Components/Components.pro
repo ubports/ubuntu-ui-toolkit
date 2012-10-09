@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS += plugin \
-           tests
+SUBDIRS += plugin
 
 include(deployment.pri)

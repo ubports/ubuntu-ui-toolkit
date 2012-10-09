@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "units.h"
 
-class UnitsTest: public QObject
+class tst_Units: public QObject
 {
     Q_OBJECT
 
@@ -160,6 +160,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(UnitsTest)
+QTEST_MAIN(tst_Units)
 
-#include "units_test.moc"
+#include "tst_units.moc"
