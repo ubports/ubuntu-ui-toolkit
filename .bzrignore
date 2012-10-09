@@ -7,5 +7,5 @@ modules/Ubuntu/Components/plugin/moc_units.cpp
 html
 *.moc
 tests/unit/tst_template/tst_template
-tests/tst_units/tst_units
-tests/tst_scaling_image_provider/tst_scaling_image_provider
+tests/unit/tst_units/tst_units
+tests/unit/tst_scaling_image_provider/tst_scaling_image_provider
