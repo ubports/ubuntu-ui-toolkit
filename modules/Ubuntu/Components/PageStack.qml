@@ -137,7 +137,7 @@ Item {
         Stack.stack.top().pageStack = null;
         Stack.stack.top().active = false;
         Stack.stack.pop();
-        Stack.stack.top().active = true;
+        if (Stack.stack.size() > 0) Stack.stack.top().active = true;
 
         __stackUpdated();
     }
