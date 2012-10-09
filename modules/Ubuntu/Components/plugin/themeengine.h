@@ -65,7 +65,7 @@ private:
     QScopedPointer<ThemeEnginePrivate> d_ptr;
 
 #ifdef QT_TESTLIB_LIB
-    friend class ThemeEnginePrivateTest;
+    friend class tst_ThemeEnginePrivate;
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())

@@ -1,5 +1,8 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
+
+#include <QtCore/QString>
+#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
@@ -19,13 +22,13 @@ const char *lookupTestPattern1 =
         "   }"
         "}";
 
-class ThemeEngineTest : public QObject
+class tst_ThemeEngine : public QObject
 {
     Q_OBJECT
-    
+
 public:
-    ThemeEngineTest();
-    
+    tst_ThemeEngine();
+
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
@@ -40,7 +43,7 @@ private:
     QQuickView *view;
 };
 
-ThemeEngineTest::ThemeEngineTest():
+tst_ThemeEngine::tst_ThemeEngine():
     view(0)
 {
     QCoreApplication *app = QCoreApplication::instance();
@@ -51,7 +54,7 @@ ThemeEngineTest::ThemeEngineTest():
     settings.setValue(appThemeFileKey, QVariant("qrc:/base.qthm"));
 }
 
-void ThemeEngineTest::initTestCase()
+void tst_ThemeEngine::initTestCase()
 {
     view = new QQuickView;
 
@@ -65,65 +68,65 @@ void ThemeEngineTest::initTestCase()
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
 
-void ThemeEngineTest::cleanupTestCase()
+void tst_ThemeEngine::cleanupTestCase()
 {
     delete view;
 }
 
-void ThemeEngineTest::testCase_initializeEngine()
+void tst_ThemeEngine::testCase_initializeEngine()
 {
     bool result = (ThemeEngine::initializeEngine(view->engine(), 0) != 0);
     // theme loading might fail, however don't care about it
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 }
 
-void ThemeEngineTest::testCase_registerInstanceId()
+void tst_ThemeEngine::testCase_registerInstanceId()
 {
     ThemeEngine::instance()->resetError();
     StyledItem *item = new StyledItem(0);
     // first time must pass
     bool result = ThemeEngine::instance()->registerInstanceId(item, "test");
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
     // second time should fail
     result = ThemeEngine::instance()->registerInstanceId(item, "test");
-    QVERIFY2(!result, "FAILURE");
+    QCOMPARE(result, false);
     // this should pass always
     result = ThemeEngine::instance()->registerInstanceId(item, QString());
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
     delete item;
 }
 
-void ThemeEngineTest::testCase_lookupStyleRule()
+void tst_ThemeEngine::testCase_lookupStyleRule()
 {
     //ThemeEngine::lookupStyleRule requires a complete QML environment therefore its
     // functionality will be tested using its privates
 }
 
-void ThemeEngineTest::testCase_loadTheme()
+void tst_ThemeEngine::testCase_loadTheme()
 {
     ThemeEngine::instance()->resetError();
     ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
-    QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error(), QString());
     ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
-    QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error(), QString());
     ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
-    QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
     ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qthm"));
-    QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error(), QString());
 }
 
-void ThemeEngineTest::testCase_setTheme()
+void tst_ThemeEngine::testCase_setTheme()
 {
     ThemeEngine::instance()->resetError();
     // should pass
     ThemeEngine::instance()->setTheme("../../resources/test.qthm", false);
-    QVERIFY2(ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error(), QString());
     // should fail
     ThemeEngine::instance()->setTheme("../../resources/base.qthm", true);
-    QVERIFY2(!ThemeEngine::instance()->error().isEmpty(), "FAILURE");
+    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
 }
 
 
-QTEST_MAIN(ThemeEngineTest)
+QTEST_MAIN(tst_ThemeEngine)
 
-#include "tst_themeenginetesttest.moc"
+#include "tst_theme_enginetest.moc"

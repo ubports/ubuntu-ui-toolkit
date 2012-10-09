@@ -1,5 +1,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
+#include <QtCore/QString>
+#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
@@ -9,13 +11,13 @@
 #include "styleditem.h"
 #include "style.h"
 
-class ThemeEnginePrivateTest : public QObject
+class tst_ThemeEnginePrivate : public QObject
 {
     Q_OBJECT
-    
+
 public:
-    ThemeEnginePrivateTest();
-    
+    tst_ThemeEnginePrivate();
+
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
@@ -29,7 +31,7 @@ private:
     friend class ThemeEnginePrivate;
 };
 
-ThemeEnginePrivateTest::ThemeEnginePrivateTest()
+tst_ThemeEnginePrivate::tst_ThemeEnginePrivate()
 {
     QCoreApplication *app = QCoreApplication::instance();
     app->setOrganizationName("Canonical");
@@ -40,7 +42,7 @@ ThemeEnginePrivateTest::ThemeEnginePrivateTest()
 }
 
 
-void ThemeEnginePrivateTest::initTestCase()
+void tst_ThemeEnginePrivate::initTestCase()
 {
     view = new QQuickView();
 
@@ -58,29 +60,29 @@ void ThemeEnginePrivateTest::initTestCase()
     engine = qobject_cast<ThemeEngine*>(ThemeEngine::initializeEngine(view->engine(), 0))->d_func();
 }
 
-void ThemeEnginePrivateTest::cleanupTestCase()
+void tst_ThemeEnginePrivate::cleanupTestCase()
 {
     delete view;
 }
 
-void ThemeEnginePrivateTest::testCase_loadTheme()
+void tst_ThemeEnginePrivate::testCase_loadTheme()
 {
     engine->errorString = QString();
     engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
-    QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
+    QCOMPARE(engine->errorString, QString());
 
     engine->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
-    QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
+    QCOMPARE(engine->errorString, QString());
 
     engine->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
-    QVERIFY2(!engine->errorString.isEmpty(), "FAILURE");
+    QCOMPARE(engine->errorString.isEmpty(), false);
 }
 
-void ThemeEnginePrivateTest::testCase_styleRuleForPath()
+void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
 {
     engine->errorString = QString();
     engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
-    QVERIFY2(engine->errorString.isEmpty(), "FAILURE");
+    QCOMPARE(engine->errorString, QString());
 
     bool result = true;
     StyleRule *rule;
@@ -90,7 +92,7 @@ void ThemeEnginePrivateTest::testCase_styleRuleForPath()
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     path.clear();
     path << SelectorNode("testA", "", SelectorNode::Descendant);
@@ -98,7 +100,7 @@ void ThemeEnginePrivateTest::testCase_styleRuleForPath()
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     path.clear();
     path << SelectorNode("testA", "", SelectorNode::Descendant);
@@ -108,7 +110,7 @@ void ThemeEnginePrivateTest::testCase_styleRuleForPath()
     rule = engine->styleRuleForPath(path);
     // should pass, but should be ".testA .baseA"
     result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == expected);
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     path.clear();
     path << SelectorNode("testB", "", SelectorNode::Descendant);
@@ -116,7 +118,7 @@ void ThemeEnginePrivateTest::testCase_styleRuleForPath()
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     path.clear();
     path << SelectorNode("testB", "", SelectorNode::Descendant);
@@ -124,10 +126,10 @@ void ThemeEnginePrivateTest::testCase_styleRuleForPath()
     rule = engine->styleRuleForPath(path);
     // should fail
     result = (rule != 0) && !(engine->parseSelector(rule->selector())[0] == path);
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 }
 
-void ThemeEnginePrivateTest::testCase_parseSelector()
+void tst_ThemeEnginePrivate::testCase_parseSelector()
 {
     engine->errorString = QString();
 
@@ -138,12 +140,12 @@ void ThemeEnginePrivateTest::testCase_parseSelector()
     expected << SelectorNode("baseA", "", SelectorNode::Descendant);
     // should match
     bool result = (selectors.count() == 1) && (selectors[0] == expected);
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
 
     selectors = engine->parseSelector(".testB > .baseA");
     // should not match
     result = (selectors.count() == 1) && !(selectors[0] == expected);
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
 
     expected.clear();
     expected << SelectorNode("root", "id", SelectorNode::Descendant);
@@ -152,12 +154,12 @@ void ThemeEnginePrivateTest::testCase_parseSelector()
     selectors = engine->parseSelector(".root#id .testB > .baseA");
     // should not match!
     result = (selectors.count() == 1) && !(selectors[0] == expected);
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
 
     selectors = engine->parseSelector(".root#id > .testB .baseB");
     // should match
     result = (selectors.count() == 1) && (selectors[0] == expected);
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
 
     selectors = engine->parseSelector(".root#id > .testB .baseB, .oneNode.bing .baseC");
     expected2 << SelectorNode("oneNode.bing", "", SelectorNode::Descendant);
@@ -165,10 +167,10 @@ void ThemeEnginePrivateTest::testCase_parseSelector()
     result = (selectors.count() == 2) &&
             (selectors[0] == expected) &&
             (selectors[1] == expected2);
-    QVERIFY2(result, "FAILURE");
+    QCOMPARE(result, true);
 }
 
-void ThemeEnginePrivateTest::testCase_selectorToString()
+void tst_ThemeEnginePrivate::testCase_selectorToString()
 {
     engine->errorString = QString();
     bool result = true;
@@ -180,37 +182,37 @@ void ThemeEnginePrivateTest::testCase_selectorToString()
     selector << SelectorNode("classB", "", SelectorNode::Descendant);
     expected = ".classA .classB";
     result = engine->selectorToString(selector) == expected;
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "", SelectorNode::Child);
     expected = ".classA > .classB";
     result = engine->selectorToString(selector) == expected;
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "id", SelectorNode::Descendant);
     selector << SelectorNode("classB", "", SelectorNode::Descendant);
     expected = ".classA#id .classB";
     result = engine->selectorToString(selector) == expected;
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "id", SelectorNode::Child);
     expected = ".classA > .classB#id";
     result = engine->selectorToString(selector) == expected;
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA.attribute", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "id", SelectorNode::Child);
     expected = ".classA.attribute > .classB#id";
     result = engine->selectorToString(selector) == expected;
-    QVERIFY2(result, "Failure");
+    QCOMPARE(result, true);
 }
 
-QTEST_MAIN(ThemeEnginePrivateTest)
+QTEST_MAIN(tst_ThemeEnginePrivate)
 
-#include "tst_themeengineprivatetest.moc"
+#include "tst_theme_engine_privatetest.moc"
