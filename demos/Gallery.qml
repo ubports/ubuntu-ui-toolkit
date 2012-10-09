@@ -98,4 +98,9 @@ Rectangle {
         }
         source: widgetList.model[widgetList.selectedIndex].source
     }
+
+    Component.onCompleted: {
+        i18n.domain = "gallery"
+        i18n.localeDir = "/usr/share/locale";
+    }
 }

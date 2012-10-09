@@ -37,6 +37,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     UbuntuI18n* i = new UbuntuI18n();
-    i->init("ubuntu-sdk", "/usr/share/locale");
+//    i->init("ubuntu-sdk", "/usr/share/locale");
+//    i->init("gallery", "/usr/share/locale");
+
     engine->rootContext()->setContextProperty("i18n", i);
 }

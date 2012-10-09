@@ -107,9 +107,8 @@ Template {
         }
     }
 
-    Component.onCompleted: {
-        i18n.domain = "nothing";
+//    Component.onCompleted: {
 //        i18n.domain = "gallery"
-        i18n.localeDir = "/usr/share/locale";
-    }
+//        i18n.localeDir = "/usr/share/locale";
+//    }
 }
