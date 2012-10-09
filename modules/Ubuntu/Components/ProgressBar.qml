@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 
 /*!
     \qmlclass ProgressBar
@@ -90,11 +90,12 @@ AnimatedItem {
             id: trackerIndeterminate
             visible: progressBar.indeterminate
             width: progressBar.width - 2 * internals.trackerOffset + 4 * sourceSize.width
+            y: internals.trackerOffset
             height: progressBar.height - 2 * internals.trackerOffset
 
             source: internals.unknownTrackerSource
             smooth: true
-            fillMode: Image.Tile
+            fillMode: Image.TileHorizontally
 
             property real animatedX
             x: internals.trackerOffset + Math.round(trackerIndeterminate.animatedX)

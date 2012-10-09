@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
@@ -29,7 +29,6 @@ Rectangle {
     onContentChanged: {
         content.parent = page
         content.anchors.top = header.bottom
-        content.anchors.topMargin = page.anchors.margins
         content.anchors.bottom = page.bottom
         content.anchors.left = page.left
         content.anchors.right = page.right
@@ -44,6 +43,12 @@ Rectangle {
         anchors {
             fill: parent
             margins: 35
+        }
+
+        Binding {
+            target: content.anchors
+            property: "topMargin"
+            value: page.anchors.margins
         }
 
         Item {

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
@@ -22,7 +22,6 @@ Template {
     id: page
 
     Item {
-        anchors.fill: parent
         MouseArea {
             anchors.fill: parent
             onClicked: page.forceActiveFocus()

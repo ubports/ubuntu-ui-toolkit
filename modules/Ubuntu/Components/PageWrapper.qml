@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import "PageWrapperUtils.js" as Utils
 
 /*!
@@ -77,8 +77,10 @@ QtObject {
       \internal
      */
     onActiveChanged: {
-        if (pageWrapper.active) Utils.activate(pageWrapper);
-        else Utils.deactivate(pageWrapper);
+        if (reference) {
+            if (pageWrapper.active) Utils.activate(pageWrapper);
+            else Utils.deactivate(pageWrapper);
+        }
     }
 
     /*!
@@ -87,7 +89,7 @@ QtObject {
     onReferenceChanged: {
         Utils.deactivate(pageWrapper);
         if (pageWrapper.object) pageWrapper.object = null;
-        if (pageWrapper.active) {
+        if (pageWrapper.active && reference) {
             Utils.activate(pageWrapper);
         }
     }

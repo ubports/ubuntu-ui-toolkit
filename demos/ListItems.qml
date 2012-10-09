@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
@@ -342,6 +342,12 @@ Template {
                                 fill: parent
                             }
                             onClicked: print("Large button clicked")
+                        }
+                    }
+                    ListItem.SingleControl {
+                        control: Slider {
+                            anchors.margins: 5
+                            width: parent.width - 10
                         }
                     }
                 }
