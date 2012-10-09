@@ -99,7 +99,7 @@ AbstractButton {
 
         width: icon.width + label.width + foreground.spacing
         height: button.height - 2*foreground.verticalPadding
-        implicitWidth: icon.width + invisibleLabel.paintedWidth + foreground.spacing
+        implicitWidth: icon.width + label.implicitWidth + foreground.spacing
 
         ImageMipmap {
             id: icon
@@ -120,16 +120,7 @@ AbstractButton {
             elide: Text.ElideRight
 
             property real availableWidth: foreground.maximumWidth - icon.width - foreground.spacing
-            width: (invisibleLabel.paintedWidth < availableWidth) ? invisibleLabel.paintedWidth : availableWidth
-        }
-
-        /* Invisible label that is used for width computations */
-        TextCustom {
-            id: invisibleLabel
-            visible: false
-            text: label.text
-            font: label.font
-            fontSize: label.fontSize
+            width: (implicitWidth < availableWidth) ? implicitWidth : availableWidth
         }
     }
 
