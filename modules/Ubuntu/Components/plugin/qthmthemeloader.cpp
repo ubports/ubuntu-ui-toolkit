@@ -391,14 +391,14 @@ bool QthmThemeLoader::handleImport(QthmThemeLoader *loader, QTextStream &stream)
     // if not, build the path relative to the current parsed file
     // Note: resource stored theme files must use absolute paths, or should have
     // qrc: scheme specified
-    if (themeFile.startsWith("qrc:"))
+    if (themeFile.startsWith("qrc:")) {
         return loader->parseTheme(themeFile);
-    else if (!themeFile.startsWith('/')) {
+    } else if (!themeFile.startsWith('/')) {
         QFile *file = qobject_cast<QFile*>(stream.device());
         QFileInfo fi(*file);
         themeFile.prepend('/').prepend(fi.dir().absolutePath());
-    } else
-        return loader->parseTheme(QUrl::fromLocalFile(themeFile));
+    }
+    return loader->parseTheme(QUrl::fromLocalFile(themeFile));
 }
 
 /*!

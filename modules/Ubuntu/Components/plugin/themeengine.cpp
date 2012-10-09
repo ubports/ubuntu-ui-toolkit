@@ -107,6 +107,8 @@ ThemeEnginePrivate::~ThemeEnginePrivate()
 void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
+    if (themeDebug)
+        qDebug() << "\t" << Q_FUNC_INFO << newTheme.toString();
 
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
@@ -206,6 +208,8 @@ Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassN
 */
 StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {
+    if (!m_styleTree)
+        return 0;
     StyleRule *rule = m_styleTree->lookupStyleRule(path);
     if (themeDebug)
         qDebug() << "lookup path =" << selectorToString(path) <<

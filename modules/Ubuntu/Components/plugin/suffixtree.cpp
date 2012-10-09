@@ -160,7 +160,7 @@ StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
     // the spare contains the remainder
     if (themeDebug)
-        qDebug() << "enter" << __FUNCTION__ << ThemeEnginePrivate::selectorToString(path);
+        qDebug() << "enter" << Q_FUNC_INFO << ThemeEnginePrivate::selectorToString(path);
     Selector sparePath = path;
     SelectorNode nextPathNode;
     if (!sparePath.isEmpty()) {
@@ -184,13 +184,13 @@ StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
             } else
                 break;
             if (themeDebug)
-                qDebug() << __FUNCTION__ << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
+                qDebug() << Q_FUNC_INFO << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
         }
     }
 
     // we have consumed the path, return the style from the node/leaf
     if (themeDebug)
-        qDebug() << __FUNCTION__ << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
+        qDebug() << Q_FUNC_INFO << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
     return styleRule;
 }
 
@@ -203,7 +203,7 @@ StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &spare
     StyleRule *rule = 0;
     QString nodeKey = nextNode.toString();
     if (themeDebug)
-        qDebug() << __FUNCTION__ << nodeKey;
+        qDebug() << Q_FUNC_INFO << nodeKey;
     if (children.contains(nodeKey)) {
         rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
@@ -214,7 +214,7 @@ StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &spare
         nextNode.relationship = SelectorNode::Descendant;
         nodeKey = nextNode.toString();
         if (themeDebug)
-            qDebug() << __FUNCTION__ << "no match, testing" << nodeKey;
+            qDebug() << Q_FUNC_INFO << "no match, testing" << nodeKey;
         strict = true;
         if (children.contains(nodeKey)) {
             rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
