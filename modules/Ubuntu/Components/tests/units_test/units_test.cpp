@@ -21,7 +21,7 @@
 
 class UnitsTest: public QObject
 {
-     Q_OBJECT
+    Q_OBJECT
 
 private Q_SLOTS:
 
