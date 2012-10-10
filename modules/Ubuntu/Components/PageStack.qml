@@ -82,6 +82,8 @@ Item {
       \preliminary
       The current size of the stack
      */
+    //FIXME: would prefer this be readonly, but readonly properties are only bound at
+    //initialisation. Trying to update it in push or pop fails. Not sure how to fix.
     property int depth: 0
 
     /*!
