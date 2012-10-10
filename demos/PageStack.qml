@@ -34,6 +34,7 @@ Template {
                 horizontalCenter: parent.horizontalCenter
             }
             width: 300
+            onDepthChanged: console.log("depth", depth)
 
             Component.onCompleted: push(page0)
 
