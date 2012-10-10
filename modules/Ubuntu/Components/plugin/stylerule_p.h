@@ -16,19 +16,32 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef THEMELOADER_P_H
-#define THEMELOADER_P_H
+#ifndef STYLE_P_H
+#define STYLE_P_H
 
-class QQmlEngine;
-class StyleTreeNode;
+#include "stylerule.h"
 
-class ThemeLoader {
+class StyleRulePrivate
+{
+    Q_DECLARE_PUBLIC(StyleRule)
+
 public:
-    ThemeLoader() : m_engine(0) {}
-    virtual ~ThemeLoader(){}
-    virtual StyleTreeNode *loadTheme(const QUrl &path) = 0;
-protected:
-    QQmlEngine *m_engine;
+    StyleRulePrivate(StyleRule *qq);
+    StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule);
+    ~StyleRulePrivate();
+
+    StyleRule *q_ptr;
+
+    QQmlComponent *style;
+    QQmlComponent *delegate;
+    QString selector;
+    QString styleQml;
+    QString delegateQml;
+    bool qthmStyle;
+
+    void createComponent(QQmlEngine *engine, const QString &rule, QQmlComponent **component);
+    void completeComponent(QQmlComponent *sender);
+    void _q_componentCompleted(QQmlComponent::Status);
 };
 
-#endif // THEMELOADER_P_H
+#endif // STYLE_P_H

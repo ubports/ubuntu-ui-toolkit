@@ -3,7 +3,6 @@ installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
 
 # Components
 QML_FILES = $$system(ls *.qml)
-CSS_FILES = $$system(ls *.css)
 JS_FILES = $$system(ls *.js)
 
 # Components/artwork
@@ -17,7 +16,7 @@ LISTITEMS_ARTWORK_FILES = $$system(find ListItems/artwork -type f)
 QMLDIR_FILE = qmldir
 
 # make found deployables visible in Qt Creator
-OTHER_FILES += $$QML_FILES $$CSS_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$QMLDIR_FILE $$LISTITEMS_ARTWORK_FILES
+OTHER_FILES += $$QML_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$QMLDIR_FILE $$LISTITEMS_ARTWORK_FILES
 
 # define deployment for found deployables
 qmldir_file.path = $$installPath

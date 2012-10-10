@@ -19,22 +19,18 @@
 #ifndef THEMEENGINE_P_H
 #define THEMEENGINE_P_H
 
-#include <QFileSystemWatcher>
-#include <QHash>
-#include <QTextStream>
-#include <QRegExp>
-#include <QSettings>
-#include <QStringList>
-#include <QObject>
+#include <QtCore/QHash>
+#include <QtCore/QStringList>
+#include <QtCore/QObject>
 #include "themeengine.h"
+#include "themesettings_p.h"
+#include "suffixtree_p.h"
 
 class QQuickItem;
 class QQmlComponent;
 class ThemeLoader;
 
 typedef QHash<QString, StyledItem*> InstanceHash;
-
-extern bool themeDebug;
 
 extern const char *appUseGlobalThemeKey;
 extern const char *appThemeFileKey;
@@ -43,61 +39,6 @@ extern const char *systemThemePath;
 #define SELECTOR_IGNORE_RELATIONSHIP    0x01
 #define SELECTOR_IGNORE_STYLEID         0x02
 #define SELECTOR_IGNORE_ALL             (SELECTOR_IGNORE_RELATIONSHIP | SELECTOR_IGNORE_STYLEID)
-
-// node of a selector
-class SelectorNode {
-    public:
-    enum Relationship {Child, Descendant, Sibling};
-    enum Sensitivity {IgnoreRelationship = 0x01, IgnoreStyleId = 0x02, IgnoreAll = IgnoreRelationship | IgnoreStyleId};
-    SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore = 0);
-    QString toString() const;
-    bool operator==(const SelectorNode &other);
-    QString styleClass;
-    QString styleId;
-    Relationship relationship;
-    unsigned char ignore;
-};
-
-// selector type
-typedef QList<SelectorNode> Selector;
-uint qHash(const Selector &key);
-
-// style rule tree
-class StyleTreeNode {
-public:
-    StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, StyleRule *styleRule);
-    ~StyleTreeNode();
-    void clear();
-    void addStyleRule(const Selector &path, StyleRule *styleRule);
-    StyleRule *lookupStyleRule(const Selector &path, bool strict = false);
-    StyleRule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
-    void listTree(const QString &prefix = QString());
-
-public:
-    StyleTreeNode *parent;
-    SelectorNode styleNode;
-    StyleRule *styleRule;
-    // the key is the next CSS node's "relationship styleClass#styleId" combination
-    QHash<QString, StyleTreeNode*> children;
-};
-
-// theme settings management
-class ThemeSettings {
-public:
-    ThemeSettings(QObject *globalThemeObserver);
-    bool initialize();
-    QUrl themeFile() const;
-    QUrl setTheme(const QString &theme, bool global);
-    QStringList imports() const;
-
-private:
-    QFileSystemWatcher configWatcher;
-    QSettings globalSettings;
-    QSettings appSettings;
-    bool hasAppSettings;
-};
 
 // Private functionality of the theme engine
 class ThemeEnginePrivate

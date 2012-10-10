@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "fontUtils.js" as FontUtils
-import "." 0.1
+import "." 0.1 as Theming
 
 /*!
     \qmlclass TextCustom
@@ -49,13 +49,13 @@ Text {
     property alias instanceId: styleRule.instanceId
 
     // example of private implementation of using StyledItem privately
-    StyledItem {
+    Theming.StyledItem {
         id: styleRule
         onStyleChanged: {
-            if (styleObject) {
-                font.family = styleObject.fontFamily
-                color = styleObject.color
-                fontSize = styleObject.fontSize
+            if (style) {
+                font.family = style.fontFamily
+                color = style.color
+                fontSize = style.fontSize
             }
         }
     }

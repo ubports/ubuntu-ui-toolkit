@@ -19,9 +19,8 @@
 #ifndef THEMEENGINE_H
 #define THEMEENGINE_H
 
-#include <QObject>
-#include <QUrl>
-#include <QtQml>
+#include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 class StyleRule;
 class QQmlEngine;
@@ -39,7 +38,7 @@ protected:
     ThemeEngine(QObject *parent = 0);
 public:
 
-    static QObject *initializeEngine(QQmlEngine *engine, QJSEngine *);
+    static QObject *initializeEngine(QQmlEngine *engine);
     static ThemeEngine *instance();
 
     bool registerInstanceId(StyledItem *item, const QString &newId);
@@ -70,7 +69,5 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
 };
-
-QML_DECLARE_TYPE(ThemeEngine);
 
 #endif // THEMEENGINE_H

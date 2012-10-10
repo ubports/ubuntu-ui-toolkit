@@ -19,12 +19,13 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "qmlthemeloader_p.h"
-#include "style.h"
+#include "stylerule.h"
 #include "styleditem.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
+#include <QtCore/QDebug>
 
 /*!
   \page QML theme loader

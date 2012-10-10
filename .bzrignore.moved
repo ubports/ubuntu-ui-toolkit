@@ -1,4 +1,0 @@
-modules/Ubuntu/Components/plugin/moc_plugin.cpp
-modules/Ubuntu/Components/plugin/moc_style.cpp
-modules/Ubuntu/Components/plugin/moc_styleditem.cpp
-modules/Ubuntu/Components/plugin/moc_themeengine.cpp

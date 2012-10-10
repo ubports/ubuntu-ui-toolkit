@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "style.h"
-#include "style_p.h"
+#include "stylerule.h"
+#include "stylerule_p.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include <QtQml/QQmlEngine>
@@ -365,4 +365,4 @@ void StyleRule::setDelegate(QQmlComponent *delegate)
     d->delegate = delegate;
 }
 
-#include "moc_style.cpp"
+#include "moc_stylerule.cpp"

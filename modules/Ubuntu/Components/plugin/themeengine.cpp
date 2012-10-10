@@ -18,19 +18,19 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "style.h"
+#include "stylerule.h"
 #include "styleditem.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
 #include "qthmthemeloader_p.h"
-#include <QString>
+#include <QtCore/QString>
 #include <QtQml/QQmlEngine>
-#include <QJSEngine>
+#include <QtQml/QJSEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
 
-#include <QDebug>
+#include <QtCore/QDebug>
 
 /*!
   \page QtQuick_Theming_Enginre
@@ -64,17 +64,6 @@ bool themeDebug = false;
 ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
 /*=============================================================================
-=============================================================================*/
-
-ThemeLoader::ThemeLoader() :
-    m_engine(0)
-{}
-
-ThemeLoader::~ThemeLoader()
-{}
-
-
-/*=============================================================================
   THEMING ENGINE PRIVATES
 =============================================================================*/
 
@@ -89,7 +78,7 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     // register theme loaders
     // TODO: shouldn't these be in separate plugins?
     themeLoaders[".qml"] = new QmlThemeLoader(m_engine);
-    themeLoaders[".qthm"] = new QthmThemeLoader(m_engine);
+    themeLoaders[".qmltheme"] = new QthmThemeLoader(m_engine);
 
     // invoke theme loading
     QMetaObject::invokeMethod(q_ptr, "_q_updateTheme", Qt::QueuedConnection);
@@ -121,6 +110,7 @@ void ThemeEnginePrivate::_q_updateTheme()
         if (!importPaths.isEmpty()) {
             importList << importPaths;
             m_engine->setImportPathList(importList);
+            qDebug() << "_q_updateTheme" << importPaths;
         }
         // load the theme
         loadTheme(newTheme);
@@ -310,10 +300,7 @@ ThemeEngine::ThemeEngine(QObject *parent) :
 
 /*!
   \internal
-  The method is used by the QML framework to register theme engine instance. It
-  is called upon first invocation of the type functionality. However the engine
-  itself is accessed earlier by the StyledItems therefore the method is called
-  upon plugin's initialization.
+  The method is used by the QML framework to register theme engine instance.
 
   When called configures the engine with the given declarative engine and loads
   the last theme configured in the settings. Returns the theme engine's instance
@@ -322,7 +309,7 @@ ThemeEngine::ThemeEngine(QObject *parent) :
   Further calls of the function do not re-initialize the engine nor re-load the
   configured theme.
 */
-QObject *ThemeEngine::initializeEngine(QQmlEngine *engine, QJSEngine *)
+QObject *ThemeEngine::initializeEngine(QQmlEngine *engine)
 {
     if (!ThemeEnginePrivate::themeEngine && engine) {
         ThemeEnginePrivate::themeEngine = new ThemeEngine(engine);

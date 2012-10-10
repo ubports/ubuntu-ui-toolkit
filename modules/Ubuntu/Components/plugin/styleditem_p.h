@@ -30,19 +30,23 @@ public:
     ~StyledItemPrivate();
 
     StyledItem *q_ptr;
-    StyleRule *privateRule;
-    StyleRule *themeRule;
-    QObject *styleObject;
+    QObject *style;
+    QQuickItem *delegate;
     QString styleClass;
     QString instanceId;
 
     // internal members
     QQmlContext *componentContext;
-    QQuickItem *delegateItem;
+    QQmlComponent *styleComponent;
+    QQmlComponent *delegateComponent;
     bool componentCompleted;
+    bool customStyle;
+    bool customDelegate;
+    bool connectedToEngine;
 
     void updateCurrentStyle(bool forceUpdate = false);
     bool registerInstanceId(const QString &id);
+    void listenThemeEngine();
     void _q_reloadTheme();
 };
 

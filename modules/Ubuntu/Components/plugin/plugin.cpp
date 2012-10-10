@@ -17,19 +17,16 @@
  */
 
 #include "plugin.h"
-
-#include <QtQml/QQmlContext>
-#include <QtQuick/QQuickItem>
-
-#include "style.h"
+#include "stylerule.h"
 #include "themeengine.h"
 #include "styleditem.h"
+
+#include <QtQml/QQmlContext>
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::initializeEngine);
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
@@ -38,5 +35,5 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     // call engine registration method to load the theme
-    ThemeEngine::initializeEngine(engine, 0);
+    engine->rootContext()->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
 }

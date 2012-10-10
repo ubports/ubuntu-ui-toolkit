@@ -20,13 +20,9 @@ PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
+FontUtils 0.1 fontUtils.js
+MathUtils 0.1 mathUtils.js
 
 # styles
 ButtonStyle 0.1 ButtonStyle.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
-
-#the following two exposures were commented out as when those are
-#in use, the plug-in exported QML elements won't be visible in
-#the module
-#FontUtils 0.1 fontUtils.js
-#MathUtils 0.1 mathUtils.js

@@ -10,7 +10,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "styleditem.h"
-#include "style.h"
+#include "stylerule.h"
 
 const char *lookupTestPattern1 =
         "import QtQuick 2.0"
@@ -63,7 +63,7 @@ void tst_ThemeEngine::initTestCase()
     // not give any error...
 
     const char *uri = "Ubuntu.Components";
-    qmlRegisterSingletonType<ThemeEngine>(uri, 0, 1, "Theme", ThemeEngine::initializeEngine);
+    ThemeEngine::initializeEngine(view->engine());
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
     qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
 }
@@ -75,7 +75,7 @@ void tst_ThemeEngine::cleanupTestCase()
 
 void tst_ThemeEngine::testCase_initializeEngine()
 {
-    bool result = (ThemeEngine::initializeEngine(view->engine(), 0) != 0);
+    bool result = (ThemeEngine::initializeEngine(view->engine()) != 0);
     // theme loading might fail, however don't care about it
     QCOMPARE(result, true);
 }

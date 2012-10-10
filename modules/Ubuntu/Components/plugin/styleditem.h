@@ -19,9 +19,8 @@
 #ifndef STYLEDITEM_H
 #define STYLEDITEM_H
 
-#include <QObject>
-#include <QScopedPointer>
-#include <QtQml>
+#include <QtCore/QObject>
+#include <QtCore/QScopedPointer>
 #include <QtQuick/QQuickItem>
 
 class StyleRule;
@@ -33,9 +32,8 @@ class StyledItem : public QQuickItem
 
     Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
     Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
-    Q_PROPERTY(StyleRule *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged)
-    Q_PROPERTY(QObject *styleObject READ styleObject NOTIFY styleChanged)
-    Q_PROPERTY(QQuickItem *delegateItem READ delegateItem NOTIFY styleChanged)
+    Q_PROPERTY(QObject *style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PROPERTY(QQuickItem *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
 
 public:
     StyledItem(QQuickItem *parent = 0);
@@ -55,11 +53,10 @@ public: // getter/setter
     void setInstanceId(const QString &instanceId);
     QString styleClass() const;
     void setStyleClass(const QString &styleClass);
-    StyleRule *style() const;
-    void setStyle(StyleRule *style);
-    void resetStyle();
-    QObject *styleObject() const;
-    QQuickItem *delegateItem() const;
+    QObject *style() const;
+    void setStyle(QObject *style);
+    QQuickItem *delegate() const;
+    void setDelegate(QQuickItem *delegate);
 
 private: //members
     Q_DISABLE_COPY(StyledItem)
@@ -68,7 +65,5 @@ private: //members
 
     Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
 };
-
-QML_DECLARE_TYPE(StyledItem);
 
 #endif // STYLEDITEM_H

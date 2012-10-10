@@ -16,13 +16,23 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "themeengine.h"
 #include "themeengine_p.h"
-#include "style.h"
+#include "themesettings_p.h"
 #include "styleditem.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
+
+const bool traceThemeSettings = false;
+
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (traceThemeSettings) \
+        qDebug() << QString("ThemeSettings::%1").arg(__FUNCTION__, -15)
+
 
 /*!
   \page QtQuick_Theming_Enginre
@@ -30,12 +40,12 @@
   ThemeSettings class handles the selection of the application style based on
   global and application settings.
 
-  User theme settings are stored in $HOME/.qthm/theme.ini file, which contains
+  User theme settings are stored in $HOME/.qmltheme/theme.ini file, which contains
   the current global theme name and the QML import paths. These settings are
   stored in "theme" and "imports" keywords.
 
   System themes are stored under /usr/share/themes/<theme-name>/qthm folder,
-  where the common theme is named "default.qthm" and each application has its
+  where the common theme is named "default.qmltheme" and each application has its
   own theme, which can be either in the qthm folder or under a subfolder.
 
   OBS: we need to expose a QML element that handles these. Beside, applications
@@ -47,20 +57,20 @@
 // therefore it is possible to have application specific theme settings
 // for it!
 
-// user's theme settings are stored in ~/.qthm/theme.ini file and here are
+// user's theme settings are stored in ~/.qmltheme/theme.ini file and here are
 // also stored the user specific themes
-const char *PathFormat_GlobalThemeIniFile = "%1/.qthm/theme.ini";
+const char *PathFormat_GlobalThemeIniFile = "%1/.qmltheme/theme.ini";
 
 #ifdef TARGET_DEMO
 // for SDK demo we use the demo folder to store both global and private themes
-const char *PathFormat_GlobalAppTheme = "demos/%1/%2";
-const char *PathFormat_GlobalThemeFile = "demos/%1/default.qthm";
-const char *systemThemePath = "demos";
+const char *PathFormat_GlobalAppTheme = "demos/themes/%1/%2";
+const char *PathFormat_GlobalThemeFile = "demos/themes/%1/default.qmltheme";
+const char *systemThemePath = "demos/themes";
 
 #else
 
-const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qthm/%2";
-const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qthm/default.qthm";
+const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qmltheme/%2";
+const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qmltheme/default.qmltheme";
 const char *systemThemePath = "/usr/share/themes";
 
 #endif
@@ -98,7 +108,7 @@ ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
     if (!hasAppSettings || (hasAppSettings && appSettings.value(appUseGlobalThemeKey).toBool()))
         configWatcher.addPath(globalSettings.fileName());
 
-    // connect to
+    // connect theme observer to file watcher's fileChanged signal
     QObject::connect(&configWatcher, SIGNAL(fileChanged(QString)),
                      globalThemeObserver, SLOT(_q_updateTheme()));
 }
@@ -145,6 +155,8 @@ QUrl ThemeSettings::themeFile() const
             result = QUrl();
     }
 
+    TRACE << "file" << result.toString();
+
     return result;
 }
 /*!
@@ -175,6 +187,7 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
         appSettings.setValue(appUseGlobalThemeKey, global);
         appSettings.setValue(appThemeFileKey, theme);
         QUrl theme = themeFile();
+        TRACE << "trying to set theme to" << theme.toString();
         if (!theme.isValid() || !QFile::exists(theme.path())) {
             // roll back settings
             appSettings.setValue(appUseGlobalThemeKey, prevGlobal);
@@ -183,8 +196,13 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
             return QUrl();
         }
 
-        if (hasAppSettings && !global)
+        if (hasAppSettings && !global) {
+            TRACE << "stop watching user theme configuration changes";
             configWatcher.removePath(globalSettings.fileName());
+        } else if (global && !prevGlobal) {
+            TRACE << "start watching user theme configuration changes";
+            configWatcher.addPath(globalSettings.fileName());
+        }
 
         return theme;
     }

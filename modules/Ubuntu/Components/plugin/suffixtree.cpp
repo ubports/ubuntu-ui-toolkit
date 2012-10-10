@@ -18,12 +18,22 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "style.h"
-#include "styleditem.h"
+#include "stylerule.h"
+#include "suffixtree_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
+#include <QtCore/QDebug>
+
+const bool debugSuffixTree = false;
+
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (debugSuffixTree) \
+        qDebug() << QString("SuffixTree::%1").arg(__FUNCTION__, -15)
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
@@ -159,8 +169,7 @@ void StyleTreeNode::addStyleRule(const Selector &path, StyleRule *styleRule)
 StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
     // the spare contains the remainder
-    if (themeDebug)
-        qDebug() << "enter" << Q_FUNC_INFO << ThemeEnginePrivate::selectorToString(path);
+    TRACE << ThemeEnginePrivate::selectorToString(path);
     Selector sparePath = path;
     SelectorNode nextPathNode;
     if (!sparePath.isEmpty()) {
@@ -183,14 +192,12 @@ StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
                 sparePath.removeLast();
             } else
                 break;
-            if (themeDebug)
-                qDebug() << Q_FUNC_INFO << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
+            TRACE << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
         }
     }
 
     // we have consumed the path, return the style from the node/leaf
-    if (themeDebug)
-        qDebug() << Q_FUNC_INFO << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
+    TRACE << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
     return styleRule;
 }
 
@@ -202,8 +209,7 @@ StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &spare
 {
     StyleRule *rule = 0;
     QString nodeKey = nextNode.toString();
-    if (themeDebug)
-        qDebug() << Q_FUNC_INFO << nodeKey;
+    TRACE << nodeKey;
     if (children.contains(nodeKey)) {
         rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
@@ -213,8 +219,7 @@ StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &spare
         // found, the lookup after this point should be strict
         nextNode.relationship = SelectorNode::Descendant;
         nodeKey = nextNode.toString();
-        if (themeDebug)
-            qDebug() << Q_FUNC_INFO << "no match, testing" << nodeKey;
+        TRACE << "no match, testing" << nodeKey;
         strict = true;
         if (children.contains(nodeKey)) {
             rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
@@ -230,7 +235,7 @@ StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &spare
 */
 void StyleTreeNode::listTree(const QString &prefix)
 {
-    if (themeDebug) {
+    if (debugSuffixTree) {
         // go backwards to build the path
         if (styleRule) {
             QString path = '(' + styleNode.toString() + ')';

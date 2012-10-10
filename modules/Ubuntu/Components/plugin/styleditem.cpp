@@ -18,12 +18,25 @@
 
 #include "styleditem.h"
 #include "styleditem_p.h"
-#include "style.h"
-#include "style_p.h"
+#include "stylerule.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
+#include <QtCore/QDebug>
+
+const bool traceStyledItem = false;
+
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (traceStyledItem) \
+        qDebug() << QString("StyledItem::%1").arg(__FUNCTION__, -15)
+
+#define TRACEP \
+    if (traceStyledItem) \
+        qDebug() << QString("StyledItemPrivate::%1").arg(__FUNCTION__, -15)
 
 const char *widgetProperty = "widget";
 /*!
@@ -85,12 +98,15 @@ const char *widgetProperty = "widget";
 
 StyledItemPrivate::StyledItemPrivate(StyledItem *qq):
     q_ptr(qq),
-    privateRule(0),
-    themeRule(0),
-    styleObject(0),
+    style(0),
+    delegate(0),
     componentContext(0),
-    delegateItem(0),
-    componentCompleted(false)
+    styleComponent(0),
+    delegateComponent(0),
+    componentCompleted(false),
+    customStyle(false),
+    customDelegate(false),
+    connectedToEngine(false)
 {
 }
 StyledItemPrivate::~StyledItemPrivate()
@@ -100,67 +116,74 @@ StyledItemPrivate::~StyledItemPrivate()
 
 /*!
   \internal
-  Updates the styleObject and delegateItem variables. The style update is forced
+  Updates the style and delegate variables. The style update is forced
   when the widget changes the style lookup from private to theme.
 */
 void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
 {
     Q_Q(StyledItem);
     // do not do anything till the component gets complete?
-    if (!componentCompleted) return;
+    if (!componentCompleted)
+       return;
 
+    TRACEP << QString("class: %1, customStyle: %2, customDelegate: %3").arg(styleClass).arg(customStyle).arg(customDelegate);
     bool styleChanged = forceUpdate;
-    StyleRule *currentRule = privateRule;
-
-    // in case of private style is in use, no need to change anything
-    if (!privateRule) {
-        // check whether we have different style for the state
-        currentRule = ThemeEngine::instance()->lookupStyleRule(q);
-        if (themeRule != currentRule) {
-            delete styleObject;
-            styleObject = 0;
-            themeRule = currentRule;
-            styleChanged = true;
+    // if force update, we need to clean the previous stuff
+    if (forceUpdate) {
+        if (!customStyle) {
+            delete style;
+            style = 0;
+            styleComponent = 0;
+        }
+        if (!customDelegate) {
+            delete delegate;
+            delegate = 0;
+            delegateComponent = 0;
         }
     }
 
-    // reset delegate if the style is updated and the new style has visuals
-    if (styleChanged && currentRule && currentRule->delegate()) {
-        delete delegateItem;
-        delegateItem = 0;
-    }
+    //check if we need to use the theme at all
+    if (!customStyle || !customDelegate) {
+        StyleRule *rule = ThemeEngine::instance()->lookupStyleRule(q);
+        if (!rule) {
+            // no style found, exit
+            return;
+        }
 
-    if (styleChanged && currentRule) {
-        // check if we have the context
+        // check if we have a context created, and set the "widget" property so
+        // the widget instance can be used from style/delegate
         if (!componentContext) {
             componentContext = new QQmlContext(QQmlEngine::contextForObject(q));
             componentContext->setContextProperty(QLatin1String(widgetProperty), q);
         }
 
-        if (!styleObject && currentRule->style()) {
-            styleObject = currentRule->createStyle(componentContext);
-            if (styleObject) {
-                styleObject->setParent(q);
-            }
-        }
+        // check them separately
+        if (!customStyle && (!style || (styleComponent != rule->style()))) {
+            //delete previous object so it doesn't eat memory
+            delete style;
+            styleComponent = rule->style();
+            style = rule->createStyle(componentContext);
+            if (style)
+                style->setParent(q);
+            styleChanged = true;
+        } else if (customStyle)
+            style->setParent(q);
 
-        // do not mandate yet the existence of visuals
-        if (!delegateItem) {
-            if (currentRule->delegate())
-                delegateItem = currentRule->createDelegate(componentContext);
-            else {
-                StyleRule *delegateStyle = ThemeEngine::instance()->lookupStyleRule(q, true);
-                if (delegateStyle)
-                    delegateItem = delegateStyle->createDelegate(componentContext);
-            }
-            if (delegateItem) {
+        // create delegate
+        if (!customDelegate && (!delegate || (delegateComponent != rule->delegate()))) {
+            // clear previous delegate so we free some memory
+            delete delegate;
+            delegateComponent = rule->delegate();
+            delegate = rule->createDelegate(componentContext);
+            styleChanged = styleChanged || (delegate != 0);
+            if (delegate) {
                 // set the styledItem as parent and parentItem too to avoid leaks
-                delegateItem->setParent(q);
-                delegateItem->setParentItem(q);
+                delegate->setParent(q);
+                delegate->setParentItem(q);
 
                 // If style item contains a property "contentItem" that points
                 // to an item, reparent all children into it:
-                QVariant contentVariant = delegateItem->property("contentItem");
+                QVariant contentVariant = delegate->property("contentItem");
                 QQuickItem *contentItem = qvariant_cast<QQuickItem *>(contentVariant);
                 if (contentItem) {
                     Q_FOREACH (QObject *child, q->children()) {
@@ -170,6 +193,18 @@ void StyledItemPrivate::updateCurrentStyle(bool forceUpdate)
                     }
                 }
             }
+        } else if (customDelegate) {
+            // do the reparenting!
+            delegate->setParent(q);
+            delegate->setParentItem(q);
+        }
+    } else {
+        //reparent custom style and delegate
+        if (customStyle)
+            style->setParent(q);
+        if (customDelegate) {
+            delegate->setParent(q);
+            delegate->setParentItem(q);
         }
     }
 
@@ -202,17 +237,41 @@ bool StyledItemPrivate::registerInstanceId(const QString &id)
 
 /*!
   \internal
+  Checks if the item needs to receive updates from theme engine or not. Connects to
+  or disconnects from the engine.
+  */
+void StyledItemPrivate::listenThemeEngine()
+{
+    Q_Q(StyledItem);
+    if (!customStyle || !customDelegate) {
+        if (!connectedToEngine)
+            connectedToEngine = (bool)QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_reloadTheme()));
+    } else {
+        if (connectedToEngine)
+            connectedToEngine = !QObject::disconnect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_reloadTheme()));
+    }
+}
+
+
+/*!
+  \internal
   Internal slot to update the style of an item. The slot is connected to the theme
-  engine's themeChanged() signal.
+  engine's themeChanged() signal. This is called only if the item uses style rules
+  from the theme.
   */
 void StyledItemPrivate::_q_reloadTheme()
 {
     // update style if theme is used
-    themeRule = 0;
-    delete styleObject;
-    delete delegateItem;
-    styleObject = 0;
-    delegateItem = 0;
+    if (!customStyle) {
+        styleComponent = 0;
+        delete style;
+        style = 0;
+    }
+    if (!customDelegate) {
+        delegateComponent = 0;
+        delete delegate;
+        delegate = 0;
+    }
     updateCurrentStyle(true);
 }
 
@@ -244,7 +303,7 @@ void StyledItem::componentComplete()
 
     // connect to theme engine's themeChanged() signal to refresh style when
     // theme is updated
-    QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), this, SLOT(_q_reloadTheme()));
+    d->listenThemeEngine();
 
     // check whether setting instanceId is possible
     d->registerInstanceId(d->instanceId);
@@ -312,70 +371,70 @@ void StyledItem::setStyleClass(const QString &styleClass)
 }
 
 /*!
-  \qmlproperty Rule StyledItem::style
-  This property holds the private style. When set, the widget will use the styling
-  defined in the rule, and altering styleClass and instanceId properties will not
-  have any effect on the widget styling. Widgets can be turned back to use theme
-  styling by resetting the property.
+  \qmlproperty QtObject StyledItem::style
+  The property holds the object containing the style configuration properties. This can
+  either be defined by a theme style rule or the private style. When set, the item will
+  no longer use the theme defined style properties but the ones set. The property must be
+  reset (set to null object) in order to use th etheme defines styles.
+
+  Modifying the property alone will only affect the styling. The delegate will be used
+  from the theme unless specified explicitly. Therefore widgets can be used with custom
+  styling and theme defined delegate, theme style and custom delegate or both theme defined/
+  custom.
   */
 /*!
-  Returns the private style component, null if the widget uses the theme style.
+  \internal
+  Returns the object created out of the style used.
   */
-StyleRule *StyledItem::style() const
+QObject *StyledItem::style() const
 {
     Q_D(const StyledItem);
-    return d->privateRule;
+    return d->style;
 }
 
+
 /*!
-  Sets the private style for the widget.
+  \internal
+  Sets/resets the style object for the widget.
   */
-void StyledItem::setStyle(StyleRule *style)
+void StyledItem::setStyle(QObject *style)
 {
     Q_D(StyledItem);
-    if (d->privateRule != style) {
-        d->privateRule = style;
-        d->_q_reloadTheme();
+    if (d->style != style) {
+        d->customStyle = (style != 0);
+        d->style = style;
+        d->listenThemeEngine();
+        d->updateCurrentStyle();
     }
 }
 
 /*!
-  Resets the private style to the default, and the widget will use the theme styles.
-  */
-void StyledItem::resetStyle()
-{
-    Q_D(StyledItem);
-    d->privateRule = 0;
-    d->_q_reloadTheme();
-}
-
-/*!
-  \qmlproperty QtObject StyledItem::styleObject
-  The property holds the object containing the style configuration properties. This can
-  either be defined by a theme style rule or the private style.
-  */
-/*!
-  Returns the object created out of the style used.
-  */
-QObject *StyledItem::styleObject() const
-{
-    Q_D(const StyledItem);
-    return d->styleObject;
-}
-
-/*!
-  \qmlproperty Item StyledItem::delegateItem
+  \qmlproperty Item StyledItem::delegate
   The property holds the Item containing the visuals of the widget defined by
-  one of the styles, theme or private.
+  one of the styles, theme or private. It can be altered
   */
 /*!
   Returns the delegate Item created out of the style.
   */
-QQuickItem *StyledItem::delegateItem() const
+QQuickItem *StyledItem::delegate() const
 {
     Q_D(const StyledItem);
-    return d->delegateItem;
+    return d->delegate;
 }
 
+/*!
+  \internal
+  Sets/resets the delegate item for the widget.
+  */
+void StyledItem::setDelegate(QQuickItem *delegate)
+{
+    Q_D(StyledItem);
+    if (d->delegate != delegate) {
+        d->customDelegate = (delegate != 0);
+        d->delegate = delegate;
+        d->listenThemeEngine();
+        d->updateCurrentStyle();
+    }
+}
 
 #include "moc_styleditem.cpp"

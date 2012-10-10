@@ -19,13 +19,10 @@
 #ifndef STYLE_H
 #define STYLE_H
 
-#include <QObject>
-#include <QStringList>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include <QtQuick/QQuickItem>
-#include <QtQml>
 #include <QtQml/QQmlParserStatus>
-
-//#include <QLibrary>
 
 class StyleRulePrivate;
 class QQmlComponent;
@@ -74,7 +71,5 @@ private:
     QScopedPointer<StyleRulePrivate> d_ptr;
     Q_PRIVATE_SLOT(d_func(), void _q_componentCompleted(QQmlComponent::Status))
 };
-
-QML_DECLARE_TYPE(StyleRule);
 
 #endif // STYLE_H

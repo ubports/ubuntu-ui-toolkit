@@ -16,32 +16,30 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef STYLE_P_H
-#define STYLE_P_H
+#ifndef THEMESETTINGS_P_H
+#define THEMESETTINGS_P_H
 
-#include "style.h"
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QSettings>
+#include <QtCore/QStringList>
+#include <QtCore/QUrl>
 
-class StyleRulePrivate
-{
-    Q_DECLARE_PUBLIC(StyleRule)
 
+class QObject;
+
+class ThemeSettings {
 public:
-    StyleRulePrivate(StyleRule *qq);
-    StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule);
-    ~StyleRulePrivate();
+    ThemeSettings(QObject *globalThemeObserver);
+    bool initialize();
+    QUrl themeFile() const;
+    QUrl setTheme(const QString &theme, bool global);
+    QStringList imports() const;
 
-    StyleRule *q_ptr;
-
-    QQmlComponent *style;
-    QQmlComponent *delegate;
-    QString selector;
-    QString styleQml;
-    QString delegateQml;
-    bool qthmStyle;
-
-    void createComponent(QQmlEngine *engine, const QString &rule, QQmlComponent **component);
-    void completeComponent(QQmlComponent *sender);
-    void _q_componentCompleted(QQmlComponent::Status);
+private:
+    QFileSystemWatcher configWatcher;
+    QSettings globalSettings;
+    QSettings appSettings;
+    bool hasAppSettings;
 };
 
-#endif // STYLE_P_H
+#endif // THEMESETTINGS_P_H

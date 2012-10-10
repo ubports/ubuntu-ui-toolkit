@@ -19,7 +19,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "qthmthemeloader_p.h"
-#include "style.h"
+#include "stylerule.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
@@ -27,7 +27,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 
-#include <QDebug>
+//#include <QtCore/QDebug>
 
 /*!
   \page QTHM file parser
@@ -502,7 +502,6 @@ bool QthmThemeLoader::handleQmlImport(QthmThemeLoader *loader, QTextStream &stre
 
     return true;
 }
-
 
 /*=============================================================================
   CSS-LIKE THEME LOADER

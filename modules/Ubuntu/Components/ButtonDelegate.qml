@@ -16,10 +16,6 @@
 
 import QtQuick 2.0
 
-
-/*
-  Style defined  in ButtonStyle
-*/
 Item {
     z: -1
     anchors.fill: parent
@@ -48,7 +44,7 @@ Item {
 
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        source: widget.darkBorder ? Qt.resolvedUrl(widget.styleObject.shapeDark) : Qt.resolvedUrl(widget.styleObject.shapeNormal)
+        source: widget.darkBorder ? widget.style.shapeDark : widget.style.shapeNormal
         border.left: 18; border.top: 15
         border.right: 18; border.bottom: 15
     }
@@ -78,8 +74,8 @@ Item {
         anchors.fill: parent
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        source: (widget.darkBorder) ? (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderDarkPressed) : Qt.resolvedUrl(widget.styleObject.borderDarkIdle))
-                            : (widget.pressed ? Qt.resolvedUrl(widget.styleObject.borderPressed) : Qt.resolvedUrl(widget.styleObject.borderIdle));
+        source: (widget.darkBorder) ? (widget.pressed ? widget.style.borderDarkPressed : widget.style.borderDarkIdle)
+                            : (widget.pressed ? widget.style.borderPressed : widget.style.borderIdle);
         border.left: 14; border.top: 17
         border.right: 15; border.bottom: 18
     }

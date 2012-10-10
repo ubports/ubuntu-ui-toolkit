@@ -36,12 +36,12 @@ Template {
             Button {
                 text: "Theme #1"
                 width: 100
-                onClicked: Theme.setTheme("theme-one/theme.qthm", true)
+                onClicked: Theme.setTheme("theme-one/theme.qmltheme", true)
             }
             Button {
                 text: "Theme #2"
                 width: 100
-                onClicked: Theme.setTheme("demos/private-theme.qthm", false)
+                onClicked: Theme.setTheme("demos/themes/private-theme.qmltheme", false)
             }
             Button {
                 text: "Default"
@@ -66,6 +66,7 @@ Template {
                 text: "Call"
             }
         }
+
         TemplateRow {
             title: "Custom"
 
@@ -76,23 +77,22 @@ Template {
                 styleClass: "frame"
 
                 Button {
+                    id: customButton
                     x: 10; y: 10; width: 150
                     text: "Private style"
-                    style: Rule {
-                        delegate: Item {
-                            z: -1
+                    delegate: Item {
+                        z: -1
+                        anchors.fill: parent
+                        clip: true
+                        Rectangle {
+                            id: shape
+                            z: -2
                             anchors.fill: parent
-                            clip: true
-                            Rectangle {
-                                id: shape
-                                z: -2
-                                anchors.fill: parent
-                                anchors.margins: -widget.width
-                                rotation: widget.pressed ? -45 : 45
-                                gradient: Gradient {
-                                    GradientStop { position: 0.0; color: "lightsteelblue" }
-                                    GradientStop { position: 1.0; color: widget.hovered ? "blue" : "green" }
-                                }
+                            anchors.margins: -customButton.width
+                            rotation: customButton.pressed ? -45 : 45
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "lightsteelblue" }
+                                GradientStop { position: 1.0; color: customButton.hovered ? "blue" : "green" }
                             }
                         }
                     }

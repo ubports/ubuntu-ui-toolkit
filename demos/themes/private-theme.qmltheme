@@ -5,7 +5,7 @@
     theme pecific types can be utilized.
 */
 
-@import url("global-themes/theme-one/theme.qthm");
+@import url("global-themes/theme-one/theme.qmltheme");
 @qml-mapping(.Button, ButtonStyle, TestFrameDelegate);
 @qml-mapping(.frame, , TestFrameDelegate);
 
@@ -16,4 +16,5 @@
 
 .Button {
     color: widget.pressed ? "purple" : "lightgray";
+    shapeNormal: Qt.resolvedUrl("call_icon.png")
 }
