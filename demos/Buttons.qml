@@ -18,16 +18,16 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Buttons")
+    title: gallery.tr("Buttons")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Standard") + emptyString
+            title: gallery.tr("Standard") + emptyString
 
             Button {
-                text: i18n.tr("Call") + emptyString
+                text: gallery.tr("Call") + emptyString
             }
         }
 
@@ -35,23 +35,23 @@ Template {
             title: tr("Disabled")
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
                 enabled: false
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Colors")
+            title: gallery.tr("Colors")
 
             Button {
-                text: i18n.tr("Call")
-//                text: i18n.tr("Call", "telephony-app") // context
+                text: gallery.tr("Call")
+//                text: gallery.tr("Call", "telephony-app") // context
                 color: "#37b301"
             }
 
             Button {
-                text: i18n.tr("Call")
-//                text: i18n.tr("Call", "default") // context
+                text: gallery.tr("Call")
+//                text: gallery.tr("Call", "default") // context
                 pressedColor: "#dd4f22"
             }
 
@@ -63,7 +63,7 @@ Template {
 
                 Button {
                     id: darkButton
-                    text: i18n.tr("Call")
+                    text: gallery.tr("Call")
                     color: "#dd4f22"
                     darkBorder: true
                     anchors.centerIn: parent
@@ -72,10 +72,10 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Content")
+            title: gallery.tr("Content")
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
             }
 
             Button {
@@ -83,26 +83,26 @@ Template {
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
                 iconSource: "call_icon.png"
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
                 iconSource: "call_icon.png"
                 iconPosition: "right"
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Scalability")
+            title: gallery.tr("Scalability")
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: gallery.tr("Call")
                 width: 140
                 height: 90
             }

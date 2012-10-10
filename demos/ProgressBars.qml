@@ -18,13 +18,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Progress Bar")
+    title: gallery.tr("Progress Bar")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Known") + " %"
+            title: gallery.tr("Known") + " %"
 
             ProgressBar {
                 id: progress
@@ -45,7 +45,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Mixed") + " %"
+            title: gallery.tr("Mixed") + " %"
 
             ProgressBar {
                 id: progress2
@@ -72,7 +72,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Unknown") + " %"
+            title: gallery.tr("Unknown") + " %"
 
             ProgressBar {
                 indeterminate: true

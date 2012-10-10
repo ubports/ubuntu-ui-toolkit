@@ -18,26 +18,17 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
-    id: root
+    id: gallery
     width: 800
     height: 600
 
-//    i18n.domain: "gallery"
-//    i18n.localeDir: "/usr/share/locale"
-
-//    Binding {
-//        target: i18n
-//        property: "domain"
-//        value: "gallery"
-//    }
-
-    property string emptyString: ""
     color: "#e6e6e6"
 
-    // Using root.tr(text) instead of i18n.tr(text) as a workaround
+    // Using gallery.tr(text) instead of i18n.tr(text) as a workaround
     // for not automatically re-evaluating strings when i18n.domain/localeDir is updated.
     // Inspired by: https://bugreports.qt-project.org/browse/QTBUG-15602
-    function tr(text) { return i18n.tr(text) + root.emptyString; }
+    function tr(text) { return i18n.tr(text) + gallery.emptyString; }
+    property string emptyString: ""
 
     Rectangle {
         anchors.fill: widgetList
@@ -64,25 +55,25 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": root.tr("Buttons"), "source": "Buttons.qml"},
-                {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
-                {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-                {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
-                {"label": i18n.tr("Switch"), "source": "Switches.qml"},
-                {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
-                {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
-                {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
-                {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
-                {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": ""},
-                {"label": i18n.tr("Popovers"), "source": ""},
-                {"label": i18n.tr("Toolbars"), "source": ""},
-                {"label": i18n.tr("Sheets & Dialogues"), "source": ""},
-                {"label": i18n.tr("Grid View"), "source": ""},
-                {"label": i18n.tr("On Screen Keyboard"), "source": ""},
-                {"label": i18n.tr("Date Picker"), "source": ""},
-                {"label": i18n.tr("Time Picker"), "source": ""},
-                {"label": i18n.tr("Tabs (Non Segmented)"), "source": ""},
+        model: [{"label": gallery.tr("Buttons"), "source": "Buttons.qml"},
+                {"label": gallery.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
+                {"label": gallery.tr("List Items"), "source": "ListItems.qml"},
+                {"label": gallery.tr("Page Stack"), "source": "PageStack.qml"},
+                {"label": gallery.tr("Switch"), "source": "Switches.qml"},
+                {"label": gallery.tr("Check Box"), "source": "CheckBoxes.qml"},
+                {"label": gallery.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
+                {"label": gallery.tr("Progress Bar"), "source": "ProgressBars.qml"},
+                {"label": gallery.tr("Slider"), "source": "Sliders.qml"},
+                {"label": gallery.tr("Text Input"), "source": "TextInputs.qml"},
+                {"label": gallery.tr("Scrollbar"), "source": ""},
+                {"label": gallery.tr("Popovers"), "source": ""},
+                {"label": gallery.tr("Toolbars"), "source": ""},
+                {"label": gallery.tr("Sheets & Dialogues"), "source": ""},
+                {"label": gallery.tr("Grid View"), "source": ""},
+                {"label": gallery.tr("On Screen Keyboard"), "source": ""},
+                {"label": gallery.tr("Date Picker"), "source": ""},
+                {"label": gallery.tr("Time Picker"), "source": ""},
+                {"label": gallery.tr("Tabs (Non Segmented)"), "source": ""},
                ]
 
         delegate: ButtonWithForeground {
@@ -118,8 +109,8 @@ Rectangle {
     Component.onCompleted: {
         i18n.domain = "gallery"
         i18n.localeDir = "/usr/share/locale";
+        // trigger a re-evaluation of all strings encapsulated by gallery.tr()
         emptyString = "a";
         emptyString = "";
-//        i18n.emptyString = "q";
     }
 }

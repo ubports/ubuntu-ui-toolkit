@@ -18,13 +18,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Slider")
+    title: gallery.tr("Slider")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Default")
+            title: gallery.tr("Default")
             Slider {
                 id: defaultSlider
             }
@@ -37,7 +37,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Live")
+            title: gallery.tr("Live")
             Slider {
                 id: liveSlider
                 live: true

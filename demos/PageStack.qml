@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
-    title: i18n.tr("Page Stack")
+    title: gallery.tr("Page Stack")
 
     Item {
         Rectangle {
@@ -39,17 +39,17 @@ Template {
 
             Page {
                 id: page0
-                title: i18n.tr("Root page")
+                title: gallery.tr("Root page")
 
                 Column {
                     anchors.fill: parent
                     ListItem.Standard {
-                        text: i18n.tr("Page one")
+                        text: gallery.tr("Page one")
                         onClicked: pageStack.push(page1)
                         progression: true
                     }
                     ListItem.Standard {
-                        text: i18n.tr("Page two (external)")
+                        text: gallery.tr("Page two (external)")
                         onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                         progression: true
                     }
@@ -58,22 +58,22 @@ Template {
 
             Page {
                 id: page1
-                title: i18n.tr("First page")
+                title: gallery.tr("First page")
 
                 Column {
                     anchors.fill: parent
                     ListItem.Standard {
-                        text: i18n.tr("External page")
+                        text: gallery.tr("External page")
                         onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                         progression: true
                     }
                     ListItem.Standard {
-                        text: i18n.tr("Root page (again)")
+                        text: gallery.tr("Root page (again)")
                         onClicked: pageStack.push(page0)
                         progression: true
                     }
                     ListItem.Standard {
-                        text: i18n.tr("Red rectangle")
+                        text: gallery.tr("Red rectangle")
                         onClicked: pageStack.push(rect, {color: "red"})
                         progression: true
                     }

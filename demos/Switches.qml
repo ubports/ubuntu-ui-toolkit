@@ -18,26 +18,26 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Switch")
+    title: gallery.tr("Switch")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Unchecked")
+            title: gallery.tr("Unchecked")
             Switch {
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Checked")
+            title: gallery.tr("Checked")
             Switch {
                 checked: true
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Disabled")
+            title: gallery.tr("Disabled")
             Switch {
                 enabled: false
             }
