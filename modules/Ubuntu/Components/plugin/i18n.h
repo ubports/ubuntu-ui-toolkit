@@ -25,12 +25,14 @@ class UbuntuI18n : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString domain READ domain WRITE setDomain)
+    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir)
+
+
+
 public:
     UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
-
-    Q_PROPERTY(QString domain READ domain WRITE setDomain)
-    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir)
 
     /**
      * @brief Install the gettext catalog.
@@ -71,7 +73,8 @@ public:
     void setDomain(QString domain);
     void setLocaleDir(QString localeDir);
 
-//signals:
+
+//Q_SIGNALS:
 
 //    void domainChanged();
 //    void localeDirChanged();
@@ -80,6 +83,7 @@ private:
 
     QString _domain;
     QString _localeDir;
+    QString _emptyString;
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H

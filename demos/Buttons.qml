@@ -24,15 +24,15 @@ Template {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Standard")
+            title: i18n.tr("Standard") + emptyString
 
             Button {
-                text: i18n.tr("Call")
+                text: i18n.tr("Call") + emptyString
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Disabled")
+            title: tr("Disabled")
 
             Button {
                 text: i18n.tr("Call")
@@ -45,11 +45,13 @@ Template {
 
             Button {
                 text: i18n.tr("Call")
+//                text: i18n.tr("Call", "telephony-app") // context
                 color: "#37b301"
             }
 
             Button {
                 text: i18n.tr("Call")
+//                text: i18n.tr("Call", "default") // context
                 pressedColor: "#dd4f22"
             }
 

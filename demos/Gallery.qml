@@ -18,10 +18,26 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
+    id: root
     width: 800
     height: 600
 
+//    i18n.domain: "gallery"
+//    i18n.localeDir: "/usr/share/locale"
+
+//    Binding {
+//        target: i18n
+//        property: "domain"
+//        value: "gallery"
+//    }
+
+    property string emptyString: ""
     color: "#e6e6e6"
+
+    // Using root.tr(text) instead of i18n.tr(text) as a workaround
+    // for not automatically re-evaluating strings when i18n.domain/localeDir is updated.
+    // Inspired by: https://bugreports.qt-project.org/browse/QTBUG-15602
+    function tr(text) { return i18n.tr(text) + root.emptyString; }
 
     Rectangle {
         anchors.fill: widgetList
@@ -48,7 +64,7 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
+        model: [{"label": root.tr("Buttons"), "source": "Buttons.qml"},
                 {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
                 {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
@@ -102,5 +118,8 @@ Rectangle {
     Component.onCompleted: {
         i18n.domain = "gallery"
         i18n.localeDir = "/usr/share/locale";
+        emptyString = "a";
+        emptyString = "";
+//        i18n.emptyString = "q";
     }
 }

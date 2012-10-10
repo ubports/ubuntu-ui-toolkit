@@ -20,12 +20,12 @@
 #include <libintl.h>
 
 
-#include <stdio.h>
+//#include <stdio.h>
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     qDebug("creating UbuntuI18n object");
-    _domain = QString("gallery");
+    _domain = QString("yo");
     _localeDir = QString("/usr/share/locale");
 }
 
@@ -38,21 +38,27 @@ void UbuntuI18n::init(QString domain, QString localeDir)
 //void UbuntuI18n::init(const char *domain, const char *localeDir)
 {
 
-    qDebug("UbuntuI18n.init(" + domain.toUtf8() + ", "+localeDir.toUtf8()+");");
+//    qDebug("UbuntuI18n.init(" + domain.toUtf8() + ", "+localeDir.toUtf8()+");");
 //    printf(_domain.toUtf8().constData());
 //    qDebug("UbuntuI18n.init("+domain+", "+localeDir+");");
 //    qDebug("UbuntuI18n.init CALLED:");
 //    qDebug(domain);
 //    qDebug(localeDir);
     setlocale(LC_ALL, "");
-//    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
-//    textdomain(domain.toUtf8().constData());
+    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
+    textdomain(domain.toUtf8().constData());
 
 //    bindtextdomain(domain, localeDir);
 //    textdomain(domain);
 
-        bindtextdomain("gallery", "/usr/share/locale");
-        textdomain("gallery");
+//        bindtextdomain("gallery", "/usr/share/locale");
+//        textdomain("gallery");
+
+//    QEvent.
+//    QObject.event(83);
+//    this->
+//    this->parent();
+//    this->event(new QEvent(QEvent::LanguageChange));
 }
 
 QString UbuntuI18n::domain() {
