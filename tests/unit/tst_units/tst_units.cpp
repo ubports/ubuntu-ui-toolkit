@@ -153,9 +153,9 @@ private Q_SLOTS:
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(2.25);
+        units.setScaleFactor(2.0);
         resolved = units.resolveResource(QUrl::fromLocalFile("lower_scale.png"));
-        expected = QString("1.5/" + QDir::currentPath() + QDir::separator() + "lower_scale@1.5x.png");
+        expected = QString("1.33333/" + QDir::currentPath() + QDir::separator() + "lower_scale@1.5x.png");
         QCOMPARE(resolved, expected);
     }
 
@@ -164,9 +164,9 @@ private Q_SLOTS:
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(2.25);
+        units.setScaleFactor(2.0);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/lower_scale.png"));
-        expected = QString("1.5/:/test/prefix/lower_scale@1.5x.png");
+        expected = QString("1.33333/:/test/prefix/lower_scale@1.5x.png");
         QCOMPARE(resolved, expected);
     }
 
@@ -177,7 +177,7 @@ private Q_SLOTS:
 
         units.setScaleFactor(1.5);
         resolved = units.resolveResource(QUrl::fromLocalFile("higher_scale.png"));
-        expected = QString("0.666667/" + QDir::currentPath() + QDir::separator() + "higher_scale@2.25x.png");
+        expected = QString("0.75/" + QDir::currentPath() + QDir::separator() + "higher_scale@2x.png");
         QCOMPARE(resolved, expected);
     }
 
@@ -188,7 +188,7 @@ private Q_SLOTS:
 
         units.setScaleFactor(1.5);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/higher_scale.png"));
-        expected = QString("0.666667/:/test/prefix/higher_scale@2.25x.png");
+        expected = QString("0.75/:/test/prefix/higher_scale@2x.png");
         QCOMPARE(resolved, expected);
     }
 };

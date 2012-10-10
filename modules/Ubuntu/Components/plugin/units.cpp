@@ -32,7 +32,7 @@ struct Category {
 
 Category mdpi = { "", 1.0 };
 Category hdpi = { "@1.5x", 1.5 };
-Category xhdpi = { "@2.25x", 2.25 };
+Category xhdpi = { "@2x", 2.0 };
 QList<Category> g_densityCategories;
 
 

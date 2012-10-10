@@ -28,7 +28,7 @@ FocusScope {
         color: "#cccccc"
     }
 
-    property var scaleFactors: [1.0, 1.5, 2.25]
+    property var scaleFactors: [1.0, 1.5, 2.0]
 
     ListView {
         id: scaleFactorList
