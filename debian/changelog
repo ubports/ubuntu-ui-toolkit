@@ -1,3 +1,9 @@
+qt-components-ubuntu (0.1.3) quantal; urgency=low
+
+  * Rebuild for armhf
+
+ -- Ricardo Mendoza <ricardo.mendoza@canonical.com>  Thu, 11 Oct 2012 14:42:20 -0430
+
 qt-components-ubuntu (0.1.2) quantal; urgency=low
 
   * Bump version number
