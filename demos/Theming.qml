@@ -36,17 +36,32 @@ Template {
             Button {
                 text: "Theme #1"
                 width: 100
-                onClicked: Theme.setTheme("theme-one/theme.qmltheme", true)
+                onClicked: {
+                    if (!Theme.setTheme("theme-one/theme.qmltheme", true)) {
+                        console.log("Cannot set application theme, retry loading...")
+                        Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme");
+                    }
+                }
             }
             Button {
                 text: "Theme #2"
                 width: 100
-                onClicked: Theme.setTheme("demos/themes/private-theme.qmltheme", false)
+                onClicked: {
+                    if (!Theme.setTheme("demos/themes/private-theme.qmltheme", false)) {
+                        console.log("Cannot set application theme, retry loading...")
+                        Theme.loadTheme("demos/themes/private-theme.qmltheme");
+                    }
+                }
             }
             Button {
                 text: "Default"
                 width: 100
-                onClicked: Theme.setTheme("", true)
+                onClicked: {
+                    if (!Theme.setTheme("", true)) {
+                        console.log("Cannot set application theme, retry loading...")
+                        Theme.loadTheme("");
+                    }
+                }
             }
         }
 

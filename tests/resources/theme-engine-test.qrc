@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>test.qthm</file>
-        <file>base.qthm</file>
+        <file>test.qmltheme</file>
+        <file>base.qmltheme</file>
     </qresource>
 </RCC>

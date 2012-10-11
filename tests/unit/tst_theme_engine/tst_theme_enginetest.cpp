@@ -51,7 +51,7 @@ tst_ThemeEngine::tst_ThemeEngine():
     app->setApplicationName("UnitTests");
     QSettings settings;
     settings.setValue(appUseGlobalThemeKey, QVariant(false));
-    settings.setValue(appThemeFileKey, QVariant("qrc:/base.qthm"));
+    settings.setValue(appThemeFileKey, QVariant("qrc:/base.qmltheme"));
 }
 
 void tst_ThemeEngine::initTestCase()
@@ -105,13 +105,13 @@ void tst_ThemeEngine::testCase_lookupStyleRule()
 void tst_ThemeEngine::testCase_loadTheme()
 {
     ThemeEngine::instance()->resetError();
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
     QCOMPARE(ThemeEngine::instance()->error(), QString());
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/base.qmltheme"));
     QCOMPARE(ThemeEngine::instance()->error(), QString());
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qmltheme"));
     QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
-    ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qthm"));
+    ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qmltheme"));
     QCOMPARE(ThemeEngine::instance()->error(), QString());
 }
 
@@ -119,10 +119,10 @@ void tst_ThemeEngine::testCase_setTheme()
 {
     ThemeEngine::instance()->resetError();
     // should pass
-    ThemeEngine::instance()->setTheme("../../resources/test.qthm", false);
+    ThemeEngine::instance()->setTheme("../../resources/test.qmltheme", false);
     QCOMPARE(ThemeEngine::instance()->error(), QString());
     // should fail
-    ThemeEngine::instance()->setTheme("../../resources/base.qthm", true);
+    ThemeEngine::instance()->setTheme("../../resources/base.qmltheme", true);
     QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
 }
 

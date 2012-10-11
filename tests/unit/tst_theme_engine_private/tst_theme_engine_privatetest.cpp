@@ -68,20 +68,20 @@ void tst_ThemeEnginePrivate::cleanupTestCase()
 void tst_ThemeEnginePrivate::testCase_loadTheme()
 {
     engine->errorString = QString();
-    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
     QCOMPARE(engine->errorString, QString());
 
-    engine->loadTheme(QUrl::fromLocalFile("../../resources/base.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/base.qmltheme"));
     QCOMPARE(engine->errorString, QString());
 
-    engine->loadTheme(QUrl::fromLocalFile("../../resources/null.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/null.qmltheme"));
     QCOMPARE(engine->errorString.isEmpty(), false);
 }
 
 void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
 {
     engine->errorString = QString();
-    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qthm"));
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
     QCOMPARE(engine->errorString, QString());
 
     bool result = true;

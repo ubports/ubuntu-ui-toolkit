@@ -125,19 +125,22 @@ void ThemeEnginePrivate::_q_updateTheme()
   */
 void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 {
-    QString fileType = themeFile.path();
+    QUrl url(themeFile);
+    if (!url.isValid())
+        url = themeSettings.themeFile();
+    QString fileType = url.path();
 
     fileType = fileType.right(fileType.length() - fileType.lastIndexOf('.'));
 
     if (themeLoaders.contains(fileType)) {
-        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(themeFile);
+        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url);
         if (errorString.isEmpty()) {
             // clear the previous style and use the loaded one
             delete m_styleTree;
             m_styleCache.clear();
             m_styleTree = styleTree;
             // emit themeChanged() to update style
-            currentTheme = themeFile;
+            currentTheme = url;
             Q_Q(ThemeEngine);
             Q_EMIT q->themeChanged();
         } else {
@@ -145,7 +148,7 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
             // continue using the previous style
         }
     } else {
-        setError("Unknown theme URL" + themeFile.toString());
+        setError("Unknown theme URL" + url.toString());
     }
 }
 

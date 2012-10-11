@@ -173,11 +173,13 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
         return QUrl();
     }
 
+    TRACE << QString("appSettings.file() = %1").arg(appSettings.fileName());
     if (!hasAppSettings && QFile::exists(appSettings.fileName())) {
         // application is configured to accept settings, so force app settings
         hasAppSettings = true;
     }
 
+    TRACE << QString("hasAppSettings = %1").arg(hasAppSettings);
     if (hasAppSettings) {
 
         // check whether the setting can be applied, if not, report error
