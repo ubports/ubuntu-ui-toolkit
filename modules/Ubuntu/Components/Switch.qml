@@ -74,7 +74,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Rectangle {
@@ -96,7 +96,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Image {
@@ -144,7 +144,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
 
             Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
         }
@@ -168,7 +168,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
             visible: true
         }
     }

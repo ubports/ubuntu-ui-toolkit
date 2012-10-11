@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import "../"
 
 // Internal helper class for the visuals of
 // the progression symbol.
@@ -25,21 +24,21 @@ Item {
 
     property bool showSplit: false
 
-    ImageMipmap {
+    Image {
         id: progressIcon
-        resource: "artwork/ListItemProgressionArrow.png"
+        source: "artwork/ListItemProgressionArrow.png"
         anchors.centerIn: parent
         opacity: enabled ? 1.0 : 0.5
     }
 
-    ImageMipmap {
+    Image {
         id: progressionDivider
         visible: progressionVisual.showSplit
         anchors {
             top: parent.top
             bottom: parent.bottom
         }
-        resource: "artwork/ListItemDividerVertical.png"
+        source: "artwork/ListItemDividerVertical.png"
         opacity: enabled ? 1.0 : 0.5
     }
 }

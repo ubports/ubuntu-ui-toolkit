@@ -41,7 +41,7 @@ AbstractButton {
        Leave this value blank for a text-only button.
        \qmlproperty url iconSource
     */
-    property alias iconSource: icon.resource
+    property alias iconSource: icon.source
 
     /*!
        \preliminary
@@ -101,7 +101,7 @@ AbstractButton {
         height: button.height - 2*foreground.verticalPadding
         implicitWidth: icon.width + label.implicitWidth + foreground.spacing
 
-        ImageMipmap {
+        Image {
             id: icon
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: foreground.verticalCenter

@@ -78,10 +78,10 @@ AnimatedItem {
         anchors.fill: parent
         source: internals.barSource
         border {
-            left: 2
-            top: 2
-            right: 2
-            bottom: 2
+            left: units.dp(2)
+            top: units.dp(2)
+            right: units.dp(2)
+            bottom: units.dp(2)
         }
 
         smooth: true

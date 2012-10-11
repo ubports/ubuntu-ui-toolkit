@@ -17,14 +17,17 @@
  */
 
 #include <QtQml>
+#include <QtQuick/private/qquickimagebase_p.h>
 
 #include "plugin.h"
 #include "units.h"
 #include "scalingimageprovider.h"
+#include "qquickimageextension.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    qmlRegisterExtendedType<QQuickImageBase, QQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<Units>(uri, 0, 1, "Units", "Not instantiable");
 }
 

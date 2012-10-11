@@ -21,7 +21,7 @@ import QtQuick 2.0
 Item {
     id: iconVisual
 
-    property alias source: icon.resource
+    property alias source: icon.source
     property alias fallbackSource: icon.fallbackSource
     visible: source != ""
     property bool hasFrame: true
@@ -61,10 +61,10 @@ Item {
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         border {
-            left: 3
-            right: 3
-            top: 3
-            bottom: 3
+            left: units.dp(3)
+            right: units.dp(3)
+            top: units.dp(3)
+            bottom: units.dp(3)
         }
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch

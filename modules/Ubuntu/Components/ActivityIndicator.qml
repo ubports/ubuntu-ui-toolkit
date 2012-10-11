@@ -57,18 +57,18 @@ AnimatedItem {
     implicitWidth: center.implicitWidth
     implicitHeight: center.implicitHeight
     // embedd visuals
-    ImageMipmap {
+    Image {
         id: center
 
         fillMode: Image.PreserveAspectFit
-        resource: internals.centralSource
+        source: internals.centralSource
         smooth: internals.smooth
         visible: internals.active
 
-        ImageMipmap {
+        Image {
             id: animation
             fillMode: Image.PreserveAspectFit
-            resource: internals.movingSource
+            source: internals.movingSource
             smooth: internals.smooth
             visible: internals.active
             NumberAnimation on rotation {

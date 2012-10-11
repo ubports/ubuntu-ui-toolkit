@@ -59,10 +59,10 @@ Rectangle {
         visible: false
         onClicked: if (header.pageStack) pageStack.pop()
 
-        ImageMipmap {
+        Image {
             id: backImage
             anchors.centerIn: parent
-            resource: "ListItems/artwork/ListItemProgressionArrow.png"
+            source: "ListItems/artwork/ListItemProgressionArrow.png"
             fillMode: Image.PreserveAspectFit
             rotation: 180
         }

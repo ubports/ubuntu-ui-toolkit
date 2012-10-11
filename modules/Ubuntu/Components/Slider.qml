@@ -143,7 +143,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Rectangle {
@@ -165,7 +165,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         // FIXME(loicm) The radius of the thumb BorderImage must be lower than
@@ -181,7 +181,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Rectangle {
@@ -207,7 +207,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
             visible: true
         }
 
