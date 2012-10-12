@@ -102,6 +102,6 @@ Rectangle {
 
     Component.onCompleted: {
         i18n.domain = "gallery"
-        i18n.localeDir = "/usr/share/locale"; // default
+//        i18n.localeDir = "/usr/share/locale"; // default
     }
 }

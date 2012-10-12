@@ -28,54 +28,22 @@
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    qDebug("creating UbuntuI18n object");
-    _domain = QString("");
-    _localeDir = QString("/usr/share/locale");
-
-//    qDebug(QDir::currentPath().toUtf8().constData());
-
-}
-
-//UbuntuI18n::~UbuntuI18n()
-//{
-//    // nothing to do
-//}
-
-void UbuntuI18n::init(QString domain, QString localeDir)
-{
-    setlocale(LC_ALL, "");
-    bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
-    textdomain(domain.toUtf8().constData());
 }
 
 QString UbuntuI18n::domain() {
     return _domain;
 }
 
-QString UbuntuI18n::localeDir() {
-    return _localeDir;
-}
-
 void UbuntuI18n::setDomain(QString domain) {
-//    qDebug("Setting domain to "+domain.toUtf8());
     _domain = domain;
-    this->init(_domain, _localeDir);
+    textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
-}
-
-void UbuntuI18n::setLocaleDir(QString localeDir) {
-    _localeDir = localeDir;
-    this->init(_domain, _localeDir);
-    Q_EMIT localeDirChanged();
 }
 
 QString UbuntuI18n::tr(const QString& text, const QString& domain)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
-//        return QString::fromUtf8(dpgettext(NULL, "default", text.toUtf8().constData()));
-//        return QString::fromUtf8(pgettext("default", textye.toUtf8().constData()));
-
     } else {
         return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
     }
@@ -101,4 +69,3 @@ void ContextPropertyChangeListener::updateContextProperty()
     QVariant value = m_context->contextProperty(m_contextProperty);
     m_context->setContextProperty(m_contextProperty, value);
 }
-

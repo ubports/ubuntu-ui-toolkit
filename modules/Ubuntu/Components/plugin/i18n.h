@@ -18,17 +18,12 @@
 #define UBUNTU_COMPONENTS_I18N_H
 
 #include <QObject>
-//#include <QtDeclarative>
-//#include <QDeclarativeListProperty>
 
 class UbuntuI18n : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString domain READ domain WRITE setDomain)
-    Q_PROPERTY(QString localeDir READ localeDir WRITE setLocaleDir)
-
-
 
 public:
     static UbuntuI18n& instance() {
@@ -37,15 +32,6 @@ public:
     }
 
     explicit UbuntuI18n(QObject* parent = 0);
-//    ~UbuntuI18n();
-
-    /**
-     * @brief Install the gettext catalog.
-     * @param domain The domain of the catalog.
-     * @param localeDir The path to the catalog.
-     */
-//    void init(const char* domain, const char* localeDir);
-    void init(QString domain, QString localeDir);
 
 //    /**
 //     * Add an object named "i18n" to context.
@@ -71,24 +57,15 @@ public:
      */
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 
-    // TODO: Add functions where a context is supplied.
-
     QString domain();
-    QString localeDir();
     void setDomain(QString domain);
-    void setLocaleDir(QString localeDir);
-
 
 Q_SIGNALS:
 
     void domainChanged();
-    void localeDirChanged();
 
 private:
-
     QString _domain;
-    QString _localeDir;
-    QString _emptyString;
 };
 
 class QQmlContext;
