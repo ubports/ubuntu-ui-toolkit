@@ -31,7 +31,12 @@ class UbuntuI18n : public QObject
 
 
 public:
-    UbuntuI18n(QObject* parent = NULL);
+    static UbuntuI18n& instance() {
+        static UbuntuI18n instance;
+        return instance;
+    }
+
+    explicit UbuntuI18n(QObject* parent = NULL);
     ~UbuntuI18n();
 
     /**

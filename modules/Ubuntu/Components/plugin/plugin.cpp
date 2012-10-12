@@ -30,7 +30,7 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "whatever"); // TODO: give reason
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "I18n", "Singleton object");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -40,5 +40,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 //    i->init("ubuntu-sdk", "/usr/share/locale");
 //    i->init("gallery", "/usr/share/locale");
 
-    engine->rootContext()->setContextProperty("i18n", i);
+    engine->rootContext()->setContextProperty("i18n", &UbuntuI18n::instance());
+
+//    engine->rootContext()->setContextProperty("units", &Units::instance());
+//    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
+//    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
+//                     &unitsChangeListener, SLOT(updateContextProperty()));
+
+//    engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);
 }
