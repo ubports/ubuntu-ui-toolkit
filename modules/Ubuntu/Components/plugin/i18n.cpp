@@ -21,6 +21,8 @@
 //#include "/usr/share/gettext/gettext.h"
 //#include <gettext-po.h>
 #include <QDir>
+#include <QtCore>
+#include <QtQml/QQmlContext>
 
 //#include <stdio.h>
 
@@ -30,14 +32,14 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
     _domain = QString("");
     _localeDir = QString("/usr/share/locale");
 
-    qDebug(QDir::currentPath().toUtf8().constData());
+//    qDebug(QDir::currentPath().toUtf8().constData());
 
 }
 
-UbuntuI18n::~UbuntuI18n()
-{
-    // nothing to do
-}
+//UbuntuI18n::~UbuntuI18n()
+//{
+//    // nothing to do
+//}
 
 void UbuntuI18n::init(QString domain, QString localeDir)
 {
@@ -55,7 +57,7 @@ QString UbuntuI18n::localeDir() {
 }
 
 void UbuntuI18n::setDomain(QString domain) {
-    qDebug("Setting domain to "+domain.toUtf8());
+//    qDebug("Setting domain to "+domain.toUtf8());
     _domain = domain;
     this->init(_domain, _localeDir);
 }
@@ -85,3 +87,16 @@ QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, co
         return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
     }
 }
+
+ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
+    m_context(context),
+    m_contextProperty(contextProperty)
+{
+}
+
+void ContextPropertyChangeListener::updateContextProperty()
+{
+    QVariant value = m_context->contextProperty(m_contextProperty);
+    m_context->setContextProperty(m_contextProperty, value);
+}
+

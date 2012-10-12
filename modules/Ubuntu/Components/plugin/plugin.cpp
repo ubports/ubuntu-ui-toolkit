@@ -16,16 +16,9 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
-#include "plugin.h"
-
-//#include <QtDeclarative/QDeclarativeExtensionPlugin>
-//#include <QtQml/QQmlExtensionPlugin>
 #include <QtQml>
-//#include <QtQml/QQmlExtensionPlugin>
-//#include <QtDeclarative/QDeclarativeContext>
-//#include <QtDeclarative/qdeclarative.h>
-//#include <QtDeclarative/QDeclarativeItem>
 
+#include "plugin.h"
 #include "i18n.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -36,16 +29,11 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    UbuntuI18n* i = new UbuntuI18n();
-//    i->init("ubuntu-sdk", "/usr/share/locale");
-//    i->init("gallery", "/usr/share/locale");
-
     engine->rootContext()->setContextProperty("i18n", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(engine->rootContext(), "i18n");
 
 //    engine->rootContext()->setContextProperty("units", &Units::instance());
 //    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
 //    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
 //                     &unitsChangeListener, SLOT(updateContextProperty()));
-
-//    engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);
 }

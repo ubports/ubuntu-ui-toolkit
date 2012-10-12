@@ -36,8 +36,8 @@ public:
         return instance;
     }
 
-    explicit UbuntuI18n(QObject* parent = NULL);
-    ~UbuntuI18n();
+    explicit UbuntuI18n(QObject* parent = 0);
+//    ~UbuntuI18n();
 
     /**
      * @brief Install the gettext catalog.
@@ -89,6 +89,18 @@ private:
     QString _domain;
     QString _localeDir;
     QString _emptyString;
+};
+
+class QQmlContext;
+
+class ContextPropertyChangeListener : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ContextPropertyChangeListener(QQmlContext* context, QString contextProperty);
+    Q_SLOT void updateContextProperty();
+    QQmlContext* m_context;
+    QString m_contextProperty;
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H
