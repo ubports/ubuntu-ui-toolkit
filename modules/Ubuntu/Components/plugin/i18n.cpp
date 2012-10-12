@@ -18,15 +18,20 @@
 
 // libc
 #include <libintl.h>
-
+//#include "/usr/share/gettext/gettext.h"
+//#include <gettext-po.h>
+#include <QDir>
 
 //#include <stdio.h>
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     qDebug("creating UbuntuI18n object");
-    _domain = QString("yo");
+    _domain = QString("");
     _localeDir = QString("/usr/share/locale");
+
+    qDebug(QDir::currentPath().toUtf8().constData());
+
 }
 
 UbuntuI18n::~UbuntuI18n()
@@ -35,30 +40,10 @@ UbuntuI18n::~UbuntuI18n()
 }
 
 void UbuntuI18n::init(QString domain, QString localeDir)
-//void UbuntuI18n::init(const char *domain, const char *localeDir)
 {
-
-//    qDebug("UbuntuI18n.init(" + domain.toUtf8() + ", "+localeDir.toUtf8()+");");
-//    printf(_domain.toUtf8().constData());
-//    qDebug("UbuntuI18n.init("+domain+", "+localeDir+");");
-//    qDebug("UbuntuI18n.init CALLED:");
-//    qDebug(domain);
-//    qDebug(localeDir);
     setlocale(LC_ALL, "");
     bindtextdomain(domain.toUtf8().constData(), localeDir.toUtf8().constData());
     textdomain(domain.toUtf8().constData());
-
-//    bindtextdomain(domain, localeDir);
-//    textdomain(domain);
-
-//        bindtextdomain("gallery", "/usr/share/locale");
-//        textdomain("gallery");
-
-//    QEvent.
-//    QObject.event(83);
-//    this->
-//    this->parent();
-//    this->event(new QEvent(QEvent::LanguageChange));
 }
 
 QString UbuntuI18n::domain() {
@@ -73,18 +58,20 @@ void UbuntuI18n::setDomain(QString domain) {
     qDebug("Setting domain to "+domain.toUtf8());
     _domain = domain;
     this->init(_domain, _localeDir);
-//    this->init("gallery", "/usr/share/locale");
 }
 
 void UbuntuI18n::setLocaleDir(QString localeDir) {
     _localeDir = localeDir;
-//    this->init(_domain, _localeDir);
+    this->init(_domain, _localeDir);
 }
 
 QString UbuntuI18n::tr(const QString& text, const QString& domain)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
+//        return QString::fromUtf8(dpgettext(NULL, "default", text.toUtf8().constData()));
+//        return QString::fromUtf8(pgettext("default", textye.toUtf8().constData()));
+
     } else {
         return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
     }

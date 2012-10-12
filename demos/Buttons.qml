@@ -24,10 +24,10 @@ Template {
         spacing: 30
 
         TemplateRow {
-            title: gallery.tr("Standard") + emptyString
+            title: gallery.tr("Standard")
 
             Button {
-                text: gallery.tr("Call") + emptyString
+                text: gallery.tr("Call")
             }
         }
 
