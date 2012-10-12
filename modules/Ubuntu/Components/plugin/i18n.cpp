@@ -40,23 +40,34 @@ void UbuntuI18n::setDomain(QString domain) {
     Q_EMIT domainChanged();
 }
 
-QString UbuntuI18n::tr(const QString& text, const QString& domain)
+QString UbuntuI18n::tr(const QString& text)
 {
-    if (domain.isNull()) {
-        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
-    } else {
-        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
-    }
+    return QString::fromUtf8(gettext(text.toUtf8()));
 }
 
-QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain)
+QString UbuntuI18n::tr(const QString &singular, const QString &plural, int n)
 {
-    if (domain.isNull()) {
-        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
-    } else {
-        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
-    }
+    return QString::fromUtf8(ngettext(singular.toUtf8(), plural.toUtf8(), n));
+
 }
+
+//QString UbuntuI18n::dtr(const QString& text, const QString& domain)
+//{
+//    if (domain.isNull()) {
+//        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
+//    } else {
+//        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
+//    }
+//}
+
+//QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain)
+//{
+//    if (domain.isNull()) {
+//        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+//    } else {
+//        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+//    }
+//}
 
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
     m_context(context),

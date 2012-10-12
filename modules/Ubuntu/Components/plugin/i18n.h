@@ -40,12 +40,16 @@ public:
 //     */
 //    void qmlInit(QDeclarativeContext* context);
 
+
+    Q_INVOKABLE QString tr(const QString& text);
+    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
+
     /**
      * @brief Translate the given string using gettext.
      * @param text The text to translate.
      * @param domain The domain to use for the translation.
      */
-    Q_INVOKABLE QString tr(const QString& text, const QString& domain = QString());
+//    Q_INVOKABLE QString tr(const QString& text, const QString& domain = QString());
 
     /**
      * @brief Translate the given string using gettext. Should be called like this:
@@ -55,7 +59,7 @@ public:
      * @param n Number of items.
      * @param domain The domain to use for the translation.
      */
-    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
+//    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 
     QString domain();
     void setDomain(QString domain);
