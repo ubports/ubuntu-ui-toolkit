@@ -17,6 +17,7 @@
 /*!
     \qmltype AnimatedItem
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The AnimatedItem drives the animated components behavior inside a Flickable.
     Reports whether the component whos parent is a Flickable is in the visible area or not,
     so derived components can pause animations while off-screen.

@@ -21,6 +21,7 @@ import Ubuntu.Components.ListItems 0.1
 /*!
     \qmltype SingleControl
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief A list item containing a single control
 
     Examples:

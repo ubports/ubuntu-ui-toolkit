@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 /*!
     \qmltype Base
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief Parent class of various list item classes that can have
         an icon and a progression symbol.
 

@@ -20,6 +20,7 @@ import "fontUtils.js" as FontUtils
 /*!
     \qmltype TextField
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.

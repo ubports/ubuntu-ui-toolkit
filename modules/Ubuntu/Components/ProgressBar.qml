@@ -19,6 +19,7 @@ import QtQuick 2.0
 /*!
     \qmltype ProgressBar
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The ProgressBar component visually indicates the progress of a process of
     determinate or indeterminate duration.
 

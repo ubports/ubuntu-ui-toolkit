@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 /*!
     \qmltype MultiValue
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief List item displaying a second string under the main label.
     \b{This component is under heavy development.}
 

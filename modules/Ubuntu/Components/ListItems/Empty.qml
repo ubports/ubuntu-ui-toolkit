@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 /*!
     \qmltype Empty
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief A list item with no contents.
     The Empty class can be used for generic list items, containing other
     components such as buttons. It is selectable, and can take mouse clicks.

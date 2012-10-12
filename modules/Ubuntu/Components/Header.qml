@@ -20,6 +20,7 @@ import QtQuick 2.0
     \internal
     \qmltype Header
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief Header used by \l PageStack
 */
 Rectangle {

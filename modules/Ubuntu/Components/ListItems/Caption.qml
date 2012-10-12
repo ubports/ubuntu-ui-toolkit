@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 /*!
     \qmltype Caption
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief List item that shows a piece of text.
 
     Examples:

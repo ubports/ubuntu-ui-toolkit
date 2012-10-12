@@ -19,6 +19,7 @@ import QtQuick 2.0
 /*!
     \qmltype ValueSelector
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
 
