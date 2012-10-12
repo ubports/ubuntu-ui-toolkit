@@ -60,11 +60,13 @@ void UbuntuI18n::setDomain(QString domain) {
 //    qDebug("Setting domain to "+domain.toUtf8());
     _domain = domain;
     this->init(_domain, _localeDir);
+    Q_EMIT domainChanged();
 }
 
 void UbuntuI18n::setLocaleDir(QString localeDir) {
     _localeDir = localeDir;
     this->init(_domain, _localeDir);
+    Q_EMIT localeDirChanged();
 }
 
 QString UbuntuI18n::tr(const QString& text, const QString& domain)

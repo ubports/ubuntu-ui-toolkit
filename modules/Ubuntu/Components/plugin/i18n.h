@@ -79,10 +79,10 @@ public:
     void setLocaleDir(QString localeDir);
 
 
-//Q_SIGNALS:
+Q_SIGNALS:
 
-//    void domainChanged();
-//    void localeDirChanged();
+    void domainChanged();
+    void localeDirChanged();
 
 private:
 

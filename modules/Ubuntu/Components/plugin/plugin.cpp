@@ -31,6 +31,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     engine->rootContext()->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(engine->rootContext(), "i18n");
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     &i18nChangeListener, SLOT(updateContextProperty()));
 
 //    engine->rootContext()->setContextProperty("units", &Units::instance());
 //    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
