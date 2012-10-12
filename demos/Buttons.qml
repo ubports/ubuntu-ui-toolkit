@@ -32,7 +32,7 @@ Template {
         }
 
         TemplateRow {
-            title: tr("Disabled")
+            title: i18n.tr("Disabled")
 
             Button {
                 text: i18n.tr("Call")

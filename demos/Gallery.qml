@@ -24,14 +24,6 @@ Rectangle {
 
     color: "#e6e6e6"
 
-    // FIXME: Using i18n.tr(text) instead of i18n.tr(text) as a workaround
-    // for not automatically re-evaluating strings when i18n.domain/localeDir is updated.
-    // Inspired by: https://bugreports.qt-project.org/browse/QTBUG-15602
-    function tr(text) {
-        return i18n.tr(text) // + gallery.emptyString;
-    }
-    property string emptyString: ""
-
     Rectangle {
         anchors.fill: widgetList
         color: "#cccccc"
@@ -110,9 +102,6 @@ Rectangle {
 
     Component.onCompleted: {
         i18n.domain = "gallery"
-//        i18n.localeDir = "/usr/share/locale"; // default
-        // trigger a re-evaluation of all strings encapsulated by i18n.tr()
-        emptyString = "a";
-        emptyString = "";
+        i18n.localeDir = "/usr/share/locale"; // default
     }
 }
