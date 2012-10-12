@@ -23,8 +23,8 @@ import QtQuick 2.0
     unknown duration is in progress, e.g. busy indication, connection in progress
     indication, etc.
 
-    Note: for time consuming Java script operations use WorkerScript, otherwise no
-    UI interaction will be possible and the ActicityIndicator amination will freeze.
+    Note: for time consuming JavaScript operations use WorkerScript, otherwise no
+    UI interaction will be possible and the ActicityIndicator animation will freeze.
 
     \b{This component is under heavy development.}
 
