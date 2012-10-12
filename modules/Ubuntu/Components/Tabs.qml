@@ -64,10 +64,10 @@ Item {
 
     /*!
       \preliminary
-      Setting this property to true will make the tabs buttons use
-      the maximum available space for the buttons.
-      If the value is false, each button will use the width that
-      is required by the largest button.
+      Setting this property to true will cause the tab buttons to expand
+      their widths equally to fill the Tabs bar.
+      If the value is false, instead each button will use the width that
+      is required by the largest tab button.
      */
     property bool buttonsExpanded: false
 
@@ -82,7 +82,7 @@ Item {
       \preliminary
       If this optional property is specified, it will be positioned
       between the bar with tab buttons, and the tab pages to act
-      as a separator. By default, it is a 1-pixel height white rectangle.
+      as a separator. By default, it is a 1-pixel high white rectangle.
      */
     property Item separator: Rectangle {
             color: "white"
