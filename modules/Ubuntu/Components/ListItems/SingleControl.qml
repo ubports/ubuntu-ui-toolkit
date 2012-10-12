@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
 /*!
-    \qmlclass SingleControl
+    \qmltype SingleControl
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief A list item containing a single control
 

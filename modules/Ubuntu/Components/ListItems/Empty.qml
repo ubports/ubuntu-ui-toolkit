@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Empty
+    \qmltype Empty
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief A list item with no contents.
     The Empty class can be used for generic list items, containing other

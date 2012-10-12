@@ -17,7 +17,7 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass ButtonWithForeground
+    \qmltype ButtonWithForeground
     \inqmlmodule Ubuntu.Components 0.1
     \brief The ButtonWithForeground class has an icon and a text.
 

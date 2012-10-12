@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Base
+    \qmltype Base
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief Parent class of various list item classes that can have
         an icon and a progression symbol.

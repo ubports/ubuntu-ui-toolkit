@@ -17,7 +17,7 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass tabButton
+    \qmltype tabButton
     \inqmlmodule Ubuntu.Components 0.1
     \brief Button used in Tab bars.
 */

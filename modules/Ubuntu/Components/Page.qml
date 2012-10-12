@@ -17,7 +17,7 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass Page
+    \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
     \brief A page that can be included in \l Tab object or pushed on a \l PageStack
 

@@ -18,7 +18,7 @@ import QtQuick 2.0
 import "stack.js" as Stack
 
 /*!
-    \qmlclass PageStack
+    \qmltype PageStack
     \inqmlmodule Ubuntu.Components 0.1
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.

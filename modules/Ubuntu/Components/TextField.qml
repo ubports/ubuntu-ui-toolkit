@@ -18,7 +18,7 @@ import QtQuick 2.0
 import "fontUtils.js" as FontUtils
 
 /*!
-    \qmlclass TextField
+    \qmltype TextField
     \inqmlmodule Ubuntu.Components 0.1
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode

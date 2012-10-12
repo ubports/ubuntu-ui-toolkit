@@ -34,7 +34,7 @@ import QtQuick 2.0
 import "mathUtils.js" as MathUtils
 
 /*!
-    \qmlclass Slider
+    \qmltype Slider
     \inqmlmodule Ubuntu.Components 0.1
     \brief Slider is a component to select a value from a continuous range of
      values.

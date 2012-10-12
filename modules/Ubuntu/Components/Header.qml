@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \internal
-    \qmlclass Header
+    \qmltype Header
     \inqmlmodule Ubuntu.Components 0.1
     \brief Header used by \l PageStack
 */

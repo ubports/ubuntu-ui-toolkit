@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Caption
+    \qmltype Caption
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item that shows a piece of text.
 

@@ -17,7 +17,7 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass HLine
+    \qmltype HLine
     \inqmlmodule Ubuntu.Components 0.1
     \brief A horizontal line.
 

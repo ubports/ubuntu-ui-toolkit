@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass MultiValue
+    \qmltype MultiValue
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \brief List item displaying a second string under the main label.
     \b{This component is under heavy development.}
