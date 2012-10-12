@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass ActivityIndicator
+    \qmltype ActivityIndicator
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The ActivityIndicator component visually indicates that a task of
     unknown duration is in progress, e.g. busy indication, connection in progress
     indication, etc.

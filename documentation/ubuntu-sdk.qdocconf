@@ -1,0 +1,20 @@
+project = Ubuntu User Interface Toolkit
+description = Ubuntu User Interface Toolkit Documentation
+sourcedirs = ../modules/Ubuntu/Components
+headerdirs = ../modules/Ubuntu/Components/plugin
+sources.fileextensions = "*.qml *.qdoc *.cpp"
+headers.fileextensions = "*.h"
+outputdir = html
+outputformats = HTML
+version = 0.1
+syntaxhighlighting = true
+sourceencoding = UTF-8
+outputencoding = UTF-8
+
+HTML.templatedir = .
+HTML.nobreadcrumbs = "true"
+HTML.stylesheets = qtquick.css
+HTML.headerstyles = "  <link rel=\"stylesheet\" type=\"text/css\" href=\"style/qtquick.css\" />\n"
+HTML.endheader = "</head>\n"
+HTML.footer = "<div class=\"footer\">Copyright (C) 2012 Canonical Ltd.</div>\n"
+

@@ -3,6 +3,6 @@ modules/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/moc_plugin.cpp
-html
+documentation/html
 *.moc
 tests/unit/tst_template/tst_template

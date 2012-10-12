@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass Tabs
+    \qmltype Tabs
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The Tabs class provides an environment where multible Tab
     children can be added, and the user is presented with a tab
     bar with tab buttons to select different tab pages.
