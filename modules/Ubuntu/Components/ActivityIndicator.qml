@@ -49,8 +49,8 @@ AnimatedItem {
     /*!
        \preliminary
        Presents whether there is activity to be visualized or not. The default value is false.
-       When activated (set to true), an animation is shown indicating an ongoing activity, and
-       the started() signal is emitted. Upon deactivation the finished() signal is emitted.
+       When activated (set to true), an animation is shown indicating an ongoing activity, which
+       continues until deactivated (set to false).
     */
     property bool running: false
 
