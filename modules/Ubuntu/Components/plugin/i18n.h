@@ -18,12 +18,12 @@
 #define UBUNTU_COMPONENTS_I18N_H
 
 #include <QObject>
+
 class QQmlContext;
 
 class UbuntuI18n : public QObject
 {
     Q_OBJECT
-
     Q_PROPERTY(QString domain READ domain WRITE setDomain)
 
 public:

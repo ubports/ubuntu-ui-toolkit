@@ -281,8 +281,8 @@ msgstr "Aardappel"
 msgid "Hide"
 msgstr "Verbergen"
 
-msgid "'value' is %n"
-msgstr "'waarde' is %n"
+msgid "value is "
+msgstr "waarde is "
 
 #, fuzzy
 #~ msgid "Value slector"
