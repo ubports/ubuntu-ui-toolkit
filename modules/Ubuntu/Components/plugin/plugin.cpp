@@ -33,9 +33,4 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener i18nChangeListener(engine->rootContext(), "i18n");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
-
-//    engine->rootContext()->setContextProperty("units", &Units::instance());
-//    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
-//    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
-//                     &unitsChangeListener, SLOT(updateContextProperty()));
 }
