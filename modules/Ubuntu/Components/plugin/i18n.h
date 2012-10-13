@@ -41,27 +41,43 @@ public:
 //    void qmlInit(QDeclarativeContext* context);
 
 
-    Q_INVOKABLE QString tr(const QString& text);
-    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
-
     /**
      * @brief Translate the given string using gettext.
      * @param text The text to translate.
-     * @param domain The domain to use for the translation.
      */
-//    Q_INVOKABLE QString tr(const QString& text, const QString& domain = QString());
+    Q_INVOKABLE QString tr(const QString& text);
 
     /**
      * @brief Translate the given string using gettext. Should be called like this:
-     *          tr("%n file", "%n files", count, domain)
+     *          tr("%n file", "%n files", count)
      * @param singular The singular version of the text to translate.
      * @param plural The plural version of the text to translate.
      * @param n Number of items.
-     * @param domain The domain to use for the translation.
      */
-//    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
+    Q_INVOKABLE QString ntr(const QString& singular, const QString& plural, int n);
 
+    /**
+     * @brief Translate the given string using gettext.
+     * @param domain The domain to use for the translation.
+     * @param text The text to translate.
+     */
+    Q_INVOKABLE QString dtr(const QString& domain, const QString& text);
+
+    /**
+     * @brief Translate the given string using gettext. Should be called like this:
+     *          tr(domain, "%n file", "%n files", count)
+     * @param domain The domain to use for the translation.
+     * @param singular The singular version of the text to translate.
+     * @param plural The plural version of the text to translate.
+     * @param n Number of items.
+     */
+    Q_INVOKABLE QString dntr(const QString& domain, const QString& singular, const QString& plural, int n);
+
+
+    // getter
     QString domain();
+
+    // setter
     void setDomain(QString domain);
 
 Q_SIGNALS:

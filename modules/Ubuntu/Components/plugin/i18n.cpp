@@ -45,30 +45,31 @@ QString UbuntuI18n::tr(const QString& text)
     return QString::fromUtf8(gettext(text.toUtf8()));
 }
 
-QString UbuntuI18n::tr(const QString &singular, const QString &plural, int n)
+QString UbuntuI18n::ntr(const QString &singular, const QString &plural, int n)
 {
     return QString::fromUtf8(ngettext(singular.toUtf8(), plural.toUtf8(), n));
-
 }
 
-//QString UbuntuI18n::dtr(const QString& text, const QString& domain)
-//{
-//    if (domain.isNull()) {
-//        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
-//    } else {
-//        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
-//    }
-//}
+QString UbuntuI18n::dtr(const QString& domain, const QString& text)
+{
+    if (domain.isNull()) {
+        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
+    } else {
+        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
+    }
+}
 
-//QString UbuntuI18n::tr(const QString& singular, const QString& plural, int n, const QString& domain)
-//{
-//    if (domain.isNull()) {
-//        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
-//    } else {
-//        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
-//    }
-//}
+QString UbuntuI18n::dntr(const QString& domain, const QString& singular, const QString& plural, int n)
+{
+    if (domain.isNull()) {
+        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+    } else {
+        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+    }
+}
 
+// TODO: The code below is the same as in resolution_independence branch
+//  create a separate cpp file with this code?
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
     m_context(context),
     m_contextProperty(contextProperty)
