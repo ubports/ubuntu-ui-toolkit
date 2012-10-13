@@ -18,7 +18,6 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
-    id: gallery
     width: 800
     height: 600
 
