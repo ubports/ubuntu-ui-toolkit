@@ -23,6 +23,7 @@
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
+    Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     UbuntuI18n::qmlRegisterTypes(uri);
 }
 
