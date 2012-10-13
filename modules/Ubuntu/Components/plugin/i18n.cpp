@@ -58,18 +58,18 @@ QString UbuntuI18n::ntr(const QString &singular, const QString &plural, int n)
 QString UbuntuI18n::dtr(const QString& domain, const QString& text)
 {
     if (domain.isNull()) {
-        return QString::fromUtf8(dgettext(NULL, text.toUtf8().constData()));
+        return QString::fromUtf8(dgettext(NULL, text.toUtf8()));
     } else {
-        return QString::fromUtf8(dgettext(domain.toUtf8().constData(), text.toUtf8().constData()));
+        return QString::fromUtf8(dgettext(domain.toUtf8(), text.toUtf8()));
     }
 }
 
 QString UbuntuI18n::dntr(const QString& domain, const QString& singular, const QString& plural, int n)
 {
     if (domain.isNull()) {
-        return QString::fromUtf8(dngettext(NULL, singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+        return QString::fromUtf8(dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
     } else {
-        return QString::fromUtf8(dngettext(domain.toUtf8().constData(), singular.toUtf8().constData(), plural.toUtf8().constData(), n));
+        return QString::fromUtf8(dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
     }
 }
 
