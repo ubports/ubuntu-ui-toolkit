@@ -18,8 +18,9 @@ import QtQuick 2.0
 import "fontUtils.js" as FontUtils
 
 /*!
-    \qmlclass TextCustom
+    \qmltype TextCustom
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The TextCustom class is DOCME
 
     \b{This component is under heavy development.}

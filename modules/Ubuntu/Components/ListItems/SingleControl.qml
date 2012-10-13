@@ -19,8 +19,9 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
 /*!
-    \qmlclass SingleControl
+    \qmltype SingleControl
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief A list item containing a single control
 
     Examples:
@@ -55,8 +56,10 @@ Empty {
      */
     property AbstractButton control
 
+    /*! \internal */
     onClicked: control.clicked(mouse)
     pressed: __mouseArea.pressed || control.__mouseArea.pressed
+    /*! \internal */
     onPressedChanged: control.pressed = singleControlListItem.pressed
 
     /*!

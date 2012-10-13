@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass ButtonWithForeground
+    \qmltype ButtonWithForeground
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The ButtonWithForeground class has an icon and a text.
 
     \b{This component is under heavy development.}

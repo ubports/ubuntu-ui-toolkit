@@ -1,3 +1,3 @@
 #!/bin/sh
 export PATH=$PATH:/opt/qt5/bin
-qdoc sdk.qdocconf
+qdoc ubuntu-sdk.qdocconf

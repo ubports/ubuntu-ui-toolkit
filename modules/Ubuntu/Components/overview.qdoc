@@ -15,6 +15,22 @@
  */
 
 /*!
-    \qmlmodule Ubuntu.Components.ListItems 0.1
-    \title Ubuntu User Interface Toolkit ListItems
-*/
+     \page overview-ubuntu-sdk.html overview
+     \title Ubuntu User Interface Toolkit
+
+     \section1 Base Items
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+
+     \annotatedlist ubuntu
+
+     \section1 List Items
+     Available through:
+     \code
+         import Ubuntu.Components.ListItems 0.1
+     \endcode
+
+     \annotatedlist ubuntu-listitems
+ */
