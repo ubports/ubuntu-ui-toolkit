@@ -59,7 +59,7 @@ Rectangle {
                 {"label": "Slider", "source": "Sliders.qml"},
                 {"label": "Text Input", "source": "TextInputs.qml"},
                 {"label": "Scrollbar", "source": ""},
-                {"label": "Popovers", "source": ""},
+                {"label": "Popovers", "source": "Popovers.qml"},
                 {"label": "Toolbars", "source": ""},
                 {"label": "Sheets & Dialogues", "source": ""},
                 {"label": "Grid View", "source": ""},
