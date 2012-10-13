@@ -45,13 +45,11 @@ Template {
 
             Button {
                 text: i18n.tr("Call")
-//                text: i18n.tr("Call", "telephony-app") // context
                 color: "#37b301"
             }
 
             Button {
                 text: i18n.tr("Call")
-//                text: i18n.tr("Call", "default") // context
                 pressedColor: "#dd4f22"
             }
 
@@ -108,9 +106,4 @@ Template {
             }
         }
     }
-
-//    Component.onCompleted: {
-//        i18n.domain = "gallery"
-//        i18n.localeDir = "/usr/share/locale";
-//    }
 }

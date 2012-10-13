@@ -15,19 +15,24 @@
  */
 
 #include "i18n.h"
-
-// libc
 #include <libintl.h>
-//#include "/usr/share/gettext/gettext.h"
-//#include <gettext-po.h>
-#include <QDir>
-#include <QtCore>
-#include <QtQml/QQmlContext>
-
-//#include <stdio.h>
+#include <QtQml>
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
+}
+
+void UbuntuI18n::qmlRegisterTypes(const char* uri)
+{
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
+}
+
+void UbuntuI18n::qmlInit(QQmlContext *context)
+{
+    context->setContextProperty("i18n", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                 &i18nChangeListener, SLOT(updateContextProperty()));
 }
 
 QString UbuntuI18n::domain() {
@@ -68,7 +73,7 @@ QString UbuntuI18n::dntr(const QString& domain, const QString& singular, const Q
     }
 }
 
-// TODO: The code below is the same as in resolution_independence branch
+// TODO: The code below is the same as in units.cpp (resolution_independence branch)
 //  create a separate cpp file with this code?
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
     m_context(context),

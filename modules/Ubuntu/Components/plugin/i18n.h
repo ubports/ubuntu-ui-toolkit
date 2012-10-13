@@ -18,6 +18,7 @@
 #define UBUNTU_COMPONENTS_I18N_H
 
 #include <QObject>
+class QQmlContext;
 
 class UbuntuI18n : public QObject
 {
@@ -33,13 +34,14 @@ public:
 
     explicit UbuntuI18n(QObject* parent = 0);
 
-//    /**
-//     * Add an object named "i18n" to context.
-//     *
-//     * One can then get translations with i18n.tr("english text")
-//     */
-//    void qmlInit(QDeclarativeContext* context);
+    static void qmlRegisterTypes(const char* uri);
 
+    /**
+     * Add an object named "i18n" to context.
+     *
+     * One can then get translations with i18n.tr("english text")
+     */
+    void qmlInit(QQmlContext* context);
 
     /**
      * @brief Translate the given string using gettext.
@@ -87,8 +89,6 @@ Q_SIGNALS:
 private:
     QString _domain;
 };
-
-class QQmlContext;
 
 class ContextPropertyChangeListener : public QObject
 {
