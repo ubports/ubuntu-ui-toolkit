@@ -265,6 +265,6 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
-msgid "value is "
+msgid "value is %1"
 msgstr ""
 
