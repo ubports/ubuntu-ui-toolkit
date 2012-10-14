@@ -44,7 +44,7 @@ Template {
                 minimumValue: -1.0
                 maximumValue: 1.0
                 value: 0.0
-                function formatValue(v) { return v.toFixed(2) }
+                function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
             }
             TextCustom {
                 color: "#757373"
