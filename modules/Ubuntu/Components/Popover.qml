@@ -18,7 +18,7 @@
  */
 
 import QtQuick 2.0
-import ".."
+//import ".."
 
 Rectangle {
   id: popupBox
@@ -86,16 +86,18 @@ Rectangle {
     State { name: "hidden"; }
   ]
 
-  transitions: [
-    Transition { from: "shown"; to: "hidden";
-      FadeOutAnimation { target: popupBox; duration: fadeDuration;
-          easingType: Easing.InQuint; }
-    },
-    Transition { from: "hidden"; to: "shown";
-      FadeInAnimation { target: popupBox; duration: fadeDuration;
-          easingType: Easing.InQuint; }
-    }
-  ]
+  visible: state === "shown"
+
+//  transitions: [
+//    Transition { from: "shown"; to: "hidden";
+//      FadeOutAnimation { target: popupBox; duration: fadeDuration;
+//          easingType: Easing.InQuint; }
+//    },
+//    Transition { from: "hidden"; to: "shown";
+//      FadeInAnimation { target: popupBox; duration: fadeDuration;
+//          easingType: Easing.InQuint; }
+//    }
+//  ]
 
   Rectangle {
     id: contentArea
@@ -110,7 +112,9 @@ Rectangle {
     border.width: 1
   }
 
-  Image {
+//  Image {
+  Rectangle {
+      color: "red"
     id: originCueImage
 
     x: originCueX
@@ -118,7 +122,7 @@ Rectangle {
     width: 39
     height: 25
 
-    source: "img/popup-arrow.png"
-    cache: true
+//    source: "img/popup-arrow.png"
+//    cache: true
   }
 }
