@@ -1,9 +1,0 @@
-project = Ubuntu User Interface Toolkit
-sourcedirs = modules/Ubuntu/Components
-sources.fileextensions = "*.qml *.qdoc *.h *.cpp"
-outputdir = html
-outputformats = HTML
-version = 0.1
-syntaxhighlighting = true
-sourceencoding = UTF-8
-outputencoding = UTF-8

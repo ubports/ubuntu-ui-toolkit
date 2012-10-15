@@ -19,8 +19,9 @@ import "fontUtils.js" as FontUtils
 import "." 0.1 as Theming
 
 /*!
-    \qmlclass TextCustom
+    \qmltype TextCustom
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief The TextCustom class is DOCME
 
     \b{This component is under heavy development.}

@@ -18,8 +18,9 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass MultiValue
+    \qmltype MultiValue
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief List item displaying a second string under the main label.
     \b{This component is under heavy development.}
 
@@ -88,7 +89,6 @@ Base {
             left: parent.left
             right: parent.right
             verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
         }
         height: childrenRect.height + label.anchors.topMargin + subLabel.anchors.bottomMargin
 

@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass ValueSelector
+    \qmltype ValueSelector
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
 
@@ -155,23 +156,15 @@ Empty {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    verticalCenterOffset: selectorMain.__verticalCenterOffset
                     leftMargin: 5
                     left: parent.left
                 }
-                width: Math.min(invisibleLabel.implicitWidth, parent.width - 10)
-            }
-            LabelVisual {
-                id: invisibleLabel
-                visible: false
-                text: label.text
-                elide: Text.ElideNone
+                width: Math.min(implicitWidth, parent.width - 10)
             }
             LabelVisual {
                 id: valueLabel
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    verticalCenterOffset: selectorMain.__verticalCenterOffset
                     right: accordion.left
                     rightMargin: 5
                     leftMargin: 5

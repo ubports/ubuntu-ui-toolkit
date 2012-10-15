@@ -33,7 +33,9 @@
 #include <QtCore/QDebug>
 
 /*!
-  \page QtQuick_Theming_Enginre
+  \qmltype Theme
+  \inqmlmodule Ubuntu.Components 0.1
+  \ingroup theming
   The Theme element provides functionality to change the current theme.
 
   Informs the application about errors during theme load through \a error property,

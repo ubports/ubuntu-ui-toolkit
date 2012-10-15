@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass SingleValue
+    \qmltype SingleValue
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief A list item displaying a single value
 
     Examples:
@@ -64,24 +65,16 @@ Base {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
             leftMargin: 5
             left: parent.left
         }
-        width: Math.min(invisibleLabel.implicitWidth, parent.width)
-    }
-    LabelVisual {
-        id: invisibleLabel
-        visible: false
-        text: label.text
-        elide: Text.ElideNone
+        width: Math.min(implicitWidth, parent.width)
     }
     LabelVisual {
         id: valueLabel
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
             right: parent.right
             rightMargin: 5
             left: label.right

@@ -40,6 +40,8 @@ const bool traceStyleRule = false;
 
 /*!
   \qmltype Rule
+  \inqmlmodule Ubuntu.Components 0.1
+  \ingroup theming
   \brief The Rule element defines the styling rule to be applied when a widget
   satisfies the conditions specified by the rule. The condition is specified by
   the selector property, using the CSS selector syntax.

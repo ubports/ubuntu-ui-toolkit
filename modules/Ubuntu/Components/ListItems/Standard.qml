@@ -18,8 +18,9 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*!
-    \qmlclass Standard
+    \qmltype Standard
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief The standard list item class. It shows a basic list item
         with a label (text), and optionally an icon, a progression arrow,
         and it can have an embedded Item (\l control) that can be used
@@ -120,13 +121,6 @@ Empty {
     property alias __rightIconMargin: iconHelper.rightIconMargin
 
     /*!
-      \internal
-      Offset from vertical center to position the ListItem contents
-     */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property int __verticalCenterOffset: 0
-
-    /*!
       \preliminary
       An optional control that is displayed inside the list item.
       The width of the control must be specified in order to determine
@@ -167,11 +161,6 @@ Empty {
 
     IconVisual {
         id: iconHelper
-        anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
-        }
     }
 
     /*!
@@ -208,7 +197,6 @@ Empty {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            verticalCenterOffset: __verticalCenterOffset
             left: __iconIsItem ? parent.left : iconHelper.right
             leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + 5 : 5
             right: controlContainer.left

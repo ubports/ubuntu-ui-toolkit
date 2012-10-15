@@ -45,6 +45,8 @@ const char *styleProperty = "itemStyle";
 
 /*!
   \qmltype ItemStyle
+  \inqmlmodule Ubuntu.Components 0.1
+  \ingroup theming
   \brief The ItemStyle attached property contains styling properties for a
   particular UI element.
 

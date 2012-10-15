@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass ThinDivider
+    \qmltype ThinDivider
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief Narrow line used as a divider between ListItems.
 
     ListItems will usually include this line at the bottom of the item
