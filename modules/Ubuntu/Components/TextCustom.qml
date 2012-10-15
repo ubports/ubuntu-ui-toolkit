@@ -36,27 +36,32 @@ Text {
     property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
 
-    /*!
-      \preliminary
-      The property holds the style class information used by the widget.
-      */
-    property alias styleClass: styleRule.styleClass
-
-    /*!
-      \preliminary
-      The property holds the instance ID information if the widget used in styling
-      */
-    property alias instanceId: styleRule.instanceId
-
-    // example of private implementation of using StyledItem privately
-    Theming.StyledItem {
-        id: styleRule
-        onStyleChanged: {
-            if (style) {
-                font.family = style.fontFamily
-                color = style.color
-                fontSize = style.fontSize
-            }
+    // the following line instructs ItemStyle attached properties to delay
+    // applying the style
+    Component.onCompleted: {}
+    // apply styling
+    Theming.ItemStyle.onStyleChanged: {
+        // define the new binding till we get the style to apply the theme
+        // properties straight on the Item!
+        color = Qt.binding(function () {
+                               if (Theming.ItemStyle.style && Theming.ItemStyle.style.color)
+                                   return Theming.ItemStyle.style.color
+                               return "black"
+                           })
+        fontSize = Qt.binding(function() {
+                                 if (Theming.ItemStyle.style && Theming.ItemStyle.style.fontSize)
+                                     return Theming.ItemStyle.style.fontSize
+                                 return "medium"
+                             })
+        if (Theming.ItemStyle.style && Theming.ItemStyle.style.style) {
+            style = Qt.binding(function() {
+                               return Theming.ItemStyle.style.style
+                               })
+        }
+        if (Theming.ItemStyle.style && Theming.ItemStyle.style.styleColor) {
+            styleColor = Qt.binding(function() {
+                               return Theming.ItemStyle.style.styleColor
+                               })
         }
     }
 }

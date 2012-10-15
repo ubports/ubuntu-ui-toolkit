@@ -14,8 +14,6 @@ DEFINES += TARGET_DEMO
 
 HEADERS += plugin.h \
     themeengine.h \
-    styleditem.h \
-    styleditem_p.h \
     themeengine_p.h \
     qmlthemeloader_p.h \
     qthmthemeloader_p.h \
@@ -23,16 +21,18 @@ HEADERS += plugin.h \
     themesettings_p.h \
     suffixtree_p.h \
     stylerule.h \
-    stylerule_p.h
+    stylerule_p.h \
+    itemstyleattached.h \
+    itemstyleattached_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
-    styleditem.cpp \
     qmlthemeloader.cpp \
     suffixtree.cpp \
     themesettings.cpp \
     qthmthemeloader.cpp \
-    stylerule.cpp
+    stylerule.cpp \
+    itemstyleattached.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

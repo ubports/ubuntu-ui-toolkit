@@ -27,7 +27,15 @@
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 
-//#include <QtCore/QDebug>
+#include <QtCore/QDebug>
+const bool traceQthmLoader = false;
+
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (traceQthmLoader) \
+        qDebug() << QString("QthmThemeLoader::%1").arg(__FUNCTION__, -15)
 
 /*!
   \page QTHM file parser
@@ -53,16 +61,32 @@ const char *styleRuleComponent =  \
         "%1\n"
         "%2\n";
 
+const char *qmlThemeData = \
+        "import QtQuick 2.0\n"
+        "%1\n"
+        "Item {\n%2\n}\n";
+const char *stylePropertyFormat = \
+        "%1 {\n"
+        "%2"
+        "    }";
+const char *styleRule = \
+        "    Rule {\n"
+        "        selector: \"%1\"\n"
+        "        %2"
+        "        %3"
+        "    }\n";
+
 /*!
   \internal
-  Resets the ignore flag for the selector nodes so the selector is interpreted
-  as declared in CSS. Ignore flags are set by the parser to ease searching in
-  the selector hash for the base selectors (subsets of the current selector).
+  Resets the node sensitivity flag for the selector nodes so the selector is
+  interpreted as defined in CSS. Sensitivity flags are set by the parser to ease
+  searching in the selector hash for the base selectors (subsets of the current
+  selector).
 */
 void normalizeSelector(Selector &selector)
 {
     for (int i = 0; i < selector.count(); i++)
-        selector[i].ignore = 0;
+        selector[i].sensitivity = SelectorNode::Normal;
 }
 
 /*!
@@ -75,7 +99,7 @@ Selector selectorSubset(const Selector &path, int elements)
     Selector result;
     while (elements > 0) {
         result << path[path.length() - elements];
-        result.last().ignore = SELECTOR_IGNORE_ALL;
+        result.last().sensitivity = SelectorNode::IgnoreAll;
         elements--;
     }
     return result;
@@ -232,6 +256,7 @@ bool QthmThemeLoader::parseTheme(const QUrl &url)
 {
     bool ret = true;
     // open the file
+    TRACE << url;
     QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
     QFile file(fname);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
@@ -269,7 +294,7 @@ bool QthmThemeLoader::parseTheme(const QUrl &url)
             if (data.isEmpty())
                 continue;
 
-            QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data, SELECTOR_IGNORE_RELATIONSHIP);
+            QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data, SelectorNode::IgnoreRelationship);
             if (selectors.isEmpty()) {
                 ThemeEnginePrivate::setError(QString("Syntax error!\n%1").arg(data));
                 return false;
@@ -298,12 +323,14 @@ bool QthmThemeLoader::parseTheme(const QUrl &url)
     return ret;
 }
 
-bool QthmThemeLoader::buildStyleTree()
+bool QthmThemeLoader::generateStyleQml()
 {
     Selector selector;
     QString style;
     QString delegate;
     QString qmap;
+
+    QString styleString, delegateString;
 
     // go through the selector map and build the styles to each
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
@@ -320,26 +347,27 @@ bool QthmThemeLoader::buildStyleTree()
 
         // get the type for style and delegate
         if (i.value().count() > 0) {
-            QString propertyPrefix;
+            QString propertyPrefix("    ");
 
             if (!qmlTypes.first.isEmpty()) {
                 // we have the mapping!!
-                style = qmlTypes.first + "{\n";
+                style = QString(stylePropertyFormat).arg(qmlTypes.first);
             } else {
-                style = "QtObject{\n";
-                propertyPrefix = "property variant";
+                style = QString(stylePropertyFormat).arg("QtObject");
+                propertyPrefix += "property var";
             }
 
             // add properties
+            QString propertyArg;
             while (properties.hasNext()) {
                 properties.next();
-                style += QString("   %1 %2: %3\n")
+                propertyArg += QString("   %1 %2: %3\n")
                         .arg(propertyPrefix)
                         .arg(properties.key())
                         .arg(properties.value());
             }
             // append the closing brace
-            style += '}';
+            style = style.arg(propertyArg);
         }
 
         // delegate
@@ -354,27 +382,75 @@ bool QthmThemeLoader::buildStyleTree()
         // StyleRule to create style and delegate components so StyleRule can handle
         // asynchronous completion of those.
 
-        if (!style.isEmpty())
+        if (!style.isEmpty()) {
+            styleString = "style: " + style + "\n";
             style = QString(styleRuleComponent).arg(imports).arg(style);
-        if (!delegate.isEmpty())
-            delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
-        StyleRule *rule = new StyleRule(m_engine,
-                                        ThemeEnginePrivate::selectorToString(selector),
-                                        style,
-                                        delegate);
-        // the error is reported in case the creation is synchronous, so capture it here
-        if (!ThemeEngine::instance()->error().isEmpty()) {
-            delete rule;
-            return false;
-        } else {
-            // we either have a success or async component creation
-            styleTree->addStyleRule(selector, rule);
-            style.clear();
-            delegate.clear();
         }
+        if (!delegate.isEmpty()) {
+            delegateString = "delegate : Component {" + delegate + "}\n";
+            delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
+        }
+        ruleString += QString(styleRule).arg(ThemeEnginePrivate::selectorToString(selector)).arg(styleString).arg(delegateString);
+        styleString = "";
+        delegateString = "";
+        style.clear();
+        delegate.clear();
     }
 
     return true;
+}
+
+
+bool QthmThemeLoader::buildStyleTree(const QUrl &url)
+{
+    bool result = false;
+    QString data = QString(qmlThemeData).arg(imports).arg(ruleString);
+#if 0
+    // keep this code till we get a stable Qt5 environment
+    QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
+
+    QFileInfo fi(fname);
+    fname = fi.dir().absolutePath() + "/GeneratedTheme.qml";
+    //qDebug() <<fname;
+    QFile file(fname);
+    if (file.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)) {
+
+        file.write(data.toLatin1());
+        file.close();
+        delete styleTree;
+        styleTree = 0;
+        // open the file with QMlThemeLoader
+        result = ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile(fname));
+    }
+#else
+    QQmlComponent themeComponent(m_engine);
+    themeComponent.setData(data.toLatin1(), QUrl());
+    if (themeComponent.isError())
+        ThemeEnginePrivate::setError(themeComponent.errorString());
+    else {
+        QObject *theme = themeComponent.create();
+        if (theme) {
+            // parse its children for Styles
+            QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
+
+            Q_FOREACH (StyleRule *rule, rules) {
+                const QString selector = rule->selector();
+                if (selector.isEmpty()) {
+                    qWarning() << "Rule without selector!";
+                    continue;
+                }
+                QList<Selector> pathList = ThemeEnginePrivate::parseSelector(selector);
+                Q_FOREACH (const Selector &path, pathList) {
+                    styleTree->addStyleRule(path, rule);
+                }
+            }
+            result = true;
+        } else {
+            ThemeEnginePrivate::setError(themeComponent.errorString());
+        }
+    }
+#endif
+    return result;
 }
 
 
@@ -526,16 +602,20 @@ StyleTreeNode * QthmThemeLoader::loadTheme(const QUrl &url)
         normalizeStyles();
         // build up the QML style tree
         styleTree = new StyleTreeNode(0);
-        if (!buildStyleTree()) {
+        if (!generateStyleQml()) {
             delete styleTree;
             styleTree = 0;
         }
 
+        buildStyleTree(url);
+
         // cleanup
+        ruleString.clear();
         imports.clear();
         qmlMap.clear();
         selectorTable.clear();
     }
 
+    TRACE << "returns styleTree" << styleTree;
     return styleTree;
 }

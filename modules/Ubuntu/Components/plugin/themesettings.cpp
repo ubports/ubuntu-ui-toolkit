@@ -18,7 +18,7 @@
 
 #include "themeengine_p.h"
 #include "themesettings_p.h"
-#include "styleditem.h"
+#include "itemstyleattached.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>

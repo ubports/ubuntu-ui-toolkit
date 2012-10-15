@@ -16,17 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef STYLEDITEM_H
-#define STYLEDITEM_H
+#ifndef ITEMSTYLEATTACHED_H
+#define ITEMSTYLEATTACHED_H
 
 #include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
-#include <QtQuick/QQuickItem>
+#include <QtQml>
 
-class StyleRule;
-
-class StyledItemPrivate;
-class StyledItem : public QQuickItem
+class QQuickItem;
+class ItemStyleAttachedPrivate;
+class ItemStyleAttached : public QObject
 {
     Q_OBJECT
 
@@ -36,34 +34,35 @@ class StyledItem : public QQuickItem
     Q_PROPERTY(QQuickItem *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
 
 public:
-    StyledItem(QQuickItem *parent = 0);
-    ~StyledItem();
+    explicit ItemStyleAttached(QObject *parent = 0);
+    ~ItemStyleAttached();
+    static ItemStyleAttached *qmlAttachedProperties(QObject *obj);
 
-protected:
-    void componentComplete();
-    
 Q_SIGNALS:
-
     void styleChanged();
     
 public Q_SLOTS:
 
-public: // getter/setter
+public: //getters
     QString instanceId() const;
-    void setInstanceId(const QString &instanceId);
     QString styleClass() const;
+
+private:
+    void setInstanceId(const QString &instanceId);
     void setStyleClass(const QString &styleClass);
     QObject *style() const;
     void setStyle(QObject *style);
     QQuickItem *delegate() const;
     void setDelegate(QQuickItem *delegate);
 
-private: //members
-    Q_DISABLE_COPY(StyledItem)
-    Q_DECLARE_PRIVATE(StyledItem)
-    QScopedPointer<StyledItemPrivate> d_ptr;
+private:
+    Q_DISABLE_COPY(ItemStyleAttached)
+    Q_DECLARE_PRIVATE(ItemStyleAttached)
+    QScopedPointer<ItemStyleAttachedPrivate> d_ptr;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
+    Q_PRIVATE_SLOT(d_func(), void _q_refteshStyle())
 };
 
-#endif // STYLEDITEM_H
+QML_DECLARE_TYPEINFO(ItemStyleAttached, QML_HAS_ATTACHED_PROPERTIES)
+
+#endif // ITEMSTYLEATTACHED_H

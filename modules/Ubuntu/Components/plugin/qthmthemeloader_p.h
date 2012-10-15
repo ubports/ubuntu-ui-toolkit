@@ -44,7 +44,8 @@ private:
     bool handleSelector(const Selector &path, const QString &declarator);
     void normalizeStyles();
     bool parseTheme(const QUrl &url);
-    bool buildStyleTree();
+    bool generateStyleQml();
+    bool buildStyleTree(const QUrl &url);
 
     // @-rule handlers
     static bool handleImport(QthmThemeLoader *loader, QTextStream &stream);
@@ -52,6 +53,7 @@ private:
     static bool handleQmlImport(QthmThemeLoader *loader, QTextStream &stream);
 
     QString imports;
+    QString ruleString;
     QHash<QString, QthmThemeParserCallback> rules;
     QHash<QString, QPair<QString, QString> > qmlMap;
     QHash<Selector, QHash<QString, QString> > selectorTable;

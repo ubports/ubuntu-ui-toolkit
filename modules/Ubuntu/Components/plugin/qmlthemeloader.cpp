@@ -20,7 +20,7 @@
 #include "themeengine_p.h"
 #include "qmlthemeloader_p.h"
 #include "stylerule.h"
-#include "styleditem.h"
+#include "itemstyleattached.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>

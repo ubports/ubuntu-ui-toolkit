@@ -8,7 +8,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "styleditem.h"
+#include "itemstyleattached.h"
 #include "stylerule.h"
 
 class tst_ThemeEnginePrivate : public QObject
@@ -53,7 +53,7 @@ void tst_ThemeEnginePrivate::initTestCase()
     char *uri = "Ubuntu.Components";
     ThemeEngine::initializeEngine(view->engine());
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
+    qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 
     // engine privates can be created with its public class; therefore
     // we create an engine class and use its privates

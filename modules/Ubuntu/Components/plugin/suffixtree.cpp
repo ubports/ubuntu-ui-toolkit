@@ -49,30 +49,29 @@ SelectorNode::SelectorNode() :
 /*!
     \internal
     Creates an instance of a SelectorNode with a given styleClass, instanceId
-    and relationship. The ignore parameter configures the node so that during
+    and relationship. The sensitivity parameter configures the node so that during
     string conversion and comparison ignores the relationship, the instanceId
-    or both. This feature is used when building up QTHM selectorTable.
+    both or none. This feature is used when building up QTHM selectorTable.
 */
-SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore) :
-    styleClass(styleClass), styleId(styleId), relationship(relationship), ignore(ignore)
+SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
+    styleClass(styleClass), styleId(styleId), relationship(relationship), sensitivity(sensitivity)
 {
 }
 
 /*!
     \internal
     Converts a SelectorNode into string using "<relation> .<styleClass>#<instanceId>"
-    format. A node can be configured so it ignores the relationship, instanceId or
-    both.
+    format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
 QString SelectorNode::toString() const
 {
     QString result;
-    if (((ignore & SELECTOR_IGNORE_RELATIONSHIP) !=  SELECTOR_IGNORE_RELATIONSHIP) &&
+    if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
             (relationship == SelectorNode::Child))
         result += "> ";
     if (!styleClass.isEmpty())
         result += "." + styleClass;
-    if (((ignore & SELECTOR_IGNORE_STYLEID) !=  SELECTOR_IGNORE_STYLEID) && !styleId.isEmpty())
+    if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
 }
@@ -80,8 +79,8 @@ QString SelectorNode::toString() const
 bool SelectorNode::operator==(const SelectorNode &other)
 {
     bool ret = (styleClass == other.styleClass) &&
-               ((ignore & SELECTOR_IGNORE_STYLEID) ? true : styleId == other.styleId) &&
-               ((ignore & SELECTOR_IGNORE_RELATIONSHIP) ? true : relationship == other.relationship);
+               ((sensitivity & IgnoreStyleId) ? true : styleId == other.styleId) &&
+               ((sensitivity & IgnoreRelationship) ? true : relationship == other.relationship);
     return ret;
 }
 

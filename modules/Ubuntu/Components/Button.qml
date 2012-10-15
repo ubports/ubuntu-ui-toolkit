@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import "." 0.1 as Theming
 
 /*!
     \qmlclass Button
@@ -54,7 +55,7 @@ ButtonWithForeground {
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: (style) ? style.color : "#e3e5e8"
+    property color color: (Theming.ItemStyle.style) ? Theming.ItemStyle.style.color : "#e3e5e8"
 
     /*!
        \preliminary
@@ -68,4 +69,7 @@ ButtonWithForeground {
        This will change the visuals/shading of the button.
     */
     property bool darkBorder: false
+
+    // make sure we apply the theming at completion
+    Component.onCompleted: {}
 }

@@ -16,20 +16,21 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef STYLEDITEM_P_H
-#define STYLEDITEM_P_H
+#ifndef ITEMSTYLEATTACHED_P_H
+#define ITEMSTYLEATTACHED_P_H
 
-#include "styleditem.h"
+#include "itemstyleattached.h"
 
-class StyledItemPrivate {
+class QQmlComponent;
+class QQmlContext;
 
-    Q_DECLARE_PUBLIC(StyledItem)
-
+class ItemStyleAttachedPrivate {
+    Q_DECLARE_PUBLIC(ItemStyleAttached)
 public:
-    StyledItemPrivate(StyledItem *qq);
-    ~StyledItemPrivate();
+    ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObject *attached);
 
-    StyledItem *q_ptr;
+    ItemStyleAttached *q_ptr;
+    QQuickItem *attachee;
     QObject *style;
     QQuickItem *delegate;
     QString styleClass;
@@ -39,7 +40,7 @@ public:
     QQmlContext *componentContext;
     QQmlComponent *styleComponent;
     QQmlComponent *delegateComponent;
-    bool componentCompleted;
+    bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
@@ -47,7 +48,8 @@ public:
     void updateCurrentStyle(bool forceUpdate = false);
     bool registerInstanceId(const QString &id);
     void listenThemeEngine();
-    void _q_reloadTheme();
+    void _q_refteshStyle();
+
 };
 
-#endif // STYLEDITEM_P_H
+#endif // ITEMSTYLEATTACHED_P_H

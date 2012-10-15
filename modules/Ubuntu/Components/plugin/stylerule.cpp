@@ -22,6 +22,21 @@
 #include "themeengine_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
+#include <QtCore/QString>
+
+#include <QtCore/QDebug>
+const bool traceStyleRule = false;
+
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (traceStyleRule) \
+        qDebug() << QString("StyleRule::%1").arg(__FUNCTION__, -15)
+
+#define TRACEP \
+    if (traceStyleRule) \
+        qDebug() << QString("StyleRulePrivate::%1").arg(__FUNCTION__, -15)
 
 /*!
   \qmltype Rule
@@ -62,7 +77,7 @@
   \endqml
 
 
-  Rules can be declared either in a theme or in a StyledItem, in which case the
+  Rules can be declared either in a theme or in a ItemStyleAttached, in which case the
   style will be private for the widget, and the widget won't load any style from
   the themes.
 
@@ -137,6 +152,14 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QStr
     // create delegate component
     if (!delegateQml.isEmpty())
         createComponent(engine, delegateQml, &delegate);
+
+    TRACEP << QString("\n=======================================================================\n"
+                      "style for [%1]:\n%2\n"
+                      "delegate for [%1]:\n%3"
+                      "=======================================================================")
+              .arg(selector)
+              .arg(styleQml)
+              .arg(delegateQml);
 }
 
 /*!
@@ -162,7 +185,7 @@ StyleRulePrivate::~StyleRulePrivate()
 void StyleRulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCode, QQmlComponent **component)
 {
     *component = new QQmlComponent(engine);
-    (*component)->setData(qmlCode.toAscii(), QUrl());
+    (*component)->setData(qmlCode.toLatin1(), QUrl());
     if ((*component)->isLoading() && !(*component)->isError()) {
         QObject::connect(*component, SIGNAL(statusChanged(QQmlComponent::Status)), q_ptr, SLOT(_q_componentCompleted(QQmlComponent::Status)));
     } else
@@ -172,7 +195,7 @@ void StyleRulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCod
 /*!
   \internal
   Completes (style or delegate) component creation. If both created style and
-  delegate components are ready, emits the ruleChanged signal to update StyledItems.
+  delegate components are ready, emits the ruleChanged signal to update ItemStyleAttacheds.
   */
 void StyleRulePrivate::completeComponent(QQmlComponent *sender)
 {
@@ -262,6 +285,7 @@ QObject *StyleRule::createStyle(QQmlContext *context)
                                      .arg(d->styleQml));
         return 0;
     }
+    TRACE << QString("create style for %1").arg(d->selector);
     return d->style ? d->style->create(context) : 0;
 }
 
@@ -280,6 +304,7 @@ QQuickItem *StyleRule::createDelegate(QQmlContext *context)
                                      .arg(d->delegateQml));
         return 0;
     }
+    TRACE << QString("create delegate for %1").arg(d->selector);
     return d->delegate ? qobject_cast<QQuickItem*>(d->delegate->create(context)) : 0;
 }
 

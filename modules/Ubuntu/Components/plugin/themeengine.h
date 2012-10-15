@@ -25,7 +25,8 @@
 class StyleRule;
 class QQmlEngine;
 class QJSEngine;
-class StyledItem;
+class QQuickItem;
+class ItemStyleAttached;
 
 class ThemeEnginePrivate;
 class ThemeEngine : public QObject
@@ -41,8 +42,8 @@ public:
     static QObject *initializeEngine(QQmlEngine *engine);
     static ThemeEngine *instance();
 
-    bool registerInstanceId(StyledItem *item, const QString &newId);
-    StyleRule *lookupStyleRule(StyledItem *item, bool forceClassName = false);
+    bool registerInstanceId(QQuickItem *item, const QString &newId);
+    StyleRule *lookupStyleRule(QQuickItem *item, bool forceClassName = false);
 
     // getter/setters
     QString error() const;

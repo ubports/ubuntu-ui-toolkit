@@ -27,7 +27,8 @@ Template {
             title: "Current:"
 
             TextCustom {
-                styleClass: "label"
+                width: 400
+                ItemStyle.styleClass: "label"
                 text: Theme.currentTheme
             }
         }
@@ -77,7 +78,7 @@ Template {
             title: ".button"
 
             Button {
-                styleClass: "button"
+                ItemStyle.styleClass: "button"
                 text: "Call"
             }
         }
@@ -85,17 +86,17 @@ Template {
         TemplateRow {
             title: "Custom"
 
-            StyledItem {
+            Item {
                 id: frame
                 width: 300
                 height: 100
-                styleClass: "frame"
+                ItemStyle.styleClass: "frame"
 
                 Button {
                     id: customButton
                     x: 10; y: 10; width: 150
                     text: "Private style"
-                    delegate: Item {
+                    ItemStyle.delegate: Item {
                         z: -1
                         anchors.fill: parent
                         clip: true
@@ -106,8 +107,8 @@ Template {
                             anchors.margins: -customButton.width
                             rotation: customButton.pressed ? -45 : 45
                             gradient: Gradient {
-                                GradientStop { position: 0.0; color: "lightsteelblue" }
-                                GradientStop { position: 1.0; color: customButton.hovered ? "blue" : "green" }
+                                GradientStop { position: 0.0; color: (ItemStyle.style && ItemStyle.style.color) ? ItemStyle.style.color : "transparent" }
+                                GradientStop { position: 1.0; color: customButton.hovered ? "blue" : "red" }
                             }
                         }
                     }

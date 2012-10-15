@@ -18,3 +18,7 @@
     color: widget.pressed ? "purple" : "lightgray";
     shapeNormal: Qt.resolvedUrl("call_icon.png")
 }
+
+.label {
+    color: "purple"
+}

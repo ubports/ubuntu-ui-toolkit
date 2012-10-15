@@ -4,8 +4,8 @@ Rectangle {
     z: -1
     anchors.fill: parent
     radius: 8
-    border.color: (widget.style.border != undefined) ? widget.style.border : "brown"
+    border.color: (itemStyle && itemStyle.hasOwnProperty("border")) ? itemStyle.border : "brown"
     border.width: 4
-    color: widget.style.color
+    color: (itemStyle && itemStyle.hasOwnProperty("color")) ? itemStyle.color : "#f97897"
     smooth: true
 }

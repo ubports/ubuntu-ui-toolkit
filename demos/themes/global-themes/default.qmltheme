@@ -41,6 +41,11 @@ Examples:
     borderDarkPressed: "artwork/ButtonBorderDarkPressed.png";
 }
 
+/* Default style for all TextCustom elements in Gallery*/
+.TextCustom {
+    fontSize: "medium";
+    color: "#757373";
+}
 
 /*
     Label does not have any QML mapping, therefore the engine will not assign any
@@ -53,6 +58,26 @@ Examples:
     color: "red";
 }
 
+/* Gallery title */
+.title {
+    fontSize: "x-large";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}
+
+/* Note: the following could be done using
+.row-label.title {
+    fontSize: "medium";
+}
+
+*/
+.row-label {
+    fontSize: "medium";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}
 /*
 @qml-mapping(.item, ItemStyle, ItemDelegate)
 @qml-mapping(.group, GroupRule, )

@@ -19,7 +19,7 @@
 #include "plugin.h"
 #include "stylerule.h"
 #include "themeengine.h"
-#include "styleditem.h"
+#include "itemstyleattached.h"
 
 #include <QtQml/QQmlContext>
 
@@ -28,7 +28,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
+    qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

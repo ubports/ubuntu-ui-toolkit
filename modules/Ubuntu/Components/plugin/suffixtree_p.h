@@ -23,15 +23,19 @@
 class SelectorNode {
     public:
     enum Relationship {Child, Descendant, Sibling};
-    enum Sensitivity {IgnoreRelationship = 0x01, IgnoreStyleId = 0x02, IgnoreAll = IgnoreRelationship | IgnoreStyleId};
+    enum NodeSensitivity {
+        Normal = 0,
+        IgnoreRelationship = 0x01,
+        IgnoreStyleId = 0x02,
+        IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, unsigned char ignore = 0);
+    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity = Normal);
     QString toString() const;
     bool operator==(const SelectorNode &other);
     QString styleClass;
     QString styleId;
     Relationship relationship;
-    unsigned char ignore;
+    NodeSensitivity sensitivity;
 };
 
 // selector type

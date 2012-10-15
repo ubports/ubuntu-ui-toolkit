@@ -30,7 +30,7 @@ class QQuickItem;
 class QQmlComponent;
 class ThemeLoader;
 
-typedef QHash<QString, StyledItem*> InstanceHash;
+typedef QHash<QString, QQuickItem*> InstanceHash;
 
 extern const char *appUseGlobalThemeKey;
 extern const char *appThemeFileKey;
@@ -63,17 +63,19 @@ public: //members
     // needed for theme loading
     QString errorString;
     QUrl currentTheme;
+    bool firstThemeLoaded;
 
     // public functions on instance
 public:
     void loadTheme(const QUrl &themeFile);
-    Selector getSelector(const StyledItem *obj, bool forceClassName) const;
+    Selector getSelector(QQuickItem *obj, bool forceClassName) const;
     StyleRule *styleRuleForPath(const Selector &path);
 
     // utility functions that are independent from the instance
     static void setError(const QString &error);
+    static ItemStyleAttached *attachedStyle(QObject *obj);
     static QString selectorToString(const Selector &path);
-    static QList<Selector> parseSelector(const QString &selectorString, unsigned char ignore = 0);
+    static QList<Selector> parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
 
 // private slots
     void _q_updateTheme();

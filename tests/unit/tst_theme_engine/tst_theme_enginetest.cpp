@@ -9,8 +9,8 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "styleditem.h"
 #include "stylerule.h"
+#include "itemstyleattached.h"
 
 const char *lookupTestPattern1 =
         "import QtQuick 2.0"
@@ -65,7 +65,7 @@ void tst_ThemeEngine::initTestCase()
     const char *uri = "Ubuntu.Components";
     ThemeEngine::initializeEngine(view->engine());
     qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-    qmlRegisterType<StyledItem>(uri, 0, 1, "StyledItem");
+    qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 }
 
 void tst_ThemeEngine::cleanupTestCase()
@@ -83,7 +83,7 @@ void tst_ThemeEngine::testCase_initializeEngine()
 void tst_ThemeEngine::testCase_registerInstanceId()
 {
     ThemeEngine::instance()->resetError();
-    StyledItem *item = new StyledItem(0);
+    QQuickItem *item = new QQuickItem(0);
     // first time must pass
     bool result = ThemeEngine::instance()->registerInstanceId(item, "test");
     QCOMPARE(result, true);

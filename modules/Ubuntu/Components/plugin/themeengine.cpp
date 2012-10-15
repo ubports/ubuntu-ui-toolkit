@@ -19,7 +19,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "stylerule.h"
-#include "styleditem.h"
+#include "itemstyleattached.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
 #include "qthmthemeloader_p.h"
@@ -60,6 +60,16 @@
 */
 
 bool themeDebug = false;
+#ifdef TRACE
+#undef TRACE
+#endif
+#define TRACE \
+    if (themeDebug) \
+        qDebug() << QString("ThemeEngine::%1").arg(__FUNCTION__, -15)
+
+#define TRACEP \
+    if (themeDebug) \
+        qDebug() << QString("ThemeEnginePrivate::%1").arg(__FUNCTION__, -15)
 
 ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
@@ -71,7 +81,8 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
     m_engine(qobject_cast<QQmlEngine*>(qq->parent())),
     m_styleTree(new StyleTreeNode(0)),
-    themeSettings(qq)
+    themeSettings(qq),
+    firstThemeLoaded(false)
 {
     themeEngine = q_ptr;
 
@@ -79,9 +90,6 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     // TODO: shouldn't these be in separate plugins?
     themeLoaders[".qml"] = new QmlThemeLoader(m_engine);
     themeLoaders[".qmltheme"] = new QthmThemeLoader(m_engine);
-
-    // invoke theme loading
-    QMetaObject::invokeMethod(q_ptr, "_q_updateTheme", Qt::QueuedConnection);
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
@@ -96,8 +104,7 @@ ThemeEnginePrivate::~ThemeEnginePrivate()
 void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
-    if (themeDebug)
-        qDebug() << "\t" << Q_FUNC_INFO << newTheme.toString();
+    TRACEP << newTheme.toString();
 
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
@@ -110,7 +117,7 @@ void ThemeEnginePrivate::_q_updateTheme()
         if (!importPaths.isEmpty()) {
             importList << importPaths;
             m_engine->setImportPathList(importList);
-            qDebug() << "_q_updateTheme" << importPaths;
+            TRACEP << importPaths;
         }
         // load the theme
         loadTheme(newTheme);
@@ -128,13 +135,15 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
     QUrl url(themeFile);
     if (!url.isValid())
         url = themeSettings.themeFile();
-    QString fileType = url.path();
 
+    QString fileType = url.path();
     fileType = fileType.right(fileType.length() - fileType.lastIndexOf('.'));
+
+    TRACEP << url << QString("theme: %1, type: %2").arg(url.toString()).arg(fileType);
 
     if (themeLoaders.contains(fileType)) {
         StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url);
-        if (errorString.isEmpty()) {
+        if (errorString.isEmpty() && styleTree) {
             // clear the previous style and use the loaded one
             delete m_styleTree;
             m_styleCache.clear();
@@ -157,21 +166,27 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
   Traverses and returns the path from \a obj up to root as a list of styleClass
   and instanceId pairs, setting the relationship between the selector nodes
   depending on the relationship between the parent and child, i.e. if a certain
-  StyledItem's parent is also a StyledItem, the SelectorNode::Child relation,
+  ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child relation,
   otherwise SelectorNode::Descendant relation is used.
+
+  The obj is an Item derived element and shoudl have styleClass and instanceId proeprties
+  to be used if styling happens on them.
   */
-Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassName) const
+Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
 {
     Selector selector;
     QQuickItem *parent;
 
     while (obj) {
-        QString styleClass = obj->styleClass();
+        ItemStyleAttached *style = attachedStyle(obj);
+        QString styleClass = style ? style->styleClass() : QString();
+
         parent = obj->parentItem();
 
-        // if parent is alsoa StyledItem, we talk about Child relationship
+        // we talk about Child relationship when the parent has styling properties
         // otherwise we talk about Descendant
-        SelectorNode::Relationship relation = qobject_cast<StyledItem*>(parent) ?
+        ItemStyleAttached *parentStyle = attachedStyle(parent);
+        SelectorNode::Relationship relation = parentStyle ?
                     SelectorNode::Child : SelectorNode::Descendant;
 
         // if styleClass is not defined, use the component's meta class name
@@ -179,18 +194,17 @@ Selector ThemeEnginePrivate::getSelector(const StyledItem *obj, bool forceClassN
             styleClass = obj->metaObject()->className();
             styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
         }
-        QString styleId = obj->instanceId();
+        QString styleId = style->instanceId();
         if (!styleClass.isEmpty() || !styleId.isEmpty()) {
             selector.prepend(SelectorNode(styleClass, styleId, relation));
         }
 
-        // get the next StyledItem, we don't care the rest
-        while (parent && !qobject_cast<StyledItem*>(parent)) {
+        // get the next ItemStyleAttached, we don't care the rest
+        while (parent && !parentStyle) {
             parent = parent->parentItem();
+            parentStyle = attachedStyle(parent);
         }
-        if (!parent)
-            break;
-        obj = qobject_cast<StyledItem*>(parent);
+        obj = parent;
     }
     return selector;
 }
@@ -204,8 +218,7 @@ StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
     if (!m_styleTree)
         return 0;
     StyleRule *rule = m_styleTree->lookupStyleRule(path);
-    if (themeDebug)
-        qDebug() << "lookup path =" << selectorToString(path) <<
+    TRACEP << "lookup path=" << selectorToString(path) <<
                     ", style rule found:" << ((rule) ? rule->selector() : "");
     return rule;
 }
@@ -223,11 +236,26 @@ StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 void ThemeEnginePrivate::setError(const QString &error)
 {
     themeEngine->d_ptr->errorString = error;
-    if (themeDebug && !themeEngine->d_ptr->errorString.isEmpty())
-        qWarning() << themeEngine->d_ptr->errorString;
+#ifndef QT_TESTLIB_LIB
+    if (!themeEngine->d_ptr->errorString.isEmpty())
+        TRACEP << themeEngine->d_ptr->errorString;
+#endif
 
     Q_EMIT themeEngine->errorChanged();
 }
+
+/*!
+  \internal
+  Returns the style propertyies object attached to an item.
+  */
+ItemStyleAttached *ThemeEnginePrivate::attachedStyle(QObject *obj)
+{
+    if (!obj)
+        return 0;
+    QObject *attached = qmlAttachedPropertiesObject<ItemStyleAttached>(obj, false);
+    return qobject_cast<ItemStyleAttached*>(attached);
+}
+
 
 /*!
   \internal
@@ -253,7 +281,7 @@ QString ThemeEnginePrivate::selectorToString(const Selector &path)
     - ID selectors, e.g: "Button#mySpecialButton"
     - Grouping, e.g: "Button#foo, Checkbox, #bar"
   */
-QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, unsigned char ignore)
+QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity)
 {
     QList<Selector> pathList;
     QStringList groupList = selectorString.split(",");
@@ -281,7 +309,7 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
                 } else
                     styleClass = token;
                 if (!styleClass.isEmpty() || !styleId.isEmpty())
-                    selector.append(SelectorNode(styleClass, styleId, nextRelationShip, ignore));
+                    selector.append(SelectorNode(styleClass, styleId, nextRelationShip, sensitivity));
                 nextRelationShip = SelectorNode::Descendant;
             }
         }
@@ -326,7 +354,12 @@ QObject *ThemeEngine::initializeEngine(QQmlEngine *engine)
   */
 ThemeEngine *ThemeEngine::instance()
 {
-    return ThemeEnginePrivate::themeEngine;
+    ThemeEngine *ret = ThemeEnginePrivate::themeEngine;
+    if (ret && !ret->d_ptr->firstThemeLoaded) {
+        ret->d_ptr->firstThemeLoaded = true;
+        ret->d_ptr->_q_updateTheme();
+    }
+    return ret;
 }
 
 /*!
@@ -334,21 +367,24 @@ ThemeEngine *ThemeEngine::instance()
   Checks whether the instance can be registerd to the given name, and registers it.
   Removes any previous registration.
 */
-bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
+bool ThemeEngine::registerInstanceId(QQuickItem *item, const QString &newId)
 {
     Q_D(ThemeEngine);
     bool ret = true;
 
     // check first whether the nex ID is valid and can be registered
+    QString prevId(item->property("instanceId").toString());
     if (newId.isEmpty()) {
         // remove the previous occurence
-        d->m_instanceCache.remove(item->instanceId());
+        if (!prevId.isEmpty())
+            d->m_instanceCache.remove(prevId);
     } else {
         if (d->m_instanceCache.contains(newId))
             ret = false;
         else {
             // remove the previous occurence
-            d->m_instanceCache.remove(item->instanceId());
+            if (!prevId.isEmpty())
+                d->m_instanceCache.remove(prevId);
             // register instance
             d->m_instanceCache.insert(newId, item);
         }
@@ -360,10 +396,10 @@ bool ThemeEngine::registerInstanceId(StyledItem *item, const QString &newId)
 /*!
   \internal
   This method searches for a Rule element that matches the conditions for a
-  StyledItem. The selector searched is built up by traversing the \a item
-  parents and considering only StyledItem elements in the hierarchy.
+  ItemStyleAttached. The selector searched is built up by traversing the \a item
+  parents and considering only ItemStyleAttached elements in the hierarchy.
   */
-StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
+StyleRule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
 {
     Q_D(ThemeEngine);
 
@@ -374,9 +410,8 @@ StyleRule *ThemeEngine::lookupStyleRule(StyledItem *item, bool forceClassName)
         return d->m_styleCache.value(path);
     }
 
-    if (themeDebug) {
-        qDebug() << "ThemeEnginePrivate::lookupStyleRule - widget path" << ThemeEnginePrivate::selectorToString(path);
-    }
+    TRACE << "widget path" << ThemeEnginePrivate::selectorToString(path);
+
     StyleRule *rule = d->styleRuleForPath(path);
     if (rule) {
         // cache the rule

@@ -30,6 +30,23 @@ Item {
         return ((r*212)+(g*715)+(b*73))/1000/255;
     }
 
+    function shapeSource()
+    {
+        if (itemStyle) {
+            return widget.darkBorder ? itemStyle.shapeDark : itemStyle.shapeNormal
+        }
+        return ""
+    }
+
+    function borderSource()
+    {
+        if (itemStyle) {
+            return (widget.darkBorder) ? (widget.pressed ? itemStyle.borderDarkPressed : itemStyle.borderDarkIdle)
+                                : (widget.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
+        }
+        return ""
+    }
+
     Binding {
         target: widget
         property: "textColor"
@@ -44,7 +61,7 @@ Item {
 
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        source: widget.darkBorder ? widget.style.shapeDark : widget.style.shapeNormal
+        source: shapeSource()
         border.left: 18; border.top: 15
         border.right: 18; border.bottom: 15
     }
@@ -74,8 +91,7 @@ Item {
         anchors.fill: parent
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        source: (widget.darkBorder) ? (widget.pressed ? widget.style.borderDarkPressed : widget.style.borderDarkIdle)
-                            : (widget.pressed ? widget.style.borderPressed : widget.style.borderIdle);
+        source: borderSource()
         border.left: 14; border.top: 17
         border.right: 15; border.bottom: 18
     }
