@@ -19,8 +19,9 @@ import "PageWrapperUtils.js" as Utils
 
 /*!
     \internal
-    \qmlclass PageWrapper
+    \qmltype PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief Internal class used by \l Tab
 
     \b{This component is under heavy development.}

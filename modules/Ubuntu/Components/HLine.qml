@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass HLine
+    \qmltype HLine
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief A horizontal line.
 
     \b{This component is under heavy development.}

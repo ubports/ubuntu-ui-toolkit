@@ -17,8 +17,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass SingleValue
+    \qmltype SingleValue
     \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
     \brief A list item displaying a single value
 
     Examples:

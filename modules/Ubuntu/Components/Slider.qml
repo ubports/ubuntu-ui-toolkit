@@ -34,8 +34,9 @@ import QtQuick 2.0
 import "mathUtils.js" as MathUtils
 
 /*!
-    \qmlclass Slider
+    \qmltype Slider
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief Slider is a component to select a value from a continuous range of
      values.
 
@@ -271,6 +272,7 @@ AbstractButton {
         slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
     }
 
+    /*! \internal */
     onPressedChanged: __mouseAreaPressed()
 
     /*! \internal */

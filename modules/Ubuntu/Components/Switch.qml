@@ -20,8 +20,9 @@
 import QtQuick 2.0
 
 /*!
-    \qmlclass Switch
+    \qmltype Switch
     \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
     \brief Switch is a component with two states, checked or unchecked. It can
     be used to set boolean options. The behavior is the same as \l CheckBox, the
     only difference is the graphical style.
