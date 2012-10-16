@@ -83,7 +83,8 @@ Item {
       \preliminary
       The current size of the stack
      */
-    // FIXME: Make readonly (in QtQuick2)
+    //FIXME: would prefer this be readonly, but readonly properties are only bound at
+    //initialisation. Trying to update it in push or pop fails. Not sure how to fix.
     property int depth: 0
 
     /*!
@@ -92,9 +93,11 @@ Item {
      */
     property Item currentPage
 
-    // FIXME: After switching to QtQuick2, use a var stack property and instead of
-    // Stack.stack in this class we can refer to that property.
-    //property var stack: new Stack.Stack()
+    /*!
+      \internal
+      The instance of the stack from javascript
+     */
+    property var stack: new Stack.Stack()
 
     /*!
       \internal
@@ -116,10 +119,10 @@ Item {
       Push a page to the stack, and apply the given (optional) properties to the page.
      */
     function push(page, properties) {
-        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
+        if (stack.size() > 0) stack.top().active = false;
 
-        Stack.stack.push(__createWrapper(page, properties));
-        Stack.stack.top().active = true;
+        stack.push(__createWrapper(page, properties));
+        stack.top().active = true;
 
         __stackUpdated();
     }
@@ -130,16 +133,16 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (Stack.stack.size() < 1) {
+        if (stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
 
-        Stack.stack.top().pageStack = null;
-        Stack.stack.top().active = false;
-        if (Stack.stack.top().canDestroy) Stack.stack.top().destroyObject();
-        Stack.stack.pop();
-        if (Stack.stack.size() > 0) Stack.stack.top().active = true;
+        stack.top().pageStack = null;
+        stack.top().active = false;
+        if (stack.top().canDestroy) stack.top().destroyObject();
+        stack.pop();
+        if (stack.size() > 0) stack.top().active = true;
 
         __stackUpdated();
     }
@@ -149,8 +152,8 @@ Item {
       Deactivate the active page and clear the stack.
      */
     function clear() {
-        if (Stack.stack.size() > 0) Stack.stack.top().active = false;
-        Stack.stack.clear();
+        if (stack.size() > 0) stack.top().active = false;
+        stack.clear();
         __stackUpdated();
     }
 
@@ -158,8 +161,8 @@ Item {
       \internal
      */
     function __stackUpdated() {
-        pageStack.depth = Stack.stack.size();
-        if (pageStack.depth > 0) currentPage = Stack.stack.top().object;
+        pageStack.depth = stack.size();
+        if (pageStack.depth > 0) currentPage = stack.top().object;
         else currentPage = null;
         contents.updateHeader();
     }
@@ -190,14 +193,14 @@ Item {
         }
 
         function updateHeader() {
-            var stackSize = Stack.stack.size();
+            var stackSize = stack.size();
             if (stackSize > 1) {
                 header.showBackButton = true
             } else {
                 header.showBackButton = false
             }
             if (stackSize > 0) {
-                var item = Stack.stack.top().object;
+                var item = stack.top().object;
                 if (item.__isPage === true) header.title = item.title;
                 else header.title = "";
             } else {

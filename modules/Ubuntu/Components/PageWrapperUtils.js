@@ -60,6 +60,7 @@ function __initPage(pageWrapper) {
         }
     }
 
+    pageWrapper.object = pageObject;
     updatePageStack(pageWrapper)
 
     return pageObject;
@@ -71,7 +72,7 @@ function __initPage(pageWrapper) {
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        pageWrapper.object = __initPage(pageWrapper);
+        __initPage(pageWrapper);
     }
     pageWrapper.object.visible = true;
 }
