@@ -17,8 +17,13 @@
 /*!
      \page overview-ubuntu-sdk.html overview
      \title Ubuntu User Interface Toolkit
+     \contentspage {Ubuntu User Interface Toolkit} {Contents}
 
-     \section1 Base Items
+     \part General Topics
+     \list
+     \endlist
+
+     \part Base Items
      Available through:
      \code
          import Ubuntu.Components 0.1
@@ -26,7 +31,7 @@
 
      \annotatedlist ubuntu
 
-     \section1 List Items
+     \part List Items
      Available through:
      \code
          import Ubuntu.Components.ListItems 0.1
