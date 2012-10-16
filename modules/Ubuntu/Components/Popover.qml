@@ -21,108 +21,111 @@ import QtQuick 2.0
 //import ".."
 
 Rectangle {
-  id: popupBox
 
-  signal popupInteractionCompleted();
 
-  property int contentLeft: 1
-  property int contentTop: 1
-  property alias contentWidth: contentArea.width
-  property alias contentHeight: contentArea.height
 
-  property int originCueX
-  property alias originCueHeight: originCueImage.height
-  property alias originCueWidth: originCueImage.width
+    id: popupBox
 
-  property int popupOriginX: 0
-  property int popupOriginY: 0
-  property int fadeDuration: 300
+    signal popupInteractionCompleted();
 
-  // readonly
-  property int cueArrowOffset: Math.floor(originCueWidth / 2)
-  property int boundingOffset: gu(0.5)
+    property int contentLeft: 1
+    property int contentTop: 1
+    property alias contentWidth: contentArea.width
+    property alias contentHeight: contentArea.height
 
-  function flipVisibility() {
-      state = (state == "shown" ? "hidden" : "shown");
-  }
+    property int originCueX
+    property alias originCueHeight: originCueImage.height
+    property alias originCueWidth: originCueImage.width
 
-  color: "transparent"
+    property int popupOriginX: 0
+    property int popupOriginY: 0
+    property int fadeDuration: 300
 
-  x: {
-    var result = (popupOriginX >= 0) ? popupOriginX - cueArrowOffset : (parent.width + popupOriginX) - width - cueArrowOffset;
-    if (result < boundingOffset)
-      result = boundingOffset;
-    else if (result + width > parent.width - boundingOffset)
-      result = parent.width - width - boundingOffset;
+    // readonly
+    property int cueArrowOffset: Math.floor(originCueWidth / 2)
+    property int boundingOffset: gu(0.5)
 
-    return result;
-  }
-  y: {
-    var result = (popupOriginY >= 0) ? popupOriginY : (parent.height + popupOriginY) - height;
-    if (result < 0)
-      result = boundingOffset;
-    else if (result + height > parent.height)
-      result = parent.height - height - originCueHeight;
+    function flipVisibility() {
+        state = (state == "shown" ? "hidden" : "shown");
+    }
 
-    return result;
-  }
+    color: "transparent"
 
-  z: 32
+    x: {
+        var result = (popupOriginX >= 0) ? popupOriginX - cueArrowOffset : (parent.width + popupOriginX) - width - cueArrowOffset;
+        if (result < boundingOffset)
+            result = boundingOffset;
+        else if (result + width > parent.width - boundingOffset)
+            result = parent.width - width - boundingOffset;
 
-  originCueX: {
-    var result = (popupOriginX >= 0) ? x : width - originCueWidth;
-    if (result < 0)
-      result = 0;
-    else if (result > width - originCueWidth)
-      result = width - cueArrowOffset;
+        return result;
+    }
+    y: {
+        var result = (popupOriginY >= 0) ? popupOriginY : (parent.height + popupOriginY) - height;
+        if (result < 0)
+            result = boundingOffset;
+        else if (result + height > parent.height)
+            result = parent.height - height - originCueHeight;
 
-    return result;
-  }
+        return result;
+    }
 
-  state: "hidden"
+    z: 32
 
-  states: [
-    State { name: "shown"; },
-    State { name: "hidden"; }
-  ]
+    originCueX: {
+        var result = (popupOriginX >= 0) ? x : width - originCueWidth;
+        if (result < 0)
+            result = 0;
+        else if (result > width - originCueWidth)
+            result = width - cueArrowOffset;
 
-  visible: state === "shown"
+        return result;
+    }
 
-//  transitions: [
-//    Transition { from: "shown"; to: "hidden";
-//      FadeOutAnimation { target: popupBox; duration: fadeDuration;
-//          easingType: Easing.InQuint; }
-//    },
-//    Transition { from: "hidden"; to: "shown";
-//      FadeInAnimation { target: popupBox; duration: fadeDuration;
-//          easingType: Easing.InQuint; }
-//    }
-//  ]
+    state: "hidden"
 
-  Rectangle {
-    id: contentArea
+    states: [
+        State { name: "shown"; },
+        State { name: "hidden"; }
+    ]
 
-    anchors.top: parent.top
-    anchors.left: parent.left
-    width: parent.width
-    height: parent.height - originCueHeight;
+    visible: state === "shown"
 
-    color: "#bcbdc0"
-    border.color: "#a7a9ac"
-    border.width: 1
-  }
+    //  transitions: [
+    //    Transition { from: "shown"; to: "hidden";
+    //      FadeOutAnimation { target: popupBox; duration: fadeDuration;
+    //          easingType: Easing.InQuint; }
+    //    },
+    //    Transition { from: "hidden"; to: "shown";
+    //      FadeInAnimation { target: popupBox; duration: fadeDuration;
+    //          easingType: Easing.InQuint; }
+    //    }
+    //  ]
 
-//  Image {
-  Rectangle {
-      color: "red"
-    id: originCueImage
+    Rectangle {
+        id: contentArea
 
-    x: originCueX
-    anchors.top: contentArea.bottom
-    width: 39
-    height: 25
+        anchors.top: parent.top
+        anchors.left: parent.left
+        width: parent.width
+        height: parent.height - originCueHeight;
 
-//    source: "img/popup-arrow.png"
-//    cache: true
-  }
+        color: "#bcbdc0"
+        border.color: "#a7a9ac"
+        border.width: 1
+    }
+
+    //  Image {
+    Rectangle {
+        color: "red"
+        id: originCueImage
+
+        x: originCueX
+        anchors.top: contentArea.bottom
+        width: 39
+        height: 25
+
+        //    source: "img/popup-arrow.png"
+        //    cache: true
+    }
 }
