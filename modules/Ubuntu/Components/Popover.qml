@@ -21,8 +21,49 @@ import QtQuick 2.0
 //import ".."
 
 Rectangle {
+    //======================================
+    // Default popover (p80)
+    // H:   Min - 32 BGU
+    //      Max - 3/4 Device Height
+    // W:   40 BGU
 
+    // height: contentHeight (restricted by H)
+    // width: W
 
+    // location (priority): Above, Beside, Below
+    // hor/vert center as close as possible to the clicked position.
+    // 2 BGU margins from edge of screen or System Bar
+
+    //======================================
+    // Menu popover - Option style (p81)
+    // H:   Min - 6 BGU (1 item)
+    //      Max - 48 BGU (8 items)
+    //      Item H - 6 BGU
+    // V:   40 BGU
+
+    // 1 to 8 menu options (ListItems?)
+
+    // =====================================
+    // Menu popover - Selector style (p82)
+    // H:   Min - 6 BGU (1 item)
+    //      Max - 48 BGU (8 items)
+    //      Item H - 6 BGU
+    // V:   40 BGU
+
+    // Like Option style, but one or more values can be selected.
+    // Implement with selectable ListItems?
+    // Or even MultiValueSelector (implement that first)
+
+    // =====================================
+    // Bar popover (p83)
+    // H:   6 BGU
+    // W:   Min - 8 BGU (1 item)
+    //      Max - 40 BGU (5 items)
+    //
+    // Close on choosing an action
+    // Can be 2 pages with 3 options each
+    // Appears above or below (not next to) clicked point
+    // Margins: at least 1 BGU from edges of the screen
 
     id: popupBox
 
