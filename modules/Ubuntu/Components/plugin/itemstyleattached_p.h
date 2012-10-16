@@ -23,6 +23,7 @@
 
 class QQmlComponent;
 class QQmlContext;
+class StyleRule;
 
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
@@ -38,8 +39,7 @@ public:
 
     // internal members
     QQmlContext *componentContext;
-    QQmlComponent *styleComponent;
-    QQmlComponent *delegateComponent;
+    StyleRule *themeRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;

@@ -241,6 +241,12 @@ void StyleRulePrivate::_q_componentCompleted(QQmlComponent::Status)
 =============================================================================*/
 
 /*!
+  \preliminary
+  \qmlsignal Rule::ruleChanged()
+  Emitted when the rule creation gets completed.
+*/
+
+/*!
   Creates the rule element. This is used when QML theme file format is loaded.
   */
 StyleRule::StyleRule(QObject *parent) :

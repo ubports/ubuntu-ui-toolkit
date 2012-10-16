@@ -34,9 +34,7 @@ const bool traceThemeSettings = false;
         qDebug() << QString("ThemeSettings::%1").arg(__FUNCTION__, -15)
 
 
-/*!
-  \page QtQuick_Theming_Enginre
-  \internal
+/*
   ThemeSettings class handles the selection of the application style based on
   global and application settings.
 
@@ -44,7 +42,7 @@ const bool traceThemeSettings = false;
   the current global theme name and the QML import paths. These settings are
   stored in "theme" and "imports" keywords.
 
-  System themes are stored under /usr/share/themes/<theme-name>/qthm folder,
+  System themes are stored under /usr/share/themes/<theme-name>/qmltheme folder,
   where the common theme is named "default.qmltheme" and each application has its
   own theme, which can be either in the qthm folder or under a subfolder.
 
@@ -81,9 +79,8 @@ const char *appUseGlobalThemeKey = "UseSystemTheme";
 const char *appThemeFileKey = "ThemeFile";
 
 
-/*!
-  \internal
-  Instanciates the settins and connects the file system watcher
+/*
+ Instanciates the settins and connects the file system watcher
   */
 ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
     configWatcher(globalThemeObserver),
@@ -113,8 +110,7 @@ ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
                      globalThemeObserver, SLOT(_q_updateTheme()));
 }
 
-/*!
-  \internal
+/*
   Returns the application's theme file as defined either in application or global
   theme settings file.
   An application can decide whether to use the global's default theme, the application
@@ -159,8 +155,7 @@ QUrl ThemeSettings::themeFile() const
 
     return result;
 }
-/*!
-  \internal
+/*
   This method sets the theme file for an application. It does not alter the global theme
   defined for the user. In case the application doesn't have theme settings set yet, it
   will try to create those aswell. Returns the URL (full path) to the theme file. The
@@ -211,8 +206,7 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
     return QUrl();
 }
 
-/*!
-  \internal
+/*
   Returns the QML import paths supporting the defined theme file.
   */
 QStringList ThemeSettings::imports() const
@@ -222,12 +216,12 @@ QStringList ThemeSettings::imports() const
 
     imports = globalSettings.value(importPathsKey).toString();
     if (!imports.isEmpty())
-        result += imports.split(',');
+        result += imports.split(':');
 
     if (hasAppSettings) {
         imports = appSettings.value(importPathsKey).toString();
         if (!imports.isEmpty())
-            result += imports.split(',');
+            result += imports.split(':');
     }
 
     return result;

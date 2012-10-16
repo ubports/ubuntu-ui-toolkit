@@ -36,7 +36,7 @@
   \qmltype Theme
   \inqmlmodule Ubuntu.Components 0.1
   \ingroup theming
-  The Theme element provides functionality to change the current theme.
+  \brief The Theme element provides functionality to change the current theme.
 
   Informs the application about errors during theme load through \a error property,
   the current theme file through \a currentTheme property and notifies the widgets
@@ -325,6 +325,12 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
   THEMING ENGINE PUBLIC API
 =============================================================================*/
 
+/*!
+  \preliminary
+  \qmlsignal Theme::themeChanged()
+  Emitted when the theme file gets loaded with success.
+*/
+
 ThemeEngine::ThemeEngine(QObject *parent) :
     QObject(parent),
     d_ptr(new ThemeEnginePrivate(this))
@@ -423,6 +429,8 @@ StyleRule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
 }
 
 /*!
+  \preliminary
+  \qmlmethod bool Theme::loadTheme(const QUrl &themeFile)
   Loads a theme file from any location, and updates the \a currentTheme property
   on success. The ocurred errors are reported in \a error property.
   */
@@ -435,6 +443,8 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 }
 
 /*!
+  \preliminary
+  \qmlmethod void Theme::setTheme(const QString &theme, bool global)
   The function sets the theme file in the application's settings and loads the
   theme.
 true
@@ -442,7 +452,7 @@ true
   - if the theme is global, then the \a theme specifies the theme folder as specified
     in the global theme; if the \a theme is empty, the global theme's default will
     be set and loaded (e.g. TestApp from Ambiance theme will lead to
-    /usr/shared/theme/Ambiance/qthm/TestApp/theme.qthm URL returned)
+    /usr/shared/theme/Ambiance/qthm/theme.qthm URL returned)
   - if the theme is local (\a global set to false), the \a theme contains the full
     path to the theme file to be used.
 

@@ -28,7 +28,6 @@
 #include <QtCore/QDebug>
 
 /*!
-  \page QML theme loader
   \internal
   The QmlTheme class loads a QML theme and builds up the ThemeEngine's Rule-element
   suffix-tree.

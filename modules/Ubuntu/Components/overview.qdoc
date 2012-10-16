@@ -19,12 +19,7 @@
      \title Ubuntu User Interface Toolkit
 
      \section1 Theming
-     Available through:
-     \code
-         import Ubuntu.Components 0.1
-     \endcode
-
-     \annotatedlist theming
+     \annotatedlist theming-description
 
      \section1 Base Items
      Available through:
@@ -41,4 +36,11 @@
      \endcode
 
      \annotatedlist ubuntu-listitems
+
+     \section2 Theming elements
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+     \annotatedlist theming
  */

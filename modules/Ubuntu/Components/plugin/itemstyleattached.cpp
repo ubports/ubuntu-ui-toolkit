@@ -157,8 +157,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     style(0),
     delegate(0),
     componentContext(0),
-    styleComponent(0),
-    delegateComponent(0),
+    themeRule(0),
     delayApplyingStyle(false),
     customStyle(false),
     customDelegate(false),
@@ -198,13 +197,11 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
                 style->deleteLater();
             }
             style = 0;
-            styleComponent = 0;
         }
         if (!customDelegate) {
             if (delegate)
                 delegate->deleteLater();
             delegate = 0;
-            delegateComponent = 0;
         }
     }
 
@@ -224,34 +221,34 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
             TRACEP << "retrieving style for default";
             rule = ThemeEngine::instance()->lookupStyleRule(attachee, true);
             defaultChecked = true;
-        } else
-            TRACEP << rule->selector();
+        }
         if (rule) {
             // apply rule
             // check style
-            if (!customStyle && (!style || (styleComponent != rule->style()))) {
+            if (!customStyle && (!style || (rule != themeRule))) {
                 //delete previous object so it doesn't eat memory
                 if (style)
                     style->deleteLater();
-                styleComponent = rule->style();
                 style = rule->createStyle(componentContext);
                 styleChanged = true;
             }
 
             // create delegate
-            if (!customDelegate && (!delegate || (delegateComponent != rule->delegate()))) {
+            if (!customDelegate && (!delegate || (rule != themeRule))) {
                 // clear previous delegate so we free some memory
                 if (delegate)
                     delegate->deleteLater();
-                if (!rule->delegate() && !defaultChecked) {
-                    StyleRule * delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true);
-                    if (delegateRule)
-                        rule = delegateRule;
-                }
-                delegateComponent = rule->delegate();
                 delegate = rule->createDelegate(componentContext);
+                if (!delegate && !defaultChecked) {
+                    StyleRule * delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true);
+                    if (delegateRule) {
+                        delegate = delegateRule->createDelegate(componentContext);
+                    }
+                }
                 styleChanged = styleChanged || (delegate != 0);
             }
+
+            themeRule = rule;
         }
     }
 
@@ -259,7 +256,7 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
     if (componentContext) {
         componentContext->setContextProperty(styleProperty, style);
     }
-    // do the re-parenting fo rstyle and delegate
+    // do the re-parenting for style and delegate
     if (style && (style->parent() != attachee)) {
         style->setParent(attachee);
     }

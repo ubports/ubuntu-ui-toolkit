@@ -30,6 +30,8 @@
 #include <QtCore/QDebug>
 const bool traceQthmLoader = false;
 
+#define SEPARATE_COMPONENTS
+
 #ifdef TRACE
 #undef TRACE
 #endif
@@ -37,9 +39,7 @@ const bool traceQthmLoader = false;
     if (traceQthmLoader) \
         qDebug() << QString("QthmThemeLoader::%1").arg(__FUNCTION__, -15)
 
-/*!
-  \page QTHM file parser
-  \internal
+/*
   CSS-like theme file parser (QTHM parser)
 
   The parsing steps are:
@@ -390,9 +390,21 @@ bool QthmThemeLoader::generateStyleQml()
             delegateString = "delegate : Component {" + delegate + "}\n";
             delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
         }
+#ifdef SEPARATE_COMPONENTS
+        StyleRule *rule = new StyleRule(m_engine,
+                                        ThemeEnginePrivate::selectorToString(selector),
+                                        style,
+                                        delegate);
+        if (!ThemeEngine::instance()->error().isEmpty()) {
+            delete rule;
+            return false;
+        } else
+            styleTree->addStyleRule(selector, rule);
+#else
         ruleString += QString(styleRule).arg(ThemeEnginePrivate::selectorToString(selector)).arg(styleString).arg(delegateString);
-        styleString = "";
-        delegateString = "";
+#endif
+        styleString.clear();
+        delegateString.clear();
         style.clear();
         delegate.clear();
     }
@@ -403,6 +415,10 @@ bool QthmThemeLoader::generateStyleQml()
 
 bool QthmThemeLoader::buildStyleTree(const QUrl &url)
 {
+#ifdef SEPARATE_COMPONENTS
+    Q_UNUSED(url);
+    return true;
+#else
     bool result = false;
     QString data = QString(qmlThemeData).arg(imports).arg(ruleString);
 #if 0
@@ -451,6 +467,7 @@ bool QthmThemeLoader::buildStyleTree(const QUrl &url)
     }
 #endif
     return result;
+#endif
 }
 
 
@@ -547,22 +564,33 @@ bool QthmThemeLoader::handleQmlImport(QthmThemeLoader *loader, QTextStream &stre
 {
     QString param = QthmThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n]")).simplified();
 
+    if (param.isEmpty()) {
+        ThemeEnginePrivate::setError("Empty QML import statement!");
+        return false;
+    }
+
     QStringList import = param.split(',');
-    QString importPath = (import.count() <= 1) ? QString() : import[0];
-    QString importUrl = (import.count() < 2) ? import[0] : import[1];
+    QString importUrl = (import.count() >= 1) ? import[0].simplified() : QString();
+    QString importPath = (import.count() < 2) ? QString() : import[1].simplified();
 
     // check whether we have the import set
+    TRACE << importUrl << importPath;
     if (!loader->imports.contains(importUrl)) {
-        loader->imports += QString("import %1\n").arg(importUrl.simplified());
+        loader->imports += QString("import %1\n").arg(importUrl);
 
         if (!importPath.isEmpty()) {
-            if (importPath.startsWith("app:")) {
-                importPath.remove("app:");
+            if (importPath.startsWith("current:")) {
+                importPath.remove("current:");
                 if (!importPath.startsWith('/'))
                     importPath.prepend('/');
                 importPath.prepend(QDir::currentPath());
-            } else if (importPath.startsWith("sys:")) {
-                importPath.remove("sys:");
+            } else if (importPath.startsWith("application:")) {
+                importPath.remove("application:");
+                if (!importPath.startsWith('/'))
+                    importPath.prepend('/');
+                importPath.prepend(QCoreApplication::applicationDirPath());
+            } else if (importPath.startsWith("system:")) {
+                importPath.remove("system:");
                 if (!importPath.startsWith('/'))
                     importPath.prepend('/');
                 importPath.prepend(systemThemePath);

@@ -5,7 +5,7 @@
 */
 
 @import url("../default.qmltheme");
-@qml-import(app:/demos, themes 1.0);
+@qml-import(themes 1.0, current:/demos);
 @qml-mapping(.frame, , TestFrameDelegate);
 
 .Button {
