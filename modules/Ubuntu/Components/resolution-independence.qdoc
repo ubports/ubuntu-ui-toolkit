@@ -1,0 +1,158 @@
+/*
+ * Copyright 2012 Canonical Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*!
+    \page resolution-independence.html resolution-independence
+    \title Resolution Independence
+    \contentspage {Ubuntu User Interface Toolkit}
+
+    The objective of resolution independence is to make it easy for graphical
+    user interfaces in Ubuntu to scale to all the form factors that Ubuntu
+    targets: phones, tablets, laptops and desktops.
+    The approach taken combines simplicity for the designers and developers
+    with visual fidelity, quality and usability.
+
+
+    \part Measurement Unit
+
+    We define a measurement unit called the device independent pixel,
+    abbreviated \b{\e dp}, that should be used instead of pixels. 1 device
+    independent pixel typically translates to 1 pixel on current laptops and on
+    phones and tablets with medium density screens.
+
+    Screens are divided into 3 categories depending on the type of device and
+    their pixel density:
+
+    \table
+    \header
+      \li Medium Density Screens
+      \li High Density Screens
+      \li Extra High Density Screens
+    \row
+      \li Laptops and Desktops
+      \li Nokia N9 Phone
+      \li Samsung Galaxy Nexus Phone
+    \row
+      \li Asus Transformer Tablet
+      \li Asus Transformer Infinity Tablet
+      \li Macbook Retina
+    \endtable
+
+    Depending on the category a device belongs to 1 dp will translate to a
+    different number of pixels.
+
+
+    \part Rhythm
+
+    In order to define a visual rhythm in Ubuntu, an increment of 8 dp needs to    be used for all measurements. Sizes of elements, spacing, margins, etc.
+    should all use multiples of 8 dp.
+    An additional benefit of layouting all UI elements with multiples of 8 dp
+    is that 8 dp always translates to an integer number of pixels in all the
+    categories thus aligning on the pixel grid of the screen:
+
+    \table
+    \header
+      \li Medium Density
+      \li High Density
+      \li Extra High Density
+    \row
+      \li 8 dp = 8 px
+      \li 8 dp = 12 px
+      \li 8 dp = 16 px
+    \endtable
+
+
+    \part Bitmaps
+
+    Vector graphics, fonts and programmatically drawn elements will usually
+    scale well to the different category scale factors. On the other hand,
+    bitmaps will typically require that multiple versions at different
+    resolutions be provided.
+    In an ideal scenario, a version of each bitmap should be provided for each
+    category. In practice, supplying versions for the medium and extra high
+    density categories will cover a vast amount of devices.
+
+    A naming convention is defined to ease the work of designers and
+    developers. If a bitmap file was previously called ‘my_bitmap.png’, adding
+    the following files is enough for the system to pick them up and load the
+    right version depending on the situation:
+
+    \table
+    \header
+      \li Medium Density
+      \li High Density
+      \li Extra High Density
+    \row
+      \li my_bitmap.png
+      \li my_bitmap@1.5x.png
+      \li my_bitmap@2x.png
+    \endtable
+
+    If the version corresponding to the category of the screen it’s displayed
+    on is available, then it is used. If not, a higher resolution version is
+    used and downscaled appropriately.
+
+
+    \part Fonts
+
+    It is critical for the font sizes to be consistent across Ubuntu and to
+    have a rhythm defining them.
+    Instead of setting the font size in pixels or points, it is imperative to
+    define the font size in terms of literals:
+
+    \table
+    \row
+      \li \b large
+    \row
+      \li \b medium
+    \row
+      \li \b small
+    \row
+      \li \b x-small
+    \endtable
+
+    For reference when designing, these sizes correspond to the following
+    pixel measurements:
+
+    \table
+    \header
+      \li Font Size
+      \li Medium Density
+      \li High Density
+      \li Extra High Density
+    \row
+      \li \b{\e large}
+      \li 17 px
+      \li 25 px
+      \li 34 px
+    \row
+      \li \b{\e medium}
+      \li 14 px
+      \li 21 px
+      \li 28 px
+    \row
+      \li \b{\e small}
+      \li 12 px
+      \li 18 px
+      \li 24 px
+    \row
+      \li \b{\e x-small}
+      \li 10 px
+      \li 15 px
+      \li 20 px
+    \endtable
+
+ */
