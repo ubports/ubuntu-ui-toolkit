@@ -109,15 +109,13 @@ QtObject {
       \internal
      */
     Component.onDestruction: {
-        print("DESTROY DESTROY");
         Utils.deactivate(pageWrapper);
-        if (canDestroy) Utils.destroyObject(pageWrapper);
+        if (pageWrapper.canDestroy) Utils.destroyObject(pageWrapper);
     }
 
     /*!
       \internal
-      Destroy \l object. Only call this function if
-      \l canDestroy
+      Destroy \l object. Only call this function if \l canDestroy
      */
     function destroyObject() {
         Utils.destroyObject(pageWrapper);

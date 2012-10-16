@@ -79,22 +79,11 @@ function activate(pageWrapper) {
 
 /*!
   \internal
-  Hide the page object, and destroy it if needed.
- */
-//function deactivate(pageWrapper) {
-//    deactivate(pageWrapper, pageWrapper.canDestroy);
-//}
-
-/*!
-  \internal
-  Hide page object, and destroy it.
+  Hide page object.
  */
 function deactivate(pageWrapper) {
-//function deactivate(pageWrapper, destroy) {
     if (pageWrapper.object) {
         pageWrapper.object.visible = false;
-
-//        if (destroy === true) __destroyPage(pageWrapper);
     }
 }
 
@@ -104,8 +93,6 @@ function deactivate(pageWrapper) {
   Do nothing if pageWrapper.canDestroy is false.
  */
 function destroyObject(pageWrapper) {
-    if (pageWrapper.active === true) pageWrapper.active = false;
-
     if (pageWrapper.canDestroy) {
         pageWrapper.object.destroy();
         pageWrapper.object = null;
