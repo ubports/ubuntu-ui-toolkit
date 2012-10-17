@@ -18,38 +18,38 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Buttons")
+    title: _("Buttons")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Standard")
+            title: _("Standard")
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Disabled")
+            title: _("Disabled")
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 enabled: false
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Colors")
+            title: _("Colors")
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 color: "#37b301"
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 pressedColor: "#dd4f22"
             }
 
@@ -61,7 +61,7 @@ Template {
 
                 Button {
                     id: darkButton
-                    text: i18n.tr("Call")
+                    text: _("Call")
                     color: "#dd4f22"
                     darkBorder: true
                     anchors.centerIn: parent
@@ -70,10 +70,10 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Content")
+            title: _("Content")
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
             }
 
             Button {
@@ -81,26 +81,26 @@ Template {
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 iconSource: "call_icon.png"
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 iconSource: "call_icon.png"
                 iconPosition: "right"
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Scalability")
+            title: _("Scalability")
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
             }
 
             Button {
-                text: i18n.tr("Call")
+                text: _("Call")
                 width: 140
                 height: 90
             }

@@ -86,3 +86,7 @@ void ContextPropertyChangeListener::updateContextProperty()
     QVariant value = m_context->contextProperty(m_contextProperty);
     m_context->setContextProperty(m_contextProperty, value);
 }
+
+QString lala(const QString& text) {
+    return UbuntuI18n::instance().tr(text);
+}

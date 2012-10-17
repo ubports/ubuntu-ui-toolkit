@@ -23,6 +23,8 @@ Rectangle {
 
     color: "#e6e6e6"
 
+    function _(text) { return i18n.tr(text); }
+
     Rectangle {
         anchors.fill: widgetList
         color: "#cccccc"
@@ -48,25 +50,25 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-                {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
-                {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-                {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
-                {"label": i18n.tr("Switch"), "source": "Switches.qml"},
-                {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
-                {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
-                {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
-                {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
-                {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": ""},
-                {"label": i18n.tr("Popovers"), "source": ""},
-                {"label": i18n.tr("Toolbars"), "source": ""},
-                {"label": i18n.tr("Sheets & Dialogues"), "source": ""},
-                {"label": i18n.tr("Grid View"), "source": ""},
-                {"label": i18n.tr("On Screen Keyboard"), "source": ""},
-                {"label": i18n.tr("Date Picker"), "source": ""},
-                {"label": i18n.tr("Time Picker"), "source": ""},
-                {"label": i18n.tr("Tabs (Non Segmented)"), "source": ""},
+        model: [{"label": _("Buttons"), "source": "Buttons.qml"},
+                {"label": _("Tabs (Segmented)"), "source": "Tabs.qml"},
+                {"label": _("List Items"), "source": "ListItems.qml"},
+                {"label": _("Page Stack"), "source": "PageStack.qml"},
+                {"label": _("Switch"), "source": "Switches.qml"},
+                {"label": _("Check Box"), "source": "CheckBoxes.qml"},
+                {"label": _("Activity Indicator"), "source": "ActivityIndicators.qml"},
+                {"label": _("Progress Bar"), "source": "ProgressBars.qml"},
+                {"label": _("Slider"), "source": "Sliders.qml"},
+                {"label": _("Text Input"), "source": "TextInputs.qml"},
+                {"label": _("Scrollbar"), "source": ""},
+                {"label": _("Popovers"), "source": ""},
+                {"label": _("Toolbars"), "source": ""},
+                {"label": _("Sheets & Dialogues"), "source": ""},
+                {"label": _("Grid View"), "source": ""},
+                {"label": _("On Screen Keyboard"), "source": ""},
+                {"label": _("Date Picker"), "source": ""},
+                {"label": _("Time Picker"), "source": ""},
+                {"label": _("Tabs (Non Segmented)"), "source": ""},
                ]
 
         delegate: ButtonWithForeground {

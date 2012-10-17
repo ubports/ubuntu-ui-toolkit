@@ -18,13 +18,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Slider")
+    title: _("Slider")
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: i18n.tr("Default")
+            title: _("Default")
             Slider {
                 id: defaultSlider
             }
@@ -32,12 +32,12 @@ Template {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"
-                text: i18n.tr("value is %1").arg(defaultSlider.formatValue(defaultSlider.value))
+                text: _("value is %1").arg(defaultSlider.formatValue(defaultSlider.value))
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Live")
+            title: _("Live")
             Slider {
                 id: liveSlider
                 live: true
@@ -50,7 +50,7 @@ Template {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"
-                text: i18n.tr("value is %1").arg(liveSlider.formatValue(liveSlider.value))
+                text: _("value is %1").arg(liveSlider.formatValue(liveSlider.value))
             }
         }
     }

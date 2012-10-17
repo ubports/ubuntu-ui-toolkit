@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Text Input")
+    title: _("Text Input")
     id: page
 
     Item {
@@ -30,14 +30,14 @@ Template {
             spacing: 30
 
             TemplateRow {
-                title: i18n.tr("Basic")
+                title: _("Basic")
 
                 TextField {
                     id: textField1
                     KeyNavigation.tab: textField2
                     KeyNavigation.backtab: textField5
 
-                    placeholderText: i18n.tr("simple text field")
+                    placeholderText: _("simple text field")
                     hasClearButton: false
                 }
             }
@@ -50,41 +50,41 @@ Template {
                     KeyNavigation.tab: textField3
                     KeyNavigation.backtab: textField1
 
-                    placeholderText: i18n.tr("type to show clear button")
-                    text: i18n.tr("sample text")
+                    placeholderText: _("type to show clear button")
+                    text: _("sample text")
                 }
             }
 
             TemplateRow {
-                title: i18n.tr("Password")
+                title: _("Password")
 
                 TextField {
                     id: textField3
                     KeyNavigation.tab: textField4
                     KeyNavigation.backtab: textField2
 
-                    placeholderText: i18n.tr("password with echo")
+                    placeholderText: _("password with echo")
                     echoMode: TextInput.Password
 
                 }
             }
 
             TemplateRow {
-                title: i18n.tr("Password")
+                title: _("Password")
 
                 TextField {
                     id: textField4
                     KeyNavigation.tab: textField5
                     KeyNavigation.backtab: textField3
 
-                    placeholderText: i18n.tr("password echo on editing")
+                    placeholderText: _("password echo on editing")
                     echoMode: TextInput.PasswordEchoOnEdit
 
                 }
             }
 
             TemplateRow {
-                title: i18n.tr("Overlaid")
+                title: _("Overlaid")
 
                 TextField {
                     id: textField5
