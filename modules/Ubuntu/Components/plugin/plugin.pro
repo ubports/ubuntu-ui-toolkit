@@ -9,10 +9,10 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-        i18n.h
+        GettextBinding.h
 
 SOURCES += plugin.cpp \
-        i18n.cpp
+        GettextBinding.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
