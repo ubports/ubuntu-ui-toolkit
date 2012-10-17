@@ -21,7 +21,6 @@ namespace C {
 
 #include <QtQml>
 
-
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
 }
