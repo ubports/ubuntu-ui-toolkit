@@ -24,13 +24,13 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 
 void UbuntuI18n::qmlRegisterTypes(const char* uri)
 {
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "gettext", "Singleton object");
 }
 
 void UbuntuI18n::qmlInit(QQmlContext *context)
 {
-    context->setContextProperty("i18n", &UbuntuI18n::instance());
-    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    context->setContextProperty("gettext", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "gettext");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
                  &i18nChangeListener, SLOT(updateContextProperty()));
 }

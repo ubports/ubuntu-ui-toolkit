@@ -23,7 +23,7 @@ Rectangle {
 
     color: "#e6e6e6"
 
-    function _(text) { return i18n.tr(text); }
+    function _(text) { return gettext.tr(text); }
 
     Rectangle {
         anchors.fill: widgetList
@@ -102,6 +102,6 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        i18n.domain = "gallery"
+        gettext.domain = "gallery"
     }
 }
