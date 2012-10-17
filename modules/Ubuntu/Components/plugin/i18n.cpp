@@ -43,6 +43,10 @@ QString UbuntuI18n::domain() {
     return _domain;
 }
 
+void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_name) {
+    C::bindtextdomain(domain_name.toUtf8(), dir_name.toUtf8());
+}
+
 void UbuntuI18n::setDomain(QString domain) {
     _domain = domain;
     C::textdomain(domain.toUtf8().constData());

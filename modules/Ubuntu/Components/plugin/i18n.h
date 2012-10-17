@@ -44,6 +44,12 @@ public:
     void qmlInit(QQmlContext* context);
 
     /**
+     * Specify that the domain_name message catalog can be found
+     * in dir_name rather than in the system locale data base.
+     */
+    Q_INVOKABLE void bindtextdomain(const QString& domain_name, const QString& dir_name);
+
+    /**
      * @brief Translate the given string using gettext.
      * @param text The text to translate.
      */
