@@ -1,270 +1,363 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Canonical Ltd
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gallery\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-17 17:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: demos/ActivityIndicators.qml:21 demos/Gallery.qml:59
 msgid "Activity Indicator"
 msgstr ""
 
-msgid "Basic"
-msgstr ""
-
-msgid "Button"
-msgstr ""
-
-msgid "Buttons"
-msgstr ""
-
-msgid "Call"
-msgstr ""
-
-msgid "Captions and Dividers"
-msgstr ""
-
-msgid "Check Box"
-msgstr ""
-
-msgid "Checked"
-msgstr ""
-
-msgid "Colors"
-msgstr ""
-
-msgid "Content"
-msgstr ""
-
-msgid "Controls"
-msgstr ""
-
-msgid "Custom icon"
-msgstr ""
-
-msgid "Date Picker"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Disabled"
-msgstr ""
-
-msgid "Expanded"
-msgstr ""
-
-msgid "External page"
-msgstr ""
-
-msgid "First page"
-msgstr ""
-
-msgid "Grid View"
-msgstr ""
-
-msgid "Grouped List"
-msgstr ""
-
-msgid "Icon"
-msgstr ""
-
-msgid "Idle"
-msgstr ""
-
-msgid "It also works well with icons and progression."
-msgstr ""
-
-msgid "Item"
-msgstr ""
-
-msgid "Known"
-msgstr ""
-
-msgid "Label"
-msgstr ""
-
-msgid "Large button clicked"
-msgstr ""
-
-msgid "List Items"
-msgstr ""
-
-msgid "Live"
-msgstr ""
-
-msgid "Mixed"
-msgstr ""
-
-msgid "Multiple lines"
-msgstr ""
-
-msgid "Multiple values"
-msgstr ""
-
-msgid "My custom page"
-msgstr ""
-
-msgid "On Screen Keyboard"
-msgstr ""
-
-msgid "Overlaid"
-msgstr ""
-
-msgid "Page one"
-msgstr ""
-
-msgid "Page Stack"
-msgstr ""
-
-msgid "Page two (external)"
-msgstr ""
-
-msgid "Password"
-msgstr ""
-
-msgid "password echo on editing"
-msgstr ""
-
-msgid "password with echo"
-msgstr ""
-
-msgid "Popovers"
-msgstr ""
-
-msgid "Progress Bar"
-msgstr ""
-
-msgid "Progression"
-msgstr ""
-
-msgid "Red rectangle"
-msgstr ""
-
-msgid "Root page"
-msgstr ""
-
-msgid "Root page (again)"
-msgstr ""
-
-msgid "sample text"
-msgstr ""
-
-msgid "Scalability"
-msgstr ""
-
-msgid "Scrollbar"
-msgstr ""
-
-msgid "Secondary label"
-msgstr ""
-
-msgid "Selected"
-msgstr ""
-
-msgid "Sheets & Dialogues"
-msgstr ""
-
-msgid "Show"
-msgstr ""
-
-msgid "simple text field"
-msgstr ""
-
-msgid "Single control"
-msgstr ""
-
-msgid "Single value"
-msgstr ""
-
-msgid "Slider"
-msgstr ""
-
-msgid "Split"
-msgstr ""
-
-msgid "Standard"
-msgstr ""
-
-msgid "Subtitled"
-msgstr ""
-
-msgid "Switch"
-msgstr ""
-
-msgid "Tab"
-msgstr ""
-
-msgid "Tabs"
-msgstr ""
-
-msgid "Tabs (Non Segmented)"
-msgstr ""
-
-msgid "Tabs (Segmented)"
-msgstr ""
-
-msgid "Text Input"
-msgstr ""
-
-msgid "This is a multi-line subText.\nUp to 5 lines are supported."
-msgstr ""
-
-msgid "This is an external page."
-msgstr ""
-
-msgid "This is the first tab."
-msgstr ""
-
-msgid "This is the second tab."
-msgstr ""
-
-msgid "Time Picker"
-msgstr ""
-
-msgid "Toolbars"
-msgstr ""
-
-msgid "Types of list items"
-msgstr ""
-
-msgid "type to show clear button"
-msgstr ""
-
-msgid "Unchecked"
-msgstr ""
-
-msgid "Unknown"
-msgstr ""
-
-msgid "Value"
-msgstr ""
-
-msgid "Value selector"
-msgstr ""
-
-msgid "Value selectors"
-msgstr ""
-
-msgid "Parsley"
-msgstr ""
-
-msgid "fruit"
-msgstr ""
-
-msgid "Orange"
-msgstr ""
-
-msgid "Apple"
-msgstr ""
-
-msgid "Tomato"
-msgstr ""
-
-msgid "veg"
-msgstr ""
-
-msgid "Carrot"
-msgstr ""
-
-msgid "Potato"
-msgstr ""
-
+#: demos/ActivityIndicators.qml:29
 msgid "Hide"
 msgstr ""
 
+#: demos/ActivityIndicators.qml:29
+msgid "Show"
+msgstr ""
+
+#: demos/Buttons.qml:21 demos/Gallery.qml:53
+msgid "Buttons"
+msgstr ""
+
+#: demos/Buttons.qml:27 demos/ListItems.qml:65
+msgid "Standard"
+msgstr ""
+
+#: demos/Buttons.qml:30 demos/Buttons.qml:38 demos/Buttons.qml:47
+#: demos/Buttons.qml:52 demos/Buttons.qml:64 demos/Buttons.qml:76
+#: demos/Buttons.qml:84 demos/Buttons.qml:89 demos/Buttons.qml:99
+#: demos/Buttons.qml:103
+msgid "Call"
+msgstr ""
+
+#: demos/Buttons.qml:35 demos/CheckBoxes.qml:40 demos/ListItems.qml:70
+#: demos/ListItems.qml:171 demos/ListItems.qml:233 demos/ListItems.qml:268
+#: demos/ListItems.qml:319 demos/ListItems.qml:389 demos/Switches.qml:40
+msgid "Disabled"
+msgstr ""
+
+#: demos/Buttons.qml:44
+msgid "Colors"
+msgstr ""
+
+#: demos/Buttons.qml:73
+msgid "Content"
+msgstr ""
+
+#: demos/Buttons.qml:96
+msgid "Scalability"
+msgstr ""
+
+#: demos/CheckBoxes.qml:21 demos/Gallery.qml:58
+msgid "Check Box"
+msgstr ""
+
+#: demos/CheckBoxes.qml:27 demos/Switches.qml:27
+msgid "Unchecked"
+msgstr ""
+
+#: demos/CheckBoxes.qml:33 demos/Switches.qml:33
+msgid "Checked"
+msgstr ""
+
+#: demos/Gallery.qml:54
+msgid "Tabs (Segmented)"
+msgstr ""
+
+#: demos/Gallery.qml:55 demos/ListItems.qml:22
+msgid "List Items"
+msgstr ""
+
+#: demos/Gallery.qml:56 demos/PageStack.qml:21
+msgid "Page Stack"
+msgstr ""
+
+#: demos/Gallery.qml:57 demos/Switches.qml:21
+msgid "Switch"
+msgstr ""
+
+#: demos/Gallery.qml:60 demos/ProgressBars.qml:21
+msgid "Progress Bar"
+msgstr ""
+
+#: demos/Gallery.qml:61 demos/Sliders.qml:21
+msgid "Slider"
+msgstr ""
+
+#: demos/Gallery.qml:62 demos/TextInputs.qml:21
+msgid "Text Input"
+msgstr ""
+
+#: demos/Gallery.qml:63
+msgid "Scrollbar"
+msgstr ""
+
+#: demos/Gallery.qml:64
+msgid "Popovers"
+msgstr ""
+
+#: demos/Gallery.qml:65
+msgid "Toolbars"
+msgstr ""
+
+#: demos/Gallery.qml:66
+msgid "Sheets & Dialogues"
+msgstr ""
+
+#: demos/Gallery.qml:67
+msgid "Grid View"
+msgstr ""
+
+#: demos/Gallery.qml:68
+msgid "On Screen Keyboard"
+msgstr ""
+
+#: demos/Gallery.qml:69
+msgid "Date Picker"
+msgstr ""
+
+#: demos/Gallery.qml:70
+msgid "Time Picker"
+msgstr ""
+
+#: demos/Gallery.qml:71
+msgid "Tabs (Non Segmented)"
+msgstr ""
+
+#: demos/ListItems.qml:43
+msgid "Types of list items"
+msgstr ""
+
+#: demos/ListItems.qml:67 demos/ListItems.qml:167 demos/ListItems.qml:228
+#: demos/ListItems.qml:264 demos/ListItems.qml:384
+msgid "Idle"
+msgstr ""
+
+#: demos/ListItems.qml:74 demos/ListItems.qml:176 demos/ListItems.qml:239
+#: demos/ListItems.qml:273 demos/ListItems.qml:324
+msgid "Selected"
+msgstr ""
+
+#: demos/ListItems.qml:78 demos/ListItems.qml:181 demos/ListItems.qml:245
+#: demos/ListItems.qml:278
+msgid "Progression"
+msgstr ""
+
+#: demos/ListItems.qml:82 demos/ListItems.qml:186 demos/ListItems.qml:251
+#: demos/ListItems.qml:283 demos/ListItems.qml:334 demos/ListItems.qml:402
+msgid "Icon"
+msgstr ""
+
+#: demos/ListItems.qml:86 demos/ListItems.qml:191
+msgid "Custom icon"
+msgstr ""
+
+#: demos/ListItems.qml:150
+msgid "Grouped List"
+msgstr ""
+
+#: demos/ListItems.qml:165
+msgid "Single value"
+msgstr ""
+
+#: demos/ListItems.qml:168 demos/ListItems.qml:172 demos/ListItems.qml:177
+#: demos/ListItems.qml:182 demos/ListItems.qml:187 demos/ListItems.qml:192
+#: demos/ListItems.qml:229 demos/ListItems.qml:230 demos/ListItems.qml:234
+#: demos/ListItems.qml:235 demos/ListItems.qml:240 demos/ListItems.qml:241
+#: demos/ListItems.qml:246 demos/ListItems.qml:247 demos/ListItems.qml:252
+#: demos/ListItems.qml:253 demos/ListItems.qml:385 demos/ListItems.qml:386
+#: demos/ListItems.qml:390 demos/ListItems.qml:391 demos/ListItems.qml:396
+#: demos/ListItems.qml:397 demos/ListItems.qml:404 demos/ListItems.qml:405
+msgid "Value"
+msgstr ""
+
+#: demos/ListItems.qml:226
+msgid "Multiple values"
+msgstr ""
+
+#: demos/ListItems.qml:262
+msgid "Subtitled"
+msgstr ""
+
+#: demos/ListItems.qml:265 demos/ListItems.qml:270 demos/ListItems.qml:275
+#: demos/ListItems.qml:279 demos/ListItems.qml:284
+msgid "Secondary label"
+msgstr ""
+
+#: demos/ListItems.qml:288 demos/ListItems.qml:292
+msgid "Multiple lines"
+msgstr ""
+
+#: demos/ListItems.qml:289
+msgid ""
+"This is a multi-line subText.\n"
+"Up to 5 lines are supported."
+msgstr ""
+
+#: demos/ListItems.qml:293
+msgid "It also works well with icons and progression."
+msgstr ""
+
+#: demos/ListItems.qml:312
+msgid "Controls"
+msgstr ""
+
+#: demos/ListItems.qml:314
+msgid "Label"
+msgstr ""
+
+#: demos/ListItems.qml:328
+msgid "Split"
+msgstr ""
+
+#: demos/ListItems.qml:339
+msgid "Single control"
+msgstr ""
+
+#: demos/ListItems.qml:344
+msgid "Button"
+msgstr ""
+
+#: demos/ListItems.qml:349
+msgid "Large button clicked"
+msgstr ""
+
+#: demos/ListItems.qml:364
+msgid "Captions and Dividers"
+msgstr ""
+
+#: demos/ListItems.qml:365 demos/ListItems.qml:367 demos/ListItems.qml:371
+#: demos/ListItems.qml:372
+msgid "Item"
+msgstr ""
+
+#: demos/ListItems.qml:382
+msgid "Value selectors"
+msgstr ""
+
+#: demos/ListItems.qml:395
+msgid "Expanded"
+msgstr ""
+
+#: demos/MyCustomPage.qml:5
+msgid "My custom page"
+msgstr ""
+
+#: demos/MyCustomPage.qml:11
+msgid "This is an external page."
+msgstr ""
+
+#: demos/PageStack.qml:42
+msgid "Root page"
+msgstr ""
+
+#: demos/PageStack.qml:47
+msgid "Page one"
+msgstr ""
+
+#: demos/PageStack.qml:52
+msgid "Page two (external)"
+msgstr ""
+
+#: demos/PageStack.qml:61
+msgid "First page"
+msgstr ""
+
+#: demos/PageStack.qml:66
+msgid "External page"
+msgstr ""
+
+#: demos/PageStack.qml:71
+msgid "Root page (again)"
+msgstr ""
+
+#: demos/PageStack.qml:76
+msgid "Red rectangle"
+msgstr ""
+
+#: demos/ProgressBars.qml:27
+msgid "Known"
+msgstr ""
+
+#: demos/ProgressBars.qml:48
+msgid "Mixed"
+msgstr ""
+
+#: demos/ProgressBars.qml:75
+msgid "Unknown"
+msgstr ""
+
+#: demos/Sliders.qml:27
+msgid "Default"
+msgstr ""
+
+#: demos/Sliders.qml:35 demos/Sliders.qml:53
+#, qt-format
 msgid "value is %1"
 msgstr ""
 
+#: demos/Sliders.qml:40
+msgid "Live"
+msgstr ""
+
+#: demos/Tabs.qml:21
+msgid "Tabs"
+msgstr ""
+
+#: demos/Tabs.qml:25 demos/Tabs.qml:49
+msgid "Tab"
+msgstr ""
+
+#: demos/Tabs.qml:31
+msgid "This is the first tab."
+msgstr ""
+
+#: demos/Tabs.qml:43
+msgid "This is the second tab."
+msgstr ""
+
+#: demos/TextInputs.qml:33
+msgid "Basic"
+msgstr ""
+
+#: demos/TextInputs.qml:40
+msgid "simple text field"
+msgstr ""
+
+#: demos/TextInputs.qml:53
+msgid "type to show clear button"
+msgstr ""
+
+#: demos/TextInputs.qml:54
+msgid "sample text"
+msgstr ""
+
+#: demos/TextInputs.qml:59 demos/TextInputs.qml:73
+msgid "Password"
+msgstr ""
+
+#: demos/TextInputs.qml:66
+msgid "password with echo"
+msgstr ""
+
+#: demos/TextInputs.qml:80
+msgid "password echo on editing"
+msgstr ""
+
+#: demos/TextInputs.qml:87
+msgid "Overlaid"
+msgstr ""
