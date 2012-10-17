@@ -37,9 +37,9 @@ public:
     static void qmlRegisterTypes(const char* uri);
 
     /**
-     * Add an object named "i18n" to context.
+     * Add an object named "gettext" to context.
      *
-     * One can then get translations with _("english text")
+     * One can then get translations with gettext.gettext("english text")
      */
     void qmlInit(QQmlContext* context);
 
@@ -99,7 +99,5 @@ public:
     QQmlContext* m_context;
     QString m_contextProperty;
 };
-
-Q_INVOKABLE QString lala(const QString& text);
 
 #endif // UBUNTU_COMPONENTS_I18N_H

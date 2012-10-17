@@ -15,8 +15,12 @@
  */
 
 #include "i18n.h"
+namespace C {
 #include <libintl.h>
+}
+
 #include <QtQml>
+
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
@@ -41,35 +45,35 @@ QString UbuntuI18n::domain() {
 
 void UbuntuI18n::setDomain(QString domain) {
     _domain = domain;
-    textdomain(domain.toUtf8().constData());
+    C::textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
 }
 
 QString UbuntuI18n::tr(const QString& text)
 {
-    return QString::fromUtf8(gettext(text.toUtf8()));
+    return QString::fromUtf8(C::gettext(text.toUtf8()));
 }
 
 QString UbuntuI18n::ntr(const QString &singular, const QString &plural, int n)
 {
-    return QString::fromUtf8(ngettext(singular.toUtf8(), plural.toUtf8(), n));
+    return QString::fromUtf8(C::ngettext(singular.toUtf8(), plural.toUtf8(), n));
 }
 
 QString UbuntuI18n::dtr(const QString& domain, const QString& text)
 {
     if (domain.isNull()) {
-        return QString::fromUtf8(dgettext(NULL, text.toUtf8()));
+        return QString::fromUtf8(C::dgettext(NULL, text.toUtf8()));
     } else {
-        return QString::fromUtf8(dgettext(domain.toUtf8(), text.toUtf8()));
+        return QString::fromUtf8(C::dgettext(domain.toUtf8(), text.toUtf8()));
     }
 }
 
 QString UbuntuI18n::dntr(const QString& domain, const QString& singular, const QString& plural, int n)
 {
     if (domain.isNull()) {
-        return QString::fromUtf8(dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
+        return QString::fromUtf8(C::dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
     } else {
-        return QString::fromUtf8(dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
+        return QString::fromUtf8(C::dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
     }
 }
 
@@ -85,8 +89,4 @@ void ContextPropertyChangeListener::updateContextProperty()
 {
     QVariant value = m_context->contextProperty(m_contextProperty);
     m_context->setContextProperty(m_contextProperty, value);
-}
-
-QString lala(const QString& text) {
-    return UbuntuI18n::instance().tr(text);
 }
