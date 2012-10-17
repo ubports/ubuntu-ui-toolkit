@@ -47,7 +47,7 @@ public:
      * @brief Translate the given string using gettext.
      * @param text The text to translate.
      */
-    Q_INVOKABLE QString tr(const QString& text);
+    Q_INVOKABLE QString gettext(const QString& text);
 
     /**
      * @brief Translate the given string using gettext. Should be called like this:
@@ -56,14 +56,14 @@ public:
      * @param plural The plural version of the text to translate.
      * @param n Number of items.
      */
-    Q_INVOKABLE QString ntr(const QString& singular, const QString& plural, int n);
+    Q_INVOKABLE QString ngettext(const QString& singular, const QString& plural, int n);
 
     /**
      * @brief Translate the given string using gettext.
      * @param domain The domain to use for the translation.
      * @param text The text to translate.
      */
-    Q_INVOKABLE QString dtr(const QString& domain, const QString& text);
+    Q_INVOKABLE QString dgettext(const QString& domain, const QString& text);
 
     /**
      * @brief Translate the given string using gettext. Should be called like this:
@@ -73,7 +73,7 @@ public:
      * @param plural The plural version of the text to translate.
      * @param n Number of items.
      */
-    Q_INVOKABLE QString dntr(const QString& domain, const QString& singular, const QString& plural, int n);
+    Q_INVOKABLE QString dngettext(const QString& domain, const QString& singular, const QString& plural, int n);
 
 
     // getter

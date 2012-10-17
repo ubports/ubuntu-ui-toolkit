@@ -49,17 +49,17 @@ void UbuntuI18n::setDomain(QString domain) {
     Q_EMIT domainChanged();
 }
 
-QString UbuntuI18n::tr(const QString& text)
+QString UbuntuI18n::gettext(const QString& text)
 {
     return QString::fromUtf8(C::gettext(text.toUtf8()));
 }
 
-QString UbuntuI18n::ntr(const QString &singular, const QString &plural, int n)
+QString UbuntuI18n::ngettext(const QString &singular, const QString &plural, int n)
 {
     return QString::fromUtf8(C::ngettext(singular.toUtf8(), plural.toUtf8(), n));
 }
 
-QString UbuntuI18n::dtr(const QString& domain, const QString& text)
+QString UbuntuI18n::dgettext(const QString& domain, const QString& text)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dgettext(NULL, text.toUtf8()));
@@ -68,7 +68,7 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& text)
     }
 }
 
-QString UbuntuI18n::dntr(const QString& domain, const QString& singular, const QString& plural, int n)
+QString UbuntuI18n::dngettext(const QString& domain, const QString& singular, const QString& plural, int n)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));

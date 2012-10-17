@@ -23,7 +23,7 @@ Rectangle {
 
     color: "#e6e6e6"
 
-    function _(text) { return gettext.tr(text); }
+    function _(text) { return gettext.gettext(text); }
 
     Rectangle {
         anchors.fill: widgetList

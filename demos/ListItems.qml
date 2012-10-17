@@ -44,7 +44,7 @@ Template {
                 Repeater {
                     model: listItemTypes.typeList.length
                     ListItem.Standard {
-                        text: i18n.tr(listItemTypes.typeList[index])
+                        text: _(listItemTypes.typeList[index])
                         selected: listItemTypes.selectedType === listItemTypes.typeList[index]
                         onClicked: listItemTypes.selectedType = listItemTypes.typeList[index]
                     }
@@ -145,12 +145,12 @@ Template {
                         interactive: false
 
                         delegate: ListItem.Standard {
-                            text: i18n.tr(name)
+                            text: _(name)
                         }
                         header: ListItem.Header { text: _("Grouped List") }
                         section.property: "type"
                         section.criteria: ViewSection.FullString
-                        section.delegate: ListItem.Header { text: i18n.tr(section) }
+                        section.delegate: ListItem.Header { text: _(section) }
                     }
                     Component.onCompleted: {
                         groupedList.height = groupedList.contentHeight;
