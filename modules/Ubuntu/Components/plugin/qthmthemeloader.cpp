@@ -173,7 +173,7 @@ QString QthmThemeLoader::readTillToken(QTextStream &stream, const QRegExp &token
   Parses the declarator of each selector. Resolves the "inheritance" between atomic
   selector items (the last items in a CSS selector component).
   */
-bool QthmThemeLoader::handleSelector(const Selector &selector, const QString &declarator)
+bool QthmThemeLoader::handleSelector(const Selector &selector, const QString &declarator, QTextStream &stream)
 {
     QStringList propertyList = declarator.split(';');
 
@@ -199,8 +199,25 @@ bool QthmThemeLoader::handleSelector(const Selector &selector, const QString &de
         // by splitting the string using ':' as separator, we need to do separation
         // based on the first ':' reached.
         int columnIndex = property.indexOf(':');
-        QString prop = property.left(columnIndex);
-        QString value = property.right(property.length() - columnIndex - 1);
+        QString prop = property.left(columnIndex).trimmed();
+        QString value = property.right(property.length() - columnIndex - 1).trimmed();
+        // check if the value is declared using url() macro
+        int atUrl = value.indexOf("url");
+        if (atUrl >= 0) {
+            // check if it is the url() function, so the next valid character should be a "(" one
+            int pathStart = value.indexOf('(', atUrl);
+            if (pathStart >= 0) {
+                int pathEnd = value.indexOf(')', pathStart);
+                int pathLen = pathEnd - pathStart;
+                QString path = value.mid(pathStart + 1, pathEnd - pathStart - 2);
+                path.remove('\"');
+                QFile *file = qobject_cast<QFile*>(stream.device());
+                QFileInfo fi(*file);
+                path.prepend('/').prepend(fi.dir().absolutePath()).prepend('\"').append('\"');
+                // replace url(path) with teh resolved one
+                value.replace(atUrl, pathEnd - atUrl + 1, path);
+            }
+        }
         properties.insert(prop, value);
     }
     selectorTable.insert(selector, properties);
@@ -302,7 +319,7 @@ bool QthmThemeLoader::parseTheme(const QUrl &url)
                 // load declarator and apply on each selector
                 data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
                 Q_FOREACH (const Selector &selector, selectors) {
-                    ret = handleSelector(selector, data);
+                    ret = handleSelector(selector, data, stream);
                     if (!ret) {
                         ThemeEnginePrivate::setError(
                                     QString("Error parsing declarator for selector %1").

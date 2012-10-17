@@ -41,7 +41,7 @@ private:
 
     static QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
     static QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
-    bool handleSelector(const Selector &path, const QString &declarator);
+    bool handleSelector(const Selector &path, const QString &declarator, QTextStream &stream);
     void normalizeStyles();
     bool parseTheme(const QUrl &url);
     bool generateStyleQml();
