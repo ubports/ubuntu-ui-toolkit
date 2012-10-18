@@ -22,7 +22,7 @@
 #include "itemstyleattached.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
-#include "qthmthemeloader_p.h"
+#include "qmlloader_p.h"
 #include <QtCore/QString>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QJSEngine>
@@ -92,8 +92,8 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
 
     // register theme loaders
     // TODO: shouldn't these be in separate plugins?
-    themeLoaders[".qml"] = new QmlThemeLoader(m_engine);
-    themeLoaders[".qmltheme"] = new QthmThemeLoader(m_engine);
+    themeLoaders[".qml"] = new QmlLoader(m_engine);
+    themeLoaders[".qmltheme"] = new QmlThemeLoader(m_engine);
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()

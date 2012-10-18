@@ -257,7 +257,7 @@ Rule::Rule(QObject *parent) :
 {}
 
 /*!
-  Creates rule element used when QTHM format themes are loaded. The style and delegate
+  Creates rule element used when QmlTheme format themes are loaded. The style and delegate
   components are created by the rule element as delayed completion can occur.
   */
 Rule::Rule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent) :

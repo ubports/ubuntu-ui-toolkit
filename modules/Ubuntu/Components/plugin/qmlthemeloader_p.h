@@ -21,21 +21,42 @@
 
 #include "themeengine_p.h"
 #include "themeloader_p.h"
+#include <QtCore/QTextStream>
 
-// QML theme loader
-class QmlThemeLoader : public QObject, public ThemeLoader {
-    Q_OBJECT
+// CSS-like theme loader
+class QmlThemeLoader;
+typedef bool (*ParserCallback)(QmlThemeLoader *loader, QTextStream &stream);
+
+class QmlThemeLoader : public ThemeLoader {
+    Q_INTERFACES(ThemeLoader)
 public:
     QmlThemeLoader(QQmlEngine *engine);
     virtual ~QmlThemeLoader(){}
     StyleTreeNode *loadTheme(const QUrl &path);
 
-private Q_SLOTS:
-    void finalizeThemeLoading();
 private:
-    QQmlComponent *themeComponent;
     StyleTreeNode *styleTree;
-    bool async;
+
+private:
+
+    static QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
+    static QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
+    bool handleSelector(const Selector &path, const QString &declarator, QTextStream &stream);
+    void normalizeStyles();
+    bool parseTheme(const QUrl &url);
+    bool generateStyleQml();
+    bool buildStyleTree(const QUrl &url);
+
+    // @-rule handlers
+    static bool handleImport(QmlThemeLoader *loader, QTextStream &stream);
+    static bool handleQmlMapping(QmlThemeLoader *loader, QTextStream &stream);
+    static bool handleQmlImport(QmlThemeLoader *loader, QTextStream &stream);
+
+    QString imports;
+    QString ruleString;
+    QHash<QString, ParserCallback> rules;
+    QHash<QString, QPair<QString, QString> > qmlMap;
+    QHash<Selector, QHash<QString, QString> > selectorTable;
 };
 
 

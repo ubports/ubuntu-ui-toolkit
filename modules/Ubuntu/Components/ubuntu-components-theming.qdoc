@@ -35,7 +35,7 @@
   The theming used in Ubuntu Components follows this idea of changing LAF (Look-And-Feel)
   Uses ideas from CSS stylesheets, however it does not provide yet another implementation
   of that. The framework supports themes defined in QML as well as in the so-called
-  QTHM theme file format (.qmltheme). Theme files are loaded by the components
+  QmlTheme theme file format (.qmltheme). Theme files are loaded by the components
   library upon startup before any QML element of the application would be loaded.
   The library uses the settings to load and store user and application specific
   theming. User theme configuration is stored under \c{$HOME/.qmltheme/theme.ini}
@@ -84,7 +84,7 @@
 
   Style rules are identified through \l{Rule::selector}{selectors}. Selectors follow
   the syntax defined in W3C, however does not provide full support for defined. This
-  syntax is used in both QML- and QTHM file formats.
+  syntax is used in both QML- and QmlTheme file formats.
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
@@ -110,15 +110,15 @@
   {selector}. The theme file is loaded using the QML engine and styles defined
   are stored in a suffix-tree to ease style lookup.
 
-  \section2 QTHM (QmlTheme) file format
-  The QTHM file format uses the ideas and format of CSS stylesheets, however does
-  not implement teh full specification. QTHM files are identified through their
+  \section2 QmlTheme file format
+  The QmlTheme file format uses the ideas and format of CSS stylesheets, however does
+  not implement teh full specification. QmlTheme files are identified through their
   extension, which is \e .qmltheme. A theme file can contain styling rules and
   so-called @-rules.
 
   \section3 @-rules
   @-rules are special rules, usually defined in one line ending with a semicolon
-  character, and define further actions or primitives. QTHM defines the following
+  character, and define further actions or primitives. QmlTheme defines the following
   @-rules:
   \list
    \li \b{@import url}
@@ -130,7 +130,7 @@
   Syntax:
     \code @import url(<url>);\endcode
 
-  The rule instructs the theme engine to import an other QTHM file from a given
+  The rule instructs the theme engine to import an other QmlTheme file from a given
   location. The location can be relative to the current theme's folder, from an
   absolute path or from the resources.
 
@@ -421,8 +421,8 @@
   }
   \endqml
 
-  \section1 QTHM theme file example
-  Finally, here are some examples of QTHM themes.
+  \section1 QmlTheme theme file example
+  Finally, here are some examples of QmlTheme themes.
 
   default.qmltheme
   \code

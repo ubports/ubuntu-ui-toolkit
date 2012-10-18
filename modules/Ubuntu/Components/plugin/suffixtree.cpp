@@ -51,7 +51,7 @@ SelectorNode::SelectorNode() :
     Creates an instance of a SelectorNode with a given styleClass, name
     and relationship. The sensitivity parameter configures the node so that during
     string conversion and comparison ignores the relationship, the name
-    both or none. This feature is used when building up QTHM selectorTable.
+    both or none. This feature is used when building up QmlTheme selectorTable.
 */
 SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
     styleClass(styleClass), styleId(styleId), relationship(relationship), sensitivity(sensitivity)
