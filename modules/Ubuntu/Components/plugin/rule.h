@@ -24,10 +24,10 @@
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlParserStatus>
 
-class StyleRulePrivate;
+class RulePrivate;
 class QQmlComponent;
 class QQmlEngine;
-class StyleRule : public QObject, public QQmlParserStatus
+class Rule : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -37,9 +37,9 @@ class StyleRule : public QObject, public QQmlParserStatus
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate)
 
 public:
-    StyleRule(QObject *parent = 0);
-    StyleRule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent = 0);
-    ~StyleRule();
+    Rule(QObject *parent = 0);
+    Rule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent = 0);
+    ~Rule();
 
     void classBegin();
     void componentComplete();
@@ -66,9 +66,9 @@ private: //setters
     void setDelegate(QQmlComponent *delegate);
 
 private:
-    Q_DISABLE_COPY(StyleRule)
-    Q_DECLARE_PRIVATE(StyleRule)
-    QScopedPointer<StyleRulePrivate> d_ptr;
+    Q_DISABLE_COPY(Rule)
+    Q_DECLARE_PRIVATE(Rule)
+    QScopedPointer<RulePrivate> d_ptr;
     Q_PRIVATE_SLOT(d_func(), void _q_componentCompleted(QQmlComponent::Status))
 };
 

@@ -27,7 +27,7 @@ Row {
 
     TextCustom {
         text: templateRow.title
-        ItemStyle.styleClass: "row-label"
+        ItemStyle.class: "row-label"
         width: 80
     }
 

@@ -18,7 +18,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "suffixtree_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
@@ -48,9 +48,9 @@ SelectorNode::SelectorNode() :
 {}
 /*!
     \internal
-    Creates an instance of a SelectorNode with a given styleClass, instanceId
+    Creates an instance of a SelectorNode with a given styleClass, name
     and relationship. The sensitivity parameter configures the node so that during
-    string conversion and comparison ignores the relationship, the instanceId
+    string conversion and comparison ignores the relationship, the name
     both or none. This feature is used when building up QTHM selectorTable.
 */
 SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
@@ -60,7 +60,7 @@ SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Re
 
 /*!
     \internal
-    Converts a SelectorNode into string using "<relation> .<styleClass>#<instanceId>"
+    Converts a SelectorNode into string using "<relation> .<styleClass>#<name>"
     format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
 QString SelectorNode::toString() const
@@ -99,7 +99,7 @@ StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
 {
 }
 
-StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, StyleRule *styleRule) :
+StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule) :
     parent(parent), styleNode(node), styleRule(styleRule)
 {
 }
@@ -126,7 +126,7 @@ void StyleTreeNode::clear()
   \internal
   Adds a style rule to the style tree based on the selector path specified.
   */
-void StyleTreeNode::addStyleRule(const Selector &path, StyleRule *styleRule)
+void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
 {
     Selector sparePath = path;
     SelectorNode nextNode = path.last();
@@ -161,11 +161,11 @@ void StyleTreeNode::addStyleRule(const Selector &path, StyleRule *styleRule)
 
 /*!
   \internal
-  Search for the style best matching the widget path. The path is parsed from the
+  Search for the style best matching the item path. The path is parsed from the
   tail as the styles are stored in the tree is stored in sufix form. The \a strict
   parameter specifies whether the search should be strict on the relationship or not.
 */
-StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
+Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
     // the spare contains the remainder
     TRACE << ThemeEnginePrivate::selectorToString(path);
@@ -183,7 +183,7 @@ StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
         // check whether we have a child that satisfies the node
         // try to remove elements from the path, maybe we still can get a match
         while (true) {
-            StyleRule *rule = testNode(nextPathNode, sparePath, strict);
+            Rule *rule = testNode(nextPathNode, sparePath, strict);
             if (rule)
                 return rule;
             if (!sparePath.isEmpty()) {
@@ -204,9 +204,9 @@ StyleRule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
   \internal
   Test whether a child matches the criteria
 */
-StyleRule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict)
+Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict)
 {
-    StyleRule *rule = 0;
+    Rule *rule = 0;
     QString nodeKey = nextNode.toString();
     TRACE << nodeKey;
     if (children.contains(nodeKey)) {

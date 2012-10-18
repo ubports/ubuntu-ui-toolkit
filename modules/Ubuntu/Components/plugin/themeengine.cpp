@@ -18,7 +18,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "itemstyleattached.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
@@ -39,7 +39,7 @@
   \brief The Theme element provides functionality to change the current theme.
 
   Informs the application about errors during theme load through \a error property,
-  the current theme file through \a currentTheme property and notifies the widgets
+  the current theme file through \a currentTheme property and notifies the items
   and application about successful theme change through \a themeChanged() signal.
 
   The theme can be changed from within the application either through \a loadTheme()
@@ -54,6 +54,8 @@
   - ThemeFile: a string value specifying the application theme name (not the entire
         file) when the global theme is used, or if not, the private theme file of
         the application
+  - imports: optional setting key containing the import paths to be added to the QML
+    engine required by the themes.
 
   Not having these keys declared by an application will force the use of the global
   theme. Setting keys should be defined prior the QML files are loaded, and
@@ -166,12 +168,12 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 /*!
   \internal
   Traverses and returns the path from \a obj up to root as a list of styleClass
-  and instanceId pairs, setting the relationship between the selector nodes
+  and name pairs, setting the relationship between the selector nodes
   depending on the relationship between the parent and child, i.e. if a certain
   ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child relation,
   otherwise SelectorNode::Descendant relation is used.
 
-  The obj is an Item derived element and shoudl have styleClass and instanceId proeprties
+  The obj is an Item derived element and shoudl have styleClass and name proeprties
   to be used if styling happens on them.
   */
 Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
@@ -196,7 +198,7 @@ Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) c
             styleClass = obj->metaObject()->className();
             styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
         }
-        QString styleId = style->instanceId();
+        QString styleId = style->name();
         if (!styleClass.isEmpty() || !styleId.isEmpty()) {
             selector.prepend(SelectorNode(styleClass, styleId, relation));
         }
@@ -215,11 +217,11 @@ Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) c
   \internal
   Wrapper function above the style tree lookup. Exposed for functional testing.
 */
-StyleRule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
+Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {
     if (!m_styleTree)
         return 0;
-    StyleRule *rule = m_styleTree->lookupStyleRule(path);
+    Rule *rule = m_styleTree->lookupStyleRule(path);
     TRACEP << "lookup path=" << selectorToString(path) <<
                     ", style rule found:" << ((rule) ? rule->selector() : "");
     return rule;
@@ -375,26 +377,26 @@ ThemeEngine *ThemeEngine::instance()
   Checks whether the instance can be registerd to the given name, and registers it.
   Removes any previous registration.
 */
-bool ThemeEngine::registerInstanceId(QQuickItem *item, const QString &newId)
+bool ThemeEngine::registerName(QQuickItem *item, const QString &newName)
 {
     Q_D(ThemeEngine);
     bool ret = true;
 
     // check first whether the nex ID is valid and can be registered
-    QString prevId(item->property("instanceId").toString());
-    if (newId.isEmpty()) {
+    QString prevName(item->property("name").toString());
+    if (newName.isEmpty()) {
         // remove the previous occurence
-        if (!prevId.isEmpty())
-            d->m_instanceCache.remove(prevId);
+        if (!prevName.isEmpty())
+            d->m_instanceCache.remove(prevName);
     } else {
-        if (d->m_instanceCache.contains(newId))
+        if (d->m_instanceCache.contains(newName))
             ret = false;
         else {
             // remove the previous occurence
-            if (!prevId.isEmpty())
-                d->m_instanceCache.remove(prevId);
+            if (!prevName.isEmpty())
+                d->m_instanceCache.remove(prevName);
             // register instance
-            d->m_instanceCache.insert(newId, item);
+            d->m_instanceCache.insert(newName, item);
         }
     }
 
@@ -407,7 +409,7 @@ bool ThemeEngine::registerInstanceId(QQuickItem *item, const QString &newId)
   ItemStyleAttached. The selector searched is built up by traversing the \a item
   parents and considering only ItemStyleAttached elements in the hierarchy.
   */
-StyleRule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
+Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
 {
     Q_D(ThemeEngine);
 
@@ -418,9 +420,9 @@ StyleRule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
         return d->m_styleCache.value(path);
     }
 
-    TRACE << "widget path" << ThemeEnginePrivate::selectorToString(path);
+    TRACE << "item path" << ThemeEnginePrivate::selectorToString(path);
 
-    StyleRule *rule = d->styleRuleForPath(path);
+    Rule *rule = d->styleRuleForPath(path);
     if (rule) {
         // cache the rule
         d->m_styleCache.insert(path, rule);
@@ -444,32 +446,62 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 
 /*!
   \preliminary
-  \qmlmethod void Theme::setTheme(const QString &theme, bool global)
+  \qmlmethod void Theme::setGlobalTheme(const QString &theme, bool global)
   The function sets the theme file in the application's settings and loads the
-  theme.
-true
-  Its parameters depend on what is about to be set.
-  - if the theme is global, then the \a theme specifies the theme folder as specified
-    in the global theme; if the \a theme is empty, the global theme's default will
-    be set and loaded (e.g. TestApp from Ambiance theme will lead to
-    /usr/shared/theme/Ambiance/qmltheme/theme.qmltheme URL returned)
-  - if the theme is local (\a global set to false), the \a theme contains the full
-    path to the theme file to be used.
+  theme. The \a theme is a file relative to the global theme folder. If an empty
+  string is given, the global theme's default will be set and loaded.
 
-  Returns the path to the theme file loaded or an invalid URL on failure. The \a error
-  will contain the error occurred.
+  In teh example below the Item will set and load the theme from the global theme
+  folder. Assuming the global user theme set is Ambiance, the theme file location
+  will be \a /usr/shared/theme/Ambiance/qmltheme/TestApp/theme.qmltheme.
+
+  \code
+  Item {
+     Component.onCompleted: {
+        Theme.setGlobalTheme("TestApp/theme.qmltheme")
+     }
+  }
+  \endcode
+
+  Returns true if the file was set and loaded with success. On failure, the error
+  message will be stored in the \a error property.
   */
-bool ThemeEngine::setTheme(const QString &theme, bool global)
+bool ThemeEngine::setGlobalTheme(const QString &theme)
 {
     Q_D(ThemeEngine);
     d->errorString = QString();
-    QUrl themeFile = d->themeSettings.setTheme(theme, global);
+    QUrl themeFile = d->themeSettings.setTheme(theme, true);
     if (themeFile.isValid())
         d->_q_updateTheme();
     else if (d->errorString.isEmpty()) {
-        d->setError(QString("Error setting theme %1 as %2")
-                    .arg(theme)
-                    .arg(global ? "global" : "private"));
+        d->setError(QString("Error setting global theme %1")
+                    .arg(theme));
+    }
+    return d->errorString.isEmpty();
+}
+
+/*!
+  \preliminary
+  \qmlmethod void Theme::setLocalTheme(const QString &theme)
+  The function works similar to \l{Theme::setGlobalTheme} but with local theme
+  files. The \a theme specifies the path (absolute or relative to the current
+  folder) to the private theme to be set. Applications setting their themes using
+  this function will not react on global theme changes. If an empty string is
+  given, the global theme's default will be set and loaded.
+
+  Returns true if the file was set and loaded with success. On failure, the error
+  message will be stored in the \a error property.
+  */
+bool ThemeEngine::setLocalTheme(const QString &theme)
+{
+    Q_D(ThemeEngine);
+    d->errorString = QString();
+    QUrl themeFile = d->themeSettings.setTheme(theme, false);
+    if (themeFile.isValid())
+        d->_q_updateTheme();
+    else if (d->errorString.isEmpty()) {
+        d->setError(QString("Error setting local %1")
+                    .arg(theme));
     }
     return d->errorString.isEmpty();
 }
@@ -499,7 +531,7 @@ void ThemeEngine::resetError()
   \qmlproperty string Theme::currentTheme
   This property holds the current theme file loaded.
   */
-QString ThemeEngine::currentTheme() const
+QString ThemeEngine::theme() const
 {
     Q_D(const ThemeEngine);
     return d->currentTheme.toString();

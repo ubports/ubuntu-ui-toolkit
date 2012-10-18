@@ -17,7 +17,7 @@
  */
 
 #include "plugin.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "themeengine.h"
 #include "itemstyleattached.h"
 
@@ -27,8 +27,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
-    qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
+    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
+    qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

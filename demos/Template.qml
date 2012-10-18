@@ -62,7 +62,7 @@ Rectangle {
 
             TextCustom {
                 id: title
-                ItemStyle.styleClass: "title"
+                ItemStyle.class: "title"
                 text: template.title
             }
 

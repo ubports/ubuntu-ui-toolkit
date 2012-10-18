@@ -55,7 +55,7 @@ public: //members
     QQmlEngine *m_engine;
     // suffix tree for the styles
     StyleTreeNode *m_styleTree;
-    QHash<Selector, StyleRule*> m_styleCache;
+    QHash<Selector, Rule*> m_styleCache;
     InstanceHash m_instanceCache;
     QStringList importPaths;
     QMap<QString, ThemeLoader*> themeLoaders;
@@ -69,7 +69,7 @@ public: //members
 public:
     void loadTheme(const QUrl &themeFile);
     Selector getSelector(QQuickItem *obj, bool forceClassName) const;
-    StyleRule *styleRuleForPath(const Selector &path);
+    Rule *styleRuleForPath(const Selector &path);
 
     // utility functions that are independent from the instance
     static void setError(const QString &error);

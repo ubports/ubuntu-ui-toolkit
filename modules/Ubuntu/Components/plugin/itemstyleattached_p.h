@@ -23,7 +23,7 @@
 
 class QQmlComponent;
 class QQmlContext;
-class StyleRule;
+class Rule;
 
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
@@ -35,18 +35,22 @@ public:
     QObject *style;
     QQuickItem *delegate;
     QString styleClass;
-    QString instanceId;
+    QString name;
 
     // internal members
     QQmlContext *componentContext;
-    StyleRule *themeRule;
+    Rule *themeRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
+
+    bool lookupThemeStyle(bool useMetaClassName);
+    bool updateStyle();
+    bool updateDelegate();
     void updateCurrentStyle(bool forceUpdate = false);
-    bool registerInstanceId(const QString &id);
+    bool registerName(const QString &id);
     void listenThemeEngine();
     void _q_refteshStyle();
 

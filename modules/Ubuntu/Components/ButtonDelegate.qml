@@ -33,7 +33,7 @@ Item {
     function shapeSource()
     {
         if (itemStyle) {
-            return widget.darkBorder ? itemStyle.shapeDark : itemStyle.shapeNormal
+            return item.darkBorder ? itemStyle.shapeDark : itemStyle.shapeNormal
         }
         return ""
     }
@@ -41,14 +41,14 @@ Item {
     function borderSource()
     {
         if (itemStyle) {
-            return (widget.darkBorder) ? (widget.pressed ? itemStyle.borderDarkPressed : itemStyle.borderDarkIdle)
-                                : (widget.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
+            return (item.darkBorder) ? (item.pressed ? itemStyle.borderDarkPressed : itemStyle.borderDarkIdle)
+                                : (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
         }
         return ""
     }
 
     Binding {
-        target: widget
+        target: item
         property: "textColor"
         value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
     }
@@ -71,13 +71,13 @@ Item {
         id: base
 
         anchors.fill: shape
-        color: widget.pressed ? widget.pressedColor : widget.color
+        color: item.pressed ? item.pressedColor : item.color
 
     }
 
     ButtonMaskEffect {
         anchors.fill: shape
-        gradientStrength: widget.pressed ? 0.0 : 1.0
+        gradientStrength: item.pressed ? 0.0 : 1.0
         Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
 
         mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}

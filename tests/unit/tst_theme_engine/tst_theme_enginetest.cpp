@@ -9,7 +9,7 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "itemstyleattached.h"
 
 const char *lookupTestPattern1 =
@@ -34,9 +34,10 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCase_initializeEngine();
-    void testCase_registerInstanceId();
+    void testCase_registerName();
     void testCase_loadTheme();
-    void testCase_setTheme();
+    void testCase_setLocalTheme();
+    void testCase_setGlobalTheme();
     void testCase_lookupStyleRule();
 
 private:
@@ -64,7 +65,7 @@ void tst_ThemeEngine::initTestCase()
 
     const char *uri = "Ubuntu.Components";
     ThemeEngine::initializeEngine(view->engine());
-    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
+    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 }
 
@@ -80,18 +81,18 @@ void tst_ThemeEngine::testCase_initializeEngine()
     QCOMPARE(result, true);
 }
 
-void tst_ThemeEngine::testCase_registerInstanceId()
+void tst_ThemeEngine::testCase_registerName()
 {
     ThemeEngine::instance()->resetError();
     QQuickItem *item = new QQuickItem(0);
     // first time must pass
-    bool result = ThemeEngine::instance()->registerInstanceId(item, "test");
+    bool result = ThemeEngine::instance()->registerName(item, "test");
     QCOMPARE(result, true);
     // second time should fail
-    result = ThemeEngine::instance()->registerInstanceId(item, "test");
+    result = ThemeEngine::instance()->registerName(item, "test");
     QCOMPARE(result, false);
     // this should pass always
-    result = ThemeEngine::instance()->registerInstanceId(item, QString());
+    result = ThemeEngine::instance()->registerName(item, QString());
     QCOMPARE(result, true);
     delete item;
 }
@@ -115,17 +116,21 @@ void tst_ThemeEngine::testCase_loadTheme()
     QCOMPARE(ThemeEngine::instance()->error(), QString());
 }
 
-void tst_ThemeEngine::testCase_setTheme()
+void tst_ThemeEngine::testCase_setLocalTheme()
 {
     ThemeEngine::instance()->resetError();
     // should pass
-    ThemeEngine::instance()->setTheme("../../resources/test.qmltheme", false);
+    ThemeEngine::instance()->setLocalTheme("../../resources/test.qmltheme");
     QCOMPARE(ThemeEngine::instance()->error(), QString());
-    // should fail
-    ThemeEngine::instance()->setTheme("../../resources/base.qmltheme", true);
-    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
 }
 
+void tst_ThemeEngine::testCase_setGlobalTheme()
+{
+    ThemeEngine::instance()->resetError();
+    // should fail
+    ThemeEngine::instance()->setGlobalTheme("../../resources/base.qmltheme");
+    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
+}
 
 QTEST_MAIN(tst_ThemeEngine)
 

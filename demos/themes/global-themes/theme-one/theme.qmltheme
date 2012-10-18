@@ -9,11 +9,11 @@
 @qml-mapping(.frame, , TestFrameDelegate);
 
 .Button {
-    color: widget.hovered ? "tan" : "lightgray";
+    color: item.hovered ? "tan" : "lightgray";
 }
 
 .button {
-    color: widget.hovered ? "lightgray" : "#a3e5e8";
+    color: item.hovered ? "lightgray" : "#a3e5e8";
 }
 
 .frame {

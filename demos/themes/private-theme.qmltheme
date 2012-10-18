@@ -15,8 +15,8 @@
 }
 
 .Button {
-    color: widget.pressed ? "purple" : "lightgray";
-    shapeNormal: Qt.resolvedUrl("call_icon.png")
+    color: item.pressed ? "purple" : "lightgray";
+    shapeNormal: url("../call_icon.png")
 }
 
 .label {

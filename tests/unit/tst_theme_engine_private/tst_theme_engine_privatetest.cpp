@@ -9,7 +9,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "itemstyleattached.h"
-#include "stylerule.h"
+#include "rule.h"
 
 class tst_ThemeEnginePrivate : public QObject
 {
@@ -22,6 +22,7 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testCase_loadTheme();
+    void testCase_urlMacro();
     void testCase_styleRuleForPath();
     void testCase_parseSelector();
     void testCase_selectorToString();
@@ -52,7 +53,7 @@ void tst_ThemeEnginePrivate::initTestCase()
 
     char *uri = "Ubuntu.Components";
     ThemeEngine::initializeEngine(view->engine());
-    qmlRegisterType<StyleRule>(uri, 0, 1, "Rule");
+    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 
     // engine privates can be created with its public class; therefore
@@ -78,6 +79,51 @@ void tst_ThemeEnginePrivate::testCase_loadTheme()
     QCOMPARE(engine->errorString.isEmpty(), false);
 }
 
+void tst_ThemeEnginePrivate::testCase_urlMacro()
+{
+    QUrl themeFile = QUrl::fromLocalFile("../../resources/urlmacro.qmltheme");
+    QFileInfo fi(themeFile.path());
+    // the URLs in the theme are relative to the theme file
+    QDir dir(fi.dir());
+
+    engine->errorString.clear();
+    engine->loadTheme(themeFile);
+
+    Selector selector = engine->parseSelector(".baseA")[0];
+    Rule *rule = engine->styleRuleForPath(selector);
+    QVERIFY2(rule, "Failure");
+    if (rule) {
+        // create style from the rule so we can check the validity of the URLs
+        QObject *style = rule->createStyle(view->engine()->rootContext());
+        QVERIFY2(style, "FAILURE");
+
+        QString url = style->property("prop_baseA_A").toString();
+        QFileInfo fi("../../resources/base.qmltheme");
+        QCOMPARE(url, fi.absoluteFilePath());
+
+        url = style->property("prop_baseA_B").toString();
+        QCOMPARE(url, fi.absoluteFilePath());
+
+        url = style->property("prop_baseA_C").toString();
+        QCOMPARE(url, fi.absoluteFilePath());
+
+        // resources should be the same!
+        url = style->property("prop_baseA_D").toString();
+        QString url2 = style->property("prop_baseA_E").toString();
+        QCOMPARE(url, url2);
+
+        url = style->property("prop_baseA_F").toString();
+        url2 = style->property("prop_baseA_G").toString();
+        QCOMPARE(url, url2);
+
+        url = style->property("prop_baseA_H").toString();
+        url2 = style->property("prop_baseA_I").toString();
+        QCOMPARE(url, url2);
+
+        style->deleteLater();
+    }
+}
+
 void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
 {
     engine->errorString = QString();
@@ -85,7 +131,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     QCOMPARE(engine->errorString, QString());
 
     bool result = true;
-    StyleRule *rule;
+    Rule *rule;
     Selector path, expected;
 
     path << SelectorNode("baseA", "", SelectorNode::Descendant);

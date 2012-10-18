@@ -28,7 +28,7 @@ Template {
 
             TextCustom {
                 width: 400
-                ItemStyle.styleClass: "label"
+                ItemStyle.class: "label"
                 text: Theme.currentTheme
             }
         }
@@ -38,7 +38,7 @@ Template {
                 text: "Theme #1"
                 width: 100
                 onClicked: {
-                    if (!Theme.setTheme("theme-one/theme.qmltheme", true)) {
+                    if (!Theme.setGlobalTheme("theme-one/theme.qmltheme")) {
                         console.log("Cannot set application theme, retry loading...")
                         Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme");
                     }
@@ -48,7 +48,7 @@ Template {
                 text: "Theme #2"
                 width: 100
                 onClicked: {
-                    if (!Theme.setTheme("demos/themes/private-theme.qmltheme", false)) {
+                    if (!Theme.setLocalTheme("demos/themes/private-theme.qmltheme")) {
                         console.log("Cannot set application theme, retry loading...")
                         Theme.loadTheme("demos/themes/private-theme.qmltheme");
                     }
@@ -58,7 +58,7 @@ Template {
                 text: "Default"
                 width: 100
                 onClicked: {
-                    if (!Theme.setTheme("", true)) {
+                    if (!Theme.setGlobalTheme("")) {
                         console.log("Cannot set application theme, retry loading...")
                         Theme.loadTheme("");
                     }
@@ -78,7 +78,7 @@ Template {
             title: ".button"
 
             Button {
-                ItemStyle.styleClass: "button"
+                ItemStyle.class: "button"
                 text: "Call"
             }
         }
@@ -90,8 +90,7 @@ Template {
                 id: frame
                 width: 300
                 height: 100
-                ItemStyle.styleClass: "frame"
-
+                ItemStyle.class: "frame"
                 Button {
                     id: customButton
                     x: 10; y: 10; width: 150

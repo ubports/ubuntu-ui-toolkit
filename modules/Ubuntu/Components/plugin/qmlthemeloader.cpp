@@ -19,7 +19,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "qmlthemeloader_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "itemstyleattached.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
@@ -75,9 +75,9 @@ void QmlThemeLoader::finalizeThemeLoading()
         QObject *theme = themeComponent->create();
         if (theme) {
             // parse its children for Styles
-            QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
+            QList<Rule*> rules = theme->findChildren<Rule*>();
 
-            Q_FOREACH (StyleRule *rule, rules) {
+            Q_FOREACH (Rule *rule, rules) {
                 const QString selector = rule->selector();
                 if (selector.isEmpty()) {
                     qWarning() << "Rule without selector!";

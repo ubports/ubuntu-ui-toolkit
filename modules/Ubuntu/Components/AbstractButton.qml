@@ -27,8 +27,7 @@ import QtQuick 2.0
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-
-Item{
+Item {
     id: button
 
     /*!

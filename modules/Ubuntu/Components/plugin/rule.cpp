@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "stylerule.h"
-#include "stylerule_p.h"
+#include "rule.h"
+#include "rule_p.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include <QtQml/QQmlEngine>
@@ -32,22 +32,22 @@ const bool traceStyleRule = false;
 #endif
 #define TRACE \
     if (traceStyleRule) \
-        qDebug() << QString("StyleRule::%1").arg(__FUNCTION__, -15)
+        qDebug() << QString("Rule::%1").arg(__FUNCTION__, -15)
 
 #define TRACEP \
     if (traceStyleRule) \
-        qDebug() << QString("StyleRulePrivate::%1").arg(__FUNCTION__, -15)
+        qDebug() << QString("RulePrivate::%1").arg(__FUNCTION__, -15)
 
 /*!
   \qmltype Rule
   \inqmlmodule Ubuntu.Components 0.1
   \ingroup theming
-  \brief The Rule element defines the styling rule to be applied when a widget
+  \brief The Rule element defines the styling rule to be applied when a item
   satisfies the conditions specified by the rule. The condition is specified by
   the selector property, using the CSS selector syntax.
 
   The following example defines a style rule that is applied on "frame" style
-  class widgets. Widgets satisfying the condition will use visuals defined in
+  class items. items satisfying the condition will use visuals defined in
   the delegate property and configured based on the values set by the style
   component.
 
@@ -65,12 +65,12 @@ const bool traceStyleRule = false;
         }
         delegate: Component {
           Rectangle {
-            anchors.fill: widget
-            color: widget.styleObject.color
+            anchors.fill: item
+            color: itemStyle.color
             radius: 5
             border {
               width: 2
-              color: widget.styleObject.frameColor
+              color: itemStyle.frameColor
             }
           }
         }
@@ -80,18 +80,18 @@ const bool traceStyleRule = false;
 
 
   Rules can be declared either in a theme or in a ItemStyleAttached, in which case the
-  style will be private for the widget, and the widget won't load any style from
+  style will be private for the item, and the item won't load any style from
   the themes.
 
-  The theming subsystem declares the context property called "widget" through which
-  styles can access the targetted widget properties, states, signals and functions,
-  everything that is declared public in the widget.
+  The theming subsystem declares the context property called "item" through which
+  styles can access the targetted item properties, states, signals and functions,
+  everything that is declared public in the item.
 
-  There can be cases when the content of the widget is anchored to the visuals or
-  when the content of a widget needs to stand on top of the visuals. In these cases
-  delegates can declare an item, which will hold all the widget content (widget
+  There can be cases when the content of the item is anchored to the visuals or
+  when the content of a item needs to stand on top of the visuals. In these cases
+  delegates can declare an item, which will hold all the item content (item
   children) and name it as "contentItem". The theming engine will search for this
-  property and if found, will reparent the widget content to it.
+  property and if found, will reparent the item content to it.
 
   Example:
   \qml
@@ -105,12 +105,12 @@ const bool traceStyleRule = false;
         delegate: Component {
             Rectangle {
                 property alias contentItem: body
-                anchors.fill: widget
-                color: widget.styleObject.color
+                anchors.fill: item
+                color: itemStyle.color
                 radius: 5
                 border {
                     width: 2
-                    color: widget.styleObject.frameColor
+                    color: itemStyle.frameColor
                 }
                 Item {
                     id: body
@@ -122,11 +122,18 @@ const bool traceStyleRule = false;
       }
 
   \endqml
-  In this example all widget content to which the style is applied will get
+  In this example all item content to which the style is applied will get
   reparented to the body item.
 */
 
-StyleRulePrivate::StyleRulePrivate(StyleRule *qq) :
+/*!
+  \preliminary
+  \qmlsignal Rule::ruleChanged()
+  Emitted when the rule creation gets completed.
+*/
+
+
+RulePrivate::RulePrivate(Rule *qq) :
     q_ptr(qq),
     style(0),
     delegate(0),
@@ -134,11 +141,10 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq) :
 {
 }
 
-/*!
-  \internal
-  Alternate constructor used in QTHM styles, when style and delegate component creation may be delayed.
+/*
+  Alternate constructor used in ".qmltheme" styles, when style and delegate component creation may be delayed.
   */
-StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule) :
+RulePrivate::RulePrivate(Rule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule) :
     q_ptr(qq),
     style(0),
     delegate(0),
@@ -164,11 +170,10 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QStr
               .arg(delegateQml);
 }
 
-/*!
-  \internal
-  Destroys style and delegate components in cas ethe rule was created by a QTHM theme.
+/*
+  Destroys style and delegate components in case the rule was created by a ".qmltheme" theme.
   */
-StyleRulePrivate::~StyleRulePrivate()
+RulePrivate::~RulePrivate()
 {
     if (qmlThemeStyle) {
         if (!style)
@@ -180,11 +185,10 @@ StyleRulePrivate::~StyleRulePrivate()
     }
 }
 
-/*!
-  \internal
+/*
   Initiates component creation for a given QML code
   */
-void StyleRulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCode, QQmlComponent **component)
+void RulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCode, QQmlComponent **component)
 {
     *component = new QQmlComponent(engine);
     (*component)->setData(qmlCode.toLatin1(), QUrl());
@@ -194,12 +198,11 @@ void StyleRulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCod
         completeComponent(*component);
 }
 
-/*!
-  \internal
+/*
   Completes (style or delegate) component creation. If both created style and
   delegate components are ready, emits the ruleChanged signal to update ItemStyleAttacheds.
   */
-void StyleRulePrivate::completeComponent(QQmlComponent *sender)
+void RulePrivate::completeComponent(QQmlComponent *sender)
 {
     Q_ASSERT_X(sender, Q_FUNC_INFO, "Cannot have NULL component");
     if (sender->isError()) {
@@ -219,20 +222,19 @@ void StyleRulePrivate::completeComponent(QQmlComponent *sender)
         if (!delegate || (delegate && (delegate->status() == QQmlComponent::Ready)))
             delegateCompleted = true;
         if (styleCompleted && delegateCompleted) {
-            Q_Q(StyleRule);
+            Q_Q(Rule);
             Q_EMIT q->ruleChanged();
         }
     }
 }
 
-/*!
-  \internal
+/*
   Slot completing the component (style or delegate) creation. Calls completeComponent
   with the signal sender.
   */
-void StyleRulePrivate::_q_componentCompleted(QQmlComponent::Status)
+void RulePrivate::_q_componentCompleted(QQmlComponent::Status)
 {
-    Q_Q(StyleRule);
+    Q_Q(Rule);
     QQmlComponent *sender = qobject_cast<QQmlComponent*>(q->sender());
     completeComponent(sender);
 }
@@ -241,52 +243,57 @@ void StyleRulePrivate::_q_componentCompleted(QQmlComponent::Status)
 =============================================================================*/
 
 /*!
-  \preliminary
-  \qmlsignal Rule::ruleChanged()
-  Emitted when the rule creation gets completed.
+  \class Rule rule.h
+
+  \internal
 */
 
 /*!
   Creates the rule element. This is used when QML theme file format is loaded.
   */
-StyleRule::StyleRule(QObject *parent) :
+Rule::Rule(QObject *parent) :
     QObject(parent),
-    d_ptr(new StyleRulePrivate(this))
+    d_ptr(new RulePrivate(this))
 {}
 
 /*!
   Creates rule element used when QTHM format themes are loaded. The style and delegate
   components are created by the rule element as delayed completion can occur.
   */
-StyleRule::StyleRule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent) :
+Rule::Rule(QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule, QObject *parent) :
     QObject(parent),
-    d_ptr(new StyleRulePrivate(this, engine, selector, styleRule, delegateRule))
+    d_ptr(new RulePrivate(this, engine, selector, styleRule, delegateRule))
 {}
 
-StyleRule::~StyleRule()
+/*!
+  */
+Rule::~Rule()
 {}
 
-void StyleRule::classBegin()
+/*!
+  */
+void Rule::classBegin()
 {
     // from QQmlParserStatus
 }
 
-void StyleRule::componentComplete()
+/*!
+  */
+void Rule::componentComplete()
 {
-    // trigger changed signal; this is needed when developer defines a private StyleRule
-    // for a widget so property bindings done with the rule are updated
+    // trigger changed signal; this is needed when developer defines a private Rule
+    // for a item so property bindings done with the rule are updated
     Q_EMIT ruleChanged();
 }
 
 /*!
-  \internal
   Creates a style object in the \a context. Use this method instead of creating
   style objects straight from the style component, as this one checks the readyness
   of the style component of the rule.
   */
-QObject *StyleRule::createStyle(QQmlContext *context)
+QObject *Rule::createStyle(QQmlContext *context)
 {
-    Q_D(StyleRule);
+    Q_D(Rule);
     if (d->qmlThemeStyle && d->style && (d->style->status() != QQmlComponent::Ready)) {
         ThemeEnginePrivate::setError(QString("Style not ready for [%1]\n%2")
                                      .arg(d->selector)
@@ -298,14 +305,13 @@ QObject *StyleRule::createStyle(QQmlContext *context)
 }
 
 /*!
-  \internal
   Creates the visuals item in the \a context. Use this method instead of creating
   visuals straight from the delegate component, as this one checks the readyness
   of the delegate component of the rule.
   */
-QQuickItem *StyleRule::createDelegate(QQmlContext *context)
+QQuickItem *Rule::createDelegate(QQmlContext *context)
 {
-    Q_D(StyleRule);
+    Q_D(Rule);
     if (d->qmlThemeStyle && d->delegate && (d->delegate->status() != QQmlComponent::Ready)) {
         ThemeEnginePrivate::setError(QString("Delegate not ready for [%1]\n%2")
                                      .arg(d->selector)
@@ -329,21 +335,20 @@ QQuickItem *StyleRule::createDelegate(QQmlContext *context)
   */
 
 /*!
-  \internal
   Rule selector value
   */
-QString StyleRule::selector() const
+QString Rule::selector() const
 {
-    Q_D(const StyleRule);
+    Q_D(const Rule);
     return d->selector;
 }
 
 /*!
   Sets the rule selector value
   */
-void StyleRule::setSelector(const QString &selector)
+void Rule::setSelector(const QString &selector)
 {
-    Q_D(StyleRule);
+    Q_D(Rule);
     d->selector = selector;
 }
 
@@ -358,44 +363,44 @@ void StyleRule::setSelector(const QString &selector)
 /*!
   Rule style.
   */
-QQmlComponent *StyleRule::style()
+QQmlComponent *Rule::style()
 {
-    Q_D(const StyleRule);
+    Q_D(const Rule);
     return d->style;
 }
 
 /*!
   Sets the style property
   */
-void StyleRule::setStyle(QQmlComponent *style)
+void Rule::setStyle(QQmlComponent *style)
 {
-    Q_D(StyleRule);
+    Q_D(Rule);
     d->style = style;
 }
 
 /*!
   \qmlproperty Component Rule::delegate
-  This property holds the visuals component of the style. Widgets implementations
+  This property holds the visuals component of the style. items implementations
   can decide on the separation of the visuals, either partially or completely.
-  It is not mandatory for a widget to rely fully on the visuals defined in themes.
+  It is not mandatory for a item to rely fully on the visuals defined in themes.
   */
 
 /*!
   Rule delegate.
   */
-QQmlComponent *StyleRule::delegate()
+QQmlComponent *Rule::delegate()
 {
-    Q_D(const StyleRule);
+    Q_D(const Rule);
     return d->delegate;
 }
 
 /*!
   Sets the delegate property value
   */
-void StyleRule::setDelegate(QQmlComponent *delegate)
+void Rule::setDelegate(QQmlComponent *delegate)
 {
-    Q_D(StyleRule);
+    Q_D(Rule);
     d->delegate = delegate;
 }
 
-#include "moc_stylerule.cpp"
+#include "moc_rule.cpp"

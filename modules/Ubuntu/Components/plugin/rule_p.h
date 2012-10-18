@@ -19,18 +19,18 @@
 #ifndef STYLE_P_H
 #define STYLE_P_H
 
-#include "stylerule.h"
+#include "rule.h"
 
-class StyleRulePrivate
+class RulePrivate
 {
-    Q_DECLARE_PUBLIC(StyleRule)
+    Q_DECLARE_PUBLIC(Rule)
 
 public:
-    StyleRulePrivate(StyleRule *qq);
-    StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule);
-    ~StyleRulePrivate();
+    RulePrivate(Rule *qq);
+    RulePrivate(Rule *qq, QQmlEngine *engine, const QString &selector, const QString &styleRule, const QString &delegateRule);
+    ~RulePrivate();
 
-    StyleRule *q_ptr;
+    Rule *q_ptr;
 
     QQmlComponent *style;
     QQmlComponent *delegate;

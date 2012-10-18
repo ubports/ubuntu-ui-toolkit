@@ -23,7 +23,7 @@
 
 #include "itemstyleattached.h"
 #include "itemstyleattached_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
 
@@ -40,7 +40,7 @@ const bool traceItemStyleAttached = false;
     if (traceItemStyleAttached) \
         qDebug() << QString("ItemStyleAttachedPrivate::%1").arg(__FUNCTION__, -15)
 
-const char *widgetProperty = "widget";
+const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
 
 /*!
@@ -52,10 +52,10 @@ const char *styleProperty = "itemStyle";
 
   The element provides styling support to any element derived from Item
   (QQuickItem).
-  The style is selected based on the styleClass and instanceId properties. If neither
+  The style is selected based on the styleClass and name properties. If neither
   of these is defined, the framework will use the meta class name to identify the
   style rule to be used. However this can happen only if the document defining the
-  widget refers to the styling attached property.
+  item refers to the styling attached property.
 
   The following items will use styling as they declare and reffer to styling
   attached properties, and styling Text can be done by defining the ".Text"
@@ -72,8 +72,8 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  A widget can use private styling by setting the style and/or the deleagte property
-  locally. In this case the widget won't use the theme defined style/delegate but
+  A item can use private styling by setting the style and/or the deleagte property
+  locally. In this case the item won't use the theme defined style/delegate but
   use the styling elements defined locally. Switching back to theme defined styles
   can be achieved by clearing the style/delegate property. It is also possible to
   set only one of the styling elements locally and use a the theme defined one for
@@ -99,7 +99,7 @@ const char *styleProperty = "itemStyle";
   styling, therefore the element by default will use the style defined using
   ".Button" selector.
 
-  The following example shows a Button widget that uses a private delegate but the
+  The following example shows a Button item that uses a private delegate but the
   style from the themes.
 
   \qml
@@ -120,7 +120,7 @@ const char *styleProperty = "itemStyle";
   The style is usually applied straight when a styling property is changed. This
   may cause performance problems as there are two properties that can affect the
   style applied. In case the component handles the "Component.onCompleted" signal,
-  the styling will be applied only when teh completion occurs. Therefore widgets
+  the styling will be applied only when teh completion occurs. Therefore items
   can handle the completion by simply adding an empty handler to delay styling.
   Modifying teh Button.qml example above, the component that applies styling on
   completion would look as follows:
@@ -144,8 +144,8 @@ const char *styleProperty = "itemStyle";
   \endqml
 
  Attached styling defines two properties in the styling context that can be
- used from delegates to access the widget and teh style proeprties. Widget
- properties can be accessed through "widget", and styling properties through
+ used from delegates to access the item and teh style proeprties. item
+ properties can be accessed through "item", and styling properties through
  "itemStyle" proeprty.
 
 */
@@ -174,15 +174,115 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
         }
     }
     listenThemeEngine();
+
+    if (!componentContext) {
+        componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
+        componentContext->setContextProperty(itemProperty, attachee);
+    }
+}
+
+bool ItemStyleAttachedPrivate::lookupThemeStyle(bool useMetaClassName)
+{
+    themeRule = ThemeEngine::instance()->lookupStyleRule(attachee, useMetaClassName);
+    TRACEP << "useMetaClassName=" << useMetaClassName << themeRule;
+    return (themeRule != 0);
+}
+
+bool ItemStyleAttachedPrivate::updateStyle()
+{
+    TRACEP << "ENTER";
+    bool result = false;
+    // do not do anything till the component gets complete?
+    if (delayApplyingStyle)
+       return result;
+
+    TRACEP << QString("class: %1, customStyle: %2").arg(styleClass).arg(customStyle);
+    if (!customStyle) {
+        // check if we have a forced update
+        if (style) {
+            style->deleteLater();
+            style = 0;
+        }
+        // make sure we have a theme
+        result = lookupThemeStyle(false);
+        if (!result || (result && !themeRule->style()))
+            result = lookupThemeStyle(true);
+        if (result) {
+            if (style)
+                style->deleteLater();
+            style = themeRule->createStyle(componentContext);
+        }
+    }
+
+    // reparent also custom styles!
+    if (result && style) {
+        style->setParent(attachee);
+        componentContext->setContextProperty(styleProperty, style);
+    }
+    TRACEP << "LEAVE";
+    return result;
+}
+
+bool ItemStyleAttachedPrivate::updateDelegate()
+{
+    TRACEP << "ENTER";
+    bool result = false;
+    // do not do anything till the component gets complete?
+    if (delayApplyingStyle)
+       return result;
+
+    TRACEP << QString("class: %1, customDelegate: %2").arg(styleClass).arg(customDelegate);
+
+    if (!customDelegate) {
+        if (delegate) {
+            delegate->deleteLater();
+            delegate = 0;
+        }
+        // make sure we have a theme
+        result = lookupThemeStyle(false);
+        if (!result || (result && !themeRule->delegate()))
+            result = lookupThemeStyle(true);
+        if (result) {
+            if (delegate)
+                delegate->deleteLater();
+            delegate = themeRule->createDelegate(componentContext);
+        }
+    }
+
+    if (delegate && ((delegate->parent() != attachee) || (delegate->parentItem() != attachee))) {
+        delegate->setParent(attachee);
+        delegate->setParentItem(attachee);
+        // If style item contains a property "contentItem" that points
+        // to an item, reparent all children into it:
+        QVariant contentVariant = delegate->property("contentItem");
+        QQuickItem *contentItem = qvariant_cast<QQuickItem *>(contentVariant);
+        if (contentItem) {
+            Q_FOREACH (QObject *child, attachee->children()) {
+                QQuickItem *childItem = qobject_cast<QQuickItem *>(child);
+                if (childItem)
+                    childItem->setParentItem(contentItem);
+            }
+        }
+    }
+    TRACEP << "LEAVE";
+    return result;
 }
 
 /*!
   \internal
   Updates the style and delegate variables. The style update is forced
-  when the widget changes the style lookup from private to theme.
+  when the item changes the style lookup from private to theme.
 */
 void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
 {
+    bool styleUpdated = updateStyle();
+    bool delegateUpdated = updateDelegate();
+    if (styleUpdated || delegateUpdated) {
+        Q_Q(ItemStyleAttached);
+        TRACEP << "emit styleChanged()";
+        Q_EMIT q->styleChanged();
+    }
+    /*
     Q_Q(ItemStyleAttached);
     // do not do anything till the component gets complete?
     if (delayApplyingStyle)
@@ -205,17 +305,17 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
         }
     }
 
-    // check if we have a context created, and set the "widget" property so
-    // the widget instance can be used from style/delegate
+    // check if we have a context created, and set the "item" property so
+    // the item instance can be used from style/delegate
     if (!componentContext) {
         componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
-        componentContext->setContextProperty(QLatin1String(widgetProperty), attachee);
+        componentContext->setContextProperty(QLatin1String(itemProperty), attachee);
     }
 
     TRACEP << QString("class: %1, customStyle: %2, customDelegate: %3").arg(styleClass).arg(customStyle).arg(customDelegate);
     //check if we need to use the theme at all
     if (!customStyle || !customDelegate) {
-        StyleRule *rule = ThemeEngine::instance()->lookupStyleRule(attachee);
+        Rule *rule = ThemeEngine::instance()->lookupStyleRule(attachee);
         if (!rule) {
             // check with class name of the attached property
             TRACEP << "retrieving style for default";
@@ -240,7 +340,7 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
                     delegate->deleteLater();
                 delegate = rule->createDelegate(componentContext);
                 if (!delegate && !defaultChecked) {
-                    StyleRule * delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true);
+                    Rule * delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true);
                     if (delegateRule) {
                         delegate = delegateRule->createDelegate(componentContext);
                     }
@@ -278,6 +378,7 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
     }
     if (styleChanged)
         Q_EMIT q->styleChanged();
+    */
 }
 
 /*!
@@ -285,19 +386,19 @@ void ItemStyleAttachedPrivate::updateCurrentStyle(bool forceUpdate)
   Registers the element with the given instance \a id. Returns true on
   successful registration. On error, the theme engine's error string is set.
   */
-bool ItemStyleAttachedPrivate::registerInstanceId(const QString &id)
+bool ItemStyleAttachedPrivate::registerName(const QString &id)
 {
     bool result = true;
     Q_Q(ItemStyleAttached);
-    if (ThemeEngine::instance()->registerInstanceId(attachee, id))
-        instanceId = id;
+    if (ThemeEngine::instance()->registerName(attachee, id))
+        name = id;
     else {
         QString className = q->metaObject()->className();
         className = className.left(className.indexOf("_QMLTYPE"));
         ThemeEnginePrivate::setError(QString("Instance %1 already registered. Resetting instance for %2.")
-                                     .arg(instanceId)
+                                     .arg(name)
                                      .arg(className));
-        instanceId = QString();
+        name = QString();
         result = false;
     }
     return result;
@@ -329,7 +430,7 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
   */
 void ItemStyleAttachedPrivate::_q_refteshStyle()
 {
-    TRACEP << styleClass;
+    TRACEP << QString("%1#%2").arg(styleClass).arg(name);
     // no need to delay style applying any longer
     delayApplyingStyle = false;
 
@@ -359,25 +460,25 @@ ItemStyleAttached *ItemStyleAttached::qmlAttachedProperties(QObject *obj)
 }
 
 /*!
-  \qmlproperty string ItemStyle::instanceId
-  This property holds the widget unique identifier used in styling.
+  \qmlproperty string ItemStyle::name
+  This property holds the item unique identifier used in styling.
   */
 /*!
-  instanceId property.
+  name property.
   */
-QString ItemStyleAttached::instanceId() const
+QString ItemStyleAttached::name() const
 {
     Q_D(const ItemStyleAttached);
-    return d->instanceId;
+    return d->name;
 }
 /*!
-  Updates the instanceId property.
+  Updates the name property.
   */
-void ItemStyleAttached::setInstanceId(const QString &instanceId)
+void ItemStyleAttached::setName(const QString &name)
 {
     Q_D(ItemStyleAttached);
-    if (instanceId != d->instanceId) {
-        if (d->registerInstanceId(instanceId)) {
+    if (name != d->name) {
+        if (d->registerName(name)) {
             d->listenThemeEngine();
             d->updateCurrentStyle();
         }
@@ -385,15 +486,15 @@ void ItemStyleAttached::setInstanceId(const QString &instanceId)
 }
 
 /*!
-  \qmlproperty string ItemStyle::styleClass
-  This property holds the style class identifier used by the widget.
-  When the engine locates the style rule to be applied on the widget, it takes
-  the styleClass and instanceId properties. If none is specified, the meta class
+  \qmlproperty string ItemStyle::class
+  This property holds the style class identifier used by the item.
+  When the engine locates the style rule to be applied on the item, it takes
+  the styleClass and name properties. If none is specified, the meta class
   name will be used to search for the style. This must be taken into account both
-  when defining themes and designing widgets and applications.
+  when defining themes and designing items and applications.
   */
 /*!
-  styleClass property.
+  class property.
   */
 QString ItemStyleAttached::styleClass() const
 {
@@ -401,7 +502,7 @@ QString ItemStyleAttached::styleClass() const
     return d->styleClass;
 }
 /*!
-  Sets the styleClass property value.
+  Sets the class property value.
   */
 void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
@@ -421,7 +522,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
   reset (set to null object) in order to use th etheme defines styles.
 
   Modifying the property alone will only affect the styling. The delegate will be used
-  from the theme unless specified explicitly. Therefore widgets can be used with custom
+  from the theme unless specified explicitly. Therefore items can be used with custom
   styling and theme defined delegate, theme style and custom delegate or both theme defined/
   custom.
   */
@@ -438,7 +539,7 @@ QObject *ItemStyleAttached::style() const
 
 /*!
   \internal
-  Sets/resets the style object for the widget.
+  Sets/resets the style object for the item.
   */
 void ItemStyleAttached::setStyle(QObject *style)
 {
@@ -450,13 +551,15 @@ void ItemStyleAttached::setStyle(QObject *style)
             d->style->deleteLater();
         d->style = style;
         d->listenThemeEngine();
-        d->updateCurrentStyle();
+        if (d->updateStyle())
+            Q_EMIT styleChanged();
+        //d->updateCurrentStyle();
     }
 }
 
 /*!
   \qmlproperty Item ItemStyle::delegate
-  The property holds the Item containing the visuals of the widget defined by
+  The property holds the Item containing the visuals of the item defined by
   one of the styles, theme or private. It can be altered
   */
 /*!
@@ -470,21 +573,23 @@ QQuickItem *ItemStyleAttached::delegate() const
 
 /*!
   \internal
-  Sets/resets the delegate item for the widget.
+  Sets/resets the delegate item for the item.
   */
 void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
-        d->customDelegate = (delegate != 0);
-        // clear the previous delegate
-        if (d->delegate) {
+        // clear the previous theme delegate
+        if (!d->customDelegate && d->delegate) {
             d->delegate->setVisible(false);
             d->delegate->deleteLater();
         }
+        d->customDelegate = (delegate != 0);
         d->delegate = delegate;
         d->listenThemeEngine();
-        d->updateCurrentStyle();
+        //d->updateCurrentStyle();
+        if (d->updateDelegate())
+            Q_EMIT styleChanged();
     }
 }
 

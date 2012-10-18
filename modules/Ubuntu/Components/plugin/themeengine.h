@@ -22,7 +22,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 
-class StyleRule;
+class Rule;
 class QQmlEngine;
 class QJSEngine;
 class QQuickItem;
@@ -34,7 +34,7 @@ class ThemeEngine : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString error READ error RESET resetError NOTIFY errorChanged)
-    Q_PROPERTY(QString currentTheme READ currentTheme NOTIFY themeChanged)
+    Q_PROPERTY(QString currentTheme READ theme NOTIFY themeChanged)
 protected:
     ThemeEngine(QObject *parent = 0);
 public:
@@ -42,13 +42,13 @@ public:
     static QObject *initializeEngine(QQmlEngine *engine);
     static ThemeEngine *instance();
 
-    bool registerInstanceId(QQuickItem *item, const QString &newId);
-    StyleRule *lookupStyleRule(QQuickItem *item, bool forceClassName = false);
+    bool registerName(QQuickItem *item, const QString &newId);
+    Rule *lookupStyleRule(QQuickItem *item, bool forceClassName = false);
 
     // getter/setters
     QString error() const;
     void resetError();
-    QString currentTheme() const;
+    QString theme() const;
 
 Q_SIGNALS:
     void errorChanged();
@@ -57,7 +57,8 @@ Q_SIGNALS:
 public Q_SLOTS:
     bool loadTheme(const QUrl &themeFile);
 
-    bool setTheme(const QString &theme, bool global = false);
+    bool setGlobalTheme(const QString &theme);
+    bool setLocalTheme(const QString &theme);
 
 private:
     Q_DISABLE_COPY(ThemeEngine)

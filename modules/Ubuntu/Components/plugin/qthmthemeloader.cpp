@@ -19,7 +19,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "qthmthemeloader_p.h"
-#include "stylerule.h"
+#include "rule.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
@@ -92,7 +92,7 @@ void normalizeSelector(Selector &selector)
 /*!
   \internal
     Returns a subset from the given selector and configures it to ignore relation
-    and instanceId.
+    and name.
   */
 Selector selectorSubset(const Selector &path, int elements)
 {
@@ -208,13 +208,18 @@ bool QthmThemeLoader::handleSelector(const Selector &selector, const QString &de
             int pathStart = value.indexOf('(', atUrl);
             if (pathStart >= 0) {
                 int pathEnd = value.indexOf(')', pathStart);
-                int pathLen = pathEnd - pathStart;
-                QString path = value.mid(pathStart + 1, pathEnd - pathStart - 2);
+                QString path = value.mid(pathStart + 1, pathEnd - pathStart - 1).trimmed();
                 path.remove('\"');
-                QFile *file = qobject_cast<QFile*>(stream.device());
-                QFileInfo fi(*file);
-                path.prepend('/').prepend(fi.dir().absolutePath()).prepend('\"').append('\"');
-                // replace url(path) with teh resolved one
+
+                if (!path.startsWith('/') && !path.startsWith("qrc:/") &&
+                        !path.startsWith("image:/") && !path.startsWith(":/")) {
+                    QFile *file = qobject_cast<QFile*>(stream.device());
+                    QFileInfo fi(*file);
+                    //create the path so that returns the absolute path to the URL given
+                    path = QFileInfo(fi.absoluteDir().path() + '/' + path).absoluteFilePath();
+                }
+                path.prepend('\"').append('\"');
+                // replace url(path) with the resolved one
                 value.replace(atUrl, pathEnd - atUrl + 1, path);
             }
         }
@@ -396,7 +401,7 @@ bool QthmThemeLoader::generateStyleQml()
 
         // creating components from internal QML source is synchronous, unless
         // one of the imported elements require threaded loading. Therefore we use
-        // StyleRule to create style and delegate components so StyleRule can handle
+        // Rule to create style and delegate components so Rule can handle
         // asynchronous completion of those.
 
         if (!style.isEmpty()) {
@@ -408,7 +413,7 @@ bool QthmThemeLoader::generateStyleQml()
             delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
         }
 #ifdef SEPARATE_COMPONENTS
-        StyleRule *rule = new StyleRule(m_engine,
+        Rule *rule = new Rule(m_engine,
                                         ThemeEnginePrivate::selectorToString(selector),
                                         style,
                                         delegate);
@@ -464,9 +469,9 @@ bool QthmThemeLoader::buildStyleTree(const QUrl &url)
         QObject *theme = themeComponent.create();
         if (theme) {
             // parse its children for Styles
-            QList<StyleRule*> rules = theme->findChildren<StyleRule*>();
+            QList<Rule*> rules = theme->findChildren<Rule*>();
 
-            Q_FOREACH (StyleRule *rule, rules) {
+            Q_FOREACH (Rule *rule, rules) {
                 const QString selector = rule->selector();
                 if (selector.isEmpty()) {
                     qWarning() << "Rule without selector!";
@@ -519,7 +524,7 @@ bool QthmThemeLoader::handleImport(QthmThemeLoader *loader, QTextStream &stream)
   where
      - css-tag is the tag used in CSS theme
      - style-qml-type is the name of the QML document defining the style properties
-     - delegate-qml-type is the name of the QML document defining the widget delegate.
+     - delegate-qml-type is the name of the QML document defining the item delegate.
   If no style is given, theme engine will use QtObject for style and will declare all
   properties typed as variant.
 

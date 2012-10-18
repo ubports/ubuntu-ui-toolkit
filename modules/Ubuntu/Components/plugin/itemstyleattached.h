@@ -28,8 +28,8 @@ class ItemStyleAttached : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString styleClass READ styleClass WRITE setStyleClass NOTIFY styleChanged)
-    Q_PROPERTY(QString instanceId READ instanceId WRITE setInstanceId NOTIFY styleChanged)
+    Q_PROPERTY(QString class READ styleClass WRITE setStyleClass NOTIFY styleChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY styleChanged)
     Q_PROPERTY(QObject *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PROPERTY(QQuickItem *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
 
@@ -44,11 +44,11 @@ Q_SIGNALS:
 public Q_SLOTS:
 
 public: //getters
-    QString instanceId() const;
+    QString name() const;
     QString styleClass() const;
 
 private:
-    void setInstanceId(const QString &instanceId);
+    void setName(const QString &name);
     void setStyleClass(const QString &styleClass);
     QObject *style() const;
     void setStyle(QObject *style);

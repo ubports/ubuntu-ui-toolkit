@@ -51,6 +51,7 @@ ButtonWithForeground {
 
     width: 87
     height: 39
+    Theming.ItemStyle.class: "Button"
 
     /*!
        \preliminary
@@ -70,7 +71,4 @@ ButtonWithForeground {
        This will change the visuals/shading of the button.
     */
     property bool darkBorder: false
-
-    // make sure we apply the theming at completion
-    Component.onCompleted: {}
 }

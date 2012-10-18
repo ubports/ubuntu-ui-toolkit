@@ -20,10 +20,10 @@ HEADERS += plugin.h \
     themeloader_p.h \
     themesettings_p.h \
     suffixtree_p.h \
-    stylerule.h \
-    stylerule_p.h \
     itemstyleattached.h \
-    itemstyleattached_p.h
+    itemstyleattached_p.h \
+    rule.h \
+    rule_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -31,8 +31,8 @@ SOURCES += plugin.cpp \
     suffixtree.cpp \
     themesettings.cpp \
     qthmthemeloader.cpp \
-    stylerule.cpp \
-    itemstyleattached.cpp
+    itemstyleattached.cpp \
+    rule.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

@@ -46,18 +46,18 @@ uint qHash(const Selector &key);
 class StyleTreeNode {
 public:
     StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, StyleRule *styleRule);
+    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule);
     ~StyleTreeNode();
     void clear();
-    void addStyleRule(const Selector &path, StyleRule *styleRule);
-    StyleRule *lookupStyleRule(const Selector &path, bool strict = false);
-    StyleRule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
+    void addStyleRule(const Selector &path, Rule *styleRule);
+    Rule *lookupStyleRule(const Selector &path, bool strict = false);
+    Rule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
     void listTree(const QString &prefix = QString());
 
 public:
     StyleTreeNode *parent;
     SelectorNode styleNode;
-    StyleRule *styleRule;
+    Rule *styleRule;
     // the key is the next CSS node's "relationship styleClass#styleId" combination
     QHash<QString, StyleTreeNode*> children;
 };

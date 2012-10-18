@@ -27,42 +27,19 @@ import "." 0.1 as Theming
     \b{This component is under heavy development.}
 */
 Text {
-    color: "black"
+    color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
+             Theming.ItemStyle.style.color : "black"
+    style: (Theming.ItemStyle.style && Theming.ItemStyle.style.style) ?
+             Theming.ItemStyle.style.style : Text.Normal
+    styleColor: (Theming.ItemStyle.style && Theming.ItemStyle.style.styleColor) ?
+                    Theming.ItemStyle.style.styleColor : color
 //    font.family: "UbuntuBeta"
 
     /*!
        \preliminary
        DOCME
     */
-    property string fontSize: "medium"
+    property string fontSize: (Theming.ItemStyle.style && Theming.ItemStyle.style.fontSize) ?
+                                Theming.ItemStyle.style.fontSize : "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
-
-    // the following line instructs ItemStyle attached properties to delay
-    // applying the style
-    Component.onCompleted: {}
-    // apply styling
-    Theming.ItemStyle.onStyleChanged: {
-        // define the new binding till we get the style to apply the theme
-        // properties straight on the Item!
-        color = Qt.binding(function () {
-                               if (Theming.ItemStyle.style && Theming.ItemStyle.style.color)
-                                   return Theming.ItemStyle.style.color
-                               return "black"
-                           })
-        fontSize = Qt.binding(function() {
-                                 if (Theming.ItemStyle.style && Theming.ItemStyle.style.fontSize)
-                                     return Theming.ItemStyle.style.fontSize
-                                 return "medium"
-                             })
-        if (Theming.ItemStyle.style && Theming.ItemStyle.style.style) {
-            style = Qt.binding(function() {
-                               return Theming.ItemStyle.style.style
-                               })
-        }
-        if (Theming.ItemStyle.style && Theming.ItemStyle.style.styleColor) {
-            styleColor = Qt.binding(function() {
-                               return Theming.ItemStyle.style.styleColor
-                               })
-        }
-    }
 }
