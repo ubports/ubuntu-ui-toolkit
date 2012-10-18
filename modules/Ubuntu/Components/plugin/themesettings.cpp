@@ -44,7 +44,7 @@ const bool traceThemeSettings = false;
 
   System themes are stored under /usr/share/themes/<theme-name>/qmltheme folder,
   where the common theme is named "default.qmltheme" and each application has its
-  own theme, which can be either in the qthm folder or under a subfolder.
+  own theme, which can be either in the qmltheme folder or under a subfolder.
 
   OBS: we need to expose a QML element that handles these. Beside, applications
   should set up the theme before the plugin gets loaded by QML.

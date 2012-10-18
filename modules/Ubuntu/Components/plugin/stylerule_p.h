@@ -37,7 +37,7 @@ public:
     QString selector;
     QString styleQml;
     QString delegateQml;
-    bool qthmStyle;
+    bool qmlThemeStyle;
 
     void createComponent(QQmlEngine *engine, const QString &rule, QQmlComponent **component);
     void completeComponent(QQmlComponent *sender);

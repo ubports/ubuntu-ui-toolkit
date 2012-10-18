@@ -130,7 +130,7 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq) :
     q_ptr(qq),
     style(0),
     delegate(0),
-    qthmStyle(false)
+    qmlThemeStyle(false)
 {
 }
 
@@ -145,7 +145,7 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QStr
     selector(selector),
     styleQml(styleRule),
     delegateQml(delegateRule),
-    qthmStyle(true)
+    qmlThemeStyle(true)
 {
     // create style component
     if (!styleQml.isEmpty())
@@ -170,7 +170,7 @@ StyleRulePrivate::StyleRulePrivate(StyleRule *qq, QQmlEngine *engine, const QStr
   */
 StyleRulePrivate::~StyleRulePrivate()
 {
-    if (qthmStyle) {
+    if (qmlThemeStyle) {
         if (!style)
             delete style;
         style = 0;
@@ -287,7 +287,7 @@ void StyleRule::componentComplete()
 QObject *StyleRule::createStyle(QQmlContext *context)
 {
     Q_D(StyleRule);
-    if (d->qthmStyle && d->style && (d->style->status() != QQmlComponent::Ready)) {
+    if (d->qmlThemeStyle && d->style && (d->style->status() != QQmlComponent::Ready)) {
         ThemeEnginePrivate::setError(QString("Style not ready for [%1]\n%2")
                                      .arg(d->selector)
                                      .arg(d->styleQml));
@@ -306,7 +306,7 @@ QObject *StyleRule::createStyle(QQmlContext *context)
 QQuickItem *StyleRule::createDelegate(QQmlContext *context)
 {
     Q_D(StyleRule);
-    if (d->qthmStyle && d->delegate && (d->delegate->status() != QQmlComponent::Ready)) {
+    if (d->qmlThemeStyle && d->delegate && (d->delegate->status() != QQmlComponent::Ready)) {
         ThemeEnginePrivate::setError(QString("Delegate not ready for [%1]\n%2")
                                      .arg(d->selector)
                                      .arg(d->delegateQml));

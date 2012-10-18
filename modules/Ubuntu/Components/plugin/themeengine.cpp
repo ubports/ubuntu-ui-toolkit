@@ -452,7 +452,7 @@ true
   - if the theme is global, then the \a theme specifies the theme folder as specified
     in the global theme; if the \a theme is empty, the global theme's default will
     be set and loaded (e.g. TestApp from Ambiance theme will lead to
-    /usr/shared/theme/Ambiance/qthm/theme.qthm URL returned)
+    /usr/shared/theme/Ambiance/qmltheme/theme.qmltheme URL returned)
   - if the theme is local (\a global set to false), the \a theme contains the full
     path to the theme file to be used.
 
