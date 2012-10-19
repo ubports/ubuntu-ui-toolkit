@@ -49,7 +49,7 @@ public:
     bool lookupThemeStyle(bool useMetaClassName);
     bool updateStyle();
     bool updateDelegate();
-    void updateCurrentStyle(bool forceUpdate = false);
+    void updateCurrentStyle();
     bool registerName(const QString &id);
     void listenThemeEngine();
     void _q_refteshStyle();
