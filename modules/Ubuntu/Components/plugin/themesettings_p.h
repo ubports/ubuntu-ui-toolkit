@@ -23,17 +23,23 @@
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QUrl>
+#include <QtCore/QObject>
 
 
-class QObject;
-
-class ThemeSettings {
+class ThemeSettings : public QObject
+{
+    Q_OBJECT
 public:
-    ThemeSettings(QObject *globalThemeObserver);
+    ThemeSettings(QObject *parent = 0);
     QUrl themeFile() const;
     QUrl setTheme(const QString &theme, bool global);
     QStringList imports() const;
 
+Q_SIGNALS:
+    void themeSettingsChanged();
+
+private Q_SLOTS:
+    void refreshSettings();
 private:
     QFileSystemWatcher configWatcher;
     QSettings globalSettings;

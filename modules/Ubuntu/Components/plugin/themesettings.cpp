@@ -82,7 +82,8 @@ const char *appThemeFileKey = "ThemeFile";
 /*
  Instanciates the settins and connects the file system watcher
   */
-ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
+ThemeSettings::ThemeSettings(QObject *parent) :
+    QObject(parent),
     globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat),
     hasAppSettings(false)
 {
@@ -104,9 +105,16 @@ ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
     if (!hasAppSettings || (hasAppSettings && appSettings.value(appUseGlobalThemeKey).toBool()))
         configWatcher.addPath(globalSettings.fileName());
 
-    // connect theme observer to file watcher's fileChanged signal
+    // connect theme observer to the slot
     QObject::connect(&configWatcher, SIGNAL(fileChanged(QString)),
-                     globalThemeObserver, SLOT(_q_updateTheme()));
+                     this, SLOT(refreshSettings()));
+}
+
+void ThemeSettings::refreshSettings()
+{
+    // sync settings
+    globalSettings.sync();
+    Q_EMIT themeSettingsChanged();
 }
 
 /*
@@ -162,6 +170,7 @@ QUrl ThemeSettings::themeFile() const
   */
 QUrl ThemeSettings::setTheme(const QString &theme, bool global)
 {
+    // sync global theme
     if (theme.isEmpty() && !global) {
         ThemeEnginePrivate::setError("Invalid private file given for theme!");
         return QUrl();
@@ -200,6 +209,7 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
             configWatcher.addPath(globalSettings.fileName());
         }
 
+        // sync settings
         return theme;
     }
     return QUrl();

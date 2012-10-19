@@ -85,7 +85,6 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
     m_engine(qobject_cast<QQmlEngine*>(qq->parent())),
     m_styleTree(new StyleTreeNode(0)),
-    themeSettings(qq),
     firstThemeLoaded(false)
 {
     themeEngine = q_ptr;
@@ -94,6 +93,9 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     // TODO: shouldn't these be in separate plugins?
     themeLoaders[".qml"] = new QmlLoader(m_engine);
     themeLoaders[".qmltheme"] = new QmlThemeLoader(m_engine);
+
+    // connect theme settings to capture theme updates
+    QObject::connect(&themeSettings, SIGNAL(themeSettingsChanged()), q_ptr, SLOT(_q_updateTheme()));
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
