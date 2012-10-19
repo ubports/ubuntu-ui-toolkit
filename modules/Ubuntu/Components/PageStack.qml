@@ -140,6 +140,7 @@ Item {
 
         stack.top().pageStack = null;
         stack.top().active = false;
+        if (stack.top().canDestroy) stack.top().destroyObject();
         stack.pop();
         if (stack.size() > 0) stack.top().active = true;
 
