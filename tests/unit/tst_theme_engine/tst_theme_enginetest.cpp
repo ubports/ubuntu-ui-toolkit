@@ -26,8 +26,6 @@ private Q_SLOTS:
     void testCase_initializeEngine();
     void testCase_registerName();
     void testCase_loadTheme();
-    void testCase_setLocalTheme();
-    void testCase_setGlobalTheme();
     void testCase_lookupStyleRule();
 
 private:
@@ -104,22 +102,6 @@ void tst_ThemeEngine::testCase_loadTheme()
     QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
     ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qmltheme"));
     QCOMPARE(ThemeEngine::instance()->error(), QString());
-}
-
-void tst_ThemeEngine::testCase_setLocalTheme()
-{
-    ThemeEngine::instance()->resetError();
-    // should pass
-    ThemeEngine::instance()->setLocalTheme("../../resources/test.qmltheme");
-    QCOMPARE(ThemeEngine::instance()->error(), QString());
-}
-
-void tst_ThemeEngine::testCase_setGlobalTheme()
-{
-    ThemeEngine::instance()->resetError();
-    // should fail
-    ThemeEngine::instance()->setGlobalTheme("../../resources/base.qmltheme");
-    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
 }
 
 QTEST_MAIN(tst_ThemeEngine)

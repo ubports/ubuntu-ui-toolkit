@@ -32,7 +32,6 @@ class ThemeSettings : public QObject
 public:
     ThemeSettings(QObject *parent = 0);
     QUrl themeFile() const;
-    QUrl setTheme(const QString &theme, bool global);
     QStringList imports() const;
 
 Q_SIGNALS:
@@ -43,8 +42,6 @@ private Q_SLOTS:
 private:
     QFileSystemWatcher configWatcher;
     QSettings globalSettings;
-    QSettings appSettings;
-    bool hasAppSettings;
 };
 
 #endif // THEMESETTINGS_P_H

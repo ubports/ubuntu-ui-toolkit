@@ -38,30 +38,21 @@ Template {
                 text: "Theme #1"
                 width: 100
                 onClicked: {
-                    if (!Theme.setGlobalTheme("theme-one/theme.qmltheme")) {
-                        console.log("Cannot set application theme, retry loading...")
-                        Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme");
-                    }
+                    Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme")
                 }
             }
             Button {
                 text: "Theme #2"
                 width: 100
                 onClicked: {
-                    if (!Theme.setLocalTheme("demos/themes/private-theme.qmltheme")) {
-                        console.log("Cannot set application theme, retry loading...")
-                        Theme.loadTheme("demos/themes/private-theme.qmltheme");
-                    }
+                    Theme.loadTheme("demos/themes/private-theme.qmltheme")
                 }
             }
             Button {
                 text: "Default"
                 width: 100
                 onClicked: {
-                    if (!Theme.setGlobalTheme("")) {
-                        console.log("Cannot set application theme, retry loading...")
-                        Theme.loadTheme("");
-                    }
+                    Theme.loadTheme("")
                 }
             }
         }

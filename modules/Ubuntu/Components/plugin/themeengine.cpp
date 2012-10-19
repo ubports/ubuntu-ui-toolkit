@@ -420,68 +420,6 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 }
 
 /*!
-  \preliminary
-  \qmlmethod void Theme::setGlobalTheme(const QString &theme, bool global)
-  The function sets the theme file in the application's settings and loads the
-  theme. The \a theme is a file relative to the global theme folder. If an empty
-  string is given, the global theme's default will be set and loaded.
-
-  In teh example below the Item will set and load the theme from the global theme
-  folder. Assuming the global user theme set is Ambiance, the theme file location
-  will be \a /usr/shared/theme/Ambiance/qmltheme/TestApp/theme.qmltheme.
-
-  \code
-  Item {
-     Component.onCompleted: {
-        Theme.setGlobalTheme("TestApp/theme.qmltheme")
-     }
-  }
-  \endcode
-
-  Returns true if the file was set and loaded with success. On failure, the error
-  message will be stored in the \a error property.
-  */
-bool ThemeEngine::setGlobalTheme(const QString &theme)
-{
-    Q_D(ThemeEngine);
-    d->errorString = QString();
-    QUrl themeFile = d->themeSettings.setTheme(theme, true);
-    if (themeFile.isValid())
-        d->_q_updateTheme();
-    else if (d->errorString.isEmpty()) {
-        d->setError(QString("Error setting global theme %1")
-                    .arg(theme));
-    }
-    return d->errorString.isEmpty();
-}
-
-/*!
-  \preliminary
-  \qmlmethod void Theme::setLocalTheme(const QString &theme)
-  The function works similar to \l{Theme::setGlobalTheme} but with local theme
-  files. The \a theme specifies the path (absolute or relative to the current
-  folder) to the private theme to be set. Applications setting their themes using
-  this function will not react on global theme changes. If an empty string is
-  given, the global theme's default will be set and loaded.
-
-  Returns true if the file was set and loaded with success. On failure, the error
-  message will be stored in the \a error property.
-  */
-bool ThemeEngine::setLocalTheme(const QString &theme)
-{
-    Q_D(ThemeEngine);
-    d->errorString = QString();
-    QUrl themeFile = d->themeSettings.setTheme(theme, false);
-    if (themeFile.isValid())
-        d->_q_updateTheme();
-    else if (d->errorString.isEmpty()) {
-        d->setError(QString("Error setting local %1")
-                    .arg(theme));
-    }
-    return d->errorString.isEmpty();
-}
-
-/*!
   \qmlproperty string Theme::error
   The property contains the error occurred upon loading. The error is not cleared
   automatically and must be acknowledged after each operation.

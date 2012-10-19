@@ -57,9 +57,6 @@ Q_SIGNALS:
 public Q_SLOTS:
     bool loadTheme(const QUrl &themeFile);
 
-    bool setGlobalTheme(const QString &theme);
-    bool setLocalTheme(const QString &theme);
-
 private:
     Q_DISABLE_COPY(ThemeEngine)
     Q_DECLARE_PRIVATE(ThemeEngine)

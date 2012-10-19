@@ -73,13 +73,8 @@ const char *appThemeFileKey = "ThemeFile";
   */
 ThemeSettings::ThemeSettings(QObject *parent) :
     QObject(parent),
-    globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat),
-    hasAppSettings(false)
+    globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat)
 {
-    hasAppSettings = (QFile::exists(appSettings.fileName()) &&
-            (appSettings.contains(appUseGlobalThemeKey) &&
-             appSettings.contains(appThemeFileKey)));
-
     // check if we have system settings file, if not, create one
     if (!QFile::exists(globalSettings.fileName())) {
         // create the file by writing the default theme
@@ -92,8 +87,7 @@ ThemeSettings::ThemeSettings(QObject *parent) :
         globalSettings.sync();
     }
 
-    if (!hasAppSettings || (hasAppSettings && appSettings.value(appUseGlobalThemeKey).toBool()))
-        configWatcher.addPath(globalSettings.fileName());
+    configWatcher.addPath(globalSettings.fileName());
 
     // connect theme observer to the slot
     QObject::connect(&configWatcher, SIGNAL(fileChanged(QString)),
@@ -108,95 +102,18 @@ void ThemeSettings::refreshSettings()
 }
 
 /*
-  Returns the application's theme file as defined either in application or global
-  theme settings file.
-  An application can decide whether to use the global's default theme, the application
-  specific theme defined by the global one or a private theme. To support this,
-  applications must have the setting keys specified in \a appUseGlobalThemeKey and
-  \a appThemeFileKey. If these are not defined, the global default theme will be loaded.
+  Returns the theme file as defined for the user.
   */
 QUrl ThemeSettings::themeFile() const
 {
     QUrl result;
-    if (hasAppSettings) {
-        bool useGlobalTheme = appSettings.value(appUseGlobalThemeKey).toBool();
-        if (useGlobalTheme) {
-            QString appTheme = appSettings.value(appThemeFileKey).toString();
-            if (!appTheme.isEmpty()) {
-                // build theme file so it is taken from the global area
-                result = QUrl::fromLocalFile(QString(PathFormat_GlobalAppTheme)
-                               .arg(globalSettings.value(globalThemeKey).toString())
-                               .arg(appTheme));
-            }
-        } else {
-            // the theme specified in settings is a private one not dependent directly to
-            // the global themes, and therefore can also be stored in qrc
-            QString theme = appSettings.value(appThemeFileKey).toString();
-            if (theme.startsWith("qrc:"))
-                result = QUrl(theme);
-            else
-                result = QUrl::fromLocalFile(theme);
-        }
-    }
-
-    // check if the application succeeded to set the URL, and if not, use the global defined
-    // theme if possible
-    if ((!result.isValid() || result.path().isEmpty())) {
-        QString theme = globalSettings.value(globalThemeKey).toString();
-        result = QUrl::fromLocalFile(QString(PathFormat_GlobalThemeFile).arg(theme));
-        if (!QFile::exists(result.path()))
-            result = QUrl();
-    }
-
+    // returns the global theme file
+    QString theme = globalSettings.value(globalThemeKey).toString();
+    result = QUrl::fromLocalFile(QString(PathFormat_GlobalThemeFile).arg(theme));
+    if (!QFile::exists(result.path()))
+        result = QUrl();
 
     return result;
-}
-/*
-  This method sets the theme file for an application. It does not alter the global theme
-  defined for the user. In case the application doesn't have theme settings set yet, it
-  will try to create those aswell. Returns the URL (full path) to the theme file. The
-  application will use the default theme setup if the \a url is invalid.
-  */
-QUrl ThemeSettings::setTheme(const QString &theme, bool global)
-{
-    // sync global theme
-    if (theme.isEmpty() && !global) {
-        ThemeEnginePrivate::setError("Invalid private file given for theme!");
-        return QUrl();
-    }
-
-    if (!hasAppSettings && QFile::exists(appSettings.fileName())) {
-        // application is configured to accept settings, so force app settings
-        hasAppSettings = true;
-    }
-
-    if (hasAppSettings) {
-
-        // check whether the setting can be applied, if not, report error
-        bool prevGlobal = appSettings.value(appUseGlobalThemeKey).toBool();
-        QString prevTheme = appSettings.value(appThemeFileKey).toString();
-
-        appSettings.setValue(appUseGlobalThemeKey, global);
-        appSettings.setValue(appThemeFileKey, theme);
-        QUrl theme = themeFile();
-        if (!theme.isValid() || !QFile::exists(theme.path())) {
-            // roll back settings
-            appSettings.setValue(appUseGlobalThemeKey, prevGlobal);
-            appSettings.setValue(appThemeFileKey, prevTheme);
-            ThemeEnginePrivate::setError("Invalid theme setting!");
-            return QUrl();
-        }
-
-        if (hasAppSettings && !global) {
-            configWatcher.removePath(globalSettings.fileName());
-        } else if (global && !prevGlobal) {
-            configWatcher.addPath(globalSettings.fileName());
-        }
-
-        // sync settings
-        return theme;
-    }
-    return QUrl();
 }
 
 /*
@@ -210,12 +127,6 @@ QStringList ThemeSettings::imports() const
     imports = globalSettings.value(importPathsKey).toString();
     if (!imports.isEmpty())
         result += imports.split(':');
-
-    if (hasAppSettings) {
-        imports = appSettings.value(importPathsKey).toString();
-        if (!imports.isEmpty())
-            result += imports.split(':');
-    }
 
     return result;
 }
