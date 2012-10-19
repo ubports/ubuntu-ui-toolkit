@@ -35,14 +35,14 @@ FocusScope {
 
         focus: true
         width: childrenRect.width
-        height: units.dp(30)
+        height: units.gu(4)
         currentIndex: 0
         onCurrentIndexChanged: units.scaleFactor = scaleFactors[currentIndex]
 
         orientation: ListView.Horizontal
         model: scaleFactors
         delegate: ButtonWithForeground {
-            width: units.dp(55)
+            width: units.gu(7)
             height: ListView.view.height
             text: modelData
             textSize: "small"

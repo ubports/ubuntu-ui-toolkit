@@ -38,8 +38,8 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: units.dp(49)
-    height: units.dp(39)
+    width: units.gu(6)
+    height: units.gu(5)
 
     /*!
       \preliminary
@@ -104,7 +104,7 @@ AbstractButton {
             id: checkMark
 
             anchors.fill: parent
-            anchors.margins: units.dp(5)
+            anchors.margins: units.gu(0.5)
             fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.checkMarkSource

@@ -44,8 +44,8 @@ import QtQuick 2.0
 AnimatedItem {
     id: progressBar
 
-    width: units.dp(200)
-    height: units.dp(10)
+    width: units.gu(25)
+    height: units.gu(1.5)
 
     /*!
       \preliminary

@@ -20,7 +20,7 @@ import QtQuick 2.0
 // the progression symbol.
 Item {
     id: progressionVisual
-    width: visible ? units.dp(48) : 0
+    width: visible ? units.gu(6) : 0
 
     property bool showSplit: false
 

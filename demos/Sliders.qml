@@ -21,7 +21,7 @@ Template {
     title: "Slider"
 
     Column {
-        spacing: units.dp(30)
+        spacing: units.gu(4)
 
         TemplateRow {
             title: "Default"

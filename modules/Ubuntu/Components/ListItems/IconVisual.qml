@@ -28,8 +28,8 @@ Item {
 
     property alias iconHeight: icon.height
     property alias iconWidth: icon.width
-    property real leftIconMargin: units.dp(5)
-    property real rightIconMargin: units.dp(5)
+    property real leftIconMargin: units.gu(0.5)
+    property real rightIconMargin: units.gu(0.5)
     width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
 
     anchors {

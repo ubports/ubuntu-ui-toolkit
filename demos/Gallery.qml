@@ -41,7 +41,7 @@ Rectangle {
     ListView {
         id: widgetList
 
-        width: units.dp(150)
+        width: units.gu(19)
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -70,7 +70,7 @@ Rectangle {
                ]
 
         delegate: ButtonWithForeground {
-            height: units.dp(48)
+            height: units.gu(6)
             textSize: "medium"
             text: modelData.label
             textColor: "#757373"

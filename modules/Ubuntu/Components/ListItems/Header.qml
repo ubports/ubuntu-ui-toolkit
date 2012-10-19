@@ -38,7 +38,7 @@ import QtQuick 2.0
 */
 
 Image {
-    height: units.dp(24)
+    height: units.gu(3)
     source: "artwork/ListItemDivider24px.png"
     anchors {
         left: parent ? parent.left : undefined
@@ -58,7 +58,7 @@ Image {
         fontSize: "medium"
         anchors {
             verticalCenter: parent.verticalCenter
-            leftMargin: units.dp(10)
+            leftMargin: units.gu(1)
             left: parent.left
             right: parent.right
         }

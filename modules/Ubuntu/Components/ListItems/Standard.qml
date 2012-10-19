@@ -198,7 +198,7 @@ Empty {
         anchors {
             verticalCenter: parent.verticalCenter
             left: __iconIsItem ? parent.left : iconHelper.right
-            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + units.dp(5) : units.dp(5)
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + units.gu(0.5) : units.gu(0.5)
             right: controlContainer.left
         }
     }
@@ -212,7 +212,7 @@ Empty {
             right: progressionHelper.left
             top: parent.top
             bottom: parent.bottom
-            margins: units.dp(5)
+            margins: units.gu(0.5)
         }
         onControlChanged: {
             control.parent = controlContainer;

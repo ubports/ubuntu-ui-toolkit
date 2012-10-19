@@ -27,5 +27,5 @@ import QtQuick 2.0
 Rectangle {
     height: units.dp(1)
     color: "black"
-    width: parent ? parent.width : units.dp(100)
+    width: parent ? parent.width : units.gu(13)
 }

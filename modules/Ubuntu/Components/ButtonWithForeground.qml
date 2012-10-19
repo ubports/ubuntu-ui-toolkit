@@ -33,8 +33,8 @@ AbstractButton {
       \preliminary
       The dimensions of the button.
     */
-    width: units.dp(150)
-    height: units.dp(50)
+    width: units.gu(19)
+    height: units.gu(6)
 
     /*!
        \preliminary
@@ -93,10 +93,10 @@ AbstractButton {
           \preliminary
           The padding on the left and right side of the button foreground.
         */
-        property real horizontalPadding: units.dp(10)
+        property real horizontalPadding: units.gu(1)
         property real maximumWidth: button.width - 2*foreground.horizontalPadding
-        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : units.dp(10)
-        property real verticalPadding: units.dp(5)
+        property real spacing: (button.text == "" || button.iconSource == "") ? 0 : units.gu(1)
+        property real verticalPadding: units.gu(0.5)
 
         width: icon.width + label.width + foreground.spacing
         height: button.height - 2*foreground.verticalPadding

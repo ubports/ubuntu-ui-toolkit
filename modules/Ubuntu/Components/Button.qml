@@ -48,8 +48,8 @@ import QtQuick 2.0
 ButtonWithForeground {
     id: button
 
-    width: units.dp(87)
-    height: units.dp(39)
+    width: units.gu(11)
+    height: units.gu(5)
 
     /*!
        \preliminary
