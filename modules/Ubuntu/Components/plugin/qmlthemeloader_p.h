@@ -27,6 +27,8 @@
 class QmlThemeLoader;
 typedef bool (*ParserCallback)(QmlThemeLoader *loader, QTextStream &stream);
 
+typedef QHash<QString, QString> PropertyHash;
+
 class QmlThemeLoader : public ThemeLoader {
     Q_INTERFACES(ThemeLoader)
 public:
@@ -44,7 +46,10 @@ private:
     bool handleSelector(const Selector &path, const QString &declarator, QTextStream &stream);
     void normalizeStyles();
     bool parseTheme(const QUrl &url);
+    bool parseAtRules(QTextStream &stream);
+    bool parseDeclarations(QString &data, QTextStream &stream);
     bool generateStyleQml();
+    void buildStyleAndDelegate(Selector &selector, PropertyHash &properties, QString &style, QString &delegate);
 
     // @-rule handlers
     static bool handleImport(QmlThemeLoader *loader, QTextStream &stream);
@@ -55,7 +60,7 @@ private:
     QString ruleString;
     QHash<QString, ParserCallback> rules;
     QHash<QString, QPair<QString, QString> > qmlMap;
-    QHash<Selector, QHash<QString, QString> > selectorTable;
+    QHash<Selector, PropertyHash > selectorTable;
 };
 
 

@@ -262,7 +262,6 @@ void QmlThemeLoader::normalizeStyles()
 */
 bool QmlThemeLoader::parseTheme(const QUrl &url)
 {
-    bool ret = true;
     // open the file
     TRACE << url;
     QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
@@ -281,104 +280,78 @@ bool QmlThemeLoader::parseTheme(const QUrl &url)
                 break;
 
             if (data[0] == '@') {
-                // rule!! read till the first token
-                data = readTillToken(stream, QRegExp("[({]"), QRegExp("[\t]")).simplified();
-                //lookup for the rule handler and continue parsing with it
-                ret = rules.contains(data);
-                if (ret)
-                    ret = rules.value(data)(this, stream);
-                else
-                    ThemeEnginePrivate::setError(QString("Unhandled rule: %1").arg(data));
-                if (!ret)
-                    return ret;
-
-                // reset data and continue parsing
+                if (!parseAtRules(stream))
+                    return false;
                 data.clear();
                 continue;
             }
-
-            // seems we have a theme rule definition, so read till we hit a '{' token
-            data += readTillToken(stream, QRegExp("[{]"), QRegExp("[\t\r\n]")).simplified();
-            if (data.isEmpty())
-                continue;
-
-            QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data, SelectorNode::IgnoreRelationship);
-            if (selectors.isEmpty()) {
-                ThemeEnginePrivate::setError(QString("Syntax error!\n%1").arg(data));
+            if (!parseDeclarations(data, stream))
                 return false;
-            } else {
-                // load declarator and apply on each selector
-                data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
-                Q_FOREACH (const Selector &selector, selectors) {
-                    ret = handleSelector(selector, data, stream);
-                    if (!ret) {
-                        ThemeEnginePrivate::setError(
-                                    QString("Error parsing declarator for selector %1").
-                                    arg(ThemeEnginePrivate::selectorToString(selector)));
-                        return ret;
-                    }
-                }
-                // clear data and continue parsing
-                data.clear();
-            }
         }
+        return true;
     } else {
-        ret = false;
         ThemeEnginePrivate::setError(QString("%1: %2")
                                      .arg(file.errorString())
                                      .arg(file.fileName()));
     }
-    return ret;
+    return false;
+}
+
+bool QmlThemeLoader::parseAtRules(QTextStream &stream)
+{
+    // rule!! read till the first token
+    QString data = readTillToken(stream, QRegExp("[({]"), QRegExp("[\t]")).simplified();
+
+    //lookup for the rule handler and continue parsing with it
+    if (rules.contains(data))
+        return rules.value(data)(this, stream);
+    else
+        ThemeEnginePrivate::setError(QString("Unhandled rule: %1").arg(data));
+    return false;
+}
+
+bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
+{
+   // read till we hit a '{' token
+   data += readTillToken(stream, QRegExp("[{]"), QRegExp("[\t\r\n]")).simplified();
+    if (data.isEmpty())
+        return false;
+
+    QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data, SelectorNode::IgnoreRelationship);
+    if (selectors.isEmpty()) {
+        ThemeEnginePrivate::setError(QString("Syntax error!\n%1").arg(data));
+        return false;
+    } else {
+        // load declarator and apply on each selector
+        data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
+        Q_FOREACH (const Selector &selector, selectors) {
+            if (!handleSelector(selector, data, stream)) {
+                ThemeEnginePrivate::setError(
+                            QString("Error parsing declarator for selector %1").
+                            arg(ThemeEnginePrivate::selectorToString(selector)));
+                return false;
+            }
+        }
+    }
+
+    // clear data before continuing parsing
+    data.clear();
+    return true;
 }
 
 bool QmlThemeLoader::generateStyleQml()
 {
-    Selector selector;
     QString style;
     QString delegate;
-    QString qmap;
 
     // go through the selector map and build the styles to each
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
     while (i.hasNext()) {
         i.next();
-        selector = i.key();
-        QHashIterator<QString, QString> properties(i.value());
-        QPair<QString, QString> qmlTypes;
+        Selector selector = i.key();
+        PropertyHash properties = i.value();
 
-        qmap = '.' + selector.last().styleClass;
-
-        if (qmlMap.contains(qmap))
-            qmlTypes = qmlMap.value(qmap);
-
-        // get the type for style and delegate
-        if (i.value().count() > 0) {
-            QString propertyPrefix("    ");
-
-            if (!qmlTypes.first.isEmpty()) {
-                // we have the mapping!!
-                style = QString(stylePropertyFormat).arg(qmlTypes.first);
-            } else {
-                style = QString(stylePropertyFormat).arg("QtObject");
-                propertyPrefix += "property var";
-            }
-
-            // add properties
-            QString propertyArg;
-            while (properties.hasNext()) {
-                properties.next();
-                propertyArg += QString("   %1 %2: %3\n")
-                        .arg(propertyPrefix)
-                        .arg(properties.key())
-                        .arg(properties.value());
-            }
-            // append the closing brace
-            style = style.arg(propertyArg);
-        }
-
-        // delegate
-        if (!qmlTypes.second.isEmpty())
-            delegate += QString("%1{}").arg(qmlTypes.second);
+        buildStyleAndDelegate(selector, properties, style, delegate);
 
         // normalize selector so we build the Rule with the proper one
         normalizeSelector(selector);
@@ -388,12 +361,6 @@ bool QmlThemeLoader::generateStyleQml()
         // Rule to create style and delegate components so Rule can handle
         // asynchronous completion of those.
 
-        if (!style.isEmpty()) {
-            style = QString(styleRuleComponent).arg(imports).arg(style);
-        }
-        if (!delegate.isEmpty()) {
-            delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
-        }
         Rule *rule = new Rule(m_engine,
                                 ThemeEnginePrivate::selectorToString(selector),
                                 style,
@@ -403,12 +370,55 @@ bool QmlThemeLoader::generateStyleQml()
             return false;
         } else
             styleTree->addStyleRule(selector, rule);
-
-        style.clear();
-        delegate.clear();
     }
 
     return true;
+}
+
+void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &properties, QString &style, QString &delegate)
+{
+    QPair<QString, QString> qmlTypes;
+
+    QString qmap = '.' + selector.last().styleClass;
+
+    if (qmlMap.contains(qmap))
+        qmlTypes = qmlMap.value(qmap);
+
+    style.clear();
+    delegate.clear();
+
+    // get the type for style and delegate
+    if (properties.count() > 0) {
+        QString propertyPrefix("    ");
+
+        if (!qmlTypes.first.isEmpty()) {
+            // we have the mapping!!
+            style = QString(stylePropertyFormat).arg(qmlTypes.first);
+        } else {
+            style = QString(stylePropertyFormat).arg("QtObject");
+            propertyPrefix += "property var";
+        }
+
+        // add properties
+        QHashIterator<QString, QString> i(properties);
+        QString propertyArg;
+        while (i.hasNext()) {
+            i.next();
+            propertyArg += QString("   %1 %2: %3\n")
+                    .arg(propertyPrefix)
+                    .arg(i.key())
+                    .arg(i.value());
+        }
+        // append the closing brace
+        style = style.arg(propertyArg);
+        style = QString(styleRuleComponent).arg(imports).arg(style);
+    }
+
+    // delegate
+    if (!qmlTypes.second.isEmpty()) {
+        delegate = QString("%1{}").arg(qmlTypes.second);
+        delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
+    }
 }
 
 /*============================================================================*/
