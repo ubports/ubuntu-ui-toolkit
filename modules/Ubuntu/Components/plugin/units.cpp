@@ -71,6 +71,11 @@ float Units::dp(float value)
     return qFloor(value * m_scaleFactor);
 }
 
+float Units::gu(float value)
+{
+    return qFloor(value * m_scaleFactor * 8);
+}
+
 QString Units::resolveResource(const QUrl& url)
 {
     if (url.isEmpty()) {

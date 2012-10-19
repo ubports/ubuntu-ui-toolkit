@@ -36,6 +36,7 @@ public:
 
     explicit Units(QObject *parent = 0);
     Q_INVOKABLE float dp(float value);
+    Q_INVOKABLE float gu(float value);
     Q_INVOKABLE QString resolveResource(const QUrl& url);
 
     // getters
