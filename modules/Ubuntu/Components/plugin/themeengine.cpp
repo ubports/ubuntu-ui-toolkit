@@ -69,11 +69,11 @@ bool themeDebug = false;
 #endif
 #define TRACE \
     if (themeDebug) \
-        qDebug() << QString("ThemeEngine::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 #define TRACEP \
     if (themeDebug) \
-        qDebug() << QString("ThemeEnginePrivate::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 

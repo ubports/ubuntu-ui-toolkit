@@ -35,7 +35,7 @@ const bool traceQmlThemeLoader = false;
 #endif
 #define TRACE \
     if (traceQmlThemeLoader) \
-        qDebug() << QString("QmlThemeLoader::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 /*
   QmlTheme file parser

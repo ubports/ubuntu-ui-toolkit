@@ -32,11 +32,11 @@ const bool traceStyleRule = false;
 #endif
 #define TRACE \
     if (traceStyleRule) \
-        qDebug() << QString("Rule::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 #define TRACEP \
     if (traceStyleRule) \
-        qDebug() << QString("RulePrivate::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 /*!
   \qmltype Rule

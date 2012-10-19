@@ -33,7 +33,7 @@ const bool debugSuffixTree = false;
 #endif
 #define TRACE \
     if (debugSuffixTree) \
-        qDebug() << QString("SuffixTree::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree

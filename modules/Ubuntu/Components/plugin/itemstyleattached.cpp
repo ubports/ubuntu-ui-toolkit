@@ -34,11 +34,11 @@ const bool traceItemStyleAttached = false;
 #endif
 #define TRACE \
     if (traceItemStyleAttached) \
-        qDebug() << QString("ItemStyleAttached::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 #define TRACEP \
     if (traceItemStyleAttached) \
-        qDebug() << QString("ItemStyleAttachedPrivate::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";

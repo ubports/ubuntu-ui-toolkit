@@ -31,7 +31,7 @@ const bool traceThemeSettings = false;
 #endif
 #define TRACE \
     if (traceThemeSettings) \
-        qDebug() << QString("ThemeSettings::%1").arg(__FUNCTION__, -15)
+        qDebug()
 
 
 /*

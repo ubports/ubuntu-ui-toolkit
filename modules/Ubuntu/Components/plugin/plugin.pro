@@ -5,6 +5,9 @@ TARGET = ../UbuntuComponents
 QT += qml quick
 CONFIG += qt plugin no_keywords
 
+#comment in the following line to remove traces
+#DEFINES += QT_NO_DEBUG_OUTPUT
+
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
