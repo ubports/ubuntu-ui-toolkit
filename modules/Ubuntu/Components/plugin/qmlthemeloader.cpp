@@ -85,10 +85,9 @@ void normalizeSelector(Selector &selector)
 Selector selectorSubset(const Selector &path, int elements)
 {
     Selector result;
-    while (elements > 0) {
-        result << path[path.length() - elements];
+    for (int i = elements; i > 0; i--) {
+        result << path[path.length() - i];
         result.last().sensitivity = SelectorNode::IgnoreAll;
-        elements--;
     }
     return result;
 }
