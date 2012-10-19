@@ -83,7 +83,6 @@ const char *appThemeFileKey = "ThemeFile";
  Instanciates the settins and connects the file system watcher
   */
 ThemeSettings::ThemeSettings(QObject *globalThemeObserver) :
-    configWatcher(globalThemeObserver),
     globalSettings(QString(PathFormat_GlobalThemeIniFile).arg(QDir::homePath()), QSettings::IniFormat),
     hasAppSettings(false)
 {
