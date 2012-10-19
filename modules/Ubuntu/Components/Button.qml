@@ -55,12 +55,14 @@ ButtonWithForeground {
 
     width: 87
     height: 39
+    // FIXME: see FIXME above
     Theming.ItemStyle.class: "Button"
 
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
+    // FIXME: see FIXME above
     property color color: (Theming.ItemStyle.style) ? Theming.ItemStyle.style.color : "#e3e5e8"
 
     /*!

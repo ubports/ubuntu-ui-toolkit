@@ -31,10 +31,13 @@ import Ubuntu.Components  0.1 as Theming
     \b{This component is under heavy development.}
 */
 Text {
+    // FIXME: see FIXME above
     color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
              Theming.ItemStyle.style.color : "black"
+    // FIXME: see FIXME above
     style: (Theming.ItemStyle.style && Theming.ItemStyle.style.style) ?
              Theming.ItemStyle.style.style : Text.Normal
+    // FIXME: see FIXME above
     styleColor: (Theming.ItemStyle.style && Theming.ItemStyle.style.styleColor) ?
                     Theming.ItemStyle.style.styleColor : color
 //    font.family: "UbuntuBeta"
@@ -43,6 +46,7 @@ Text {
        \preliminary
        DOCME
     */
+    // FIXME: see FIXME above
     property string fontSize: (Theming.ItemStyle.style && Theming.ItemStyle.style.fontSize) ?
                                 Theming.ItemStyle.style.fontSize : "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
