@@ -30,7 +30,6 @@ class QObject;
 class ThemeSettings {
 public:
     ThemeSettings(QObject *globalThemeObserver);
-    bool initialize();
     QUrl themeFile() const;
     QUrl setTheme(const QString &theme, bool global);
     QStringList imports() const;
