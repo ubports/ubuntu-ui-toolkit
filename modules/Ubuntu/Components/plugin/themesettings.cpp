@@ -57,7 +57,7 @@ const bool traceThemeSettings = false;
 
 // user's theme settings are stored in ~/.qmltheme/theme.ini file and here are
 // also stored the user specific themes
-const char *PathFormat_GlobalThemeIniFile = "%1/.qmltheme/theme.ini";
+const char *PathFormat_GlobalThemeIniFile = "%1/.config/UITK/theme.ini";
 
 #ifdef TARGET_DEMO
 // for SDK demo we use the demo folder to store both global and private themes
@@ -100,6 +100,7 @@ ThemeSettings::ThemeSettings(QObject *parent) :
         // TODO: figure out how to get the default theme for the release
         globalSettings.setValue(globalThemeKey, "Ambiance");
 #endif
+        globalSettings.sync();
     }
 
     if (!hasAppSettings || (hasAppSettings && appSettings.value(appUseGlobalThemeKey).toBool()))
