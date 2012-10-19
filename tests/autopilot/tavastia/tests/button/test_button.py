@@ -11,6 +11,7 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
+import time
 
 from tavastia.tests import TavastiaTestCase
 
@@ -32,7 +33,7 @@ class EnabledButtonTests(TavastiaTestCase):
         """Must be able to select the Qml button component."""
 
         btn = self.app.select_single('Button')
-        self.assertThat(btn, Eventually(Not(Is(None))))
+        self.assertThat(btn, Not(Is(None)))
 
 
     def test_clicked_signal_emitted(self):
@@ -44,8 +45,10 @@ class EnabledButtonTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        self.assertThat(signal.was_emitted, Eventually(Equals(True)))
-        self.assertThat(signal.num_emissions, Eventually(Equals(1)))
+        time.sleep(0.1)
+
+        self.assertThat(signal.was_emitted, Equals(True))
+        self.assertThat(signal.num_emissions, Equals(1))
 
 
     def test_entered_signal_emitted(self):
@@ -57,9 +60,9 @@ class EnabledButtonTests(TavastiaTestCase):
 
         self.mouse.move_to_object(btn)
 
-        self.assertThat(signal.was_emitted, Eventually(Equals(True)))
-        self.assertThat(signal.num_emissions, Eventually(Equals(1)))
-        self.assertThat(btn.hovered, Eventually(Equals(True)))
+        self.assertThat(signal.was_emitted, Equals(True))
+        self.assertThat(signal.num_emissions, Equals(1))
+        self.assertThat(btn.hovered, Equals(True))
 
 
     def test_exited_signal_emitted(self):
@@ -76,9 +79,9 @@ class EnabledButtonTests(TavastiaTestCase):
         # assuming the WM will never put the window over 0,0:
         self.mouse.move(0,0)
 
-        self.assertThat(signal.was_emitted, Eventually(Equals(True)))
-        self.assertThat(signal.num_emissions, Eventually(Equals(1)))
-        self.assertThat(btn.hovered, Eventually(Equals(False)))
+        self.assertThat(signal.was_emitted, Equals(True))
+        self.assertThat(signal.num_emissions, Equals(1))
+        self.assertThat(btn.hovered, Equals(False))
 
 
     def test_can_press_button(self):
@@ -90,7 +93,7 @@ class EnabledButtonTests(TavastiaTestCase):
         self.mouse.press()
         self.addCleanup(self.mouse.release)
 
-        self.assertThat(btn.pressed, Eventually(Equals(True)))
+        self.assertThat(btn.pressed, Equals(True))
 
 
 class DisabledButtonTests(TavastiaTestCase):
@@ -124,8 +127,11 @@ class DisabledButtonTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        self.assertThat(signal.was_emitted, Eventually(Equals(False)))
-        self.assertThat(signal.num_emissions, Eventually(Equals(0)))
+        time.sleep(0.1)
+
+        self.assertThat(signal.was_emitted, Equals(False))
+        self.assertThat(signal.num_emissions, Equals(0)
+)
 
 
 class ButtonColorTests(TavastiaTestCase):
