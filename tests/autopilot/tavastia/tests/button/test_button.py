@@ -18,7 +18,7 @@ class EnabledButtonTests(TavastiaTestCase):
     """Tests for an enabled Button component."""
 
     test_qml = dedent("""\
-    import QtQuick 1.1
+    import QtQuick 2.0
     import Ubuntu.Components 0.1
 
     Button {
@@ -39,7 +39,7 @@ class EnabledButtonTests(TavastiaTestCase):
         """Clicking the button component must emit the clicked() signal."""
 
         btn = self.app.select_single('Button')
-        signal = btn.watch_signal('clicked()')
+        signal = btn.watch_signal('clicked(QVariant)')
 
         self.mouse.move_to_object(btn)
         self.mouse.click()
@@ -97,7 +97,7 @@ class DisabledButtonTests(TavastiaTestCase):
     """Tests for a disabled button component."""
 
     test_qml = dedent("""\
-    import QtQuick 1.1
+    import QtQuick 2.0
     import Ubuntu.Components 0.1
 
     Button {
@@ -119,7 +119,7 @@ class DisabledButtonTests(TavastiaTestCase):
         """Clicking a disabled button must not emit the clicked() signal."""
 
         btn = self.app.select_single('Button')
-        signal = btn.watch_signal('clicked()')
+        signal = btn.watch_signal('clicked(QVariant)')
 
         self.mouse.move_to_object(btn)
         self.mouse.click()
@@ -132,7 +132,7 @@ class ButtonColorTests(TavastiaTestCase):
     """Tests for the button color properties."""
 
     test_qml = dedent("""\
-    import QtQuick 1.1
+    import QtQuick 2.0
     import Ubuntu.Components 0.1
 
     Button {
@@ -169,7 +169,7 @@ class ButtonColorTests(TavastiaTestCase):
 
         # this is hacky because the base rectangle in the button has no name. If
         # the component were named this would be a much more readable test...
-        btnbase = self.app.select_single('QDeclarativeRectangle', color=[0,255,255,255])
+        btnbase = self.app.select_single('QQuickRectangle', color=[0,255,255,255])
 
         self.assertThat(btnbase, Not(Is(None)))
 

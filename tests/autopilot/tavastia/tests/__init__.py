@@ -46,5 +46,6 @@ class TavastiaTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
 
             self.app = self.launch_test_application(
                 "qmlscene",
+                "-opengl",
                 "-I", get_module_include_path(),
                 qml_path)
