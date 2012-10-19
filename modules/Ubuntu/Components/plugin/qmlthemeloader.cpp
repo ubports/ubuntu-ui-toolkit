@@ -85,9 +85,10 @@ void normalizeSelector(Selector &selector)
 Selector selectorSubset(const Selector &path, int elements)
 {
     Selector result;
-    for (int i = elements; i > 0; i--) {
-        result << path[path.length() - i];
+    while (elements > 0) {
+        result << path[path.length() - elements];
         result.last().sensitivity = SelectorNode::IgnoreAll;
+        elements--;
     }
     return result;
 }
@@ -231,9 +232,7 @@ void QmlThemeLoader::normalizeStyles()
         QHash<QString, QString> propertyMap = i.value();
         bool propertyMapUpdated = false;
 
-        int count = selector.count();
-
-        while (count-- > 1) {
+        for (int count = selector.count(); count > 1; count--) {
             Selector subset = selectorSubset(selector, count);
 
             // check if we have a style that is a subset of the curent one and if yes
