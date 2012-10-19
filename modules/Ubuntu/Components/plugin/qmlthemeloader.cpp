@@ -30,8 +30,6 @@
 #include <QtCore/QDebug>
 const bool traceQmlThemeLoader = false;
 
-#define SEPARATE_COMPONENTS
-
 #ifdef TRACE
 #undef TRACE
 #endif
@@ -61,20 +59,10 @@ const char *styleRuleComponent =  \
         "%1\n"
         "%2\n";
 
-const char *qmlThemeData = \
-        "import QtQuick 2.0\n"
-        "%1\n"
-        "Item {\n%2\n}\n";
 const char *stylePropertyFormat = \
         "%1 {\n"
         "%2"
         "    }";
-const char *styleRule = \
-        "    Rule {\n"
-        "        selector: \"%1\"\n"
-        "        %2"
-        "        %3"
-        "    }\n";
 
 /*!
   \internal
@@ -352,8 +340,6 @@ bool QmlThemeLoader::generateStyleQml()
     QString delegate;
     QString qmap;
 
-    QString styleString, delegateString;
-
     // go through the selector map and build the styles to each
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
     while (i.hasNext()) {
@@ -405,93 +391,27 @@ bool QmlThemeLoader::generateStyleQml()
         // asynchronous completion of those.
 
         if (!style.isEmpty()) {
-            styleString = "style: " + style + "\n";
             style = QString(styleRuleComponent).arg(imports).arg(style);
         }
         if (!delegate.isEmpty()) {
-            delegateString = "delegate : Component {" + delegate + "}\n";
             delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
         }
-#ifdef SEPARATE_COMPONENTS
         Rule *rule = new Rule(m_engine,
-                                        ThemeEnginePrivate::selectorToString(selector),
-                                        style,
-                                        delegate);
+                                ThemeEnginePrivate::selectorToString(selector),
+                                style,
+                                delegate);
         if (!ThemeEngine::instance()->error().isEmpty()) {
             delete rule;
             return false;
         } else
             styleTree->addStyleRule(selector, rule);
-#else
-        ruleString += QString(styleRule).arg(ThemeEnginePrivate::selectorToString(selector)).arg(styleString).arg(delegateString);
-#endif
-        styleString.clear();
-        delegateString.clear();
+
         style.clear();
         delegate.clear();
     }
 
     return true;
 }
-
-
-bool QmlThemeLoader::buildStyleTree(const QUrl &url)
-{
-#ifdef SEPARATE_COMPONENTS
-    Q_UNUSED(url);
-    return true;
-#else
-    bool result = false;
-    QString data = QString(qmlThemeData).arg(imports).arg(ruleString);
-#if 0
-    // keep this code till we get a stable Qt5 environment
-    QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
-
-    QFileInfo fi(fname);
-    fname = fi.dir().absolutePath() + "/GeneratedTheme.qml";
-    //qDebug() <<fname;
-    QFile file(fname);
-    if (file.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)) {
-
-        file.write(data.toLatin1());
-        file.close();
-        delete styleTree;
-        styleTree = 0;
-        // open the file with QMlThemeLoader
-        result = ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile(fname));
-    }
-#else
-    QQmlComponent themeComponent(m_engine);
-    themeComponent.setData(data.toLatin1(), QUrl());
-    if (themeComponent.isError())
-        ThemeEnginePrivate::setError(themeComponent.errorString());
-    else {
-        QObject *theme = themeComponent.create();
-        if (theme) {
-            // parse its children for Styles
-            QList<Rule*> rules = theme->findChildren<Rule*>();
-
-            Q_FOREACH (Rule *rule, rules) {
-                const QString selector = rule->selector();
-                if (selector.isEmpty()) {
-                    qWarning() << "Rule without selector!";
-                    continue;
-                }
-                QList<Selector> pathList = ThemeEnginePrivate::parseSelector(selector);
-                Q_FOREACH (const Selector &path, pathList) {
-                    styleTree->addStyleRule(path, rule);
-                }
-            }
-            result = true;
-        } else {
-            ThemeEnginePrivate::setError(themeComponent.errorString());
-        }
-    }
-#endif
-    return result;
-#endif
-}
-
 
 /*============================================================================*/
 
@@ -656,8 +576,6 @@ StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url)
             delete styleTree;
             styleTree = 0;
         }
-
-        buildStyleTree(url);
 
         // cleanup
         ruleString.clear();

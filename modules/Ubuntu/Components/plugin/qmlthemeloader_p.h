@@ -45,7 +45,6 @@ private:
     void normalizeStyles();
     bool parseTheme(const QUrl &url);
     bool generateStyleQml();
-    bool buildStyleTree(const QUrl &url);
 
     // @-rule handlers
     static bool handleImport(QmlThemeLoader *loader, QTextStream &stream);
