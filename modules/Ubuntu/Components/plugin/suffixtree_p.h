@@ -58,7 +58,7 @@ public:
     StyleTreeNode *parent;
     SelectorNode styleNode;
     Rule *styleRule;
-    // the key is the next CSS node's "relationship styleClass#styleId" combination
+    // the key is the next style node's "relationship class#name" combination
     QHash<QString, StyleTreeNode*> children;
 };
 

@@ -167,13 +167,13 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 
 /*!
   \internal
-  Traverses and returns the path from \a obj up to root as a list of styleClass
+  Traverses and returns the path from \a obj up to root as a list of class
   and name pairs, setting the relationship between the selector nodes
   depending on the relationship between the parent and child, i.e. if a certain
-  ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child relation,
-  otherwise SelectorNode::Descendant relation is used.
+  ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child
+  relation, otherwise SelectorNode::Descendant relation is used.
 
-  The obj is an Item derived element and shoudl have styleClass and name proeprties
+  The obj is an Item derived element and shoudl have class and name properties
   to be used if styling happens on them.
   */
 Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
@@ -193,7 +193,7 @@ Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) c
         SelectorNode::Relationship relation = parentStyle ?
                     SelectorNode::Child : SelectorNode::Descendant;
 
-        // if styleClass is not defined, use the component's meta class name
+        // if class is not defined, use the component's meta class name
         if (styleClass.isEmpty() || forceClassName) {
             styleClass = obj->metaObject()->className();
             styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
@@ -277,7 +277,7 @@ QString ThemeEnginePrivate::selectorToString(const Selector &path)
 /*!
   \internal
   Parses and returns the path described by \a selector as a list of
-  styleClass and styleId pairs.
+  class and name pairs.
   Current support (ref: www.w3.org/TR/selector.html):
     - Type selectors, e.g: "Button"
     - Descendant selectors, e.g: "Dialog Button"

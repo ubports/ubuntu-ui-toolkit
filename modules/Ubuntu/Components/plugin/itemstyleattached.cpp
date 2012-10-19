@@ -52,7 +52,7 @@ const char *styleProperty = "itemStyle";
 
   The element provides styling support to any element derived from Item
   (QQuickItem).
-  The style is selected based on the styleClass and name properties. If neither
+  The style is selected based on the \a class and \a name properties. If neither
   of these is defined, the framework will use the meta class name to identify the
   style rule to be used. However this can happen only if the document defining the
   item refers to the styling attached property.
@@ -63,7 +63,7 @@ const char *styleProperty = "itemStyle";
 
   \qml
   Item {
-     ItemStyle.styleClass: "button"
+     ItemStyle.class: "button"
   }
   \endqml
   \qml
@@ -392,7 +392,7 @@ void ItemStyleAttached::setName(const QString &name)
   \qmlproperty string ItemStyle::class
   This property holds the style class identifier used by the item.
   When the engine locates the style rule to be applied on the item, it takes
-  the styleClass and name properties. If none is specified, the meta class
+  the class and name properties. If none is specified, the meta class
   name will be used to search for the style. This must be taken into account both
   when defining themes and designing items and applications.
   */

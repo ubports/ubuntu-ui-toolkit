@@ -12,16 +12,6 @@
 #include "rule.h"
 #include "itemstyleattached.h"
 
-const char *lookupTestPattern1 =
-        "import QtQuick 2.0"
-        "import Ubuntu.Components 0.1"
-        "StyledItem {"
-        "   styleClass: \"testB\""
-        "   StyledItem {"
-        "       styleClass: \"baseA\""
-        "   }"
-        "}";
-
 class tst_ThemeEngine : public QObject
 {
     Q_OBJECT
