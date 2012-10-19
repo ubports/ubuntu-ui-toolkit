@@ -22,17 +22,6 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-#include <QtCore/QDebug>
-
-const bool traceThemeSettings = false;
-
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (traceThemeSettings) \
-        qDebug()
-
 
 /*
   ThemeSettings class handles the selection of the application style based on
@@ -159,7 +148,6 @@ QUrl ThemeSettings::themeFile() const
             result = QUrl();
     }
 
-    TRACE << "file" << result.toString();
 
     return result;
 }
@@ -177,13 +165,11 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
         return QUrl();
     }
 
-    TRACE << QString("appSettings.file() = %1").arg(appSettings.fileName());
     if (!hasAppSettings && QFile::exists(appSettings.fileName())) {
         // application is configured to accept settings, so force app settings
         hasAppSettings = true;
     }
 
-    TRACE << QString("hasAppSettings = %1").arg(hasAppSettings);
     if (hasAppSettings) {
 
         // check whether the setting can be applied, if not, report error
@@ -193,7 +179,6 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
         appSettings.setValue(appUseGlobalThemeKey, global);
         appSettings.setValue(appThemeFileKey, theme);
         QUrl theme = themeFile();
-        TRACE << "trying to set theme to" << theme.toString();
         if (!theme.isValid() || !QFile::exists(theme.path())) {
             // roll back settings
             appSettings.setValue(appUseGlobalThemeKey, prevGlobal);
@@ -203,10 +188,8 @@ QUrl ThemeSettings::setTheme(const QString &theme, bool global)
         }
 
         if (hasAppSettings && !global) {
-            TRACE << "stop watching user theme configuration changes";
             configWatcher.removePath(globalSettings.fileName());
         } else if (global && !prevGlobal) {
-            TRACE << "start watching user theme configuration changes";
             configWatcher.addPath(globalSettings.fileName());
         }
 

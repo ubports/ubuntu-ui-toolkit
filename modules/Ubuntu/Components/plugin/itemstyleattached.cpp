@@ -19,26 +19,12 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
-#include <QtCore/QDebug>
 
 #include "itemstyleattached.h"
 #include "itemstyleattached_p.h"
 #include "rule.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
-
-const bool traceItemStyleAttached = false;
-
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (traceItemStyleAttached) \
-        qDebug()
-
-#define TRACEP \
-    if (traceItemStyleAttached) \
-        qDebug()
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
@@ -168,7 +154,6 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     QObjectList children = attachee->children();
     Q_FOREACH(QObject *child, children) {
         if (child->inherits("QQmlComponentAttached")) {
-            TRACEP << attachee->metaObject()->className() << "style update delayed till completion!";
             QObject::connect(child, SIGNAL(completed()), q_ptr, SLOT(_q_refteshStyle()));
             delayApplyingStyle = true;
         }
@@ -184,19 +169,16 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
 bool ItemStyleAttachedPrivate::lookupThemeStyle(bool useMetaClassName)
 {
     themeRule = ThemeEngine::instance()->lookupStyleRule(attachee, useMetaClassName);
-    TRACEP << "useMetaClassName=" << useMetaClassName << themeRule;
     return (themeRule != 0);
 }
 
 bool ItemStyleAttachedPrivate::updateStyle()
 {
-    TRACEP << "ENTER";
     bool result = false;
     // do not do anything till the component gets complete?
     if (delayApplyingStyle)
        return result;
 
-    TRACEP << QString("class: %1, customStyle: %2").arg(styleClass).arg(customStyle);
     if (!customStyle) {
         // check if we have a forced update
         if (style) {
@@ -219,19 +201,15 @@ bool ItemStyleAttachedPrivate::updateStyle()
         style->setParent(attachee);
         componentContext->setContextProperty(styleProperty, style);
     }
-    TRACEP << "LEAVE";
     return result;
 }
 
 bool ItemStyleAttachedPrivate::updateDelegate()
 {
-    TRACEP << "ENTER";
     bool result = false;
     // do not do anything till the component gets complete?
     if (delayApplyingStyle)
        return result;
-
-    TRACEP << QString("class: %1, customDelegate: %2").arg(styleClass).arg(customDelegate);
 
     if (!customDelegate) {
         if (delegate) {
@@ -264,7 +242,6 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             }
         }
     }
-    TRACEP << "LEAVE";
     return result;
 }
 
@@ -279,7 +256,6 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
     bool delegateUpdated = updateDelegate();
     if (styleUpdated || delegateUpdated) {
         Q_Q(ItemStyleAttached);
-        TRACEP << "emit styleChanged()";
         Q_EMIT q->styleChanged();
     }
 }
@@ -333,7 +309,6 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
   */
 void ItemStyleAttachedPrivate::_q_refteshStyle()
 {
-    TRACEP << QString("%1#%2").arg(styleClass).arg(name);
     // no need to delay style applying any longer
     delayApplyingStyle = false;
 

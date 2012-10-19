@@ -24,16 +24,6 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
-#include <QtCore/QDebug>
-
-const bool debugSuffixTree = false;
-
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (debugSuffixTree) \
-        qDebug()
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
@@ -168,7 +158,6 @@ void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
 Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
     // the spare contains the remainder
-    TRACE << ThemeEnginePrivate::selectorToString(path);
     Selector sparePath = path;
     SelectorNode nextPathNode;
     if (!sparePath.isEmpty()) {
@@ -191,12 +180,10 @@ Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
                 sparePath.removeLast();
             } else
                 break;
-            TRACE << "items left in path:" << ThemeEnginePrivate::selectorToString(sparePath);
         }
     }
 
     // we have consumed the path, return the style from the node/leaf
-    TRACE << "got a style" << styleNode.toString() << styleRule << (styleRule ? styleRule->selector() : QString());
     return styleRule;
 }
 
@@ -208,7 +195,6 @@ Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath,
 {
     Rule *rule = 0;
     QString nodeKey = nextNode.toString();
-    TRACE << nodeKey;
     if (children.contains(nodeKey)) {
         rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
@@ -218,7 +204,6 @@ Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath,
         // found, the lookup after this point should be strict
         nextNode.relationship = SelectorNode::Descendant;
         nodeKey = nextNode.toString();
-        TRACE << "no match, testing" << nodeKey;
         strict = true;
         if (children.contains(nodeKey)) {
             rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
@@ -227,26 +212,3 @@ Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath,
 
     return rule;
 }
-
-/*!
-  \internal
-  For debugging purposes, lists the tree content.
-*/
-void StyleTreeNode::listTree(const QString &prefix)
-{
-    if (debugSuffixTree) {
-        // go backwards to build the path
-        if (styleRule) {
-            QString path = '(' + styleNode.toString() + ')';
-            for (StyleTreeNode *pl = parent; pl; pl = pl->parent)
-                path.append(" (" + pl->styleNode.toString() + ')');
-            qDebug() << "node" << prefix << path << ":::" << styleRule->selector();
-        }
-        QHashIterator<QString, StyleTreeNode*> i(children);
-        while (i.hasNext()) {
-            i.next();
-            i.value()->listTree(prefix + " ");
-        }
-    }
-}
-

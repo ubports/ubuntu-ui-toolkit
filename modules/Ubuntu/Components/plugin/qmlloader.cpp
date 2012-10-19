@@ -89,8 +89,6 @@ void QmlLoader::finalizeThemeLoading()
                 }
             }
 
-            styleTree->listTree();
-
             // emit themeChanged() using meta-object
             if (async)
                 QMetaObject::invokeMethod(ThemeEngine::instance(), "themeChanged()", Qt::QueuedConnection);

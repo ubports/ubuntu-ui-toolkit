@@ -30,8 +30,6 @@
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
 
-#include <QtCore/QDebug>
-
 /*!
   \qmltype Theme
   \inqmlmodule Ubuntu.Components 0.1
@@ -62,18 +60,6 @@
   applications must define the organization name (domain in Mac OSX) and application
   names as specified in QSettings documentation.
 */
-
-bool themeDebug = false;
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (themeDebug) \
-        qDebug()
-
-#define TRACEP \
-    if (themeDebug) \
-        qDebug()
 
 ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 
@@ -110,7 +96,6 @@ ThemeEnginePrivate::~ThemeEnginePrivate()
 void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
-    TRACEP << newTheme.toString();
 
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
@@ -123,7 +108,6 @@ void ThemeEnginePrivate::_q_updateTheme()
         if (!importPaths.isEmpty()) {
             importList << importPaths;
             m_engine->setImportPathList(importList);
-            TRACEP << importPaths;
         }
         // load the theme
         loadTheme(newTheme);
@@ -144,8 +128,6 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 
     QString fileType = url.path();
     fileType = fileType.right(fileType.length() - fileType.lastIndexOf('.'));
-
-    TRACEP << url << QString("theme: %1, type: %2").arg(url.toString()).arg(fileType);
 
     if (themeLoaders.contains(fileType)) {
         StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url);
@@ -224,8 +206,6 @@ Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
     if (!m_styleTree)
         return 0;
     Rule *rule = m_styleTree->lookupStyleRule(path);
-    TRACEP << "lookup path=" << selectorToString(path) <<
-                    ", style rule found:" << ((rule) ? rule->selector() : "");
     return rule;
 }
 
@@ -242,11 +222,6 @@ Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 void ThemeEnginePrivate::setError(const QString &error)
 {
     themeEngine->d_ptr->errorString = error;
-#ifndef QT_TESTLIB_LIB
-    if (!themeEngine->d_ptr->errorString.isEmpty())
-        TRACEP << themeEngine->d_ptr->errorString;
-#endif
-
     Q_EMIT themeEngine->errorChanged();
 }
 
@@ -421,8 +396,6 @@ Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
     if (d->m_styleCache.contains(path)) {
         return d->m_styleCache.value(path);
     }
-
-    TRACE << "item path" << ThemeEnginePrivate::selectorToString(path);
 
     Rule *rule = d->styleRuleForPath(path);
     if (rule) {

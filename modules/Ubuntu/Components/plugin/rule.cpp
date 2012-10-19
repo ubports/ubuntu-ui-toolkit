@@ -24,20 +24,6 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QString>
 
-#include <QtCore/QDebug>
-const bool traceStyleRule = false;
-
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (traceStyleRule) \
-        qDebug()
-
-#define TRACEP \
-    if (traceStyleRule) \
-        qDebug()
-
 /*!
   \qmltype Rule
   \inqmlmodule Ubuntu.Components 0.1
@@ -160,14 +146,6 @@ RulePrivate::RulePrivate(Rule *qq, QQmlEngine *engine, const QString &selector, 
     // create delegate component
     if (!delegateQml.isEmpty())
         createComponent(engine, delegateQml, &delegate);
-
-    TRACEP << QString("\n=======================================================================\n"
-                      "style for [%1]:\n%2\n"
-                      "delegate for [%1]:\n%3"
-                      "=======================================================================")
-              .arg(selector)
-              .arg(styleQml)
-              .arg(delegateQml);
 }
 
 /*
@@ -300,7 +278,6 @@ QObject *Rule::createStyle(QQmlContext *context)
                                      .arg(d->styleQml));
         return 0;
     }
-    TRACE << QString("create style for %1").arg(d->selector);
     return d->style ? d->style->create(context) : 0;
 }
 
@@ -318,7 +295,6 @@ QQuickItem *Rule::createDelegate(QQmlContext *context)
                                      .arg(d->delegateQml));
         return 0;
     }
-    TRACE << QString("create delegate for %1").arg(d->selector);
     return d->delegate ? qobject_cast<QQuickItem*>(d->delegate->create(context)) : 0;
 }
 

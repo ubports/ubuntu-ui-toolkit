@@ -52,7 +52,6 @@ public:
     void addStyleRule(const Selector &path, Rule *styleRule);
     Rule *lookupStyleRule(const Selector &path, bool strict = false);
     Rule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
-    void listTree(const QString &prefix = QString());
 
 public:
     StyleTreeNode *parent;

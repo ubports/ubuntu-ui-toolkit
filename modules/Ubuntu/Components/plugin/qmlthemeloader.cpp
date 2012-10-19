@@ -27,16 +27,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 
-#include <QtCore/QDebug>
-const bool traceQmlThemeLoader = false;
-
-#ifdef TRACE
-#undef TRACE
-#endif
-#define TRACE \
-    if (traceQmlThemeLoader) \
-        qDebug()
-
 /*
   QmlTheme file parser
 
@@ -263,7 +253,6 @@ void QmlThemeLoader::normalizeStyles()
 bool QmlThemeLoader::parseTheme(const QUrl &url)
 {
     // open the file
-    TRACE << url;
     QString fname = (url.scheme() == "qrc") ? url.toString().remove("qrc") : url.path();
     QFile file(fname);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
@@ -524,7 +513,6 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
     QString importPath = (import.count() < 2) ? QString() : import[1].simplified();
 
     // check whether we have the import set
-    TRACE << importUrl << importPath;
     if (!loader->imports.contains(importUrl)) {
         loader->imports += QString("import %1\n").arg(importUrl);
 
@@ -592,6 +580,5 @@ StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url)
         selectorTable.clear();
     }
 
-    TRACE << "returns styleTree" << styleTree;
     return styleTree;
 }
