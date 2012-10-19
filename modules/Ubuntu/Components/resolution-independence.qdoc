@@ -30,8 +30,7 @@
 
     We define a measurement unit called the device independent pixel,
     abbreviated \b{\e dp}, that should be used instead of pixels. 1 device
-    independent pixel typically translates to 1 pixel on current laptops and on
-    phones and tablets with medium density screens.
+    independent pixel typically translates to 1 pixel on current laptops.
 
     Screens are divided into 3 categories depending on the type of device and
     their pixel density:
@@ -57,11 +56,12 @@
 
     \part Rhythm
 
-    In order to define a visual rhythm in Ubuntu, an increment of 8 dp needs to    be used for all measurements. Sizes of elements, spacing, margins, etc.
-    should all use multiples of 8 dp.
-    An additional benefit of layouting all UI elements with multiples of 8 dp
-    is that 8 dp always translates to an integer number of pixels in all the
-    categories thus aligning on the pixel grid of the screen:
+    In order to define a visual rhythm in Ubuntu, an increment of 8 dp needs to     be used for all measurements. Sizes of elements, spacing, margins, etc.
+    should all use multiples of 8 dp. To facilitate that, another unit
+    called grid unit, abbreviated \b{\e gu}, is defined so that 1 gu = 8 dp.
+    An additional benefit of layouting all UI elements with multiples of 1 gu
+    is that 1 gu always translates to an integer number of pixels in all the
+    categories of devices thus aligning on the pixel grid of the screen:
 
     \table
     \header
@@ -69,9 +69,9 @@
       \li High Density
       \li Extra High Density
     \row
-      \li 8 dp = 8 px
-      \li 8 dp = 12 px
-      \li 8 dp = 16 px
+      \li 1 gu = 8 px
+      \li 1 gu = 12 px
+      \li 1 gu = 16 px
     \endtable
 
 
