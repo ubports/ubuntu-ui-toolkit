@@ -24,6 +24,7 @@
 #include <QtCore/QFileInfo>
 
 #define ENV_SCALE_FACTOR "SCALE_FACTOR"
+#define GRID_UNIT_IN_DP 8
 
 struct Category {
     QString suffix;
@@ -73,7 +74,7 @@ float Units::dp(float value)
 
 float Units::gu(float value)
 {
-    return qFloor(value * m_scaleFactor * 8);
+    return qFloor(value * m_scaleFactor * GRID_UNIT_IN_DP);
 }
 
 QString Units::resolveResource(const QUrl& url)
