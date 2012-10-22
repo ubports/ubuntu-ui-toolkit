@@ -6,7 +6,7 @@ Syntax:
 qml-mapping(selector, style-qml-type, delegate-qml-type)
 where
    - selector is the tag used in the theme
-   - style -qml-type is the name of the QML document defining the style properties
+   - style-qml-type is the name of the QML document defining the style properties
    - delegate-qml-type is the name of the QML document defining the widget delegate.
 If no style is given, the theme engine will use QtObject for style and will declare all
 properties typed as variant.

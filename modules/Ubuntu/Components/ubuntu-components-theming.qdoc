@@ -19,27 +19,118 @@
   \ingroup theming-description
   \title Theming Ubuntu Components
 
-  \b{The theming is under heavy development therefore changes may occur frequiently,
-  and may not be in sync with this documentation.}
+  \b{The theming is under heavy development, therefore changes may occur leaving
+  the documentation out of date.}
 
   \section1 What is theming and why is needed?
 
   Theming is one of the most important aspects of a component set that is aimed
-  to be fully reusable and customizable. There are various trials and solutions
-  available that use different methods and approaches for what they consider
-  theming. With proper theming support both the look and feel can be changed without
-  altering the components API or implementation.
+  to be fully reusable and customizable. With proper theming support both the
+  look and feel can be changed without altering the components API or implementation.
+  Creating a division between the visual implementation and the stylistic settings
+  will help enforce visual consistency throughout the application and perhaps ease
+  visual experimentation by designers.
+
+  The following sample illustrates the abilities of the theming.
+
+  Theme file (sample.qmltheme):
+  \code
+  @qml-mapping(.frame, , FrameDelegate);
+  @qml-import(Ubuntu.Components 0.1);
+
+  .frame {
+     borderColor: "darkgray";
+     radius: 10;
+     fillColor: "lightgray";
+     opacity: 0.8;
+  }
+  .button {
+     color: widget.hovered ? "tan" : "#757373";
+  }
+  \endcode
+
+  Delegate files used by the theme providing the visuals:
+  \qml
+  // FrameDelegate
+  import QtQuick 2.0
+  import Ubuntu.Components 0.1
+
+  Rectangle {
+     anchors.fill: parent
+     color: itemStyle.fillColor
+     radius: itemStyle.radius
+     opacity: itemStyle.opacity
+     border {
+        color: itemStyle.borderColor
+        border.width: 2
+     }
+  }
+  \endqml
+
+  The Button document:
+  \qml
+  // Button.qml
+  import QtQuick 2.0
+
+  Item {
+     id: root
+     property alias hovered: mouseArea.containsMouse
+     property alias pressed: mouseArea.pressed
+
+     signal clicked
+
+     MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+
+        onClicked: clicked()
+     }
+  }
+  \endqml
+
+  Finally the main document:
+  \qml
+  // Main doculent
+  import QtQuick 2.0
+  import Ubuntu.Components 0.1
+
+  Rectangle {
+    ItemStyle.class: "frame"
+    width: 100
+    height: 100
+    Button {
+       width: 100
+       height: 40
+       anchors {
+          left: parent.left
+          top: parent.top
+          leftMargin: 20
+          topMargin: 20
+       }
+       ItemStyle.class: "button"
+       ItemStyle.delegate: Rectangle {
+          anchors.fill: parent
+          color: (ItemStyle.style) ? ItemStyle.style.color : "transparent"
+          radius: 25
+          Text {
+            anchors.centerIn: parent
+            text: "Button"
+          }
+       }
+    }
+  }
+  \endqml
 
   \section1 Theming Engine, Theming Components
 
-  The theming used in Ubuntu Components follows this idea of changing LAF (Look-And-Feel)
-  Uses ideas from CSS stylesheets, however it does not provide yet another implementation
-  of that. The framework supports themes defined in QML as well as in the so-called
+  The theming used in Ubuntu Components follows this idea of changing the look-and-feel.
+  Our approach on selecting items to theme is inspired by CSS stylesheets. The framework
+  supports themes defined in QML as well as in the so-called
   QmlTheme theme file format (.qmltheme). Theme files are loaded by the components
-  library upon startup before any QML element of the application would be loaded.
-  The library uses the settings to load and store user and application specific
-  theming. User theme configuration is stored under \c{$HOME/.qmltheme/theme.ini}
-  file, which contains the following setting keys:
+  library upon startup before any QML element of the application would be created.
+  The library loads the default theme that is set for the user in
+  \c{$HOME/.config/UITK/theme.ini} file, which contains the following setting keys:
   \list
    \li \b{theme} specifies the actual theme set for the user, more precisely the
    folder name of the theme stored under \c{/var/shared/themes} system folder.
@@ -49,49 +140,30 @@
    the theme file is loaded. This key is optional.
   \endlist
 
-  Theme folders are stored under \c qmltheme, and the default theme file, which
-  defines the theme is \c default.qml or \c default.qmltheme.
+  Theme files are stored within a directory named \c qmltheme, within which the
+  default theme files should be named default.qml or default.qmltheme.
 
-  For example \e Ambiance theme is located under \c{/var/shared/themes/Ambiance}
+  For example the \e Ambiance theme is located under \c{/var/shared/themes/Ambiance}
   and the default theme file therefore will be at \c{/var/shared/themes/Ambiance/qmltheme/default.qmltheme}.
 
-  Themes can define application specific themes. These are stored under the system
-  theme folder. These theme files are stored in application settings and also loaded
-  upon startup. An application supporting theming must define the following setting
-  keys:
-  \list
-   \li \b{UseSystemTheme} specifies whether the application uses the system theme
-   or not.
-   \li \b{ThemeFile} specifies the theme file to be loaded. If the application uses
-   the system theme, the field defines the relative path to the system theme folder.
-   If the system theme is not used (private theme), the path can either be a full
-   path to the theme, relative to the current directory or a resource.
-   \li \b{imports} same as in theme's case, contains the folders to be added to the
-   import aths of the QML engine. The presence of this key is needed when themes are
-   defined in QML format.
-  \endlist
-
-  Using the example above, assuming the application uses the system themes, and
-  application's theme is "someapp.qmltheme", the theme file full path will be
-  \c{/var/shared/themes/Ambiance/qmltheme/someapp.qmltheme}.
-
   When themes are loaded, the engine builds up a map of \l{Rule} elements to ease
-  style lookup. These style rules are applied only on items, which have styling
-  defined using \l ItemStyle attached properties. ItemStyle attached object will
+  style lookup. These style rules are applied only on items which have styling
+  defined using \l ItemStyle attached properties. The ItemStyle attached object will
   look after style rules based on the styling information set and based on the
   hierarchy they are nested in. Style rules can define configuration properties
   (style property), visuals (delegate property) or both.
 
   Style rules are identified through \l{Rule::selector}{selectors}. Selectors follow
-  the syntax defined in W3C, however does not provide full support for defined. This
+  the syntax defined by the \l{http://www.w3.org/TR/selector.html}{W3C for CSS selectors}
+  however does not provide full support, and selectors are case sensitive. This
   syntax is used in both QML- and QmlTheme file formats.
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
-   meta class name, therefore selectors are case sensitive
+   meta class name, therefore selectors are case sensitive.
    \li - element names are always prefixed with a ‘.’ character
-   \li - ID is the name of the widget prefixed with ‘#’ character
-   \li - hierarchy on a style rule is represented
+   \li - ID selector is the \l{ItemStyle::name}{name} of the widget prefixed with ‘#’ character
+   \li - hierarchy on a style rule is represented in two ways:
    \list
     \li * either with a space character in between selectors (e.g. “.Toolbar
         .Button”), when the style should be applied only if the widget occurs
@@ -103,6 +175,63 @@
    \li - multiple selectors can share the same declaration block, by separating
    them with comma character
   \endlist
+
+  Examples:
+
+  1) a Rule having its selector identifying QML elements styled with class "Button"
+  \code
+  // QML rule
+  Rule {
+     selector: ".Button"
+     ...
+  }
+
+  // QmlTheme rule
+  .Button {
+     ...
+  }
+  \endcode
+  2) a Rule having its selector identifying QML elements styled with class "button"
+  and named as "red"
+  \code
+  // QML rule
+  Rule {
+     selector: ".button#red"
+     ...
+  }
+
+  //QmlTheme rule
+  .button#red {
+     ...
+  }
+  \endcode
+  3) a Rule having its selector identifying QML elements styled with class "Button"
+  named as "red" and which are children of QML elements styled as class "frame"
+  \code
+  // QML rule
+  Rule {
+     selector: ".frame .Button#red"
+     ...
+  }
+
+  //QmlTheme rule
+  .frame .Button#red {
+     ...
+  }
+  \endcode
+  4) a Rule having its selector identifying QML elements styled with class "Button"
+  named as "red" and which are direct children of QML elements styled as class "frame"
+  \code
+  Rule {
+     selector: ".frame > .Button#red"
+     ...
+  }
+
+  //QmlTheme rule
+  .frame > .Button#red {
+     ...
+  }
+  \endcode
 
   \section2 QML theme files
   QML theme file consists of a document enumerating \l{Rule}{styling rules}.
