@@ -35,7 +35,7 @@ class SelectorNode {
     QString styleClass;
     QString styleId;
     Relationship relationship;
-    NodeSensitivity sensitivity;
+    int sensitivity;
 };
 
 // selector type

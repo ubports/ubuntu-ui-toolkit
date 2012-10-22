@@ -18,36 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Theming"
+    title: "Theme: " + Theme.currentTheme
 
     Column {
         spacing: 30
 
         TemplateRow {
-            title: "Current:"
-
-            TextCustom {
-                width: 400
-                ItemStyle.class: "label"
-                text: Theme.currentTheme
-            }
-        }
-
-        TemplateRow {
-            Button {
-                text: "Theme #1"
-                width: 100
-                onClicked: {
-                    Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme")
-                }
-            }
-            Button {
-                text: "Theme #2"
-                width: 100
-                onClicked: {
-                    Theme.loadTheme("demos/themes/private-theme.qmltheme")
-                }
-            }
             Button {
                 text: "Default"
                 width: 100
@@ -55,53 +31,123 @@ Template {
                     Theme.loadTheme("")
                 }
             }
-        }
-
-        TemplateRow {
-            title: ".Button"
-
             Button {
-                text: "Call"
+                text: "Custom"
+                width: 100
+                onClicked: {
+                    Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme")
+                }
             }
         }
 
         TemplateRow {
-            title: ".button"
+            title: "Button"
+            height: code1.height
+
+            Button {
+                id: button
+                text: "Call"
+                Binding {
+                    target: button.ItemStyle.style
+                    property: "color"
+                    value: "green"
+                }
+            }
+
+            TextCustom {
+                ItemStyle.class: "row-label"
+                text: " code "
+            }
+
+            Rectangle {
+                id: code1
+                height: codeSnipet1.paintedHeight + 10
+                width: codeSnipet1.paintedWidth + 10
+                color: "#efefef"
+                radius: 5
+                border.color: Qt.darker(color, 1.2)
+                TextCustom {
+                    anchors.margins: 5
+                    id: codeSnipet1
+                    ItemStyle.class: "row-label"
+                    anchors.fill: parent
+                    text: "Button {\n"+
+                          "    id: button\n"+
+                          "    text: \"Call\"\n"+
+                          "    Binding {\n"+
+                          "        target: button.ItemStyle.style\n"+
+                          "        property: \"color\"\n"+
+                          "        value: \"green\"\n"+
+                          "    }\n"+
+                          "}"
+                }
+            }
+        }
+
+        TemplateRow {
+            title: "Altered style"
+            height: code2.height
 
             Button {
                 ItemStyle.class: "button"
                 text: "Call"
             }
+            TextCustom {
+                ItemStyle.class: "row-label"
+                text: " code "
+            }
+
+            Rectangle {
+                id: code2
+                height: codeSnipet2.paintedHeight + 10
+                width: codeSnipet2.paintedWidth + 10
+                color: "#efefef"
+                radius: 5
+                border.color: Qt.darker(color, 1.2)
+                TextCustom {
+                    anchors.margins: 5
+                    id: codeSnipet2
+                    ItemStyle.class: "row-label"
+                    anchors.fill: parent
+                    text: "Button {\n"+
+                          "    ItemStyle.class: \"button\"\n"+
+                          "    text: \"Call\"\n"+
+                          "}"
+                }
+            }
         }
 
         TemplateRow {
-            title: "Custom"
+            title: "Altered visuals"
+            height: code3.height
 
-            Item {
-                id: frame
-                width: 300
-                height: 100
-                ItemStyle.class: "frame"
-                Button {
-                    id: customButton
-                    x: 10; y: 10; width: 150
-                    text: "Private style"
-                    ItemStyle.delegate: Item {
-                        z: -1
-                        anchors.fill: parent
-                        clip: true
-                        Rectangle {
-                            id: shape
-                            z: -2
-                            anchors.fill: parent
-                            anchors.margins: -customButton.width
-                            rotation: customButton.pressed ? -45 : 45
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: (ItemStyle.style && ItemStyle.style.color) ? ItemStyle.style.color : "transparent" }
-                                GradientStop { position: 1.0; color: customButton.hovered ? "blue" : "red" }
-                            }
-                        }
-                    }
+            Button {
+                ItemStyle.class: "button"
+                ItemStyle.name: "altered"
+                text: "Call"
+            }
+            TextCustom {
+                ItemStyle.class: "row-label"
+                text: " code "
+            }
+
+            Rectangle {
+                id: code3
+                height: codeSnipet3.paintedHeight + 10
+                width: codeSnipet3.paintedWidth + 10
+                color: "#efefef"
+                radius: 5
+                border.color: Qt.darker(color, 1.2)
+                TextCustom {
+                    anchors.margins: 5
+                    id: codeSnipet3
+                    ItemStyle.class: "row-label"
+                    anchors.fill: parent
+                    text: "Button {\n"+
+                          "    ItemStyle.class: \"button\"\n"+
+                          "    ItemStyle.name: \"altered\"\n"+
+                          "    text: \"Call\"\n"+
+                          "}"
                 }
             }
         }

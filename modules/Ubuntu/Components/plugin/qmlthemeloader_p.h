@@ -45,6 +45,7 @@ private:
     static QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
     bool handleSelector(const Selector &path, const QString &declarator, QTextStream &stream);
     void normalizeStyles();
+    bool updateRuleProperties(Selector &selector, QHash<QString, QString> &propertyMap);
     bool parseTheme(const QUrl &url);
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);

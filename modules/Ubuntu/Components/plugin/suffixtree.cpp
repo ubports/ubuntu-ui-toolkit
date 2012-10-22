@@ -69,8 +69,8 @@ QString SelectorNode::toString() const
 bool SelectorNode::operator==(const SelectorNode &other)
 {
     bool ret = (styleClass == other.styleClass) &&
-               ((sensitivity & IgnoreStyleId) ? true : styleId == other.styleId) &&
-               ((sensitivity & IgnoreRelationship) ? true : relationship == other.relationship);
+               (((sensitivity & IgnoreStyleId) ==  IgnoreStyleId) ? true : styleId == other.styleId) &&
+               (((sensitivity & IgnoreRelationship) ==  IgnoreRelationship) ? true : relationship == other.relationship);
     return ret;
 }
 
@@ -198,15 +198,26 @@ Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath,
     if (children.contains(nodeKey)) {
         rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
-    if (!rule && !strict && (nextNode.relationship == SelectorNode::Child)) {
-        // check if the searched node had Child relationship; if yes,
-        // change it to Descendant and look after the style again; if
-        // found, the lookup after this point should be strict
-        nextNode.relationship = SelectorNode::Descendant;
+    //if (!rule && !strict && (nextNode.relationship == SelectorNode::Child)) {
+    if (!rule && !strict) {
+        // check if we find something without the style name
+        if (!nextNode.styleId.isEmpty())
+            nextNode.styleId = QString();
         nodeKey = nextNode.toString();
         strict = true;
         if (children.contains(nodeKey)) {
             rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
+        }
+        if (!rule && (nextNode.relationship == SelectorNode::Child)) {
+            // check if the searched node had Child relationship; if yes,
+            // change it to Descendant and look after the style again; if
+            // found, the lookup after this point should be strict
+            nextNode.relationship = SelectorNode::Descendant;
+            nodeKey = nextNode.toString();
+            strict = true;
+            if (children.contains(nodeKey)) {
+                rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
+            }
         }
     }
 

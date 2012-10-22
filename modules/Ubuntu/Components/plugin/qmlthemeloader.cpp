@@ -77,7 +77,7 @@ Selector selectorSubset(const Selector &path, int elements)
     Selector result;
     while (elements > 0) {
         result << path[path.length() - elements];
-        result.last().sensitivity = SelectorNode::IgnoreAll;
+        result.last().sensitivity |= SelectorNode::IgnoreAll;
         elements--;
     }
     return result;
@@ -220,29 +220,45 @@ void QmlThemeLoader::normalizeStyles()
         i.next();
         Selector selector = i.key();
         QHash<QString, QString> propertyMap = i.value();
-        bool propertyMapUpdated = false;
+        bool propertyMapUpdated = updateRuleProperties(selector, propertyMap);
 
         for (int count = selector.count(); count > 1; count--) {
             Selector subset = selectorSubset(selector, count);
-
-            // check if we have a style that is a subset of the current one and if yes
-            // copy the base propertyes that are not overloaded by the current one
-            if (selectorTable.contains(subset)) {
-                // get the properties and copy the base ones into the current selector
-                QHashIterator<QString, QString> baseProperty(selectorTable.value(subset));
-                while (baseProperty.hasNext()) {
-                    baseProperty.next();
-                    if (!propertyMap.contains(baseProperty.key())) {
-                        propertyMap.insert(baseProperty.key(), baseProperty.value());
-                        propertyMapUpdated = true;
-                    }
-                }
-            }
+            if (updateRuleProperties(subset, propertyMap))
+                propertyMapUpdated = true;
         }
         if (propertyMapUpdated) {
-            selectorTable.insert(selector, propertyMap);
+            selectorTable.insert(i.key(), propertyMap);
         }
     }
+}
+
+/*!
+  \internal
+  Updates the properties of a rule based on the subset of the proeprty. May ignore relation
+  and/or style ID when collecting properties
+  */
+bool QmlThemeLoader::updateRuleProperties(Selector &selector, QHash<QString, QString> &propertyMap)
+{
+    bool result = false;
+    // check if we have a style that is a subset of the current one and if yes
+    // copy the base propertyes that are not overloaded by the current one
+    if (!selector[0].styleId.isEmpty()) {
+        selector[0].sensitivity |= SelectorNode::IgnoreStyleId;
+        selector[0].styleId = QString();
+    }
+    if (selectorTable.contains(selector)) {
+        // get the properties and copy the base ones into the current selector
+        QHashIterator<QString, QString> baseProperty(selectorTable.value(selector));
+        while (baseProperty.hasNext()) {
+            baseProperty.next();
+            if (!propertyMap.contains(baseProperty.key())) {
+                propertyMap.insert(baseProperty.key(), baseProperty.value());
+                result = true;
+            }
+        }
+    }
+    return result;
 }
 
 /*!
@@ -368,10 +384,15 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
 {
     QPair<QString, QString> qmlTypes;
 
-    QString qmap = '.' + selector.last().styleClass;
+    QString qmap = selector.last().toString();
 
     if (qmlMap.contains(qmap))
         qmlTypes = qmlMap.value(qmap);
+    else {
+        qmap = '.' + selector.last().styleClass;
+        if (qmlMap.contains(qmap))
+            qmlTypes = qmlMap.value(qmap);
+    }
 
     style.clear();
     delegate.clear();

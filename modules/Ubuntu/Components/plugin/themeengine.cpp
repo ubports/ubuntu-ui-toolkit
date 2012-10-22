@@ -377,7 +377,6 @@ Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
     if (d->m_styleCache.contains(path)) {
         return d->m_styleCache.value(path);
     }
-
     Rule *rule = d->styleRuleForPath(path);
     if (rule) {
         // cache the rule

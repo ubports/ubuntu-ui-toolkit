@@ -6,7 +6,7 @@
 
 @import url("../default.qmltheme");
 @qml-import(themes 1.0, current:/demos);
-@qml-mapping(.frame, , TestFrameDelegate);
+@qml-mapping(.button#altered, ButtonStyle, TestFrameDelegate);
 
 .Button {
     color: item.hovered ? "tan" : "lightgray";
@@ -15,6 +15,11 @@
 .button {
     color: item.hovered ? "lightgray" : "#a3e5e8";
 }
+
+.button#altered {
+    color: item.hovered ? "lightblue" : "cyan"
+}
+
 
 .frame {
     color: "tan";
