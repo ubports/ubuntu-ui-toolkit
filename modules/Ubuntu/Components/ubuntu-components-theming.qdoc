@@ -241,13 +241,13 @@
 
   \section2 QmlTheme file format
   The QmlTheme file format uses the ideas and format of CSS stylesheets, however does
-  not implement teh full specification. QmlTheme files are identified through their
+  not implement the full specification. QmlTheme files are identified through their
   extension, which is \e .qmltheme. A theme file can contain styling rules and
   so-called @-rules.
 
   \section3 @-rules
   @-rules are special rules, usually defined in one line ending with a semicolon
-  character, and define further actions or primitives. QmlTheme defines the following
+  character, which define further actions or primitives. QmlTheme defines the following
   @-rules:
   \list
    \li \b{@import url}
@@ -333,38 +333,24 @@
   named "resources". The declaration block of the button would look as follows:
   \code
   .button {
-    color: "lightgray";
-    frame: url("resources/button-frame.png");
-    pressedColor: Qt.darker(color, 1.2);
+      color: "lightgray";
+      frame: url("resources/button-frame.png");
+      pressedColor: Qt.darker(color, 1.2);
   }
   \endcode
-  Assuming the theme is called "Foo", the generated QML Rule would look like
-  \qml
-  Rule {
-      selector: ".button"
-      style: ButtonStyle {
-          color: "lightgray"
-          frame: "/var/shared/themes/Foo/qmltheme/resources/button-frame.png"
-          pressedColor: Qt.darker(color, 1.2)
-      }
-      delegate: Component {
-          ButtonDelegate{}
-      }
-  }
-  \endqml
 
   \section2 Style rules
   Style rules are defined using "selectors {declaration-block}" syntax, where
-  selectors define one or more selectors separated with commas, and the declaration
-  block following QML syntax to ease transfering of those to QML. Every line in the
-  declaration block must be separated with semicolon character.
+  selectors define one or more selectors separated by commas, and the declaration
+  block follow QML syntax to ease transfering of those to QML. \b Note: Unlike QML
+  every line in the declaration block must be separated with semicolon character.
 
   The following example defines styling for a Button element identified with ".button"
   \code
   .button {
-    color: "lightgray";
-    frame: Qt.resolvedUrl("resources/button-frame.png");
-    pressedColor: Qt.darker(color, 1.2);
+      color: "lightgray";
+      frame: Qt.resolvedUrl("resources/button-frame.png");
+      pressedColor: Qt.darker(color, 1.2);
   }
   \endcode
 
@@ -384,7 +370,7 @@
       }
   }
   \endqml
-  In case the theme does not define maping for the selector, the generated Rule
+  In case the theme does not define mapping for the selector, the generated Rule
   will look like
   \qml
   Rule {
@@ -397,12 +383,11 @@
   }
   \endqml
 
-  The theming engine defines two properties that can be used to access the widget
-  and the styling properties. These properties can be accessed then from the visuals
-  defined. These context properties are:
+  The theming engine defines two properties that are available for the style and
+  delegate components. These context properties are:
   \list
-    \li \b{widget} is defined to access widget properties
-    \li \b{itemStyle} holds styling properties, and it is defined only if the widget
+    \li \b{item}, holding the widget properties
+    \li \b{itemStyle} holding styling properties, and it is defined only if the widget
     uses delegates (visuals), therefore accessible within delegates
   \endlist
 
@@ -418,9 +403,9 @@
   as follows:
   \code
   .button {
-    color: widget.hovered ? "lightgreen" : "lightgray";
-    frame: Qt.resolvedUrl("resources/button-frame.png");
-    pressedColor: Qt.darker(color, 1.2);
+      color: widget.hovered ? "lightgreen" : "lightgray";
+      frame: Qt.resolvedUrl("resources/button-frame.png");
+      pressedColor: Qt.darker(color, 1.2);
   }
   \endcode
 
@@ -431,13 +416,13 @@
   existing QML elements, as well as component library widgets.
 
   The main properties that define styling are the \l{ItemStyle::class}{class} and
-  \l{ItemStyle::name}{name} proeprties. \c class property
+  \l{ItemStyle::name}{name} properties. \c class property
   declares the style class to be applied, and \c name defines the unique
   identifier of the widget. Theming engine uses these properties to build up
   the selector node that identifies the widget. The format used to build it is
-  \c{.<class>[#<name>]}. If neither of these are specifies, but the
-  widget still uses styling, the engine will look after the default style class,
-  by substituting class to the meta class name (i.e. Button.qml this will be
+  \c{.<class>[#<name>]}. If neither of these are specified, but the
+  widget still uses styling, the engine will apply the default style class,
+  by substituting class with the meta class name (i.e. Button.qml this will be
   \c Button).
 
   Updating the previous example, the complete Button widget with style information
@@ -479,9 +464,9 @@
   \endqml
 
   \section1 Styling QML elements
-  As mentioned before, attaching ItemStyle property to QML elements can also be used
+  As mentioned before, attaching the ItemStyle property to QML elements can also be used
   to style them. The following example styles a Text element. There's no delegate as
-  the Text element provides the visuals needed to reate a Label widget.
+  the Text element provides the visuals needed to create a Label widget.
   \code
   .label {
       fontSize: 12;
@@ -498,9 +483,9 @@
   Text {
       ItemStyle.onStyleChanged: {
           if (ItemStyle.style && ItemStyle.style.fontSize)
-              font.pixelSize = Qt.binding(function() {return ItemStyle.style.fontSize})
+              font.pixelSize = Qt.binding(function() {return ItemStyle.style.fontSize});
           if (ItemStyle.style && ItemStyle.style.color)
-              color = Qt.binding(function() {return ItemStyle.style.color})
+              color = Qt.binding(function() {return ItemStyle.style.color});
       }
   }
   \endqml
@@ -519,9 +504,9 @@
   \endcode
 
   \section1 Custom (private) Styles
-  ItemStyles has two more properties, which hold the style configuration properties
+  ItemStyle has two more properties which hold the style configuration properties
   and the visuals. These properties are set the theme contains styling identified by
-  the selector of the widget. These properties can also be set with styling configuration
+  the selector of the widget. These properties can also be set to styling configuration
   or delegates others than the ones defined in themes.
 
   An example of a Label that uses a private style configuration defining font
@@ -535,8 +520,9 @@
   }
   \endqml
 
-  A particular widget user can decide to use private styles and delegates, style or
-  delegate from theme and other one as private it or both from theme.
+  A particular widget user can decide to use private styles and delegates, style
+  from theme with private delegate, delegate from theme with private style, or
+  just rely on the theme for both.
   A button that uses a private delegate but style from theme would look like
   \qml
   Button {
@@ -559,22 +545,22 @@
   @qml-mapping(.Button, ButtonStyle, ButtonDelegate);
   @qml-import(Ubuntu.Components 0.1);
 
-    .Button, .button {
-        color: "#e3e5e8";
-        shapeDark: url("artwork/ButtonShapeDark.png");
-        shapeNormal: url("artwork/ButtonShape.png");
-        borderIdle: url("artwork/ButtonBorderIdle.png");
-        borderPressed: url("artwork/ButtonBorderPressed.png");
-        borderPressed: url("artwork/ButtonBorderPressed.png");
-        borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
-        borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
-    }
+  .Button, .button {
+      color: "#e3e5e8";
+      shapeDark: url("artwork/ButtonShapeDark.png");
+      shapeNormal: url("artwork/ButtonShape.png");
+      borderIdle: url("artwork/ButtonBorderIdle.png");
+      borderPressed: url("artwork/ButtonBorderPressed.png");
+      borderPressed: url("artwork/ButtonBorderPressed.png");
+      borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
+      borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
+  }
 
-    .label {
-        fontFamily: "Ubuntu";
-        fontSize: "medium";
-        color: "red";
-    }
+  .label {
+      fontFamily: "Ubuntu";
+      fontSize: "medium";
+      color: "red";
+  }
   \endcode
 
   theme.qmltheme
@@ -583,17 +569,21 @@
   @qml-import(themes 1.0, current:/demos);
   @qml-mapping(.frame, , TestFrameDelegate);
 
-    .Button {
-        color: widget.hovered ? "tan" : "lightgray";
-    }
+  .Button {
+      color: widget.hovered ? "tan" : "lightgray";
+  }
 
-    .button {
-        color: widget.hovered ? "lightgray" : "#a3e5e8";
-    }
+  .button {
+      color: widget.hovered ? "lightgray" : "#a3e5e8";
+  }
 
-    .frame {
-        color: "tan";
-    }
+  .button#red {
+      color: "red";
+  }
+
+  .frame {
+      color: "tan";
+  }
   \endcode
 
   \section1 QML elements supporting theming
