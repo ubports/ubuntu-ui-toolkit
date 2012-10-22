@@ -2,7 +2,7 @@
 
     The theme extends the default one and redefines the delegate for the
     .Button selector. The "demos" folder is added to the imports so the
-    theme pecific types can be utilized.
+    theme specific types can be utilized.
 */
 
 @import url("global-themes/theme-one/theme.qmltheme");

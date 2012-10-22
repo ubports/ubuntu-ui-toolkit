@@ -29,7 +29,7 @@
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
   contains all the rules defined for selectors in suffix format, meaning the selectors
   are parsed and stored from the end to the beginning. Each node in the tree collects
-  its children nodes in a has table, where the key is the selector node converted to
+  its children nodes in a hash table, where the key is the selector node converted to
   a string.
 */
 
@@ -76,7 +76,7 @@ bool SelectorNode::operator==(const SelectorNode &other)
 
 /*!
   \internal
-  Hash key for Selector. Uses the QString's hash function.
+  Hash key for Selector. Uses QString's hash function.
   */
 uint qHash(const Selector &key)
 {
@@ -152,7 +152,7 @@ void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
 /*!
   \internal
   Search for the style best matching the item path. The path is parsed from the
-  tail as the styles are stored in the tree is stored in sufix form. The \a strict
+  tail as the styles are stored in the tree in suffix form. The \a strict
   parameter specifies whether the search should be strict on the relationship or not.
 */
 Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)

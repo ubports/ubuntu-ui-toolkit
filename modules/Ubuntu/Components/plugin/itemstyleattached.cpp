@@ -43,7 +43,7 @@ const char *styleProperty = "itemStyle";
   style rule to be used. However this can happen only if the document defining the
   item refers to the styling attached property.
 
-  The following items will use styling as they declare and reffer to styling
+  The following items will use styling as they declare and refer to styling
   attached properties, and styling Text can be done by defining the ".Text"
   selector.
 
@@ -58,11 +58,11 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  A item can use private styling by setting the style and/or the deleagte property
-  locally. In this case the item won't use the theme defined style/delegate but
+  A item can use private styling by setting the style and/or the delegate property
+  locally. In this case the item won't use the theme defined style/delegate but will
   use the styling elements defined locally. Switching back to theme defined styles
   can be achieved by clearing the style/delegate property. It is also possible to
-  set only one of the styling elements locally and use a the theme defined one for
+  set only one of the styling elements locally and use the theme defined one for
   the other.
 
   \qml
@@ -81,12 +81,12 @@ const char *styleProperty = "itemStyle";
      }
   }
   \endqml
-  In the example above Button document reffers to the style property of the attached
+  In the example above the Button document refers to the style property of the attached
   styling, therefore the element by default will use the style defined using
-  ".Button" selector.
+  the ".Button" selector.
 
   The following example shows a Button item that uses a private delegate but the
-  style from the themes.
+  styles from the themes.
 
   \qml
   Button {
@@ -103,12 +103,12 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  The style is usually applied straight when a styling property is changed. This
+  The style is usually applied immediately when a styling property is changed. This
   may cause performance problems as there are two properties that can affect the
   style applied. In case the component handles the "Component.onCompleted" signal,
-  the styling will be applied only when teh completion occurs. Therefore items
+  the styling will be applied only when the completion occurs. Therefore items
   can handle the completion by simply adding an empty handler to delay styling.
-  Modifying teh Button.qml example above, the component that applies styling on
+  Modifying the Button.qml example above, the component that applies styling on
   completion would look as follows:
 
   \qml
@@ -130,9 +130,9 @@ const char *styleProperty = "itemStyle";
   \endqml
 
  Attached styling defines two properties in the styling context that can be
- used from delegates to access the item and teh style proeprties. item
+ used from delegates to access the item and the style proeprties. item
  properties can be accessed through "item", and styling properties through
- "itemStyle" proeprty.
+ "itemStyle" property.
 
 */
 
@@ -397,7 +397,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
   The property holds the object containing the style configuration properties. This can
   either be defined by a theme style rule or the private style. When set, the item will
   no longer use the theme defined style properties but the ones set. The property must be
-  reset (set to null object) in order to use th etheme defines styles.
+  reset (set to null object) in order to use the theme defined styles.
 
   Modifying the property alone will only affect the styling. The delegate will be used
   from the theme unless specified explicitly. Therefore items can be used with custom
@@ -438,8 +438,14 @@ void ItemStyleAttached::setStyle(QObject *style)
 
 /*!
   \qmlproperty Item ItemStyle::delegate
-  The property holds the Item containing the visuals of the item defined by
-  one of the styles, theme or private. It can be altered
+  The property holds the Item containing the visuals. This can either be defined
+  by a theme or can be a private element. When set, the item will no longer use
+  the theme defined visuals but the ones set. The property must be reset (set to
+  null object) in order to use the theme defined visuals.
+
+  Modifying the property alone will only affect the visuals. Styles can be still
+  used from the theme, unless specified explicitly. Therefore custom visuals can
+  be made so that are aware of the styling properties.
   */
 /*!
   Returns the delegate Item created out of the style.

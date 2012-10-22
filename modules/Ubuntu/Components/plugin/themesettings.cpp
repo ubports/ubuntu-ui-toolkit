@@ -31,12 +31,9 @@
   the current global theme name and the QML import paths. These settings are
   stored in "theme" and "imports" keywords.
 
-  System themes are stored under /usr/share/themes/<theme-name>/qmltheme folder,
+  System themes are stored under the /usr/share/themes/<theme-name>/qmltheme folder,
   where the common theme is named "default.qmltheme" and each application has its
   own theme, which can be either in the qmltheme folder or under a subfolder.
-
-  OBS: we need to expose a QML element that handles these. Beside, applications
-  should set up the theme before the plugin gets loaded by QML.
   */
 
 

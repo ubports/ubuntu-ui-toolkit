@@ -36,29 +36,10 @@
   \ingroup theming
   \brief The Theme element provides functionality to change the current theme.
 
-  Informs the application about errors during theme load through \a error property,
-  the current theme file through \a currentTheme property and notifies the items
-  and application about successful theme change through \a themeChanged() signal.
-
-  The theme can be changed from within the application either through \a loadTheme()
-  or through \a setTheme() functions. The difference between these two functions is
-  that while loadTheme() simply loads and applies a theme file, setTheme() stores it
-  into the application's settings.
-
-  In order to have application theming enabled, applications must define the following
-  setting keys in Generic section:
-  - UseSystemTheme: a boolean key specifying whether the global theme declares
-        theme fo rthe application, and the application is using that theme
-  - ThemeFile: a string value specifying the application theme name (not the entire
-        file) when the global theme is used, or if not, the private theme file of
-        the application
-  - imports: optional setting key containing the import paths to be added to the QML
-    engine required by the themes.
-
-  Not having these keys declared by an application will force the use of the global
-  theme. Setting keys should be defined prior the QML files are loaded, and
-  applications must define the organization name (domain in Mac OSX) and application
-  names as specified in QSettings documentation.
+  Informs the application about the current theme file used through \a currentTheme
+  property and notifies the items and application about successful theme change
+  through \a themeChanged() signal. When error occurs during theme loading, it is
+  reported through \a error property.
 */
 
 ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
@@ -118,7 +99,7 @@ void ThemeEnginePrivate::_q_updateTheme()
   \internal
   Loads the theme using the registered theme file format loaders. Aliased theme
   files stored in the resources should contain the file format, otherwise the
-  engine canot detect the file format.
+  engine cannot detect the file format.
   */
 void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 {
@@ -157,7 +138,7 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
   ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child
   relation, otherwise SelectorNode::Descendant relation is used.
 
-  The obj is an Item derived element and shoudl have class and name properties
+  The obj is an Item derived element and should have class and name properties
   to be used if styling happens on them.
   */
 Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
@@ -320,7 +301,7 @@ ThemeEngine::ThemeEngine(QObject *parent) :
   \internal
   The method is used by the QML framework to register theme engine instance.
 
-  When called configures the engine with the given declarative engine and loads
+  When called it configures the engine with the given declarative engine and loads
   the last theme configured in the settings. Returns the theme engine's instance
   on successful initialization. Theme loading failure does not affect the success
   of the initialization, however it is reflected in the \a error property.
@@ -351,7 +332,7 @@ ThemeEngine *ThemeEngine::instance()
 
 /*!
   \internal
-  Checks whether the instance can be registerd to the given name, and registers it.
+  Checks whether the instance can be registered to the given name, and registers it.
   Removes any previous registration.
 */
 bool ThemeEngine::registerName(QQuickItem *item, const QString &newName)
@@ -359,7 +340,7 @@ bool ThemeEngine::registerName(QQuickItem *item, const QString &newName)
     Q_D(ThemeEngine);
     bool ret = true;
 
-    // check first whether the nex ID is valid and can be registered
+    // check first whether the next ID is valid and can be registered
     QString prevName(item->property("name").toString());
     if (newName.isEmpty()) {
         // remove the previous occurence
@@ -382,9 +363,9 @@ bool ThemeEngine::registerName(QQuickItem *item, const QString &newName)
 
 /*!
   \internal
-  This method searches for a Rule element that matches the conditions for a
-  ItemStyleAttached. The selector searched is built up by traversing the \a item
-  parents and considering only ItemStyleAttached elements in the hierarchy.
+  This method searches for a Rule element that matches the conditions for an
+  Item. The selector identifying the Rule is built up by traversing the \a item
+  parents and considering only those having ItemStyle elements attached in the hierarchy.
   */
 Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
 {
@@ -409,7 +390,7 @@ Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
   \preliminary
   \qmlmethod bool Theme::loadTheme(const QUrl &themeFile)
   Loads a theme file from any location, and updates the \a currentTheme property
-  on success. The ocurred errors are reported in \a error property.
+  on success. Any error messages are reported in the \a error property.
   */
 bool ThemeEngine::loadTheme(const QUrl &themeFile)
 {
@@ -421,7 +402,7 @@ bool ThemeEngine::loadTheme(const QUrl &themeFile)
 
 /*!
   \qmlproperty string Theme::error
-  The property contains the error occurred upon loading. The error is not cleared
+  The property contains the error, which occurred upon loading. The error is not cleared
   automatically and must be acknowledged after each operation.
   */
 QString ThemeEngine::error() const
@@ -431,7 +412,7 @@ QString ThemeEngine::error() const
 }
 
 /*!
-  Property reset method for \a error property.
+  Property reset method for the \a error property.
   */
 void ThemeEngine::resetError()
 {

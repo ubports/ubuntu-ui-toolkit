@@ -3,12 +3,12 @@ qml-mapping defines the QML style and delegate QML documents that are used as ba
 when building up the Rule components.
 
 Syntax:
-qml-mapping(css-selector, style-qml-type, delegate-qml-type)
+qml-mapping(selector, style-qml-type, delegate-qml-type)
 where
-   - css-selector is the tag used in CSS theme
+   - selector is the tag used in the theme
    - style -qml-type is the name of the QML document defining the style properties
    - delegate-qml-type is the name of the QML document defining the widget delegate.
-If no style is given, theme engine will use QtObject for style and will declare all
+If no style is given, the theme engine will use QtObject for style and will declare all
 properties typed as variant.
 */
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
@@ -50,7 +50,7 @@ Examples:
 /*
     Label does not have any QML mapping, therefore the engine will not assign any
     style rule or delegate to the Rule object. Instead a QtObject based style rule
-    wil be used with all declared properties as variant.
+    will be used with all declared properties as variant.
 */
 .label {
     fontFamily: "Ubuntu";

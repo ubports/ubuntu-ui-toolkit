@@ -332,9 +332,8 @@ void Rule::setSelector(const QString &selector)
   \qmlproperty Component Rule::style
   This property holds the style configuration component. The style configuration
   component usually is a QtObject or a derivate of a QtObject, which enumerates
-  the properties that can be configured on the rule delegate. It is not mandatory
-  for a rule to have style or delegate, however one of these properties must be
-  configured on the rule.
+  the properties that can be configured on the rule delegate. A valid Rule must
+  have either style or delegate, or both style and delegate set.
   */
 /*!
   Rule style.

@@ -130,7 +130,7 @@ QString QmlThemeLoader::readChar(QTextStream &stream, const QRegExp &bypassToken
 /*!
   \internal
   Reads the stream content till one of the \a tokens is reached. The characters
-  specified in \a bypassTokens will be skipped. \a excludeToken specifies wherher
+  specified in \a bypassTokens will be skipped. \a excludeToken specifies whether
   the limiting token reached should be included in the data read or not (default
   is not to include).
   */
@@ -225,7 +225,7 @@ void QmlThemeLoader::normalizeStyles()
         for (int count = selector.count(); count > 1; count--) {
             Selector subset = selectorSubset(selector, count);
 
-            // check if we have a style that is a subset of the curent one and if yes
+            // check if we have a style that is a subset of the current one and if yes
             // copy the base propertyes that are not overloaded by the current one
             if (selectorTable.contains(subset)) {
                 // get the properties and copy the base ones into the current selector
@@ -442,7 +442,7 @@ bool QmlThemeLoader::handleImport(QmlThemeLoader *loader, QTextStream &stream)
      - css-tag is the tag used in CSS theme
      - style-qml-type is the name of the QML document defining the style properties
      - delegate-qml-type is the name of the QML document defining the item delegate.
-  If no style is given, theme engine will use QtObject for style and will declare all
+  If no style is given, the theme engine will use QtObject for style and will declare all
   properties typed as variant.
 
   Example:
