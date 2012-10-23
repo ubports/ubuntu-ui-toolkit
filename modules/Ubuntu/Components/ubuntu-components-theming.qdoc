@@ -26,7 +26,7 @@
 
   Theming is one of the most important aspects of a component set that is aimed
   to be fully reusable and customizable. With proper theming support both the
-  look and feel can be changed without altering the components API or implementation.
+  look-and-feel can be changed without altering the components API or implementation.
   Creating a division between the visual implementation and the stylistic settings
   will help enforce visual consistency throughout the application and perhaps ease
   visual experimentation by designers.
