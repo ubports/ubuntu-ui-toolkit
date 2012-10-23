@@ -39,7 +39,6 @@ Examples:
     shapeNormal: url("artwork/ButtonShape.png");
     borderIdle: url("artwork/ButtonBorderIdle.png");
     borderPressed: url("artwork/ButtonBorderPressed.png");
-    borderPressed: url("artwork/ButtonBorderPressed.png");
     borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
     borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
 }
