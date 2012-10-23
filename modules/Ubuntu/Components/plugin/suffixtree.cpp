@@ -153,7 +153,17 @@ void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
   \internal
   Search for the style best matching the item path. The path is parsed from the
   tail as the styles are stored in the tree in suffix form. The \a strict
-  parameter specifies whether the search should be strict on the relationship or not.
+  parameter specifies whether the search should be strict on the relationship or
+  not.
+
+  For example we have a style which defines a rule identified by the ".box > .frame .button"
+  selector. A styled Item is looking after ".box > .frame > .button" selector,
+  but as there is no exact match found for "> .button" node, as the strictness
+  is loose the algorithm will ignore the relationship and start looking after the
+  ".button" node, and continue the search in its children by no longer ignoring
+  the relationship. This means that the ".box > .frame .button" rule will be
+  returned for the ".box > .frame > .button" Item. If the theme would have only
+  the ".box .frame .button" rule defined, the lookup would not match that rule.
 */
 Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
