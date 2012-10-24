@@ -4,7 +4,7 @@
     defines delegate for .frame
 */
 
-@import url("../default.qmltheme");
+@import url("./global-themes/default.qmltheme");
 @qml-import(themes 1.0, current:/demos);
 
 .button {

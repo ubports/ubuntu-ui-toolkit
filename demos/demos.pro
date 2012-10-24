@@ -5,7 +5,6 @@ OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.j
 OTHER_FILES += themes/*.qmltheme
 OTHER_FILES += themes/*.qml
 OTHER_FILES += themes/global-themes/*.qmltheme
-OTHER_FILES += themes/global-themes/theme-one/*.qmltheme
 
 other_files.path = /usr/lib/ubuntu-demos/uitk/demos
 other_files.files = $$OTHER_FILES
