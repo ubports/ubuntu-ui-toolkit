@@ -29,6 +29,7 @@ class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
 public:
     ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObject *attached);
+    ~ItemStyleAttachedPrivate();
 
     ItemStyleAttached *q_ptr;
     QQuickItem *attachee;

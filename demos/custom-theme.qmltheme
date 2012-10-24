@@ -4,8 +4,7 @@
     defines delegate for .frame
 */
 
-@import url("./global-themes/default.qmltheme");
-@qml-import(themes 1.0, current:/demos);
+@import url("system:demo/qmltheme/default.qmltheme");
 
 .button {
     color: item.hovered ? "tan" : "lightgray";
@@ -18,7 +17,6 @@
 .button#custom-name {
     color: item.hovered ? "brown" : "tan"
 }
-
 
 .frame {
     color: "tan";

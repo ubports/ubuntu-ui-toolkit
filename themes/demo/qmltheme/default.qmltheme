@@ -35,12 +35,12 @@ Examples:
 
 .button, .custom-button {
     color: "#e3e5e8";
-    shapeDark: url("artwork/ButtonShapeDark.png");
-    shapeNormal: url("artwork/ButtonShape.png");
-    borderIdle: url("artwork/ButtonBorderIdle.png");
-    borderPressed: url("artwork/ButtonBorderPressed.png");
-    borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
-    borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
+    shapeDark: url("../artwork/ButtonShapeDark.png");
+    shapeNormal: url("../artwork/ButtonShape.png");
+    borderIdle: url("../artwork/ButtonBorderIdle.png");
+    borderPressed: url("../artwork/ButtonBorderPressed.png");
+    borderDarkIdle: url("../artwork/ButtonBorderDarkIdle.png");
+    borderDarkPressed: url("../artwork/ButtonBorderDarkPressed.png");
 }
 
 /* Default style for all TextCustom elements in Gallery*/

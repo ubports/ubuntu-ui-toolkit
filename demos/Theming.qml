@@ -28,7 +28,7 @@ Template {
             Switch {
                 onCheckedChanged: {
                     if (checked)
-                        Theme.loadTheme("demos/themes/custom-theme.qmltheme");
+                        Theme.loadTheme("demos/custom-theme.qmltheme");
                     else
                         Theme.loadTheme("");
                 }

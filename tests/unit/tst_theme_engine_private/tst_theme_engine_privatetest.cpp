@@ -34,12 +34,6 @@ private:
 
 tst_ThemeEnginePrivate::tst_ThemeEnginePrivate()
 {
-    QCoreApplication *app = QCoreApplication::instance();
-    app->setOrganizationName("Canonical");
-    app->setApplicationName("UnitTests");
-    QSettings settings;
-    settings.setValue(appUseGlobalThemeKey, QVariant(false));
-    settings.setValue(appThemeFileKey, QVariant(""));
 }
 
 

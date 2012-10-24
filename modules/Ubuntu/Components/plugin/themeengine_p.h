@@ -22,23 +22,18 @@
 #include <QtCore/QHash>
 #include <QtCore/QStringList>
 #include <QtCore/QObject>
+#include <QtCore/QCoreApplication>
 #include "themeengine.h"
 #include "themesettings_p.h"
 #include "suffixtree_p.h"
+
+#include <QDebug>
 
 class QQuickItem;
 class QQmlComponent;
 class ThemeLoader;
 
 typedef QHash<QString, QQuickItem*> InstanceHash;
-
-extern const char *appUseGlobalThemeKey;
-extern const char *appThemeFileKey;
-extern const char *systemThemePath;
-
-#define SELECTOR_IGNORE_RELATIONSHIP    0x01
-#define SELECTOR_IGNORE_STYLEID         0x02
-#define SELECTOR_IGNORE_ALL             (SELECTOR_IGNORE_RELATIONSHIP | SELECTOR_IGNORE_STYLEID)
 
 // Private functionality of the theme engine
 class ThemeEnginePrivate
@@ -80,5 +75,12 @@ public:
 // private slots
     void _q_updateTheme();
 };
+
+inline QString systemFolder()
+{
+    QString env = QLatin1String(getenv("UITK_THEME_PATH"));
+    env = env.isEmpty() ? QString("/usr/share/themes") : env + "/themes";
+    return env;
+}
 
 #endif // THEMEENGINE_P_H

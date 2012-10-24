@@ -166,6 +166,13 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     }
 }
 
+ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
+{
+    // remove name from the theming engine
+    if (!name.isEmpty())
+        ThemeEngine::instance()->registerName(attachee, QString());
+}
+
 bool ItemStyleAttachedPrivate::lookupThemeStyle(bool useMetaClassName)
 {
     themeRule = ThemeEngine::instance()->lookupStyleRule(attachee, useMetaClassName);

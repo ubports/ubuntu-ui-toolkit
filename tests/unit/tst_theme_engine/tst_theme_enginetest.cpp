@@ -35,12 +35,6 @@ private:
 tst_ThemeEngine::tst_ThemeEngine():
     view(0)
 {
-    QCoreApplication *app = QCoreApplication::instance();
-    app->setOrganizationName("Canonical");
-    app->setApplicationName("UnitTests");
-    QSettings settings;
-    settings.setValue(appUseGlobalThemeKey, QVariant(false));
-    settings.setValue(appThemeFileKey, QVariant("qrc:/base.qmltheme"));
 }
 
 void tst_ThemeEngine::initTestCase()

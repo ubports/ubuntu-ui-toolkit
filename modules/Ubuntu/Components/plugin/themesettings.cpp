@@ -27,7 +27,7 @@
   ThemeSettings class handles the selection of the application style based on
   global and application settings.
 
-  User theme settings are stored in $HOME/.qmltheme/theme.ini file, which contains
+  User theme settings are stored in $HOME/.config/UITK/theme.ini file, which contains
   the current global theme name and the QML import paths. These settings are
   stored in "theme" and "imports" keywords.
 
@@ -41,29 +41,14 @@
 // therefore it is possible to have application specific theme settings
 // for it!
 
-// user's theme settings are stored in ~/.qmltheme/theme.ini file and here are
+// user's theme settings are stored in ~/.config/UITK/theme.ini file and here are
 // also stored the user specific themes
 const char *PathFormat_GlobalThemeIniFile = "%1/.config/UITK/theme.ini";
 
-#ifdef TARGET_DEMO
-// for SDK demo we use the demo folder to store both global and private themes
-const char *PathFormat_GlobalAppTheme = "demos/themes/%1/%2";
-const char *PathFormat_GlobalThemeFile = "demos/themes/%1/default.qmltheme";
-const char *systemThemePath = "demos/themes";
-
-#else
-
-const char *PathFormat_GlobalAppTheme = "/usr/share/themes/%1/qmltheme/%2";
-const char *PathFormat_GlobalThemeFile = "/usr/share/themes/%1/qmltheme/default.qmltheme";
-const char *systemThemePath = "/usr/share/themes";
-
-#endif
+const char *PathFormat_GlobalThemeFile = "/%1/qmltheme/default.qmltheme";
 
 const char *globalThemeKey = "theme";
 const char *importPathsKey = "imports";
-const char *appUseGlobalThemeKey = "UseSystemTheme";
-const char *appThemeFileKey = "ThemeFile";
-
 
 /*
  Instanciates the settins and connects the file system watcher
@@ -75,12 +60,7 @@ ThemeSettings::ThemeSettings(QObject *parent) :
     // check if we have system settings file, if not, create one
     if (!QFile::exists(globalSettings.fileName())) {
         // create the file by writing the default theme
-#ifdef TARGET_DEMO
-        globalSettings.setValue(globalThemeKey, "global-themes");
-#else
-        // TODO: figure out how to get the default theme for the release
-        globalSettings.setValue(globalThemeKey, "Ambiance");
-#endif
+        globalSettings.setValue(globalThemeKey, "demo");
         globalSettings.sync();
     }
 
@@ -106,10 +86,9 @@ QUrl ThemeSettings::themeFile() const
     QUrl result;
     // returns the global theme file
     QString theme = globalSettings.value(globalThemeKey).toString();
-    result = QUrl::fromLocalFile(QString(PathFormat_GlobalThemeFile).arg(theme));
+    result = QUrl::fromLocalFile(systemFolder() + QString(PathFormat_GlobalThemeFile).arg(theme));
     if (!QFile::exists(result.path()))
         result = QUrl();
-
     return result;
 }
 

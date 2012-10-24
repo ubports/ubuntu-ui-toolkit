@@ -5,15 +5,11 @@ TARGET = ../UbuntuComponents
 QT += qml quick
 CONFIG += qt plugin no_keywords
 
-#comment in the following line to remove traces
+#comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
-
-# configures setting patterns for demo target; comment out to use
-# release patterns
-DEFINES += TARGET_DEMO
 
 HEADERS += plugin.h \
     themeengine.h \
@@ -26,7 +22,8 @@ HEADERS += plugin.h \
     rule.h \
     rule_p.h \
     qmlloader_p.h \
-    qmlthemeloader_p.h
+    qmlthemeloader_p.h \
+    config.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \

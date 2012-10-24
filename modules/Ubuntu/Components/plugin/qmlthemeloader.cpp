@@ -26,6 +26,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
+#include <QDebug>
 
 /*
   QmlTheme file parser
@@ -81,6 +82,44 @@ Selector selectorSubset(const Selector &path, int elements)
         elements--;
     }
     return result;
+}
+
+/*!
+ * \brief QmlThemeLoader::urlMacro resolves the QmlTheme url() macro.
+ * \param param
+ * \return fixed path
+ */
+QString QmlThemeLoader::urlMacro(const QString &param, const QTextStream &stream)
+{
+    QString path(param);
+    path.remove('\"');
+
+    if (!path.startsWith('/') && !path.startsWith("qrc:/") &&
+            !path.startsWith("image:/") && !path.startsWith(":/")) {
+        // check if we have one of the location tags: current, system, application
+        if (path.startsWith("current:")) {
+            path.remove("current:");
+            if (!path.startsWith('/'))
+                path.prepend('/');
+            path.prepend(QDir::currentPath());
+        } else if (path.startsWith("application:")) {
+            path.remove("application:");
+            if (!path.startsWith('/'))
+                path.prepend('/');
+            path.prepend(QCoreApplication::applicationDirPath());
+        } else if (path.startsWith("system:")) {
+            path.remove("system:");
+            if (!path.startsWith('/'))
+                path.prepend('/');
+            path.prepend(systemFolder());
+        } else {
+            QFile *file = qobject_cast<QFile*>(stream.device());
+            QFileInfo fi(*file);
+            //create the path so that returns the absolute path to the URL given
+            path = QFileInfo(fi.absoluteDir().path() + '/' + path).absoluteFilePath();
+        }
+    }
+    return path;
 }
 
 /*!
@@ -187,18 +226,8 @@ bool QmlThemeLoader::handleSelector(const Selector &selector, const QString &dec
             if (pathStart >= 0) {
                 int pathEnd = value.indexOf(')', pathStart);
                 QString path = value.mid(pathStart + 1, pathEnd - pathStart - 1).trimmed();
-                path.remove('\"');
-
-                if (!path.startsWith('/') && !path.startsWith("qrc:/") &&
-                        !path.startsWith("image:/") && !path.startsWith(":/")) {
-                    QFile *file = qobject_cast<QFile*>(stream.device());
-                    QFileInfo fi(*file);
-                    //create the path so that returns the absolute path to the URL given
-                    path = QFileInfo(fi.absoluteDir().path() + '/' + path).absoluteFilePath();
-                }
-                path.prepend('\"').append('\"');
                 // replace url(path) with the resolved one
-                value.replace(atUrl, pathEnd - atUrl + 1, path);
+                value.replace(atUrl, pathEnd - atUrl + 1, urlMacro(path, stream).prepend('\"').append('\"'));
             }
         }
         properties.insert(prop, value);
@@ -444,13 +473,9 @@ bool QmlThemeLoader::handleImport(QmlThemeLoader *loader, QTextStream &stream)
     // if not, build the path relative to the current parsed file
     // Note: resource stored theme files must use absolute paths, or should have
     // qrc: scheme specified
-    if (themeFile.startsWith("qrc:")) {
-        return loader->parseTheme(themeFile);
-    } else if (!themeFile.startsWith('/')) {
-        QFile *file = qobject_cast<QFile*>(stream.device());
-        QFileInfo fi(*file);
-        themeFile.prepend('/').prepend(fi.dir().absolutePath());
-    }
+    themeFile = urlMacro(themeFile, stream);
+    if (themeFile.startsWith("qrc"))
+        return loader->parseTheme(QUrl(themeFile));
     return loader->parseTheme(QUrl::fromLocalFile(themeFile));
 }
 
@@ -538,22 +563,7 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
         loader->imports += QString("import %1\n").arg(importUrl);
 
         if (!importPath.isEmpty()) {
-            if (importPath.startsWith("current:")) {
-                importPath.remove("current:");
-                if (!importPath.startsWith('/'))
-                    importPath.prepend('/');
-                importPath.prepend(QDir::currentPath());
-            } else if (importPath.startsWith("application:")) {
-                importPath.remove("application:");
-                if (!importPath.startsWith('/'))
-                    importPath.prepend('/');
-                importPath.prepend(QCoreApplication::applicationDirPath());
-            } else if (importPath.startsWith("system:")) {
-                importPath.remove("system:");
-                if (!importPath.startsWith('/'))
-                    importPath.prepend('/');
-                importPath.prepend(systemThemePath);
-            }
+            importPath = urlMacro(importPath, stream);
             loader->m_engine->addImportPath(importPath);
         }
 
