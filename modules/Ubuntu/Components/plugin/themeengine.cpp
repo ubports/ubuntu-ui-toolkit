@@ -87,8 +87,6 @@ void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
 
-    qDebug() << newTheme;
-
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
         QStringList importList = m_engine->importPathList();
@@ -110,17 +108,14 @@ void ThemeEnginePrivate::removeWatchedFiles()
 {
     QStringList watchedThemeFiles = themeWatcher.files();
     Q_FOREACH(const QString &file, watchedThemeFiles) {
-        qDebug() << file;
         themeWatcher.removePath(file);
     }
 }
 
 void ThemeEnginePrivate::addWatchedFiles(const QStringList &watchedThemeFiles)
 {
-    qDebug();
     Q_FOREACH(const QString &file, watchedThemeFiles) {
         themeWatcher.addPath(file);
-        qDebug() << file;
     }
 }
 
