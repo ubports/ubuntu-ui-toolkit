@@ -226,35 +226,35 @@ void tst_ThemeEnginePrivate::testCase_selectorToString()
     selector.clear();
     selector << SelectorNode("classA", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "", SelectorNode::Descendant);
-    expected = ".classA .classB";
+    expected = ".classa .classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "", SelectorNode::Child);
-    expected = ".classA > .classB";
+    expected = ".classa > .classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "id", SelectorNode::Descendant);
     selector << SelectorNode("classB", "", SelectorNode::Descendant);
-    expected = ".classA#id .classB";
+    expected = ".classa#id .classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classA > .classB#id";
+    expected = ".classa > .classb#id";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
     selector << SelectorNode("classA.attribute", "", SelectorNode::Descendant);
     selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classA.attribute > .classB#id";
+    expected = ".classa.attribute > .classb#id";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 }

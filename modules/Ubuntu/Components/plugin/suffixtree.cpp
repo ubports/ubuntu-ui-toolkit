@@ -44,7 +44,7 @@ SelectorNode::SelectorNode() :
     both or none. This feature is used when building up QmlTheme selectorTable.
 */
 SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
-    styleClass(styleClass), styleId(styleId), relationship(relationship), sensitivity(sensitivity)
+    styleClass(styleClass.toLower()), styleId(styleId.toLower()), relationship(relationship), sensitivity(sensitivity)
 {
 }
 
