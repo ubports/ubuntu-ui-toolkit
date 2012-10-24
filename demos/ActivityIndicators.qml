@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: _("Activity Indicator")
+    title: i18n.tr("Activity Indicator")
     id: indicators
 
     Column {
@@ -26,7 +26,7 @@ Template {
 
         Button {
             id: button
-            text: (indicator.running) ? _("Hide") : _("Show")
+            text: (indicator.running) ? i18n.tr("Hide") : i18n.tr("Show")
             onClicked: indicator.running = !indicator.running
         }
 

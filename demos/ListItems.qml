@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
-    title: _("List Items")
+    title: i18n.tr("List Items")
 
     Item {
         Rectangle {
@@ -40,11 +40,11 @@ Template {
                     "Grouped List"]
                 property string selectedType: "Standard"
 
-                ListItem.Header { text: _("Types of list items") }
+                ListItem.Header { text: i18n.tr("Types of list items") }
                 Repeater {
                     model: listItemTypes.typeList.length
                     ListItem.Standard {
-                        text: _(listItemTypes.typeList[index])
+                        text: i18n.tr(listItemTypes.typeList[index])
                         selected: listItemTypes.selectedType === listItemTypes.typeList[index]
                         onClicked: listItemTypes.selectedType = listItemTypes.typeList[index]
                     }
@@ -62,28 +62,28 @@ Template {
                 Column {
                     width: 250
 
-                    ListItem.Header { text: _("Standard") }
+                    ListItem.Header { text: i18n.tr("Standard") }
                     ListItem.Standard {
-                        text: _("Idle")
+                        text: i18n.tr("Idle")
                     }
                     ListItem.Standard {
-                        text: _("Disabled")
+                        text: i18n.tr("Disabled")
                         enabled: false
                     }
                     ListItem.Standard {
-                        text: _("Selected")
+                        text: i18n.tr("Selected")
                         selected: true
                     }
                     ListItem.Standard {
-                        text: _("Progression")
+                        text: i18n.tr("Progression")
                         progression: true
                     }
                     ListItem.Standard {
-                        text: _("Icon")
+                        text: i18n.tr("Icon")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Standard {
-                        text: _("Custom icon")
+                        text: i18n.tr("Custom icon")
                         icon: Rectangle {
                             anchors.margins: 5
                             width: height
@@ -145,12 +145,12 @@ Template {
                         interactive: false
 
                         delegate: ListItem.Standard {
-                            text: _(name)
+                            text: i18n.tr(name)
                         }
-                        header: ListItem.Header { text: _("Grouped List") }
+                        header: ListItem.Header { text: i18n.tr("Grouped List") }
                         section.property: "type"
                         section.criteria: ViewSection.FullString
-                        section.delegate: ListItem.Header { text: _(section) }
+                        section.delegate: ListItem.Header { text: i18n.tr(section) }
                     }
                     Component.onCompleted: {
                         groupedList.height = groupedList.contentHeight;
@@ -162,34 +162,34 @@ Template {
                 Column {
                     width: 250
 
-                    ListItem.Header { text: _("Single value") }
+                    ListItem.Header { text: i18n.tr("Single value") }
                     ListItem.SingleValue {
-                        text: _("Idle")
-                        value: _("Value")
+                        text: i18n.tr("Idle")
+                        value: i18n.tr("Value")
                     }
                     ListItem.SingleValue {
-                        text: _("Disabled")
-                        value: _("Value")
+                        text: i18n.tr("Disabled")
+                        value: i18n.tr("Value")
                         enabled: false
                     }
                     ListItem.SingleValue {
-                        text: _("Selected")
-                        value: _("Value")
+                        text: i18n.tr("Selected")
+                        value: i18n.tr("Value")
                         selected: true
                     }
                     ListItem.SingleValue {
-                        text: _("Progression")
-                        value: _("Value")
+                        text: i18n.tr("Progression")
+                        value: i18n.tr("Value")
                         progression: true
                     }
                     ListItem.SingleValue {
-                        text: _("Icon")
-                        value: _("Value")
+                        text: i18n.tr("Icon")
+                        value: i18n.tr("Value")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.SingleValue {
-                        text: _("Custom icon")
-                        value: _("Value")
+                        text: i18n.tr("Custom icon")
+                        value: i18n.tr("Value")
                         icon: Rectangle {
                             anchors.margins: 5
                             width: height
@@ -223,34 +223,34 @@ Template {
                 selected: listItemTypes.selectedType === "Multiple values"
                 Column {
                     width: 250
-                    ListItem.Header { text: _("Multiple values") }
+                    ListItem.Header { text: i18n.tr("Multiple values") }
                     ListItem.MultiValue {
-                        text: _("Idle")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Idle")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                     }
                     ListItem.MultiValue {
-                        text: _("Disabled")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Disabled")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         enabled: false
                     }
                     ListItem.MultiValue {
-                        text: _("Selected")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Selected")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         selected: true
                     }
                     ListItem.MultiValue {
-                        text: _("Progression")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Progression")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         progression: true
                     }
                     ListItem.MultiValue {
-                        text: _("Icon")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Icon")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                 }
@@ -259,38 +259,38 @@ Template {
                 selected: listItemTypes.selectedType === "Subtitled"
                 Column {
                     width: 250
-                    ListItem.Header { text: _("Subtitled") }
+                    ListItem.Header { text: i18n.tr("Subtitled") }
                     ListItem.Subtitled {
-                        text: _("Idle")
-                        subText: _("Secondary label")
+                        text: i18n.tr("Idle")
+                        subText: i18n.tr("Secondary label")
                     }
                     ListItem.Subtitled {
-                        text: _("Disabled")
+                        text: i18n.tr("Disabled")
                         enabled: false
-                        subText: _("Secondary label")
+                        subText: i18n.tr("Secondary label")
                     }
                     ListItem.Subtitled {
-                        text: _("Selected")
+                        text: i18n.tr("Selected")
                         selected: true
-                        subText: _("Secondary label")
+                        subText: i18n.tr("Secondary label")
                     }
                     ListItem.Subtitled {
-                        text: _("Progression")
-                        subText: _("Secondary label")
+                        text: i18n.tr("Progression")
+                        subText: i18n.tr("Secondary label")
                         progression: true
                     }
                     ListItem.Subtitled {
-                        text: _("Icon")
-                        subText: _("Secondary label")
+                        text: i18n.tr("Icon")
+                        subText: i18n.tr("Secondary label")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     }
                     ListItem.Subtitled {
-                        text: _("Multiple lines")
-                        subText: _("This is a multi-line subText.\nUp to 5 lines are supported.")
+                        text: i18n.tr("Multiple lines")
+                        subText: i18n.tr("This is a multi-line subText.\nUp to 5 lines are supported.")
                     }
                     ListItem.Subtitled {
-                        text: _("Multiple lines")
-                        subText: _("It also works well with icons and progression.")
+                        text: i18n.tr("Multiple lines")
+                        subText: i18n.tr("It also works well with icons and progression.")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         progression: true
                     }
@@ -309,44 +309,44 @@ Template {
                 }
                 Column {
                     width: 250
-                    ListItem.Header { text: _("Controls") }
+                    ListItem.Header { text: i18n.tr("Controls") }
                     ListItem.Standard {
-                        text: _("Label")
+                        text: i18n.tr("Label")
                         control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
                         enabled: false
-                        text: _("Disabled")
+                        text: i18n.tr("Disabled")
                         control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
                         selected: true
-                        text: _("Selected")
+                        text: i18n.tr("Selected")
                         control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
-                        text: _("Split")
+                        text: i18n.tr("Split")
                         control: controlExample.createObject(parent)
                         progression: true
                         onClicked: print("Progression clicked!")
                     }
                     ListItem.Standard {
-                        text: _("Icon")
+                        text: i18n.tr("Icon")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         control: controlExample.createObject(parent)
                         showDivider: false
                     }
-                    ListItem.Header { text: _("Single control") }
+                    ListItem.Header { text: i18n.tr("Single control") }
 
                     // TODO: Add more single controls (TextField, Slider) when they become available
                     ListItem.SingleControl {
                         control: Button {
-                            text: _("Button")
+                            text: i18n.tr("Button")
                             anchors {
                                 margins: 10
                                 fill: parent
                             }
-                            onClicked: print(_("Large button clicked"))
+                            onClicked: print(i18n.tr("Large button clicked"))
                         }
                     }
                     ListItem.SingleControl {
@@ -361,15 +361,15 @@ Template {
                 selected: listItemTypes.selectedType === "Captions and Dividers"
                 Column {
                     width: 250
-                    ListItem.Header { text: _("Captions and Dividers") }
-                    ListItem.Standard { text: _("Item") + " 1a" }
+                    ListItem.Header { text: i18n.tr("Captions and Dividers") }
+                    ListItem.Standard { text: i18n.tr("Item") + " 1a" }
                     ListItem.Standard {
-                        text: _("Item") + " 1b"
+                        text: i18n.tr("Item") + " 1b"
                         showDivider: false
                     }
                     ListItem.Divider { }
-                    ListItem.Standard { text: _("Item") + " 2a" }
-                    ListItem.Standard { text: _("Item") + " 2b" }
+                    ListItem.Standard { text: i18n.tr("Item") + " 2a" }
+                    ListItem.Standard { text: i18n.tr("Item") + " 2b" }
                     ListItem.Caption {
                         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris hendrerit, erat ut vulputate dignissim, augue est vulputate ante, non tempus nulla est quis purus."
                     }
@@ -379,30 +379,30 @@ Template {
                 selected: listItemTypes.selectedType === "Value selector"
                 Column {
                     width: 250
-                    ListItem.Header { text: _("Value selectors") }
+                    ListItem.Header { text: i18n.tr("Value selectors") }
                     ListItem.ValueSelector {
-                        text: _("Idle")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Idle")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                     }
                     ListItem.ValueSelector {
-                        text: _("Disabled")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Disabled")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         enabled: false
                     }
                     ListItem.ValueSelector {
-                        text: _("Expanded")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        text: i18n.tr("Expanded")
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                         selectedIndex: 1
                         expanded: true
                     }
                     ListItem.ValueSelector {
-                        text: _("Icon")
+                        text: i18n.tr("Icon")
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        values: [_("Value") + " 1", _("Value") + " 2",
-                            _("Value") + " 3", _("Value") + " 4"]
+                        values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
+                            i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
                     }
                 }
             }

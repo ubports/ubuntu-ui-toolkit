@@ -28,13 +28,13 @@ GettextBinding::GettextBinding(QObject* parent) : QObject(parent)
 
 void GettextBinding::qmlRegisterTypes(const char* uri)
 {
-    qmlRegisterUncreatableType<GettextBinding>(uri, 0, 1, "gettext", "Singleton object");
+    qmlRegisterUncreatableType<GettextBinding>(uri, 0, 1, "i18n", "Singleton object");
 }
 
 void GettextBinding::qmlInit(QQmlContext *context)
 {
-    context->setContextProperty("gettext", &GettextBinding::instance());
-    static ContextPropertyChangeListener i18nChangeListener(context, "gettext");
+    context->setContextProperty("i18n", &GettextBinding::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
     QObject::connect(&GettextBinding::instance(), SIGNAL(domainChanged()),
                  &i18nChangeListener, SLOT(updateContextProperty()));
 }
@@ -53,17 +53,17 @@ void GettextBinding::setDomain(QString domain) {
     Q_EMIT domainChanged();
 }
 
-QString GettextBinding::gettext(const QString& text)
+QString GettextBinding::tr(const QString& text)
 {
     return QString::fromUtf8(C::gettext(text.toUtf8()));
 }
 
-QString GettextBinding::ngettext(const QString &singular, const QString &plural, int n)
+QString GettextBinding::tr(const QString &singular, const QString &plural, int n)
 {
     return QString::fromUtf8(C::ngettext(singular.toUtf8(), plural.toUtf8(), n));
 }
 
-QString GettextBinding::dgettext(const QString& domain, const QString& text)
+QString GettextBinding::dtr(const QString& domain, const QString& text)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dgettext(NULL, text.toUtf8()));
@@ -72,7 +72,7 @@ QString GettextBinding::dgettext(const QString& domain, const QString& text)
     }
 }
 
-QString GettextBinding::dngettext(const QString& domain, const QString& singular, const QString& plural, int n)
+QString GettextBinding::dtr(const QString& domain, const QString& singular, const QString& plural, int n)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
