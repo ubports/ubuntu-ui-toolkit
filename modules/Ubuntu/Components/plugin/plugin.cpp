@@ -30,5 +30,5 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    GettextBinding::instance().qmlInit(engine->rootContext());
+    GettextBinding::instance().qmlInit(engine); //->rootContext());
 }

@@ -20,6 +20,7 @@
 #include <QObject>
 
 class QQmlContext;
+class QQmlEngine;
 
 class GettextBinding : public QObject
 {
@@ -37,11 +38,11 @@ public:
     static void qmlRegisterTypes(const char* uri);
 
     /**
-     * Add an object named "gettext" to context.
+     * Add an object named "i18n" to context.
      *
-     * One can then get translations with gettext.gettext("english text")
+     * One can then get translations with i18n.tr("english text")
      */
-    void qmlInit(QQmlContext* context);
+    void qmlInit(QQmlEngine* engine);
 
     /**
      * Specify that the domain_name message catalog can be found

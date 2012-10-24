@@ -21,6 +21,7 @@ namespace C {
 }
 
 #include <QtQml>
+#include <QtScript/QScriptValue>
 
 GettextBinding::GettextBinding(QObject* parent) : QObject(parent)
 {
@@ -31,12 +32,19 @@ void GettextBinding::qmlRegisterTypes(const char* uri)
     qmlRegisterUncreatableType<GettextBinding>(uri, 0, 1, "i18n", "Singleton object");
 }
 
-void GettextBinding::qmlInit(QQmlContext *context)
+void GettextBinding::qmlInit(QQmlEngine* engine)
 {
+    QQmlContext* context = engine->rootContext();
     context->setContextProperty("i18n", &GettextBinding::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
     QObject::connect(&GettextBinding::instance(), SIGNAL(domainChanged()),
                  &i18nChangeListener, SLOT(updateContextProperty()));
+
+    QJSValue global = engine->globalObject();
+// TODO: remove the lines below
+//    global.setProperty("yeah", engine->newFunction(tr));
+//    global.setProperty("yeah", &GettextBinding::instance().property("domain"));
+//    global.setProperty("tr", global.property("i18n.tr"));
 }
 
 QString GettextBinding::domain() {
