@@ -481,12 +481,10 @@
   \qml
   // Label.qml
   Text {
-      ItemStyle.onStyleChanged: {
-          if (ItemStyle.style && ItemStyle.style.fontSize)
-              font.pixelSize = Qt.binding(function() {return ItemStyle.style.fontSize});
-          if (ItemStyle.style && ItemStyle.style.color)
-              color = Qt.binding(function() {return ItemStyle.style.color});
-      }
+      font.pixelSize: (ItemStyle.style && ItemStyle.style.fontSize) ?
+                        ItemStyle.style.fontSize : 12
+      color: (ItemStyle.style && ItemStyle.style.color) ?
+                        ItemStyle.style.color : "black"
   }
   \endqml
   When using the component, different styles can be applied as the following code sample
