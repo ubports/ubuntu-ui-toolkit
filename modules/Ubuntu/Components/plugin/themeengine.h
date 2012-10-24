@@ -67,6 +67,7 @@ private:
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
+    Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
 };
 
 #endif // THEMEENGINE_H

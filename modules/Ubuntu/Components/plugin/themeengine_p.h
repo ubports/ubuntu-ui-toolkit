@@ -55,6 +55,7 @@ public: //members
     QStringList importPaths;
     QMap<QString, ThemeLoader*> themeLoaders;
     ThemeSettings themeSettings;
+    QFileSystemWatcher themeWatcher;
     // needed for theme loading
     QString errorString;
     QUrl currentTheme;
@@ -62,6 +63,8 @@ public: //members
 
     // public functions on instance
 public:
+    void removeWatchedFiles();
+    void addWatchedFiles(const QStringList &watchedThemeFiles);
     void loadTheme(const QUrl &themeFile);
     Selector getSelector(QQuickItem *obj, bool forceClassName) const;
     Rule *styleRuleForPath(const Selector &path);
@@ -74,6 +77,7 @@ public:
 
 // private slots
     void _q_updateTheme();
+    void _q_reloadTheme();
 };
 
 inline QString systemFolder()

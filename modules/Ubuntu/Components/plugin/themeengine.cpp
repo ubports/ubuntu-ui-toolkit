@@ -63,11 +63,20 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
 
     // connect theme settings to capture theme updates
     QObject::connect(&themeSettings, SIGNAL(themeSettingsChanged()), q_ptr, SLOT(_q_updateTheme()));
+
+    // connect theme watcher to the same slot so we update the theme whenever we sense changes
+    QObject::connect(&themeWatcher, SIGNAL(fileChanged(QString)), q_ptr, SLOT(_q_reloadTheme()));
 }
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
 {
     delete m_styleTree;
+}
+
+void ThemeEnginePrivate::_q_reloadTheme()
+{
+    currentTheme = QString();
+    _q_updateTheme();
 }
 
 /*!
@@ -77,6 +86,8 @@ ThemeEnginePrivate::~ThemeEnginePrivate()
 void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
+
+    qDebug() << newTheme;
 
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
@@ -92,6 +103,24 @@ void ThemeEnginePrivate::_q_updateTheme()
         }
         // load the theme
         loadTheme(newTheme);
+    }
+}
+
+void ThemeEnginePrivate::removeWatchedFiles()
+{
+    QStringList watchedThemeFiles = themeWatcher.files();
+    Q_FOREACH(const QString &file, watchedThemeFiles) {
+        qDebug() << file;
+        themeWatcher.removePath(file);
+    }
+}
+
+void ThemeEnginePrivate::addWatchedFiles(const QStringList &watchedThemeFiles)
+{
+    qDebug();
+    Q_FOREACH(const QString &file, watchedThemeFiles) {
+        themeWatcher.addPath(file);
+        qDebug() << file;
     }
 }
 
@@ -111,12 +140,15 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
     fileType = fileType.right(fileType.length() - fileType.lastIndexOf('.'));
 
     if (themeLoaders.contains(fileType)) {
-        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url);
+        removeWatchedFiles();
+        QStringList watchedThemeFiles;
+        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url, watchedThemeFiles);
         if (errorString.isEmpty() && styleTree) {
             // clear the previous style and use the loaded one
             delete m_styleTree;
             m_styleCache.clear();
             m_styleTree = styleTree;
+            addWatchedFiles(watchedThemeFiles);
             // emit themeChanged() to update style
             currentTheme = url;
             Q_Q(ThemeEngine);

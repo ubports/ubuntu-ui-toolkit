@@ -34,10 +34,11 @@ class QmlThemeLoader : public ThemeLoader {
 public:
     QmlThemeLoader(QQmlEngine *engine);
     virtual ~QmlThemeLoader(){}
-    StyleTreeNode *loadTheme(const QUrl &path);
+    StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles);
 
 private:
     StyleTreeNode *styleTree;
+    QStringList themeFiles;
 
 private:
 

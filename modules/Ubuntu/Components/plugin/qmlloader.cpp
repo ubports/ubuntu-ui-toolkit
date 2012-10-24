@@ -49,7 +49,7 @@ QmlLoader::QmlLoader(QQmlEngine *engine) :
   \internal
   Loads a QML theme and builds up the style rule tree.
   */
-StyleTreeNode *QmlLoader::loadTheme(const QUrl &path)
+StyleTreeNode *QmlLoader::loadTheme(const QUrl &path, QStringList &themeFiles)
 {
     async = false;
     themeComponent = new QQmlComponent(m_engine, path);
@@ -62,6 +62,9 @@ StyleTreeNode *QmlLoader::loadTheme(const QUrl &path)
                          ThemeEngine::instance(), SLOT(_q_continueThemeLoading));
     } else
         finalizeThemeLoading();
+
+    if (styleTree)
+        themeFiles << path.path();
     return styleTree;
 }
 

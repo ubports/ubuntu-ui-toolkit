@@ -26,7 +26,7 @@ class ThemeLoader {
 public:
     ThemeLoader() : m_engine(0) {}
     virtual ~ThemeLoader(){}
-    virtual StyleTreeNode *loadTheme(const QUrl &path) = 0;
+    virtual StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles) = 0;
 protected:
     QQmlEngine *m_engine;
 };

@@ -473,10 +473,16 @@ bool QmlThemeLoader::handleImport(QmlThemeLoader *loader, QTextStream &stream)
     // if not, build the path relative to the current parsed file
     // Note: resource stored theme files must use absolute paths, or should have
     // qrc: scheme specified
+    bool result = false;
     themeFile = urlMacro(themeFile, stream);
     if (themeFile.startsWith("qrc"))
-        return loader->parseTheme(QUrl(themeFile));
-    return loader->parseTheme(QUrl::fromLocalFile(themeFile));
+        result = loader->parseTheme(QUrl(themeFile));
+    else {
+        result = loader->parseTheme(QUrl::fromLocalFile(themeFile));
+        if (result)
+            loader->themeFiles << themeFile;
+    }
+    return result;
 }
 
 /*!
@@ -590,7 +596,7 @@ QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
     rules["qml-import"] = handleQmlImport;
 }
 
-StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url)
+StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles)
 {
     styleTree = 0;
     // parses the theme
@@ -602,7 +608,8 @@ StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url)
         if (!generateStyleQml()) {
             delete styleTree;
             styleTree = 0;
-        }
+        } else
+            themeFiles<< url.path() << this->themeFiles;
 
         // cleanup
         ruleString.clear();

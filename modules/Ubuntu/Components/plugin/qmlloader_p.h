@@ -28,7 +28,7 @@ class QmlLoader : public QObject, public ThemeLoader {
 public:
     QmlLoader(QQmlEngine *engine);
     virtual ~QmlLoader(){}
-    StyleTreeNode *loadTheme(const QUrl &path);
+    StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles);
 
 private Q_SLOTS:
     void finalizeThemeLoading();
