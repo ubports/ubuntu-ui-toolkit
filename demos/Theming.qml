@@ -18,24 +18,19 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Theme: " + Theme.currentTheme
+    title: "Theming"
 
     Column {
         spacing: 30
 
         TemplateRow {
-            Button {
-                text: "Default"
-                width: 100
-                onClicked: {
-                    Theme.loadTheme("")
-                }
-            }
-            Button {
-                text: "Custom"
-                width: 100
-                onClicked: {
-                    Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme")
+            title: "Custom"
+            Switch {
+                onCheckedChanged: {
+                    if (checked)
+                        Theme.loadTheme("demos/themes/global-themes/theme-one/theme.qmltheme");
+                    else
+                        Theme.loadTheme("");
                 }
             }
         }
@@ -85,7 +80,7 @@ Template {
         }
 
         TemplateRow {
-            title: "Altered style"
+            title: "Custom style"
             height: code2.height
 
             Button {
@@ -118,12 +113,11 @@ Template {
         }
 
         TemplateRow {
-            title: "Altered visuals"
+            title: "Custom style"
             height: code3.height
 
             Button {
-                //ItemStyle.class: "button"
-                ItemStyle.name: "altered"
+                ItemStyle.name: "custom-name"
                 text: "Call"
             }
             TextCustom {
@@ -144,8 +138,7 @@ Template {
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
                     text: "Button {\n"+
-                          "    ItemStyle.class: \"button\"\n"+
-                          "    ItemStyle.name: \"altered\"\n"+
+                          "    ItemStyle.name: \"custom-name\"\n"+
                           "    text: \"Call\"\n"+
                           "}"
                 }

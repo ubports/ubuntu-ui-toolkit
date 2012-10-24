@@ -12,7 +12,7 @@ If no style is given, the theme engine will use QtObject for style and will decl
 properties typed as variant.
 */
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
-@qml-mapping(.Button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
