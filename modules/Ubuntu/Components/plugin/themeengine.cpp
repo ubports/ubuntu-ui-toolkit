@@ -161,7 +161,7 @@ Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) c
         // if class is not defined, use the component's meta class name
         if (styleClass.isEmpty() || forceClassName) {
             styleClass = obj->metaObject()->className();
-            styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE"));
+            styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE")).toLower();
         }
         QString styleId = style->name();
         if (!styleClass.isEmpty() || !styleId.isEmpty()) {
@@ -271,7 +271,7 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
                 } else
                     styleClass = token;
                 if (!styleClass.isEmpty() || !styleId.isEmpty())
-                    selector.append(SelectorNode(styleClass, styleId, nextRelationShip, sensitivity));
+                    selector.append(SelectorNode(styleClass.toLower(), styleId.toLower(), nextRelationShip, sensitivity));
                 nextRelationShip = SelectorNode::Descendant;
             }
         }

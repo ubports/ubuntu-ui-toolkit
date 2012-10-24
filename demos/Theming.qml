@@ -89,7 +89,7 @@ Template {
             height: code2.height
 
             Button {
-                ItemStyle.class: "button"
+                ItemStyle.class: "custom-button"
                 text: "Call"
             }
             TextCustom {
@@ -110,7 +110,7 @@ Template {
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
                     text: "Button {\n"+
-                          "    ItemStyle.class: \"button\"\n"+
+                          "    ItemStyle.class: \"custom-button\"\n"+
                           "    text: \"Call\"\n"+
                           "}"
                 }
@@ -122,7 +122,7 @@ Template {
             height: code3.height
 
             Button {
-                ItemStyle.class: "button"
+                //ItemStyle.class: "button"
                 ItemStyle.name: "altered"
                 text: "Call"
             }

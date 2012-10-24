@@ -155,12 +155,12 @@
 
   Style rules are identified through \l{Rule::selector}{selectors}. Selectors follow
   the syntax defined by the \l{http://www.w3.org/TR/selector.html}{W3C for CSS selectors}
-  however does not provide full support, and selectors are case sensitive. This
+  however does not provide full support. This
   syntax is used in both QML- and QmlTheme file formats.
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
-   meta class name, therefore selectors are case sensitive.
+   meta class name with small capitals.
    \li - element names are always prefixed with a ‘.’ character
    \li - ID selector is the \l{ItemStyle::name}{name} of the widget prefixed with ‘#’ character
    \li - hierarchy on a style rule is represented in two ways:

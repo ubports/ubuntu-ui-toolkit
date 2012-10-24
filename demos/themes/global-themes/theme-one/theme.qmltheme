@@ -8,11 +8,11 @@
 @qml-import(themes 1.0, current:/demos);
 @qml-mapping(.button#altered, ButtonStyle, TestFrameDelegate);
 
-.Button {
+.button {
     color: item.hovered ? "tan" : "lightgray";
 }
 
-.button {
+.custom-button {
     color: item.hovered ? "lightgray" : "#a3e5e8";
 }
 

@@ -33,7 +33,7 @@ Examples:
 */
 @qml-import(Ubuntu.Components 0.1);
 
-.Button, .button {
+.button, .custom-button {
     color: "#e3e5e8";
     shapeDark: url("artwork/ButtonShapeDark.png");
     shapeNormal: url("artwork/ButtonShape.png");

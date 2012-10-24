@@ -386,7 +386,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
     Q_D(ItemStyleAttached);
     if (d->styleClass != styleClass) {
-        d->styleClass = styleClass;
+        d->styleClass = styleClass.toLower();
         d->listenThemeEngine();
         d->updateCurrentStyle();
     }
