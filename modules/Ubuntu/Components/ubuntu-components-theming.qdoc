@@ -133,7 +133,7 @@
   \c{$HOME/.config/UITK/theme.ini} file, which contains the following setting keys:
   \list
    \li \b{theme} specifies the actual theme set for the user, more precisely the
-   folder name of the theme stored under \c{/usr/shared/themes} system folder.
+   folder name of the theme stored under \c{/usr/share/themes} system folder.
    \li \b{imports} specifies the paths where the compoments used in the theme are
    located. Multiple folders can be added to the import path and those must be
    separated with column character. These paths are then added to Qml Engine when
@@ -143,8 +143,8 @@
   Theme files are stored within a directory named \c qmltheme, within which the
   default theme files should be named default.qml or default.qmltheme.
 
-  For example the \e Ambiance theme is located under \c{/usr/shared/themes/Ambiance}
-  and the default theme file therefore will be at \c{/usr/shared/themes/Ambiance/qmltheme/default.qmltheme}.
+  For example the \e Ambiance theme is located under \c{/usr/share/themes/Ambiance}
+  and the default theme file therefore will be at \c{/usr/share/themes/Ambiance/qmltheme/default.qmltheme}.
 
   When themes are loaded, the engine builds up a map of \l{Rule} elements to ease
   style lookup. These style rules are applied only on items which have styling
@@ -160,7 +160,7 @@
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
-   meta class name with small capitals.
+   meta class name.
    \li - element names are always prefixed with a ‘.’ character
    \li - ID selector is the \l{ItemStyle::name}{name} of the widget prefixed with ‘#’ character
    \li - hierarchy on a style rule is represented in two ways:

@@ -111,7 +111,7 @@ QString QmlThemeLoader::urlMacro(const QString &param, const QTextStream &stream
             path.remove("system:");
             if (!path.startsWith('/'))
                 path.prepend('/');
-            path.prepend(systemFolder());
+            path.prepend(themeFolder());
         } else {
             QFile *file = qobject_cast<QFile*>(stream.device());
             QFileInfo fi(*file);

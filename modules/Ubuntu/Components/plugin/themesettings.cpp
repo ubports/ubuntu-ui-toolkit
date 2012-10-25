@@ -60,7 +60,7 @@ ThemeSettings::ThemeSettings(QObject *parent) :
     // check if we have system settings file, if not, create one
     if (!QFile::exists(globalSettings.fileName())) {
         // create the file by writing the default theme
-        globalSettings.setValue(globalThemeKey, "demo");
+        globalSettings.setValue(globalThemeKey, "Ambiance");
         globalSettings.sync();
     }
 
@@ -86,7 +86,7 @@ QUrl ThemeSettings::themeFile() const
     QUrl result;
     // returns the global theme file
     QString theme = globalSettings.value(globalThemeKey).toString();
-    result = QUrl::fromLocalFile(systemFolder() + QString(PathFormat_GlobalThemeFile).arg(theme));
+    result = QUrl::fromLocalFile(themeFolder() + QString(PathFormat_GlobalThemeFile).arg(theme));
     if (!QFile::exists(result.path()))
         result = QUrl();
     return result;

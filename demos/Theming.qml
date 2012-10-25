@@ -28,7 +28,7 @@ Template {
             Switch {
                 onCheckedChanged: {
                     if (checked)
-                        Theme.loadTheme("demos/custom-theme.qmltheme");
+                        Theme.loadTheme(Qt.resolvedUrl("./custom-theme.qmltheme"));
                     else
                         Theme.loadTheme("");
                 }

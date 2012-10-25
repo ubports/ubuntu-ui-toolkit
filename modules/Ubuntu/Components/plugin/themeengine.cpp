@@ -57,7 +57,6 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     themeEngine = q_ptr;
 
     // register theme loaders
-    // TODO: shouldn't these be in separate plugins?
     themeLoaders[".qml"] = new QmlLoader(m_engine);
     themeLoaders[".qmltheme"] = new QmlThemeLoader(m_engine);
 
@@ -86,7 +85,6 @@ void ThemeEnginePrivate::_q_reloadTheme()
 void ThemeEnginePrivate::_q_updateTheme()
 {
     const QUrl newTheme = themeSettings.themeFile();
-
     if (newTheme.isValid() && (currentTheme != newTheme)) {
         // remove previous import paths and add the ones defined for the new theme
         QStringList importList = m_engine->importPathList();

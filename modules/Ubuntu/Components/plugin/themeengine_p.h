@@ -80,7 +80,7 @@ public:
     void _q_reloadTheme();
 };
 
-inline QString systemFolder()
+inline QString themeFolder()
 {
     QString env = QLatin1String(getenv("UITK_THEME_PATH"));
     env = env.isEmpty() ? QString("/usr/share/themes") : env + "/themes";
