@@ -10,19 +10,16 @@ GETTEXT_FILES=$(mktemp --tmpdir uitk-gallery.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
 find \( -name '*.cpp' -o -name '*.qml' \) \
-    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*'  -o -path './libunity-2d-private/tests/*' \) | sort \
+    -a ! \( -path './debian/*' -o -path './build/*' -o -path './.bzr/*' \) | sort \
 > $GETTEXT_FILES
 
 # Generate pot from our list
-# Note: we use --keyword=tr for QML files because --keyword=u2d.tr does not
-# work
 xgettext \
     --output $PO_DIR/auto-generated.pot \
     --files-from $GETTEXT_FILES \
     --qt --c++ \
     --add-comments=TRANSLATORS \
-    --keyword=gettext \
-    --keyword=_ \
+    --keyword=tr \
     --package-name gallery \
     --copyright-holder "Canonical Ltd"
 
