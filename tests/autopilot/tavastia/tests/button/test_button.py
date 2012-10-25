@@ -38,14 +38,17 @@ class EnabledButtonTests(TavastiaTestCase):
 
     def test_clicked_signal_emitted(self):
         """Clicking the button component must emit the clicked() signal."""
-
+        
         btn = self.app.select_single('Button')
+        print dir(btn)
+        print btn.get_signals()
+        print dir(btn._get_qt_iface())
         signal = btn.watch_signal('clicked(QVariant)')
 
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        time.sleep(0.1)
+#        time.sleep(3)
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
@@ -127,7 +130,7 @@ class DisabledButtonTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        time.sleep(0.1)
+#        time.sleep(0.1)
 
         self.assertThat(signal.was_emitted, Equals(False))
         self.assertThat(signal.num_emissions, Equals(0)
