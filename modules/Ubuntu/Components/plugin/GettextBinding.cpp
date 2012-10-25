@@ -21,7 +21,6 @@ namespace C {
 }
 
 #include <QtQml>
-#include <QtScript/QScriptValue>
 
 GettextBinding::GettextBinding(QObject* parent) : QObject(parent)
 {
