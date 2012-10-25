@@ -26,11 +26,23 @@ Template {
         TemplateRow {
             title: "Custom"
             Switch {
+                property bool __loopGuard: false
                 onCheckedChanged: {
+                    if (__loopGuard)
+                        return;
                     if (checked)
                         Theme.loadTheme(Qt.resolvedUrl("./custom-theme.qmltheme"));
                     else
                         Theme.loadTheme("");
+                }
+                Component.onCompleted: {
+                    var currTheme = Theme.currentTheme;
+                    var themePos = currTheme.lastIndexOf("/");
+                    if (currTheme.substring(themePos + 1, currTheme.lastIndexOf('.')) == "custom-theme") {
+                        __loopGuard = true;
+                        checked = true;
+                        __loopGuard = false;
+                    }
                 }
             }
         }
