@@ -27,13 +27,15 @@ class UbuntuI18n : public QObject
     Q_OBJECT
     Q_PROPERTY(QString domain READ domain WRITE setDomain)
 
+private:
+    explicit UbuntuI18n(QObject* parent = 0);
+
+
 public:
     static UbuntuI18n& instance() {
         static UbuntuI18n instance;
         return instance;
     }
-
-    explicit UbuntuI18n(QObject* parent = 0);
 
     static void qmlRegisterTypes(const char* uri);
 
