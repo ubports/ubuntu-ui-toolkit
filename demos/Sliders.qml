@@ -32,7 +32,7 @@ Template {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"
-                text: i18n.tr("value is %1").arg(defaultSlider.formatValue(defaultSlider.value))
+                text: i18n.tr("\'value\' is %1").arg(defaultSlider.formatValue(defaultSlider.value))
             }
         }
 
@@ -50,7 +50,7 @@ Template {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"
-                text: i18n.tr("value is %1").arg(liveSlider.formatValue(liveSlider.value))
+                text: i18n.tr("\'value\' is %1").arg(liveSlider.formatValue(liveSlider.value))
             }
         }
     }
