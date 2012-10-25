@@ -41,10 +41,6 @@ void UbuntuI18n::qmlInit(QQmlEngine* engine)
                  &i18nChangeListener, SLOT(updateContextProperty()));
 
     QJSValue global = engine->globalObject();
-// TODO: remove the lines below
-//    global.setProperty("yeah", engine->newFunction(tr));
-//    global.setProperty("yeah", &UbuntuI18n::instance().property("domain"));
-//    global.setProperty("tr", global.property("i18n.tr"));
 }
 
 QString UbuntuI18n::domain() {
@@ -90,7 +86,7 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& singular, const QS
 }
 
 // TODO: The code below is the same as in units.cpp (resolution_independence branch)
-//  create a separate cpp file with this code?
+//  create a separate cpp file with this code
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
     m_context(context),
     m_contextProperty(contextProperty)
