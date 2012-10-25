@@ -28,6 +28,7 @@ class UbuntuI18n : public QObject
     Q_PROPERTY(QString domain READ domain WRITE setDomain)
 
 private:
+    Q_DISABLE_COPY(UbuntuI18n)
     explicit UbuntuI18n(QObject* parent = 0);
 
 
