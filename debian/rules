@@ -10,14 +10,10 @@
 #export DH_VERBOSE=1
 PATH := /opt/qt5/bin:${PATH}
 
-override_dh_auto_install:
-	make install
-	make install_mo
-
 override_dh_install:
 	
 # execute dh_install and fail if something was not packaged
 	dh_install --fail-missing
 
 %:
-	dh $@ --with translations
+	dh $@ 
