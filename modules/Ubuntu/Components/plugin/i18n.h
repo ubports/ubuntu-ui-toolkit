@@ -17,7 +17,7 @@
 #ifndef UBUNTU_COMPONENTS_I18N_H
 #define UBUNTU_COMPONENTS_I18N_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class QQmlContext;
 class QQmlEngine;
@@ -85,7 +85,6 @@ public:
      */
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
 
-
     // getter
     QString domain();
 
@@ -93,7 +92,6 @@ public:
     void setDomain(QString domain);
 
 Q_SIGNALS:
-
     void domainChanged();
 
 private:
