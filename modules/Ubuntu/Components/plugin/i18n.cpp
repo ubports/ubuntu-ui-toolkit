@@ -24,6 +24,7 @@ namespace C {
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
+    m_domain = "";
 }
 
 void UbuntuI18n::qmlRegisterTypes(const char* uri)
@@ -47,7 +48,7 @@ void UbuntuI18n::qmlInit(QQmlEngine* engine)
 }
 
 QString UbuntuI18n::domain() {
-    return _domain;
+    return m_domain;
 }
 
 void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_name) {
@@ -55,7 +56,7 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
 }
 
 void UbuntuI18n::setDomain(QString domain) {
-    _domain = domain;
+    m_domain = domain;
     C::textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
 }

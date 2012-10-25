@@ -97,7 +97,7 @@ Q_SIGNALS:
     void domainChanged();
 
 private:
-    QString _domain;
+    QString m_domain;
 };
 
 class ContextPropertyChangeListener : public QObject
