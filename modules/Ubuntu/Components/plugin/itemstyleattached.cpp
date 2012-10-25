@@ -276,9 +276,10 @@ bool ItemStyleAttachedPrivate::registerName(const QString &id)
 {
     bool result = true;
     Q_Q(ItemStyleAttached);
-    if (ThemeEngine::instance()->registerName(attachee, id))
+    if (ThemeEngine::instance()->registerName(attachee, id)) {
         name = id;
-    else {
+        attachee->setProperty("name", name);
+    } else {
         QString className = q->metaObject()->className();
         className = className.left(className.indexOf("_QMLTYPE"));
         ThemeEnginePrivate::setError(QString("Instance %1 already registered. Resetting instance for %2.")
