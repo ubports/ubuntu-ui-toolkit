@@ -12,6 +12,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Tim Peeters <tim.peeters@canonical.com>
  */
 
 #ifndef UBUNTU_COMPONENTS_I18N_H
@@ -87,16 +89,6 @@ Q_SIGNALS:
 
 private:
     QString m_domain;
-};
-
-class ContextPropertyChangeListener : public QObject
-{
-    Q_OBJECT
-public:
-    explicit ContextPropertyChangeListener(QQmlContext* context, QString contextProperty);
-    Q_SLOT void updateContextProperty();
-    QQmlContext* m_context;
-    QString m_contextProperty;
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H

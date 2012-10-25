@@ -20,6 +20,7 @@
 
 #include "plugin.h"
 #include "i18n.h"
+#include "listener.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {

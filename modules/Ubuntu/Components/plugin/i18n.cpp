@@ -12,6 +12,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Tim Peeters <tim.peeters@canonical.om>
  */
 
 #include "i18n.h"
@@ -67,18 +69,4 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& singular, const QS
     } else {
         return QString::fromUtf8(C::dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
     }
-}
-
-// TODO: The code below is the same as in units.cpp (resolution_independence branch)
-//  create a separate cpp file with this code
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
-    m_context(context),
-    m_contextProperty(contextProperty)
-{
-}
-
-void ContextPropertyChangeListener::updateContextProperty()
-{
-    QVariant value = m_context->contextProperty(m_contextProperty);
-    m_context->setContextProperty(m_contextProperty, value);
 }

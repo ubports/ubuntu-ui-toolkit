@@ -9,10 +9,12 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-        i18n.h
+        i18n.h \
+	listener.h
 
 SOURCES += plugin.cpp \
-        i18n.cpp
+        i18n.cpp \
+	listener.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
