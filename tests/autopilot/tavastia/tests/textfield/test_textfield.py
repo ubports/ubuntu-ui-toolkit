@@ -14,22 +14,22 @@ from testtools import skip
 
 from tavastia.tests import TavastiaTestCase
 
-class TextInputTests(TavastiaTestCase):
-    """Tests for TextInput component."""
+class TextFieldTests(TavastiaTestCase):
+    """Tests for TextField component."""
 
     test_qml = dedent("""\
     import QtQuick 2.0
     import Ubuntu.Components 0.1
 
-    TextInput {
-       id: textInput
+    TextField {
+       
     }
     """)
 
-    def test_can_select_textinput(self):
-        """Must be able to select the Qml TextInput component."""
+    def test_can_select_textfield(self):
+        """Must be able to select the Qml TextField component."""
 
-        obj = self.app.select_single('TextInput')
+        obj = self.app.select_single('TextField')
         self.assertThat(obj, Not(Is(None)))
     
 

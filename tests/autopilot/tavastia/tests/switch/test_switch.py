@@ -22,7 +22,7 @@ class EnabledSwitchTests(TavastiaTestCase):
     import Ubuntu.Components 0.1
 
     Switch {
-       id: switch
+      
     }
     """)
 
@@ -56,7 +56,6 @@ class DisabledSwitchTests(TavastiaTestCase):
     import Ubuntu.Components 0.1
 
     Switch {
-       id: switch
        enabled: false
     }
     """)
