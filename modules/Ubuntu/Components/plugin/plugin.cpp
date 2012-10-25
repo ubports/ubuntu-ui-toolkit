@@ -19,16 +19,16 @@
 #include <QtQml>
 
 #include "plugin.h"
-#include "GettextBinding.h"
+#include "i18n.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
-    GettextBinding::qmlRegisterTypes(uri);
+    UbuntuI18n::qmlRegisterTypes(uri);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    GettextBinding::instance().qmlInit(engine); //->rootContext());
+    UbuntuI18n::instance().qmlInit(engine); //->rootContext());
 }

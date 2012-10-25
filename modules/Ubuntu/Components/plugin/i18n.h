@@ -14,26 +14,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_COMPONENTS_GETTEXTBINDING_H
-#define UBUNTU_COMPONENTS_GETTEXTBINDING_H
+#ifndef UBUNTU_COMPONENTS_I18N_H
+#define UBUNTU_COMPONENTS_I18N_H
 
 #include <QObject>
 
 class QQmlContext;
 class QQmlEngine;
 
-class GettextBinding : public QObject
+class UbuntuI18n : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString domain READ domain WRITE setDomain)
 
 public:
-    static GettextBinding& instance() {
-        static GettextBinding instance;
+    static UbuntuI18n& instance() {
+        static UbuntuI18n instance;
         return instance;
     }
 
-    explicit GettextBinding(QObject* parent = 0);
+    explicit UbuntuI18n(QObject* parent = 0);
 
     static void qmlRegisterTypes(const char* uri);
 
@@ -107,4 +107,4 @@ public:
     QString m_contextProperty;
 };
 
-#endif // UBUNTU_COMPONENTS_GETTEXTBINDING_H
+#endif // UBUNTU_COMPONENTS_I18N_H

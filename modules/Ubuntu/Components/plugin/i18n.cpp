@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "GettextBinding.h"
+#include "i18n.h"
 
 namespace C {
 #include <libintl.h>
@@ -22,55 +22,55 @@ namespace C {
 
 #include <QtQml>
 
-GettextBinding::GettextBinding(QObject* parent) : QObject(parent)
+UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
 }
 
-void GettextBinding::qmlRegisterTypes(const char* uri)
+void UbuntuI18n::qmlRegisterTypes(const char* uri)
 {
-    qmlRegisterUncreatableType<GettextBinding>(uri, 0, 1, "i18n", "Singleton object");
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
 }
 
-void GettextBinding::qmlInit(QQmlEngine* engine)
+void UbuntuI18n::qmlInit(QQmlEngine* engine)
 {
     QQmlContext* context = engine->rootContext();
-    context->setContextProperty("i18n", &GettextBinding::instance());
+    context->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
-    QObject::connect(&GettextBinding::instance(), SIGNAL(domainChanged()),
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
                  &i18nChangeListener, SLOT(updateContextProperty()));
 
     QJSValue global = engine->globalObject();
 // TODO: remove the lines below
 //    global.setProperty("yeah", engine->newFunction(tr));
-//    global.setProperty("yeah", &GettextBinding::instance().property("domain"));
+//    global.setProperty("yeah", &UbuntuI18n::instance().property("domain"));
 //    global.setProperty("tr", global.property("i18n.tr"));
 }
 
-QString GettextBinding::domain() {
+QString UbuntuI18n::domain() {
     return _domain;
 }
 
-void GettextBinding::bindtextdomain(const QString& domain_name, const QString& dir_name) {
+void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_name) {
     C::bindtextdomain(domain_name.toUtf8(), dir_name.toUtf8());
 }
 
-void GettextBinding::setDomain(QString domain) {
+void UbuntuI18n::setDomain(QString domain) {
     _domain = domain;
     C::textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
 }
 
-QString GettextBinding::tr(const QString& text)
+QString UbuntuI18n::tr(const QString& text)
 {
     return QString::fromUtf8(C::gettext(text.toUtf8()));
 }
 
-QString GettextBinding::tr(const QString &singular, const QString &plural, int n)
+QString UbuntuI18n::tr(const QString &singular, const QString &plural, int n)
 {
     return QString::fromUtf8(C::ngettext(singular.toUtf8(), plural.toUtf8(), n));
 }
 
-QString GettextBinding::dtr(const QString& domain, const QString& text)
+QString UbuntuI18n::dtr(const QString& domain, const QString& text)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dgettext(NULL, text.toUtf8()));
@@ -79,7 +79,7 @@ QString GettextBinding::dtr(const QString& domain, const QString& text)
     }
 }
 
-QString GettextBinding::dtr(const QString& domain, const QString& singular, const QString& plural, int n)
+QString UbuntuI18n::dtr(const QString& domain, const QString& singular, const QString& plural, int n)
 {
     if (domain.isNull()) {
         return QString::fromUtf8(C::dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
