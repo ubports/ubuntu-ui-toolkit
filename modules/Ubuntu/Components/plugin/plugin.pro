@@ -8,9 +8,13 @@ CONFIG += qt plugin no_keywords
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
-HEADERS += plugin.h
+HEADERS += plugin.h \
+        i18n.h \
+	listener.h
 
-SOURCES += plugin.cpp
+SOURCES += plugin.cpp \
+        i18n.cpp \
+	listener.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
