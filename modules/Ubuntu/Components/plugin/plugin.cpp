@@ -24,11 +24,17 @@
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
-    UbuntuI18n::qmlRegisterTypes(uri);
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    UbuntuI18n::instance().qmlInit(engine); //->rootContext());
+
+    QQmlContext* context = engine->rootContext();
+
+    context->setContextProperty("i18n", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     &i18nChangeListener, SLOT(updateContextProperty()));
 }

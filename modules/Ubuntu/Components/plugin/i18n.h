@@ -38,15 +38,6 @@ public:
         return instance;
     }
 
-    static void qmlRegisterTypes(const char* uri);
-
-    /**
-     * Add an object named "i18n" to context.
-     *
-     * One can then get translations with i18n.tr("english text")
-     */
-    void qmlInit(QQmlEngine* engine);
-
     /**
      * Specify that the domain_name message catalog can be found
      * in dir_name rather than in the system locale data base.

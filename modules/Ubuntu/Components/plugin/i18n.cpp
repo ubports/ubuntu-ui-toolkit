@@ -27,22 +27,6 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
     m_domain = "";
 }
 
-void UbuntuI18n::qmlRegisterTypes(const char* uri)
-{
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
-}
-
-void UbuntuI18n::qmlInit(QQmlEngine* engine)
-{
-    QQmlContext* context = engine->rootContext();
-    context->setContextProperty("i18n", &UbuntuI18n::instance());
-    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
-                 &i18nChangeListener, SLOT(updateContextProperty()));
-
-    QJSValue global = engine->globalObject();
-}
-
 QString UbuntuI18n::domain() {
     return m_domain;
 }
