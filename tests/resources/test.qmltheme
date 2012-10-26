@@ -1,0 +1,19 @@
+@import url("qrc:/base.qmltheme");
+
+.baseA {
+    test_base_A_A: "new:: test.qmltheme/.baseA";
+    prop_baseA_A: "overload:: test.qmltheme/.baseA";
+}
+
+.testA .baseA {
+    prop_baseA_C: "overload-> test.qmltheme/.testA .baseA";
+}
+
+.testB > .baseA {
+    prop_baseA_A: "overload:: test.qmltheme/.testB > .baseA";
+}
+
+.testC .textB .baseA {
+    test_base_A_A: "overload:: test.qmltheme/.testC .textB .baseA";
+    prop_baseA_B: "overload:: test.qmltheme/.testC .textB .baseA";
+}

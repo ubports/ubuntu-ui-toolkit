@@ -131,16 +131,3 @@ QString Units::suffixForGridUnit(float gridUnit)
 {
     return "@" + QString::number(gridUnit);
 }
-
-
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
-    m_context(context),
-    m_contextProperty(contextProperty)
-{
-}
-
-void ContextPropertyChangeListener::updateContextProperty()
-{
-    QVariant value = m_context->contextProperty(m_contextProperty);
-    m_context->setContextProperty(m_contextProperty, value);
-}

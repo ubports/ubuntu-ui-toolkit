@@ -20,6 +20,13 @@
 #include <QtQuick/private/qquickimagebase_p.h>
 
 #include "plugin.h"
+#include "rule.h"
+#include "themeengine.h"
+#include "itemstyleattached.h"
+
+#include <QtQml/QQmlContext>
+#include "i18n.h"
+#include "listener.h"
 #include "units.h"
 #include "scalingimageprovider.h"
 #include "qquickimageextension.h"
@@ -27,6 +34,9 @@
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
+    qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, QQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<Units>(uri, 0, 1, "Units", "Not instantiable");
 }
@@ -34,6 +44,15 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
+    // call engine registration method to load the theme
+    QQmlContext* context = engine->rootContext();
+
+    context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
+    context->setContextProperty("i18n", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     &i18nChangeListener, SLOT(updateContextProperty()));
+
     Units::instance().setBaseUrl(engine->baseUrl());
     engine->rootContext()->setContextProperty("units", &Units::instance());
     static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");

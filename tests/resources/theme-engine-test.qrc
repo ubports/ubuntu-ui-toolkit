@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>test.qmltheme</file>
+        <file>base.qmltheme</file>
+    </qresource>
+</RCC>

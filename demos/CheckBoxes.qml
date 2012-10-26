@@ -18,30 +18,29 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Check Box"
+    title: i18n.tr("Check Box")
 
     Column {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: "Unchecked"
+            title: i18n.tr("Unchecked")
             CheckBox {
             }
         }
 
         TemplateRow {
-            title: "Checked"
+            title: i18n.tr("Checked")
             CheckBox {
                 checked: true
             }
         }
 
         TemplateRow {
-            title: "Disabled"
+            title: i18n.tr("Disabled")
             CheckBox {
                 enabled: false
             }
         }
-
     }
 }
