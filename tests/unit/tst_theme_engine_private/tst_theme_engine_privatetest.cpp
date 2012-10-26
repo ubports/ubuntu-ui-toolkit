@@ -27,26 +27,28 @@ private Q_SLOTS:
     void testCase_parseSelector();
     void testCase_selectorToString();
 private:
-    QQuickView *view;
+    QQmlEngine *quickEngine;
     ThemeEnginePrivate *engine;
     friend class ThemeEnginePrivate;
 };
 
-tst_ThemeEnginePrivate::tst_ThemeEnginePrivate()
+tst_ThemeEnginePrivate::tst_ThemeEnginePrivate():
+    quickEngine(0),
+    engine(0)
 {
 }
 
 
 void tst_ThemeEnginePrivate::initTestCase()
 {
-    view = new QQuickView();
+    quickEngine = new QQmlEngine(this);
 
     // must register all the types as done in plugin; if used from plugin
     // declarative does not create the Rule objects but QObjects, and does
     // not give any error...
 
-    char *uri = "Ubuntu.Components";
-    ThemeEngine::initializeEngine(view->engine());
+    const char *uri = QString("Ubuntu.Components").toLatin1();
+    ThemeEngine::initializeEngine(quickEngine);
     qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 
@@ -57,7 +59,6 @@ void tst_ThemeEnginePrivate::initTestCase()
 
 void tst_ThemeEnginePrivate::cleanupTestCase()
 {
-    delete view;
 }
 
 void tst_ThemeEnginePrivate::testCase_loadTheme()
@@ -88,7 +89,7 @@ void tst_ThemeEnginePrivate::testCase_urlMacro()
     QVERIFY2(rule, "Failure");
     if (rule) {
         // create style from the rule so we can check the validity of the URLs
-        QObject *style = rule->createStyle(view->engine()->rootContext());
+        QObject *style = rule->createStyle(quickEngine->rootContext());
         QVERIFY2(style, "FAILURE");
 
         QString url = style->property("prop_baseA_A").toString();

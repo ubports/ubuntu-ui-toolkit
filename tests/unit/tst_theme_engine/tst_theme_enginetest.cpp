@@ -29,36 +29,35 @@ private Q_SLOTS:
     void testCase_lookupStyleRule();
 
 private:
-    QQuickView *view;
+    QQmlEngine *quickEngine;
 };
 
 tst_ThemeEngine::tst_ThemeEngine():
-    view(0)
+    quickEngine(0)
 {
 }
 
 void tst_ThemeEngine::initTestCase()
 {
-    view = new QQuickView;
+    quickEngine = new QQmlEngine(this);
 
     // must register all the types as done in plugin; if used from plugin
     // declarative does not create the Rule objects but QObjects, and does
     // not give any error...
 
-    const char *uri = "Ubuntu.Components";
-    ThemeEngine::initializeEngine(view->engine());
+    const char *uri = QString("Ubuntu.Components").toLatin1();
+    ThemeEngine::initializeEngine(quickEngine);
     qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 }
 
 void tst_ThemeEngine::cleanupTestCase()
 {
-    delete view;
 }
 
 void tst_ThemeEngine::testCase_initializeEngine()
 {
-    bool result = (ThemeEngine::initializeEngine(view->engine()) != 0);
+    bool result = (ThemeEngine::initializeEngine(quickEngine) != 0);
     // theme loading might fail, however don't care about it
     QCOMPARE(result, true);
 }
