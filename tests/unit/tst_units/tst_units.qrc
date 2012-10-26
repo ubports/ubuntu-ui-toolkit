@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/test/prefix">
         <file>exact_match.png</file>
-        <file>higher_scale@2x.png</file>
-        <file>lower_scale@1.5x.png</file>
+        <file>higher_scale.png</file>
+        <file>lower_scale.png</file>
     </qresource>
 </RCC>

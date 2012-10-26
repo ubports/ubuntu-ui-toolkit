@@ -29,7 +29,7 @@ QQuickImageExtension::QQuickImageExtension(QObject *parent) :
     m_image(static_cast<QQuickImageBase*>(parent)),
     m_tmpSciFile(NULL)
 {
-    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
+    QObject::connect(&Units::instance(), SIGNAL(gridUnitChanged()),
                      this, SLOT(reloadSource()), Qt::UniqueConnection);
 }
 

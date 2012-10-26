@@ -23,18 +23,10 @@
 #include <QtQml/QQmlFile>
 #include <QtCore/QFileInfo>
 
-#define ENV_SCALE_FACTOR "SCALE_FACTOR"
-#define GRID_UNIT_IN_DP 8
-
-struct Category {
-    QString suffix;
-    float scaleFactor;
-};
-
-Category mdpi = { "", 1.0 };
-Category hdpi = { "@1.5x", 1.5 };
-Category xhdpi = { "@2x", 2.0 };
-QList<Category> g_densityCategories;
+#define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
+#define DEFAULT_GRID_UNIT_PX 8
+#define DEFAULT_RESOURCES_UNIT_PX 8
+#define RESOURCES_UNIT_FILE "resources_unit"
 
 
 static float getenvFloat(const char* name, float defaultValue)
@@ -49,32 +41,55 @@ static float getenvFloat(const char* name, float defaultValue)
 Units::Units(QObject *parent) :
     QObject(parent)
 {
-    g_densityCategories.append(mdpi);
-    g_densityCategories.append(hdpi);
-    g_densityCategories.append(xhdpi);
+    m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
+    m_resourcesUnit = DEFAULT_RESOURCES_UNIT_PX;
 
-    m_scaleFactor = getenvFloat(ENV_SCALE_FACTOR, 1.0);
+    /* A file named RESOURCES_UNIT_FILE can be provided by the application
+     * and contains the grid unit the resources have been designed to. */
+    loadResourcesUnitFile(RESOURCES_UNIT_FILE);
 }
 
-float Units::scaleFactor()
+bool Units::loadResourcesUnitFile(QString fileName)
 {
-    return m_scaleFactor;
+    QUrl unresolved = QUrl::fromLocalFile(fileName);
+    fileName = m_baseUrl.resolved(unresolved).toLocalFile();
+
+    QFile resourcesUnitFile(fileName);
+    if (resourcesUnitFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        bool valid;
+        int unit = resourcesUnitFile.readLine().trimmed().toInt(&valid);
+        if (valid) {
+            m_resourcesUnit = (float)unit;
+        }
+        return valid;
+    }
+    return false;
 }
 
-void Units::setScaleFactor(float scaleFactor)
+float Units::gridUnit()
 {
-    m_scaleFactor = scaleFactor;
-    Q_EMIT scaleFactorChanged();
+    return m_gridUnit;
+}
+
+void Units::setGridUnit(float gridUnit)
+{
+    m_gridUnit = gridUnit;
+    Q_EMIT gridUnitChanged();
+}
+
+void Units::setBaseUrl(const QUrl& baseUrl)
+{
+    m_baseUrl = baseUrl;
 }
 
 float Units::dp(float value)
 {
-    return qFloor(value * m_scaleFactor);
+    return qRound(value * m_gridUnit / DEFAULT_GRID_UNIT_PX);
 }
 
 float Units::gu(float value)
 {
-    return qFloor(value * m_scaleFactor * GRID_UNIT_IN_DP);
+    return qRound(value * m_gridUnit);
 }
 
 QString Units::resolveResource(const QUrl& url)
@@ -97,38 +112,24 @@ QString Units::resolveResource(const QUrl& url)
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
 
-    path = prefix + suffixForScaleFactor(m_scaleFactor) + suffix;
+    path = prefix + suffixForGridUnit(m_gridUnit) + suffix;
+    float scaleFactor = m_gridUnit / m_resourcesUnit;
+
     if (QFile::exists(path)) {
         return QString("1") + "/" + path;
     }
 
-    path = prefix + xhdpi.suffix + suffix;
+    path = prefix + suffix;
     if (QFile::exists(path)) {
-        return QString::number(m_scaleFactor/xhdpi.scaleFactor) + "/" + path;
-    }
-
-    path = prefix + hdpi.suffix + suffix;
-    if (QFile::exists(path)) {
-        return QString::number(m_scaleFactor/hdpi.scaleFactor) + "/" + path;
-    }
-
-    path = prefix + mdpi.suffix + suffix;
-    if (QFile::exists(path)) {
-        return QString::number(m_scaleFactor/mdpi.scaleFactor) + "/" + path;
+        return QString::number(scaleFactor) + "/" + path;
     }
 
     return "";
 }
 
-QString Units::suffixForScaleFactor(float scaleFactor)
+QString Units::suffixForGridUnit(float gridUnit)
 {
-    Q_FOREACH (Category category, g_densityCategories) {
-        if (scaleFactor <= category.scaleFactor) {
-            return category.suffix;
-        }
-    }
-
-    return g_densityCategories.last().suffix;
+    return "@" + QString::number(gridUnit);
 }
 
 

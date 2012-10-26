@@ -31,63 +31,100 @@ private Q_SLOTS:
         QCOMPARE(&units1, &units2);
     }
 
-    void defaultScaleFactor() {
+    void defaultGridUnit() {
         Units units;
-        QCOMPARE(units.scaleFactor(), 1.0f);
+        QCOMPARE(units.gridUnit(), 8.0f);
     }
 
-    void setScaleFactor() {
+    void setGridUnit() {
         Units units;
-        units.setScaleFactor(0.0);
-        QCOMPARE(units.scaleFactor(), 0.0f);
-        units.setScaleFactor(42.0);
-        QCOMPARE(units.scaleFactor(), 42.0f);
+        units.setGridUnit(0.0);
+        QCOMPARE(units.gridUnit(), 0.0f);
+        units.setGridUnit(42.0);
+        QCOMPARE(units.gridUnit(), 42.0f);
     }
 
-    void scaleFactorEnvironmentVariable() {
-        QByteArray scaleFactor = QString::number(1.42).toLocal8Bit();
-        qputenv("SCALE_FACTOR", scaleFactor);
+    void gridUnitEnvironmentVariable() {
+        QByteArray gridUnit = QString::number(11).toLocal8Bit();
+        qputenv("GRID_UNIT_PX", gridUnit);
         Units units;
-        QCOMPARE(units.scaleFactor(), 1.42f);
-        qputenv("SCALE_FACTOR", "");
+        QCOMPARE(units.gridUnit(), 11.0);
+        qputenv("GRID_UNIT_PX", "");
     }
 
-    void dpScaleFactorOne() {
+    void dpGridUnitDefault() {
         Units units;
-
-        QCOMPARE(units.dp(1.0), 1.0f);
-        QCOMPARE(units.dp(1.32), 1.0f);
-        QCOMPARE(units.dp(1.72), 1.0f);
-        QCOMPARE(units.dp(0.23), 0.0f);
-        QCOMPARE(units.dp(0.51), 0.0f);
-        QCOMPARE(units.dp(0.9999), 0.0f);
-        QCOMPARE(units.dp(1000.01), 1000.0f);
-    }
-
-    void dpScaleFactorOnePointFive() {
-        Units units;
-        units.setScaleFactor(1.5);
 
         QCOMPARE(units.dp(1.0), 1.0f);
         QCOMPARE(units.dp(1.32), 1.0f);
         QCOMPARE(units.dp(1.72), 2.0f);
         QCOMPARE(units.dp(0.23), 0.0f);
-        QCOMPARE(units.dp(0.51), 0.0f);
+        QCOMPARE(units.dp(0.51), 1.0f);
         QCOMPARE(units.dp(0.9999), 1.0f);
-        QCOMPARE(units.dp(1000.01), 1500.0f);
+        QCOMPARE(units.dp(1000.01), 1000.0f);
     }
 
-    void dpScaleFactorTwo() {
+    void guGridUnitDefault() {
         Units units;
-        units.setScaleFactor(2.0);
 
-        QCOMPARE(units.dp(1.0), 2.0f);
+        QCOMPARE(units.gu(1.0), 8.0f);
+        QCOMPARE(units.gu(1.32), 11.0f);
+        QCOMPARE(units.gu(1.72), 14.0f);
+        QCOMPARE(units.gu(0.23), 2.0f);
+        QCOMPARE(units.gu(0.51), 4.0f);
+        QCOMPARE(units.gu(0.9999), 8.0f);
+        QCOMPARE(units.gu(1000.01), 8000.0f);
+    }
+    void dpGridUnitTen() {
+        Units units;
+        units.setGridUnit(10);
+
+        QCOMPARE(units.dp(1.0), 1.0f);
         QCOMPARE(units.dp(1.32), 2.0f);
-        QCOMPARE(units.dp(1.72), 3.0f);
+        QCOMPARE(units.dp(1.72), 2.0f);
         QCOMPARE(units.dp(0.23), 0.0f);
         QCOMPARE(units.dp(0.51), 1.0f);
         QCOMPARE(units.dp(0.9999), 1.0f);
+        QCOMPARE(units.dp(1000.01), 1250.0f);
+    }
+
+    void guGridUnitTen() {
+        Units units;
+        units.setGridUnit(10);
+
+        QCOMPARE(units.gu(0.5), 5.0f);
+        QCOMPARE(units.gu(1), 10.0f);
+        QCOMPARE(units.gu(1.5), 15.0f);
+        QCOMPARE(units.gu(2), 20.0f);
+        QCOMPARE(units.gu(4), 40.0f);
+        QCOMPARE(units.gu(100000), 1000000.0f);
+        QCOMPARE(units.gu(150.51983), 1505.0f);
+    }
+
+    void dpGridUnitSixteen() {
+        Units units;
+        units.setGridUnit(16);
+
+        QCOMPARE(units.dp(1.0), 2.0f);
+        QCOMPARE(units.dp(1.32), 3.0f);
+        QCOMPARE(units.dp(1.72), 3.0f);
+        QCOMPARE(units.dp(0.23), 0.0f);
+        QCOMPARE(units.dp(0.51), 1.0f);
+        QCOMPARE(units.dp(0.9999), 2.0f);
         QCOMPARE(units.dp(1000.01), 2000.0f);
+    }
+
+    void guGridUnitSixteen() {
+        Units units;
+        units.setGridUnit(16);
+
+        QCOMPARE(units.gu(0.5), 8.0f);
+        QCOMPARE(units.gu(1), 16.0f);
+        QCOMPARE(units.gu(1.5), 24.0f);
+        QCOMPARE(units.gu(2), 32.0f);
+        QCOMPARE(units.gu(4), 64.0f);
+        QCOMPARE(units.gu(100000), 1600000.0f);
+        QCOMPARE(units.gu(150.51983), 2408.0f);
     }
 
     void resolveEmpty() {
@@ -99,7 +136,7 @@ private Q_SLOTS:
         expected = QString("");
         QCOMPARE(resolved, expected);
 
-        units.setScaleFactor(2.0);
+        units.setGridUnit(18);
 
         resolved = units.resolveResource(QUrl(""));
         expected = QString("");
@@ -131,7 +168,8 @@ private Q_SLOTS:
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(1.0);
+        // identical grid and resources units since resources_unit contains 18
+        units.setGridUnit(18);
         resolved = units.resolveResource(QUrl::fromLocalFile("exact_match.png"));
         expected = QString("1/" + QDir::currentPath() + QDir::separator() + "exact_match.png");
         QCOMPARE(resolved, expected);
@@ -142,53 +180,54 @@ private Q_SLOTS:
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(1.0);
+        // identical grid and resources units since resources_unit contains 18
+        units.setGridUnit(18);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/exact_match.png"));
         expected = QString("1/:/test/prefix/exact_match.png");
         QCOMPARE(resolved, expected);
     }
 
-    void resolveLowerScaleFactor() {
+    void resolveLowerGridUnit() {
         Units units;
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(2.0);
+        units.setGridUnit(30);
         resolved = units.resolveResource(QUrl::fromLocalFile("lower_scale.png"));
-        expected = QString("1.33333/" + QDir::currentPath() + QDir::separator() + "lower_scale@1.5x.png");
+        expected = QString("1.66667/" + QDir::currentPath() + QDir::separator() + "lower_scale.png");
         QCOMPARE(resolved, expected);
     }
 
-    void resolveLowerScaleFactorQrc() {
+    void resolveLowerGridUnitQrc() {
         Units units;
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(2.0);
+        units.setGridUnit(30);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/lower_scale.png"));
-        expected = QString("1.33333/:/test/prefix/lower_scale@1.5x.png");
+        expected = QString("1.66667/:/test/prefix/lower_scale.png");
         QCOMPARE(resolved, expected);
     }
 
-    void resolveHigherScaleFactor() {
+    void resolveHigherGridUnit() {
         Units units;
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(1.5);
+        units.setGridUnit(10);
         resolved = units.resolveResource(QUrl::fromLocalFile("higher_scale.png"));
-        expected = QString("0.75/" + QDir::currentPath() + QDir::separator() + "higher_scale@2x.png");
+        expected = QString("0.555556/" + QDir::currentPath() + QDir::separator() + "higher_scale.png");
         QCOMPARE(resolved, expected);
     }
 
-    void resolveHigherScaleFactorQrc() {
+    void resolveHigherGridUnitQrc() {
         Units units;
         QString resolved;
         QString expected;
 
-        units.setScaleFactor(1.5);
+        units.setGridUnit(10);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/higher_scale.png"));
-        expected = QString("0.75/:/test/prefix/higher_scale@2x.png");
+        expected = QString("0.555556/:/test/prefix/higher_scale.png");
         QCOMPARE(resolved, expected);
     }
 };

@@ -28,7 +28,7 @@ FocusScope {
         color: "#cccccc"
     }
 
-    property var modes: [1.0, 1.5, 2.0]
+    property var modes: [8, 10, 14, 16, 18]
 
     ListView {
         id: modesList
@@ -37,7 +37,7 @@ FocusScope {
         width: childrenRect.width
         height: units.gu(4)
         currentIndex: 0
-        onCurrentIndexChanged: units.scaleFactor = modes[currentIndex]
+        onCurrentIndexChanged: units.gridUnit = modes[currentIndex]
 
         orientation: ListView.Horizontal
         model: modes

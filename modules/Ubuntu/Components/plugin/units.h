@@ -26,7 +26,7 @@
 class Units : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(float scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
+    Q_PROPERTY(float gridUnit READ gridUnit WRITE setGridUnit NOTIFY gridUnitChanged)
 
 public:
     static Units& instance() {
@@ -40,19 +40,23 @@ public:
     Q_INVOKABLE QString resolveResource(const QUrl& url);
 
     // getters
-    float scaleFactor();
+    float gridUnit();
 
     // setters
-    void setScaleFactor(float scaleFactor);
+    void setGridUnit(float gridUnit);
+    void setBaseUrl(const QUrl& baseUrl);
 
 Q_SIGNALS:
-    void scaleFactorChanged();
+    void gridUnitChanged();
 
 protected:
-    QString suffixForScaleFactor(float scaleFactor);
+    QString suffixForGridUnit(float gridUnit);
+    bool loadResourcesUnitFile(QString fileName);
 
 private:
-    float m_scaleFactor;
+    float m_gridUnit;
+    float m_resourcesUnit;
+    QUrl m_baseUrl;
 };
 
 class QQmlContext;

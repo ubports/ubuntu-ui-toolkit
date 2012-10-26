@@ -34,9 +34,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
+    Units::instance().setBaseUrl(engine->baseUrl());
     engine->rootContext()->setContextProperty("units", &Units::instance());
     static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
-    QObject::connect(&Units::instance(), SIGNAL(scaleFactorChanged()),
+    QObject::connect(&Units::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);
