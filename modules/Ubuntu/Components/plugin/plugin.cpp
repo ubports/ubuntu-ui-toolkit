@@ -55,8 +55,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &i18nChangeListener, SLOT(updateContextProperty()));
 
     Units::instance().setBaseUrl(engine->baseUrl());
-    engine->rootContext()->setContextProperty("units", &Units::instance());
-    static ContextPropertyChangeListener unitsChangeListener(engine->rootContext(), "units");
+    context->setContextProperty("units", &Units::instance());
+    static ContextPropertyChangeListener unitsChangeListener(context, "units");
     QObject::connect(&Units::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
