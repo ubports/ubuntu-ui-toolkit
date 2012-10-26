@@ -77,6 +77,9 @@ class EnabledButtonTests(TavastiaTestCase):
         # assuming the WM will never put the window over 0,0:
         self.mouse.move(0,0)
 
+        # wait until it is done
+        time.sleep(3)
+
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
         self.assertThat(btn.hovered, Eventually(Equals(False)))
@@ -90,6 +93,9 @@ class EnabledButtonTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.press()
         self.addCleanup(self.mouse.release)
+
+        # wait until it is done
+        time.sleep(3)
 
         self.assertThat(btn.pressed, Eventually(Equals(True)))
 
@@ -124,6 +130,9 @@ class DisabledButtonTests(TavastiaTestCase):
 
         self.mouse.move_to_object(btn)
         self.mouse.click()
+
+        # wait until it is done
+        time.sleep(3)
 
         self.assertThat(signal.was_emitted, Equals(False))
         self.assertThat(signal.num_emissions, Equals(0)
@@ -168,6 +177,9 @@ class ButtonColorTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.press()
         self.addCleanup(self.mouse.release)
+
+        # wait until it is done
+        time.sleep(3)
 
         # this is hacky because the base rectangle in the button has no name. If
         # the component were named this would be a much more readable test...

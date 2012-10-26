@@ -43,7 +43,10 @@ class EnabledSwitchTests(TavastiaTestCase):
         self.mouse.move_to_object(obj)
         self.mouse.click()
 
-        self.assertThat(obj.checked, Equals(True))
+        # wait until it is done
+        time.sleep(3)
+
+        self.assertThat(obj.checked, Eventually(Equals(True)))
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
@@ -72,7 +75,10 @@ class DisabledSwitchTests(TavastiaTestCase):
         self.mouse.move_to_object(obj)
         self.mouse.click()
 
-        self.assertThat(obj.checked, Equals(False))
+        # wait until it is done
+        time.sleep(3)
+
+        self.assertThat(obj.checked, Eventually(Equals(False)))
 
         self.assertThat(signal.was_emitted, Equals(False))
         self.assertThat(signal.num_emissions, Equals(0))

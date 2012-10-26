@@ -38,12 +38,15 @@ class EnabledCheckBoxTests(TavastiaTestCase):
         obj = self.app.select_single('CheckBox')
         signal = obj.watch_signal('clicked(QVariant)')
 
-        self.assertThat(obj.checked, Equals(False))
+        self.assertThat(obj.checked, Eventually(Equals(False)))
 
         self.mouse.move_to_object(obj)
         self.mouse.click()
 
-        self.assertThat(obj.checked, Equals(True))
+        # wait until it is done
+        time.sleep(3)
+
+        self.assertThat(obj.checked, Eventually(Equals(True)))
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
@@ -73,7 +76,10 @@ class DisabledCheckBoxTests(TavastiaTestCase):
         self.mouse.move_to_object(obj)
         self.mouse.click()
 
-        self.assertThat(obj.checked, Equals(False))
+        # wait until it is done
+        time.sleep(3)
+
+        self.assertThat(obj.checked, Eventually(Equals(False)))
 
         self.assertThat(signal.was_emitted, Equals(False))
         self.assertThat(signal.num_emissions, Equals(0))
