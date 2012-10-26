@@ -1,0 +1,23 @@
+/*
+  Base theme file for ThemeEngine test cases.
+*/
+
+@qml-import(Ubuntu.Components 0.1);
+
+.baseA {
+    prop_baseA_A: url("base.qmltheme");
+    prop_baseA_B: url(base.qmltheme);
+    prop_baseA_C: url("../resources/base.qmltheme");
+    prop_baseA_D: url("qrc:/base.qmltheme");
+    prop_baseA_E: "qrc:/base.qmltheme";
+    prop_baseA_F: url("image:/base.qmltheme");
+    prop_baseA_G: "image:/base.qmltheme";
+    prop_baseA_H: url(":/base.qmltheme");
+    prop_baseA_I: ":/base.qmltheme";
+}
+
+.baseB {
+    prop_baseB_A: "prop_baseB_A";
+    prop_baseB_B: "prop_baseB_B";
+    prop_baseB_C: "prop_baseB_C";
+}

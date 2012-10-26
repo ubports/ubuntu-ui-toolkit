@@ -21,6 +21,8 @@
 
      \part General Topics
      \list
+     \li \l{theming-components.html}{Theming} describes the styling capabilities
+     provided by the toolkit.
      \endlist
 
      \part Base Items
@@ -38,4 +40,11 @@
      \endcode
 
      \annotatedlist ubuntu-listitems
+
+     \part Theming Elements
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+     \annotatedlist theming
  */

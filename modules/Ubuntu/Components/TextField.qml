@@ -550,7 +550,7 @@ FocusScope {
                     internal.textChanged = false
                 } else {
                     internal.hideInputPanel()
-                    // emit accepted signal is changed
+                    // emit accepted signal if changed
                     if (internal.textChanged)
                         control.accepted()
                 }

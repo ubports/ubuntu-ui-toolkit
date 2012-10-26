@@ -50,7 +50,8 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
+        model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
+                {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
                 {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
                 {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
@@ -73,6 +74,7 @@ Rectangle {
 
         delegate: ButtonWithForeground {
             height: 48
+            width: ListView.view.width
             textSize: "medium"
             text: modelData.label
             textColor: "#757373"

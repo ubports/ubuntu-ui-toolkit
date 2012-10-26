@@ -62,12 +62,8 @@ Rectangle {
 
             TextCustom {
                 id: title
-
-                fontSize: "x-large"
+                ItemStyle.class: "title"
                 text: template.title
-                color: "#757373"
-                style: Text.Raised
-                styleColor: "white"
             }
 
             Rectangle {

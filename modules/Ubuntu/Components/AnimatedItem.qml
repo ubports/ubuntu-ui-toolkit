@@ -38,7 +38,7 @@ Item {
         id: internal
         property Flickable flickable
 
-        // returns whether the component is in teh visible area of the flickable
+        // returns whether the component is in the visible area of the flickable
         function checkOnScreen()
         {
             var pos = root.mapToItem(flickable, 0, 0)

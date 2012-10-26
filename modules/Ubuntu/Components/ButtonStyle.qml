@@ -15,26 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 
-Row {
-    id: templateRow
-
-    property string title
-
-    spacing: 10
-    height: 50
-
-    TextCustom {
-        text: templateRow.title
-        ItemStyle.class: "row-label"
-        width: 80
-    }
-
-    // ensure that all the children are vertically centered
-    onChildrenChanged: {
-        for (var i=0; i<children.length; i++) {
-            children[i].anchors.verticalCenter = templateRow.verticalCenter;
-        }
-    }
+QtObject {
+    property color color: "transparent"
+    property url shapeDark: ""
+    property url shapeNormal: ""
+    property url borderIdle: ""
+    property url borderPressed: ""
+    property url borderDarkIdle: ""
+    property url borderDarkPressed: ""
 }

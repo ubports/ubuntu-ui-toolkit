@@ -12,29 +12,23 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+#ifndef THEMELOADER_P_H
+#define THEMELOADER_P_H
 
-Row {
-    id: templateRow
+class QQmlEngine;
+class StyleTreeNode;
 
-    property string title
+class ThemeLoader {
+public:
+    ThemeLoader() : m_engine(0) {}
+    virtual ~ThemeLoader(){}
+    virtual StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles) = 0;
+protected:
+    QQmlEngine *m_engine;
+};
 
-    spacing: 10
-    height: 50
-
-    TextCustom {
-        text: templateRow.title
-        ItemStyle.class: "row-label"
-        width: 80
-    }
-
-    // ensure that all the children are vertically centered
-    onChildrenChanged: {
-        for (var i=0; i<children.length; i++) {
-            children[i].anchors.verticalCenter = templateRow.verticalCenter;
-        }
-    }
-}
+#endif // THEMELOADER_P_H

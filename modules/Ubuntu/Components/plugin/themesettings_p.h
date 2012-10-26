@@ -12,29 +12,36 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+#ifndef THEMESETTINGS_P_H
+#define THEMESETTINGS_P_H
 
-Row {
-    id: templateRow
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QSettings>
+#include <QtCore/QStringList>
+#include <QtCore/QUrl>
+#include <QtCore/QObject>
 
-    property string title
 
-    spacing: 10
-    height: 50
+class ThemeSettings : public QObject
+{
+    Q_OBJECT
+public:
+    ThemeSettings(QObject *parent = 0);
+    QUrl themeFile() const;
+    QStringList imports() const;
 
-    TextCustom {
-        text: templateRow.title
-        ItemStyle.class: "row-label"
-        width: 80
-    }
+Q_SIGNALS:
+    void themeSettingsChanged();
 
-    // ensure that all the children are vertically centered
-    onChildrenChanged: {
-        for (var i=0; i<children.length; i++) {
-            children[i].anchors.verticalCenter = templateRow.verticalCenter;
-        }
-    }
-}
+private Q_SLOTS:
+    void refreshSettings();
+private:
+    QFileSystemWatcher configWatcher;
+    QSettings globalSettings;
+};
+
+#endif // THEMESETTINGS_P_H
