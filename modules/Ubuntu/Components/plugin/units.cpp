@@ -18,10 +18,10 @@
 
 #include "units.h"
 
-#include <QtCore>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlFile>
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
