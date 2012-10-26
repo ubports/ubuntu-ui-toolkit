@@ -253,7 +253,7 @@ FocusScope {
     */
     function copy()
     {
-        editor.copy()
+        editor.copy();
     }
 
     /*!
@@ -262,7 +262,7 @@ FocusScope {
     */
     function cut()
     {
-        editor.cut()
+        editor.cut();
     }
 
     /*!
@@ -271,7 +271,7 @@ FocusScope {
     */
     function paste()
     {
-        editor.paste()
+        editor.paste();
     }
 
     /*!
@@ -280,7 +280,7 @@ FocusScope {
     */
     function deselect()
     {
-        editor.deselect()
+        editor.deselect();
     }
 
     /*!
@@ -303,9 +303,9 @@ FocusScope {
     function positionAt(x, position)
     {
         if (position == undefined)
-            return editor.positionAt(x)
+            return editor.positionAt(x);
         else
-            return editor.positionAt(x, position)
+            return editor.positionAt(x, position);
     }
 
     /*!
@@ -318,7 +318,7 @@ FocusScope {
     */
     function positionToRectangle(pos)
     {
-        return editor.positionToRectangle(pos)
+        return editor.positionToRectangle(pos);
     }
 
     /*!
@@ -332,7 +332,7 @@ FocusScope {
     */
     function select(start, end)
     {
-        editor.select(start, end)
+        editor.select(start, end);
     }
 
     /*!
@@ -341,7 +341,7 @@ FocusScope {
     */
     function selectAll()
     {
-        editor.selectAll()
+        editor.selectAll();
     }
 
     /*!
@@ -350,7 +350,7 @@ FocusScope {
     */
     function selectWord()
     {
-        editor.selectWord()
+        editor.selectWord();
     }
 
     /*!
@@ -359,7 +359,7 @@ FocusScope {
     */
     function forceActiveFocus()
     {
-        editor.forceActiveFocus()
+        editor.forceActiveFocus();
     }
 
     //internals
@@ -383,12 +383,12 @@ FocusScope {
         {
             if (control.errorHighlight && !editor.acceptableInput) {
                 if (editor.activeFocus && editor.enabled)
-                    return Qt.resolvedUrl("artwork/TextFieldFrameError.sci")
-                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.sci")
+                    return Qt.resolvedUrl("artwork/TextFieldFrameError.sci");
+                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.sci");
             }
             if (editor.activeFocus && editor.enabled)
-                return Qt.resolvedUrl("artwork/TextFieldFrame.sci")
-            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.sci")
+                return Qt.resolvedUrl("artwork/TextFieldFrame.sci");
+            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.sci");
         }
 
         function showInputPanel()
@@ -396,7 +396,7 @@ FocusScope {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                Qt.inputMethod.show()
+                Qt.inputMethod.show();
             }
         }
         function hideInputPanel()
@@ -404,13 +404,13 @@ FocusScope {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                Qt.inputMethod.hide()
+                Qt.inputMethod.hide();
             }
         }
         // reset selection
         function resetEditorSelection(mouseX)
         {
-            editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX)
+            editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX);
         }
     }
 
@@ -435,8 +435,8 @@ FocusScope {
             onChildrenChanged: {
                 // reparenting
                 for (var i = 0; i < children.length; i++) {
-                    children[i].parent = leftPane
-                    children[i].anchors.verticalCenter = verticalCenter
+                    children[i].parent = leftPane;
+                    children[i].anchors.verticalCenter = verticalCenter;
                 }
             }
         }
@@ -455,8 +455,8 @@ FocusScope {
             onChildrenChanged: {
                 // reparenting
                 for (var i = 0; i < children.length; i++) {
-                    children[i].parent = rightPane
-                    children[i].anchors.verticalCenter = verticalCenter
+                    children[i].parent = rightPane;
+                    children[i].anchors.verticalCenter = verticalCenter;
                 }
             }
         }
@@ -469,12 +469,7 @@ FocusScope {
 
                 id: customCursor
                 color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                    topMargin: -parent.topMargin
-                    bottomMargin: -parent.bottomMargin
-                }
+                height: parent.height - (parent.topMargin + parent.bottomMargin)
                 width: 1
                 visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
                 Timer {
@@ -482,14 +477,13 @@ FocusScope {
                     running: (customCursor.parent.forceCursorVisible || customCursor.parent.activeFocus)
                     repeat: true
                     onTriggered: {
-                        interval = (interval == 800) ? 400 : 800
-                        customCursor.timerShowCursor = !customCursor.timerShowCursor
+                        interval = (interval == 800) ? 400 : 800;
+                        customCursor.timerShowCursor = !customCursor.timerShowCursor;
                     }
                 }
             }
         }
 
-        //clear button
         ButtonWithForeground {
             id: clearButton
             anchors {
@@ -546,13 +540,13 @@ FocusScope {
             activeFocusOnPress: false
             onActiveFocusChanged: {
                 if (activeFocus) {
-                    internal.showInputPanel()
-                    internal.textChanged = false
+                    internal.showInputPanel();
+                    internal.textChanged = false;
                 } else {
-                    internal.hideInputPanel()
+                    internal.hideInputPanel();
                     // emit accepted signal if changed
                     if (internal.textChanged)
-                        control.accepted()
+                        control.accepted();
                 }
             }
 
@@ -562,55 +556,64 @@ FocusScope {
                 id: virtualKbdHandler
                 anchors.fill: parent
                 hoverEnabled: true
+                preventStealing: true
 
                 onClicked: {
                     // activate control
                     if (!control.activeFocus) {
-                        control.forceActiveFocus()
+                        control.forceActiveFocus();
                         // set cursor position if no selection was previously set
                         if (internal.selectionEnd == internal.selectionStart)
-                            editor.cursorPosition = editor.positionAt(mouse.x)
+                            editor.cursorPosition = editor.positionAt(mouse.x);
                         else
-                            editor.select(internal.selectionStart, internal.selectionEnd)
+                            editor.select(internal.selectionStart, internal.selectionEnd);
                     } else if (!internal.selectionMode){
                         // reset selection and move cursor unde mouse click
-                        internal.resetEditorSelection(mouse.x)
-                    } else if (internal.selectionMode)
+                        internal.resetEditorSelection(mouse.x);
+                    } else if (internal.selectionMode) {
                         // reset selection mode (onReleased is triggered prior to onClicked
                         // and resetting selection mode there would cause to enter in the\
                         // previous if-clause
-                        internal.selectionMode = false
+                        internal.selectionMode = false;
+                    }
                 }
 
                 onDoubleClicked: {
                     // select word under doubletap
                     if (!control.activeFocus)
-                        return
-                    editor.selectWord()
+                        return;
+                    editor.selectWord();
                     // update selection boundaries, except cursorPosition
-                    internal.selectionEnd = editor.selectionEnd
-                    internal.selectionStart = editor.selectionStart
-
+                    internal.selectionEnd = editor.selectionEnd;
+                    internal.selectionStart = editor.selectionStart;
+                    internal.selectionMode = false;
                 }
                 onPressed: {
                     // don't do anything while the control is inactive
                     if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
-                        return
+                        return;
                     if (internal.selectionEnd == internal.selectionStart) {
-                        internal.resetEditorSelection(mouse.x)
-                        internal.selectionMode = true
+                        internal.resetEditorSelection(mouse.x);
+                        internal.selectionMode = true;
                     }
-
                 }
+                onReleased: {
+                    if (!containsMouse)
+                        internal.selectionMode = false;
+                }
+
                 onPositionChanged: {
                     if (!editor.activeFocus || !internal.selectionMode)
-                        return
+                        return;
                     // update selectionEnd
-                    internal.selectionEnd = editor.positionAt(mouse.x)
-                    editor.select(internal.selectionStart, internal.selectionEnd)
+                    internal.selectionEnd = editor.positionAt(mouse.x);
+                    editor.select(internal.selectionStart, internal.selectionEnd);
                 }
             }
         }
     }
-    Component.onCompleted: editor.accepted.connect(control.accepted)
+    Component.onCompleted: {
+        editor.accepted.connect(control.accepted);
+        cursorPosition = 0;
+    }
 }
