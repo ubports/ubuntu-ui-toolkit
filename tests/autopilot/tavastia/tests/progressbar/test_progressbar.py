@@ -110,8 +110,8 @@ class ProgressBarTests(TavastiaTestCase):
         self.mouse.click()
 
         # we should be able to set the value within the QML, check Button::onClicked
-        self.assertThat(obj.minimumValue, Equals(old_minimumValue+1))
-        self.assertThat(obj.maximumValue, Equals(old_maximumValue+10))
+        self.assertThat(obj.minimumValue, Eventually(Equals(old_minimumValue+1)))
+        self.assertThat(obj.maximumValue, Eventually(Equals(old_maximumValue+10)))
 
     def test_can_set_value(self):
         """Must be able to set value"""
@@ -140,7 +140,7 @@ class ProgressBarTests(TavastiaTestCase):
         time.sleep(3)
 
         # the value should have changed but maximumValue and minimumValue should be the same
-        self.assertThat(obj.value, Equals(maximumValue))
-        self.assertThat(obj.maximumValue, Equals(maximumValue))
-        self.assertThat(obj.minimumValue, Equals(minimumValue))
+        self.assertThat(obj.value, Eventually(Equals(maximumValue)))
+        self.assertThat(obj.maximumValue, Eventually(Equals(maximumValue)))
+        self.assertThat(obj.minimumValue, Eventually(Equals(minimumValue)))
 

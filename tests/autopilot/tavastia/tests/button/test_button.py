@@ -60,7 +60,7 @@ class EnabledButtonTests(TavastiaTestCase):
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
-        self.assertThat(btn.hovered, Equals(True))
+        self.assertThat(btn.hovered, Eventually(Equals(True)))
 
 
     def test_exited_signal_emitted(self):
@@ -79,7 +79,7 @@ class EnabledButtonTests(TavastiaTestCase):
 
         self.assertThat(signal.was_emitted, Equals(True))
         self.assertThat(signal.num_emissions, Equals(1))
-        self.assertThat(btn.hovered, Equals(False))
+        self.assertThat(btn.hovered, Eventually(Equals(False)))
 
 
     def test_can_press_button(self):
@@ -91,7 +91,7 @@ class EnabledButtonTests(TavastiaTestCase):
         self.mouse.press()
         self.addCleanup(self.mouse.release)
 
-        self.assertThat(btn.pressed, Equals(True))
+        self.assertThat(btn.pressed, Eventually(Equals(True)))
 
 
 class DisabledButtonTests(TavastiaTestCase):
@@ -150,14 +150,14 @@ class ButtonColorTests(TavastiaTestCase):
         """Button component must have correct color."""
 
         btn = self.app.select_single('Button')
-        self.assertThat(btn.color, Equals([255,255,0,255]))
+        self.assertThat(btn.color, Eventually(Equals([255,255,0,255])))
 
 
     def test_button_has_correct_pressed_color(self):
         """Button component must have correct pressed color."""
 
         btn = self.app.select_single('Button')
-        self.assertThat(btn.pressedColor, Equals([0,255,255,255]))
+        self.assertThat(btn.pressedColor, Eventually(Equals([0,255,255,255])))
 
 
     def test_button_color_changes_on_mouse_press(self):
