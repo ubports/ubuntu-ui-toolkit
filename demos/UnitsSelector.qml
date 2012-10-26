@@ -18,8 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 FocusScope {
-    width: scaleFactorList.width
-    height: scaleFactorList.height
+    width: modesList.width
+    height: modesList.height
 
     opacity: 0.8
 
@@ -28,32 +28,32 @@ FocusScope {
         color: "#cccccc"
     }
 
-    property var scaleFactors: [1.0, 1.5, 2.0]
+    property var modes: [1.0, 1.5, 2.0]
 
     ListView {
-        id: scaleFactorList
+        id: modesList
 
         focus: true
         width: childrenRect.width
         height: units.gu(4)
         currentIndex: 0
-        onCurrentIndexChanged: units.scaleFactor = scaleFactors[currentIndex]
+        onCurrentIndexChanged: units.scaleFactor = modes[currentIndex]
 
         orientation: ListView.Horizontal
-        model: scaleFactors
+        model: modes
         delegate: ButtonWithForeground {
             width: units.gu(7)
             height: ListView.view.height
             text: modelData
             textSize: "small"
             textColor: "#757373"
-            onClicked: scaleFactorList.currentIndex = index
+            onClicked: modesList.currentIndex = index
 
             Rectangle {
                 anchors.fill: parent
                 z: -1
                 color: "#e6dede"
-                opacity: scaleFactorList.currentIndex == index ? 1.0 : 0.0
+                opacity: modesList.currentIndex == index ? 1.0 : 0.0
                 Behavior on opacity {NumberAnimation {duration: 250; easing.type: Easing.OutQuart}}
             }
         }
