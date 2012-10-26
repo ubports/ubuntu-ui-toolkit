@@ -18,17 +18,17 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: "Tabs"
+    title: i18n.tr("Tabs")
 
     Tabs {
         Tab {
-            title: "Tab 1"
+            title: i18n.tr("Tab") + " 1"
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
                 TextCustom {
                     anchors.centerIn: parent
-                    text: "This is the first tab."
+                    text: i18n.tr("This is the first tab.")
                     color: "#757373"
                 }
             }
@@ -40,13 +40,13 @@ Template {
                 color: "#e4e4e4"
                 TextCustom {
                     anchors.centerIn: parent
-                    text: "This is the second tab."
+                    text: i18n.tr("This is the second tab.")
                     color: "#757373"
                 }
             }
         }
         Tab {
-            title: "Tab 3"
+            title: i18n.tr("Tab") + " 3"
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }

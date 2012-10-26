@@ -23,6 +23,8 @@ Rectangle {
 
     color: "#e6e6e6"
 
+//    function i18n.tr(text) { return i18n.tr(text); }
+
     Rectangle {
         anchors.fill: widgetList
         color: "#cccccc"
@@ -48,26 +50,26 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": "Theming", "source": "Theming.qml"},
-                {"label": "Buttons", "source": "Buttons.qml"},
-                {"label": "Tabs (Segmented)", "source": "Tabs.qml"},
-                {"label": "List Items", "source": "ListItems.qml"},
-                {"label": "Page Stack", "source": "PageStack.qml"},
-                {"label": "Switch", "source": "Switches.qml"},
-                {"label": "Check Box", "source": "CheckBoxes.qml"},
-                {"label": "Activity Indicator", "source": "ActivityIndicators.qml"},
-                {"label": "Progress Bar", "source": "ProgressBars.qml"},
-                {"label": "Slider", "source": "Sliders.qml"},
-                {"label": "Text Input", "source": "TextInputs.qml"},
-                {"label": "Scrollbar", "source": ""},
-                {"label": "Popovers", "source": ""},
-                {"label": "Toolbars", "source": ""},
-                {"label": "Sheets & Dialogues", "source": ""},
-                {"label": "Grid View", "source": ""},
-                {"label": "On Screen Keyboard", "source": ""},
-                {"label": "Date Picker", "source": ""},
-                {"label": "Time Picker", "source": ""},
-                {"label": "Tabs (Non Segmented)", "source": ""},
+        model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
+                {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
+                {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
+                {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
+                {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
+                {"label": i18n.tr("Switch"), "source": "Switches.qml"},
+                {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
+                {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
+                {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
+                {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
+                {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
+                {"label": i18n.tr("Scrollbar"), "source": ""},
+                {"label": i18n.tr("Popovers"), "source": ""},
+                {"label": i18n.tr("Toolbars"), "source": ""},
+                {"label": i18n.tr("Sheets & Dialogues"), "source": ""},
+                {"label": i18n.tr("Grid View"), "source": ""},
+                {"label": i18n.tr("On Screen Keyboard"), "source": ""},
+                {"label": i18n.tr("Date Picker"), "source": ""},
+                {"label": i18n.tr("Time Picker"), "source": ""},
+                {"label": i18n.tr("Tabs (Non Segmented)"), "source": ""},
                ]
 
         delegate: ButtonWithForeground {
@@ -99,5 +101,9 @@ Rectangle {
             bottom: parent.bottom
         }
         source: widgetList.model[widgetList.selectedIndex].source
+    }
+
+    Component.onCompleted: {
+        i18n.domain = "gallery"
     }
 }

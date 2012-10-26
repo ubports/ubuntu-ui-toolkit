@@ -23,7 +23,9 @@ HEADERS += plugin.h \
     rule_p.h \
     qmlloader_p.h \
     qmlthemeloader_p.h \
-    config.h
+    config.h \
+    i18n.h \
+    listener.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -32,7 +34,9 @@ SOURCES += plugin.cpp \
     itemstyleattached.cpp \
     rule.cpp \
     qmlloader.cpp \
-    qmlthemeloader.cpp
+    qmlthemeloader.cpp \
+    i18n.cpp \
+    listener.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

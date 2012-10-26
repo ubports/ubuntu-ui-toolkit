@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+SUBDIRS += po
+
 OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.js)
 
 OTHER_FILES += *.qmltheme

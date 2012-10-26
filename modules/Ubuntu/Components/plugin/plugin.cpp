@@ -16,12 +16,16 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
+#include <QtQml>
+
 #include "plugin.h"
 #include "rule.h"
 #include "themeengine.h"
 #include "itemstyleattached.h"
 
 #include <QtQml/QQmlContext>
+#include "i18n.h"
+#include "listener.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -29,11 +33,18 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     // call engine registration method to load the theme
-    engine->rootContext()->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
+    QQmlContext* context = engine->rootContext();
+
+    context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
+    context->setContextProperty("i18n", &UbuntuI18n::instance());
+    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     &i18nChangeListener, SLOT(updateContextProperty()));
 }

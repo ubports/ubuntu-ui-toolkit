@@ -14,33 +14,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+#ifndef UBUNTU_COMPONENTS_LISTENER_H
+#define UBUNTU_COMPONENTS_LISTENER_H
 
-Template {
-    title: i18n.tr("Check Box")
+#include <QtQml>
 
-    Column {
-        spacing: 30
+class ContextPropertyChangeListener : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ContextPropertyChangeListener(QQmlContext* context, QString contextProperty);
+    Q_SLOT void updateContextProperty();
+    QQmlContext* m_context;
+    QString m_contextProperty;
+};
 
-        TemplateRow {
-            title: i18n.tr("Unchecked")
-            CheckBox {
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Checked")
-            CheckBox {
-                checked: true
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Disabled")
-            CheckBox {
-                enabled: false
-            }
-        }
-    }
-}
+#endif // UBUNTU_COMPONENTS_PLUGIN_H
