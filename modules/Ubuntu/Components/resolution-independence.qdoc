@@ -26,84 +26,76 @@
     with visual fidelity, quality and usability.
 
 
-    \part Measurement Unit
+    \part Measurement Units
 
-    We define a measurement unit called the device independent pixel,
-    abbreviated \b{\e dp}, that should be used instead of pixels. 1 device
-    independent pixel typically translates to 1 pixel on current laptops.
+    A new measurement unit is defined called the grid unit, abbreviated \b{\e gu}.
+    1 grid unit translates to a given number of pixels depending on the type of
+    screen that the user interface is displayed on.
+    For example, on a laptop computer 1 grid unit will typically translate to 8 pixels.
+    The number of pixels per grid unit is chosen in order to preserve the perceived
+    visual size of UI elements and therefore depends on the density on the display
+    and the distance the user is to the screen. We also ensure that 1 grid unit is
+    always an integer number of pixel.
 
-    Screens are divided into 3 categories depending on the type of device and
-    their pixel density:
-
-    \table
-    \header
-      \li Medium Density Screens
-      \li High Density Screens
-      \li Extra High Density Screens
-    \row
-      \li Laptops and Desktops
-      \li Nokia N9 Phone
-      \li Samsung Galaxy Nexus Phone
-    \row
-      \li Asus Transformer Tablet
-      \li Asus Transformer Infinity Tablet
-      \li Macbook Retina
-    \endtable
-
-    Depending on the category a device belongs to 1 dp will translate to a
-    different number of pixels.
-
-
-    \part Rhythm
-
-    In order to define a visual rhythm in Ubuntu, an increment of 8 dp needs to     be used for all measurements. Sizes of elements, spacing, margins, etc.
-    should all use multiples of 8 dp. To facilitate that, another unit
-    called grid unit, abbreviated \b{\e gu}, is defined so that 1 gu = 8 dp.
-    An additional benefit of layouting all UI elements with multiples of 1 gu
-    is that 1 gu always translates to an integer number of pixels in all the
-    categories of devices thus aligning on the pixel grid of the screen:
+    Examples:
 
     \table
     \header
-      \li Medium Density
-      \li High Density
-      \li Extra High Density
+      \li Device
+      \li Conversion
     \row
+      \li Most laptops
       \li 1 gu = 8 px
-      \li 1 gu = 12 px
+    \row
+      \li Retina laptops
       \li 1 gu = 16 px
+    \row
+      \li Samsung Galaxy Nexus phone
+      \li 1 gu = 18 px
+    \row
+      \li Asus Transformer TF101 tablet
+      \li 1 gu = 10 px
     \endtable
 
+    The grid unit defines a visual rhythm in Ubuntu and should be used for all measurements.
+    Sizes of elements, spacing, margins, etc. should all use multiples of 1 gu.
+
+    Example Usage:
+    \code
+    import Ubuntu.Components 0.1
+
+    Item {
+        width: units.gu(2)
+        height: units.gu(5)
+    }
+    \endcode
+
+    Exceptionally, in order to accommodate for the rare cases where measurements of less
+    than 1 gu are needed another unit is available: the density independent pixel,
+    abbreviated \b{\e dp}. 1 dp typically translates to 1 pixel on laptops and low
+    density mobile phones and tablets.
+
+    Example Usage:
+    \code
+    import Ubuntu.Components 0.1
+
+    Rectangle {
+        height: units.dp(1)
+    }
+    \endcode
 
     \part Bitmaps
 
-    Vector graphics, fonts and programmatically drawn elements will usually
-    scale well to the different category scale factors. On the other hand,
-    bitmaps will typically require that multiple versions at different
-    resolutions be provided.
-    In an ideal scenario, a version of each bitmap should be provided for each
-    category. In practice, supplying versions for the medium and extra high
-    density categories will cover a vast amount of devices.
+    Vector graphics, fonts and programmatically drawn elements will usually scale well
+    to the different devices. On the other hand, bitmaps will typically require a bit
+    more care. We require that for each bitmap the developer provides the highest
+    resolution version of it. The system will perform a high quality downscaling of the
+    bitmap when needed on lower density screens.
 
-    A naming convention is defined to ease the work of designers and
-    developers. If a bitmap file was previously called ‘my_bitmap.png’, adding
-    the following files is enough for the system to pick them up and load the
-    right version depending on the situation:
-
-    \table
-    \header
-      \li Medium Density
-      \li High Density
-      \li Extra High Density
-    \row
-      \li my_bitmap.png
-      \li my_bitmap@1.5x.png
-      \li my_bitmap@2x.png
-    \endtable
-
-    If the version corresponding to the category of the screen it’s displayed
-    on is available, then it is used. If not, a higher resolution version is
-    used and downscaled appropriately.
+    For example, if the destination size of the bitmap is 10 gu * 10 gu and the developer
+    targets a Samsung Galaxy Nexus phone (1 gu = 18 px) and a Asus Transformer TF101
+    tablet (1 gu = 10 px) then he/she only needs to create a bitmap of 180 px * 180 px
+    to support both devices.
 
 
     \part Fonts
@@ -115,6 +107,8 @@
 
     \table
     \row
+      \li \b x-large
+    \row
       \li \b large
     \row
       \li \b medium
@@ -124,35 +118,49 @@
       \li \b x-small
     \endtable
 
+    Example Usage:
+    \code
+    import Ubuntu.Components 0.1
+
+    TextCustom {
+        fontSize: "small"
+    }
+    \endcode
+
     For reference when designing, these sizes correspond to the following
     pixel measurements:
 
     \table
     \header
       \li Font Size
-      \li Medium Density
-      \li High Density
-      \li Extra High Density
+      \li Desktop
+      \li Nexus Galaxy Phone
+      \li Asus Transformer Tablet
+    \row
+      \li \b{\e x-large}
+      \li 34 px
+      \li 76 px
+      \li 42 px
     \row
       \li \b{\e large}
-      \li 17 px
+      \li 20 px
+      \li 45 px
       \li 25 px
-      \li 34 px
     \row
       \li \b{\e medium}
       \li 14 px
-      \li 21 px
-      \li 28 px
+      \li 31 px
+      \li 18 px
     \row
       \li \b{\e small}
       \li 12 px
-      \li 18 px
-      \li 24 px
+      \li 27 px
+      \li 15 px
     \row
       \li \b{\e x-small}
       \li 10 px
-      \li 15 px
-      \li 20 px
+      \li 22 px
+      \li 12 px
     \endtable
 
  */
