@@ -533,7 +533,7 @@ FocusScope {
             clip: true
             passwordCharacter: "\u2022"
             font.pixelSize: FontUtils.sizeToPixels(internal.fontSize)
-            onTextChanged: internal.textChanged
+            onTextChanged: internal.textChanged = true
             cursorDelegate: cursor
 
             // virtual keyboard/software input panel handling
