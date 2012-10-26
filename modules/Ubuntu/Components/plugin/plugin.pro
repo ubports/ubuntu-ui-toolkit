@@ -23,7 +23,6 @@ HEADERS += plugin.h \
     rule_p.h \
     qmlloader_p.h \
     qmlthemeloader_p.h \
-    config.h \
     i18n.h \
     listener.h
 
