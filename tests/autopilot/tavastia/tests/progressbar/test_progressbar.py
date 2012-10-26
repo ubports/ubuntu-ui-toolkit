@@ -94,7 +94,7 @@ class ProgressBarTests(TavastiaTestCase):
         time.sleep(3)
 
         # we should be able to set the value within the QML, check Button::onClicked
-        self.assertThat(obj.indeterminate, Equals(True))
+        self.assertThat(obj.indeterminate, Eventually(Equals(True)))
 
     def test_can_set_minimum_and_maximum(self):
         """Must be able to set indeterminate"""
@@ -130,6 +130,8 @@ class ProgressBarTests(TavastiaTestCase):
         self.mouse.move_to_object(btnreset)
         self.mouse.click()
 
+        time.sleep(3)
+        
         # read current values
         self.assertThat(obj.maximumValue, Equals(10))
         self.assertThat(obj.minimumValue, Equals(-10))
