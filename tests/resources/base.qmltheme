@@ -2,7 +2,6 @@
   Base theme file for ThemeEngine test cases.
 */
 
-@qml-import(Ubuntu.Components 0.1);
 /*
 @qml-mapping(.baseA, BaseAStyle, BaseADelegate);
 @qml-mapping(.baseB, , BaseBDelegate);

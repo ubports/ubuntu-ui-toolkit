@@ -2,8 +2,6 @@
   Base theme file for ThemeEngine test cases.
 */
 
-@qml-import(Ubuntu.Components 0.1);
-
 .baseA {
     prop_baseA_A: url("base.qmltheme");
     prop_baseA_B: url(base.qmltheme);
