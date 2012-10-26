@@ -55,6 +55,7 @@ Rectangle {
             }
         }
         ListItem.Empty {
+            highlightWhenPressed: false
             TextCustom {
                 anchors.left: parent.left
                 text: i18n.tr("Activity indicator")
@@ -74,6 +75,7 @@ Rectangle {
         }
         ListItem.Header { text: i18n.tr("Progress bar") }
         ListItem.Empty {
+            highlightWhenPressed: false
             ProgressBar {
                 id: progress
                 anchors.centerIn: parent
@@ -100,6 +102,7 @@ Rectangle {
         }
         ListItem.Empty {
             height: 200
+            highlightWhenPressed: false
             Tabs {
                 anchors {
                     fill: parent
@@ -138,6 +141,7 @@ Rectangle {
 
         }
         ListItem.Empty {
+            highlightWhenPressed: false
             TextField {
                 anchors.centerIn: parent
                 placeholderText: i18n.tr("simple text field")
