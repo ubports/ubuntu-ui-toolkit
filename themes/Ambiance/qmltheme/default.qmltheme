@@ -1,0 +1,82 @@
+/*
+qml-mapping defines the QML style and delegate QML documents that are used as base
+when building up the Rule components.
+
+Syntax:
+qml-mapping(selector, style-qml-type, delegate-qml-type)
+where
+   - selector is the tag used in the theme
+   - style-qml-type is the name of the QML document defining the style properties
+   - delegate-qml-type is the name of the QML document defining the widget delegate.
+If no style is given, the theme engine will use QtObject for style and will declare all
+properties typed as variant.
+*/
+@qml-mapping(.button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
+
+/*
+qml-import defines the QML modules defining the style rules and delegates defined in
+a qml-mapping.
+
+Syntax:
+qml-import(<import-statement>[,<import-path>])
+where
+   - import-statement is the module to be imported with the syntax defined in QML
+   - import-path is an optional parameter containing the path to be added to the QML
+     engine's import path list
+
+Examples:
+    @qml-import(Qt.labs.shaders 1.0) translates into import Qt.labs.shaders 1.0
+    @qml-import("demos", current:/modules) translates into import "demos" and will add the
+      modules folder that is relative to the current path to the QML engine import paths
+    @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
+*/
+@qml-import(Ubuntu.Components 0.1);
+
+.button, .custom-button {
+    color: "#e3e5e8";
+    shapeDark: url("artwork/ButtonShapeDark.png");
+    shapeNormal: url("artwork/ButtonShape.png");
+    borderIdle: url("artwork/ButtonBorderIdle.png");
+    borderPressed: url("artwork/ButtonBorderPressed.png");
+    borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
+    borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
+}
+
+/* Default style for all TextCustom elements in Gallery*/
+.TextCustom {
+    fontSize: "medium";
+    color: "#757373";
+}
+
+/*
+    Label does not have any QML mapping, therefore the engine will not assign any
+    style rule or delegate to the Rule object. Instead a QtObject based style rule
+    will be used with all declared properties as variant.
+*/
+.label {
+    fontFamily: "Ubuntu";
+    fontSize: "medium";
+    color: "red";
+}
+
+/* Gallery title */
+.title {
+    fontSize: "x-large";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}
+
+/* Note: the following could be done using
+.row-label.title {
+    fontSize: "medium";
+}
+
+*/
+.row-label {
+    fontSize: "medium";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}

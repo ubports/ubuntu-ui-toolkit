@@ -11,7 +11,7 @@
 PATH := /opt/qt5/bin:${PATH}
 
 override_dh_install:
-
+	
 # execute dh_install and fail if something was not packaged
 	dh_install --fail-missing
 

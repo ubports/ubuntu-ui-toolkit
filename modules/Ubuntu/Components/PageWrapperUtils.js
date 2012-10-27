@@ -60,6 +60,7 @@ function __initPage(pageWrapper) {
         }
     }
 
+    pageWrapper.object = pageObject;
     updatePageStack(pageWrapper)
 
     return pageObject;
@@ -71,24 +72,31 @@ function __initPage(pageWrapper) {
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        pageWrapper.object = __initPage(pageWrapper);
+        __initPage(pageWrapper);
     }
     pageWrapper.object.visible = true;
 }
 
 /*!
   \internal
-  Hide the page object, and destroy it if needed.
+  Hide page object.
  */
 function deactivate(pageWrapper) {
     if (pageWrapper.object) {
         pageWrapper.object.visible = false;
+    }
+}
 
-        if (pageWrapper.canDestroy) {
-            pageWrapper.object.destroy();
-            pageWrapper.object = null;
-            pageWrapper.canDestroy = false;
-        }
+/*!
+  \internal
+  Destroy the page object if pageWrapper.canDestroy is true.
+  Do nothing if pageWrapper.canDestroy is false.
+ */
+function destroyObject(pageWrapper) {
+    if (pageWrapper.canDestroy) {
+        pageWrapper.object.destroy();
+        pageWrapper.object = null;
+        pageWrapper.canDestroy = false;
     }
 }
 

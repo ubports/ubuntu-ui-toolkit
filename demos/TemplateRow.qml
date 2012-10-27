@@ -27,10 +27,8 @@ Row {
 
     TextCustom {
         text: templateRow.title
-        color: "#757373"
+        ItemStyle.class: "row-label"
         width: 80
-        style: Text.Raised
-        styleColor: "white"
     }
 
     // ensure that all the children are vertically centered

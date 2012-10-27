@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=/opt/qt5/bin/qmlscene /usr/lib/ubuntu-demos/uitk/demos/PhoneGallery.qml
+Path=/opt/qt-components-ubuntu/
+Name=Qt Components for Ubuntu - Phone Gallery
+GenericName=Qt Components for Ubuntu phone gallery application
+Icon=/usr/lib/ubuntu-demos/uitk/demos/call_icon.png
+Terminal=false
+

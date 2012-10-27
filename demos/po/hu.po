@@ -1,0 +1,287 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Tim Peeters <tim.peeters@canonical.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Activity Indicator"
+msgstr "Akitvitás Jelző"
+
+msgid "Basic"
+msgstr "Alapvető"
+
+msgid "Button"
+msgstr "Gomb"
+
+msgid "Buttons"
+msgstr "Gombok"
+
+msgid "Call"
+msgstr "Hívás"
+
+msgid "Captions and Dividers"
+msgstr "Feliratok és Választóvonalak"
+
+msgid "Check Box"
+msgstr "Jelölő négyzet"
+
+msgid "Checked"
+msgstr "Kipipálva"
+
+msgid "Colors"
+msgstr "Színek"
+
+msgid "Content"
+msgstr "Tartalom"
+
+msgid "Controls"
+msgstr "Vezérlő"
+
+msgid "Custom icon"
+msgstr "Egyedi ikon"
+
+msgid "Date Picker"
+msgstr "Dátum Választó"
+
+msgid "Default"
+msgstr "Alapértelmezett"
+
+msgid "Disabled"
+msgstr "Letiltva"
+
+msgid "Expanded"
+msgstr "Kiterjesztett"
+
+msgid "External page"
+msgstr "Külső oldal"
+
+msgid "First page"
+msgstr "Első oldal"
+
+msgid "Grid View"
+msgstr "Rács Nézet"
+
+msgid "Grouped List"
+msgstr "Csoportosított Lista"
+
+msgid "Icon"
+msgstr "Ikon"
+
+msgid "Idle"
+msgstr "Üresjárat"
+
+msgid "It also works well with icons and progression."
+msgstr "Jól működik Ikonokkal és Progresszióval"
+
+msgid "Item"
+msgstr "Elem"
+
+msgid "Known"
+msgstr "Ismert"
+
+msgid "Label"
+msgstr "Cimke"
+
+msgid "Large button clicked"
+msgstr "Nagy gombra klikkelve"
+
+msgid "List Items"
+msgstr "Lista Elem"
+
+msgid "Live"
+msgstr "Élő"
+
+msgid "Mixed"
+msgstr "Vegyes"
+
+msgid "Multiple lines"
+msgstr "Több sor"
+
+msgid "Multiple values"
+msgstr "Több érték"
+
+msgid "My custom page"
+msgstr "Egyéni oldalam"
+
+msgid "On Screen Keyboard"
+msgstr "Billentyűzet"
+
+msgid "Overlaid"
+msgstr "Lefedett"
+
+msgid "Page one"
+msgstr "Első oldal"
+
+msgid "Page Stack"
+msgstr "Oldal Halom"
+
+msgid "Page two (external)"
+msgstr "Második oldal (külső)"
+
+msgid "Password"
+msgstr "Jelszó"
+
+msgid "password echo on editing"
+msgstr "Jelszó kiírása szerkesztéskor"
+
+msgid "password with echo"
+msgstr "Jelszó kiírása"
+
+msgid "Popovers"
+msgstr "Előugrók"
+
+msgid "Progress Bar"
+msgstr "Folyamat jelző"
+
+msgid "Progression"
+msgstr "Előrehaladás"
+
+msgid "Red rectangle"
+msgstr "Piros téglalap"
+
+msgid "Root page"
+msgstr "Kezdő oldal"
+
+msgid "Root page (again)"
+msgstr "Kezdő oldal (ismét)"
+
+msgid "sample text"
+msgstr "minta szöveg"
+
+msgid "Scalability"
+msgstr "Skálázhatóság"
+
+msgid "Scrollbar"
+msgstr "Gördülő sáv"
+
+msgid "Secondary label"
+msgstr "Másodlagos címke"
+
+msgid "Selected"
+msgstr "Kiválasztott"
+
+msgid "Sheets & Dialogues"
+msgstr "Táblázatok és Dialógusok"
+
+msgid "Show"
+msgstr "Megmutat"
+
+msgid "simple text field"
+msgstr "egyszerű szöveges mező"
+
+msgid "Single control"
+msgstr "Egyedüli vezérlő"
+
+msgid "Single value"
+msgstr "Egyedüli érték"
+
+msgid "Slider"
+msgstr "Csúszó"
+
+msgid "Split"
+msgstr "Választó"
+
+msgid "Standard"
+msgstr "Szabványos"
+
+msgid "Subtitled"
+msgstr "Feliratozott"
+
+msgid "Switch"
+msgstr "Kapcsoló"
+
+msgid "Tab"
+msgstr "Fül"
+
+msgid "Tabs"
+msgstr "Fülek"
+
+msgid "Tabs (Non Segmented)"
+msgstr "Fülek (Nem osztott)"
+
+msgid "Tabs (Segmented)"
+msgstr "Fülek (Osztott)"
+
+msgid "Text Input"
+msgstr "Szöveg Bevitel"
+
+msgid ""
+"This is a multi-line subText.\n"
+"Up to 5 lines are supported."
+msgstr ""
+"Ez egy több-soros subText.\n"
+"Legfeljebb 5 sor engedélyezett."
+
+msgid "This is an external page."
+msgstr "Ez egy külső oldal."
+
+msgid "This is the first tab."
+msgstr "Ez az első fül"
+
+msgid "This is the second tab."
+msgstr "Ez a második fül"
+
+msgid "Time Picker"
+msgstr "Időpont kiválasztó"
+
+msgid "Toolbars"
+msgstr "Eszközök"
+
+msgid "Types of list items"
+msgstr "Lista elemek típusai"
+
+msgid "type to show clear button"
+msgstr "gépeljen a törlő gomb megjelenítéséhez"
+
+msgid "Unchecked"
+msgstr "Bejelöletlen"
+
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+msgid "Value"
+msgstr "Érték"
+
+msgid "Value selector"
+msgstr "Értékválasztó"
+
+msgid "Value selectors"
+msgstr "Értékválasztók"
+
+msgid "Parsley"
+msgstr "Petrezselyem"
+
+msgid "fruit"
+msgstr "gyümölcs"
+
+msgid "Orange"
+msgstr "Narancs"
+
+msgid "Apple"
+msgstr "Alma"
+
+msgid "Tomato"
+msgstr "Paradicsom"
+
+msgid "veg"
+msgstr "zöldség"
+
+msgid "Carrot"
+msgstr "Répa"
+
+msgid "Potato"
+msgstr "Pityóka"
+
+msgid "Hide"
+msgstr "Elrejt"
+
+#, fuzzy
+msgid "'value' is %1"
+msgstr "az érték %1"
+
