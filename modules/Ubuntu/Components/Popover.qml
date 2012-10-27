@@ -130,7 +130,7 @@ Rectangle {
         State { name: "hidden"; }
     ]
 
-    visible: state === "shown"
+    visible: true //state === "shown"
 
     //  transitions: [
     //    Transition { from: "shown"; to: "hidden";

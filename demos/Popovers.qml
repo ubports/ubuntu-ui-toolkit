@@ -20,15 +20,36 @@ import Ubuntu.Components 0.1
 Template {
     title: "Popovers"
 
-    Column {
-        spacing: 30
+//    Column {
+//        spacing: 30
 
-        TemplateRow {
-            title: "TODO"
+//        TemplateRow {
+//            title: "TODO"
 
+//            Button {
+//                text: "Pop!"
+//            }
+//        }
+//    }
+
+    Rectangle {
+        color: "black"
+        anchors.fill: parent
+        id: canvas
+
+        Component {
+            id: button
             Button {
                 text: "Pop!"
             }
+        }
+
+        Component.onCompleted: {
+            var b = [];
+            for (var i=0; i < 10; i++) b[i]
+            var b1 = button.createObject(canvas);
+            b1.anchors.top = canvas.top;
+            b1.anchors.horizontalCenter = canvas.horizontalCenter;
         }
     }
 }
