@@ -219,8 +219,8 @@ bool QmlThemeLoader::handleSelector(const Selector &selector, const QString &dec
         QString prop = property.left(columnIndex).trimmed();
         QString value = property.right(property.length() - columnIndex - 1).trimmed();
         // check if the value is declared using url() macro
-        int atUrl = value.indexOf("url");
-        if (atUrl >= 0) {
+        int atUrl;
+        while ((atUrl = value.indexOf("url")) >= 0) {
             // check if it is the url() function, so the next valid character should be a "(" one
             int pathStart = value.indexOf('(', atUrl);
             if (pathStart >= 0) {
