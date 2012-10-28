@@ -32,7 +32,7 @@ Template {
                 left: parent.left
             }
             Column {
-                width: 250
+                width: units.gu(31)
                 id: listItemTypes
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
@@ -55,12 +55,12 @@ Template {
             anchors {
                 top: parent.top
                 left: typesRectangle.right
-                leftMargin: 15
+                leftMargin: units.gu(2)
             }
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Standard"
                 Column {
-                    width: 250
+                    width: units.gu(31)
 
                     ListItem.Header { text: i18n.tr("Standard") }
                     ListItem.Standard {
@@ -85,25 +85,25 @@ Template {
                     ListItem.Standard {
                         text: i18n.tr("Custom icon")
                         icon: Rectangle {
-                            anchors.margins: 5
+                            anchors.margins: units.dp(5)
                             width: height
                             color: "darkgrey"
                             Rectangle {
                                 anchors {
                                     fill: parent
-                                    margins: 5
+                                    margins: units.dp(5)
                                 }
                                 color: "lightgrey"
                                 Rectangle {
                                     anchors {
                                         fill: parent
-                                        margins: 5
+                                        margins: units.dp(5)
                                     }
                                     color: "darkgrey"
                                     Rectangle {
                                         anchors {
                                             fill: parent
-                                            margins: 5
+                                            margins: units.dp(5)
                                         }
                                         color: "lightgrey"
                                     }
@@ -117,7 +117,7 @@ Template {
                 id: container
                 selected: listItemTypes.selectedType === "Grouped List"
                 Column {
-                    width: 250
+                    width: units.gu(31)
 
                     ListModel {
                         id: testModel
@@ -138,10 +138,11 @@ Template {
                              https://bugreports.qt-project.org/browse/QTBUG-17057
                              https://bugreports.qt-project.org/browse/QTBUG-19941
                          * We need to explicitly calculate the contentHeight for QML1
-                         * So we have all but 2 items that are 50 pixels height, the others are 48
-                         * high and there are 3 headings at 24 pixels high
+                         * So we have all but 2 items that are 6 gu + 2 dp high,
+                         * the others are 6 grid units high and there are 3 headings
+                         * at 3 grid units high.
                          */
-                        contentHeight: 50 * count - 2 * 2 + 3 * 24
+                        contentHeight: (units.gu(6) + units.dp(2)) * count - 2 * units.dp(2) + 3 * units.gu(3)
                         interactive: false
 
                         delegate: ListItem.Standard {
@@ -160,7 +161,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Single value"
                 Column {
-                    width: 250
+                    width: units.gu(31)
 
                     ListItem.Header { text: i18n.tr("Single value") }
                     ListItem.SingleValue {
@@ -191,25 +192,25 @@ Template {
                         text: i18n.tr("Custom icon")
                         value: i18n.tr("Value")
                         icon: Rectangle {
-                            anchors.margins: 5
+                            anchors.margins: units.dp(5)
                             width: height
                             color: "darkgrey"
                             Rectangle {
                                 anchors {
                                     fill: parent
-                                    margins: 5
+                                    margins: units.dp(5)
                                 }
                                 color: "lightgrey"
                                 Rectangle {
                                     anchors {
                                         fill: parent
-                                        margins: 5
+                                        margins: units.dp(5)
                                     }
                                     color: "darkgrey"
                                     Rectangle {
                                         anchors {
                                             fill: parent
-                                            margins: 5
+                                            margins: units.dp(5)
                                         }
                                         color: "lightgrey"
                                     }
@@ -222,7 +223,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Multiple values"
                 Column {
-                    width: 250
+                    width: units.gu(31)
                     ListItem.Header { text: i18n.tr("Multiple values") }
                     ListItem.MultiValue {
                         text: i18n.tr("Idle")
@@ -258,7 +259,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Subtitled"
                 Column {
-                    width: 250
+                    width: units.gu(31)
                     ListItem.Header { text: i18n.tr("Subtitled") }
                     ListItem.Subtitled {
                         text: i18n.tr("Idle")
@@ -308,7 +309,7 @@ Template {
                     }
                 }
                 Column {
-                    width: 250
+                    width: units.gu(31)
                     ListItem.Header { text: i18n.tr("Controls") }
                     ListItem.Standard {
                         text: i18n.tr("Label")
@@ -343,7 +344,7 @@ Template {
                         control: Button {
                             text: i18n.tr("Button")
                             anchors {
-                                margins: 10
+                                margins: units.gu(1)
                                 fill: parent
                             }
                             onClicked: print(i18n.tr("Large button clicked"))
@@ -351,8 +352,10 @@ Template {
                     }
                     ListItem.SingleControl {
                         control: Slider {
-                            anchors.margins: 5
-                            width: parent.width - 10
+                            anchors {
+                                margins: units.gu(1)
+                                fill: parent
+                            }
                         }
                     }
                 }
@@ -360,7 +363,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Captions and Dividers"
                 Column {
-                    width: 250
+                    width: units.gu(31)
                     ListItem.Header { text: i18n.tr("Captions and Dividers") }
                     ListItem.Standard { text: i18n.tr("Item") + " 1a" }
                     ListItem.Standard {
@@ -378,7 +381,7 @@ Template {
             FadingRectangle {
                 selected: listItemTypes.selectedType === "Value selector"
                 Column {
-                    width: 250
+                    width: units.gu(31)
                     ListItem.Header { text: i18n.tr("Value selectors") }
                     ListItem.ValueSelector {
                         text: i18n.tr("Idle")

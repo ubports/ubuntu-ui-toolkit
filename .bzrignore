@@ -2,7 +2,10 @@ Makefile
 modules/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/Makefile.qt-components-ubuntu
 modules/Ubuntu/Components/plugin/Makefile.qt-components-ubuntu
-modules/Ubuntu/Components/plugin/moc_plugin.cpp
 documentation/html
 *.moc
+moc_*.cpp
 tests/unit/tst_template/tst_template
+tests/unit/tst_units/tst_units
+tests/unit/tst_scaling_image_provider/tst_scaling_image_provider
+qrc_tst_*.cpp

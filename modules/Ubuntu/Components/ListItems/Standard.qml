@@ -48,7 +48,7 @@ import Ubuntu.Components 0.1
                 text: "Control"
                 control: Button {
                     text: "Click me"
-                    width: 150
+                    width: units.gu(19)
                     onClicked: print("Clicked")
                 }
                 progression: true
@@ -198,7 +198,7 @@ Empty {
         anchors {
             verticalCenter: parent.verticalCenter
             left: __iconIsItem ? parent.left : iconHelper.right
-            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + 5 : 5
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin + units.gu(0.5) : units.gu(0.5)
             right: controlContainer.left
         }
     }
@@ -212,7 +212,7 @@ Empty {
             right: progressionHelper.left
             top: parent.top
             bottom: parent.bottom
-            margins: 5
+            margins: units.gu(0.5)
         }
         onControlChanged: {
             control.parent = controlContainer;

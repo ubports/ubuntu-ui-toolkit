@@ -65,7 +65,7 @@ Base {
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            leftMargin: 5
+            leftMargin: units.gu(0.5)
             left: parent.left
         }
         width: Math.min(implicitWidth, parent.width)
@@ -76,9 +76,9 @@ Base {
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
-            rightMargin: 5
+            rightMargin: units.gu(0.5)
             left: label.right
-            leftMargin: 5
+            leftMargin: units.gu(0.5)
         }
         horizontalAlignment: Text.AlignRight
         fontSize: "medium"

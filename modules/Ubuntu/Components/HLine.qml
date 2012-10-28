@@ -25,7 +25,7 @@ import QtQuick 2.0
     \b{This component is under heavy development.}
 */
 Rectangle {
-    height: 1
+    height: units.dp(1)
     color: "black"
-    width: parent ? parent.width : 100
+    width: parent ? parent.width : units.gu(13)
 }

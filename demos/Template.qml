@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 Rectangle {
     id: template
 
-    width: 800
-    height: 600
+    width: units.gu(100)
+    height: units.gu(75)
 
     property string title
     default property Item content
@@ -42,7 +42,7 @@ Rectangle {
         parent: template
         anchors {
             fill: parent
-            margins: 35
+            margins: units.gu(4)
         }
 
         Binding {
@@ -71,11 +71,11 @@ Rectangle {
 
                 anchors {
                     top: title.bottom
-                    topMargin: 5
+                    topMargin: units.gu(0.5)
                     left: parent.left
                     right: parent.right
                 }
-                height: 1
+                height: units.dp(1)
                 color: "#757373"
             }
         }

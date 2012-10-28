@@ -38,8 +38,8 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: 49
-    height: 39
+    width: units.gu(6)
+    height: units.gu(5)
 
     /*!
       \preliminary
@@ -67,7 +67,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: internals.shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         // FIXME: might become a paper texture
@@ -97,14 +97,14 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: checkBox.checked ? internals.borderPressedSource : internals.borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Image {
             id: checkMark
 
             anchors.fill: parent
-            anchors.margins: 5
+            anchors.margins: units.gu(0.5)
             fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.checkMarkSource

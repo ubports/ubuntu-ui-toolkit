@@ -27,7 +27,7 @@ Rectangle {
     id: header
 
     color: "#666666"
-    height: 40
+    height: units.gu(5)
 
     /*!
       \preliminary
@@ -54,9 +54,9 @@ Rectangle {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            margins: 2
+            margins: units.gu(0.5)
         }
-        width: visible ? backImage.width + 20 : 0
+        width: visible ? backImage.width + units.gu(3) : 0
         visible: false
         onClicked: if (header.pageStack) pageStack.pop()
 
@@ -76,7 +76,7 @@ Rectangle {
             top: parent.top
             bottom: parent.bottom
             right: parent.right
-            margins: 5
+            margins: units.gu(0.5)
         }
         color: "white"
         horizontalAlignment: Text.AlignLeft

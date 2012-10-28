@@ -18,8 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
-    width: 800
-    height: 600
+    width: units.gu(100)
+    height: units.gu(75)
 
     color: "#e6e6e6"
 
@@ -31,7 +31,7 @@ Rectangle {
     }
 
     Rectangle {
-        width: 1
+        width: units.dp(1)
         anchors {
             right: widgetList.right
             top: widgetList.top
@@ -43,7 +43,7 @@ Rectangle {
     ListView {
         id: widgetList
 
-        width: 150
+        width: units.gu(19)
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -51,6 +51,7 @@ Rectangle {
 
         property int selectedIndex: 0
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
+                {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
                 {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
@@ -73,7 +74,7 @@ Rectangle {
                ]
 
         delegate: ButtonWithForeground {
-            height: 48
+            height: units.gu(6)
             width: ListView.view.width
             textSize: "medium"
             text: modelData.label
@@ -83,7 +84,7 @@ Rectangle {
 
             Rectangle {
                 anchors.fill: parent
-                anchors.margins: 1
+                anchors.margins: units.dp(1)
                 z: -1
                 color: "#e6dede"
                 visible: index == widgetList.selectedIndex

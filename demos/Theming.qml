@@ -21,7 +21,7 @@ Template {
     title: "Theming"
 
     Column {
-        spacing: 30
+        spacing: units.gu(4)
 
         TemplateRow {
             title: "Custom"
@@ -57,13 +57,13 @@ Template {
 
             Rectangle {
                 id: code1
-                height: codeSnipet1.paintedHeight + 10
-                width: codeSnipet1.paintedWidth + 10
+                height: codeSnipet1.paintedHeight + units.gu(2)
+                width: codeSnipet1.paintedWidth + units.gu(2)
                 color: "#efefef"
-                radius: 5
+                radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
                 TextCustom {
-                    anchors.margins: 5
+                    anchors.margins: units.gu(1)
                     id: codeSnipet1
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
@@ -95,13 +95,13 @@ Template {
 
             Rectangle {
                 id: code2
-                height: codeSnipet2.paintedHeight + 10
-                width: codeSnipet2.paintedWidth + 10
+                height: codeSnipet2.paintedHeight + units.gu(2)
+                width: codeSnipet2.paintedWidth + units.gu(2)
                 color: "#efefef"
-                radius: 5
+                radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
                 TextCustom {
-                    anchors.margins: 5
+                    anchors.margins: units.gu(1)
                     id: codeSnipet2
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
@@ -128,13 +128,13 @@ Template {
 
             Rectangle {
                 id: code3
-                height: codeSnipet3.paintedHeight + 10
-                width: codeSnipet3.paintedWidth + 10
+                height: codeSnipet3.paintedHeight + units.gu(2)
+                width: codeSnipet3.paintedWidth + units.gu(2)
                 color: "#efefef"
-                radius: 5
+                radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
                 TextCustom {
-                    anchors.margins: 5
+                    anchors.margins: units.gu(1)
                     id: codeSnipet3
                     ItemStyle.class: "row-label"
                     anchors.fill: parent

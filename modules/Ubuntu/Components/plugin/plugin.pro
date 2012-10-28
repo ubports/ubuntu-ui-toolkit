@@ -2,7 +2,7 @@ include( ../../../../qtversioncheck.pri )
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick
+QT += qml quick quick-private
 CONFIG += qt plugin no_keywords
 
 #comment in the following line to disable traces
@@ -24,7 +24,10 @@ HEADERS += plugin.h \
     qmlloader_p.h \
     qmlthemeloader_p.h \
     i18n.h \
-    listener.h
+    listener.h \
+    ucscalingimageprovider.h \
+    ucunits.h \
+    ucqquickimageextension.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -35,7 +38,10 @@ SOURCES += plugin.cpp \
     qmlloader.cpp \
     qmlthemeloader.cpp \
     i18n.cpp \
-    listener.cpp
+    listener.cpp \
+    ucscalingimageprovider.cpp \
+    ucunits.cpp \
+    ucqquickimageextension.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

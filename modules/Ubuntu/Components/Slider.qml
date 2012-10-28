@@ -60,14 +60,14 @@ AbstractButton {
 
     // FIXME(loicm) There are stretched pixels on the left of the thumb when
     //     the width is an odd number.
-    width: 300
+    width: units.gu(38)
 
     // FIXME(loicm) Button and other components have a default height of 39, I
     //     had to specify 42 here because under that value the BorderImage of
     //     the inner element gets cropped and starts to look ugly. A general
     //     solution would need to be found in order to support arbitrary sizes,
     //     or maybe simply clamping the requested sizes.
-    height: 42
+    height: units.gu(5)
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
     //     debate on whether we should use that property (like every other
@@ -144,7 +144,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Rectangle {
@@ -166,7 +166,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         // FIXME(loicm) The radius of the thumb BorderImage must be lower than
@@ -182,7 +182,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __shapeSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Rectangle {
@@ -208,7 +208,7 @@ AbstractButton {
             horizontalTileMode: BorderImage.Stretch
             verticalTileMode: BorderImage.Stretch
             source: __borderIdleSource
-            border.left: 14; border.top: 14; border.right: 14; border.bottom: 14
+            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
             visible: true
         }
 
@@ -237,10 +237,10 @@ AbstractButton {
     property url __borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
     
     /*! \internal */
-    property real __thumbSpacing: 3.0
+    property real __thumbSpacing: units.dp(3)
     
     /*! \internal */
-    property real __thumbWidth: 50.0
+    property real __thumbWidth: units.gu(6)
     
     /*! \internal */
     property real __thumbSpace: backgroundShape.width - (2.0 * __thumbSpacing + __thumbWidth)
