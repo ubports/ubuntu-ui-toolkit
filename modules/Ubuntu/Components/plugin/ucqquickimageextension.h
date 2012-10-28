@@ -26,13 +26,13 @@
 #include <QtCore/QTemporaryFile>
 
 class QQuickImageBase;
-class QQuickImageExtension : public QObject
+class UCQQuickImageExtension : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QQuickImageExtension(QObject *parent = 0);
+    explicit UCQQuickImageExtension(QObject *parent = 0);
 
     QUrl source() const;
     virtual void setSource(const QUrl& url);

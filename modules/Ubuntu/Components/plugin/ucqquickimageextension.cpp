@@ -21,24 +21,24 @@
 #include <QtCore/QDir>
 #include <QtQuick/private/qquickimagebase_p.h>
 
-#include "qquickimageextension.h"
-#include "units.h"
+#include "ucqquickimageextension.h"
+#include "ucunits.h"
 
-QQuickImageExtension::QQuickImageExtension(QObject *parent) :
+UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
     m_image(static_cast<QQuickImageBase*>(parent)),
     m_tmpSciFile(NULL)
 {
-    QObject::connect(&Units::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      this, SLOT(reloadSource()), Qt::UniqueConnection);
 }
 
-QUrl QQuickImageExtension::source() const
+QUrl UCQQuickImageExtension::source() const
 {
     return m_source;
 }
 
-void QQuickImageExtension::setSource(const QUrl& url)
+void UCQQuickImageExtension::setSource(const QUrl& url)
 {
     if (url != m_source) {
         m_source = url;
@@ -47,7 +47,7 @@ void QQuickImageExtension::setSource(const QUrl& url)
     }
 }
 
-void QQuickImageExtension::reloadSource()
+void UCQQuickImageExtension::reloadSource()
 {
     if (m_tmpSciFile != NULL) {
         delete m_tmpSciFile;
@@ -59,7 +59,7 @@ void QQuickImageExtension::reloadSource()
         return;
     }
 
-    QString resolved = Units::instance().resolveResource(m_source);
+    QString resolved = UCUnits::instance().resolveResource(m_source);
 
     if (resolved.isEmpty()) {
         m_image->setSource(m_source);
@@ -74,7 +74,7 @@ void QQuickImageExtension::reloadSource()
         // No scaling. Just pass the file as is.
         m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
     } else {
-        // Prepend "image://scaling" for the image to be loaded by ScalingImageProvider.
+        // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
         if (!m_source.path().endsWith(".sci")) {
             // Regular image file
             m_image->setSource(QUrl("image://scaling/" + resolved));
@@ -95,7 +95,7 @@ void QQuickImageExtension::reloadSource()
     }
 }
 
-bool QQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFactor, QTextStream& output)
+bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFactor, QTextStream& output)
 {
     QFile sciFile(sciFilePath);
     if (sciFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -116,15 +116,15 @@ bool QQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFact
     }
 }
 
-QString QQuickImageExtension::scaledBorder(QString border)
+QString UCQQuickImageExtension::scaledBorder(QString border)
 {
     // Rewrite the border line with a scaled border value
     QStringList parts = border.split(":");
-    float scaledValue = Units::instance().dp(parts[1].toFloat());
+    float scaledValue = UCUnits::instance().dp(parts[1].toFloat());
     return parts[0] + ": " + QString::number(scaledValue);
 }
 
-QString QQuickImageExtension::scaledSource(QString source, QString sciFilePath, QString scaleFactor)
+QString UCQQuickImageExtension::scaledSource(QString source, QString sciFilePath, QString scaleFactor)
 {
     // Rewrite the source line by prepending "image://scaling" to the source value
     QString sciDirectory = QFileInfo(sciFilePath).dir().path() + QDir::separator();

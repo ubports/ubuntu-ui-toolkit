@@ -17,27 +17,27 @@
  */
 
 #include <QtTest/QtTest>
-#include "units.h"
+#include "ucunits.h"
 
-class tst_Units: public QObject
+class tst_UCUnits: public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
 
     void singletonInstance() {
-        Units& units1 = Units::instance();
-        Units& units2 = Units::instance();
+        UCUnits& units1 = UCUnits::instance();
+        UCUnits& units2 = UCUnits::instance();
         QCOMPARE(&units1, &units2);
     }
 
     void defaultGridUnit() {
-        Units units;
+        UCUnits units;
         QCOMPARE(units.gridUnit(), 8.0f);
     }
 
     void setGridUnit() {
-        Units units;
+        UCUnits units;
         units.setGridUnit(0.0);
         QCOMPARE(units.gridUnit(), 0.0f);
         units.setGridUnit(42.0);
@@ -47,13 +47,13 @@ private Q_SLOTS:
     void gridUnitEnvironmentVariable() {
         QByteArray gridUnit = QString::number(11).toLocal8Bit();
         qputenv("GRID_UNIT_PX", gridUnit);
-        Units units;
+        UCUnits units;
         QCOMPARE(units.gridUnit(), 11.0);
         qputenv("GRID_UNIT_PX", "");
     }
 
     void dpGridUnitDefault() {
-        Units units;
+        UCUnits units;
 
         QCOMPARE(units.dp(1.0), 1.0f);
         QCOMPARE(units.dp(1.32), 1.0f);
@@ -65,7 +65,7 @@ private Q_SLOTS:
     }
 
     void guGridUnitDefault() {
-        Units units;
+        UCUnits units;
 
         QCOMPARE(units.gu(1.0), 8.0f);
         QCOMPARE(units.gu(1.32), 11.0f);
@@ -76,7 +76,7 @@ private Q_SLOTS:
         QCOMPARE(units.gu(1000.01), 8000.0f);
     }
     void dpGridUnitTen() {
-        Units units;
+        UCUnits units;
         units.setGridUnit(10);
 
         QCOMPARE(units.dp(1.0), 1.0f);
@@ -89,7 +89,7 @@ private Q_SLOTS:
     }
 
     void guGridUnitTen() {
-        Units units;
+        UCUnits units;
         units.setGridUnit(10);
 
         QCOMPARE(units.gu(0.5), 5.0f);
@@ -102,7 +102,7 @@ private Q_SLOTS:
     }
 
     void dpGridUnitSixteen() {
-        Units units;
+        UCUnits units;
         units.setGridUnit(16);
 
         QCOMPARE(units.dp(1.0), 2.0f);
@@ -115,7 +115,7 @@ private Q_SLOTS:
     }
 
     void guGridUnitSixteen() {
-        Units units;
+        UCUnits units;
         units.setGridUnit(16);
 
         QCOMPARE(units.gu(0.5), 8.0f);
@@ -128,7 +128,7 @@ private Q_SLOTS:
     }
 
     void resolveEmpty() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -144,7 +144,7 @@ private Q_SLOTS:
     }
 
     void resolveNonExisting() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -154,7 +154,7 @@ private Q_SLOTS:
     }
 
     void resolveDirectory() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -164,7 +164,7 @@ private Q_SLOTS:
     }
 
     void resolveExactMatch() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -176,7 +176,7 @@ private Q_SLOTS:
     }
 
     void resolveExactMatchQrc() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -188,7 +188,7 @@ private Q_SLOTS:
     }
 
     void resolveLowerGridUnit() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -199,7 +199,7 @@ private Q_SLOTS:
     }
 
     void resolveLowerGridUnitQrc() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -210,7 +210,7 @@ private Q_SLOTS:
     }
 
     void resolveHigherGridUnit() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -221,7 +221,7 @@ private Q_SLOTS:
     }
 
     void resolveHigherGridUnitQrc() {
-        Units units;
+        UCUnits units;
         QString resolved;
         QString expected;
 
@@ -232,6 +232,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_Units)
+QTEST_MAIN(tst_UCUnits)
 
 #include "tst_units.moc"

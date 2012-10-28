@@ -25,9 +25,9 @@ HEADERS += plugin.h \
     qmlthemeloader_p.h \
     i18n.h \
     listener.h \
-    units.h \
-    scalingimageprovider.h \
-    qquickimageextension.h
+    ucscalingimageprovider.h \
+    ucunits.h \
+    ucqquickimageextension.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -39,9 +39,9 @@ SOURCES += plugin.cpp \
     qmlthemeloader.cpp \
     i18n.cpp \
     listener.cpp \
-    units.cpp \
-    scalingimageprovider.cpp \
-    qquickimageextension.cpp
+    ucscalingimageprovider.cpp \
+    ucunits.cpp \
+    ucqquickimageextension.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

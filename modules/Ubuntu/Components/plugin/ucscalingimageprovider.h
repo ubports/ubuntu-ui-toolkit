@@ -22,10 +22,10 @@
 #include <QtQuick/QQuickImageProvider>
 #include <QtGui/QImage>
 
-class ScalingImageProvider : public QQuickImageProvider
+class UCScalingImageProvider : public QQuickImageProvider
 {
 public:
-    explicit ScalingImageProvider();
+    explicit UCScalingImageProvider();
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 };
 

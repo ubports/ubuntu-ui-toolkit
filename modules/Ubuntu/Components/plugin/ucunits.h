@@ -23,18 +23,18 @@
 #include <QtCore/QHash>
 #include <QtCore/QUrl>
 
-class Units : public QObject
+class UCUnits : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(float gridUnit READ gridUnit WRITE setGridUnit NOTIFY gridUnitChanged)
 
 public:
-    static Units& instance() {
-        static Units instance;
+    static UCUnits& instance() {
+        static UCUnits instance;
         return instance;
     }
 
-    explicit Units(QObject *parent = 0);
+    explicit UCUnits(QObject *parent = 0);
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
     Q_INVOKABLE QString resolveResource(const QUrl& url);

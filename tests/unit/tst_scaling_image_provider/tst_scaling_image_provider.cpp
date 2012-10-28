@@ -17,16 +17,16 @@
  */
 
 #include <QtTest/QtTest>
-#include "scalingimageprovider.h"
+#include "ucscalingimageprovider.h"
 
-class tst_ScalingImageProvider: public QObject
+class tst_UCScalingImageProvider: public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
 
     void scaleToHalfSize() {
-        ScalingImageProvider provider;
+        UCScalingImageProvider provider;
         QImage result;
         QSize returnedSize;
         QImage expected;
@@ -39,7 +39,7 @@ private Q_SLOTS:
     }
 
     void qrcSupport() {
-        ScalingImageProvider provider;
+        UCScalingImageProvider provider;
         QImage result;
         QSize returnedSize;
         QImage expected;
@@ -52,6 +52,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_ScalingImageProvider)
+QTEST_MAIN(tst_UCScalingImageProvider)
 
 #include "tst_scaling_image_provider.moc"

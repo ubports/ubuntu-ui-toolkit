@@ -27,9 +27,9 @@
 #include <QtQml/QQmlContext>
 #include "i18n.h"
 #include "listener.h"
-#include "units.h"
-#include "scalingimageprovider.h"
-#include "qquickimageextension.h"
+#include "ucunits.h"
+#include "ucscalingimageprovider.h"
+#include "ucqquickimageextension.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -38,8 +38,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
-    qmlRegisterExtendedType<QQuickImageBase, QQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
-    qmlRegisterUncreatableType<Units>(uri, 0, 1, "Units", "Not instantiable");
+    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
+    qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -54,11 +54,11 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
 
-    Units::instance().setBaseUrl(engine->baseUrl());
-    context->setContextProperty("units", &Units::instance());
+    UCUnits::instance().setBaseUrl(engine->baseUrl());
+    context->setContextProperty("units", &UCUnits::instance());
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
-    QObject::connect(&Units::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
-    engine->addImageProvider(QLatin1String("scaling"), new ScalingImageProvider);
+    engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 }

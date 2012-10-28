@@ -16,7 +16,7 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "units.h"
+#include "ucunits.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlFile>
@@ -38,7 +38,7 @@ static float getenvFloat(const char* name, float defaultValue)
 }
 
 
-Units::Units(QObject *parent) :
+UCUnits::UCUnits(QObject *parent) :
     QObject(parent)
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
@@ -49,7 +49,7 @@ Units::Units(QObject *parent) :
     loadResourcesUnitFile(RESOURCES_UNIT_FILE);
 }
 
-bool Units::loadResourcesUnitFile(QString fileName)
+bool UCUnits::loadResourcesUnitFile(QString fileName)
 {
     QUrl unresolved = QUrl::fromLocalFile(fileName);
     fileName = m_baseUrl.resolved(unresolved).toLocalFile();
@@ -66,33 +66,33 @@ bool Units::loadResourcesUnitFile(QString fileName)
     return false;
 }
 
-float Units::gridUnit()
+float UCUnits::gridUnit()
 {
     return m_gridUnit;
 }
 
-void Units::setGridUnit(float gridUnit)
+void UCUnits::setGridUnit(float gridUnit)
 {
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
 }
 
-void Units::setBaseUrl(const QUrl& baseUrl)
+void UCUnits::setBaseUrl(const QUrl& baseUrl)
 {
     m_baseUrl = baseUrl;
 }
 
-float Units::dp(float value)
+float UCUnits::dp(float value)
 {
     return qRound(value * m_gridUnit / DEFAULT_GRID_UNIT_PX);
 }
 
-float Units::gu(float value)
+float UCUnits::gu(float value)
 {
     return qRound(value * m_gridUnit);
 }
 
-QString Units::resolveResource(const QUrl& url)
+QString UCUnits::resolveResource(const QUrl& url)
 {
     if (url.isEmpty()) {
         return "";
@@ -127,7 +127,7 @@ QString Units::resolveResource(const QUrl& url)
     return "";
 }
 
-QString Units::suffixForGridUnit(float gridUnit)
+QString UCUnits::suffixForGridUnit(float gridUnit)
 {
     return "@" + QString::number(gridUnit);
 }

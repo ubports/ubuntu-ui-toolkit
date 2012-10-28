@@ -16,16 +16,16 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "scalingimageprovider.h"
+#include "ucscalingimageprovider.h"
 
 #include <QtCore/QFile>
 #include <QtGui/QImageReader>
 
-ScalingImageProvider::ScalingImageProvider() : QQuickImageProvider(QQuickImageProvider::Image)
+UCScalingImageProvider::UCScalingImageProvider() : QQuickImageProvider(QQuickImageProvider::Image)
 {
 }
 
-QImage ScalingImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
+QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     Q_UNUSED(requestedSize);
 
