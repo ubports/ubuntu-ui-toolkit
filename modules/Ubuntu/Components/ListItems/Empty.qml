@@ -34,17 +34,17 @@ import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
         Column {
             ListItem.Empty {
-                height: 50
+                height: units.gu(6)
                 Text {
                     text: "Hello world"
                     anchors.centerIn: parent
                 }
             }
             ListItem.Empty {
-                height: 100
+                height: units.gu(13)
                 Tabs {
-                    height: parent.height - 20
-                    width: parent.width - 20
+                    height: parent.height - units.gu(3)
+                    width: parent.width - units.gu(3)
                     anchors.centerIn: parent
                     Tab {
                         text: "Tab 1"

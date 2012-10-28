@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 Rectangle {
     id: template
 
-    width: 800
-    height: 600
+    width: units.gu(100)
+    height: units.gu(75)
 
     property string title
     default property Item content

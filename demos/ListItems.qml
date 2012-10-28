@@ -85,25 +85,25 @@ Template {
                     ListItem.Standard {
                         text: i18n.tr("Custom icon")
                         icon: Rectangle {
-                            anchors.margins: units.gu(0.5)
+                            anchors.margins: units.dp(5)
                             width: height
                             color: "darkgrey"
                             Rectangle {
                                 anchors {
                                     fill: parent
-                                    margins: units.gu(0.5)
+                                    margins: units.dp(5)
                                 }
                                 color: "lightgrey"
                                 Rectangle {
                                     anchors {
                                         fill: parent
-                                        margins: units.gu(0.5)
+                                        margins: units.dp(5)
                                     }
                                     color: "darkgrey"
                                     Rectangle {
                                         anchors {
                                             fill: parent
-                                            margins: units.gu(0.5)
+                                            margins: units.dp(5)
                                         }
                                         color: "lightgrey"
                                     }
@@ -192,25 +192,25 @@ Template {
                         text: i18n.tr("Custom icon")
                         value: i18n.tr("Value")
                         icon: Rectangle {
-                            anchors.margins: 5
+                            anchors.margins: units.dp(5)
                             width: height
                             color: "darkgrey"
                             Rectangle {
                                 anchors {
                                     fill: parent
-                                    margins: 5
+                                    margins: units.dp(5)
                                 }
                                 color: "lightgrey"
                                 Rectangle {
                                     anchors {
                                         fill: parent
-                                        margins: 5
+                                        margins: units.dp(5)
                                     }
                                     color: "darkgrey"
                                     Rectangle {
                                         anchors {
                                             fill: parent
-                                            margins: 5
+                                            margins: units.dp(5)
                                         }
                                         color: "lightgrey"
                                     }
@@ -352,8 +352,10 @@ Template {
                     }
                     ListItem.SingleControl {
                         control: Slider {
-                            anchors.margins: 5
-                            width: parent.width - 10
+                            anchors {
+                                margins: units.gu(1)
+                                fill: parent
+                            }
                         }
                     }
                 }

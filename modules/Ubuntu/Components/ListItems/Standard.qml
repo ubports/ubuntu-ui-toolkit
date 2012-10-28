@@ -48,7 +48,7 @@ import Ubuntu.Components 0.1
                 text: "Control"
                 control: Button {
                     text: "Click me"
-                    width: 150
+                    width: units.gu(19)
                     onClicked: print("Clicked")
                 }
                 progression: true

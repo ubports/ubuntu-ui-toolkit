@@ -19,8 +19,8 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Flickable {
-    width: 360
-    height: 640
+    width: units.gu(45)
+    height: units.gu(80)
 
     contentWidth: width
     contentHeight: background.height
@@ -38,7 +38,7 @@ Flickable {
             ListItem.SingleControl {
                 control: Button {
                     anchors {
-                        margins: 10
+                        margins: units.gu(1)
                         fill: parent
                     }
                     text: i18n.tr("Button")
@@ -56,7 +56,7 @@ Flickable {
             ListItem.SingleControl {
                 control: Slider {
                     anchors {
-                        margins: 10
+                        margins: units.gu(1)
                         fill: parent
                     }
                     value: 50
@@ -69,13 +69,13 @@ Flickable {
                     text: i18n.tr("Activity indicator")
                     anchors {
                         verticalCenter: parent.verticalCenter
-                        margins: 5
+                        margins: units.gu(1)
                     }
                 }
                 ActivityIndicator {
                     running: true
                     anchors {
-                        margins: 10
+                        margins: units.gu(1)
                         right: parent.right
                         verticalCenter: parent.verticalCenter
                     }
@@ -109,12 +109,12 @@ Flickable {
                 }
             }
             ListItem.Empty {
-                height: 200
+                height: units.gu(25)
                 highlightWhenPressed: false
                 Tabs {
                     anchors {
                         fill: parent
-                        margins: 10
+                        margins: units.gu(1)
                     }
                     Tab {
                         title: i18n.tr("Tab") + " 1"

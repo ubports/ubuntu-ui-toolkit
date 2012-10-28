@@ -18,8 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
-    width: 800
-    height: 600
+    width: units.gu(100)
+    height: units.gu(75)
 
     color: "#e6e6e6"
 
