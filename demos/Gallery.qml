@@ -51,6 +51,7 @@ Rectangle {
 
         property int selectedIndex: 0
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
+                {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
                 {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
@@ -101,14 +102,6 @@ Rectangle {
             bottom: parent.bottom
         }
         source: widgetList.model[widgetList.selectedIndex].source
-    }
-
-    UnitsSelector {
-        focus: true
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-        }
     }
 
     Component.onCompleted: {
