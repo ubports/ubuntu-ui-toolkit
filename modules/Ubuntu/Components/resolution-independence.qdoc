@@ -95,7 +95,7 @@
     bitmap when needed on lower density screens.
 
     For example, if the destination size of the bitmap is 10 gu * 10 gu and the developer
-    targets a Samsung Galaxy Nexus phone (1 gu = 18 px) and a Asus Transformer TF101
+    targets a Samsung Galaxy Nexus phone (1 gu = 18 px) and an Asus Transformer TF101
     tablet (1 gu = 10 px) then he/she only needs to create a bitmap of 180 px * 180 px
     to support both devices.
 
