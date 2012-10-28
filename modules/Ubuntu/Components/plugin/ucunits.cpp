@@ -38,6 +38,31 @@ static float getenvFloat(const char* name, float defaultValue)
 }
 
 
+/*!
+    \qmltype Units
+    \instantiates UCUnits
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup resolution-independence
+    \brief Units of measurement for sizes, spacing, margin, etc.
+
+    Units provides facilities for measuring UI elements in a variety
+    of units other than just pixels.
+
+    A global instance of Units is exposed as the \b{units} context property.
+    Example usage:
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    Item {
+        width: units.gu(2)
+        height: units.gu(5)
+    }
+    \endqml
+
+    \sa {Resolution Independence}
+*/
 UCUnits::UCUnits(QObject *parent) :
     QObject(parent)
 {
@@ -66,6 +91,11 @@ bool UCUnits::loadResourcesUnitFile(QString fileName)
     return false;
 }
 
+/*!
+    \qmlproperty real Units::gridUnit
+
+    The number of pixels 1 grid unit corresponds to.
+*/
 float UCUnits::gridUnit()
 {
     return m_gridUnit;
@@ -82,11 +112,21 @@ void UCUnits::setBaseUrl(const QUrl& baseUrl)
     m_baseUrl = baseUrl;
 }
 
+/*!
+    \qmlmethod real Units::dp(real value)
+
+    Returns the number of pixels \a value density independent pixels correspond to.
+*/
 float UCUnits::dp(float value)
 {
     return qRound(value * m_gridUnit / DEFAULT_GRID_UNIT_PX);
 }
 
+/*!
+    \qmlmethod real Units::gu(real value)
+
+    Returns the number of pixels \a value grid units correspond to.
+*/
 float UCUnits::gu(float value)
 {
     return qRound(value * m_gridUnit);

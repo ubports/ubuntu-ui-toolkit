@@ -50,4 +50,12 @@
          import Ubuntu.Components 0.1
      \endcode
      \annotatedlist theming
+
+     \part Resolution Independence Items
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+
+     \annotatedlist resolution-independence
  */
