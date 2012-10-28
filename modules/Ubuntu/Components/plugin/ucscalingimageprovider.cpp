@@ -21,6 +21,17 @@
 #include <QtCore/QFile>
 #include <QtGui/QImageReader>
 
+/*!
+    \internal
+
+    The UCScalingImageProvider class loads and scales images.
+    It responds to URLs of the form "image://scaling/scale/path" where:
+    - 'scale' is the scaling factor applied to the image
+    - 'path' is the full path of the image on the filesystem
+
+    Example:
+     * image://scaling/0.5/arrow.png
+*/
 UCScalingImageProvider::UCScalingImageProvider() : QQuickImageProvider(QQuickImageProvider::Image)
 {
 }
@@ -29,11 +40,6 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
 {
     Q_UNUSED(requestedSize);
 
-    /* Accepts id of the form SCALE_FACTOR/PATH
-     * Examples:
-     * - 1/arrow.png
-     * - 0.5/arrow.png
-     */
     int separatorPosition = id.indexOf("/");
     float scaleFactor = id.left(separatorPosition).toFloat();
     QString path = id.mid(separatorPosition+1);

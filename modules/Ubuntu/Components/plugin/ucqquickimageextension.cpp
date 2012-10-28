@@ -24,6 +24,14 @@
 #include "ucqquickimageextension.h"
 #include "ucunits.h"
 
+/*!
+    \internal
+
+    The UCQQuickImageExtension class makes sure that for images loaded via
+    QQuickImageBase the right version is loaded and that they are scaled
+    appropriately. It does so by overriding the QQuickImageBase's
+    'source' property.
+*/
 UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
     m_image(static_cast<QQuickImageBase*>(parent)),
