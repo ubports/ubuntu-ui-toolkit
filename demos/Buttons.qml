@@ -21,7 +21,7 @@ Template {
     title: i18n.tr("Buttons")
 
     Column {
-        spacing: 30
+        spacing: units.gu(4)
 
         TemplateRow {
             title: i18n.tr("Standard")
@@ -55,8 +55,8 @@ Template {
 
             Rectangle {
                 id: darkBackground
-                width: darkButton.width + 20
-                height: darkButton.height + 20
+                width: darkButton.width + units.gu(3)
+                height: darkButton.height + units.gu(3)
                 color: "#3a3c41"
 
                 Button {
@@ -101,8 +101,8 @@ Template {
 
             Button {
                 text: i18n.tr("Call")
-                width: 140
-                height: 90
+                width: units.gu(18)
+                height: units.gu(11)
             }
         }
     }

@@ -21,7 +21,7 @@ Template {
     title: i18n.tr("Check Box")
 
     Column {
-        spacing: 30
+        spacing: units.gu(4)
 
         TemplateRow {
             title: i18n.tr("Unchecked")

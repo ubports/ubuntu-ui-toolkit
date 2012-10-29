@@ -53,8 +53,8 @@ import Ubuntu.Components  0.1 as Theming
 ButtonWithForeground {
     id: button
 
-    width: 87
-    height: 39
+    width: units.gu(11)
+    height: units.gu(5)
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "Button"
 

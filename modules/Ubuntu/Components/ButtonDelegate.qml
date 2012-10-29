@@ -62,8 +62,8 @@ Item {
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
         source: shapeSource()
-        border.left: 18; border.top: 15
-        border.right: 18; border.bottom: 15
+        border.left: units.dp(18); border.top: units.dp(15)
+        border.right: units.dp(18); border.bottom: units.dp(15)
     }
 
     // FIXME: might become a paper texture
@@ -92,7 +92,7 @@ Item {
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
         source: borderSource()
-        border.left: 14; border.top: 17
-        border.right: 15; border.bottom: 18
+        border.left: units.dp(14); border.top: units.dp(17)
+        border.right: units.dp(15); border.bottom: units.dp(18)
     }
 }

@@ -141,13 +141,13 @@ Empty {
         anchors {
             left: parent.left
             right: parent.right
-            topMargin: 2
-            bottomMargin: 2
+            topMargin: units.dp(2)
+            bottomMargin: units.dp(2)
         }
 
         Base {
             id: selectorMain
-            height: 48
+            height: units.gu(6)
             showDivider: false
             onClicked: selector.expanded = !selector.expanded
             selected: selector.selected
@@ -156,18 +156,18 @@ Empty {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    leftMargin: 5
+                    leftMargin: units.gu(0.5)
                     left: parent.left
                 }
-                width: Math.min(implicitWidth, parent.width - 10)
+                width: Math.min(implicitWidth, parent.width - units.gu(1))
             }
             LabelVisual {
                 id: valueLabel
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: accordion.left
-                    rightMargin: 5
-                    leftMargin: 5
+                    rightMargin: units.gu(0.5)
+                    leftMargin: units.gu(0.5)
                     left: label.right
                 }
                 fontSize: "small"
@@ -177,7 +177,7 @@ Empty {
             }
             Item {
                 id: accordion
-                width: 30
+                width: units.gu(4)
                 anchors {
                     right: parent.right
                     top: parent.top
@@ -222,14 +222,14 @@ Empty {
 
         Repeater {
             id: valueRepeater
-            property int valueHeight: selector.expanded ? 40 : 0
+            property int valueHeight: selector.expanded ? units.gu(5) : 0
 
             states: [ State {
                     name: "expanded"
                     when: selector.expanded
                     PropertyChanges {
                         target: valueRepeater
-                        valueHeight: 40
+                        valueHeight: units.gu(5)
                     }
                 }, State {
                     name: "closed"
@@ -270,7 +270,7 @@ Empty {
                         text: modelData
                         anchors {
                             left: parent.left
-                            leftMargin: 24
+                            leftMargin: units.gu(3)
                             verticalCenter: parent.verticalCenter
                         }
                         font.italic: true

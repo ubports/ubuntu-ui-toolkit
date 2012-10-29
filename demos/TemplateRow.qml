@@ -22,13 +22,13 @@ Row {
 
     property string title
 
-    spacing: 10
-    height: 50
+    spacing: units.gu(1)
+    height: units.gu(6)
 
     TextCustom {
         text: templateRow.title
         ItemStyle.class: "row-label"
-        width: 80
+        width: units.gu(10)
     }
 
     // ensure that all the children are vertically centered

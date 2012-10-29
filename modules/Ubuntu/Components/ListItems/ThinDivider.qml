@@ -49,6 +49,6 @@ Image {
         left: (parent) ? parent.left : null
         right: (parent) ? parent.right : null
     }
-    height: (visible) ? sourceSize.height : 0
+    height: (visible) ? units.dp(2) : 0
     source: "artwork/ListItemDividerHorizontal.png"
 }

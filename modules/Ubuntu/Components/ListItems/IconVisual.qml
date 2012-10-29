@@ -28,8 +28,8 @@ Item {
 
     property alias iconHeight: icon.height
     property alias iconWidth: icon.width
-    property real leftIconMargin: 5
-    property real rightIconMargin: 5
+    property real leftIconMargin: units.gu(0.5)
+    property real rightIconMargin: units.gu(0.5)
     width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
 
     anchors {
@@ -61,10 +61,10 @@ Item {
         source: visible ? "artwork/ListItemFrame.png" : ""
         anchors.fill: icon
         border {
-            left: 3
-            right: 3
-            top: 3
-            bottom: 3
+            left: units.dp(3)
+            right: units.dp(3)
+            top: units.dp(3)
+            bottom: units.dp(3)
         }
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch

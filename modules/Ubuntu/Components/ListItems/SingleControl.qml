@@ -32,7 +32,7 @@ import Ubuntu.Components.ListItems 0.1
             ListItem.SingleControl {
                 control: Button {
                     anchors {
-                        margins: 5
+                        margins: units.gu(1)
                         fill: parent
                     }
                     text: "Large button"

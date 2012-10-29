@@ -55,13 +55,11 @@ AnimatedItem {
     */
     property bool running: false
 
-    // use one of the image size for the implicit size
-    implicitWidth: center.sourceSize.width
-    implicitHeight: center.sourceSize.height
+    implicitWidth: center.implicitWidth
+    implicitHeight: center.implicitHeight
     // embedd visuals
     Image {
         id: center
-        anchors.fill: parent
 
         fillMode: Image.PreserveAspectFit
         source: internals.centralSource
@@ -71,7 +69,6 @@ AnimatedItem {
         Image {
             id: animation
             fillMode: Image.PreserveAspectFit
-            anchors.fill: parent
             source: internals.movingSource
             smooth: internals.smooth
             visible: internals.active
