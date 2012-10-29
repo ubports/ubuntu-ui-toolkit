@@ -53,8 +53,8 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: button
 
-    width: units.gu(11) // BWF had units.gu(19)
-    height: units.gu(5) // BWF had units.gu(6)
+    width: units.gu(11)
+    height: units.gu(5)
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "button"
 

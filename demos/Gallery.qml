@@ -80,7 +80,6 @@ Rectangle {
             enabled: modelData.source != ""
 
             Rectangle {
-                ItemStyle.class: "menu-background"
                 anchors.fill: parent
                 anchors.margins: units.dp(1)
                 z: -1
