@@ -208,5 +208,4 @@ Item {
             }
         }
     }
-            onVisibleChanged: contents. updateHeader()
 }
