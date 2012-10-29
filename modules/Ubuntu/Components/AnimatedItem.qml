@@ -45,6 +45,21 @@ Item {
             root.onScreen = (pos.y + root.height >= 0) && (pos.y <= internal.flickable.height) &&
                             (pos.x + root.width >= 0) && (pos.x <= internal.flickable.width)
         }
+        // lookup for a flickable parent
+        function updateFlickableParent()
+        {
+            var flickable = root.parent
+            while (flickable) {
+                if (flickable.hasOwnProperty("flicking") && flickable.hasOwnProperty("flickableDirection")) {
+                    // non-interactive flickables must be skipped as those do not provide
+                    // on-screen detection support
+                    if (flickable.interactive)
+                        break
+                }
+                flickable = flickable.parent
+            }
+            internal.flickable = flickable
+        }
     }
 
     Connections {
@@ -54,19 +69,6 @@ Item {
         onContentYChanged: internal.checkOnScreen()
     }
 
-    Component.onCompleted: {
-        // find a flickable parent
-        var flickable = root.parent
-        while (flickable) {
-            if (flickable.hasOwnProperty("flicking") && flickable.hasOwnProperty("flickableDirection")) {
-                // non-interactive flickables must be skipped as those do not provide
-                // on-screen detection support
-                if (flickable.interactive)
-                    break
-            }
-            flickable = flickable.parent
-        }
-        if (flickable)
-            internal.flickable = flickable
-    }
+    Component.onCompleted: internal.updateFlickableParent()
+    onParentChanged: internal.updateFlickableParent()
 }
