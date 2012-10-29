@@ -125,11 +125,11 @@ Item {
             // largest button needs to fit all its contents.
             // Scrolling in case the buttons don't fit in the available space is currently
             // not implemented.
-            property int minimumButtonWidth: units.gu(3)
-            property int maximumButtonWidth: (visuals.width - 2*buttonRow.horizontalPadding) / repeater.count
+            property real minimumButtonWidth: units.gu(3)
+            property real maximumButtonWidth: (visuals.width - 2*buttonRow.horizontalPadding) / repeater.count
             property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
-            property int widestButtonWidth
-            property int buttonWidth
+            property real widestButtonWidth
+            property real buttonWidth
             buttonWidth: {
                 if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
                 else if (tabs.buttonsExpanded) return buttonRow.maximumButtonWidth;
