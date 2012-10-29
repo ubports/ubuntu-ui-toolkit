@@ -58,8 +58,12 @@ Item {
         // find a flickable parent
         var flickable = root.parent
         while (flickable) {
-            if (flickable.hasOwnProperty("flicking") && flickable.hasOwnProperty("flickableDirection"))
-                break
+            if (flickable.hasOwnProperty("flicking") && flickable.hasOwnProperty("flickableDirection")) {
+                // non-interactive flickables must be skipped as those do not provide
+                // on-screen detection support
+                if (flickable.interactive)
+                    break
+            }
             flickable = flickable.parent
         }
         if (flickable)
