@@ -19,7 +19,7 @@ import QtQuick 2.0
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components  0.1 as Theming
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Button
@@ -56,25 +56,13 @@ ButtonWithForeground {
     width: units.gu(11)
     height: units.gu(5)
     // FIXME: see FIXME above
-    Theming.ItemStyle.class: "Button"
+    Theming.ItemStyle.class: "button"
 
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
     // FIXME: see FIXME above
-    property color color: (Theming.ItemStyle.style) ? Theming.ItemStyle.style.color : "#e3e5e8"
-
-    /*!
-       \preliminary
-       The color when the button is pressed.
-    */
-    property color pressedColor: color
-
-    /*!
-       \preliminary
-       Specify whether the layer behind the button has a dark color.
-       This will change the visuals/shading of the button.
-    */
-    property bool darkBorder: false
+    property color color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
+                              Theming.ItemStyle.style.color : "transparent"
 }

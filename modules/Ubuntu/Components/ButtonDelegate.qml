@@ -33,7 +33,7 @@ Item {
     function shapeSource()
     {
         if (itemStyle) {
-            return item.darkBorder ? itemStyle.shapeDark : itemStyle.shapeNormal
+            return itemStyle.shape;
         }
         return ""
     }
@@ -41,12 +41,12 @@ Item {
     function borderSource()
     {
         if (itemStyle) {
-            return (item.darkBorder) ? (item.pressed ? itemStyle.borderDarkPressed : itemStyle.borderDarkIdle)
-                                : (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
+            return (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
         }
         return ""
     }
 
+    // FIXME: this binding will disappear once we move ButtonWithForeground into a separate Button style
     Binding {
         target: item
         property: "textColor"
@@ -71,7 +71,7 @@ Item {
         id: base
 
         anchors.fill: shape
-        color: item.pressed ? item.pressedColor : item.color
+        color: item.color
 
     }
 

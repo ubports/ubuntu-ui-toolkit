@@ -12,6 +12,7 @@ If no style is given, the theme engine will use QtObject for style and will decl
 properties typed as variant.
 */
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
 /*
@@ -33,14 +34,22 @@ Examples:
 */
 @qml-import(Ubuntu.Components 0.1);
 
+.green {
+   color: "green"
+}
+
 .button, .custom-button {
     color: "#e3e5e8";
-    shapeDark: url("artwork/ButtonShapeDark.png");
-    shapeNormal: url("artwork/ButtonShape.png");
+    shape: url("artwork/ButtonShape.png");
     borderIdle: url("artwork/ButtonBorderIdle.png");
     borderPressed: url("artwork/ButtonBorderPressed.png");
-    borderDarkIdle: url("artwork/ButtonBorderDarkIdle.png");
-    borderDarkPressed: url("artwork/ButtonBorderDarkPressed.png");
+}
+
+.dark-button {
+    color: "#e3e5e8";
+    shape: url("artwork/ButtonShapeDark.png");
+    borderIdle: url("artwork/ButtonBorderDarkIdle.png");
+    borderPressed: url("artwork/ButtonBorderDarkPressed.png");
 }
 
 /* Default style for all TextCustom elements in Gallery*/
