@@ -56,25 +56,17 @@ ButtonWithForeground {
     width: units.gu(11)
     height: units.gu(5)
     // FIXME: see FIXME above
-    Theming.ItemStyle.class: "Button"
+    Theming.ItemStyle.class: "button"
 
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
-    // FIXME: see FIXME above
-    property color color: (Theming.ItemStyle.style) ? Theming.ItemStyle.style.color : "#e3e5e8"
+    property color color: "transparent"
 
     /*!
        \preliminary
        The color when the button is pressed.
     */
     property color pressedColor: color
-
-    /*!
-       \preliminary
-       Specify whether the layer behind the button has a dark color.
-       This will change the visuals/shading of the button.
-    */
-    property bool darkBorder: false
 }

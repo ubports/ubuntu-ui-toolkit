@@ -18,10 +18,8 @@ import QtQuick 2.0
 
 QtObject {
     property color color: "transparent"
-    property url shapeDark: ""
-    property url shapeNormal: ""
+
+    property url shape: ""
     property url borderIdle: ""
     property url borderPressed: ""
-    property url borderDarkIdle: ""
-    property url borderDarkPressed: ""
 }

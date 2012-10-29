@@ -201,7 +201,8 @@ bool ItemStyleAttachedPrivate::updateStyle()
                 style->deleteLater();
             style = themeRule->createStyle(componentContext);
         }
-    }
+    } else
+        result = true;
 
     // reparent also custom styles!
     if (result && style) {
@@ -232,7 +233,8 @@ bool ItemStyleAttachedPrivate::updateDelegate()
                 delegate->deleteLater();
             delegate = themeRule->createDelegate(componentContext);
         }
-    }
+    } else
+        result = true;
 
     if (delegate && ((delegate->parent() != attachee) || (delegate->parentItem() != attachee))) {
         delegate->setParent(attachee);

@@ -62,8 +62,8 @@ Template {
                 Button {
                     id: darkButton
                     text: i18n.tr("Call")
+                    ItemStyle.class: "dark-button"
                     color: "#dd4f22"
-                    darkBorder: true
                     anchors.centerIn: parent
                 }
             }
