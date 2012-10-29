@@ -33,7 +33,7 @@ Item {
       \preliminary
       The padding on the left and right side of the button foreground.
     */
-    property real horizontalPadding: units.gu(1)
+    property real horizontalPadding: units.gu(2)
     property real maximumWidth: item.width - 2*foreground.horizontalPadding
     property real spacing: (item.text == "" || item.iconSource == "") ? 0 : units.gu(1)
     property real verticalPadding: units.gu(0.5)
