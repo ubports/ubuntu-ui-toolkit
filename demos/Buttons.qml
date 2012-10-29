@@ -50,7 +50,6 @@ Template {
 
             Button {
                 text: i18n.tr("Call")
-                pressedColor: "#dd4f22"
             }
 
             Rectangle {

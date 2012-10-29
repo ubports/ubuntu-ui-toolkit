@@ -20,9 +20,6 @@ Item {
     z: -1
     anchors.fill: parent
 
-    property color __color: (item.color !== Qt.rgba(0,0,0,0)) ? item.color : itemStyle.color
-    property color __pressedColor: (item.pressedColor !== Qt.rgba(0,0,0,0)) ? item.pressedColor : __color
-
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
     function __luminance(hexcolor){
@@ -74,7 +71,7 @@ Item {
         id: base
 
         anchors.fill: shape
-        color: item.pressed ? __pressedColor : __color
+        color: item.color
 
     }
 

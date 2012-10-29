@@ -62,11 +62,7 @@ ButtonWithForeground {
        \preliminary
        The foreground color of the button in idle state.
     */
-    property color color: "transparent"
-
-    /*!
-       \preliminary
-       The color when the button is pressed.
-    */
-    property color pressedColor: color
+    // FIXME: see FIXME above
+    property color color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
+                              Theming.ItemStyle.style.color : "transparent"
 }
