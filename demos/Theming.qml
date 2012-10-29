@@ -23,6 +23,10 @@ Template {
     Column {
         spacing: units.gu(4)
 
+        TextCustom {
+            text: Theme.error
+        }
+
         TemplateRow {
             title: "Custom"
             Switch {
