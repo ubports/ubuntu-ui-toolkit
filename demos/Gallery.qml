@@ -23,8 +23,6 @@ Rectangle {
 
     color: "#e6e6e6"
 
-//    function i18n.tr(text) { return i18n.tr(text); }
-
     Rectangle {
         anchors.fill: widgetList
         color: "#cccccc"
