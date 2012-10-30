@@ -105,9 +105,12 @@ Item {
     }
 
     function __updatePositionAbove() {
+        var coords = new Qt.point(0,0);// = [];
         var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
-        popover.x = topCenter.x - popover.width/2;
-        popover.y = topCenter.y - popover.height;
+        coords.x = topCenter.x - popover.width/2;
+        coords.y = topCenter.y - popover.height;
+        popover.x = coords.x;
+        popover.y = coords.y;
         __fixHorizontalMargins()
     }
 
