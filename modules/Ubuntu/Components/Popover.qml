@@ -22,6 +22,30 @@ import QtQuick 2.0
 Item {
     id: popover
 
+    width: units.gu(40)
+    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
+
+    property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
+    property real minHeight: units.gu(32)
+
+    property Item overlay
+    property Item caller
+
+    onCallerChanged: updatePosition()
+    onOverlayChanged: updatePosition()
+
+    default property alias container: containerLayout.data
+
+
+    // priority: above, beside, below
+    property string relativePosition: "above"
+
+    function updatePosition() {
+        if (!overlay || !caller) return;
+        popover.x = caller.x - units.gu(5);
+        popover.y = caller.y + units.gu(5);
+    }
+
     Rectangle {
         id: background
         anchors.fill: parent
@@ -35,42 +59,14 @@ Item {
         anchors.fill: parent
     }
 
-    width: units.gu(40)
-    height: Math.max(minHeight, Math.min(containerBackground.totalHeight, maxHeight))
-
-    property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
-    property real minHeight: units.gu(32)
-
-    property Item overlay
-    property Item caller
-
-    onCallerChanged: {
-        popover.x = caller.x - units.gu(5);
-        popover.y = caller.y + units.gu(5);
-    }
-
-    default property alias container: containerLayout.data
-
-    Rectangle {
-        id: containerBackground
-        color: "transparent"
+    Column {
+        id: containerLayout
+        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         anchors {
             left: parent.left
-            right: parent.right
             top: parent.top
-            margins: units.gu(3)
-        }
-        height: containerLayout.totalHeight
-        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
-
-        Column {
-            id: containerLayout
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
-            anchors {
-                left: parent.left
-                top: parent.top
-                right: parent.right
-            }
+            right: parent.right
+            margins: units.gu(2)
         }
     }
 }
