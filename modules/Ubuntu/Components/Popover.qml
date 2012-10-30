@@ -55,6 +55,7 @@ Item {
         if (popover.y < edgeMargins) __updatePositionLeft();
         if (popover.x < edgeMargins) __updatePositionRight();
         if (popover.x + popover.width > overlay.width - edgeMargins) __updatePositionBelow();
+        if (popover.y + popover.height > overlay.height - edgeMargins) __updatePositionCenterInOverlay();
     }
 
     function __fixHorizontalMargins() {
@@ -97,6 +98,13 @@ Item {
         popover.x = rightCenter.x;
         popover.y = rightCenter.y - popover.height/2;
         __fixVerticalMargins();
+    }
+
+    // Center the popover. Only as a fallback when none of the
+    // other positions work.
+    function __updatePositionCenterInOverlay() {
+        popover.x = overlay.width/2 - popover.width/2;
+        popover.y = overlay.height/2 - popover.height/2;
     }
 
     Rectangle {
