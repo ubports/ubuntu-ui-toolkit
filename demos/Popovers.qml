@@ -49,7 +49,7 @@ Template {
             for (var i=0; i < 10; i++) b[i]
             var b1 = button.createObject(canvas);
             b1.anchors.top = canvas.top;
-            b1.anchors.horizontalCenter = canvas.horizontalCenter;
+            b1.anchors.left = canvas.left;
         }
     }
 }
