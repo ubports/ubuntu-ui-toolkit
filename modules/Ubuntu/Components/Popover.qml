@@ -108,29 +108,29 @@ Item {
         var coords = new Qt.point(0,0);// = [];
         var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
         coords.x = topCenter.x - popover.width/2;
-        coords.y = topCenter.y - popover.height;
+        coords.y = topCenter.y - popover.height - units.gu(0.5);
         popover.x = coords.x;
         popover.y = coords.y;
-        __fixHorizontalMargins()
+        __fixHorizontalMargins();
     }
 
     function __updatePositionBelow() {
         var bottomCenter = overlay.mapFromItem(caller, caller.width/2, caller.height);
         popover.x = bottomCenter.x - popover.width/2;
-        popover.y = bottomCenter.y;
+        popover.y = bottomCenter.y + units.gu(0.5);
         __fixHorizontalMargins();
     }
 
     function __updatePositionLeft() {
         var leftCenter = overlay.mapFromItem(caller, 0, caller.height/2);
-        popover.x = leftCenter.x - popover.width;
+        popover.x = leftCenter.x - popover.width - units.gu(0.5);
         popover.y = leftCenter.y - popover.height/2;
         __fixVerticalMargins();
     }
 
     function __updatePositionRight() {
         var rightCenter = overlay.mapFromItem(caller, caller.width, caller.height/2);
-        popover.x = rightCenter.x;
+        popover.x = rightCenter.x + units.gu(0.5);
         popover.y = rightCenter.y - popover.height/2;
         __fixVerticalMargins();
     }
