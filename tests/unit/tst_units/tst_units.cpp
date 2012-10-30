@@ -165,6 +165,7 @@ private Q_SLOTS:
 
     void resolveExactMatch() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
@@ -177,6 +178,7 @@ private Q_SLOTS:
 
     void resolveExactMatchQrc() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
@@ -189,6 +191,7 @@ private Q_SLOTS:
 
     void resolveLowerGridUnit() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
@@ -200,6 +203,7 @@ private Q_SLOTS:
 
     void resolveLowerGridUnitQrc() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
@@ -211,6 +215,7 @@ private Q_SLOTS:
 
     void resolveHigherGridUnit() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
@@ -222,6 +227,7 @@ private Q_SLOTS:
 
     void resolveHigherGridUnitQrc() {
         UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
