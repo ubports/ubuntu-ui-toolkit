@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class TabsTests(TavastiaTestCase):
     """Tests for Tabs component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"TabsTests")
 
     def test_can_select_tabs(self):
         """Must be able to select the Qml Tabs component."""

@@ -18,7 +18,7 @@ from tavastia.tests import TavastiaTestCase
 class ProgressBarTests(TavastiaTestCase):
     """Tests for ProgressBar component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"ProgressBarTests")
 
     def test_can_select_progressbar(self):
         """Must be able to select the Qml ProgressBar component."""

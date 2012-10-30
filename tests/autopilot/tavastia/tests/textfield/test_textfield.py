@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class TextFieldTests(TavastiaTestCase):
     """Tests for TextField component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"TextFieldTests")
 
     def test_can_select_textfield(self):
         """Must be able to select the Qml TextField component."""

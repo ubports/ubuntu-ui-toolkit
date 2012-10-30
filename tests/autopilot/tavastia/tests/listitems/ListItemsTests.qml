@@ -39,24 +39,24 @@ Item {
         }
 
         ListItem.Divider {
-		id: listItemDivider
-	}
+            id: listItemDivider
+        }
 
         ListItem.ValueSelector {
-	    id: listItemValueSelector
+            id: listItemValueSelector
             text: "Value Selector"
             values: ["Value 1", "Value 2", "Value 3", "Value 4"]
         }
 
-	ListItem.Standard {
-	    id: listItemWithControl
-	    text: "With Control"
-	    control: Switch {
-	        anchors {
-	           top: parent.top
-		   bottom: parent.bottom
-	        }
-	    }
-	}
+        ListItem.Standard {
+            id: listItemWithControl
+            text: "With Control"
+            control: Switch {
+                anchors {
+                   top: parent.top
+               bottom: parent.bottom
+                }
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class EnabledSwitchTests(TavastiaTestCase):
     """Tests for an enabled Switch component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"EnabledSwitchTests")
 
     def test_can_select_switch(self):
         """Must be able to select the Qml Switch component."""
@@ -44,7 +44,7 @@ class EnabledSwitchTests(TavastiaTestCase):
 class DisabledSwitchTests(TavastiaTestCase):
     """Tests for an enabled Switch component."""
 
-    test_qml_file = "%s/DisabledSwitchTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"DisabledSwitchTests")
 
     def test_clicked_signal_not_emitted(self):
         """Clicking a disabled switch must not emit the clicked() signal."""

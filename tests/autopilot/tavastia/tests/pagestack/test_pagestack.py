@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class PageStackTests(TavastiaTestCase):
     """Tests for PageStack component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"PageStackTests")
 
     def test_can_select_pagestack(self):
         """Must be able to select the Qml PageStack component."""

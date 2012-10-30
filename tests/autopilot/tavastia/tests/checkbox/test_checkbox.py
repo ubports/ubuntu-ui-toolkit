@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class EnabledCheckBoxTests(TavastiaTestCase):
     """Tests for an enabled CheckBox component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"EnabledCheckBoxTests")
 
     def test_can_select_checkbox(self):
         """Must be able to select the Qml CheckBox component."""
@@ -44,7 +44,7 @@ class EnabledCheckBoxTests(TavastiaTestCase):
 class DisabledCheckBoxTests(TavastiaTestCase):
     """Tests for an enabled CheckBox component."""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"DisabledCheckBoxTests")
 
     def test_clicked_signal_not_emitted(self):
         """Clicking a disabled CheckBox must not emit the clicked() signal."""
