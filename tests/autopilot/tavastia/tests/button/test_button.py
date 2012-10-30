@@ -89,6 +89,13 @@ class DisabledButtonTests(TavastiaTestCase):
 
     test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"DisabledButtonTests")
 
+    def test_can_select_button(self):
+        """Must be able to select the Qml button component."""
+
+        btn = self.app.select_single('Button')
+        self.assertThat(btn, Not(Is(None)))
+
+
     def test_button_is_disabled(self):
         """Test that the button really is disabled."""
 
@@ -113,6 +120,13 @@ class ButtonColorTests(TavastiaTestCase):
     """Tests for the button color properties."""
 
     test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"ButtonColorTests")
+
+    def test_can_select_button(self):
+        """Must be able to select the Qml button component."""
+
+        btn = self.app.select_single('Button')
+        self.assertThat(btn, Not(Is(None)))
+
 
     def test_button_has_correct_color(self):
         """Button component must have correct color."""
@@ -144,7 +158,31 @@ class ButtonColorTests(TavastiaTestCase):
         self.assertThat(btnbase, Not(Is(None)))
 
 
-# This is a little hack to allow you to launch the test_qml in the viewer so it
-# shows up in the autopilot vis tool. Not really needed at all...
-if __name__ == '__main__':
-    ButtonColorTests('test_button_has_correct_color').launch_test_qml()
+
+class ButtonIconTests(TavastiaTestCase):
+    """Tests for the button icon properties"""
+
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"ButtonIconTests")
+
+    def test_can_select_button(self):
+        """Must be able to select the Qml button component."""
+
+        btn = self.app.select_single('Button')
+        self.assertThat(btn, Not(Is(None)))
+
+
+    def test_can_set_icon(self):
+        """Must be able to set icon for the Button"""
+
+        btn = self.app.select_single('Button')
+        dir(btn)
+        self.assertThat(btn.iconSource, Equals("call_icon.png"))
+
+
+    def test_can_set_icon_position(self):
+        """Must be able to set icon position for the Button"""
+
+        btn = self.app.select_single('Button')
+        self.assertThat(btn.iconPosition, Equals("right"))
+
+
