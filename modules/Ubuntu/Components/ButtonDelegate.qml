@@ -17,7 +17,6 @@
 import QtQuick 2.0
 
 Item {
-    z: -1
     anchors.fill: parent
 
     // pick either a clear or dark text color depending on the luminance of the
@@ -44,13 +43,6 @@ Item {
             return (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
         }
         return ""
-    }
-
-    // FIXME: this binding will disappear once we move ButtonWithForeground into a separate Button style
-    Binding {
-        target: item
-        property: "textColor"
-        value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
     }
 
     // FIXME: think of using distance fields
@@ -94,5 +86,9 @@ Item {
         source: borderSource()
         border.left: units.dp(14); border.top: units.dp(17)
         border.right: units.dp(15); border.bottom: units.dp(18)
+    }
+
+    TransparentButtonDelegate {
+        textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
     }
 }
