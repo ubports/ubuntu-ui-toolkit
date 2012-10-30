@@ -25,4 +25,6 @@ MathUtils 0.1 mathUtils.js
 # styles
 ButtonStyle 0.1 ButtonStyle.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
+TabButtonStyle 0.1 TabButtonStyle.qml
+TabButtonDelegate 0.1 TabButtonDelegate.qml
 TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml

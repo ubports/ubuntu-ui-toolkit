@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype tabButton
@@ -22,8 +23,10 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief Button used in Tab bars.
 */
-ButtonWithForeground {
+//ButtonWithForegroud {
+Button {
     id: tabButton
+    Theming.ItemStyle.class: "tab-button"
 
     /*!
       \preliminary
@@ -33,7 +36,6 @@ ButtonWithForeground {
     property bool selected: false;
 
     height: parent ? parent.height : units.gu(6)
-    textColor: "#757373"
 
     /*!
        \internal
@@ -46,23 +48,4 @@ ButtonWithForeground {
       \internal
      */
     property bool __isLast: false
-
-
-    BorderImage {
-        id: background
-        z: -1
-
-        property Item allTabs: tabButton.parent
-
-        anchors.fill: parent
-        source: {
-            if (tabButton.__isFirst) {
-                return tabButton.selected ? "artwork/TabLeftSelected.sci" : "artwork/TabLeftUnselected.sci"
-            } else if (tabButton.__isLast) {
-                return tabButton.selected ? "artwork/TabRightSelected.sci" : "artwork/TabRightUnselected.sci"
-            } else {
-                return tabButton.selected ? "artwork/TabMiddleSelected.sci" : "artwork/TabMiddleUnselected.sci"
-            }
-        }
-    }
 }
