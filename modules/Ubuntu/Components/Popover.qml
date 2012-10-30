@@ -22,8 +22,26 @@ import QtQuick 2.0
 Item {
     id: popover
 
-    width: units.gu(40)
-    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
+//    width: units.gu(40)
+//    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
+
+    width: __getWidth()
+    height: __getHeight()
+
+    function __getWidth() {
+        if (!overlay) return units.gu(40);
+        return Math.min(units.gu(40), overlay.width - 2*edgeMargins);
+    }
+
+    function __getHeight() {
+        var h;
+        if (!overlay) h = units.gu(40);
+        else {
+            h = Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight));
+            h = Math.min(h, overlay.height - 2*edgeMargins);
+        }
+        return h;
+    }
 
     property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
     property real minHeight: units.gu(32)
@@ -34,6 +52,8 @@ Item {
     onCallerChanged: __updatePosition()
     onOverlayChanged: {
         parent = overlay
+        overlay.widthChanged.connect(popover.__updatePosition);
+        overlay.heightChanged.connect(popover.__updatePosition);
         __updatePosition();
     }
 
@@ -51,6 +71,18 @@ Item {
 
     function __updatePosition() {
         if (!overlay || !caller) return;
+
+        // TODO: figure out what to do when the overlay is too small to fit the popover.
+//        if (popover.width > overlay.width) {
+//            __updatePositionCenterInOverlay();
+//            return;
+//        }
+
+//        if (popover.height > overlay.height) {
+//            __updatePositionCenterInOverlay();
+//            return;
+//        }
+
         __updatePositionAbove();
         if (popover.y < edgeMargins) __updatePositionLeft();
         if (popover.x < edgeMargins) __updatePositionRight();
