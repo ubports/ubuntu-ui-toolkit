@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class EnabledButtonTests(TavastiaTestCase):
     """Tests for an enabled Button component."""
 
-    test_qml_file = "%s/EnabledButtonTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_can_select_button(self):
         """Must be able to select the Qml button component."""
@@ -87,7 +87,7 @@ class EnabledButtonTests(TavastiaTestCase):
 class DisabledButtonTests(TavastiaTestCase):
     """Tests for a disabled button component."""
 
-    test_qml_file = "%s/DisabledButtonTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_button_is_disabled(self):
         """Test that the button really is disabled."""
@@ -114,7 +114,7 @@ class DisabledButtonTests(TavastiaTestCase):
 class ButtonColorTests(TavastiaTestCase):
     """Tests for the button color properties."""
 
-    test_qml_file = "%s/ButtonColorTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_button_has_correct_color(self):
         """Button component must have correct color."""

@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class ActivityIndicatorTests(TavastiaTestCase):
     """Tests for ActivityIndicator component."""
 
-    test_qml_file = "%s/ActivityIndicatorTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_can_select_activityindicator(self):
         """Must be able to select the Qml ActivityIndicator component."""

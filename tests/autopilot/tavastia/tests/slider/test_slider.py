@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class SliderTests(TavastiaTestCase):
     """Tests for Slider component."""
 
-    test_qml_file = "%s/SliderTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_can_select_slider(self):
         """Must be able to select the Qml Slider component."""

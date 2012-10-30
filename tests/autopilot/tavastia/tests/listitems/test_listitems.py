@@ -17,7 +17,7 @@ from tavastia.tests import TavastiaTestCase
 class ListItemsTests(TavastiaTestCase):
     """Tests for ListItems component."""
 
-    test_qml_file = "%s/ListItemsTests.qml" % os.path.dirname(os.path.realpath(__file__))
+    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),self.__class__.__name__)
 
     def test_can_select_header(self):
         """Must be able to select the Qml ListItem.Header component."""
