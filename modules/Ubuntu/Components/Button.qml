@@ -19,7 +19,7 @@ import QtQuick 2.0
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components  0.1 as Theming
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Button
@@ -50,31 +50,52 @@ import Ubuntu.Components  0.1 as Theming
         }
     \endqml
 */
-ButtonWithForeground {
+AbstractButton {
     id: button
 
     width: units.gu(11)
     height: units.gu(5)
     // FIXME: see FIXME above
-    Theming.ItemStyle.class: "Button"
+    Theming.ItemStyle.class: "button"
 
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
     // FIXME: see FIXME above
-    property color color: (Theming.ItemStyle.style) ? Theming.ItemStyle.style.color : "#e3e5e8"
+    property color color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
+                              Theming.ItemStyle.style.color : "transparent"
 
     /*!
        \preliminary
-       The color when the button is pressed.
+       The source URL of the icon to display inside the button.
+       Leave this value blank for a text-only button.
+       \qmlproperty url iconSource
     */
-    property color pressedColor: color
+    property url iconSource
 
     /*!
        \preliminary
-       Specify whether the layer behind the button has a dark color.
-       This will change the visuals/shading of the button.
+       The text to display in the button. If an icon was defined,
+       the text will be shown next to the icon, otherwise it will
+       be centered. Leave blank for an icon-only button.
+       \qmlproperty string text
     */
-    property bool darkBorder: false
+    property string text
+
+    /*!
+       \preliminary
+
+       The position of the icon relative to the text. Options
+       are "left" and "right". The default value is "left".
+
+       If only text or only an icon is defined, this
+       property is ignored and the text or icon is
+       centered horizontally and vertically in the button.
+
+       Currently this is a string value. We are waiting for
+       support for enums:
+       https://bugreports.qt-project.org/browse/QTBUG-14861
+    */
+    property string iconPosition: "left"
 }

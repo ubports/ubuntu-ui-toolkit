@@ -20,7 +20,7 @@ import "fontUtils.js" as FontUtils
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components  0.1 as Theming
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype TextCustom
@@ -31,6 +31,7 @@ import Ubuntu.Components  0.1 as Theming
     \b{This component is under heavy development.}
 */
 Text {
+    Theming.ItemStyle.class: "textcustom"
     // FIXME: see FIXME above
     color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
              Theming.ItemStyle.style.color : "black"

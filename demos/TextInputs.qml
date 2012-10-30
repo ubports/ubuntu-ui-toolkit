@@ -91,11 +91,13 @@ Template {
                     KeyNavigation.tab: textField1
                     KeyNavigation.backtab: textField4
 
-                    primaryItem: ButtonWithForeground {
+                    primaryItem: Button {
+                        ItemStyle.class: "transparent-button"
                         iconSource: "call_icon.png"
                         width: units.gu(3)
                     }
-                    secondaryItem: ButtonWithForeground {
+                    secondaryItem: Button {
+                        ItemStyle.class: "transparent-button"
                         iconSource: "small_avatar.png"
                         width: height
                         height: parent.height - units.gu(0.5)

@@ -17,9 +17,7 @@
 import QtQuick 2.0
 
 QtObject {
-    property color color: "transparent"
-
-    property url shape: ""
-    property url borderIdle: ""
-    property url borderPressed: ""
+    property url backgroundLeft: ""
+    property url backgroundRight: ""
+    property url backgroundMiddle: ""
 }

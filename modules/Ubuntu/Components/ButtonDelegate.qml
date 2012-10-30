@@ -17,7 +17,6 @@
 import QtQuick 2.0
 
 Item {
-    z: -1
     anchors.fill: parent
 
     // pick either a clear or dark text color depending on the luminance of the
@@ -32,25 +31,22 @@ Item {
 
     function shapeSource()
     {
-        if (itemStyle) {
-            return item.darkBorder ? itemStyle.shapeDark : itemStyle.shapeNormal
+        if (itemStyle && itemStyle.shape !== undefined) {
+            return itemStyle.shape;
         }
         return ""
     }
 
     function borderSource()
     {
-        if (itemStyle) {
-            return (item.darkBorder) ? (item.pressed ? itemStyle.borderDarkPressed : itemStyle.borderDarkIdle)
-                                : (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
+        if (!itemStyle) return "";
+        var result = "";
+        if (item.pressed) {
+            result = itemStyle.borderPressed !== undefined ? itemStyle.borderPressed : "";
+        } else {
+            result = itemStyle.borderIdle !== undefined ? itemStyle.borderIdle : "";
         }
-        return ""
-    }
-
-    Binding {
-        target: item
-        property: "textColor"
-        value: __luminance(base.color) <= 0.72 ? "white" : "#757373"
+        return result;
     }
 
     // FIXME: think of using distance fields
@@ -71,7 +67,7 @@ Item {
         id: base
 
         anchors.fill: shape
-        color: item.pressed ? item.pressedColor : item.color
+        color: item.color
 
     }
 
@@ -94,5 +90,9 @@ Item {
         source: borderSource()
         border.left: units.dp(14); border.top: units.dp(17)
         border.right: units.dp(15); border.bottom: units.dp(18)
+    }
+
+    TransparentButtonDelegate {
+        textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
     }
 }

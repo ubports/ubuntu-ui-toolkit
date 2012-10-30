@@ -23,8 +23,6 @@ Rectangle {
 
     color: "#e6e6e6"
 
-//    function i18n.tr(text) { return i18n.tr(text); }
-
     Rectangle {
         anchors.fill: widgetList
         color: "#cccccc"
@@ -73,12 +71,11 @@ Rectangle {
                 {"label": i18n.tr("Tabs (Non Segmented)"), "source": ""},
                ]
 
-        delegate: ButtonWithForeground {
+        delegate: Button {
+            ItemStyle.class: "transparent-button"
             height: units.gu(6)
             width: ListView.view.width
-            textSize: "medium"
             text: modelData.label
-            textColor: "#757373"
             onClicked: widgetList.selectedIndex = index
             enabled: modelData.source != ""
 

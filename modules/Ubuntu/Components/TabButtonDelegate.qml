@@ -16,10 +16,22 @@
 
 import QtQuick 2.0
 
-QtObject {
-    property color color: "transparent"
+Item {
+    anchors.fill: parent
 
-    property url shape: ""
-    property url borderIdle: ""
-    property url borderPressed: ""
+    BorderImage {
+        anchors.fill: parent
+        source: {
+            if (tabButton.__isFirst) {
+                return itemStyle.backgroundLeft;
+            } else if (tabButton.__isLast) {
+                return itemStyle.backgroundRight;
+            } else {
+                return itemStyle.backgroundMiddle;
+            }
+        }
+    }
+
+    TransparentButtonDelegate {
+    }
 }
