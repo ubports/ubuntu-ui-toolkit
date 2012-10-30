@@ -11,20 +11,13 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-
+import os
 from tavastia.tests import TavastiaTestCase
 
 class EnabledCheckBoxTests(TavastiaTestCase):
     """Tests for an enabled CheckBox component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    CheckBox {
-       id: checkbox
-    }
-    """)
+    test_qml_file = "%s/EnabledCheckBoxTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_can_select_checkbox(self):
         """Must be able to select the Qml CheckBox component."""
@@ -51,16 +44,7 @@ class EnabledCheckBoxTests(TavastiaTestCase):
 class DisabledCheckBoxTests(TavastiaTestCase):
     """Tests for an enabled CheckBox component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    CheckBox {
-       id: checkbox
-       enabled: false
-    }
-    """)
-
+    test_qml_file = "%s/DisabledCheckBoxTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_clicked_signal_not_emitted(self):
         """Clicking a disabled CheckBox must not emit the clicked() signal."""

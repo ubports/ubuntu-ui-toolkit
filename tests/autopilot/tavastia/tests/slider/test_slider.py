@@ -11,65 +11,13 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-
+import os
 from tavastia.tests import TavastiaTestCase
 
 class SliderTests(TavastiaTestCase):
     """Tests for Slider component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-Column {
-    Slider {
-       id: slider
-       minimumValue: 0
-       maximumValue: 11
-    }
-Button {
-            text: "live"
-            onClicked: {
-                slider.live = !slider.live;
-            }
-        }
-        Button {
-            text: "minmax_values"
-            onClicked: {
-                slider.minimumValue = slider.minimumValue + 1;
-                slider.maximumValue = slider.maximumValue + 10;
-            }
-        }
-        Button {
-            text: "reset values"
-            onClicked: {
-                slider.value = -10;
-                slider.minimumValue = -10;
-                slider.maximumValue = 10;
-                timer.running = false;
-            }
-        }
-        Button {
-            text: "inc value"
-
-            property bool running : timer.running
-
-            onClicked: {
-                timer.running = true;
-            }
-        }
-        Timer {
-            id: timer
-            interval: 100
-            running: false
-            repeat: true
-            onTriggered: {
-                slider.value += 1;
-                running = (slider.value!==slider.maximumValue) 
-            }
-        }
-}
-    """)
+    test_qml_file = "%s/SliderTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_can_select_slider(self):
         """Must be able to select the Qml Slider component."""

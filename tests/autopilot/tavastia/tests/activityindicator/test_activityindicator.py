@@ -11,20 +11,13 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-
+import os
 from tavastia.tests import TavastiaTestCase
 
 class ActivityIndicatorTests(TavastiaTestCase):
     """Tests for ActivityIndicator component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    ActivityIndicator {
-       id: activityIndicator
-    }
-    """)
+    test_qml_file = "%s/ActivityIndicatorTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_can_select_activityindicator(self):
         """Must be able to select the Qml ActivityIndicator component."""
@@ -32,4 +25,11 @@ class ActivityIndicatorTests(TavastiaTestCase):
         obj = self.app.select_single('ActivityIndicator')
         self.assertThat(obj, Not(Is(None)))
     
-
+    def test_can_set_running(self):
+        obj = self.app.select_single('ActivityIndicator')
+        self.assertThat(obj, Not(Is(None)))
+        
+        obj.running = True
+        
+        obj.running = False
+        

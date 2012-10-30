@@ -11,20 +11,13 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-
+import os
 from tavastia.tests import TavastiaTestCase
 
 class TextFieldTests(TavastiaTestCase):
     """Tests for TextField component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    TextField {
-       
-    }
-    """)
+    test_qml_file = "%s/TextFieldTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_can_select_textfield(self):
         """Must be able to select the Qml TextField component."""

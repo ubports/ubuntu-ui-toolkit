@@ -11,20 +11,13 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-
+import os
 from tavastia.tests import TavastiaTestCase
 
 class EnabledSwitchTests(TavastiaTestCase):
     """Tests for an enabled Switch component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    Switch {
-      
-    }
-    """)
+    test_qml_file = "%s/EnabledSwitchTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_can_select_switch(self):
         """Must be able to select the Qml Switch component."""
@@ -51,15 +44,7 @@ class EnabledSwitchTests(TavastiaTestCase):
 class DisabledSwitchTests(TavastiaTestCase):
     """Tests for an enabled Switch component."""
 
-    test_qml = dedent("""\
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    Switch {
-       enabled: false
-    }
-    """)
-
+    test_qml_file = "%s/DisabledSwitchTests.qml" % os.path.dirname(os.path.realpath(__file__))
 
     def test_clicked_signal_not_emitted(self):
         """Clicking a disabled switch must not emit the clicked() signal."""
