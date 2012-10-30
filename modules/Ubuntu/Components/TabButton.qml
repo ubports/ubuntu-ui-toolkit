@@ -15,6 +15,10 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import Ubuntu.Components 0.1 as Theming
 
 /*!
@@ -25,6 +29,7 @@ import Ubuntu.Components 0.1 as Theming
 */
 Button {
     id: tabButton
+    // FIXME: see FIXME above
     Theming.ItemStyle.class: "tab-button"
 
     /*!
