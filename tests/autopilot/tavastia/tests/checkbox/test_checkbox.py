@@ -11,7 +11,6 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
-import time
 
 from tavastia.tests import TavastiaTestCase
 
@@ -44,9 +43,6 @@ class EnabledCheckBoxTests(TavastiaTestCase):
         self.mouse.move_to_object(obj)
         self.mouse.click()
 
-        # wait until it is done
-        time.sleep(3)
-
         self.assertThat(obj.checked, Eventually(Equals(True)))
 
         self.assertThat(signal.was_emitted, Equals(True))
@@ -76,9 +72,6 @@ class DisabledCheckBoxTests(TavastiaTestCase):
 
         self.mouse.move_to_object(obj)
         self.mouse.click()
-
-        # wait until it is done
-        time.sleep(3)
 
         self.assertThat(obj.checked, Eventually(Equals(False)))
 

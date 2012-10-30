@@ -90,9 +90,6 @@ class ProgressBarTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        # wait until it is done
-        time.sleep(3)
-
         # we should be able to set the value within the QML, check Button::onClicked
         self.assertThat(obj.indeterminate, Eventually(Equals(True)))
 
@@ -112,9 +109,6 @@ class ProgressBarTests(TavastiaTestCase):
         self.mouse.move_to_object(btn)
         self.mouse.click()
 
-        # wait until it is done
-        time.sleep(3)
-
         # we should be able to set the value within the QML, check Button::onClicked
         self.assertThat(obj.minimumValue, Eventually(Equals(old_minimumValue+1)))
         self.assertThat(obj.maximumValue, Eventually(Equals(old_maximumValue+10)))
@@ -129,8 +123,6 @@ class ProgressBarTests(TavastiaTestCase):
         # lets reset values
         self.mouse.move_to_object(btnreset)
         self.mouse.click()
-
-        time.sleep(3)
         
         # read current values
         self.assertThat(obj.maximumValue, Equals(10))
@@ -143,9 +135,6 @@ class ProgressBarTests(TavastiaTestCase):
         # start the qml timer which should increase the value
         self.mouse.move_to_object(btnvalue)
         self.mouse.click()
-        
-        # wait until it is done
-        time.sleep(10)
 
         # the value should have changed but maximumValue and minimumValue should be the same
         self.assertThat(obj.value, Eventually(Equals(maximumValue)))
