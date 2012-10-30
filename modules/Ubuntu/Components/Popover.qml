@@ -31,19 +31,72 @@ Item {
     property Item overlay
     property Item caller
 
-    onCallerChanged: updatePosition()
-    onOverlayChanged: updatePosition()
+    onCallerChanged: __updatePosition()
+    onOverlayChanged: {
+        parent = overlay
+        __updatePosition();
+    }
 
     default property alias container: containerLayout.data
+
+    /*!
+      \preliminary
+      The minimum distance that the popover must keep from the edges of the overlay
+     */
+    property real edgeMargins: units.gu(2)
 
 
     // priority: above, beside, below
     property string relativePosition: "above"
 
-    function updatePosition() {
+    function __updatePosition() {
         if (!overlay || !caller) return;
-        popover.x = caller.x - units.gu(5);
-        popover.y = caller.y + units.gu(5);
+        __updatePositionAbove();
+        if (popover.y < edgeMargins) __updatePositionLeft();
+        if (popover.x < edgeMargins) __updatePositionRight();
+        if (popover.x + popover.width > overlay.width - edgeMargins) __updatePositionBelow();
+    }
+
+    function __fixHorizontalMargins() {
+        // TODO: margins may be computed with min/max
+        // check the left margin
+        if (popover.x < edgeMargins) popover.x = edgeMargins;
+
+        // check the right margin
+        if (popover.x + popover.width > overlay.width - edgeMargins) popover.x = overlay.width - popover.width - edgeMargins;
+    }
+
+    function __fixVerticalMargins() {
+        if (popover.y < edgeMargins) popover.y = edgeMargins;
+        if (popover.y + popover.height > overlay.height - edgeMargins) popover.y = overlay.height - popover.height - edgeMargins;
+    }
+
+    function __updatePositionAbove() {
+        var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
+        popover.x = topCenter.x - popover.width/2;
+        popover.y = topCenter.y - popover.height;
+        __fixHorizontalMargins()
+    }
+
+    function __updatePositionBelow() {
+        var bottomCenter = overlay.mapFromItem(caller, caller.width/2, caller.height);
+        popover.x = bottomCenter.x - popover.width/2;
+        popover.y = bottomCenter.y;
+        __fixHorizontalMargins();
+    }
+
+    function __updatePositionLeft() {
+        var leftCenter = overlay.mapFromItem(caller, 0, caller.height/2);
+        popover.x = leftCenter.x - popover.width;
+        popover.y = leftCenter.y - popover.height/2;
+        __fixVerticalMargins();
+    }
+
+    function __updatePositionRight() {
+        var rightCenter = overlay.mapFromItem(caller, caller.width, caller.height/2);
+        popover.x = rightCenter.x;
+        popover.y = rightCenter.y - popover.height/2;
+        __fixVerticalMargins();
     }
 
     Rectangle {

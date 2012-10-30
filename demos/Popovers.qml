@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+//    id: root
     title: "Popovers"
 
     Rectangle {
@@ -27,7 +28,7 @@ Template {
         id: canvas
 
         Popover {
-            z: Number.MAX_VALUE
+//            z: Number.MAX_VALUE
             id: popover
             visible: false
             overlay: root
