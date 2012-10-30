@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
+    id: root
     width: units.gu(100)
     height: units.gu(75)
 
@@ -47,7 +48,7 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 0
+        property int selectedIndex: 13 // TODO: make 0 after finish testing
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
                 {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},

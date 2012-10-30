@@ -16,40 +16,82 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     title: "Popovers"
 
-//    Column {
-//        spacing: 30
-
-//        TemplateRow {
-//            title: "TODO"
-
-//            Button {
-//                text: "Pop!"
-//            }
-//        }
-//    }
-
     Rectangle {
-        color: "black"
+        color: "green" //transparent"
         anchors.fill: parent
         id: canvas
+
+        Popover {
+            z: Number.MAX_VALUE
+            id: popover
+            visible: false
+            overlay: root
+
+            Column {
+                spacing: units.gu(0.5)
+                width: parent.width
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    right: parent.right
+                    margins: units.gu(1)
+                }
+
+                ListItem.SingleControl {
+                    highlightWhenPressed: false
+                    control: Button {
+                        width: parent.width
+                        text: "Do something"
+                    }
+                }
+                ListItem.SingleControl {
+                    highlightWhenPressed: false
+                    control: Button {
+                        width: parent.width
+                        text: "Do something else"
+                    }
+                }
+                ListItem.SingleControl {
+                    highlightWhenPressed: false
+                    control: Button {
+                        width: parent.width
+                        text: "Cancel! Abort! Break! NOOOOO"
+                    }
+                }
+            }
+        }
 
         Component {
             id: button
             Button {
+                id: theActualButton
                 text: "Pop!"
+                width: 100
+                onClicked: {
+                    popover.caller = theActualButton;
+                    popover.visible = true;
+                }
             }
         }
 
         Component.onCompleted: {
+            var i;
             var b = [];
-            for (var i=0; i < 10; i++) b[i]
-            var b1 = button.createObject(canvas);
-            b1.anchors.top = canvas.top;
-            b1.anchors.left = canvas.left;
+            for (i=0; i < 9; i++) b[i] = button.createObject(canvas);
+            for (i=0; i < 3; i++) b[i].anchors.top = canvas.top;
+            for (i=3; i < 6; i++) b[i].anchors.verticalCenter = canvas.verticalCenter;
+            for (i=6; i < 9; i++) b[i].anchors.bottom = canvas.bottom;
+
+            for (i=0; i < 3; i++) {
+                b[3*i].anchors.left = canvas.left;
+                b[1+3*i].anchors.horizontalCenter = canvas.horizontalCenter;
+                b[2+3*i].anchors.right = canvas.right;
+            }
         }
     }
 }
