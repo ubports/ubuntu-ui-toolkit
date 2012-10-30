@@ -31,7 +31,7 @@ Item {
 
     function shapeSource()
     {
-        if (itemStyle) {
+        if (itemStyle && itemStyle.shape !== undefined) {
             return itemStyle.shape;
         }
         return ""
@@ -39,10 +39,14 @@ Item {
 
     function borderSource()
     {
-        if (itemStyle) {
-            return (item.pressed ? itemStyle.borderPressed : itemStyle.borderIdle);
+        if (!itemStyle) return "";
+        var result = "";
+        if (item.pressed) {
+            result = itemStyle.borderPressed !== undefined ? itemStyle.borderPressed : "";
+        } else {
+            result = itemStyle.borderIdle !== undefined ? itemStyle.borderIdle : "";
         }
-        return ""
+        return result;
     }
 
     // FIXME: think of using distance fields

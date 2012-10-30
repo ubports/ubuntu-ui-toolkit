@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype tabButton
@@ -22,8 +27,10 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief Button used in Tab bars.
 */
-ButtonWithForeground {
+Button {
     id: tabButton
+    // FIXME: see FIXME above
+    Theming.ItemStyle.class: "tab-button"
 
     /*!
       \preliminary
@@ -33,7 +40,6 @@ ButtonWithForeground {
     property bool selected: false;
 
     height: parent ? parent.height : units.gu(6)
-    textColor: "#757373"
 
     /*!
        \internal
@@ -46,23 +52,4 @@ ButtonWithForeground {
       \internal
      */
     property bool __isLast: false
-
-
-    BorderImage {
-        id: background
-        z: -1
-
-        property Item allTabs: tabButton.parent
-
-        anchors.fill: parent
-        source: {
-            if (tabButton.__isFirst) {
-                return tabButton.selected ? "artwork/TabLeftSelected.sci" : "artwork/TabLeftUnselected.sci"
-            } else if (tabButton.__isLast) {
-                return tabButton.selected ? "artwork/TabRightSelected.sci" : "artwork/TabRightUnselected.sci"
-            } else {
-                return tabButton.selected ? "artwork/TabMiddleSelected.sci" : "artwork/TabMiddleUnselected.sci"
-            }
-        }
-    }
 }
