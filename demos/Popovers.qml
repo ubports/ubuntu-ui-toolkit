@@ -22,7 +22,7 @@ Template {
     title: "Popovers"
 
     Rectangle {
-        color: "green" //transparent"
+        color: "transparent"
         anchors.fill: parent
         id: canvas
 
@@ -32,35 +32,41 @@ Template {
             visible: false
             overlay: root
 
-            Column {
-                spacing: units.gu(0.5)
-                width: parent.width
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    right: parent.right
-                    margins: units.gu(1)
-                }
+            ListItem.Header { text: "Share" }
 
-                ListItem.SingleControl {
-                    highlightWhenPressed: false
-                    control: Button {
-                        width: parent.width
-                        text: "Do something"
+            ListItem.Standard {
+//                highlightWhenPressed: false
+                text: "Do something"
+//                control: Button {
+//                    text: "Do something"
+//                    anchors {
+//                        fill: parent
+//                        margins: units.gu(1)
+//                    }
+//                }
+            }
+            ListItem.Standard {
+                text: "Do something else"
+            }
+
+            ListItem.Header { text: "Paste into app" }
+            ListItem.SingleControl {
+                highlightWhenPressed: false
+                control: Button {
+                    text: "Do nothing"
+                    anchors {
+                        fill: parent
+                        margins: units.gu(1)
                     }
                 }
-                ListItem.SingleControl {
-                    highlightWhenPressed: false
-                    control: Button {
-                        width: parent.width
-                        text: "Do something else"
-                    }
-                }
-                ListItem.SingleControl {
-                    highlightWhenPressed: false
-                    control: Button {
-                        width: parent.width
-                        text: "Cancel! Abort! Break! NOOOOO"
+            }
+            ListItem.SingleControl {
+                highlightWhenPressed: false
+                control: Button {
+                    text: "Cancel! Abort! Break! NOOOOO"
+                    anchors {
+                        fill: parent
+                        margins: units.gu(1)
                     }
                 }
             }
