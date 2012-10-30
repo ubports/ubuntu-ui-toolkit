@@ -52,13 +52,15 @@ import "fontUtils.js" as FontUtils
                 source: "magnifier.png"
             }
             secondaryItem: Row {
-                ButtonWithForeground {
+                Button {
+                    ItemStyle.class: "transparent-button"
                     height: parent.height
                     width: height
                     iconSource: "caps-lock.png"
                     onClicked: doSomething()
                 }
-                ButtonWithForeground {
+                Button {
+                    ItemStyle.class: "transparent-button"
                     height: parent.height
                     width: height
                     iconSource: "num-lock.png"
@@ -484,7 +486,8 @@ FocusScope {
             }
         }
 
-        ButtonWithForeground {
+        Button {
+            ItemStyle.class: "transparent-button"
             id: clearButton
             anchors {
                 right: rightPane.left

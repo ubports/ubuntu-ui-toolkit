@@ -13,6 +13,7 @@ properties typed as variant.
 */
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
 /*
@@ -34,15 +35,14 @@ Examples:
 */
 @qml-import(Ubuntu.Components 0.1);
 
-.green {
-   color: "green"
-}
-
 .button, .custom-button {
     color: "#e3e5e8";
     shape: url("artwork/ButtonShape.png");
     borderIdle: url("artwork/ButtonBorderIdle.png");
     borderPressed: url("artwork/ButtonBorderPressed.png");
+}
+
+.transparent-button {
 }
 
 .dark-button {
