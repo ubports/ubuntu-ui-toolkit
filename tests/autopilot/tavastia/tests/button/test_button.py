@@ -107,9 +107,7 @@ class DisabledButtonTests(TavastiaTestCase):
         self.mouse.click()
 
         self.assertThat(signal.was_emitted, Equals(False))
-        self.assertThat(signal.num_emissions, Equals(0)
-)
-
+        self.assertThat(signal.num_emissions, Equals(0))
 
 class ButtonColorTests(TavastiaTestCase):
     """Tests for the button color properties."""

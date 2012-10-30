@@ -25,11 +25,20 @@ class ActivityIndicatorTests(TavastiaTestCase):
         obj = self.app.select_single('ActivityIndicator')
         self.assertThat(obj, Not(Is(None)))
     
-    def test_can_set_running(self):
+    def test_can_toggle_running(self):
         obj = self.app.select_single('ActivityIndicator')
         self.assertThat(obj, Not(Is(None)))
+
+        self.assertThat(obj.running, Eventually(Equals(False)))
         
-        obj.running = True
-        
-        obj.running = False
+        btn = self.app.select_single('Button')
+
+        self.mouse.move_to_object(btn)
+        self.mouse.click()
+
+        self.assertThat(obj.running, Eventually(Equals(True)))
+
+        self.mouse.click()
+
+        self.assertThat(obj.running, Eventually(Equals(False)))
         
