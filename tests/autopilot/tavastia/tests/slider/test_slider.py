@@ -21,9 +21,54 @@ class SliderTests(TavastiaTestCase):
     import QtQuick 2.0
     import Ubuntu.Components 0.1
 
+Column {
     Slider {
        id: slider
+       minimumValue: 0
+       maximumValue: 11
     }
+Button {
+            text: "live"
+            onClicked: {
+                slider.live = !slider.live;
+            }
+        }
+        Button {
+            text: "minmax_values"
+            onClicked: {
+                slider.minimumValue = slider.minimumValue + 1;
+                slider.maximumValue = slider.maximumValue + 10;
+            }
+        }
+        Button {
+            text: "reset values"
+            onClicked: {
+                slider.value = -10;
+                slider.minimumValue = -10;
+                slider.maximumValue = 10;
+                timer.running = false;
+            }
+        }
+        Button {
+            text: "inc value"
+
+            property bool running : timer.running
+
+            onClicked: {
+                timer.running = true;
+            }
+        }
+        Timer {
+            id: timer
+            interval: 100
+            running: false
+            repeat: true
+            onTriggered: {
+                slider.value += 1;
+                running = (slider.value!==slider.maximumValue) 
+            }
+        }
+}
     """)
 
     def test_can_select_slider(self):
@@ -32,4 +77,65 @@ class SliderTests(TavastiaTestCase):
         obj = self.app.select_single('Slider')
         self.assertThat(obj, Not(Is(None)))
     
+    def test_can_set_live(self):
+        """Must be able to set live"""
+
+        obj = self.app.select_single('Slider')
+        btn = self.app.select_single('Button', text="live")
+
+        # default value is False
+        self.assertThat(obj.live, Equals(False))
+
+        self.mouse.move_to_object(btn)
+        self.mouse.click()
+
+        # we should be able to set the value within the QML, check Button::onClicked
+        self.assertThat(obj.live, Eventually(Equals(True)))
+
+    def test_can_set_minimum_and_maximum(self):
+        """Must be able to set minimum and maximum values"""
+
+        obj = self.app.select_single('Slider')
+        btn = self.app.select_single('Button', text="minmax_values")
+
+        self.assertThat(obj.minimumValue, Equals(0))
+        self.assertThat(obj.maximumValue, Equals(11))
+
+        old_minimumValue = obj.minimumValue
+        old_maximumValue = obj.maximumValue
+
+        self.mouse.move_to_object(btn)
+        self.mouse.click()
+
+        # we should be able to set the value within the QML, check Button::onClicked
+        self.assertThat(obj.minimumValue, Eventually(Equals(old_minimumValue+1)))
+        self.assertThat(obj.maximumValue, Eventually(Equals(old_maximumValue+10)))
+
+    def test_can_set_value(self):
+        """Must be able to set value"""
+
+        obj = self.app.select_single('Slider')
+        btnreset = self.app.select_single('Button', text="reset values")
+        btnvalue = self.app.select_single('Button', text="inc value")
+
+        # lets reset values
+        self.mouse.move_to_object(btnreset)
+        self.mouse.click()
+        
+        # read current values
+        self.assertThat(obj.maximumValue, Eventually(Equals(10)))
+        self.assertThat(obj.minimumValue, Eventually(Equals(-10)))
+
+        value = obj.value
+        maximumValue = obj.maximumValue
+        minimumValue = obj.minimumValue
+
+        # start the qml timer which should increase the value
+        self.mouse.move_to_object(btnvalue)
+        self.mouse.click()
+
+        # the value should have changed but maximumValue and minimumValue should be the same
+        self.assertThat(obj.value, Eventually(Equals(maximumValue)))
+        self.assertThat(obj.maximumValue, Eventually(Equals(maximumValue)))
+        self.assertThat(obj.minimumValue, Eventually(Equals(minimumValue)))
 

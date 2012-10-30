@@ -94,7 +94,7 @@ class ProgressBarTests(TavastiaTestCase):
         self.assertThat(obj.indeterminate, Eventually(Equals(True)))
 
     def test_can_set_minimum_and_maximum(self):
-        """Must be able to set indeterminate"""
+        """Must be able to set minimum and maximum values"""
 
         obj = self.app.select_single('ProgressBar')
         btn = self.app.select_single('Button', text="minmax_values")
