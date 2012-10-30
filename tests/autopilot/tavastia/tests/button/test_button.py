@@ -159,30 +159,34 @@ class ButtonColorTests(TavastiaTestCase):
 
 
 
-class ButtonIconTests(TavastiaTestCase):
-    """Tests for the button icon properties"""
-
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"ButtonIconTests")
-
-    def test_can_select_button(self):
-        """Must be able to select the Qml button component."""
-
-        btn = self.app.select_single('Button')
-        self.assertThat(btn, Not(Is(None)))
-
-
-    def test_can_set_icon(self):
-        """Must be able to set icon for the Button"""
-
-        btn = self.app.select_single('Button')
-        dir(btn)
-        self.assertThat(btn.iconSource, Equals("call_icon.png"))
-
-
-    def test_can_set_icon_position(self):
-        """Must be able to set icon position for the Button"""
-
-        btn = self.app.select_single('Button')
-        self.assertThat(btn.iconPosition, Equals("right"))
+######################
+# Test commented out due to bug in autopilot-qt5, which has no support for 'property alias'
+# https://bugs.launchpad.net/autopilot-qt/+bug/1073265
+# 
+#class ButtonIconTests(TavastiaTestCase):
+#    """Tests for the button icon properties"""
+#
+#    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"ButtonIconTests")
+#
+#    def test_can_select_button(self):
+#        """Must be able to select the Qml button component."""
+#
+#        btn = self.app.select_single('Button')
+#        self.assertThat(btn, Not(Is(None)))
+#
+#
+#    def test_can_set_icon(self):
+#        """Must be able to set icon for the Button"""
+#
+#        btn = self.app.select_single('Button')
+#        dir(btn)
+#        self.assertThat(btn.iconSource, Equals("call_icon.png"))
+#
+#
+#    def test_can_set_icon_position(self):
+#        """Must be able to set icon position for the Button"""
+#
+#        btn = self.app.select_single('Button')
+#        self.assertThat(btn.iconPosition, Equals("right"))
 
 
