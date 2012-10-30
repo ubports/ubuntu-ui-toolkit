@@ -23,7 +23,6 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu
     \brief Button used in Tab bars.
 */
-//ButtonWithForegroud {
 Button {
     id: tabButton
     Theming.ItemStyle.class: "tab-button"
