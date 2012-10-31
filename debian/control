@@ -13,6 +13,15 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu
  The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
 
+Package: qt-components-ubuntu-doc
+Section: doc
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Qt Components for Ubuntu - documentation
+ The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
+ .
+ This package contains developer documentation.
+
 Package: qt-components-ubuntu-demos
 Section: devel
 Architecture: any
