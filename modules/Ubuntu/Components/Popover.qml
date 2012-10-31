@@ -20,26 +20,46 @@ import "mathUtils.js" as MathUtils
 Item {
     id: popover
 
-    //    width: units.gu(40)
-    //    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
-
-    // TODO: special case for phone screen
+    // TODO: detect special case for phone screen
     width: units.gu(40)
     height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
     property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
     property real minHeight: units.gu(32)
+    property real requestedWidth: units.gu(40)
+
+    property bool smallScreen: false
+    property bool landscape: false  // ignored if !smallScreen
 
     property Item overlay
     property Item caller
 
+    function __detectScreen() {
+        if (!overlay) {
+            smallScreen = false;
+            landscape = false;
+            return;
+        }
+
+        if (Math.min(overlay.width, overlay.height) <= requestedWidth) {
+            smallScreen = true;
+            landscape = overlay.width > overlay.height;
+        } else {
+            smallScreen = false;
+            landscape = false //ignored
+        }
+
+        __updatePosition();
+    }
+
+
     onHeightChanged: __updatePosition()
-    onCallerChanged: __updatePosition()
+    onCallerChanged: __detectScreen()
     onOverlayChanged: {
         parent = overlay
-        overlay.widthChanged.connect(popover.__updatePosition);
-        overlay.heightChanged.connect(popover.__updatePosition);
-        __updatePosition();
+        overlay.widthChanged.connect(popover.__detectScreen);
+        overlay.heightChanged.connect(popover.__detectScreen);
+        __detectScreen();
     }
 
     default property alias container: containerLayout.data
@@ -56,22 +76,8 @@ Item {
      */
     property real callerMargins: units.gu(0.5)
 
-    // priority: above, beside, below
-    property string relativePosition: "above"
-
     function __updatePosition() {
         if (!overlay || !caller) return;
-
-        // TODO: figure out what to do when the overlay is too small to fit the popover.
-        //        if (popover.width > overlay.width) {
-        //            __updatePositionCenterInOverlay();
-        //            return;
-        //        }
-
-        //        if (popover.height > overlay.height) {
-        //            __updatePositionCenterInOverlay();
-        //            return;
-        //        }
 
         var coords = __positionAuto();
         popover.x = coords.x;
@@ -111,25 +117,9 @@ Item {
         return __positionCenter();
     }
 
-    function __fixHorizontalMargins() {
-        // TODO: margins may be computed with min/max
-        // check the left margin
-        if (popover.x < edgeMargins) popover.x = edgeMargins;
-
-        // check the right margin
-        if (popover.x + popover.width > overlay.width - edgeMargins) popover.x = overlay.width - popover.width - edgeMargins;
-    }
-
-    function __fixVerticalMargins() {
-        if (popover.y < edgeMargins) popover.y = edgeMargins;
-        if (popover.y + popover.height > overlay.height - edgeMargins) popover.y = overlay.height - popover.height - edgeMargins;
-    }
-
     function __positionAbove() {
         var coords = new Qt.point(0, 0);
         var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
-        print("x, y = " + topCenter.x+", "+topCenter.y);
-        print("popover.height = "+popover.height);
         coords.x = topCenter.x - popover.width/2;
         coords.y = topCenter.y - popover.height - callerMargins;
         return coords;
@@ -177,7 +167,7 @@ Item {
         id: background
         anchors.fill: parent
         color: "silver"
-        opacity: 0.7
+        opacity: 0.8
         radius: units.gu(2)
     }
 
@@ -188,7 +178,7 @@ Item {
 
     Rectangle {
         id: containerItem
-        color: "pink"
+        color: "transparent"
 
         anchors {
             left: parent.left
@@ -209,8 +199,6 @@ Item {
                 right: parent.right
                 margins: units.gu(2)
             }
-            onHeightChanged: print("container layout height: "+height)
-            onTotalHeightChanged: print("container layout total height changed to: "+totalHeight)
         }
     }
 }
