@@ -26,8 +26,6 @@
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
 #define DEFAULT_RESOURCES_UNIT_PX 8
-#define RESOURCES_UNIT_FILE "resources_unit"
-
 
 static float getenvFloat(const char* name, float defaultValue)
 {
@@ -68,16 +66,14 @@ UCUnits::UCUnits(QObject *parent) :
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
     m_resourcesUnit = DEFAULT_RESOURCES_UNIT_PX;
-
-    /* A file named RESOURCES_UNIT_FILE can be provided by the application
-     * and contains the grid unit the resources have been designed to. */
-    loadResourcesUnitFile(RESOURCES_UNIT_FILE);
 }
 
-bool UCUnits::loadResourcesUnitFile(QString fileName)
+/* A file named fileName can be provided by the application
+ * and contains the grid unit the resources have been designed to. */
+bool UCUnits::loadResourcesUnitFile(const QUrl& baseUrl, QString fileName)
 {
     QUrl unresolved = QUrl::fromLocalFile(fileName);
-    fileName = m_baseUrl.resolved(unresolved).toLocalFile();
+    fileName = baseUrl.resolved(unresolved).toLocalFile();
 
     QFile resourcesUnitFile(fileName);
     if (resourcesUnitFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -105,11 +101,6 @@ void UCUnits::setGridUnit(float gridUnit)
 {
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
-}
-
-void UCUnits::setBaseUrl(const QUrl& baseUrl)
-{
-    m_baseUrl = baseUrl;
 }
 
 /*!

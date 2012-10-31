@@ -23,6 +23,8 @@
 #include <QtCore/QHash>
 #include <QtCore/QUrl>
 
+#define RESOURCES_UNIT_FILE "resources_unit"
+
 class UCUnits : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ public:
     }
 
     explicit UCUnits(QObject *parent = 0);
+    bool loadResourcesUnitFile(const QUrl& baseUrl, QString fileName);
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
     QString resolveResource(const QUrl& url);
@@ -44,19 +47,16 @@ public:
 
     // setters
     void setGridUnit(float gridUnit);
-    void setBaseUrl(const QUrl& baseUrl);
 
 Q_SIGNALS:
     void gridUnitChanged();
 
 protected:
     QString suffixForGridUnit(float gridUnit);
-    bool loadResourcesUnitFile(QString fileName);
 
 private:
     float m_gridUnit;
     float m_resourcesUnit;
-    QUrl m_baseUrl;
 };
 
 #endif // UBUNTU_COMPONENTS_UNITS_H
