@@ -85,8 +85,8 @@ Template {
                 text: "Pop!"
                 width: 100
                 onClicked: {
-                    var popover = popoverComponent.createObject(canvas);
-                    popover.area = root;
+                    var popover = popoverComponent.createObject(root);
+//                    popover.area = root;
                     popover.caller = theActualButton;
                     popover.visible = true;
                 }
