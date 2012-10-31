@@ -19,7 +19,6 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
-//    id: root
     title: "Popovers"
 
     Rectangle {
@@ -30,7 +29,6 @@ Template {
         Popover {
             id: popover
             visible: false
-            overlay: root
 
             ListItem.Header { text: "Share" }
 

@@ -21,32 +21,32 @@ Item {
     id: popover
 
     // TODO: detect special case for phone screen
-    width: units.gu(40)
+    width: smallScreen ? area.width : units.gu(40)
     height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
-    property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
+    property real maxHeight: area ? 3*area.height/4 : Number.MAX_VALUE
     property real minHeight: units.gu(32)
     property real requestedWidth: units.gu(40)
 
+    // TODO: detect not only screen size but also orientation
     property bool smallScreen: false
-    property bool landscape: false  // ignored if !smallScreen
 
-    property Item overlay
+    property Item area
     property Item caller
 
     function __detectScreen() {
-        if (!overlay) {
+        if (!area) {
             smallScreen = false;
-            landscape = false;
+//            landscape = false;
             return;
         }
 
-        if (Math.min(overlay.width, overlay.height) <= requestedWidth) {
+        if (Math.min(area.width, area.height) <= requestedWidth) {
             smallScreen = true;
-            landscape = overlay.width > overlay.height;
+//            landscape = area.width > area.height;
         } else {
             smallScreen = false;
-            landscape = false //ignored
+//            landscape = false //ignored
         }
 
         __updatePosition();
@@ -55,18 +55,23 @@ Item {
 
     onHeightChanged: __updatePosition()
     onCallerChanged: __detectScreen()
-    onOverlayChanged: {
-        parent = overlay
-        overlay.widthChanged.connect(popover.__detectScreen);
-        overlay.heightChanged.connect(popover.__detectScreen);
+    onAreaChanged: {
+        parent = area
+        area.widthChanged.connect(popover.__detectScreen);
+        area.heightChanged.connect(popover.__detectScreen);
         __detectScreen();
+    }
+    Component.onCompleted: {
+        var root = parent;
+        while (root.parent) root = root.parent;
+        area = root;
     }
 
     default property alias container: containerLayout.data
 
     /*!
       \preliminary
-      The minimum distance that the popover must keep from the edges of the overlay
+      The minimum distance that the popover must keep from the edges of the area
      */
     property real edgeMargins: units.gu(2)
 
@@ -77,7 +82,7 @@ Item {
     property real callerMargins: units.gu(0.5)
 
     function __updatePosition() {
-        if (!overlay || !caller) return;
+        if (!area || !caller) return;
 
         var coords = __positionAuto();
         popover.x = coords.x;
@@ -85,10 +90,12 @@ Item {
     }
 
     function __positionAuto() {
+        if (smallScreen) return __positionCenter();
+
         var minX = edgeMargins;
-        var maxX = overlay.width - edgeMargins - popover.width;
+        var maxX = area.width - edgeMargins - popover.width;
         var minY = edgeMargins;
-        var maxY = overlay.height - edgeMargins - popover.height;
+        var maxY = area.height - edgeMargins - popover.height;
 
         var coords = __positionAbove();
         if (coords.y >= minY) {
@@ -119,7 +126,7 @@ Item {
 
     function __positionAbove() {
         var coords = new Qt.point(0, 0);
-        var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
+        var topCenter = area.mapFromItem(caller, caller.width/2, 0);
         coords.x = topCenter.x - popover.width/2;
         coords.y = topCenter.y - popover.height - callerMargins;
         return coords;
@@ -127,7 +134,7 @@ Item {
 
     function __positionBelow() {
         var coords = new Qt.point(0, 0);
-        var bottomCenter = overlay.mapFromItem(caller, caller.width/2, caller.height);
+        var bottomCenter = area.mapFromItem(caller, caller.width/2, caller.height);
         coords.x = bottomCenter.x - popover.width/2;
         coords.y = bottomCenter.y + callerMargins;
         return coords;
@@ -135,7 +142,7 @@ Item {
 
     function __positionLeft() {
         var coords = new Qt.point(0, 0);
-        var leftCenter = overlay.mapFromItem(caller, 0, caller.height/2);
+        var leftCenter = area.mapFromItem(caller, 0, caller.height/2);
         coords.x = leftCenter.x - popover.width - callerMargins;
         coords.y = leftCenter.y - popover.height/2;
         return coords;
@@ -143,7 +150,7 @@ Item {
 
     function __positionRight() {
         var coords = new Qt.point(0, 0);
-        var rightCenter = overlay.mapFromItem(caller, caller.width, caller.height/2);
+        var rightCenter = area.mapFromItem(caller, caller.width, caller.height/2);
         coords.x = rightCenter.x + callerMargins;
         coords.y = rightCenter.y - popover.height/2;
         return coords;
@@ -151,16 +158,16 @@ Item {
 
     function __positionCenter() {
         var coords = new Qt.point(0, 0);
-        coords.x = overlay.width/2 - popover.width/2;
-        coords.y = overlay.height/2 - popover.height/2;
+        coords.x = area.width/2 - popover.width/2;
+        coords.y = area.height/2 - popover.height/2;
         return coords;
     }
 
     // Center the popover. Only as a fallback when none of the
     // other positions work.
-    function __updatePositionCenterInOverlay() {
-        popover.x = overlay.width/2 - popover.width/2;
-        popover.y = overlay.height/2 - popover.height/2;
+    function __updatePositionCenterInarea() {
+        popover.x = area.width/2 - popover.width/2;
+        popover.y = area.height/2 - popover.height/2;
     }
 
     Rectangle {
@@ -187,10 +194,12 @@ Item {
             margins: units.gu(0)
         }
 
-        height: containerLayout.totalHeight //childrenRect.height
+        height: containerLayout.totalHeight
         property real totalHeight: height
 
         Column {
+            // TODO: use the column container in one of the subclasses of Popover.
+            // It is too specific to use it here, but right now I need it for the margins.
             id: containerLayout
             property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
             anchors {
