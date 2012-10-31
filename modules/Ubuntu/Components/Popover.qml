@@ -21,7 +21,7 @@ Item {
     id: popover
 
     // TODO: detect special case for phone screen
-    width: smallScreen ? area.width : units.gu(40)
+    width: Math.min(area.width, units.gu(40)) //smallScreen ? area.width : units.gu(40)
     height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
     property real maxHeight: area ? 3*area.height/4 : Number.MAX_VALUE
@@ -41,7 +41,7 @@ Item {
             return;
         }
 
-        if (Math.min(area.width, area.height) <= requestedWidth) {
+        if (Math.min(area.width, area.height) <= requestedWidth + 2*edgeMargins) {
             smallScreen = true;
 //            landscape = area.width > area.height;
         } else {
@@ -67,7 +67,7 @@ Item {
         area = root;
     }
 
-    default property alias container: containerLayout.data
+    default property alias container: containerItem.data
 
     /*!
       \preliminary
@@ -100,24 +100,29 @@ Item {
         var coords = __positionAbove();
         if (coords.y >= minY) {
             coords.x = MathUtils.clamp(coords.x, minX, maxX);
+            print("above");
             return coords;
         }
 
         coords = __positionLeft();
         if (coords.x >= minX) {
             coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            print("left");
             return coords;
         }
 
         coords = __positionRight();
         if (coords.x <= maxX) {
             coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            print("right");
             return coords;
         }
 
         coords = __positionBelow();
         if (coords.y <= maxY) {
-            coords = MathUtils.clamp(coords.x, minX, maxX);
+            print("coords = "+coords);
+            coords.x = MathUtils.clamp(coords.x, minX, maxX);
+            print("below "+coords);
             return coords;
         }
 
@@ -191,23 +196,10 @@ Item {
             left: parent.left
             top: parent.top
             right: parent.right
-            margins: units.gu(0)
+            margins: units.gu(2)
         }
 
         height: containerLayout.totalHeight
-        property real totalHeight: height
-
-        Column {
-            // TODO: use the column container in one of the subclasses of Popover.
-            // It is too specific to use it here, but right now I need it for the margins.
-            id: containerLayout
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
-            anchors {
-                left: parent.left
-                top: parent.top
-                right: parent.right
-                margins: units.gu(2)
-            }
-        }
+        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
     }
 }
