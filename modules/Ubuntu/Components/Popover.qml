@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import "mathUtils.js" as MathUtils
 
 Item {
     id: popover
@@ -24,7 +25,7 @@ Item {
 
     // TODO: special case for phone screen
     width: units.gu(40)
-    height: Math.max(Math.min(containerItem.totalHeight, maxHeight), minHeight);
+    height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
     property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
     property real minHeight: units.gu(32)
@@ -49,6 +50,11 @@ Item {
      */
     property real edgeMargins: units.gu(2)
 
+    /*!
+      \preliminary
+      The distance to keep from the calling Item
+     */
+    property real callerMargins: units.gu(0.5)
 
     // priority: above, beside, below
     property string relativePosition: "above"
@@ -67,24 +73,42 @@ Item {
         //            return;
         //        }
 
+        var coords = __positionAuto();
+        popover.x = coords.x;
+        popover.y = coords.y;
+    }
 
+    function __positionAuto() {
         var minX = edgeMargins;
         var maxX = overlay.width - edgeMargins - popover.width;
         var minY = edgeMargins;
         var maxY = overlay.height - edgeMargins - popover.height;
 
         var coords = __positionAbove();
-        //        if (coords.y < minY) __updatePositionLeft();
-        //        else {
-        //            coords.x = Math.max(Math.min(coords.x, maxX), minX);
-        popover.x = coords.x;
-        popover.y = coords.y - units.gu(0);
-        //        }
-        //        __updatePositionAbove();
-        //        if (popover.y < edgeMargins) __updatePositionLeft();
-        //        if (popover.x < edgeMargins) __updatePositionRight();
-        //        if (popover.x + popover.width > overlay.width - edgeMargins) __updatePositionBelow();
-        //        if (popover.y + popover.height > overlay.height - edgeMargins) __updatePositionCenterInOverlay();
+        if (coords.y >= minY) {
+            coords.x = MathUtils.clamp(coords.x, minX, maxX);
+            return coords;
+        }
+
+        coords = __positionLeft();
+        if (coords.x >= minX) {
+            coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            return coords;
+        }
+
+        coords = __positionRight();
+        if (coords.x <= maxX) {
+            coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            return coords;
+        }
+
+        coords = __positionBelow();
+        if (coords.y <= maxY) {
+            coords = MathUtils.clamp(coords.x, minX, maxX);
+            return coords;
+        }
+
+        return __positionCenter();
     }
 
     function __fixHorizontalMargins() {
@@ -102,35 +126,44 @@ Item {
     }
 
     function __positionAbove() {
-        var coords = new Qt.point(0,0);
+        var coords = new Qt.point(0, 0);
         var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
+        print("x, y = " + topCenter.x+", "+topCenter.y);
+        print("popover.height = "+popover.height);
         coords.x = topCenter.x - popover.width/2;
-        coords.y = topCenter.y - popover.height - 0;//units.gu(0.5);
+        coords.y = topCenter.y - popover.height - callerMargins;
         return coords;
-        //        popover.x = coords.x;
-        //        popover.y = coords.y;
-        //        __fixHorizontalMargins();
     }
 
-    function __updatePositionBelow() {
+    function __positionBelow() {
+        var coords = new Qt.point(0, 0);
         var bottomCenter = overlay.mapFromItem(caller, caller.width/2, caller.height);
-        popover.x = bottomCenter.x - popover.width/2;
-        popover.y = bottomCenter.y + units.gu(0.5);
-        __fixHorizontalMargins();
+        coords.x = bottomCenter.x - popover.width/2;
+        coords.y = bottomCenter.y + callerMargins;
+        return coords;
     }
 
-    function __updatePositionLeft() {
+    function __positionLeft() {
+        var coords = new Qt.point(0, 0);
         var leftCenter = overlay.mapFromItem(caller, 0, caller.height/2);
-        popover.x = leftCenter.x - popover.width - units.gu(0.5);
-        popover.y = leftCenter.y - popover.height/2;
-        __fixVerticalMargins();
+        coords.x = leftCenter.x - popover.width - callerMargins;
+        coords.y = leftCenter.y - popover.height/2;
+        return coords;
     }
 
-    function __updatePositionRight() {
+    function __positionRight() {
+        var coords = new Qt.point(0, 0);
         var rightCenter = overlay.mapFromItem(caller, caller.width, caller.height/2);
-        popover.x = rightCenter.x + units.gu(0.5);
-        popover.y = rightCenter.y - popover.height/2;
-        __fixVerticalMargins();
+        coords.x = rightCenter.x + callerMargins;
+        coords.y = rightCenter.y - popover.height/2;
+        return coords;
+    }
+
+    function __positionCenter() {
+        var coords = new Qt.point(0, 0);
+        coords.x = overlay.width/2 - popover.width/2;
+        coords.y = overlay.height/2 - popover.height/2;
+        return coords;
     }
 
     // Center the popover. Only as a fallback when none of the
