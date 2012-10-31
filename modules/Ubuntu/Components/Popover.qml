@@ -26,6 +26,13 @@ Item {
     onWidthChanged: popover.__detectScreen()
     onHeightChanged: popover.__detectScreen()
 
+    Item {
+        id: theme
+
+        property real edgeMargins: units.gu(2)
+        property real callerMargins: units.gu(0.5)
+    }
+
     Rectangle {
         // darken the background
         anchors.fill: parent
@@ -61,7 +68,7 @@ Item {
         property Item caller
 
         function __detectScreen() {
-            if (Math.min(rootArea.width, rootArea.height) <= requestedWidth + 2*edgeMargins) {
+            if (Math.min(rootArea.width, rootArea.height) <= requestedWidth + 2*theme.edgeMargins) {
                 smallScreen = true;
             } else {
                 smallScreen = false;
@@ -72,9 +79,6 @@ Item {
         onHeightChanged: __updatePosition()
         onCallerChanged: __detectScreen() // TODO: remove or call __updatePosition
 
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(0.5)
-
         function __updatePosition() {
             var coords = __positionAuto();
             popover.x = coords.x;
@@ -84,10 +88,10 @@ Item {
         function __positionAuto() {
             if (smallScreen || !caller) return __positionCenter();
 
-            var minX = edgeMargins;
-            var maxX = rootArea.width - edgeMargins - popover.width;
-            var minY = edgeMargins;
-            var maxY = rootArea.height - edgeMargins - popover.height;
+            var minX = theme.edgeMargins;
+            var maxX = rootArea.width - theme.edgeMargins - popover.width;
+            var minY = theme.edgeMargins;
+            var maxY = rootArea.height - theme.edgeMargins - popover.height;
 
             var coords = __positionAbove();
             if (coords.y >= minY) {
@@ -119,7 +123,7 @@ Item {
             var coords = new Qt.point(0, 0);
             var topCenter = rootArea.mapFromItem(caller, caller.width/2, 0);
             coords.x = topCenter.x - popover.width/2;
-            coords.y = topCenter.y - popover.height - callerMargins;
+            coords.y = topCenter.y - popover.height - theme.callerMargins;
             return coords;
         }
 
@@ -127,14 +131,14 @@ Item {
             var coords = new Qt.point(0, 0);
             var bottomCenter = rootArea.mapFromItem(caller, caller.width/2, caller.height);
             coords.x = bottomCenter.x - popover.width/2;
-            coords.y = bottomCenter.y + callerMargins;
+            coords.y = bottomCenter.y + theme.callerMargins;
             return coords;
         }
 
         function __positionLeft() {
             var coords = new Qt.point(0, 0);
             var leftCenter = rootArea.mapFromItem(caller, 0, caller.height/2);
-            coords.x = leftCenter.x - popover.width - callerMargins;
+            coords.x = leftCenter.x - popover.width - theme.callerMargins;
             coords.y = leftCenter.y - popover.height/2;
             return coords;
         }
@@ -142,7 +146,7 @@ Item {
         function __positionRight() {
             var coords = new Qt.point(0, 0);
             var rightCenter = rootArea.mapFromItem(caller, caller.width, caller.height/2);
-            coords.x = rightCenter.x + callerMargins;
+            coords.x = rightCenter.x + theme.callerMargins;
             coords.y = rightCenter.y - popover.height/2;
             return coords;
         }
@@ -165,7 +169,7 @@ Item {
             id: background
             anchors.fill: parent
             color: "silver"
-            opacity: 0.8
+            opacity: 0.9
             radius: units.gu(2)
         }
 
