@@ -37,16 +37,16 @@ Item {
     function __detectScreen() {
         if (!area) {
             smallScreen = false;
-//            landscape = false;
+            //            landscape = false;
             return;
         }
 
         if (Math.min(area.width, area.height) <= requestedWidth + 2*edgeMargins) {
             smallScreen = true;
-//            landscape = area.width > area.height;
+            //            landscape = area.width > area.height;
         } else {
             smallScreen = false;
-//            landscape = false //ignored
+            //            landscape = false //ignored
         }
 
         __updatePosition();
@@ -61,9 +61,14 @@ Item {
         area.heightChanged.connect(popover.__detectScreen);
         __detectScreen();
     }
-    Component.onCompleted: {
+    Component.onCompleted: __findRoot()
+
+    function __findRoot() {
         var root = parent;
-        while (root.parent) root = root.parent;
+        do {
+            root = root.parent;
+        } while (!root.parent)
+
         area = root;
     }
 
@@ -100,29 +105,24 @@ Item {
         var coords = __positionAbove();
         if (coords.y >= minY) {
             coords.x = MathUtils.clamp(coords.x, minX, maxX);
-            print("above");
             return coords;
         }
 
         coords = __positionLeft();
         if (coords.x >= minX) {
             coords.y = MathUtils.clamp(coords.y, minY, maxY);
-            print("left");
             return coords;
         }
 
         coords = __positionRight();
         if (coords.x <= maxX) {
             coords.y = MathUtils.clamp(coords.y, minY, maxY);
-            print("right");
             return coords;
         }
 
         coords = __positionBelow();
         if (coords.y <= maxY) {
-            print("coords = "+coords);
             coords.x = MathUtils.clamp(coords.x, minX, maxX);
-            print("below "+coords);
             return coords;
         }
 
