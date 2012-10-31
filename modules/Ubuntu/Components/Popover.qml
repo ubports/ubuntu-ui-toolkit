@@ -1,20 +1,17 @@
 /*
- * Copyright (C) 2011-2012 Canonical Ltd
+ * Copyright 2012 Canonical Ltd.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3 as
- * published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors:
- * Lucas Beeler <lucas@yorba.org>
  */
 
 import QtQuick 2.0
@@ -22,26 +19,12 @@ import QtQuick 2.0
 Item {
     id: popover
 
-//    width: units.gu(40)
-//    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
+    //    width: units.gu(40)
+    //    height: Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight))
 
-    width: __getWidth()
-    height: __getHeight()
-
-    function __getWidth() {
-        if (!overlay) return units.gu(40);
-        return Math.min(units.gu(40), overlay.width - 2*edgeMargins);
-    }
-
-    function __getHeight() {
-        var h;
-        if (!overlay) h = units.gu(40);
-        else {
-            h = Math.max(minHeight, Math.min(containerLayout.totalHeight, maxHeight));
-            h = Math.min(h, overlay.height - 2*edgeMargins);
-        }
-        return h;
-    }
+    // TODO: special case for phone screen
+    width: units.gu(40)
+    height: Math.max(Math.min(containerItem.totalHeight, maxHeight), minHeight);
 
     property real maxHeight: overlay ? 3*overlay.height/4 : Number.MAX_VALUE
     property real minHeight: units.gu(32)
@@ -49,6 +32,7 @@ Item {
     property Item overlay
     property Item caller
 
+    onHeightChanged: __updatePosition()
     onCallerChanged: __updatePosition()
     onOverlayChanged: {
         parent = overlay
@@ -73,21 +57,34 @@ Item {
         if (!overlay || !caller) return;
 
         // TODO: figure out what to do when the overlay is too small to fit the popover.
-//        if (popover.width > overlay.width) {
-//            __updatePositionCenterInOverlay();
-//            return;
-//        }
+        //        if (popover.width > overlay.width) {
+        //            __updatePositionCenterInOverlay();
+        //            return;
+        //        }
 
-//        if (popover.height > overlay.height) {
-//            __updatePositionCenterInOverlay();
-//            return;
-//        }
+        //        if (popover.height > overlay.height) {
+        //            __updatePositionCenterInOverlay();
+        //            return;
+        //        }
 
-        __updatePositionAbove();
-        if (popover.y < edgeMargins) __updatePositionLeft();
-        if (popover.x < edgeMargins) __updatePositionRight();
-        if (popover.x + popover.width > overlay.width - edgeMargins) __updatePositionBelow();
-        if (popover.y + popover.height > overlay.height - edgeMargins) __updatePositionCenterInOverlay();
+
+        var minX = edgeMargins;
+        var maxX = overlay.width - edgeMargins - popover.width;
+        var minY = edgeMargins;
+        var maxY = overlay.height - edgeMargins - popover.height;
+
+        var coords = __positionAbove();
+        //        if (coords.y < minY) __updatePositionLeft();
+        //        else {
+        //            coords.x = Math.max(Math.min(coords.x, maxX), minX);
+        popover.x = coords.x;
+        popover.y = coords.y - units.gu(0);
+        //        }
+        //        __updatePositionAbove();
+        //        if (popover.y < edgeMargins) __updatePositionLeft();
+        //        if (popover.x < edgeMargins) __updatePositionRight();
+        //        if (popover.x + popover.width > overlay.width - edgeMargins) __updatePositionBelow();
+        //        if (popover.y + popover.height > overlay.height - edgeMargins) __updatePositionCenterInOverlay();
     }
 
     function __fixHorizontalMargins() {
@@ -104,14 +101,15 @@ Item {
         if (popover.y + popover.height > overlay.height - edgeMargins) popover.y = overlay.height - popover.height - edgeMargins;
     }
 
-    function __updatePositionAbove() {
-        var coords = new Qt.point(0,0);// = [];
+    function __positionAbove() {
+        var coords = new Qt.point(0,0);
         var topCenter = overlay.mapFromItem(caller, caller.width/2, 0);
         coords.x = topCenter.x - popover.width/2;
-        coords.y = topCenter.y - popover.height - units.gu(0.5);
-        popover.x = coords.x;
-        popover.y = coords.y;
-        __fixHorizontalMargins();
+        coords.y = topCenter.y - popover.height - 0;//units.gu(0.5);
+        return coords;
+        //        popover.x = coords.x;
+        //        popover.y = coords.y;
+        //        __fixHorizontalMargins();
     }
 
     function __updatePositionBelow() {
@@ -155,14 +153,31 @@ Item {
         anchors.fill: parent
     }
 
-    Column {
-        id: containerLayout
-        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
+    Rectangle {
+        id: containerItem
+        color: "pink"
+
         anchors {
             left: parent.left
             top: parent.top
             right: parent.right
-            margins: units.gu(2)
+            margins: units.gu(0)
+        }
+
+        height: containerLayout.totalHeight //childrenRect.height
+        property real totalHeight: height
+
+        Column {
+            id: containerLayout
+            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
+            anchors {
+                left: parent.left
+                top: parent.top
+                right: parent.right
+                margins: units.gu(2)
+            }
+            onHeightChanged: print("container layout height: "+height)
+            onTotalHeightChanged: print("container layout total height changed to: "+totalHeight)
         }
     }
 }

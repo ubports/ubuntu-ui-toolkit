@@ -28,7 +28,6 @@ Template {
         id: canvas
 
         Popover {
-//            z: Number.MAX_VALUE
             id: popover
             visible: false
             overlay: root
@@ -36,15 +35,7 @@ Template {
             ListItem.Header { text: "Share" }
 
             ListItem.Standard {
-//                highlightWhenPressed: false
                 text: "Do something"
-//                control: Button {
-//                    text: "Do something"
-//                    anchors {
-//                        fill: parent
-//                        margins: units.gu(1)
-//                    }
-//                }
             }
             ListItem.Standard {
                 text: "Do something else"
