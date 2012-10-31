@@ -103,7 +103,7 @@ Item {
                 return coords;
             }
 
-            coords =  pos.left(); //__positionLeft();
+            coords =  pos.left();
             if (coords.x >= minX) {
                 coords.y = MathUtils.clamp(coords.y, minY, maxY);
                 return coords;
