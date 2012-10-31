@@ -82,15 +82,18 @@ Item {
         onCallerChanged: __detectScreen() // TODO: remove or call __updatePosition
 
         function __updatePosition() {
-            var coords = __positionAuto();
+            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
+
+            var coords;// = Qt.point(0, 0);
+            if (smallScreen || !caller) coords = pos.center();
+            else coords = __positionAuto();
+
             popover.x = coords.x;
             popover.y = coords.y;
         }
 
         function __positionAuto() {
             var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
-
-            if (smallScreen || !caller) return pos.center();
 
             var minX = theme.edgeMargins;
             var maxX = rootArea.width - theme.edgeMargins - popover.width;
