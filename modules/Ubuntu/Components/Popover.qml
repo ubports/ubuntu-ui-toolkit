@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
+import "popoverUtils.js" as PopoverUtils
 
 Item {
     id: rootArea
@@ -27,6 +28,7 @@ Item {
     onHeightChanged: popover.__detectScreen()
 
     Item {
+        // TODO: use proper theming for this
         id: theme
 
         property real edgeMargins: units.gu(2)
@@ -57,7 +59,7 @@ Item {
         width: Math.min(rootArea.width, units.gu(40))
         height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
-        property real maxHeight: area ? 3*rootArea.height/4 : Number.MAX_VALUE
+        property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
         property real minHeight: units.gu(32)
         property real requestedWidth: units.gu(40)
 
@@ -86,83 +88,39 @@ Item {
         }
 
         function __positionAuto() {
-            if (smallScreen || !caller) return __positionCenter();
+            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
+
+            if (smallScreen || !caller) return pos.center();
 
             var minX = theme.edgeMargins;
             var maxX = rootArea.width - theme.edgeMargins - popover.width;
             var minY = theme.edgeMargins;
             var maxY = rootArea.height - theme.edgeMargins - popover.height;
 
-            var coords = __positionAbove();
+            var coords = pos.above();
             if (coords.y >= minY) {
                 coords.x = MathUtils.clamp(coords.x, minX, maxX);
                 return coords;
             }
 
-            coords = __positionLeft();
+            coords =  pos.left(); //__positionLeft();
             if (coords.x >= minX) {
                 coords.y = MathUtils.clamp(coords.y, minY, maxY);
                 return coords;
             }
 
-            coords = __positionRight();
+            coords = pos.right();
             if (coords.x <= maxX) {
                 coords.y = MathUtils.clamp(coords.y, minY, maxY);
                 return coords;
             }
 
-            coords = __positionBelow();
+            coords = pos.below();
             if (coords.y <= maxY) {
                 coords.x = MathUtils.clamp(coords.x, minX, maxX);
                 return coords;
             }
-            return __positionCenter();
-        }
-
-        function __positionAbove() {
-            var coords = new Qt.point(0, 0);
-            var topCenter = rootArea.mapFromItem(caller, caller.width/2, 0);
-            coords.x = topCenter.x - popover.width/2;
-            coords.y = topCenter.y - popover.height - theme.callerMargins;
-            return coords;
-        }
-
-        function __positionBelow() {
-            var coords = new Qt.point(0, 0);
-            var bottomCenter = rootArea.mapFromItem(caller, caller.width/2, caller.height);
-            coords.x = bottomCenter.x - popover.width/2;
-            coords.y = bottomCenter.y + theme.callerMargins;
-            return coords;
-        }
-
-        function __positionLeft() {
-            var coords = new Qt.point(0, 0);
-            var leftCenter = rootArea.mapFromItem(caller, 0, caller.height/2);
-            coords.x = leftCenter.x - popover.width - theme.callerMargins;
-            coords.y = leftCenter.y - popover.height/2;
-            return coords;
-        }
-
-        function __positionRight() {
-            var coords = new Qt.point(0, 0);
-            var rightCenter = rootArea.mapFromItem(caller, caller.width, caller.height/2);
-            coords.x = rightCenter.x + theme.callerMargins;
-            coords.y = rightCenter.y - popover.height/2;
-            return coords;
-        }
-
-        function __positionCenter() {
-            var coords = new Qt.point(0, 0);
-            coords.x = rootArea.width/2 - popover.width/2;
-            coords.y = rootArea.height/2 - popover.height/2;
-            return coords;
-        }
-
-        // Center the popover. Only as a fallback when none of the
-        // other positions work.
-        function __updatePositionCenterInarea() {
-            popover.x = rootArea.width/2 - popover.width/2;
-            popover.y = rootArea.height/2 - popover.height/2;
+            return pos.center();
         }
 
         Rectangle {
