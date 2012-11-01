@@ -87,7 +87,7 @@ Item {
         function updatePosition() {
             var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.edgeMargins, theme.callerMargins);
 
-            var coords;// = Qt.point(0, 0);
+            var coords;
             if (internal.smallScreen || !caller) {
                 coords = pos.center();
             } else {
