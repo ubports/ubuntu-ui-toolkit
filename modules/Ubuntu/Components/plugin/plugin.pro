@@ -27,7 +27,8 @@ HEADERS += plugin.h \
     listener.h \
     ucscalingimageprovider.h \
     ucunits.h \
-    ucqquickimageextension.h
+    ucqquickimageextension.h \
+    quickutils.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -41,7 +42,8 @@ SOURCES += plugin.cpp \
     listener.cpp \
     ucscalingimageprovider.cpp \
     ucunits.cpp \
-    ucqquickimageextension.cpp
+    ucqquickimageextension.cpp \
+    quickutils.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
