@@ -135,29 +135,6 @@ class ButtonColorTests(TavastiaTestCase):
         self.assertThat(btn.color, Eventually(Equals([255,255,0,255])))
 
 
-    def test_button_has_correct_pressed_color(self):
-        """Button component must have correct pressed color."""
-
-        btn = self.app.select_single('Button')
-        self.assertThat(btn.pressedColor, Eventually(Equals([0,255,255,255])))
-
-
-    def test_button_color_changes_on_mouse_press(self):
-        """Button color must change to pressedColor when pressed with mouse."""
-
-        btn = self.app.select_single('Button')
-
-        self.mouse.move_to_object(btn)
-        self.mouse.press()
-        self.addCleanup(self.mouse.release)
-
-        # this is hacky because the base rectangle in the button has no name. If
-        # the component were named this would be a much more readable test...
-        btnbase = self.app.select_single('QQuickRectangle', color=[0,255,255,255])
-
-        self.assertThat(btnbase, Not(Is(None)))
-
-
 
 ######################
 # Test commented out due to bug in autopilot-qt5, which has no support for 'property alias'
