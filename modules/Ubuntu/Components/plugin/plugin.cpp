@@ -52,11 +52,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
-    /*
-    static ContextPropertyChangeListener rootItemListener(context, "QuickUtils");
-    QObject::connect(&QuickUtils::instance(), SIGNAL(rootObjectChanged()),
-                     &rootItemListener, SLOT(updateContextProperty()));
-    */
+
     context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
