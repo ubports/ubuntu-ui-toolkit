@@ -25,8 +25,7 @@ function modularScale(size) {
         case "x-small": return 0.707
         case "small": return 0.857
         case "medium": return 1.0
-        case "large": return 1.212
-        case "x-large": return 1.414
-        case "xx-large": return 1.714
+        case "large": return 1.414
+        case "x-large": return 2.423
     }
 }
