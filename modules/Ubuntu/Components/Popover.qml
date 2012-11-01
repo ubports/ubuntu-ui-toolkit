@@ -38,8 +38,8 @@ Item {
     Rectangle {
         // darken the background
         anchors.fill: parent
-        color: "black"
-        opacity: 0.3
+        color: "red"
+        opacity: 0.6
     }
 
     MouseArea {
@@ -75,7 +75,7 @@ Item {
         height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
         property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
-        property real minHeight: units.gu(32)
+        property real minHeight: units.gu(40)
         property real requestedWidth: units.gu(40)
 
         property Item caller

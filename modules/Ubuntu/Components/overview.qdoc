@@ -42,6 +42,10 @@
          import Ubuntu.Components.ListItems 0.1
      \endcode
 
+     \part Popovers
+     Available through:
+     TODO
+
      \annotatedlist ubuntu-listitems
 
      \part Theming Elements
