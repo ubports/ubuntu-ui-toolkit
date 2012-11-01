@@ -24,8 +24,8 @@ Item {
     default property alias container: containerItem.data
     property alias caller: popover.caller;
 
-    onWidthChanged: popover.__detectScreen()
-    onHeightChanged: popover.__detectScreen()
+    onWidthChanged: internal.detectScreen()
+    onHeightChanged: internal.detectScreen()
 
     Item {
         // TODO: use proper theming for this
@@ -52,47 +52,53 @@ Item {
         }
     }
 
+    QtObject {
+        id: internal
+
+        property bool smallScreen: false;
+        // TODO: add property for screen orientation
+
+        function detectScreen() {
+            if (Math.min(rootArea.width, rootArea.height) <= popover.requestedWidth + 2*theme.edgeMargins) {
+                smallScreen = true;
+            } else {
+                smallScreen = false;
+            }
+            popover.updatePosition();
+        }
+    }
+
     Item {
         id: popover
 
-        // TODO: detect special case for phone screen
-        width: Math.min(rootArea.width, units.gu(40))
+        width: Math.min(rootArea.width, requestedWidth)
         height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
         property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
         property real minHeight: units.gu(32)
         property real requestedWidth: units.gu(40)
 
-        // TODO: detect not only screen size but also orientation
-        property bool smallScreen: false
-
-        property Item area: rootArea
         property Item caller
 
-        function __detectScreen() {
-            if (Math.min(rootArea.width, rootArea.height) <= requestedWidth + 2*theme.edgeMargins) {
-                smallScreen = true;
-            } else {
-                smallScreen = false;
-            }
-            __updatePosition();
-        }
+        onWidthChanged: updatePosition()
+        onHeightChanged: updatePosition()
+        onCallerChanged: updatePosition()
 
-        onHeightChanged: __updatePosition()
-        onCallerChanged: __detectScreen() // TODO: remove or call __updatePosition
-
-        function __updatePosition() {
+        function updatePosition() {
             var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
 
             var coords;// = Qt.point(0, 0);
-            if (smallScreen || !caller) coords = pos.center();
-            else coords = __positionAuto();
+            if (internal.smallScreen || !caller) {
+                coords = pos.center();
+            } else {
+                coords = positionAuto();
+            }
 
             popover.x = coords.x;
             popover.y = coords.y;
         }
 
-        function __positionAuto() {
+        function positionAuto() {
             var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
 
             var minX = theme.edgeMargins;
