@@ -20,10 +20,6 @@
 #include <QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QJSEngine>
-#include <QtQml/QQmlContext>
-#include <QDebug>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
