@@ -6,7 +6,7 @@ OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.j
 
 OTHER_FILES += *.qmltheme
 
-other_files.path = /usr/lib/ubuntu-demos/uitk/demos
+other_files.path = /usr/lib/qt-components-ubuntu/demos
 other_files.files = $$OTHER_FILES
 
 desktop_file.path = /usr/share/applications
