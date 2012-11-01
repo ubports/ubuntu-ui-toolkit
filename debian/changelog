@@ -1,3 +1,10 @@
+qt-components-ubuntu (0.1.5) UNRELEASED; urgency=low
+
+  * Add qt-components-ubuntu-doc package containing HTML generated documentation
+  * Move demos from usr/lib/ubuntu-demos/uitk/demos to usr/lib/qt-components-ubuntu/demos
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 31 Oct 2012 11:05:11 +0100
+
 qt-components-ubuntu (0.1.4) quantal; urgency=low
 
   * Version bump
