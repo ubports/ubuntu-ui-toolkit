@@ -15,7 +15,7 @@
  */
 
 .pragma library
-.import "mathUtils.js" as MathUtils
+.import "../mathUtils.js" as MathUtils
 
 function Positioning(popover, area, caller, edgeMargins, callerMargins) {
 

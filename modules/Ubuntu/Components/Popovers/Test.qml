@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "mathUtils.js" as MathUtils
+import "../mathUtils.js" as MathUtils
 import "popoverUtils.js" as PopoverUtils
 
 Item {
@@ -38,8 +38,8 @@ Item {
     Rectangle {
         // darken the background
         anchors.fill: parent
-        color: "red"
-        opacity: 0.6
+        color: "black"
+        opacity: 0.5
     }
 
     MouseArea {
