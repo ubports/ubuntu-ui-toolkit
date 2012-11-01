@@ -17,7 +17,7 @@
 .pragma library
 .import "mathUtils.js" as MathUtils
 
-function Positioning(popover, area, caller, callerMargins) {
+function Positioning(popover, area, caller, edgeMargins, callerMargins) {
 
     this.above = function() {
         var coords = new Qt.point(0, 0);
@@ -56,6 +56,38 @@ function Positioning(popover, area, caller, callerMargins) {
         coords.x = area.width/2 - popover.width/2;
         coords.y = area.height/2 - popover.height/2;
         return coords;
+    }
+
+    this.auto = function() {
+        var minX = edgeMargins;
+        var maxX = area.width - edgeMargins - popover.width;
+        var minY = edgeMargins;
+        var maxY = area.height - edgeMargins - popover.height;
+
+        var coords = this.above();
+        if (coords.y >= minY) {
+            coords.x = MathUtils.clamp(coords.x, minX, maxX);
+            return coords;
+        }
+
+        coords =  this.left();
+        if (coords.x >= minX) {
+            coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            return coords;
+        }
+
+        coords = this.right();
+        if (coords.x <= maxX) {
+            coords.y = MathUtils.clamp(coords.y, minY, maxY);
+            return coords;
+        }
+
+        coords = this.below();
+        if (coords.y <= maxY) {
+            coords.x = MathUtils.clamp(coords.x, minX, maxX);
+            return coords;
+        }
+        return this.center();
     }
 }
 

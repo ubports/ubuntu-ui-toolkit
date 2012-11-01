@@ -85,51 +85,17 @@ Item {
         onCallerChanged: updatePosition()
 
         function updatePosition() {
-            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
+            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.edgeMargins, theme.callerMargins);
 
             var coords;// = Qt.point(0, 0);
             if (internal.smallScreen || !caller) {
                 coords = pos.center();
             } else {
-                coords = positionAuto();
+                coords = pos.auto();
             }
 
             popover.x = coords.x;
             popover.y = coords.y;
-        }
-
-        function positionAuto() {
-            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.callerMargins);
-
-            var minX = theme.edgeMargins;
-            var maxX = rootArea.width - theme.edgeMargins - popover.width;
-            var minY = theme.edgeMargins;
-            var maxY = rootArea.height - theme.edgeMargins - popover.height;
-
-            var coords = pos.above();
-            if (coords.y >= minY) {
-                coords.x = MathUtils.clamp(coords.x, minX, maxX);
-                return coords;
-            }
-
-            coords =  pos.left();
-            if (coords.x >= minX) {
-                coords.y = MathUtils.clamp(coords.y, minY, maxY);
-                return coords;
-            }
-
-            coords = pos.right();
-            if (coords.x <= maxX) {
-                coords.y = MathUtils.clamp(coords.y, minY, maxY);
-                return coords;
-            }
-
-            coords = pos.below();
-            if (coords.y <= maxY) {
-                coords.x = MathUtils.clamp(coords.x, minX, maxX);
-                return coords;
-            }
-            return pos.center();
         }
 
         Rectangle {
