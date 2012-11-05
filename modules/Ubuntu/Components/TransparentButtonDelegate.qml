@@ -104,6 +104,6 @@ Item {
                 }
             }
         ]
-        state: (item.iconSource == "" || item.text == "") ? "center" : iconPosition
+        state: (item.iconSource == "" || item.text == "") ? "center" : item.iconPosition
     }
 }

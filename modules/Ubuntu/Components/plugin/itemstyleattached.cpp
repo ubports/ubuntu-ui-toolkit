@@ -144,26 +144,23 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     delegate(0),
     componentContext(0),
     themeRule(0),
-    delayApplyingStyle(false),
+    delayApplyingStyle(true),
     customStyle(false),
     customDelegate(false),
     connectedToEngine(false)
 {
-    // search for a child in the attachee who is derived from QQmlComponentAttached
-    // so we can catch the completion
-    QObjectList children = attachee->children();
-    Q_FOREACH(QObject *child, children) {
-        if (child->inherits("QQmlComponentAttached")) {
-            QObject::connect(child, SIGNAL(completed()), q_ptr, SLOT(_q_refteshStyle()));
-            delayApplyingStyle = true;
-        }
-    }
+    // refresh style upon reparenting!
+    // there is no reason to do styling till the parent is not set and this applies
+    // to the root objects too as even those have an internal parent
+    QObject::connect(attachee, SIGNAL(parentChanged(QQuickItem*)), q_ptr, SLOT(_q_reapplyStyling(QQuickItem*)));
+
     listenThemeEngine();
 
     if (!componentContext) {
         componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
         componentContext->setContextProperty(itemProperty, attachee);
     }
+
 }
 
 ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
@@ -189,6 +186,7 @@ bool ItemStyleAttachedPrivate::updateStyle()
     if (!customStyle) {
         // check if we have a forced update
         if (style) {
+            style->setParent(0);
             style->deleteLater();
             style = 0;
         }
@@ -197,8 +195,6 @@ bool ItemStyleAttachedPrivate::updateStyle()
         if (!result || (result && !themeRule->style()))
             result = lookupThemeStyle(true);
         if (result) {
-            if (style)
-                style->deleteLater();
             style = themeRule->createStyle(componentContext);
         }
     } else
@@ -221,6 +217,8 @@ bool ItemStyleAttachedPrivate::updateDelegate()
 
     if (!customDelegate) {
         if (delegate) {
+            delegate->setParent(0);
+            delegate->setParentItem(0);
             delegate->deleteLater();
             delegate = 0;
         }
@@ -229,8 +227,6 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         if (!result || (result && !themeRule->delegate()))
             result = lookupThemeStyle(true);
         if (result) {
-            if (delegate)
-                delegate->deleteLater();
             delegate = themeRule->createDelegate(componentContext);
         }
     } else
@@ -303,10 +299,10 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
     Q_Q(ItemStyleAttached);
     if (!customStyle || !customDelegate) {
         if (!connectedToEngine)
-            connectedToEngine = (bool)QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refteshStyle()));
+            connectedToEngine = (bool)QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
     } else {
         if (connectedToEngine)
-            connectedToEngine = !QObject::disconnect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refteshStyle()));
+            connectedToEngine = !QObject::disconnect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
     }
 }
 
@@ -317,7 +313,7 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
   connected() signal. This is called only if the item defines "Component.onCompleted()"
   attached signal.
   */
-void ItemStyleAttachedPrivate::_q_refteshStyle()
+void ItemStyleAttachedPrivate::_q_refreshStyle()
 {
     // no need to delay style applying any longer
     delayApplyingStyle = false;
@@ -325,6 +321,17 @@ void ItemStyleAttachedPrivate::_q_refteshStyle()
     updateCurrentStyle();
 }
 
+/*!
+ * \internal
+ * Reapply styling on parent change.
+ */
+void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
+{
+    if (!parentItem)
+        // the component is most likely used in a delegate or is being deleted
+        return;
+    _q_refreshStyle();
+}
 
 /*==============================================================================
   */

@@ -53,7 +53,8 @@ public:
     void updateCurrentStyle();
     bool registerName(const QString &id);
     void listenThemeEngine();
-    void _q_refteshStyle();
+    void _q_refreshStyle();
+    void _q_reapplyStyling(QQuickItem *);
 
 };
 

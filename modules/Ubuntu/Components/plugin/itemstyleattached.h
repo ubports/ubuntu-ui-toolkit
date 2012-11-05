@@ -60,7 +60,8 @@ private:
     Q_DECLARE_PRIVATE(ItemStyleAttached)
     QScopedPointer<ItemStyleAttachedPrivate> d_ptr;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_refteshStyle())
+    Q_PRIVATE_SLOT(d_func(), void _q_reapplyStyling(QQuickItem *))
+    Q_PRIVATE_SLOT(d_func(), void _q_refreshStyle())
 };
 
 QML_DECLARE_TYPEINFO(ItemStyleAttached, QML_HAS_ATTACHED_PROPERTIES)
