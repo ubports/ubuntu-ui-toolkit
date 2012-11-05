@@ -39,7 +39,7 @@ Item {
         // darken the background
         anchors.fill: parent
         color: "black"
-        opacity: 0.5
+        opacity: 0.0
     }
 
     MouseArea {

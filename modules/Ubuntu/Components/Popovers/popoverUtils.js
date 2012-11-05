@@ -19,6 +19,8 @@
 
 function Positioning(popover, area, caller, edgeMargins, callerMargins) {
 
+    // all coordinate computation are relative inside the area Item.
+
     this.above = function() {
         var coords = new Qt.point(0, 0);
         var topCenter = area.mapFromItem(caller, caller.width/2, 0);
