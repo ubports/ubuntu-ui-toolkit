@@ -22,6 +22,7 @@ Item {
     id: popupBase
     anchors.fill: parent ? parent : undefined
 
+    // TODO: make private?
     property Item caller;
 
     // theme
@@ -29,6 +30,7 @@ Item {
     property real callerMargins: units.gu(0.5)
 
     function show() {
+        print("PopupBase.show("+caller+").");
         if (parent !== QuickUtils.rootObject) parent = QuickUtils.rootObject;
         popupBase.visible = true;
     }

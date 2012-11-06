@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1 as Popup
+import Ubuntu.Components.Popups 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
@@ -26,17 +26,13 @@ Template {
         color: "transparent"
         id: canvas
 
-
         Component {
             id: popoverComponent
 
-            Popup.Popover {
+            Popover {
                 id: popover
                 Column {
-                    // TODO: use the column container in one of the subclasses of Popover.
-                    // It is too specific to use it here, but right now I need it for the margins.
                     id: containerLayout
-//                    property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
                     anchors {
                         left: parent.left
                         top: parent.top
@@ -71,7 +67,7 @@ Template {
                                 fill: parent
                                 margins: units.gu(1)
                             }
-                            onClicked: popover.destroy()
+                            onClicked: popover.hide()
                         }
                     }
                 }
@@ -85,10 +81,7 @@ Template {
                 text: "Pop!"
                 width: 100
                 onClicked: {
-                    var popover = popoverComponent.createObject(root);
-                    popover.caller = theActualButton;
-//                    popover.visible = true;
-                    popover.show();
+                    PopupUtils.open(popoverComponent, theActualButton);
                 }
             }
         }

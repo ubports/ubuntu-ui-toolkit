@@ -1,5 +1,7 @@
 PopupBase 0.1 PopupBase.qml
 Popover 0.1 Popover.qml
 
+PopupUtils 0.1 popoverUtils.js
+
 internal Foreground Foreground.qml
 internal Background Background.qml

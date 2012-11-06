@@ -17,6 +17,18 @@
 .pragma library
 .import "../mathUtils.js" as MathUtils
 
+function open(component, caller) {
+    // TODO: pass the proper root object to createObject() so that
+    //  popup.show() does not need to do re-parenting.
+    // TODO: Check that component is a valid component, and the object
+    //  can be created.
+    var popup = component.createObject();
+    popup.caller = caller;
+    popup.show();
+}
+
+// TODO: close function.
+
 function Positioning(popover, area, caller, edgeMargins, callerMargins) {
 
     // all coordinate computation are relative inside the area Item.
