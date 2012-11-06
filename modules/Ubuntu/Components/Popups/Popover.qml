@@ -29,46 +29,15 @@ PopupBase {
         onPressed: rootArea.destroy()
     }
 
-    Item {
+    Foreground {
         id: popover
 
-        width: Math.min(rootArea.width, requestedWidth)
-        height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
-
-        property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
-        property real minHeight: units.gu(40)
-        property real requestedWidth: units.gu(40)
+//        property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
+//        property real minHeight: units.gu(40)
+//        property real requestedWidth: units.gu(40)
 
         onWidthChanged: updatePosition()
         onHeightChanged: updatePosition()
-
-        function updatePosition() {
-            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, rootArea.edgeMargins, rootArea.callerMargins);
-
-            var coords;
-//            if (internal.smallScreen || !caller) {
-            if (!caller) {
-                coords = pos.center();
-            } else {
-                coords = pos.auto();
-            }
-
-            popover.x = coords.x;
-            popover.y = coords.y;
-        }
-
-        Rectangle {
-            id: background
-            anchors.fill: parent
-            color: "silver"
-            opacity: 0.9
-            radius: units.gu(2)
-        }
-
-        // Avoid mouse events being sent to any MouseAreas that are behind the popover
-        MouseArea {
-            anchors.fill: parent
-        }
 
         Rectangle {
             id: containerItem

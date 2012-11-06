@@ -17,113 +17,63 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 import "popoverUtils.js" as PopoverUtils
-
 Item {
-    id: rootArea
-    anchors.fill: parent ? parent : undefined
-    default property alias container: containerItem.data
-    property alias caller: popover.caller;
+    id: popover
 
-    onWidthChanged: internal.detectScreen()
-    onHeightChanged: internal.detectScreen()
+    width: parent ? Math.min(parent.width, requestedWidth) : requestedWidth
+    height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
 
-    Item {
-        // TODO: use proper theming for this
-        id: theme
+    property real maxHeight: parent ? 3*parent.height/4 : Number.MAX_VALUE
+    property real minHeight: units.gu(40)
+    property real requestedWidth: units.gu(40)
 
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(0.5)
+    property Item caller: parent ? parent.caller : undefined
+
+    onWidthChanged: updatePosition()
+    onHeightChanged: updatePosition()
+    onCallerChanged: updatePosition()
+
+    function updatePosition() {
+//        var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.edgeMargins, theme.callerMargins);
+        var pos = new PopoverUtils.Positioning(popover, rootArea, caller, 20, 10);
+
+        var coords;
+//        if (internal.smallScreen || !caller) {
+        if (!caller) {
+            coords = pos.center();
+        } else {
+            coords = pos.auto();
+        }
+
+        popover.x = coords.x;
+        popover.y = coords.y;
     }
 
     Rectangle {
-        // darken the background
+        id: background
         anchors.fill: parent
-        color: "black"
-        opacity: 0.0
+        color: "silver"
+        opacity: 0.9
+        radius: units.gu(2)
     }
 
+    // Avoid mouse events being sent to any MouseAreas that are behind the popover
     MouseArea {
         anchors.fill: parent
-
-        onPressed: {
-            // mouse events inside the popover area area captured by another mouse area below
-            // so it is always okay to delete the rootArea here.
-            rootArea.destroy();
-        }
     }
 
-    QtObject {
-        id: internal
+    Rectangle {
+        id: containerItem
+        color: "transparent"
 
-        property bool smallScreen: false;
-        // TODO: add property for screen orientation
-
-        function detectScreen() {
-            if (Math.min(rootArea.width, rootArea.height) <= popover.requestedWidth + 2*theme.edgeMargins) {
-                smallScreen = true;
-            } else {
-                smallScreen = false;
-            }
-            popover.updatePosition();
-        }
-    }
-
-    Item {
-        id: popover
-
-        width: Math.min(rootArea.width, requestedWidth)
-        height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
-
-        property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
-        property real minHeight: units.gu(40)
-        property real requestedWidth: units.gu(40)
-
-        property Item caller
-
-        onWidthChanged: updatePosition()
-        onHeightChanged: updatePosition()
-        onCallerChanged: updatePosition()
-
-        function updatePosition() {
-            var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.edgeMargins, theme.callerMargins);
-
-            var coords;
-            if (internal.smallScreen || !caller) {
-                coords = pos.center();
-            } else {
-                coords = pos.auto();
-            }
-
-            popover.x = coords.x;
-            popover.y = coords.y;
+        anchors {
+            left: parent.left
+            top: parent.top
+            right: parent.right
+            margins: units.gu(2)
         }
 
-        Rectangle {
-            id: background
-            anchors.fill: parent
-            color: "silver"
-            opacity: 0.9
-            radius: units.gu(2)
-        }
-
-        // Avoid mouse events being sent to any MouseAreas that are behind the popover
-        MouseArea {
-            anchors.fill: parent
-        }
-
-        Rectangle {
-            id: containerItem
-            color: "transparent"
-
-            anchors {
-                left: parent.left
-                top: parent.top
-                right: parent.right
-                margins: units.gu(2)
-            }
-
-            height: containerLayout.totalHeight
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
-        }
+        height: containerLayout.totalHeight
+        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
     }
 }
