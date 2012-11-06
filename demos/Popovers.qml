@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.Popovers 0.1 as Popover
+import Ubuntu.Components.Popups 0.1 as Popup
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
@@ -30,7 +30,7 @@ Template {
         Component {
             id: popoverComponent
 
-            Popover.Test {
+            Popup.Test {
                 id: popover
                 Column {
                     // TODO: use the column container in one of the subclasses of Popover.
