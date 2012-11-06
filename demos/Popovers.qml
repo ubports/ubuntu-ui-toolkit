@@ -30,7 +30,7 @@ Template {
         Component {
             id: popoverComponent
 
-            Popup.Test {
+            Popup.Popover {
                 id: popover
                 Column {
                     // TODO: use the column container in one of the subclasses of Popover.
@@ -87,7 +87,8 @@ Template {
                 onClicked: {
                     var popover = popoverComponent.createObject(root);
                     popover.caller = theActualButton;
-                    popover.visible = true;
+//                    popover.visible = true;
+                    popover.show();
                 }
             }
         }
