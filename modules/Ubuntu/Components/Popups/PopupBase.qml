@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "popoverUtils.js" as PopoverUtils
+import "popupUtils.js" as PopupUtils
 import Ubuntu.Components 0.1
 
 Item {
@@ -41,7 +41,7 @@ Item {
 
     // private
     function updatePosition(item) {
-        var pos = new PopoverUtils.Positioning(item, popupBase, caller, edgeMargins, callerMargins);
+        var pos = new PopupUtils.Positioning(item, popupBase, caller, edgeMargins, callerMargins);
 
         var minWidth = item.width + 2*edgeMargins;
         var minHeight = item.height + 2*edgeMargins;
