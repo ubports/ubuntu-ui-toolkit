@@ -56,7 +56,11 @@ Item {
         item.y = coords.y;
     }
 
-
     // TODO: Destroy *only* from Utils.close()
-    onVisibleChanged: if (!visible) popupBase.destroy()
+    onVisibleChanged: {
+        if (!visible) {
+            print("destroying");
+            popupBase.destroy();
+        }
+    }
 }

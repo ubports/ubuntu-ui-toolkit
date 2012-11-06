@@ -16,18 +16,32 @@
 
 import QtQuick 2.0
 
-Rectangle {
+Item {
     id: background
     anchors.fill: parent
-    color: "black"
-    opacity: 0.6
+    property alias base: background.parent
 
-    // TODO: add "dimBackground" parameter
+    property bool dim: true
+
+    // the name "transient" for this property is not accepted by QtQuick2
+    property bool ephemeral
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.6
+        visible: background.dim
+    }
 
     MouseArea {
         anchors.fill: parent
-        onPressed: background.pressed(mouse)
+        onPressed: {
+            if (ephemeral) {
+                base.hide();
+                mouse.accepted = false;
+            } else {
+                mouse.accepted = true;
+            }
+        }
     }
-
-    signal pressed(var mouse);
 }

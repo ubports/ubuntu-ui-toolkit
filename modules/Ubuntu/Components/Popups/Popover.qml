@@ -21,7 +21,8 @@ PopupBase {
     default property alias container: containerItem.data
 
     Background {
-        onPressed: popover.destroy()
+        dim: false
+        ephemeral: true
     }
 
     Foreground {
