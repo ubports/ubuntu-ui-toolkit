@@ -1,0 +1,22 @@
+SDK Release Notes
+#################
+
+.. contents:: List of Releases
+   :depth: 1
+
+SDK 0.1.5
+#########
+
+:0.1.5: NOT RELEASED YET
+
+Compatibility Breaks
+********************
+
+* Meaning of TextCustom.fontSize has changed: the 'large' and 'x-large' sizes
+  changed to be bigger.
+
+API Changes
+***********
+
+* None
+

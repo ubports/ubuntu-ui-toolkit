@@ -30,6 +30,7 @@
 #include "ucunits.h"
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
+#include "quickutils.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -47,6 +48,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     // call engine registration method to load the theme
     QQmlContext* context = engine->rootContext();
+
+    // register root object watcher that sets a global property with the root object
+    // that can be accessed from any object
+    context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
     context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
     context->setContextProperty("i18n", &UbuntuI18n::instance());

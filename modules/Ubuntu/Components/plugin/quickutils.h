@@ -12,20 +12,38 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-function sizeToPixels(size) {
-    var baseSize = units.dp(14)
-    return Math.round(modularScale(size) * baseSize)
-}
+#ifndef QUICKUTILS_P_H
+#define QUICKUTILS_P_H
 
-function modularScale(size) {
-    switch (size) {
-        case "xx-small": return 0.606
-        case "x-small": return 0.707
-        case "small": return 0.857
-        case "medium": return 1.0
-        case "large": return 1.414
-        case "x-large": return 2.423
+#include <QtCore/QObject>
+#include <QtQuick/QQuickView>
+
+class QQuickItem;
+class QQmlEngine;
+class QJSEngine;
+class QuickUtils : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
+public:
+    static QuickUtils& instance()
+    {
+        static QuickUtils instance;
+        return instance;
     }
-}
+
+    QQuickItem *rootObject();
+
+Q_SIGNALS:
+    void rootObjectChanged();
+
+private:
+    explicit QuickUtils(QObject *parent = 0);
+    QQuickView *m_rootView;
+};
+
+
+#endif // QUICKUTILS_P_H
