@@ -24,7 +24,6 @@ Template {
 
     Rectangle {
         color: "transparent"
-        anchors.fill: parent
         id: canvas
 
 
