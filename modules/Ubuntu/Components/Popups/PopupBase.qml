@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.0
-//import "../mathUtils.js" as MathUtils
-//import "popoverUtils.js" as PopoverUtils
+import "popoverUtils.js" as PopoverUtils
 import Ubuntu.Components 0.1
 
 Item {
@@ -25,6 +24,7 @@ Item {
 
     property Item caller;
 
+    // theme
     property real edgeMargins: units.gu(2)
     property real callerMargins: units.gu(0.5)
 
@@ -37,25 +37,26 @@ Item {
         popupBase.visible = false;
     }
 
-    // TODO: Destroy only from Utils.close()
+    // private
+    function updatePosition(item) {
+        var pos = new PopoverUtils.Positioning(item, popupBase, caller, edgeMargins, callerMargins);
+
+        var minWidth = item.width + 2*edgeMargins;
+        var minHeight = item.height + 2*edgeMargins;
+        // TODO: do specialized positioning on small screens.
+
+        var coords;
+        if (!caller) {
+            coords = pos.center();
+        } else {
+            coords = pos.auto();
+        }
+
+        item.x = coords.x;
+        item.y = coords.y;
+    }
+
+
+    // TODO: Destroy *only* from Utils.close()
     onVisibleChanged: if (!visible) popupBase.destroy()
-
-//    QtObject {
-//        id: internal
-
-//        // FIXME: Do not assume always portrait orientation for smalls creens.
-//        property bool smallScreen: false;
-
-//        function detectScreen() {
-//            if (Math.min(rootArea.width, rootArea.height) <= popover.requestedWidth + 2*theme.edgeMargins) {
-//                smallScreen = true;
-//            } else {
-//                smallScreen = false;
-//            }
-//            popover.updatePosition();
-//        }
-//    }
-
-//    onWidthChanged: internal.detectScreen()
-//    onHeightChanged: internal.detectScreen()
 }

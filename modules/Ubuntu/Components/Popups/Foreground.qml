@@ -16,41 +16,28 @@
 
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
-import "popoverUtils.js" as PopoverUtils
+
 Item {
-    id: popover
+    // TODO: check that popover has a parent
+    id: foreground
 
-    width: parent ? Math.min(parent.width, requestedWidth) : requestedWidth
-    height: MathUtils.clamp(containerItem.totalHeight, minHeight, maxHeight)
+    property alias base: foreground.parent
 
-    property real maxHeight: parent ? 3*parent.height/4 : Number.MAX_VALUE
-    property real minHeight: units.gu(40)
-    property real requestedWidth: units.gu(40)
+    width: Math.min(base.width, requestedWidth)
+    height: MathUtils.clamp(childrenRect.height, minHeight, maxHeight)
 
-    property Item caller: parent ? parent.caller : undefined
+    property real maxHeight
+    property real minHeight
+    property real requestedWidth
 
-    onWidthChanged: updatePosition()
-    onHeightChanged: updatePosition()
-    onCallerChanged: updatePosition()
+    property Item caller: base.caller
 
-    function updatePosition() {
-//        var pos = new PopoverUtils.Positioning(popover, rootArea, caller, theme.edgeMargins, theme.callerMargins);
-        var pos = new PopoverUtils.Positioning(popover, rootArea, caller, 20, 10);
+    onWidthChanged: base.updatePosition(foreground)
+    onHeightChanged: base.updatePosition(foreground)
+    onCallerChanged: base.updatePosition(foreground)
 
-        var coords;
-//        if (internal.smallScreen || !caller) {
-        if (!caller) {
-            coords = pos.center();
-        } else {
-            coords = pos.auto();
-        }
-
-        popover.x = coords.x;
-        popover.y = coords.y;
-    }
-
+    // TODO: move to theme
     Rectangle {
-        id: background
         anchors.fill: parent
         color: "silver"
         opacity: 0.9
@@ -60,20 +47,5 @@ Item {
     // Avoid mouse events being sent to any MouseAreas that are behind the popover
     MouseArea {
         anchors.fill: parent
-    }
-
-    Rectangle {
-        id: containerItem
-        color: "transparent"
-
-        anchors {
-            left: parent.left
-            top: parent.top
-            right: parent.right
-            margins: units.gu(2)
-        }
-
-        height: containerLayout.totalHeight
-        property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
     }
 }

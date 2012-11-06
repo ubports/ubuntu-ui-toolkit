@@ -15,19 +15,17 @@
  */
 
 import QtQuick 2.0
-import "../mathUtils.js" as MathUtils
-import "popoverUtils.js" as PopoverUtils
 
 Rectangle {
     id: background
-    // darken the background
-//    anchors.fill: parent
+    anchors.fill: parent
     color: "black"
     opacity: 0.6
 
+    // TODO: add "dimBackground" parameter
+
     MouseArea {
         anchors.fill: parent
-//        onPressed: background.close();
         onPressed: background.pressed(mouse)
     }
 

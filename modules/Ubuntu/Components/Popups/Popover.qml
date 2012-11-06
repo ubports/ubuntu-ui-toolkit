@@ -15,33 +15,24 @@
  */
 
 import QtQuick 2.0
-import "../mathUtils.js" as MathUtils
-import "popoverUtils.js" as PopoverUtils
 
 PopupBase {
-    id: rootArea
+    id: popover
     default property alias container: containerItem.data
 
-    onCallerChanged: popover.updatePosition()
-
     Background {
-        anchors.fill: rootArea
-        onPressed: rootArea.destroy()
+        onPressed: popover.destroy()
     }
 
     Foreground {
-        id: popover
+        maxHeight: 3*popover.height/4
+        minHeight: units.gu(40)
+        requestedWidth: units.gu(40)
 
-//        property real maxHeight: rootArea ? 3*rootArea.height/4 : Number.MAX_VALUE
-//        property real minHeight: units.gu(40)
-//        property real requestedWidth: units.gu(40)
-
-        onWidthChanged: updatePosition()
-        onHeightChanged: updatePosition()
-
+        // TODO: make item after testing.
         Rectangle {
             id: containerItem
-            color: "transparent"
+            color: "white"
 
             anchors {
                 left: parent.left
@@ -50,8 +41,7 @@ PopupBase {
                 margins: units.gu(2)
             }
 
-            height: containerLayout.totalHeight
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
+            height: childrenRect.height + anchors.topMargin + anchors.bottomMargin
         }
     }
 }

@@ -36,7 +36,7 @@ Template {
                     // TODO: use the column container in one of the subclasses of Popover.
                     // It is too specific to use it here, but right now I need it for the margins.
                     id: containerLayout
-                    property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
+//                    property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
                     anchors {
                         left: parent.left
                         top: parent.top
