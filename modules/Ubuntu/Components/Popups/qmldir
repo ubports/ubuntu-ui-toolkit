@@ -1,6 +1,5 @@
 PopupBase 0.1 PopupBase.qml
 Popover 0.1 Popover.qml
-Test 0.1 Test.qml
 
 internal Foreground Foreground.qml
 internal Background Background.qml
