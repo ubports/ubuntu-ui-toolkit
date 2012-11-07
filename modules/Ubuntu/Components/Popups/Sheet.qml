@@ -23,6 +23,9 @@ PopupBase {
 
     property alias title: headerText.text
 
+    // choose between "closeButton", "doneButton", "composerButtons"
+    property string buttonConfiguration: "closeButton"
+
     Background {
         dim: false
         ephemeral: false
@@ -52,6 +55,18 @@ PopupBase {
                 width: height
                 text: "X"
                 onClicked: sheet.hide()
+                visible: "closeButton" === sheet.buttonConfiguration
+            }
+            Button {
+                anchors {
+                    left:  parent.left
+                    verticalCenter: parent.verticalCenter
+                    margins: units.gu(1)
+                }
+                text: "cancel"
+                color: "grey"
+                onClicked: sheet.hide()
+                visible: "composerButtons" === sheet.buttonConfiguration
             }
 
             TextCustom {
@@ -59,8 +74,6 @@ PopupBase {
                 anchors {
                     centerIn: parent
                 }
-
-                //                text: "Yeah!! This rules!! whahaa!"
             }
             Button {
                 anchors {
@@ -68,9 +81,21 @@ PopupBase {
                     right: parent.right
                     margins: units.gu(1)
                 }
-                text: "Done"
+                text: "done"
                 color: "orange"
                 onClicked: sheet.hide()
+                visible: "doneButton" === sheet.buttonConfiguration
+            }
+            Button {
+                anchors {
+                    right:  parent.right
+                    verticalCenter: parent.verticalCenter
+                    margins: units.gu(1)
+                }
+                text: "confirm"
+                color: "orange"
+                onClicked: sheet.hide()
+                visible: "composerButtons" === sheet.buttonConfiguration
             }
         }
 

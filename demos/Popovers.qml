@@ -80,6 +80,8 @@ Template {
                 id: sheet
 
                 title: "Ain't this the coolest sheet evar?"
+                buttonConfiguration: "composerButtons"
+
                 Column {
                     anchors {
                         left: parent.left
