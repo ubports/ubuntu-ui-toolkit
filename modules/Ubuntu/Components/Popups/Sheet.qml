@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-//import "../mathUtils.js" as MathUtils
 
 PopupBase {
     id: sheet
@@ -26,7 +25,7 @@ PopupBase {
 
     Background {
         dim: false
-        ephemeral: true
+        ephemeral: false
     }
 
     Foreground {
@@ -52,7 +51,7 @@ PopupBase {
                 }
                 width: height
                 text: "X"
-                color: "orange"
+                onClicked: sheet.hide()
             }
 
             TextCustom {
@@ -71,6 +70,7 @@ PopupBase {
                 }
                 text: "Done"
                 color: "orange"
+                onClicked: sheet.hide()
             }
         }
 
