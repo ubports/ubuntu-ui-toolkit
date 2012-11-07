@@ -23,7 +23,7 @@ Item {
 
     property bool dim: true
 
-    // the name "transient" for this property is not accepted by QtQuick2
+    // the names "transient" and "volatile" are reserved words
     property bool ephemeral
 
     Rectangle {

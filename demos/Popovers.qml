@@ -79,6 +79,7 @@ Template {
             Sheet {
                 id: sheet
 
+                title: "Ain't this the coolest sheet evar?"
                 Column {
                     anchors {
                         left: parent.left

@@ -15,11 +15,14 @@
  */
 
 import QtQuick 2.0
-import "../mathUtils.js" as MathUtils
+import Ubuntu.Components 0.1
+//import "../mathUtils.js" as MathUtils
 
 PopupBase {
     id: sheet
     default property alias container: containerItem.data
+
+    property alias title: headerText.text
 
     Background {
         dim: false
@@ -27,14 +30,49 @@ PopupBase {
     }
 
     Foreground {
-//        maxHeight: sheet.height
-//        minHeight: units.gu(40)
-
-        // TODO minWidth: 50, maxWidth: sheet.width
-//        requestedWidth: units.gu(60)
 
         width: MathUtils.clamp(childrenRect.width, units.gu(50), sheet.width)
         height: Math.min(units.gu(40), sheet.height)
+
+        Rectangle {
+            id: header
+            color: "darkgrey"
+            height: units.gu(8)
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
+            Button {
+                ItemStyle.class: "transparent-button"
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    margins: units.gu(1)
+                }
+                width: height
+                text: "X"
+                color: "orange"
+            }
+
+            TextCustom {
+                id: headerText
+                anchors {
+                    centerIn: parent
+                }
+
+                //                text: "Yeah!! This rules!! whahaa!"
+            }
+            Button {
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    margins: units.gu(1)
+                }
+                text: "Done"
+                color: "orange"
+            }
+        }
 
         // TODO: Make height of Foreground depend on containerItem height + margins?
         // TODO: make item after testing.
@@ -43,8 +81,8 @@ PopupBase {
             color: "transparent"
 
             anchors {
+                top: header.bottom
                 left: parent.left
-                top: parent.top
                 right: parent.right
                 margins: units.gu(2)
             }
