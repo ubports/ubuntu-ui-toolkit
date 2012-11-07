@@ -1,5 +1,6 @@
 PopupBase 0.1 PopupBase.qml
 Popover 0.1 Popover.qml
+Sheet 0.1 Sheet.qml
 
 PopupUtils 0.1 popupUtils.js
 

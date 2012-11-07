@@ -15,20 +15,13 @@
  */
 
 import QtQuick 2.0
-import "../mathUtils.js" as MathUtils
+//import "../mathUtils.js" as MathUtils
 
 Item {
     // TODO: check that popover has a parent
     id: foreground
 
     property alias base: foreground.parent
-
-    width: Math.min(base.width, requestedWidth)
-    height: MathUtils.clamp(childrenRect.height, minHeight, maxHeight)
-
-    property real maxHeight
-    property real minHeight
-    property real requestedWidth
 
     property Item caller: base.caller
 

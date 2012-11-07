@@ -75,17 +75,67 @@ Template {
         }
 
         Component {
-            id: buttonComponent
-            Button {
-                id: theActualButton
-                text: "Pop!"
-                width: 100
-                onClicked: {
-                    PopupUtils.open(popoverComponent, theActualButton);
+            id: defaultSheetComponent
+            Sheet {
+                id: sheet
+
+                Column {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+
+                    TextCustom { text: "hello there" }
+                    Rectangle {
+                        color: "red"
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        height: units.gu(4)
+                    }
+                    Rectangle {
+                        color: "yellow"
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        height: units.gu(4)
+                    }
+                    Rectangle {
+                        color: "green"
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        height: units.gu(4)
+                    }
                 }
             }
         }
 
+        Component {
+            id: buttonComponent
+            Column {
+                width: 120
+
+                Button {
+                    id: theActualButton
+                    text: "Pop!"
+                    width: parent.width
+                    onClicked: {
+                        PopupUtils.open(popoverComponent, theActualButton);
+                    }
+                }
+                Button {
+                    id: theOtherButton
+                    text: "oh, sheet!"
+                    width: parent.width
+                    onClicked: PopupUtils.open(defaultSheetComponent, theOtherButton);
+                }
+            }
+        }
         Component.onCompleted: {
             var i;
             var b = [];

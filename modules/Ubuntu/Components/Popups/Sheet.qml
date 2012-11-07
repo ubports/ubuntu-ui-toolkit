@@ -17,9 +17,8 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 
-
 PopupBase {
-    id: popover
+    id: sheet
     default property alias container: containerItem.data
 
     Background {
@@ -28,8 +27,14 @@ PopupBase {
     }
 
     Foreground {
-        width: Math.min(units.gu(40), popover.width)
-        height: MathUtils.clamp(childrenRect.height, units.gu(40), 3*popover.height/4)
+//        maxHeight: sheet.height
+//        minHeight: units.gu(40)
+
+        // TODO minWidth: 50, maxWidth: sheet.width
+//        requestedWidth: units.gu(60)
+
+        width: MathUtils.clamp(childrenRect.width, units.gu(50), sheet.width)
+        height: Math.min(units.gu(40), sheet.height)
 
         // TODO: Make height of Foreground depend on containerItem height + margins?
         // TODO: make item after testing.
