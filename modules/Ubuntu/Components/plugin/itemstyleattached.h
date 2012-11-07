@@ -33,6 +33,8 @@ class ItemStyleAttached : public QObject
     Q_PROPERTY(QObject *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PROPERTY(QQuickItem *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
 
+    Q_PROPERTY(QString path READ path NOTIFY styleChanged)
+
 public:
     explicit ItemStyleAttached(QObject *parent = 0);
     ~ItemStyleAttached();
@@ -46,6 +48,7 @@ public Q_SLOTS:
 public: //getters
     QString name() const;
     QString styleClass() const;
+    QString path() const;
 
 private:
     void setName(const QString &name);

@@ -143,7 +143,8 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     style(0),
     delegate(0),
     componentContext(0),
-    themeRule(0),
+    styleRule(0),
+    delegateRule(0),
     delayApplyingStyle(true),
     customStyle(false),
     customDelegate(false),
@@ -170,12 +171,6 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
         ThemeEngine::instance()->registerName(attachee, QString());
 }
 
-bool ItemStyleAttachedPrivate::lookupThemeStyle(bool useMetaClassName)
-{
-    themeRule = ThemeEngine::instance()->lookupStyleRule(attachee, useMetaClassName);
-    return (themeRule != 0);
-}
-
 bool ItemStyleAttachedPrivate::updateStyle()
 {
     bool result = false;
@@ -191,11 +186,11 @@ bool ItemStyleAttachedPrivate::updateStyle()
             style = 0;
         }
         // make sure we have a theme
-        result = lookupThemeStyle(false);
-        if (!result || (result && !themeRule->style()))
-            result = lookupThemeStyle(true);
+        result = (styleRule = ThemeEngine::instance()->lookupStyleRule(attachee));
+        if (!result || (result && !styleRule->style()))
+            result = (styleRule = ThemeEngine::instance()->lookupStyleRule(attachee, true));
         if (result) {
-            style = themeRule->createStyle(componentContext);
+            style = styleRule->createStyle(componentContext);
         }
     } else
         result = true;
@@ -223,11 +218,11 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             delegate = 0;
         }
         // make sure we have a theme
-        result = lookupThemeStyle(false);
-        if (!result || (result && !themeRule->delegate()))
-            result = lookupThemeStyle(true);
+        result = (delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee));
+        if (!result || (result && !delegateRule->delegate()))
+            result = (delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true));
         if (result) {
-            delegate = themeRule->createDelegate(componentContext);
+            delegate = delegateRule->createDelegate(componentContext);
         }
     } else
         result = true;
@@ -330,7 +325,17 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
     if (!parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
+
     _q_refreshStyle();
+
+    // need to reapply styling on each child of the attachee!
+    // this will cause performance issues!
+    QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
+    Q_FOREACH(QQuickItem *child, children) {
+        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
+        if (style)
+            style->d_ptr->_q_reapplyStyling(child->parentItem());
+    }
 }
 
 /*==============================================================================
@@ -372,8 +377,8 @@ QString ItemStyleAttached::name() const
 void ItemStyleAttached::setName(const QString &name)
 {
     Q_D(ItemStyleAttached);
-    if (name != d->name) {
-        if (d->registerName(name)) {
+    if (d->name.compare(name, Qt::CaseInsensitive)) {
+        if (d->registerName(name.toLower())) {
             d->listenThemeEngine();
             d->updateCurrentStyle();
         }
@@ -402,11 +407,21 @@ QString ItemStyleAttached::styleClass() const
 void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
     Q_D(ItemStyleAttached);
-    if (d->styleClass != styleClass) {
+    if (d->styleClass.compare(styleClass, Qt::CaseInsensitive)) {
         d->styleClass = styleClass.toLower();
         d->listenThemeEngine();
         d->updateCurrentStyle();
     }
+}
+
+/*!
+ *\qmlproperty string ItemStyle::path
+ * This property holds the style path applied on the attachee item.
+ */
+QString ItemStyleAttached::path() const
+{
+    Q_D(const ItemStyleAttached);
+    return d->styleRule ? d->styleRule->selector() : QString("(null)");
 }
 
 /*!
@@ -446,6 +461,8 @@ void ItemStyleAttached::setStyle(QObject *style)
             d->style = 0;
         }
         d->customStyle = (style != 0);
+        if (d->customStyle)
+            d->styleRule = 0;
         d->style = style;
         d->listenThemeEngine();
         if (d->updateStyle())
@@ -487,6 +504,8 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
             d->delegate->deleteLater();
         }
         d->customDelegate = (delegate != 0);
+        if (d->customDelegate)
+            d->delegateRule = 0;
         d->delegate = delegate;
         d->listenThemeEngine();
         if (d->updateDelegate())

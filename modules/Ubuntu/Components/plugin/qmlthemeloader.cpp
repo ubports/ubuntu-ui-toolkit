@@ -249,16 +249,11 @@ void QmlThemeLoader::normalizeStyles()
         i.next();
         Selector selector = i.key();
         QHash<QString, QString> propertyMap = i.value();
-        bool propertyMapUpdated = updateRuleProperties(selector, propertyMap);
 
-        for (int count = selector.count(); count > 1; count--) {
-            Selector subset = selectorSubset(selector, count);
-            if (updateRuleProperties(subset, propertyMap))
-                propertyMapUpdated = true;
-        }
-        if (propertyMapUpdated) {
+        // need to check only the last node from the selector path
+        Selector subset = selectorSubset(selector, 1);
+        if (updateRuleProperties(subset, propertyMap))
             selectorTable.insert(i.key(), propertyMap);
-        }
     }
 }
 
@@ -357,7 +352,7 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
         return false;
     } else {
         // load declarator and apply on each selector
-        data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
+        data = readTillToken(stream, QRegExp("[}]"), QRegExp("[\t\r\n]"));
         Q_FOREACH (const Selector &selector, selectors) {
             if (!handleSelector(selector, data, stream)) {
                 ThemeEnginePrivate::setError(

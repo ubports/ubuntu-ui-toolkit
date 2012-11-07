@@ -85,8 +85,12 @@ QUrl ThemeSettings::themeFile() const
 {
     QUrl result;
     // returns the global theme file
-    QString theme = globalSettings.value(globalThemeKey).toString();
-    result = QUrl::fromLocalFile(themeFolder() + QString(PathFormat_GlobalThemeFile).arg(theme));
+    QString theme = ::themeFile();
+    if (theme.isEmpty()) {
+        theme = globalSettings.value(globalThemeKey).toString();
+        result = QUrl::fromLocalFile(themeFolder() + QString(PathFormat_GlobalThemeFile).arg(theme));
+    } else
+        result = QUrl::fromLocalFile(theme);
     if (!QFile::exists(result.path()))
         result = QUrl();
     return result;
