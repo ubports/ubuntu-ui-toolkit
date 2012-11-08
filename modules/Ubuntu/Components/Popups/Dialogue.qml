@@ -89,12 +89,12 @@ PopupBase {
         Column {
             id: buttonColumn
             anchors {
-                top: questionText.bottom
+                bottom: parent.bottom
                 left: parent.left
                 right: parent.right
                 margins: units.gu(1)
             }
-            spacing: units.gu(0.5)
+            spacing: units.gu(1)
 
             height: childrenRect.height + anchors.bottomMargin
 
@@ -104,22 +104,6 @@ PopupBase {
                     children[i].anchors.right = buttonColumn.right;
                 }
             }
-        }
-
-        // TODO: Make height of Foreground depend on containerItem height + margins?
-        // TODO: make item after testing.
-        Rectangle {
-            id: containerItem
-            color: "transparent"
-
-            anchors {
-                left: parent.left
-                top: parent.top
-                right: parent.right
-                margins: units.gu(2)
-            }
-
-            height: childrenRect.height + anchors.margins //anchors.topMargin + anchors.bottomMargin
         }
 
         onWidthChanged: popover.updatePosition(foreground)
