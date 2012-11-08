@@ -48,7 +48,7 @@ PopupBase {
         property real maxWidth: portrait ? popover.width : popover.width * 3/4
         property real maxHeight: portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
-        height: MathUtils.clamp(containerItem.height + containerItem.anchors.margins*2, units.gu(32), maxHeight)
+        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
 
         // TODO: Make height of Foreground depend on containerItem height + margins?
         // TODO: make item after testing.
@@ -64,6 +64,7 @@ PopupBase {
             }
 
             height: childrenRect.height
+            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
         onWidthChanged: popover.updatePosition(foreground)
