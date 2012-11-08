@@ -21,19 +21,22 @@ TestCase {
 
      function test_echoMode() {
          compare(textField.echoMode, TextInput.Normal,"echoMode is TextInput.Normal by default")
-         // try other echomodes
      }
 
      function test_errorHighlight() {
          compare(textField.errorHighlight, false,"errorHighlight is false by default")
+         textField.errorHighlight = true
+         compare(textField.errorHighlight,true,"set/get")
      }
 
      function test_font() {
-         //TODO: to be done
+         verify((textField.font),"font is set")
      }
 
      function test_hasClearButton() {
          compare(textField.hasClearButton, true, "hasClearButton is false by default")
+         textField.hasClearButton = false
+         compare(textField.hasClearButton, false, "set/get")
      }
 
      function test_inputMask() {
@@ -58,6 +61,8 @@ TestCase {
 
      function test_readOnly() {
          compare(textField.readOnly, false, "readOnly is false by default")
+         textField.readOnly = true
+         compare(textField.readOnly, true, "set/get")
      }
 
      function test_secondaryItem() {
@@ -78,6 +83,9 @@ TestCase {
 
      function test_text() {
          compare(textField.text, "", "text is '' by default")
+         var newText = "Hello World!"
+         textField.text = newText
+         compare(textField.text, newText, "set/get")
      }
 
      function test_validator() {
