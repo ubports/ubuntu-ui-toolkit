@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testCase_loadTheme();
     void testCase_lookupStyleRule();
     void testCase_reparenting();
+    void testCase_blockDeclaration();
 
 private:
     QQuickView *quickView;
@@ -112,6 +113,7 @@ void tst_ThemeEngine::testCase_reparenting()
     ThemeEngine::instance()->resetError();
     ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
     quickView->setSource(QUrl::fromLocalFile("ReparentingTest.qml"));
+    QCoreApplication::processEvents();
 
     QObject *root = quickView->rootObject();
     QVERIFY2(root, "FAILURE");
@@ -122,8 +124,11 @@ void tst_ThemeEngine::testCase_reparenting()
     QVERIFY(items.count());
 
     Q_FOREACH(QQuickItem *item, items) {
+        // if a style has Item-derived properties (Animations, etc), those will be listed here too
+        // therefore skip those
         QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
-        QVERIFY(obj);
+        if (!obj)
+            continue;
 
         ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
         QVERIFY(attached);
@@ -144,6 +149,28 @@ void tst_ThemeEngine::testCase_reparenting()
             QVERIFY(0);
         }
     }
+}
+
+void tst_ThemeEngine::testCase_blockDeclaration()
+{
+    ThemeEngine::initializeEngine(quickEngine);
+    ThemeEngine::instance()->resetError();
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/block.qmltheme"));
+    quickView->setSource(QUrl::fromLocalFile("BlockPropertyTest.qml"));
+
+    QObject *root = quickView->rootObject();
+    QVERIFY2(root, "FAILURE");
+
+    QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(root, false);
+    QVERIFY(obj);
+
+    ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
+    QVERIFY(attached);
+
+    QObject *style = qvariant_cast<QObject*>(attached->property("style"));
+    QVERIFY(style);
+
+    QObject *anim = qvariant_cast<QObject*>(style->property(""));
 }
 
 QTEST_MAIN(tst_ThemeEngine)
