@@ -14,15 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library
+//.pragma library
 .import "../mathUtils.js" as MathUtils
 
 function open(component, caller) {
-    // TODO: pass the proper root object to createObject() so that
-    //  popup.show() does not need to do re-parenting.
     // TODO: Check that component is a valid component, and the object
     //  can be created.
-    var popup = component.createObject();
+    // FIXME: how can I use the rootObject here?
+    var popup = component.createObject(QuickUtils.rootObject);
     popup.caller = caller;
     popup.show();
 }

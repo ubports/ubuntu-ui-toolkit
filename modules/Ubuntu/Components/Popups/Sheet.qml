@@ -32,9 +32,12 @@ PopupBase {
     }
 
     Foreground {
-
-        width: MathUtils.clamp(childrenRect.width, units.gu(50), sheet.width)
+        property real contentsWidth: Math.max(header.width, containerItem.width)
+        width: MathUtils.clamp(contentsWidth, units.gu(50), sheet.width)
         height: Math.min(units.gu(40), sheet.height)
+
+        onWidthChanged: print("width = "+width)
+        Component.onCompleted: print("w = "+sheet.width)
 
         Rectangle {
             id: header
@@ -45,19 +48,43 @@ PopupBase {
                 left: parent.left
                 right: parent.right
             }
+            width: headerText.width + totalButtonWidth()
+
+            TextCustom {
+                id: headerText
+                anchors {
+                    centerIn: parent
+                }
+                width: headerText.implicitWidth + units.gu(4)
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
+//                wrapMode: Text.Wrap
+//                maximumLineCount: 2
+            }
+
+            function totalButtonWidth() {
+                var total = 0;
+                if (closeButton.visible) total += 2*closeButton.width;
+                if (doneButton.visible) total += 2*doneButton.width;
+                if (cancelButton.visible) total += 2*Math.max(cancelButton.width, confirmButton.width)
+//                if (confirmButton.visible) total += confirmButton.width;
+                return total;
+            }
+
             Button {
+                id: closeButton
                 ItemStyle.class: "transparent-button"
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                     margins: units.gu(1)
                 }
-                width: height
                 text: "X"
                 onClicked: sheet.hide()
                 visible: "closeButton" === sheet.buttonConfiguration
             }
             Button {
+                id: cancelButton
                 anchors {
                     left:  parent.left
                     verticalCenter: parent.verticalCenter
@@ -68,14 +95,8 @@ PopupBase {
                 onClicked: sheet.hide()
                 visible: "composerButtons" === sheet.buttonConfiguration
             }
-
-            TextCustom {
-                id: headerText
-                anchors {
-                    centerIn: parent
-                }
-            }
             Button {
+                id: doneButton
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
@@ -87,6 +108,7 @@ PopupBase {
                 visible: "doneButton" === sheet.buttonConfiguration
             }
             Button {
+                id: confirmButton
                 anchors {
                     right:  parent.right
                     verticalCenter: parent.verticalCenter
@@ -107,12 +129,14 @@ PopupBase {
 
             anchors {
                 top: header.bottom
-                left: parent.left
-                right: parent.right
-                margins: units.gu(2)
+//                left: parent.left
+//                right: parent.right
+                horizontalCenter: parent.horizontalCenter
+//                margins: units.gu(2)
             }
 
-            height: childrenRect.height + anchors.margins //anchors.topMargin + anchors.bottomMargin
+            height: childrenRect.height //+ anchors.margins //anchors.topMargin + anchors.bottomMargin
+            width: childrenRect.width
         }
     }
 }

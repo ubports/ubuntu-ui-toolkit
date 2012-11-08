@@ -80,14 +80,11 @@ Template {
                 id: sheet
 
                 title: "Ain't this the coolest sheet evar?"
-                buttonConfiguration: "composerButtons"
+                buttonConfiguration: "doneButton"
 
                 Column {
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
+//                    anchors.top: parent.top
+                    width: units.gu(30)
 
                     TextCustom { text: "hello there" }
                     Rectangle {
@@ -119,24 +116,41 @@ Template {
         }
 
         Component {
+            id: dialogComponent
+
+            Dialogue {
+                Rectangle {
+                    color: "white"
+                    width: 200
+                    height: 200
+                }
+            }
+        }
+
+        Component {
             id: buttonComponent
             Column {
-                width: 120
+                width: units.gu(15)
 
                 Button {
-                    id: theActualButton
+                    id: popButton
                     text: "Pop!"
                     width: parent.width
-                    onClicked: {
-                        PopupUtils.open(popoverComponent, theActualButton);
-                    }
+                    onClicked: PopupUtils.open(popoverComponent, popButton)
                 }
                 Button {
-                    id: theOtherButton
+                    id: sheetButton
                     text: "oh, sheet!"
                     width: parent.width
-                    onClicked: PopupUtils.open(defaultSheetComponent, theOtherButton);
+                    onClicked: PopupUtils.open(defaultSheetComponent, sheetButton)
                 }
+                Button {
+                    id: queryButton
+                    text: "Q"
+                    width: parent.width
+                    onClicked: PopupUtils.open(dialogComponent, queryButton)
+                }
+
             }
         }
         Component.onCompleted: {

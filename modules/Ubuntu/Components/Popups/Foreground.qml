@@ -25,9 +25,9 @@ Item {
 
     property Item caller: base.caller
 
-    onWidthChanged: base.updatePosition(foreground)
-    onHeightChanged: base.updatePosition(foreground)
-    onCallerChanged: base.updatePosition(foreground)
+//    onWidthChanged: base.updatePosition(foreground)
+//    onHeightChanged: base.updatePosition(foreground)
+//    onCallerChanged: base.updatePosition(foreground)
 
     // TODO: move to theme
     Rectangle {

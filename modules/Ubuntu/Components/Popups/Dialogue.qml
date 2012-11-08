@@ -17,33 +17,10 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 
+
 PopupBase {
     id: popover
     default property alias container: containerItem.data
-
-    // theme
-    property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(0.5)
-
-    // private
-    function updatePosition(item) {
-        var pos = new PopupUtils.Positioning(item, popover, caller, edgeMargins, callerMargins);
-
-        var minWidth = item.width + 2*edgeMargins;
-        var minHeight = item.height + 2*edgeMargins;
-        // TODO: do specialized positioning on small screens.
-
-        var coords;
-        if (!popover.caller) {
-            // TODO: ERROR
-            coords = pos.center();
-        } else {
-            coords = pos.auto();
-        }
-
-        item.x = coords.x;
-        item.y = coords.y;
-    }
 
     Background {
         dim: false
@@ -51,7 +28,6 @@ PopupBase {
     }
 
     Foreground {
-        id: foreground
         width: Math.min(units.gu(40), popover.width)
         height: MathUtils.clamp(childrenRect.height, units.gu(40), 3*popover.height/4)
 
@@ -70,10 +46,5 @@ PopupBase {
 
             height: childrenRect.height + anchors.margins //anchors.topMargin + anchors.bottomMargin
         }
-
-        onWidthChanged: popover.updatePosition(foreground)
-        onHeightChanged: popover.updatePosition(foreground)
     }
-
-    onCallerChanged: updatePosition(foreground)
 }

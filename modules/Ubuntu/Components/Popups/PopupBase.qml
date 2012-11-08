@@ -20,18 +20,21 @@ import Ubuntu.Components 0.1
 
 Item {
     id: popupBase
-    anchors.fill: parent ? parent : undefined
+
+    anchors.fill: parent
+
+    // without this, some width calculations go wrong in Sheet
+    // I guess popupBase.width is not correctly set initially
+    width: parent.width
+    height: parent.height
 
     // TODO: make private?
     property Item caller;
 
-    // theme
-    property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(0.5)
-
     function show() {
-        print("PopupBase.show("+caller+").");
-        if (parent !== QuickUtils.rootObject) parent = QuickUtils.rootObject;
+        if (parent !== QuickUtils.rootObject) {
+            parent = QuickUtils.rootObject;
+        }
         popupBase.visible = true;
     }
 
@@ -39,29 +42,9 @@ Item {
         popupBase.visible = false;
     }
 
-    // private
-    function updatePosition(item) {
-        var pos = new PopupUtils.Positioning(item, popupBase, caller, edgeMargins, callerMargins);
-
-        var minWidth = item.width + 2*edgeMargins;
-        var minHeight = item.height + 2*edgeMargins;
-        // TODO: do specialized positioning on small screens.
-
-        var coords;
-        if (!caller) {
-            coords = pos.center();
-        } else {
-            coords = pos.auto();
-        }
-
-        item.x = coords.x;
-        item.y = coords.y;
-    }
-
     // TODO: Destroy *only* from Utils.close()
     onVisibleChanged: {
         if (!visible) {
-            print("destroying");
             popupBase.destroy();
         }
     }
