@@ -24,67 +24,15 @@ PopupBase {
     // theme
     property real edgeMargins: units.gu(2)
     property real callerMargins: units.gu(0.5)
-
     property bool portrait: width < height
-//    property bool smallScreen: Math.min(width, height) < units.gu(40)
 
     // private
     function updatePosition(item) {
         // FIXME: assuming that popover has a caller.
         // FIXME: if the edgeMargins are larger than caller width/height+callerMargins,
         //          then we can run into problems.
-
         var pos = new PopupUtils.Positioning(item, popover, caller, edgeMargins, callerMargins);
-
-        var coords = new Qt.point(0, 0);
-        if (foreground.width >= popover.width - 2*edgeMargins) {
-            // the popover uses (almost) the full width of the screen
-            coords.x = pos.horizontalCenter();
-            coords.y = pos.above();
-            if (!pos.checkVerticalPosition(coords.y, 0, popover.height/4)) {
-                coords.y = pos.below();
-                if (!pos.checkVerticalPosition(coords.y, 0, popover.height/4)) {
-                    // position at the top of the screen:
-                    coords.y = 0;
-                }
-            }
-        } else if (foreground.height >= popover.height - 2*edgeMargins) {
-            // the popover uses (almost) the full height of the screen
-            coords.y = pos.verticalCenter();
-            coords.x = pos.left();
-            if (!pos.checkHorizontalPosition(coords.x, 0, popover.width/4)) {
-                coords.x = pos.right();
-                if (!pos.checkHorizontalPosition(coords.x, 0, popover.width/4)) {
-                    // position at the left of the screen
-                    coords.x = 0;
-                }
-            }
-        } else {
-            // position with the following priorities: above, left, right, below.
-            coords.y = pos.above();
-            if (pos.checkVerticalPosition(coords.y, edgeMargins, 0)) {
-                coords.x = pos.horizontalAlign();
-            } else {
-                coords.x = pos.left();
-                if (pos.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
-                    coords.y = pos.verticalAlign();
-                } else {
-                    coords.x = pos.right();
-                    if (pos.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
-                        coords.y = pos.verticalAlign();
-                    } else {
-                        coords.y = pos.below();
-                        if (pos.checkVerticalPosition(coords.y, edgeMargins, 0)) {
-                            coords.x = pos.horizontalAlign();
-                        } else {
-                            // not enough space on any of the sides to fit within the margins.
-                            coords.x = pos.horizontalCenter();
-                            coords.y = pos.verticalCenter();
-                        }
-                    }
-                }
-            }
-        }
+        var coords = pos.auto();
         item.x = coords.x;
         item.y = coords.y;
     }

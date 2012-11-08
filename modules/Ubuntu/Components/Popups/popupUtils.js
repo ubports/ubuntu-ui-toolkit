@@ -82,5 +82,58 @@ function Positioning(item, area, caller, edgeMargins, callerMargins) {
         var y = area.mapFromItem(caller, -1, caller.height/2).y - item.height/2;
         return MathUtils.clamp(y, edgeMargins, area.height - item.height - edgeMargins);
     }
+
+    this.auto = function() {
+        var coords = new Qt.point(0, 0);
+        if (item.width >= area.width - 2*edgeMargins) {
+            // the popover uses (almost) the full width of the screen
+            coords.x = this.horizontalCenter();
+            coords.y = this.above();
+            if (!this.checkVerticalPosition(coords.y, 0, area.height/4)) {
+                coords.y = this.below();
+                if (!this.checkVerticalPosition(coords.y, 0, area.height/4)) {
+                    // position at the top of the screen:
+                    coords.y = 0;
+                }
+            }
+        } else if (item.height >= area.height - 2*edgeMargins) {
+            // the popover uses (almost) the full height of the screen
+            coords.y = this.verticalCenter();
+            coords.x = this.left();
+            if (!this.checkHorizontalPosition(coords.x, 0, area.width/4)) {
+                coords.x = this.right();
+                if (!this.checkHorizontalPosition(coords.x, 0, area.width/4)) {
+                    // position at the left of the screen
+                    coords.x = 0;
+                }
+            }
+        } else {
+            // position with the following priorities: above, left, right, below.
+            coords.y = this.above();
+            if (this.checkVerticalPosition(coords.y, edgeMargins, 0)) {
+                coords.x = this.horizontalAlign();
+            } else {
+                coords.x = this.left();
+                if (this.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
+                    coords.y = this.verticalAlign();
+                } else {
+                    coords.x = this.right();
+                    if (this.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
+                        coords.y = this.verticalAlign();
+                    } else {
+                        coords.y = this.below();
+                        if (this.checkVerticalPosition(coords.y, edgeMargins, 0)) {
+                            coords.x = this.horizontalAlign();
+                        } else {
+                            // not enough space on any of the sides to fit within the margins.
+                            coords.x = this.horizontalCenter();
+                            coords.y = this.verticalCenter();
+                        }
+                    }
+                }
+            }
+        }
+        return coords;
+    }
 }
 
