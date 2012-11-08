@@ -14,93 +14,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//.pragma library
 .import "../mathUtils.js" as MathUtils
 
 function open(component, caller) {
     // TODO: Check that component is a valid component, and the object
     //  can be created.
-    // FIXME: how can I use the rootObject here?
-    var popup = component.createObject(QuickUtils.rootObject);
-    popup.caller = caller;
+    var popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
     popup.show();
 }
 
 // TODO: close function.
 
-function Positioning(popover, area, caller, edgeMargins, callerMargins) {
+function Positioning(item, area, caller, edgeMargins, callerMargins) {
 
-    // all coordinate computation are relative inside the area Item.
+    // all coordinate computation are relative inside "area".
+
+    this.horizontalCenter = function() {
+        return area.width/2 - item.width/2;
+    }
+
+    this.verticalCenter = function() {
+        return area.height/2 - item.height/2;
+    }
+
+    this.checkVerticalPosition = function(y, marginBothSides, marginOneSide) {
+        if (y < marginBothSides) return false;
+        if (y + item.height > area.height - marginBothSides) return false;
+        if (marginBothSides >= marginOneSide) return true;
+        if (y > marginOneSide) return true;
+        if (y + item.height < area.height - marginOneSide) return true;
+        return false;
+    }
+
+    this.checkHorizontalPosition = function(x, marginBothSides, marginOneSide) {
+        if (x < marginBothSides) return false;
+        if (x + item.width > area.width - marginBothSides) return false;
+        if (marginBothSides >= marginOneSide) return true;
+        if (x > marginOneSide) return true;
+        if (x + item.width < area.width - marginOneSide) return true;
+        return false;
+    }
+
+    // -1 values are not relevant.
 
     this.above = function() {
-        var coords = new Qt.point(0, 0);
-        var topCenter = area.mapFromItem(caller, caller.width/2, 0);
-        coords.x = topCenter.x - popover.width/2;
-        coords.y = topCenter.y - popover.height - callerMargins;
-        return coords;
+        return area.mapFromItem(caller, -1, 0).y - item.height - callerMargins;
     }
 
     this.below = function() {
-        var coords = new Qt.point(0, 0);
-        var bottomCenter = area.mapFromItem(caller, caller.width/2, caller.height);
-        coords.x = bottomCenter.x - popover.width/2;
-        coords.y = bottomCenter.y + callerMargins;
-        return coords;
+        return area.mapFromItem(caller, -1, caller.height).y + callerMargins;
     }
 
     this.left = function() {
-        var coords = new Qt.point(0, 0);
-        var leftCenter = area.mapFromItem(caller, 0, caller.height/2);
-        coords.x = leftCenter.x - popover.width - callerMargins;
-        coords.y = leftCenter.y - popover.height/2;
-        return coords;
+        return area.mapFromItem(caller, 0, -1).x - item.width - callerMargins;
     }
 
     this.right = function() {
-        var coords = new Qt.point(0, 0);
-        var rightCenter = area.mapFromItem(caller, caller.width, caller.height/2);
-        coords.x = rightCenter.x + callerMargins;
-        coords.y = rightCenter.y - popover.height/2;
-        return coords;
+        return area.mapFromItem(caller, caller.width, -1).x + callerMargins;
     }
 
-    this.center = function() {
-        var coords = new Qt.point(0, 0);
-        coords.x = area.width/2 - popover.width/2;
-        coords.y = area.height/2 - popover.height/2;
-        return coords;
+    this.horizontalAlign = function() {
+        var x = area.mapFromItem(caller, caller.width/2, -1).x - item.width/2;
+        return MathUtils.clamp(x, edgeMargins, area.width - item.width - edgeMargins);
     }
 
-    this.auto = function() {
-        var minX = edgeMargins;
-        var maxX = area.width - edgeMargins - popover.width;
-        var minY = edgeMargins;
-        var maxY = area.height - edgeMargins - popover.height;
-
-        var coords = this.above();
-        if (coords.y >= minY) {
-            coords.x = MathUtils.clamp(coords.x, minX, maxX);
-            return coords;
-        }
-
-        coords =  this.left();
-        if (coords.x >= minX) {
-            coords.y = MathUtils.clamp(coords.y, minY, maxY);
-            return coords;
-        }
-
-        coords = this.right();
-        if (coords.x <= maxX) {
-            coords.y = MathUtils.clamp(coords.y, minY, maxY);
-            return coords;
-        }
-
-        coords = this.below();
-        if (coords.y <= maxY) {
-            coords.x = MathUtils.clamp(coords.x, minX, maxX);
-            return coords;
-        }
-        return this.center();
+    this.verticalAlign = function() {
+        var y = area.mapFromItem(caller, -1, caller.height/2).y - item.height/2;
+        return MathUtils.clamp(y, edgeMargins, area.height - item.height - edgeMargins);
     }
 }
 

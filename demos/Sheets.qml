@@ -153,18 +153,19 @@ Template {
                     width: parent.width
                     onClicked: PopupUtils.open(popoverComponent, popButton)
                 }
-//                Button {
-//                    id: sheetButton
-//                    text: "oh, sheet!"
-//                    width: parent.width
-//                    onClicked: PopupUtils.open(defaultSheetComponent, sheetButton)
-//                }
-//                Button {
-//                    id: queryButton
-//                    text: "Q"
-//                    width: parent.width
-//                    onClicked: PopupUtils.open(dialogComponent, queryButton)
-//                }
+                Button {
+                    id: sheetButton
+                    text: "oh, sheet!"
+                    width: parent.width
+                    onClicked: PopupUtils.open(defaultSheetComponent, sheetButton)
+                }
+                Button {
+                    id: queryButton
+                    text: "Q"
+                    width: parent.width
+                    onClicked: PopupUtils.open(dialogComponent, queryButton)
+                }
+
             }
         }
         Component.onCompleted: {
