@@ -15,4 +15,5 @@ OTHER_FILES += \
     tst_tab.qml \
     tst_tabs.qml \
     tst_textcustom.qml \
-    tst_textfield.qml
+    tst_textfield.qml \
+    tst_pagestack.qml
