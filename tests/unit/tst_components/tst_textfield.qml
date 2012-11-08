@@ -1,0 +1,90 @@
+import QtQuick 2.0
+import QtTest 1.0
+import Ubuntu.Components 0.1
+
+TestCase {
+     name: "TextFieldAPI"
+
+     function test_acceptableInput() {
+         compare(textField.acceptableInput,true,"acceptableInput true by default")
+
+         // TODO: set validator and try invalid value
+     }
+
+     function test_cursorPosition() {
+         compare(textField.cursorPosition,0,"cursorPosition 0 by default")
+     }
+
+     function test_customSoftwareInputPanel() {
+         compare(textField.customSoftwareInputPanel,null,"customSoftwareInputPanel is null by default")
+     }
+
+     function test_echoMode() {
+         compare(textField.echoMode, TextInput.Normal,"echoMode is TextInput.Normal by default")
+         // try other echomodes
+     }
+
+     function test_errorHighlight() {
+         compare(textField.errorHighlight, false,"errorHighlight is false by default")
+     }
+
+     function test_font() {
+         //TODO: to be done
+     }
+
+     function test_hasClearButton() {
+         compare(textField.hasClearButton, true, "hasClearButton is false by default")
+     }
+
+     function test_inputMask() {
+         compare(textField.inputMask, "", "inputMask is undefined by default")
+     }
+
+     function test_inputMethodComposing() {
+         compare(textField.inputMethodComposing, false, "inputMethodComposing is false by default")
+     }
+
+     function test_maximumLength() {
+         compare(textField.maximumLength, 32767, "maximumLength is 32767 by default")
+     }
+
+     function test_placeholderText() {
+         compare(textField.placeholderText, "", "placeholderText is '' by default")
+     }
+
+     function test_primaryItem() {
+         compare(textField.primaryItem, undefined, "primaryItem is undefined by default")
+     }
+
+     function test_readOnly() {
+         compare(textField.readOnly, false, "readOnly is false by default")
+     }
+
+     function test_secondaryItem() {
+         compare(textField.secondaryItem, undefined, "secondaryItem is undefined by default")
+     }
+
+     function test_selectedText() {
+         compare(textField.selectedText, "", "selectedText is '' by default")
+     }
+
+     function test_selectionEnd() {
+         compare(textField.selectionEnd, 0, "selectionEnd is 0 by default")
+     }
+
+     function test_selectionStart() {
+         compare(textField.selectionStart, 0, "selectionStart is 0 by default")
+     }
+
+     function test_text() {
+         compare(textField.text, "", "text is '' by default")
+     }
+
+     function test_validator() {
+         compare(textField.validator, null, "validator is null by default")
+     }
+
+     TextField {
+         id: textField
+     }
+}
