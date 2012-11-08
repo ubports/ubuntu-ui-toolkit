@@ -6,11 +6,17 @@ TestCase {
      name: "ListItemsSingleValueAPI"
 
      function test_text() {
-//TODO
+         compare(listItemSingleValue.text,"","text is '' by default")
+         var newText = "Hello World!"
+         listItemSingleValue.text = newText
+         compare(listItemSingleValue.text,newText,"set/get")
      }
 
      function test_value() {
-//TODO
+         compare(listItemSingleValue.value,"","value is '' by default")
+         var newValue = "New Value"
+         listItemSingleValue.value = newValue
+         compare(listItemSingleValue.value,newValue,"set/get")
      }
 
      ListItem.SingleValue {

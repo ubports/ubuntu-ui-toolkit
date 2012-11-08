@@ -6,7 +6,10 @@ TestCase {
      name: "ListItemsHeaderAPI"
 
      function test_text() {
-
+         compare(listItemHeader.text,"","text is '' by default")
+         var newText = "Hello World!"
+         listItemHeader.text = newText
+         compare(listItemHeader.text,newText,"set/get")
      }
 
      ListItem.Header {

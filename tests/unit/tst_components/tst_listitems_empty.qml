@@ -6,23 +6,27 @@ TestCase {
      name: "ListItemsEmptyAPI"
 
      function test_highlightWhenPressed() {
-//TODO
+         compare(listItemEmpty.highlightWhenPressed,true,"highlightWhenPressed is true by default")
+         listItemEmpty.highlightWhenPressed = false
+         compare(listItemEmpty.highlightWhenPressed,false,"set/get")
      }
 
      function test_hovered() {
-//TODO
+        compare(listItemEmpty.hovered,false,"hovered is false by default")
      }
 
      function test_pressed() {
-//TODO
+        compare(listItemEmpty.pressed,false,"pressed is false by default")
      }
 
      function test_selected() {
-//TODO
+        compare(listItemEmpty.selected,false,"selected is false by default")
      }
 
      function test_showDivider() {
-//TODO
+        compare(listItemEmpty.showDivider,true,"showDivider is true by default")
+        listItemEmpty.showDivider = false
+        compare(listItemEmpty.showDivider,false,"set/get")
      }
 
      ListItem.Empty {

@@ -6,7 +6,7 @@ TestCase {
      name: "ListItemsThinDividerAPI"
 
      function test_divider() {
-
+        verify((listItemThinDivider),"ThinDivider can be loaded")
      }
 
      ListItem.ThinDivider {

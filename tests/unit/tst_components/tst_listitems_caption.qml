@@ -6,7 +6,10 @@ TestCase {
      name: "ListItemsCaptionAPI"
 
      function test_text() {
-//TODO
+         compare(listItemCaption.text,"","text is '' by default")
+         var newText = "Hello World!"
+         listItemCaption.text = newText
+         compare(listItemCaption.text,newText,"set/get")
      }
 
      ListItem.Caption {

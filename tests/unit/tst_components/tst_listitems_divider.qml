@@ -6,7 +6,7 @@ TestCase {
      name: "ListItemsDividerAPI"
 
      function test_divider() {
-//TODO
+         verify((listItemDivider),"Divider can be loaded")
      }
 
      ListItem.Divider {

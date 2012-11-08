@@ -6,36 +6,53 @@ TestCase {
      name: "ListItemsValueSelectorAPI"
 
      function test_expanded() {
-//TODO
+        compare(listItemValueSelector.expanded,false,"expanded is false by default")
      }
 
      function test_fallbackIconSource() {
-//TODO
+         compare(listItemValueSelector.fallbackIconSource,undefined,"fallbackIconSource is not set by default")
      }
 
-
      function test_icon() {
-//TODO
+         compare(listItemValueSelector.icon,undefined,"icon is not set by default")
+
+         // test with item
+         listItemValueSelector.icon = testItem
+         compare(listItemValueSelector.icon,testItem,"set/get from Item")
+
+         // test with url
+         var newIcon = "../../../demos/small_avatar.png"
+         listItemValueSelector.icon = newIcon
+         compare(listItemValueSelector.icon,newIcon,"set/get from url")
      }
 
      function test_iconFrame() {
-//TODO
-     }
-
-     function test_selectedIndex() {
-//TODO
+         compare(listItemValueSelector.iconFrame,true,"iconFrame is true by default")
      }
 
      function test_text() {
-//TODO
+         compare(listItemValueSelector.text,"","text is '' by default")
+         var newText = "Hello World!"
+         listItemValueSelector.text = newText
+         compare(listItemValueSelector.text,newText,"set/get")
+     }
+
+     function test_selectedIndex() {
+        compare(listItemValueSelector.selectedIndex,0,"selectedIndex is 0 by default")
      }
 
      function test_values() {
-//TODO
+         compare(listItemValueSelector.values,undefined,"values is undefined by default")
+         var newValues = ["value1","value2","value3"]
+         listItemValueSelector.values = newValues
+         compare(listItemValueSelector.values,newValues,"set/get")
      }
 
+     Rectangle {
+         id: testItem
+     }
 
      ListItem.ValueSelector {
-         id: listItemSubtitled
+         id: listItemValueSelector
      }
 }
