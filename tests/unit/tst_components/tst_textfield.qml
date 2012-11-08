@@ -7,8 +7,6 @@ TestCase {
 
      function test_acceptableInput() {
          compare(textField.acceptableInput,true,"acceptableInput true by default")
-
-         // TODO: set validator and try invalid value
      }
 
      function test_cursorPosition() {
@@ -90,6 +88,21 @@ TestCase {
 
      function test_validator() {
          compare(textField.validator, null, "validator is null by default")
+         textField.validator = regExpValidator
+         compare(textField.validator, regExpValidator, "set/get")
+     }
+
+     function test_validator_and_acceptableInput_with_invalid_value() {
+         textField.validator = null
+         compare(textField.acceptableInput,true,"acceptableInput should be true")
+         textField.validator = regExpValidator
+         textField.text = "012345"
+         compare(textField.acceptableInput,false,"with validator failure the acceptableInput should be false")
+     }
+
+     RegExpValidator {
+         id: regExpValidator
+         regExp: /[a-z]*/
      }
 
      TextField {
