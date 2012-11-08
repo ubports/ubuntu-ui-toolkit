@@ -36,6 +36,9 @@ PopupBase {
         width: MathUtils.clamp(contentsWidth, units.gu(50), sheet.width)
         height: Math.min(units.gu(40), sheet.height)
 
+        y: units.gu(15)
+        anchors.horizontalCenter: parent.horizontalCenter
+
         onWidthChanged: print("width = "+width)
         Component.onCompleted: print("w = "+sheet.width)
 

@@ -19,17 +19,15 @@ import QtQuick 2.0
 
 Item {
     // TODO: check that popover has a parent
+    // TODO: get rid of this class?
     id: foreground
 
     property alias base: foreground.parent
 
     property Item caller: base.caller
 
-//    onWidthChanged: base.updatePosition(foreground)
-//    onHeightChanged: base.updatePosition(foreground)
-//    onCallerChanged: base.updatePosition(foreground)
-
     // TODO: move to theme
+    // TODO: move to individual popup types.
     Rectangle {
         anchors.fill: parent
         color: "silver"
