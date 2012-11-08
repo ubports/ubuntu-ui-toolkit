@@ -27,6 +27,7 @@ TestCase {
      }
 
      function test_value() {
+         skip("https://bugs.launchpad.net/tavastia/+bug/1076764")
          compare(progressBar.value,0,"is set to 0 by default")
          var newValue = 5
          progressBar.value = newValue

@@ -10,6 +10,7 @@ TestCase {
      }
 
      function test_fallbackIconSource() {
+         skip("https://bugs.launchpad.net/tavastia/+bug/1076762")
          compare(listItemValueSelector.fallbackIconSource,undefined,"fallbackIconSource is not set by default")
      }
 
