@@ -18,21 +18,15 @@ import QtQuick 2.0
 //import "../mathUtils.js" as MathUtils
 
 Item {
-    // TODO: check that popover has a parent
     // TODO: get rid of this class?
     id: foreground
 
-    property alias base: foreground.parent
-
-    property Item caller: base.caller
-
-    // TODO: move to theme
-    // TODO: move to individual popup types.
+    // TODO: move to themes of individual popup types
     Rectangle {
         anchors.fill: parent
         color: "silver"
         opacity: 0.9
-        radius: units.gu(2)
+        radius: units.gu(1)
     }
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover

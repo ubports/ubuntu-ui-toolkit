@@ -51,9 +51,9 @@ PopupBase {
         } else if (foreground.height >= popover.height - 2*edgeMargins) {
             // the popover uses (almost) the full height of the screen
             coords.y = pos.verticalCenter();
-            coords.x = pos.left().x;
+            coords.x = pos.left();
             if (!pos.checkHorizontalPosition(coords.x, 0, popover.width/4)) {
-                coords.x = pos.right().x;
+                coords.x = pos.right();
                 if (!pos.checkHorizontalPosition(coords.x, 0, popover.width/4)) {
                     // position at the left of the screen
                     coords.x = 0;
@@ -91,7 +91,7 @@ PopupBase {
 
     Background {
         dim: false
-        ephemeral: false
+        ephemeral: true
     }
 
     Foreground {
@@ -100,29 +100,29 @@ PopupBase {
         property real maxWidth: portrait ? popover.width : popover.width * 3/4
         property real maxHeight: portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
-        height: MathUtils.clamp(childrenRect.height, units.gu(32), maxHeight)
+        height: MathUtils.clamp(containerItem.height + containerItem.anchors.margins*2, units.gu(32), maxHeight)
 
         // TODO: Make height of Foreground depend on containerItem height + margins?
         // TODO: make item after testing.
         Rectangle {
             id: containerItem
-            color: "transparent"
+            color: "white"
 
             anchors {
                 left: parent.left
                 top: parent.top
                 right: parent.right
-                margins: units.gu(2)
+                margins: units.gu(1)
             }
 
-            height: childrenRect.height + anchors.margins //anchors.topMargin + anchors.bottomMargin
+            height: childrenRect.height
         }
 
         onWidthChanged: popover.updatePosition(foreground)
         onHeightChanged: popover.updatePosition(foreground)
     }
 
-    onCallerChanged: updatePosition(foreground)
+//    onCallerChanged: updatePosition(foreground)
     onWidthChanged: updatePosition(foreground)
     onHeightChanged: updatePosition(foreground)
 }
