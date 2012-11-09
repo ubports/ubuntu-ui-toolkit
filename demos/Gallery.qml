@@ -48,7 +48,7 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 13 // TODO: make 0 after finish testing
+        property int selectedIndex: 13 // TODO TIM: make 0 after finish testing
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
                 {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},

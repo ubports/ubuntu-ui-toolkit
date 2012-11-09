@@ -21,10 +21,19 @@ function open(component, caller) {
     //  can be created.
     var popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
     popup.show();
+
+    popup.onVisibleChanged.connect(popup.__closeIfHidden);
+    return popup;
 }
 
-// TODO: close function.
+//function close(popupObject) {
+//    popupObject.hide();
+//    popupObject.__closeIfHidden();
+//}
 
+
+// TODO: close function.
+// TODO: support for no caller?
 function Positioning(item, area, caller, edgeMargins, callerMargins) {
 
     // all coordinate computation are relative inside "area".

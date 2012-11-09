@@ -67,7 +67,7 @@ Template {
                                 fill: parent
                                 margins: units.gu(1)
                             }
-                            onClicked: popover.hide()
+                            onClicked: hide()
                         }
                     }
                 }

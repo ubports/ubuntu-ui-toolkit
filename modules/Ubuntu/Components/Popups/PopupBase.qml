@@ -42,6 +42,14 @@ Item {
         popupBase.visible = false;
     }
 
+    function __closeIfHidden() {
+        if (!visible) {
+            print("destroying!");
+            //popupBase.parent = null;
+            popupBase.destroy();
+        }
+    }
+
     // TODO: Destroy *only* from Utils.close()
     onVisibleChanged: {
         if (!visible) {
