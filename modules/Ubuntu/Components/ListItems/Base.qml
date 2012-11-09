@@ -63,21 +63,18 @@ Empty {
     /*!
       \internal
       Width of the icon to be displayed
-      \qmlproperty int __iconWidth
     */
     property alias __iconWidth: iconHelper.iconWidth
 
     /*!
       \internal
       Height of the icon to be displayed
-      \qmlproperty int __iconHeight
     */
     property alias __iconHeight: iconHelper.iconHeight
 
     /*!
       \internal
       The margin on the left side of the icon.
-      \qmlproperty real leftIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __leftIconMargin: iconHelper.leftIconMargin
@@ -85,7 +82,6 @@ Empty {
     /*!
       \internal
       The margin on the right side of the icon.
-      \qmlproperty real rightIconMargin
      */
     // FIXME: Remove this when the setting becomes part of the theming engine
     property alias __rightIconMargin: iconHelper.rightIconMargin

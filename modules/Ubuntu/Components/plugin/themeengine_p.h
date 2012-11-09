@@ -87,4 +87,11 @@ inline QString themeFolder()
     return env;
 }
 
+// returns the theme file set through UITK_THEME_FILE env. variable
+inline QString localThemeFile()
+{
+    QString env = QLatin1String(getenv("UITK_THEME_FILE"));
+    return env;
+}
+
 #endif // THEMEENGINE_P_H
