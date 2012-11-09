@@ -265,7 +265,7 @@ void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, QHash<QStri
 
 /*!
  * \internal
- * Resolves macros, tokens/tags in the proeprty value data.
+ * Resolves macros, tokens/tags in the property value data.
  */
 void QmlThemeLoader::patchDeclarationValue(QString &value, const QTextStream &stream)
 {
