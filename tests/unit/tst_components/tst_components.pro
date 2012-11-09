@@ -1,8 +1,10 @@
 include(../test-include.pri)
 
-TEMPLATE = app
+check.target = check
+check.commands = QML_IMPORT_PATH=../../../modules
+
 TARGET = tst_components
-CONFIG += warn_on qmltestcase
+CONFIG += qmltestcase
 SOURCES += tst_components.cpp
 
 OTHER_FILES += \
