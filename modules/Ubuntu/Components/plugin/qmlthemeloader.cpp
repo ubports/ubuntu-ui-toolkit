@@ -86,8 +86,6 @@ Selector selectorSubset(const Selector &path, int elements)
 
 /*!
  * \brief QmlThemeLoader::urlMacro resolves the QmlTheme url() macro.
- * \param param
- * \return fixed path
  */
 QString QmlThemeLoader::urlMacro(const QString &param, const QTextStream &stream)
 {
