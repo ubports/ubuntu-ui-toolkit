@@ -1,10 +1,7 @@
-include(../test-include.pri)
-
-check.target = check
-check.commands = QML_IMPORT_PATH=../../../modules
+include(../qmltest-include.pri)
 
 TARGET = tst_components
-CONFIG += qmltestcase
+
 SOURCES += tst_components.cpp
 
 OTHER_FILES += \
