@@ -233,7 +233,7 @@ void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, QHash<QStri
             // and continue to parse string till we get the declaration end token ';'
             // note that we can have several of those as we can have object blocks inside
             // e.g. animation: NumberAnimation {duration: 100; easing.type: Easing.OutQuad};
-            // in which case we need to pay attention on braces ASO.
+            // in which case we need to pay attention on braces, and so on.
             propertyValue.clear();
             int braceCount = 0;
             data++;
