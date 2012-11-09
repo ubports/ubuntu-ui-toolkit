@@ -1,3 +1,5 @@
+include(../test-include.pri)
+
 TEMPLATE = app
 TARGET = tst_components
 CONFIG += warn_on qmltestcase
