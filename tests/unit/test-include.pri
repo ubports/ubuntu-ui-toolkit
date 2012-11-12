@@ -13,4 +13,4 @@ LIBS += $$COMPONENTS_PATH/libUbuntuComponents.so
 # Instead add a 'make check' manually.
 check.target = check
 check.commands = ./$$TARGET -platform minimal -xunitxml >
-check.commands += ../../$(TARGET).xml
+check.commands += ../../test_$(TARGET).xml
