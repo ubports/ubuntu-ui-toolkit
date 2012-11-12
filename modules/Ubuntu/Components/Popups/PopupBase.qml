@@ -29,7 +29,7 @@ Item {
     height: parent ? parent.height : undefined
 
     // TODO: make private?
-    property Item caller;
+//    property Item caller;
 
     function show() {
         if (parent !== QuickUtils.rootObject) {
@@ -42,14 +42,9 @@ Item {
         popupBase.visible = false;
     }
 
+    // When the popup is created by calling PopupUtils.open(),
+    //  onVisibleChanged is connected to __closeIfHidden().
     function __closeIfHidden() {
         if (!visible) PopupUtils.close(popupBase);
-    }
-
-    // TODO: Destroy *only* from Utils.close()
-    onVisibleChanged: {
-        if (!visible) {
-            popupBase.destroy();
-        }
     }
 }

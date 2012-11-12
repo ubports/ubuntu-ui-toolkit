@@ -116,33 +116,6 @@ Template {
         }
 
         Component {
-            id: dialogComponent
-
-            Dialogue {
-                id: dialogue
-
-                title: "Save file"
-                text: "Are you sure that you want to save this file?"
-
-                Button {
-                    text: "cancel"
-                    color: "silver"
-                    onClicked: dialogue.hide()
-                }
-                Button {
-                    text: "overwrite previous version"
-                    color: "orange"
-                    onClicked: dialogue.hide()
-                }
-                Button {
-                    text: "save a copy"
-                    color: "orange"
-                    onClicked: dialogue.hide()
-                }
-            }
-        }
-
-        Component {
             id: buttonComponent
             Column {
                 width: units.gu(15)

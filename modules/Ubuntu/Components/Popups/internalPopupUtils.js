@@ -16,8 +16,8 @@
 
 .import "../mathUtils.js" as MathUtils
 
-function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargins) {
-
+// Simple positioning on the screen, not relative to a caller Item.
+function SimplePositioning(foreground, area, edgeMargins) {
     // all coordinate computation are relative inside "area".
 
     // return the x-coordinate to center item horizontally in area
@@ -50,6 +50,44 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
         return false;
     }
 
+    // position foreground at the top of the screen, horizontally centered
+    this.autoSmallScreenPortrait = function() {
+        foreground.x = this.horizontalCenter(foreground);
+        foreground.y = 0;
+    }
+
+    // position foreground at the left side of the screen, vertically centered
+    this.autoSmallScreenLandscape = function() {
+        foreground.x = 0;
+        foreground.y = this.verticalCenter(foreground);
+    }
+
+    // position foreground centered on a large screen
+    this.autoLargeScreen = function() {
+        foreground.x = this.horizontalCenter(foreground);
+        foreground.y = this.verticalCenter(foreground);
+    }
+
+    // automatically position foreground on the screen
+    this.auto = function() {
+        if (foreground.width >= area.width - 2*edgeMargins) {
+            // the popover uses (almost) the full width of the screen
+            this.autoSmallScreenPortrait();
+            return;
+        }
+        if (foreground.height >= area.height - 2*edgeMargins) {
+            // the popover uses (almost) the full height of the screen
+            this.autoSmallScreenLandscape();
+            return;
+        }
+        this.autoLargeScreen();
+    }
+}
+
+// caller is optional.
+// if caller is given, pointer and callerMargins must be specified, otherwise they are ignored.
+function CallerPositioning(foreground, pointer, area, caller, edgeMargins, callerMargins) {
+    var simplePos = new SimplePositioning(foreground, area, edgeMargins);
     // -1 values are not relevant.
 
     // return y-coordinate to position item a distance of margin above caller
@@ -86,14 +124,14 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
 
     // position foreground and pointer automatically on a small screen in portrait mode
     this.autoSmallScreenPortrait = function() {
-        foreground.x = this.horizontalCenter(foreground);
         if (!caller) {
-            foreground.y = 0;
+            simplePos.autoSmallScreenPortrait();
             pointer.direction = "none";
             return;
         }
+        foreground.x = simplePos.horizontalCenter(foreground);
         var ycoord = this.above(foreground, callerMargins);
-        if (this.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
+        if (simplePos.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
             pointer.direction = "down";
             pointer.y = this.above(pointer, 0);
@@ -101,28 +139,27 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         ycoord = this.below(foreground, callerMargins);
-        if (this.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
+        if (simplePos.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
             pointer.direction = "up";
             pointer.y = this.below(pointer, 0);
             pointer.x = this.horizontalAlign(pointer);
             return;
         }
-        // position at the top of the screen:
-        foreground.y = 0;
+        simplePos.autoSmallScreenPortrait();
         pointer.direction = "none";
     }
 
     // position foreground and pointer automatically on a small screen in landscape mode.
     this.autoSmallScreenLandscape = function() {
-        foreground.y = this.verticalCenter(foreground);
         if (!caller) {
-            foreground.x = 0;
+            simplePos.autoSmallScreenLandScape();
             pointer.direction = "none";
             return;
         }
+        foreground.y = simplePos.verticalCenter(foreground);
         var xcoord = this.left(foreground, callerMargins);
-        if (this.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
+        if (simplePos.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
             foreground.x = xcoord;
             pointer.direction = "right";
             pointer.x = this.left(pointer, 0);
@@ -130,7 +167,7 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         xcoord = this.right(foreground, callerMargins);
-        if (this.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
+        if (simplePos.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
             foreground.x = xcoord;
             pointer.direction = "left";
             pointer.x = this.right(pointer, 0);
@@ -138,21 +175,20 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         // position at the left of the screen
-        foreground.x = 0;
+        simplePos.autoSmallScreenLandscape();
         pointer.direction = "none";
     }
 
     // position foreground and pointer automatically on a large screen.
     this.autoLargeScreen = function() {
         if (!caller) {
-            foreground.x = this.horizontalCenter(foreground);
-            foreground.y = this.verticalCenter(foreground);
+            simplePos.autoLargeScreen();
             pointer.direction = "none";
             return;
         }
         // position with the following priorities: above, left, right, below.
         var coord = this.above(foreground, callerMargins);
-        if (this.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground);
             pointer.direction = "down";
@@ -161,7 +197,7 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         coord = this.left(foreground, callerMargins);
-        if (this.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
             foreground.x = coord;
             foreground.y = this.verticalAlign(foreground);
             pointer.direction = "right";
@@ -170,7 +206,7 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         coord = this.right(foreground, callerMargins)
-        if (this.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
             foreground.x = coord;
             foreground.y = this.verticalAlign(foreground);
             pointer.direction = "left";
@@ -179,7 +215,7 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         coord = this.below(foreground, callerMargins);
-        if (this.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground);
             pointer.direction = "up";
@@ -188,8 +224,7 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
             return;
         }
         // not enough space on any of the sides to fit within the margins.
-        coords.x = this.horizontalCenter(foreground);
-        coords.y = this.verticalCenter(foreground);
+        simplePos.autoLargeScreen();
         pointer.direction = "none";
     }
 
@@ -207,4 +242,3 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
         this.autoLargeScreen();
     }
 }
-

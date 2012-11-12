@@ -22,6 +22,8 @@ PopupBase {
     id: popover
     default property alias container: containerItem.data
 
+    property Item caller
+
     // theme
     property real edgeMargins: units.gu(2)
     property real callerMargins: units.gu(2)
@@ -32,7 +34,7 @@ PopupBase {
         // FIXME: assuming that popover has a caller.
         // FIXME: if the edgeMargins are larger than caller width/height+callerMargins,
         //          then we can run into problems.
-        var pos = new InternalPopupUtils.Positioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+        var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
         pos.auto();
     }
 
