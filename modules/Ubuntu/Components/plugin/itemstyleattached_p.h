@@ -40,20 +40,20 @@ public:
 
     // internal members
     QQmlContext *componentContext;
-    Rule *themeRule;
+    Rule *styleRule;
+    Rule *delegateRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
-
-    bool lookupThemeStyle(bool useMetaClassName);
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
     bool registerName(const QString &id);
     void listenThemeEngine();
-    void _q_refteshStyle();
+    void _q_refreshStyle();
+    void _q_reapplyStyling(QQuickItem *);
 
 };
 

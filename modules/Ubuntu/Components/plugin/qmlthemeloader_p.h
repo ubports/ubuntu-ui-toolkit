@@ -45,7 +45,10 @@ private:
     static QString urlMacro(const QString &param, const QTextStream &stream);
     static QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
     static QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
-    bool handleSelector(const Selector &path, const QString &declarator, QTextStream &stream);
+    static QString readDeclarationBlock(QTextStream &stream);
+    static void parseDeclarationBlock(const QString &blockData, QHash<QString, QString> &properties, const QTextStream &stream);
+    static void patchDeclarationValue(QString &value, const QTextStream &stream);
+    void handleSelector(const Selector &path,  const QHash<QString, QString> &newProperties);
     void normalizeStyles();
     bool updateRuleProperties(Selector &selector, QHash<QString, QString> &propertyMap);
     bool parseTheme(const QUrl &url);

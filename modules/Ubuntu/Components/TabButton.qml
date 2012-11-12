@@ -23,6 +23,7 @@ import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype tabButton
+    \internal
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Button used in Tab bars.

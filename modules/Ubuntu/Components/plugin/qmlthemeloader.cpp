@@ -86,8 +86,6 @@ Selector selectorSubset(const Selector &path, int elements)
 
 /*!
  * \brief QmlThemeLoader::urlMacro resolves the QmlTheme url() macro.
- * \param param
- * \return fixed path
  */
 QString QmlThemeLoader::urlMacro(const QString &param, const QTextStream &stream)
 {
@@ -187,54 +185,120 @@ QString QmlThemeLoader::readTillToken(QTextStream &stream, const QRegExp &tokens
 
 /*!
   \internal
-  Parses the declarator of each selector. Resolves the "inheritance" between atomic
-  selector items (the last items in a CSS selector component).
+  Special read function for reading declaration block where we may have objects
+  defined and we need to count the opened and closed parenthesis.
+  Example of such a declaration block:
+  \code
+  .button {
+      pressedAnimation: NumberAnimation {duration: 300; easing.type: Easing.OutQuad};
+  }
+  \endcode
   */
-bool QmlThemeLoader::handleSelector(const Selector &selector, const QString &declarator, QTextStream &stream)
+QString QmlThemeLoader::readDeclarationBlock(QTextStream &stream)
 {
-    QStringList propertyList = declarator.split(';');
+    // read till the close brace count is zero
+    // the first opened brace is consumed, therefore start from 1
+    int braceCount = 1;
+    QString chunk, data;
 
-    if (propertyList.isEmpty()) {
-        ThemeEnginePrivate::setError(QString("Selector %1 has empty declarator!").
-                                     arg(ThemeEnginePrivate::selectorToString(selector)));
-        return false;
+    while (!stream.atEnd() && (braceCount > 0)) {
+        chunk = readChar(stream, QRegExp("[\r\n]"));
+        if (chunk[0] == '{')
+            braceCount++;
+        if (chunk[0] == '}')
+            braceCount--;
+        if (braceCount)
+            data += chunk;
     }
 
-    // the properties from base classes that are not overridden will be copied
-    // into the other selectors before we generate the QML components, in
-    // normalizeStyles; yet we simply store them in the table
+    return data;
+}
+
+/*!
+ * \internal
+ * Parses the declaration block and fills the property map from it. Also resolves
+ * macros and any other special tokens/tags in property value.
+ */
+void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, QHash<QString, QString> &properties, const QTextStream &stream)
+{
+    // parse data
+    QString propertyName, propertyValue;
+    const QChar *data = blockData.constData();
+    while (!data->isNull()) {
+        if (*data != ':')
+            propertyName += *data;
+        else {
+            // and continue to parse string till we get the declaration end token ';'
+            // note that we can have several of those as we can have object blocks inside
+            // e.g. animation: NumberAnimation {duration: 100; easing.type: Easing.OutQuad};
+            // in which case we need to pay attention on braces, and so on.
+            propertyValue.clear();
+            int braceCount = 0;
+            data++;
+            while (!data->isNull()) {
+                if ((*data == ';') && !braceCount)
+                    break;
+                if (*data == '{')
+                    braceCount++;
+                if (*data == '}')
+                    braceCount--;
+                propertyValue += *data;
+                data++;
+            }
+            propertyValue = propertyValue.trimmed();
+            if (!propertyValue.isEmpty()) {
+                // resolve all macros and special tags/tokens
+                patchDeclarationValue(propertyValue, stream);
+                properties.insert(propertyName.trimmed(), propertyValue);
+            }
+            // check if we reached the end of the data
+            if (data->isNull())
+                return;
+            propertyName.clear();
+            propertyValue.clear();
+        }
+        data++;
+    }
+}
+
+/*!
+ * \internal
+ * Resolves macros, tokens/tags in the property value data.
+ */
+void QmlThemeLoader::patchDeclarationValue(QString &value, const QTextStream &stream)
+{
+    // check if the value is declared using url() macro
+    int atUrl;
+    while ((atUrl = value.indexOf("url")) >= 0) {
+        // check if it is the url() function, so the next valid character should be a "(" one
+        int pathStart = value.indexOf('(', atUrl);
+        if (pathStart >= 0) {
+            int pathEnd = value.indexOf(')', pathStart);
+            QString path = value.mid(pathStart + 1, pathEnd - pathStart - 1).trimmed();
+            // replace url(path) with the resolved one
+            value.replace(atUrl, pathEnd - atUrl + 1, urlMacro(path, stream).prepend('\"').append('\"'));
+        }
+    }
+}
+
+
+/*!
+  \internal
+  Resolves the "inheritance" between atomic selector items (the last items in a CSS selector component).
+  */
+void QmlThemeLoader::handleSelector(const Selector &selector, const QHash<QString, QString> &newProperties)
+{
     QHash<QString, QString> properties;
     if (selectorTable.contains(selector))
-        // update the current hash
         properties = selectorTable.value(selector);
-
-    Q_FOREACH (const QString &property, propertyList) {
-        if (property.isEmpty())
-            continue;
-
-        // properties might have other columns, so we cannot do separation simply
-        // by splitting the string using ':' as separator, we need to do separation
-        // based on the first ':' reached.
-        int columnIndex = property.indexOf(':');
-        QString prop = property.left(columnIndex).trimmed();
-        QString value = property.right(property.length() - columnIndex - 1).trimmed();
-        // check if the value is declared using url() macro
-        int atUrl;
-        while ((atUrl = value.indexOf("url")) >= 0) {
-            // check if it is the url() function, so the next valid character should be a "(" one
-            int pathStart = value.indexOf('(', atUrl);
-            if (pathStart >= 0) {
-                int pathEnd = value.indexOf(')', pathStart);
-                QString path = value.mid(pathStart + 1, pathEnd - pathStart - 1).trimmed();
-                // replace url(path) with the resolved one
-                value.replace(atUrl, pathEnd - atUrl + 1, urlMacro(path, stream).prepend('\"').append('\"'));
-            }
-        }
-        properties.insert(prop, value);
+    // merge tables; cannot use QHash::unite as that one uses insertMulti() for the existing keys.
+    QHashIterator<QString, QString> i(newProperties);
+    while (i.hasNext()) {
+        i.next();
+        properties.insert(i.key(), i.value());
     }
+    // save them (back) into the table
     selectorTable.insert(selector, properties);
-
-    return true;
 }
 
 /*!
@@ -249,16 +313,11 @@ void QmlThemeLoader::normalizeStyles()
         i.next();
         Selector selector = i.key();
         QHash<QString, QString> propertyMap = i.value();
-        bool propertyMapUpdated = updateRuleProperties(selector, propertyMap);
 
-        for (int count = selector.count(); count > 1; count--) {
-            Selector subset = selectorSubset(selector, count);
-            if (updateRuleProperties(subset, propertyMap))
-                propertyMapUpdated = true;
-        }
-        if (propertyMapUpdated) {
+        // need to check only the last node from the selector path
+        Selector subset = selectorSubset(selector, 1);
+        if (updateRuleProperties(subset, propertyMap))
             selectorTable.insert(i.key(), propertyMap);
-        }
     }
 }
 
@@ -357,14 +416,13 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
         return false;
     } else {
         // load declarator and apply on each selector
-        data = readTillToken(stream, QRegExp("[}]"), QRegExp("[ \t\r\n]"));
+        data = readDeclarationBlock(stream);
+        QHash<QString, QString> properties;
+        if (!data.isEmpty())
+            parseDeclarationBlock(data, properties, stream);
+
         Q_FOREACH (const Selector &selector, selectors) {
-            if (!handleSelector(selector, data, stream)) {
-                ThemeEnginePrivate::setError(
-                            QString("Error parsing declarator for selector %1").
-                            arg(ThemeEnginePrivate::selectorToString(selector)));
-                return false;
-            }
+            handleSelector(selector, properties);
         }
     }
 
@@ -434,7 +492,7 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
             // we have the mapping!!
             style = QString(stylePropertyFormat).arg(qmlTypes.first);
         } else {
-            style = QString(stylePropertyFormat).arg("QtObject");
+            style = QString(stylePropertyFormat).arg("Item");
             propertyPrefix += "property var";
         }
 
