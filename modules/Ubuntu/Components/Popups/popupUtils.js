@@ -31,8 +31,6 @@ function open(component, caller) {
 //    popupObject.__closeIfHidden();
 //}
 
-
-// TODO: close function.
 // TODO: support for no caller?
 function Positioning(item, area, caller, edgeMargins, callerMargins) {
 
