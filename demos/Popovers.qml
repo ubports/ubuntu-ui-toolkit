@@ -22,8 +22,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
     title: "Popovers"
 
-    Rectangle {
-        color: "transparent"
+    Item {
         id: canvas
 
         Component {
@@ -40,14 +39,8 @@ Template {
                     }
 
                     ListItem.Header { text: "Share" }
-
-                    ListItem.Standard {
-                        text: "Do something"
-                    }
-                    ListItem.Standard {
-                        text: "Do something else"
-                    }
-
+                    ListItem.Standard { text: "Do something" }
+                    ListItem.Standard { text: "Do something else" }
                     ListItem.Header { text: "Paste into app" }
                     ListItem.SingleControl {
                         highlightWhenPressed: false
@@ -67,49 +60,8 @@ Template {
                                 fill: parent
                                 margins: units.gu(1)
                             }
-                            onClicked: hide()
+                            onClicked: PopupUtils.close(popover)
                         }
-                    }
-                }
-            }
-        }
-
-        Component {
-            id: defaultSheetComponent
-            Sheet {
-                id: sheet
-
-                title: "Ain't this the coolest sheet evar?"
-                buttonConfiguration: "doneButton"
-
-                Column {
-//                    anchors.top: parent.top
-                    width: units.gu(30)
-
-                    TextCustom { text: "hello there" }
-                    Rectangle {
-                        color: "red"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
-                    }
-                    Rectangle {
-                        color: "yellow"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
-                    }
-                    Rectangle {
-                        color: "green"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
                     }
                 }
             }
@@ -117,27 +69,10 @@ Template {
 
         Component {
             id: buttonComponent
-            Column {
-                width: units.gu(15)
-
-                Button {
-                    id: popButton
-                    text: "Pop!"
-                    width: parent.width
-                    onClicked: PopupUtils.open(popoverComponent, popButton)
-                }
-//                Button {
-//                    id: sheetButton
-//                    text: "oh, sheet!"
-//                    width: parent.width
-//                    onClicked: PopupUtils.open(defaultSheetComponent, sheetButton)
-//                }
-//                Button {
-//                    id: queryButton
-//                    text: "Q"
-//                    width: parent.width
-//                    onClicked: PopupUtils.open(dialogComponent, queryButton)
-//                }
+            Button {
+                id: popButton
+                text: "Pop!"
+                onClicked: PopupUtils.open(popoverComponent, popButton)
             }
         }
         Component.onCompleted: {

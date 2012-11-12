@@ -15,21 +15,16 @@
  */
 
 import QtQuick 2.0
-//import "popupUtils.js" as PopupUtils
-import Ubuntu.Components 0.1
 
 Item {
     id: popupBase
 
     anchors.fill: parent ? parent : undefined
 
-    // without this, some width calculations go wrong in Sheet
+    // without specifying width and height below, some width calculations go wrong in Sheet.
     // I guess popupBase.width is not correctly set initially
     width: parent ? parent.width : undefined
     height: parent ? parent.height : undefined
-
-    // TODO: make private?
-//    property Item caller;
 
     function show() {
         if (parent !== QuickUtils.rootObject) {

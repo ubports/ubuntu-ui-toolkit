@@ -31,9 +31,6 @@ PopupBase {
 
     // private
     function updatePosition() {
-        // FIXME: assuming that popover has a caller.
-        // FIXME: if the edgeMargins are larger than caller width/height+callerMargins,
-        //          then we can run into problems.
         var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
         pos.auto();
     }
