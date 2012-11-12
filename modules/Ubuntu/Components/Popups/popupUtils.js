@@ -32,19 +32,22 @@ function open(component, caller) {
 //}
 
 // TODO: support for no caller?
-function Positioning(item, area, caller, edgeMargins, callerMargins) {
+function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargins) {
 
     // all coordinate computation are relative inside "area".
 
-    this.horizontalCenter = function() {
+    // return the x-coordinate to center item horizontally in area
+    this.horizontalCenter = function(item) {
         return area.width/2 - item.width/2;
     }
 
-    this.verticalCenter = function() {
+    // return the y-coordinate to center item vertically in area
+    this.verticalCenter = function(item) {
         return area.height/2 - item.height/2;
     }
 
-    this.checkVerticalPosition = function(y, marginBothSides, marginOneSide) {
+    // check whether item fits inside area, obeying the given margins
+    this.checkVerticalPosition = function(item, y, marginBothSides, marginOneSide) {
         if (y < marginBothSides) return false;
         if (y + item.height > area.height - marginBothSides) return false;
         if (marginBothSides >= marginOneSide) return true;
@@ -53,7 +56,8 @@ function Positioning(item, area, caller, edgeMargins, callerMargins) {
         return false;
     }
 
-    this.checkHorizontalPosition = function(x, marginBothSides, marginOneSide) {
+    // check whether item fits inside area, obeying the given margins
+    this.checkHorizontalPosition = function(item, x, marginBothSides, marginOneSide) {
         if (x < marginBothSides) return false;
         if (x + item.width > area.width - marginBothSides) return false;
         if (marginBothSides >= marginOneSide) return true;
@@ -64,101 +68,143 @@ function Positioning(item, area, caller, edgeMargins, callerMargins) {
 
     // -1 values are not relevant.
 
-    this.above = function() {
-        return area.mapFromItem(caller, -1, 0).y - item.height - callerMargins;
+    // return y-coordinate to position item a distance of margin above caller
+    this.above = function(item, margin) {
+        return area.mapFromItem(caller, -1, 0).y - item.height - margin;
     }
 
-    this.below = function() {
-        return area.mapFromItem(caller, -1, caller.height).y + callerMargins;
+    // return y-coordinate to position item a distance of margin below caller
+    this.below = function(item, margin) {
+        return area.mapFromItem(caller, -1, caller.height).y + margin;
     }
 
-    this.left = function() {
-        return area.mapFromItem(caller, 0, -1).x - item.width - callerMargins;
+    // return x-coordinate to position item a distance of margin left of caller
+    this.left = function(item, margin) {
+        return area.mapFromItem(caller, 0, -1).x - item.width - margin;
     }
 
-    this.right = function() {
-        return area.mapFromItem(caller, caller.width, -1).x + callerMargins;
+    // return x-coodinate to position item a distance of margin right of caller
+    this.right = function(item, margin) {
+        return area.mapFromItem(caller, caller.width, -1).x + margin;
     }
 
-    this.horizontalAlign = function() {
+    // return x-coordinate to align center of item horizontally with center of caller
+    this.horizontalAlign = function(item) {
         var x = area.mapFromItem(caller, caller.width/2, -1).x - item.width/2;
         return MathUtils.clamp(x, edgeMargins, area.width - item.width - edgeMargins);
     }
 
-    this.verticalAlign = function() {
+    // return y-coordinate to align center of item vertically with center of caller
+    this.verticalAlign = function(item) {
         var y = area.mapFromItem(caller, -1, caller.height/2).y - item.height/2;
         return MathUtils.clamp(y, edgeMargins, area.height - item.height - edgeMargins);
     }
 
+    // position foreground and pointer automatically on a small screen in portrait mode
     this.autoSmallScreenPortrait = function() {
-        var coords = new Qt.point(this.horizontalCenter(), 0);
-        coords.y = this.above();
-        if (this.checkVerticalPosition(coords.y, 0, area.height/4)) {
-            return coords;
+        foreground.x = this.horizontalCenter(foreground);
+        var ycoord = this.above(foreground, callerMargins);
+        if (this.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
+            foreground.y = ycoord;
+            pointer.direction = "down";
+            pointer.y = this.above(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return;
         }
-        coords.y = this.below();
-        if (this.checkVerticalPosition(coords.y, 0, area.height/4)) {
-            return coords;
+        ycoord = this.below(foreground, callerMargins);
+        if (this.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
+            foreground.y = ycoord;
+            pointer.direction = "up";
+            pointer.y = this.below(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return;
         }
         // position at the top of the screen:
-        coords.y = 0;
-        return coords;
+        foreground.y = 0;
+        pointer.direction = "none";
     }
 
+    // position foreground and pointer automatically on a small screen in landscape mode.
     this.autoSmallScreenLandscape = function() {
-        var coords = Qt.point(0, this.verticalCenter());
-        coords.x = this.left();
-        if (this.checkHorizontalPosition(coords.x, 0, area.width/4)) {
-            return coords;
+        foreground.y = this.verticalCenter(foreground);
+        var xcoord = this.left(foreground, callerMargins);
+        if (this.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
+            foreground.x = xcoord;
+            pointer.direction = "right";
+            pointer.x = this.left(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return;
         }
-        coords.x = this.right();
-        if (this.checkHorizontalPosition(coords.x, 0, area.width/4)) {
-            return coords;
+        xcoord = this.right(foreground, callerMargins);
+        if (this.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
+            foreground.x = xcoord;
+            pointer.direction = "left";
+            pointer.x = this.right(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return;
         }
         // position at the left of the screen
-        coords.x = 0;
-        return coords;
+        foreground.x = 0;
+        pointer.direction = "none";
     }
 
+    // position foreground and pointer automatically on a large screen.
     this.autoLargeScreen = function() {
-        var coords = Qt.point(0, 0);
         // position with the following priorities: above, left, right, below.
-        coords.y = this.above();
-        if (this.checkVerticalPosition(coords.y, edgeMargins, 0)) {
-            coords.x = this.horizontalAlign();
-            return coords;
+        var coord = this.above(foreground, callerMargins);
+        if (this.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.y = coord;
+            foreground.x = this.horizontalAlign(foreground);
+            pointer.direction = "down";
+            pointer.y = this.above(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return;
         }
-        coords.x = this.left();
-        if (this.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
-            coords.y = this.verticalAlign();
-            return coords;
+        coord = this.left(foreground, callerMargins);
+        if (this.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.x = coord;
+            foreground.y = this.verticalAlign(foreground);
+            pointer.direction = "right";
+            pointer.x = this.left(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return;
         }
-        coords.x = this.right();
-        if (this.checkHorizontalPosition(coords.x, edgeMargins, 0)) {
-            coords.y = this.verticalAlign();
-            return coords;
+        coord = this.right(foreground, callerMargins)
+        if (this.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.x = coord;
+            foreground.y = this.verticalAlign(foreground);
+            pointer.direction = "left";
+            pointer.x = this.right(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return;
         }
-        coords.y = this.below();
-        if (this.checkVerticalPosition(coords.y, edgeMargins, 0)) {
-            coords.x = this.horizontalAlign();
-            return coords;
+        coord = this.below(foreground, callerMargins);
+        if (this.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.y = coord;
+            foreground.x = this.horizontalAlign(foreground);
+            pointer.direction = "up";
+            pointer.y = this.below(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return;
         }
         // not enough space on any of the sides to fit within the margins.
-        coords.x = this.horizontalCenter();
-        coords.y = this.verticalCenter();
-        return coords;
+        coords.x = this.horizontalCenter(foreground);
+        coords.y = this.verticalCenter(foreground);
+        pointer.direction = "none";
     }
 
     this.auto = function() {
-        if (item.width >= area.width - 2*edgeMargins) {
+        if (foreground.width >= area.width - 2*edgeMargins) {
             // the popover uses (almost) the full width of the screen
-            return this.autoSmallScreenPortrait();
+            this.autoSmallScreenPortrait();
+            return;
         }
-        if (item.height >= area.height - 2*edgeMargins) {
+        if (foreground.height >= area.height - 2*edgeMargins) {
             // the popover uses (almost) the full height of the screen
-            return this.autoSmallScreenLandscape();
+            this.autoSmallScreenLandscape();
+            return;
         }
-        return this.autoLargeScreen();
+        this.autoLargeScreen();
     }
 }
 

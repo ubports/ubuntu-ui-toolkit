@@ -27,14 +27,15 @@ PopupBase {
     property bool portrait: width < height
 
     // private
-    function updatePosition(item) {
+    function updatePosition() {
         // FIXME: assuming that popover has a caller.
         // FIXME: if the edgeMargins are larger than caller width/height+callerMargins,
         //          then we can run into problems.
-        var pos = new PopupUtils.Positioning(item, popover, caller, edgeMargins, callerMargins);
-        var coords = pos.auto();
-        item.x = coords.x;
-        item.y = coords.y;
+        var pos = new PopupUtils.Positioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+        //var coords = pos.auto();
+        pos.auto();
+//        foreground.x = coords.x;
+//        foreground.y = coords.y;
     }
 
     Background {
@@ -67,23 +68,18 @@ PopupBase {
             property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
-        onWidthChanged: popover.updatePosition(foreground)
-        onHeightChanged: popover.updatePosition(foreground)
+        onWidthChanged: popover.updatePosition()
+        onHeightChanged: popover.updatePosition()
     }
 
-    Triangle {
-        anchors {
-            top: foreground.bottom
-            right: foreground.right
-            rightMargin: units.gu(1)
-        }
-        width: 2*callerMargins
-        height: callerMargins
+    Pointer {
+        id: pointer
         color: "silver"
         opacity: 0.9
+        longAxis: 2*callerMargins
+        shortAxis: callerMargins
     }
 
-//    onCallerChanged: updatePosition(foreground)
-    onWidthChanged: updatePosition(foreground)
-    onHeightChanged: updatePosition(foreground)
+    onWidthChanged: updatePosition()
+    onHeightChanged: updatePosition()
 }
