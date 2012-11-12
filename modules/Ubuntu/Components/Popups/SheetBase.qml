@@ -49,13 +49,8 @@ PopupBase {
         width: MathUtils.clamp(contentsWidth, units.gu(50), sheet.width)
         property real contentsHeight: header.height + containerItem.height
         height: MathUtils.clamp(contentsHeight, units.gu(40), contentsHeight, sheet.height)
-
         y: units.gu(15)
         anchors.horizontalCenter: parent.horizontalCenter
-
-        onWidthChanged: print("width = "+width)
-        onHeightChanged: print("height = "+height)
-        Component.onCompleted: print("w = "+sheet.width)
 
         Rectangle {
             id: header
