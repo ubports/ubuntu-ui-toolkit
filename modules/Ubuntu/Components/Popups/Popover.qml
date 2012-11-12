@@ -53,7 +53,7 @@ PopupBase {
         // TODO: make item after testing.
         Rectangle {
             id: containerItem
-            color: "white"
+            color: "silver"
 
             anchors {
                 left: parent.left
@@ -72,7 +72,7 @@ PopupBase {
 
     Pointer {
         id: pointer
-        color: "silver"
+        color: "white"
         opacity: 0.9
         longAxis: 2*callerMargins
         shortAxis: callerMargins

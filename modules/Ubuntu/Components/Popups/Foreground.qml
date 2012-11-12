@@ -17,13 +17,12 @@
 import QtQuick 2.0
 
 Item {
-    // TODO: get rid of this class?
     id: foreground
 
     // TODO: move to themes of individual popup types
     Rectangle {
         anchors.fill: parent
-        color: "silver"
+        color: "white"
         opacity: 0.9
         radius: units.gu(1)
     }
