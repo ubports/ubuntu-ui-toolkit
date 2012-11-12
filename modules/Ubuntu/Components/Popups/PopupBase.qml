@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "popupUtils.js" as PopupUtils
+//import "popupUtils.js" as PopupUtils
 import Ubuntu.Components 0.1
 
 Item {

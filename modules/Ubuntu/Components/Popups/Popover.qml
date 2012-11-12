@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
+import "internalPopupUtils.js" as InternalPopupUtils
 
 PopupBase {
     id: popover
@@ -31,11 +32,8 @@ PopupBase {
         // FIXME: assuming that popover has a caller.
         // FIXME: if the edgeMargins are larger than caller width/height+callerMargins,
         //          then we can run into problems.
-        var pos = new PopupUtils.Positioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
-        //var coords = pos.auto();
+        var pos = new InternalPopupUtils.Positioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
         pos.auto();
-//        foreground.x = coords.x;
-//        foreground.y = coords.y;
     }
 
     Background {
