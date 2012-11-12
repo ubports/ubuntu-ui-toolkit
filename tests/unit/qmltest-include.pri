@@ -12,6 +12,6 @@ DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$_PRO_FILE_PWD_\\\"\"
 
 check.target = check
 check.commands = ./$$TARGET -platform minimal
-check.commands += -import \"../../../modules\" -xml >
+check.commands += -import \"../../../modules\" -xunitxml >
 check.commands += ../../test_$(TARGET).xml
 

@@ -12,5 +12,5 @@ LIBS += $$COMPONENTS_PATH/libUbuntuComponents.so
 # adds a 'make install' that installs the test cases, which we do not want.
 # Instead add a 'make check' manually.
 check.target = check
-check.commands = ./$$TARGET -platform minimal -xml >
+check.commands = ./$$TARGET -platform minimal -xunitxml >
 check.commands += ../../test_$(TARGET).xml
