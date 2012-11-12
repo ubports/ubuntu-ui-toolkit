@@ -23,7 +23,7 @@ PopupBase {
 
     // theme
     property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(0.5)
+    property real callerMargins: units.gu(2)
     property bool portrait: width < height
 
     // private
@@ -69,6 +69,18 @@ PopupBase {
 
         onWidthChanged: popover.updatePosition(foreground)
         onHeightChanged: popover.updatePosition(foreground)
+    }
+
+    Triangle {
+        anchors {
+            top: foreground.bottom
+            right: foreground.right
+            rightMargin: units.gu(1)
+        }
+        width: 2*callerMargins
+        height: callerMargins
+        color: "silver"
+        opacity: 0.9
     }
 
 //    onCallerChanged: updatePosition(foreground)
