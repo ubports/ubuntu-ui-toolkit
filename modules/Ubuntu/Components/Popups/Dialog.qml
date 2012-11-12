@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import "internalPopupUtils.js" as InternalPopupUtils
 
 PopupBase {
     id: popover
@@ -24,29 +25,16 @@ PopupBase {
     property alias title: headerText.text
     property alias text: questionText.text
 
+    property Item caller
+
     // theme
     property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(0.5)
+    property real callerMargins: units.gu(2)
 
     // private
-    function updatePosition(item) {
-        // TODO: different behavior when the caller is a popover or sheet. Then fill the caller.
-        var pos = new PopupUtils.Positioning(item, popover, caller, edgeMargins, callerMargins);
-
-        var minWidth = item.width + 2*edgeMargins;
-        var minHeight = item.height + 2*edgeMargins;
-        // TODO: do specialized positioning on small screens.
-
-        var coords;
-        if (!popover.caller) {
-            // TODO: ERROR
-            coords = pos.center();
-        } else {
-            coords = pos.auto();
-        }
-
-        item.x = coords.x;
-        item.y = coords.y;
+    function updatePosition() {
+        var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+        pos.auto();
     }
 
     Background {
@@ -54,8 +42,17 @@ PopupBase {
         ephemeral: false
     }
 
+    Pointer {
+        id: pointer
+        color: "grey"
+        opacity: 0.9
+        longAxis: 2*callerMargins
+        shortAxis: callerMargins
+    }
+
     Foreground {
         id: foreground
+        color: "grey"
         width: Math.min(units.gu(40), popover.width)
         height: MathUtils.clamp(childrenRect.height, units.gu(32), 3*popover.height/4)
 
@@ -69,6 +66,7 @@ PopupBase {
             }
             fontSize: "large"
             horizontalAlignment: Text.AlignHCenter
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
         }
 
         TextCustom {
@@ -83,6 +81,7 @@ PopupBase {
             fontSize: "medium"
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
         }
 
         Column {
@@ -105,9 +104,11 @@ PopupBase {
             }
         }
 
-        onWidthChanged: popover.updatePosition(foreground)
-        onHeightChanged: popover.updatePosition(foreground)
+        onWidthChanged: popover.updatePosition()
+        onHeightChanged: popover.updatePosition()
     }
 
-    onCallerChanged: updatePosition(foreground)
+    onCallerChanged: updatePosition()
+    onWidthChanged: popover.updatePosition()
+    onHeightChanged: popover.updatePosition()
 }

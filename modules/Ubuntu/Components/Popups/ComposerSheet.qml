@@ -15,21 +15,20 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-Item {
-    id: foreground
+SheetBase {
+    signal cancelClicked
+    signal confirmClicked
 
-    property alias color: rectangle.color
-
-    // TODO: move to themes of individual popup types
-    Rectangle {
-        id: rectangle
-        anchors.fill: parent
-        radius: units.gu(1)
+    leftButton: Button {
+        text: "cancel"
+        onClicked: cancelClicked()
     }
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the popover
-    MouseArea {
-        anchors.fill: parent
+    rightButton: Button {
+        text: "confirm"
+        color: "orange"
+        onClicked: confirmClicked()
     }
 }

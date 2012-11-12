@@ -43,6 +43,7 @@ PopupBase {
     Foreground {
         id: foreground
 
+        color: "white"
         property real maxWidth: portrait ? popover.width : popover.width * 3/4
         property real maxHeight: portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
@@ -53,7 +54,6 @@ PopupBase {
         Rectangle {
             id: containerItem
             color: "silver"
-
             anchors {
                 left: parent.left
                 top: parent.top

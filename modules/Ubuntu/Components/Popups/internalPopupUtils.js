@@ -153,7 +153,7 @@ function CallerPositioning(foreground, pointer, area, caller, edgeMargins, calle
     // position foreground and pointer automatically on a small screen in landscape mode.
     this.autoSmallScreenLandscape = function() {
         if (!caller) {
-            simplePos.autoSmallScreenLandScape();
+            simplePos.autoSmallScreenLandscape();
             pointer.direction = "none";
             return;
         }

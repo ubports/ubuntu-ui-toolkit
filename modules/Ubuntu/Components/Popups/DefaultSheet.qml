@@ -15,21 +15,24 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-Item {
-    id: foreground
+SheetBase {
+    property bool doneButton: false
 
-    property alias color: rectangle.color
+    signal closeClicked
+    signal doneClicked
 
-    // TODO: move to themes of individual popup types
-    Rectangle {
-        id: rectangle
-        anchors.fill: parent
-        radius: units.gu(1)
+    leftButton: Button {
+        text: "close"
+        visible: !doneButton
+        onClicked: closeClicked()
     }
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the popover
-    MouseArea {
-        anchors.fill: parent
+    rightButton: Button {
+        text: "done"
+        color: "orange"
+        visible: doneButton
+        onClicked: doneClicked()
     }
 }

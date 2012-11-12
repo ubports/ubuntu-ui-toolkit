@@ -17,169 +17,117 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
-    title: "Popovers"
+    title: i18n.tr("Sheets & Dialogues")
 
-    Rectangle {
-        color: "transparent"
-        id: canvas
-
+    Item {
         Component {
-            id: popoverComponent
-
-            Popover {
-                id: popover
-                Column {
-                    id: containerLayout
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
-
-                    ListItem.Header { text: "Share" }
-
-                    ListItem.Standard {
-                        text: "Do something"
-                    }
-                    ListItem.Standard {
-                        text: "Do something else"
-                    }
-
-                    ListItem.Header { text: "Paste into app" }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Do nothing"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
-                            }
-                        }
-                    }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Cancel! Abort! Break! NOOOOO"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
-                            }
-                            onClicked: popover.hide()
-                        }
-                    }
-                }
-            }
-        }
-
-        Component {
-            id: defaultSheetComponent
-            Sheet {
+            id: closeButtonSheet
+            DefaultSheet {
                 id: sheet
-
-                title: "Ain't this the coolest sheet evar?"
-                buttonConfiguration: "doneButton"
-
-                Column {
-//                    anchors.top: parent.top
-                    width: units.gu(30)
-
-                    TextCustom { text: "hello there" }
-                    Rectangle {
-                        color: "red"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
-                    }
-                    Rectangle {
-                        color: "yellow"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
-                    }
-                    Rectangle {
-                        color: "green"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        height: units.gu(4)
-                    }
+                title: "Default sheet with close button"
+                TextCustom {
+                    text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
+                    wrapMode: Text.WordWrap
+                    width: units.gu(70)
                 }
+                onCloseClicked: PopupUtils.close(sheet)
             }
         }
 
         Component {
-            id: dialogComponent
-
-            Dialogue {
-                id: dialogue
-
-                title: "Save file"
-                text: "Are you sure that you want to save this file?"
-
-                Button {
-                    text: "cancel"
-                    color: "silver"
-                    onClicked: dialogue.hide()
+            id: doneButtonSheet
+            DefaultSheet {
+                id: sheet
+                title: "Default sheet with done button"
+                doneButton: true
+                TextCustom {
+                    text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
+                    wrapMode: Text.WordWrap
+                    width: units.gu(50)
                 }
-                Button {
-                    text: "overwrite previous version"
-                    color: "orange"
-                    onClicked: dialogue.hide()
-                }
-                Button {
-                    text: "save a copy"
-                    color: "orange"
-                    onClicked: dialogue.hide()
-                }
+                onDoneClicked: PopupUtils.close(sheet)
             }
         }
 
         Component {
-            id: buttonComponent
-            Column {
-                width: units.gu(15)
-
-                Button {
-                    id: popButton
-                    text: "Pop!"
-                    width: parent.width
-                    onClicked: PopupUtils.open(popoverComponent, popButton)
+            id: composerSheet
+            ComposerSheet {
+                id: sheet
+                title: "Composer sheet"
+                TextCustom {
+                    text: "A composer sheet has cancel and confirm buttons."
                 }
-                Button {
-                    id: sheetButton
-                    text: "oh, sheet!"
-                    width: parent.width
-                    onClicked: PopupUtils.open(defaultSheetComponent, sheetButton)
-                }
-                Button {
-                    id: queryButton
-                    text: "Q"
-                    width: parent.width
-                    onClicked: PopupUtils.open(dialogComponent, queryButton)
-                }
-
+                onCancelClicked: PopupUtils.close(sheet)
+                onConfirmClicked: PopupUtils.close(sheet)
             }
         }
-        Component.onCompleted: {
-            var i;
-            var b = [];
-            for (i=0; i < 9; i++) b[i] = buttonComponent.createObject(canvas);
-            for (i=0; i < 3; i++) b[i].anchors.top = canvas.top;
-            for (i=3; i < 6; i++) b[i].anchors.verticalCenter = canvas.verticalCenter;
-            for (i=6; i < 9; i++) b[i].anchors.bottom = canvas.bottom;
 
-            for (i=0; i < 3; i++) {
-                b[3*i].anchors.left = canvas.left;
-                b[1+3*i].anchors.horizontalCenter = canvas.horizontalCenter;
-                b[2+3*i].anchors.right = canvas.right;
+        Component {
+             id: dialog
+             Dialog {
+                 id: dialogue
+
+                 title: "Save file"
+                 text: "Are you sure that you want to save this file?"
+
+                 Button {
+                     text: "cancel"
+                     color: "silver"
+                     onClicked: PopupUtils.close(dialogue)
+                 }
+                 Button {
+                     text: "overwrite previous version"
+                     color: "orange"
+                     onClicked: PopupUtils.close(dialogue)
+                 }
+                 Button {
+                     text: "save a copy"
+                     color: "orange"
+                     onClicked: PopupUtils.close(dialogue)
+                 }
+             }
+         }
+
+        Column {
+            spacing: units.gu(4)
+
+            TemplateRow {
+                title: i18n.tr("Default\nSheet")
+
+                Button {
+                    text: i18n.tr("close button")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(closeButtonSheet)
+                }
+
+                Button {
+                    text: i18n.tr("done button")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(doneButtonSheet)
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Composer\nSheet")
+
+                Button {
+                    text: i18n.tr("Click")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(composerSheet)
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Dialog")
+
+                Button {
+                    id: saveButton
+                    text: i18n.tr("Save")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(dialog, saveButton)
+                }
             }
         }
     }
