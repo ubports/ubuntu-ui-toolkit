@@ -15,16 +15,18 @@
  */
 
 function open(component, caller) {
-    // TODO: Check that component is a valid component, and the object
-    //  can be created.
-    var popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
-    popup.show();
+    // TODO: Check that component is a valid component, and the object can be created
+    var popup;
+    if (caller) popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
+    else popup = component.createObject(QuickUtils.rootObject);
 
+    popup.show();
     popup.onVisibleChanged.connect(popup.__closeIfHidden);
     return popup;
 }
 
-//function close(popupObject) {
-//    popupObject.hide();
-//    popupObject.__closeIfHidden();
-//}
+function close(popup) {
+    popup.hide();
+    popup.parent  = null;
+    popup.destroy();
+}

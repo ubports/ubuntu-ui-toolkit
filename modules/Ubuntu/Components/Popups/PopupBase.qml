@@ -21,12 +21,12 @@ import Ubuntu.Components 0.1
 Item {
     id: popupBase
 
-    anchors.fill: parent
+    anchors.fill: parent ? parent : undefined
 
     // without this, some width calculations go wrong in Sheet
     // I guess popupBase.width is not correctly set initially
-    width: parent.width
-    height: parent.height
+    width: parent ? parent.width : undefined
+    height: parent ? parent.height : undefined
 
     // TODO: make private?
     property Item caller;
@@ -43,11 +43,7 @@ Item {
     }
 
     function __closeIfHidden() {
-        if (!visible) {
-            print("destroying!");
-            //popupBase.parent = null;
-            popupBase.destroy();
-        }
+        if (!visible) PopupUtils.close(popupBase);
     }
 
     // TODO: Destroy *only* from Utils.close()
