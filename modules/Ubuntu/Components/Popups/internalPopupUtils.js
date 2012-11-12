@@ -16,7 +16,6 @@
 
 .import "../mathUtils.js" as MathUtils
 
-// TODO: support for no caller?
 function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargins) {
 
     // all coordinate computation are relative inside "area".
@@ -88,6 +87,11 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
     // position foreground and pointer automatically on a small screen in portrait mode
     this.autoSmallScreenPortrait = function() {
         foreground.x = this.horizontalCenter(foreground);
+        if (!caller) {
+            foreground.y = 0;
+            pointer.direction = "none";
+            return;
+        }
         var ycoord = this.above(foreground, callerMargins);
         if (this.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
@@ -112,6 +116,11 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
     // position foreground and pointer automatically on a small screen in landscape mode.
     this.autoSmallScreenLandscape = function() {
         foreground.y = this.verticalCenter(foreground);
+        if (!caller) {
+            foreground.x = 0;
+            pointer.direction = "none";
+            return;
+        }
         var xcoord = this.left(foreground, callerMargins);
         if (this.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
             foreground.x = xcoord;
@@ -135,6 +144,12 @@ function Positioning(foreground, pointer, area, caller, edgeMargins, callerMargi
 
     // position foreground and pointer automatically on a large screen.
     this.autoLargeScreen = function() {
+        if (!caller) {
+            foreground.x = this.horizontalCenter(foreground);
+            foreground.y = this.verticalCenter(foreground);
+            pointer.direction = "none";
+            return;
+        }
         // position with the following priorities: above, left, right, below.
         var coord = this.above(foreground, callerMargins);
         if (this.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
