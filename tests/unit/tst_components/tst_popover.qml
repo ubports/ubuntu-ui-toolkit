@@ -4,29 +4,28 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 TestCase {
-     name: "PopoverAPI"
+    name: "PopoverAPI"
 
-     function test_show() {
-         //TODO: does not work?
-         // Uncaught exception: Object [object Object] has no method &apos;show&apos;
-         PopupUtils.show(popoverComponent,rootItem);
-     }
+    function test_show() {
+        popOver.show()
+    }
 
-     function test_close() {
-         //TODO
-     }
+    function test_hide() {
+        popOver.hide()
+    }
 
-     Rectangle {
-         id: rootItem
-     }
+    function test_caller() {
+        //TODO
+    }
 
-     Component {
-         id: popoverComponent
-         Popover {
-             id: popOver
-             Text {
-                 text: "Hello Popover!"
-             }
-         }
-     }
+    function test_container() {
+        //TODO
+    }
+
+    Popover {
+        id: popOver
+        Text {
+            text: "Hello Popover!"
+        }
+    }
 }
