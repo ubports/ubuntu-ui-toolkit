@@ -25,6 +25,56 @@ import "internalPopupUtils.js" as InternalPopupUtils
     \brief A popover allows an application to present additional content without changing the view.
         A popover has a fixed width and automatic height, depending on is contents.
         It can be closed by clicking anywhere outside of the popover area.
+
+    Example:
+    \qml
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.Popups 0.1
+
+        Item {
+            Popover {
+                id: popover
+                Column {
+                    id: containerLayout
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+                    ListItem.Header { text: "Standard list items" }
+                    ListItem.Standard { text: "Do something" }
+                    ListItem.Standard { text: "Do something else" }
+                    ListItem.Header { text: "Buttons" }
+                    ListItem.SingleControl {
+                        highlightWhenPressed: false
+                        control: Button {
+                            text: "Do nothing"
+                            anchors {
+                                fill: parent
+                                margins: units.gu(1)
+                            }
+                        }
+                    }
+                    ListItem.SingleControl {
+                        highlightWhenPressed: false
+                        control: Button {
+                            text: "Close"
+                            anchors {
+                                fill: parent
+                                margins: units.gu(1)
+                            }
+                            onClicked: PopupUtils.close(popover)
+                        }
+                    }
+                }
+            }
+            Button {
+                id: popoverButton
+                text: "open"
+                onClicked: PopupUtils.open(popoverComponent, popoverButton)
+            }
+        }
+    \endqml
 */
 PopupBase {
     id: popover

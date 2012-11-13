@@ -28,6 +28,35 @@ import Ubuntu.Components 0.1
         (top right). The sheet cannot be dismissed any other way.
         Use the \l doneButton property to configure whether the "close" or the "done" button
         is used.
+
+    Example:
+    \qml
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.Popups 0.1
+
+        Item {
+            Component {
+                id: defaultSheet
+                DefaultSheet {
+                    id: sheet
+                    title: "Default sheet with done button"
+                    doneButton: true
+                    TextCustom {
+                        anchors.fill: parent
+                        text: "A default sheet with a done button."
+                        wrapMode: Text.WordWrap
+                    }
+                    onDoneClicked: PopupUtils.close(sheet)
+                }
+            }
+            Button {
+                anchors.centerIn: parent
+                text: "default"
+                width: units.gu(16)
+                onClicked: PopupUtils.open(defaultSheet)
+            }
+        }
+    \endqml
 */
 SheetBase {
     id: sheet

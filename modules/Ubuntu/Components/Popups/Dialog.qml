@@ -26,6 +26,43 @@ import "internalPopupUtils.js" as InternalPopupUtils
         between optional actions. The Dialog will interrupt the user flow and lock the view
         for further interaction before the user has selected a desired action.
         It can only be closed by selecting an optional action confirming or cancelling the operation.
+
+    Example:
+    \qml
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.Popups 0.1
+
+        Item {
+            Component {
+                 id: dialog
+                 Dialog {
+                     id: dialogue
+                     title: "Save file"
+                     text: "Are you sure that you want to save this file?"
+                     Button {
+                         text: "cancel"
+                         onClicked: PopupUtils.close(dialogue)
+                     }
+                     Button {
+                         text: "overwrite previous version"
+                         color: "orange"
+                         onClicked: PopupUtils.close(dialogue)
+                     }
+                     Button {
+                         text: "save a copy"
+                         color: "orange"
+                         onClicked: PopupUtils.close(dialogue)
+                     }
+                 }
+            }
+            Button {
+                anchors.centerIn: parent
+                id: saveButton
+                text: "save"
+                onClicked: PopupUtils.open(dialog, saveButton)
+            }
+        }
+    \endqml
 */
 
 PopupBase {

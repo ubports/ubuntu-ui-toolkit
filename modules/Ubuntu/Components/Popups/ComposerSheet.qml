@@ -27,6 +27,34 @@ import Ubuntu.Components 0.1
         There are two ways to dismiss it: user confirming the manipulation or user cancelling
         the manipulation, using the "confirm" and "cancel" buttons shown in the right and left side
         of the composer header.
+
+    Example:
+    \qml
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.Popups 0.1
+
+        Item {
+            Component {
+                id: composerSheet
+                ComposerSheet {
+                    id: sheet
+                    title: "Composer sheet"
+                    TextCustom {
+                        text: "A composer sheet has cancel and confirm buttons."
+                    }
+                    onCancelClicked: PopupUtils.close(sheet)
+                    onConfirmClicked: PopupUtils.close(sheet)
+                }
+            }
+
+            Button {
+                anchors.centerIn: parent
+                text: "composer"
+                width: units.gu(16)
+                onClicked: PopupUtils.open(composerSheet)
+            }
+        }
+    \endqml
 */
 
 SheetBase {
