@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 
+// internal class, to be used inside PopupBase subclasses.
 Item {
     id: foreground
 

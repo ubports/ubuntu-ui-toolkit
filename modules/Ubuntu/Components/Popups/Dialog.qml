@@ -18,23 +18,55 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import "internalPopupUtils.js" as InternalPopupUtils
 
-PopupBase {
-    id: popover
-    default property alias buttons: buttonColumn.data
+/*!
+    \qmltype Dialog
+    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \ingroup ubuntu-popups
+    \brief The Dialog caters for cases in which the application requires the user to determine
+        between optional actions. The Dialog will interrupt the user flow and lock the view
+        for further interaction before the user has selected a desired action.
+        It can only be closed by selecting an optional action confirming or cancelling the operation.
+*/
 
+PopupBase {
+    id: dialog
+
+    /*! \internal */
+    default property alias __buttons: buttonColumn.data
+
+    /*!
+      \preliminary
+      The title of the question to ask the user.
+      \qmlproperty string title
+     */
     property alias title: headerText.text
+
+    /*!
+      \preliminary
+      The question to the user.
+      \qmlproperty string text
+     */
     property alias text: questionText.text
 
+    /*!
+      \preliminary
+      The Item such as a \l Button that the user interacted with to open the Dialog.
+      This property will be used for the automatic positioning of the Dialog next to
+      the caller, if possible.
+     */
     property Item caller
 
-    // theme
-    property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(2)
+    QtObject {
+        id: internal
 
-    // private
-    function updatePosition() {
-        var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
-        pos.auto();
+        // TODO: Move the two properties below, and various margins and colors, to a delegate.
+        property real edgeMargins: units.gu(2)
+        property real callerMargins: units.gu(2)
+
+        function updatePosition() {
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, edgeMargins, callerMargins);
+            pos.auto();
+        }
     }
 
     Background {
@@ -46,15 +78,15 @@ PopupBase {
         id: pointer
         color: "grey"
         opacity: 0.9
-        longAxis: 2*callerMargins
-        shortAxis: callerMargins
+        longAxis: 2*internal.callerMargins
+        shortAxis: internal.callerMargins
     }
 
     Foreground {
         id: foreground
         color: "grey"
-        width: Math.min(units.gu(40), popover.width)
-        height: MathUtils.clamp(childrenRect.height, units.gu(32), 3*popover.height/4)
+        width: Math.min(units.gu(40), dialog.width)
+        height: MathUtils.clamp(childrenRect.height, units.gu(32), 3*dialog.height/4)
 
         TextCustom {
             id: headerText
@@ -104,11 +136,16 @@ PopupBase {
             }
         }
 
-        onWidthChanged: popover.updatePosition()
-        onHeightChanged: popover.updatePosition()
+        onWidthChanged: internal.updatePosition()
+        onHeightChanged: internal.updatePosition()
     }
 
-    onCallerChanged: updatePosition()
-    onWidthChanged: popover.updatePosition()
-    onHeightChanged: popover.updatePosition()
+    /*! \internal */
+    onCallerChanged: internal.updatePosition()
+
+    /*! \internal */
+    onWidthChanged: internal.updatePosition()
+
+    /*! \internal */
+    onHeightChanged: internal.updatePosition()
 }

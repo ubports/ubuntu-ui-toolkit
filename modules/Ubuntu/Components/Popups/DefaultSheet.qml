@@ -17,22 +17,52 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
+/*!
+    \qmltype DefaultSheet
+    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \ingroup ubuntu-popups
+    \brief The Default Sheet allows an application to insert a content view over the focused view
+        without disrupting the navigation pattern (tabs state or drill-down path are maintained. When
+        the sheet is dismissed the user continues the journey from the point he left it).
+        The Default Sheet can be closed using either a "close" button (top left) or a "done" button
+        (top right). The sheet cannot be dismissed any other way.
+        Use the \l doneButton property to configure whether the "close" or the "done" button
+        is used.
+*/
 SheetBase {
+    id: sheet
+
+    /*!
+      \preliminary
+      If set, a "done" button is visible in the top right of the sheet's header, if unset
+      a "cancel" button is available in the top left of the sheet's header.
+    */
     property bool doneButton: false
 
+    /*!
+      \preliminary
+      This handler is called when the close button is clicked.
+     */
     signal closeClicked
+
+    /*!
+      \preliminary
+      This handler is called when the done button is clicked.
+     */
     signal doneClicked
 
     leftButton: Button {
         text: "close"
         visible: !doneButton
-        onClicked: closeClicked()
+        /*! \internal */
+        onClicked: sheet.closeClicked()
     }
 
     rightButton: Button {
         text: "done"
         color: "orange"
         visible: doneButton
-        onClicked: doneClicked()
+        /*! \internal */
+        onClicked: sheet.doneClicked()
     }
 }

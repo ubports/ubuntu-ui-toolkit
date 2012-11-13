@@ -16,14 +16,22 @@
 
 import QtQuick 2.0
 
+// internal popup background
 Item {
     id: background
     anchors.fill: parent
+
+    // parent must exist and be an instance of PopupBase
     property alias base: background.parent
 
+    // show a semi-transparent dark Rectangle that dims
+    // what is behind the background
     property bool dim: true
 
-    // the names "transient" and "volatile" are reserved words
+    // The names "transient" and "volatile" are reserved words.
+    // When this property is set, clicks anywhere on the background
+    // will hide the popup, and the mouse event are forwarded by
+    // setting mouse.accepted to false.
     property bool ephemeral
 
     Rectangle {

@@ -18,21 +18,41 @@ import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 import "internalPopupUtils.js" as InternalPopupUtils
 
+/*!
+    \qmltype Popover
+    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \ingroup ubuntu-popups
+    \brief A popover allows an application to present additional content without changing the view.
+        A popover has a fixed width and automatic height, depending on is contents.
+        It can be closed by clicking anywhere outside of the popover area.
+*/
 PopupBase {
     id: popover
-    default property alias container: containerItem.data
 
+    /*! \internal */
+    default property alias __container: containerItem.data
+
+    /*!
+      \preliminary
+      The Item such as a \l Button that the user interacted with to open the Dialog.
+      This property will be used for the automatic positioning of the Dialog next to
+      the caller, if possible.
+     */
     property Item caller
 
-    // theme
-    property real edgeMargins: units.gu(2)
-    property real callerMargins: units.gu(2)
-    property bool portrait: width < height
+    QtObject {
+        id: internal
 
-    // private
-    function updatePosition() {
-        var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
-        pos.auto();
+        // theme
+        property real edgeMargins: units.gu(2)
+        property real callerMargins: units.gu(2)
+        property bool portrait: width < height
+
+        // private
+        function updatePosition() {
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+            pos.auto();
+        }
     }
 
     Background {
@@ -44,8 +64,8 @@ PopupBase {
         id: foreground
 
         color: "white"
-        property real maxWidth: portrait ? popover.width : popover.width * 3/4
-        property real maxHeight: portrait ? popover.height * 3/4 : popover.height
+        property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
+        property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
         height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
 
@@ -65,18 +85,24 @@ PopupBase {
             property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
-        onWidthChanged: popover.updatePosition()
-        onHeightChanged: popover.updatePosition()
+        onWidthChanged: internal.updatePosition()
+        onHeightChanged: internal.updatePosition()
     }
 
     Pointer {
         id: pointer
         color: "white"
         opacity: 0.9
-        longAxis: 2*callerMargins
-        shortAxis: callerMargins
+        longAxis: 2*internal.callerMargins
+        shortAxis: internal.callerMargins
     }
 
-    onWidthChanged: updatePosition()
-    onHeightChanged: updatePosition()
+    /*! \internal */
+    onCallerChanged: internal.updatePosition()
+
+    /*! \internal */
+    onWidthChanged: internal.updatePosition()
+
+    /*! \internal */
+    onHeightChanged: internal.updatePosition()
 }

@@ -17,19 +17,62 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
+/*!
+    \qmltype SheetBase
+    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \ingroup ubuntu-popups
+    \brief Parent class of different types of sheets. Not to be used directly.
+
+    Examples: See subclasses.
+    \b{This component is under heavy development.}
+*/
 PopupBase {
     id: sheet
-    default property alias container: containerItem.data
 
+    /*! \internal */
+    default property alias __container: containerItem.data
+
+    /*!
+      Override the default width of the contents of the sheet.
+      Total sheet width will be clamped between 50 grid units and the screen width.
+      \qmlproperty real contentsWidth
+     */
     property alias contentsWidth: foreground.contentsWidth
+
+    /*!
+      \preliminary
+      Override the default height of the contents of the sheet.
+      Total sheet height will be clamped between 40 grid units and the screen height.
+      \qmlproperty real contentsHeight
+     */
     property alias contentsHeight: foreground.contentsHeight
 
+    /*!
+      \preliminary
+      The text shown in the header of the sheet.
+      \qmlproperty string title
+     */
     property alias title: headerText.text
 
+    /*!
+      \internal
+      This property is to be set by the subclasses of SheetBase, and
+      not changed by external developers. It is internal but not prefixed
+      with __ because we need the onLeftButtonChanged signal below.
+    */
     property Button leftButton
+
+    /*!
+      \internal
+      This property is to be set by the subclasses of SheetBase, and
+      not changed by external developers. It is internal but not prefixed
+      with __ because we need the onRightButtonChanged signal below.
+    */
     property Button rightButton
 
+    /*! \internal */
     onLeftButtonChanged: header.updateButton(leftButton, leftButtonContainer)
+    /*! \internal */
     onRightButtonChanged: header.updateButton(rightButton, rightButtonContainer)
 
     Background {
@@ -75,6 +118,7 @@ PopupBase {
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
             }
+
             Item {
                 id: leftButtonContainer
                 width: units.gu(14)
@@ -84,6 +128,7 @@ PopupBase {
                     bottom: parent.bottom
                 }
             }
+
             Item {
                 id: rightButtonContainer
                 anchors {

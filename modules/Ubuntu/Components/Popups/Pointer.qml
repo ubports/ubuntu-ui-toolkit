@@ -1,33 +1,43 @@
 import QtQuick 2.0
 
-ShaderEffect {
-    property color color
+// internal class, used inside subclasses of PopupBase
+Item {
+    id: pointer
+    property alias color: effect.color
+    property alias longAxis: effect.longAxis
+    property alias shortAxis: effect.shortAxis
+    property alias direction: effect.direction
 
-    // Using Item.Rotation does not play well with the
-    //  translation that would be needed after rotating.
-    property real longAxis
-    property real shortAxis
+    width: effect.rotate ? shortAxis : longAxis
+    height: effect.rotate ? longAxis : shortAxis
 
-    // up, down, left or right, or none to hide the pointer
-    property string direction: "down"
+    ShaderEffect {
+        id: effect
+        anchors.fill: parent
+        property color color
 
-    width: rotate ? shortAxis : longAxis
-    height: rotate ? longAxis : shortAxis
+        // Using Item.Rotation does not play well with the
+        //  translation that would be needed after rotating.
+        property real longAxis
+        property real shortAxis
 
-    // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
-    //  but I did not manage to get a 3x3 matrix from QML into the shader.
-    // Note: The properties declared below are internal, but cannot be prefixed with __ because
-    //  that is not supported in the shaders where the same variable names are used.
+        // up, down, left or right, or none to hide the pointer
+        property string direction: "down"
 
-    // rotate pointer 90 degrees
-    property bool rotate: (direction === "left" || direction === "right")
+        // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
+        //  but I did not manage to get a 3x3 matrix from QML into the shader.
+        // Note: The properties declared below are internal, but cannot be prefixed with __ because
+        //  that is not supported in the shaders where the same variable names are used.
 
-    // flip the direction of the pointer
-    property bool flip: (direction === "left" || direction === "up")
+        // rotate pointer 90 degrees
+        property bool rotate: (direction === "left" || direction === "right")
 
-    visible: (direction !== "none")
+        // flip the direction of the pointer
+        property bool flip: (direction === "left" || direction === "up")
 
-    vertexShader: "
+        visible: (direction !== "none")
+
+        vertexShader: "
         uniform highp mat4 qt_Matrix;
         attribute highp vec4 qt_Vertex;
         attribute highp vec2 qt_MultiTexCoord0;
@@ -45,7 +55,7 @@ ShaderEffect {
             gl_Position = qt_Matrix * qt_Vertex;
         }"
 
-    fragmentShader: "
+        fragmentShader: "
         varying highp vec2 coord;
         uniform vec4 color;
         uniform float opacity;
@@ -55,4 +65,5 @@ ShaderEffect {
             if (coord.t > 2.0*coord.s) discard;
             gl_FragColor = color * vec4(opacity);
         }"
+    }
 }

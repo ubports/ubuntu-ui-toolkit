@@ -15,7 +15,14 @@
  */
 
 import QtQuick 2.0
+/*!
+    \qmltype PopupBase
+    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \ingroup ubuntu-popups
+    \brief The base class for all dialogs, sheets and popovers. Do not use directly.
 
+    Examples: See subclasses.
+*/
 Item {
     id: popupBase
 
@@ -26,6 +33,12 @@ Item {
     width: parent ? parent.width : undefined
     height: parent ? parent.height : undefined
 
+    /*!
+      \preliminary
+      Make the popup visible. Reparent to the root object first if needed.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.open() to do it automatically.
+    */
     function show() {
         if (parent !== QuickUtils.rootObject) {
             parent = QuickUtils.rootObject;
@@ -33,12 +46,21 @@ Item {
         popupBase.visible = true;
     }
 
+    /*!
+      \preliminary
+      Hide the popup.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.close() to do it automatically.
+    */
     function hide() {
         popupBase.visible = false;
     }
 
-    // When the popup is created by calling PopupUtils.open(),
-    //  onVisibleChanged is connected to __closeIfHidden().
+    /*!
+        \internal
+        When the popup is created by calling PopupUtils.open(),
+        onVisibleChanged is connected to __closeIfHidden().
+     */
     function __closeIfHidden() {
         if (!visible) PopupUtils.close(popupBase);
     }
