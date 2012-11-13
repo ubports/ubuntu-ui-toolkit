@@ -17,11 +17,55 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
-    title: i18n.tr("Sheets & Dialogues")
+    title: i18n.tr("Popovers, Sheets & Dialogues")
 
     Item {
+        Component {
+            id: popoverComponent
+
+            Popover {
+                id: popover
+                Column {
+                    id: containerLayout
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+
+                    ListItem.Header { text: "Standard list items" }
+                    ListItem.Standard { text: "Do something" }
+                    ListItem.Standard { text: "Do something else" }
+                    ListItem.Header { text: "Buttons" }
+                    ListItem.SingleControl {
+                        highlightWhenPressed: false
+                        control: Button {
+                            text: "Do nothing"
+                            anchors {
+                                fill: parent
+                                margins: units.gu(1)
+                            }
+                        }
+                    }
+                    ListItem.SingleControl {
+                        highlightWhenPressed: false
+                        control: Button {
+                            text: "Close"
+                            anchors {
+                                fill: parent
+                                margins: units.gu(1)
+                            }
+                            onClicked: PopupUtils.close(popover)
+                        }
+                    }
+                }
+            }
+        }
+
+
         Component {
             id: closeButtonSheet
             DefaultSheet {
@@ -74,7 +118,6 @@ Template {
 
                  Button {
                      text: "cancel"
-                     color: "silver"
                      onClicked: PopupUtils.close(dialogue)
                  }
                  Button {
@@ -94,7 +137,25 @@ Template {
             spacing: units.gu(4)
 
             TemplateRow {
-                title: i18n.tr("Default\nSheet")
+                title: i18n.tr("Popover")
+
+                Button {
+                    id: leftPopoverButton
+                    text: i18n.tr("automatic")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(popoverComponent, leftPopoverButton)
+                }
+
+                Button {
+                    id: rightPopoverButton
+                    text: i18n.tr("positioning")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(popoverComponent, rightPopoverButton)
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Sheets")
 
                 Button {
                     text: i18n.tr("close button")
@@ -107,13 +168,9 @@ Template {
                     width: units.gu(16)
                     onClicked: PopupUtils.open(doneButtonSheet)
                 }
-            }
-
-            TemplateRow {
-                title: i18n.tr("Composer\nSheet")
 
                 Button {
-                    text: i18n.tr("Click")
+                    text: i18n.tr("composer")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(composerSheet)
                 }
@@ -124,7 +181,7 @@ Template {
 
                 Button {
                     id: saveButton
-                    text: i18n.tr("Save")
+                    text: i18n.tr("save")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(dialog, saveButton)
                 }
