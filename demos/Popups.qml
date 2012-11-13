@@ -72,9 +72,9 @@ Template {
                 id: sheet
                 title: "Default sheet with close button"
                 TextCustom {
+                    anchors.fill: parent
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
-                    width: units.gu(70)
                 }
                 onCloseClicked: PopupUtils.close(sheet)
             }
@@ -87,9 +87,9 @@ Template {
                 title: "Default sheet with done button"
                 doneButton: true
                 TextCustom {
+                    anchors.fill: parent
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
-                    width: units.gu(50)
                 }
                 onDoneClicked: PopupUtils.close(sheet)
             }

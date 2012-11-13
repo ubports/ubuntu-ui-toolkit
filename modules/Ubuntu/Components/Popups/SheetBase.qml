@@ -21,22 +21,16 @@ PopupBase {
     id: sheet
     default property alias container: containerItem.data
 
+    property alias contentsWidth: foreground.contentsWidth
+    property alias contentsHeight: foreground.contentsHeight
+
     property alias title: headerText.text
 
     property Button leftButton
     property Button rightButton
 
-    onLeftButtonChanged: __buttonChanged(leftButton, leftButtonContainer)
-    onRightButtonChanged: __buttonChanged(rightButton, rightButtonContainer)
-
-    function __buttonChanged(button, container) {
-        if (!button) return;
-        button.parent = container;
-        button.anchors.left = container.left;
-        button.anchors.right = container.right;
-        button.anchors.verticalCenter = container.verticalCenter;
-        button.anchors.margins = units.gu(1);
-    }
+    onLeftButtonChanged: header.updateButton(leftButton, leftButtonContainer)
+    onRightButtonChanged: header.updateButton(rightButton, rightButtonContainer)
 
     Background {
         dim: false
@@ -44,13 +38,21 @@ PopupBase {
     }
 
     Foreground {
-        color: "lightgrey"
-        property real contentsWidth: Math.max(header.requestedWidth, containerItem.requestedWidth)
-        width: MathUtils.clamp(contentsWidth, units.gu(50), sheet.width)
-        property real contentsHeight: header.height + containerItem.height
-        height: MathUtils.clamp(contentsHeight, units.gu(40), contentsHeight, sheet.height)
-        y: units.gu(15)
+        id: foreground
+
+        property real contentsWidth: units.gu(64)
+        property real contentsHeight: units.gu(40)
+
+        y: Math.min(units.gu(15), (sheet.height - height)/2)
         anchors.horizontalCenter: parent.horizontalCenter
+
+        property real minWidth: Math.min(units.gu(50), sheet.width)
+        property real minHeight: Math.min(units.gu(40), sheet.height)
+
+        width: MathUtils.clamp(contentsWidth, minWidth, sheet.width)
+        height: MathUtils.clamp(contentsHeight + header.height, units.gu(40), sheet.height)
+
+        color: "lightgrey"
 
         Rectangle {
             id: header
@@ -61,18 +63,18 @@ PopupBase {
                 left: parent.left
                 right: parent.right
             }
-            property real requestedWidth: headerText.width + leftButtonContainer.width + rightButtonContainer.width
 
             TextCustom {
                 id: headerText
                 anchors {
-                    centerIn: parent
+                    verticalCenter: parent.verticalCenter
+                    left: leftButtonContainer.right
+                    right: rightButtonContainer.left
                 }
                 width: headerText.implicitWidth + units.gu(4)
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
             }
-
             Item {
                 id: leftButtonContainer
                 width: units.gu(14)
@@ -82,7 +84,6 @@ PopupBase {
                     bottom: parent.bottom
                 }
             }
-
             Item {
                 id: rightButtonContainer
                 anchors {
@@ -92,6 +93,15 @@ PopupBase {
                 }
                 width: units.gu(14)
             }
+
+            function updateButton(button, container) {
+                if (!button) return;
+                button.parent = container;
+                button.anchors.left = container.left;
+                button.anchors.right = container.right;
+                button.anchors.verticalCenter = container.verticalCenter;
+                button.anchors.margins = units.gu(1);
+            }
         }
 
         Item {
@@ -100,10 +110,9 @@ PopupBase {
                 top: header.bottom
                 left: parent.left
                 right: parent.right
+                bottom: parent.bottom
                 margins: units.gu(1)
             }
-            height: childrenRect.height + 2*anchors.margins
-            property real requestedWidth: childrenRect.width + 2*anchors.margins
         }
     }
 }
