@@ -6,4 +6,5 @@ SUBDIRS += tst_template \
     tst_units \
     tst_scaling_image_provider \
     tst_components \
-    tst_components_benchmark
+    tst_components_benchmark \
+    tst_modelsectioncounter
