@@ -80,6 +80,9 @@ import Ubuntu.Components 0.1 as Theming
 PopupBase {
     id: popover
 
+    property string themeName: "popover"
+    Theming.ItemStyle.class: themeName
+
     /*! \internal */
     default property alias __container: containerItem.data
 
@@ -114,7 +117,7 @@ PopupBase {
     Foreground {
         id: foreground
 
-        Theming.ItemStyle.class: "popover-foreground"
+        Theming.ItemStyle.class: popover.themeName + "-foreground"
 
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
