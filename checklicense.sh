@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-licensecheck -r --copyright -i "sci$|$0" -m .
+licensecheck -r --copyright -i "sci$|$0" -m -c '\.(c(c|pp|xx)?|h(h|pp|xx)?|f(77|90)?|p(l|m)|xs|sh|php|py(|x)|rb|java|vala|el|sc(i|e)|cs|pas|inc|dtd|xsl|mod|m|tex|qml|js|mli?)$' .
 
 
 
