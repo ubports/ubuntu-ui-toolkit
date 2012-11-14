@@ -16,14 +16,26 @@
 
 import QtQuick 2.0
 
-/*
-  Internal type used for objects that can have children
+/*!
+    \qmltype Object
+    \internal
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief Internal type used for lightweight objects that can have children.
 */
 
 QtObject {
     id: object
     // internal objects using nested elements,
     // which isn't allowed by QtObject; this fix makes this possible
+    /*!
+      \internal
+      Default property to allow adding of children.
+      */
     default property alias children: object.__defaultPropertyFix
-    property list<QtObject> __defaultPropertyFix: [Item {}] //QML doesn't allow an empty list here
+    /*!
+      \internal
+      Property list to allow adding of children.
+      */
+    property list<QtObject> __defaultPropertyFix: [QtObject {}] //QML doesn't allow an empty list here
 }

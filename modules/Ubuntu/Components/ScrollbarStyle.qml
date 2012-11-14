@@ -16,16 +16,18 @@
 
 import QtQuick 2.0
 
-Object {
+QtObject {
     property PropertyAnimation fadeAnimation
     property PropertyAnimation sliderAnimation
     property PropertyAnimation thumbConnectorFading
     property PropertyAnimation thumbFading
-    property real thickness
     property color sliderColor
     property color thumbConnectorColor
     property url forwardThumbReleased
     property url forwardThumbPressed
     property url backwardThumbReleased
     property url backwardThumbPressed
+    property real sensingAreaThickness
+    property real scrollAreaThickness
+    property real thumbConnectorMargin
 }

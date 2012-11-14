@@ -16,100 +16,105 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 Template {
     title: i18n.tr("Scrollbar")
     id: scrollbars
+    LayoutMirroring.childrenInherit: true
+
+    property bool passiveScrollbars: passiveSwitch.checked
 
     Column {
-        LayoutMirroring.childrenInherit: true
-        //LayoutMirroring.enabled: true
         spacing: units.gu(4)
 
-        Item {
-            width: 300
-            height: 220
-            Flickable {
-                id: flickable
-                anchors.fill: parent
-                contentHeight: image.sourceSize.height
-                contentWidth: image.sourceSize.width
-                clip: true
-                Image {
-                    id: image
-                    source: Qt.resolvedUrl("rivieramaya3.jpg")
-                }
-            }
-            Scrollbar {
-                flickableItem: flickable
-                align: "rear"
-                orientation: Qt.Vertical
-            }
-            Scrollbar {
-                flickableItem: flickable
-                align: "bottom"
-                orientation: Qt.Horizontal
+        TemplateRow {
+            title: i18n.tr("Passive")
+            Switch {
+                id: passiveSwitch
+                checked: true
             }
         }
 
+        TemplateRow {
+            title: i18n.tr("Flickable")
+            height: scrollable.height
 
-        Item {
-            width: 300
-            height: 220
-            Component {
-                id: sectionDelegate
-                Rectangle {
-                    id: sectionHeader
-                    width: 300
-                    height: units.gu(4.2)
-                    color: "#66AA77"
-                    TextCustom {
-                        anchors.fill: parent
-                        text: section
-                        font.bold: true
+            Item {
+                id: scrollable
+                width: units.gu(37.5)
+                height: units.gu(23)
+                Flickable {
+                    id: flickable
+                    anchors.fill: parent
+                    contentHeight: image.sourceSize.height
+                    contentWidth: image.sourceSize.width
+                    clip: true
+                    Image {
+                        id: image
+                        source: Qt.resolvedUrl("rivieramaya3.jpg")
+                        //source: "http://farm9.staticflickr.com/8325/8113426644_50a2b934cf_z_d.jpg"
                     }
                 }
-            }
-
-            Component {
-                id: itemDelegate
-                Rectangle {
-                    id: itemFrame
-                    width: 300
-                    height: units.gu(6)
-                    color: "#C4C5C4"
-                    TextCustom {
-                        anchors.fill: parent
-                        text: label
-                    }
+                Scrollbar {
+                    flickableItem: flickable
+                    align: "rear"
+                    orientation: Qt.Vertical
+                    __passive: passiveScrollbars
                 }
-            }
-
-            ListView {
-                id: listView
-                clip: true
-                anchors.fill: parent
-                model: listModel
-                //section.property: "title"
-                section.criteria: ViewSection.FirstCharacter
-                //section.delegate: sectionDelegate
-                delegate: itemDelegate
-            }
-            ListModel {
-                id: listModel
-                Component.onCompleted: {
-                    for (var i = 0; i < 100; i++) {
-                        listModel.append({"title": i, "label": i})
-                    }
+                Scrollbar {
+                    flickableItem: flickable
+                    align: "bottom"
+                    orientation: Qt.Horizontal
+                    __passive: passiveScrollbars
                 }
-            }
-
-            Scrollbar {
-                flickableItem: listView
-                align: "rear"
-                orientation: Qt.Vertical
             }
         }
 
+        TemplateRow {
+            title: i18n.tr("ListView")
+            height: scrollable2.height
+
+            Rectangle {
+                id: scrollable2
+                width: units.gu(37.5)
+                height: units.gu(23)
+                color: transparent
+                border.width: units.dp(1)
+                border.color: "#eeeeee"
+                radius: units.dp(5)
+
+                ListView {
+                    id: listView
+                    clip: true
+                    anchors.fill: parent
+                    model: listModel
+                    section.property: "title"
+                    section.criteria: ViewSection.FirstCharacter
+                    section.delegate: Header {
+                        text: "Section - " + section
+                    }
+
+                    delegate: Standard {
+                        text: "Data - " + label
+                    }
+                }
+                ListModel {
+                    id: listModel
+                    Component.onCompleted: {
+                        for (var i = 0; i < 100; i++) {
+                            listModel.append({"title": i, "label": i})
+                        }
+                    }
+                }
+
+                Scrollbar {
+                    flickableItem: listView
+                    align: "rear"
+                    orientation: Qt.Vertical
+                    __passive: passiveScrollbars
+                }
+            }
+        }
     }
 }

@@ -140,7 +140,6 @@ void ModelSectionCounter::watchSectionPropertyRole()
     if (!m_sectionProperty.isEmpty() && m_model != NULL) {
         QList<QByteArray> roles;
         roles << m_sectionProperty.toUtf8();
-        qDebug() << roles;
         m_model->setWatchedRoles(roles);
     }
 }
