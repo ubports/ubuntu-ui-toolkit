@@ -1,8 +1,10 @@
 TEMPLATE = subdirs
 
 #######################################
-# there tests are failing in armhf
+# these tests are failing in armhf
 # can not create QQuickView
+# tested with Qt 5 beta 1 and beta 2
+#######################################
 !contains(QMAKE_HOST.arch,armv7l) {
     SUBDIRS += tst_theme_engine \
         tst_theme_engine_private \
