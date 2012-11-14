@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright 2012 Canonical Ltd.
 #
@@ -10,14 +10,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-for f in `find $TARGET -type f -name "*.po"`
-    do
-        FILENAME=${f%.*}
-        EXTENSION=${f#*.}
-        msgfmt $f -o $FILENAME'.mo'
-    done
+
+licensecheck -r --copyright -i "sci$|$0" -m .
