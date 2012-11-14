@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 !contains(QMAKE_HOST.arch,armv7l) {
     SUBDIRS += tst_theme_engine \
         tst_theme_engine_private \
-        tst_modelsectioncounter \
+        #tst_modelsectioncounter \
         tst_components \
         tst_components_benchmark
 }
