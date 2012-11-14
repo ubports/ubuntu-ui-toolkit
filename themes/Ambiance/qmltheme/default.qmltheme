@@ -103,10 +103,10 @@ Examples:
     sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
     thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
     thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
-    backwardThumbReleased : (item.orientation == Qt.Vertical) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
-    backwardThumbPressed: (item.orientation == Qt.Vertical) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
-    forwardThumbReleased: (item.orientation == Qt.Vertical) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
-    forwardThumbPressed: (item.orientation == Qt.Vertical) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
+    backwardThumbReleased : (item.align === Qt.AlignLeft || item.align === Qt.AlignRight) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
+    backwardThumbPressed: (item.align === Qt.AlignLeft || item.align === Qt.AlignRight) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
+    forwardThumbReleased: (item.align === Qt.AlignLeft || item.align === Qt.AlignRight) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
+    forwardThumbPressed: (item.align === Qt.AlignLeft || item.align === Qt.AlignRight) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
     sensingAreaThickness: units.gu(4);
     scrollAreaThickness: units.dp(2);
     thumbConnectorMargin: units.dp(3);

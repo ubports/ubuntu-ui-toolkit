@@ -29,13 +29,13 @@ import QtQuick 2.0
 Item {
     id: visuals
     // helper properties to ease code readability
-    property bool isActive: !item.__passive
+    property bool isActive: item.__interactive
     property bool isScrollable: item.__private.scrollable
-    property bool isVertical: (item.orientation === Qt.Vertical)
-    property bool frontAligned: isVertical && (item.align === "front")
-    property bool rearAligned: isVertical && (item.align === "rear")
-    property bool topAligned: !isVertical && (item.align === "top")
-    property bool bottomAligned: !isVertical && (item.align === "bottom")
+    property bool isVertical: (item.__private.vertical)
+    property bool frontAligned: (item.align === Qt.AlignLeft)
+    property bool rearAligned: (item.align === Qt.AlignRight)
+    property bool topAligned: (item.align === Qt.AlignTop)
+    property bool bottomAligned: (item.align === Qt.AlignBottom)
     property real contentSize: item.__private.contentSize
     property real pageSize: item.__private.pageSize
 
@@ -62,7 +62,7 @@ Item {
 
     /* Scroll by amount pixels never overshooting */
     function scrollBy(amount) {
-        var destination = item.contentPosition + amount
+        var destination = item.__contentPosition + amount
         destination += (isVertical) ? item.flickableItem.originY : item.flickableItem.originX
         scrollAnimation.to = clamp(destination, 0, contentSize - pageSize)
         scrollAnimation.restart()
@@ -131,10 +131,10 @@ Item {
         color: itemStyle.sliderColor
 
         anchors {
-            left: (frontAligned) ? scrollbarArea.left : undefined
-            right: (rearAligned) ? scrollbarArea.right : undefined
-            top: (topAligned) ? scrollbarArea.top : undefined
-            bottom: (bottomAligned) ? scrollbarArea.bottom : undefined
+            left: (isVertical) ? scrollbarArea.left : undefined
+            right: (isVertical) ? scrollbarArea.right : undefined
+            top: (!isVertical) ? scrollbarArea.top : undefined
+            bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
         // FIXME: theme this
@@ -159,13 +159,13 @@ Item {
             when: (isVertical)
             target: slider
             property: "y"
-            value: clampAndProject(item.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
+            value: clampAndProject(item.__contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
         }
         Binding {
             when: (!isVertical)
             target: slider
             property: "x"
-            value: clampAndProject(item.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
+            value: clampAndProject(item.__contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
         }
     }
 
@@ -177,13 +177,13 @@ Item {
         anchors {
             left: (isVertical) ? scrollbarArea.left : (isThumbAboveSlider ? thumb.left : slider.right)
             right: (isVertical) ? scrollbarArea.right : (isThumbAboveSlider ? slider.left : thumb.right)
-            top: (isVertical) ? (isThumbAboveSlider ? thumb.top : slider.bottom) : scrollbarArea.top
-            bottom: (isVertical) ? (isThumbAboveSlider ? slider.top : thumb.bottom) : scrollbarArea.bottom
+            top: (!isVertical) ? scrollbarArea.top : (isThumbAboveSlider ? thumb.top : slider.bottom)
+            bottom: (!isVertical) ? scrollbarArea.bottom : (isThumbAboveSlider ? slider.top : thumb.bottom)
 
             leftMargin : (isVertical) ? 0 : (isThumbAboveSlider ? itemStyle.thumbConnectorMargin : 0)
             rightMargin : (isVertical) ? 0 : (isThumbAboveSlider ? 0 : itemStyle.thumbConnectorMargin)
-            topMargin : (isVertical) ? (isThumbAboveSlider ? itemStyle.thumbConnectorMargin : 0) : 0
-            bottomMargin : (isVertical) ? (isThumbAboveSlider ? 0 : itemStyle.thumbConnectorMargin) : 0
+            topMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? itemStyle.thumbConnectorMargin : 0)
+            bottomMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? 0 : itemStyle.thumbConnectorMargin)
         }
         color: itemStyle.thumbConnectorColor
         opacity: thumb.shown ? 1.0 : 0.0
@@ -202,10 +202,10 @@ Item {
         anchors {
             fill: scrollbarArea
             // set margins adding 2 dp for error area
-            leftMargin: (!isVertical)  ? 0 : (frontAligned ? 0 : units.dp(-2) - thumb.width)
-            rightMargin: (!isVertical) ? 0 : (rearAligned ? 0 : units.dp(-2) - thumb.width)
-            topMargin: (isVertical) ? 0 : (topAligned ?  0 : units.dp(-2) - thumb.height)
-            bottomMargin: (isVertical) ? 0 : (bottomAligned ?  0 : units.dp(-2) - thumb.height)
+            leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2) - thumb.width
+            rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2) - thumb.width
+            topMargin: (isVertical || topAligned) ?  0 : units.dp(-2) - thumb.height
+            bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2) - thumb.height
         }
         enabled: isScrollable && isActive
         hoverEnabled: true
@@ -284,10 +284,10 @@ Item {
         enabled: isActive
 
         anchors {
-            left: (isVertical) ? item.__private.leftAnchor(slider) : undefined
-            right: (isVertical) ? item.__private.rightAnchor(slider) : undefined
-            top: (!isVertical) ? item.__private.topAnchor(slider) : undefined
-            bottom: (!isVertical) ? item.__private.bottomAnchor(slider) : undefined
+            left: frontAligned ? slider.left : undefined
+            right: rearAligned ? slider.right : undefined
+            top: topAligned ? slider.top : undefined
+            bottom: bottomAligned ? slider.bottom : undefined
         }
 
         width: childrenRect.width

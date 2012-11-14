@@ -80,37 +80,30 @@ Item {
 
     /*!
       \preliminary
-      Scrollbar orientation, Qt.Vertical or Qt.Horizontal. The default value is
-      Qt.Vertical.
-      */
-    property int orientation: Qt.Vertical
-
-    /*!
-      \preliminary
-        String property holding the anchoring of the Scrollbar to the flickableItem.
-        Possible values are \b{front, rear, top, bottom}.
+      The property handles the alignment of the scrollbar to the flickableItem.
+      It is translated into anchoring as follows:
         \list
-        \li front anchors to the left on LTR and to the right on RTL layouts
-        \li rear anchors to the right on LTR and to the left on RTL layouts
-        \li top anchors to the top
-        \li bottom anchors to the bottom
+        \li Qt.AlignLeft anchors to the left on LTR and to the right on RTL layouts
+        \li Qt.AlignRight anchors to the right on LTR and to the left on RTL layouts
+        \li Qt.AlignTop anchors to the top
+        \li Qt.AlignBottom anchors to the bottom
         \endlist
-        The default value is \b rear.
+        The default value is \b Qt.AlignRight.
       */
-    property string align: "rear"
-
-    /*!
-      \preliminary
-      Read-only property presenting the content's position within the flickableItem.
-      */
-    readonly property real contentPosition: internals.contentPosition
+    property int align: Qt.AlignRight
 
     /*!
       \internal
       This property holds whether the scrollbar is active or passive. It is present
       for testing purposes.
     */
-    property bool __passive: false
+    property bool __interactive: false
+
+    /*!
+      \internal
+      Read-only property presenting the content's position within the flickableItem.
+      */
+    readonly property alias __contentPosition: internals.contentPosition
 
 
     // styling
@@ -142,36 +135,37 @@ Item {
     Object {
         id: internals
         property QtObject listView: null
+        property bool vertical: (align === Qt.AlignLeft) || (align === Qt.AlignRight)
         // The content position is driven through the flickableItem's contentX
         property real contentPosition
         property bool scrollable: flickableItem && flickableItem.interactive && pageSize > 0.0
                                   && contentSize > 0.0 && contentSize > pageSize
-        property real pageSize: (scrollbar.orientation == Qt.Vertical) ? flickableItem.height : flickableItem.width
-        property real contentSize: (scrollbar.orientation == Qt.Vertical) ?
+        property real pageSize: (internals.vertical) ? flickableItem.height : flickableItem.width
+        property real contentSize: (internals.vertical) ?
                                        ((internals.listView) ? internals.listView.size : flickableItem.contentHeight) :
                                        ((internals.listView) ? internals.listView.size : flickableItem.contentWidth)
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
         function leftAnchor(item)
         {
-            if ((orientation == Qt.Horizontal) || ((orientation == Qt.Vertical) && (align == "front")))
+            if (!internals.vertical || (align == Qt.AlignLeft))
                 return item.left;
             return undefined;
         }
         function rightAnchor(item)
         {
-            if ((orientation == Qt.Horizontal) || ((orientation == Qt.Vertical) && (align == "rear")))
+            if (!internals.vertical || (align == Qt.AlignRight))
                 return item.right;
             return undefined;
         }
         function topAnchor(item)
         {
-            if ((orientation == Qt.Vertical) || ((orientation == Qt.Horizontal) && (align == "top")))
+            if (internals.vertical || (align == Qt.AlignTop))
                 return item.top;
             return undefined;
         }
         function bottomAnchor(item)
         {
-            if ((orientation == Qt.Vertical) || ((orientation == Qt.Horizontal) && (align == "bottom")))
+            if (internals.vertical || (align == Qt.AlignBottom))
                 return item.bottom;
             return undefined;
         }
@@ -180,8 +174,8 @@ Item {
         // common logic for Flickable and ListView to update contentPosition when Flicked
         Connections {
             target: flickableItem
-            onContentYChanged: if (orientation == Qt.Vertical) internals.contentPosition = flickableItem.contentY - flickableItem.originY
-            onContentXChanged: if (orientation == Qt.Horizontal) internals.contentPosition = flickableItem.contentX - flickableItem.originX
+            onContentYChanged: if (internals.vertical) internals.contentPosition = flickableItem.contentY - flickableItem.originY
+            onContentXChanged: if (!internals.vertical) internals.contentPosition = flickableItem.contentX - flickableItem.originX
         }
         // logic for ListView
         Component {

@@ -23,16 +23,16 @@ Template {
     id: scrollbars
     LayoutMirroring.childrenInherit: true
 
-    property bool passiveScrollbars: passiveSwitch.checked
+    property bool interactiveScrollbars: interactiveSwitch.checked
 
     Column {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: i18n.tr("Passive")
+            title: i18n.tr("Interactive")
             Switch {
-                id: passiveSwitch
-                checked: true
+                id: interactiveSwitch
+                checked: false
             }
         }
 
@@ -58,15 +58,13 @@ Template {
                 }
                 Scrollbar {
                     flickableItem: flickable
-                    align: "rear"
-                    orientation: Qt.Vertical
-                    __passive: passiveScrollbars
+                    align: Qt.AlignRight
+                    __interactive: interactiveScrollbars
                 }
                 Scrollbar {
                     flickableItem: flickable
-                    align: "bottom"
-                    orientation: Qt.Horizontal
-                    __passive: passiveScrollbars
+                    align: Qt.AlignBottom
+                    __interactive: interactiveScrollbars
                 }
             }
         }
@@ -79,7 +77,7 @@ Template {
                 id: scrollable2
                 width: units.gu(37.5)
                 height: units.gu(23)
-                color: transparent
+                color: "transparent"
                 border.width: units.dp(1)
                 border.color: "#eeeeee"
                 radius: units.dp(5)
@@ -110,9 +108,8 @@ Template {
 
                 Scrollbar {
                     flickableItem: listView
-                    align: "rear"
-                    orientation: Qt.Vertical
-                    __passive: passiveScrollbars
+                    align: Qt.AlignRight
+                    __interactive: interactiveScrollbars
                 }
             }
         }
