@@ -20,13 +20,13 @@ import QtQuick 2.0
 Item {
     id: foreground
 
-    property alias color: rectangle.color
-
     // TODO: move to themes of individual popup types
+    property alias color: rectangle.color
     Rectangle {
         id: rectangle
         anchors.fill: parent
         radius: units.gu(1)
+        visible: false
     }
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover

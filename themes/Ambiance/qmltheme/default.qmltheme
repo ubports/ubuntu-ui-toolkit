@@ -16,6 +16,7 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
+@qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -35,6 +36,8 @@ Examples:
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
 @qml-import(Ubuntu.Components 0.1);
+@qml-import(Ubuntu.Components.Popups 0.1);
+
 
 .button, .custom-button {
     color: "#e3e5e8";
@@ -63,6 +66,9 @@ Examples:
 .TextCustom {
     fontSize: "medium";
     color: "#757373";
+}
+
+.popover-foreground {
 }
 
 /*

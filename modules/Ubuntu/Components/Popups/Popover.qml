@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 import "internalPopupUtils.js" as InternalPopupUtils
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Popover
@@ -113,26 +114,28 @@ PopupBase {
     Foreground {
         id: foreground
 
-        color: "white"
+        Theming.ItemStyle.class: "popover-foreground"
+
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
-        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
+//        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
+        // FIXME: The childrenRect height can be larger than maxHeight
+        height: MathUtils.clamp(childrenRect.height, units.gu(32), maxHeight)
 
-        // TODO: Make height of Foreground depend on containerItem height + margins?
-        // TODO: make item after testing.
-        Rectangle {
+        Item {
             id: containerItem
-            color: "silver"
             anchors {
                 left: parent.left
                 top: parent.top
                 right: parent.right
-                margins: units.gu(1)
+//                bottom: parent.bottom
+//                margins: units.gu(1)
             }
 
+//            anchors.fill: parent
             height: childrenRect.height
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
+//            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
         onWidthChanged: internal.updatePosition()

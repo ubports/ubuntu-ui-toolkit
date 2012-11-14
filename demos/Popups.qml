@@ -28,6 +28,7 @@ Template {
 
             Popover {
                 id: popover
+
                 Column {
                     id: containerLayout
                     anchors {
