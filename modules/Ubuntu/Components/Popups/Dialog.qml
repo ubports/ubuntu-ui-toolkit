@@ -82,14 +82,14 @@ PopupBase {
       The title of the question to ask the user.
       \qmlproperty string title
      */
-    property alias title: foreground.title //headerText.text
+    property alias title: foreground.title
 
     /*!
       \preliminary
       The question to the user.
       \qmlproperty string text
      */
-    property alias text: foreground.text //questionText.text
+    property alias text: foreground.text
 
     /*!
       \preliminary

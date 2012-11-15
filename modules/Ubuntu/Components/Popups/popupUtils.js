@@ -16,6 +16,7 @@
 
 function open(component, caller) {
     // TODO: Check that component is a valid component, and the object can be created
+    // TODO: support url/string as component
     var popup;
     if (caller) popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
     else popup = component.createObject(QuickUtils.rootObject);

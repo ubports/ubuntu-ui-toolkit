@@ -77,6 +77,7 @@ PopupBase {
         // FIXME: see above
         Theming.ItemStyle.class: "sheet-foreground"
 
+        property string title
         property real contentsWidth: units.gu(64)
         property real contentsHeight: units.gu(40)
         property Button leftButton
@@ -90,10 +91,8 @@ PopupBase {
         property real minHeight: Math.min(units.gu(40), sheet.height)
         property real maxHeight: sheet.height
 
-        width: childrenRect.width //MathUtils.clamp(childrenRect.width, minWidth, maxWidth)
-        height: childrenRect.height //MathUtils.clamp(childrenRect.height, minHeight, maxHeight)
-
-        property string title
+        width: childrenRect.width
+        height: childrenRect.height
 
         Item {
             id: containerItem

@@ -66,7 +66,6 @@ Template {
             }
         }
 
-
         Component {
             id: closeButtonSheet
             DefaultSheet {
