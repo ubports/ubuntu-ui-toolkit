@@ -19,7 +19,7 @@ import QtQuick 2.0
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by
-  the item's __passive property, however should be detected upon runtime based on
+  the item's __inactive property, however should be detected upon runtime based on
   the device type.
   On active scrollbars, positioning is handled so that the logic updates the flickable's
   X/Y content positions, which is then synched with the contentPosition by the main
@@ -29,15 +29,103 @@ import QtQuick 2.0
 Item {
     id: visuals
     // helper properties to ease code readability
-    property bool isActive: item.__interactive
-    property bool isScrollable: item.__private.scrollable
+    property Flickable flickableItem: item.flickableItem
+    property bool interactive: item.__interactive
+    property bool isScrollable: item.__private.scrollable && pageSize > 0.0
+                                && contentSize > 0.0 && contentSize > pageSize
     property bool isVertical: (item.__private.vertical)
     property bool frontAligned: (item.align === Qt.AlignLeft)
     property bool rearAligned: (item.align === Qt.AlignRight)
     property bool topAligned: (item.align === Qt.AlignTop)
     property bool bottomAligned: (item.align === Qt.AlignBottom)
-    property real contentSize: item.__private.contentSize
-    property real pageSize: item.__private.pageSize
+
+    property real pageSize: (isVertical) ? item.height : item.width
+    property real contentSize: (listView) ?
+                                   listView.size :
+                                   ((isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth)
+
+    property real contentPosition
+    property QtObject listView: logicLoader.item
+
+    /* Removing the first row of the ListView's model will render
+       ListView.contentY invalid and therefore break the scrollbar's position.
+       This is fixable in QtQuick 2.0 thanks to the introduction of the
+       Flickable.originY property, however the property is not reliable enough.
+       Therefore we compute originY manually using the fact that
+       ListView.visibleArea.yPosition is not rendered invalid by removing the
+       first row of the ListView's model.
+       Unfortunately the result is not flawless when the ListView uses section
+       headers because ListView.visibleArea.yPosition is often slightly incorrect.
+
+       Ref.: https://bugreports.qt-project.org/browse/QTBUG-20927
+             https://bugreports.qt-project.org/browse/QTBUG-21358
+             http://doc-snapshot.qt-project.org/5.0/qml-qtquick2-flickable.html#originX-prop
+    */
+    property real originX: (listView) ? -item.flickableItem.contentX + Math.round(item.flickableItem.visibleArea.xPosition * contentSize) : item.flickableItem.originX
+    property real originY: (listView) ? -item.flickableItem.contentY + Math.round(item.flickableItem.visibleArea.yPosition * contentSize) : item.flickableItem.originY
+
+    // common logic for Flickable and ListView to update contentPosition when Flicked
+    Connections {
+        target: item.flickableItem
+        onContentYChanged: if (isVertical) contentPosition = clamp(item.flickableItem.contentY - visuals.originY, 0.0, contentSize)
+        onContentXChanged: if (!isVertical) contentPosition = clamp(item.flickableItem.contentX - visuals.originX, 0.0, contentSize)
+    }
+    // logic for ListView
+    Component {
+        id: listViewLogic
+        Object {
+            /* ListView.contentHeight is not reliable when section headers are defined.
+               In that case we compute 'size' manually.
+
+               Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
+                     https://bugreports.qt-project.org/browse/QTBUG-19941
+            */
+            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
+            property int itemHeight: delegateHeight(flickableItem.delegate)
+            property int sectionHeight: delegateHeight(flickableItem.section.delegate)
+            property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
+            property int itemsSize: flickableItem.count * itemHeight
+
+            ModelSectionCounter {
+                id: sectionCounter
+                view: flickableItem
+            }
+
+            Binding {
+                target: internals
+                property: "sectionCount"
+                value: sectionCounter.sectionCount
+            }
+
+            function delegateHeight(delegate)
+            {
+                // FIXME: this causes QML warnings because of unknown roles,
+                // but we need it for correct content calculations
+                if (delegate) {
+                    var instance = delegate.createObject(null);
+                    var ret = instance.height;
+                    instance.destroy();
+                    return ret;
+                }
+
+                return 0;
+            }
+        }
+    }
+    Loader { id:logicLoader }
+    onFlickableItemChanged: {
+        if (flickableItem) {
+            if (flickableItem.hasOwnProperty("header")) {
+                // we consider Grids same as Flickables
+                if (flickableItem.hasOwnProperty("cellWidth")) {
+                    logicLoader.sourceComponent = undefined;
+                } else {
+                    logicLoader.sourceComponent = listViewLogic;
+                }
+            } else
+                logicLoader.sourceComponent = undefined;
+        }
+    }
 
     /*****************************************
       Visuals
@@ -62,8 +150,8 @@ Item {
 
     /* Scroll by amount pixels never overshooting */
     function scrollBy(amount) {
-        var destination = item.__private.contentPosition + amount
-        destination += (isVertical) ? item.flickableItem.originY : item.flickableItem.originX
+        var destination = contentPosition + amount
+        destination += (isVertical) ? visuals.originY : visuals.originX
         scrollAnimation.to = clamp(destination, 0, contentSize - pageSize)
         scrollAnimation.restart()
     }
@@ -116,7 +204,7 @@ Item {
             topMargin: (isVertical) ? 0 : (topAligned ? scrollbarArea.thickness : 0)
             bottomMargin: (isVertical) ? 0 : (bottomAligned ? scrollbarArea.thickness : 0)
         }
-        enabled: isScrollable && isActive
+        enabled: isScrollable && interactive
         hoverEnabled: true
         onEntered: thumb.show()
     }
@@ -137,38 +225,18 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        // FIXME: theme this
-        property int minimalSize: units.gu(4)
+        x: (isVertical) ? 0 : clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
+        y: (!isVertical) ? 0 : clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
+        width: (isVertical) ? scrollbarArea.thickness : sliderSizer.size
+        height: (!isVertical) ? scrollbarArea.thickness : sliderSizer.size
 
-        x: (isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
-        y: (!isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
-        /*
-        x: (isVertical) ? 0 : sliderX()
-        y: (!isVertical) ? 0 : sliderY()
-        */
-        function sliderX()
-        {
-            var pos = /*(item.__private.sectionCount > 0) ? (item.width - slider.width) : */item.width;
-            pos *= item.flickableItem.visibleArea.xPosition;
-            pos = clamp(pos, 0.0, item.width - slider.width)
-            //pos = clampAndProject(pos, 0.0, contentSize - pageSize, 0.0, item.width - slider.width);
-            return pos;
+        ScrollSliderSizer {
+            id: sliderSizer
+            positionRatio: (isVertical) ? item.flickableItem.visibleArea.yPosition : item.flickableItem.visibleArea.xPosition
+            sizeRatio: (isVertical) ? item.flickableItem.visibleArea.heightRatio : item.flickableItem.visibleArea.widthRatio
+            maximumPosition: (isVertical) ? item.flickableItem.height : item.flickableItem.width
+            minimumSize: units.gu(2)
         }
-        function sliderY()
-        {
-            var pos = /*(item.__private.sectionCount > 0) ? (item.height - slider.height) : */item.height;
-            pos *= item.flickableItem.visibleArea.yPosition;
-            pos = clamp(pos, 0.0, item.height - slider.height)
-            //pos = clampAndProject(pos, 0.0, contentSize - pageSize, 0.0, item.height - slider.height);
-            return pos;
-        }
-
-        width: (isVertical) ?
-                   scrollbarArea.thickness :
-                   clamp(pageSize / contentSize * item.width, minimalSize, item.width)
-        height: (!isVertical) ?
-                    scrollbarArea.thickness :
-                    clamp(pageSize / contentSize * item.height, minimalSize, item.height)
 
         Behavior on width {
             enabled: (!isVertical)
@@ -218,7 +286,7 @@ Item {
             topMargin: (isVertical || topAligned) ?  0 : units.dp(-2) - thumb.height
             bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2) - thumb.height
         }
-        enabled: isScrollable && isActive
+        enabled: isScrollable && interactive
         hoverEnabled: true
         onEntered: thumb.show()
         onPressed: {
@@ -271,12 +339,12 @@ Item {
         // cannot use Binding as there would be a binding loop
         onDragYAmountChanged: {
             var pos = clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize);
-            item.flickableItem.contentY = clamp(pos + item.flickableItem.originY, 0.0, contentSize - pageSize);
+            item.flickableItem.contentY = clamp(pos + visuals.originY, 0.0, contentSize - pageSize);
             thumb.y = clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
         }
         onDragXAmountChanged: {
             var pos = clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize);
-            item.flickableItem.contentX = clamp(pos + item.flickableItem.originX, 0.0, contentSize - pageSize);
+            item.flickableItem.contentX = clamp(pos + visuals.originX, 0.0, contentSize - pageSize);
             thumb.x = clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
         }
     }
@@ -292,7 +360,7 @@ Item {
     Item {
         id: thumb
 
-        enabled: isActive
+        enabled: interactive
 
         anchors {
             left: frontAligned ? slider.left : undefined

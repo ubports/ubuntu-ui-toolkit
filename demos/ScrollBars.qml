@@ -22,18 +22,9 @@ Template {
     title: i18n.tr("Scrollbar")
     id: scrollbars
     LayoutMirroring.childrenInherit: true
-    LayoutMirroring.enabled: layoutMirrorSwitch.checked
 
     Column {
         spacing: units.gu(4)
-
-        TemplateRow {
-            title: i18n.tr("Mirror")
-            Switch {
-                id: layoutMirrorSwitch
-                checked: false
-            }
-        }
 
         TemplateRow {
             title: i18n.tr("Flickable")

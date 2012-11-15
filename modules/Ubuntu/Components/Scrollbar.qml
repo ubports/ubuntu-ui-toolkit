@@ -115,9 +115,8 @@ Item {
 
     /*!
       \internal
-      Detecting the proper flickable type
       */
-    onFlickableItemChanged: internals.detectFlickableLogic();
+    onAlignChanged: if (!internals.checkAlign()) console.log("Wrong alignment set to Scrollbar: "+align)
 
     /*!
       \internal
@@ -127,17 +126,13 @@ Item {
     property alias __private: internals
     Object {
         id: internals
-        property QtObject listView: null
         property bool vertical: (align === Qt.AlignLeft) || (align === Qt.AlignRight)
-        // The content position is driven through the flickableItem's contentX
-        property real contentPosition
-        property int sectionCount: 0
-        property bool scrollable: flickableItem && flickableItem.interactive && pageSize > 0.0
-                                  && contentSize > 0.0 && contentSize > pageSize
-        property real pageSize: (internals.vertical) ? scrollbar.height : scrollbar.width
-        property real contentSize: (internals.vertical) ?
-                                       ((internals.listView) ? internals.listView.size : flickableItem.contentHeight) :
-                                       ((internals.listView) ? internals.listView.size : flickableItem.contentWidth)
+        property bool scrollable: flickableItem && flickableItem.interactive && checkAlign()
+
+        function checkAlign()
+        {
+            return (align === Qt.AlignLeft) || (align === Qt.AlignRight) || (align === Qt.AlignTop) || (align === Qt.AlignBottom);
+        }
 
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
         function leftAnchor(object)
@@ -164,78 +159,5 @@ Item {
                 return object.bottom;
             return undefined;
         }
-
-        // size detection and content position tracking logic
-        // common logic for Flickable and ListView to update contentPosition when Flicked
-        Connections {
-            target: scrollbar.flickableItem
-            onContentYChanged: if (internals.vertical) internals.contentPosition = flickableItem.contentY - flickableItem.originY
-            onContentXChanged: if (!internals.vertical) internals.contentPosition = flickableItem.contentX - flickableItem.originX
-        }
-        // logic for ListView
-        Component {
-            id: listViewLogic
-            Object {
-                property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
-                property int itemHeight: delegateHeight(flickableItem.delegate)
-                property int sectionHeight: delegateHeight(flickableItem.section.delegate)
-                property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
-                property int itemsSize: flickableItem.count * itemHeight
-
-                ModelSectionCounter {
-                    id: sectionCounter
-                    view: flickableItem
-                }
-
-                Binding {
-                    target: internals
-                    property: "sectionCount"
-                    value: sectionCounter.sectionCount
-                }
-
-                function delegateHeight(delegate)
-                {
-                    // FIXME: this causes QML warnings because of unknown roles,
-                    // but we need it for correct content calculations
-                    if (delegate) {
-                        var instance = delegate.createObject(null);
-                        var ret = instance.height;
-                        instance.destroy();
-                        return ret;
-                    }
-
-                    return 0;
-                }
-            }
-        }
-        function detectFlickableLogic()
-        {
-            if (flickableItem) {
-                if (flickableItem.hasOwnProperty("header")) {
-                    // we consider Grids same as Flickables
-                    if (flickableItem.hasOwnProperty("cellWidth")) {
-                        loadFlickableLogic();
-                    } else {
-                        loadListViewLogic();
-                    }
-                } else
-                    loadFlickableLogic();
-            }
-        }
-
-        function loadFlickableLogic()
-        {
-            if (internals.listView)
-                internals.listView.destroy();
-            internals.listView = null;
-        }
-
-        function loadListViewLogic()
-        {
-            if (internals.listView)
-                internals.listView.destroy();
-            internals.listView = listViewLogic.createObject(scrollbar);
-        }
-
     }
 }
