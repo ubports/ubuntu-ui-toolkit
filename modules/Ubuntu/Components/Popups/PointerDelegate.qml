@@ -23,12 +23,10 @@ Item {
         id: effect
         anchors.fill: parent
 
-        property color color: "white" //item.color
+        property color color: "white"
 
         // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
         //  but I did not manage to get a 3x3 matrix from QML into the shader.
-        // Note: The properties declared below are internal, but cannot be prefixed with __ because
-        //  that is not supported in the shaders where the same variable names are used.
 
         // rotate pointer 90 degrees
         property bool rotate: (item.direction === "left" || item.direction === "right")

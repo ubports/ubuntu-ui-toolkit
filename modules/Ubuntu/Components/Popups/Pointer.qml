@@ -23,6 +23,4 @@ Item {
 
     width: rotate ? shortAxis : longAxis
     height: rotate ? longAxis : shortAxis
-//    width: longAxis
-//    height: shortAxis
 }
