@@ -23,7 +23,7 @@ TestCase {
     }
 
     function test_contentsWidth() {
-        compare(defaultSheet.contentsWidth,units.gu(50),"contentsWidth is 50 grid units by default")
+        compare(defaultSheet.contentsWidth,units.gu(64),"contentsWidth is 64 grid units by default")
     }
 
     function test_contentsHeight() {

@@ -142,14 +142,14 @@ Template {
 
                 Button {
                     id: leftPopoverButton
-                    text: i18n.tr("automatic")
+                    text: i18n.tr("automatic..")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(popoverComponent, leftPopoverButton)
                 }
 
                 Button {
                     id: rightPopoverButton
-                    text: i18n.tr("positioning")
+                    text: i18n.tr("..positioning")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(popoverComponent, rightPopoverButton)
                 }
