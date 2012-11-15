@@ -4,7 +4,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 TestCase {
-    name: "PopoverAPI"
+    name: "PopupsPopoverAPI"
 
     function test_show() {
         popOver.show()
@@ -15,11 +15,7 @@ TestCase {
     }
 
     function test_caller() {
-        //TODO
-    }
-
-    function test_container() {
-        //TODO
+        compare(popOver.caller,null,"caller is not set by default")
     }
 
     Popover {

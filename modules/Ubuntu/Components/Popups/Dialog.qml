@@ -20,6 +20,7 @@ import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
     \qmltype Dialog
+    \inherits PopupBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief The Dialog caters for cases in which the application requires the user to determine
