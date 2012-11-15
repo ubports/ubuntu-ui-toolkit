@@ -17,6 +17,10 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 import "internalPopupUtils.js" as InternalPopupUtils
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import Ubuntu.Components 0.1 as Theming
 
 /*!
@@ -113,6 +117,7 @@ PopupBase {
     Foreground {
         id: foreground
 
+        // FIXME: see above
         Theming.ItemStyle.class: "popover-foreground"
 
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
@@ -137,7 +142,6 @@ PopupBase {
 
     Pointer {
         id: pointer
-        color: "white"
         opacity: 0.9
         longAxis: 2*internal.callerMargins
         shortAxis: internal.callerMargins

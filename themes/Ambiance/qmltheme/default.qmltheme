@@ -19,6 +19,7 @@ properties typed as variant.
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
+@qml-mapping (.pointer, , PointerDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -78,6 +79,9 @@ Examples:
 }
 
 .dialog-foreground {
+}
+
+.pointer {
 }
 
 /*

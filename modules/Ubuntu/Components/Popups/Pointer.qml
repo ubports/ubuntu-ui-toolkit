@@ -1,69 +1,28 @@
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 // internal class, used inside subclasses of PopupBase
 Item {
     id: pointer
-    property alias color: effect.color
-    property alias longAxis: effect.longAxis
-    property alias shortAxis: effect.shortAxis
-    property alias direction: effect.direction
+    Theming.ItemStyle.class: "pointer"
 
-    width: effect.rotate ? shortAxis : longAxis
-    height: effect.rotate ? longAxis : shortAxis
+    // Using Item.Rotation does not play well with the
+    //  translation that would be needed after rotating.
+    property real longAxis
+    property real shortAxis
 
-    ShaderEffect {
-        id: effect
-        anchors.fill: parent
-        property color color
+    // up, down, left or right, or none to hide the pointer
+    property string direction: "down"
 
-        // Using Item.Rotation does not play well with the
-        //  translation that would be needed after rotating.
-        property real longAxis
-        property real shortAxis
+    // rotate pointer 90 degrees
+    property bool rotate: (direction === "left" || direction === "right")
 
-        // up, down, left or right, or none to hide the pointer
-        property string direction: "down"
-
-        // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
-        //  but I did not manage to get a 3x3 matrix from QML into the shader.
-        // Note: The properties declared below are internal, but cannot be prefixed with __ because
-        //  that is not supported in the shaders where the same variable names are used.
-
-        // rotate pointer 90 degrees
-        property bool rotate: (direction === "left" || direction === "right")
-
-        // flip the direction of the pointer
-        property bool flip: (direction === "left" || direction === "up")
-
-        visible: (direction !== "none")
-
-        vertexShader: "
-        uniform highp mat4 qt_Matrix;
-        attribute highp vec4 qt_Vertex;
-        attribute highp vec2 qt_MultiTexCoord0;
-
-        uniform bool flip;
-        uniform bool rotate;
-        varying highp vec2 coord;
-
-        void main() {
-            if (rotate) coord = qt_MultiTexCoord0.ts;
-            else coord = qt_MultiTexCoord0.st;
-
-            if (flip) coord = vec2(coord.x, 1.0 - coord.y);
-
-            gl_Position = qt_Matrix * qt_Vertex;
-        }"
-
-        fragmentShader: "
-        varying highp vec2 coord;
-        uniform vec4 color;
-        uniform float opacity;
-
-        void main(void) {
-            if (coord.t > 2.0*(1.0 - coord.s)) discard;
-            if (coord.t > 2.0*coord.s) discard;
-            gl_FragColor = color * vec4(opacity);
-        }"
-    }
+    width: rotate ? shortAxis : longAxis
+    height: rotate ? longAxis : shortAxis
+//    width: longAxis
+//    height: shortAxis
 }
