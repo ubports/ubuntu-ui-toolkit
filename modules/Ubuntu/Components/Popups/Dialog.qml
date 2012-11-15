@@ -16,6 +16,11 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
@@ -77,14 +82,14 @@ PopupBase {
       The title of the question to ask the user.
       \qmlproperty string title
      */
-    property alias title: headerText.text
+    property alias title: foreground.title //headerText.text
 
     /*!
       \preliminary
       The question to the user.
       \qmlproperty string text
      */
-    property alias text: questionText.text
+    property alias text: foreground.text //questionText.text
 
     /*!
       \preliminary
@@ -97,7 +102,7 @@ PopupBase {
     QtObject {
         id: internal
 
-        // TODO: Move the two properties below, and various margins and colors, to a delegate.
+        // TODO: Move the two properties below, and various margins and colors, to style.
         property real edgeMargins: units.gu(2)
         property real callerMargins: units.gu(2)
 
@@ -114,7 +119,6 @@ PopupBase {
 
     Pointer {
         id: pointer
-        color: "grey"
         opacity: 0.9
         longAxis: 2*internal.callerMargins
         shortAxis: internal.callerMargins
@@ -122,48 +126,25 @@ PopupBase {
 
     Foreground {
         id: foreground
-        color: "grey"
+        // FIXME: see above
+        Theming.ItemStyle.class: "dialog-foreground"
         width: Math.min(units.gu(40), dialog.width)
-        height: MathUtils.clamp(childrenRect.height, units.gu(32), 3*dialog.height/4)
 
-        TextCustom {
-            id: headerText
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                margins: units.gu(1)
-            }
-            fontSize: "large"
-            horizontalAlignment: Text.AlignHCenter
-            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-        }
+        // used in the delegate
+        property string title
+        property string text
+        property string minHeight: units.gu(32)
+        property string maxHeight: 3*dialog.height/4
 
-        TextCustom {
-            id: questionText
-            anchors {
-                top: headerText.bottom
-                left: parent.left
-                right: parent.right
-                margins: units.gu(1)
-            }
-            width: parent.width - 2*anchors.margins
-            fontSize: "medium"
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.Wrap
-            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-        }
+        height: childrenRect.height
 
         Column {
             id: buttonColumn
             anchors {
-                bottom: parent.bottom
                 left: parent.left
                 right: parent.right
-                margins: units.gu(1)
             }
             spacing: units.gu(1)
-
             height: childrenRect.height + anchors.bottomMargin
 
             onChildrenChanged: {
@@ -180,10 +161,8 @@ PopupBase {
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
-
     /*! \internal */
     onWidthChanged: internal.updatePosition()
-
     /*! \internal */
     onHeightChanged: internal.updatePosition()
 }

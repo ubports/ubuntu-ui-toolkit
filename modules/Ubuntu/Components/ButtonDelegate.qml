@@ -68,7 +68,6 @@ Item {
 
         anchors.fill: shape
         color: item.color
-
     }
 
     ButtonMaskEffect {

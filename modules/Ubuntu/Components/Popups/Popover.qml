@@ -17,6 +17,11 @@
 import QtQuick 2.0
 import "../mathUtils.js" as MathUtils
 import "internalPopupUtils.js" as InternalPopupUtils
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Popover
@@ -93,8 +98,7 @@ PopupBase {
 
     QtObject {
         id: internal
-
-        // theme
+        // TODO: put the margins in the style
         property real edgeMargins: units.gu(2)
         property real callerMargins: units.gu(2)
         property bool portrait: width < height
@@ -114,26 +118,23 @@ PopupBase {
     Foreground {
         id: foreground
 
-        color: "white"
+        // FIXME: see above
+        Theming.ItemStyle.class: "popover-foreground"
+
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
+        property real minHeight: units.gu(32)
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
-        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
+        height: childrenRect.height
 
-        // TODO: Make height of Foreground depend on containerItem height + margins?
-        // TODO: make item after testing.
-        Rectangle {
+        Item {
             id: containerItem
-            color: "silver"
             anchors {
                 left: parent.left
                 top: parent.top
                 right: parent.right
-                margins: units.gu(1)
             }
-
             height: childrenRect.height
-            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
         onWidthChanged: internal.updatePosition()
@@ -142,7 +143,6 @@ PopupBase {
 
     Pointer {
         id: pointer
-        color: "white"
         opacity: 0.9
         longAxis: 2*internal.callerMargins
         shortAxis: internal.callerMargins
