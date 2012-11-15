@@ -13,7 +13,7 @@ LISTITEMS_FILES = $$system(find ListItems -maxdepth 1 -type f)
 LISTITEMS_ARTWORK_FILES = $$system(find ListItems/artwork -type f)
 
 # Components/Popups
-POPUPS = $$system(find Popups -maxdepth 1 -type f)
+POPUPS_FILES = $$system(find Popups -maxdepth 1 -type f)
 POPUPS_ARTWORK_FILES = $$systen(find Popups/artwork -type f)
 
 # qmldir
