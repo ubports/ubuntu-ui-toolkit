@@ -80,9 +80,6 @@ import Ubuntu.Components 0.1 as Theming
 PopupBase {
     id: popover
 
-    property string themeName: "popover"
-    Theming.ItemStyle.class: themeName
-
     /*! \internal */
     default property alias __container: containerItem.data
 
@@ -96,6 +93,7 @@ PopupBase {
 
     QtObject {
         id: internal
+        // TODO: put the margins in the style
 
         // theme
         property real edgeMargins: units.gu(2)
@@ -117,14 +115,15 @@ PopupBase {
     Foreground {
         id: foreground
 
-        Theming.ItemStyle.class: popover.themeName + "-foreground"
+        Theming.ItemStyle.class: "popover-foreground"
 
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
 //        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
         // FIXME: The childrenRect height can be larger than maxHeight
-        height: MathUtils.clamp(childrenRect.height, units.gu(32), maxHeight)
+//        height: MathUtils.clamp(childrenRect.height, units.gu(32), maxHeight)
+        height: childrenRect.height
 
         Item {
             id: containerItem

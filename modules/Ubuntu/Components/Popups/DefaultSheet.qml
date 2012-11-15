@@ -80,14 +80,14 @@ SheetBase {
      */
     signal doneClicked
 
-    leftButton: Button {
+    __leftButton: Button {
         text: "close"
         visible: !doneButton
         /*! \internal */
         onClicked: sheet.closeClicked()
     }
 
-    rightButton: Button {
+    __rightButton: Button {
         text: "done"
         color: "orange"
         visible: doneButton

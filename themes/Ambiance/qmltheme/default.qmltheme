@@ -17,6 +17,8 @@ properties typed as variant.
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
+@qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
+@qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -68,7 +70,14 @@ Examples:
     color: "#757373";
 }
 
+
 .popover-foreground {
+}
+
+.sheet-foreground {
+}
+
+.dialog-foreground {
 }
 
 /*
