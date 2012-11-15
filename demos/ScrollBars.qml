@@ -22,16 +22,15 @@ Template {
     title: i18n.tr("Scrollbar")
     id: scrollbars
     LayoutMirroring.childrenInherit: true
-
-    property bool interactiveScrollbars: interactiveSwitch.checked
+    LayoutMirroring.enabled: layoutMirrorSwitch.checked
 
     Column {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: i18n.tr("Interactive")
+            title: i18n.tr("Mirror")
             Switch {
-                id: interactiveSwitch
+                id: layoutMirrorSwitch
                 checked: false
             }
         }
@@ -59,12 +58,10 @@ Template {
                 Scrollbar {
                     flickableItem: flickable
                     align: Qt.AlignRight
-                    __interactive: interactiveScrollbars
                 }
                 Scrollbar {
                     flickableItem: flickable
                     align: Qt.AlignBottom
-                    __interactive: interactiveScrollbars
                 }
             }
         }
@@ -109,7 +106,6 @@ Template {
                 Scrollbar {
                     flickableItem: listView
                     align: Qt.AlignRight
-                    __interactive: interactiveScrollbars
                 }
             }
         }

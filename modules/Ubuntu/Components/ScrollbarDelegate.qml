@@ -138,7 +138,9 @@ Item {
         }
 
         // FIXME: theme this
-        property int minimalSize: units.gu(5)
+        property int minimalSize: units.gu(4)
+        x: (isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
+        y: (!isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
         width: (isVertical) ?
                    scrollbarArea.thickness :
                    clamp(pageSize / contentSize * item.width, minimalSize, item.width)
@@ -153,19 +155,6 @@ Item {
         Behavior on height {
             enabled: (isVertical)
             animation: itemStyle.sliderAnimation
-        }
-
-        Binding {
-            when: (isVertical)
-            target: slider
-            property: "y"
-            value: clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
-        }
-        Binding {
-            when: (!isVertical)
-            target: slider
-            property: "x"
-            value: clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
         }
     }
 
@@ -259,14 +248,14 @@ Item {
         // update flickableItem's and thumb's position
         // cannot use Binding as there would be a binding loop
         onDragYAmountChanged: {
-            var pos = clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize)
-            item.flickableItem.contentY = pos + item.flickableItem.originY
-            thumb.y = clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos)
+            var pos = clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize);
+            item.flickableItem.contentY = clamp(pos + item.flickableItem.originY, 0.0, contentSize - pageSize);
+            thumb.y = clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
         }
         onDragXAmountChanged: {
-            var pos = clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize)
-            item.flickableItem.contentX = pos + item.flickableItem.originX
-            thumb.x = clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos)
+            var pos = clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize);
+            item.flickableItem.contentX = clamp(pos + item.flickableItem.originX, 0.0, contentSize - pageSize);
+            thumb.x = clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
         }
     }
 

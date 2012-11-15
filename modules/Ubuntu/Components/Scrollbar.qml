@@ -99,13 +99,6 @@ Item {
     */
     property bool __interactive: false
 
-    /*!
-      \internal
-      Read-only property presenting the content's position within the flickableItem.
-      */
-    readonly property alias __contentPosition: internals.contentPosition
-
-
     // styling
     Theming.ItemStyle.class: "scrollbar"
     implicitWidth: (Theming.ItemStyle.style && Theming.ItemStyle.style.hasOwnProperty("sensingAreaThickness")) ?
@@ -140,40 +133,41 @@ Item {
         property real contentPosition
         property bool scrollable: flickableItem && flickableItem.interactive && pageSize > 0.0
                                   && contentSize > 0.0 && contentSize > pageSize
-        property real pageSize: (internals.vertical) ? flickableItem.height : flickableItem.width
+        property real pageSize: (internals.vertical) ? scrollbar.height : scrollbar.width
         property real contentSize: (internals.vertical) ?
                                        ((internals.listView) ? internals.listView.size : flickableItem.contentHeight) :
                                        ((internals.listView) ? internals.listView.size : flickableItem.contentWidth)
+
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
-        function leftAnchor(item)
+        function leftAnchor(object)
         {
             if (!internals.vertical || (align == Qt.AlignLeft))
-                return item.left;
+                return object.left;
             return undefined;
         }
-        function rightAnchor(item)
+        function rightAnchor(object)
         {
             if (!internals.vertical || (align == Qt.AlignRight))
-                return item.right;
+                return object.right;
             return undefined;
         }
-        function topAnchor(item)
+        function topAnchor(object)
         {
             if (internals.vertical || (align == Qt.AlignTop))
-                return item.top;
+                return object.top;
             return undefined;
         }
-        function bottomAnchor(item)
+        function bottomAnchor(object)
         {
             if (internals.vertical || (align == Qt.AlignBottom))
-                return item.bottom;
+                return object.bottom;
             return undefined;
         }
 
         // size detection and content position tracking logic
         // common logic for Flickable and ListView to update contentPosition when Flicked
         Connections {
-            target: flickableItem
+            target: scrollbar.flickableItem
             onContentYChanged: if (internals.vertical) internals.contentPosition = flickableItem.contentY - flickableItem.originY
             onContentXChanged: if (!internals.vertical) internals.contentPosition = flickableItem.contentX - flickableItem.originX
         }
@@ -181,12 +175,11 @@ Item {
         Component {
             id: listViewLogic
             Object {
-                property real size: sectionCounter.sectionCount * sectionHeight + contentSize + spacingSize
+                property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
                 property int itemHeight: delegateHeight(flickableItem.delegate)
                 property int sectionHeight: delegateHeight(flickableItem.section.delegate)
                 property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
-                property int contentSize: flickableItem.count * itemHeight
-                onSizeChanged: print(size)
+                property int itemsSize: flickableItem.count * itemHeight
 
                 ModelSectionCounter {
                     id: sectionCounter
