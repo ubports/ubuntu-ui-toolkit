@@ -97,7 +97,7 @@ PopupBase {
     QtObject {
         id: internal
 
-        // TODO: Move the two properties below, and various margins and colors, to a delegate.
+        // TODO: Move the two properties below, and various margins and colors, to style.
         property real edgeMargins: units.gu(2)
         property real callerMargins: units.gu(2)
 
@@ -122,16 +122,16 @@ PopupBase {
 
     Foreground {
         id: foreground
-
-        color: "green"
-
         Theming.ItemStyle.class: "dialog-foreground"
         width: Math.min(units.gu(40), dialog.width)
-        property string maxHeight: 3*dialog.height/4
-        height: childrenRect.height //MathUtils.clamp(childrenRect.height, units.gu(32), 3*dialog.height/4)
 
+        // used in the delegate
         property string title
         property string text
+        property string minHeight: units.gu(32)
+        property string maxHeight: 3*dialog.height/4
+
+        height: childrenRect.height
 
         Column {
             id: buttonColumn
@@ -140,7 +140,6 @@ PopupBase {
                 right: parent.right
             }
             spacing: units.gu(1)
-
             height: childrenRect.height + anchors.bottomMargin
 
             onChildrenChanged: {
@@ -157,10 +156,8 @@ PopupBase {
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
-
     /*! \internal */
     onWidthChanged: internal.updatePosition()
-
     /*! \internal */
     onHeightChanged: internal.updatePosition()
 }

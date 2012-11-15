@@ -80,10 +80,12 @@ PopupBase {
         anchors.horizontalCenter: parent.horizontalCenter
 
         property real minWidth: Math.min(units.gu(50), sheet.width)
+        property real maxWidth: sheet.width
         property real minHeight: Math.min(units.gu(40), sheet.height)
+        property real maxHeight: sheet.height
 
-        width: MathUtils.clamp(contentsWidth, minWidth, sheet.width)
-        height: MathUtils.clamp(childrenRect.height, units.gu(40), sheet.height)
+        width: childrenRect.width //MathUtils.clamp(childrenRect.width, minWidth, maxWidth)
+        height: childrenRect.height //MathUtils.clamp(childrenRect.height, minHeight, maxHeight)
 
         property string title
 

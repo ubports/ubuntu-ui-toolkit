@@ -18,7 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    anchors.fill: parent
+    width: item.contentsWidth
+    height: header.height + containerItem.height
 
     property alias contentItem: containerItem
 
@@ -84,7 +85,7 @@ Item {
     Rectangle {
         id: containerItem
         color: "lightgrey"
-        height: item.contentsHeight
+        height: MathUtils.clamp(item.contentsHeight, item.minHeight - header.height, item.maxHeight - header.height)
         anchors {
             top: header.bottom
             left: parent.left

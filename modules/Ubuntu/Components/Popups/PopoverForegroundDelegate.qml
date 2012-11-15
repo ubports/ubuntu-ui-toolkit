@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 Item {
     anchors {
@@ -22,8 +23,7 @@ Item {
         right: parent.right
         top: parent.top
     }
-    height: outer.height
-
+    height: MathUtils.clamp(outer.height, item.minHeight, item.maxHeight)
     property alias contentItem: inner
 
     Rectangle {

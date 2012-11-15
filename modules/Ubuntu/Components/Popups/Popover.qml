@@ -94,8 +94,6 @@ PopupBase {
     QtObject {
         id: internal
         // TODO: put the margins in the style
-
-        // theme
         property real edgeMargins: units.gu(2)
         property real callerMargins: units.gu(2)
         property bool portrait: width < height
@@ -118,11 +116,9 @@ PopupBase {
         Theming.ItemStyle.class: "popover-foreground"
 
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
+        property real minHeight: units.gu(32)
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
-//        height: MathUtils.clamp(containerItem.totalHeight, units.gu(32), maxHeight)
-        // FIXME: The childrenRect height can be larger than maxHeight
-//        height: MathUtils.clamp(childrenRect.height, units.gu(32), maxHeight)
         height: childrenRect.height
 
         Item {
@@ -131,13 +127,8 @@ PopupBase {
                 left: parent.left
                 top: parent.top
                 right: parent.right
-//                bottom: parent.bottom
-//                margins: units.gu(1)
             }
-
-//            anchors.fill: parent
             height: childrenRect.height
-//            property real totalHeight: height + anchors.topMargin + anchors.bottomMargin
         }
 
         onWidthChanged: internal.updatePosition()

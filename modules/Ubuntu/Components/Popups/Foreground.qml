@@ -21,13 +21,13 @@ Item {
     id: foreground
 
     // TODO: move to themes of individual popup types
-    property alias color: rectangle.color
-    Rectangle {
-        id: rectangle
-        anchors.fill: parent
-        radius: units.gu(1)
-        visible: false
-    }
+//    property alias color: rectangle.color
+//    Rectangle {
+//        id: rectangle
+//        anchors.fill: parent
+//        radius: units.gu(1)
+//        visible: false
+//    }
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover
     MouseArea {

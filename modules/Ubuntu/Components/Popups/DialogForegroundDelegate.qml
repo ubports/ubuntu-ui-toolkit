@@ -19,23 +19,18 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors {
-//        fill: parent
         left: parent.left
         right: parent.right
         top: parent.top
     }
-//    height: /*childrenRect.height*/
-//    height: totalHeight
     property real totalHeight: headerText.totalHeight + questionText.totalHeight + columnContainer.height
-    height: MathUtils.clamp(totalHeight, units.gu(32), item.maxHeight)
-
+    height: MathUtils.clamp(totalHeight, item.minHeight, item.maxHeight)
     property alias contentItem: columnContainer
 
     Rectangle {
         color: "grey"
         anchors.fill: parent
         radius: units.gu(1)
-//        visible: false
     }
 
     TextCustom {
@@ -71,11 +66,6 @@ Item {
     }
 
     Item {
-//        Rectangle {
-//            color: "white"
-//            anchors.fill: parent
-//        }
-
         id: columnContainer
         anchors {
             bottom: parent.bottom
@@ -85,6 +75,4 @@ Item {
         }
         height: childrenRect.height
     }
-
-
 }
