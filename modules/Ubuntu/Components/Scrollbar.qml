@@ -131,6 +131,7 @@ Item {
         property bool vertical: (align === Qt.AlignLeft) || (align === Qt.AlignRight)
         // The content position is driven through the flickableItem's contentX
         property real contentPosition
+        property int sectionCount: 0
         property bool scrollable: flickableItem && flickableItem.interactive && pageSize > 0.0
                                   && contentSize > 0.0 && contentSize > pageSize
         property real pageSize: (internals.vertical) ? scrollbar.height : scrollbar.width
@@ -184,6 +185,12 @@ Item {
                 ModelSectionCounter {
                     id: sectionCounter
                     view: flickableItem
+                }
+
+                Binding {
+                    target: internals
+                    property: "sectionCount"
+                    value: sectionCounter.sectionCount
                 }
 
                 function delegateHeight(delegate)

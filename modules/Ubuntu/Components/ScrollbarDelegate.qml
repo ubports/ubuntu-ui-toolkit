@@ -139,8 +139,30 @@ Item {
 
         // FIXME: theme this
         property int minimalSize: units.gu(4)
+
         x: (isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
         y: (!isVertical) ? 0 : clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
+        /*
+        x: (isVertical) ? 0 : sliderX()
+        y: (!isVertical) ? 0 : sliderY()
+        */
+        function sliderX()
+        {
+            var pos = /*(item.__private.sectionCount > 0) ? (item.width - slider.width) : */item.width;
+            pos *= item.flickableItem.visibleArea.xPosition;
+            pos = clamp(pos, 0.0, item.width - slider.width)
+            //pos = clampAndProject(pos, 0.0, contentSize - pageSize, 0.0, item.width - slider.width);
+            return pos;
+        }
+        function sliderY()
+        {
+            var pos = /*(item.__private.sectionCount > 0) ? (item.height - slider.height) : */item.height;
+            pos *= item.flickableItem.visibleArea.yPosition;
+            pos = clamp(pos, 0.0, item.height - slider.height)
+            //pos = clampAndProject(pos, 0.0, contentSize - pageSize, 0.0, item.height - slider.height);
+            return pos;
+        }
+
         width: (isVertical) ?
                    scrollbarArea.thickness :
                    clamp(pageSize / contentSize * item.width, minimalSize, item.width)

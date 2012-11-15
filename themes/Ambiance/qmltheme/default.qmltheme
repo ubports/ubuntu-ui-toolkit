@@ -16,7 +16,8 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
-@qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);
+/*@qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);*/
+@qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDecorator);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
