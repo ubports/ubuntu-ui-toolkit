@@ -32,6 +32,21 @@ TestCase {
         compare(scrollbar.flickableItem, listView, "Cannot get/set flickableItem property")
     }
 
+    function test_nonFlickable() {
+        var failed = false
+        try {
+            scrollbar.flickableItem = nonFlickable
+        } catch (e) {
+            failed = true
+        } finally {
+            compare(failed,true,"can not set non-flickable item to flickableItem")
+        }
+    }
+
+    Rectangle {
+       id: nonFlickable
+    }
+
     Flickable{
         id: flickable
         width: 100
