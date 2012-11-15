@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 /*!
     \qmltype DefaultSheet
+    \inherits SheetBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief The Default Sheet allows an application to insert a content view over the focused view

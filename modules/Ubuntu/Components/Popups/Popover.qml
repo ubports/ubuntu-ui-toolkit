@@ -20,6 +20,7 @@ import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
     \qmltype Popover
+    \inherits PopupBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief A popover allows an application to present additional content without changing the view.

@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 /*!
     \qmltype ComposerSheet
+    \inherits SheetBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief Much like the \l DefaultSheet the Composer Sheet allows an application to insert a content
