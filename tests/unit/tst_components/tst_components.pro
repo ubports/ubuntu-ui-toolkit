@@ -30,4 +30,5 @@ OTHER_FILES += \
     tst_listitems_subtitled.qml \
     tst_listitems_thindivider.qml \
     tst_listitems_valueselector.qml \
-    tst_button_events.qml
+    tst_button_events.qml \
+    tst_scrollbar.qml

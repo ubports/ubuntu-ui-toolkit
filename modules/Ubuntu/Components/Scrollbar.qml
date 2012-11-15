@@ -183,21 +183,14 @@ Item {
             Object {
                 property real size: sectionCounter.sectionCount * sectionHeight + contentSize + spacingSize
                 property int itemHeight: delegateHeight(flickableItem.delegate)
-                property int sectionHeight: sectionCounter.sectionCount * delegateHeight(flickableItem.section.delegate)
+                property int sectionHeight: delegateHeight(flickableItem.section.delegate)
                 property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
                 property int contentSize: flickableItem.count * itemHeight
+                onSizeChanged: print(size)
 
-                VisualDataModel {
-                    id: sectionModel
-                    model: flickableItem.section.delegate != undefined ? flickableItem.model : null
-                    delegate: Item {}
-                }
-
-                Theming.ModelSectionCounter {
+                ModelSectionCounter {
                     id: sectionCounter
-                    model: flickableItem.section.delegate != undefined ? sectionModel : null
-                    sectionProperty: flickableItem.section.property
-                    sectionCriteria: flickableItem.section.criteria
+                    view: flickableItem
                 }
 
                 function delegateHeight(delegate)

@@ -62,7 +62,7 @@ Item {
 
     /* Scroll by amount pixels never overshooting */
     function scrollBy(amount) {
-        var destination = item.__contentPosition + amount
+        var destination = item.__private.contentPosition + amount
         destination += (isVertical) ? item.flickableItem.originY : item.flickableItem.originX
         scrollAnimation.to = clamp(destination, 0, contentSize - pageSize)
         scrollAnimation.restart()
@@ -159,13 +159,13 @@ Item {
             when: (isVertical)
             target: slider
             property: "y"
-            value: clampAndProject(item.__contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
+            value: clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
         }
         Binding {
             when: (!isVertical)
             target: slider
             property: "x"
-            value: clampAndProject(item.__contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
+            value: clampAndProject(item.__private.contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
         }
     }
 
