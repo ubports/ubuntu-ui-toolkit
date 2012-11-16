@@ -60,19 +60,8 @@ import Ubuntu.Components 0.1 as Theming
 */
 
 Item {
-//    id: tabs
-
     // FIXME: see above
     Theming.ItemStyle.class: "tabs"
-
-    /*!
-      \preliminary
-      Setting this property to true will cause the tab buttons to expand
-      their widths equally to fill the Tabs bar.
-      If the value is false, instead each button will use the width that
-      is required by the largest tab button.
-     */
-    property bool buttonsExpanded: false
 
     /*!
       \preliminary

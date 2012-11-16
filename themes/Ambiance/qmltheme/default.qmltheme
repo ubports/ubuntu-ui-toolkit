@@ -14,7 +14,7 @@ properties typed as variant.
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
-@qml-mapping(.tabs, , TabsDelegate);
+@qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
@@ -48,6 +48,13 @@ Examples:
 }
 
 .tabs {
+    buttonsExpanded: false;
+    separator: Rectangle {
+        color: "white";
+        height: units.dp(1);
+    };
+    horizontalPadding: units.gu(1);
+    minimumButtonWidth: units.gu(8);
 }
 
 .tab-button {

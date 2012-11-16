@@ -22,21 +22,6 @@ Item {
 
     property alias contentItem: contentsContainer
 
-    // needed to set the anchors in setSeparator()
-    property alias buttonRow: buttonRow
-    property alias contentsContainer: contentsContainer
-
-    /*!
-      \preliminary
-      If this optional property is specified, it will be positioned
-      between the bar with tab buttons, and the tab pages to act
-      as a separator. By default, it is a 1-pixel high white rectangle.
-     */
-    property Item separator: Rectangle {
-            color: "white"
-            height: units.dp(1)
-    }
-
     Row {
         id: buttonRow
         width: buttonRow.buttonWidth * repeater.count
@@ -46,12 +31,6 @@ Item {
             horizontalCenter: parent.horizontalCenter
         }
 
-        /*!
-          \preliminary
-          The padding on the left and right side of the row of buttons.
-        */
-        property real horizontalPadding: units.gu(1)
-
         // maximumButtonWidth is the total space available for all tab buttons
         // divided by the number of buttons.
         // If minimumButtonWidth is larger than maximumButtonWidth, the buttonWidth
@@ -59,14 +38,13 @@ Item {
         // largest button needs to fit all its contents.
         // Scrolling in case the buttons don't fit in the available space is currently
         // not implemented.
-        property real minimumButtonWidth: units.gu(3)
-        property real maximumButtonWidth: (visuals.width - 2*buttonRow.horizontalPadding) / repeater.count
-        property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
+        property real maximumButtonWidth: (visuals.width - 2*itemStyle.horizontalPadding) / repeater.count
+        property bool needsScrolling: maximumButtonWidth < itemStyle.minimumButtonWidth
         property real widestButtonWidth
         property real buttonWidth
         buttonWidth: {
-            if (buttonRow.needsScrolling) return buttonRow.minimumButtonWidth;
-            else if (item.buttonsExpanded) return buttonRow.maximumButtonWidth;
+            if (buttonRow.needsScrolling) return itemStyle.minimumButtonWidth;
+            else if (itemStyle.buttonsExpanded) return buttonRow.maximumButtonWidth;
             else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
         }
 
@@ -148,15 +126,15 @@ Item {
     }
 
     function updateSeparator() {
-        if (visuals.separator) {
-            visuals.separator.parent = visuals;
-            visuals.separator.anchors.top = visuals.buttonRow.bottom;
-            visuals.separator.anchors.left = visuals.left;
-            visuals.separator.anchors.right = visuals.right;
-            visuals.contentsContainer.anchors.top = visuals.separator.bottom;
+        if (itemStyle.separator) {
+            itemStyle.separator.parent = visuals;
+            itemStyle.separator.anchors.top = buttonRow.bottom;
+            itemStyle.separator.anchors.left = visuals.left;
+            itemStyle.separator.anchors.right = visuals.right;
+            contentsContainer.anchors.top = itemStyle.separator.bottom;
         } else {
             // no separator
-            visuals.contentsContainer.anchors.top = visuals.buttonRow.bottom;
+            contentsContainer.anchors.top = buttonRow.bottom;
         }
     }
 
@@ -166,5 +144,4 @@ Item {
     }
 
     Component.onCompleted: visuals.updateSeparator();
-    onSeparatorChanged: visuals.updateSeparator();
 }

@@ -14,6 +14,8 @@ Compatibility Breaks
 
 * Meaning of TextCustom.fontSize has changed: the 'large' and 'x-large' sizes
   changed to be bigger.
+* Tabs component no longer has properties buttonsExpanded and separator.
+  These two properties can now be specified in the qmltheme of the Tabs.
 
 API Changes
 ***********
