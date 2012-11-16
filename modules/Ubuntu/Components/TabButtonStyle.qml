@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 
-QtObject {
+ButtonStyle {
     property url backgroundLeft: ""
     property url backgroundRight: ""
     property url backgroundMiddle: ""

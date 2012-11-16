@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Theming
 
 Item {
     id: visuals
@@ -90,13 +91,15 @@ Item {
 
             TabButton {
                 id: tabButton
-                property Item page: modelData
-                text: modelData.title
-                __isFirst: index === 0
-                __isLast: index === (repeater.count - 1)
-                iconSource: modelData.iconSource
+                height: parent.height
                 width: buttonRow.buttonWidth
+
                 selected: (index === item.selectedTabIndex)
+                first: index === 0
+                last: index === (repeater.count - 1)
+
+                text: modelData.title
+                iconSource: modelData.iconSource
                 onClicked: item.selectedTabIndex = index
             }
         }

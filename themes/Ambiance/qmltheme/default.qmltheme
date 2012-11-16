@@ -15,7 +15,7 @@ properties typed as variant.
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
-@qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
+@qml-mapping(.tab-button, TabButtonStyle, ButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
 /*
@@ -58,9 +58,12 @@ Examples:
 }
 
 .tab-button {
+    color: "white"; /* the background images are light, and this makes the text color dark */
     backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
-    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
     backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
+    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
+    borderIdle: item.first ? backgroundLeft : item.last ? backgroundRight : backgroundMiddle;
+    borderPressed: borderIdle;
 }
 
 .dark-button {
