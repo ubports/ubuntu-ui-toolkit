@@ -20,7 +20,7 @@ Item {
     id: visuals
     anchors.fill: parent
 
-    property alias contentItem: contentsContainer
+    property alias contentItem: tabsContainer
 
     Row {
         id: buttonRow
@@ -86,7 +86,7 @@ Item {
                 buttonRow.updateWidestButtonWidth()
             }
 
-            model: contentsContainer.children
+            model: tabsContainer.children
 
             TabButton {
                 id: tabButton
@@ -104,7 +104,7 @@ Item {
 
     // This is the item that will be the parent of the currently displayed page.
     Item {
-        id: contentsContainer
+        id: tabsContainer
         anchors {
             top: buttonRow.bottom
             left: parent.left
@@ -115,8 +115,8 @@ Item {
 
     function selectedTabChanged() {
         var tab;
-        for (var i = 0; i < contentsContainer.children.length; i++) {
-            tab = contentsContainer.children[i];
+        for (var i = 0; i < tabsContainer.children.length; i++) {
+            tab = tabsContainer.children[i];
             if (i === item.selectedTabIndex) {
                 tab.__active = true;
             } else {
@@ -131,10 +131,10 @@ Item {
             itemStyle.separator.anchors.top = buttonRow.bottom;
             itemStyle.separator.anchors.left = visuals.left;
             itemStyle.separator.anchors.right = visuals.right;
-            contentsContainer.anchors.top = itemStyle.separator.bottom;
+            tabsContainer.anchors.top = itemStyle.separator.bottom;
         } else {
             // no separator
-            contentsContainer.anchors.top = buttonRow.bottom;
+            tabsContainer.anchors.top = buttonRow.bottom;
         }
     }
 
