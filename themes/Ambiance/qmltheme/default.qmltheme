@@ -15,7 +15,7 @@ properties typed as variant.
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
-@qml-mapping(.tab-button, TabButtonStyle, ButtonDelegate);
+@qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
 /*
