@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 
-ButtonStyle {
+QtObject {
     property url backgroundLeft: ""
     property url backgroundRight: ""
     property url backgroundMiddle: ""

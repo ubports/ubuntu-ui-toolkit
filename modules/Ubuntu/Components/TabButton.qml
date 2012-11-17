@@ -26,7 +26,7 @@ import Ubuntu.Components 0.1 as Theming
     \internal
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Button used in Tabs
+    \brief Button used in Tab bars.
 */
 Button {
     id: tabButton
@@ -34,6 +34,7 @@ Button {
     Theming.ItemStyle.class: "tab-button"
 
     /*!
+      \preliminary
       True if the tab is selected.
       This value is automatically updated by the Tabs object.
      */
@@ -42,10 +43,14 @@ Button {
     height: parent ? parent.height : units.gu(6)
 
     /*!
+       \internal
        These properties keep track on whether the tab button is the first or the
        last in the current row or tabs. This changes their appearance (rounded
        borders vs. straight corners for tabButtons that are not first or last).
      */
-    property bool first: false
-    property bool last: false
+    property bool __isFirst: false
+    /*!
+      \internal
+     */
+    property bool __isLast: false
 }

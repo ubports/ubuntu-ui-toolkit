@@ -21,7 +21,15 @@ Item {
 
     BorderImage {
         anchors.fill: parent
-        source: itemStyle.borderIdle
+        source: {
+            if (tabButton.__isFirst) {
+                return itemStyle.backgroundLeft;
+            } else if (tabButton.__isLast) {
+                return itemStyle.backgroundRight;
+            } else {
+                return itemStyle.backgroundMiddle;
+            }
+        }
     }
 
     TransparentButtonDelegate {
