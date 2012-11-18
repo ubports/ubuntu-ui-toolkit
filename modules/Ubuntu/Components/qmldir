@@ -28,4 +28,5 @@ TabsStyle 0.1 TabsStyle.qml
 TabsDelegate 0.1 TabsDelegate.qml
 TabButtonStyle 0.1 TabButtonStyle.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
+SlidingTabsDelegate 0.1 SlidingTabsDelegate.qml
 TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml

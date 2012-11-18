@@ -15,6 +15,7 @@ properties typed as variant.
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
+@qml-mapping(.sliding-tabs, , SlidingTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 
@@ -61,6 +62,9 @@ Examples:
     backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
     backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
     backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
+}
+
+.sliding-tabs {
 }
 
 .dark-button {
