@@ -53,6 +53,7 @@ Item {
                 page.anchors.fill = null;
                 if (page.hasOwnProperty("__active")) page.__active = true;
             }
+//            listView.updateSelectedTabIndex();
         }
         onMovingChanged: {
             if(!moving) {
@@ -60,8 +61,28 @@ Item {
                 var index = contentX / slidingTabsDelegate.width;
                 if (currentIndex !== index) {
                     currentIndex = index;
+//                    selectedTabIndex = currentIndex;
+//                    print("contentX = "+contentX);
+//                    print("current index = "+currentIndex);
+//                    print("indexAt = " + indexAt(contentX, contentY));
                 }
             }
         }
+
+//        function updateSelectedTabIndex() {
+//            print("new index = "+item.selectedTabIndex);
+//            listView.currentIndex = item.selectedTabIndex;
+//            listView.positionViewAtIndex(item.selectedTabIndex, ListView.Center);
+//            print("contentX = "+contentX);
+//        }
+
+        Connections {
+            target: item
+//            onSelectedTabIndexChanged: listView.updateSelectedTabIndex()
+        }
+
+//        Component.onCompleted: listView.updateSelectedTabIndex()
+
     }
+
 }
