@@ -21,7 +21,8 @@ Template {
     title: i18n.tr("Tabs")
 
     Tabs {
-//        ItemStyle.class: "sliding-tabs"
+        selectedTabIndex: 1
+        ItemStyle.class: "sliding-tabs"
         Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {
@@ -38,7 +39,7 @@ Template {
             iconSource: "call_icon.png"
             page: Rectangle {
                 anchors.fill: parent
-                color: "#e4e4e4"
+                color: "tan"
                 TextCustom {
                     anchors.centerIn: parent
                     text: i18n.tr("This is the second tab.")

@@ -70,12 +70,23 @@ Item {
      */
     property int selectedTabIndex: -1
 
-    // minimal width of 200
-    // TODO: remove this?
-    width: units.gu(25)
-    height: units.gu(4)
+    onSelectedTabIndexChanged: print("selected tab "+selectedTabIndex)
 
     Component.onCompleted: {
-        if (children.length > 0) selectedTabIndex = 0;
+        if (children.length > 0 && selectedTabIndex === -1) selectedTabIndex = 0;
+    }
+
+    // FIXME: The __pages, __pagesModel and pagesModel are a workaround for this bug:
+    //  "theming: contentItem does work when it is a VisualItemModel"
+    //  https://bugs.launchpad.net/tavastia/+bug/1080330
+    //  The workaround does not break the regular TabsDelegate.
+    /*! \internal */
+    default property alias __pages: pagesModel.children
+    /*!
+      \internal
+      required by SlidingTabsDelegate
+     */    property alias __pagesModel: pagesModel
+    VisualItemModel {
+        id: pagesModel
     }
 }

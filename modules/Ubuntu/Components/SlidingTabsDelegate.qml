@@ -17,11 +17,51 @@
 import QtQuick 2.0
 
 Item {
-    id: slidingTabs
+    id: slidingTabsDelegate
     anchors.fill: parent
 
+    onWidthChanged: listView.updatePages();
+    onHeightChanged: listView.updatePages();
+
+    Component.onCompleted: listView.updatePages();
+
+    clip: true
+
+    // TODO: Remove after debugging
     Rectangle {
         color: "yellow"
         anchors.fill: parent
+        opacity: 0.4
+    }
+
+    ListView {
+        id: listView
+        anchors.fill: parent
+        model: item.__pagesModel
+        onModelChanged: updatePages();
+        orientation: ListView.Horizontal
+        snapMode: ListView.SnapOneItem
+        boundsBehavior: Flickable.DragOverBounds
+
+        function updatePages() {
+            var page;
+            var pageList = item.__pagesModel.children
+            for (var i=0; i < pageList.length; i++) {
+                page = pageList[i];
+                page.width = slidingTabsDelegate.width;
+                page.height = slidingTabsDelegate.height;
+                page.anchors.fill = null;
+                if (page.hasOwnProperty("__active")) page.__active = true;
+            }
+        }
+        onMovingChanged: {
+            if(!moving) {
+                // update the currentItem
+                var index = contentX / slidingTabsDelegate.width;
+                if (currentIndex !== index) {
+                    currentIndex = index;
+                }
+            }
+        }
     }
 }
