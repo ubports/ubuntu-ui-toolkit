@@ -237,7 +237,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         if (contentItem) {
             Q_FOREACH (QObject *child, attachee->children()) {
                 QQuickItem *childItem = qobject_cast<QQuickItem *>(child);
-                if (childItem)
+                if (childItem && (childItem != delegate))
                     childItem->setParentItem(contentItem);
             }
         }
