@@ -43,6 +43,8 @@ Q_SIGNALS:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QQuickView *m_rootView;
+
+    void lookupQuickView();
 };
 
 
