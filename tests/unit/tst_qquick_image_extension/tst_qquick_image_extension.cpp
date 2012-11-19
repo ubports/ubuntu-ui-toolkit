@@ -51,6 +51,27 @@ private Q_SLOTS:
         QString result = image.scaledBorder(border, "2");
         QCOMPARE(result, expected);
     }
+
+    void rewriteContainsBorderInName() {
+        UCQQuickImageExtension image;
+        QString sciFilePath = "borderInName.sci";
+        QString result;
+
+        QTextStream resultStream(&result);
+        image.rewriteSciFile(sciFilePath, "1", resultStream);
+
+        QString expected;
+        QTextStream expectedStream(&expected);
+        expectedStream << "source: image://scaling/1/./borderInName.png" << endl;
+        expectedStream << "border.left: 9" << endl;
+        expectedStream << "border.right: 2" << endl;
+        expectedStream << "border.top: 9" << endl;
+        expectedStream << "border.bottom: 0" << endl;
+        expectedStream << "horizontalTileMode: Stretch" << endl;
+        expectedStream << "verticalTileMode: Stretch" << endl;
+
+        QCOMPARE(result, expected);
+    }
 };
 
 QTEST_MAIN(tst_UCQQuickImageExtension)
