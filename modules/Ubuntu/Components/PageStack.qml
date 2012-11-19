@@ -152,8 +152,12 @@ Item {
       Deactivate the active page and clear the stack.
      */
     function clear() {
-        if (stack.size() > 0) stack.top().active = false;
-        stack.clear();
+        while (stack.size() > 0) {
+            stack.top().pageStack = null;
+            stack.top().active = false;
+            if (stack.top().canDestroy) stack.top().destroyObject();
+            stack.pop();
+        }
         __stackUpdated();
     }
 
