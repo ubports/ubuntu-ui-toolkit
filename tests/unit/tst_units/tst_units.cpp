@@ -165,18 +165,16 @@ private Q_SLOTS:
 
     void resolveExactMatch() {
         UCUnits units;
-        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
         QString expected;
 
-        // identical grid and resources units since resources_unit contains 18
-        units.setGridUnit(18);
+        units.setGridUnit(8);
         resolved = units.resolveResource(QUrl::fromLocalFile("exact_match.png"));
-        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "exact_match.png");
+        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "exact_match@8.png");
         QCOMPARE(resolved, expected);
     }
 
-    void resolveExactMatchQrc() {
+    void resolveExactMatchNoSuffix() {
         UCUnits units;
         units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
         QString resolved;
@@ -184,8 +182,21 @@ private Q_SLOTS:
 
         // identical grid and resources units since resources_unit contains 18
         units.setGridUnit(18);
-        resolved = units.resolveResource(QUrl("qrc:/test/prefix/exact_match.png"));
-        expected = QString("1/:/test/prefix/exact_match.png");
+        resolved = units.resolveResource(QUrl::fromLocalFile("exact_match_no_suffix.png"));
+        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "exact_match_no_suffix.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExactMatchQrcNoSuffix() {
+        UCUnits units;
+        units.loadResourcesUnitFile(QUrl(""), RESOURCES_UNIT_FILE);
+        QString resolved;
+        QString expected;
+
+        // identical grid and resources units since resources_unit contains 18
+        units.setGridUnit(18);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/exact_match_no_suffix.png"));
+        expected = QString("1/:/test/prefix/exact_match_no_suffix.png");
         QCOMPARE(resolved, expected);
     }
 
@@ -234,6 +245,92 @@ private Q_SLOTS:
         units.setGridUnit(10);
         resolved = units.resolveResource(QUrl("qrc:/test/prefix/higher_scale.png"));
         expected = QString("0.555556/:/test/prefix/higher_scale.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExistsOnlyHigherGridUnit() {
+        UCUnits units;
+        QString resolved;
+        QString expected;
+
+        units.setGridUnit(10);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource_only_higher.png"));
+        expected = QString("0.769231/" + QDir::currentPath() + QDir::separator() + "resource_only_higher@13.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExistsOnlyHigherGridUnitQrc() {
+        UCUnits units;
+        QString resolved;
+        QString expected;
+
+        units.setGridUnit(10);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/resource_only_higher.png"));
+
+        expected = QString("0.769231/:/test/prefix/resource_only_higher@13.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExistsOnlySmallerGridUnit() {
+        UCUnits units;
+        QString resolved;
+        QString expected;
+
+        units.setGridUnit(10);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource_only_smaller.png"));
+        expected = QString("1.42857/" + QDir::currentPath() + QDir::separator() + "resource_only_smaller@7.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExistsOnlySmallerGridUnitQrc() {
+        UCUnits units;
+        QString resolved;
+        QString expected;
+
+        units.setGridUnit(10);
+        resolved = units.resolveResource(QUrl("qrc:/test/prefix/resource_only_smaller.png"));
+        expected = QString("1.42857/:/test/prefix/resource_only_smaller@7.png");
+        QCOMPARE(resolved, expected);
+    }
+
+    void resolveExistsMultipleGridUnit() {
+        UCUnits units;
+        QString resolved;
+        QString expected;
+
+        units.setGridUnit(20);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("1.05263/" + QDir::currentPath() + QDir::separator() + "resource@19.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(19);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "resource@19.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(18);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "resource@18.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(17);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("0.944444/" + QDir::currentPath() + QDir::separator() + "resource@18.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(9);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("0.9/" + QDir::currentPath() + QDir::separator() + "resource@10.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(8);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("1/" + QDir::currentPath() + QDir::separator() + "resource@8.png");
+        QCOMPARE(resolved, expected);
+
+        units.setGridUnit(7);
+        resolved = units.resolveResource(QUrl::fromLocalFile("resource.png"));
+        expected = QString("0.875/" + QDir::currentPath() + QDir::separator() + "resource@8.png");
         QCOMPARE(resolved, expected);
     }
 };
