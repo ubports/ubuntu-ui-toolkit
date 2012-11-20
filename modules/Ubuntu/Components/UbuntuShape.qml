@@ -17,16 +17,88 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1 as Theming
 
+/*!
+    \qmltype UbuntuShape
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
+
+    The UbuntuShape is used where a rounded rectangle is needed either filled
+    with a color or an image that it crops.
+
+    When given with a \l color it is applied with an overlay blending as a
+    vertical gradient going from \l color to \l gradientColor.
+    Two corner \l radius are available, "small" (default) and "medium", that
+    determine the size of the corners.
+    Optionally, an Image can be passed that will be displayed inside the
+    UbuntuShape and cropped to fit it.
+
+    Examples:
+    \qml
+        import Ubuntu.Components 0.1
+
+        UbuntuShape {
+            color: "lightblue"
+            radius: "medium"
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 0.1
+
+        UbuntuShape {
+            image: Image {
+                source: "icon.png"
+            }
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 0.1
+
+        UbuntuShape {
+            maskSource: "customMask.sci"
+            borderSource: "customBorder.sci"
+        }
+    \endqml
+
+*/
 Item {
     id: shape
 
     Theming.ItemStyle.class: "UbuntuShape-radius-" + radius
 
+    /*!
+      The size of the corners among: "small" (default) and "medium".
+    */
     property string radius: "small"
+
+    /*!
+      The top color of the gradient used to fill the shape. Setting only this
+      one is enough to set the overall color the shape.
+    */
     property color color: Qt.rgba(0, 0, 0, 0)
+
+    /*!
+      The bottom color of the gradient used to fill the shape. It is optional
+      to set this one as setting \l color is enough to set the overall color
+      of the shape.
+    */
     property color gradientColor: Theming.ItemStyle.style ? Theming.ItemStyle.style.gradientColor : Qt.rgba(0, 0, 0, 0)
+
+    /*!
+      The image used to mask the \l image.
+    */
     property url maskSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.maskSource : ""
+
+    /*!
+      The image used as a border.
+    */
     property url borderSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.borderSource : ""
+
+    /*!
+      The image used to fill the shape.
+    */
     property Image image
 
     width: units.gu(8)
