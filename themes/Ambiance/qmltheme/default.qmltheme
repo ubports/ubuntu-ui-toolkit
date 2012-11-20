@@ -36,6 +36,18 @@ Examples:
 */
 @qml-import(Ubuntu.Components 0.1);
 
+.UbuntuShape-radius-small {
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.3);
+    maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
+}
+
+.UbuntuShape-radius-medium {
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.3);
+    maskSource: url("artwork/ubuntushape_medium_radius_shape.sci");
+    borderSource: url("artwork/ubuntushape_medium_radius_idle.sci");
+}
+
 .button, .custom-button {
     color: "#e3e5e8";
     shape: url("artwork/ButtonShape.png");
