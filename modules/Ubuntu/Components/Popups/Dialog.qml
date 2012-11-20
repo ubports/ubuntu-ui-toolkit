@@ -115,7 +115,7 @@ PopupBase {
 
     Background {
         dim: true
-        ephemeral: false
+        dismissOnTap: false
     }
 
     Pointer {

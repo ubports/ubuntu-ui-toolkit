@@ -112,7 +112,7 @@ PopupBase {
 
     Background {
         dim: false
-        ephemeral: true
+        dismissOnTap: true
     }
 
     Foreground {

@@ -28,11 +28,10 @@ Item {
     // what is behind the background
     property bool dim: true
 
-    // The names "transient" and "volatile" are reserved words.
     // When this property is set, clicks anywhere on the background
     // will hide the popup, and the mouse event are forwarded by
     // setting mouse.accepted to false.
-    property bool ephemeral
+    property bool dismissOnTap
 
     Rectangle {
         anchors.fill: parent
@@ -44,7 +43,7 @@ Item {
     MouseArea {
         anchors.fill: parent
         onPressed: {
-            if (ephemeral) {
+            if (background.dismissOnTap) {
                 base.hide();
                 mouse.accepted = false;
             } else {
