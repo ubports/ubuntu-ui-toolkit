@@ -24,49 +24,6 @@ Template {
 
     Item {
         Component {
-            id: popoverComponent
-
-            Popover {
-                id: popover
-
-                Column {
-                    id: containerLayout
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
-
-                    ListItem.Header { text: "Standard list items" }
-                    ListItem.Standard { text: "Do something" }
-                    ListItem.Standard { text: "Do something else" }
-                    ListItem.Header { text: "Buttons" }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Do nothing"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
-                            }
-                        }
-                    }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Close"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
-                            }
-                            onClicked: PopupUtils.close(popover)
-                        }
-                    }
-                }
-            }
-        }
-
-        Component {
             id: closeButtonSheet
             DefaultSheet {
                 id: sheet
@@ -143,14 +100,14 @@ Template {
                     id: leftPopoverButton
                     text: i18n.tr("automatic..")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(popoverComponent, leftPopoverButton)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), leftPopoverButton)
                 }
 
                 Button {
                     id: rightPopoverButton
                     text: i18n.tr("..positioning")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(popoverComponent, rightPopoverButton)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), rightPopoverButton)
                 }
             }
 

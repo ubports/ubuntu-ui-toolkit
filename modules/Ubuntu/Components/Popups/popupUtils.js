@@ -14,20 +14,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function open(component, caller) {
-    // TODO: Check that component is a valid component, and the object can be created
-    // TODO: support url/string as component
-    var popup;
-    if (caller) popup = component.createObject(QuickUtils.rootObject, { "caller": caller });
-    else popup = component.createObject(QuickUtils.rootObject);
+function open(popup, caller) {
+    var popupComponent = null;
+    if (popup.createObject) {
+        // popup is a component and can create an object
+        popupComponent = popup;
+    } else if (typeof popup === "string") {
+        popupComponent = Qt.createComponent(popup);
+    } else {
+        print("PopupUtils.open(): "+popup+" is not a component or a link");
+        return;
+    }
 
-    popup.show();
-    popup.onVisibleChanged.connect(popup.__closeIfHidden);
-    return popup;
+    var popupObject;
+    if (caller) popupObject = popupComponent.createObject(QuickUtils.rootObject, { "caller": caller });
+    else popupObject = popupComponent.createObject(QuickUtils.rootObject);
+    if (!popupObject) {
+        print("PopupUtils.open(): Failed to create the popup object.");
+        return;
+    }
+
+    popupObject.show();
+    popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
+    return popupObject;
 }
 
-function close(popup) {
-    popup.hide();
-    popup.parent  = null;
-    popup.destroy();
+function close(popupObject) {
+    print("destroying "+popupObject);
+    popupObject.hide();
+    popupObject.parent  = null;
+    popupObject.destroy();
 }
