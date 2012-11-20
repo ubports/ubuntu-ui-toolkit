@@ -15,11 +15,18 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 // internal popup background
 Item {
     id: background
     anchors.fill: parent
+    Theming.ItemStyle.class: "popup-background"
 
     // parent must exist and be an instance of PopupBase
     property alias base: background.parent
@@ -36,7 +43,10 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "black"
+//        color: "black"
+        // FIXME: see above
+        color: Theming.ItemStyle.style && Theming.ItemStyle.style.color ? Theming.ItemStyle.style.color : "yellow"
+//        color: Theming.ItemStyle.style.color
         opacity: 0.6
         visible: background.dim
     }
