@@ -18,31 +18,37 @@ import QtQuick 2.0
 
 /*!
     \qmltype ModelSectionCounter
-    \internal
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Section counter for ListView models.
 */
 
-Object {
+QtObject {
 
     /*!
       \preliminary
+      The property holds the ListView instance whose model sections are to be counted.
     */
     property var view: null
 
     /*!
       \preliminary
+      The property contains the section counts of the given view.
     */
     property int sectionCount: 0
 
     /*!
       \preliminary
+      When set (true), the sections will be cached for further use. This is used on
+      section scrollers (e.g. alphabet scrollbar). The default value is false, meaning
+      no caching is done, just counting.
     */
     property bool cacheSections: false
 
     /*!
       \preliminary
+      This property holds the cached sections when the cacheSections property is set, and
+      is an empty list when no caching is requested.
     */
     property var sectionCache: [""]
 
@@ -70,19 +76,23 @@ Object {
             return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(0) : str;
         }
 
-        var sections = 0;
+        var sections = 0, sectionStack = [];
         var current = "",
                 prop = view.section.property,
                 item, section = "";
         for (var i = 0, count = (typeof view.model.count === 'undefined' ? view.model.length : view.model.count); i < count; i++) {
             item = view.model.get(i);
-            section = sectionString(JSON.stringify(item[prop]));
+            section = sectionString(JSON.stringify(item[prop])).toLowerCase();
             if (section !== current) {
                 current = section;
                 sections++;
+                if (cacheSections)
+                    sectionStack.push(current);
             }
         }
         sectionCount = sections;
+        if (cacheSections)
+            sectionCache = sectionStack;
     }
 
     onViewChanged: {

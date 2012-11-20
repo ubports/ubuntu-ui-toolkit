@@ -34,11 +34,7 @@ import Ubuntu.Components 0.1 as Theming
     makes sure to have the proper alignemt applied based on theme and layout
     direction (RTL or LTR).
 
-    Scrollbars are passive on handheld devices and active on desktops. Passive
-    scrollbars are simple decorators which only show the flickableItem's content
-    position but cannot modify that.
-
-    The content position is driven through the attaced Flickable. Therefore every
+    The content position is driven through the attached Flickable. Therefore every
     delegate implementation should drive the position through contentX/contentY
     properties, depending on whether the orientation is vertical or horizontal.
 
@@ -61,8 +57,7 @@ import Ubuntu.Components 0.1 as Theming
         }
         ScrollBar {
             flickableItem: list
-            orientation: Qt.Vertical
-            align: "rear"
+            align: Qt.AlignRight
         }
     }
     \endqml
@@ -73,15 +68,15 @@ Item {
 
     /*!
       \preliminary
-        This proeprty holds the flickable item (Flickable, ListView or GridView)
+        This property holds the flickable item (Flickable, ListView or GridView)
         the Scrollbar is attached to.
       */
     property Flickable flickableItem: null
 
     /*!
       \preliminary
-      The property handles the alignment of the scrollbar to the flickableItem.
-      It is translated into anchoring as follows:
+      The property defines the alignment of the scrollbar to the flickableItem.
+      The implementation handles the alignment as follows:
         \list
         \li Qt.AlignLeft anchors to the left on LTR and to the right on RTL layouts
         \li Qt.AlignRight anchors to the right on LTR and to the left on RTL layouts
@@ -124,7 +119,7 @@ Item {
       calculations and ListView-specific size calculation/detection.
     */
     property alias __private: internals
-    Object {
+    QtObject {
         id: internals
         property bool vertical: (align === Qt.AlignLeft) || (align === Qt.AlignRight)
         property bool scrollable: flickableItem && flickableItem.interactive && checkAlign()
