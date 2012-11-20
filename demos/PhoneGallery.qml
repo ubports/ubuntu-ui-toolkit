@@ -35,6 +35,31 @@ Flickable {
             width: parent.width
             height: childrenRect.height
 
+            ListItem.Empty {
+                height: units.gu(10)
+                Row {
+                    anchors.centerIn: parent
+                    spacing: units.gu(1)
+                    UbuntuShape {
+                        color: "#5da357"
+                    }
+                    UbuntuShape {
+                        color: "lightblue"
+                    }
+                    UbuntuShape {
+                        image: Image {
+                            source: "map_icon.png"
+                        }
+                    }
+                    UbuntuShape {
+                        color: "#c94212"
+                        width: units.gu(10)
+                        height: units.gu(4)
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+
             ListItem.SingleControl {
                 control: Button {
                     anchors {
