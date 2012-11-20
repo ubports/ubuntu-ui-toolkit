@@ -75,7 +75,7 @@ PopupBase {
     id: dialog
 
     /*! \internal */
-    default property alias __buttons: buttonColumn.data
+    default property alias __contents: contentsColumn.data
 
     /*!
       \preliminary
@@ -140,7 +140,7 @@ PopupBase {
         height: childrenRect.height
 
         Column {
-            id: buttonColumn
+            id: contentsColumn
             anchors {
                 left: parent.left
                 right: parent.right
@@ -150,8 +150,8 @@ PopupBase {
 
             onChildrenChanged: {
                 for (var i = 0; i < children.length; i++) {
-                    children[i].anchors.left = buttonColumn.left;
-                    children[i].anchors.right = buttonColumn.right;
+                    children[i].anchors.left = contentsColumn.left;
+                    children[i].anchors.right = contentsColumn.right;
                 }
             }
         }
