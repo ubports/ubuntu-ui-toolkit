@@ -1,3 +1,5 @@
+module Ubuntu.Components.Popups
+
 Dialog 0.1 Dialog.qml
 PopupBase 0.1 PopupBase.qml
 Popover 0.1 Popover.qml
