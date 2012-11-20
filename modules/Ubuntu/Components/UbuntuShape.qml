@@ -24,9 +24,9 @@ Item {
 
     property string radius: "small"
     property color color: Qt.rgba(0, 0, 0, 0)
-    property color gradientColor: Theming.ItemStyle.style.gradientColor
-    property url maskSource: Theming.ItemStyle.style.maskSource
-    property url borderSource: Theming.ItemStyle.style.borderSource
+    property color gradientColor: Theming.ItemStyle.style ? Theming.ItemStyle.style.gradientColor : Qt.rgba(0, 0, 0, 0)
+    property url maskSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.maskSource : ""
+    property url borderSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.borderSource : ""
     property Image image
 
     width: units.gu(8)
