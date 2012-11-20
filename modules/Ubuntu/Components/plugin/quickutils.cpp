@@ -24,17 +24,7 @@
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
 {
-    // get QQuickView from the application's window list
-    // and connect its status change signal as the root
-    // element is set after the root element completion.
-    Q_FOREACH (QWindow *w, QGuiApplication::allWindows()) {
-        m_rootView = qobject_cast<QQuickView*>(w);
-        if (m_rootView) {
-            QObject::connect(m_rootView, SIGNAL(statusChanged(QQuickView::Status)),
-                             this, SIGNAL(rootObjectChanged()));
-            break;
-        }
-    }
+    lookupQuickView();
 }
 
 /*!
@@ -43,5 +33,24 @@ QuickUtils::QuickUtils(QObject *parent) :
  */
 QQuickItem *QuickUtils::rootObject()
 {
+    if (!m_rootView)
+        lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
+}
+
+/*!
+ * \internal
+ * Get QQuickView from the application's window list and connect its status change
+ * signal as the root element is set after the root element completion.
+ */
+void QuickUtils::lookupQuickView()
+{
+    Q_FOREACH (QWindow *w, QGuiApplication::allWindows()) {
+        m_rootView = qobject_cast<QQuickView*>(w);
+        if (m_rootView) {
+            QObject::connect(m_rootView, SIGNAL(statusChanged(QQuickView::Status)),
+                             this, SIGNAL(rootObjectChanged()));
+            break;
+        }
+    }
 }

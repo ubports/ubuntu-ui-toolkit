@@ -110,9 +110,9 @@ bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFa
         QTextStream sciStream(&sciFile);
         while (!sciStream.atEnd()) {
             QString line = sciStream.readLine();
-            if (line.contains("border")) {
-                output << scaledBorder(line) << endl;
-            } else if (line.contains("source")) {
+            if (line.startsWith("border")) {
+                output << scaledBorder(line, scaleFactor) << endl;
+            } else if (line.startsWith("source")) {
                 output << scaledSource(line, sciFilePath, scaleFactor) << endl;
             } else {
                 output << line << endl;
@@ -124,12 +124,12 @@ bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFa
     }
 }
 
-QString UCQQuickImageExtension::scaledBorder(QString border)
+QString UCQQuickImageExtension::scaledBorder(QString border, QString scaleFactor)
 {
     // Rewrite the border line with a scaled border value
     QStringList parts = border.split(":");
-    float scaledValue = UCUnits::instance().dp(parts[1].toFloat());
-    return parts[0] + ": " + QString::number(scaledValue);
+    float scaledValue = parts[1].toFloat() * scaleFactor.toFloat();
+    return parts[0] + ": " + QString::number(qRound(scaledValue));
 }
 
 QString UCQQuickImageExtension::scaledSource(QString source, QString sciFilePath, QString scaleFactor)
