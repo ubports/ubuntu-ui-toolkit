@@ -7,7 +7,6 @@ ComposerSheet 0.1 ComposerSheet.qml
 
 PopupUtils 0.1 popupUtils.js
 
-internal Foreground Foreground.qml
 internal Background Background.qml
 internal Pointer Pointer.qml
 

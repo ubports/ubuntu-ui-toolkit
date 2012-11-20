@@ -26,6 +26,11 @@ Item {
     height: MathUtils.clamp(outer.height, item.minHeight, item.maxHeight)
     property alias contentItem: inner
 
+    // Avoid mouse events being sent to any MouseAreas that are behind the popover
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Rectangle {
         id: outer
         anchors {

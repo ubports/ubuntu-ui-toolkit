@@ -125,7 +125,7 @@ PopupBase {
         shortAxis: internal.callerMargins
     }
 
-    Foreground {
+    Item {
         id: foreground
         // FIXME: see above
         Theming.ItemStyle.class: "dialog-foreground"

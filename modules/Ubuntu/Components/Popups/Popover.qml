@@ -115,7 +115,7 @@ PopupBase {
         dismissOnTap: true
     }
 
-    Foreground {
+    Item {
         id: foreground
 
         // FIXME: see above

@@ -23,6 +23,11 @@ Item {
 
     property alias contentItem: containerItem
 
+    // Avoid mouse events being sent to any MouseAreas that are behind the sheet
+    MouseArea {
+        anchors.fill: parent
+    }
+
     Rectangle {
         id: header
         color: "darkgrey"
