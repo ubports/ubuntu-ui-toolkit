@@ -85,6 +85,9 @@ import Ubuntu.Components 0.1 as Theming
 PopupBase {
     id: popover
 
+    // FIXME: see above
+      Theming.ItemStyle.class: "popover"
+
     /*! \internal */
     default property alias __container: containerItem.data
 
@@ -126,6 +129,8 @@ PopupBase {
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
         height: childrenRect.height
+
+        Theming.ItemStyle.onStyleChanged: print("lala")
 
         Item {
             id: containerItem

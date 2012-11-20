@@ -17,7 +17,7 @@ properties typed as variant.
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.popup-background, PopupBackgroundStyle, Item);
-@qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
+@qml-mapping(.popover .popover-foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
@@ -76,7 +76,7 @@ Examples:
     color: "green";
 }
 
-.popover-foreground {
+.popover .popover-foreground {
 }
 
 .sheet-foreground {

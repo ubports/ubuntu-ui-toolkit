@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    Component.onCompleted: print("done");
     anchors {
         left: parent.left
         right: parent.right
