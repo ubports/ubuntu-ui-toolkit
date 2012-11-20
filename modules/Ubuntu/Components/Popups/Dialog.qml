@@ -109,6 +109,7 @@ PopupBase {
         function updatePosition() {
             var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, edgeMargins, callerMargins);
             pos.auto();
+
         }
     }
 
