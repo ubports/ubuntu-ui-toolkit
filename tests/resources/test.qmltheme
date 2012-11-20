@@ -1,5 +1,8 @@
 @import url("qrc:/base.qmltheme");
 
+@qml-mapping(.baseA, , Item);
+@qml-mapping(.testA .baseA, , Text);
+
 .baseA {
     test_base_A_A: "new:: test.qmltheme/.baseA";
     prop_baseA_A: "overload:: test.qmltheme/.baseA";

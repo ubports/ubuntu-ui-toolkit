@@ -23,6 +23,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
+#include <QtQuick/QQuickItem>
 
 #include <QtCore/QThread>
 #include <QtCore/QFileInfo>
@@ -50,6 +51,7 @@ private Q_SLOTS:
     void testCase_lookupStyleRule();
     void testCase_reparenting();
     void testCase_blockDeclaration();
+    void testCase_selectorDelegates();
 
 private:
     QQuickView *quickView;
@@ -189,6 +191,49 @@ void tst_ThemeEngine::testCase_blockDeclaration()
 
     QObject *anim = qvariant_cast<QObject*>(style->property(""));
 }
+
+void tst_ThemeEngine::testCase_selectorDelegates()
+{
+    ThemeEngine::initializeEngine(quickEngine);
+    ThemeEngine::instance()->resetError();
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
+    quickView->setSource(QUrl::fromLocalFile("SelectorTest.qml"));
+    QCoreApplication::processEvents();
+
+    QObject *root = quickView->rootObject();
+    QVERIFY2(root, "FAILURE");
+
+    QCOMPARE(root->property("themeError").toString(), QString());
+
+    QList<QQuickItem*> items = root->findChildren<QQuickItem*>();
+    QVERIFY(items.count());
+
+    Q_FOREACH(QQuickItem *item, items) {
+        // if a style has Item-derived properties (Animations, etc), those will be listed here too
+        // therefore skip those
+        QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+        if (!obj)
+            continue;
+
+        ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
+        QVERIFY(attached);
+
+        QQuickItem *delegate = qvariant_cast<QQuickItem*>(attached->property("delegate"));
+
+        if (attached->path() == ".basea") {
+            QVERIFY(delegate);
+            QString delegateClass = delegate->metaObject()->className();
+            QCOMPARE(delegateClass, QString("QQuickItem"));
+        } else if (attached->path() == ".testa") {
+            QVERIFY(!delegate);
+        } else if (attached->path() == ".testa .base") {
+            QVERIFY(delegate);
+            QString delegateClass = delegate->metaObject()->className();
+            QCOMPARE(delegateClass, QString("QQuickText"));
+        }
+    }
+}
+
 
 QTEST_MAIN(tst_ThemeEngine)
 
