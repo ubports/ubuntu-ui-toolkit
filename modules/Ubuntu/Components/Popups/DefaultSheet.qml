@@ -24,7 +24,7 @@ import Ubuntu.Components 0.1
     \ingroup ubuntu-popups
     \brief The Default Sheet allows an application to insert a content view over the focused view
         without disrupting the navigation pattern (tabs state or drill-down path are maintained. When
-        the sheet is dismissed the user continues the journey from the point he left it).
+        the sheet is dismissed the user continues the journey from the point (s)he left it).
         The Default Sheet can be closed using either a "close" button (top left) or a "done" button
         (top right). The sheet cannot be dismissed any other way.
         Use the \l doneButton property to configure whether the "close" or the "done" button
