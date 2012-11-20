@@ -85,7 +85,10 @@ SheetBase {
         text: "close"
         visible: !doneButton
         /*! \internal */
-        onClicked: sheet.closeClicked()
+        onClicked: {
+            sheet.closeClicked();
+            sheet.hide();
+        }
     }
 
     __rightButton: Button {
@@ -93,6 +96,9 @@ SheetBase {
         color: "orange"
         visible: doneButton
         /*! \internal */
-        onClicked: sheet.doneClicked()
+        onClicked: {
+            sheet.doneClicked();
+            sheet.hide();
+        }
     }
 }

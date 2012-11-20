@@ -76,13 +76,19 @@ SheetBase {
     __leftButton: Button {
         text: "cancel"
         /*! \internal */ // avoid warning when generating documentation
-        onClicked: composer.cancelClicked()
+        onClicked: {
+            composer.cancelClicked();
+            composer.hide();
+        }
     }
 
     __rightButton: Button {
         text: "confirm"
         color: "orange"
         /*! \internal */ // avoid warning when generating documentation
-        onClicked: composer.confirmClicked()
+        onClicked: {
+            composer.confirmClicked();
+            composer.hide();
+        }
     }
 }

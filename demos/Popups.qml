@@ -76,7 +76,7 @@ Template {
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
                 }
-                onCloseClicked: PopupUtils.close(sheet)
+                onCloseClicked: print("closed sheet")
             }
         }
 
@@ -91,7 +91,7 @@ Template {
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
                 }
-                onDoneClicked: PopupUtils.close(sheet)
+                onDoneClicked: print("completed sheet")
             }
         }
 
@@ -103,8 +103,8 @@ Template {
                 TextCustom {
                     text: "A composer sheet has cancel and confirm buttons."
                 }
-                onCancelClicked: PopupUtils.close(sheet)
-                onConfirmClicked: PopupUtils.close(sheet)
+                onCancelClicked: print("cancelled");
+                onConfirmClicked: print("confirmed");
             }
         }
 
