@@ -110,9 +110,9 @@ bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFa
         QTextStream sciStream(&sciFile);
         while (!sciStream.atEnd()) {
             QString line = sciStream.readLine();
-            if (line.contains("border")) {
+            if (line.startsWith("border")) {
                 output << scaledBorder(line, scaleFactor) << endl;
-            } else if (line.contains("source")) {
+            } else if (line.startsWith("source")) {
                 output << scaledSource(line, sciFilePath, scaleFactor) << endl;
             } else {
                 output << line << endl;
