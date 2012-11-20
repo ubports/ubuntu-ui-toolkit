@@ -35,8 +35,11 @@ import Ubuntu.Components 0.1 as Theming
 PopupBase {
     id: sheet
 
-    /*! \internal */
-    default property alias __container: containerItem.data
+    /*!
+      \preliminary
+      All children will be put inside the foreround of the sheet.
+    */
+    default property alias container: containerItem.data
 
     /*!
       Override the default width of the contents of the sheet.

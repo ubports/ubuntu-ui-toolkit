@@ -74,8 +74,11 @@ import "internalPopupUtils.js" as InternalPopupUtils
 PopupBase {
     id: dialog
 
-    /*! \internal */
-    default property alias __contents: contentsColumn.data
+    /*!
+      \preliminary
+      All children will be put inside a column in the foreround of the Dialog.
+    */
+    default property alias contents: contentsColumn.data
 
     /*!
       \preliminary
