@@ -27,7 +27,7 @@ class QQmlEngine;
 class UbuntuI18n : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString domain READ domain WRITE setDomain)
+    Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
 
 private:
     Q_DISABLE_COPY(UbuntuI18n)
