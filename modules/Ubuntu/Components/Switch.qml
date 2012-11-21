@@ -44,12 +44,7 @@ AbstractButton {
     //     as a guideline to prevent that?
     id: sweetch
 
-    width: units.gu(11)
-    // FIXME(loicm) Button and other components have a default height of 39, I
-    //     had to specify 42 here because under that value the BorderImage of
-    //     the inner element gets cropped and starts to look ugly. A general
-    //     solution would need to be found in order to support arbitrary sizes,
-    //     or maybe simply clamping the requested sizes.
+    width: units.gu(10)
     height: units.gu(5)
 
     /*!
@@ -69,35 +64,11 @@ AbstractButton {
 
         opacity: enabled ? 1.0 : 0.5
 
-        BorderImage {
+        UbuntuShape {
             id: backgroundShape
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: internals.shapeSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-        }
 
-        Rectangle {
-            id: backgroundBase
             anchors.fill: parent
             color: sweetch.checked ? internals.checkedColor : internals.uncheckedColor
-        }
-
-        ButtonMaskEffect {
-            anchors.fill: parent
-            gradientStrength: 0.0
-            mask: ShaderEffectSource { sourceItem: backgroundShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: backgroundBase; live: true; hideSource: true }
-        }
-
-        BorderImage {
-            id: backgroundBorder
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: internals.borderIdleSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Image {
@@ -128,49 +99,18 @@ AbstractButton {
             Behavior on opacity { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
         }
 
-        // FIXME(loicm) The radius of the thumb BorderImage must be lower than
-        //     the radius of the background BorderImage so that the perimeter can
-        //     look perfectly consistent.
-        // FIXME(loicm) There are stretched pixels on the left of the thumb in
-        //     the checked state.
-
-        BorderImage {
+        UbuntuShape {
             id: thumbShape
+
             x: backgroundShape.x + internals.thumbSpacing +
                (sweetch.checked ? ((backgroundShape.width - (2.0 * internals.thumbSpacing))
                * (1.0 - internals.thumbWidth)) : 0.0)
             y: backgroundShape.y + internals.thumbSpacing
             width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
             height: backgroundShape.height - (2.0 * internals.thumbSpacing)
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: internals.shapeSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
+            color: internals.thumbColor
 
             Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-        }
-
-        Rectangle {
-            id: thumbBase
-            anchors.fill: thumbShape
-            color: internals.thumbColor
-        }
-
-        ButtonMaskEffect {
-            anchors.fill: thumbShape
-            gradientStrength: 0.4
-            mask: ShaderEffectSource { sourceItem: thumbShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: thumbBase; live: true; hideSource: true }
-        }
-
-        BorderImage {
-            id: thumbBorder
-            anchors.fill: thumbShape
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: internals.borderIdleSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-            visible: true
         }
     }
 
@@ -179,14 +119,12 @@ AbstractButton {
 
         property url ballotSource: Qt.resolvedUrl("artwork/Ballot.png")
         property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
-        property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
-        property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
         property real iconHorizontalMargin: units.gu(1)
         property real iconSpacing: units.gu(1)
         property real thumbWidth: 0.5    // In [0.0, 1.0].
-        property real thumbSpacing: units.dp(3)
-        property color uncheckedColor: "#c4c4c4"
+        property real thumbSpacing: units.dp(2)
+        property color uncheckedColor: "#d3d3d3"
         property color checkedColor: uncheckedColor
-        property color thumbColor: "#8b8b8b"
+        property color thumbColor: "#626262"
     }
 }
