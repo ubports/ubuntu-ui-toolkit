@@ -56,6 +56,6 @@ Item {
     }
 
     TransparentButtonDelegate {
-        textColor: __luminance(item.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : "#333333"
+        textColor: __luminance(item.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
     }
 }

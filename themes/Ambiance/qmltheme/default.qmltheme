@@ -49,7 +49,7 @@ Examples:
 }
 
 .button, .custom-button {
-    color: "#dd4814";
+    color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
@@ -65,7 +65,7 @@ Examples:
 }
 
 .dark-button {
-    color: "#dd4814";
+    color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
