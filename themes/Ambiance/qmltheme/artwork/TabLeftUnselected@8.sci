@@ -1,4 +1,4 @@
-source: TabLeftUnselected.png
+source: TabLeftUnselected@8.png
 border.left: 9
 border.right: 2
 border.top: 9
