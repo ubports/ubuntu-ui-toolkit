@@ -80,9 +80,9 @@ Item {
     property color color: Qt.rgba(0, 0, 0, 0)
 
     /*!
-      The bottom color of the gradient used to fill the shape. It is optional
-      to set this one as setting \l color is enough to set the overall color
-      of the shape.
+      The bottom color of the gradient used for the overlay blending of the
+      color that fills the shape. It is optional to set this one as setting
+      \l color is enough to set the overall color of the shape.
     */
     property color gradientColor: (Theming.ItemStyle.style && Theming.ItemStyle.style.gradientColor != undefined) ? Theming.ItemStyle.style.gradientColor : Qt.rgba(0, 0, 0, 0)
 
