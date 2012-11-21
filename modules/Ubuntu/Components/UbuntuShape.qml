@@ -84,17 +84,17 @@ Item {
       to set this one as setting \l color is enough to set the overall color
       of the shape.
     */
-    property color gradientColor: Theming.ItemStyle.style ? Theming.ItemStyle.style.gradientColor : Qt.rgba(0, 0, 0, 0)
+    property color gradientColor: (Theming.ItemStyle.style && Theming.ItemStyle.style.gradientColor != undefined) ? Theming.ItemStyle.style.gradientColor : Qt.rgba(0, 0, 0, 0)
 
     /*!
       The image used to mask the \l image.
     */
-    property url maskSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.maskSource : ""
+    property url maskSource: (Theming.ItemStyle.style && Theming.ItemStyle.style.maskSource != undefined) ? Theming.ItemStyle.style.maskSource : ""
 
     /*!
       The image used as a border.
     */
-    property url borderSource: Theming.ItemStyle.style ? Theming.ItemStyle.style.borderSource : ""
+    property url borderSource: (Theming.ItemStyle.style && Theming.ItemStyle.style.borderSource != undefined) ? Theming.ItemStyle.style.borderSource : ""
 
     /*!
       The image used to fill the shape.
