@@ -76,7 +76,7 @@ PopupBase {
 
     /*!
       \preliminary
-      All children will be put inside a column in the foreround of the Dialog.
+      Content will be put inside a column in the foreround of the Dialog.
     */
     default property alias contents: contentsColumn.data
 
