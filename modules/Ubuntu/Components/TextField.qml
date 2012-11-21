@@ -539,6 +539,7 @@ FocusScope {
                 verticalCenter: parent.verticalCenter
             }
             color: internal.textColor
+            clip: true
             passwordCharacter: "\u2022"
             font.pixelSize: FontUtils.sizeToPixels(internal.fontSize)
             onTextChanged: internal.textChanged = true
