@@ -42,8 +42,7 @@ Template {
                     clip: true
                     Image {
                         id: image
-                        source: Qt.resolvedUrl("rivieramaya3.jpg")
-                        //source: "http://farm9.staticflickr.com/8325/8113426644_50a2b934cf_z_d.jpg"
+                        source: Qt.resolvedUrl("demo_image.jpg")
                     }
                 }
                 Scrollbar {
@@ -74,7 +73,15 @@ Template {
                     id: listView
                     clip: true
                     anchors.fill: parent
-                    model: listModel
+                    model: ListModel {
+                        id: listModel
+                        Component.onCompleted: {
+                            for (var i = 0; i < 100; i++) {
+                                listModel.append({"title": i, "label": i})
+                            }
+                        }
+                    }
+
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
                     section.delegate: Header {
@@ -83,14 +90,6 @@ Template {
 
                     delegate: Standard {
                         text: "Data - " + label
-                    }
-                }
-                ListModel {
-                    id: listModel
-                    Component.onCompleted: {
-                        for (var i = 0; i < 100; i++) {
-                            listModel.append({"title": i, "label": i})
-                        }
                     }
                 }
 

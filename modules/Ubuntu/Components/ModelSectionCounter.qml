@@ -18,6 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype ModelSectionCounter
+    \internal
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Section counter for ListView models.
@@ -39,6 +40,12 @@ QtObject {
 
     /*!
       \preliminary
+      The property contains the section Item height.
+    */
+    property real sectionHeight: 0
+
+    /*!
+      \preliminary
       When set (true), the sections will be cached for further use. This is used on
       section scrollers (e.g. alphabet scrollbar). The default value is false, meaning
       no caching is done, just counting.
@@ -50,7 +57,7 @@ QtObject {
       This property holds the cached sections when the cacheSections property is set, and
       is an empty list when no caching is requested.
     */
-    property var sectionCache: [""]
+    property var sectionCache: []
 
     function __initSectionCounter()
     {
@@ -68,7 +75,15 @@ QtObject {
 
         if (view.model.itemsRemoved)
             view.model.itemsRemoved.connect(__checkSections);
+
+        cacheSectionsChanged.connect(__checkSections);
     }
+
+    function __checkFromNowOn()
+    {
+        __checkSections();
+    }
+
     function __checkSections()
     {
         function sectionString(str)
@@ -90,9 +105,14 @@ QtObject {
                     sectionStack.push(current);
             }
         }
+        if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
+            sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
+            print(sectionHeight)
+        } else if (sections <= 0)
+            sectionHeight = 0;
+
         sectionCount = sections;
-        if (cacheSections)
-            sectionCache = sectionStack;
+        sectionCache = sectionStack;
     }
 
     onViewChanged: {

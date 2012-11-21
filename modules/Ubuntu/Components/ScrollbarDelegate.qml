@@ -80,35 +80,20 @@ Item {
                      https://bugreports.qt-project.org/browse/QTBUG-19941
             */
             property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
-            property int itemHeight: delegateHeight(flickableItem.delegate)
-            property int sectionHeight: delegateHeight(flickableItem.section.delegate)
+            property int sectionHeight: sectionCounter.sectionHeight//delegateHeight(flickableItem.section.delegate)
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
-            property int itemsSize: flickableItem.count * itemHeight
+            property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
 
             ModelSectionCounter {
                 id: sectionCounter
                 view: flickableItem
             }
-
-            Binding {
-                target: internals
-                property: "sectionCount"
-                value: sectionCounter.sectionCount
+/*
+            Connections {
+                target: flickableItem.model
+                onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
             }
-
-            function delegateHeight(delegate)
-            {
-                // FIXME: this causes QML warnings because of unknown roles,
-                // but we need it for correct content calculations
-                if (delegate) {
-                    var instance = delegate.createObject(null);
-                    var ret = instance.height;
-                    instance.destroy();
-                    return ret;
-                }
-
-                return 0;
-            }
+*/
         }
     }
     Loader { id:logicLoader }

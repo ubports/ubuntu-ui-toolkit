@@ -115,8 +115,7 @@ Item {
 
     /*!
       \internal
-      Internals: contains the common logic of the scrollbar like anchoring, size
-      calculations and ListView-specific size calculation/detection.
+      Internals: contains the common logic of the scrollbar like anchoring,
     */
     property alias __private: internals
     QtObject {
