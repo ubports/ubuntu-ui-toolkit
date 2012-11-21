@@ -37,7 +37,7 @@ Examples:
 @qml-import(Ubuntu.Components 0.1);
 
 .UbuntuShape-radius-small {
-    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.5);
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
 }
