@@ -53,13 +53,13 @@ Text {
                            Theming.ItemStyle.style.capitalization : Font.MixedCase
 
     font.family: (Theming.ItemStyle.style && Theming.ItemStyle.style.fontFamily) ?
-                   Theming.ItemStyle.style.fontFamily : ""
+                   Theming.ItemStyle.style.fontFamily : "Ubuntu"
 
     font.italic: (Theming.ItemStyle.style && Theming.ItemStyle.style.italic) ?
                    Theming.ItemStyle.style.italic : false
 
     font.letterSpacing: (Theming.ItemStyle.style && Theming.ItemStyle.style.letterSpacing) ?
-                          Theming.ItemStyle.style.letterSpacing : 1.0
+                          Theming.ItemStyle.style.letterSpacing : 0.0
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
 
@@ -76,7 +76,7 @@ Text {
                         Theming.ItemStyle.style.wordSpacing : 0.0
 
     horizontalAlignment: (Theming.ItemStyle.horizontalAlignment && Theming.ItemStyle.horizontalAlignment.horizontalAlignment) ?
-                           Theming.ItemStyle.horizontalAlignment.horizontalAlignment : Text.AlignHLeft
+                           Theming.ItemStyle.horizontalAlignment.horizontalAlignment : Text.AlignLeft
 
     lineHeight: (Theming.ItemStyle.lineHeight && Theming.ItemStyle.lineHeight.lineHeight) ?
                   Theming.ItemStyle.lineHeight.lineHeight : 1.0
@@ -100,5 +100,5 @@ Text {
                Theming.ItemStyle.style.textOpacity : 1.0
 
     verticalAlignment: (Theming.ItemStyle.verticalAlignment && Theming.ItemStyle.verticalAlignment.verticalAlignment) ?
-                         Theming.ItemStyle.verticalAlignment.verticalAlignment : Text.AlignVTop
+                         Theming.ItemStyle.verticalAlignment.verticalAlignment : Text.AlignTop
 }
