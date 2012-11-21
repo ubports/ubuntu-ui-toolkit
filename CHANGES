@@ -4,14 +4,13 @@ SDK Release Notes
 .. contents:: List of Releases
    :depth: 1
 
-SDK 0.1.6
+SDK 0.1.7
 #########
+
 * Rule QML type removed from public API of the components
 
 SDK 0.1.5
 #########
-
-:0.1.5: NOT RELEASED YET
 
 Compatibility Breaks
 ********************
