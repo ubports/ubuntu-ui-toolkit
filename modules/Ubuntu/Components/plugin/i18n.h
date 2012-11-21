@@ -28,6 +28,7 @@ class UbuntuI18n : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
+    Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
 
 private:
     Q_DISABLE_COPY(UbuntuI18n)
@@ -80,15 +81,19 @@ public:
 
     // getter
     QString domain();
+    QString language();
 
     // setter
     void setDomain(QString domain);
+    void setLanguage(const QString& lang);
 
 Q_SIGNALS:
     void domainChanged();
+    void languageChanged();
 
 private:
     QString m_domain;
+    QString m_language;
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H
