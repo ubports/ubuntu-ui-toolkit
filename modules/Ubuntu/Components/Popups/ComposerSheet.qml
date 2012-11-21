@@ -74,7 +74,7 @@ SheetBase {
     signal confirmClicked
 
     __leftButton: Button {
-        text: "cancel"
+        text: i18n.dtr("ubuntu-sdk", "cancel")
         /*! \internal */ // avoid warning when generating documentation
         onClicked: {
             composer.cancelClicked();
@@ -83,7 +83,7 @@ SheetBase {
     }
 
     __rightButton: Button {
-        text: "confirm"
+        text: i18n.dtr("ubuntu-sdk", "confirm")
         color: "orange"
         /*! \internal */ // avoid warning when generating documentation
         onClicked: {
