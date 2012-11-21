@@ -44,7 +44,8 @@ Flickable {
                         color: "#5da357"
                     }
                     UbuntuShape {
-                        color: "lightblue"
+                        color: "#5da357"
+                        radius: "medium"
                     }
                     UbuntuShape {
                         image: Image {
