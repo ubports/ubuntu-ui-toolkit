@@ -131,8 +131,8 @@ Item {
 
             lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)
             {
-                bvec3 comparison = lessThan(base, vec3(0.5));
-                return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - blend), 2.0 * base * blend, vec3(comparison));
+                lowp vec3 comparison = clamp(sign(base.rgb - vec3(0.5)), vec3(0.0), vec3(1.0));
+                return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), comparison);
             }
 
             void main(void)
