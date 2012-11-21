@@ -20,7 +20,6 @@
 #include <QtQuick/private/qquickimagebase_p.h>
 
 #include "plugin.h"
-#include "rule.h"
 #include "themeengine.h"
 #include "itemstyleattached.h"
 
@@ -36,7 +35,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
     qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");

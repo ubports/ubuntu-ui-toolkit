@@ -55,6 +55,7 @@ private:
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);
     bool generateStyleQml();
+    QPair<QString, QString> selectorMapping(const Selector &selector);
     void buildStyleAndDelegate(Selector &selector, PropertyHash &properties, QString &style, QString &delegate);
 
     // @-rule handlers
