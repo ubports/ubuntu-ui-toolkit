@@ -73,12 +73,12 @@ void normalizeSelector(Selector &selector)
     Returns a subset from the given selector and configures it to ignore relation
     and name.
   */
-Selector selectorSubset(const Selector &path, int elements)
+Selector selectorSubset(const Selector &path, int elements, SelectorNode::NodeSensitivity sensitivity = SelectorNode::IgnoreAll)
 {
     Selector result;
     while (elements > 0) {
         result << path[path.length() - elements];
-        result.last().sensitivity |= SelectorNode::IgnoreAll;
+        result.last().sensitivity = sensitivity;
         elements--;
     }
     return result;
@@ -467,19 +467,26 @@ bool QmlThemeLoader::generateStyleQml()
     return true;
 }
 
+QPair<QString, QString> QmlThemeLoader::selectorMapping(const Selector &selector)
+{
+    Selector subset;
+    QString qmap;
+    for (int count = selector.count(); count > 0; count--) {
+        subset = selectorSubset(selector, count, SelectorNode::Normal);
+        qmap = ThemeEnginePrivate::selectorToString(subset);
+        if (qmlMap.contains(qmap)) {
+            return qmlMap.value(qmap);
+        }
+    }
+    // if none found, check the last node's style class
+    qmap = '.' + selector.last().styleClass;
+    return (qmlMap.contains(qmap)) ? qmlMap.value(qmap) : QPair<QString, QString>();
+}
+
+
 void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &properties, QString &style, QString &delegate)
 {
-    QPair<QString, QString> qmlTypes;
-
-    QString qmap = selector.last().toString();
-
-    if (qmlMap.contains(qmap))
-        qmlTypes = qmlMap.value(qmap);
-    else {
-        qmap = '.' + selector.last().styleClass;
-        if (qmlMap.contains(qmap))
-            qmlTypes = qmlMap.value(qmap);
-    }
+    QPair<QString, QString> qmlTypes = selectorMapping(selector);
 
     style.clear();
     delegate.clear();
@@ -587,7 +594,7 @@ bool QmlThemeLoader::handleImport(QmlThemeLoader *loader, QTextStream &stream)
   */
 bool QmlThemeLoader::handleQmlMapping(QmlThemeLoader *loader, QTextStream &stream)
 {
-    QString params = QmlThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[ )\t\r\n\"]"));
+    QString params = QmlThemeLoader::readTillToken(stream, QRegExp("[;]"), QRegExp("[)\t\r\n\"]"));
     QStringList mapping = params.split(',');
 
     // we should have 3 elements in the list! if we don't we have an error!
@@ -596,7 +603,7 @@ bool QmlThemeLoader::handleQmlMapping(QmlThemeLoader *loader, QTextStream &strea
         ThemeEnginePrivate::setError(QString("Mapping has %1 parameter(s), should have 3!").
                                      arg(mapping.count()));
     else
-        loader->qmlMap.insert(mapping[0], qMakePair(mapping[1], mapping[2]));
+        loader->qmlMap.insert(mapping[0].trimmed().toLower(), qMakePair(mapping[1].trimmed(), mapping[2].trimmed()));
 
     return ret;
 }

@@ -5,4 +5,5 @@ SOURCES += \
 RESOURCES += \
     ../../resources/theme-engine-test.qrc
 
-OTHER_FILES += ReparentingTest.qml
+OTHER_FILES += ReparentingTest.qml \
+    SelectorTest.qml
