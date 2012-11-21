@@ -16,7 +16,6 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
-@qml-mapping(.popup-background, BackgroundStyle, );
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
@@ -70,9 +69,6 @@ Examples:
 .TextCustom {
     fontSize: "medium";
     color: "#757373";
-}
-
-.popup-background {
 }
 
 .popover-foreground {
