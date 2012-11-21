@@ -17,7 +17,6 @@
 import QtQuick 2.0
 /*!
     \qmltype PopupBase
-    \internal
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief The base class for all dialogs, sheets and popovers. Do not use directly.

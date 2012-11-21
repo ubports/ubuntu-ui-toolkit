@@ -24,7 +24,6 @@ import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype SheetBase
-    \internal
     \inqmlmodule Ubuntu.Components.Popups 0.1
     \ingroup ubuntu-popups
     \brief Parent class of different types of sheets. Not to be used directly.
