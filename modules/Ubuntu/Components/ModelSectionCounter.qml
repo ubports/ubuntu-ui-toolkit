@@ -107,7 +107,6 @@ QtObject {
         }
         if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
             sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
-            print(sectionHeight)
         } else if (sections <= 0)
             sectionHeight = 0;
 
