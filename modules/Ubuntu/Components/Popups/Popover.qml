@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import "../mathUtils.js" as MathUtils
 import "internalPopupUtils.js" as InternalPopupUtils
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
