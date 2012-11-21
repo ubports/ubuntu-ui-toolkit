@@ -56,6 +56,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
+    QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
+                     &i18nChangeListener, SLOT(updateContextProperty()));
 
     UCUnits::instance().loadResourcesUnitFile(engine->baseUrl(), RESOURCES_UNIT_FILE);
     context->setContextProperty("units", &UCUnits::instance());
