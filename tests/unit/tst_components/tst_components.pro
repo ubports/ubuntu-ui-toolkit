@@ -33,3 +33,4 @@ OTHER_FILES += \
     tst_button_events.qml \
     tst_scrollbar.qml \
     tst_modelsectioncounter.qml
+    tst_ubuntushape.qml
