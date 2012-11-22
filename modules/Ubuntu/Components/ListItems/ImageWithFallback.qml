@@ -33,7 +33,7 @@ Image {
     }
 
     function checkStatus() {
-        if ((status == Image.Error || status == Image.Null) && source != fallbackSource) {
+        if (!isSourceDefined(source) || status == Image.Error && source != fallbackSource) {
             fallbackRequired = true
             tryLoadingFallbackSource()
         }
