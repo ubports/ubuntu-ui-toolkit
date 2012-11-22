@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Utils
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by
@@ -33,8 +34,8 @@ Item {
     property bool isScrollable: item.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
     property bool isVertical: (item.__private.vertical)
-    property bool frontAligned: (item.align === Qt.AlignLeft)
-    property bool rearAligned: (item.align === Qt.AlignRight)
+    property bool frontAligned: (item.align === Qt.AlignLeading)
+    property bool rearAligned: (item.align === Qt.AlignTrailing)
     property bool topAligned: (item.align === Qt.AlignTop)
     property bool bottomAligned: (item.align === Qt.AlignBottom)
 
@@ -66,8 +67,8 @@ Item {
     // common logic for Flickable and ListView to update contentPosition when Flicked
     Connections {
         target: item.flickableItem
-        onContentYChanged: if (isVertical) contentPosition = clamp(item.flickableItem.contentY - visuals.originY, 0.0, contentSize)
-        onContentXChanged: if (!isVertical) contentPosition = clamp(item.flickableItem.contentX - visuals.originX, 0.0, contentSize)
+        onContentYChanged: if (isVertical) contentPosition = Utils.MathUtils.clamp(item.flickableItem.contentY - visuals.originY, 0.0, contentSize)
+        onContentXChanged: if (!isVertical) contentPosition = Utils.MathUtils.clamp(item.flickableItem.contentX - visuals.originX, 0.0, contentSize)
     }
     // logic for ListView
     Component {
@@ -80,7 +81,7 @@ Item {
                      https://bugreports.qt-project.org/browse/QTBUG-19941
             */
             property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
-            property int sectionHeight: sectionCounter.sectionHeight//delegateHeight(flickableItem.section.delegate)
+            property int sectionHeight: sectionCounter.sectionHeight
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
 
@@ -88,12 +89,6 @@ Item {
                 id: sectionCounter
                 view: flickableItem
             }
-/*
-            Connections {
-                target: flickableItem.model
-                onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-            }
-*/
         }
     }
     Loader { id:logicLoader }
@@ -119,24 +114,11 @@ Item {
     opacity: isScrollable ? 1.0 : 0.0
     Behavior on opacity {animation: itemStyle.fadeAnimation}
 
-    function clamp(x, min, max) {
-        return Math.max(min, Math.min(max, x))
-    }
-
-    // Linearly project a value x from [xmin, xmax] into [ymin, ymax]
-    function projectValue(x, xmin, xmax, ymin, ymax) {
-        return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
-    }
-
-    function clampAndProject(x, xmin, xmax, ymin, ymax) {
-        return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
-    }
-
     /* Scroll by amount pixels never overshooting */
     function scrollBy(amount) {
         var destination = contentPosition + amount
         destination += (isVertical) ? visuals.originY : visuals.originX
-        scrollAnimation.to = clamp(destination, 0, contentSize - pageSize)
+        scrollAnimation.to = Utils.MathUtils.clamp(destination, 0, contentSize - pageSize)
         scrollAnimation.restart()
     }
 
@@ -188,9 +170,13 @@ Item {
             topMargin: (isVertical) ? 0 : (topAligned ? scrollbarArea.thickness : 0)
             bottomMargin: (isVertical) ? 0 : (bottomAligned ? scrollbarArea.thickness : 0)
         }
+        propagateComposedEvents: true
         enabled: isScrollable && interactive
         hoverEnabled: true
-        onEntered: thumb.show()
+        onEntered: thumb.show();
+        onPressed: mouse.accepted = false
+        onClicked: mouse.accepted = false
+        onReleased: mouse.accepted = false
     }
 
 
@@ -209,8 +195,8 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        x: (isVertical) ? 0 : clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
-        y: (!isVertical) ? 0 : clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
+        x: (isVertical) ? 0 : Utils.MathUtils.clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
+        y: (!isVertical) ? 0 : Utils.MathUtils.clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
         width: (isVertical) ? scrollbarArea.thickness : sliderSizer.size
         height: (!isVertical) ? scrollbarArea.thickness : sliderSizer.size
 
@@ -322,14 +308,14 @@ Item {
         // update flickableItem's and thumb's position
         // cannot use Binding as there would be a binding loop
         onDragYAmountChanged: {
-            var pos = clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize);
-            item.flickableItem.contentY = clamp(pos + visuals.originY, 0.0, contentSize - pageSize);
-            thumb.y = clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
+            var pos = Utils.MathUtils.clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize);
+            item.flickableItem.contentY = Utils.MathUtils.clamp(pos + visuals.originY, 0.0, contentSize - pageSize);
+            thumb.y = Utils.MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
         }
         onDragXAmountChanged: {
-            var pos = clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize);
-            item.flickableItem.contentX = clamp(pos + visuals.originX, 0.0, contentSize - pageSize);
-            thumb.x = clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
+            var pos = Utils.MathUtils.clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize);
+            item.flickableItem.contentX = Utils.MathUtils.clamp(pos + visuals.originX, 0.0, contentSize - pageSize);
+            thumb.x = Utils.MathUtils.clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
         }
     }
 
@@ -364,10 +350,10 @@ Item {
             if (shown) {
                 if (isVertical) {
                     var mouseY = proximityArea.containsMouse ? proximityArea.mouseY : thumbArea.mouseY;
-                    y = clamp(mouseY - thumb.height / 2, 0, thumb.maximumPos);
+                    y = Utils.MathUtils.clamp(mouseY - thumb.height / 2, 0, thumb.maximumPos);
                 } else {
                     var mouseX = proximityArea.containsMouse ? proximityArea.mouseX : thumbArea.mouseX;
-                    x = clamp(mouseX - thumb.width / 2, 0, thumb.maximumPos);
+                    x = Utils.MathUtils.clamp(mouseX - thumb.width / 2, 0, thumb.maximumPos);
                 }
             }
         }
@@ -384,13 +370,13 @@ Item {
 
         function placeThumbForeUnderMouse(mouse) {
             var diff = (isVertical) ? mouse.y - height / 4 : mouse.x - width / 4;
-            positionAnimation.to = clamp(diff, 0, maximumPos);
+            positionAnimation.to = Utils.MathUtils.clamp(diff, 0, maximumPos);
             positionAnimation.restart();
         }
 
         function placeThumbRearUnderMouse(mouse) {
             var diff = (isVertical) ? mouse.y - height * 3 / 4 : mouse.x - width * 3 / 4;
-            positionAnimation.to = clamp(diff, 0, maximumPos);
+            positionAnimation.to = Utils.MathUtils.clamp(diff, 0, maximumPos);
             positionAnimation.restart();
         }
 

@@ -47,7 +47,7 @@ Template {
                 }
                 Scrollbar {
                     flickableItem: flickable
-                    align: Qt.AlignRight
+                    align: Qt.AlignTrailing
                 }
                 Scrollbar {
                     flickableItem: flickable
@@ -96,7 +96,7 @@ Template {
 
                 Scrollbar {
                     flickableItem: listView
-                    align: Qt.AlignRight
+                    align: Qt.AlignTrailing
                 }
             }
         }

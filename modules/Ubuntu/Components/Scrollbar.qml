@@ -57,7 +57,7 @@ import Ubuntu.Components 0.1 as Theming
         }
         ScrollBar {
             flickableItem: list
-            align: Qt.AlignRight
+            align: Qt.AlignTrailing
         }
     }
     \endqml
@@ -78,14 +78,14 @@ Item {
       The property defines the alignment of the scrollbar to the flickableItem.
       The implementation handles the alignment as follows:
         \list
-        \li Qt.AlignLeft anchors to the left on LTR and to the right on RTL layouts
-        \li Qt.AlignRight anchors to the right on LTR and to the left on RTL layouts
+        \li Qt.AlignLeading anchors to the left on LTR and to the right on RTL layouts
+        \li Qt.AlignTrailing anchors to the right on LTR and to the left on RTL layouts
         \li Qt.AlignTop anchors to the top
         \li Qt.AlignBottom anchors to the bottom
         \endlist
-        The default value is \b Qt.AlignRight.
+        The default value is \b Qt.AlignTrailing.
       */
-    property int align: Qt.AlignRight
+    property int align: Qt.AlignTrailing
 
     /*!
       \internal
@@ -96,8 +96,10 @@ Item {
 
     // styling
     Theming.ItemStyle.class: "scrollbar"
+    // FIXME: see FIXME at the top
     implicitWidth: (Theming.ItemStyle.style && Theming.ItemStyle.style.hasOwnProperty("sensingAreaThickness")) ?
                        Theming.ItemStyle.style.sensingAreaThickness : units.gu(4)
+    // FIXME: see FIXME at the top
     implicitHeight: (Theming.ItemStyle.style && Theming.ItemStyle.style.hasOwnProperty("sensingAreaThickness")) ?
                        Theming.ItemStyle.style.sensingAreaThickness : units.gu(4)
 
@@ -116,28 +118,29 @@ Item {
     /*!
       \internal
       Internals: contains the common logic of the scrollbar like anchoring,
+      alignemt check, scrollability check.
     */
     property alias __private: internals
     QtObject {
         id: internals
-        property bool vertical: (align === Qt.AlignLeft) || (align === Qt.AlignRight)
+        property bool vertical: (align === Qt.AlignLeading) || (align === Qt.AlignTrailing)
         property bool scrollable: flickableItem && flickableItem.interactive && checkAlign()
 
         function checkAlign()
         {
-            return (align === Qt.AlignLeft) || (align === Qt.AlignRight) || (align === Qt.AlignTop) || (align === Qt.AlignBottom);
+            return (align === Qt.AlignLeading) || (align === Qt.AlignTrailing) || (align === Qt.AlignTop) || (align === Qt.AlignBottom);
         }
 
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
         function leftAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignLeft))
+            if (!internals.vertical || (align == Qt.AlignLeading))
                 return object.left;
             return undefined;
         }
         function rightAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignRight))
+            if (!internals.vertical || (align == Qt.AlignTrailing))
                 return object.right;
             return undefined;
         }

@@ -24,7 +24,7 @@ import QtQuick 2.0
     \brief Section counter for ListView models.
 */
 
-QtObject {
+Object {
 
     /*!
       \preliminary
@@ -59,69 +59,90 @@ QtObject {
     */
     property var sectionCache: []
 
-    function __initSectionCounter()
-    {
-        if (view.model.countChanged)
-            view.model.countChanged.connect(__checkSections);
-
-        if (view.model.itemsChanged)
-            view.model.itemsChanged.connect(__checkSections);
-
-        if (view.model.itemsInserted)
-            view.model.itemsInserted.connect(__checkSections);
-
-        if (view.model.itemsMoved)
-            view.model.itemsMoved.connect(__checkSections);
-
-        if (view.model.itemsRemoved)
-            view.model.itemsRemoved.connect(__checkSections);
-
-        cacheSectionsChanged.connect(__checkSections);
-    }
-
-    function __checkFromNowOn()
-    {
-        __checkSections();
-    }
-
-    function __checkSections()
-    {
-        function sectionString(str)
+    QtObject {
+        id: internals
+        property var myView: null
+        function disconnectPreviousView()
         {
-            return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(0) : str;
+            if (!myView)
+                return;
+            if (myView.model.countChanged)
+                myView.model.countChanged.disconnect(checkSections);
+
+            if (myView.model.itemsChanged)
+                myView.model.itemsChanged.disconnect(checkSections);
+
+            if (myView.model.itemsInserted)
+                myView.model.itemsInserted.disconnect(checkSections);
+
+            if (myView.model.itemsMoved)
+                myView.model.itemsMoved.disconnect(checkSections);
+
+            if (myView.model.itemsRemoved)
+                myView.model.itemsRemoved.disconnect(checkSections);
         }
 
-        var sections = 0, sectionStack = [];
-        var current = "",
-                prop = view.section.property,
-                item, section = "";
-        for (var i = 0, count = (typeof view.model.count === 'undefined' ? view.model.length : view.model.count); i < count; i++) {
-            item = view.model.get(i);
-            section = sectionString(JSON.stringify(item[prop])).toLowerCase();
-            if (section !== current) {
-                current = section;
-                sections++;
-                if (cacheSections)
-                    sectionStack.push(current);
+        function initSectionCounter()
+        {
+            myView = view;
+            if (myView.model.countChanged)
+                myView.model.countChanged.connect(checkSections);
+
+            if (myView.model.itemsChanged)
+                myView.model.itemsChanged.connect(checkSections);
+
+            if (myView.model.itemsInserted)
+                myView.model.itemsInserted.connect(checkSections);
+
+            if (myView.model.itemsMoved)
+                myView.model.itemsMoved.connect(checkSections);
+
+            if (myView.model.itemsRemoved)
+                myView.model.itemsRemoved.connect(checkSections);
+        }
+
+        function checkSections()
+        {
+            function sectionString(str)
+            {
+                return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(0) : str;
             }
-        }
-        if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
-            sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
-        } else if (sections <= 0)
-            sectionHeight = 0;
 
-        sectionCount = sections;
-        sectionCache = sectionStack;
+            var sections = 0, sectionStack = [];
+            var current = "",
+                    prop = view.section.property,
+                    item, section = "";
+            for (var i = 0, count = (typeof view.model.count === 'undefined' ? view.model.length : view.model.count); i < count; i++) {
+                item = view.model.get(i);
+                section = sectionString(JSON.stringify(item[prop])).toLowerCase();
+                if (section !== current) {
+                    current = section;
+                    sections++;
+                    if (cacheSections)
+                        sectionStack.push(current);
+                }
+            }
+            if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
+                sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
+            } else if (sections <= 0)
+                sectionHeight = 0;
+
+            sectionCount = sections;
+            sectionCache = sectionStack;
+        }
     }
+
+    Component.onCompleted: cacheSectionsChanged.connect(internals.checkSections);
 
     onViewChanged: {
+        internals.disconnectPreviousView()
         if (view && view.model) {
-            __initSectionCounter();
+            internals.initSectionCounter();
         } else if (view) {
             view.modelChanged.connect(function()
             {
                 if (view.model)
-                    __initSectionCounter();
+                    internals.initSectionCounter();
             });
         }
     }
