@@ -29,69 +29,33 @@ Item {
         return ((r*212)+(g*715)+(b*73))/1000/255;
     }
 
-    function shapeSource()
-    {
-        if (itemStyle && itemStyle.shape !== undefined) {
-            return itemStyle.shape;
-        }
-        return ""
-    }
-
-    function borderSource()
-    {
-        if (!itemStyle) return "";
-        var result = "";
-        if (item.pressed) {
-            result = itemStyle.borderPressed !== undefined ? itemStyle.borderPressed : "";
-        } else {
-            result = itemStyle.borderIdle !== undefined ? itemStyle.borderIdle : "";
-        }
-        return result;
-    }
-
-    // FIXME: think of using distance fields
-    BorderImage {
+    UbuntuShape {
         id: shape
 
         anchors.fill: parent
-
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Stretch
-        source: shapeSource()
-        border.left: units.dp(18); border.top: units.dp(15)
-        border.right: units.dp(18); border.bottom: units.dp(15)
-    }
-
-    // FIXME: might become a paper texture
-    Rectangle {
-        id: base
-
-        anchors.fill: shape
         color: item.color
+        maskSource: itemStyle.shape
+        borderSource: ""
     }
 
-    ButtonMaskEffect {
-        anchors.fill: shape
-        gradientStrength: item.pressed ? 0.0 : 1.0
-        Behavior on gradientStrength {NumberAnimation {duration: 100; easing.type: Easing.OutQuad}}
-
-        mask: ShaderEffectSource {sourceItem: shape; live: true; hideSource: true}
-        base: ShaderEffectSource {sourceItem: base; live: true; hideSource: true}
-    }
-
-    // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
-    BorderImage {
+    UbuntuShape {
         id: border
 
         anchors.fill: parent
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Stretch
-        source: borderSource()
-        border.left: units.dp(14); border.top: units.dp(17)
-        border.right: units.dp(15); border.bottom: units.dp(18)
+        borderSource: itemStyle.borderIdle
+        opacity: 1.0 - borderPressed.opacity
+    }
+
+    UbuntuShape {
+        id: borderPressed
+
+        anchors.fill: parent
+        borderSource: itemStyle.borderPressed
+        opacity: item.pressed ? 1.0 : 0.0
+        Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
     }
 
     TransparentButtonDelegate {
-        textColor: __luminance(base.color) <= 0.72 ? "white" : "#757373"
+        textColor: __luminance(item.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
     }
 }
