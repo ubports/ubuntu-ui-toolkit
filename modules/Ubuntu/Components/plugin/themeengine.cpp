@@ -228,6 +228,7 @@ Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 void ThemeEnginePrivate::setError(const QString &error)
 {
     themeEngine->d_ptr->errorString = error;
+    qDebug() << error;
     Q_EMIT themeEngine->errorChanged();
 }
 

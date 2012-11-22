@@ -14,24 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library
+import QtQuick 2.0
 
-// FIXME(loicm) It would be better to have these functions available in a global
-//     set of common native C++ functions.
-
-function clamp(x, min, max) {
-    return Math.max(min, Math.min(x, max));
-}
-
-function lerp(x, a, b) {
-    return ((1.0 - x) * a) + (x * b);
-}
-
-// Linearly project a value x from [xmin, xmax] into [ymin, ymax]
-function projectValue(x, xmin, xmax, ymin, ymax) {
-    return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
-}
-
-function clampAndProject(x, xmin, xmax, ymin, ymax) {
-    return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
+QtObject {
+    property PropertyAnimation fadeAnimation
+    property PropertyAnimation sliderAnimation
+    property PropertyAnimation thumbConnectorFading
+    property PropertyAnimation thumbFading
+    property color sliderColor
+    property color thumbConnectorColor
+    property url forwardThumbReleased
+    property url forwardThumbPressed
+    property url backwardThumbReleased
+    property url backwardThumbPressed
+    property real sensingAreaThickness
+    property real scrollAreaThickness
+    property real thumbConnectorMargin
 }

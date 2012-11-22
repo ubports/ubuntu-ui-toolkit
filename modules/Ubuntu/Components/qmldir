@@ -11,6 +11,9 @@ TextField 0.1 TextField.qml
 Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 Slider 0.1 Slider.qml
+Scrollbar 0.1 Scrollbar.qml
+ModelSectionCounter 0.1 ModelSectionCounter.qml
+internal Object Object.qml
 internal TabButton TabButton.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
@@ -20,3 +23,9 @@ internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
+
+# styles
+ScrollbarStyle 0.1 ScrollbarStyle.qml
+ScrollbarDelegate 0.1 ScrollbarDelegate.qml
+ScrollSliderSizer 0.1 ScrollSliderSizer.qml
+
