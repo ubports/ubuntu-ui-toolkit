@@ -111,15 +111,21 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
+
+        onChildrenChanged: visuals.selectedTabChanged()
     }
 
     function selectedTabChanged() {
+        print("selecting tab + "+item.selectedTabIndex);
+        print("num children = "+tabsContainer.children.length);
         var tab;
         for (var i = 0; i < tabsContainer.children.length; i++) {
             tab = tabsContainer.children[i];
             if (i === item.selectedTabIndex) {
+                print("activating tab " +i);
                 tab.__active = true;
             } else {
+                print("deactivating tab "+i);
                 tab.__active = false;
             }
         }
@@ -143,5 +149,7 @@ Item {
         onSelectedTabIndexChanged: visuals.selectedTabChanged()
     }
 
-    Component.onCompleted: visuals.updateSeparator();
+    Component.onCompleted: {
+        visuals.updateSeparator();
+    }
 }

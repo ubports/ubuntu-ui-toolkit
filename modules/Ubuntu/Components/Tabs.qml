@@ -67,10 +67,7 @@ Item {
       \preliminary
       The index of the currently selected tab.
       The first tab is 0, and -1 means that no tab is selected.
+      The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: -1
-
-    Component.onCompleted: {
-        if (children.length > 0) selectedTabIndex = 0;
-    }
+    property int selectedTabIndex: children.length > 0 ? 0 : -1
 }
