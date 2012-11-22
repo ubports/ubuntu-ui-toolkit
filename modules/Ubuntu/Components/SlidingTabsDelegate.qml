@@ -32,6 +32,11 @@ Item {
         color: "yellow"
         anchors.fill: parent
         opacity: 0.4
+
+        //    property alias __pagesModel: pagesModel
+        //    VisualItemModel {
+        //        id: pagesModel
+        //    }
     }
 
     ListView {
