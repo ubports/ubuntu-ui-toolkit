@@ -20,6 +20,8 @@
 #include <QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
+#include <QtQml/QQmlContext>
+#include <QtCore/QAbstractListModel>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
@@ -37,6 +39,43 @@ QQuickItem *QuickUtils::rootObject()
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
 }
+
+/*!
+ * \internal
+ * Creates an instance out of a delegate using the roles specified in the
+ * modelData. Accepts QAbstractListModel delegates
+ */
+qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &modelData)
+{
+    QAbstractListModel *model = qvariant_cast<QAbstractListModel*>(modelData);
+    // accept only QAbstractListModel derived models
+    if (!delegate || !model)
+        return 0.0;
+
+    QQmlContext *creationContext = delegate->creationContext();
+    QQmlContext *context = new QQmlContext(creationContext);
+
+    qreal result = 0.0;
+    // define roles inside the context
+    const QHash<int,QByteArray> roles = model->roleNames();
+    if (roles.count()) {
+        QHashIterator<int,QByteArray> i(roles);
+        while (i.hasNext()) {
+            i.next();
+            context->setContextProperty(i.value(), "");
+        }
+        // add section too
+        context->setContextProperty("section", "");
+        // create item from component
+        QObject * obj = delegate->create(context);
+        QQuickItem *item = qobject_cast<QQuickItem*>(obj);
+        result = item->height();
+        item->deleteLater();
+    }
+
+    return result;
+}
+
 
 /*!
  * \internal
