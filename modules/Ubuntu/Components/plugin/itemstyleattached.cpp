@@ -58,7 +58,7 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  A item can use private styling by setting the style and/or the delegate property
+  An item can use private styling by setting the style and/or the delegate property
   locally. In this case the item won't use the theme defined style/delegate but will
   use the styling elements defined locally. Switching back to theme defined styles
   can be achieved by clearing the style/delegate property. It is also possible to
@@ -237,7 +237,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         if (contentItem) {
             Q_FOREACH (QObject *child, attachee->children()) {
                 QQuickItem *childItem = qobject_cast<QQuickItem *>(child);
-                if (childItem)
+                if (childItem && (childItem != delegate))
                     childItem->setParentItem(contentItem);
             }
         }

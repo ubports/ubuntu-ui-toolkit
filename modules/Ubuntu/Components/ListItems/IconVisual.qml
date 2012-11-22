@@ -51,7 +51,6 @@ Item {
         width: sourceSize.width
         smooth: true
         asynchronous: true
-        clip: true
     }
 
     BorderImage {

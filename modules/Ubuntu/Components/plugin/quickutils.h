@@ -23,6 +23,7 @@
 
 class QQuickItem;
 class QQmlEngine;
+class QQmlComponent;
 class QJSEngine;
 class QuickUtils : public QObject
 {
@@ -37,12 +38,16 @@ public:
 
     QQuickItem *rootObject();
 
+    Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
+
 Q_SIGNALS:
     void rootObjectChanged();
 
 private:
     explicit QuickUtils(QObject *parent = 0);
     QQuickView *m_rootView;
+
+    void lookupQuickView();
 };
 
 

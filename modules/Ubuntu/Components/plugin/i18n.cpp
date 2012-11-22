@@ -23,14 +23,20 @@ namespace C {
 }
 
 #include <QtQml>
+#include <stdlib.h>
 
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     m_domain = "";
+    m_language = QString(getenv("LANGUAGE"));
 }
 
 QString UbuntuI18n::domain() {
     return m_domain;
+}
+
+QString UbuntuI18n::language() {
+    return m_language;
 }
 
 void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_name) {
@@ -41,6 +47,12 @@ void UbuntuI18n::setDomain(QString domain) {
     m_domain = domain;
     C::textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
+}
+
+void UbuntuI18n::setLanguage(const QString &lang) {
+    m_language = lang;
+    setenv("LANGUAGE",lang.toUtf8().constData(),1);
+    Q_EMIT languageChanged();
 }
 
 QString UbuntuI18n::tr(const QString& text)

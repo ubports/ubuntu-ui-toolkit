@@ -22,6 +22,7 @@
 #include <QtQml/QQmlFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QRegularExpression>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -143,15 +144,54 @@ QString UCUnits::resolveResource(const QUrl& url)
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
 
-    path = prefix + suffixForGridUnit(m_gridUnit) + suffix;
-    float scaleFactor = m_gridUnit / m_resourcesUnit;
+    /* Use file with expected grid unit suffix if it exists.
+       For example, if m_gridUnit = 10, look for resource@10.png.
+    */
 
+    path = prefix + suffixForGridUnit(m_gridUnit) + suffix;
     if (QFile::exists(path)) {
         return QString("1") + "/" + path;
     }
 
+    /* No file with expected grid unit suffix exists.
+       List all the files of the form fileBaseName@[0-9]*.fileSuffix and select
+       the most appropriate one privileging downscaling high resolution assets
+       over upscaling low resolution assets.
+
+       The most appropriate file has a grid unit suffix greater than the target
+       grid unit (m_gridUnit) yet as small as possible.
+       If no file with a grid unit suffix greater than the target grid unit
+       exists, then select one with a grid unit suffix as close as possible to
+       the target grid unit.
+
+       For example, if m_gridUnit = 10 and the available files are
+       resource@9.png, resource@14.png and resource@18.png, the most appropriate
+       file would be resource@14.png since it is above 10 and smaller
+       than resource@18.png.
+    */
+    QStringList nameFilters;
+    nameFilters << fileInfo.baseName() + "@[0-9]*" + suffix;
+    QStringList files = fileInfo.dir().entryList(nameFilters, QDir::Files);
+
+    if (!files.empty()) {
+        float selectedGridUnitSuffix = gridUnitSuffixFromFileName(files.first());
+
+        Q_FOREACH (QString fileName, files) {
+            float gridUnitSuffix = gridUnitSuffixFromFileName(fileName);
+            if ((selectedGridUnitSuffix >= m_gridUnit && gridUnitSuffix >= m_gridUnit && gridUnitSuffix < selectedGridUnitSuffix)
+                || (selectedGridUnitSuffix < m_gridUnit && gridUnitSuffix > selectedGridUnitSuffix)) {
+                selectedGridUnitSuffix = gridUnitSuffix;
+            }
+        }
+
+        path = prefix + suffixForGridUnit(selectedGridUnitSuffix) + suffix;
+        float scaleFactor = m_gridUnit / selectedGridUnitSuffix;
+        return QString::number(scaleFactor) + "/" + path;
+    }
+
     path = prefix + suffix;
     if (QFile::exists(path)) {
+        float scaleFactor = m_gridUnit / m_resourcesUnit;
         return QString::number(scaleFactor) + "/" + path;
     }
 
@@ -161,4 +201,15 @@ QString UCUnits::resolveResource(const QUrl& url)
 QString UCUnits::suffixForGridUnit(float gridUnit)
 {
     return "@" + QString::number(gridUnit);
+}
+
+float UCUnits::gridUnitSuffixFromFileName(QString fileName)
+{
+    QRegularExpression re("^.*@([0-9]*).*$");
+    QRegularExpressionMatch match = re.match(fileName);
+    if (match.hasMatch()) {
+        return match.captured(1).toFloat();
+    } else {
+        return 0;
+    }
 }

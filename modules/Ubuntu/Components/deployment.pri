@@ -12,11 +12,14 @@ ARTWORK_FILES = $$system(find artwork -type f)
 LISTITEMS_FILES = $$system(find ListItems -maxdepth 1 -type f)
 LISTITEMS_ARTWORK_FILES = $$system(find ListItems/artwork -type f)
 
+# Components/Popups
+POPUPS_FILES = $$system(find Popups -maxdepth 1 -type f)
+
 # qmldir
 QMLDIR_FILE = qmldir
 
 # make found deployables visible in Qt Creator
-OTHER_FILES += $$QML_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$QMLDIR_FILE $$LISTITEMS_ARTWORK_FILES
+OTHER_FILES += $$QML_FILES $$JS_FILES $$ARTWORK_FILES $$LISTITEMS_FILES $$POPUPS_FILES $$QMLDIR_FILE $$LISTITEMS_ARTWORK_FILES
 
 # define deployment for found deployables
 qmldir_file.path = $$installPath
@@ -31,5 +34,7 @@ listitems_files.path = $$installPath/ListItems
 listitems_files.files = $$LISTITEMS_FILES
 listitems_artwork_files.path = $$installPath/ListItems/artwork
 listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
+popups_files.path = $$installPath/Popups
+popups_files.files = $$POPUPS_FILES
 
-INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files
+INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files

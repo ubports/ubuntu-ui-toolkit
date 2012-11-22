@@ -22,7 +22,7 @@ Template {
 
     Tabs {
         selectedTabIndex: 1
-        ItemStyle.class: "sliding-tabs"
+//        ItemStyle.class: "sliding-tabs"
         Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {

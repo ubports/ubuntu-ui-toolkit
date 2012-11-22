@@ -45,7 +45,7 @@
      opacity: 0.8;
   }
   .button {
-     color: widget.hovered ? "tan" : "#757373";
+     color: item.hovered ? "tan" : "#757373";
   }
   \endcode
 
@@ -125,19 +125,20 @@
   \section1 Theming Engine, Theming Components
 
   The theming used in Ubuntu Components follows this idea of changing the look-and-feel.
-  Our approach on selecting items to theme is inspired by CSS stylesheets. The framework
-  supports themes defined in QML as well as in the so-called
-  QmlTheme theme file format (.qmltheme). Theme files are loaded by the components
+  Our approach on selecting items to theme is inspired by CSS stylesheets, however does
+  not implement every feature of CSS format. Therefore the theme file format is also
+  called QmlTheme theme file format (.qmltheme). Theme files are loaded by the components
   library upon startup before any QML element of the application would be created.
   The library loads the default theme that is set for the user in
   \c{$HOME/.config/UITK/theme.ini} file, which contains the following setting keys:
   \list
-   \li \b{theme} specifies the actual theme set for the user, more precisely the
-   folder name of the theme stored under \c{/usr/share/themes} system folder.
-   \li \b{imports} specifies the paths where the compoments used in the theme are
+   \li - \b{theme} specifies the actual theme set for the user, more precisely the
+   folder name of the theme stored under \c{/usr/share/themes} system folder (e.g. Ambiance);
+   \li - \b{imports} specifies the paths where the compoments used in the theme are
    located. Multiple folders can be added to the import path and those must be
    separated with column character. These paths are then added to Qml Engine when
-   the theme file is loaded. This key is optional.
+   the theme file is loaded. This key is optional, as paths can be specified
+   using the @qml-impotr rule.
   \endlist
 
   Theme files are stored within a directory named \c qmltheme, within which the
@@ -146,14 +147,14 @@
   For example the \e Ambiance theme is located under \c{/usr/share/themes/Ambiance}
   and the default theme file therefore will be at \c{/usr/share/themes/Ambiance/qmltheme/default.qmltheme}.
 
-  When themes are loaded, the engine builds up a map of \l{Rule} elements to ease
+  When themes are loaded, the engine builds up a map of rules to ease
   style lookup. These style rules are applied only on items which have styling
   defined using \l ItemStyle attached properties. The ItemStyle attached object will
   look after style rules based on the styling information set and based on the
   hierarchy they are nested in. Style rules can define configuration properties
   (style property), visuals (delegate property) or both.
 
-  Style rules are identified through \l{Rule::selector}{selectors}. Selectors follow
+  Style rules are identified through selectors. Selectors follow
   the syntax defined by the \l{http://www.w3.org/TR/selector.html}{W3C for CSS selectors}
   however does not provide full support. This
   syntax is used in both QML- and QmlTheme file formats.
@@ -180,12 +181,6 @@
 
   1) a Rule having its selector identifying QML elements styled with class "Button"
   \code
-  // QML rule
-  Rule {
-     selector: ".Button"
-     ...
-  }
-
   // QmlTheme rule
   .Button {
      ...
@@ -194,12 +189,6 @@
   2) a Rule having its selector identifying QML elements styled with class "button"
   and named as "red"
   \code
-  // QML rule
-  Rule {
-     selector: ".button#red"
-     ...
-  }
-
   //QmlTheme rule
   .button#red {
      ...
@@ -208,12 +197,6 @@
   3) a Rule having its selector identifying QML elements styled with class "Button"
   named as "red" and which are children of QML elements styled as class "frame"
   \code
-  // QML rule
-  Rule {
-     selector: ".frame .Button#red"
-     ...
-  }
-
   //QmlTheme rule
   .frame .Button#red {
      ...
@@ -222,22 +205,11 @@
   4) a Rule having its selector identifying QML elements styled with class "Button"
   named as "red" and which are direct children of QML elements styled as class "frame"
   \code
-  Rule {
-     selector: ".frame > .Button#red"
-     ...
-  }
-
   //QmlTheme rule
   .frame > .Button#red {
      ...
   }
   \endcode
-
-  \section2 QML theme files
-  QML theme file consists of a document enumerating \l{Rule}{styling rules}.
-  Each rule defines a particular style identified by a \l{Rule::selector}
-  {selector}. The theme file is loaded using the QML engine and styles defined
-  are stored in a suffix-tree to ease style lookup.
 
   \section2 QmlTheme file format
   The QmlTheme file format uses the ideas and format of CSS stylesheets, however does
@@ -274,6 +246,8 @@
    contain the extension so the theming engine can identify the file type.
   \endlist
 
+  \b Note: see also The url() macro.
+
   \section4 @qml-import() rule
   Syntax: \code@qml-import (<import-module>[,<import-path>]);\endcode
 
@@ -287,6 +261,7 @@
   The engine defines three tags that can be used in \c import-path syntax. These are
   the following:
   \list
+   \li \b . specifies the path relative to the current theme file
    \li \b current: specifies the current folder from where the application was launched.
    \li \b application: specifies the application's executable folder
    \li \b system: specifies the system themes folder \c{"/var/shared/themes"}
@@ -294,6 +269,9 @@
 
   Examples:
   \list
+  \li \code@qml-import(Types 1.0, ./modules);\endcode will add \c{Types 1.0} to every
+  QML component generated by the theme rules and will add the modules path that is relative
+  to the theme file to the import path list.   
   \li \code@qml-import(some.module 1.0);\endcode will add \c{some.module} to every QML
   component generated by the theme styling rules. The module is assumed to be
   located relative to the theme file including the statement.
@@ -354,39 +332,16 @@
   }
   \endcode
 
-  Assuming the theme defines a mapping for the style called \c ButtonStyle and a
-  delegate called \c ButtonDelegate, the generated Rule will look
-  as follows:
-  \qml
-  Rule {
-      selector: ".button"
-      style: ButtonStyle {
-          color: "lightgray"
-          frame: Qt.resolvedUrl("resources/button-frame.png")
-          pressedColor: Qt.darker(color, 1.2)
-      }
-      delegate: Component {
-          ButtonDelegate{}
-      }
-  }
-  \endqml
-  In case the theme does not define mapping for the selector, the generated Rule
-  will look like
-  \qml
-  Rule {
-      selector: ".button"
-      style: QtObject {
-          property var color: "lightgray"
-          property var frame: Qt.resolvedUrl("resources/button-frame.png")
-          property var pressedColor: Qt.darker(color, 1.2)
-      }
-  }
-  \endqml
+  Assuming the theme defines a mapping for the style called \c ButtonStyle, the
+  engine will map the property values listed in the rule using the type. In case the
+  style type is not defined, the engine will create a \c QtObject using \c var property
+  type for each declaration. Note that the engine does not perform any type checking
+  nor check the property presence in the specified type. 
 
-  The theming engine defines two properties that are available for the style and
+  The theming engine defines two context properties that are available for the style and
   delegate components. These context properties are:
   \list
-    \li \b{item}, holding the widget properties
+    \li \b{item}, holding the widget or styled item properties
     \li \b{itemStyle} holding styling properties, and it is defined only if the widget
     uses delegates (visuals), therefore accessible within delegates
   \endlist
@@ -403,7 +358,7 @@
   as follows:
   \code
   .button {
-      color: widget.hovered ? "lightgreen" : "lightgray";
+      color: item.hovered ? "lightgreen" : "lightgray";
       frame: Qt.resolvedUrl("resources/button-frame.png");
       pressedColor: Qt.darker(color, 1.2);
   }
@@ -451,7 +406,7 @@
   .button"} or if not defined, according to the rules defined by \a ".button" selector.
   However, the following example will create a selector like \a{".toolbar .button"}
   as there is a non-styled element between Toolbar and Button, so Button is no
-  longer a dirrect child of Toolbar.
+  longer a direct child of Toolbar.
   \qml
   Toolbar {
       ItemStyle.class: "toolbar"
@@ -568,11 +523,11 @@
   @qml-mapping(.frame, , TestFrameDelegate);
 
   .Button {
-      color: widget.hovered ? "tan" : "lightgray";
+      color: item.hovered ? "tan" : "lightgray";
   }
 
   .button {
-      color: widget.hovered ? "lightgray" : "#a3e5e8";
+      color: item.hovered ? "lightgray" : "#a3e5e8";
   }
 
   .button#red {

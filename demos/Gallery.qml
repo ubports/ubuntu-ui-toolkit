@@ -47,9 +47,10 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 3 // TODO TIM: revert to 0
+        property int selectedIndex: 4 // TODO TIM: revert to 0
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
                 {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
+                {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
                 {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
@@ -60,10 +61,9 @@ Rectangle {
                 {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
                 {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
                 {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": ""},
-                {"label": i18n.tr("Popovers"), "source": ""},
+                {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
+                {"label": i18n.tr("Popups"), "source": "Popups.qml"},
                 {"label": i18n.tr("Toolbars"), "source": ""},
-                {"label": i18n.tr("Sheets & Dialogues"), "source": ""},
                 {"label": i18n.tr("Grid View"), "source": ""},
                 {"label": i18n.tr("On Screen Keyboard"), "source": ""},
                 {"label": i18n.tr("Date Picker"), "source": ""},

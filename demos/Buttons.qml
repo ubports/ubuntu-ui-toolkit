@@ -45,7 +45,7 @@ Template {
 
             Button {
                 text: i18n.tr("Call")
-                color: "#37b301"
+                color: "#5da357"
             }
 
             Button {
@@ -62,7 +62,6 @@ Template {
                     id: darkButton
                     text: i18n.tr("Call")
                     ItemStyle.class: "dark-button"
-                    color: "#dd4f22"
                     anchors.centerIn: parent
                 }
             }
@@ -80,11 +79,13 @@ Template {
             }
 
             Button {
+                width: units.gu(11)
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
             }
 
             Button {
+                width: units.gu(11)
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
                 iconPosition: "right"

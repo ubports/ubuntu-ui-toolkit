@@ -71,7 +71,6 @@ Item {
     property int selectedTabIndex: -1
 
     onSelectedTabIndexChanged: print("selected tab "+selectedTabIndex)
-
     Component.onCompleted: {
         if (children.length > 0 && selectedTabIndex === -1) selectedTabIndex = 0;
     }
