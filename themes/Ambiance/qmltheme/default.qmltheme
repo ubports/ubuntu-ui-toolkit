@@ -16,6 +16,10 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
+@qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
+@qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
+@qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
+@qml-mapping (.pointer, , PointerDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -35,24 +39,26 @@ Examples:
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
 @qml-import(Ubuntu.Components 0.1);
+@qml-import(Ubuntu.Components.Popups 0.1);
+
 
 .UbuntuShape-radius-small {
-    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.3);
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
 }
 
 .UbuntuShape-radius-medium {
-    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.3);
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_medium_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_medium_radius_idle.sci");
 }
 
 .button, .custom-button {
-    color: "#e3e5e8";
-    shape: url("artwork/ButtonShape.png");
-    borderIdle: url("artwork/ButtonBorderIdle.png");
-    borderPressed: url("artwork/ButtonBorderPressed.png");
+    color: "#cccccc";
+    shape: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 .transparent-button {
@@ -65,16 +71,28 @@ Examples:
 }
 
 .dark-button {
-    color: "#e3e5e8";
-    shape: url("artwork/ButtonShapeDark.png");
-    borderIdle: url("artwork/ButtonBorderDarkIdle.png");
-    borderPressed: url("artwork/ButtonBorderDarkPressed.png");
+    color: "#cccccc";
+    shape: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 /* Default style for all TextCustom elements in Gallery*/
 .TextCustom {
     fontSize: "medium";
     color: "#757373";
+}
+
+.popover-foreground {
+}
+
+.sheet-foreground {
+}
+
+.dialog-foreground {
+}
+
+.pointer {
 }
 
 /*

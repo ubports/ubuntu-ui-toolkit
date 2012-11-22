@@ -33,7 +33,6 @@
      \code
          import Ubuntu.Components 0.1
      \endcode
-
      \annotatedlist ubuntu
 
      \part List Items
@@ -41,8 +40,14 @@
      \code
          import Ubuntu.Components.ListItems 0.1
      \endcode
-
      \annotatedlist ubuntu-listitems
+
+     \part Popovers, Sheets and Dialogs
+     Available through:
+     \code
+         import Ubuntu.Components.Popups 0.1
+     \endcode
+     \annotatedlist ubuntu-popups
 
      \part Theming Elements
      Available through:
@@ -56,6 +61,5 @@
      \code
          import Ubuntu.Components 0.1
      \endcode
-
      \annotatedlist resolution-independence
  */
