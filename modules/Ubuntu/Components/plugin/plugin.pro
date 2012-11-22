@@ -1,5 +1,10 @@
 include( ../../../../qtversioncheck.pri )
 
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += gio-2.0
+}
+
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
 QT += qml quick quick-private
@@ -28,7 +33,8 @@ HEADERS += plugin.h \
     ucscalingimageprovider.h \
     ucunits.h \
     ucqquickimageextension.h \
-    quickutils.h
+    quickutils.h \
+    giconprovider.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -43,7 +49,8 @@ SOURCES += plugin.cpp \
     ucscalingimageprovider.cpp \
     ucunits.cpp \
     ucqquickimageextension.cpp \
-    quickutils.cpp
+    quickutils.cpp \
+    giconprovider.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
