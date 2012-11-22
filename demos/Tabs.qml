@@ -21,7 +21,6 @@ Template {
     title: i18n.tr("Tabs")
 
     Tabs {
-//        selectedTabIndex: 2
         Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {
