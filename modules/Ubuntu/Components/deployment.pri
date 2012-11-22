@@ -34,9 +34,7 @@ listitems_files.path = $$installPath/ListItems
 listitems_files.files = $$LISTITEMS_FILES
 listitems_artwork_files.path = $$installPath/ListItems/artwork
 listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
-popups.path = $$installPath/Popups
+popups_files.path = $$installPath/Popups
 popups_files.files = $$POPUPS_FILES
-popups_artwork_files.path = $$installPath/Popups/artwork
-popups_artwork_files.files = $$POPUPS_ARTWORK_FILES
 
-INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files popups_artwork_files
+INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files
