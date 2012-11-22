@@ -61,7 +61,7 @@ Rectangle {
                 {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
                 {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
                 {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": ""},
+                {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
                 {"label": i18n.tr("Popups"), "source": "Popups.qml"},
                 {"label": i18n.tr("Toolbars"), "source": ""},
                 {"label": i18n.tr("Grid View"), "source": ""},
