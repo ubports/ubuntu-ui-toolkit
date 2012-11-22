@@ -80,12 +80,13 @@ Item {
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
     //  The workaround does not break the regular TabsDelegate.
     /*! \internal */
-    default property alias __pages: pagesModel.children
+//    default property alias __pages: pagesModel.children
     /*!
       \internal
       required by SlidingTabsDelegate
-     */    property alias __pagesModel: pagesModel
-    VisualItemModel {
-        id: pagesModel
-    }
+     */
+//    property alias __pagesModel: pagesModel
+//    VisualItemModel {
+//        id: pagesModel
+//    }
 }
