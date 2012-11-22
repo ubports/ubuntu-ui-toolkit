@@ -26,6 +26,18 @@ extern "C" {
 #include <gio/gio.h>
 }
 
+/*
+  GIconProvider is a implementation of QQuickImageProvider that handles GIcon sources.
+  GIcons sources can be loaded in QML using the uri: "image://gicon/<icon_name>"
+
+  Example:
+  \qml
+    Image {
+      source: "image://gicon/my_icon_name"
+    }
+  \endqml
+*/
+
 static QIcon getThemedIcon(GThemedIcon *icon)
 {
     const gchar* const* iconNames = g_themed_icon_get_names(icon);
