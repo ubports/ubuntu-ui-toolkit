@@ -79,12 +79,12 @@ Template {
                  }
                  Button {
                      text: "overwrite previous version"
-                     color: "orange"
+                     color: "#5da357"
                      onClicked: PopupUtils.close(dialogue)
                  }
                  Button {
                      text: "save a copy"
-                     color: "orange"
+                     color: "#5da357"
                      onClicked: PopupUtils.close(dialogue)
                  }
              }
