@@ -67,13 +67,11 @@ Item {
       \preliminary
       The index of the currently selected tab.
       The first tab is 0, and -1 means that no tab is selected.
+      The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: -1
+    property int selectedTabIndex: children.length > 0 ? 0 : -1
 
     onSelectedTabIndexChanged: print("selected tab "+selectedTabIndex)
-    Component.onCompleted: {
-        if (children.length > 0 && selectedTabIndex === -1) selectedTabIndex = 0;
-    }
 
     // FIXME: The __pages, __pagesModel and pagesModel are a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"

@@ -111,6 +111,8 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
+
+        onChildrenChanged: visuals.selectedTabChanged()
     }
 
     function selectedTabChanged() {
@@ -143,5 +145,7 @@ Item {
         onSelectedTabIndexChanged: visuals.selectedTabChanged()
     }
 
-    Component.onCompleted: visuals.updateSeparator();
+    Component.onCompleted: {
+        visuals.updateSeparator();
+    }
 }
