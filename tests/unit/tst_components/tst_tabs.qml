@@ -21,10 +21,28 @@ import Ubuntu.Components 0.1
 TestCase {
      name: "TabsAPI"
 
+     function test_selectedTabIndex() {
+        compare(emptyTabs.selectedTabIndex,-1,"The default value for selectedTabIndex is -1 when there are no tabs");
+        compare(tabs.selectedTabIndex,0,"The default selectedTabIndex is 0 when Tabs has contents");
+        var newSelectedTabIndex = 1;
+         tabs.selectedTabIndex = newSelectedTabIndex;
+         compare(tabs.selectedTabIndex, newSelectedTabIndex);
+     }
 
-
+     Tabs {
+         id: emptyTabs
+     }
 
      Tabs {
          id: tabs
+         Tab {
+             id: tab1
+         }
+         Tab {
+             id: tab2
+         }
+         Tab {
+             id: tab3
+         }
      }
 }
