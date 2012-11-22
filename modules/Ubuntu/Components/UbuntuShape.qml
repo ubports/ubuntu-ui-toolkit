@@ -115,7 +115,6 @@ Item {
                 source: shape.maskSource
                 visible: false
             }
-            live: false
         }
         property Image image: shape.image
         property color baseColor: shape.color
