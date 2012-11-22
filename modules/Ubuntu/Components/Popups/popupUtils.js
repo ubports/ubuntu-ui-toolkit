@@ -40,7 +40,6 @@ function open(popup, caller) {
 }
 
 function close(popupObject) {
-    print("destroying "+popupObject);
     popupObject.hide();
     popupObject.parent  = null;
     popupObject.destroy();
