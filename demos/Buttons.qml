@@ -79,11 +79,13 @@ Template {
             }
 
             Button {
+                width: units.gu(11)
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
             }
 
             Button {
+                width: units.gu(11)
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
                 iconPosition: "right"
