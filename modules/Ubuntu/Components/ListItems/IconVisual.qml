@@ -54,7 +54,6 @@ Item {
         asynchronous: true
     }
 
-
     UbuntuShape {
         visible: iconVisual.hasFrame
         anchors {
@@ -67,20 +66,4 @@ Item {
 
         image: icon
     }
-
-    //    BorderImage {
-    //        id: iconFrame
-    //        opacity: iconVisual.enabled ? 1.0 : 0.5
-    //        visible: iconVisual.hasFrame
-    //        source: visible ? "artwork/ListItemFrame.png" : ""
-    //        anchors.fill: icon
-    //        border {
-    //            left: units.dp(3)
-    //            right: units.dp(3)
-    //            top: units.dp(3)
-    //            bottom: units.dp(3)
-    //        }
-    //        horizontalTileMode: BorderImage.Stretch
-    //        verticalTileMode: BorderImage.Stretch
-    //    }
 }
