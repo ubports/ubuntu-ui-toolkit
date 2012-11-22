@@ -89,6 +89,11 @@ Rectangle {
         }
     }
 
+    Scrollbar {
+        flickableItem: widgetList
+        align: Qt.AlignTrailing
+    }
+
     Loader {
         id: widgetLoader
 
