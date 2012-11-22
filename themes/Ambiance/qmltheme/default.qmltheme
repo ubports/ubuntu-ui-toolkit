@@ -11,6 +11,7 @@ where
 If no style is given, the theme engine will use QtObject for style and will declare all
 properties typed as variant.
 */
+@qml-import(qmltheme 0.1, system:/Ambiance);
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
@@ -38,9 +39,6 @@ Examples:
       modules folder that is relative to the current path to the QML engine import paths
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
-@qml-import(Ubuntu.Components 0.1);
-@qml-import(Ubuntu.Components.Popups 0.1);
-
 
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
