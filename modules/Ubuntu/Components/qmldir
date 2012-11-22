@@ -15,7 +15,6 @@ Scrollbar 0.1 Scrollbar.qml
 ModelSectionCounter 0.1 ModelSectionCounter.qml
 internal Object Object.qml
 internal TabButton TabButton.qml
-internal ButtonMaskEffect ButtonMaskEffect.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
