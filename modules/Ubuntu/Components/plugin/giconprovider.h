@@ -1,7 +1,7 @@
 #ifndef GICONPROVIDER_H
 #define GICONPROVIDER_H
 
-#include <QQuickImageProvider>
+#include <QtQuick/QQuickImageProvider>
 
 class GIconProvider : public QQuickImageProvider
 {

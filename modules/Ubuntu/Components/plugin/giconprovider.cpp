@@ -1,10 +1,12 @@
 #include "giconprovider.h"
 
-#include <QDebug>
-#include <QFile>
-#include <QIcon>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtGui/QIcon>
 
+extern "C" {
 #include <gio/gio.h>
+}
 
 static QIcon getThemedIcon(GThemedIcon *icon)
 {
