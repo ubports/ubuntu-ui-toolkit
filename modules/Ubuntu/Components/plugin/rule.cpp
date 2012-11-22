@@ -26,6 +26,7 @@
 
 /*!
   \qmltype Rule
+  \internal
   \inqmlmodule Ubuntu.Components 0.1
   \ingroup theming
   \brief The Rule element defines the styling rule to be applied when a item

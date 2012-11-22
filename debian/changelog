@@ -1,3 +1,39 @@
+qt-components-ubuntu (0.1.11) quantal; urgency=low
+
+  * Daily release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Thu, 22 Nov 2012 09:34:17 +0000
+
+qt-components-ubuntu (0.1.10) quantal; urgency=low
+
+  * Daily release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 23:54:28 +0000
+
+qt-components-ubuntu (0.1.9) quantal; urgency=low
+
+  * Daily release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 14:33:06 +0000
+
+qt-components-ubuntu (0.1.8) quantal; urgency=low
+
+  * Daily release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 13:14:07 +0000
+
+qt-components-ubuntu (0.1.7) quantal; urgency=low
+
+  * New release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 01:02:57 +0000
+
+qt-components-ubuntu (0.1.6) quantal; urgency=low
+
+  * Daily release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 20 Nov 2012 17:43:40 +0000
+
 qt-components-ubuntu (0.1.5) quantal; urgency=low
 
   * Add qt-components-ubuntu-doc package containing HTML generated documentation

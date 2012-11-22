@@ -45,7 +45,7 @@ protected Q_SLOTS:
 
 protected:
     bool rewriteSciFile(QString sciFilePath, QString scaleFactor, QTextStream& output);
-    QString scaledBorder(QString border);
+    QString scaledBorder(QString border, QString scaleFactor);
     QString scaledSource(QString source, QString sciFilePath, QString scaleFactor);
 
 private:

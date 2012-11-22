@@ -27,7 +27,6 @@ Rectangle {
     id: header
 
     color: "#666666"
-    height: units.gu(5)
 
     /*!
       \preliminary

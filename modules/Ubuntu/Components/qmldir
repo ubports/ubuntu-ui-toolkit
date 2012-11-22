@@ -12,12 +12,12 @@ Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 Slider 0.1 Slider.qml
 internal TabButton TabButton.qml
-internal ButtonMaskEffect ButtonMaskEffect.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
+UbuntuShape 0.1 UbuntuShape.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
 
@@ -29,3 +29,4 @@ TabsDelegate 0.1 TabsDelegate.qml
 TabButtonStyle 0.1 TabButtonStyle.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
 TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml
+UbuntuShapeStyle 0.1 UbuntuShapeStyle.qml

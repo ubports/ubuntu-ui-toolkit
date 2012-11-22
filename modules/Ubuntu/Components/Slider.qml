@@ -58,15 +58,7 @@ import "mathUtils.js" as MathUtils
 AbstractButton {
     id: slider
 
-    // FIXME(loicm) There are stretched pixels on the left of the thumb when
-    //     the width is an odd number.
     width: units.gu(38)
-
-    // FIXME(loicm) Button and other components have a default height of 39, I
-    //     had to specify 42 here because under that value the BorderImage of
-    //     the inner element gets cropped and starts to look ugly. A general
-    //     solution would need to be found in order to support arbitrary sizes,
-    //     or maybe simply clamping the requested sizes.
     height: units.gu(5)
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
@@ -138,78 +130,21 @@ AbstractButton {
         id: main
         anchors.fill: parent
 
-        BorderImage {
+        UbuntuShape {
             id: backgroundShape
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: __shapeSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-        }
 
-        Rectangle {
-            id: backgroundBase
             anchors.fill: parent
             color: __backgroundColor
         }
 
-        ButtonMaskEffect {
-            anchors.fill: parent
-            gradientStrength: 0.0
-            mask: ShaderEffectSource { sourceItem: backgroundShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: backgroundBase; live: true; hideSource: true }
-        }
-
-        BorderImage {
-            id: backgroundBorder
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: __borderIdleSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-        }
-
-        // FIXME(loicm) The radius of the thumb BorderImage must be lower than
-        //     the radius of the background BorderImage so that the perimeter can
-        //     look perfectly consistent.
-
-        BorderImage {
+        UbuntuShape {
             id: thumbShape
+
             x: backgroundShape.x + __thumbSpacing + __normalizedValue * __thumbSpace
             y: backgroundShape.y + __thumbSpacing
             width: __thumbWidth
             height: backgroundShape.height - (2.0 * __thumbSpacing)
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: __shapeSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-        }
-
-        Rectangle {
-            id: thumbBase
-            anchors.fill: thumbShape
             color: __thumbColor
-        }
-
-        ButtonMaskEffect {
-            anchors.fill: thumbShape
-            gradientStrength: slider.pressed ? 0.2 : 0.4
-            mask: ShaderEffectSource { sourceItem: thumbShape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: thumbBase; live: true; hideSource: true }
-
-            Behavior on gradientStrength {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
-        }
-
-        BorderImage {
-            id: thumbBorder
-            anchors.fill: thumbShape
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: __borderIdleSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-            visible: true
         }
 
         TextCustom {
@@ -229,27 +164,21 @@ AbstractButton {
     }
 
     // Private symbols.
-
-    /*! \internal */
-    property url __shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
     
     /*! \internal */
-    property url __borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
+    property real __thumbSpacing: units.dp(2)
     
     /*! \internal */
-    property real __thumbSpacing: units.dp(3)
-    
-    /*! \internal */
-    property real __thumbWidth: units.gu(6)
+    property real __thumbWidth: slider.height - __thumbSpacing
     
     /*! \internal */
     property real __thumbSpace: backgroundShape.width - (2.0 * __thumbSpacing + __thumbWidth)
     
     /*! \internal */
-    property color __backgroundColor: "#c4c4c4"
+    property color __backgroundColor: "#d3d3d3"
     
     /*! \internal */
-    property color __thumbColor: "#8b8b8b"
+    property color __thumbColor: "#626262"
     
     /*! \internal */
     property real __dragInitMouseX: 0.0

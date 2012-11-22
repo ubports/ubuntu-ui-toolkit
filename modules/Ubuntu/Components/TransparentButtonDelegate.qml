@@ -58,7 +58,6 @@ Item {
             verticalCenterOffset: units.dp(-1)
         }
         fontSize: "medium"
-        font.italic: true
         opacity: item.enabled ? 1.0 : 0.5
         elide: Text.ElideRight
 

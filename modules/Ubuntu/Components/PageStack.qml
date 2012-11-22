@@ -71,13 +71,13 @@ Item {
     id: pageStack
 
     /*!
-      \preliminary
+      \internal
       Show a header bar at the top of the page stack which shows a back button
       to pop the top, and the title of the current page on top.
      */
     // TODO: Decide on our approach to Toolbars. For now, we always show a
     // header toolbar, but it is not part of the public API.
-    // property alias showHeader: header.visible
+    property alias __showHeader: header.visible
 
     /*!
       \preliminary
@@ -152,8 +152,12 @@ Item {
       Deactivate the active page and clear the stack.
      */
     function clear() {
-        if (stack.size() > 0) stack.top().active = false;
-        stack.clear();
+        while (stack.size() > 0) {
+            stack.top().pageStack = null;
+            stack.top().active = false;
+            if (stack.top().canDestroy) stack.top().destroyObject();
+            stack.pop();
+        }
         __stackUpdated();
     }
 
@@ -180,6 +184,7 @@ Item {
                 top: parent.top
             }
             pageStack: pageStack
+            height: header.visible ? units.gu(5) : 0
         }
 
         Item {
