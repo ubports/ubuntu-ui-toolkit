@@ -38,8 +38,8 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: units.gu(6)
-    height: units.gu(5)
+    width: units.gu(4)
+    height: units.gu(4)
 
     /*!
       \preliminary
@@ -59,45 +59,14 @@ AbstractButton {
 
         opacity: enabled ? 1.0 : 0.5
 
-        // FIXME: think of using distance fields
-        BorderImage {
+        UbuntuShape {
             id: shape
 
             anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: internals.shapeSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
-        }
-
-        // FIXME: might become a paper texture
-        Rectangle {
-            id: base
-
-            anchors.fill: shape
-
             color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
             Behavior on color {
                 ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
             }
-        }
-
-        ButtonMaskEffect {
-            anchors.fill: shape
-            gradientStrength: 0.0
-            mask: ShaderEffectSource { sourceItem: shape; live: true; hideSource: true }
-            base: ShaderEffectSource { sourceItem: base; live: true; hideSource: true }
-        }
-
-        // FIXME: could be generated from the shape (shadow parameters specified in guidelines)
-        BorderImage {
-            id: border
-
-            anchors.fill: parent
-            horizontalTileMode: BorderImage.Stretch
-            verticalTileMode: BorderImage.Stretch
-            source: checkBox.checked ? internals.borderPressedSource : internals.borderIdleSource
-            border.left: units.dp(14); border.top: units.dp(14); border.right: units.dp(14); border.bottom: units.dp(14)
         }
 
         Image {
@@ -120,10 +89,7 @@ AbstractButton {
         id: internals
 
         property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
-        property url shapeSource: Qt.resolvedUrl("artwork/ButtonShape.png")
-        property url borderPressedSource: Qt.resolvedUrl("artwork/ButtonBorderPressed.png")
-        property url borderIdleSource: Qt.resolvedUrl("artwork/ButtonBorderIdle.png")
-        property color uncheckedColor: "#e3e5e8"
-        property color checkedColor: "#8b8b8b"
+        property color uncheckedColor: checkedColor
+        property color checkedColor: "#626262"
     }
 }
