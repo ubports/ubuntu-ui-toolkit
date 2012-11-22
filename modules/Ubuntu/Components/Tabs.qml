@@ -70,11 +70,6 @@ Item {
      */
     property int selectedTabIndex: -1
 
-    // minimal width of 200
-    // TODO: remove this?
-    width: units.gu(25)
-    height: units.gu(4)
-
     Component.onCompleted: {
         if (children.length > 0) selectedTabIndex = 0;
     }
