@@ -73,14 +73,7 @@ Template {
                     id: listView
                     clip: true
                     anchors.fill: parent
-                    model: ListModel {
-                        id: listModel
-                        Component.onCompleted: {
-                            for (var i = 0; i < 100; i++) {
-                                listModel.append({"title": i, "label": i})
-                            }
-                        }
-                    }
+                    model: listModel
 
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
@@ -92,6 +85,14 @@ Template {
                         text: "Data - " + label
                     }
                 }
+                ListModel {
+                   id: listModel
+                   Component.onCompleted: {
+                       for (var i = 0; i < 100; i++) {
+                           listModel.append({"title": i, "label": i})
+                       }
+                   }
+               }
 
                 Scrollbar {
                     flickableItem: listView
