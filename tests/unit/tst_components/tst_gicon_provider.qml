@@ -14,24 +14,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library
+import QtQuick 2.0
+import QtTest 1.0
+import Ubuntu.Components 0.1
 
-// FIXME(loicm) It would be better to have these functions available in a global
-//     set of common native C++ functions.
+TestCase {
+     name: "GIconImageLoad"
 
-function clamp(x, min, max) {
-    return Math.max(min, Math.min(x, max));
-}
+     function test_image() {
+         verify(img.sourceSize.height > 0, "Image source size is invalid, image not loaded")
+     }
 
-function lerp(x, a, b) {
-    return ((1.0 - x) * a) + (x * b);
-}
-
-// Linearly project a value x from [xmin, xmax] into [ymin, ymax]
-function projectValue(x, xmin, xmax, ymin, ymax) {
-    return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
-}
-
-function clampAndProject(x, xmin, xmax, ymin, ymax) {
-    return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
+     Image {
+         id: img
+         source: "image://gicon/" + Qt.resolvedUrl("../../../demos/demo_image.jpg")
+     }
 }

@@ -11,11 +11,13 @@ where
 If no style is given, the theme engine will use QtObject for style and will declare all
 properties typed as variant.
 */
+@qml-import(qmltheme 0.1, system:/Ambiance);
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
@@ -38,9 +40,6 @@ Examples:
       modules folder that is relative to the current path to the QML engine import paths
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
-@qml-import(Ubuntu.Components 0.1);
-@qml-import(Ubuntu.Components.Popups 0.1);
-
 
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
@@ -125,4 +124,20 @@ Examples:
     color: "#757373";
     styleColor: "white";
     style: Text.Raised;
+}
+
+.scrollbar {
+    fadeAnimation: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
+    thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    backwardThumbReleased : (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
+    backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
+    forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
+    forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
+    sensingAreaThickness: units.gu(4);
+    scrollAreaThickness: units.dp(2);
+    thumbConnectorMargin: units.dp(3);
+    sliderColor: "#fc7134";
+    thumbConnectorColor: "white";
 }

@@ -61,8 +61,9 @@ Rectangle {
                 {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
                 {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
                 {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": ""},
+                {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
                 {"label": i18n.tr("Popups"), "source": "Popups.qml"},
+                {"label": i18n.tr("GIcon Provider"), "source": "GIconProvider.qml"},
                 {"label": i18n.tr("Toolbars"), "source": ""},
                 {"label": i18n.tr("Grid View"), "source": ""},
                 {"label": i18n.tr("On Screen Keyboard"), "source": ""},
@@ -74,7 +75,7 @@ Rectangle {
         delegate: Button {
             ItemStyle.class: "transparent-button"
             height: units.gu(6)
-            width: ListView.view.width
+            width: widgetList.width
             text: modelData.label
             onClicked: widgetList.selectedIndex = index
             enabled: modelData.source != ""
@@ -87,6 +88,11 @@ Rectangle {
                 visible: index == widgetList.selectedIndex
             }
         }
+    }
+
+    Scrollbar {
+        flickableItem: widgetList
+        align: Qt.AlignTrailing
     }
 
     Loader {

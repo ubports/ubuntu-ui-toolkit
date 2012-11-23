@@ -23,6 +23,7 @@
 
 class QQuickItem;
 class QQmlEngine;
+class QQmlComponent;
 class QJSEngine;
 class QuickUtils : public QObject
 {
@@ -36,6 +37,8 @@ public:
     }
 
     QQuickItem *rootObject();
+
+    Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
 
 Q_SIGNALS:
     void rootObjectChanged();
