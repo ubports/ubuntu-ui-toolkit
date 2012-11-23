@@ -32,11 +32,6 @@ Item {
         color: "yellow"
         anchors.fill: parent
         opacity: 0.4
-
-        //    property alias __pagesModel: pagesModel
-        //    VisualItemModel {
-        //        id: pagesModel
-        //    }
     }
 
     ListView {
@@ -46,6 +41,7 @@ Item {
         onModelChanged: updatePages();
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem
+//        snapMode: ListView.SnapToItem
         boundsBehavior: Flickable.DragOverBounds
 
         function updatePages() {
@@ -63,30 +59,33 @@ Item {
         onMovingChanged: {
             if(!moving) {
                 // update the currentItem
+                print("selected tab index = "+item.selectedTabIndex);
+                print("currentIndex = "+currentIndex);
                 var index = contentX / slidingTabsDelegate.width;
-                if (currentIndex !== index) {
-                    currentIndex = index;
+                print("index = "+index);
+//                if (currentIndex !== index) {
+//                    currentIndex = index;
 //                    selectedTabIndex = currentIndex;
 //                    print("contentX = "+contentX);
 //                    print("current index = "+currentIndex);
 //                    print("indexAt = " + indexAt(contentX, contentY));
-                }
+//                }
             }
         }
 
-//        function updateSelectedTabIndex() {
-//            print("new index = "+item.selectedTabIndex);
-//            listView.currentIndex = item.selectedTabIndex;
-//            listView.positionViewAtIndex(item.selectedTabIndex, ListView.Center);
-//            print("contentX = "+contentX);
-//        }
+        function updateSelectedTabIndex() {
+            print("new index = "+item.selectedTabIndex);
+            listView.currentIndex = item.selectedTabIndex;
+            listView.positionViewAtIndex(item.selectedTabIndex, ListView.Center);
+            print("contentX = "+contentX);
+        }
 
         Connections {
             target: item
-//            onSelectedTabIndexChanged: listView.updateSelectedTabIndex()
+            onSelectedTabIndexChanged: listView.updateSelectedTabIndex()
         }
 
-//        Component.onCompleted: listView.updateSelectedTabIndex()
+        Component.onCompleted: listView.updateSelectedTabIndex()
 
     }
 
