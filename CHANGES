@@ -6,18 +6,19 @@ SDK Release Notes
 
 UNRELEASED
 ##########
+
 New: Scrollbar component
 
 Compatibility Breaks
 ********************
 
-* None
+* Tabs component no longer has properties buttonsExpanded and separator.
+  These two properties can now be specified in the qmltheme of the Tabs.
 
 API Changes
 ***********
 
-* None
-
+* buttonsExpanded and separator properties removed from Tabs component.
 
 SDK 0.1.11
 ##########

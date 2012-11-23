@@ -14,7 +14,7 @@ Slider 0.1 Slider.qml
 Scrollbar 0.1 Scrollbar.qml
 ModelSectionCounter 0.1 ModelSectionCounter.qml
 Object 0.1 Object.qml
-internal TabButton TabButton.qml
+TabButton 0.1 TabButton.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
@@ -23,4 +23,3 @@ internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
-
