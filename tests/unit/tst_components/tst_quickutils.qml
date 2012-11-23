@@ -99,7 +99,6 @@ TestCase {
 
     property var stringList: ["1", "10", "100", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-
     ListView {
         id: list
 
