@@ -21,7 +21,9 @@ Template {
     title: i18n.tr("Tabs")
 
     Tabs {
-        selectedTabIndex: 2
+        id: tabs
+        Component.onCompleted: selectedTabIndex = 2
+//        selectedTabIndex: 2
         ItemStyle.class: "sliding-tabs"
         Tab {
             title: i18n.tr("Tab") + " 1"
@@ -40,10 +42,18 @@ Template {
             page: Rectangle {
                 anchors.fill: parent
                 color: "tan"
-                TextCustom {
+                Row {
                     anchors.centerIn: parent
-                    text: i18n.tr("This is the second tab.")
-                    color: "#757373"
+                    Button {
+                        width: units.gu(20)
+                        text: i18n.tr("Go to previous tab")
+                        onClicked: tabs.selectedTabIndex--
+                    }
+                    Button {
+                        width: units.gu(20)
+                        text: i18n.tr("Go to next tab")
+                        onClicked: tabs.selectedTabIndex++
+                    }
                 }
             }
         }

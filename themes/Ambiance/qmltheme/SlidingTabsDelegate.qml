@@ -43,6 +43,9 @@ Item {
         snapMode: ListView.SnapOneItem
 //        snapMode: ListView.SnapToItem
         boundsBehavior: Flickable.DragOverBounds
+        highlightFollowsCurrentItem: true
+
+//        onModelChanged: print("change!!")
 
         function updatePages() {
             var page;
@@ -54,30 +57,22 @@ Item {
                 page.anchors.fill = null;
                 if (page.hasOwnProperty("__active")) page.__active = true;
             }
-//            listView.updateSelectedTabIndex();
+            print(pageList.length + " pages. updating tab index");
+            listView.updateSelectedTabIndex();
         }
         onMovingChanged: {
             if(!moving) {
                 // update the currentItem
-                print("selected tab index = "+item.selectedTabIndex);
-                print("currentIndex = "+currentIndex);
-                var index = contentX / slidingTabsDelegate.width;
-                print("index = "+index);
-//                if (currentIndex !== index) {
-//                    currentIndex = index;
-//                    selectedTabIndex = currentIndex;
-//                    print("contentX = "+contentX);
-//                    print("current index = "+currentIndex);
-//                    print("indexAt = " + indexAt(contentX, contentY));
-//                }
+                listView.currentIndex = contentX / slidingTabsDelegate.width;
+                item.selectedTabIndex = listView.currentIndex;
             }
         }
 
         function updateSelectedTabIndex() {
-            print("new index = "+item.selectedTabIndex);
+            print("currentIndex = "+currentIndex+", selected tab = "+item.selectedTabIndex);
+            if (listView.currentIndex === item.selectedTabIndex) return;
+            // The view is automatically updated, because highlightFollowsCurrentItem
             listView.currentIndex = item.selectedTabIndex;
-            listView.positionViewAtIndex(item.selectedTabIndex, ListView.Center);
-            print("contentX = "+contentX);
         }
 
         Connections {
