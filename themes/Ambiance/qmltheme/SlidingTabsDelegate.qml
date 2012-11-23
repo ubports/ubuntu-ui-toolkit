@@ -22,7 +22,6 @@ Item {
 
     onWidthChanged: listView.updatePages();
     onHeightChanged: listView.updatePages();
-
     Component.onCompleted: listView.updatePages();
 
     clip: true
@@ -46,6 +45,7 @@ Item {
         highlightFollowsCurrentItem: true
 
 //        onModelChanged: print("change!!")
+
 
         function updatePages() {
             var page;
@@ -80,8 +80,12 @@ Item {
             onSelectedTabIndexChanged: listView.updateSelectedTabIndex()
         }
 
-        Component.onCompleted: listView.updateSelectedTabIndex()
-
+//        Component.onCompleted: listView.updateSelectedTabIndex()
+        Component.onCompleted: {
+            print("bla");
+            currentIndex = 2;
+            positionViewAtIndex(count - 1, ListView.Beginning)
+//            listView.positionViewAtIndex(2, ListView.Beginning);
+        }
     }
-
 }
