@@ -29,7 +29,21 @@ TestCase {
         compare(absButton.pressed,false,"Pressed is boolean and false by default")
      }
 
+     function test_signal_clicked() {
+         signalSpy.signalName = "clicked";
+         compare(signalSpy.valid,true,"clicked signal exists")
+     }
+
+     function test_signal_pressAndHold() {
+         signalSpy.signalName = "pressAndHold";
+         compare(signalSpy.valid,true,"pressAndHold signal exists")
+     }
+
      AbstractButton {
          id: absButton
+         SignalSpy {
+             id: signalSpy
+             target: parent
+         }
      }
 }

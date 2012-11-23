@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 // internal helper class to create the visuals
 // for the icon.
@@ -40,6 +41,7 @@ Item {
 
     ImageWithFallback {
         id: icon
+        visible: !iconVisual.hasFrame
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectCrop
         anchors {
@@ -53,19 +55,16 @@ Item {
         asynchronous: true
     }
 
-    BorderImage {
-        id: iconFrame
-        opacity: iconVisual.enabled ? 1.0 : 0.5
+    UbuntuShape {
         visible: iconVisual.hasFrame
-        source: visible ? "artwork/ListItemFrame.png" : ""
-        anchors.fill: icon
-        border {
-            left: units.dp(3)
-            right: units.dp(3)
-            top: units.dp(3)
-            bottom: units.dp(3)
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            leftMargin: iconVisual.leftIconMargin
         }
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Stretch
+        height: icon.height
+        width: icon.width
+
+        image: icon
     }
 }

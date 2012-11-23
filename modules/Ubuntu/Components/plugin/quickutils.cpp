@@ -22,6 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlContext>
 #include <QtCore/QAbstractListModel>
+#include <QtQml/QQmlPropertyMap>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
@@ -43,28 +44,63 @@ QQuickItem *QuickUtils::rootObject()
 /*!
  * \internal
  * Creates an instance out of a delegate using the roles specified in the
- * modelData. Accepts QAbstractListModel delegates
+ * modelData. Accepts QAbstractListModel, QStringList and QVariantList models.
  */
+
+
 qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &modelData)
 {
-    QAbstractListModel *model = qvariant_cast<QAbstractListModel*>(modelData);
-    // accept only QAbstractListModel derived models
-    if (!delegate || !model)
-        return 0.0;
+    qreal result = 0.0;
+    if (!delegate)
+        return result;
 
     QQmlContext *creationContext = delegate->creationContext();
-    QQmlContext *context = new QQmlContext(creationContext);
+    QQmlContext *context = 0;
+    QAbstractListModel *model = qvariant_cast<QAbstractListModel*>(modelData);
 
-    qreal result = 0.0;
-    // define roles inside the context
-    const QHash<int,QByteArray> roles = model->roleNames();
-    if (roles.count()) {
-        QHashIterator<int,QByteArray> i(roles);
-        while (i.hasNext()) {
-            i.next();
-            context->setContextProperty(i.value(), "");
+    if (model) {
+
+        // QAbstractListModel derived models
+        const QHash<int,QByteArray> roles = model->roleNames();
+        if (roles.count()) {
+
+            context = new QQmlContext(creationContext);
+            // put roles inside the context
+            QHashIterator<int,QByteArray> i(roles);
+            while (i.hasNext()) {
+                i.next();
+                context->setContextProperty(i.value(), "");
+            }
         }
-        // add section too
+    } else if (modelData.type() == QVariant::List){
+        QVariantList vModel = qvariant_cast<QVariantList>(modelData);
+        if (vModel.count() > 0) {
+            if (vModel[0].type() == QVariant::String) {
+                context = new QQmlContext(creationContext);
+                // the only role name we have is modelData
+                context->setContextProperty("modelData", "");
+
+            } else if (vModel[0].type() == QVariant::Map) {
+                // we need only the keys, attached to an object named "modelData"
+                context = new QQmlContext(creationContext);
+                QQmlPropertyMap *modelData = new QQmlPropertyMap(context);
+                QVariantMap map = qvariant_cast<QVariantMap>(vModel[0]);
+                QStringList roles = map.uniqueKeys();
+
+                Q_FOREACH(const QString &role, roles)
+                    modelData->insert(role, "");
+
+                context->setContextProperty("modelData", modelData);
+            }
+        }
+    } else if (modelData.type() == QVariant::Int) {
+        context = new QQmlContext(creationContext);
+        // the only role name we have is modelData
+        context->setContextProperty("modelData", 0);
+    }
+    if (context) {
+        // add index and section too
+        context->setContextProperty("index", 0);
         context->setContextProperty("section", "");
         // create item from component
         QObject * obj = delegate->create(context);
@@ -72,7 +108,6 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
         result = item->height();
         item->deleteLater();
     }
-
     return result;
 }
 

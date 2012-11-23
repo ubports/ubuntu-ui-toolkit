@@ -32,12 +32,15 @@ Image {
         }
     }
 
-    onSourceChanged: fallbackRequired = false
-    onFallbackSourceChanged: if (fallbackRequired) tryLoadingFallbackSource()
-    onStatusChanged: {
-        if (status == Image.Error && source != fallbackSource) {
+    function checkStatus() {
+        if (!isSourceDefined(source) || (status == Image.Error && source != fallbackSource)) {
             fallbackRequired = true
             tryLoadingFallbackSource()
         }
     }
+
+    onSourceChanged: fallbackRequired = false
+    onFallbackSourceChanged: if (fallbackRequired) tryLoadingFallbackSource()
+    onStatusChanged: checkStatus()
+    Component.onCompleted: checkStatus()
 }

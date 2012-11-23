@@ -118,6 +118,11 @@ TestCase {
          compare(textField.acceptableInput,false,"with validator failure the acceptableInput should be false")
      }
 
+     function test_accepted() {
+         signalSpy.signalName = "accepted";
+         compare(signalSpy.valid,true,"accepted signal exists")
+     }
+
      RegExpValidator {
          id: regExpValidator
          regExp: /[a-z]*/
@@ -125,5 +130,9 @@ TestCase {
 
      TextField {
          id: textField
+         SignalSpy {
+             id: signalSpy
+             target: parent
+         }
      }
 }

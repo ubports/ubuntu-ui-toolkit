@@ -15,34 +15,43 @@
  */
 
 import QtQuick 2.0
-import QtTest 1.0
 import Ubuntu.Components 0.1
 
-TestCase {
-    name: "TabsAPI"
+Template {
+    title: i18n.tr("GIcon image provider")
 
-    function test_selectedTabIndex() {
-        compare(emptyTabs.selectedTabIndex,-1,"The default value for selectedTabIndex is -1 when there are no tabs");
-        compare(tabs.selectedTabIndex,0,"The default selectedTabIndex is 0 when Tabs has contents");
-        var newSelectedTabIndex = 1;
-        tabs.selectedTabIndex = newSelectedTabIndex;
-        compare(tabs.selectedTabIndex, newSelectedTabIndex,"can set selectedTabIndex");
-    }
+    Column {
+        spacing: units.gu(4)
 
-    Tabs {
-        id: emptyTabs
-    }
+        TemplateRow {
+            title: i18n.tr("color")
 
-    Tabs {
-        id: tabs
-        Tab {
-            id: tab1
+            Image {
+                source: "image://gicon/preferences-color"
+                height: 48
+                width: 48
+            }
         }
-        Tab {
-            id: tab2
+
+        TemplateRow {
+            title: i18n.tr("display")
+
+            Image {
+                source: "image://gicon/preferences-desktop-display"
+                height: 48
+                width: 48
+            }
         }
-        Tab {
-            id: tab3
+
+        TemplateRow {
+            title: i18n.tr("time")
+
+            Image {
+                source: "image://gicon/preferences-system-time"
+                height: 48
+                width: 48
+            }
         }
+
     }
 }

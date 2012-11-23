@@ -1,0 +1,17 @@
+module qmltheme
+ButtonStyle 0.1 ButtonStyle.qml
+ButtonDelegate 0.1 ButtonDelegate.qml
+TabButtonStyle 0.1 TabButtonStyle.qml
+TabButtonDelegate 0.1 TabButtonDelegate.qml
+TabsDelegate 0.1 TabsDelegate.qml
+TabsStyle 0.1 TabsStyle.qml
+SlidingTabsDelegate 0.1 SlidingTabsDelegate.qml
+TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml
+UbuntuShapeStyle 0.1 UbuntuShapeStyle.qml
+DialogForegroundDelegate 0.1 DialogForegroundDelegate.qml
+PopoverForegroundDelegate 0.1 PopoverForegroundDelegate.qml
+SheetForegroundDelegate 0.1 SheetForegroundDelegate.qml
+PointerDelegate 0.1 PointerDelegate.qml
+ScrollbarStyle 0.1 ScrollbarStyle.qml
+ScrollbarDelegate 0.1 ScrollbarDelegate.qml
+ScrollSliderSizer 0.1 ScrollSliderSizer.qml

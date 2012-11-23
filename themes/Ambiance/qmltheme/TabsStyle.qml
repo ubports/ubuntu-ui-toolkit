@@ -23,22 +23,22 @@ QtObject {
       If the value is false, instead each button will use the width that
       is required by the largest tab button.
      */
-    property bool buttonsExpanded: false
+    property bool buttonsExpanded
 
     /*!
       If this optional property is specified, it will be positioned
       between the bar with tab buttons, and the tab pages to act
       as a separator.
      */
-    property Item separator: Rectangle { height: units.dp(1); color: "white" }
+    property Item separator
 
     /*!
       The padding on the left and right side of the row of buttons.
     */
-    property real horizontalPadding: units.gu(1)
+    property real horizontalPadding
 
     /*!
       The minimum width of the tab buttons
      */
-    property real minimumButtonWidth: units.gu(3)
+    property real minimumButtonWidth
 }
