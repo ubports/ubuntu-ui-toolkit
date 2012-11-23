@@ -19,31 +19,14 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-     name: "AbstractButtonAPI"
+     name: "GIconImageLoad"
 
-     function test_hovered() {
-        compare(absButton.hovered,false,"Hovered is boolean and false by default")
+     function test_image() {
+         verify(img.sourceSize.height > 0, "Image source size is invalid, image not loaded")
      }
 
-     function test_pressed() {
-        compare(absButton.pressed,false,"Pressed is boolean and false by default")
-     }
-
-     function test_signal_clicked() {
-         signalSpy.signalName = "clicked";
-         compare(signalSpy.valid,true,"clicked signal exists")
-     }
-
-     function test_signal_pressAndHold() {
-         signalSpy.signalName = "pressAndHold";
-         compare(signalSpy.valid,true,"pressAndHold signal exists")
-     }
-
-     AbstractButton {
-         id: absButton
-         SignalSpy {
-             id: signalSpy
-             target: parent
-         }
+     Image {
+         id: img
+         source: "image://gicon/" + Qt.resolvedUrl("../../../demos/demo_image.jpg")
      }
 }

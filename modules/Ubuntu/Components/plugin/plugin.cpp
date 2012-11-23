@@ -30,6 +30,7 @@
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
 #include "quickutils.h"
+#include "giconprovider.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -66,4 +67,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
+
+    // register gicon provider
+     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
 }
