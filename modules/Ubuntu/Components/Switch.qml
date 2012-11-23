@@ -44,8 +44,8 @@ AbstractButton {
     //     as a guideline to prevent that?
     id: sweetch
 
-    width: units.gu(10)
-    height: units.gu(5)
+    width: units.gu(8)
+    height: units.gu(4)
 
     /*!
       \preliminary
