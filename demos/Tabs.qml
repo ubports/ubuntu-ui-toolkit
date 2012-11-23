@@ -23,7 +23,7 @@ Template {
     Tabs {
         id: tabs
 //        Component.onCompleted: selectedTabIndex = 2
-        selectedTabIndex: 2
+//        selectedTabIndex: 2
         ItemStyle.class: "sliding-tabs"
         Tab {
             title: i18n.tr("Tab") + " 1"

@@ -15,17 +15,15 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 Item {
     id: slidingTabsDelegate
     anchors.fill: parent
 
-    onWidthChanged: listView.updatePages();
-    onHeightChanged: listView.updatePages();
-    Component.onCompleted: listView.updatePages();
-
     clip: true
 
+//    property alias contentItem: container
     // TODO: Remove after debugging
     Rectangle {
         color: "yellow"
@@ -33,31 +31,68 @@ Item {
         opacity: 0.4
     }
 
+    property VisualItemModel tabModel: itemModel //item.__pagesModel
+
+//    onTabModelChanged: {
+//        print("updating tab model");
+//        listView.updatePages();
+//    }
+
+    VisualItemModel {
+        id: itemModel
+        Tab {
+            width: 500; height: 300
+            page: Rectangle { color: "red"; width: 500; height: 300 }
+        }
+        Tab {
+            width: 500; height: 300
+            page: Rectangle { color: "white"; width: 500; height: 300 }
+        }
+        Tab {
+            width: 500; height: 300
+            Rectangle { color: "blue"; width: 500; height: 300 }
+        }
+    }
+
+
     ListView {
         id: listView
         anchors.fill: parent
-        model: item.__pagesModel
-        onModelChanged: updatePages();
+        model: slidingTabsDelegate.tabModel
+//        model: item.__pages
+//        onModelChanged: updatePages();
+//        orientation: ListView.Horizontal
+//        snapMode: ListView.SnapOneItem
+////        snapMode: ListView.SnapToItem
+//        boundsBehavior: Flickable.DragOverBounds
+//        highlightFollowsCurrentItem: true
+
+        clip: true
+//        model: container.children
+//        anchors.centerIn: parent
+//        width: 400
+//        height: 300
+
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem
 //        snapMode: ListView.SnapToItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
 
-//        onModelChanged: print("change!!")
-
 
         function updatePages() {
-            var page;
-            var pageList = item.__pagesModel.children
-            for (var i=0; i < pageList.length; i++) {
-                page = pageList[i];
-                page.width = slidingTabsDelegate.width;
-                page.height = slidingTabsDelegate.height;
-                page.anchors.fill = null;
-                if (page.hasOwnProperty("__active")) page.__active = true;
+            var tab;
+            var tabList = slidingTabsDelegate.tabModel.children
+//            var pageList = container.children;
+            print("w*h = "+slidingTabsDelegate.width+", "+slidingTabsDelegate.height);
+            for (var i=0; i < tabList.length; i++) {
+                tab = tabList[i];
+                tab.width = slidingTabsDelegate.width;
+                tab.height = slidingTabsDelegate.height;
+                tab.anchors.fill = null;
+                if (tab.hasOwnProperty("__active")) tab.__active = true;
             }
-            print(pageList.length + " pages. updating tab index");
+            print(tabList.length + " pages. updating tab index");
             listView.updateSelectedTabIndex();
         }
         onMovingChanged: {
@@ -81,11 +116,23 @@ Item {
         }
 
 //        Component.onCompleted: listView.updateSelectedTabIndex()
-        Component.onCompleted: {
-            print("bla");
-            currentIndex = 2;
-            positionViewAtIndex(count - 1, ListView.Beginning)
+//        Component.onCompleted: {
+//            print("bla");
+//            currentIndex = 2;
+//            positionViewAtIndex(count - 1, ListView.Beginning)
 //            listView.positionViewAtIndex(2, ListView.Beginning);
+//        }
+        Component.onCompleted: {
+            listView.updatePages();
+            listView.positionViewAtIndex(1, ListView.Beginning);
         }
+
     }
+
+    onWidthChanged: listView.updatePages();
+    onHeightChanged: listView.updatePages();
+    Component.onCompleted: listView.updatePages();
+
+
+//    Component.onCompleted: item.selectedTabIndex = 2
 }
