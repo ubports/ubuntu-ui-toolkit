@@ -75,7 +75,7 @@ Rectangle {
         delegate: Button {
             ItemStyle.class: "transparent-button"
             height: units.gu(6)
-            width: ListView.view.width
+            width: widgetList.width
             text: modelData.label
             onClicked: widgetList.selectedIndex = index
             enabled: modelData.source != ""
