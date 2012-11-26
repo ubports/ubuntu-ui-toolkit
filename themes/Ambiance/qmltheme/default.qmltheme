@@ -154,8 +154,11 @@ Examples:
     thumbConnectorColor: "white";
 }
 
-/* TextField default theme */
-@qml-mapping(.textfield .clear-button, , TransparentButtonDelegate);
+/* TextField default theme
+   Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
+*/
+
+@qml-mapping(.textfield .button, , TransparentButtonDelegate);
 @qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
@@ -173,7 +176,7 @@ Examples:
 }
 
 /* clear button */
-.textfield .clear-button {
+.textfield .button {
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
@@ -185,10 +188,10 @@ Examples:
    elide: Text.ElideRight;
 }
 /* cursor */
-.textfield .cursor {
+.cursor {
    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
    opacity: 1.0;
    width: units.dp(1);
    blinkTimeoutShown: 800;
-   blinkTimeoutHidden: 0;
+   blinkTimeoutHidden: 400;
 }

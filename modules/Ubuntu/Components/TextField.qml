@@ -469,8 +469,6 @@ FocusScope {
     }
 
     Button {
-        // FIXME: see previous FIXME
-        Theming.ItemStyle.class: "clear-button"
         id: clearButton
         anchors {
             right: rightPane.left
