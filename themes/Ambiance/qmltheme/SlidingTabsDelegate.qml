@@ -23,7 +23,6 @@ Item {
 
     clip: true
 
-//    property alias contentItem: container
     // TODO: Remove after debugging
     Rectangle {
         color: "yellow"
@@ -31,47 +30,36 @@ Item {
         opacity: 0.4
     }
 
-    property VisualItemModel tabModel: itemModel //item.__pagesModel
+    property VisualItemModel tabModel: item.__pagesModel
 
 //    onTabModelChanged: {
 //        print("updating tab model");
 //        listView.updatePages();
 //    }
-
-    VisualItemModel {
-        id: itemModel
-        Tab {
-            width: 500; height: 300
-            page: Rectangle { color: "red"; width: 500; height: 300 }
-        }
-        Tab {
-            width: 500; height: 300
-            page: Rectangle { color: "white"; width: 500; height: 300 }
-        }
-        Tab {
-            width: 500; height: 300
-            Rectangle { color: "blue"; width: 500; height: 300 }
-        }
-    }
+//    VisualItemModel {
+//        id: itemModel
+//        Tab {
+//            width: 500; height: 300
+//            page: Rectangle { color: "red"; anchors.fill: parent }
+//        }
+//        Tab {
+//            width: 500; height: 300
+//            page: Rectangle { color: "white"; anchors.fill: parent }
+//        }
+//        Tab {
+//            width: 500; height: 300
+//            Rectangle { color: "blue"; anchors.fill: parent }
+//        }
+//    }
 
 
     ListView {
         id: listView
         anchors.fill: parent
         model: slidingTabsDelegate.tabModel
-//        model: item.__pages
-//        onModelChanged: updatePages();
-//        orientation: ListView.Horizontal
-//        snapMode: ListView.SnapOneItem
-////        snapMode: ListView.SnapToItem
-//        boundsBehavior: Flickable.DragOverBounds
-//        highlightFollowsCurrentItem: true
+        onModelChanged: listView.updatePages();
 
         clip: true
-//        model: container.children
-//        anchors.centerIn: parent
-//        width: 400
-//        height: 300
 
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem
@@ -83,7 +71,6 @@ Item {
         function updatePages() {
             var tab;
             var tabList = slidingTabsDelegate.tabModel.children
-//            var pageList = container.children;
             print("w*h = "+slidingTabsDelegate.width+", "+slidingTabsDelegate.height);
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
@@ -115,13 +102,6 @@ Item {
             onSelectedTabIndexChanged: listView.updateSelectedTabIndex()
         }
 
-//        Component.onCompleted: listView.updateSelectedTabIndex()
-//        Component.onCompleted: {
-//            print("bla");
-//            currentIndex = 2;
-//            positionViewAtIndex(count - 1, ListView.Beginning)
-//            listView.positionViewAtIndex(2, ListView.Beginning);
-//        }
         Component.onCompleted: {
             listView.updatePages();
             listView.positionViewAtIndex(1, ListView.Beginning);
@@ -132,7 +112,4 @@ Item {
     onWidthChanged: listView.updatePages();
     onHeightChanged: listView.updatePages();
     Component.onCompleted: listView.updatePages();
-
-
-//    Component.onCompleted: item.selectedTabIndex = 2
 }
