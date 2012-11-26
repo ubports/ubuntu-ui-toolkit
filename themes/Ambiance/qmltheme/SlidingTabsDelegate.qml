@@ -22,7 +22,7 @@ Item {
     id: slidingTabsDelegate
     anchors.fill: parent
 
-        clip: true
+    clip: true
 
     property VisualItemModel tabModel: item.__pagesModel
 
@@ -71,15 +71,17 @@ Item {
         property bool active: false
         onActiveChanged: buttonView.position()
 
-        ListView {
+        Flickable {
             id: buttonView
             anchors.fill: parent
-            model: slidingTabsDelegate.tabModel.children
+            contentWidth: 600
+//            contentHeight: 100
+            //            model: slidingTabsDelegate.tabModel.children
 
             clip: false
 
-            orientation: ListView.Horizontal
-            snapMode: ListView.NoSnap
+            //            orientation: ListView.Horizontal
+            //            snapMode: ListView.NoSnap
 
             Connections {
                 target: item
@@ -88,49 +90,68 @@ Item {
 
             function position() {
                 if (tabBar.active) {
-                    if (buttonView.currentIndex > 0) {
+                    if (item.selectedTabIndex > 0) {
                         // move the current button a bit to the right so that the user can see
                         // that it is possible to scroll left
-                        buttonView.contentX -= units.gu(4);
+//                        buttonView.contentX -= units.gu(4);
                     }
                 } else {
                     // not active, move the button of the current tab to the left
-                    buttonView.currentIndex = item.selectedTabIndex;
-                    buttonView.contentX = buttonView.currentItem.x;
+                    buttonView.contentX = repeater.itemAt(item.selectedTabIndex).x;
                 }
             }
 
-            delegate: AbstractButton {
-                id: tabButton
-                width: text.width + 2*text.anchors.margins
+            Row {
                 height: parent.height
+                width: childrenRect.width
 
-                visible:  tabBar.active || selected
-//                ItemStyle.class: "transparent-button"
-                property bool selected: (index === item.selectedTabIndex)
+                spacing: units.gu(2)
 
-                TextCustom {
-                    anchors.centerIn: parent
-                    anchors.margins: units.gu(2)
-                    id: text
-                    text: modelData.title
-                    fontSize: "x-large"
-                }
+                Repeater {
+                    id: repeater
+                    //                    AbstractButton {
+                    model: slidingTabsDelegate.tabModel.children
+                    AbstractButton {
+                        id: tabButton
+                        width: text.width + 2*text.anchors.margins
+                        height: parent.height
+//                        color: "pink"
+//                        visible:  tabBar.active || selected
+                        //                ItemStyle.class: "transparent-button"
+                        property bool selected: (index === item.selectedTabIndex)
 
-//                text: modelData.title
-//                iconSource: modelData.iconSource
-                onClicked: {
-                    item.selectedTabIndex = index;
-                    tabBar.active = false;
+                        Rectangle {
+                            border.width: 2
+                            radius: 10
+                            color: "yellow"
+                            anchors.fill: parent
+                        }
+
+                        TextCustom {
+                            visible:  tabBar.active || selected
+                            anchors.centerIn: parent
+                            anchors.margins: units.gu(2)
+                            id: text
+                            text: modelData.title
+                            fontSize: "x-large"
+                        }
+
+                        //                text: modelData.title
+                        //                iconSource: modelData.iconSource
+                        onClicked: {
+                            item.selectedTabIndex = index;
+                            tabBar.active = false;
+                        }
+                    }
                 }
             }
-        }
 
-        MouseArea {
-            // an inactive tabBar can be clicked to make it active
-            anchors.fill: parent
-            enabled: !tabBar.active
-            onClicked: tabBar.active = true
+            MouseArea {
+                // an inactive tabBar can be clicked to make it active
+                anchors.fill: parent
+                enabled: !tabBar.active
+                onClicked: tabBar.active = true
+            }
         }
     }
 
