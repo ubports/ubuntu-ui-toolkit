@@ -26,7 +26,8 @@ Template {
 //        selectedTabIndex: 2
         ItemStyle.class: "sliding-tabs"
         Tab {
-            title: i18n.tr("Tab") + " 1"
+//            title: i18n.tr("Tab") + " 1"
+            title: "Calls"
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
@@ -39,6 +40,7 @@ Template {
         }
         Tab {
             iconSource: "call_icon.png"
+            title: "Conversations"
             page: Rectangle {
                 anchors.fill: parent
                 color: "tan"
@@ -58,7 +60,8 @@ Template {
             }
         }
         Tab {
-            title: i18n.tr("Tab") + " 3"
+//            title: i18n.tr("Tab") + " 3"
+            title: "Contacts"
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }

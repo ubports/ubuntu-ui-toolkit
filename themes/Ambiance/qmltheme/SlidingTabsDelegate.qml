@@ -60,7 +60,7 @@ Item {
 
     Rectangle {
         id: tabBar
-        color: "lightyellow"
+        color: "transparent"
         anchors {
             top: orangebar.bottom
             left: parent.left
@@ -100,16 +100,25 @@ Item {
                 }
             }
 
-            delegate: Button {
+            delegate: AbstractButton {
                 id: tabButton
-                width: units.gu(35)
+                width: text.width + 2*text.anchors.margins
                 height: parent.height
 
                 visible:  tabBar.active || selected
-                ItemStyle.class: "transparent-button"
+//                ItemStyle.class: "transparent-button"
                 property bool selected: (index === item.selectedTabIndex)
-                text: modelData.title
-                iconSource: modelData.iconSource
+
+                TextCustom {
+                    anchors.centerIn: parent
+                    anchors.margins: units.gu(2)
+                    id: text
+                    text: modelData.title
+                    fontSize: "x-large"
+                }
+
+//                text: modelData.title
+//                iconSource: modelData.iconSource
                 onClicked: {
                     item.selectedTabIndex = index;
                     tabBar.active = false;
@@ -125,10 +134,15 @@ Item {
         }
     }
 
+    ListItem.Divider {
+        id: divider
+        anchors.top: tabBar.bottom
+    }
+
     ListView {
         id: tabView
         anchors {
-            top: tabBar.bottom
+            top: divider.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -150,9 +164,6 @@ Item {
             if (!slidingTabsDelegate.tabModel) return; // not initialized yet
 
             var tabList = slidingTabsDelegate.tabModel.children
-            print(slidingTabsDelegate+" " +slidingTabsDelegate.tabModel + " "+tabList + " "+item + " "+item.__pagesModel);
-
-            //            print("w*h = "+slidingTabsDelegate.width+", "+slidingTabsDelegate.height);
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
                 tab.width = tabView.width;
@@ -160,7 +171,6 @@ Item {
                 tab.anchors.fill = null;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
             }
-            print(tabList.length + " pages. updating tab index");
             tabView.updateSelectedTabIndex();
         }
         onMovingChanged: {
@@ -172,7 +182,6 @@ Item {
         }
 
         function updateSelectedTabIndex() {
-            print("currentIndex = "+currentIndex+", selected tab = "+item.selectedTabIndex);
             if (tabView.currentIndex === item.selectedTabIndex) return;
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;
