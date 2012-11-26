@@ -116,7 +116,7 @@ Item {
                 visible: false
             }
         }
-        property Image image: shape.image
+        property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
         property color baseColor: shape.color
         property color gradientColor: shape.gradientColor
 
