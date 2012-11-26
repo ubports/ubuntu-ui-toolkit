@@ -22,10 +22,14 @@ QtObject {
         These properties hold the images of the frame and background that will be drawn
         around the input. Images represent the state and error highlight
       */
-    property url frameImageIdle
-    property url frameImageNormal
-    property url frameImageError
-    property url frameImageIdleError
+    property url backgroundBorder
+    property url backgroundShape
+
+    /*!
+      Background fill colors for accepted input and erronous inputs
+      */
+    property color normalFillColor
+    property color errorFillColor
 
     /*!
       Text color.

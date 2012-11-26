@@ -27,6 +27,7 @@ Item {
     z: -1
 
     // frame
+    /*
     BorderImage {
         id: frame
         anchors.fill: parent
@@ -44,5 +45,23 @@ Item {
                 return itemStyle.frameImageNormal;
             return itemStyle.frameImageIdle;
         }
+    }
+    */
+
+    property bool error: item.errorHighlight && !item.acceptableInput
+    UbuntuShape {
+        id: shape
+
+        anchors.fill: parent
+        color: (error) ? itemStyle.errorFillColor : itemStyle.normalFillColor
+        maskSource: itemStyle.hasOwnProperty("backgroundShape") ? itemStyle.backgroundShape : ""
+        borderSource: ""
+        opacity: item.enabled ? 1.0 : 0.5
+    }
+
+    UbuntuShape {
+        id: border
+        anchors.fill: parent
+        borderSource: itemStyle.hasOwnProperty("backgroundBorder") ? itemStyle.backgroundBorder : ""
     }
 }
