@@ -14,3 +14,7 @@ PointerDelegate 0.1 PointerDelegate.qml
 ScrollbarStyle 0.1 ScrollbarStyle.qml
 ScrollbarDelegate 0.1 ScrollbarDelegate.qml
 ScrollSliderSizer 0.1 ScrollSliderSizer.qml
+TextFieldStyle 0.1 TextFieldStyle.qml
+TextFieldDelegate 0.1 TextFieldDelegate.qml
+EditorCursorStyle 0.1 EditorCursorStyle.qml
+EditorCursorDelegate 0.1 EditorCursorDelegate.qml

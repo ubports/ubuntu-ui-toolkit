@@ -23,6 +23,7 @@ properties typed as variant.
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
+@qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
 
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -151,4 +152,43 @@ Examples:
     thumbConnectorMargin: units.dp(3);
     sliderColor: "#fc7134";
     thumbConnectorColor: "white";
+}
+
+/* TextField default theme */
+@qml-mapping(.textfield .clear-button, , TransparentButtonDelegate);
+@qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
+@qml-import(Ubuntu.Components 0.1);
+.textfield {
+    frameImageIdle: url("artwork/TextFieldFrameIdle@8.sci");
+    frameImageNormal: url("artwork/TextFieldFrame@8.sci");
+    frameImageError: url("artwork/TextFieldFrameError@8.sci");
+    frameImageIdleError: url("artwork/TextFieldFrameIdleError@8.sci");
+    color: (item.enabled) ? "#757373" : "darkgray";
+    selectedTextColor: "white";
+    selectionColor: "#fc7134";
+    overlaidSpacing: units.gu(0.5);
+    passwordCharacter: "\u2022";
+    font.family: "Ubuntu";
+    font.pixelSize: FontUtils.sizeToPixels("small");
+}
+
+/* clear button */
+.textfield .clear-button {
+    iconSource: url("artwork/TextFieldClear@8.png");
+}
+/* hint */
+.textfield .textcustom {
+   fontFamily: "Ubuntu";
+   italic: true;
+   color: "#B6B6B6";
+   fontSize: "small";
+   elide: Text.ElideRight;
+}
+/* cursor */
+.textfield .cursor {
+   color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
+   opacity: 1.0;
+   width: units.dp(1);
+   blinkTimeoutShown: 800;
+   blinkTimeoutHidden: 0;
 }
