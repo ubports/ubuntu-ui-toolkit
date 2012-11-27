@@ -34,11 +34,24 @@ Template {
 
                 TextField {
                     id: textField1
-                    KeyNavigation.tab: textField2
+                    KeyNavigation.tab: textFieldDisabled
                     KeyNavigation.backtab: textField5
 
                     placeholderText: i18n.tr("simple text field")
                     hasClearButton: false
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Disabled")
+
+                TextField {
+                    id: textFieldDisabled
+                    KeyNavigation.tab: textField2
+                    KeyNavigation.backtab: textField1
+
+                    text: i18n.tr("disabled text field")
+                    enabled: false
                 }
             }
 

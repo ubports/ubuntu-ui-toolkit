@@ -4,6 +4,7 @@ TEMPLATE = subdirs
 
 THEME_FILES = Ambiance/qmltheme/*.qmltheme
 QML_FILES = $$system(ls Ambiance/qmltheme/*.qml)
+QML_FILES += $$system(ls Ambiance/qmltheme/*.js)
 QMLDIR_FILE = Ambiance/qmltheme/qmldir
 
 OTHER_FILES += $$THEME_FILES $$QML_FILES $$QMLDIR_FILE
