@@ -58,108 +58,15 @@ Item {
         height: units.dp(2)
     }
 
-    Rectangle {
+    TabBar {
         id: tabBar
-        color: "transparent"
         anchors {
             top: orangebar.bottom
             left: parent.left
             right: parent.right
         }
-        height: units.gu(6)
 
-        property bool active: false
-        onActiveChanged: buttonView.position()
-
-        Flickable {
-            id: buttonView
-            anchors.fill: parent
-            contentWidth: 600
-            //            contentHeight: 100
-            //            model: slidingTabsDelegate.tabModel.children
-
-            clip: false
-
-            //            orientation: ListView.Horizontal
-            //            snapMode: ListView.NoSnap
-
-            Connections {
-                target: item
-                onSelectedTabIndexChanged: buttonView.position()
-            }
-
-            function position() {
-                print("positioning");
-                if (tabBar.active) {
-                    print("active");
-                    if (item.selectedTabIndex > 0) {
-                        print("hmm");
-                        // move the current button a bit to the right so that the user can see
-                        // that it is possible to scroll left
-                        buttonView.contentX -= units.gu(8);
-                    }
-                } else {
-                    print("inactive, tab index = "+item.selectedTabIndex+ " x = "+repeater.itemAt(item.selectedTabIndex).x);
-                    // not active, move the button of the current tab to the left
-                    buttonView.contentX = repeater.itemAt(item.selectedTabIndex).x;
-                }
-            }
-
-            Row {
-                height: parent.height
-                width: childrenRect.width
-
-                spacing: units.gu(2)
-
-                Repeater {
-                    id: repeater
-                    //                    AbstractButton {
-                    model: slidingTabsDelegate.tabModel.children
-                    AbstractButton {
-                        id: tabButton
-                        width: text.width + 2*text.anchors.margins
-                        height: parent.height
-                        //                        color: "pink"
-                        //                        visible:  tabBar.active || selected
-                        //                ItemStyle.class: "transparent-button"
-                        property bool selected: (index === item.selectedTabIndex)
-
-                        Rectangle {
-                            border.width: 2
-                            radius: 10
-                            color: "yellow"
-                            anchors.fill: parent
-                            visible: false
-                        }
-
-                        TextCustom {
-                            visible:  tabBar.active || selected
-                            anchors.centerIn: parent
-                            anchors.margins: units.gu(2)
-                            id: text
-                            text: modelData.title
-                            fontSize: "x-large"
-                        }
-
-                        //                text: modelData.title
-                        //                iconSource: modelData.iconSource
-                        onClicked: {
-                            item.selectedTabIndex = index;
-                            tabBar.active = false;
-                        }
-                    }
-                }
-            }
-        }
-        MouseArea {
-            // an inactive tabBar can be clicked to make it active
-            anchors.fill: parent
-            enabled: !tabBar.active
-            onClicked: {
-                print("activating tab bar!");
-                tabBar.active = true;
-            }
-        }
+        tabs: item
     }
 
     ListItem.Divider {
@@ -224,7 +131,6 @@ Item {
             tabView.updatePages();
             tabView.positionViewAtIndex(1, ListView.Beginning);
         }
-
     }
 
     onWidthChanged: tabView.updatePages();
