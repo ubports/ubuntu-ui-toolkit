@@ -46,13 +46,15 @@ Examples:
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
-    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 .UbuntuShape-radius-medium {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_medium_radius_shape.sci");
-    borderSource: url("artwork/ubuntushape_medium_radius_idle.sci");
+    borderIdle: url("artwork/ubuntushape_medium_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_medium_radius_pressed.sci");
 }
 
 .button, .custom-button {

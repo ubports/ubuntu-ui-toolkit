@@ -94,7 +94,7 @@ Item {
     /*!
       The image used as a border.
     */
-    property url borderSource: (Theming.ItemStyle.style && Theming.ItemStyle.style.borderSource != undefined) ? Theming.ItemStyle.style.borderSource : ""
+    property url borderSource: (Theming.ItemStyle.style && Theming.ItemStyle.style.borderIdle != undefined) ? Theming.ItemStyle.style.borderIdle : ""
 
     /*!
       The image used to fill the shape.

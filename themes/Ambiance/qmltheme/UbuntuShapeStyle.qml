@@ -19,5 +19,6 @@ import QtQuick 2.0
 QtObject {
     property color gradientColor
     property url maskSource
-    property url borderSource
+    property url borderIdle
+    property url borderPressed
 }
