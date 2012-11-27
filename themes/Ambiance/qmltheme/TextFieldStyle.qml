@@ -32,7 +32,7 @@ QtObject {
     property color errorFillColor
 
     /*!
-      Text color.
+      Text color
       */
     property color color
 
