@@ -75,7 +75,7 @@ Item {
             id: buttonView
             anchors.fill: parent
             contentWidth: 600
-//            contentHeight: 100
+            //            contentHeight: 100
             //            model: slidingTabsDelegate.tabModel.children
 
             clip: false
@@ -89,13 +89,17 @@ Item {
             }
 
             function position() {
+                print("positioning");
                 if (tabBar.active) {
+                    print("active");
                     if (item.selectedTabIndex > 0) {
+                        print("hmm");
                         // move the current button a bit to the right so that the user can see
                         // that it is possible to scroll left
-//                        buttonView.contentX -= units.gu(4);
+                        buttonView.contentX -= units.gu(8);
                     }
                 } else {
+                    print("inactive, tab index = "+item.selectedTabIndex+ " x = "+repeater.itemAt(item.selectedTabIndex).x);
                     // not active, move the button of the current tab to the left
                     buttonView.contentX = repeater.itemAt(item.selectedTabIndex).x;
                 }
@@ -115,8 +119,8 @@ Item {
                         id: tabButton
                         width: text.width + 2*text.anchors.margins
                         height: parent.height
-//                        color: "pink"
-//                        visible:  tabBar.active || selected
+                        //                        color: "pink"
+                        //                        visible:  tabBar.active || selected
                         //                ItemStyle.class: "transparent-button"
                         property bool selected: (index === item.selectedTabIndex)
 
@@ -125,6 +129,7 @@ Item {
                             radius: 10
                             color: "yellow"
                             anchors.fill: parent
+                            visible: false
                         }
 
                         TextCustom {
@@ -145,12 +150,14 @@ Item {
                     }
                 }
             }
-
-            MouseArea {
-                // an inactive tabBar can be clicked to make it active
-                anchors.fill: parent
-                enabled: !tabBar.active
-                onClicked: tabBar.active = true
+        }
+        MouseArea {
+            // an inactive tabBar can be clicked to make it active
+            anchors.fill: parent
+            enabled: !tabBar.active
+            onClicked: {
+                print("activating tab bar!");
+                tabBar.active = true;
             }
         }
     }
