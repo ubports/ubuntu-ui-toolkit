@@ -376,6 +376,9 @@ FocusScope {
     Text {
         id: fontHolder
     }
+    SystemPalette {
+        id: systemColors
+    }
 
     //internals
     QtObject {
@@ -496,6 +499,7 @@ FocusScope {
         visible: (editor.text == "") && !editor.inputMethodComposing
     }
 
+
     // text input
     TextInput {
         id: editor
@@ -507,17 +511,19 @@ FocusScope {
             margins: internal.spacing
             verticalCenter: parent.verticalCenter
         }
-        color: (control.Theming.ItemStyle.style && control.Theming.ItemStyle.style.hasOwnProperty("color")) ?
-                   control.Theming.ItemStyle.style.color: "black"
-        selectedTextColor: (control.Theming.ItemStyle.style && control.Theming.ItemStyle.style.hasOwnProperty("selectedTextColor")) ?
-                   control.Theming.ItemStyle.style.selectedTextColor: systemColors.highlightedText
-        selectionColor: (control.Theming.ItemStyle.style && control.Theming.ItemStyle.style.hasOwnProperty("selectionColor")) ?
-                   control.Theming.ItemStyle.style.selectionColor: systemColors.highlight
+        // get the control's style
+        Theming.ItemStyle.style: control.Theming.ItemStyle.style
+        color: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["color"]))?
+                   Theming.ItemStyle.style.color : "black"
+        selectedTextColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectedTextColor"])) ?
+                   Theming.ItemStyle.style.selectedTextColor: systemColors.highlightedText
+        selectionColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectionColor"])) ?
+                   Theming.ItemStyle.style.selectionColor: systemColors.highlight
         clip: true
-        passwordCharacter: (control.Theming.ItemStyle.style && control.Theming.ItemStyle.style.hasOwnProperty("passwordCharacter")) ?
-                               control.Theming.ItemStyle.style.passwordCharacter: "*"
-        font: (control.Theming.ItemStyle.style && control.Theming.ItemStyle.style.hasOwnProperty("font")) ?
-                  control.Theming.ItemStyle.style.font : fontHolder.font
+        passwordCharacter: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["passwordCharacter"])) ?
+                               Theming.ItemStyle.style.passwordCharacter: "*"
+        font: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["font"])) ?
+                  Theming.ItemStyle.style.font : fontHolder.font
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
 
