@@ -22,8 +22,7 @@
         property is not found.
  */
 function itemStyleProperty(property, defaultValue) {
-    for (var i in itemStyle)
-        if (i === property)
-            return itemStyle[i];
+    if ('undefined' !== typeof itemStyle[property])
+        return itemStyle[property];
     return defaultValue;
 }
