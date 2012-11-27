@@ -25,10 +25,48 @@ Rectangle {
 
     property Tabs tabs
     property VisualItemModel tabModel: tabs.__pagesModel
-    onTabsChanged: tabModel = tabs.__pagesModel
+    onTabsChanged: {
+        print("A");
+        tabModel = tabs.__pagesModel;
+    }
 
     property bool active: false
     onActiveChanged: buttonView.position()
+
+
+    Component {
+        id: tabButton
+        AbstractButton {
+            width: text.width + 2*text.anchors.margins
+            height: parent.height
+            property bool selected: (index === tabs.selectedTabIndex)
+
+            Rectangle {
+                border.width: 2
+                radius: 10
+                color: "pink"
+                anchors.fill: parent
+                visible: false
+            }
+
+            TextCustom {
+                visible:  tabBar.active || selected
+                anchors.centerIn: parent
+                anchors.margins: units.gu(2)
+                id: text
+                text: modelData.title
+                fontSize: "x-large"
+            }
+
+            //                text: modelData.title
+            //                iconSource: modelData.iconSource
+            onClicked: {
+                tabs.selectedTabIndex = index;
+                tabBar.active = false;
+            }
+        }
+
+    }
 
     Flickable {
         id: buttonView
@@ -43,8 +81,11 @@ Rectangle {
         //            snapMode: ListView.NoSnap
 
         Connections {
-            target: item
-            onSelectedTabIndexChanged: buttonView.position()
+            target: tabBar.tabs
+            onSelectedTabIndexChanged: {
+                print("okidoki");
+                buttonView.position();
+            }
         }
 
         function position() {
