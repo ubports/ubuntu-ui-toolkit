@@ -27,27 +27,6 @@ Item {
     z: -1
 
     // frame
-    /*
-    BorderImage {
-        id: frame
-        anchors.fill: parent
-        source: selectFrameImage()
-        smooth: true
-
-        function selectFrameImage()
-        {
-            if (item.errorHighlight && !item.acceptableInput) {
-                if (item.__editor.activeFocus && item.enabled)
-                    return itemStyle.frameImageError;
-                return itemStyle.frameImageIdleError;
-            }
-            if (item.__editor.activeFocus && item.enabled)
-                return itemStyle.frameImageNormal;
-            return itemStyle.frameImageIdle;
-        }
-    }
-    */
-
     property bool error: item.errorHighlight && !item.acceptableInput
     UbuntuShape {
         id: shape
