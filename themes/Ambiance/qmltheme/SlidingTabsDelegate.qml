@@ -26,6 +26,19 @@ Item {
 
     property VisualItemModel tabModel: item.__pagesModel
 
+    ListModel {
+        id: tabProperties
+    }
+
+    onTabModelChanged: {
+        print("adding tab properties");
+        tabProperties.clear();
+        for (var i=0; i < tabModel.count; i++) {
+            print(i+" appending "+tabModel.children[i].title);
+            tabProperties.append({"title": tabModel.children[i].title});
+        }
+    }
+
     //    onTabModelChanged: {
     //        print("updating tab model");
     //        listView.updatePages();
@@ -66,7 +79,7 @@ Item {
             right: parent.right
         }
 
-        tabs: item
+        tabModel: tabProperties
     }
 
     ListItem.Divider {
