@@ -36,7 +36,6 @@ QtObject {
     /*!
       Properties driving cursor blinking. If either of these values are 0, no
       blinking is provided.
-
       */
     property int blinkTimeoutShown
     property int blinkTimeoutHidden
