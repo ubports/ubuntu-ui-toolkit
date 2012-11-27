@@ -33,7 +33,7 @@ Item {
 
         anchors.fill: parent
         color: (error) ? itemStyle.errorFillColor : itemStyle.normalFillColor
-        maskSource: itemStyle.hasOwnProperty("backgroundShape") ? itemStyle.backgroundShape : ""
+        maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
         borderSource: ""
         opacity: item.enabled ? 1.0 : 0.5
     }
@@ -41,6 +41,6 @@ Item {
     UbuntuShape {
         id: border
         anchors.fill: parent
-        borderSource: itemStyle.hasOwnProperty("backgroundBorder") ? itemStyle.backgroundBorder : ""
+        borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
     }
 }

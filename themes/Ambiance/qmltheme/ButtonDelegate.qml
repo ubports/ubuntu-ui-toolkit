@@ -35,7 +35,7 @@ Item {
 
         anchors.fill: parent
         color: item.color
-        maskSource: itemStyle.hasOwnProperty("shape") ? itemStyle.shape : ""
+        maskSource: StyleUtils.itemStyleProperty("shape", "")
         borderSource: ""
     }
 
@@ -43,7 +43,7 @@ Item {
         id: border
 
         anchors.fill: parent
-        borderSource: itemStyle.hasOwnProperty("borderIdle") ? itemStyle.borderIdle : ""
+        borderSource: StyleUtils.itemStyleProperty("borderIdle")
         opacity: 1.0 - borderPressed.opacity
     }
 
@@ -51,7 +51,7 @@ Item {
         id: borderPressed
 
         anchors.fill: parent
-        borderSource: itemStyle.hasOwnProperty("borderPressed") ? itemStyle.borderPressed : ""
+        borderSource: StyleUtils.itemStyleProperty("borderPressed")
         opacity: item.pressed ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
     }

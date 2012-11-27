@@ -18,3 +18,4 @@ TextFieldStyle 0.1 TextFieldStyle.qml
 TextFieldDelegate 0.1 TextFieldDelegate.qml
 EditorCursorStyle 0.1 EditorCursorStyle.qml
 EditorCursorDelegate 0.1 EditorCursorDelegate.qml
+StyleUtils 0.1 styleUtils.js
