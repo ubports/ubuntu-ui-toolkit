@@ -412,8 +412,6 @@ FocusScope {
         }
     }
 
-    property alias __editor: editor
-
     //left pane
     Item {
         id: leftPane
