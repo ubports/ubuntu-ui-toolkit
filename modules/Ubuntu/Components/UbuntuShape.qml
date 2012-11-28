@@ -104,11 +104,15 @@ Item {
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(8)
 
-    onWidthChanged: updateImageDimensions()
-    onHeightChanged: updateImageDimensions()
-    onImageChanged: updateImageDimensions()
+    /*! \internal */
+    onWidthChanged: __updateImageDimensions()
+    /*! \internal */
+    onHeightChanged: __updateImageDimensions()
+    /*! \internal */
+    onImageChanged: __updateImageDimensions()
 
-    function updateImageDimensions() {
+    /*! \internal */
+    function __updateImageDimensions() {
         if (!image) return;
         image.width = shape.width;
         image.height = shape.height;
