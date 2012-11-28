@@ -26,7 +26,6 @@
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
-#define DEFAULT_RESOURCES_UNIT_PX 8
 
 static float getenvFloat(const char* name, float defaultValue)
 {
@@ -66,26 +65,6 @@ UCUnits::UCUnits(QObject *parent) :
     QObject(parent)
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
-    m_resourcesUnit = DEFAULT_RESOURCES_UNIT_PX;
-}
-
-/* A file named fileName can be provided by the application
- * and contains the grid unit the resources have been designed to. */
-bool UCUnits::loadResourcesUnitFile(const QUrl& baseUrl, QString fileName)
-{
-    QUrl unresolved = QUrl::fromLocalFile(fileName);
-    fileName = baseUrl.resolved(unresolved).toLocalFile();
-
-    QFile resourcesUnitFile(fileName);
-    if (resourcesUnitFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        bool valid;
-        int unit = resourcesUnitFile.readLine().trimmed().toInt(&valid);
-        if (valid) {
-            m_resourcesUnit = (float)unit;
-        }
-        return valid;
-    }
-    return false;
 }
 
 /*!
@@ -191,8 +170,7 @@ QString UCUnits::resolveResource(const QUrl& url)
 
     path = prefix + suffix;
     if (QFile::exists(path)) {
-        float scaleFactor = m_gridUnit / m_resourcesUnit;
-        return QString::number(scaleFactor) + "/" + path;
+        return QString("1") + "/" + path;
     }
 
     return "";
