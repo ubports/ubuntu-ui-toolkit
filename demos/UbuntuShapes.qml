@@ -75,74 +75,81 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Original images")
+            title: i18n.tr("Images")
             height: units.gu(8)
 
-            Image {
+            MouseArea {
                 width: units.gu(14)
                 height: units.gu(8)
-                id: imageStretch
-                fillMode: Image.Stretch
-                source: "map_icon.png"
+                Image {
+                    id: imagePreserveAspectCropTopLeft
+                    anchors.fill: parent
+                    source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignLeft
+                    verticalAlignment: Image.AlignTop
+                    visible: parent.pressed
+                }
+                UbuntuShape {
+                    image: imagePreserveAspectCropTopLeft
+                    anchors.fill: parent
+                    visible: !parent.pressed
+                }
             }
 
-            Image {
+            MouseArea {
                 width: units.gu(14)
                 height: units.gu(8)
-                id: imagePreserveAspectCropTopLeft
-                source: "map_icon.png"
-                fillMode: Image.PreserveAspectCrop
-                horizontalAlignment: Image.AlignLeft
-                verticalAlignment: Image.AlignTop
+                Image {
+                    id: imagePreserveAspectCropBottomRight
+                    anchors.fill: parent
+                    source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignRight
+                    verticalAlignment: Image.AlignBottom
+                    visible: parent.pressed
+                }
+                UbuntuShape {
+                    image: imagePreserveAspectCropBottomRight
+                    anchors.fill: parent
+                    visible: !parent.pressed
+                }
             }
 
-            Image {
+            MouseArea {
                 width: units.gu(14)
                 height: units.gu(8)
-                id: imagePreserveAspectCropBottomRight
-                source: "map_icon.png"
-                fillMode: Image.PreserveAspectCrop
-                horizontalAlignment: Image.AlignRight
-                verticalAlignment: Image.AlignBottom
+                Image {
+                    id: imagePreserveAspectCropCenter
+                    anchors.fill: parent
+                    source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    visible: parent.pressed
+                }
+                UbuntuShape {
+                    image: imagePreserveAspectCropCenter
+                    anchors.fill: parent
+                    visible: !parent.pressed
+                }
             }
 
-            Image {
-                width: units.gu(14)
+            MouseArea {
+                width:  units.gu(14)
                 height: units.gu(8)
-                id: imagePreserveAspectCropCenter
-                source: "map_icon.png"
-                fillMode: Image.PreserveAspectCrop
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Shaped image")
-            height: units.gu(8)
-
-            UbuntuShape {
-                image: imageStretch
-                width: imageStretch.width
-                height: imageStretch.height
-            }
-
-            UbuntuShape {
-                image: imagePreserveAspectCropTopLeft
-                width: imagePreserveAspectCropTopLeft.width
-                height: imagePreserveAspectCropTopLeft.height
-            }
-
-            UbuntuShape {
-                image: imagePreserveAspectCropBottomRight
-                width: imagePreserveAspectCropBottomRight.width
-                height: imagePreserveAspectCropBottomRight.height
-            }
-
-            UbuntuShape {
-                image: imagePreserveAspectCropCenter
-                width: imagePreserveAspectCropCenter.width
-                height: imagePreserveAspectCropCenter.height
+                Image {
+                    anchors.fill: parent
+                    id: imageStretch
+                    fillMode: Image.Stretch
+                    source: "map_icon.png"
+                    visible: parent.pressed
+                }
+                UbuntuShape {
+                    image: imageStretch
+                    anchors.fill: parent
+                    visible: !parent.pressed
+                }
             }
         }
 
