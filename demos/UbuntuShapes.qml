@@ -79,8 +79,40 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
+                width: units.gu(12)
+                image: Image {
+                    fillMode: Image.Stretch
+                    source: "map_icon.png"
+                }
+            }
+
+            UbuntuShape {
+                width: units.gu(12)
                 image: Image {
                     source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignLeft
+                    verticalAlignment: Image.AlignTop
+                }
+            }
+
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
+                    source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignRight
+                    verticalAlignment: Image.AlignBottom
+                }
+            }
+
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
+                    source: "map_icon.png"
+                    fillMode: Image.PreserveAspectCrop
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
                 }
             }
         }

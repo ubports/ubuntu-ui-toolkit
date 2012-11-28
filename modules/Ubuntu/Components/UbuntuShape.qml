@@ -101,8 +101,22 @@ Item {
     */
     property Image image
 
-    width: units.gu(8)
-    height: units.gu(8)
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(8)
+
+    /*! \internal */
+    onWidthChanged: __updateImageDimensions()
+    /*! \internal */
+    onHeightChanged: __updateImageDimensions()
+    /*! \internal */
+    onImageChanged: __updateImageDimensions()
+
+    /*! \internal */
+    function __updateImageDimensions() {
+        if (!image) return;
+        image.width = shape.width;
+        image.height = shape.height;
+    }
 
     ShaderEffect {
         anchors.fill: parent
@@ -116,6 +130,43 @@ Item {
                 visible: false
             }
         }
+
+
+        // The imageScale and imageOffset properties are used in imageMaskingShader to
+        // compute the correct TexCoords for the image, depending on its fillmode and alignment.
+        // FIXME: Cases where the image fillmode is tiling, padding or PreserveAspectFit
+        //  are not covered here. Those cases need more than texture coordinate manipulations.
+        property point imageScale: getImageScale()
+        property point imageOffset: getImageOffset()
+
+        function getImageScale() {
+            var scale = Qt.point(1.0, 1.0);
+            if (image) {
+                if (image.fillMode === Image.PreserveAspectCrop) {
+                    scale.x = image.width / image.paintedWidth;
+                    scale.y = image.height / image.paintedHeight;
+                }
+            }
+            return scale;
+        }
+
+        function getImageOffset() {
+            var offset = Qt.point(0.0, 0.0);
+            if (image && image.fillMode === Image.PreserveAspectCrop) {
+                if (image.horizontalAlignment === Image.AlignRight) {
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth;
+                } else if (image.horizontalAlignment === Image.AlignHCenter) {
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth / 2.0;
+                }
+                if (image.verticalAlignment === Image.AlignBottom) {
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight;
+                } else if (image.verticalAlignment === Image.AlignVCenter) {
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight / 2.0;
+                }
+            }
+            return offset;
+        }
+
         property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
         property color baseColor: shape.color
         property color gradientColor: shape.gradientColor
@@ -156,11 +207,13 @@ Item {
             uniform lowp float qt_Opacity;
             uniform sampler2D mask;
             uniform sampler2D image;
+            uniform highp vec2 imageScale;
+            uniform highp vec2 imageOffset;
 
             void main(void)
             {
                 lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                lowp vec4 imageColor = texture2D(image, qt_TexCoord0.st);
+                lowp vec4 imageColor = texture2D(image, imageOffset + imageScale * qt_TexCoord0.st);
                 gl_FragColor = imageColor * maskColor.a * qt_Opacity;
             }
             "
