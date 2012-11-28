@@ -78,105 +78,41 @@ Template {
             title: i18n.tr("Image")
             height: units.gu(8)
 
-            MouseArea {
-                width:  units.gu(14)
-                height: units.gu(8)
-                Image {
-                    width: units.gu(8); height: units.gu(8)
-//                    anchors.fill: parent
-                    id: imageStretch
-                    source: "map_icon.png"
-                    visible: parent.pressed
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
                     fillMode: Image.Stretch
-//                    width: units.gu(14)
-//                    height: units.gu(8)
-                }
-                UbuntuShape {
-//                    width: units.gu(14)
-                    height: units.gu(8)
-                    image: Image {
-                        fillMode: Image.Stretch
-                        source: "map_icon.png"
-//                        width: units.gu(14)
-//                        height: units.gu(8)
-                    }
-                    visible: !parent.pressed
+                    source: "map_icon.png"
                 }
             }
 
-            MouseArea {
-                width: units.gu(8)
-                height: units.gu(8)
-                Image {
-                    id: imagePreserveAspectCropTopLeft
-                    anchors.fill: parent
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
                     horizontalAlignment: Image.AlignLeft
                     verticalAlignment: Image.AlignTop
-                    visible: parent.pressed
-                }
-                UbuntuShape {
-//                    width: units.gu(14)
-                    height: units.gu(8)
-                    image: Image {
-                        source: "map_icon.png"
-                        fillMode: Image.PreserveAspectCrop
-                        horizontalAlignment: Image.AlignLeft
-                        verticalAlignment: Image.AlignTop
-
-//                        anchors.fill: sh
-//                        width:  units.gu(14)
-//                        height: units.gu(8)
-                    }
-//                    anchors.fill: parent
-                    visible: !parent.pressed
                 }
             }
 
-            MouseArea {
-                width: units.gu(8)
-                height: units.gu(8)
-                Image {
-                    id: imagePreserveAspectCropBottomRight
-                    anchors.fill: parent
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
                     horizontalAlignment: Image.AlignRight
                     verticalAlignment: Image.AlignBottom
-                    visible: parent.pressed
-                }
-                UbuntuShape {
-//                    image: imagePreserveAspectCropBottomRight
-//                    width: units.gu(14)
-                    image: Image {
-                        source: "map_icon.png"
-                        fillMode: Image.PreserveAspectCrop
-                        horizontalAlignment: Image.AlignRight
-                        verticalAlignment: Image.AlignBottom
-                    }
-
-//                    anchors.fill: parent
-                    visible: !parent.pressed
                 }
             }
 
-            MouseArea {
-                width: units.gu(14)
-                height: units.gu(8)
-                Image {
-                    id: imagePreserveAspectCropCenter
-                    anchors.fill: parent
+            UbuntuShape {
+                width: units.gu(12)
+                image: Image {
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
                     horizontalAlignment: Image.AlignHCenter
                     verticalAlignment: Image.AlignVCenter
-                    visible: parent.pressed
-                }
-                UbuntuShape {
-                    image: imagePreserveAspectCropCenter
-                    anchors.fill: parent
-                    visible: !parent.pressed
                 }
             }
         }
