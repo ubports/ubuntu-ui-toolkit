@@ -75,7 +75,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Images")
+            title: i18n.tr("Image")
             height: units.gu(8)
 
             MouseArea {
