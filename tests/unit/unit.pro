@@ -12,7 +12,8 @@ TEMPLATE = subdirs
         tst_components_benchmark
 }
 
-SUBDIRS += tst_template \
+SUBDIRS += testparser \
+    tst_template \
     tst_units \
     tst_scaling_image_provider \
     tst_qquick_image_extension
