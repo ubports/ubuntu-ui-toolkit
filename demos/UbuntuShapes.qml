@@ -75,13 +75,68 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Image")
-            height: units.gu(8)
+            title: i18n.tr("Original images")
+            height: units.gu(6)
+
+            Image {
+                width: units.gu(10)
+                height: units.gu(6)
+                id: imageStretch
+                fillMode: Image.Stretch
+                source: "map_icon.png"
+            }
+
+            Image {
+                width: units.gu(10)
+                height: units.gu(6)
+                id: imagePreserveAspectFit
+                source: "map_icon.png"
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Image {
+                width: units.gu(10)
+                height: units.gu(6)
+                id: imagePreserveAspectCrop
+                source: "map_icon.png"
+                fillMode: Image.PreserveAspectCrop
+            }
+
+            Image {
+                width: units.gu(10)
+                height: units.gu(6)
+                id: imagePad
+                source: "map_icon.png"
+                fillMode: Image.Pad
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Shaped image")
+            height: units.gu(6)
 
             UbuntuShape {
-                image: Image {
-                    source: "map_icon.png"
-                }
+                image: imageStretch
+                width: imageStretch.width
+                height: imageStretch.height
+            }
+
+            UbuntuShape {
+                image: imagePreserveAspectFit
+                width: imagePreserveAspectFit.width
+                height: imagePreserveAspectFit.height
+            }
+
+            UbuntuShape {
+                image: imagePreserveAspectCrop
+                width: imagePreserveAspectCrop.width
+                height: imagePreserveAspectFit.height
+            }
+
+            UbuntuShape {
+                image: imagePad
+                width: imagePad.width
+                height: imagePad.height
             }
         }
 

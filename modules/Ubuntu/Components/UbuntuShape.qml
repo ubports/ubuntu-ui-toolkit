@@ -119,8 +119,37 @@ Item {
 
         onImageChanged: updateTexCoords();
 
-        property point texCoordScale;
-        property point texCoordOffset;
+        property point texCoordScale //: texCoordScaling()
+        property point texCoordOffset //: texCoordOffset()
+
+//        function texCoordScaling() {
+//            var scaling = Qt.point(1.0, 1.0);
+//            if (image) {
+//                if (image.fillMode == Image.PreserveAspectCrop) {
+//                    if (image.horizontalAlignment === Image.AlignHCenter) {
+//                        scaling.x = image.width / image.paintedWidth;
+//                    }
+//                    if (image.verticalAlignment === Image.AlignVCenter) {
+//                        scaling.y = image.height / image.paintedHeight;
+//                    }
+//                }
+//            }
+//            return scaling;
+//        }
+
+//        function texCoordOffset() {
+//            var offset = Qt.point(0.0, 0.0);
+//            if (image) {
+//                if (image.fillMode === Image.PreserveAspectCrop) {
+//                    if (image.horizontalAlignment === Image.AlignHCenter) {
+//                        offset.x = 0.5 - image.width / image.paintedWidth / 2.0;
+//                    }
+//                    if (image.verticalAlignment === Image.AlignVCenter) {
+//                        offset.y = 0.5 - im
+//                    }
+//                }
+//            }
+//        }
 
         // FIXME: The default alignments for the default fillMode, and
         //      fillMode === PreserveAspectCrop and left/top/hcenter/vcenter alignment are covered
@@ -132,11 +161,12 @@ Item {
             if (image.fillMode === Image.PreserveAspectCrop) {
                 if (image.horizontalAlignment === Image.AlignHCenter) {
                     texCoordScale.x = image.width / image.paintedWidth;
-                    texCoordOffset.x = 0.5 - texCoordScale.x / 2.0;
+//                    texCoordOffset.x = 0.5 - texCoordScale.x / 2.0;
+                    texCoordOffset.x = 0.5 - image.width / image.paintedWidth / 2.0;
                 }
                 if (image.verticalAlignment === Image.AlignVCenter) {
                     texCoordScale.y = image.height / image.paintedHeight;
-                    texCoordOffset.y = 0.5 - texCoordScale.y / 2.0;
+                    texCoordOffset.y = 0.5 - image.height / image.paintedHeight / 2.0;
                 }
             }
         }
