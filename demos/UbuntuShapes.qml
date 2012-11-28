@@ -76,44 +76,50 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Original images")
-            height: units.gu(6)
+            height: units.gu(8)
 
             Image {
-                width: units.gu(10)
-                height: units.gu(6)
+                width: units.gu(14)
+                height: units.gu(8)
                 id: imageStretch
                 fillMode: Image.Stretch
                 source: "map_icon.png"
             }
 
             Image {
-                width: units.gu(10)
-                height: units.gu(6)
-                id: imagePreserveAspectFit
-                source: "map_icon.png"
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Image {
-                width: units.gu(10)
-                height: units.gu(6)
-                id: imagePreserveAspectCrop
+                width: units.gu(14)
+                height: units.gu(8)
+                id: imagePreserveAspectCropTopLeft
                 source: "map_icon.png"
                 fillMode: Image.PreserveAspectCrop
+                horizontalAlignment: Image.AlignLeft
+                verticalAlignment: Image.AlignTop
             }
 
             Image {
-                width: units.gu(10)
-                height: units.gu(6)
-                id: imagePad
+                width: units.gu(14)
+                height: units.gu(8)
+                id: imagePreserveAspectCropBottomRight
                 source: "map_icon.png"
-                fillMode: Image.Pad
+                fillMode: Image.PreserveAspectCrop
+                horizontalAlignment: Image.AlignRight
+                verticalAlignment: Image.AlignBottom
+            }
+
+            Image {
+                width: units.gu(14)
+                height: units.gu(8)
+                id: imagePreserveAspectCropCenter
+                source: "map_icon.png"
+                fillMode: Image.PreserveAspectCrop
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
             }
         }
 
         TemplateRow {
             title: i18n.tr("Shaped image")
-            height: units.gu(6)
+            height: units.gu(8)
 
             UbuntuShape {
                 image: imageStretch
@@ -122,21 +128,21 @@ Template {
             }
 
             UbuntuShape {
-                image: imagePreserveAspectFit
-                width: imagePreserveAspectFit.width
-                height: imagePreserveAspectFit.height
+                image: imagePreserveAspectCropTopLeft
+                width: imagePreserveAspectCropTopLeft.width
+                height: imagePreserveAspectCropTopLeft.height
             }
 
             UbuntuShape {
-                image: imagePreserveAspectCrop
-                width: imagePreserveAspectCrop.width
-                height: imagePreserveAspectFit.height
+                image: imagePreserveAspectCropBottomRight
+                width: imagePreserveAspectCropBottomRight.width
+                height: imagePreserveAspectCropBottomRight.height
             }
 
             UbuntuShape {
-                image: imagePad
-                width: imagePad.width
-                height: imagePad.height
+                image: imagePreserveAspectCropCenter
+                width: imagePreserveAspectCropCenter.width
+                height: imagePreserveAspectCropCenter.height
             }
         }
 

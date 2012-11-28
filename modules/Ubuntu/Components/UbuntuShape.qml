@@ -107,6 +107,7 @@ Item {
     ShaderEffect {
         anchors.fill: parent
         visible: shape.image || shape.color.a != 0.0
+        id: pf
 
         property ShaderEffectSource mask: ShaderEffectSource {
             sourceItem: BorderImage {
@@ -117,58 +118,37 @@ Item {
             }
         }
 
-        onImageChanged: updateTexCoords();
+        // FIXME: Cases where the image fillmode is tiling, padding or PreserveAspectFit
+        //  are not covered here. Those cases need more than texture coordinate manipulations.
+        property point texCoordScale: getTexCoordScale()
+        property point texCoordOffset: getTexCoordOffset()
 
-        property point texCoordScale //: texCoordScaling()
-        property point texCoordOffset //: texCoordOffset()
-
-//        function texCoordScaling() {
-//            var scaling = Qt.point(1.0, 1.0);
-//            if (image) {
-//                if (image.fillMode == Image.PreserveAspectCrop) {
-//                    if (image.horizontalAlignment === Image.AlignHCenter) {
-//                        scaling.x = image.width / image.paintedWidth;
-//                    }
-//                    if (image.verticalAlignment === Image.AlignVCenter) {
-//                        scaling.y = image.height / image.paintedHeight;
-//                    }
-//                }
-//            }
-//            return scaling;
-//        }
-
-//        function texCoordOffset() {
-//            var offset = Qt.point(0.0, 0.0);
-//            if (image) {
-//                if (image.fillMode === Image.PreserveAspectCrop) {
-//                    if (image.horizontalAlignment === Image.AlignHCenter) {
-//                        offset.x = 0.5 - image.width / image.paintedWidth / 2.0;
-//                    }
-//                    if (image.verticalAlignment === Image.AlignVCenter) {
-//                        offset.y = 0.5 - im
-//                    }
-//                }
-//            }
-//        }
-
-        // FIXME: The default alignments for the default fillMode, and
-        //      fillMode === PreserveAspectCrop and left/top/hcenter/vcenter alignment are covered
-        //      Other fillmodes and alignments need to be added.
-        function updateTexCoords() {
-            texCoordScale = Qt.point(1.0, 1.0);
-            texCoordOffset = Qt.point(0.0, 0.0);
-            if (!image) return;
-            if (image.fillMode === Image.PreserveAspectCrop) {
-                if (image.horizontalAlignment === Image.AlignHCenter) {
-                    texCoordScale.x = image.width / image.paintedWidth;
-//                    texCoordOffset.x = 0.5 - texCoordScale.x / 2.0;
-                    texCoordOffset.x = 0.5 - image.width / image.paintedWidth / 2.0;
-                }
-                if (image.verticalAlignment === Image.AlignVCenter) {
-                    texCoordScale.y = image.height / image.paintedHeight;
-                    texCoordOffset.y = 0.5 - image.height / image.paintedHeight / 2.0;
+        function getTexCoordScale() {
+            var scale = Qt.point(1.0, 1.0);
+            if (image) {
+                if (image.fillMode === Image.PreserveAspectCrop) {
+                    scale.x = image.width / image.paintedWidth;
+                    scale.y = image.height / image.paintedHeight;
                 }
             }
+            return scale;
+        }
+
+        function getTexCoordOffset() {
+            var offset = Qt.point(0.0, 0.0);
+            if (image) {
+                if (image.horizontalAlignment === Image.AlignRight) {
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth;
+                } else if (image.horizontalAlignment === Image.AlignHCenter) {
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth / 2.0;
+                }
+                if (image.verticalAlignment === Image.AlignBottom) {
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight;
+                } else if (image.verticalAlignment === Image.AlignVCenter) {
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight / 2.0;
+                }
+            }
+            return offset;
         }
 
         property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
