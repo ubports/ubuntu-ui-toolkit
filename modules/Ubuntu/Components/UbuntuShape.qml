@@ -132,8 +132,6 @@ Item {
                     scale.x = shape.width / image.paintedWidth;
                     scale.y = shape.height / image.paintedHeight;
                 }
-                print("image.height = "+image.height+", paintedheight = "+image.paintedHeight+", shape.height = "+shape.height);
-
             }
             return scale;
         }
