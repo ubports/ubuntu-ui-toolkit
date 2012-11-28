@@ -116,6 +116,11 @@ Item {
                 visible: false
             }
         }
+
+        property ShaderEffectSource shaderImage: ShaderEffectSource {
+            sourceItem: image
+        }
+
         property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
         property color baseColor: shape.color
         property color gradientColor: shape.gradientColor
@@ -155,12 +160,12 @@ Item {
             varying highp vec2 qt_TexCoord0;
             uniform lowp float qt_Opacity;
             uniform sampler2D mask;
-            uniform sampler2D image;
+            uniform sampler2D shaderImage;
 
             void main(void)
             {
                 lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                lowp vec4 imageColor = texture2D(image, qt_TexCoord0.st);
+                lowp vec4 imageColor = texture2D(shaderImage, qt_TexCoord0.st);
                 gl_FragColor = imageColor * maskColor.a * qt_Opacity;
             }
             "
