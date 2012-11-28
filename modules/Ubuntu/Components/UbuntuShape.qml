@@ -118,12 +118,15 @@ Item {
             }
         }
 
+
+        // The imageScale and imageOffset properties are used in imageMaskingShader to
+        // compute the correct TexCoords for the image, depending on its fillmode and alignment.
         // FIXME: Cases where the image fillmode is tiling, padding or PreserveAspectFit
         //  are not covered here. Those cases need more than texture coordinate manipulations.
-        property point texCoordScale: getTexCoordScale()
-        property point texCoordOffset: getTexCoordOffset()
+        property point imageScale: getImageScale()
+        property point imageOffset: getImageOffset()
 
-        function getTexCoordScale() {
+        function getImageScale() {
             var scale = Qt.point(1.0, 1.0);
             if (image) {
                 if (image.fillMode === Image.PreserveAspectCrop) {
@@ -134,7 +137,7 @@ Item {
             return scale;
         }
 
-        function getTexCoordOffset() {
+        function getImageOffset() {
             var offset = Qt.point(0.0, 0.0);
             if (image) {
                 if (image.horizontalAlignment === Image.AlignRight) {
@@ -191,13 +194,13 @@ Item {
             uniform lowp float qt_Opacity;
             uniform sampler2D mask;
             uniform sampler2D image;
-            uniform highp vec2 texCoordScale;
-            uniform highp vec2 texCoordOffset;
+            uniform highp vec2 imageScale;
+            uniform highp vec2 imageOffset;
 
             void main(void)
             {
                 lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                lowp vec4 imageColor = texture2D(image, texCoordOffset + texCoordScale * qt_TexCoord0.st);
+                lowp vec4 imageColor = texture2D(image, imageOffset + imageScale * qt_TexCoord0.st);
                 gl_FragColor = imageColor * maskColor.a * qt_Opacity;
             }
             "
