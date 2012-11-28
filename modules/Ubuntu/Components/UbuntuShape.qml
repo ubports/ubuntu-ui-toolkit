@@ -117,8 +117,28 @@ Item {
             }
         }
 
-        property ShaderEffectSource shaderImage: ShaderEffectSource {
-            sourceItem: image
+        onImageChanged: updateTexCoords();
+
+        property point texCoordScale;
+        property point texCoordOffset;
+
+        // FIXME: The default alignments for the default fillMode, and
+        //      fillMode === PreserveAspectCrop and left/top/hcenter/vcenter alignment are covered
+        //      Other fillmodes and alignments need to be added.
+        function updateTexCoords() {
+            texCoordScale = Qt.point(1.0, 1.0);
+            texCoordOffset = Qt.point(0.0, 0.0);
+            if (!image) return;
+            if (image.fillMode === Image.PreserveAspectCrop) {
+                if (image.horizontalAlignment === Image.AlignHCenter) {
+                    texCoordScale.x = image.width / image.paintedWidth;
+                    texCoordOffset.x = 0.5 - texCoordScale.x / 2.0;
+                }
+                if (image.verticalAlignment === Image.AlignVCenter) {
+                    texCoordScale.y = image.height / image.paintedHeight;
+                    texCoordOffset.y = 0.5 - texCoordScale.y / 2.0;
+                }
+            }
         }
 
         property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
@@ -160,12 +180,14 @@ Item {
             varying highp vec2 qt_TexCoord0;
             uniform lowp float qt_Opacity;
             uniform sampler2D mask;
-            uniform sampler2D shaderImage;
+            uniform sampler2D image;
+            uniform highp vec2 texCoordScale;
+            uniform highp vec2 texCoordOffset;
 
             void main(void)
             {
                 lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                lowp vec4 imageColor = texture2D(shaderImage, qt_TexCoord0.st);
+                lowp vec4 imageColor = texture2D(image, texCoordOffset + texCoordScale * qt_TexCoord0.st);
                 gl_FragColor = imageColor * maskColor.a * qt_Opacity;
             }
             "
