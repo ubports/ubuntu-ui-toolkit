@@ -13,6 +13,10 @@ Compatibility Breaks
 API Changes
 ***********
 
+* UbuntuShapeStyle:
+  - 'borderSource' property renamed to 'borderIdle'
+  - 'borderPressed' property added
+
 
 SDK 0.1.13
 ##########
