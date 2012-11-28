@@ -101,8 +101,18 @@ Item {
     */
     property Image image
 
-    width: units.gu(8)
-    height: units.gu(8)
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(8)
+
+    onWidthChanged: updateImageDimensions()
+    onHeightChanged: updateImageDimensions()
+    onImageChanged: updateImageDimensions()
+
+    function updateImageDimensions() {
+        if (!image) return;
+        image.width = shape.width;
+        image.height = shape.height;
+    }
 
     ShaderEffect {
         anchors.fill: parent
@@ -129,8 +139,8 @@ Item {
             var scale = Qt.point(1.0, 1.0);
             if (image) {
                 if (image.fillMode === Image.PreserveAspectCrop) {
-                    scale.x = shape.width / image.paintedWidth;
-                    scale.y = shape.height / image.paintedHeight;
+                    scale.x = image.width / image.paintedWidth;
+                    scale.y = image.height / image.paintedHeight;
                 }
             }
             return scale;
@@ -138,16 +148,16 @@ Item {
 
         function getImageOffset() {
             var offset = Qt.point(0.0, 0.0);
-            if (image) {
+            if (image && image.fillMode === Image.PreserveAspectCrop) {
                 if (image.horizontalAlignment === Image.AlignRight) {
-                    offset.x = (image.paintedWidth - shape.width) / image.paintedWidth;
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth;
                 } else if (image.horizontalAlignment === Image.AlignHCenter) {
-                    offset.x = (image.paintedWidth - shape.width) / image.paintedWidth / 2.0;
+                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth / 2.0;
                 }
                 if (image.verticalAlignment === Image.AlignBottom) {
-                    offset.y = (image.paintedHeight - shape.height) / image.paintedHeight;
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight;
                 } else if (image.verticalAlignment === Image.AlignVCenter) {
-                    offset.y = (image.paintedHeight - shape.height) / image.paintedHeight / 2.0;
+                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight / 2.0;
                 }
             }
             return offset;

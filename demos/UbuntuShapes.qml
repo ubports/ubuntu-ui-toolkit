@@ -82,20 +82,30 @@ Template {
                 width:  units.gu(14)
                 height: units.gu(8)
                 Image {
-                    anchors.fill: parent
+                    width: units.gu(8); height: units.gu(8)
+//                    anchors.fill: parent
                     id: imageStretch
                     source: "map_icon.png"
                     visible: parent.pressed
+                    fillMode: Image.Stretch
+//                    width: units.gu(14)
+//                    height: units.gu(8)
                 }
                 UbuntuShape {
-                    image: imageStretch
-                    anchors.fill: parent
+//                    width: units.gu(14)
+                    height: units.gu(8)
+                    image: Image {
+                        fillMode: Image.Stretch
+                        source: "map_icon.png"
+//                        width: units.gu(14)
+//                        height: units.gu(8)
+                    }
                     visible: !parent.pressed
                 }
             }
 
             MouseArea {
-                width: units.gu(14)
+                width: units.gu(8)
                 height: units.gu(8)
                 Image {
                     id: imagePreserveAspectCropTopLeft
@@ -107,14 +117,25 @@ Template {
                     visible: parent.pressed
                 }
                 UbuntuShape {
-                    image: imagePreserveAspectCropTopLeft
-                    anchors.fill: parent
+//                    width: units.gu(14)
+                    height: units.gu(8)
+                    image: Image {
+                        source: "map_icon.png"
+                        fillMode: Image.PreserveAspectCrop
+                        horizontalAlignment: Image.AlignLeft
+                        verticalAlignment: Image.AlignTop
+
+//                        anchors.fill: sh
+//                        width:  units.gu(14)
+//                        height: units.gu(8)
+                    }
+//                    anchors.fill: parent
                     visible: !parent.pressed
                 }
             }
 
             MouseArea {
-                width: units.gu(14)
+                width: units.gu(8)
                 height: units.gu(8)
                 Image {
                     id: imagePreserveAspectCropBottomRight
@@ -126,8 +147,16 @@ Template {
                     visible: parent.pressed
                 }
                 UbuntuShape {
-                    image: imagePreserveAspectCropBottomRight
-                    anchors.fill: parent
+//                    image: imagePreserveAspectCropBottomRight
+//                    width: units.gu(14)
+                    image: Image {
+                        source: "map_icon.png"
+                        fillMode: Image.PreserveAspectCrop
+                        horizontalAlignment: Image.AlignRight
+                        verticalAlignment: Image.AlignBottom
+                    }
+
+//                    anchors.fill: parent
                     visible: !parent.pressed
                 }
             }
