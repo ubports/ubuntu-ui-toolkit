@@ -107,7 +107,6 @@ Item {
     ShaderEffect {
         anchors.fill: parent
         visible: shape.image || shape.color.a != 0.0
-        id: pf
 
         property ShaderEffectSource mask: ShaderEffectSource {
             sourceItem: BorderImage {
