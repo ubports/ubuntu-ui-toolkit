@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 Rectangle {
     id: tabBar
-    color: active ? "red" : "transparent"
+    color: active ? "tan" : "transparent"
 
     height: units.gu(6)
     property ListModel tabModel
@@ -55,17 +55,19 @@ Rectangle {
                         bottom: parent.bottom
                     }
 
-                    Rectangle {
-                        border.width: 2
-                        radius: 10
-                        color: selected ? "pink" : "black"
-                        anchors.fill: parent
-                        visible: true
-                    }
+//                    Rectangle {
+//                        border.width: 2
+//                        radius: 10
+//                        color: selected ? "pink" : "black"
+//                        anchors.fill: parent
+//                        visible: true
+//                    }
 
                     TextCustom {
                         id: text
-                        visible: true // tabBar.active || selected
+                        color: "#333333"
+                        opacity: selected ? 0.9 : 0.6
+                        visible: tabBar.active || selected
                         anchors.centerIn: parent
                         anchors.margins: units.gu(2)
                         text: title + tabIndex
