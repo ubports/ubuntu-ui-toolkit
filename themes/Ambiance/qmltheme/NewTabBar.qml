@@ -61,7 +61,7 @@ Item {
             Repeater {
                 id: repeater
 
-                model: tabs.__pagesModel.children
+                model: tabs.__tabsModel.children
 
                 AbstractButton {
                     id: button

@@ -24,7 +24,7 @@ Item {
 
     clip: true
 
-    property VisualItemModel tabModel: item.__pagesModel
+    property VisualItemModel tabModel: item.__tabsModel
 
     ListModel {
         id: tabProperties
