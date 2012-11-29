@@ -26,8 +26,8 @@ Rectangle {
 
     property Tabs tabs
     property ListModel tabModel
-//    property int selectedTabIndex
-//    onSelectedTabIndexChanged: buttonView.position()
+    //    property int selectedTabIndex
+    //    onSelectedTabIndexChanged: buttonView.position()
 
     Connections {
         target: tabs
@@ -53,8 +53,13 @@ Rectangle {
             anchors {
                 top: parent.top
                 bottom: parent.bottom
+                //                left: parent.left
             }
+            width: childrenRect.width
+
             Component.onCompleted: {
+                print("row parent = "+parent)
+                print("row width = "+theRow.width)
                 tabBar.totalButtonWidth = theRow.width;
                 tabBar.relativeButtonPositions = [];
                 // children[length-3] is the repeater
@@ -112,32 +117,56 @@ Rectangle {
         }
     }
 
-    PathView {
-        id: buttonView
-        anchors.fill: parent
-        model: 2
-        delegate: tabButtonRow
-        highlightRangeMode: PathView.NoHighlightRange
-        offset: (model === 1) ? 0.5 : 0
-        path: Path {
-            startX: -tabBar.totalButtonWidth/2
-            PathLine {
-                x: tabBar.totalButtonWidth*1.5
+//    Item {
+        //        color: "black"
+        //        id: clipper
+        //        anchors {
+        //            left: tabBar.left
+        //            top: tabBar.top
+        //            bottom: tabBar.bottom
+        //            right: tabBar.right
+        //        }
+
+//        anchors.fill: parent
+        //        visible: true
+        //        width: Math.min(tabBar.width, tabBar.totalButtonWidth)
+
+        PathView {
+            id: buttonView
+            //            anchors.fill: parent
+            anchors {
+                left: parent.left
+//                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+            clip: true
+            interactive: (tabBar.totalButtonWidth > tabBar.width)
+            width: Math.min(tabBar.width, tabBar.totalButtonWidth)
+
+            model: 2
+            delegate: tabButtonRow
+            highlightRangeMode: PathView.NoHighlightRange
+            offset: (model === 1) ? 0.5 : 0
+            path: Path {
+                startX: -tabBar.totalButtonWidth/2
+                PathLine {
+                    x: tabBar.totalButtonWidth*1.5
+                }
+            }
+            onOffsetChanged: print("offset = "+offset)
+
+            function position() {
+                if (!tabBar.relativeButtonPositions) return;
+                print("woei")
+                print(tabBar)
+                print(tabBar.tabs)
+                print(tabBar.tabs.selectedTabIndex)
+                print(tabBar.relativeButtonPositions)
+                offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
             }
         }
-        onOffsetChanged: print("offset = "+offset)
-
-        function position() {
-            if (!tabBar.relativeButtonPositions) return;
-            offset = 1 - tabBar.relativeButtonPositions[tabs.selectedTabIndex];
-        }
-        Image {
-//            x: buttonView.currentIndex.x
-            x: 200
-            source: "artwork/chevron.png"
-        }
-
-    }
+//    }
 
     MouseArea {
         // an inactive tabBar can be clicked to make it active

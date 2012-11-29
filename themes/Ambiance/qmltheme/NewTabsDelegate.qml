@@ -22,7 +22,7 @@ Item {
     id: slidingTabsDelegate
     anchors.fill: parent
 
-//    clip: true
+    clip: true
 
     property VisualItemModel tabModel: item.__pagesModel
 
