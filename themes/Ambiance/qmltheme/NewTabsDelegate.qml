@@ -50,7 +50,7 @@ Item {
         height: units.dp(2)
     }
 
-    TabBar {
+    NewTabBar {
         id: tabBar
         anchors {
             top: orangebar.bottom
