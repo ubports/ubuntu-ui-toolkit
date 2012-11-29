@@ -40,7 +40,7 @@ import Ubuntu.Components 0.1
                 ComposerSheet {
                     id: sheet
                     title: "Composer sheet"
-                    TextCustom {
+                    Label {
                         text: "A composer sheet has cancel and confirm buttons."
                     }
                     onCancelClicked: PopupUtils.close(sheet)

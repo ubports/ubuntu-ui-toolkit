@@ -15,7 +15,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* TextCustom renamed to Label, TextCustom remains for backwards compatibility
 
 
 SDK 0.1.14

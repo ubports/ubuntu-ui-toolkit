@@ -19,7 +19,7 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-    name: "TextCustomAPI"
+    name: "LabelAPI"
 
     function test_fontSize() {
         skip("https://bugs.launchpad.net/tavastia/+bug/1076771")
@@ -58,24 +58,24 @@ TestCase {
     }
 
     function test_boldWeightConflict() {
-        compare(lightTextCustom.font.weight, Font.Light, "font.weight is not overriden by font.bold")
+        compare(lightLabel.font.weight, Font.Light, "font.weight is not overriden by font.bold")
     }
 
     function test_weightPrecedence() {
-        compare(lightTextCustom.font.weight, Font.Light, "font.weight takes precedence over font.bold")
+        compare(lightLabel2.font.weight, Font.Light, "font.weight takes precedence over font.bold")
     }
 
-    TextCustom {
+    Label {
         id: textCustom
     }
 
-    TextCustom {
-        id: lightTextCustom
+    Label {
+        id: lightLabel
         font.weight: Font.Light
     }
 
-    TextCustom {
-        id: lightTextCustom2
+    Label {
+        id: lightLabel2
         font.weight: Font.Light
         font.bold: true
     }
