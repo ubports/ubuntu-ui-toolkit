@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
-    height: units.gu(6)
+    height: units.gu(6.5)
 
     property Tabs tabs
 
@@ -65,7 +65,7 @@ Item {
 
                 AbstractButton {
                     id: button
-                    width: text.width + 2*text.anchors.margins
+                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                     property bool selected: (index === tabs.selectedTabIndex)
 
                     anchors {
@@ -78,10 +78,16 @@ Item {
                         color: "#333333"
                         opacity: selected ? 0.9 : 0.6
                         visible: tabBar.active || selected
-                        anchors.centerIn: parent
-                        anchors.margins: units.gu(2)
+                        anchors {
+                            left: parent.left
+                            leftMargin: units.gu(2)
+                            rightMargin: units.gu(0)
+                            bottom: parent.bottom
+                            bottomMargin: units.gu(1)
+                        }
                         text: title
                         fontSize: "x-large"
+                        verticalAlignment: Text.AlignBottom
                     }
 
                     onClicked: {
@@ -125,7 +131,8 @@ Item {
         id: chevron
         source: "artwork/chevron.png"
         anchors {
-            verticalCenter: parent.verticalCenter
+            bottom: parent.bottom
+            bottomMargin: units.gu(2)
         }
 
         visible: !tabBar.active
@@ -135,7 +142,7 @@ Item {
         function getXPosition() {
             var buttons = buttonView.children[1].children; // the first buttonRow
             var selectedButton = buttons[tabs.selectedTabIndex];
-            return selectedButton.width;
+            return selectedButton.width + units.gu(2)
         }
     }
 

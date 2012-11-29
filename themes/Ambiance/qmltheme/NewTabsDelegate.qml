@@ -61,6 +61,7 @@ Item {
     ListItem.Divider {
         id: divider
         anchors.top: tabBar.bottom
+        height: units.gu(2)
     }
 
     ListView {
