@@ -24,6 +24,9 @@ Item {
 
     clip: true
 
+    // TODO: move to style
+    property bool swipeToSwitchTabs: true
+
     property VisualItemModel tabModel: item.__tabsModel
 
     ListModel {
@@ -73,12 +76,12 @@ Item {
             bottom: parent.bottom
         }
 
+        interactive: parent.swipeToSwitchTabs
         model: slidingTabsDelegate.tabModel
         onModelChanged: tabView.updatePages();
 
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem
-        //        snapMode: ListView.SnapToItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
 
@@ -99,7 +102,11 @@ Item {
         onMovingChanged: {
             if(!moving) {
                 // update the currentItem
-                tabView.currentIndex = contentX / slidingTabsDelegate.width;
+                var relativePosition = contentX / slidingTabsDelegate.width;
+                print("x = "+contentX+" delegate width="+slidingTabsDelegate.width);
+                print("relative position = "+relativePosition);
+                // Clamping because on very narrow views contentX can overshoot
+                tabView.currentIndex = MathUtils.clamp(Math.round(relativePosition), 0, tabModel.count-1);
                 item.selectedTabIndex = tabView.currentIndex;
             }
         }
