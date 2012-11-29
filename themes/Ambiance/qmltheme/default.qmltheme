@@ -139,7 +139,21 @@ Examples:
 }
 
 .scrollbar {
-    fadeAnimation: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    interactive: true;
+    overlay: false;
+    overlayOpacityWhenShown: 0.8;
+    overlayOpacityWhenHidden: 0.2;
+
+    scrollbarFadeInAnimation: NumberAnimation {
+        duration: 100;
+        easing.type: Easing.InOutQuad;
+    };
+    scrollbarFadeOutPause: 300;
+    scrollbarFadeOutAnimation: NumberAnimation {
+        duration: 500;
+        easing.type: Easing.InOutQuad;
+    };
+
     sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
     thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
     thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};

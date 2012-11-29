@@ -17,7 +17,28 @@
 import QtQuick 2.0
 
 QtObject {
-    property PropertyAnimation fadeAnimation
+    /*!
+      This property drives the interactive behavior of the scrollbar
+      */
+    property bool interactive
+
+    /*!
+      Overlay: when set, opacity specified in overlayOpacity will be used;
+      when no overlay is specuified, the scrollbar is 100% visible
+      */
+    property bool overlay
+    property var overlayOpacityWhenHidden
+    property var overlayOpacityWhenShown
+
+    /*!
+      Animation durations
+      */
+    property PropertyAnimation scrollbarFadeInAnimation
+    property var scrollbarFadeOutPause
+    property PropertyAnimation scrollbarFadeOutAnimation
+    /*!
+      Animations: fade out.
+      */
     property PropertyAnimation sliderAnimation
     property PropertyAnimation thumbConnectorFading
     property PropertyAnimation thumbFading
