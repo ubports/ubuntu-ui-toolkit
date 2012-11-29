@@ -15,9 +15,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
-* Label was added
-* TextCustom is a subclass of Label for backwards compatibility
+* TextCustom renamed to Label, TextCustom remains for backwards compatibility
 
 
 SDK 0.1.14
