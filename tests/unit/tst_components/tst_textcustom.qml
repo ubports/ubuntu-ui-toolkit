@@ -19,19 +19,19 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-     name: "TextCustomAPI"
+    name: "TextCustomAPI"
 
-     function test_fontSize() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076771")
-         compare(textCustom.fontSize,"medium","fontSize is 'medium' by default")
+    function test_fontSize() {
+        skip("https://bugs.launchpad.net/tavastia/+bug/1076771")
+        compare(textCustom.fontSize,"medium","fontSize is 'medium' by default")
 
-         var fontSizes = ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large" ]
+        var fontSizes = ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large" ]
 
-         for (var i=0;i<fontSizes.length;i++)
-         {
+        for (var i=0;i<fontSizes.length;i++)
+        {
 
-             var newFontSize = fontSizes[i]
-             console.debug("Testing with fontSize " + newFontSize)
+            var newFontSize = fontSizes[i]
+            console.debug("Testing with fontSize " + newFontSize)
 
             textCustom.fontSize = newFontSize
 
@@ -40,10 +40,43 @@ TestCase {
             } catch(err) {
                 console.debug("Found a bug, continuing for the other items in list..")
             }
-         }
-     }
+        }
+    }
 
-     TextCustom {
-         id: textCustom
-     }
+    function test_fontWeight() {
+        compare(textCustom.font.weight, Font.Normal, "font.weight is 'normal' by default")
+
+        var fontWeights = [ Font.Light, Font.Normal, Font.DemiBold, Font.Bold, Font.Black ]
+
+        for (var i in fontWeights)
+        {
+            var newFontWeight = fontWeights[i]
+            textCustom.font.weight = newFontWeight
+
+            compare(textCustom.font.weight, newFontWeight, "can set/get " + newFontWeight)
+        }
+    }
+
+    function test_boldWeightConflict() {
+        compare(lightTextCustom.font.weight, Font.Light, "font.weight is not overriden by font.bold")
+    }
+
+    function test_weightPrecedence() {
+        compare(lightTextCustom.font.weight, Font.Light, "font.weight takes precedence over font.bold")
+    }
+
+    TextCustom {
+        id: textCustom
+    }
+
+    TextCustom {
+        id: lightTextCustom
+        font.weight: Font.Light
+    }
+
+    TextCustom {
+        id: lightTextCustom2
+        font.weight: Font.Light
+        font.bold: true
+    }
 }
