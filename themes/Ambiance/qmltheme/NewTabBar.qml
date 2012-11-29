@@ -99,9 +99,9 @@ Rectangle {
         delegate: tabButtonRow
         //        onModelChanged: print("yay")
 //        snapMode: PathView.noSnap
-        offset: 0.5
+        offset: 0
         path: Path {
-            startX: 0 //tabBar.totalButtonWidth/2 + 50
+            startX: -tabBar.totalButtonWidth/2
 //            startX: tabBar.totalButtonWidth/2
             //            startY: 0
 
@@ -113,9 +113,13 @@ Rectangle {
             PathLine {
 //                x: parent.width
 //                x: tabBar.totalButtonWidth*2.5
-                x: tabBar.totalButtonWidth*2
+                x: tabBar.totalButtonWidth*1.5
                 //                y: 40
             }
+//            PathLine {
+//                x: -2*tabBar.totalButtonWidth
+//            }
+
 //            PathLine {
 //                                x: tabBar.totalButtonWidth*4
 //            }
