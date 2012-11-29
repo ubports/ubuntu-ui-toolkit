@@ -7,6 +7,50 @@ SDK Release Notes
 UNRELEASED
 ##########
 
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
+
+SDK 0.1.14
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* UbuntuShapeStyle:
+  - 'borderSource' property renamed to 'borderIdle'
+  - 'borderPressed' property added
+
+
+SDK 0.1.13
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
+
+SDK 0.1.12
+##########
+
 New: Scrollbar component
 
 Compatibility Breaks

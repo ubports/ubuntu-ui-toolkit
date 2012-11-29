@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,8 +18,25 @@
 import QtQuick 2.0
 
 QtObject {
-    property color gradientColor
-    property url maskSource
-    property url borderIdle
-    property url borderPressed
+    /*!
+      Cursor color
+      */
+    property color color
+
+    /*!
+      Cursor transparency, may be used to show text under the cursor for thick cursors.
+      */
+    property real opacity
+
+    /*!
+      Cursor width
+      */
+    property real width
+
+    /*!
+      Properties driving cursor blinking. If either of these values are 0, no
+      blinking is provided.
+      */
+    property int blinkTimeoutShown
+    property int blinkTimeoutHidden
 }

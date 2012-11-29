@@ -46,9 +46,6 @@ Text {
     elide: (Theming.ItemStyle.style && Theming.ItemStyle.style.elide) ?
              Theming.ItemStyle.style.elide : Text.ElideNone
 
-    font.bold: (Theming.ItemStyle.style && Theming.ItemStyle.style.bold) ?
-                 Theming.ItemStyle.style.bold : false
-
     font.capitalization: (Theming.ItemStyle.style && Theming.ItemStyle.style.capitalization) ?
                            Theming.ItemStyle.style.capitalization : Font.MixedCase
 
@@ -68,9 +65,6 @@ Text {
 
     font.underline: (Theming.ItemStyle.style && Theming.ItemStyle.style.underline) ?
                       Theming.ItemStyle.style.underline : false
-
-    font.weight: (Theming.ItemStyle.style && Theming.ItemStyle.style.weight) ?
-                   Theming.ItemStyle.style.weight : Font.Normal
 
     font.wordSpacing: (Theming.ItemStyle.style && Theming.ItemStyle.style.wordSpacing) ?
                         Theming.ItemStyle.style.wordSpacing : 0.0
@@ -99,6 +93,16 @@ Text {
     opacity: (Theming.ItemStyle.style && Theming.ItemStyle.style.textOpacity) ?
                Theming.ItemStyle.style.textOpacity : 1.0
 
-    verticalAlignment: (Theming.ItemStyle.verticalAlignment && Theming.ItemStyle.verticalAlignment.verticalAlignment) ?
-                         Theming.ItemStyle.verticalAlignment.verticalAlignment : Text.AlignTop
+    verticalAlignment: (Theming.ItemStyle.style && Theming.ItemStyle.style.verticalAlignment) ?
+                         Theming.ItemStyle.style.verticalAlignment : Text.AlignTop
+
+    Theming.ItemStyle.onStyleChanged: {
+        // only set font.bold and font.weight if they're defined in the style
+        if (Theming.ItemStyle.style && Theming.ItemStyle.style.bold !== undefined) {
+            font.bold = Theming.ItemStyle.style.bold
+        }
+        if (Theming.ItemStyle.style && Theming.ItemStyle.style.weight !== undefined) {
+            font.weight = Theming.ItemStyle.style.weight
+        }
+    }
 }

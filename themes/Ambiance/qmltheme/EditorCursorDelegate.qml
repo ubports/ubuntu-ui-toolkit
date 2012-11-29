@@ -16,9 +16,21 @@
 
 import QtQuick 2.0
 
-QtObject {
-    property color gradientColor
-    property url maskSource
-    property url borderIdle
-    property url borderPressed
+Rectangle {
+
+    color: itemStyle.color
+    opacity: itemStyle.opacity
+    width: itemStyle.width
+    height: item.height
+
+    Timer {
+        interval: itemStyle.blinkTimeoutShown
+        running: item.showCursor && (itemStyle.blinkTimeoutShown > 0) && (itemStyle.blinkTimeoutHidden > 0)
+        repeat: true
+        onTriggered: {
+            interval = (interval == itemStyle.blinkTimeoutShown) ?
+                        itemStyle.blinkTimeoutHidden : itemStyle.blinkTimeoutShown;
+            item.timerShowCursor = !item.timerShowCursor;
+        }
+    }
 }

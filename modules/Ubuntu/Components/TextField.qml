@@ -76,6 +76,7 @@ import "." 0.1 as Theming
     }
     \endqml
 */
+
 FocusScope {
     id: control
 
@@ -369,34 +370,27 @@ FocusScope {
         editor.forceActiveFocus();
     }
 
+    // internals
+    Theming.ItemStyle.class: "textfield"
+
+    Text {
+        id: fontHolder
+    }
+    SystemPalette {
+        id: systemColors
+    }
+
     //internals
     QtObject {
         id: internal
-        property url frameImage: selectFrameSource()
         // array of borders in left, top, right, bottom order
-        property url clearImage: Qt.resolvedUrl("artwork/TextFieldClear.png")
-        property color textColor: (editor.enabled) ? "#757373" : "darkgray"
-        property color hintColor: "#B6B6B6"
-        property string fontSize: "small"
-        property real clearButtonSpacing: units.gu(0.5)
         property bool textChanged: false
-        property real spacing: units.gu(0.5)
+        property real spacing: (Theming.ItemStyle.style && Theming.ItemStyle.hasOwnProperty("overlaidSpacing")) ?
+                                   Theming.ItemStyle.overlaidSpacing : units.gu(0.5)
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
-
-        function selectFrameSource()
-        {
-            if (control.errorHighlight && !editor.acceptableInput) {
-                if (editor.activeFocus && editor.enabled)
-                    return Qt.resolvedUrl("artwork/TextFieldFrameError.sci");
-                return Qt.resolvedUrl("artwork/TextFieldFrameIdleError.sci");
-            }
-            if (editor.activeFocus && editor.enabled)
-                return Qt.resolvedUrl("artwork/TextFieldFrame.sci");
-            return Qt.resolvedUrl("artwork/TextFieldFrameIdle.sci");
-        }
 
         function showInputPanel()
         {
@@ -421,206 +415,194 @@ FocusScope {
         }
     }
 
-    // frame
-    BorderImage {
-        id: frame
-        anchors.fill: parent
-        source: internal.frameImage
-        smooth: true
-
-        //left pane
-        Item {
-            id: leftPane
-            anchors {
-                left: parent.left
-                leftMargin: internal.spacing
-                verticalCenter: parent.verticalCenter
-            }
-            // the left pane width depends on its children width
-            height: parent.height
-            width: childrenRect.width
-            onChildrenChanged: {
-                // reparenting
-                for (var i = 0; i < children.length; i++) {
-                    children[i].parent = leftPane;
-                    children[i].anchors.verticalCenter = verticalCenter;
-                }
-            }
+    //left pane
+    Item {
+        id: leftPane
+        anchors {
+            left: parent.left
+            leftMargin: internal.spacing
+            verticalCenter: parent.verticalCenter
         }
-
-        // right pane
-        Item {
-            id: rightPane
-            anchors {
-                right: parent.right
-                rightMargin: internal.spacing
-                verticalCenter: parent.verticalCenter
-            }
-            // the right pane width depends on its children width
-            height: parent.height
-            width: childrenRect.width
-            onChildrenChanged: {
-                // reparenting
-                for (var i = 0; i < children.length; i++) {
-                    children[i].parent = rightPane;
-                    children[i].anchors.verticalCenter = verticalCenter;
-                }
-            }
-        }
-
-        // cursor
-        Component {
-            id: cursor
-            Rectangle {
-                property bool timerShowCursor: true
-
-                id: customCursor
-                color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                height: parent.height - (parent.topMargin + parent.bottomMargin)
-                width: units.dp(1)
-                visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
-                Timer {
-                    interval: 800
-                    running: (customCursor.parent.forceCursorVisible || customCursor.parent.activeFocus)
-                    repeat: true
-                    onTriggered: {
-                        interval = (interval == 800) ? 400 : 800;
-                        customCursor.timerShowCursor = !customCursor.timerShowCursor;
-                    }
-                }
-            }
-        }
-
-        Button {
-            // FIXME: see previous FIXME
-            Theming.ItemStyle.class: "transparent-button"
-            id: clearButton
-            anchors {
-                right: rightPane.left
-                rightMargin: internal.spacing
-                verticalCenter: parent.verticalCenter
-            }
-            iconSource: (control.hasClearButton) ? internal.clearImage : ""
-            width: visible ? units.gu(2) : 0 // TODO: no way to set the image size :(
-            visible: control.hasClearButton &&
-                        (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
-            onClicked: editor.text = ""
-        }
-
-        // hint text
-        TextCustom {
-            id: hint
-            color: internal.hintColor
-            font.italic: true
-            verticalAlignment: Text.AlignVCenter
-            fontSize: "small"
-            anchors {
-                left: leftPane.right
-                right: clearButton.left
-                top: parent.top
-                bottom: parent.bottom
-                margins: internal.spacing
-            }
-            elide: Text.ElideRight
-            font.pixelSize: editor.font.pixelSize
-            // hint is shown till user types something in the field
-            visible: (editor.text == "") && !editor.inputMethodComposing
-        }
-
-        // text input
-        TextInput {
-            id: editor
-            // FocusScope will forward focus to this component
-            focus: true
-            anchors {
-                left: leftPane.right
-                right: clearButton.left
-                margins: internal.spacing
-                verticalCenter: parent.verticalCenter
-            }
-            color: internal.textColor
-            clip: true
-            passwordCharacter: "\u2022"
-            font.pixelSize: FontUtils.sizeToPixels(internal.fontSize)
-            onTextChanged: internal.textChanged = true
-            cursorDelegate: cursor
-
-            // virtual keyboard/software input panel handling
-            activeFocusOnPress: false
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    internal.showInputPanel();
-                    internal.textChanged = false;
-                } else {
-                    internal.hideInputPanel();
-                    // emit accepted signal if changed
-                    if (internal.textChanged)
-                        control.accepted();
-                }
-            }
-
-            // handle virtual keyboard and cursor positioning, as the MouseArea overrides
-            // those functionalities of the TextInput
-            MouseArea {
-                id: virtualKbdHandler
-                anchors.fill: parent
-                hoverEnabled: true
-                preventStealing: true
-
-                onClicked: {
-                    // activate control
-                    if (!control.activeFocus) {
-                        control.forceActiveFocus();
-                        // set cursor position if no selection was previously set
-                        if (internal.selectionEnd == internal.selectionStart)
-                            editor.cursorPosition = editor.positionAt(mouse.x);
-                        else
-                            editor.select(internal.selectionStart, internal.selectionEnd);
-                    } else if (!internal.selectionMode){
-                        // reset selection and move cursor unde mouse click
-                        internal.resetEditorSelection(mouse.x);
-                    } else if (internal.selectionMode) {
-                        // reset selection mode (onReleased is triggered prior to onClicked
-                        // and resetting selection mode there would cause to enter in the\
-                        // previous if-clause
-                        internal.selectionMode = false;
-                    }
-                }
-
-                onDoubleClicked: {
-                    // select word under doubletap
-                    if (!control.activeFocus)
-                        return;
-                    editor.selectWord();
-                    // update selection boundaries, except cursorPosition
-                    internal.selectionEnd = editor.selectionEnd;
-                    internal.selectionStart = editor.selectionStart;
-                    internal.selectionMode = false;
-                }
-                onPressed: {
-                    // don't do anything while the control is inactive
-                    if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
-                        return;
-                    if (internal.selectionEnd == internal.selectionStart) {
-                        internal.resetEditorSelection(mouse.x);
-                        internal.selectionMode = true;
-                    }
-                }
-                onReleased: {
-                    if (!containsMouse)
-                        internal.selectionMode = false;
-                }
-
-                onPositionChanged: {
-                    if (!editor.activeFocus || !internal.selectionMode)
-                        return;
-                    // update selectionEnd
-                    internal.selectionEnd = editor.positionAt(mouse.x);
-                    editor.select(internal.selectionStart, internal.selectionEnd);
-                }
+        // the left pane width depends on its children width
+        height: parent.height
+        width: childrenRect.width
+        onChildrenChanged: {
+            // reparenting
+            for (var i = 0; i < children.length; i++) {
+                children[i].parent = leftPane;
+                children[i].anchors.verticalCenter = verticalCenter;
             }
         }
     }
+
+    // right pane
+    Item {
+        id: rightPane
+        anchors {
+            right: parent.right
+            rightMargin: internal.spacing
+            verticalCenter: parent.verticalCenter
+        }
+        // the right pane width depends on its children width
+        height: parent.height
+        width: childrenRect.width
+        onChildrenChanged: {
+            // reparenting
+            for (var i = 0; i < children.length; i++) {
+                children[i].parent = rightPane;
+                children[i].anchors.verticalCenter = verticalCenter;
+            }
+        }
+    }
+
+    // cursor
+    Component {
+        id: cursor
+        Item {
+            id: customCursor
+            property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
+            property bool timerShowCursor: true
+
+            Theming.ItemStyle.class: "cursor"
+            height: parent.height
+            visible: showCursor && timerShowCursor
+        }
+    }
+
+    Button {
+        id: clearButton
+        anchors {
+            right: rightPane.left
+            rightMargin: internal.spacing
+            verticalCenter: parent.verticalCenter
+        }
+        iconSource: (control.hasClearButton && Theming.ItemStyle.style && Theming.ItemStyle.style.iconSource) ?
+                        Theming.ItemStyle.style.iconSource : ""
+        width: visible ? units.gu(2) : 0 // TODO: no way to set the image size :(
+        visible: control.hasClearButton &&
+                    (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
+        onClicked: editor.text = ""
+    }
+
+    // hint text
+    TextCustom {
+        id: hint
+        verticalAlignment: Text.AlignVCenter
+        anchors {
+            left: leftPane.right
+            right: clearButton.left
+            top: parent.top
+            bottom: parent.bottom
+            margins: internal.spacing
+        }
+        // hint is shown till user types something in the field
+        visible: (editor.text == "") && !editor.inputMethodComposing
+    }
+
+
+    // text input
+    TextInput {
+        id: editor
+        // FocusScope will forward focus to this component
+        focus: true
+        anchors {
+            left: leftPane.right
+            right: clearButton.left
+            margins: internal.spacing
+            verticalCenter: parent.verticalCenter
+        }
+        // get the control's style
+        Theming.ItemStyle.style: control.Theming.ItemStyle.style
+        color: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["color"]))?
+                   Theming.ItemStyle.style.color : "black"
+        selectedTextColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectedTextColor"])) ?
+                   Theming.ItemStyle.style.selectedTextColor: systemColors.highlightedText
+        selectionColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectionColor"])) ?
+                   Theming.ItemStyle.style.selectionColor: systemColors.highlight
+        clip: true
+        passwordCharacter: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["passwordCharacter"])) ?
+                               Theming.ItemStyle.style.passwordCharacter: "*"
+        font: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["font"])) ?
+                  Theming.ItemStyle.style.font : fontHolder.font
+        onTextChanged: internal.textChanged = true
+        cursorDelegate: cursor
+
+        // virtual keyboard/software input panel handling
+        activeFocusOnPress: false
+        onActiveFocusChanged: {
+            if (activeFocus) {
+                internal.showInputPanel();
+                internal.textChanged = false;
+            } else {
+                internal.hideInputPanel();
+                // emit accepted signal if changed
+                if (internal.textChanged)
+                    control.accepted();
+            }
+        }
+
+        // handle virtual keyboard and cursor positioning, as the MouseArea overrides
+        // those functionalities of the TextInput
+        MouseArea {
+            id: virtualKbdHandler
+            anchors.fill: parent
+            hoverEnabled: true
+            preventStealing: true
+
+            onClicked: {
+                // activate control
+                if (!control.activeFocus) {
+                    control.forceActiveFocus();
+                    // set cursor position if no selection was previously set
+                    if (internal.selectionEnd == internal.selectionStart)
+                        editor.cursorPosition = editor.positionAt(mouse.x);
+                    else
+                        editor.select(internal.selectionStart, internal.selectionEnd);
+                } else if (!internal.selectionMode){
+                    // reset selection and move cursor unde mouse click
+                    internal.resetEditorSelection(mouse.x);
+                } else if (internal.selectionMode) {
+                    // reset selection mode (onReleased is triggered prior to onClicked
+                    // and resetting selection mode there would cause to enter in the\
+                    // previous if-clause
+                    internal.selectionMode = false;
+                }
+            }
+
+            onDoubleClicked: {
+                // select word under doubletap
+                if (!control.activeFocus)
+                    return;
+                editor.selectWord();
+                // update selection boundaries, except cursorPosition
+                internal.selectionEnd = editor.selectionEnd;
+                internal.selectionStart = editor.selectionStart;
+                internal.selectionMode = false;
+            }
+            onPressed: {
+                // don't do anything while the control is inactive
+                if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
+                    return;
+                if (internal.selectionEnd == internal.selectionStart) {
+                    internal.resetEditorSelection(mouse.x);
+                    internal.selectionMode = true;
+                }
+            }
+            onReleased: {
+                if (!containsMouse)
+                    internal.selectionMode = false;
+            }
+
+            onPositionChanged: {
+                if (!editor.activeFocus || !internal.selectionMode)
+                    return;
+                // update selectionEnd
+                internal.selectionEnd = editor.positionAt(mouse.x);
+                editor.select(internal.selectionStart, internal.selectionEnd);
+            }
+        }
+    }
+
     Component.onCompleted: {
         editor.accepted.connect(control.accepted);
         cursorPosition = 0;

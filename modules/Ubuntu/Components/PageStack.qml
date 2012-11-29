@@ -184,7 +184,7 @@ Item {
                 top: parent.top
             }
             pageStack: pageStack
-            height: header.visible ? units.gu(5) : 0
+            height: units.gu(5)
         }
 
         Item {
@@ -193,7 +193,7 @@ Item {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                top: header.bottom
+                top: header.visible ? header.bottom : parent.top
             }
         }
 

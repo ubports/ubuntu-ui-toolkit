@@ -14,11 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-
-QtObject {
-    property color gradientColor
-    property url maskSource
-    property url borderIdle
-    property url borderPressed
+/* checks whether the property is defined in the itemStyle, and if found, returns
+  the property value or the given (optional) default value.
+  Example:
+     itemStyleProperty("color", Qt.rgba(0,0,0,0))
+     itemStyleProperty("background") - returns "undefined" if the background
+        property is not found.
+ */
+function itemStyleProperty(property, defaultValue) {
+    if ('undefined' !== typeof itemStyle[property])
+        return itemStyle[property];
+    return defaultValue;
 }

@@ -59,7 +59,7 @@ AbstractButton {
     id: slider
 
     width: units.gu(38)
-    height: units.gu(5)
+    height: units.gu(4)
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
     //     debate on whether we should use that property (like every other

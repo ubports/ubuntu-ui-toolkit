@@ -60,7 +60,7 @@ GIconProvider::GIconProvider()
 QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     QPixmap result;
-    QByteArray utf8Name = id.toUtf8();
+    QByteArray utf8Name = QUrl::fromPercentEncoding(id.toUtf8()).toUtf8();
     GError *error = NULL;
     GIcon *icon = g_icon_new_for_string(utf8Name.data(), &error);
     if (error) {
