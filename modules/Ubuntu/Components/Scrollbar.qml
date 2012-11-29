@@ -95,7 +95,6 @@ Item {
     property bool __interactive: (Theming.ItemStyle.style && Theming.ItemStyle.style.hasOwnProperty("interactive")) ?
                                      Theming.ItemStyle.style.interactive : false
 
-    //opacity: 0.0
     // styling
     Theming.ItemStyle.class: "scrollbar"
     // FIXME: see FIXME at the top

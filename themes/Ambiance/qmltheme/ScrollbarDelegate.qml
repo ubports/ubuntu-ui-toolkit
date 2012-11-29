@@ -45,7 +45,7 @@ Item {
                                    ((isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth)
     property real overlayOpacityWhenShown: StyleUtils.itemStyleProperty("overlayOpacityWhenShown", 0.6)
     property real overlayOpacityWhenHidden: StyleUtils.itemStyleProperty("overlayOpacityWhenHidden", 0.0)
-    property bool overlay: StyleUtils.itemStyleProperty("overlay", false)
+    property bool overlay: StyleUtils.itemStyleProperty("overlay", false) && !interactive
 
     property real contentPosition
     property QtObject listView: logicLoader.item
@@ -127,7 +127,6 @@ Item {
             return 'shown';
     }
 
-    onStateChanged: print(state)
     states: [
         State {
             name: 'stopped'

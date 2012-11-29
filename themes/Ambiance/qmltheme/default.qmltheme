@@ -142,9 +142,9 @@ Examples:
 
 .scrollbar {
     interactive: true;
-    overlay: false;
-    overlayOpacityWhenShown: 0.8;
-    overlayOpacityWhenHidden: 0.2;
+    overlay: true;
+    overlayOpacityWhenShown: 0.6;
+    overlayOpacityWhenHidden: 0.0;
 
     scrollbarFadeInAnimation: NumberAnimation {
         duration: 100;
