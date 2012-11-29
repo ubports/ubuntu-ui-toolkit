@@ -31,13 +31,13 @@ QtObject {
     property var overlayOpacityWhenShown
 
     /*!
-      Animation durations
+      Scrollbar animations
       */
     property PropertyAnimation scrollbarFadeInAnimation
     property var scrollbarFadeOutPause
     property PropertyAnimation scrollbarFadeOutAnimation
     /*!
-      Animations: fade out.
+      Scrollbar element animations.
       */
     property PropertyAnimation sliderAnimation
     property PropertyAnimation thumbConnectorFading
