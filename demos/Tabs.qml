@@ -24,7 +24,7 @@ Template {
         id: tabs
 //        Component.onCompleted: selectedTabIndex = 2
 //        selectedTabIndex: 2
-        ItemStyle.class: "sliding-tabs"
+        ItemStyle.class: "new-tabs"
         Tab {
 //            title: i18n.tr("Tab") + " 1"
             title: "Calls"
