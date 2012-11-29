@@ -22,7 +22,7 @@ Item {
     id: slidingTabsDelegate
     anchors.fill: parent
 
-    clip: true
+//    clip: true
 
     property VisualItemModel tabModel: item.__pagesModel
 
@@ -61,6 +61,7 @@ Item {
         }
 
         tabModel: tabProperties
+        tabs: item
     }
 
     ListItem.Divider {
@@ -109,7 +110,6 @@ Item {
         }
 
         function updateSelectedTabIndex() {
-            tabBar.selectedTabIndex = item.selectedTabIndex;
             if (tabView.currentIndex === item.selectedTabIndex) return;
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;

@@ -23,9 +23,19 @@ Rectangle {
     color: "transparent"
 
     height: units.gu(6)
+
+    property Tabs tabs
     property ListModel tabModel
-    property int selectedTabIndex
-    onSelectedTabIndexChanged: buttonView.position()
+//    property int selectedTabIndex
+//    onSelectedTabIndexChanged: buttonView.position()
+
+    Connections {
+        target: tabs
+        onSelectedTabIndexChanged: {
+            tabBar.active = false;
+            buttonView.position()
+        }
+    }
 
     property bool active: false
     onActiveChanged: {
@@ -47,7 +57,10 @@ Rectangle {
             Component.onCompleted: {
                 tabBar.totalButtonWidth = theRow.width;
                 tabBar.relativeButtonPositions = [];
-                for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
+                // children[length-3] is the repeater
+                // children[length-2] is the chevron
+                for (var i=0; i < children.length; i++) print(children[i])
+                for (var i=0; i < children.length-1; i++) {
                     print(children[i].x);
                     tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
                 }
@@ -60,7 +73,7 @@ Rectangle {
                 AbstractButton {
                     id: button
                     width: text.width + 2*text.anchors.margins
-                    property bool selected: (index === tabBar.selectedTabIndex)
+                    property bool selected: (index === tabs.selectedTabIndex)
 
                     anchors {
                         top: parent.top
@@ -87,11 +100,15 @@ Rectangle {
                     }
 
                     onClicked: {
-                        tabBar.selectedTabIndex = index;
+                        tabs.selectedTabIndex = index;
                         tabBar.active = false;
                     }
                 }
             }
+
+            //            Image {
+            //                source: "artwork/chevron.png"
+            //            }
         }
     }
 
@@ -112,8 +129,14 @@ Rectangle {
 
         function position() {
             if (!tabBar.relativeButtonPositions) return;
-            offset = 1 - tabBar.relativeButtonPositions[tabBar.selectedTabIndex];
+            offset = 1 - tabBar.relativeButtonPositions[tabs.selectedTabIndex];
         }
+        Image {
+//            x: buttonView.currentIndex.x
+            x: 200
+            source: "artwork/chevron.png"
+        }
+
     }
 
     MouseArea {
