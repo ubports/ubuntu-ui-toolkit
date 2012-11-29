@@ -485,7 +485,7 @@ FocusScope {
     }
 
     // hint text
-    TextCustom {
+    Label {
         id: hint
         verticalAlignment: Text.AlignVCenter
         anchors {

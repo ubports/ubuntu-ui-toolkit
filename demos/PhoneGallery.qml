@@ -90,7 +90,7 @@ Flickable {
             }
             ListItem.Empty {
                 highlightWhenPressed: false
-                TextCustom {
+                Label {
                     anchors.left: parent.left
                     text: i18n.tr("Activity indicator")
                     anchors {
@@ -147,7 +147,7 @@ Flickable {
                         page: Rectangle {
                             anchors.fill: parent
                             color: "#eeeeee"
-                            TextCustom {
+                            Label {
                                 anchors.centerIn: parent
                                 text: i18n.tr("This is the first tab.")
                                 color: "#757373"
@@ -159,7 +159,7 @@ Flickable {
                         page: Rectangle {
                             anchors.fill: parent
                             color: "#e4e4e4"
-                            TextCustom {
+                            Label {
                                 anchors.centerIn: parent
                                 text: i18n.tr("This is the second tab.")
                                 color: "#757373"

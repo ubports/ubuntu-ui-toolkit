@@ -38,7 +38,7 @@ Item {
         radius: units.gu(1)
     }
 
-    TextCustom {
+    Label {
         id: headerText
         anchors {
             top: parent.top
@@ -53,7 +53,7 @@ Item {
         text: item.title
     }
 
-    TextCustom {
+    Label {
         id: questionText
         anchors {
             top: headerText.bottom

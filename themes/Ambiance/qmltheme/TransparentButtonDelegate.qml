@@ -51,7 +51,7 @@ Item {
         opacity: item.enabled ? 1.0 : 0.5
     }
 
-    TextCustom {
+    Label {
         id: label
         text: item.text
         anchors {

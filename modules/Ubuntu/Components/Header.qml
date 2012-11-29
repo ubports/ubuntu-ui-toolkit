@@ -68,7 +68,7 @@ Rectangle {
         }
     }
 
-    TextCustom {
+    Label {
         id: headerTitle
         anchors {
             left: backButton.right

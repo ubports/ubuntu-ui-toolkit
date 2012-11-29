@@ -32,7 +32,7 @@ Template {
                 color: "#c94212"
                 radius: "small"
 
-                TextCustom {
+                Label {
                     anchors.centerIn: parent
                     text: "small"
                     fontSize: "x-small"
@@ -44,7 +44,7 @@ Template {
                 color: "#c94212"
                 radius: "medium"
 
-                TextCustom {
+                Label {
                     anchors.centerIn: parent
                     text: "medium"
                     fontSize: "x-small"

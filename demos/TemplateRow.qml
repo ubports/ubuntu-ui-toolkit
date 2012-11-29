@@ -25,7 +25,7 @@ Row {
     spacing: units.gu(1)
     height: units.gu(6)
 
-    TextCustom {
+    Label {
         text: templateRow.title
         ItemStyle.class: "row-label"
         width: units.gu(10)

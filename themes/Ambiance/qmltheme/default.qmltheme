@@ -90,12 +90,6 @@ Examples:
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
-/* Default style for all TextCustom elements in Gallery*/
-.TextCustom {
-    fontSize: "medium";
-    color: "#757373";
-}
-
 .popover-foreground {
 }
 
@@ -114,9 +108,8 @@ Examples:
     will be used with all declared properties as variant.
 */
 .label {
-    fontFamily: "Ubuntu";
     fontSize: "medium";
-    color: "red";
+    color: "#757373";
 }
 
 /* Gallery title */

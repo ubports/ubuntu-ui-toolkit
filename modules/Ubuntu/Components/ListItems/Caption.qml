@@ -57,7 +57,7 @@ Item {
         }
         height: captionText.height + units.gu(1)
 
-        TextCustom {
+        Label {
             id: captionText
             anchors.centerIn: parent
             width: parent.width - units.gu(1)
