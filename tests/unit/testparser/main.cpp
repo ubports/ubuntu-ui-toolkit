@@ -59,6 +59,15 @@ void printResults() {
         if (testXml.open(QIODevice::ReadOnly)) {
             testXmlData = testXml.readAll();
             testXml.close();
+        } else {
+            qWarning() << "Unable to open" << fileName << "for reading. Skipped.";
+            continue;
+        }
+
+        if (testXmlData.trimmed().length()==0) {
+            QFile::remove(fileName);
+            qWarning() << "The file was empty, removing it.";
+            continue;
         }
 
 
