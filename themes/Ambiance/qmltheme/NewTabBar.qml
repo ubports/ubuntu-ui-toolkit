@@ -17,17 +17,11 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
+Item {
     id: tabBar
-    //    color: active ? "tan" : "transparent"
-    color: "transparent"
-
     height: units.gu(6)
 
     property Tabs tabs
-    property ListModel tabModel
-    //    property int selectedTabIndex
-    //    onSelectedTabIndexChanged: buttonView.position()
 
     Connections {
         target: tabs
@@ -39,12 +33,12 @@ Rectangle {
 
     property bool active: false
     onActiveChanged: {
-        print("active = "+active);
-        buttonView.position();
+        if (!active) buttonView.position();
     }
 
+    // used to position buttons and chevron
     property real totalButtonWidth: 0
-    property var relativeButtonPositions
+    property var relativeButtonPositions: []
 
     Component {
         id: tabButtonRow
@@ -53,27 +47,21 @@ Rectangle {
             anchors {
                 top: parent.top
                 bottom: parent.bottom
-                //                left: parent.left
             }
             width: childrenRect.width
 
             Component.onCompleted: {
-                print("row parent = "+parent)
-                print("row width = "+theRow.width)
                 tabBar.totalButtonWidth = theRow.width;
                 tabBar.relativeButtonPositions = [];
-                // children[length-3] is the repeater
-                // children[length-2] is the chevron
-                for (var i=0; i < children.length; i++) print(children[i])
-                for (var i=0; i < children.length-1; i++) {
-                    print(children[i].x);
+                for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
                     tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
                 }
             }
 
             Repeater {
                 id: repeater
-                model: tabModel
+
+                model: tabs.__pagesModel.children
 
                 AbstractButton {
                     id: button
@@ -85,14 +73,6 @@ Rectangle {
                         bottom: parent.bottom
                     }
 
-                    //                    Rectangle {
-                    //                        border.width: 2
-                    //                        radius: 10
-                    //                        color: selected ? "pink" : "black"
-                    //                        anchors.fill: parent
-                    //                        visible: true
-                    //                    }
-
                     TextCustom {
                         id: text
                         color: "#333333"
@@ -100,7 +80,7 @@ Rectangle {
                         visible: tabBar.active || selected
                         anchors.centerIn: parent
                         anchors.margins: units.gu(2)
-                        text: title + tabIndex
+                        text: title
                         fontSize: "x-large"
                     }
 
@@ -110,70 +90,60 @@ Rectangle {
                     }
                 }
             }
-
-            //            Image {
-            //                source: "artwork/chevron.png"
-            //            }
         }
     }
 
-//    Item {
-        //        color: "black"
-        //        id: clipper
-        //        anchors {
-        //            left: tabBar.left
-        //            top: tabBar.top
-        //            bottom: tabBar.bottom
-        //            right: tabBar.right
-        //        }
 
-//        anchors.fill: parent
-        //        visible: true
-        //        width: Math.min(tabBar.width, tabBar.totalButtonWidth)
+    PathView {
+        id: buttonView
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        interactive: (tabBar.totalButtonWidth > tabBar.width)
+        width: Math.min(tabBar.width, tabBar.totalButtonWidth)
+        clip: true // avoid showing the same button twice
 
-        PathView {
-            id: buttonView
-            //            anchors.fill: parent
-            anchors {
-                left: parent.left
-//                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-            }
-            clip: true
-            interactive: (tabBar.totalButtonWidth > tabBar.width)
-            width: Math.min(tabBar.width, tabBar.totalButtonWidth)
-
-            model: 2
-            delegate: tabButtonRow
-            highlightRangeMode: PathView.NoHighlightRange
-            offset: (model === 1) ? 0.5 : 0
-            path: Path {
-                startX: -tabBar.totalButtonWidth/2
-                PathLine {
-                    x: tabBar.totalButtonWidth*1.5
-                }
-            }
-            onOffsetChanged: print("offset = "+offset)
-
-            function position() {
-                if (!tabBar.relativeButtonPositions) return;
-                print("woei")
-                print(tabBar)
-                print(tabBar.tabs)
-                print(tabBar.tabs.selectedTabIndex)
-                print(tabBar.relativeButtonPositions)
-                offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
+        model: 2
+        delegate: tabButtonRow
+        highlightRangeMode: PathView.NoHighlightRange
+        offset: (model === 1) ? 0.5 : 0
+        path: Path {
+            startX: -tabBar.totalButtonWidth/2
+            PathLine {
+                x: tabBar.totalButtonWidth*1.5
             }
         }
-//    }
+        function position() {
+            if (!tabBar.relativeButtonPositions) return;
+            offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
+        }
+    }
+
+    Image {
+        id: chevron
+        source: "artwork/chevron.png"
+        anchors {
+            verticalCenter: parent.verticalCenter
+        }
+
+        visible: !tabBar.active
+
+        x: getXPosition()
+
+        function getXPosition() {
+            var buttons = buttonView.children[1].children; // the first buttonRow
+            var selectedButton = buttons[tabs.selectedTabIndex];
+            return selectedButton.width;
+        }
+    }
 
     MouseArea {
         // an inactive tabBar can be clicked to make it active
         anchors.fill: parent
         enabled: !tabBar.active
         onClicked: {
-            print("activating tab bar!");
             tabBar.active = true;
         }
     }

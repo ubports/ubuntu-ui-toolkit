@@ -31,13 +31,9 @@ Item {
     }
 
     onTabModelChanged: {
-        print("adding tab properties");
         tabProperties.clear();
         for (var i=0; i < tabModel.count; i++) {
-            print(i+" appending "+tabModel.children[i].title);
-            //            tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
             tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
-            //            tabProperties.setProperty(i, "tabIndex", i);
         }
     }
 
@@ -59,8 +55,6 @@ Item {
             left: parent.left
             right: parent.right
         }
-
-        tabModel: tabProperties
         tabs: item
     }
 
