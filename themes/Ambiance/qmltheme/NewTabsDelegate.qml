@@ -39,27 +39,6 @@ Item {
         }
     }
 
-    //    onTabModelChanged: {
-    //        print("updating tab model");
-    //        listView.updatePages();
-    //    }
-    //    VisualItemModel {
-    //        id: itemModel
-    //        Tab {
-    //            width: 500; height: 300
-    //            page: Rectangle { color: "red"; anchors.fill: parent }
-    //        }
-    //        Tab {
-    //            width: 500; height: 300
-    //            page: Rectangle { color: "white"; anchors.fill: parent }
-    //        }
-    //        Tab {
-    //            width: 500; height: 300
-    //            Rectangle { color: "blue"; anchors.fill: parent }
-    //        }
-    //    }
-
-
     Rectangle {
         id: orangebar
         color: "#c94212"
