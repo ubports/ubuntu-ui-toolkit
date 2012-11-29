@@ -22,7 +22,7 @@ Item {
     id: slidingTabsDelegate
     anchors.fill: parent
 
-    clip: false
+    clip: true
 
     property VisualItemModel tabModel: item.__pagesModel
 
@@ -35,9 +35,9 @@ Item {
         tabProperties.clear();
         for (var i=0; i < tabModel.count; i++) {
             print(i+" appending "+tabModel.children[i].title);
-//            tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
+            //            tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
             tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
-//            tabProperties.setProperty(i, "tabIndex", i);
+            //            tabProperties.setProperty(i, "tabIndex", i);
         }
     }
 
@@ -80,8 +80,6 @@ Item {
         model: slidingTabsDelegate.tabModel
         onModelChanged: tabView.updatePages();
 
-        clip: true
-
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem
         //        snapMode: ListView.SnapToItem
@@ -111,6 +109,7 @@ Item {
         }
 
         function updateSelectedTabIndex() {
+            tabBar.selectedTabIndex = item.selectedTabIndex;
             if (tabView.currentIndex === item.selectedTabIndex) return;
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;

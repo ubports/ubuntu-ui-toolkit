@@ -19,15 +19,23 @@ import Ubuntu.Components 0.1
 
 Rectangle {
     id: tabBar
-    color: active ? "tan" : "transparent"
+    //    color: active ? "tan" : "transparent"
+    color: "transparent"
 
     height: units.gu(6)
     property ListModel tabModel
+    property int selectedTabIndex
+    onSelectedTabIndexChanged: buttonView.position()
 
     property bool active: false
-    //    onActiveChanged: buttonView.position()
+    onActiveChanged: {
+        print("active = "+active);
+        buttonView.position();
+    }
 
     property real totalButtonWidth: 0
+    property var relativeButtonPositions
+
     Component {
         id: tabButtonRow
         Row {
@@ -38,7 +46,11 @@ Rectangle {
             }
             Component.onCompleted: {
                 tabBar.totalButtonWidth = theRow.width;
-                print("total buttonw width = "+tabBar.totalButtonWidth);
+                tabBar.relativeButtonPositions = [];
+                for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
+                    print(children[i].x);
+                    tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
+                }
             }
 
             Repeater {
@@ -48,20 +60,20 @@ Rectangle {
                 AbstractButton {
                     id: button
                     width: text.width + 2*text.anchors.margins
-                    property bool selected: (index === tabs.selectedTabIndex)
+                    property bool selected: (index === tabBar.selectedTabIndex)
 
                     anchors {
                         top: parent.top
                         bottom: parent.bottom
                     }
 
-//                    Rectangle {
-//                        border.width: 2
-//                        radius: 10
-//                        color: selected ? "pink" : "black"
-//                        anchors.fill: parent
-//                        visible: true
-//                    }
+                    //                    Rectangle {
+                    //                        border.width: 2
+                    //                        radius: 10
+                    //                        color: selected ? "pink" : "black"
+                    //                        anchors.fill: parent
+                    //                        visible: true
+                    //                    }
 
                     TextCustom {
                         id: text
@@ -75,7 +87,7 @@ Rectangle {
                     }
 
                     onClicked: {
-                        tabs.selectedTabIndex = index;
+                        tabBar.selectedTabIndex = index;
                         tabBar.active = false;
                     }
                 }
@@ -97,6 +109,11 @@ Rectangle {
             }
         }
         onOffsetChanged: print("offset = "+offset)
+
+        function position() {
+            if (!tabBar.relativeButtonPositions) return;
+            offset = 1 - tabBar.relativeButtonPositions[tabBar.selectedTabIndex];
+        }
     }
 
     MouseArea {
