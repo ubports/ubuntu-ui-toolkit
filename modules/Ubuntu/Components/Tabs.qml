@@ -33,7 +33,7 @@ import Ubuntu.Components 0.1 as Theming
     \qml
         Tabs {
             Tab {
-                title: "tab 1   "
+                title: "tab 1"
                 page: Text {
                     text: "This is the first tab."
                 }

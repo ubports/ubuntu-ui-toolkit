@@ -26,8 +26,7 @@ Template {
         ItemStyle.class: newTabs ? "new-tabs" : ""
 
         id: tabs
-//        Component.onCompleted: selectedTabIndex = 2
-        selectedTabIndex: 2
+        selectedTabIndex: 1
         Tab {
             title: i18n.tr("Tab") + " 1"
 //            title: "Calls"
