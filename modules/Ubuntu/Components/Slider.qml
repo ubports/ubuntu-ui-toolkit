@@ -147,7 +147,7 @@ AbstractButton {
             color: __thumbColor
         }
 
-        TextCustom {
+        Label {
             id: thumbValue
             anchors {
                 verticalCenter: thumbShape.verticalCenter

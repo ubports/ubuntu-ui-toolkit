@@ -60,7 +60,7 @@ Rectangle {
                 right: parent.right
             }
 
-            TextCustom {
+            Label {
                 id: title
                 ItemStyle.class: "title"
                 text: template.title

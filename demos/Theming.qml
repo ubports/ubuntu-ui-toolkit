@@ -50,7 +50,7 @@ Template {
                 }
             }
 
-            TextCustom {
+            Label {
                 ItemStyle.class: "row-label"
                 text: " code "
             }
@@ -62,7 +62,7 @@ Template {
                 color: "#efefef"
                 radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
-                TextCustom {
+                Label {
                     anchors.margins: units.gu(1)
                     id: codeSnipet1
                     ItemStyle.class: "row-label"
@@ -88,7 +88,7 @@ Template {
                 ItemStyle.class: "custom-button"
                 text: "Call"
             }
-            TextCustom {
+            Label {
                 ItemStyle.class: "row-label"
                 text: " code "
             }
@@ -100,7 +100,7 @@ Template {
                 color: "#efefef"
                 radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
-                TextCustom {
+                Label {
                     anchors.margins: units.gu(1)
                     id: codeSnipet2
                     ItemStyle.class: "row-label"
@@ -121,7 +121,7 @@ Template {
                 ItemStyle.name: "custom-name"
                 text: "Call"
             }
-            TextCustom {
+            Label {
                 ItemStyle.class: "row-label"
                 text: " code "
             }
@@ -133,7 +133,7 @@ Template {
                 color: "#efefef"
                 radius: units.gu(1)
                 border.color: Qt.darker(color, 1.2)
-                TextCustom {
+                Label {
                     anchors.margins: units.gu(1)
                     id: codeSnipet3
                     ItemStyle.class: "row-label"
