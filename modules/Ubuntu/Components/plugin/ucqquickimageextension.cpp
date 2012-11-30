@@ -24,6 +24,9 @@
 #include "ucqquickimageextension.h"
 #include "ucunits.h"
 
+
+QHash<QUrl, QSharedPointer<QTemporaryFile> > UCQQuickImageExtension::s_rewrittenSciFiles;
+
 /*!
     \internal
 
@@ -34,8 +37,7 @@
 */
 UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
-    m_image(static_cast<QQuickImageBase*>(parent)),
-    m_tmpSciFile(NULL)
+    m_image(static_cast<QQuickImageBase*>(parent))
 {
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      this, SLOT(reloadSource()), Qt::UniqueConnection);
@@ -57,11 +59,6 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
 
 void UCQQuickImageExtension::reloadSource()
 {
-    if (m_tmpSciFile != NULL) {
-        delete m_tmpSciFile;
-        m_tmpSciFile = NULL;
-    }
-
     if (m_source.isEmpty()) {
         m_image->setSource(m_source);
         return;
@@ -88,14 +85,23 @@ void UCQQuickImageExtension::reloadSource()
             m_image->setSource(QUrl("image://scaling/" + resolved));
         } else {
             // .sci image file. Rewrite the .sci file into a temporary file.
-            m_tmpSciFile = new QTemporaryFile(this);
-            m_tmpSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
-            m_tmpSciFile->open();
-            QTextStream output(m_tmpSciFile);
-            bool rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
-            m_tmpSciFile->close();
+            bool rewritten = true;
+            QTemporaryFile* rewrittenSciFile;
+
+            rewrittenSciFile = UCQQuickImageExtension::s_rewrittenSciFiles.value(m_source).data();
+            if (rewrittenSciFile == NULL) {
+                rewrittenSciFile = new QTemporaryFile;
+                rewrittenSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
+                rewrittenSciFile->open();
+                QTextStream output(rewrittenSciFile);
+                rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
+                rewrittenSciFile->close();
+
+                s_rewrittenSciFiles.insert(m_source, QSharedPointer<QTemporaryFile>(rewrittenSciFile));
+            }
+
             if (rewritten) {
-                m_image->setSource(QUrl::fromLocalFile(m_tmpSciFile->fileName()));
+                m_image->setSource(QUrl::fromLocalFile(rewrittenSciFile->fileName()));
             } else {
                 m_image->setSource(m_source);
             }

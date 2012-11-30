@@ -95,12 +95,18 @@ private Q_SLOTS:
 
         image1->setSource(sciFileUrl);
         QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+
         image2->setSource(sciFileUrl);
         QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+
         delete image1;
         QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+
+        /* The temporary files will be deleted when the cache is destroyed when
+           the application exits.
+        */
         delete image2;
-        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles);
+        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
     }
 };
 
