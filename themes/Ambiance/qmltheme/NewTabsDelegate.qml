@@ -135,8 +135,5 @@ Item {
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: {
-        item.selectedTabIndex = 2;
-        tabView.updatePages();
-    }
+    Component.onCompleted: tabView.updatePages();
 }
