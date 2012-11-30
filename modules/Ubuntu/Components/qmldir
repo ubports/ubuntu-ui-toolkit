@@ -8,6 +8,7 @@ AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
 TextField 0.1 TextField.qml
+TextArea 0.1 TextArea.qml
 Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 Slider 0.1 Slider.qml
@@ -23,3 +24,4 @@ internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
+StyleUtils 0.1 styleUtils.js
