@@ -70,6 +70,7 @@ Item {
         onModelChanged: tabView.updatePages();
 
         orientation: ListView.Horizontal
+
         snapMode: ListView.SnapOneItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
@@ -115,10 +116,10 @@ Item {
         }
 
         Component.onCompleted: {
+            print("XXX")
             tabView.updatePages();
-//            tabView.currentIndex = 0;
-//            tabView.positionViewAtIndex(1, ListView.Beginning);
-            tabView.updateSelectedTabIndex();
+//            tabView.positionViewAtIndex(2, ListView.End);
+//            tabView.contentX = 2000
         }
     }
 
