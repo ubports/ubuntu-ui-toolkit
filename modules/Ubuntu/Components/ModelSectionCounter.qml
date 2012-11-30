@@ -103,6 +103,8 @@ Object {
 
         function checkSections()
         {
+            if (undefined === view.section.property || "" === view.section.property)
+                return;
             function sectionString(str)
             {
                 return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(0) : str;

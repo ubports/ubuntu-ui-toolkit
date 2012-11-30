@@ -23,6 +23,7 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QAbstractListModel>
 #include <QtQml/QQmlPropertyMap>
+#include <QDebug>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
@@ -59,24 +60,26 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
     QAbstractListModel *model = qvariant_cast<QAbstractListModel*>(modelData);
 
     if (model) {
-
         // QAbstractListModel derived models
-        const QHash<int,QByteArray> roles = model->roleNames();
-        if (roles.count()) {
 
+        if (model->rowCount() > 0) {
             context = new QQmlContext(creationContext);
-            // put roles inside the context
-            QHashIterator<int,QByteArray> i(roles);
-            while (i.hasNext()) {
-                i.next();
-                context->setContextProperty(i.value(), "");
+            const QHash<int,QByteArray> roles = model->roleNames();
+            if (roles.count()) {
+
+                // put roles inside the context
+                QHashIterator<int,QByteArray> i(roles);
+                while (i.hasNext()) {
+                    i.next();
+                    context->setContextProperty(i.value(), "");
+                }
             }
         }
     } else if (modelData.type() == QVariant::List){
         QVariantList vModel = qvariant_cast<QVariantList>(modelData);
         if (vModel.count() > 0) {
+            context = new QQmlContext(creationContext);
             if (vModel[0].type() == QVariant::String) {
-                context = new QQmlContext(creationContext);
                 // the only role name we have is modelData
                 context->setContextProperty("modelData", "");
 
