@@ -175,7 +175,7 @@ Examples:
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
-.textfield .textcustom {
+.textfield .label {
    fontFamily: "Ubuntu";
    italic: true;
    color: "#B6B6B6";
