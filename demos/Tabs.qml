@@ -23,10 +23,11 @@ Template {
     title: newTabs ? i18n.tr("Tabs (new)") : i18n.tr("Tabs (old)")
 
     Tabs {
+        ItemStyle.class: newTabs ? "new-tabs" : ""
+
         id: tabs
 //        Component.onCompleted: selectedTabIndex = 2
-//        selectedTabIndex: 2
-        ItemStyle.class: newTabs ? "new-tabs" : ""
+        selectedTabIndex: 2
         Tab {
 //            title: i18n.tr("Tab") + " 1"
             title: "Calls"

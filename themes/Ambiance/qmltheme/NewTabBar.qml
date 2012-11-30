@@ -35,6 +35,7 @@ Item {
     onActiveChanged: {
         if (!active) buttonView.position();
     }
+    Component.onCompleted: buttonView.position();
 
     // used to position buttons and chevron
     property real totalButtonWidth: 0

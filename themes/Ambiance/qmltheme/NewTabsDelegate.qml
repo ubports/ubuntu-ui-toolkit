@@ -112,7 +112,10 @@ Item {
         }
 
         function updateSelectedTabIndex() {
+            print("oooo")
+            print("aaaa " + tabView.currentIndex + ".."+item.selectedTabIndex);
             if (tabView.currentIndex === item.selectedTabIndex) return;
+            print("bb");
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;
         }
@@ -124,11 +127,16 @@ Item {
 
         Component.onCompleted: {
             tabView.updatePages();
-            tabView.positionViewAtIndex(1, ListView.Beginning);
+//            tabView.currentIndex = 0;
+//            tabView.positionViewAtIndex(1, ListView.Beginning);
+            tabView.updateSelectedTabIndex();
         }
     }
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: tabView.updatePages();
+    Component.onCompleted: {
+        item.selectedTabIndex = 2;
+        tabView.updatePages();
+    }
 }
