@@ -66,14 +66,26 @@ Item {
         }
 
         interactive: parent.swipeToSwitchTabs
-        model: slidingTabsDelegate.tabModel
-        onModelChanged: tabView.updatePages();
+        model: item.__tabsModel
+        onModelChanged: {
+            print()
+            tabView.updatePages();
+        }
+        currentIndex: item.selectedTabIndex
+        onCurrentIndexChanged: {
+            print("current index = "+tabView.currentIndex);
+            print("selected tab index = "+item.selectedTabIndex);
+            item.selectedTabIndex = tabView.currentIndex
+        }
+        onCurrentItemChanged: print(currentItem.title)
 
         orientation: ListView.Horizontal
 
         snapMode: ListView.SnapOneItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
+        highlight: Item{}
+        highlightRangeMode: ListView.StrictlyEnforceRange
 
         function updatePages() {
             var tab;
@@ -84,7 +96,7 @@ Item {
                 tab = tabList[i];
                 tab.width = tabView.width;
                 tab.height = tabView.height;
-                tab.anchors.fill = null;
+                tab.anchors.fill = undefined;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
             }
             tabView.updateSelectedTabIndex();
@@ -97,29 +109,36 @@ Item {
                 print("relative position = "+relativePosition);
                 // Clamping because on very narrow views contentX can overshoot
                 tabView.currentIndex = MathUtils.clamp(Math.round(relativePosition), 0, tabModel.count-1);
-                item.selectedTabIndex = tabView.currentIndex;
+                //item.selectedTabIndex = tabView.currentIndex;
             }
         }
 
         function updateSelectedTabIndex() {
             print("oooo")
-            print("aaaa " + tabView.currentIndex + ".."+item.selectedTabIndex);
+            print("aaaa " + tabView.currentIndex + ".."+item.selectedTabIndex + "^"+tabView.model.count);
             if (tabView.currentIndex === item.selectedTabIndex) return;
             print("bb");
             // The view is automatically updated, because highlightFollowsCurrentItem
-            tabView.currentIndex = item.selectedTabIndex;
+            //tabView.currentIndex = item.selectedTabIndex;
         }
 
         Connections {
             target: item
-            onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
+            //onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
         }
 
         Component.onCompleted: {
-            print("XXX")
-            tabView.updatePages();
+//<<<<<<< TREE
+//            print("XXX")
+//            tabView.updatePages();
 //            tabView.positionViewAtIndex(2, ListView.End);
 //            tabView.contentX = 2000
+//=======
+            //tabView.updatePages();
+//            tabView.currentIndex = 0;
+//            tabView.positionViewAtIndex(1, ListView.Beginning);
+            //tabView.updateSelectedTabIndex();
+//>>>>>>> MERGE-SOURCE
         }
     }
 
