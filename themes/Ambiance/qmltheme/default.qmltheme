@@ -227,3 +227,7 @@ Examples:
    elide: Text.ElideRight;
    wrapMode: Text.WordWrap;
 }
+/* scrollbars */
+.textarea .scrollbar {
+   interactive: false;
+}

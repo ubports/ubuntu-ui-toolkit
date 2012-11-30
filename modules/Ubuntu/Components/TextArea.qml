@@ -292,12 +292,10 @@ FocusScope {
     //scrollbars
     Scrollbar {
         id: rightScrollbar
-        opacity: 0.3
         flickableItem: flicker
     }
     Scrollbar {
         id: bottomScrollbar
-        opacity: 0.3
         flickableItem: flicker
         align: Qt.AlignBottom
     }
