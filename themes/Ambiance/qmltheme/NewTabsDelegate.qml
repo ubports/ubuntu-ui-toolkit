@@ -119,12 +119,12 @@ Item {
             if (tabView.currentIndex === item.selectedTabIndex) return;
             print("bb");
             // The view is automatically updated, because highlightFollowsCurrentItem
-            //tabView.currentIndex = item.selectedTabIndex;
+            tabView.currentIndex = item.selectedTabIndex;
         }
 
         Connections {
             target: item
-            //onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
+            onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
         }
 
         Component.onCompleted: {
