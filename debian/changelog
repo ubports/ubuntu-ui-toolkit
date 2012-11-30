@@ -1,3 +1,9 @@
+qt-components-ubuntu (0.1.15) quantal; urgency=low
+
+  * New release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Fri, 30 Nov 2012 00:38:31 +0000
+
 qt-components-ubuntu (0.1.14) quantal; urgency=low
 
   * New release
