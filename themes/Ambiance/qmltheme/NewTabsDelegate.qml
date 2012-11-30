@@ -29,17 +29,6 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    ListModel {
-        id: tabProperties
-    }
-
-    onTabModelChanged: {
-        tabProperties.clear();
-        for (var i=0; i < tabModel.count; i++) {
-            tabProperties.append({"title": tabModel.children[i].title, "tabIndex": i});
-        }
-    }
-
     Rectangle {
         id: orangebar
         color: "#c94212"
