@@ -18,13 +18,15 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Tabs")
+    property bool newTabs: false
+
+    title: newTabs ? i18n.tr("Tabs (new)") : i18n.tr("Tabs (old)")
 
     Tabs {
         id: tabs
 //        Component.onCompleted: selectedTabIndex = 2
 //        selectedTabIndex: 2
-        ItemStyle.class: "new-tabs"
+        ItemStyle.class: newTabs ? "new-tabs" : ""
         Tab {
 //            title: i18n.tr("Tab") + " 1"
             title: "Calls"

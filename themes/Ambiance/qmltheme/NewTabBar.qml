@@ -99,7 +99,6 @@ Item {
         }
     }
 
-
     PathView {
         id: buttonView
         anchors {
