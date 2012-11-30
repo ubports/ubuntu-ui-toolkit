@@ -17,10 +17,18 @@
  */
 
 #include <QtTest/QtTest>
+#include <QtQuick/private/qquickimagebase_p.h>
+
 // Make protected methods of QQuickImageExtension public in order to test them
 #define protected public
 #include "ucqquickimageextension.h"
 #undef protected
+
+unsigned int numberOfTemporarySciFiles() {
+    QStringList nameFilters;
+    nameFilters << "*.sci";
+    return QDir::temp().entryList(nameFilters, QDir::Files).count();
+}
 
 class tst_UCQQuickImageExtension : public QObject
 {
@@ -71,6 +79,28 @@ private Q_SLOTS:
         expectedStream << "verticalTileMode: Stretch" << endl;
 
         QCOMPARE(result, expected);
+    }
+
+    void cachingOfRewrittenSciFiles() {
+        /* This tests an internal implementation detail of UCQQuickImageExtension,
+           namely making sure that only one temporary rewritten .sci file is
+           created for each source .sci file.
+        */
+        QQuickImageBase baseImage;
+        UCQQuickImageExtension* image1 = new UCQQuickImageExtension(&baseImage);
+        UCQQuickImageExtension* image2 = new UCQQuickImageExtension(&baseImage);
+        QUrl sciFileUrl = QUrl::fromLocalFile("./test.sci");
+
+        unsigned int initialNumberOfSciFiles = numberOfTemporarySciFiles();
+
+        image1->setSource(sciFileUrl);
+        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+        image2->setSource(sciFileUrl);
+        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+        delete image1;
+        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+        delete image2;
+        QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles);
     }
 };
 
