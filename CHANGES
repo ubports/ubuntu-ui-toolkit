@@ -15,7 +15,15 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* ScrollbarStyle property changes
+ - fadeAnimation property
+ + interactive
+ + overlay
+ + overlayOpacityWhenHidden
+ + overlayOpacityWhenShown
+ + scrollbarFadeInAnimation
+ + scrollbarFadeOutPause
+ + scrollbarFadeOutAnimation
 
 
 SDK 0.1.15
