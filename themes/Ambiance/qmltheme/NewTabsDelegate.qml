@@ -102,9 +102,12 @@ Item {
         onMovingChanged: {
             if(!moving) {
                 // update the currentItem
+                print("contentX = "+contentX+", width = "+tabsDelegate.width);
                 var relativePosition = contentX / tabsDelegate.width;
                 // Clamping because on very narrow views contentX can overshoot
-                tabView.currentIndex = MathUtils.clamp(Math.round(relativePosition), 0, tabModel.count-1);
+                print("currentIndex = "+tabView.currentIndex);
+//                tabView.currentIndex = MathUtils.clamp(Math.round(relativePosition), 0, tabModel.count-1);
+                print("relative position = "+relativePosition+" currentIndex = "+tabView.currentIndex);
                 //item.selectedTabIndex = tabView.currentIndex;
             }
         }
