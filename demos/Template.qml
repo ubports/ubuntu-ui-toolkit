@@ -63,7 +63,7 @@ Rectangle {
             }
             visible: template.showHeader
 
-            TextCustom {
+            Label {
                 id: title
                 ItemStyle.class: "title"
                 text: template.title

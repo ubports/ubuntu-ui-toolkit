@@ -94,12 +94,6 @@ Examples:
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
-/* Default style for all TextCustom elements in Gallery*/
-.TextCustom {
-    fontSize: "medium";
-    color: "#757373";
-}
-
 .popover-foreground {
 }
 
@@ -118,9 +112,8 @@ Examples:
     will be used with all declared properties as variant.
 */
 .label {
-    fontFamily: "Ubuntu";
     fontSize: "medium";
-    color: "red";
+    color: "#757373";
 }
 
 /* Gallery title */
@@ -145,7 +138,21 @@ Examples:
 }
 
 .scrollbar {
-    fadeAnimation: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    interactive: true;
+    overlay: true;
+    overlayOpacityWhenShown: 0.6;
+    overlayOpacityWhenHidden: 0.0;
+
+    scrollbarFadeInAnimation: NumberAnimation {
+        duration: 100;
+        easing.type: Easing.InOutQuad;
+    };
+    scrollbarFadeOutPause: 300;
+    scrollbarFadeOutAnimation: NumberAnimation {
+        duration: 500;
+        easing.type: Easing.InOutQuad;
+    };
+
     sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
     thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
     thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
@@ -186,7 +193,7 @@ Examples:
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
-.textfield .textcustom {
+.textfield .label {
    fontFamily: "Ubuntu";
    italic: true;
    color: "#B6B6B6";

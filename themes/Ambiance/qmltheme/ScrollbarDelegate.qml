@@ -43,6 +43,9 @@ Item {
     property real contentSize: (listView) ?
                                    listView.size :
                                    ((isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth)
+    property real overlayOpacityWhenShown: StyleUtils.itemStyleProperty("overlayOpacityWhenShown", 0.6)
+    property real overlayOpacityWhenHidden: StyleUtils.itemStyleProperty("overlayOpacityWhenHidden", 0.0)
+    property bool overlay: StyleUtils.itemStyleProperty("overlay", false) && !interactive
 
     property real contentPosition
     property QtObject listView: logicLoader.item
@@ -111,8 +114,77 @@ Item {
      *****************************************/
     anchors.fill: parent
 
-    opacity: isScrollable ? 1.0 : 0.0
-    Behavior on opacity {animation: itemStyle.fadeAnimation}
+    opacity: overlayOpacityWhenHidden
+    state: {
+        if (!isScrollable)
+            return '';
+        else if (overlay) {
+            if (flickableItem.moving)
+                return 'overlay';
+            else
+                return 'stopped';
+        } else
+            return 'shown';
+    }
+
+    states: [
+        State {
+            name: 'stopped'
+            extend: ''
+            PropertyChanges {
+                target: visuals
+                opacity: overlayOpacityWhenHidden
+            }
+        },
+        State {
+            name: "shown"
+            PropertyChanges {
+                target: visuals
+                opacity: overlayOpacityWhenShown
+            }
+        },
+        State {
+            name: 'overlay'
+            PropertyChanges {
+                target: visuals
+                opacity: overlayOpacityWhenShown
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            from: ''
+            to: 'shown'
+            NumberAnimation {
+                target: visuals
+                property: "opacity"
+                duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
+            }
+        },
+        Transition {
+            from: '*'
+            to: 'overlay'
+            NumberAnimation {
+                target: visuals
+                property: "opacity"
+                duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
+            }
+        },
+        Transition {
+            from: "overlay"
+            to: "stopped"
+            SequentialAnimation {
+                PauseAnimation { duration: StyleUtils.itemStyleProperty("scrollbarFadeOutPause", 0) }
+                NumberAnimation {
+                    target: visuals
+                    property: "opacity"
+                    //to: overlayOpacityWhenHidden
+                    duration: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").duration
+                    easing.type: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").easing.type
+                }
+            }
+        }
+    ]
 
     /* Scroll by amount pixels never overshooting */
     function scrollBy(amount) {
@@ -210,11 +282,15 @@ Item {
 
         Behavior on width {
             enabled: (!isVertical)
-            animation: itemStyle.sliderAnimation
+            animation: ScriptAction {
+                script: StyleUtils.animate("sliderAnimation")
+            }
         }
         Behavior on height {
             enabled: (isVertical)
-            animation: itemStyle.sliderAnimation
+            animation: ScriptAction {
+                script: StyleUtils.animate("sliderAnimation")
+            }
         }
     }
 
@@ -236,7 +312,7 @@ Item {
         }
         color: itemStyle.thumbConnectorColor
         opacity: thumb.shown ? 1.0 : 0.0
-        Behavior on opacity {animation: itemStyle.thumbConnectorFading}
+        Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbConnectorFading")}}
     }
 
     MouseArea {
@@ -390,7 +466,7 @@ Item {
         }
 
         opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
-        Behavior on opacity {animation: itemStyle.thumbFading}
+        Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbFading")}}
 
         Flow {
             // disable mirroring as thumbs are placed in the same way no matter of RTL or LTR

@@ -22,7 +22,7 @@ Page {
     Rectangle {
         anchors.fill: parent
         color: "#dddddd"
-        TextCustom {
+        Label {
             anchors.centerIn: parent
             text: i18n.tr("This is an external page.")
             color: "#757373"

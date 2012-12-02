@@ -28,7 +28,7 @@ Template {
             DefaultSheet {
                 id: sheet
                 title: "Default sheet with close button"
-                TextCustom {
+                Label {
                     anchors.fill: parent
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
@@ -42,7 +42,7 @@ Template {
                 id: sheet
                 title: "Default sheet with done button"
                 doneButton: true
-                TextCustom {
+                Label {
                     anchors.fill: parent
                     text: "The Default Sheet allows an application to insert a content view over the focused view without disrupting the navigation pattern (tabs state or drill-down path are maintained. When the sheet is dismissed the user continues the journey from the point he left it)."
                     wrapMode: Text.WordWrap
@@ -55,7 +55,7 @@ Template {
             ComposerSheet {
                 id: sheet
                 title: "Composer sheet"
-                TextCustom {
+                Label {
                     text: "A composer sheet has cancel and confirm buttons."
                 }
             }

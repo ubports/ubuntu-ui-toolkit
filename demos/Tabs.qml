@@ -31,7 +31,7 @@ Template {
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
-                TextCustom {
+                Label {
                     anchors.centerIn: parent
                     text: i18n.tr("This is the first tab.")
                     color: "#757373"

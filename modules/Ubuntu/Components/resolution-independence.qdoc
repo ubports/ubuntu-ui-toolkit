@@ -124,7 +124,7 @@
     \code
     import Ubuntu.Components 0.1
 
-    TextCustom {
+    Label {
         fontSize: "small"
     }
     \endcode

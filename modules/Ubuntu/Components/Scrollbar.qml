@@ -92,7 +92,8 @@ Item {
       This property holds whether the scrollbar is active or passive. It is present
       for testing purposes.
     */
-    property bool __interactive: false
+    property bool __interactive: (Theming.ItemStyle.style && Theming.ItemStyle.style.hasOwnProperty("interactive")) ?
+                                     Theming.ItemStyle.style.interactive : false
 
     // styling
     Theming.ItemStyle.class: "scrollbar"
