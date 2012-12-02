@@ -24,9 +24,6 @@ Item {
 
     clip: true
 
-    // TODO: move to style
-    property bool swipeToSwitchTabs: true
-
     property VisualItemModel tabModel: item.__tabsModel
 
     Rectangle {
@@ -72,7 +69,7 @@ Item {
             bottom: parent.bottom
         }
 
-        interactive: parent.swipeToSwitchTabs
+        interactive: itemStyle.swipeToSwitchTabs
         model: tabsDelegate.tabModel
         onModelChanged: {
             print()

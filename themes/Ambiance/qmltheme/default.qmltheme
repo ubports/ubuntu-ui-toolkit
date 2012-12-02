@@ -86,6 +86,7 @@ Examples:
 
 @qml-import(Ubuntu.Components.ListItems 0.1);
 .new-tabs {
+    swipeToSwitchTabs: true;
     separator: Divider {
         height: units.gu(2);
     };

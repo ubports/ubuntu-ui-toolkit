@@ -23,4 +23,10 @@ QtObject {
       as a separator.
      */
     property Item separator
+
+    /*!
+      Enable left/right swiping in the contents area to go to
+      the next/previous tab.
+     */
+    property bool swipeToSwitchTabs
 }
