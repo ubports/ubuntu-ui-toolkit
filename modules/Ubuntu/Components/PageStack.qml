@@ -176,6 +176,19 @@ Item {
         parent: pageStack
         anchors.fill: pageStack
 
+        Item {
+            id: pageContents
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                top: header.visible ? header.bottom : parent.top
+            }
+        }
+
+        // The header comes after the contents to ensure its z-order is higher.
+        // This ensures flickable contents never overlap the header,
+        // without having to resort to clipping.
         Header {
             id: header
             anchors {
@@ -185,16 +198,6 @@ Item {
             }
             pageStack: pageStack
             height: units.gu(5)
-        }
-
-        Item {
-            id: pageContents
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                top: header.visible ? header.bottom : parent.top
-            }
         }
 
         function updateHeader() {
