@@ -71,9 +71,6 @@ Item {
      */
     property int selectedTabIndex: children.length > 0 ? 0 : -1
 
-    //TODO TIM: remove debugging code
-    onSelectedTabIndexChanged: print("selected tab "+selectedTabIndex)
-
     // FIXME: The __pages, __pagesModel and pagesModel are a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
