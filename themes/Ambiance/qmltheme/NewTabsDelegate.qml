@@ -52,30 +52,21 @@ Item {
 
     function updateSeparator() {
         if (itemStyle.separator) {
-            print("AA");
             itemStyle.separator.parent = tabsDelegate;
             itemStyle.separator.anchors.top = tabBar.bottom;
             itemStyle.separator.anchors.left = tabsDelegate.left;
             itemStyle.separator.anchors.right = tabsDelegate.right;
             tabView.anchors.top = itemStyle.separator.bottom;
         } else {
-            print("BB")
             // no separator
             tabView.anchors.top = tabBar.bottom;
         }
     }
 
-    //    ListItem.Divider {
-    //        id: divider
-    //        anchors.top: tabBar.bottom
-    //        height: units.gu(2)
-    //    }
-
     ListView {
         id: tabView
         anchors {
             top: tabBar.bottom
-//            top: divider.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -97,7 +88,6 @@ Item {
         snapMode: ListView.SnapOneItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
-//        highlight: Item{}
         highlightRangeMode: ListView.StrictlyEnforceRange
 
         function updatePages() {
@@ -113,19 +103,6 @@ Item {
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
             }
             tabView.updateSelectedTabIndex();
-        }
-
-        onMovingChanged: {
-            if(!moving) {
-                // update the currentItem
-                print("contentX = "+contentX+", width = "+tabsDelegate.width);
-                var relativePosition = contentX / tabsDelegate.width;
-                // Clamping because on very narrow views contentX can overshoot
-                print("currentIndex = "+tabView.currentIndex);
-//                tabView.currentIndex = MathUtils.clamp(Math.round(relativePosition), 0, tabModel.count-1);
-                print("relative position = "+relativePosition+" currentIndex = "+tabView.currentIndex);
-                //item.selectedTabIndex = tabView.currentIndex;
-            }
         }
 
         function updateSelectedTabIndex() {
