@@ -50,16 +50,32 @@ Item {
         tabs: item
     }
 
-    ListItem.Divider {
-        id: divider
-        anchors.top: tabBar.bottom
-        height: units.gu(2)
+    function updateSeparator() {
+        if (itemStyle.separator) {
+            print("AA");
+            itemStyle.separator.parent = tabsDelegate;
+            itemStyle.separator.anchors.top = tabBar.bottom;
+            itemStyle.separator.anchors.left = tabsDelegate.left;
+            itemStyle.separator.anchors.right = tabsDelegate.right;
+            tabView.anchors.top = itemStyle.separator.bottom;
+        } else {
+            print("BB")
+            // no separator
+            tabView.anchors.top = tabBar.bottom;
+        }
     }
+
+    //    ListItem.Divider {
+    //        id: divider
+    //        anchors.top: tabBar.bottom
+    //        height: units.gu(2)
+    //    }
 
     ListView {
         id: tabView
         anchors {
-            top: divider.bottom
+            top: tabBar.bottom
+//            top: divider.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -127,5 +143,8 @@ Item {
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: tabView.updatePages();
+    Component.onCompleted: {
+        tabsDelegate.updateSeparator();
+        tabView.updatePages();
+    }
 }

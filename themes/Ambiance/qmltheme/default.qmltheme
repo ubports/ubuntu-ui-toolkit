@@ -16,7 +16,7 @@ properties typed as variant.
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
-@qml-mapping(.new-tabs, , NewTabsDelegate);
+@qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);
@@ -84,7 +84,11 @@ Examples:
     backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
 }
 
+@qml-import(Ubuntu.Components.ListItems 0.1);
 .new-tabs {
+    separator: Divider {
+        height: units.gu(2);
+    };
 }
 
 .dark-button {
