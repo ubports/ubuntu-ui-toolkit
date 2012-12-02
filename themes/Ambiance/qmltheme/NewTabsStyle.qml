@@ -35,4 +35,8 @@ QtObject {
       the next/previous tab.
      */
     property bool swipeToSwitchTabs
+
+    property color headerTextColor
+    property color headerTextColorSelected
+    property string headerFontSize
 }

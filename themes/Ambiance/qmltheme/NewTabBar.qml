@@ -76,8 +76,7 @@ Item {
 
                     Label {
                         id: text
-                        color: "#333333"
-                        opacity: selected ? 0.9 : 0.6
+                        color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
                         visible: tabBar.active || selected
                         anchors {
                             left: parent.left
@@ -87,7 +86,7 @@ Item {
                             bottomMargin: units.gu(1)
                         }
                         text: title
-                        fontSize: "x-large"
+                        fontSize: itemStyle.headerFontSize
                         verticalAlignment: Text.AlignBottom
                     }
 

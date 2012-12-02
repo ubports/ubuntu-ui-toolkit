@@ -94,6 +94,9 @@ Examples:
         color: "#c94212";
         height: units.dp(2);
     }
+    headerFontSize: "x-large";
+    headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
+    headerTextColor: "#A0333333";           /* opacity 0.6 */
 }
 
 .dark-button {
