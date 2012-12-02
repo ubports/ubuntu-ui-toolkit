@@ -26,17 +26,6 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Rectangle {
-        id: orangebar
-        color: "#c94212"
-        anchors {
-            left: parent.left
-            right: parent.right
-            top:parent.top
-        }
-        height: units.dp(2)
-    }
-
     NewTabBar {
         id: tabBar
         anchors {
@@ -45,19 +34,6 @@ Item {
             right: parent.right
         }
         tabs: item
-    }
-
-    function updateSeparator() {
-        if (itemStyle.separator) {
-            itemStyle.separator.parent = tabsDelegate;
-            itemStyle.separator.anchors.top = tabBar.bottom;
-            itemStyle.separator.anchors.left = tabsDelegate.left;
-            itemStyle.separator.anchors.right = tabsDelegate.right;
-            tabView.anchors.top = itemStyle.separator.bottom;
-        } else {
-            // no separator
-            tabView.anchors.top = tabBar.bottom;
-        }
     }
 
     ListView {
@@ -115,10 +91,34 @@ Item {
 
     }
 
+    function updateSeparators() {
+        if (itemStyle.separator) {
+            itemStyle.separator.parent = tabsDelegate;
+            itemStyle.separator.anchors.top = tabBar.bottom;
+            itemStyle.separator.anchors.left = tabsDelegate.left;
+            itemStyle.separator.anchors.right = tabsDelegate.right;
+            tabView.anchors.top = itemStyle.separator.bottom;
+        } else {
+            // no separator
+            tabView.anchors.top = tabBar.bottom;
+        }
+
+        if (itemStyle.topSeparator) {
+            itemStyle.topSeparator.parent = tabsDelegate;
+            itemStyle.topSeparator.anchors.top = tabsDelegate.top;
+            itemStyle.topSeparator.anchors.left = tabsDelegate.left;
+            itemStyle.topSeparator.anchors.right = tabsDelegate.right;
+            tabBar.anchors.top = itemStyle.topSeparator.bottom;
+        } else {
+            // no top separator
+            tabBar.anchors.top = tabsDelegate.top;
+        }
+    }
+
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
-        tabsDelegate.updateSeparator();
+        tabsDelegate.updateSeparators();
         tabView.updatePages();
     }
 }
