@@ -59,7 +59,7 @@ QtObject {
       \preliminary
       Determines whether the wrapped page is currently visible.
      */
-    property bool active: true // TODO
+    property bool active: false
 
     /*!
       \preliminary

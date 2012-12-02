@@ -21,8 +21,12 @@ Item {
     id: tabBar
     height: units.gu(6.5)
 
+    /*!
+      The set of tabs this tab bar belongs to
+     */
     property Tabs tabs
 
+    /*! \internal */
     Connections {
         target: tabs
         onSelectedTabIndexChanged: {
@@ -31,14 +35,24 @@ Item {
         }
     }
 
+    /*!
+      Use the tab bar only to display the currently selected tab,
+      or can the user interact with it and select a tab?
+     */
     property bool active: false
+
+    /*! \internal */
     onActiveChanged: {
         if (!active) buttonView.position();
     }
+
+    /*! \internal */
     Component.onCompleted: buttonView.position();
 
     // used to position buttons and indicator image
+    /*! \internal */
     property real totalButtonWidth: 0
+    /*! \internal */
     property var relativeButtonPositions: []
 
     Component {

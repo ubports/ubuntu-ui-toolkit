@@ -71,12 +71,13 @@ Item {
      */
     property int selectedTabIndex: children.length > 0 ? 0 : -1
 
-    // FIXME: The __pages, __pagesModel and pagesModel are a workaround for this bug:
+    // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
     //  The workaround does not break the regular TabsDelegate.
     /*! \internal */
     default property alias __tabs: tabsModel.children
+
     /*!
       \internal
       required by SlidingTabsDelegate
