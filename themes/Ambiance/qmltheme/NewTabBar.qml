@@ -74,7 +74,7 @@ Item {
                         bottom: parent.bottom
                     }
 
-                    TextCustom {
+                    Label {
                         id: text
                         color: "#333333"
                         opacity: selected ? 0.9 : 0.6
