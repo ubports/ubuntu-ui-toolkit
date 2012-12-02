@@ -88,7 +88,6 @@ Item {
             target: item
             onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
         }
-
     }
 
     function updateSeparators() {
