@@ -25,6 +25,7 @@ Template {
     Tabs {
         ItemStyle.class: newTabs ? "new-tabs" : ""
 
+        id: tabs
         Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {
