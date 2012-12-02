@@ -107,12 +107,13 @@ Item {
         }
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        interactive: (tabBar.totalButtonWidth > tabBar.width)
-        width: Math.min(tabBar.width, tabBar.totalButtonWidth)
-        clip: true // avoid showing the same button twice
+        property bool needsScrolling: tabBar.totalButtonWidth > tabBar.width
+        interactive: needsScrolling
+        width: needsScrolling ? tabBar.width : tabBar.totalButtonWidth
+        clip: !needsScrolling // avoid showing the same button twice
 
         highlightRangeMode: PathView.NoHighlightRange
-        offset: (model === 1) ? 0.5 : 0
+        offset: 0
         path: Path {
             startX: -tabBar.totalButtonWidth/2
             PathLine {
