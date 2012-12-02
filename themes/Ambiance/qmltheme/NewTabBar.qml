@@ -37,7 +37,7 @@ Item {
     }
     Component.onCompleted: buttonView.position();
 
-    // used to position buttons and chevron
+    // used to position buttons and indicator image
     property real totalButtonWidth: 0
     property var relativeButtonPositions: []
 
@@ -127,8 +127,8 @@ Item {
     }
 
     Image {
-        id: chevron
-        source: "artwork/chevron.png"
+        id: indicatorImage
+        source: itemStyle.indicatorImageSource
         anchors {
             bottom: parent.bottom
             bottomMargin: units.gu(2)
@@ -141,7 +141,7 @@ Item {
         function getXPosition() {
             var buttons = buttonView.children[1].children; // the first buttonRow
             var selectedButton = buttons[tabs.selectedTabIndex];
-            return selectedButton.width + units.gu(2)
+            return selectedButton.width + units.gu(2);
         }
     }
 

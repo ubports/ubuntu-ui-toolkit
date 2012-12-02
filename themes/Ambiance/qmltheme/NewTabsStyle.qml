@@ -39,4 +39,6 @@ QtObject {
     property color headerTextColor
     property color headerTextColorSelected
     property string headerFontSize
+
+    property url indicatorImageSource
 }
