@@ -26,6 +26,8 @@ Rectangle {
     property string title
     default property Item content
 
+    property bool showHeader: true
+
     onContentChanged: {
         content.parent = page
         content.anchors.top = header.bottom
@@ -42,7 +44,7 @@ Rectangle {
         parent: template
         anchors {
             fill: parent
-            margins: units.gu(4)
+            margins: template.showHeader ? units.gu(4) : units.gu(2)
         }
 
         Binding {
@@ -54,11 +56,12 @@ Rectangle {
         Item {
             id: header
 
-            height: childrenRect.height
+            height: visible ? childrenRect.height : 0
             anchors {
                 left: parent.left
                 right: parent.right
             }
+            visible: template.showHeader
 
             TextCustom {
                 id: title

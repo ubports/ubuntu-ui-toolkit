@@ -15,30 +15,30 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 0.1 as Ubuntu
 
 Template {
     property bool newTabs: false
 
     title: newTabs ? i18n.tr("Tabs (new)") : i18n.tr("Tabs (old)")
 
-    Tabs {
-        ItemStyle.class: newTabs ? "new-tabs" : ""
+    Ubuntu.Tabs {
+        Ubuntu.ItemStyle.class: newTabs ? "new-tabs" : ""
 
         id: tabs
-        Tab {
+        Ubuntu.Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
-                TextCustom {
+                Ubuntu.TextCustom {
                     anchors.centerIn: parent
                     text: i18n.tr("This is the first tab.")
                     color: "#757373"
                 }
             }
         }
-        Tab {
+        Ubuntu.Tab {
             iconSource: "call_icon.png"
             title: i18n.tr("Tab") + " 2"
             page: Rectangle {
@@ -46,12 +46,12 @@ Template {
                 color: "tan"
                 Row {
                     anchors.centerIn: parent
-                    Button {
+                    Ubuntu.Button {
                         width: units.gu(20)
                         text: i18n.tr("Go to previous tab")
                         onClicked: tabs.selectedTabIndex--
                     }
-                    Button {
+                    Ubuntu.Button {
                         width: units.gu(20)
                         text: i18n.tr("Go to next tab")
                         onClicked: tabs.selectedTabIndex++
@@ -59,7 +59,7 @@ Template {
                 }
             }
         }
-        Tab {
+        Ubuntu.Tab {
             title: i18n.tr("Tab") + " 3"
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
