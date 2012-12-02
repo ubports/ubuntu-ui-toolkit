@@ -61,7 +61,6 @@ Item {
 
             Repeater {
                 id: repeater
-
                 model: tabs.__tabsModel.children
 
                 AbstractButton {
@@ -106,12 +105,12 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
+        delegate: tabButtonRow
+        model: 2 // The second buttonRow shows the buttons that disappear on the left
         interactive: (tabBar.totalButtonWidth > tabBar.width)
         width: Math.min(tabBar.width, tabBar.totalButtonWidth)
         clip: true // avoid showing the same button twice
 
-        model: 2
-        delegate: tabButtonRow
         highlightRangeMode: PathView.NoHighlightRange
         offset: (model === 1) ? 0.5 : 0
         path: Path {
