@@ -26,10 +26,8 @@ Template {
         ItemStyle.class: newTabs ? "new-tabs" : ""
 
         id: tabs
-        selectedTabIndex: 1
         Tab {
             title: i18n.tr("Tab") + " 1"
-//            title: "Calls"
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
@@ -42,7 +40,6 @@ Template {
         }
         Tab {
             iconSource: "call_icon.png"
-//            title: "Conversations"
             title: i18n.tr("Tab") + " 2"
             page: Rectangle {
                 anchors.fill: parent
@@ -64,7 +61,6 @@ Template {
         }
         Tab {
             title: i18n.tr("Tab") + " 3"
-//            title: "Contacts"
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }
