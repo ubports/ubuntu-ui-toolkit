@@ -25,7 +25,7 @@ QtObject {
     property Item separator
 
     /*!
-      Separator between the top of the tab bar and items above the
+      Optional separator between the top of the tab bar and items above the
       tabs view.
      */
     property Item topSeparator
