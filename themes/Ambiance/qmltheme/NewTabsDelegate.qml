@@ -47,17 +47,11 @@ Item {
 
         interactive: itemStyle.swipeToSwitchTabs
         model: tabsDelegate.tabModel
-        onModelChanged: {
-            print()
-            tabView.updatePages();
-        }
+        onModelChanged: tabView.updatePages()
         currentIndex: item.selectedTabIndex
-        onCurrentIndexChanged: {
-            item.selectedTabIndex = tabView.currentIndex
-        }
+        onCurrentIndexChanged: item.selectedTabIndex = tabView.currentIndex
 
         orientation: ListView.Horizontal
-
         snapMode: ListView.SnapOneItem
         boundsBehavior: Flickable.DragOverBounds
         highlightFollowsCurrentItem: true
