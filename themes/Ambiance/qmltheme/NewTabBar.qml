@@ -26,7 +26,6 @@ Item {
      */
     property Tabs tabs
 
-    /*! \internal */
     Connections {
         target: tabs
         onSelectedTabIndexChanged: {
@@ -41,18 +40,14 @@ Item {
      */
     property bool active: false
 
-    /*! \internal */
     onActiveChanged: {
         if (!active) buttonView.position();
     }
 
-    /*! \internal */
     Component.onCompleted: buttonView.position();
 
     // used to position buttons and indicator image
-    /*! \internal */
     property real totalButtonWidth: 0
-    /*! \internal */
     property var relativeButtonPositions: []
 
     Component {
