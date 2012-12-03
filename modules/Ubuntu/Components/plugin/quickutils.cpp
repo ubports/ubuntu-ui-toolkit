@@ -23,7 +23,6 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QAbstractListModel>
 #include <QtQml/QQmlPropertyMap>
-#include <QDebug>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
