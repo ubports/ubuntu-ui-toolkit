@@ -104,7 +104,7 @@ FocusScope {
       This property contains the text that is displayed on the screen. May differ
       from the text property value when TextEdit.RichText format is selected.
       */
-    property alias displayText: internal.displayText
+    readonly property alias displayText: internal.displayText
 
     /*!
       The property drives whether text selection should happen with the mouse or
