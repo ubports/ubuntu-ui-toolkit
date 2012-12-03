@@ -44,7 +44,32 @@ import "." 0.1 as Theming
 
     The auto-expand mode is realized using two properties: autoExpand and maximumLineCount.
     Setting autoExpand will set the implicit height to one line, and the height is aligned
-    to the font's pixel size. If the
+    to the font's pixel size. The maximumLineCount specifies how much the editor should be
+    expanded. If this value is set to 0, the area will always expand vertically to fit the
+    content. When autoExpand is set, the contentHeight property value is ignored, and the
+    expansion only happens vertically.
+
+    \qml
+    TextArea {
+        width: units.gu(20)
+        height: units.gu(12)
+        contentWidth: units.gu(30)
+        autoExpand: true
+        maximumLineCount: 0
+    }
+    \endqml
+
+    Scrolling the editing area can happen when the size is fixed or in auto-expand mode when
+    the content size is bigger than the visible area. The scrolling is realized by swipe
+    gestures, or by navigating the cursor.
+
+    The item enters in selection mode when the user performs a long tap (or long mouse press)
+    or a double tap/press on the text area. The mode is visualized by two selection cursors
+    (pins) which can be used to select the desired text. The text can also be selected by
+    moving the finger/mouse towards the desired area right after entering in selection mode.
+    The way the text is selected is driven by the mouseSelectionMode value, which is either
+    character or word. The editor leaves the selection mode by pressing/tapping again on it
+    or by losing focus.
 
     \b{This component is under heavy development.}
   */
@@ -56,22 +81,32 @@ FocusScope {
 
     // new properties
     /*!
+      Text that appears when there is no focus and no content in the component.
       */
     property alias placeholderText: hint.text
 
     /*!
+      This property contains the text that is displayed on the screen. May differ
+      from the text property value when TextEdit.RichText format is selected.
       */
     property alias displayText: internal.displayText
 
     /*!
+      The property drives whether text selection should happen with the mouse or
+      not. The default value is true.
       */
     property bool selectByMouse: true
 
     /*!
+      This property specifies whether the text area expands following the entered
+      text or not. The default value is false.
       */
     property bool autoExpand: false
 
     /*!
+      The property holds the maximum amount of lines to expand when autoExpand is
+      enabled. The value of 0 does not put any upper limit and the control will
+      expand forever.
       */
     property int maximumLineCount: 5
 
@@ -335,12 +370,14 @@ FocusScope {
 
     // logic
     Component.onCompleted: {
-        editor.linkActivated.connect(control.linkActivated)
+        editor.linkActivated.connect(control.linkActivated);
+        internal.prevShowCursor = control.cursorVisible;
     }
 
     // styling
     Theming.ItemStyle.class: "textarea"
     //internals
+
     QtObject {
         id: internal
         // public property locals enabling aliasing
@@ -355,18 +392,21 @@ FocusScope {
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
-        property int selectionStart: 0
-        property int selectionEnd: 0
-
-        onLineSizeChanged: print(lineSize)
-        onFrameLineHeightChanged: print(frameLineHeight)
-
+        //property int selectionStart: 0
+        //property int selectionEnd: 0
+        property bool prevShowCursor
 
         onDraggingModeChanged: {
             if (draggingMode) selectionMode = false;
         }
         onSelectionModeChanged: {
-            if (selectionMode) draggingMode = false;
+            if (selectionMode)
+                draggingMode = false;
+            else {
+                leftCursorLoader.sourceComponent = undefined;
+                rightCursorLoader.sourceComponent = undefined;
+                editor.cursorVisible = prevShowCursor;
+            }
         }
 
         function activateEditor()
@@ -409,21 +449,84 @@ FocusScope {
                     control.height = frameLinesHeight(control.lineCount);
             }
         }
+
+        function enterSelectionMode(x, y)
+        {
+            if (undefined !== x && undefined !== y) {
+                control.cursorPosition = control.positionAt(x, y);
+                control.moveCursorSelection(control.cursorPosition + 1);
+            }
+            prevShowCursor = editor.cursorVisible;
+            editor.cursorVisible = false;
+            leftCursorLoader.setCursor();
+            rightCursorLoader.setCursor();
+        }
     }
 
     // cursor
     Component {
         id: cursor
         Item {
-            id: customCursor
+            id: cursorItem
+            property bool selectionMode: internal.selectionMode
+            property bool selectionStartCursor: true
             property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
             property bool timerShowCursor: true
+
+            function updateCursorPosition(posX, posY)
+            {
+                if (!selectionMode)
+                    return;
+                var pos = editor.mapFromItem(cursorItem, posX, posY)
+                if (selectionStartCursor)
+                    control.select(control.positionAt(pos.x, pos.y), control.selectionEnd);
+                else
+                    control.select(control.selectionStart, control.positionAt(pos.x, pos.y));
+            }
 
             Theming.ItemStyle.class: "cursor"
             height: internal.lineSize
             visible: showCursor && timerShowCursor
         }
     }
+    // selection cursor loader
+    Loader {
+        id: leftCursorLoader
+        onItemChanged: {
+            if (item) {
+                item.parent = editor;
+                var rect = control.positionToRectangle(control.selectionStart);
+                item.x = rect.x;
+                item.y = rect.y;
+                item.selectionStartCursor = true;
+            }
+        }
+        function setCursor()
+        {
+            if (internal.selectionMode) {
+                sourceComponent = cursor;
+            }
+        }
+    }
+    Loader {
+        id: rightCursorLoader
+        onItemChanged: {
+            if (item) {
+                item.parent = editor;
+                var rect = control.positionToRectangle(control.selectionEnd);
+                item.x = rect.x;
+                item.y = rect.y;
+                item.selectionStartCursor = false;
+            }
+        }
+        function setCursor()
+        {
+            if (internal.selectionMode) {
+                sourceComponent = cursor;
+            }
+        }
+    }
+
 
     // holding default values
     Label { id: fontHolder }
@@ -491,6 +594,8 @@ FocusScope {
             mouseSelectionMode: TextEdit.SelectCharacters
             selectByMouse: false
             cursorDelegate: cursor
+            property Item leftCursor
+            property Item rightCursor
 
             // styling
             Theming.ItemStyle.style: control.Theming.ItemStyle.style
@@ -504,7 +609,7 @@ FocusScope {
 
             MouseArea {
                 id: handler
-                enabled: control.selectByMouse && control.enabled
+                enabled: control.enabled
                 anchors.fill: parent
                 propagateComposedEvents: true
                 preventStealing: true
@@ -519,11 +624,13 @@ FocusScope {
                     // press -> move-pressed ->stop-and-hold-pressed gesture is performed
                     if (!internal.draggingMode)
                         return;
-                    internal.selectionMode = true;
-                    editor.cursorPosition = editor.positionAt(mouse.x, mouse.y)
+                    internal.selectionMode = control.selectByMouse;
+                    if (internal.selectionMode && control.selectByMouse) {
+                        internal.enterSelectionMode(mouse.x, mouse.y);
+                    }
                 }
                 onReleased: {
-                    internal.draggingMode = internal.selectionMode = false;
+                    internal.draggingMode = false;
                 }
                 onPositionChanged: {
                     if (internal.draggingMode) {
@@ -531,16 +638,21 @@ FocusScope {
                         mouse.accepted = false;
                         return;
                     }
-                    if (internal.selectionMode) editor.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
+                    if (internal.selectionMode && control.selectByMouse)
+                        control.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
                 }
                 onDoubleClicked: {
                     internal.activateEditor()
-                    editor.selectWord()
+                    internal.selectionMode = control.selectByMouse;
+                    if (internal.selectionMode && control.selectByMouse) {
+                        control.selectWord()
+                        internal.enterSelectionMode();
+                    }
                 }
 
                 onClicked: {
                     internal.activateEditor()
-                    editor.cursorPosition = editor.positionAt(mouse.x, mouse.y)
+                    control.cursorPosition = control.positionAt(mouse.x, mouse.y)
                 }
             }
         }
