@@ -71,6 +71,8 @@ import "." 0.1 as Theming
     character or word. The editor leaves the selection mode by pressing/tapping again on it
     or by losing focus.
 
+    The default styling uses \b textarea selector.
+
     \b{This component is under heavy development.}
   */
 
@@ -81,7 +83,20 @@ FocusScope {
 
     // new properties
     /*!
-      Text that appears when there is no focus and no content in the component.
+      Text that appears when there is no focus and no content in the component
+      (hint text). The hint style can be customized by defining a style selector which
+      styles a label. For example the default styling defines the hint styling using
+      \b{.textarea .label} selector.
+
+      \code
+      .textarea .label {
+           italic: true;
+           color: "#B6B6B6";
+           fontSize: "small";
+           elide: Text.ElideRight;
+           wrapMode: Text.WordWrap;
+      }
+      \endcode
       */
     property alias placeholderText: hint.text
 
@@ -112,141 +127,321 @@ FocusScope {
 
     // altered TextEdit properties
     /*!
+      The property folds the width of the text editing content. This can be equal or
+      bigger than the frame width.
       */
     property alias contentWidth: editor.width
 
     /*!
+      The property folds the height of the text editing content. This can be equal or
+      bigger than the frame height.
       */
     property alias contentHeight: editor.height
 
     // forwarded properties
     /*!
+      Whether the TextArea should gain active focus on a mouse press. By default this
+      is set to true.
       */
     property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
+      This property specifies a base URL which is used to resolve relative URLs within
+      the text. The default value is the url of the QML file instantiating the TextArea
+      item.
       */
     property alias baseUrl: editor.baseUrl
 
     /*!
+      Returns true if the TextArea is writable and the content of the clipboard is
+      suitable for pasting into the TextArea.
       */
     property alias canPaste: editor.canPaste
 
     /*!
+      Returns true if the TextArea is writable and there are undone operations that
+      can be redone.
       */
     property alias canRedo: editor.canRedo
 
     /*!
+      Returns true if the TextArea is writable and there are previous operations
+      that can be undone.
       */
     property alias canUndo: editor.canUndo
 
     /*!
+      The text color.
       */
     property alias color: editor.color
 
     /*!
+      The delegate for the cursor in the TextArea.
+
+      If you set a cursorDelegate for a TextArea, this delegate will be used for
+      drawing the cursor instead of the standard cursor. An instance of the delegate
+      will be created and managed by the text edit when a cursor is needed, and
+      the x and y properties of delegate instance will be set so as to be one pixel
+      before the top left of the current character.
+
+      Note that the root item of the delegate component must be a QQuickItem or
+      QQuickItem derived item.
       */
     property alias cursorDelegate: editor.cursorDelegate
 
     /*!
+      The position of the cursor in the TextArea.
       */
     property alias cursorPosition: editor.cursorPosition
 
     /*!
+      The rectangle where the standard text cursor is rendered within the text
+      edit. Read-only.
+
+      The position and height of a custom cursorDelegate are updated to follow
+      the cursorRectangle automatically when it changes. The width of the delegate
+      is unaffected by changes in the cursor rectangle.
       */
     property alias cursorRectangle: editor.cursorRectangle
 
     /*!
+      If true the text edit shows a cursor.
+
+      This property is set and unset when the text edit gets active focus, but it
+      can also be set directly (useful, for example, if a KeyProxy might forward
+      keys to it).
       */
     property alias cursorVisible: editor.cursorVisible
 
     /*!
+      Presents the effective horizontal alignment that can be different from the one
+      specified at horizontalAlignment due to layout mirroring.
       */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
 
     /*!
+      The property holds the font used by the editing.
       */
     property alias font: editor.font
 
     /*!
+      Sets the horizontal alignment of the text within the TextAre item's width
+      and height. By default, the text alignment follows the natural alignment
+      of the text, for example text that is read from left to right will be
+      aligned to the left.
+
+      Valid values for effectiveHorizontalAlignment are:
+        \list
+        \li TextEdit.AlignLeft (default)
+        \li TextEdit.AlignRight
+        \li TextEdit.AlignHCenter
+        \li TextEdit.AlignJustify
+        \endlist
       */
     property alias horizontalAlignment: editor.horizontalAlignment
 
     /*!
+      This property holds whether the TextArea has partial text input from an
+      input method.
+
+      While it is composing an input method may rely on mouse or key events
+      from the TextArea to edit or commit the partial text. This property can
+      be used to determine when to disable events handlers that may interfere
+      with the correct operation of an input method.
       */
     property alias inputMethodComposing: editor.inputMethodComposing
 
     /*!
+    Provides hints to the input method about the expected content of the text
+    edit and how it should operate.
+
+    The value is a bit-wise combination of flags or Qt.ImhNone if no hints are set.
+
+    Flags that alter behaviour are:
+    \list
+    \li Qt.ImhHiddenText - Characters should be hidden, as is typically used when entering passwords.
+    \li Qt.ImhSensitiveData - Typed text should not be stored by the active input method in any persistent storage like predictive user dictionary.
+    \li Qt.ImhNoAutoUppercase - The input method should not try to automatically switch to upper case when a sentence ends.
+    \li Qt.ImhPreferNumbers - Numbers are preferred (but not required).
+    \li Qt.ImhPreferUppercase - Upper case letters are preferred (but not required).
+    \li Qt.ImhPreferLowercase - Lower case letters are preferred (but not required).
+    \li Qt.ImhNoPredictiveText - Do not use predictive text (i.e. dictionary lookup) while typing.
+    \li Qt.ImhDate - The text editor functions as a date field.
+    \li Qt.ImhTime - The text editor functions as a time field.
+    \endlist
+    Flags that restrict input (exclusive flags) are:
+
+    \list
+    \li Qt.ImhDigitsOnly - Only digits are allowed.
+    \li Qt.ImhFormattedNumbersOnly - Only number input is allowed. This includes decimal point and minus sign.
+    \li Qt.ImhUppercaseOnly - Only upper case letter input is allowed.
+    \li Qt.ImhLowercaseOnly - Only lower case letter input is allowed.
+    \li Qt.ImhDialableCharactersOnly - Only characters suitable for phone dialing are allowed.
+    \li Qt.ImhEmailCharactersOnly - Only characters suitable for email addresses are allowed.
+    \li Qt.ImhUrlCharactersOnly - Only characters suitable for URLs are allowed.
+    \endlist
+    Masks:
+
+    \list
+    \li Qt.ImhExclusiveInputMask - This mask yields nonzero if any of the exclusive flags are used.
+    \endlist
       */
     property alias inputMethodHints: editor.inputMethodHints
 
     /*!
+      Returns the total number of plain text characters in the TextArea item.
+
+      As this number doesn't include any formatting markup it may not be the
+      same as the length of the string returned by the text property.
+
+      This property can be faster than querying the length the text property
+      as it doesn't require any copying or conversion of the TextArea's internal
+      string data.
       */
     property alias length: editor.length
 
     /*!
+      Returns the total number of lines in the TextArea item.
       */
     property alias lineCount: editor.lineCount
 
     /*!
+      Specifies how text should be selected using a mouse.
+        \list
+        \li TextEdit.SelectCharacters - The selection is updated with individual characters. (Default)
+        \li TextEdit.SelectWords - The selection is updated with whole words.
+        \endlist
+      This property only applies when selectByMouse is true.
       */
     property alias mouseSelectionMode: editor.mouseSelectionMode
 
     /*!
+      Whether the TextArea should keep the selection visible when it loses active
+      focus to another item in the scene. By default this is set to true;
       */
     property alias persistentSelection: editor.persistentSelection
 
     /*!
+      Whether the user can interact with the TextArea item. If this property is set
+      to true the text cannot be edited by user interaction.
+
+      By default this property is false.
       */
     property alias readOnly: editor.readOnly
 
     /*!
+      Override the default rendering type for this component.
+
+      Supported render types are:
+        \list
+        \li Text.QtRendering - the default
+        \li Text.NativeRendering
+        \endlist
+      Select Text.NativeRendering if you prefer text to look native on the target
+      platform and do not require advanced features such as transformation of the
+      text. Using such features in combination with the NativeRendering render type
+      will lend poor and sometimes pixelated results.
       */
     property alias renderType: editor.renderType
 
     /*!
+      This read-only property provides the text currently selected in the text edit.
       */
-    property alias selectedTExt: editor.selectedText
+    property alias selectedText: editor.selectedText
 
     /*!
+      The selected text color, used in selections.
       */
     property alias selectedTextColor: editor.selectedTextColor
 
     /*!
+      The text highlight color, used behind selections.
       */
     property alias selectionColor: editor.selectionColor
 
     /*!
+      The cursor position after the last character in the current selection.
+
+      This property is read-only. To change the selection, use select(start, end),
+      selectAll(), or selectWord().
+
+      See also selectionStart, cursorPosition, and selectedText.
       */
     property alias selectionEnd: editor.selectionEnd
 
     /*!
+      The cursor position before the first character in the current selection.
+
+      This property is read-only. To change the selection, use select(start, end),
+      selectAll(), or selectWord().
+
+      See also selectionEnd, cursorPosition, and selectedText.
       */
     property alias selectionStart: editor.selectionStart
 
     /*!
+      The text to display. If the text format is AutoText the text edit will
+      automatically determine whether the text should be treated as rich text.
+      This determination is made using Qt::mightBeRichText().
       */
     property alias text: editor.text
 
     /*!
+      The way the text property should be displayed.
+        \list
+        \li TextEdit.AutoText
+        \li TextEdit.PlainText
+        \li TextEdit.RichText
+        \endlist
+      The default is TextEdit.PlainText. If the text format is TextEdit.AutoText
+      the text edit will automatically determine whether the text should be treated
+      as rich text. This determination is made using Qt::mightBeRichText().
       */
     property alias textFormat: editor.textFormat
 
     /*!
+      Sets the vertical alignment of the text within the TextAres item's width
+      and height. By default, the text alignment follows the natural alignment
+      of the text.
+
+      Valid values for verticalAlignment are:
+
+        \list
+        \li TextEdit.AlignTop (default)
+        \li TextEdit.AlignBottom
+        \li TextEdit.AlignVCenter
+        \endlist
       */
     property alias verticalAlignment: editor.verticalAlignment
 
     /*!
+      Set this property to wrap the text to the TextEdit item's width. The text
+      will only wrap if an explicit width has been set.
+        \list
+        \li TextEdit.NoWrap - no wrapping will be performed. If the text contains
+            insufficient newlines, then implicitWidth will exceed a set width.
+        \li TextEdit.WordWrap - wrapping is done on word boundaries only. If a word
+            is too long, implicitWidth will exceed a set width.
+        \li TextEdit.WrapAnywhere - wrapping is done at any point on a line, even
+            if it occurs in the middle of a word.
+        \li TextEdit.Wrap - if possible, wrapping occurs at a word boundary; otherwise
+            it will occur at the appropriate point on the line, even in the middle of a word.
+        \endlist
+       The default is TextEdit.NoWrap. If you set a width, consider using TextEdit.Wrap.
       */
     property alias wrapMode:editor.wrapMode
 
     // signals
     /*!
+      This handler is called when the user clicks on a link embedded in the text.
+      The link must be in rich text or HTML format and the link string provides
+      access to the particular link.
       */
     signal linkActivated(string link)
 
     // functions
     /*!
+      Copies the currently selected text to the system clipboard.
       */
     function copy()
     {
@@ -254,6 +449,7 @@ FocusScope {
     }
 
     /*!
+      Moves the currently selected text to the system clipboard.
       */
     function cut()
     {
@@ -261,6 +457,7 @@ FocusScope {
     }
 
     /*!
+      Removes active text selection.
       */
     function deselect()
     {
@@ -268,6 +465,7 @@ FocusScope {
     }
 
     /*!
+      Inserts text into the TextArea at position.
       */
     function insert(position, text)
     {
@@ -275,6 +473,11 @@ FocusScope {
     }
 
     /*!
+      Returns the text position closest to pixel position (x, y).
+
+      Position 0 is before the first character, position 1 is after the first
+      character but before the second, and so on until position text.length,
+      which is after all characters.
       */
     function positionAt(x, y)
     {
@@ -282,6 +485,8 @@ FocusScope {
     }
 
     /*!
+      Returns true if the natural reading direction of the editor text found
+      between positions start and end is right to left.
       */
     function isRightToLeft(start, end)
     {
@@ -289,6 +494,18 @@ FocusScope {
     }
 
     /*!
+      Moves the cursor to position and updates the selection according to the
+      optional mode parameter. (To only move the cursor, set the cursorPosition
+      property.)
+
+      When this method is called it additionally sets either the selectionStart
+      or the selectionEnd (whichever was at the previous cursor position) to the
+      specified position. This allows you to easily extend and contract the selected
+      text range.
+
+      The selection mode specifies whether the selection is updated on a per character
+      or a per word basis. If not specified the selection mode will default to whatever
+      is given in the mouseSelectionMode property.
       */
     function moveCursorSelection(position, mode)
     {
@@ -299,6 +516,7 @@ FocusScope {
     }
 
     /*!
+      Replaces the currently selected text by the contents of the system clipboard.
       */
     function paste()
     {
@@ -306,6 +524,8 @@ FocusScope {
     }
 
     /*!
+      Returns the rectangle at the given position in the text. The x, y, and height
+      properties correspond to the cursor that would describe that position.
       */
     function positionToRectangle(position)
     {
@@ -313,6 +533,7 @@ FocusScope {
     }
 
     /*!
+      Redoes the last operation if redo is \l{canRedo}{available}.
       */
     function redo()
     {
@@ -320,6 +541,14 @@ FocusScope {
     }
 
     /*!
+      Causes the text from start to end to be selected.
+
+      If either start or end is out of range, the selection is not changed.
+
+      After calling this, selectionStart will become the lesser and selectionEnd
+      will become the greater (regardless of the order passed to this method).
+
+      See also selectionStart and selectionEnd.
       */
     function select(start, end)
     {
@@ -327,6 +556,7 @@ FocusScope {
     }
 
     /*!
+      Causes all text to be selected.
       */
     function selectAll()
     {
@@ -334,6 +564,7 @@ FocusScope {
     }
 
     /*!
+      Causes the word closest to the current cursor position to be selected.
       */
     function selectWord()
     {
@@ -341,6 +572,9 @@ FocusScope {
     }
 
     /*!
+      Returns the section of text that is between the start and end positions.
+
+      The returned text will be formatted according the textFormat property.
       */
     function getFormattedText(start, end)
     {
@@ -348,6 +582,10 @@ FocusScope {
     }
 
     /*!
+      Returns the section of text that is between the start and end positions.
+
+      The returned text does not include any rich text formatting. A getText(0, length)
+      will result in the same value as displayText.
       */
     function getText(start, end)
     {
@@ -355,6 +593,8 @@ FocusScope {
     }
 
     /*!
+      Removes the section of text that is between the start and end positions
+      from the TextArea.
       */
     function remove(start, end)
     {
@@ -362,6 +602,9 @@ FocusScope {
     }
 
     /*!
+      Undoes the last operation if undo is \l{canUndo}{available}. Deselects
+      any current selection, and updates the selection start to the current
+      cursor position.
       */
     function undo()
     {
@@ -369,6 +612,7 @@ FocusScope {
     }
 
     // logic
+    /*!\internal - to remove warnings */
     Component.onCompleted: {
         editor.linkActivated.connect(control.linkActivated);
         internal.prevShowCursor = control.cursorVisible;
