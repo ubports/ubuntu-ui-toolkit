@@ -79,8 +79,9 @@ Item {
 
                     anchors {
                         top: parent.top
-                        bottom: parent.bottom
+//                        bottom: parent.bottom
                     }
+                    height: parent.height - itemStyle.headerTextBottomMargin
 
                     Label {
                         id: text
@@ -90,8 +91,7 @@ Item {
                             left: parent.left
                             leftMargin: units.gu(2)
                             rightMargin: units.gu(0)
-                            bottom: parent.bottom
-                            bottomMargin: units.gu(1)
+                            baseline: parent.bottom
                         }
                         text: title
                         fontSize: itemStyle.headerFontSize
@@ -140,7 +140,7 @@ Item {
         source: itemStyle.indicatorImageSource
         anchors {
             bottom: parent.bottom
-            bottomMargin: units.gu(2)
+            bottomMargin: itemStyle.headerTextBottomMargin
         }
 
         visible: !tabBar.active

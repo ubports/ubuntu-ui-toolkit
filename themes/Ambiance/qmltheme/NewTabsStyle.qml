@@ -43,4 +43,5 @@ QtObject {
     property url indicatorImageSource
 
     property real tabBarHeight
+    property real headerTextBottomMargin
 }
