@@ -97,7 +97,8 @@ Examples:
     headerFontSize: "x-large";
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
     headerTextColor: "#A0333333";           /* opacity 0.6 */
-    indicatorImageSource: url("artwork/chevron.png")
+    indicatorImageSource: url("artwork/chevron.png");
+    tabBarHeight: units.gu(6.5);
 }
 
 .dark-button {

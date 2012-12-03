@@ -41,4 +41,6 @@ QtObject {
     property string headerFontSize
 
     property url indicatorImageSource
+
+    property real tabBarHeight
 }
