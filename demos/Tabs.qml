@@ -18,9 +18,14 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Tabs")
+    property bool newTabs: false
+
+    title: newTabs ? i18n.tr("Tabs (new)") : i18n.tr("Tabs (old)")
 
     Tabs {
+        ItemStyle.class: newTabs ? "new-tabs" : ""
+
+        id: tabs
         Tab {
             title: i18n.tr("Tab") + " 1"
             page: Rectangle {
@@ -35,13 +40,22 @@ Template {
         }
         Tab {
             iconSource: "call_icon.png"
+            title: i18n.tr("Tab") + " 2"
             page: Rectangle {
                 anchors.fill: parent
-                color: "#e4e4e4"
-                Label {
+                color: "tan"
+                Row {
                     anchors.centerIn: parent
-                    text: i18n.tr("This is the second tab.")
-                    color: "#757373"
+                    Button {
+                        width: units.gu(20)
+                        text: i18n.tr("Go to previous tab")
+                        onClicked: tabs.selectedTabIndex--
+                    }
+                    Button {
+                        width: units.gu(20)
+                        text: i18n.tr("Go to next tab")
+                        onClicked: tabs.selectedTabIndex++
+                    }
                 }
             }
         }

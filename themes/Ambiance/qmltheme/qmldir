@@ -5,6 +5,9 @@ TabButtonStyle 0.1 TabButtonStyle.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
 TabsDelegate 0.1 TabsDelegate.qml
 TabsStyle 0.1 TabsStyle.qml
+NewTabBar 0.1 NewTabBar.qml
+NewTabsDelegate 0.1 NewTabsDelegate.qml
+NewTabsStyle 0.1 NewTabsStyle.qml
 TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml
 UbuntuShapeStyle 0.1 UbuntuShapeStyle.qml
 DialogForegroundDelegate 0.1 DialogForegroundDelegate.qml

@@ -52,7 +52,8 @@ Rectangle {
                 {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
                 {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-                {"label": i18n.tr("Tabs (Segmented)"), "source": "Tabs.qml"},
+                {"label": i18n.tr("Tabs (old)"), "source": "Tabs.qml"},
+                {"label": i18n.tr("Tabs (new)"), "source": "NewTabs.qml"},
                 {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
                 {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
                 {"label": i18n.tr("Switch"), "source": "Switches.qml"},
@@ -69,7 +70,6 @@ Rectangle {
                 {"label": i18n.tr("On Screen Keyboard"), "source": ""},
                 {"label": i18n.tr("Date Picker"), "source": ""},
                 {"label": i18n.tr("Time Picker"), "source": ""},
-                {"label": i18n.tr("Tabs (Non Segmented)"), "source": ""},
                ]
 
         delegate: Button {
