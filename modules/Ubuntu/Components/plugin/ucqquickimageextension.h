@@ -24,6 +24,7 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QTextStream>
 #include <QtCore/QTemporaryFile>
+#include <QtCore/QSharedPointer>
 
 class QQuickImageBase;
 class UCQQuickImageExtension : public QObject
@@ -51,7 +52,7 @@ protected:
 private:
     QQuickImageBase* m_image;
     QUrl m_source;
-    QTemporaryFile* m_tmpSciFile;
+    static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;
 };
 
 #endif // QQUICKIMAGEEXTENSION_H
