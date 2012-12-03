@@ -46,12 +46,14 @@ Template {
             spacing: units.gu(4)
 
             TemplateRow {
-                title: i18n.tr("Normal text")
-                height: normalText.height
+                title: i18n.tr("Rich text")
+                height: richText.height
 
                 TextArea {
-                    id: normalText
+                    id: richText
                     contentWidth: units.gu(62)
+                    textFormat:TextEdit.RichText
+                    placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
                     text: longText
                 }
             }
@@ -69,29 +71,29 @@ Template {
             }
 
             TemplateRow {
-                title: i18n.tr("Rich text")
-                height: richText.height
+                title: i18n.tr("Expanding")
+                height: expandFix.height
 
                 TextArea {
-                    id: richText
-                    contentWidth: units.gu(62)
-                    textFormat:TextEdit.RichText
-                    placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
-                    text: longText
+                    id: expandFix
+                    contentWidth: units.gu(40)
+                    placeholderText: "expands till 5 lines, then scrolls"
+                    autoExpand: true
+                    maximumLineCount: 5
                 }
             }
 
             TemplateRow {
-                title: i18n.tr("Auto-expand")
-                height: autoExpanding.height
+                title: i18n.tr("Expanding")
+                height: expandUnlimited.height
 
                 TextArea {
-                    id: autoExpanding
-                    contentWidth: units.gu(62)
+                    id: expandUnlimited
+                    contentWidth: units.gu(40)
                     textFormat:TextEdit.RichText
-                    placeholderText: "this text input will expand vertically till 5 lines are added"
+                    placeholderText: "the area will expand forever"
                     autoExpand: true
-                    maximumLineCount: 5
+                    maximumLineCount: 0
                 }
             }
         }

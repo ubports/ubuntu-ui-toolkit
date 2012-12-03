@@ -1,6 +1,6 @@
 
-function style(object, proeprty, defaultValue) {
-    if (undefined !== object.Theming.ItemStyle.style[proeprty])
-        return object.Theming.ItemStyle.style[proeprty];
+function style(object, property, defaultValue) {
+    if (undefined !== object.Theming.ItemStyle.style[property])
+        return object.Theming.ItemStyle.style[property];
     return defaultValue;
 }

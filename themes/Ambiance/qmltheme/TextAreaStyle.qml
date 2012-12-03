@@ -53,5 +53,10 @@ QtObject {
     /*!
       Spacing between overlaid elements (e.g. hint)
       */
-    property real overlaidSpacing
+    property var overlaySpacing
+
+    /*!
+      Spacing between the frame and the text editor area
+      */
+    property var frameSpacing
 }

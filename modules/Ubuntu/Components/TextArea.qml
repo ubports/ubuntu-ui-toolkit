@@ -25,7 +25,26 @@ import "." 0.1 as Theming
     \qmltype TextArea
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The TextArea element is a multiline text editor.
+    \brief The TextArea item displays a block of editable, scrollable, formatted
+    text.
+
+    The TextArea supports fix-size and auto-expanding modes. In fix-size mode the
+    content is scrolled when exceeds the boundaries and can be scrolled both horizontally
+    and vertically, depending on the contentWidth and contentHeight set. The following
+    example will scroll the editing area both horizontally and vertically:
+
+    \qml
+    TextArea {
+        width: units.gu(20)
+        height: units.gu(12)
+        contentWidth: units.gu(30)
+        contentHeight: units.gu(60)
+    }
+    \endqml
+
+    The auto-expand mode is realized using two properties: autoExpand and maximumLineCount.
+    Setting autoExpand will set the implicit height to one line, and the height is aligned
+    to the font's pixel size. If the
 
     \b{This component is under heavy development.}
   */
@@ -33,52 +52,162 @@ import "." 0.1 as Theming
 FocusScope {
     id: control
     implicitWidth: units.gu(30)
-    implicitHeight: (autoExpand) ? units.gu(3) : units.gu(12)
+    implicitHeight: (autoExpand) ? internal.frameLinesHeight(1) : internal.frameLinesHeight(4)
 
     // new properties
+    /*!
+      */
     property alias placeholderText: hint.text
-    property string displayText: editor.getText(0, editor.length)
+
+    /*!
+      */
+    property alias displayText: internal.displayText
+
+    /*!
+      */
     property bool selectByMouse: true
+
+    /*!
+      */
     property bool autoExpand: false
+
+    /*!
+      */
     property int maximumLineCount: 5
 
     // altered TextEdit properties
+    /*!
+      */
     property alias contentWidth: editor.width
+
+    /*!
+      */
     property alias contentHeight: editor.height
 
     // forwarded properties
+    /*!
+      */
     property alias activeFocusOnPress: editor.activeFocusOnPress
+
+    /*!
+      */
     property alias baseUrl: editor.baseUrl
+
+    /*!
+      */
     property alias canPaste: editor.canPaste
+
+    /*!
+      */
     property alias canRedo: editor.canRedo
+
+    /*!
+      */
     property alias canUndo: editor.canUndo
+
+    /*!
+      */
     property alias color: editor.color
+
+    /*!
+      */
     property alias cursorDelegate: editor.cursorDelegate
+
+    /*!
+      */
     property alias cursorPosition: editor.cursorPosition
+
+    /*!
+      */
     property alias cursorRectangle: editor.cursorRectangle
+
+    /*!
+      */
     property alias cursorVisible: editor.cursorVisible
+
+    /*!
+      */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
+
+    /*!
+      */
     property alias font: editor.font
+
+    /*!
+      */
     property alias horizontalAlignment: editor.horizontalAlignment
+
+    /*!
+      */
     property alias inputMethodComposing: editor.inputMethodComposing
+
+    /*!
+      */
     property alias inputMethodHints: editor.inputMethodHints
+
+    /*!
+      */
     property alias length: editor.length
+
+    /*!
+      */
     property alias lineCount: editor.lineCount
+
+    /*!
+      */
     property alias mouseSelectionMode: editor.mouseSelectionMode
+
+    /*!
+      */
     property alias persistentSelection: editor.persistentSelection
+
+    /*!
+      */
     property alias readOnly: editor.readOnly
+
+    /*!
+      */
     property alias renderType: editor.renderType
+
+    /*!
+      */
     property alias selectedTExt: editor.selectedText
+
+    /*!
+      */
     property alias selectedTextColor: editor.selectedTextColor
+
+    /*!
+      */
     property alias selectionColor: editor.selectionColor
+
+    /*!
+      */
     property alias selectionEnd: editor.selectionEnd
+
+    /*!
+      */
     property alias selectionStart: editor.selectionStart
+
+    /*!
+      */
     property alias text: editor.text
+
+    /*!
+      */
     property alias textFormat: editor.textFormat
+
+    /*!
+      */
     property alias verticalAlignment: editor.verticalAlignment
+
+    /*!
+      */
     property alias wrapMode:editor.wrapMode
 
     // signals
+    /*!
+      */
     signal linkActivated(string link)
 
     // functions
@@ -214,22 +343,29 @@ FocusScope {
     //internals
     QtObject {
         id: internal
+        // public property locals enabling aliasing
+        property string displayText: editor.getText(0, editor.length)
         property bool useTextEditMouse: true
         property bool textChanged: false
-        property real spacing: units.gu(0.5)
-        property real lineSize: editor.font.pixelSize + units.dp(3)
+        property real spacing: StyleUtils.style(control, "overlaySpacing", units.gu(0.5))
+        property real lineSpacing: units.dp(3)
+        property real frameSpacing: StyleUtils.style(control, "frameSpacing", units.gu(0.35))
+        property real lineSize: editor.font.pixelSize + lineSpacing
+        property real frameLineHeight: editor.font.pixelSize + 2 * spacing + frameSpacing
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
 
+        onLineSizeChanged: print(lineSize)
+        onFrameLineHeightChanged: print(frameLineHeight)
+
+
         onDraggingModeChanged: {
-            print(draggingMode);
             if (draggingMode) selectionMode = false;
         }
         onSelectionModeChanged: {
-            print(selectionMode);
             if (selectionMode) draggingMode = false;
         }
 
@@ -255,6 +391,24 @@ FocusScope {
                 Qt.inputMethod.hide();
             }
         }
+
+        function lineHeight(lines)
+        {
+            return editor.font.pixelSize * lines + lineSpacing * (lines - 1);
+        }
+
+        function frameLinesHeight(lines)
+        {
+            return lineHeight(lines) + 2 * spacing + frameSpacing;
+        }
+
+        function frameSize()
+        {
+            if (control.autoExpand) {
+                if (!control.maximumLineCount || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
+                    control.height = frameLinesHeight(control.lineCount);
+            }
+        }
     }
 
     // cursor
@@ -271,15 +425,12 @@ FocusScope {
         }
     }
 
-    Text {
-        id: fontHolder
-    }
-    SystemPalette {
-        id: systemColors
-    }
+    // holding default values
+    Label { id: fontHolder }
+    SystemPalette { id: systemColors }
 
     //hint
-    TextCustom {
+    Label {
         id: hint
         anchors{
             fill: parent
@@ -289,7 +440,7 @@ FocusScope {
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
     }
 
-    //scrollbars
+    //scrollbars and flickable
     Scrollbar {
         id: rightScrollbar
         flickableItem: flicker
@@ -299,7 +450,6 @@ FocusScope {
         flickableItem: flicker
         align: Qt.AlignBottom
     }
-
     Flickable {
         id: flicker
         anchors {
@@ -312,8 +462,6 @@ FocusScope {
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         pressDelay: 200
-        //onFlickingChanged: if (flicking) handler.cancelled = true
-        //onMovingChanged: if (moving) handler.cancelled = true
 
         function ensureVisible(r)
         {
@@ -341,28 +489,31 @@ FocusScope {
             height: Math.max(control.height, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectCharacters
-            selectByMouse: false//handler.selectionMode
+            selectByMouse: false
             cursorDelegate: cursor
 
+            // styling
             Theming.ItemStyle.style: control.Theming.ItemStyle.style
             color: StyleUtils.style(editor, "color", "black")
             selectedTextColor: StyleUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
             selectionColor: StyleUtils.style(editor, "selectionColor", systemColors.highlight)
             font: StyleUtils.style(editor, "font", fontHolder.font)
 
+            // autoexpand handling
+            onLineCountChanged: internal.frameSize()
+
             MouseArea {
                 id: handler
+                enabled: control.selectByMouse && control.enabled
                 anchors.fill: parent
                 propagateComposedEvents: true
                 preventStealing: true
 
                 onPressed: {
-                    print()
                     internal.activateEditor()
                     internal.draggingMode = true
                 }
                 onPressAndHold: {
-                    print()
                     // move mode gets false if there was a mouse move after the press;
                     // this is needed as Flickable will send a pressAndHold in case of
                     // press -> move-pressed ->stop-and-hold-pressed gesture is performed
@@ -372,11 +523,9 @@ FocusScope {
                     editor.cursorPosition = editor.positionAt(mouse.x, mouse.y)
                 }
                 onReleased: {
-                    print()
                     internal.draggingMode = internal.selectionMode = false;
                 }
                 onPositionChanged: {
-                    print()
                     if (internal.draggingMode) {
                         internal.draggingMode = false;
                         mouse.accepted = false;
@@ -385,13 +534,11 @@ FocusScope {
                     if (internal.selectionMode) editor.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
                 }
                 onDoubleClicked: {
-                    print()
                     internal.activateEditor()
                     editor.selectWord()
                 }
 
                 onClicked: {
-                    print()
                     internal.activateEditor()
                     editor.cursorPosition = editor.positionAt(mouse.x, mouse.y)
                 }
