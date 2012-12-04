@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1 as Theming
                 }
             }
         }
-        ScrollBar {
+        Scrollbar {
             flickableItem: list
             align: Qt.AlignTrailing
         }
