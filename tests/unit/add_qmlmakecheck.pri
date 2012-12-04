@@ -3,7 +3,11 @@
 # Instead add a 'make check' manually.
 
 check.target = check
-check.commands = ./$$TARGET -platform minimal
-check.commands += -import \"../../../modules\"
-check.commands += -maxwarnings 4 -xunitxml -o ../../test_$(TARGET).xml;
-check.commands += ../testparser/testparser ../../test_$(TARGET).xml
+check.commands = ""
+for(TEST, TESTS) {
+  check.commands += ./$$TARGET -input $${TEST} -platform minimal
+  check.commands += -import \"../../../modules\"
+  check.commands += -maxwarnings 4 -xunitxml -o ../../test_$(TARGET)_$${TEST}.xml;
+  check.commands += ../testparser/testparser ../../test_$(TARGET)_$${TEST}.xml;
+
+}
