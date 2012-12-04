@@ -59,6 +59,10 @@ import "." 0.1 as Theming
     }
     \endqml
 
+    TextArea comes with 30 grid-units implicit width and one line height on auto-expanding
+    mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
+    ovarlay and frame spacing specified in the style.
+
     Scrolling the editing area can happen when the size is fixed or in auto-expand mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
@@ -122,6 +126,8 @@ FocusScope {
       The property holds the maximum amount of lines to expand when autoExpand is
       enabled. The value of 0 does not put any upper limit and the control will
       expand forever.
+
+      The default value is 5 lines.
       */
     property int maximumLineCount: 5
 
@@ -427,7 +433,7 @@ FocusScope {
         \li TextEdit.Wrap - if possible, wrapping occurs at a word boundary; otherwise
             it will occur at the appropriate point on the line, even in the middle of a word.
         \endlist
-       The default is TextEdit.NoWrap. If you set a width, consider using TextEdit.Wrap.
+       The default is TextEdit.Wrap
       */
     property alias wrapMode:editor.wrapMode
 
@@ -689,7 +695,7 @@ FocusScope {
         function frameSize()
         {
             if (control.autoExpand) {
-                if (!control.maximumLineCount || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
+                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
                     control.height = frameLinesHeight(control.lineCount);
             }
         }
