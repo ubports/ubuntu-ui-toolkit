@@ -385,8 +385,7 @@ FocusScope {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: (Theming.ItemStyle.style && Theming.ItemStyle.hasOwnProperty("overlaidSpacing")) ?
-                                   Theming.ItemStyle.overlaidSpacing : units.gu(0.5)
+        property real spacing: Theming.ComponentUtils.style(control, "overlaidSpacing", units.gu(0.5))
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
@@ -476,8 +475,7 @@ FocusScope {
             rightMargin: internal.spacing
             verticalCenter: parent.verticalCenter
         }
-        iconSource: (control.hasClearButton && Theming.ItemStyle.style && Theming.ItemStyle.style.iconSource) ?
-                        Theming.ItemStyle.style.iconSource : ""
+        iconSource: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
         width: visible ? units.gu(2) : 0 // TODO: no way to set the image size :(
         visible: control.hasClearButton &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
@@ -513,17 +511,12 @@ FocusScope {
         }
         // get the control's style
         Theming.ItemStyle.style: control.Theming.ItemStyle.style
-        color: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["color"]))?
-                   Theming.ItemStyle.style.color : "black"
-        selectedTextColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectedTextColor"])) ?
-                   Theming.ItemStyle.style.selectedTextColor: systemColors.highlightedText
-        selectionColor: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["selectionColor"])) ?
-                   Theming.ItemStyle.style.selectionColor: systemColors.highlight
+        color: Theming.ComponentUtils.style(editor, "color", "black")
+        selectedTextColor: Theming.ComponentUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
+        selectionColor: Theming.ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
         clip: true
-        passwordCharacter: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["passwordCharacter"])) ?
-                               Theming.ItemStyle.style.passwordCharacter: "*"
-        font: (Theming.ItemStyle.style && ('undefined' !== Theming.ItemStyle.style["font"])) ?
-                  Theming.ItemStyle.style.font : fontHolder.font
+        passwordCharacter: Theming.ComponentUtils.style(editor, "passwordCharacter", "*")
+        font: Theming.ComponentUtils.style(editor, "font", fontHolder.font)
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
 

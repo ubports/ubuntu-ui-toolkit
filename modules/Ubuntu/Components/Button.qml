@@ -63,8 +63,7 @@ AbstractButton {
        The foreground color of the button in idle state.
     */
     // FIXME: see FIXME above
-    property color color: (Theming.ItemStyle.style && Theming.ItemStyle.style.color) ?
-                              Theming.ItemStyle.style.color : "transparent"
+    property color color: Theming.ComponentUtils.style(button, "color", "transparent")
 
     /*!
        \preliminary
@@ -72,7 +71,7 @@ AbstractButton {
        Leave this value blank for a text-only button.
        \qmlproperty url iconSource
     */
-    property url iconSource
+    property url iconSource: Theming.ComponentUtils.style(button, "iconSource", "")
 
     /*!
        \preliminary
@@ -97,5 +96,5 @@ AbstractButton {
        support for enums:
        https://bugreports.qt-project.org/browse/QTBUG-14861
     */
-    property string iconPosition: "left"
+    property string iconPosition: Theming.ComponentUtils.style(button, "iconPosition", "left")
 }

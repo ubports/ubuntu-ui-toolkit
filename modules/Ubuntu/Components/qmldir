@@ -24,3 +24,4 @@ internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
+ComponentUtils 0.1 componentUtils.js
