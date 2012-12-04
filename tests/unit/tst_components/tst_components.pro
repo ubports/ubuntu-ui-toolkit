@@ -1,3 +1,5 @@
+TESTS += $$system(ls tst_*.qml)
+
 include(../qmltest-include.pri)
 
 TARGET = tst_components
