@@ -27,8 +27,8 @@ Item {
     visible: source != ""
     property bool hasFrame: true
 
-    property alias iconHeight: icon.height
-    property alias iconWidth: icon.width
+    property alias iconHeight: shape.height
+    property alias iconWidth: shape.width
     property real leftIconMargin: units.gu(0.5)
     property real rightIconMargin: units.gu(0.5)
     width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
@@ -51,19 +51,21 @@ Item {
         }
         height: sourceSize.height
         width: sourceSize.width
+
         smooth: true
         asynchronous: true
     }
 
     UbuntuShape {
+        id: shape
         visible: iconVisual.hasFrame
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
             leftMargin: iconVisual.leftIconMargin
         }
-        height: icon.height
-        width: icon.width
+        height: icon.sourceSize.height
+        width: icon.sourceSize.width
 
         image: icon
     }
