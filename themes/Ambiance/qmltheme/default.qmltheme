@@ -220,6 +220,7 @@ Examples:
    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
    opacity: 1.0;
    width: units.dp(1);
+   blinking: true;
    blinkTimeoutShown: 800;
    blinkTimeoutHidden: 400;
 }
@@ -247,6 +248,19 @@ Examples:
    elide: Text.ElideRight;
    wrapMode: Text.WordWrap;
 }
+/* selection cursors */
+@qml-mapping (.left-pin, EditorCursorStyle, SelectionCursorDelegate);
+@qml-mapping (.right-pin, EditorCursorStyle, SelectionCursorDelegate);
+.textarea .left-pin, .textarea .right-pin {
+    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
+    opacity: 1.0;
+    width: units.dp(1);
+    blinking: false;
+    pinSize: units.gu(1.2);
+    pinSensingOffset: units.dp(4);
+    pinColor: "blue";
+}
+
 /* scrollbars */
 .textarea .scrollbar {
    interactive: false;
