@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     }
 
     if (!QFileInfo(searchPath).exists()) {
-        qWarning() << "Invalid argument, file or folder does not exist";
+        qWarning() << "\n\nInvalid argument, file or folder does not exist:\n" << searchPath << "\n\n";
         return -1;
     }
 
