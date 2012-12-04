@@ -51,7 +51,6 @@ Item {
         }
         height: sourceSize.height
         width: sourceSize.width
-
         smooth: true
         asynchronous: true
     }
