@@ -16,6 +16,7 @@ properties typed as variant.
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
+@qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);
@@ -83,17 +84,29 @@ Examples:
     backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
 }
 
+@qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
+.new-tabs {
+    swipeToSwitchTabs: true;
+    separator: Divider {
+        height: units.gu(2);
+    };
+    topSeparator: Rectangle {
+        color: "#c94212";
+        height: units.dp(2);
+    }
+    headerFontSize: "x-large";
+    headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
+    headerTextColor: "#A0333333";           /* opacity 0.6 */
+    headerTextBottomMargin: units.gu(2);
+    indicatorImageSource: url("artwork/chevron.png");
+    tabBarHeight: units.gu(6.5);
+}
+
 .dark-button {
     color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
-}
-
-/* Default style for all TextCustom elements in Gallery*/
-.TextCustom {
-    fontSize: "medium";
-    color: "#757373";
 }
 
 .popover-foreground {
@@ -114,9 +127,8 @@ Examples:
     will be used with all declared properties as variant.
 */
 .label {
-    fontFamily: "Ubuntu";
     fontSize: "medium";
-    color: "red";
+    color: "#757373";
 }
 
 /* Gallery title */
@@ -141,7 +153,21 @@ Examples:
 }
 
 .scrollbar {
-    fadeAnimation: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    interactive: true;
+    overlay: true;
+    overlayOpacityWhenShown: 0.6;
+    overlayOpacityWhenHidden: 0.0;
+
+    scrollbarFadeInAnimation: NumberAnimation {
+        duration: 100;
+        easing.type: Easing.InOutQuad;
+    };
+    scrollbarFadeOutPause: 300;
+    scrollbarFadeOutAnimation: NumberAnimation {
+        duration: 500;
+        easing.type: Easing.InOutQuad;
+    };
+
     sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
     thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
     thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
@@ -182,7 +208,7 @@ Examples:
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
-.textfield .textcustom {
+.textfield .label {
    fontFamily: "Ubuntu";
    italic: true;
    color: "#B6B6B6";

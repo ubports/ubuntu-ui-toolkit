@@ -10,6 +10,58 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
+* None
+
+API Changes
+***********
+
+* None
+
+
+SDK 0.1.16
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* ScrollbarStyle property changes
+ - fadeAnimation property
+ + interactive
+ + overlay
+ + overlayOpacityWhenHidden
+ + overlayOpacityWhenShown
+ + scrollbarFadeInAnimation
+ + scrollbarFadeOutPause
+ + scrollbarFadeOutAnimation
+
+
+SDK 0.1.15
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* TextCustom renamed to Label, TextCustom remains for backwards compatibility
+
+
+SDK 0.1.14
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
 API Changes
 ***********
 

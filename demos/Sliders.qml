@@ -28,7 +28,7 @@ Template {
             Slider {
                 id: defaultSlider
             }
-            TextCustom {
+            Label {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"
@@ -46,7 +46,7 @@ Template {
                 value: 0.0
                 function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
             }
-            TextCustom {
+            Label {
                 color: "#757373"
                 style: Text.Raised
                 styleColor: "white"

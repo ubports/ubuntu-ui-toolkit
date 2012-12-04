@@ -48,7 +48,7 @@ import Ubuntu.Components 0.1
                     anchors.centerIn: parent
                     Tab {
                         text: "Tab 1"
-                        page: TextCustom {
+                        page: Label {
                             anchors.centerIn: parent
                             text: "Page one"
                             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
@@ -56,7 +56,7 @@ import Ubuntu.Components 0.1
                     }
                     Tab {
                         text: "Tab 2"
-                        page: TextCustom {
+                        page: Label {
                             anchors.centerIn: parent
                             text: "Page two"
                             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
@@ -64,7 +64,7 @@ import Ubuntu.Components 0.1
                     }
                     Tab {
                         text: "Tab 3"
-                        page: TextCustom {
+                        page: Label {
                             anchors.centerIn: parent
                             text: "Page three"
                             color: Qt.rgba(0.4, 0.4, 0.4, 1.0)

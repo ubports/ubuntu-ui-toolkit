@@ -42,7 +42,7 @@ import Ubuntu.Components 0.1
                     id: sheet
                     title: "Default sheet with done button"
                     doneButton: true
-                    TextCustom {
+                    Label {
                         anchors.fill: parent
                         text: "A default sheet with a done button."
                         wrapMode: Text.WordWrap

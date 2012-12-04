@@ -15,17 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 
-// internal helper class for text inside the list items.
-Label {
-    id: label
-    property bool selected: false
-
-    fontSize: "medium"
-    elide: Text.ElideRight
-    color: selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0)
-    style: Text.Raised
-    styleColor: "white"
-    opacity: label.enabled ? 1.0 : 0.5
+Tabs {
+    newTabs: true
 }
