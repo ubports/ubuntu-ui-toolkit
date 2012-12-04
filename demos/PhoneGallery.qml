@@ -18,168 +18,164 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Flickable {
+Rectangle {
+    color: "lightgrey"
     width: units.gu(45)
     height: units.gu(80)
 
-    contentWidth: width
-    contentHeight: background.height
+    Tabs {
+        ItemStyle.class: "new-tabs"
+        anchors.fill: parent
 
-    Rectangle {
-        id: background
-        width: parent.width
-        height: childrenRect.height
-        color: "#e6e6e6"
+        Tab {
+            title: "Components"
+            page: Flickable {
+                clip: true
+                width: units.gu(45)
+                height: units.gu(80)
 
-        Column {
-            width: parent.width
-            height: childrenRect.height
+                contentWidth: width
+                contentHeight: background.height
 
-            ListItem.Empty {
-                height: units.gu(10)
-                Row {
-                    anchors.centerIn: parent
-                    spacing: units.gu(1)
-                    UbuntuShape {
-                        color: "#5da357"
-                    }
-                    UbuntuShape {
-                        color: "#5da357"
-                        radius: "medium"
-                    }
-                    UbuntuShape {
-                        image: Image {
-                            source: "map_icon.png"
-                        }
-                    }
-                    UbuntuShape {
-                        color: "#c94212"
-                        width: units.gu(10)
-                        height: units.gu(4)
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-            }
+                Rectangle {
+                    id: background
+                    width: parent.width
+                    height: childrenRect.height
+                    color: "#e6e6e6"
 
-            ListItem.SingleControl {
-                control: Button {
-                    anchors {
-                        margins: units.gu(1)
-                        fill: parent
-                    }
-                    text: i18n.tr("Button")
-                }
-            }
-            ListItem.Standard {
-                text: i18n.tr("Checkbox")
-                control: CheckBox { }
-            }
-            ListItem.Standard {
-                text: i18n.tr("Switch")
-                control: Switch { }
-            }
-            ListItem.Header { text: i18n.tr("Slider") }
-            ListItem.SingleControl {
-                control: Slider {
-                    anchors {
-                        margins: units.gu(1)
-                        fill: parent
-                    }
-                    value: 50
-                }
-            }
-            ListItem.Empty {
-                highlightWhenPressed: false
-                Label {
-                    anchors.left: parent.left
-                    text: i18n.tr("Activity indicator")
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        margins: units.gu(1)
-                    }
-                }
-                ActivityIndicator {
-                    running: true
-                    anchors {
-                        margins: units.gu(1)
-                        right: parent.right
-                        verticalCenter: parent.verticalCenter
-                    }
-                }
-            }
-            ListItem.Header { text: i18n.tr("Progress bar") }
-            ListItem.Empty {
-                highlightWhenPressed: false
-                ProgressBar {
-                    id: progress
-                    anchors.centerIn: parent
-                    value: progress.minimumValue
+                    Column {
+                        width: parent.width
+                        height: childrenRect.height
 
-                    SequentialAnimation on value {
-                        loops: Animation.Infinite
-                        NumberAnimation {
-                            from: progress.minimumValue
-                            to: progress.maximumValue
-                            duration: 2000
-                        }
-                        PauseAnimation {duration: 1000}
-                        ScriptAction { script: progress.indeterminate = true; }
-                        PauseAnimation {duration: 2000}
-                        ScriptAction {
-                            script: {
-                                progress.indeterminate = false
-                                progress.value = progress.minimumValue
+                        ListItem.SingleControl {
+                            control: Button {
+                                anchors {
+                                    margins: units.gu(1)
+                                    fill: parent
+                                }
+                                text: i18n.tr("Button")
                             }
                         }
-                    }
-                }
-            }
-            ListItem.Empty {
-                height: units.gu(25)
-                highlightWhenPressed: false
-                Tabs {
-                    anchors {
-                        fill: parent
-                        margins: units.gu(1)
-                    }
-                    Tab {
-                        title: i18n.tr("Tab") + " 1"
-                        page: Rectangle {
-                            anchors.fill: parent
-                            color: "#eeeeee"
+                        ListItem.Standard {
+                            text: i18n.tr("Checkbox")
+                            control: CheckBox { }
+                        }
+                        ListItem.Standard {
+                            text: i18n.tr("Switch")
+                            control: Switch { }
+                        }
+                        ListItem.Header { text: i18n.tr("Slider") }
+                        ListItem.SingleControl {
+                            control: Slider {
+                                anchors {
+                                    margins: units.gu(1)
+                                    fill: parent
+                                }
+                                value: 50
+                            }
+                        }
+                        ListItem.Empty {
+                            highlightWhenPressed: false
                             Label {
-                                anchors.centerIn: parent
-                                text: i18n.tr("This is the first tab.")
-                                color: "#757373"
+                                anchors.left: parent.left
+                                text: i18n.tr("Activity indicator")
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: units.gu(1)
+                                }
+                            }
+                            ActivityIndicator {
+                                running: true
+                                anchors {
+                                    margins: units.gu(1)
+                                    right: parent.right
+                                    verticalCenter: parent.verticalCenter
+                                }
                             }
                         }
-                    }
-                    Tab {
-                        iconSource: "call_icon.png"
-                        page: Rectangle {
-                            anchors.fill: parent
-                            color: "#e4e4e4"
-                            Label {
+                        ListItem.Header { text: i18n.tr("Progress bar") }
+                        ListItem.Empty {
+                            highlightWhenPressed: false
+                            ProgressBar {
+                                id: progress
                                 anchors.centerIn: parent
-                                text: i18n.tr("This is the second tab.")
-                                color: "#757373"
-                            }
-                        }
-                    }
-                    Tab {
-                        title: i18n.tr("Tab") + " 3"
-                        iconSource: "call_icon.png"
-                        page: Qt.resolvedUrl("MyCustomPage.qml")
-                    }
-                }
+                                value: progress.minimumValue
 
-            }
-            ListItem.Empty {
-                highlightWhenPressed: false
-                TextField {
-                    anchors.centerIn: parent
-                    placeholderText: i18n.tr("simple text field")
+                                SequentialAnimation on value {
+                                    loops: Animation.Infinite
+                                    NumberAnimation {
+                                        from: progress.minimumValue
+                                        to: progress.maximumValue
+                                        duration: 2000
+                                    }
+                                    PauseAnimation {duration: 1000}
+                                    ScriptAction { script: progress.indeterminate = true; }
+                                    PauseAnimation {duration: 2000}
+                                    ScriptAction {
+                                        script: {
+                                            progress.indeterminate = false
+                                            progress.value = progress.minimumValue
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        ListItem.Empty {
+                            height: units.gu(25)
+                            highlightWhenPressed: false
+                            Tabs {
+                                anchors {
+                                    fill: parent
+                                    margins: units.gu(1)
+                                }
+                                Tab {
+                                    title: i18n.tr("Tab") + " 1"
+                                    page: Rectangle {
+                                        anchors.fill: parent
+                                        color: "#eeeeee"
+                                        Label {
+                                            anchors.centerIn: parent
+                                            text: i18n.tr("This is the first tab.")
+                                            color: "#757373"
+                                        }
+                                    }
+                                }
+                                Tab {
+                                    iconSource: "call_icon.png"
+                                    page: Rectangle {
+                                        anchors.fill: parent
+                                        color: "#e4e4e4"
+                                        Label {
+                                            anchors.centerIn: parent
+                                            text: i18n.tr("This is the second tab.")
+                                            color: "#757373"
+                                        }
+                                    }
+                                }
+                                Tab {
+                                    title: i18n.tr("Tab") + " 3"
+                                    iconSource: "call_icon.png"
+                                    page: Qt.resolvedUrl("MyCustomPage.qml")
+                                }
+                            }
+
+                        }
+                        ListItem.Empty {
+                            highlightWhenPressed: false
+                            TextField {
+                                anchors.centerIn: parent
+                                placeholderText: i18n.tr("simple text field")
+                            }
+                        }
+                    }
                 }
+            }
+        }
+
+        Tab {
+            title: "Ubuntu shape"
+            page: UbuntuShapes {
+                showHeader: false
             }
         }
     }
