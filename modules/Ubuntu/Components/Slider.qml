@@ -45,6 +45,10 @@ import "." 0.1 as Theming
     \brief Slider is a component to select a value from a continuous range of
      values.
 
+    The slider's sensing area is defined by the width and height, therefore
+    delegates should take this into account when defining the visuals, and
+    alter these values to align the graphics' sizes.
+
     \b{This component is under heavy development.}
 
     Example:
