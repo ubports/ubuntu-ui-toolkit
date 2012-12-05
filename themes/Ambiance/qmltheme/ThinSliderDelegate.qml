@@ -36,7 +36,7 @@ Item {
     property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
     property real thumbWidth: item.height - thumbSpacing
 
-    Rectangle {
+    Image {
         id: backgroundShape
         Component.onCompleted: item.__background = backgroundShape
         anchors {
@@ -44,11 +44,11 @@ Item {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
-        height: units.dp(3)
-        color: StyleUtils.itemStyleProperty("backgroundColor", "white")
+        //height: units.dp(3)
+        source: StyleUtils.itemStyleProperty("backgroundImage")
     }
 
-    UbuntuShape {
+    Image {
         id: thumbShape
         Component.onCompleted: item.__thumb = thumbShape
 
@@ -57,6 +57,6 @@ Item {
         width: thumbWidth
         height: parent.height - (2.0 * thumbSpacing)
         anchors.verticalCenter: parent.verticalCenter
-        color: StyleUtils.itemStyleProperty("thumbColor", "darkgray")
+        source: StyleUtils.itemStyleProperty("thumbImage")
     }
 }

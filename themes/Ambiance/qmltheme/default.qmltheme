@@ -240,7 +240,7 @@ Examples:
 }
 @qml-mapping(.thin-slider, , ThinSliderDelegate);
 .thin-slider {
-    backgroundColor: "#d3d3d3";
-    thumbColor: "#626262";
-    thumbSpacing: units.dp(2);
+    thumbSpacing: 0;
+    backgroundImage: url(artwork/zoom_bar@18.png);
+    thumbImage: url(artwork/zoom_point@18.png);
 }
