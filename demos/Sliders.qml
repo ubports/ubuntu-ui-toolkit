@@ -53,5 +53,24 @@ Template {
                 text: i18n.tr("\'value\' is %1").arg(liveSlider.formatValue(liveSlider.value))
             }
         }
+
+        TemplateRow {
+            title: i18n.tr("Thin live")
+            Slider {
+                id: thinSlider
+                ItemStyle.class: "thin-slider"
+                live: true
+                minimumValue: 0.0
+                maximumValue: 1.0
+                value: 0.0
+                function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
+            }
+            Label {
+                color: "#757373"
+                style: Text.Raised
+                styleColor: "white"
+                text: i18n.tr("\'value\' is %1").arg(thinSlider.formatValue(thinSlider.value))
+            }
+        }
     }
 }

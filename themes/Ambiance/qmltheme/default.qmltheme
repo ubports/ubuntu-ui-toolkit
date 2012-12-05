@@ -223,3 +223,24 @@ Examples:
    blinkTimeoutShown: 800;
    blinkTimeoutHidden: 400;
 }
+
+/* sliders */
+@qml-mapping(.slider, , SliderDelegate);
+.slider {
+    backgroundColor: "#d3d3d3";
+    thumbColor: "#626262";
+    thumbSpacing: units.dp(2);
+    /*
+    the following properties should be removed once we get the delegate
+    for visualizing percentage in the thumb
+    */
+    thumbFontSize: "medium";
+    thumbFontColor: "white";
+    thumbFontWeight: Font.Bold;
+}
+@qml-mapping(.thin-slider, , ThinSliderDelegate);
+.thin-slider {
+    backgroundColor: "#d3d3d3";
+    thumbColor: "#626262";
+    thumbSpacing: units.dp(2);
+}
