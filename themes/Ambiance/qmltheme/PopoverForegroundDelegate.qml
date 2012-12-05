@@ -23,7 +23,7 @@ Item {
         right: parent.right
         top: parent.top
     }
-    height: MathUtils.clamp(outer.height, item.minHeight, item.maxHeight)
+    height: Math.min(outer.height, item.maxHeight)
     property alias contentItem: inner
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover
