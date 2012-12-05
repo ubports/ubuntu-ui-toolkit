@@ -172,7 +172,7 @@ AbstractButton {
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
         property real thumbSpacing: ComponentUtils.style(slider, "thumbSpacing", units.dp(2))
-        property real thumbWidth: slider.height - thumbSpacing
+        property real thumbWidth: __thumb.width - thumbSpacing
         property real thumbSpace: __background.width - (2.0 * thumbSpacing + thumbWidth)
 
         function updateMouseArea() {

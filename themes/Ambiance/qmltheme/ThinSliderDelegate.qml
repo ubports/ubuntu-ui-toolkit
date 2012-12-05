@@ -19,9 +19,13 @@ import Ubuntu.Components 0.1
 
 /*
   This delegate is styled using the following properties:
-  - backgroundColor: color for the slider bar
-  - thumbColor: color for the thumb
-  - thumbSpacing: spacing between the thumb and the bar
+  - backgroundImage: image source for the bar
+  - backgroundImageHeight: specifies the height of the image to be used;
+        if not specified, the images source height will be used
+  - thumbImage: image source for the thumb
+  - thumbWidth, thumbHeight: width and height of the thumb; source measurements
+        will be used if not specified
+  - thumbSpacing: spacing between the thumb and the bar; 0 if not specified
   */
 
 Item {
@@ -32,9 +36,9 @@ Item {
     property real normalizedValue: MathUtils.clamp((value - item.minimumValue) /
                                                      (item.maximumValue - item.minimumValue),
                                                      0.0, 1.0)
-    property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(2))
+    property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", 0.0)
     property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
-    property real thumbWidth: item.height - thumbSpacing
+    property real thumbWidth: thumbShape.width - thumbSpacing
 
     Image {
         id: backgroundShape
@@ -45,6 +49,7 @@ Item {
             verticalCenter: parent.verticalCenter
         }
         source: StyleUtils.itemStyleProperty("backgroundImage")
+        height: StyleUtils.itemStyleProperty("backgroundImageHeight", sourceSize.height)
     }
 
     Image {
@@ -53,9 +58,9 @@ Item {
 
         x: backgroundShape.x + thumbSpacing + normalizedValue * thumbSpace
         y: backgroundShape.y + thumbSpacing
-        width: thumbWidth
-        height: parent.height - (2.0 * thumbSpacing)
-        anchors.verticalCenter: parent.verticalCenter
+        width: StyleUtils.itemStyleProperty("thumbWidth", sourceSize.width)
+        height: StyleUtils.itemStyleProperty("thumbHeight", sourceSize.height)
+        anchors.verticalCenter: backgroundShape.verticalCenter
         source: StyleUtils.itemStyleProperty("thumbImage")
     }
 }
