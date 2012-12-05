@@ -44,7 +44,6 @@ Item {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
-        //height: units.dp(3)
         source: StyleUtils.itemStyleProperty("backgroundImage")
     }
 
