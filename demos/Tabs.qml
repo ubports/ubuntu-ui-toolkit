@@ -24,10 +24,6 @@ Template {
 
     Tabs {
         ItemStyle.class: newTabs ? "new-tabs" : ""
-        //        ItemStyle.swipeToSwitchTabs: false
-        Component.onCompleted: {
-            ItemStyle.separator = null;
-        }
 
         id: tabs
         Tab {
