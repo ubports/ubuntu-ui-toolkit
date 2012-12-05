@@ -31,10 +31,20 @@ Template {
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
-                Label {
-                    anchors.centerIn: parent
-                    text: i18n.tr("This is the first tab.")
-                    color: "#757373"
+
+                Flickable {
+                    anchors.fill: parent
+                    contentHeight: text.height
+                    contentWidth: parent.width
+                    flickableDirection: Flickable.VerticalFlick
+
+                    Label {
+                        id: text
+                        property string blankLines: "\n\n\n\n\n\n\n\n\n\n\n\n"
+                        anchors.centerIn: parent
+                        text: i18n.tr(blankLines + "This is the first tab." + blankLines + "(scroll down)" + blankLines + "Lots" + blankLines + "of" + blankLines + "text" )
+                        color: "#757373"
+                    }
                 }
             }
         }
