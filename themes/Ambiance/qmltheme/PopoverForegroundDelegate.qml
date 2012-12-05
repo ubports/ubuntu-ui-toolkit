@@ -23,7 +23,8 @@ Item {
         right: parent.right
         top: parent.top
     }
-    height: MathUtils.clamp(outer.height, item.minHeight, item.maxHeight)
+    // FIXME: using max() does not work. I think height is not updated properly when the parameters change.
+    height: outer.height > item.maxHeight ? item.maxHeight : outer.height
     property alias contentItem: inner
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover
