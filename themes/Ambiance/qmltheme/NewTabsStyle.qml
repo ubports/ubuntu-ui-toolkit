@@ -1,5 +1,4 @@
 /*
-
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,32 +18,30 @@ import QtQuick 2.0
 
 QtObject {
     /*!
-      Cursor colors
-      */
-    property color color
+      If this optional property is specified, it will be positioned
+      between the bar with tab buttons, and the tab pages to act
+      as a separator.
+     */
+    property Item separator
 
     /*!
-      Cursor transparency, may be used to show text under the cursor for thick cursors.
-      */
-    property real opacity
+      Optional separator between the top of the tab bar and items above the
+      tabs view.
+     */
+    property Item topSeparator
 
     /*!
-      Cursor width
-      */
-    property real width
+      Enable left/right swiping in the contents area to go to
+      the next/previous tab.
+     */
+    property bool swipeToSwitchTabs
 
-    /*!
-      Properties driving cursor blinking. If either of these values are 0, no
-      blinking is provided.
-      */
-    property bool blinking
-    property int blinkTimeoutShown
-    property int blinkTimeoutHidden
+    property color headerTextColor
+    property color headerTextColorSelected
+    property string headerFontSize
 
-    /*!
-      Selection mode pin styles
-      */
-    property var pinSize
-    property var pinSensingOffset
-    property color pinColor
+    property url indicatorImageSource
+
+    property real tabBarHeight
+    property real headerTextBottomMargin
 }

@@ -43,7 +43,7 @@ TestCase {
      }
 
      function test_0_cursorDelegate() {
-         compare(textArea.cursorDelegate,textEdit.cursorDelegate,"TextArea.cursorDelegate is same as TextEdit.cursorDelegate")
+         compare((textArea.cursorDelegate!=null),true,"TextArea.cursorDelegate is not null")
      }
 
      function test_0_cursorPosition() {
@@ -103,7 +103,7 @@ TestCase {
      }
 
      function test_0_selectByMouse() {
-         compare(textArea.selectByMouse,textEdit.selectByMouse,"TextArea.selectByMouse is same as TextEdit.selectByMouse")
+         compare(textArea.selectByMouse,true,"TextArea.selectByMouse is true")
      }
 
      function test_0_selectedText() {
@@ -139,19 +139,19 @@ TestCase {
      }
 
      function test_0_wrapMode() {
-         compare(textArea.wrapMode,textEdit.wrapMode,"TextArea.wrapMode is same as TextEdit.wrapMode")
+         compare(textArea.wrapMode,TextEdit.Wrap,"TextArea.wrapMode is TextEdit.Wrap")
      }
 
 // TextArea specific properties
      function test_contentHeight() {
-         compare(textArea.contentHeight,-1,"contentHeight is TODO on default")
+         compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
          var newValue = 200;
          textArea.contentHeight = newValue;
          compare(textArea.contentHeight,newValue,"set/get");
      }
 
      function test_contentWidth() {
-         compare(textArea.contentWidth,-1,"contentWidth is TODO on default")
+         compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
          var newValue = 200;
          textArea.contentWidth = newValue;
          compare(textArea.contentWidth,newValue,"set/get");
@@ -172,19 +172,24 @@ TestCase {
      }
 
      function test_baseUrl() {
-         skip("TODO")
+         expectFail("","TODO")
          compare(textArea.baseUrl,"tst_textarea.qml","baseUrl is QML file instantiating the TextArea item on default")
      }
 
      function test_displayText() {
          compare(textArea.displayText,"","displayText is '' on default")
          var newValue = "Hello Display Text";
-         textArea.displayText = newValue;
-         compare(textArea.displayText,newValue,"set/get");
+         try {
+             textArea.displayText = newValue;
+             compare(false,true,"Unable to set value as it is read-only");
+         } catch (e) {
+             compare(true,true,"Unable to set value as it is read-only");
+         }
+        
      }
 
      function test_maximumLineCount() {
-         compare(textArea.maximumLineCount,0,"maximumLineCount is 0 on default")
+         compare(textArea.maximumLineCount,5,"maximumLineCount is 0 on default")
          var newValue = 10;
          textArea.maximumLineCount = newValue;
          compare(textArea.maximumLineCount,newValue,"set/get");

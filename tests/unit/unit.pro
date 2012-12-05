@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 
+SUBDIRS += testparser
+
 #######################################
-# these tests are failing in armhf
+# these tests are failing in armhf/qemu
 # can not create QQuickView
 # tested with Qt 5 beta 1 and beta 2
 #######################################
@@ -16,3 +18,4 @@ SUBDIRS += tst_template \
     tst_units \
     tst_scaling_image_provider \
     tst_qquick_image_extension
+

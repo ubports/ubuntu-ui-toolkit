@@ -59,6 +59,10 @@ import "." 0.1 as Theming
     }
     \endqml
 
+    TextArea comes with 30 grid-units implicit width and one line height on auto-expanding
+    mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
+    ovarlay and frame spacing specified in the style.
+
     Scrolling the editing area can happen when the size is fixed or in auto-expand mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
@@ -122,6 +126,8 @@ FocusScope {
       The property holds the maximum amount of lines to expand when autoExpand is
       enabled. The value of 0 does not put any upper limit and the control will
       expand forever.
+
+      The default value is 5 lines.
       */
     property int maximumLineCount: 5
 
@@ -427,7 +433,7 @@ FocusScope {
         \li TextEdit.Wrap - if possible, wrapping occurs at a word boundary; otherwise
             it will occur at the appropriate point on the line, even in the middle of a word.
         \endlist
-       The default is TextEdit.NoWrap. If you set a width, consider using TextEdit.Wrap.
+       The default is TextEdit.Wrap
       */
     property alias wrapMode:editor.wrapMode
 
@@ -628,9 +634,9 @@ FocusScope {
         property string displayText: editor.getText(0, editor.length)
         property bool useTextEditMouse: true
         property bool textChanged: false
-        property real spacing: StyleUtils.style(control, "overlaySpacing", units.gu(0.5))
+        property real spacing: ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
         property real lineSpacing: units.dp(3)
-        property real frameSpacing: StyleUtils.style(control, "frameSpacing", units.gu(0.35))
+        property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real frameLineHeight: editor.font.pixelSize + 2 * spacing + frameSpacing
         //selection properties
@@ -689,7 +695,7 @@ FocusScope {
         function frameSize()
         {
             if (control.autoExpand) {
-                if (!control.maximumLineCount || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
+                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
                     control.height = frameLinesHeight(control.lineCount);
             }
         }
@@ -707,30 +713,20 @@ FocusScope {
         }
     }
 
-    // cursor
+    // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
         Item {
             id: cursorItem
-            property bool selectionMode: internal.selectionMode
-            property bool selectionStartCursor: true
-            property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
-            property bool timerShowCursor: true
-
-            function updateCursorPosition(posX, posY)
-            {
-                if (!selectionMode)
-                    return;
-                var pos = editor.mapFromItem(cursorItem, posX, posY)
-                if (selectionStartCursor)
-                    control.select(control.positionAt(pos.x, pos.y), control.selectionEnd);
-                else
-                    control.select(control.selectionStart, control.positionAt(pos.x, pos.y));
-            }
+            // new properties
+            property var editor: control
+            property string positionProperty
+            // FIXME: move the following properties to delegate
+            //property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
+            //property bool timerShowCursor: true
 
             Theming.ItemStyle.class: "cursor"
             height: internal.lineSize
-            visible: showCursor && timerShowCursor
         }
     }
     // selection cursor loader
@@ -738,11 +734,14 @@ FocusScope {
         id: leftCursorLoader
         onItemChanged: {
             if (item) {
-                item.parent = editor;
+                item.Theming.ItemStyle.class = "left-pin";
+                /*
                 var rect = control.positionToRectangle(control.selectionStart);
                 item.x = rect.x;
                 item.y = rect.y;
-                item.selectionStartCursor = true;
+                */
+                item.positionProperty = "selectionStart";
+                item.parent = editor;
             }
         }
         function setCursor()
@@ -756,11 +755,14 @@ FocusScope {
         id: rightCursorLoader
         onItemChanged: {
             if (item) {
-                item.parent = editor;
+                item.Theming.ItemStyle.class = "right-pin";
+                /*
                 var rect = control.positionToRectangle(control.selectionEnd);
                 item.x = rect.x;
                 item.y = rect.y;
-                item.selectionStartCursor = false;
+                */
+                item.positionProperty = "selectionEnd";
+                item.parent = editor;
             }
         }
         function setCursor()
@@ -838,15 +840,13 @@ FocusScope {
             mouseSelectionMode: TextEdit.SelectCharacters
             selectByMouse: false
             cursorDelegate: cursor
-            property Item leftCursor
-            property Item rightCursor
 
             // styling
             Theming.ItemStyle.style: control.Theming.ItemStyle.style
-            color: StyleUtils.style(editor, "color", "black")
-            selectedTextColor: StyleUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
-            selectionColor: StyleUtils.style(editor, "selectionColor", systemColors.highlight)
-            font: StyleUtils.style(editor, "font", fontHolder.font)
+            color: ComponentUtils.style(editor, "color", "black")
+            selectedTextColor: ComponentUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
+            selectionColor: ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
+            font: ComponentUtils.style(editor, "font", fontHolder.font)
 
             // autoexpand handling
             onLineCountChanged: internal.frameSize()

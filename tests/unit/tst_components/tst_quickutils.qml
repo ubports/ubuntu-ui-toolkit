@@ -23,6 +23,22 @@ import Ubuntu.Components.ListItems 0.1
 TestCase {
     name: "QuickUtilsAPI"
 
+    function test_modelDelegateHeightForEmptyObjectModelElements()
+    {
+        list.model = emptyModel;
+        list.section.property = "";
+
+        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+        compare(itemHeight, 0, "itemHeight failure");
+
+
+        for (var i = 0; i < 10; i++) {
+            emptyModel.append({});
+            var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+            compare(itemHeight, 50, "itemHeight failure");
+        }
+    }
+
     function test_modelDelegateHeightForObjectModel()
     {
         list.model = objectList;
@@ -70,6 +86,8 @@ TestCase {
         var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
         compare(itemHeight, 50, "itemHeight failure");
     }
+
+    property var emptyModel: ListModel {}
 
     property var objectList: ListModel {
         ListElement {label: "1"}
