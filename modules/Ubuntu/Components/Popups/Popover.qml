@@ -124,7 +124,7 @@ PopupBase {
         Theming.ItemStyle.class: "popover-foreground"
 
         property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
-        property real minHeight: units.gu(32)
+        property real minHeight: units.gu(2)
         property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
         width: Math.min(units.gu(40), maxWidth)
         height: childrenRect.height
