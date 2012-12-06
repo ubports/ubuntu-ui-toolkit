@@ -121,12 +121,9 @@ Item {
     Item {
         id: cacheItem
         anchors.fill: parent
+        // FIXME: should be true, but as it breaks on the phone, it is only set on the first rendering
+        // in the ShaderEffectSource - see FIXME there
         layer.enabled: false
-        Timer {
-            interval: 1
-            onTriggered: cacheItem.layer.enabled = true
-            Component.onCompleted: start()
-        }
 
         ShaderEffect {
             anchors.fill: parent
@@ -139,6 +136,9 @@ Item {
                     source: shape.maskSource
                     visible: false
                 }
+                // FIXME: because "ShaderEffectSource rendered in a ShaderEffectSource breaks on the phone"
+                // But might be cause by a Qt bug as well https://bugreports.qt-project.org/browse/QTBUG-21343
+                onScheduledUpdateCompleted: cacheItem.layer.enabled = true
             }
 
 
