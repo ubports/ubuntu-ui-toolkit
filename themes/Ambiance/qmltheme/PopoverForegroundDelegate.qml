@@ -19,9 +19,9 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors {
-        left: parent.left
-        right: parent.right
-        top: parent.top
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        top: parent ? parent.top : undefined
     }
     height: Math.min(outer.height, item.maxHeight)
     property alias contentItem: inner
