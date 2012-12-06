@@ -141,7 +141,6 @@ Item {
                 onScheduledUpdateCompleted: cacheItem.layer.enabled = true
             }
 
-
             // The imageScale and imageOffset properties are used in imageMaskingShader to
             // compute the correct TexCoords for the image, depending on its fillmode and alignment.
             // FIXME: Cases where the image fillmode is tiling, padding or PreserveAspectFit
