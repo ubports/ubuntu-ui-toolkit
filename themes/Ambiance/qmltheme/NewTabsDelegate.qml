@@ -114,4 +114,47 @@ Item {
         tabsDelegate.updateSeparators();
         tabView.updatePages();
     }
+
+    Flickable {
+        id: flicker
+        anchors {
+            top: tabBar.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+
+        property Flickable itemFlickable: (item !== null) ? item.__tabs[item.selectedTabIndex].flickable : null
+        enabled: (itemFlickable !== null)
+        contentHeight: itemFlickable ? itemFlickable.contentHeight + itemStyle.tabBarHeight : 0
+        property real __headerVisibleHeight
+        onContentYChanged: {
+            var deltaContentY = contentY - __previousContentY;
+            __previousContentY = contentY;
+
+            // first decide if movement will prompt the page header to change height
+            if ((deltaContentY < 0 && tabBar.height >= 0) ||
+                    (deltaContentY > 0 && tabBar.height <= itemStyle.tabBarHeight)) {
+
+                // calculate header height - but prevent bounce from changing it
+                if (contentY > 0 && contentY < contentHeight - height) {
+                    tabBar.height = MathUtils.clamp(tabBar.height - deltaContentY, 0, itemStyle.tabBarHeight);
+                }
+            }
+
+            // now we move list position, taking into account page header height
+
+            // BUG: With section headers enabled, the values of originY and contentY appear not
+            // correct at the exact point originY changes. originY changes when the ListView
+            // deletes/creates hidden delegates which are above the visible delegates.
+            // As a result of this bug, you experience jittering scrolling when rapidly moving
+            // around in large lists. See https://bugreports.qt-project.org/browse/QTBUG-27997
+            // A workaround is to use a large enough cacheBuffer to prevent deletions/creations
+            // so effectively originY is always zero.
+            itemFlickable.contentY = flicker.contentY + itemFlickable.originY - itemStyle.tabBarHeight + tabBar.height;
+        }
+
+        property real __previousContentY: 0
+    }
+
 }

@@ -28,11 +28,14 @@ Template {
         id: tabs
         Tab {
             title: i18n.tr("Tab") + " 1"
+            flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
 
                 Flickable {
+                    clip: true
+                    id: flickable
                     anchors.fill: parent
                     contentHeight: text.height
                     contentWidth: parent.width

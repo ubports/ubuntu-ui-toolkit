@@ -53,6 +53,9 @@ Item {
      */
     property alias page: pageWrapper.reference
 
+    // TODO: document
+    property Flickable flickable: null
+
     /*!
       \internal
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
