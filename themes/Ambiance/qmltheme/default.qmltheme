@@ -95,6 +95,7 @@ Examples:
         height: units.dp(2);
     }
     headerFontSize: "x-large";
+    headerFontWeight: Font.Light;
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
     headerTextColor: "#A0333333";           /* opacity 0.6 */
     headerTextBottomMargin: units.gu(2);
