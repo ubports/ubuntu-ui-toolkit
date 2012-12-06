@@ -1,3 +1,9 @@
+qt-components-ubuntu (0.1.17) quantal; urgency=low
+
+  * New release 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Thu, 06 Dec 2012 15:49:25 +0000
+
 qt-components-ubuntu (0.1.16) quantal; urgency=low
 
   * New release
