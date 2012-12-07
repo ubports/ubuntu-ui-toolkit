@@ -22,10 +22,7 @@ import Ubuntu.Components 0.1
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
   - thumbSpacing: spacing between the thumb and the bar
-  Additional styling properties that will be removed:
-  - thumbFontSize: size of the font showing the value in the thumb
-  - thumbFontColor: color of the font
-  - thumbFontWeight: weight of the font
+  - thumbLabelShown: controls visibility of the thumb label
   */
 
 Item {
@@ -64,10 +61,8 @@ Item {
                 right: thumbShape.right
             }
             horizontalAlignment: Text.AlignHCenter
-            fontSize: StyleUtils.itemStyleProperty("thumbFontSize", "medium")
-            font.weight: StyleUtils.itemStyleProperty("thumbFontWeight", Font.Bold)
-            color: StyleUtils.itemStyleProperty("thumbFontColor", "white")
             text: item.formatValue(MathUtils.clamp(item.__liveValue, item.minimumValue, item.maximumValue))
+            visible: StyleUtils.itemStyleProperty("thumbLabelShown", true)
         }
     }
 }
