@@ -22,7 +22,6 @@ import Ubuntu.Components 0.1
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
   - thumbSpacing: spacing between the thumb and the bar
-  - thumbLabelShown: controls visibility of the thumb label
   */
 
 Item {
