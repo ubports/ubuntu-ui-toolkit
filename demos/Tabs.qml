@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     property bool newTabs: false
@@ -76,6 +77,17 @@ Template {
             title: i18n.tr("Tab") + " 3"
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
+        }
+        Tab {
+            title: "List view"
+            flickable: page
+            page: ListView {
+                anchors.fill: parent
+                model: 30
+                delegate: ListItem.Standard {
+                    text: "Item "+modelData
+                }
+            }
         }
     }
 }
