@@ -57,8 +57,8 @@ Item {
 
         fragmentShader: "
             varying highp vec2 coord;
-            uniform vec4 color;
-            uniform float opacity;
+            uniform highp vec4 color;
+            uniform highp float opacity;
 
             void main(void) {
                 if (coord.t > 2.0*(1.0 - coord.s)) discard;
