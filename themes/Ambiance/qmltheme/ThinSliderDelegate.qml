@@ -60,7 +60,17 @@ Item {
         y: backgroundShape.y + thumbSpacing
         width: StyleUtils.itemStyleProperty("thumbWidth", sourceSize.width)
         height: StyleUtils.itemStyleProperty("thumbHeight", sourceSize.height)
-        anchors.verticalCenter: backgroundShape.verticalCenter
+        anchors {
+            verticalCenter: backgroundShape.verticalCenter
+            verticalCenterOffset: units.dp(1)
+        }
         source: StyleUtils.itemStyleProperty("thumbImage")
+    }
+
+    // set item's implicitHeight to the thumbShape's height
+    Binding {
+        target: item
+        property: "implicitHeight"
+        value: thumbShape.height + 2.0 * thumbSpacing
     }
 }
