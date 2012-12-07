@@ -66,13 +66,21 @@ TestCase {
 
      function test_load_image(data) {
          // with valid value
-         console.debug(data.tag + "   icon: " + data.icon + "   status: " + data.statusDesc)
-         var newValue = "image://gicon/" + data.icon
+         console.debug(data.tag + "   icon: " + data.icon + "   status: " + data.statusDesc);
+         var newValue = "image://gicon/" + data.icon;
+         console.debug("new value is " + newValue);
          img.source = newValue;
+         console.debug("img status is " + img.status + " and expected value was " + data.status);
          compare(img.status,data.status,"Image status is " + data.statusDesc);
      }
 
      Image {
          id: img
+         onStatusChanged: {
+             console.debug("Image status changed to " + status)
+         }
+         onProgressChanged: {
+             console.debug("Image progress changed to " + progress)
+         }
      }
 }
