@@ -19,11 +19,11 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors {
-        left: parent.left
-        right: parent.right
-        top: parent.top
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        top: parent ? parent.top : undefined
     }
-    height: MathUtils.clamp(outer.height, item.minHeight, item.maxHeight)
+    height: Math.min(outer.height, item.maxHeight)
     property alias contentItem: inner
 
     // Avoid mouse events being sent to any MouseAreas that are behind the popover
