@@ -49,8 +49,6 @@ import "." 0.1 as Theming
     delegates should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
 
-    \b{This component is under heavy development.}
-
     Example:
     \qml
     Item {
@@ -63,6 +61,14 @@ import "." 0.1 as Theming
         }
     }
     \endqml
+
+    The default slider style is defined by the \b{slider} style class and
+    consists of a slider and a thumb shape, where the thumb is having a
+    label showing the actual value. This label can be styled using
+    \b{.slider .ubuntushape-radius-small .label} selector.
+
+    \b{This component is under heavy development.}
+
 */
 AbstractButton {
     id: slider
