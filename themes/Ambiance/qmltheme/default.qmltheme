@@ -238,10 +238,3 @@ Examples:
     thumbFontColor: "white";
     thumbFontWeight: Font.Bold;
 }
-@qml-mapping(.thin-slider, , ThinSliderDelegate);
-.thin-slider {
-    backgroundImage: url(artwork/zoom_bar@18.png);
-    thumbImage: url(artwork/zoom_point@18.png);
-    thumbWidth: units.gu(1.5);
-    thumbHeight: units.gu(1.5);
-}
