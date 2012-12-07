@@ -1,4 +1,4 @@
-include( ../../generic.pri )
+include( ../../common.pri )
 
 TEMPLATE = app
 QT += qml quick qmltest

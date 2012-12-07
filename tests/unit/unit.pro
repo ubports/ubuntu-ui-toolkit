@@ -1,4 +1,5 @@
-include( ../../generic.pri )
+include( ../../common.pri )
+
 TEMPLATE = subdirs
 
 SUBDIRS += testparser

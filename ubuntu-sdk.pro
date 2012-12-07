@@ -1,5 +1,5 @@
-include( generic.pri )
-include(documentation/documentation.pri)
+include( common.pri )
+include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
 SUBDIRS += demos themes modules/qt-components-ubuntu.pro tests/unit
