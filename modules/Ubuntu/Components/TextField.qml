@@ -468,17 +468,26 @@ FocusScope {
         }
     }
 
-    Button {
+    AbstractButton {
         id: clearButton
+        Theming.ItemStyle.class: "clear-button"
         anchors {
+            top: parent.top
             right: rightPane.left
-            rightMargin: internal.spacing
-            verticalCenter: parent.verticalCenter
+            bottom: parent.bottom
+            margins: internal.spacing
         }
-        iconSource: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
-        width: visible ? units.gu(2) : 0 // TODO: no way to set the image size :(
+        width: control.hasClearButton ? height : 0
         visible: control.hasClearButton &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
+
+        Image {
+            anchors.fill: parent
+            smooth: true
+            source: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
+            onSourceChanged: print(source)
+        }
+
         onClicked: editor.text = ""
     }
 

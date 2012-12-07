@@ -187,7 +187,6 @@ Examples:
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
 
-@qml-mapping(.textfield .button, , TransparentButtonDelegate);
 @qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
@@ -205,7 +204,7 @@ Examples:
 }
 
 /* clear button */
-.textfield .button {
+.textfield .clear-button {
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
