@@ -19,7 +19,6 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
-    height: itemStyle.tabBarHeight //units.gu(6.5)
 
     /*!
       The set of tabs this tab bar belongs to
