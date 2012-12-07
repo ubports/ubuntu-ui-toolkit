@@ -95,6 +95,7 @@ Item {
                         }
                         text: title
                         fontSize: itemStyle.headerFontSize
+                        font.weight: itemStyle.headerFontWeight
                         verticalAlignment: Text.AlignBottom
                     }
 
