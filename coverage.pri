@@ -26,7 +26,7 @@ CONFIG(coverage) {
     generate-coverage-html.commands = \
         "@echo Collecting coverage data"; \
         "lcov --directory $${TOP_SRC_DIR} --capture --output-file coverage.info --no-checksum --compat-libtool"; \
-        "lcov --extract coverage.info \"*/src/*.cpp\" -o coverage.info"; \
+        "lcov --extract coverage.info \"*/modules/*.cpp\" -o coverage.info"; \
         "lcov --remove coverage.info \"moc_*.cpp\" -o coverage.info"; \
         "LANG=C genhtml --prefix $${TOP_SRC_DIR} --output-directory coverage-html --title \"Code Coverage\" --legend --show-details coverage.info"
   
@@ -39,7 +39,7 @@ CONFIG(coverage) {
 
     generate-coverage-xml.commands = \
         "@echo Generating coverage GCOVR XML report"; \
-        "gcovr -x -r $${TOP_SRC_DIR} -o $${TOP_SRC_DIR}/coverage.xml -e \".*/moc_.*\" -e \"unittests/.*\" -e \".*\\.h\""
+        "gcovr -x -r $${TOP_SRC_DIR} -o $${TOP_SRC_DIR}/coverage.xml -e \".*/moc_.*\" -e \"unit/.*\" -e \".*\\.h\""
 
     clean-coverage-xml.depends = clean-gcda
     clean-coverage-xml.commands = \
