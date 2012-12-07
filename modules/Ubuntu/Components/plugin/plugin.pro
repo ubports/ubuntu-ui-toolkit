@@ -1,4 +1,4 @@
-include( ../../../../qtversioncheck.pri )
+include( ../../../../generic.pri )
 
 unix {
     CONFIG += link_pkgconfig

@@ -1,4 +1,4 @@
-include( qtversioncheck.pri )
+include( generic.pri )
 include(documentation/documentation.pri)
 
 TEMPLATE = subdirs
