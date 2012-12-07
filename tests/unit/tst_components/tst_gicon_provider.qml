@@ -25,44 +25,51 @@ TestCase {
          return [
                      {
                          tag: "local file with ok data",
-                         icon:Qt.resolvedUrl("../../../demos/demo_image.jpg"),
-                         status: Image.Ready
+                         icon: Qt.resolvedUrl("../../../demos/demo_image.jpg"),
+                         status: Image.Ready,
+                         statusDesc: "Ready"
                      },
                      {
                          tag: "local file does not exist",
-                         icon:Qt.resolvedUrl("../../../demos/NOT_EXISTING_demo_image.jpg"),
-                         status: Image.Error
+                         icon: Qt.resolvedUrl("../../../demos/NOT_EXISTING_demo_image.jpg"),
+                         status: Image.Error,
+                         statusDesc: "Error"
                      },
                      {
                          tag: "with some random data",
                          icon: "ftp://sdkfjldsfjfjfldsjfljlskjfl329isflkmjvcx",
-                         status: Image.Error
+                         status: Image.Error,
+                         statusDesc: "Error"
                      },
                      {
                          tag: "gicon file with ok data",
                          icon: "preferences-desktop-display",
-                         status: Image.Ready
+                         status: Image.Ready,
+                         statusDesc: "Ready"
                      },
                      {
                          tag: "gicon file with invalid filename",
                          icon: "preferences-desktop-display-NOT_EXISTING",
-                         status: Image.Error
+                         status: Image.Error,
+                         statusDesc: "Error"
                      }
                      /*
                        //TODO: Add a valid theme icon
                      {
                          tag: "gicon file from theme",
                          icon: "application-exit",
-                         status: Image.Ready
+                         status: Image.Ready,
+                         statusDesc: "Ready"
                      }*/
                  ]
      }
 
      function test_load_image(data) {
          // with valid value
+         console.debug(data.tag + "   icon: " + data.icon + "   status: " + data.statusDesc)
          var newValue = "image://gicon/" + data.icon
          img.source = newValue;
-         compare(img.status,data.status,"Image has been set");
+         compare(img.status,data.status,"Image status is " + data.statusDesc);
      }
 
      Image {
