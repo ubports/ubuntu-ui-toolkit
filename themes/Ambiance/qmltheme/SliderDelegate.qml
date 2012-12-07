@@ -62,7 +62,6 @@ Item {
             }
             horizontalAlignment: Text.AlignHCenter
             text: item.formatValue(MathUtils.clamp(item.__liveValue, item.minimumValue, item.maximumValue))
-            visible: StyleUtils.itemStyleProperty("thumbLabelShown", true)
         }
     }
 }

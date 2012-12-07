@@ -231,7 +231,6 @@ Examples:
     backgroundColor: "#d3d3d3";
     thumbColor: "#626262";
     thumbSpacing: units.dp(2);
-    thumbLabelShown: true;
 }
 .slider .ubuntushape-radius-small .label {
     fontSize: "medium";
