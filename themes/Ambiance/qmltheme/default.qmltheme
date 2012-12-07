@@ -232,7 +232,7 @@ Examples:
     thumbColor: "#626262";
     thumbSpacing: units.dp(2);
 }
-.slider .ubuntushape-radius-small .label {
+.slider .label {
     fontSize: "medium";
     color: "white";
     weight: Font.Bold;

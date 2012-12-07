@@ -52,16 +52,17 @@ Item {
         width: thumbWidth
         height: backgroundShape.height - (2.0 * thumbSpacing)
         color: StyleUtils.itemStyleProperty("thumbColor", "darkgray")
+    }
 
-        Label {
-            id: thumbValue
-            anchors {
-                verticalCenter: thumbShape.verticalCenter
-                left: thumbShape.left
-                right: thumbShape.right
-            }
-            horizontalAlignment: Text.AlignHCenter
-            text: item.formatValue(MathUtils.clamp(item.__liveValue, item.minimumValue, item.maximumValue))
+    Label {
+        id: thumbValue
+        ItemStyle.class: "label"
+        anchors {
+            verticalCenter: thumbShape.verticalCenter
+            left: thumbShape.left
+            right: thumbShape.right
         }
+        horizontalAlignment: Text.AlignHCenter
+        text: item.formatValue(MathUtils.clamp(item.__liveValue, item.minimumValue, item.maximumValue))
     }
 }

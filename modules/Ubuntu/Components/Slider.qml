@@ -65,7 +65,7 @@ import "." 0.1 as Theming
     The default slider style is defined by the \b{slider} style class and
     consists of a slider and a thumb shape, where the thumb is having a
     label showing the actual value. This label can be styled using
-    \b{.slider .ubuntushape-radius-small .label} selector.
+    \b{.slider .label} selector.
 
     \b{This component is under heavy development.}
 
