@@ -626,16 +626,17 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
     }
 
     QStringList import = param.split(',');
-    QString importUrl = (import.count() >= 1) ? import[0].simplified() : QString();
+    QString importUrl = (import.count() >= 1) ? import[0].simplified().prepend("import ") : QString();
     QString importPath = (import.count() < 2) ? QString() : import[1].simplified();
 
     // check whether we have the import set
     if (!loader->imports.contains(importUrl)) {
-        loader->imports += QString("import %1\n").arg(importUrl);
+        loader->imports += importUrl + '\n';
 
         if (!importPath.isEmpty()) {
             importPath = urlMacro(importPath, stream);
-            loader->m_engine->addImportPath(importPath);
+            if (!loader->m_engine->importPathList().contains(importPath))
+                loader->m_engine->addImportPath(importPath);
         }
 
     } else {
