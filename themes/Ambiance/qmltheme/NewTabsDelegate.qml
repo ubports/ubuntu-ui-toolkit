@@ -143,7 +143,7 @@ Item {
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
 
                 // Set-up the top-margin of the contents of the tab so that
-                //  it is never hidden by the header:
+                //  the contents is never hidden by the header:
                 if (tab.__flickable) {
                     tab.height = tabView.height;
                     tab.__flickable.topMargin = header.height;
