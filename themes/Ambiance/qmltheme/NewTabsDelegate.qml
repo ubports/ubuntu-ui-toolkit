@@ -101,7 +101,7 @@ Item {
         }
 
         function scrollContents() {
-            // Avoid updating header.y when rebounding after being dragged over the bounds.
+            // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
                 var deltaContentY = selectedFlickable.contentY - previousContentY;
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
