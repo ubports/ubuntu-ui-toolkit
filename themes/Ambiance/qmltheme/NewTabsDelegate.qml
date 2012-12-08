@@ -118,7 +118,7 @@ Item {
 
     Item {
         id: scroller
-        property Tab selectedTab: item ? item.__tabs[item.selectedTabIndex] : null
+        property Tab selectedTab: item ? item.__selectedTab : null
         property Flickable selectedFlickable: null
         property real previousContentY: 0
         onSelectedTabChanged: updateFlickable()

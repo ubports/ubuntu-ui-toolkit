@@ -71,6 +71,12 @@ Item {
      */
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
+    /*!
+      \internal
+      TODO: Expose and document
+     */
+    readonly property Tab __selectedTab: (selectedTabIndex < 0) && (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
