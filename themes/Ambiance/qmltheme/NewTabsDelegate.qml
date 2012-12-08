@@ -119,17 +119,6 @@ Item {
         }
     }
 
-    Item {
-        id: headerSpace
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        // same height as the header, but headerSpace does not move.
-        height: header.height
-    }
-
     ListView {
         id: tabView
         anchors.fill: parent
@@ -166,7 +155,7 @@ Item {
                 } else {
                     // no flickable
                     if (tab.parent) tab.anchors.bottom = tab.parent.bottom;
-                    tab.height = tabsDelegate.height - headerSpace.height;
+                    tab.height = tabsDelegate.height - header.height;
                 }
             }
             tabView.updateSelectedTabIndex();
