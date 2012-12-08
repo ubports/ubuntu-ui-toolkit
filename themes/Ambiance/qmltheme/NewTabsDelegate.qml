@@ -77,7 +77,6 @@ Item {
             }
         }
 
-
         property Tab selectedTab: item ? item.selectedTab : null
         // use updateFlickable() to update selectedFlickable so that events from the
         // previous selectedFlickable can be disconnected.
