@@ -36,6 +36,15 @@ Item {
             right: parent.right
         }
         y: 0
+
+        Behavior on y {
+            enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
+            SmoothedAnimation {
+                id: yAnimation
+                duration: 200
+            }
+        }
+
         height: tabBar.height + separator.height
 
         function show() {
@@ -78,11 +87,15 @@ Item {
         Component.onCompleted: updateFlickable()
 
         function updateFlickable() {
-            if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(header.scrollContents);
+            if (selectedFlickable) {
+                selectedFlickable.contentYChanged.disconnect(header.scrollContents);
+                selectedFlickable.movementEnded.disconnect(header.movementEnded);
+            }
             if (selectedTab && selectedTab.__flickable) {
                 selectedFlickable = selectedTab.__flickable;
                 previousContentY = selectedFlickable.contentY;
                 selectedFlickable.contentYChanged.connect(header.scrollContents);
+                selectedFlickable.movementEnded.connect(header.movementEnded);
             } else {
                 selectedFlickable = null;
             }
@@ -95,6 +108,11 @@ Item {
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
             }
             previousContentY = selectedFlickable.contentY;
+        }
+
+        function movementEnded() {
+            if (header.y < -header.height/2) header.hide();
+            else header.show();
         }
     }
 
