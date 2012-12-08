@@ -111,7 +111,9 @@ Item {
         }
 
         function movementEnded() {
-            if (header.y < -header.height/2) header.hide();
+            // there is movement, so selectedFlickable exists.
+            if (selectedFlickable.contentY < 0) header.show();
+            else if (header.y < -header.height/2) header.hide();
             else header.show();
         }
     }

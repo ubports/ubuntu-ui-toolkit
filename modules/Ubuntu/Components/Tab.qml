@@ -55,6 +55,9 @@ Item {
 
     /*!
       \internal
+      If the page has a flickable that can be scrolled to show/hide the tabs header,
+      set __flickable.
+      FIXME: Auto-detect this, perhaps in the Page.
      */
     property Flickable __flickable: null
 
