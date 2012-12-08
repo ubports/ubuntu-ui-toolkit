@@ -48,7 +48,10 @@ Template {
                         height: childrenRect.height
 
                         Label {
-                            text: "\n\n\n\n\n\n\n\n\n\nThis is the first tab.\n\n\n\n\n\n\n\n\n\n\n\n(scroll down)\n\n\n"
+                            text: "\n\n\n\n\n\n\n\n\n\n" +
+                                  i18n.tr("This is the first tab.") +
+                                  "\n\n\n\n\n\n\n\n\n\n\n\n(" +
+                                  i18n.tr("scroll down") + ")\n\n\n"
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -63,7 +66,7 @@ Template {
                         }
 
                         Label {
-                            text: "\n\n\nThe end."
+                            text: "\n\n\n" + i18n.tr("The end.")
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -98,7 +101,7 @@ Template {
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }
         Tab {
-            title: "List view"
+            title: i18n.tr("List view")
             __flickable: page
             page: ListView {
                 clip: true
