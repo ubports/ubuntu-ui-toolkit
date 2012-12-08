@@ -18,8 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Rectangle {
-    color: "transparent"
+Item {
     id: tabsDelegate
     anchors.fill: parent
 
@@ -27,16 +26,15 @@ Rectangle {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Rectangle {
+    Item {
         id: header
-        z: 10
-        color: "pink"
+        z: 1 // header is on top of the tab's contents.
         anchors {
             left: parent.left
             right: parent.right
         }
         y: 0
-        height: tabBar.height + separator.height //childrenRect.height
+        height: tabBar.height + separator.height
 
         function show() {
             header.y = 0;
@@ -70,6 +68,8 @@ Rectangle {
         }
 
         property Tab selectedTab: item ? item.__selectedTab : null
+        // use updateFlickable() to update selectedFlickable so that events from the
+        // previous selectedFlickable can be disconnected.
         property Flickable selectedFlickable: null
         property real previousContentY: 0
         onSelectedTabChanged: updateFlickable()
@@ -77,31 +77,20 @@ Rectangle {
 
         function updateFlickable() {
             if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(header.scrollContents);
-            if (selectedTab && selectedTab.__flickable !== null) selectedFlickable = selectedTab.__flickable;
-            else selectedFlickable = null;
-            if (!selectedFlickable) {
-                //                tabView.anchors.top = headerSpace.bottom;
-                return;
+            if (selectedTab && selectedTab.__flickable) {
+                selectedFlickable = selectedTab.__flickable;
+                previousContentY = selectedFlickable.contentY;
+                selectedFlickable.contentYChanged.connect(header.scrollContents);
+            } else {
+                selectedFlickable = null;
             }
-            //            tabView.anchors.top = tabsDelegate.top;
-            previousContentY = selectedFlickable.contentY;
-            selectedFlickable.contentYChanged.connect(header.scrollContents);
         }
 
         function scrollContents() {
-            print("y: "+selectedFlickable.contentY+", dy:");
-            if (selectedFlickable.contentY > -header.height) {
+            // Avoid updating header.y when rebounding after being dragged over the bounds.
+            if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
                 var deltaContentY = selectedFlickable.contentY - previousContentY;
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-
-                //                if (previousContentY === 0) {
-                //                    headerSpace.height = 0;
-                //                    selectedFlickable.contentY = selectedFlickable.contentY - headerSpace.height;
-                //                    selectedFlickable.height += headerSpace.height;
-                //                } else if (selectedFlickable.contentY === 0) {
-                //                    headerSpace.height = header.height;
-                //                    selectedFlickable.contentY -= header.height;
-                //                }
             }
             previousContentY = selectedFlickable.contentY;
         }
@@ -114,24 +103,13 @@ Rectangle {
             right: parent.right
             top: parent.top
         }
-
         // same height as the header, but headerSpace does not move.
         height: header.height
-
-        //        color: "brown"
-        //        z: -10
-
     }
 
     ListView {
         id: tabView
-        anchors {
-            //            top: headerSpace.bottom //(header.selectedFlickable === null) ? headerSpace.bottom : parent.top
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
+        anchors.fill: parent
 
         interactive: itemStyle.swipeToSwitchTabs
         model: tabsDelegate.tabModel
@@ -155,10 +133,11 @@ Rectangle {
                 tab.anchors.fill = undefined;
                 tab.width = tabView.width;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
+
+                // Set-up the top-margin of the contents of the tab so that
+                //  it is never hidden by the header:
                 if (tab.__flickable) {
                     tab.height = tabView.height;
-                    // Set-up the top-margin of the contents of the tab so that
-                    //  it is never hidden by the header.
                     tab.__flickable.topMargin = header.height;
                     tab.__flickable.contentY = -header.height;
                 } else {
@@ -175,7 +154,6 @@ Rectangle {
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;
         }
-
     }
 
     Connections {
@@ -186,10 +164,7 @@ Rectangle {
         }
     }
 
-
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: {
-        tabView.updatePages();
-    }
+    Component.onCompleted: tabView.updatePages();
 }
