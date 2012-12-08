@@ -63,6 +63,8 @@ Item {
     // FIXME: see above
     Theming.ItemStyle.class: "tabs"
 
+    clip: true
+
     /*!
       \preliminary
       The index of the currently selected tab.

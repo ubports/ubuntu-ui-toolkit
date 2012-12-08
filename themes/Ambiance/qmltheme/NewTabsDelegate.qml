@@ -145,10 +145,10 @@ Item {
         highlightRangeMode: ListView.StrictlyEnforceRange
 
         function updatePages() {
-            var tab;
-            if (!tabsDelegate.__complete || !tabsDelegate.tabModel) return;
+            if (!tabsDelegate.tabModel) return; // not initialized yet
 
             var tabList = tabsDelegate.tabModel.children
+            var tab;
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
                 tab.anchors.fill = undefined;
@@ -163,7 +163,7 @@ Item {
                     tab.__flickable.contentY = -header.height;
                 } else {
                     // no flickable
-                    tab.anchors.bottom = tab.parent.bottom;
+                    if (tab.parent) tab.anchors.bottom = tab.parent.bottom;
                     tab.height = tabsDelegate.height - headerSpace.height;
                 }
             }
@@ -185,11 +185,7 @@ Item {
         }
     }
 
-    property bool __complete: false
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: {
-        __complete = true;
-        tabView.updatePages();
-    }
+    Component.onCompleted: tabView.updatePages();
 }
