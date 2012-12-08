@@ -28,7 +28,7 @@ Template {
 
         id: tabs
         Tab {
-            title: i18n.tr("Tab") + " 1"
+            title: i18n.tr("Flickable")
             __flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
@@ -76,7 +76,7 @@ Template {
         }
         Tab {
             iconSource: "call_icon.png"
-            title: i18n.tr("Tab") + " 2"
+            title: i18n.tr("Buttons")
             page: Rectangle {
                 anchors.fill: parent
                 color: "tan"
@@ -96,7 +96,7 @@ Template {
             }
         }
         Tab {
-            title: i18n.tr("Tab") + " 3"
+            title: i18n.tr("External")
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }
@@ -108,6 +108,7 @@ Template {
                 anchors.fill: parent
                 model: 20
                 delegate: ListItem.Standard {
+                    icon: Qt.resolvedUrl("avatar_contacts_list.png")
                     text: "Item "+modelData
                 }
             }
