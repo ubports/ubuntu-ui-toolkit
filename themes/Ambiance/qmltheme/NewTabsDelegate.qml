@@ -31,7 +31,6 @@ Item {
         z: 1 // header is on top of the tab's contents.
         color: "white"
         anchors {
-            top: parent.top
             left: parent.left
             right: parent.right
         }
