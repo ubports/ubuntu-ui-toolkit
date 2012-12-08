@@ -111,7 +111,6 @@ Item {
         }
 
         function movementEnded() {
-            // there is movement, so selectedFlickable exists.
             if (selectedFlickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();
@@ -147,7 +146,7 @@ Item {
 
         function updatePages() {
             var tab;
-            if (!tabsDelegate.tabModel) return; // not initialized yet
+            if (!tabsDelegate.__complete || !tabsDelegate.tabModel) return;
 
             var tabList = tabsDelegate.tabModel.children
             for (var i=0; i < tabList.length; i++) {
@@ -186,7 +185,11 @@ Item {
         }
     }
 
+    property bool __complete: false
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: tabView.updatePages();
+    Component.onCompleted: {
+        __complete = true;
+        tabView.updatePages();
+    }
 }
