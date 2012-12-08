@@ -57,7 +57,7 @@ Template {
                         }
 
                         Repeater {
-                            model: 50
+                            model: 20
                             Label {
                                 text: "Lorem ipsum dolor sit amet, platea est tincidunt nunc, commodo odio elit."
                                 width: parent.width
