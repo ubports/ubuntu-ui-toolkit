@@ -31,6 +31,7 @@ Item {
         z: 1 // header is on top of the tab's contents.
         color: "white"
         anchors {
+            top: parent.top
             left: parent.left
             right: parent.right
         }
@@ -39,7 +40,6 @@ Item {
         Behavior on y {
             enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
             SmoothedAnimation {
-                id: yAnimation
                 duration: 200
             }
         }
