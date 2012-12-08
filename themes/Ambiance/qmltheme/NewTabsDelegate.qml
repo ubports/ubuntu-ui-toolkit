@@ -26,8 +26,7 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Rectangle {
-        // Not an Item because scrolling content behind the header must be hidden
+    Rectangle { // Hide scrolling content behind the header
         id: header
         z: 1 // header is on top of the tab's contents.
         color: "white"
