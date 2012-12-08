@@ -52,6 +52,12 @@ Image {
     */
     property alias text: label.text
 
+    /*!
+      \internal
+      The \l foregroundGroundColor property stores the internal label color.
+     */
+    property alias __foregroundColor: label.color
+
     LabelVisual {
         id: label
         font.italic: true
