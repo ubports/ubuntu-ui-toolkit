@@ -126,7 +126,7 @@ Item {
 
         function updateFlickable() {
             if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(scroller.yeah);
-            if (selectedTab && selectedTab.flickable !== null) selectedFlickable = selectedTab.flickable;
+            if (selectedTab && selectedTab.__flickable !== null) selectedFlickable = selectedTab.__flickable;
             else selectedFlickable = null;
             print("selected flickable "+selectedFlickable);
             if (!selectedFlickable) return;

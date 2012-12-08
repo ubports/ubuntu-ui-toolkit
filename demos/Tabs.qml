@@ -29,7 +29,7 @@ Template {
         id: tabs
         Tab {
             title: i18n.tr("Tab") + " 1"
-            flickable: flickable
+            __flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
@@ -80,7 +80,7 @@ Template {
         }
         Tab {
             title: "List view"
-            flickable: page
+            __flickable: page
             page: ListView {
                 anchors.fill: parent
                 model: 30

@@ -53,8 +53,10 @@ Item {
      */
     property alias page: pageWrapper.reference
 
-    // TODO: document
-    property Flickable flickable: null
+    /*!
+      \internal
+     */
+    property Flickable __flickable: null
 
     /*!
       \internal
