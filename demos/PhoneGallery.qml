@@ -143,8 +143,11 @@ Rectangle {
                                 }
                             }
                         }
+                        ListItem.Header {
+                            text: "Old-style tabs"
+                        }
                         ListItem.Empty {
-                            height: units.gu(25)
+                            height: units.gu(40)
                             highlightWhenPressed: false
                             Tabs {
                                 anchors {
