@@ -44,15 +44,6 @@ Rectangle {
                     width: parent.width
                     height: childrenRect.height
                     color: "#e6e6e6"
-                    Component {
-                        id: popover
-                        Popover {
-                            id: popover
-                            Label {
-                                text: "This is a simple popover\n\nClick outside the popover to dismiss."
-                            }
-                        }
-                    }
 
                     Column {
                         width: parent.width
@@ -67,18 +58,6 @@ Rectangle {
                                 text: i18n.tr("Button")
                             }
                         }
-                        ListItem.SingleControl {
-                            control: Button {
-                                id: caller
-                                anchors {
-                                    margins: units.gu(1)
-                                    fill: parent
-                                }
-                                text: "Click for popover"
-                                onClicked: PopupUtils.open(popover, caller)
-                            }
-                        }
-
                         ListItem.Standard {
                             text: i18n.tr("Checkbox")
                             control: CheckBox { }
