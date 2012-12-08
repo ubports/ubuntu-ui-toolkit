@@ -106,7 +106,7 @@ Template {
             page: ListView {
                 clip: true
                 anchors.fill: parent
-                model: 30
+                model: 20
                 delegate: ListItem.Standard {
                     text: "Item "+modelData
                 }
