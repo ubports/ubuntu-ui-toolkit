@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
+    height: itemStyle.tabBarHeight
 
     /*!
       The set of tabs this tab bar belongs to

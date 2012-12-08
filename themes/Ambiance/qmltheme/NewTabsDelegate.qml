@@ -58,7 +58,6 @@ Item {
         NewTabBar {
             id: tabBar
             tabs: item
-            height: itemStyle.tabBarHeight
             anchors {
                 top: parent.top
                 left: parent.left
