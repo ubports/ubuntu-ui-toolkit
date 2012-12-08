@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Rectangle {
@@ -29,6 +30,7 @@ Rectangle {
 
         Tab {
             title: "Components"
+            __flickable: page
             page: Flickable {
                 clip: true
                 width: units.gu(45)
@@ -42,6 +44,15 @@ Rectangle {
                     width: parent.width
                     height: childrenRect.height
                     color: "#e6e6e6"
+                    Component {
+                        id: popover
+                        Popover {
+                            id: popover
+                            Label {
+                                text: "This is a simple popover\n\nClick outside the popover to dismiss."
+                            }
+                        }
+                    }
 
                     Column {
                         width: parent.width
@@ -56,6 +67,18 @@ Rectangle {
                                 text: i18n.tr("Button")
                             }
                         }
+                        ListItem.SingleControl {
+                            control: Button {
+                                id: caller
+                                anchors {
+                                    margins: units.gu(1)
+                                    fill: parent
+                                }
+                                text: "Click for popover"
+                                onClicked: PopupUtils.open(popover, caller)
+                            }
+                        }
+
                         ListItem.Standard {
                             text: i18n.tr("Checkbox")
                             control: CheckBox { }
