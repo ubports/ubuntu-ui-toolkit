@@ -17,6 +17,9 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
+/*!
+  The new tab bar containing the tab buttons.
+ */
 Item {
     id: tabBar
 

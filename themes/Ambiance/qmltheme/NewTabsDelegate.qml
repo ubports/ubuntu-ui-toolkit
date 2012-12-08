@@ -18,11 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Item {
+Rectangle {
+    color: "transparent"
     id: tabsDelegate
     anchors.fill: parent
 
-    clip: true
+        clip: true
 
     property VisualItemModel tabModel: item.__tabsModel
 
@@ -35,7 +36,15 @@ Item {
             right: parent.right
         }
         y: 0
-        height: childrenRect.height
+        height: tabBar.height + separator.height //childrenRect.height
+
+        function show() {
+            header.y = 0;
+        }
+
+        function hide() {
+            header.y = - header.height;
+        }
 
         Column {
             anchors {
@@ -57,15 +66,67 @@ Item {
 
             ListItem.Divider {
                 id: separator
+                height: 0
             }
         }
+
+        property Tab selectedTab: item ? item.__selectedTab : null
+        property Flickable selectedFlickable: null
+        property real previousContentY: 0
+        onSelectedTabChanged: updateFlickable()
+        Component.onCompleted: updateFlickable()
+
+        function updateFlickable() {
+            if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(header.scrollContents);
+            if (selectedTab && selectedTab.__flickable !== null) selectedFlickable = selectedTab.__flickable;
+            else selectedFlickable = null;
+            if (!selectedFlickable) {
+                //                tabView.anchors.top = headerSpace.bottom;
+                return;
+            }
+            //            tabView.anchors.top = tabsDelegate.top;
+            previousContentY = selectedFlickable.contentY;
+            selectedFlickable.contentYChanged.connect(header.scrollContents);
+        }
+
+        function scrollContents() {
+            print("y: "+selectedFlickable.contentY+", dy:");
+            if (selectedFlickable.contentY > -header.height) {
+                var deltaContentY = selectedFlickable.contentY - previousContentY;
+                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+
+                //                if (previousContentY === 0) {
+                //                    headerSpace.height = 0;
+                //                    selectedFlickable.contentY = selectedFlickable.contentY - headerSpace.height;
+                //                    selectedFlickable.height += headerSpace.height;
+                //                } else if (selectedFlickable.contentY === 0) {
+                //                    headerSpace.height = header.height;
+                //                    selectedFlickable.contentY -= header.height;
+                //                }
+            }
+            previousContentY = selectedFlickable.contentY;
+        }
+    }
+
+    Rectangle {
+        id: headerSpace
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: header.height
+
+        color: "brown"
+        z: -10
+
     }
 
     ListView {
         id: tabView
         anchors {
-            //            top: header.bottom
-            top:  parent.top
+            //            top: headerSpace.bottom //(header.selectedFlickable === null) ? headerSpace.bottom : parent.top
+            top: parent.top
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -94,6 +155,12 @@ Item {
                 tab.height = tabView.height;
                 tab.anchors.fill = undefined;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
+                if (tab.__flickable) {
+                    // Set-up the top-margin of the contents of the tab so that
+                    //  it is never hidden by the header.
+                    tab.__flickable.topMargin = header.height;
+                    tab.__flickable.contentY = -header.height;
+                }
             }
             tabView.updateSelectedTabIndex();
         }
@@ -114,40 +181,6 @@ Item {
     onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
         tabView.updatePages();
-    }
-
-    Item {
-        id: scroller
-        property Tab selectedTab: item ? item.__selectedTab : null
-        property Flickable selectedFlickable: null
-        property real previousContentY: 0
-        onSelectedTabChanged: updateFlickable()
-        Component.onCompleted: updateFlickable()
-
-        function updateFlickable() {
-            if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(scroller.scroll);
-            if (selectedTab && selectedTab.__flickable !== null) selectedFlickable = selectedTab.__flickable;
-            else selectedFlickable = null;
-            print("selected flickable "+selectedFlickable);
-            if (!selectedFlickable) return;
-            //            selectedFlickable.boundsBehavior = Flickable.StopAtBounds;
-            selectedFlickable.topMargin = header.height;
-            previousContentY = selectedFlickable.contentY;
-            selectedFlickable.contentYChanged.connect(scroller.scroll);
-
-        }
-
-        function scroll() {
-            if (selectedFlickable.contentY > 0) {
-                var deltaContentY = selectedFlickable.contentY - previousContentY;
-                previousContentY = selectedFlickable.contentY;
-                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-            }
-        }
-
-        function showHeader() {
-            header.y = 0;
-        }
     }
 
     //    Flickable {

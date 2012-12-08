@@ -32,10 +32,11 @@ Template {
             __flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
-                color: "#eeeeee"
+//                color: "#eeeeee"
+                color: "transparent"
 
                 Flickable {
-                    clip: true
+//                    clip: true
                     id: flickable
                     anchors.fill: parent
                     contentHeight: text.height
