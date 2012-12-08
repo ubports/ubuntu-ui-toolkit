@@ -36,6 +36,7 @@ Template {
 
                 Flickable {
                     id: flickable
+                    clip: true
                     anchors.fill: parent
                     contentHeight: column.height
                     contentWidth: parent.width
@@ -100,6 +101,7 @@ Template {
             title: "List view"
             __flickable: page
             page: ListView {
+                clip: true
                 anchors.fill: parent
                 model: 30
                 delegate: ListItem.Standard {
