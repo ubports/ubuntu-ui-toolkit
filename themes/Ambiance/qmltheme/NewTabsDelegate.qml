@@ -23,7 +23,7 @@ Rectangle {
     id: tabsDelegate
     anchors.fill: parent
 
-        clip: true
+    clip: true
 
     property VisualItemModel tabModel: item.__tabsModel
 
@@ -66,7 +66,6 @@ Rectangle {
 
             ListItem.Divider {
                 id: separator
-                height: 0
             }
         }
 
@@ -108,17 +107,19 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    Item {
         id: headerSpace
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
+
+        // same height as the header, but headerSpace does not move.
         height: header.height
 
-        color: "brown"
-        z: -10
+        //        color: "brown"
+        //        z: -10
 
     }
 
@@ -151,15 +152,19 @@ Rectangle {
             var tabList = tabsDelegate.tabModel.children
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
-                tab.width = tabView.width;
-                tab.height = tabView.height;
                 tab.anchors.fill = undefined;
+                tab.width = tabView.width;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
                 if (tab.__flickable) {
+                    tab.height = tabView.height;
                     // Set-up the top-margin of the contents of the tab so that
                     //  it is never hidden by the header.
                     tab.__flickable.topMargin = header.height;
                     tab.__flickable.contentY = -header.height;
+                } else {
+                    // no flickable
+                    tab.anchors.bottom = tab.parent.bottom;
+                    tab.height = tabsDelegate.height - headerSpace.height;
                 }
             }
             tabView.updateSelectedTabIndex();
@@ -171,11 +176,16 @@ Rectangle {
             tabView.currentIndex = item.selectedTabIndex;
         }
 
-        Connections {
-            target: item
-            onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
+    }
+
+    Connections {
+        target: item
+        onSelectedTabIndexChanged: {
+            tabView.updateSelectedTabIndex();
+            header.show();
         }
     }
+
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
