@@ -72,10 +72,10 @@ Item {
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
     /*!
-      \internal
-      TODO: Expose and document
+      \preliminary
+      The currently selected tab.
      */
-    readonly property Tab __selectedTab: (selectedTabIndex < 0) && (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+    readonly property Tab selectedTab: (selectedTabIndex < 0) && (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
@@ -86,7 +86,7 @@ Item {
 
     /*!
       \internal
-      required by SlidingTabsDelegate
+      required by NewTabsDelegate
      */
     property alias __tabsModel: tabsModel
     VisualItemModel {

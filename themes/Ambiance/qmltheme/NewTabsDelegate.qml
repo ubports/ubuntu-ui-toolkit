@@ -26,9 +26,11 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Item {
+    Rectangle {
+        // Not an Item because scrolling content behind the header must be hidden
         id: header
         z: 1 // header is on top of the tab's contents.
+        color: "white"
         anchors {
             left: parent.left
             right: parent.right
@@ -67,7 +69,7 @@ Item {
             }
         }
 
-        property Tab selectedTab: item ? item.__selectedTab : null
+        property Tab selectedTab: item ? item.selectedTab : null
         // use updateFlickable() to update selectedFlickable so that events from the
         // previous selectedFlickable can be disconnected.
         property Flickable selectedFlickable: null
