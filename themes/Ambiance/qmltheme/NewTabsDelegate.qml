@@ -45,7 +45,7 @@ Item {
             }
         }
 
-        height: tabBar.height + separator.height
+        height: tabBar.height
 
         function show() {
             header.y = 0;
@@ -55,28 +55,30 @@ Item {
             header.y = - header.height;
         }
 
-        Column {
+        NewTabBar {
+            id: tabBar
+            tabs: item
+            height: itemStyle.tabBarHeight
             anchors {
+                top: parent.top
                 left: parent.left
                 right: parent.right
-                top: parent.top
-            }
-            height: tabBar.height + separator.height
-
-            NewTabBar {
-                id: tabBar
-                tabs: item
-                height: itemStyle.tabBarHeight
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
-            }
-
-            ListItem.Divider {
-                id: separator
             }
         }
+
+        property Item separator: itemStyle.separator
+        onSeparatorChanged: {
+            if (separator) {
+                separator.parent = header;
+                separator.anchors.top = tabBar.bottom;
+                separator.anchors.left = header.left;
+                separator.anchors.right = header.right;
+                header.height = tabBar.height + separator.height;
+            } else {
+                header.height = tabBar.height;
+            }
+        }
+
 
         property Tab selectedTab: item ? item.selectedTab : null
         // use updateFlickable() to update selectedFlickable so that events from the

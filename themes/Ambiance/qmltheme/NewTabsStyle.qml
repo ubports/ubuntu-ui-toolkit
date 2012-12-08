@@ -25,12 +25,6 @@ QtObject {
     property Item separator
 
     /*!
-      Optional separator between the top of the tab bar and items above the
-      tabs view.
-     */
-    property Item topSeparator
-
-    /*!
       Enable left/right swiping in the contents area to go to
       the next/previous tab.
      */
