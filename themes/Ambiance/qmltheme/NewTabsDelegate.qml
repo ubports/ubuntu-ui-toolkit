@@ -64,7 +64,7 @@ Item {
     ListView {
         id: tabView
         anchors {
-//            top: header.bottom
+            //            top: header.bottom
             top:  parent.top
             left: parent.left
             right: parent.right
@@ -125,73 +125,78 @@ Item {
         Component.onCompleted: updateFlickable()
 
         function updateFlickable() {
-            if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(scroller.yeah);
+            if (selectedFlickable) selectedFlickable.contentYChanged.disconnect(scroller.scroll);
             if (selectedTab && selectedTab.__flickable !== null) selectedFlickable = selectedTab.__flickable;
             else selectedFlickable = null;
             print("selected flickable "+selectedFlickable);
             if (!selectedFlickable) return;
-//            selectedFlickable.boundsBehavior = Flickable.StopAtBounds;
+            //            selectedFlickable.boundsBehavior = Flickable.StopAtBounds;
             selectedFlickable.topMargin = header.height;
             previousContentY = selectedFlickable.contentY;
-            selectedFlickable.contentYChanged.connect(scroller.yeah);
+            selectedFlickable.contentYChanged.connect(scroller.scroll);
 
         }
 
-        function yeah() {
-            var deltaContentY = selectedFlickable.contentY - previousContentY;
-            previousContentY = selectedFlickable.contentY;
-            header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-            print(deltaContentY);
+        function scroll() {
+            if (selectedFlickable.contentY > 0) {
+                var deltaContentY = selectedFlickable.contentY - previousContentY;
+                previousContentY = selectedFlickable.contentY;
+                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+            }
+        }
+
+        function showHeader() {
+            header.y = 0;
         }
     }
 
-//    Flickable {
-//        id: flicker
-//        anchors {
-//            top: header.bottom
-//            left: parent.left
-//            right: parent.right
-//            bottom: parent.bottom
-//        }
+    //    Flickable {
+    //        id: flicker
+    //        anchors {
+    //            top: header.bottom
+    //            left: parent.left
+    //            right: parent.right
+    //            bottom: parent.bottom
+    //        }
 
-//        property Flickable itemFlickable: (item !== null) ? item.__tabs[item.selectedTabIndex].flickable : null
-//        enabled: false // (itemFlickable !== null)
-//        contentHeight: itemFlickable ? itemFlickable.contentHeight + itemStyle.tabBarHeight : 0
-//        property real __headerVisibleHeight
-//        onContentYChanged: {
-//            var deltaContentY = contentY - __previousContentY;
-//            __previousContentY = contentY;
+    //        property Flickable itemFlickable: (item !== null) ? item.__tabs[item.selectedTabIndex].flickable : null
+    //        enabled: false // (itemFlickable !== null)
+    //        contentHeight: itemFlickable ? itemFlickable.contentHeight + itemStyle.tabBarHeight : 0
+    //        property real __headerVisibleHeight
+    //        onContentYChanged: {
+    //            var deltaContentY = contentY - __previousContentY;
+    //            __previousContentY = contentY;
 
-//            print(deltaContentY);
-//            var newHeaderY = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-//            if (newHeaderY === header.y) return;
-//            header.y = newHeaderY;
+    //            print(deltaContentY);
+    //            var newHeaderY = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+    //            if (newHeaderY === header.y) return;
+    //            header.y = newHeaderY;
 
-//            return;
+    //            return;
 
-//            // first decide if movement will prompt the page header to change height
-//            if ((deltaContentY < 0 && header.height >= 0) ||
-//                    (deltaContentY > 0 && header.height <= itemStyle.tabBarHeight)) {
+    //            // first decide if movement will prompt the page header to change height
+    //            if ((deltaContentY < 0 && header.height >= 0) ||
+    //                    (deltaContentY > 0 && header.height <= itemStyle.tabBarHeight)) {
 
-//                // calculate header height - but prevent bounce from changing it
-//                if (contentY > 0 && contentY < contentHeight - height) {
-//                    header.height = MathUtils.clamp(header.height - deltaContentY, 0, itemStyle.tabBarHeight);
-//                }
-//            }
+    //                // calculate header height - but prevent bounce from changing it
+    //                if (contentY > 0 && contentY < contentHeight - height) {
+    //                    header.height = MathUtils.clamp(header.height - deltaContentY, 0, itemStyle.tabBarHeight);
+    //                }
+    //            }
 
-//            // now we move list position, taking into account page header height
+    //            // now we move list position, taking into account page header height
 
-//            // BUG: With section headers enabled, the values of originY and contentY appear not
-//            // correct at the exact point originY changes. originY changes when the ListView
-//            // deletes/creates hidden delegates which are above the visible delegates.
-//            // As a result of this bug, you experience jittering scrolling when rapidly moving
-//            // around in large lists. See https://bugreports.qt-project.org/browse/QTBUG-27997
-//            // A workaround is to use a large enough cacheBuffer to prevent deletions/creations
-//            // so effectively originY is always zero.
-////            itemFlickable.contentY = flicker.contentY + itemFlickable.originY - itemStyle.tabBarHeight + header.height;
-//        }
+    //            // BUG: With section headers enabled, the values of originY and contentY appear not
+    //            // correct at the exact point originY changes. originY changes when the ListView
+    //            // deletes/creates hidden delegates which are above the visible delegates.
+    //            // As a result of this bug, you experience jittering scrolling when rapidly moving
+    //            // around in large lists. See https://bugreports.qt-project.org/browse/QTBUG-27997
+    //            // A workaround is to use a large enough cacheBuffer to prevent deletions/creations
+    //            // so effectively originY is always zero.
+    ////            itemFlickable.contentY = flicker.contentY + itemFlickable.originY - itemStyle.tabBarHeight + header.height;
+    //        }
 
-//        property real __previousContentY: 0
-//    }
+    //        property real __previousContentY: 0
+    //    }
 
 }
