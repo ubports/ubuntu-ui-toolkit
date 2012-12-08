@@ -32,23 +32,40 @@ Template {
             __flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
-//                color: "#eeeeee"
-                color: "transparent"
+                color: "#eeeeee"
 
                 Flickable {
-//                    clip: true
                     id: flickable
                     anchors.fill: parent
-                    contentHeight: text.height
+                    contentHeight: column.height
                     contentWidth: parent.width
                     flickableDirection: Flickable.VerticalFlick
 
-                    Label {
-                        id: text
-                        property string blankLines: "\n\n\n\n\n\n\n\n\n\n\n\n"
-                        anchors.centerIn: parent
-                        text: i18n.tr(blankLines + "This is the first tab." + blankLines + "(scroll down)" + blankLines + "Lots" + blankLines + "of" + blankLines + "text" )
-                        color: "#757373"
+                    Column {
+                        id: column
+                        width: parent.width
+                        height: childrenRect.height
+
+                        Label {
+                            text: "\n\n\n\n\n\n\n\n\n\nThis is the first tab.\n\n\n\n\n\n\n\n\n\n\n\n(scroll down)\n\n\n"
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Repeater {
+                            model: 50
+                            Label {
+                                text: "Lorem ipsum dolor sit amet, platea est tincidunt nunc, commodo odio elit."
+                                width: parent.width
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        Label {
+                            text: "\n\n\nThe end."
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
                     }
                 }
             }
