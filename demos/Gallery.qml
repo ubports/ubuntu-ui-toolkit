@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Rectangle {
-    width: units.gu(100)
+    width: units.gu(80) // TODO TIM: revert to 100
     height: units.gu(75)
 
     color: "#e6e6e6"

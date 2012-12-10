@@ -159,8 +159,9 @@ Item {
         // an inactive tabBar can be clicked to make it active
         anchors.fill: parent
         enabled: !tabBar.active
-        onClicked: {
+        onPressed: {
             tabBar.active = true;
+            mouse.accepted = false;
         }
     }
 }
