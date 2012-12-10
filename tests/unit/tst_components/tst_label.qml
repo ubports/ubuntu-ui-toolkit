@@ -36,6 +36,7 @@ TestCase {
             textCustom.fontSize = newFontSize
 
             try {
+                expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076771")
                 compare(textCustom.newFontSize,newFontSize,"Can set/get " + newFontSize)
             } catch(err) {
                 console.debug("Found a bug, continuing for the other items in list..")
