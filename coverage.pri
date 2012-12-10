@@ -1,4 +1,21 @@
-# Coverage
+# Coverage Support
+# --------------------------------
+# In order to generate coverage report you will have to:
+# 0) Install following packages: gcovr lcov
+# 1) Configure project with coverage enabled
+# 1.1) qmake CONFIG+=coverage
+# 2) Compile project with coverage target
+# 2.1) xml report
+# 2.1.1) make coverage-xml
+# 2.2) html report
+# 2.2.1) make coverage-html
+# 
+# In order to regenerate the report you might need to do following steps:
+# 1) make distclean
+# 2) qmake -r CONFIG+=coverage
+# 3) make coverage-html or make coverage-xml
+# --------------------------------
+
 CONFIG(coverage) {
     OBJECTS_DIR =
     MOC_DIR =
