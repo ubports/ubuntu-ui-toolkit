@@ -188,6 +188,12 @@ Empty {
         }
     }
 
+    /*!
+      \internal
+      The \l foregroundGroundColor property stores the internal label color.
+     */
+    property alias __foregroundColor: label.color
+
     LabelVisual {
         id: label
         selected: listItem.selected
