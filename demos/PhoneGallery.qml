@@ -30,7 +30,6 @@ Rectangle {
 
         Tab {
             title: "Components"
-            __flickable: page
             page: Flickable {
                 clip: true
                 width: units.gu(45)
