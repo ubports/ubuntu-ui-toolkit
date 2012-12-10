@@ -1,9 +1,7 @@
-include (../../qtversioncheck.pri)
+include( ../../common.pri )
+include( plugin_dependency.pri )
+include( add_qmlmakecheck.pri)
 
 TEMPLATE = app
 QT += qml quick qmltest
 CONFIG += no_keywords
-
-include ( plugin_dependency.pri )
-include (add_qmlmakecheck.pri)
-

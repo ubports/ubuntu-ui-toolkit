@@ -70,7 +70,7 @@ TestCase {
      }
 
      function test_primaryItem() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076768")
+         expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076768")
          compare(textField.primaryItem, undefined, "primaryItem is undefined by default")
      }
 
@@ -81,7 +81,7 @@ TestCase {
      }
 
      function test_secondaryItem() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076768")
+         expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076768")
          compare(textField.secondaryItem, undefined, "secondaryItem is undefined by default")
      }
 

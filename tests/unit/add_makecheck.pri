@@ -4,5 +4,5 @@
 
 check.target = check
 check.commands = ./$$TARGET -platform minimal
-check.commands += -maxwarnings 4 -xunitxml -o ../../test_$(TARGET).xml;
+check.commands += -maxwarnings 10 -xunitxml -o ../../test_$(TARGET).xml;
 check.commands += ../testparser/testparser ../../test_$(TARGET).xml 
