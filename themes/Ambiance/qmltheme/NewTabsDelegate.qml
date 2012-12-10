@@ -90,10 +90,15 @@ Item {
                 selectedFlickable.movementEnded.disconnect(header.movementEnded);
             }
             if (selectedTab && selectedTab.__flickable) {
-                selectedFlickable = selectedTab.__flickable;
-                previousContentY = selectedFlickable.contentY;
-                selectedFlickable.contentYChanged.connect(header.scrollContents);
-                selectedFlickable.movementEnded.connect(header.movementEnded);
+                if (selectedTab.__flickable.hasOwnProperty("autoHideTabBar") &&
+                        selectedTab.__flickable.autoHideTabBar === false) {
+                    selectedFlickable = null;
+                } else {
+                    selectedFlickable = selectedTab.__flickable;
+                    previousContentY = selectedFlickable.contentY;
+                    selectedFlickable.contentYChanged.connect(header.scrollContents);
+                    selectedFlickable.movementEnded.connect(header.movementEnded);
+                }
             } else {
                 selectedFlickable = null;
             }
