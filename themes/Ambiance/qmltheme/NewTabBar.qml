@@ -56,9 +56,17 @@ Item {
         if (active) {
             __buttonsClickable = false;
             buttonsClickableTimer.restart();
+            deactivateTimer.restart();
         } else {
             buttonView.position();
         }
+    }
+
+    Timer {
+        id: deactivateTimer
+        interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 5000
+        running: false
+        onTriggered: active = false
     }
 
     Component.onCompleted: buttonView.position();
@@ -159,6 +167,9 @@ Item {
             if (!tabBar.relativeButtonPositions) return;
             offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
         }
+
+        onMovementStarted: deactivateTimer.stop();
+        onMovementEnded: deactivateTimer.restart();
     }
 
     Image {
@@ -184,10 +195,14 @@ Item {
         // an inactive tabBar can be clicked to make it active
         id: mouseArea
         anchors.fill: parent
-        enabled: !tabBar.active
+//        enabled: !tabBar.active
         onPressed: {
+            print("pressed!");
             tabBar.active = true;
             mouse.accepted = false;
+        }
+        onPositionChanged: {
+            print("moved")
         }
     }
 }

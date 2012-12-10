@@ -95,6 +95,7 @@ Examples:
     headerTextBottomMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
     tabBarHeight: units.gu(6.5);
+    deactivateTime: 3000;
 }
 
 .dark-button {

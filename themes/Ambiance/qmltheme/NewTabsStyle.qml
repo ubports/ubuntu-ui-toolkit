@@ -39,4 +39,9 @@ QtObject {
 
     property real tabBarHeight
     property real headerTextBottomMargin
+
+    /*
+      The time of inactivity before the tab bar is automatically deactivated
+     */
+    property int deactivateTime
 }
