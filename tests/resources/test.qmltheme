@@ -3,6 +3,9 @@
 @qml-mapping(.baseA, , Item);
 @qml-mapping(.testA .baseA, , Text);
 
+@qml-import("test", .);
+@qml-import("test2", .);
+
 .baseA {
     test_base_A_A: "new:: test.qmltheme/.baseA";
     prop_baseA_A: "overload:: test.qmltheme/.baseA";
