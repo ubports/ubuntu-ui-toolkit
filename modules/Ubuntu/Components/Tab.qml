@@ -55,9 +55,8 @@ Item {
 
     /*!
       \internal
-      If the page is flickable and interactive, __flickable refers to the page, otherwise it refers
-      to the first of the children that is flickable and interactive, or null if none of the children is
-      flickable and interactive.
+      If the page is flickable, __flickable refers to the page, otherwise it refers to the first
+      of the children that is flickable, or null if none of the children is flickable.
      */
     property Flickable __flickable: pageWrapper.flickable
 
