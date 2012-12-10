@@ -79,6 +79,8 @@ Text {
 
     verticalAlignment: Theming.ComponentUtils.style(label, "verticalAlignment", Text.AlignTop)
 
+    visible: Theming.ComponentUtils.style(label, "visible", true)
+
     Theming.ItemStyle.onStyleChanged: {
         // only set font.bold and font.weight if they're defined in the style
         if (Theming.ComponentUtils.hasStyle(label, "bold")) {

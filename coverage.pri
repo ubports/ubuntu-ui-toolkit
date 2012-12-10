@@ -1,0 +1,66 @@
+# Coverage Support
+# --------------------------------
+# In order to generate coverage report you will have to:
+# 0) Install following packages: gcovr lcov
+# 1) Configure project with coverage enabled
+# 1.1) qmake CONFIG+=coverage
+# 2) Compile project with coverage target
+# 2.1) xml report
+# 2.1.1) make coverage-xml
+# 2.2) html report
+# 2.2.1) make coverage-html
+# 
+# In order to regenerate the report you might need to do following steps:
+# 1) make distclean
+# 2) qmake -r CONFIG+=coverage
+# 3) make coverage-html or make coverage-xml
+# --------------------------------
+
+CONFIG(coverage) {
+    OBJECTS_DIR =
+    MOC_DIR =
+    TOP_SRC_DIR = $$PWD
+
+    LIBS += -lgcov
+    QMAKE_CXXFLAGS += --coverage
+    QMAKE_LDFLAGS += --coverage
+
+    QMAKE_EXTRA_TARGETS += coverage cov
+    QMAKE_EXTRA_TARGETS += clean-gcno clean-gcda coverage-html \
+        generate-coverage-html clean-coverage-html coverage-xml \
+        generate-xml generate-coverage-xml clean-coverage-xml
+
+    clean-gcno.commands = \
+        "@echo Removing old coverage instrumentation"; \
+        "find -name '*.gcno' -print | xargs -r rm"
+
+    clean-gcda.commands = \
+        "@echo Removing old coverage results"; \
+        "find -name '*.gcda' -print | xargs -r rm"
+  
+    coverage-html.depends = clean-gcda check generate-coverage-html
+  
+    generate-coverage-html.commands = \
+        "@echo Collecting coverage data"; \
+        "lcov --directory $${TOP_SRC_DIR} --capture --output-file coverage.info --no-checksum --compat-libtool"; \
+        "lcov --extract coverage.info \"*/modules/*.cpp\" -o coverage.info"; \
+        "lcov --remove coverage.info \"moc_*.cpp\" -o coverage.info"; \
+        "LANG=C genhtml --prefix $${TOP_SRC_DIR} --output-directory coverage-html --title \"Code Coverage\" --legend --show-details coverage.info"
+  
+    clean-coverage-html.depends = clean-gcda
+    clean-coverage-html.commands = \
+        "lcov --directory $${TOP_SRC_DIR} -z"; \
+        "rm -rf coverage.info coverage-html"
+
+    coverage-xml.depends = clean-gcda check generate-coverage-xml
+
+    generate-coverage-xml.commands = \
+        "@echo Generating coverage GCOVR XML report"; \
+        "gcovr -x -r $${TOP_SRC_DIR} -o $${TOP_SRC_DIR}/coverage.xml -e \".*/moc_.*\" -e \"unit/.*\" -e \".*\\.h\""
+
+    clean-coverage-xml.depends = clean-gcda
+    clean-coverage-xml.commands = \
+        "rm -rf $${TOP_SRC_DIR}/coverage.xml"
+
+    QMAKE_CLEAN += *.gcda *.gcno coverage.info coverage.xml
+}

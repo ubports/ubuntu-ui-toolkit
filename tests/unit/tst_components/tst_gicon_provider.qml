@@ -19,14 +19,77 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-     name: "GIconImageLoad"
+     name: "GIconProvider"
 
-     function test_image() {
-         verify(img.sourceSize.height > 0, "Image source size is invalid, image not loaded")
+     function test_load_image_data() {
+         return [
+                     {
+                         tag: "local file with ok data",
+                         icon: Qt.resolvedUrl("../../../demos/demo_image.jpg"),
+                         status: Image.Ready,
+                         statusDesc: "Ready"
+                     },
+                     {
+                         tag: "local file does not exist",
+                         icon: Qt.resolvedUrl("../../../demos/NOT_EXISTING_demo_image.jpg"),
+                         status: Image.Error,
+                         statusDesc: "Error"
+                     },
+                     {
+                         tag: "with some random data",
+                         icon: "ftp://sdkfjldsfjfjfldsjfljlskjfl329isflkmjvcx",
+                         status: Image.Error,
+                         statusDesc: "Error"
+                     },
+
+/* 
+TODO: preferences-desktop-display does not exist in CI
+                    {
+                         tag: "gicon file with ok data",
+                         icon: "preferences-desktop-display",
+                         status: Image.Ready,
+                         statusDesc: "Ready"
+                     },*/
+
+                     {
+                         tag: "gicon file with invalid filename",
+                         icon: "preferences-desktop-display-NOT_EXISTING",
+                         status: Image.Error,
+                         statusDesc: "Error"
+                     }
+                     
+/*                       //TODO: Add a valid theme icon
+                     {
+                         tag: "gicon file from theme",
+                         icon: "application-exit",
+                         status: Image.Ready,
+                         statusDesc: "Ready"
+                     }*/
+                 ]
+     }
+
+     function test_load_image(data) {
+         // with valid value
+         console.debug(data.tag + "   icon: " + data.icon + "   status: " + data.statusDesc);
+         var newValue = "image://gicon/" + data.icon;
+         console.debug("new value is " + newValue);
+         img.source = newValue;
+         console.debug("img status is " + img.status + " and expected value was " + data.status);
+         compare(img.status,data.status,"Image status is " + data.statusDesc);
+         if (data.status===Image.Ready) {
+           verify(img.sourceSize.height > 0, "Image source size is larger than 0, image was loaded")
+         } else {
+           verify(img.sourceSize.height <= 0, "Image source size is invalid, image not loaded")
+         }
      }
 
      Image {
          id: img
-         source: "image://gicon/" + Qt.resolvedUrl("../../../demos/demo_image.jpg")
+         onStatusChanged: {
+             console.debug("Image status changed to " + status)
+         }
+         onProgressChanged: {
+             console.debug("Image progress changed to " + progress)
+         }
      }
 }
