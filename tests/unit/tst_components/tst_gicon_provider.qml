@@ -76,6 +76,11 @@ TODO: preferences-desktop-display does not exist in CI
          img.source = newValue;
          console.debug("img status is " + img.status + " and expected value was " + data.status);
          compare(img.status,data.status,"Image status is " + data.statusDesc);
+         if (data.status===Image.Ready) {
+           verify(img.sourceSize.height > 0, "Image source size is larger than 0, image was loaded")
+         } else {
+           verify(img.sourceSize.height <= 0, "Image source size is invalid, image not loaded")
+         }
      }
 
      Image {
