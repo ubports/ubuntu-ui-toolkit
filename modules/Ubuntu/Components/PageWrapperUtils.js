@@ -120,7 +120,7 @@ function updatePageStack(pageWrapper) {
 function __isFlickable(object) {
     if (object) {
         if (object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection")) {
-            if (object.interactive) return true;
+            return true;
         }
     }
     return false;
