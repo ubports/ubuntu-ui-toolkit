@@ -78,7 +78,7 @@ QtObject {
       \preliminary
       The object if it is Flickable, or the first of its children that is Flickable.
       If neither object nor its children are Flickable, then null.
-      Call PageWrapperUtils.detectFlickable(pageWrapper) to detect.
+      Automatically upadted by PageWrapperUtils.activate() after initializing the object.
      */
     property Flickable flickable: null
 
