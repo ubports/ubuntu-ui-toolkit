@@ -54,6 +54,14 @@ Item {
     property alias page: pageWrapper.reference
 
     /*!
+      \preliminary
+      Depending on the theme, \l Tabs can have a header that is automatically hidden
+      by scrolling down in the Tab's flickable. To disable this behavior for a Tab, set
+      autoHideTabBar to false.
+     */
+    property bool autoHideTabBar: true
+
+    /*!
       \internal
       If the page is flickable, __flickable refers to the page, otherwise it refers to the first
       of the children that is flickable, or null if none of the children is flickable.

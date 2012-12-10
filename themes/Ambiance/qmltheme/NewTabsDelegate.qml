@@ -89,16 +89,11 @@ Item {
                 selectedFlickable.contentYChanged.disconnect(header.scrollContents);
                 selectedFlickable.movementEnded.disconnect(header.movementEnded);
             }
-            if (selectedTab && selectedTab.__flickable) {
-                if (selectedTab.__flickable.hasOwnProperty("autoHideTabBar") &&
-                        selectedTab.__flickable.autoHideTabBar === false) {
-                    selectedFlickable = null;
-                } else {
+            if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
                     selectedFlickable = selectedTab.__flickable;
                     previousContentY = selectedFlickable.contentY;
                     selectedFlickable.contentYChanged.connect(header.scrollContents);
                     selectedFlickable.movementEnded.connect(header.movementEnded);
-                }
             } else {
                 selectedFlickable = null;
             }
