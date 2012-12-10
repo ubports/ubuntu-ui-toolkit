@@ -32,6 +32,7 @@
 
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
+import "sliderUtils.js" as SliderFuncs
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
@@ -62,13 +63,22 @@ import "." 0.1 as Theming
     }
     \endqml
 
-    The default slider style is defined by the \b{slider} style class and
-    consists of a slider and a thumb shape, where the thumb is having a
-    label showing the actual value. This label can be styled using
-    \b{.slider .label} selector.
+    \section2 Theming
+
+    The slider's default style class is \b slider and style properties depend on
+    the actual delegate defined by the theme, except of one property which defines
+    the spacing units between the slider's bar and thumb, called \b thumbSpacing.
+    The slider uses one single touch sensing area to position the thumb within the
+    bar. Therefore However delegates must define the following properties:
+    \list
+    \li * \b bar - the slider's bar object
+    \li * \b thumb - the slider's thumb object
+    \endlist
+
+    Beside these, the library provies functions for delegates to update liveValue and
+    normalizedValue in SliderUtils module.
 
     \b{This component is under heavy development.}
-
 */
 AbstractButton {
     id: slider
@@ -135,40 +145,18 @@ AbstractButton {
       This function is used by the value indicator to show the current value.
       Reimplement this function if you want to show different information. By
       default, the value v is rounded to the nearest interger value.
+
+      \b Note: this function will be deprecated, and will be solved with particular
+      delegates for the thumb.
      */
     function formatValue(v) {
         return v.toFixed(0)
     }
 
     // Private symbols.
-    
-    /*!
-      \internal
-      Slider value to be updated live
-    */
-    property real __liveValue: 0.0
+
     /*! \internal */
-    onValueChanged: __liveValue = slider.value
-
-    /*!
-      \internal
-      Should be used by the delegates to position the thumbs.
-    */
-    property real __normalizedValue: MathUtils.clamp((__liveValue - slider.minimumValue) /
-                                                     (slider.maximumValue - slider.minimumValue),
-                                                     0.0, 1.0)
-
-    /*!
-      \internal
-      Should be set by the delegates
-    */
-    property Item __thumb
-
-    /*!
-      \internal
-      Should be set by the delegates
-    */
-    property Item __background
+    onValueChanged: internals.liveValue = slider.value
 
     /*! \internal */
     Component.onCompleted: internals.updateMouseArea()
@@ -176,46 +164,58 @@ AbstractButton {
     /*! \internal */
     onPressedChanged: internals.mouseAreaPressed()
 
+    /*! \internal */
+    property alias __internals: internals
     QtObject {
         id: internals
 
+        property real thumbSpacing: ComponentUtils.style(slider, "thumbSpacing", 0.0)
+        property Item bar: ComponentUtils.delegateProperty(slider, "bar", null)
+        property Item thumb: ComponentUtils.delegateProperty(slider, "thumb", null)
+
+        property real liveValue: 0.0
+        property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
+                                                         (slider.maximumValue - slider.minimumValue),
+                                                         0.0, 1.0)
+
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
-        property real thumbSpacing: ComponentUtils.style(slider, "thumbSpacing", units.dp(2))
-        property real thumbWidth: __thumb.width - thumbSpacing
-        property real thumbSpace: __background.width - (2.0 * thumbSpacing + thumbWidth)
+        property real thumbWidth: thumb ? thumb.width - thumbSpacing : 0.0
+        property real thumbSpace: bar ? bar.width - (2.0 * thumbSpacing + thumbWidth) : 0.0
 
         function updateMouseArea() {
             slider.__mouseArea.positionChanged.connect(internals.mouseAreaPositionchanged);
         }
 
         function mouseAreaPressed() {
+            if (!thumb || !bar)
+                return;
             if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
                 // Left button pressed.
                 var mouseX = slider.__mouseArea.mouseX;
                 var mouseY = slider.__mouseArea.mouseY;
-                if (mouseY >= __thumb.y && mouseY <= __thumb.y + __thumb.height) {
-                    if (mouseX >= __thumb.x && mouseX <= __thumb.x + __thumb.width) {
+                if (mouseY >= thumb.y && mouseY <= thumb.y + thumb.height) {
+                    if (mouseX >= thumb.x && mouseX <= thumb.x + thumb.width) {
                         // Button pressed inside the thumb.
                         dragInitMouseX = mouseX;
-                        dragInitNormalizedValue = __normalizedValue;
+                        dragInitNormalizedValue = normalizedValue;
                     } else if (mouseX > thumbSpacing &&
-                               mouseX < __background.width - thumbSpacing) {
+                               mouseX < bar.width - thumbSpacing) {
                         // Button pressed outside the thumb.
                         var normalizedPosition = (slider.__mouseArea.mouseX - thumbSpacing - thumbWidth * 0.5) / thumbSpace;
                         normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
-                        __liveValue = MathUtils.lerp(normalizedPosition, slider.minimumValue, slider.maximumValue);
+                        liveValue = MathUtils.lerp(normalizedPosition, slider.minimumValue, slider.maximumValue);
                         dragInitMouseX = mouseX;
-                        dragInitNormalizedValue = __normalizedValue;
+                        dragInitNormalizedValue = normalizedValue;
                         if (slider.live) {
-                            slider.value = __liveValue;
+                            slider.value = liveValue;
                         }
                     }
                 }
             } else {
                 // Button released.
                 if (!slider.live) {
-                    slider.value = __liveValue;
+                    slider.value = liveValue;
                 }
             }
         }
@@ -225,9 +225,9 @@ AbstractButton {
             if (slider.pressed) {
                 var normalizedOffsetX = (slider.__mouseArea.mouseX - dragInitMouseX) / thumbSpace;
                 var v = MathUtils.clamp(dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
-                __liveValue = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
+                liveValue = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
                 if (slider.live) {
-                    slider.value = __liveValue;
+                    slider.value = liveValue;
                 }
             }
         }

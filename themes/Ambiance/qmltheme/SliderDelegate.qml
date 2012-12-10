@@ -18,6 +18,10 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*
+  The default slider style consists of a bar and a thumb shape, where the thumb
+  is having a label showing the actual value. This label can be styled using
+  \b{.slider .label} selector.
+
   This delegate is styled using the following properties:
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
@@ -28,15 +32,21 @@ Item {
     id: main
     anchors.fill: parent
 
-    property real normalizedValue: item.__normalizedValue
+    // properties to be published:
+    property Item bar: backgroundShape
+    property Item thumb: thumbShape
+
+    // private properties
 
     property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(2))
+    property real liveValue: SliderUtils.liveValue(item)
+    property real normalizedValue: SliderUtils.normalizedValue(item)
+
     property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
     property real thumbWidth: item.height - thumbSpacing
 
     UbuntuShape {
         id: backgroundShape
-        Component.onCompleted: item.__background = backgroundShape
 
         anchors.fill: parent
         color: StyleUtils.itemStyleProperty("backgroundColor", "white")
@@ -44,7 +54,6 @@ Item {
 
     UbuntuShape {
         id: thumbShape
-        Component.onCompleted: item.__thumb = thumbShape
 
         x: backgroundShape.x + thumbSpacing + normalizedValue * thumbSpace
         y: backgroundShape.y + thumbSpacing
@@ -55,13 +64,12 @@ Item {
 
     Label {
         id: thumbValue
-        ItemStyle.class: "label"
         anchors {
             verticalCenter: thumbShape.verticalCenter
             left: thumbShape.left
             right: thumbShape.right
         }
         horizontalAlignment: Text.AlignHCenter
-        text: item.formatValue(MathUtils.clamp(item.__liveValue, item.minimumValue, item.maximumValue))
+        text: item.formatValue(MathUtils.clamp(liveValue, item.minimumValue, item.maximumValue))
     }
 }

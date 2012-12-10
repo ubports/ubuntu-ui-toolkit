@@ -58,6 +58,25 @@ TestCase {
          compare(slider.value,newValue,"can set/get")
      }
 
+     // SliderUtils API tests
+     function test_zzz_liveValue()
+     {
+         slider.live = true
+         slider.minimumValue = 0.0
+         slider.maximumValue = 1.0
+         slider.value = 0.2
+         compare(slider.value, SliderUtils.liveValue(slider), "are identical")
+     }
+
+     function test_zzz_normalizedValue()
+     {
+         slider.live = true
+         slider.minimumValue = 0.0
+         slider.maximumValue = 1.0
+         slider.value = 0.2557
+         compare(slider.value, SliderUtils.normalizedValue(slider), "are identical")
+     }
+
      Slider {
          id: slider
      }
