@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
-    height: itemStyle.tabBarHeight //units.gu(6.5)
+    height: itemStyle.tabBarHeight
 
     /*!
       The set of tabs this tab bar belongs to
@@ -57,8 +57,6 @@ Item {
             __buttonsClickable = false;
             buttonsClickableTimer.restart();
             deactivateTimer.restart();
-        } else {
-//            buttonView.position();
         }
     }
 
@@ -73,7 +71,7 @@ Item {
 
     // used to position buttons and indicator image
     property real totalButtonWidth: 0
-    property var relativeButtonPositions: []
+    property var relativeButtonPositions: [] // TODO: remove this property
     property var buttonOffsets: []
 
     Component {
@@ -92,7 +90,6 @@ Item {
                 tabBar.buttonOffsets = [];
                 for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
                     tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
-                    print("relative position of child "+i+" = "+tabBar.relativeButtonPositions[i])
                     tabBar.buttonOffsets.push(1 - children[i].x / totalButtonWidth);
                 }
                 tabBar.buttonOffsets.push(0.0);
@@ -107,10 +104,7 @@ Item {
                     width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                     property bool selected: (index === tabs.selectedTabIndex)
 
-                    anchors {
-                        top: parent.top
-                        //                        bottom: parent.bottom
-                    }
+                    anchors.top: parent.top
                     height: parent.height - itemStyle.headerTextBottomMargin
 
                     Label {
@@ -120,7 +114,7 @@ Item {
 
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: 500
+                                duration: 350
                             }
                         }
 
@@ -170,41 +164,27 @@ Item {
         }
         function position() {
             if (!tabBar.relativeButtonPositions) return;
-            var newOffset = Math.ceil(offset) - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
-
-//                print(newOffset + " too large");
-//                newOffset = newOffset + 1;
-            print("old offset = "+offset + ", new offset = " + newOffset);
-            offset = newOffset; //1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex] //+ Math.floor(offset);
+            offset = Math.ceil(offset) - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
         }
-        onOffsetChanged: {
-//            print(offset)
-//            if (offset >= 0 && offset < 1-tabBar.relativeButtonPositions[1]) print("yay");
-//            else print("naj");
-//            print(offset - Math.floor(offset) > buttonOffsets[1]);
-            print(offset - Math.floor(offset));
-            print(buttonOffsets);
-            for (var i=0; i < buttonOffsets.length-1; i++)
-                if (buttonInRange(i)) {
-
-                    print("BUTTON "+i);
-//                    tabBar.tabs.selectedTabIndex = i;
-                }
-        }
+//        onOffsetChanged: {
+//            for (var i=0; i < buttonOffsets.length-1; i++) {
+//                if (buttonInRange(i)) {
+//                    print("BUTTON "+i);
+//                    //                    tabBar.tabs.selectedTabIndex = i;
+//                }
+//            }
+//        }
 
         function buttonInRange(i) {
             var relativePosition = offset - Math.floor(offset);
-//            print(relativePosition);
             return (buttonOffsets[i] > relativePosition && relativePosition > buttonOffsets[i+1]);
         }
 
         Behavior on offset {
             SmoothedAnimation {
-//                duration: 200
                 velocity: 1
             }
         }
-
 
         onMovementStarted: deactivateTimer.stop();
         onMovementEnded: deactivateTimer.restart();
@@ -218,7 +198,7 @@ Item {
             bottomMargin: itemStyle.headerTextBottomMargin
         }
 
-        visible: false //!tabBar.active
+        visible: false //!tabBar.active // TODO re-enable
 
         x: getXPosition()
 
