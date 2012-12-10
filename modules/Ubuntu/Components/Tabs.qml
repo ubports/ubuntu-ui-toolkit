@@ -56,9 +56,6 @@ import Ubuntu.Components 0.1 as Theming
         }
     \endqml
 
-    Depending on the theme used, Tabs can have a header that is automatically hidden
-    when scrolling a Flickable inside the Tab. To disable this behavior, and always display
-    the Tabs header for a certain Tab, define the property autoHideTabBar with value false.
     \b{This component is under heavy development.}
 */
 
