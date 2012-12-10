@@ -55,11 +55,11 @@ Item {
 
     /*!
       \internal
-      If the page has a flickable that can be scrolled to show/hide the tabs header,
-      set __flickable.
-      FIXME: Auto-detect this, perhaps in the Page.
+      If the page is flickable and interactive, __flickable refers to the page, otherwise it refers
+      to the first of the children that is flickable and interactive, or null if none of the children is
+      flickable and interactive.
      */
-    property Flickable __flickable: null
+    property Flickable __flickable: pageWrapper.flickable
 
     /*!
       \internal

@@ -29,7 +29,6 @@ Template {
         id: tabs
         Tab {
             title: i18n.tr("Flickable")
-            __flickable: flickable
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
@@ -102,7 +101,6 @@ Template {
         }
         Tab {
             title: i18n.tr("List view")
-            __flickable: page
             page: ListView {
                 clip: true
                 anchors.fill: parent
