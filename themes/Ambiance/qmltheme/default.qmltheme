@@ -223,3 +223,16 @@ Examples:
    blinkTimeoutShown: 800;
    blinkTimeoutHidden: 400;
 }
+
+/* sliders */
+@qml-mapping(.slider, , SliderDelegate);
+.slider {
+    backgroundColor: "#d3d3d3";
+    thumbColor: "#626262";
+    thumbSpacing: units.dp(2);
+}
+.slider .label {
+    fontSize: "medium";
+    color: "white";
+    weight: Font.Bold;
+}

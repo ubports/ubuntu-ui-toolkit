@@ -32,6 +32,12 @@
 
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
+import "sliderUtils.js" as SliderFuncs
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import "." 0.1 as Theming
 
 /*!
     \qmltype Slider
@@ -40,7 +46,9 @@ import "mathUtils.js" as MathUtils
     \brief Slider is a component to select a value from a continuous range of
      values.
 
-    \b{This component is under heavy development.}
+    The slider's sensing area is defined by the width and height, therefore
+    delegates should take this into account when defining the visuals, and
+    alter these values to align the graphics' sizes.
 
     Example:
     \qml
@@ -54,12 +62,31 @@ import "mathUtils.js" as MathUtils
         }
     }
     \endqml
+
+    \section2 Theming
+
+    The slider's default style class is \b slider and style properties depend on
+    the actual delegate defined by the theme, except of one property which defines
+    the spacing units between the slider's bar and thumb, called \b thumbSpacing.
+    The slider uses one single touch sensing area to position the thumb within the
+    bar. Therefore However delegates must define the following properties:
+    \list
+    \li * \b bar - the slider's bar object
+    \li * \b thumb - the slider's thumb object
+    \endlist
+
+    Beside these, the library provies functions for delegates to update liveValue and
+    normalizedValue in SliderUtils module.
+
+    \b{This component is under heavy development.}
 */
 AbstractButton {
     id: slider
 
     width: units.gu(38)
     height: units.gu(4)
+
+    Theming.ItemStyle.class: "slider"
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
     //     debate on whether we should use that property (like every other
@@ -118,135 +145,90 @@ AbstractButton {
       This function is used by the value indicator to show the current value.
       Reimplement this function if you want to show different information. By
       default, the value v is rounded to the nearest interger value.
+
+      \b Note: this function will be deprecated, and will be solved with particular
+      delegates for the thumb.
      */
     function formatValue(v) {
         return v.toFixed(0)
     }
 
-    /*! \internal */
-    onValueChanged: __value = slider.value
-
-    Item {
-        id: main
-        anchors.fill: parent
-
-        UbuntuShape {
-            id: backgroundShape
-
-            anchors.fill: parent
-            color: __backgroundColor
-        }
-
-        UbuntuShape {
-            id: thumbShape
-
-            x: backgroundShape.x + __thumbSpacing + __normalizedValue * __thumbSpace
-            y: backgroundShape.y + __thumbSpacing
-            width: __thumbWidth
-            height: backgroundShape.height - (2.0 * __thumbSpacing)
-            color: __thumbColor
-        }
-
-        Label {
-            id: thumbValue
-            anchors {
-                verticalCenter: thumbShape.verticalCenter
-                left: thumbShape.left
-                right: thumbShape.right
-            }
-            horizontalAlignment: Text.AlignHCenter
-            fontSize: "medium"
-            font.weight: Font.Bold
-            color: "white"
-            text: slider.formatValue(MathUtils.clamp(__value, slider.minimumValue,
-                                                     slider.maximumValue))
-        }
-    }
-
     // Private symbols.
-    
-    /*! \internal */
-    property real __thumbSpacing: units.dp(2)
-    
-    /*! \internal */
-    property real __thumbWidth: slider.height - __thumbSpacing
-    
-    /*! \internal */
-    property real __thumbSpace: backgroundShape.width - (2.0 * __thumbSpacing + __thumbWidth)
-    
-    /*! \internal */
-    property color __backgroundColor: "#d3d3d3"
-    
-    /*! \internal */
-    property color __thumbColor: "#626262"
-    
-    /*! \internal */
-    property real __dragInitMouseX: 0.0
 
     /*! \internal */
-    property real __dragInitNormalizedValue: 0.0
+    onValueChanged: internals.liveValue = slider.value
 
     /*! \internal */
-    property real __value: 0.0
+    Component.onCompleted: internals.updateMouseArea()
 
     /*! \internal */
-    property real __normalizedValue: MathUtils.clamp((__value - slider.minimumValue) /
-                                                     (slider.maximumValue - slider.minimumValue),
-                                                     0.0, 1.0)
-
-    Component.onCompleted: __updateMouseArea()
+    onPressedChanged: internals.mouseAreaPressed()
 
     /*! \internal */
-    function __updateMouseArea() {
-        slider.__mouseArea.positionChanged.connect(__mouseAreaPositionchanged);
-    }
+    property alias __internals: internals
+    QtObject {
+        id: internals
 
-    /*! \internal */
-    onPressedChanged: __mouseAreaPressed()
+        property real thumbSpacing: ComponentUtils.style(slider, "thumbSpacing", 0.0)
+        property Item bar: ComponentUtils.delegateProperty(slider, "bar", null)
+        property Item thumb: ComponentUtils.delegateProperty(slider, "thumb", null)
 
-    /*! \internal */
-    function __mouseAreaPressed() {
-        if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
-            // Left button pressed.
-            var mouseX = slider.__mouseArea.mouseX;
-            var mouseY = slider.__mouseArea.mouseY;
-            if (mouseY >= thumbShape.y && mouseY <= thumbShape.y + thumbShape.height) {
-                if (mouseX >= thumbShape.x && mouseX <= thumbShape.x + thumbShape.width) {
-                    // Button pressed inside the thumb.
-                    __dragInitMouseX = mouseX;
-                    __dragInitNormalizedValue = __normalizedValue;
-                } else if (mouseX > __thumbSpacing &&
-                           mouseX < backgroundShape.width - __thumbSpacing) {
-                    // Button pressed outside the thumb.
-                    var normalizedPosition = (slider.__mouseArea.mouseX - __thumbSpacing -
-                    __thumbWidth * 0.5) / __thumbSpace;
-                    normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
-                    __value = MathUtils.lerp(normalizedPosition, slider.minimumValue,
-                    slider.maximumValue);
-                    __dragInitMouseX = mouseX;
-                    __dragInitNormalizedValue = __normalizedValue;
-                    if (slider.live) {
-                        slider.value = __value
+        property real liveValue: 0.0
+        property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
+                                                         (slider.maximumValue - slider.minimumValue),
+                                                         0.0, 1.0)
+
+        property real dragInitMouseX: 0.0
+        property real dragInitNormalizedValue: 0.0
+        property real thumbWidth: thumb ? thumb.width - thumbSpacing : 0.0
+        property real thumbSpace: bar ? bar.width - (2.0 * thumbSpacing + thumbWidth) : 0.0
+
+        function updateMouseArea() {
+            slider.__mouseArea.positionChanged.connect(internals.mouseAreaPositionchanged);
+        }
+
+        function mouseAreaPressed() {
+            if (!thumb || !bar)
+                return;
+            if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
+                // Left button pressed.
+                var mouseX = slider.__mouseArea.mouseX;
+                var mouseY = slider.__mouseArea.mouseY;
+                if (mouseY >= thumb.y && mouseY <= thumb.y + thumb.height) {
+                    if (mouseX >= thumb.x && mouseX <= thumb.x + thumb.width) {
+                        // Button pressed inside the thumb.
+                        dragInitMouseX = mouseX;
+                        dragInitNormalizedValue = normalizedValue;
+                    } else if (mouseX > thumbSpacing &&
+                               mouseX < bar.width - thumbSpacing) {
+                        // Button pressed outside the thumb.
+                        var normalizedPosition = (slider.__mouseArea.mouseX - thumbSpacing - thumbWidth * 0.5) / thumbSpace;
+                        normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
+                        liveValue = MathUtils.lerp(normalizedPosition, slider.minimumValue, slider.maximumValue);
+                        dragInitMouseX = mouseX;
+                        dragInitNormalizedValue = normalizedValue;
+                        if (slider.live) {
+                            slider.value = liveValue;
+                        }
                     }
                 }
-            }
-        } else {
-            // Button released.
-            if (!slider.live) {
-                slider.value = __value;
+            } else {
+                // Button released.
+                if (!slider.live) {
+                    slider.value = liveValue;
+                }
             }
         }
-    }
 
-    /*! \internal */
-    function __mouseAreaPositionchanged() {
-        // Left button dragging.
-        if (slider.pressed) {
-            var normalizedOffsetX = (slider.__mouseArea.mouseX - __dragInitMouseX) / __thumbSpace;
-            var v = MathUtils.clamp(__dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
-            __value = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
-            if (slider.live) {
-                slider.value = __value
+        function mouseAreaPositionchanged() {
+            // Left button dragging.
+            if (slider.pressed) {
+                var normalizedOffsetX = (slider.__mouseArea.mouseX - dragInitMouseX) / thumbSpace;
+                var v = MathUtils.clamp(dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
+                liveValue = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
+                if (slider.live) {
+                    slider.value = liveValue;
+                }
             }
         }
     }
