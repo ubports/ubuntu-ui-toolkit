@@ -180,11 +180,11 @@ Item {
             return (buttonOffsets[i] > relativePosition && relativePosition > buttonOffsets[i+1]);
         }
 
-        Behavior on offset {
-            SmoothedAnimation {
-                velocity: 1
-            }
-        }
+//        Behavior on offset {
+//            SmoothedAnimation {
+//                velocity: 1
+//            }
+//        }
 
         onMovementStarted: deactivateTimer.stop();
         onMovementEnded: deactivateTimer.restart();
