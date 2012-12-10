@@ -90,10 +90,10 @@ Item {
                 selectedFlickable.movementEnded.disconnect(header.movementEnded);
             }
             if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
-                    selectedFlickable = selectedTab.__flickable;
-                    previousContentY = selectedFlickable.contentY;
-                    selectedFlickable.contentYChanged.connect(header.scrollContents);
-                    selectedFlickable.movementEnded.connect(header.movementEnded);
+                selectedFlickable = selectedTab.__flickable;
+                previousContentY = selectedFlickable.contentY;
+                selectedFlickable.contentYChanged.connect(header.scrollContents);
+                selectedFlickable.movementEnded.connect(header.movementEnded);
             } else {
                 selectedFlickable = null;
             }
