@@ -30,7 +30,7 @@ Item {
         target: tabs
         onSelectedTabIndexChanged: {
             tabBar.active = false;
-            buttonView.position()
+            buttonView.position();
         }
     }
 
@@ -58,7 +58,7 @@ Item {
             buttonsClickableTimer.restart();
             deactivateTimer.restart();
         } else {
-            buttonView.position();
+//            buttonView.position();
         }
     }
 
@@ -74,6 +74,7 @@ Item {
     // used to position buttons and indicator image
     property real totalButtonWidth: 0
     property var relativeButtonPositions: []
+    property var buttonOffsets: []
 
     Component {
         id: tabButtonRow
@@ -88,9 +89,13 @@ Item {
             Component.onCompleted: {
                 tabBar.totalButtonWidth = theRow.width;
                 tabBar.relativeButtonPositions = [];
+                tabBar.buttonOffsets = [];
                 for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
                     tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
+                    print("relative position of child "+i+" = "+tabBar.relativeButtonPositions[i])
+                    tabBar.buttonOffsets.push(1 - children[i].x / totalButtonWidth);
                 }
+                tabBar.buttonOffsets.push(0.0);
             }
 
             Repeater {
@@ -111,10 +116,10 @@ Item {
                     Label {
                         id: text
                         color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
-                        opacity: (tabBar.active || selected) ? 1.0 : 0.0
+                        opacity: (tabBar.active || selected) ? 1.0 : 0
 
                         Behavior on opacity {
-                            SmoothedAnimation {
+                            NumberAnimation {
                                 duration: 500
                             }
                         }
@@ -165,8 +170,41 @@ Item {
         }
         function position() {
             if (!tabBar.relativeButtonPositions) return;
-            offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
+            var newOffset = Math.ceil(offset) - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
+
+//                print(newOffset + " too large");
+//                newOffset = newOffset + 1;
+            print("old offset = "+offset + ", new offset = " + newOffset);
+            offset = newOffset; //1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex] //+ Math.floor(offset);
         }
+        onOffsetChanged: {
+//            print(offset)
+//            if (offset >= 0 && offset < 1-tabBar.relativeButtonPositions[1]) print("yay");
+//            else print("naj");
+//            print(offset - Math.floor(offset) > buttonOffsets[1]);
+            print(offset - Math.floor(offset));
+            print(buttonOffsets);
+            for (var i=0; i < buttonOffsets.length-1; i++)
+                if (buttonInRange(i)) {
+
+                    print("BUTTON "+i);
+//                    tabBar.tabs.selectedTabIndex = i;
+                }
+        }
+
+        function buttonInRange(i) {
+            var relativePosition = offset - Math.floor(offset);
+//            print(relativePosition);
+            return (buttonOffsets[i] > relativePosition && relativePosition > buttonOffsets[i+1]);
+        }
+
+        Behavior on offset {
+            SmoothedAnimation {
+//                duration: 200
+                velocity: 1
+            }
+        }
+
 
         onMovementStarted: deactivateTimer.stop();
         onMovementEnded: deactivateTimer.restart();
@@ -180,7 +218,7 @@ Item {
             bottomMargin: itemStyle.headerTextBottomMargin
         }
 
-        visible: !tabBar.active
+        visible: false //!tabBar.active
 
         x: getXPosition()
 
@@ -195,14 +233,10 @@ Item {
         // an inactive tabBar can be clicked to make it active
         id: mouseArea
         anchors.fill: parent
-//        enabled: !tabBar.active
+        enabled: !tabBar.active
         onPressed: {
-            print("pressed!");
             tabBar.active = true;
             mouse.accepted = false;
-        }
-        onPositionChanged: {
-            print("moved")
         }
     }
 }
