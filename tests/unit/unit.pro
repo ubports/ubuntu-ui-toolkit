@@ -8,6 +8,8 @@ SUBDIRS += testparser
 # these tests are failing in armhf/qemu
 # can not create QQuickView
 # tested with Qt 5 beta 1 and beta 2
+#
+# https://bugs.launchpad.net/qemu-linaro/+bug/1084148
 #######################################
 #!contains(QMAKE_HOST.arch,armv7l) {
     SUBDIRS += tst_theme_engine \

@@ -43,7 +43,7 @@ TestCase {
                      },
 
 /* 
-// does not exist in CI
+TODO: preferences-desktop-display does not exist in CI
                     {
                          tag: "gicon file with ok data",
                          icon: "preferences-desktop-display",

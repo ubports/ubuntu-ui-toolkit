@@ -22,7 +22,6 @@ TestCase {
     name: "LabelAPI"
 
     function test_fontSize() {
-        //expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076771")
         compare(textCustom.fontSize,"medium","fontSize is 'medium' by default")
 
         var fontSizes = ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large" ]
