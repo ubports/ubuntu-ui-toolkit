@@ -37,7 +37,7 @@ TestCase {
      }
 
      function test_maximumValue() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076764")
+         expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076764")
          compare(slider.maximumValue,1.0,"is set to 1.0 by default")
          var newMaximumValue = 20.0
          slider.maximumValue = newMaximumValue
