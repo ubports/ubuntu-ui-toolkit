@@ -40,8 +40,25 @@ Item {
      */
     property bool active: false
 
+    /*!
+      \internal
+      Avoid interpreting a click to activate the tab bar as a button click.
+     */
+    property bool __buttonsClickable: true
+    Timer {
+        id: buttonsClickableTimer
+        interval: 800 // same as the default timing for MouseArea.pressAndHold events
+        running: false
+        onTriggered: __buttonsClickable = true
+    }
+
     onActiveChanged: {
-        if (!active) buttonView.position();
+        if (active) {
+            __buttonsClickable = false;
+            buttonsClickableTimer.restart();
+        } else {
+            buttonView.position();
+        }
     }
 
     Component.onCompleted: buttonView.position();
@@ -79,14 +96,21 @@ Item {
 
                     anchors {
                         top: parent.top
-//                        bottom: parent.bottom
+                        //                        bottom: parent.bottom
                     }
                     height: parent.height - itemStyle.headerTextBottomMargin
 
                     Label {
                         id: text
                         color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
-                        visible: tabBar.active || selected
+                        opacity: (tabBar.active || selected) ? 1.0 : 0.0
+
+                        Behavior on opacity {
+                            SmoothedAnimation {
+                                duration: 500
+                            }
+                        }
+
                         anchors {
                             left: parent.left
                             leftMargin: units.gu(2)
@@ -98,10 +122,11 @@ Item {
                         font.weight: itemStyle.headerFontWeight
                         verticalAlignment: Text.AlignBottom
                     }
-
                     onClicked: {
-                        tabs.selectedTabIndex = index;
-                        tabBar.active = false;
+                        if (tabBar.__buttonsClickable) {
+                            tabs.selectedTabIndex = index;
+                            tabBar.active = false;
+                        }
                     }
                 }
             }
@@ -157,6 +182,7 @@ Item {
 
     MouseArea {
         // an inactive tabBar can be clicked to make it active
+        id: mouseArea
         anchors.fill: parent
         enabled: !tabBar.active
         onPressed: {
