@@ -87,13 +87,7 @@ Examples:
 @qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
 .new-tabs {
     swipeToSwitchTabs: true;
-    separator: Divider {
-        height: units.gu(2);
-    };
-    topSeparator: Rectangle {
-        color: "#c94212";
-        height: units.dp(2);
-    }
+    separator: Divider { };
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */

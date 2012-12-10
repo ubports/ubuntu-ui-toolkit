@@ -71,6 +71,12 @@ Item {
      */
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
+    /*!
+      \preliminary
+      The currently selected tab.
+     */
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
@@ -80,7 +86,7 @@ Item {
 
     /*!
       \internal
-      required by SlidingTabsDelegate
+      required by NewTabsDelegate
      */
     property alias __tabsModel: tabsModel
     VisualItemModel {
