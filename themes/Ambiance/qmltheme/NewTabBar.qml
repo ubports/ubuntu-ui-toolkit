@@ -116,6 +116,7 @@ Item {
                             Behavior on opacity {
                                 NumberAnimation {
                                     duration: 350
+                                    easing.type: Easing.InOutQuad
                                 }
                             }
 
