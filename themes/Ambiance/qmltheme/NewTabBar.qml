@@ -29,6 +29,7 @@ Item {
     Connections {
         target: tabs
         onSelectedTabIndexChanged: {
+            indicatorImage.visible = false;
             tabBar.active = false;
             buttonView.position();
         }
@@ -47,27 +48,28 @@ Item {
     property bool __buttonsClickable: true
     Timer {
         id: buttonsClickableTimer
-        interval: 800 // same as the default timing for MouseArea.pressAndHold events
+        interval: 300
         running: false
         onTriggered: __buttonsClickable = true
     }
 
     onActiveChanged: {
         if (active) {
+            indicatorImage.visible = false;
             __buttonsClickable = false;
             buttonsClickableTimer.restart();
             deactivateTimer.restart();
+        } else {
+            buttonView.position();
         }
     }
 
     Timer {
         id: deactivateTimer
-        interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 5000
-        running: false
+        interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 1000
+        running: true
         onTriggered: active = false
     }
-
-    Component.onCompleted: buttonView.position();
 
     // used to position buttons and indicator image
     property real totalButtonWidth: 0
@@ -83,6 +85,9 @@ Item {
                 bottom: parent.bottom
             }
             width: childrenRect.width
+
+            // set in onCompleted of the PathView
+            property int rowNumber
 
             Component.onCompleted: {
                 tabBar.totalButtonWidth = theRow.width;
@@ -131,6 +136,8 @@ Item {
                     }
                     onClicked: {
                         if (tabBar.__buttonsClickable) {
+                            print(theRow.rowNumber);
+                            buttonView.activeButtonRowNumber = theRow.rowNumber;
                             tabs.selectedTabIndex = index;
                             tabBar.active = false;
                         }
@@ -162,32 +169,35 @@ Item {
                 x: tabBar.totalButtonWidth*1.5
             }
         }
+
+        property int activeButtonRowNumber: 1
         function position() {
             if (!tabBar.relativeButtonPositions) return;
-            offset = Math.ceil(offset) - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
+            var newOffset = activeButtonRowNumber + tabBar.buttonOffsets[tabBar.tabs.selectedTabIndex];
+            var diff = offset - newOffset;
+            if (diff < -1) newOffset = newOffset - 2;
+            offset = newOffset;
+            indicatorImage.visible = true;
         }
-//        onOffsetChanged: {
-//            for (var i=0; i < buttonOffsets.length-1; i++) {
-//                if (buttonInRange(i)) {
-//                    print("BUTTON "+i);
-//                    //                    tabBar.tabs.selectedTabIndex = i;
-//                }
-//            }
-//        }
 
         function buttonInRange(i) {
             var relativePosition = offset - Math.floor(offset);
             return (buttonOffsets[i] > relativePosition && relativePosition > buttonOffsets[i+1]);
         }
 
-//        Behavior on offset {
-//            SmoothedAnimation {
-//                velocity: 1
-//            }
-//        }
+        Component.onCompleted: {
+            children[1].rowNumber = 0;
+            children[2].rowNumber = 1;
+        }
 
-        onMovementStarted: deactivateTimer.stop();
-        onMovementEnded: deactivateTimer.restart();
+        Behavior on offset {
+            SmoothedAnimation {
+                velocity: 1
+            }
+        }
+
+        onMovementStarted: deactivateTimer.stop()
+        onMovementEnded: deactivateTimer.restart()
     }
 
     Image {
@@ -198,7 +208,16 @@ Item {
             bottomMargin: itemStyle.headerTextBottomMargin
         }
 
-        visible: false //!tabBar.active // TODO re-enable
+        visible: !tabBar.active && !buttonView.moving
+        opacity: visible ? 1 : 0
+
+        Behavior on opacity {
+            SequentialAnimation {
+                PropertyAction { property: "opacity"; value: 0 }
+                PauseAnimation { duration: 1000 }
+                NumberAnimation { from: 0; to: 1; duration: 600 }
+            }
+        }
 
         x: getXPosition()
 
