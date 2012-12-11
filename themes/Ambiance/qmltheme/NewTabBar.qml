@@ -103,7 +103,8 @@ Item {
                     AbstractButton {
                         id: button
                         width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
-                        property bool selected: (index === tabs.selectedTabIndex)
+                        property bool selected: (index === tabs.selectedTabIndex) &&
+                                                (tabBar.active || theRow.rowNumber === buttonView.activeButtonRowNumber)
 
                         anchors.top: parent.top
                         height: parent.height - itemStyle.headerTextBottomMargin
@@ -131,6 +132,7 @@ Item {
                         }
 
                         onClicked: {
+                            print("index = "+buttonView.currentIndex);
                             if (!activatingTimer.running) {
                                 buttonView.activeButtonRowNumber = theRow.rowNumber;
                                 tabs.selectedTabIndex = index;
