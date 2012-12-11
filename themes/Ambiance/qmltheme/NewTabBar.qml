@@ -123,7 +123,6 @@ Item {
                             anchors {
                                 left: parent.left
                                 leftMargin: units.gu(2)
-                                rightMargin: units.gu(0)
                                 baseline: parent.bottom
                             }
                             text: modelData.title
