@@ -19,10 +19,10 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
 
 #include "itemstyleattached.h"
 #include "itemstyleattached_p.h"
-#include "rule.h"
 #include "themeengine.h"
 #include "themeengine_p.h"
 
@@ -219,9 +219,8 @@ bool ItemStyleAttachedPrivate::updateStyle()
             style = 0;
         }
         // make sure we have a theme
-        //result = (styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
-        if (styleRule && styleRule->style()) {
-            style = styleRule->createStyle(componentContext);
+        if (styleRule && styleRule->style) {
+            style = styleRule->style->create(componentContext);
             result = (style != 0);
         }
     } else
@@ -250,9 +249,8 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             delegate = 0;
         }
         // make sure we have a theme
-        //result = (delegateRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
-        if (styleRule && styleRule->delegate()) {
-            delegate = styleRule->createDelegate(componentContext);
+        if (styleRule && styleRule->delegate) {
+            delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(componentContext));
             result = (delegate != 0);
         }
     } else
@@ -337,9 +335,9 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
 
 /*!
   \internal
-  Internal slot to update the style of an item. The slot is connected to the item's
-  connected() signal. This is called only if the item defines "Component.onCompleted()"
-  attached signal.
+  Internal slot to update the style of an item when the theme is changed. The slot
+  is connected to the engine's themeChanged() signal. The lot should not be used
+  from other methods as it will cause performance problems.
   */
 void ItemStyleAttachedPrivate::_q_refreshStyle()
 {
@@ -462,7 +460,9 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
 QString ItemStyleAttached::path() const
 {
     Q_D(const ItemStyleAttached);
-    return d->styleRule ? d->styleRule->selector() : QString("(null)");
+    return d->styleRule ?
+                ThemeEnginePrivate::selectorToString(d->styleRule->path()) :
+                QString("(null)");
 }
 
 /*!

@@ -22,11 +22,12 @@
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
+#include <QtQuick/QQuickItem>
 
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "itemstyleattached.h"
-#include "rule.h"
+#include "suffixtree_p.h"
 
 class tst_ThemeEnginePrivate : public QObject
 {
@@ -116,11 +117,11 @@ void tst_ThemeEnginePrivate::testCase_urlMacro()
     engine->loadTheme(themeFile);
 
     Selector selector = engine->parseSelector(".baseA")[0];
-    Rule *rule = engine->styleRuleForPath(selector);
+    StyleTreeNode *rule = engine->styleRuleForPath(selector);
     QVERIFY2(rule, "Failure");
     if (rule) {
         // create style from the rule so we can check the validity of the URLs
-        QObject *style = rule->createStyle(quickEngine->rootContext());
+        QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
         QVERIFY2(style, "FAILURE");
 
         QString url = style->property("prop_baseA_A").toString();
@@ -157,13 +158,13 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     QCOMPARE(engine->errorString, QString());
 
     bool result = true;
-    Rule *rule;
+    StyleTreeNode *rule;
     Selector path, expected;
 
     path << SelectorNode("baseA", "", SelectorNode::Descendant);
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
+    result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
@@ -171,7 +172,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     path << SelectorNode("baseA", "", SelectorNode::Descendant);
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
+    result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
@@ -181,7 +182,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     expected << SelectorNode("baseA", "", SelectorNode::Descendant);
     rule = engine->styleRuleForPath(path);
     // should pass, but should be ".testA .baseA"
-    result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == expected);
+    result = (rule != 0) && (rule->path() == expected);
     QCOMPARE(result, true);
 
     path.clear();
@@ -189,7 +190,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     path << SelectorNode("baseA", "", SelectorNode::Child);
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (engine->parseSelector(rule->selector())[0] == path);
+    result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
@@ -197,7 +198,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     path << SelectorNode("baseA", "", SelectorNode::Descendant);
     rule = engine->styleRuleForPath(path);
     // should fail
-    result = (rule != 0) && !(engine->parseSelector(rule->selector())[0] == path);
+    result = (rule != 0) && !(rule->path() == path);
     QCOMPARE(result, true);
 }
 

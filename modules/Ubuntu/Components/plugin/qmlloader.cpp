@@ -88,7 +88,7 @@ void QmlLoader::finalizeThemeLoading()
                 }
                 QList<Selector> pathList = ThemeEnginePrivate::parseSelector(selector);
                 Q_FOREACH (const Selector &path, pathList) {
-                    styleTree->addStyleRule(path, rule);
+                    //styleTree->addStyleRule(path, rule);
                 }
             }
 

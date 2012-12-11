@@ -19,7 +19,8 @@
 #ifndef SUFFIXTREE_P_H
 #define SUFFIXTREE_P_H
 
-#include "rule.h"
+#include <QtCore/QHash>
+#include <QtCore/QString>
 
 // node of a selector
 class SelectorNode {
@@ -46,20 +47,23 @@ typedef QList<SelectorNode> Selector;
 uint qHash(const Selector &key);
 
 // style rule tree
+class QQmlComponent;
 class StyleTreeNode {
 public:
     StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule);
+    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate);
     ~StyleTreeNode();
     void clear();
-    void addStyleRule(const Selector &path, Rule *styleRule);
-    Rule *lookupStyleRule(const Selector &path, bool strict = false);
-    Rule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
+    void addStyleRule(const Selector &path, QQmlComponent *style, QQmlComponent *delegate);
+    Selector path() const;
+    StyleTreeNode *lookupStyleRule(const Selector &path, bool strict = false);
+    StyleTreeNode *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
 
 public:
     StyleTreeNode *parent;
     SelectorNode styleNode;
-    Rule *styleRule;
+    QQmlComponent *style;
+    QQmlComponent *delegate;
     // the key is the next style node's "relationship class#name" combination
     QHash<QString, StyleTreeNode*> children;
 };

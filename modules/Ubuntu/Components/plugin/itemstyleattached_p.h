@@ -22,10 +22,8 @@
 #include "itemstyleattached.h"
 #include "suffixtree_p.h"
 
-class QQmlComponent;
+//class QQmlComponent;
 class QQmlContext;
-class Rule;
-
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
 public:
@@ -41,7 +39,7 @@ public:
 
     // internal members
     QQmlContext *componentContext;
-    Rule *styleRule;
+    StyleTreeNode *styleRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;

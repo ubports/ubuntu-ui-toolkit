@@ -18,7 +18,6 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "rule.h"
 #include "itemstyleattached.h"
 #include "itemstyleattached_p.h"
 #include "themeloader_p.h"
@@ -162,14 +161,14 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
   Item. The selector identifying the Rule is built up by traversing the \a item
   parents and considering only those having ItemStyle elements attached in the hierarchy.
 */
-Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
+StyleTreeNode *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {
     if (!themeEngine->d_ptr->m_styleTree)
         return 0;
     if (themeEngine->d_ptr->m_styleCache.contains(path))
         return themeEngine->d_ptr->m_styleCache.value(path);
 
-    Rule *rule = themeEngine->d_ptr->m_styleTree->lookupStyleRule(path);
+    StyleTreeNode *rule = themeEngine->d_ptr->m_styleTree->lookupStyleRule(path);
     if (rule)
         themeEngine->d_ptr->m_styleCache.insert(path, rule);
     return rule;
