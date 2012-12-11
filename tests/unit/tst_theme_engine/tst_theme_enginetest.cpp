@@ -31,7 +31,6 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "rule.h"
 #include "itemstyleattached.h"
 
 class tst_ThemeEngine : public QObject

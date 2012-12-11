@@ -22,7 +22,6 @@
 #include "itemstyleattached_p.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
-#include "qmlloader_p.h"
 #include <QtCore/QString>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QJSEngine>
@@ -57,7 +56,8 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     themeEngine = q_ptr;
 
     // register theme loaders
-    themeLoaders[".qml"] = new QmlLoader(m_engine);
+    // so far we have one single loader, however keep the design so we can add
+    // more of them later if needed
     themeLoaders[".qmltheme"] = new QmlThemeLoader(m_engine);
 
     // connect theme settings to capture theme updates
