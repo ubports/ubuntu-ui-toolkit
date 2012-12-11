@@ -170,6 +170,7 @@ Item {
         Behavior on offset {
             SmoothedAnimation {
                 velocity: itemStyle.buttonPositioningVelocity
+                easing.type: Easing.InOutQuad
             }
         }
 
