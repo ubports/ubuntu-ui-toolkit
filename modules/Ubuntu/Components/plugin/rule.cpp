@@ -172,6 +172,7 @@ void RulePrivate::createComponent(QQmlEngine *engine, const QString &qmlCode, QQ
     *component = new QQmlComponent(engine);
     (*component)->setData(qmlCode.toLatin1(), QUrl());
     if ((*component)->isLoading() && !(*component)->isError()) {
+        qDebug() << "delayed rule completion";
         QObject::connect(*component, SIGNAL(statusChanged(QQmlComponent::Status)), q_ptr, SLOT(_q_componentCompleted(QQmlComponent::Status)));
     } else
         completeComponent(*component);

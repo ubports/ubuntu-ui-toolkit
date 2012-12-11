@@ -144,7 +144,6 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     delegate(0),
     componentContext(0),
     styleRule(0),
-    delegateRule(0),
     delayApplyingStyle(true),
     customStyle(false),
     customDelegate(false),
@@ -199,6 +198,7 @@ bool ItemStyleAttachedPrivate::updateStyleSelector()
     if (path != styleSelector) {
         styleSelector = path;
         // need to refresh the style rule(s)
+        styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
         return true;
     }
     return false;
@@ -219,9 +219,10 @@ bool ItemStyleAttachedPrivate::updateStyle()
             style = 0;
         }
         // make sure we have a theme
-        result = (styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
-        if (result) {
+        //result = (styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
+        if (styleRule && styleRule->style()) {
             style = styleRule->createStyle(componentContext);
+            result = (style != 0);
         }
     } else
         result = true;
@@ -249,9 +250,10 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             delegate = 0;
         }
         // make sure we have a theme
-        result = (delegateRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
-        if (result) {
-            delegate = delegateRule->createDelegate(componentContext);
+        //result = (delegateRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
+        if (styleRule && styleRule->delegate()) {
+            delegate = styleRule->createDelegate(componentContext);
+            result = (delegate != 0);
         }
     } else
         result = true;
@@ -320,11 +322,15 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
 {
     Q_Q(ItemStyleAttached);
     if (!customStyle || !customDelegate) {
-        if (!connectedToEngine)
+        if (!connectedToEngine) {
             connectedToEngine = (bool)QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
+            updateStyleSelector();
+        }
     } else {
         if (connectedToEngine)
             connectedToEngine = !QObject::disconnect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
+        if (!connectedToEngine)
+            styleRule = 0;
     }
 }
 
@@ -340,6 +346,9 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
     // no need to delay style applying any longer
     delayApplyingStyle = false;
 
+    // ... but style refresh is needed as the old styles are dead
+    styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
+
     updateCurrentStyle();
 }
 
@@ -353,8 +362,10 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
 
-    updateStyleSelector();
-    _q_refreshStyle();
+    if (updateStyleSelector() || delayApplyingStyle) {
+        delayApplyingStyle = false;
+        updateCurrentStyle();
+    }
 
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
@@ -408,8 +419,8 @@ void ItemStyleAttached::setName(const QString &name)
     if (d->styleData.styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
             d->listenThemeEngine();
-            d->updateStyleSelector();
-            d->updateCurrentStyle();
+            if (d->updateStyleSelector())
+                d->updateCurrentStyle();
         }
     }
 }
@@ -439,8 +450,8 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
     if (d->styleData.styleClass.compare(styleClass, Qt::CaseInsensitive)) {
         d->styleData.styleClass = styleClass.toLower();
         d->listenThemeEngine();
-        d->updateStyleSelector();
-        d->updateCurrentStyle();
+        if (d->updateStyleSelector())
+            d->updateCurrentStyle();
     }
 }
 
@@ -491,7 +502,7 @@ void ItemStyleAttached::setStyle(QObject *style)
             d->style = 0;
         }
         d->customStyle = (style != 0);
-        if (d->customStyle)
+        if (d->customStyle && d->customDelegate)
             d->styleRule = 0;
         d->style = style;
         d->listenThemeEngine();
@@ -534,8 +545,6 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
             d->delegate->deleteLater();
         }
         d->customDelegate = (delegate != 0);
-        if (d->customDelegate)
-            d->delegateRule = 0;
         d->delegate = delegate;
         d->listenThemeEngine();
         if (d->updateDelegate())

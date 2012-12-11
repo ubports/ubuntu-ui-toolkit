@@ -39,13 +39,9 @@ public:
     SelectorNode styleData;
     Selector styleSelector;
 
-    //QString styleClass;
-    //QString name;
-
     // internal members
     QQmlContext *componentContext;
     Rule *styleRule;
-    Rule *delegateRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
