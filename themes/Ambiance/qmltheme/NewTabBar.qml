@@ -27,8 +27,8 @@ Item {
     property Tabs tabs
 
     /*!
-      Use the tab bar only to display the currently selected tab,
-      or can the user interact with it and select a tab?
+      An inactive tab bar only displays the currently selected tab,
+      and an active tab bar can be interacted with to select a tab.
      */
     property bool active: false
 
