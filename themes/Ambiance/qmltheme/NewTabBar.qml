@@ -31,7 +31,7 @@ Item {
         onSelectedTabIndexChanged: {
             indicatorImage.visible = false;
             tabBar.active = false;
-            buttonView.position();
+            buttonView.updateOffset();
         }
     }
 
@@ -60,7 +60,7 @@ Item {
             buttonsClickableTimer.restart();
             deactivateTimer.restart();
         } else {
-            buttonView.position();
+            buttonView.updateOffset();
         }
     }
 
@@ -136,7 +136,6 @@ Item {
                     }
                     onClicked: {
                         if (tabBar.__buttonsClickable) {
-                            print(theRow.rowNumber);
                             buttonView.activeButtonRowNumber = theRow.rowNumber;
                             tabs.selectedTabIndex = index;
                             tabBar.active = false;
@@ -170,8 +169,9 @@ Item {
             }
         }
 
+        // used to track (in combination with selectedTabIndex) which button instance was clicked
         property int activeButtonRowNumber: 1
-        function position() {
+        function updateOffset() {
             if (!tabBar.relativeButtonPositions) return;
             var newOffset = activeButtonRowNumber + tabBar.buttonOffsets[tabBar.tabs.selectedTabIndex];
             var diff = offset - newOffset;
