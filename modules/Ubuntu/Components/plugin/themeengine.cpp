@@ -157,9 +157,7 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 
 /*!
   \internal
-  This method searches for a Rule element that matches the conditions for an
-  Item. The selector identifying the Rule is built up by traversing the \a item
-  parents and considering only those having ItemStyle elements attached in the hierarchy.
+  This method searches for styling components matching the given selector (style path).
 */
 StyleTreeNode *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {

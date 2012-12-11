@@ -23,7 +23,6 @@
 #include <QtCore/QUrl>
 #include "suffixtree_p.h"
 
-class Rule;
 class QQmlEngine;
 class QJSEngine;
 class QQuickItem;

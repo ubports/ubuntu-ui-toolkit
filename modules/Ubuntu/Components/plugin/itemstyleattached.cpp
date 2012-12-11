@@ -336,7 +336,7 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
 /*!
   \internal
   Internal slot to update the style of an item when the theme is changed. The slot
-  is connected to the engine's themeChanged() signal. The lot should not be used
+  is connected to the engine's themeChanged() signal. The slot should not be used
   from other methods as it will cause performance problems.
   */
 void ItemStyleAttachedPrivate::_q_refreshStyle()

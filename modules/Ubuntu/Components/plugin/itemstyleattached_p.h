@@ -22,7 +22,6 @@
 #include "itemstyleattached.h"
 #include "suffixtree_p.h"
 
-//class QQmlComponent;
 class QQmlContext;
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
