@@ -61,6 +61,10 @@ QString SelectorNode::toString() const
         result += "> ";
     if (!styleClass.isEmpty())
         result += "." + styleClass;
+    else if (!className.isEmpty()) {
+        qDebug() << "use" << className;
+        result += '.' + className;
+    }
     if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
@@ -68,7 +72,10 @@ QString SelectorNode::toString() const
 
 bool SelectorNode::operator==(const SelectorNode &other)
 {
-    bool ret = (styleClass == other.styleClass) &&
+    QString myClass = (styleClass.isEmpty()) ? className : styleClass;
+    QString otherClass = (other.styleClass.isEmpty()) ? other.className : other.styleClass;
+
+    bool ret = (myClass == otherClass) &&
                (((sensitivity & IgnoreStyleId) ==  IgnoreStyleId) ? true : styleId == other.styleId) &&
                (((sensitivity & IgnoreRelationship) ==  IgnoreRelationship) ? true : relationship == other.relationship);
     return ret;

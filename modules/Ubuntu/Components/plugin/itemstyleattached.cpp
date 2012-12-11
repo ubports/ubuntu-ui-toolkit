@@ -149,8 +149,9 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     customDelegate(false),
     connectedToEngine(false)
 {
-    QString className = attachee->metaObject()->className();
-    className = className.left(className.indexOf("_QMLTYPE")).toLower();
+    QString className = QString(attachee->metaObject()->className()).toLower();
+    // class name may have_QMLTYPE_XX or _QML_XX suffixes
+    className = className.left(className.indexOf("_qml"));
     styleData.className = className;
     styleData.styleClass = className;
     // refresh style upon reparenting!
@@ -164,7 +165,6 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
         componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
         componentContext->setContextProperty(itemProperty, attachee);
     }
-
 }
 
 ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
