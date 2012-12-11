@@ -88,6 +88,13 @@ Item {
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
 
+            // need to capture count change otherwise the count won't be
+            // reported for the proxy models
+            Connections {
+                target: flickableItem
+                onCountChanged: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
+            }
+
             ModelSectionCounter {
                 id: sectionCounter
                 view: flickableItem
