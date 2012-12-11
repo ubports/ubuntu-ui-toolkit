@@ -26,123 +26,38 @@ Item {
      */
     property Tabs tabs
 
-    Connections {
-        target: tabs
-        onSelectedTabIndexChanged: {
-            indicatorImage.visible = false;
-            tabBar.active = false;
-            buttonView.updateOffset();
-        }
-    }
-
     /*!
       Use the tab bar only to display the currently selected tab,
       or can the user interact with it and select a tab?
      */
     property bool active: false
 
-    /*!
-      \internal
-      Avoid interpreting a click to activate the tab bar as a button click.
-     */
-    property bool __buttonsClickable: true
-    Timer {
-        id: buttonsClickableTimer
-        interval: 300
-        running: false
-        onTriggered: __buttonsClickable = true
-    }
-
     onActiveChanged: {
+        indicatorImage.visible = false;
         if (active) {
-            indicatorImage.visible = false;
-            __buttonsClickable = false;
-            buttonsClickableTimer.restart();
-            deactivateTimer.restart();
+            activatingTimer.restart();
         } else {
             buttonView.updateOffset();
         }
     }
 
+    /*!
+      \internal
+      Avoid interpreting a click to activate the tab bar as a button click.
+     */
     Timer {
-        id: deactivateTimer
-        interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 1000
-        running: true
-        onTriggered: active = false
+        id: activatingTimer
+        interval: 800 // same as pressAndHold time
+        running: false
+        repeat: false
     }
 
-    // used to position buttons and indicator image
-    property real totalButtonWidth: 0
-    property var relativeButtonPositions: [] // TODO: remove this property
-    property var buttonOffsets: []
-
-    Component {
-        id: tabButtonRow
-        Row {
-            id: theRow
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-            }
-            width: childrenRect.width
-
-            // set in onCompleted of the PathView
-            property int rowNumber
-
-            Component.onCompleted: {
-                tabBar.totalButtonWidth = theRow.width;
-                tabBar.relativeButtonPositions = [];
-                tabBar.buttonOffsets = [];
-                for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
-                    tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
-                    tabBar.buttonOffsets.push(1 - children[i].x / totalButtonWidth);
-                }
-                tabBar.buttonOffsets.push(0.0);
-            }
-
-            Repeater {
-                id: repeater
-                model: tabs.__tabsModel.children
-
-                AbstractButton {
-                    id: button
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
-                    property bool selected: (index === tabs.selectedTabIndex)
-
-                    anchors.top: parent.top
-                    height: parent.height - itemStyle.headerTextBottomMargin
-
-                    Label {
-                        id: text
-                        color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
-                        opacity: (tabBar.active || selected) ? 1.0 : 0
-
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: 350
-                            }
-                        }
-
-                        anchors {
-                            left: parent.left
-                            leftMargin: units.gu(2)
-                            rightMargin: units.gu(0)
-                            baseline: parent.bottom
-                        }
-                        text: title
-                        fontSize: itemStyle.headerFontSize
-                        font.weight: itemStyle.headerFontWeight
-                        verticalAlignment: Text.AlignBottom
-                    }
-                    onClicked: {
-                        if (tabBar.__buttonsClickable) {
-                            buttonView.activeButtonRowNumber = theRow.rowNumber;
-                            tabs.selectedTabIndex = index;
-                            tabBar.active = false;
-                        }
-                    }
-                }
-            }
+    Connections {
+        target: tabs
+        onSelectedTabIndexChanged: {
+            indicatorImage.visible = false;
+            tabBar.active = false;
+            buttonView.updateOffset();
         }
     }
 
@@ -153,41 +68,107 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
+
+        // used to position buttons and indicator image
+        property real buttonRowWidth: 0
+        property var buttonOffsets: []
+
+        // There will be two buttonRows. Use activeButtonRowNumber
+        // to track (in combination with selectedTabIndex) which button instance was clicked
+        property int activeButtonRowNumber: 1
+
+        Component {
+            id: tabButtonRow
+            Row {
+                id: theRow
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+                width: childrenRect.width
+                property int rowNumber // set by buttonView
+
+                Component.onCompleted: {
+                    buttonView.buttonRowWidth = theRow.width;
+                    buttonView.buttonOffsets = [];
+                    for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
+                        buttonView.buttonOffsets.push(1 - children[i].x / buttonView.buttonRowWidth);
+                    }
+                    buttonView.buttonOffsets.push(0.0);
+                }
+
+                Repeater {
+                    id: repeater
+                    model: tabs.__tabsModel.children
+
+                    AbstractButton {
+                        id: button
+                        width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+                        property bool selected: (index === tabs.selectedTabIndex)
+
+                        anchors.top: parent.top
+                        height: parent.height - itemStyle.headerTextBottomMargin
+
+                        Label {
+                            id: text
+                            color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
+                            opacity: (tabBar.active || selected) ? 1.0 : 0
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: 350
+                                }
+                            }
+
+                            anchors {
+                                left: parent.left
+                                leftMargin: units.gu(2)
+                                rightMargin: units.gu(0)
+                                baseline: parent.bottom
+                            }
+                            text: modelData.title
+                            fontSize: itemStyle.headerFontSize
+                            font.weight: itemStyle.headerFontWeight
+                            verticalAlignment: Text.AlignBottom
+                        }
+
+                        onClicked: {
+                            if (!activatingTimer.running) {
+                                buttonView.activeButtonRowNumber = theRow.rowNumber;
+                                tabs.selectedTabIndex = index;
+                            } else {
+                                activatingTimer.stop();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: tabBar.totalButtonWidth > tabBar.width
+        property bool needsScrolling: buttonRowWidth > tabBar.width
         interactive: needsScrolling
-        width: needsScrolling ? tabBar.width : tabBar.totalButtonWidth
+        width: needsScrolling ? tabBar.width : buttonRowWidth
         clip: !needsScrolling // avoid showing the same button twice
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0
         path: Path {
-            startX: -tabBar.totalButtonWidth/2
+            startX: -buttonView.buttonRowWidth/2
             PathLine {
-                x: tabBar.totalButtonWidth*1.5
+                x: buttonView.buttonRowWidth*1.5
             }
         }
 
-        // used to track (in combination with selectedTabIndex) which button instance was clicked
-        property int activeButtonRowNumber: 1
+
+
         function updateOffset() {
-            if (!tabBar.relativeButtonPositions) return;
-            var newOffset = activeButtonRowNumber + tabBar.buttonOffsets[tabBar.tabs.selectedTabIndex];
-            var diff = offset - newOffset;
-            if (diff < -1) newOffset = newOffset - 2;
+            if (!buttonOffsets) return;
+            var newOffset = activeButtonRowNumber + buttonOffsets[tabBar.tabs.selectedTabIndex];
+            if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
             indicatorImage.visible = true;
-        }
-
-        function buttonInRange(i) {
-            var relativePosition = offset - Math.floor(offset);
-            return (buttonOffsets[i] > relativePosition && relativePosition > buttonOffsets[i+1]);
-        }
-
-        Component.onCompleted: {
-            children[1].rowNumber = 0;
-            children[2].rowNumber = 1;
         }
 
         Behavior on offset {
@@ -196,8 +177,20 @@ Item {
             }
         }
 
-        onMovementStarted: deactivateTimer.stop()
-        onMovementEnded: deactivateTimer.restart()
+        Component.onCompleted: {
+            children[1].rowNumber = 0;
+            children[2].rowNumber = 1;
+        }
+
+        // deactivate the tab bar after inactivity
+        onMovementStarted: idleTimer.stop()
+        onMovementEnded: idleTimer.restart()
+        Timer {
+            id: idleTimer
+            interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 1000
+            running: tabBar.active
+            onTriggered: tabBar.active = false
+        }
     }
 
     Image {
@@ -208,7 +201,7 @@ Item {
             bottomMargin: itemStyle.headerTextBottomMargin
         }
 
-        visible: !tabBar.active && !buttonView.moving
+        visible: !tabBar.active
         opacity: visible ? 1 : 0
 
         Behavior on opacity {
@@ -229,7 +222,7 @@ Item {
     }
 
     MouseArea {
-        // an inactive tabBar can be clicked to make it active
+        // an inactive tabBar can be pressed to make it active
         id: mouseArea
         anchors.fill: parent
         enabled: !tabBar.active
