@@ -39,21 +39,25 @@ Item {
         when: windowShown
 
         function init() {
-            console.debug("init is called before each test");
+            console.debug(">> init");
+            console.debug("<< init");    
         }
-        
+
         function cleanup() {
-            console.debug("cleanup is called after each test");
+            console.debug(">> cleanup");
+            console.debug("<< cleanup");
         }
-        
+
         function initTestCase() {
-            console.debug("initTestCase is called once before running any tests");
+            console.debug(">> initTestCase");
+            console.debug("<< initTestCase");
         }
-        
+
         function cleanupTestCase() {
-            console.debug("cleanupTestCase is called once after all tests");
+            console.debug(">> cleanupTestCase");
+            console.debug("<< cleanupTestCase");
         }
-        
+
         /* 
          * the data for the test_text(data)
          */

@@ -73,9 +73,8 @@ Item {
         when: windowShown
         
         function init() {
-            console.debug(">> init is called before each test");
-
-            console.debug("<< init is called before each test");
+            console.debug(">> init");
+            console.debug("<< init");
         }
         
         function cleanup() {
