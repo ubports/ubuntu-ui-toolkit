@@ -19,6 +19,8 @@
 #ifndef SUFFIXTREE_P_H
 #define SUFFIXTREE_P_H
 
+#include "rule.h"
+
 // node of a selector
 class SelectorNode {
     public:
@@ -29,9 +31,10 @@ class SelectorNode {
         IgnoreStyleId = 0x02,
         IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity = Normal);
+    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship = Descendant, NodeSensitivity sensitivity = Normal);
     QString toString() const;
     bool operator==(const SelectorNode &other);
+    QString className;
     QString styleClass;
     QString styleId;
     Relationship relationship;

@@ -20,6 +20,7 @@
 #include "themeengine_p.h"
 #include "rule.h"
 #include "itemstyleattached.h"
+#include "itemstyleattached_p.h"
 #include "themeloader_p.h"
 #include "qmlthemeloader_p.h"
 #include "qmlloader_p.h"
@@ -168,22 +169,25 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
   */
 Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
 {
+    Q_UNUSED(forceClassName)
     Selector selector;
     QQuickItem *parent;
 
     while (obj) {
         ItemStyleAttached *style = attachedStyle(obj);
-        QString styleClass = style ? style->styleClass() : QString();
+        //QString styleClass = style ? style->styleClass() : QString();
+        SelectorNode node = style->d_func()->styleData;
 
         parent = obj->parentItem();
 
         // we talk about Child relationship when the parent has styling properties
         // otherwise we talk about Descendant
         ItemStyleAttached *parentStyle = attachedStyle(parent);
-        SelectorNode::Relationship relation = parentStyle ?
-                    SelectorNode::Child : SelectorNode::Descendant;
+        //SelectorNode::Relationship relation = parentStyle ? SelectorNode::Child : SelectorNode::Descendant;
+        node.relationship = parentStyle ? SelectorNode::Child : SelectorNode::Descendant;
 
         // if class is not defined, use the component's meta class name
+        /*
         if (styleClass.isEmpty() || forceClassName) {
             styleClass = obj->metaObject()->className();
             styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE")).toLower();
@@ -192,6 +196,8 @@ Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) c
         if (!styleClass.isEmpty() || !styleId.isEmpty()) {
             selector.prepend(SelectorNode(styleClass, styleId, relation));
         }
+        */
+        selector.prepend(node);
 
         // get the next ItemStyleAttached, we don't care the rest
         while (parent && !parentStyle) {

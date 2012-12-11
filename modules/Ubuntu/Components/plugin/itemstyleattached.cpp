@@ -150,6 +150,10 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     customDelegate(false),
     connectedToEngine(false)
 {
+    QString className = attachee->metaObject()->className();
+    className = className.left(className.indexOf("_QMLTYPE")).toLower();
+    styleData.className = className;
+    styleData.styleClass = className;
     // refresh style upon reparenting!
     // there is no reason to do styling till the parent is not set and this applies
     // to the root objects too as even those have an internal parent
@@ -167,7 +171,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
 ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
 {
     // remove name from the theming engine
-    if (!name.isEmpty())
+    if (!styleData.styleId.isEmpty())
         ThemeEngine::instance()->registerName(attachee, QString());
 }
 
@@ -270,15 +274,13 @@ bool ItemStyleAttachedPrivate::registerName(const QString &id)
     bool result = true;
     Q_Q(ItemStyleAttached);
     if (ThemeEngine::instance()->registerName(attachee, id)) {
-        name = id;
-        attachee->setProperty("name", name);
+        styleData.styleId = id;
+        attachee->setProperty("name", styleData.styleId);
     } else {
-        QString className = q->metaObject()->className();
-        className = className.left(className.indexOf("_QMLTYPE"));
         ThemeEnginePrivate::setError(QString("Instance %1 already registered. Resetting instance for %2.")
-                                     .arg(name)
-                                     .arg(className));
-        name = QString();
+                                     .arg(styleData.styleId)
+                                     .arg(styleData.className));
+        styleData.styleId = QString();
         result = false;
     }
     return result;
@@ -369,7 +371,7 @@ ItemStyleAttached *ItemStyleAttached::qmlAttachedProperties(QObject *obj)
 QString ItemStyleAttached::name() const
 {
     Q_D(const ItemStyleAttached);
-    return d->name;
+    return d->styleData.styleId;
 }
 /*!
   Updates the name property.
@@ -377,7 +379,7 @@ QString ItemStyleAttached::name() const
 void ItemStyleAttached::setName(const QString &name)
 {
     Q_D(ItemStyleAttached);
-    if (d->name.compare(name, Qt::CaseInsensitive)) {
+    if (d->styleData.styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
             d->listenThemeEngine();
             d->updateCurrentStyle();
@@ -399,7 +401,7 @@ void ItemStyleAttached::setName(const QString &name)
 QString ItemStyleAttached::styleClass() const
 {
     Q_D(const ItemStyleAttached);
-    return d->styleClass;
+    return d->styleData.styleClass;
 }
 /*!
   Sets the class property value.
@@ -407,8 +409,8 @@ QString ItemStyleAttached::styleClass() const
 void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
     Q_D(ItemStyleAttached);
-    if (d->styleClass.compare(styleClass, Qt::CaseInsensitive)) {
-        d->styleClass = styleClass.toLower();
+    if (d->styleData.styleClass.compare(styleClass, Qt::CaseInsensitive)) {
+        d->styleData.styleClass = styleClass.toLower();
         d->listenThemeEngine();
         d->updateCurrentStyle();
     }

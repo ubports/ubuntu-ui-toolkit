@@ -20,6 +20,7 @@
 #define ITEMSTYLEATTACHED_P_H
 
 #include "itemstyleattached.h"
+#include "suffixtree_p.h"
 
 class QQmlComponent;
 class QQmlContext;
@@ -35,8 +36,10 @@ public:
     QQuickItem *attachee;
     QObject *style;
     QQuickItem *delegate;
-    QString styleClass;
-    QString name;
+    SelectorNode styleData;
+
+    //QString styleClass;
+    //QString name;
 
     // internal members
     QQmlContext *componentContext;

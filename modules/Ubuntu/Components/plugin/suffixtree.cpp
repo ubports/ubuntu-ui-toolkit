@@ -34,7 +34,8 @@
 */
 
 SelectorNode::SelectorNode() :
-    relationship(Descendant)
+    relationship(Descendant),
+    sensitivity(Normal)
 {}
 /*!
     \internal
