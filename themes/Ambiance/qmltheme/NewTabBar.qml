@@ -89,7 +89,8 @@ Item {
                 Component.onCompleted: {
                     buttonView.buttonRowWidth = theRow.width;
                     buttonView.buttonOffsets = [];
-                    for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
+                    for (var i=0; i < children.length; i++) {
+                        if (children[i] === repeater) continue;
                         buttonView.buttonOffsets.push(1 - children[i].x / buttonView.buttonRowWidth);
                     }
                     buttonView.buttonOffsets.push(0.0);
