@@ -115,7 +115,7 @@ Item {
 
                             Behavior on opacity {
                                 NumberAnimation {
-                                    duration: 350
+                                    duration: itemStyle.headerTextFadeDuration
                                     easing.type: Easing.InOutQuad
                                 }
                             }

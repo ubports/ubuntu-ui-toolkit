@@ -32,6 +32,7 @@ QtObject {
 
     property color headerTextColor
     property color headerTextColorSelected
+    property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight
 
