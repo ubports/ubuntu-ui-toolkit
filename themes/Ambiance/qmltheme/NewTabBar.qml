@@ -128,7 +128,6 @@ Item {
                             text: modelData.title
                             fontSize: itemStyle.headerFontSize
                             font.weight: itemStyle.headerFontWeight
-                            verticalAlignment: Text.AlignBottom
                         }
 
                         onClicked: {
