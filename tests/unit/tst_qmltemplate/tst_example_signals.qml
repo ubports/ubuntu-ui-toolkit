@@ -23,8 +23,6 @@ Item {
     width: 200
     height: 200
     
-    
-    
     // The objects
     Button {
         id: objectUnderTest
@@ -32,20 +30,14 @@ Item {
         anchors.fill: parent
     }
 
-    Label {
-        id: testObject1
-    }
-
-    
-
     TestCase {
-        name: "Example1"
+        name: "ExampleCheckSignals"
         when: windowShown
         
-       SignalSpy {
-        id: signalSpy
-        target: objectUnderTest
-       }
+        SignalSpy {
+            id: signalSpy
+            target: objectUnderTest
+        }
         
         function init() {
             console.debug("init is called before each test");
@@ -63,49 +55,20 @@ Item {
             console.debug("cleanupTestCase is called once after all tests");
         }
         
-        /* 
-         * the data for the test_text(data)
-         */
-        function test_text_data() {
-            return [
-                    { tag: "A normal text", text: "Hello World!", expectFail: false },
-                    { tag: "Unable to set object* to text", text: testObject1, expectFail: true }
-                   ];
-        }
-        
-        /*
-         * a data driven test function
-         */
-        function test_text(data) {
-            // check if the expectFail flag is up in data
-            if (data.expectFail) {
-                expectFail("",data.tag);
-            }
-            
-            // try to set the data
-            try {
-                objectUnderTest.text = data.text;
-            } catch (e) {
-                // catched an exception, check if we are expecting a failure, if we are then lets ignore.
-                if (!data.expectFail) { console.error(e); } else { console.debug(e); }
-            }
-            
-            // do the comparing
-            compare(objectUnderTest.text,data.text,"Was able to set " + data.text + " as text.");
-        }
-        
         /*
          * test for a signal existence
          */
         function test_signals_exists_data() {
-	    return [{ tag: "clicked", signalName: "clicked", validSignal: true },
-      		{ tag: "hovered", signalName: "hovered", validSignal: true } ];
+	        return [
+	                { tag: "clicked", signalName: "clicked", validSignal: true },
+          		    { tag: "hovered", signalName: "hovered", validSignal: true } 
+          		   ];
         }
 
         function test_signals_exists(data) {
             signalSpy.signalName = data.signalName;
             compare(signalSpy.signalName,data.signalName,"signalName is set to " + data.signalName);
-            compare(signalSpy.valid,data.validSignal,signalSpy.signalName + " signal exists")
+            compare(signalSpy.valid,data.validSignal,"valid is " + data.validSignal);
         }
         
         function test_signal_emission_clicked() {
