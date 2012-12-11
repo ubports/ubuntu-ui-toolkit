@@ -25,8 +25,6 @@
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 
-#include <QDebug>
-
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
 {
@@ -47,7 +45,7 @@ QQuickItem *QuickUtils::rootObject()
 /*!
  * \internal
  * Creates an instance out of a delegate using the roles specified in the
- * modelData. Accepts QAbstractListModel, QAbstractPropxyModel, QStringList
+ * modelData. Accepts QAbstractListModel, QAbstractProxyModel, QStringList
  * and QVariantList models.
  */
 

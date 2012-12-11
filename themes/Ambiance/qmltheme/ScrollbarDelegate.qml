@@ -92,7 +92,7 @@ Item {
             // reported for the proxy models
             Connections {
                 target: flickableItem
-                onCountChanged: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
+                onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
             }
 
             ModelSectionCounter {
