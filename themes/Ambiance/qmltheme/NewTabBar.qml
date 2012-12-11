@@ -132,7 +132,6 @@ Item {
                         }
 
                         onClicked: {
-                            print("index = "+buttonView.currentIndex);
                             if (!activatingTimer.running) {
                                 buttonView.activeButtonRowNumber = theRow.rowNumber;
                                 tabs.selectedTabIndex = index;
