@@ -48,8 +48,6 @@ Item {
     Timer {
         id: activatingTimer
         interval: 800 // same as pressAndHold time
-        running: false
-        repeat: false
     }
 
     Connections {
