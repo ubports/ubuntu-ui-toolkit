@@ -158,66 +158,20 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
 
 /*!
   \internal
-  Traverses and returns the path from \a obj up to root as a list of class
-  and name pairs, setting the relationship between the selector nodes
-  depending on the relationship between the parent and child, i.e. if a certain
-  ItemStyleAttached's parent is also a ItemStyleAttached, the SelectorNode::Child
-  relation, otherwise SelectorNode::Descendant relation is used.
-
-  The obj is an Item derived element and should have class and name properties
-  to be used if styling happens on them.
-  */
-Selector ThemeEnginePrivate::getSelector(QQuickItem *obj, bool forceClassName) const
-{
-    Q_UNUSED(forceClassName)
-    Selector selector;
-    QQuickItem *parent;
-
-    while (obj) {
-        ItemStyleAttached *style = attachedStyle(obj);
-        //QString styleClass = style ? style->styleClass() : QString();
-        SelectorNode node = style->d_func()->styleData;
-
-        parent = obj->parentItem();
-
-        // we talk about Child relationship when the parent has styling properties
-        // otherwise we talk about Descendant
-        ItemStyleAttached *parentStyle = attachedStyle(parent);
-        //SelectorNode::Relationship relation = parentStyle ? SelectorNode::Child : SelectorNode::Descendant;
-        node.relationship = parentStyle ? SelectorNode::Child : SelectorNode::Descendant;
-
-        // if class is not defined, use the component's meta class name
-        /*
-        if (styleClass.isEmpty() || forceClassName) {
-            styleClass = obj->metaObject()->className();
-            styleClass = styleClass.left(styleClass.indexOf("_QMLTYPE")).toLower();
-        }
-        QString styleId = style->name();
-        if (!styleClass.isEmpty() || !styleId.isEmpty()) {
-            selector.prepend(SelectorNode(styleClass, styleId, relation));
-        }
-        */
-        selector.prepend(node);
-
-        // get the next ItemStyleAttached, we don't care the rest
-        while (parent && !parentStyle) {
-            parent = parent->parentItem();
-            parentStyle = attachedStyle(parent);
-        }
-        obj = parent;
-    }
-    return selector;
-}
-
-/*!
-  \internal
-  Wrapper function above the style tree lookup. Exposed for functional testing.
+  This method searches for a Rule element that matches the conditions for an
+  Item. The selector identifying the Rule is built up by traversing the \a item
+  parents and considering only those having ItemStyle elements attached in the hierarchy.
 */
 Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {
-    if (!m_styleTree)
+    if (!themeEngine->d_ptr->m_styleTree)
         return 0;
-    Rule *rule = m_styleTree->lookupStyleRule(path);
+    if (themeEngine->d_ptr->m_styleCache.contains(path))
+        return themeEngine->d_ptr->m_styleCache.value(path);
+
+    Rule *rule = themeEngine->d_ptr->m_styleTree->lookupStyleRule(path);
+    if (rule)
+        themeEngine->d_ptr->m_styleCache.insert(path, rule);
     return rule;
 }
 
@@ -225,6 +179,36 @@ Rule *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 /*=============================================================================
   Utility functions
 =============================================================================*/
+
+/*!
+  \internal
+  Checks whether the instance can be registered to the given name, and registers it.
+  Removes any previous registration.
+*/
+bool ThemeEnginePrivate::registerName(QQuickItem *item, const QString &newName)
+{
+    bool ret = true;
+
+    // check first whether the next ID is valid and can be registered
+    QString prevName(item->property("name").toString());
+    if (newName.isEmpty()) {
+        // remove the previous occurence
+        if (!prevName.isEmpty())
+            themeEngine->d_ptr->m_instanceCache.remove(prevName);
+    } else {
+        if (themeEngine->d_ptr->m_instanceCache.contains(newName))
+            ret = false;
+        else {
+            // remove the previous occurence
+            if (!prevName.isEmpty())
+                themeEngine->d_ptr->m_instanceCache.remove(prevName);
+            // register instance
+            themeEngine->d_ptr->m_instanceCache.insert(newName, item);
+        }
+    }
+
+    return ret;
+}
 
 /*!
   \internal
@@ -360,61 +344,6 @@ ThemeEngine *ThemeEngine::instance()
         ret->d_ptr->_q_updateTheme();
     }
     return ret;
-}
-
-/*!
-  \internal
-  Checks whether the instance can be registered to the given name, and registers it.
-  Removes any previous registration.
-*/
-bool ThemeEngine::registerName(QQuickItem *item, const QString &newName)
-{
-    Q_D(ThemeEngine);
-    bool ret = true;
-
-    // check first whether the next ID is valid and can be registered
-    QString prevName(item->property("name").toString());
-    if (newName.isEmpty()) {
-        // remove the previous occurence
-        if (!prevName.isEmpty())
-            d->m_instanceCache.remove(prevName);
-    } else {
-        if (d->m_instanceCache.contains(newName))
-            ret = false;
-        else {
-            // remove the previous occurence
-            if (!prevName.isEmpty())
-                d->m_instanceCache.remove(prevName);
-            // register instance
-            d->m_instanceCache.insert(newName, item);
-        }
-    }
-
-    return ret;
-}
-
-/*!
-  \internal
-  This method searches for a Rule element that matches the conditions for an
-  Item. The selector identifying the Rule is built up by traversing the \a item
-  parents and considering only those having ItemStyle elements attached in the hierarchy.
-  */
-Rule *ThemeEngine::lookupStyleRule(QQuickItem *item, bool forceClassName)
-{
-    Q_D(ThemeEngine);
-
-    Selector path = d->getSelector(item, forceClassName);
-
-    // check whether we have the path cached
-    if (d->m_styleCache.contains(path)) {
-        return d->m_styleCache.value(path);
-    }
-    Rule *rule = d->styleRuleForPath(path);
-    if (rule) {
-        // cache the rule
-        d->m_styleCache.insert(path, rule);
-    }
-    return rule;
 }
 
 /*!

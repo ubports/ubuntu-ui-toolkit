@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* ThemeEngine class
+- lookupStyleRule
 
 
 SDK 0.1.20

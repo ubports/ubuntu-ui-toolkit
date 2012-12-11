@@ -66,10 +66,10 @@ public:
     void removeWatchedFiles();
     void addWatchedFiles(const QStringList &watchedThemeFiles);
     void loadTheme(const QUrl &themeFile);
-    Selector getSelector(QQuickItem *obj, bool forceClassName) const;
-    Rule *styleRuleForPath(const Selector &path);
 
     // utility functions that are independent from the instance
+    static Rule *styleRuleForPath(const Selector &path);
+    static bool registerName(QQuickItem *item, const QString &newName);
     static void setError(const QString &error);
     static ItemStyleAttached *attachedStyle(QObject *obj);
     static QString selectorToString(const Selector &path);

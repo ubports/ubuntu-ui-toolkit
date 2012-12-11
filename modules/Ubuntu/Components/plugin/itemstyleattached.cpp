@@ -172,7 +172,36 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
 {
     // remove name from the theming engine
     if (!styleData.styleId.isEmpty())
-        ThemeEngine::instance()->registerName(attachee, QString());
+        ThemeEnginePrivate::registerName(attachee, QString());
+}
+
+bool ItemStyleAttachedPrivate::updateStyleSelector()
+{
+    Selector path;
+    SelectorNode::Relationship relation = SelectorNode::Child;
+    QQuickItem *parent = attachee->parentItem();
+    ItemStyleAttached *parentStyle = 0;
+
+    path << styleData;
+
+    while (parent) {
+        parentStyle = ThemeEnginePrivate::attachedStyle(parent);
+        if (!parentStyle)
+            relation = SelectorNode::Descendant;
+        else {
+            path[0].relationship = relation;
+            path.prepend(parentStyle->d_ptr->styleData);
+            relation = SelectorNode::Child;
+        }
+        parent = parent->parentItem();
+    }
+
+    if (path != styleSelector) {
+        styleSelector = path;
+        // need to refresh the style rule(s)
+        return true;
+    }
+    return false;
 }
 
 bool ItemStyleAttachedPrivate::updateStyle()
@@ -190,9 +219,7 @@ bool ItemStyleAttachedPrivate::updateStyle()
             style = 0;
         }
         // make sure we have a theme
-        result = (styleRule = ThemeEngine::instance()->lookupStyleRule(attachee));
-        if (!result || (result && !styleRule->style()))
-            result = (styleRule = ThemeEngine::instance()->lookupStyleRule(attachee, true));
+        result = (styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
         if (result) {
             style = styleRule->createStyle(componentContext);
         }
@@ -222,9 +249,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             delegate = 0;
         }
         // make sure we have a theme
-        result = (delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee));
-        if (!result || (result && !delegateRule->delegate()))
-            result = (delegateRule = ThemeEngine::instance()->lookupStyleRule(attachee, true));
+        result = (delegateRule = ThemeEnginePrivate::styleRuleForPath(styleSelector));
         if (result) {
             delegate = delegateRule->createDelegate(componentContext);
         }
@@ -273,7 +298,7 @@ bool ItemStyleAttachedPrivate::registerName(const QString &id)
 {
     bool result = true;
     Q_Q(ItemStyleAttached);
-    if (ThemeEngine::instance()->registerName(attachee, id)) {
+    if (ThemeEnginePrivate::registerName(attachee, id)) {
         styleData.styleId = id;
         attachee->setProperty("name", styleData.styleId);
     } else {
@@ -328,6 +353,7 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
 
+    updateStyleSelector();
     _q_refreshStyle();
 
     // need to reapply styling on each child of the attachee!
@@ -382,6 +408,7 @@ void ItemStyleAttached::setName(const QString &name)
     if (d->styleData.styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
             d->listenThemeEngine();
+            d->updateStyleSelector();
             d->updateCurrentStyle();
         }
     }
@@ -412,6 +439,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
     if (d->styleData.styleClass.compare(styleClass, Qt::CaseInsensitive)) {
         d->styleData.styleClass = styleClass.toLower();
         d->listenThemeEngine();
+        d->updateStyleSelector();
         d->updateCurrentStyle();
     }
 }

@@ -46,9 +46,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCase_initializeEngine();
-    void testCase_registerName();
     void testCase_loadTheme();
-    void testCase_lookupStyleRule();
     void testCase_reparenting();
     void testCase_blockDeclaration();
     void testCase_selectorDelegates();
@@ -89,28 +87,6 @@ void tst_ThemeEngine::testCase_initializeEngine()
     bool result = (ThemeEngine::initializeEngine(quickEngine) != 0);
     // theme loading might fail, however don't care about it
     QCOMPARE(result, true);
-}
-
-void tst_ThemeEngine::testCase_registerName()
-{
-    ThemeEngine::instance()->resetError();
-    QQuickItem *item = new QQuickItem(0);
-    // first time must pass
-    bool result = ThemeEngine::instance()->registerName(item, "test");
-    QCOMPARE(result, true);
-    // second time should fail
-    result = ThemeEngine::instance()->registerName(item, "test");
-    QCOMPARE(result, false);
-    // this should pass always
-    result = ThemeEngine::instance()->registerName(item, QString());
-    QCOMPARE(result, true);
-    delete item;
-}
-
-void tst_ThemeEngine::testCase_lookupStyleRule()
-{
-    //ThemeEngine::lookupStyleRule requires a complete QML environment therefore its
-    // functionality will be tested using its privates
 }
 
 void tst_ThemeEngine::testCase_loadTheme()

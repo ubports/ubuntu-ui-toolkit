@@ -38,6 +38,7 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+    void testCase_registerName();
     void testCase_loadTheme();
     void testCase_urlMacro();
     void testCase_styleRuleForPath();
@@ -64,10 +65,7 @@ void tst_ThemeEnginePrivate::initTestCase()
     // declarative does not create the Rule objects but QObjects, and does
     // not give any error...
 
-    const char *uri = QString("Ubuntu.Components").toLatin1();
     ThemeEngine::initializeEngine(quickEngine);
-    qmlRegisterType<Rule>(uri, 0, 1, "Rule");
-    qmlRegisterType<ItemStyleAttached>(uri, 0, 1, "ItemStyle");
 
     // engine privates can be created with its public class; therefore
     // we create an engine class and use its privates
@@ -76,6 +74,22 @@ void tst_ThemeEnginePrivate::initTestCase()
 
 void tst_ThemeEnginePrivate::cleanupTestCase()
 {
+}
+
+void tst_ThemeEnginePrivate::testCase_registerName()
+{
+    ThemeEngine::instance()->resetError();
+    QQuickItem *item = new QQuickItem(0);
+    // first time must pass
+    bool result = ThemeEnginePrivate::registerName(item, "test");
+    QCOMPARE(result, true);
+    // second time should fail
+    result = ThemeEnginePrivate::registerName(item, "test");
+    QCOMPARE(result, false);
+    // this should pass always
+    result = ThemeEnginePrivate::registerName(item, QString());
+    QCOMPARE(result, true);
+    delete item;
 }
 
 void tst_ThemeEnginePrivate::testCase_loadTheme()

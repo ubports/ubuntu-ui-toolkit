@@ -37,6 +37,7 @@ public:
     QObject *style;
     QQuickItem *delegate;
     SelectorNode styleData;
+    Selector styleSelector;
 
     //QString styleClass;
     //QString name;
@@ -50,6 +51,7 @@ public:
     bool customDelegate;
     bool connectedToEngine;
 
+    bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
