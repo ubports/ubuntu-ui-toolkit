@@ -40,8 +40,13 @@ QtObject {
     property real tabBarHeight
     property real headerTextBottomMargin
 
-    /*
-      The time of inactivity before the tab bar is automatically deactivated
+    /*!
+      The time of inactivity in ms before the tab bar is automatically deactivated
      */
     property int deactivateTime
+
+    /*!
+      The velocity at which buttons are repositioned when a new tab gets selected.
+     */
+    property real buttonPositioningVelocity
 }

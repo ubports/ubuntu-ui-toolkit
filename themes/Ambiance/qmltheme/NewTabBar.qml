@@ -161,8 +161,6 @@ Item {
             }
         }
 
-
-
         function updateOffset() {
             if (!buttonOffsets) return;
             var newOffset = activeButtonRowNumber + buttonOffsets[tabBar.tabs.selectedTabIndex];
@@ -173,7 +171,7 @@ Item {
 
         Behavior on offset {
             SmoothedAnimation {
-                velocity: 1
+                velocity: itemStyle.buttonPositioningVelocity
             }
         }
 

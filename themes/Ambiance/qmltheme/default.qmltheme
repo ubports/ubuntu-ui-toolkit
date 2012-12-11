@@ -96,6 +96,7 @@ Examples:
     indicatorImageSource: url("artwork/chevron.png");
     tabBarHeight: units.gu(6.5);
     deactivateTime: 3000;
+    buttonPositioningVelocity: 1.0
 }
 
 .dark-button {
