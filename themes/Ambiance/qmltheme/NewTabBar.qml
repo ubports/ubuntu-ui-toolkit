@@ -207,7 +207,10 @@ Item {
             SequentialAnimation {
                 PropertyAction { property: "opacity"; value: 0 }
                 PauseAnimation { duration: 1000 }
-                NumberAnimation { from: 0; to: 1; duration: 600 }
+                NumberAnimation {
+                    from: 0; to: 1; duration: 600
+                    easing.type: Easing.InOutQuad
+                }
             }
         }
 
