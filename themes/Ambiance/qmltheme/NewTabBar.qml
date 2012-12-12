@@ -67,10 +67,6 @@ Item {
             width: childrenRect.width
             property int rowNumber: modelData
 
-            Component.onCompleted: {
-                buttonView.buttonRowWidth = theRow.width;
-            }
-
             Repeater {
                 id: repeater
                 model: tabs.__tabsModel.children
@@ -96,7 +92,7 @@ Item {
                     property bool selected: (index === tabs.selectedTabIndex) &&
                                             (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
 
-                    property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
+                    property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
                     Component.onCompleted: buttonView.buttons.push(button)
 
@@ -168,7 +164,8 @@ Item {
             bottom: parent.bottom
         }
 
-        property real buttonRowWidth: 1
+        // initial width needs to be parent.width, otherwise the contents will be messed up
+        property real buttonRowWidth: currentItem ? currentItem.width : parent.width
         property var buttons: []
 
         // Track which button was last clicked
@@ -218,7 +215,9 @@ Item {
             }
         }
 
-        Component.onCompleted: selectButton(tabs.selectedTabIndex)
+        Component.onCompleted: {
+            selectButton(tabs.selectedTabIndex)
+        }
 
         onDragEnded: activatingTimer.stop()
 
