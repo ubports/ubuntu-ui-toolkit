@@ -71,9 +71,8 @@ Item {
         property real buttonRowWidth: 1
         property var buttons: []
 
-        // There will be two buttonRows. Use activeButtonRowNumber
-        // to track (in combination with selectedTabIndex) which button instance was clicked
-        property int activeButtonRowNumber: 1
+        // Track which button was last clicked
+        property int activeButtonIndex: 4 // TODO:  fix initialization
 
         Component {
             id: tabButtonRow
@@ -98,12 +97,14 @@ Item {
                         id: button
                         width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                         property bool selected: (index === tabs.selectedTabIndex) &&
-                                                (tabBar.active || theRow.rowNumber === buttonView.activeButtonRowNumber)
+                                                (tabBar.active || buttonView.activeButtonIndex === button.buttonIndex)
 
                         anchors.top: parent.top
                         height: parent.height - itemStyle.headerTextBottomMargin
 
-                        property real offset: 1 - button.x / buttonView.buttonRowWidth
+                        property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth
+                        property int buttonIndex: index + theRow.rowNumber*repeater.count
+//                        onOffsetChanged: print("button "+buttonIndex+": "+offset)
                         Component.onCompleted: buttonView.buttons.push(button)
 
                         Label {
@@ -129,8 +130,9 @@ Item {
                         }
 
                         onClicked: {
+                            print("clicked button "+buttonIndex)
                             if (!activatingTimer.running) {
-                                buttonView.activeButtonRowNumber = theRow.rowNumber;
+                                buttonView.activeButtonIndex = button.buttonIndex;
                                 tabs.selectedTabIndex = index;
                             } else {
                                 activatingTimer.stop();
@@ -158,10 +160,7 @@ Item {
         }
 
         function updateOffset() {
-//            if (!buttonOffsets) return;
-            if (buttons.length <= tabBar.tabs.selectedTabIndex) return;
-//            var newOffset = activeButtonRowNumber + buttonOffsets[tabBar.tabs.selectedTabIndex];
-            var newOffset = activeButtonRowNumber + buttonView.buttons[tabBar.tabs.selectedTabIndex].offset;
+            var newOffset = buttonView.buttons[buttonView.activeButtonIndex].offset;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
             indicatorImage.visible = true;
