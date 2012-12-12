@@ -65,7 +65,7 @@ Item {
                 bottom: parent.bottom
             }
             width: childrenRect.width
-            property int rowNumber // set by buttonView
+            property int rowNumber: modelData
 
             Component.onCompleted: {
                 buttonView.buttonRowWidth = theRow.width;
@@ -218,11 +218,7 @@ Item {
             }
         }
 
-        Component.onCompleted: {
-            children[1].rowNumber = 0;
-            children[2].rowNumber = 1;
-            selectButton(tabs.selectedTabIndex);
-        }
+        Component.onCompleted: selectButton(tabs.selectedTabIndex)
 
         onDragEnded: activatingTimer.stop()
 
