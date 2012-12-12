@@ -98,7 +98,7 @@ Examples:
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
-    headerTextColor: "#A0333333";           /* opacity 0.6 */
+    headerTextColor: "#50333333";
     headerTextLeftMargin: units.gu(2);
     headerTextRightMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
