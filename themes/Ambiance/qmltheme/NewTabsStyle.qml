@@ -40,6 +40,7 @@ QtObject {
     property int headerFontWeight
     property real headerTextLeftMargin
     property real headerTextRightMargin
+    property real headerTextBottomMargin
 
     property url indicatorImageSource
 

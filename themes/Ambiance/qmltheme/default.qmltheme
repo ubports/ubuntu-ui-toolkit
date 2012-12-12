@@ -95,6 +95,7 @@ Examples:
     headerTextColor: "#333333";
     headerTextLeftMargin: units.gu(2);
     headerTextRightMargin: units.gu(2);
+    headerTextBottomMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
     tabBarHeight: units.gu(7.5);
     deactivateTime: 3000;

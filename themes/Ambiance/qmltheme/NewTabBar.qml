@@ -115,8 +115,8 @@ Item {
                             id: indicatorImage
                             source: itemStyle.indicatorImageSource
                             anchors {
-                                bottom: text.bottom
-                                bottomMargin: units.gu(0.7) // FIXME: find a good way to align with text bottom
+                                bottom: parent.bottom
+                                bottomMargin: itemStyle.headerTextBottomMargin
                             }
                             x: button.width - width
                             property bool isLastAfterSelected: index === (tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
@@ -139,7 +139,8 @@ Item {
                                 left: parent.left
                                 leftMargin: itemStyle.headerTextLeftMargin
                                 rightMargin: itemStyle.headerTextRightMargin
-                                verticalCenter: parent.verticalCenter
+                                baseline: parent.bottom
+                                baselineOffset: -itemStyle.headerTextBottomMargin
                             }
                             text: modelData.title
                             fontSize: itemStyle.headerFontSize
