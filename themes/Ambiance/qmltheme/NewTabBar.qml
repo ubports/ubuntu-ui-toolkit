@@ -217,6 +217,8 @@ Item {
             selectButton(tabs.selectedTabIndex);
         }
 
+        onDragEnded: activatingTimer.stop()
+
         // deactivate the tab bar after inactivity
         onMovementStarted: idleTimer.stop()
         onMovementEnded: idleTimer.restart()
