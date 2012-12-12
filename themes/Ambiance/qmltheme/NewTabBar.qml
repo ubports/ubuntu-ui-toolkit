@@ -77,6 +77,12 @@ Item {
 
                 AbstractButton {
                     id: button
+
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                    }
+
                     property bool showAsSelected: tabBar.active ? selected : buttonView.selectedButtonIndex === buttonIndex
                     opacity: showAsSelected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
 
@@ -89,9 +95,6 @@ Item {
                     width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                     property bool selected: (index === tabs.selectedTabIndex) &&
                                             (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
-
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
 
                     property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
