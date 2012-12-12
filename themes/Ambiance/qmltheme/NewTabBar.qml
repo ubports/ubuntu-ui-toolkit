@@ -123,7 +123,7 @@ Item {
                             // The indicator image must be visible after the selected tab button, when the
                             // tab bar is not active, or after the "last" button (starting with the selected one),
                             // when the tab bar is active.
-                            property bool isLastAfterSelected: index === (tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
+                            property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
                             opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
                             Behavior on opacity {
                                 SequentialAnimation {
