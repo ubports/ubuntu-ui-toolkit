@@ -102,7 +102,7 @@ Examples:
     headerTextLeftMargin: units.gu(2);
     headerTextRightMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
-    tabBarHeight: units.gu(6.5);
+    tabBarHeight: units.gu(7.5);
     deactivateTime: 3000;
     buttonPositioningVelocity: 1.0;
     headerTextFadeDuration: 350;
