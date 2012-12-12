@@ -258,6 +258,7 @@ Examples:
 /* scrollbars */
 .textarea .scrollbar {
    interactive: false;
+}
 
 /* sliders */
 @qml-mapping(.slider, , SliderDelegate);
