@@ -65,6 +65,7 @@ Template {
                 TextArea {
                     id: disabled
                     enabled: false
+                    textFormat:TextEdit.RichText
                     contentWidth: units.gu(62)
                     text: longText
                 }

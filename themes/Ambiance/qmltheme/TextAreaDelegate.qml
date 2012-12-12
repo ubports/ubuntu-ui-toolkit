@@ -17,32 +17,14 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-
-    anchors.fill: parent
-
-    //property alias contentItem: item
+// frame
+UbuntuShape {
+    id: shape
     z: -1
 
-    // frame
-    UbuntuShape {
-        id: shape
-
-        anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
-        maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
-        borderSource: ""
-        opacity: item.enabled ? 1.0 : 0.5
-    }
-
-    UbuntuShape {
-        id: border
-        anchors.fill: parent
-        maskSource: ""
-        borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
-        Item {
-            id: item
-            anchors.fill: parent
-        }
-    }
+    anchors.fill: parent
+    color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
+    borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
+    opacity: item.enabled ? 1.0 : 0.5
 }

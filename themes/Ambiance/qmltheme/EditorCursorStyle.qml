@@ -19,7 +19,7 @@ import QtQuick 2.0
 
 QtObject {
     /*!
-      Cursor colors
+      Cursor color
       */
     property color color
 

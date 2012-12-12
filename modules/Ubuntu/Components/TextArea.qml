@@ -632,8 +632,6 @@ FocusScope {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property bool useTextEditMouse: true
-        property bool textChanged: false
         property real spacing: ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
         property real lineSpacing: units.dp(3)
         property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
@@ -642,8 +640,6 @@ FocusScope {
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
-        //property int selectionStart: 0
-        //property int selectionEnd: 0
         property bool prevShowCursor
 
         onDraggingModeChanged: {
@@ -667,19 +663,11 @@ FocusScope {
 
         function showInputPanel()
         {
-            if (control.customSoftwareInputPanel != undefined) {
-                // TODO implement once we have the SIP ready
-            } else {
-                Qt.inputMethod.show();
-            }
+            Qt.inputMethod.show();
         }
         function hideInputPanel()
         {
-            if (control.customSoftwareInputPanel != undefined) {
-                // TODO implement once we have the SIP ready
-            } else {
-                Qt.inputMethod.hide();
-            }
+            Qt.inputMethod.hide();
         }
 
         function lineHeight(lines)
@@ -721,9 +709,6 @@ FocusScope {
             // new properties
             property var editor: control
             property string positionProperty
-            // FIXME: move the following properties to delegate
-            //property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
-            //property bool timerShowCursor: true
 
             Theming.ItemStyle.class: "cursor"
             height: internal.lineSize
@@ -735,11 +720,6 @@ FocusScope {
         onItemChanged: {
             if (item) {
                 item.Theming.ItemStyle.class = "left-pin";
-                /*
-                var rect = control.positionToRectangle(control.selectionStart);
-                item.x = rect.x;
-                item.y = rect.y;
-                */
                 item.positionProperty = "selectionStart";
                 item.parent = editor;
             }
@@ -756,11 +736,6 @@ FocusScope {
         onItemChanged: {
             if (item) {
                 item.Theming.ItemStyle.class = "right-pin";
-                /*
-                var rect = control.positionToRectangle(control.selectionEnd);
-                item.x = rect.x;
-                item.y = rect.y;
-                */
                 item.positionProperty = "selectionEnd";
                 item.parent = editor;
             }
@@ -772,7 +747,6 @@ FocusScope {
             }
         }
     }
-
 
     // holding default values
     Label { id: fontHolder }
@@ -851,6 +825,15 @@ FocusScope {
             // autoexpand handling
             onLineCountChanged: internal.frameSize()
 
+            // virtual keyboard handling
+            activeFocusOnPress: false
+            onActiveFocusChanged: {
+                if (activeFocus)
+                    internal.showInputPanel();
+                else
+                    internal.hideInputPanel();
+            }
+
             MouseArea {
                 id: handler
                 enabled: control.enabled
@@ -893,7 +876,6 @@ FocusScope {
                         internal.enterSelectionMode();
                     }
                 }
-
                 onClicked: {
                     internal.activateEditor()
                     control.cursorPosition = control.positionAt(mouse.x, mouse.y)
