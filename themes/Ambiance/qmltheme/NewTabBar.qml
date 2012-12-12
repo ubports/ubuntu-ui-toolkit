@@ -68,8 +68,8 @@ Item {
         }
 
         // used to position buttons and indicator image
-        property real buttonRowWidth: 0
-        property var buttonOffsets: []
+        property real buttonRowWidth: 1
+        property var buttons: []
 
         // There will be two buttonRows. Use activeButtonRowNumber
         // to track (in combination with selectedTabIndex) which button instance was clicked
@@ -88,12 +88,6 @@ Item {
 
                 Component.onCompleted: {
                     buttonView.buttonRowWidth = theRow.width;
-                    buttonView.buttonOffsets = [];
-                    for (var i=0; i < children.length; i++) {
-                        if (children[i] === repeater) continue;
-                        buttonView.buttonOffsets.push(1 - children[i].x / buttonView.buttonRowWidth);
-                    }
-                    buttonView.buttonOffsets.push(0.0);
                 }
 
                 Repeater {
@@ -108,6 +102,9 @@ Item {
 
                         anchors.top: parent.top
                         height: parent.height - itemStyle.headerTextBottomMargin
+
+                        property real offset: 1 - button.x / buttonView.buttonRowWidth
+                        Component.onCompleted: buttonView.buttons.push(button)
 
                         Label {
                             id: text
@@ -161,8 +158,10 @@ Item {
         }
 
         function updateOffset() {
-            if (!buttonOffsets) return;
-            var newOffset = activeButtonRowNumber + buttonOffsets[tabBar.tabs.selectedTabIndex];
+//            if (!buttonOffsets) return;
+            if (buttons.length <= tabBar.tabs.selectedTabIndex) return;
+//            var newOffset = activeButtonRowNumber + buttonOffsets[tabBar.tabs.selectedTabIndex];
+            var newOffset = activeButtonRowNumber + buttonView.buttons[tabBar.tabs.selectedTabIndex].offset;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
             indicatorImage.visible = true;

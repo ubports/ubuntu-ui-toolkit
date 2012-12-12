@@ -88,6 +88,13 @@ Examples:
 .new-tabs {
     swipeToSwitchTabs: true;
     separator: Divider { };
+/*
+    separator: Image {
+        source: url("artwork/PageHeaderBaseDividerLight.png");
+        anchors.left: parent ? parent.left : undefined;
+        anchors.right: parent ? parent.right : undefined;
+    }
+*/
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
