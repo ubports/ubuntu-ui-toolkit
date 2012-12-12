@@ -35,3 +35,9 @@ function projectValue(x, xmin, xmax, ymin, ymax) {
 function clampAndProject(x, xmin, xmax, ymin, ymax) {
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
 }
+
+// x - y (mod a), for (x - y) <= a
+function absDiffMod(x, y, a) {
+    var r = x - y;
+    return Math.min(Math.abs(r), Math.abs(r - a));
+}

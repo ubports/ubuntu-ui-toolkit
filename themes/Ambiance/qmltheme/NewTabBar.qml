@@ -37,7 +37,7 @@ Item {
         if (active) {
             activatingTimer.restart();
         } else {
-            buttonView.updateOffset();
+            buttonView.selectButton(tabs.selectedTabIndex);
         }
     }
 
@@ -54,8 +54,7 @@ Item {
         target: tabs
         onSelectedTabIndexChanged: {
             indicatorImage.visible = false;
-            tabBar.active = false;
-            buttonView.updateOffset();
+            buttonView.selectButton(tabs.selectedTabIndex);
         }
     }
 
@@ -72,7 +71,7 @@ Item {
         property var buttons: []
 
         // Track which button was last clicked
-        property int activeButtonIndex: 4 // TODO:  fix initialization
+        property int selectedButtonIndex: 0
 
         Component {
             id: tabButtonRow
@@ -97,14 +96,13 @@ Item {
                         id: button
                         width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                         property bool selected: (index === tabs.selectedTabIndex) &&
-                                                (tabBar.active || buttonView.activeButtonIndex === button.buttonIndex)
+                                                (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
 
                         anchors.top: parent.top
                         height: parent.height - itemStyle.headerTextBottomMargin
 
-                        property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth
+                        property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
                         property int buttonIndex: index + theRow.rowNumber*repeater.count
-//                        onOffsetChanged: print("button "+buttonIndex+": "+offset)
                         Component.onCompleted: buttonView.buttons.push(button)
 
                         Label {
@@ -130,13 +128,19 @@ Item {
                         }
 
                         onClicked: {
-                            print("clicked button "+buttonIndex)
                             if (!activatingTimer.running) {
-                                buttonView.activeButtonIndex = button.buttonIndex;
                                 tabs.selectedTabIndex = index;
+                                tabBar.active = false;
+                                button.select();
                             } else {
                                 activatingTimer.stop();
                             }
+                        }
+
+                        // Select this button
+                        function select() {
+                            buttonView.selectedButtonIndex = button.buttonIndex;
+                            buttonView.updateOffset();
                         }
                     }
                 }
@@ -159,8 +163,23 @@ Item {
             }
         }
 
+        // Select the closest of the two buttons that represent the given tab index
+        function selectButton(tabIndex) {
+            var b1 = buttons[tabIndex];
+            var b2 = buttons[tabIndex + tabs.__tabsModel.children.length];
+
+            // find the button with the nearest offset
+            var d1 = MathUtils.absDiffMod(b1.offset, buttonView.offset, 2);
+            var d2 = MathUtils.absDiffMod(b2.offset, buttonView.offset, 2);
+            if (d1 < d2) {
+                b1.select();
+            } else {
+                b2.select();
+            }
+        }
+
         function updateOffset() {
-            var newOffset = buttonView.buttons[buttonView.activeButtonIndex].offset;
+            var newOffset = buttonView.buttons[buttonView.selectedButtonIndex].offset;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
             indicatorImage.visible = true;
@@ -176,6 +195,7 @@ Item {
         Component.onCompleted: {
             children[1].rowNumber = 0;
             children[2].rowNumber = 1;
+            selectButton(tabs.selectedTabIndex);
         }
 
         // deactivate the tab bar after inactivity
@@ -214,8 +234,9 @@ Item {
         x: getXPosition()
 
         function getXPosition() {
+            // getXPosition() gets called before buttonView.button is filled with buttons
             var buttons = buttonView.children[1].children; // the first buttonRow
-            var selectedButton = buttons[tabs.selectedTabIndex];
+            var selectedButton = buttonView.buttons[tabs.selectedTabIndex];
             return selectedButton.width + units.gu(2);
         }
     }
