@@ -26,10 +26,12 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Rectangle { // Hide scrolling content behind the header
+    Image {
         id: header
         z: 1 // header is on top of the tab's contents.
-        color: "white"
+        source: "artwork/background-paper.png"
+        fillMode: Image.Tile
+
         anchors {
             left: parent.left
             right: parent.right
