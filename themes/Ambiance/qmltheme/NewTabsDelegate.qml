@@ -43,7 +43,7 @@ Item {
             }
         }
 
-        height: tabBar.height
+        height: tabBar.height + separator.height
 
         function show() {
             header.y = 0;
@@ -63,17 +63,16 @@ Item {
             }
         }
 
-        property Item separator: itemStyle.separator
-        onSeparatorChanged: {
-            if (separator) {
-                separator.parent = header;
-                separator.anchors.top = tabBar.bottom;
-                separator.anchors.left = header.left;
-                separator.anchors.right = header.right;
-                header.height = tabBar.height + separator.height;
-            } else {
-                header.height = tabBar.height;
+        // FIXME: Define the separator in the theme when this bug is fixed:
+        // https://bugs.launchpad.net/goodhope/+bug/1089614
+        BorderImage {
+            id: separator
+            anchors {
+                top: tabBar.bottom
+                left: parent.left
+                right: parent.right
             }
+            source: "artwork/PageHeaderBaseDividerLight.sci"
         }
 
         property Tab selectedTab: item ? item.selectedTab : null
@@ -82,7 +81,7 @@ Item {
         property Flickable selectedFlickable: null
         property real previousContentY: 0
         onSelectedTabChanged: updateFlickable()
-        Component.onCompleted: updateFlickable()
+        Component.onCompleted: updateFlickable();
 
         function updateFlickable() {
             if (selectedFlickable) {
