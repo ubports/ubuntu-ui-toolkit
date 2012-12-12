@@ -91,6 +91,15 @@ Item {
 
                     AbstractButton {
                         id: button
+                        property bool showAsSelected: tabBar.active ? selected : buttonView.selectedButtonIndex === buttonIndex
+                        opacity: showAsSelected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: itemStyle.headerTextFadeDuration
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
                         width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                         property bool selected: (index === tabs.selectedTabIndex) &&
                                                 (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
@@ -111,7 +120,6 @@ Item {
                             }
                             x: button.width - width
                             property bool isLastAfterSelected: index === (tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
-
                             opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
                             Behavior on opacity {
                                 SequentialAnimation {
@@ -125,23 +133,12 @@ Item {
 
                         Label {
                             id: text
-                            color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
-                            opacity: (tabBar.active || selected) ? 1.0 : 0
-
-                            Behavior on opacity {
-                                NumberAnimation {
-                                    duration: itemStyle.headerTextFadeDuration
-                                    easing.type: Easing.InOutQuad
-                                }
-                            }
+                            color: selected ? itemStyle.headerTextSelectedColor : itemStyle.headerTextColor
 
                             anchors {
                                 left: parent.left
                                 leftMargin: itemStyle.headerTextLeftMargin
                                 rightMargin: itemStyle.headerTextRightMargin
-//                                baseline: parent.bottom
-//                                bottom: parent.bottom
-//                                bottomMargin: itemStyle.headerTextBottomMargin
                                 verticalCenter: parent.verticalCenter
                             }
                             text: modelData.title

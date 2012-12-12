@@ -31,7 +31,10 @@ QtObject {
     property bool swipeToSwitchTabs
 
     property color headerTextColor
-    property color headerTextColorSelected
+    property real headerTextOpacity
+    property color headerTextSelectedColor
+    property real headerTextSelectedOpacity
+
     property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight

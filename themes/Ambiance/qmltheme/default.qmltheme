@@ -97,8 +97,10 @@ Examples:
 */
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
-    headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
-    headerTextColor: "#50333333";
+    headerTextSelectedOpacity: 0.9;
+    headerTextSelectedColor: "#333333";
+    headerTextOpacity: 0.4;
+    headerTextColor: "#333333";
     headerTextLeftMargin: units.gu(2);
     headerTextRightMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
