@@ -632,6 +632,12 @@ FocusScope {
     Theming.ItemStyle.class: "textarea"
     //internals
 
+    /*!\internal */
+    onVisibleChanged: {
+        if (!visible)
+            control.focus = false;
+    }
+
     QtObject {
         id: internal
         // public property locals enabling aliasing

@@ -21,6 +21,11 @@ import Ubuntu.Components 0.1
 TestCase {
      name: "TextAreaAPI"
 
+     function iniTestCase() {
+         textArea.forceActiveFocus();
+         compare(textArea.activeFocus, true, "TextArea is active");
+     }
+
      // TextEdit shared properties
      function test_0_activeFocusOnPress() {
          compare(textArea.activeFocusOnPress,textEdit.activeFocusOnPress,"TextArea.activeFocusOnPress is same as TextEdit.activeFocusOnPress")
@@ -193,6 +198,11 @@ TestCase {
          var newValue = 10;
          textArea.maximumLineCount = newValue;
          compare(textArea.maximumLineCount,newValue,"set/get");
+     }
+
+     function test_visible() {
+         textArea.visible = false;
+         compare(textArea.activeFocus, false, "TextArea is inactive");
      }
 
 // functions
