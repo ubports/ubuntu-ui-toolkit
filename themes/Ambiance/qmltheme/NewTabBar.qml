@@ -108,11 +108,9 @@ Item {
                         property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
                         opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    duration: itemStyle.headerTextFadeDuration
-                                    easing.type: Easing.InOutQuad
-                                }
+                            NumberAnimation {
+                                duration: itemStyle.headerTextFadeDuration
+                                easing.type: Easing.InOutQuad
                             }
                         }
                     }
