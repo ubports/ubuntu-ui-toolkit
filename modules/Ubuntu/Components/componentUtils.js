@@ -46,3 +46,13 @@ function style(object, property, defaultValue) {
         return object.Theming.ItemStyle.style[property];
     return defaultValue;
 }
+
+/*!
+  The function checks the existence of the delegate property of a given component.
+  Returns the property or undefined.
+  */
+function delegateProperty(object, property, defaultValue) {
+    if (object && property && object.Theming.ItemStyle.delegate && (undefined !== object.Theming.ItemStyle.delegate[property]))
+        return object.Theming.ItemStyle.delegate[property];
+    return defaultValue;
+}

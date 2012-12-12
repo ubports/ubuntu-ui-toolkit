@@ -12,31 +12,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
-import QtQuick 2.0
-
-QtObject {
-    /*!
-      If this optional property is specified, it will be positioned
-      between the bar with tab buttons, and the tab pages to act
-      as a separator.
-     */
-    property Item separator
-
-    /*!
-      Enable left/right swiping in the contents area to go to
-      the next/previous tab.
-     */
-    property bool swipeToSwitchTabs
-
-    property color headerTextColor
-    property color headerTextColorSelected
-    property string headerFontSize
-    property int headerFontWeight
-
-    property url indicatorImageSource
-
-    property real tabBarHeight
-    property real headerTextBottomMargin
-}
+#include <QtQuickTest/quicktest.h>
+QUICK_TEST_MAIN(qmltemplate)

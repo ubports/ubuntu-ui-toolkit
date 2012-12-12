@@ -22,7 +22,7 @@ TestCase {
      name: "ListItemsBaseAPI"
 
      function test_fallbackIconSource() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076762")
+         expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076762")
          compare(listItemBase.fallbackIconSource,undefined,"fallbackIconSource is not set by default")
      }
 

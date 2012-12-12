@@ -14,29 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+.pragma library
 
-QtObject {
-    /*!
-      If this optional property is specified, it will be positioned
-      between the bar with tab buttons, and the tab pages to act
-      as a separator.
-     */
-    property Item separator
+/*!
+  The function returns the live value of the slider.
+  */
+function liveValue(item) {
+    if (item && item.__internals && (undefined !== item.__internals["liveValue"]))
+        return item.__internals["liveValue"];
+    return 0.0;
+}
 
-    /*!
-      Enable left/right swiping in the contents area to go to
-      the next/previous tab.
-     */
-    property bool swipeToSwitchTabs
-
-    property color headerTextColor
-    property color headerTextColorSelected
-    property string headerFontSize
-    property int headerFontWeight
-
-    property url indicatorImageSource
-
-    property real tabBarHeight
-    property real headerTextBottomMargin
+/*!
+  The function returns the normalized live value of the slider.
+  */
+function normalizedValue(item) {
+    if (item && item.__internals && (undefined !== item.__internals["normalizedValue"]))
+        return item.__internals["normalizedValue"];
+    return 0.0;
 }

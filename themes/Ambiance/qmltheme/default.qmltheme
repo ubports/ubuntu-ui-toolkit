@@ -87,13 +87,7 @@ Examples:
 @qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
 .new-tabs {
     swipeToSwitchTabs: true;
-    separator: Divider {
-        height: units.gu(2);
-    };
-    topSeparator: Rectangle {
-        color: "#c94212";
-        height: units.dp(2);
-    }
+    separator: Divider { };
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
@@ -187,7 +181,6 @@ Examples:
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
 
-@qml-mapping(.textfield .button, , TransparentButtonDelegate);
 @qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
@@ -205,7 +198,7 @@ Examples:
 }
 
 /* clear button */
-.textfield .button {
+.textfield .clear-button {
     iconSource: url("artwork/TextFieldClear@8.png");
 }
 /* hint */
@@ -265,4 +258,16 @@ Examples:
 /* scrollbars */
 .textarea .scrollbar {
    interactive: false;
+
+/* sliders */
+@qml-mapping(.slider, , SliderDelegate);
+.slider {
+    backgroundColor: "#d3d3d3";
+    thumbColor: "#626262";
+    thumbSpacing: units.dp(2);
+}
+.slider .label {
+    fontSize: "medium";
+    color: "white";
+    weight: Font.Bold;
 }

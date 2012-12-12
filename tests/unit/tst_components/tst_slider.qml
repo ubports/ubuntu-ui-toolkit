@@ -37,7 +37,7 @@ TestCase {
      }
 
      function test_maximumValue() {
-         skip("https://bugs.launchpad.net/tavastia/+bug/1076764")
+         expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076764")
          compare(slider.maximumValue,1.0,"is set to 1.0 by default")
          var newMaximumValue = 20.0
          slider.maximumValue = newMaximumValue
@@ -56,6 +56,25 @@ TestCase {
          var newValue = 5
          slider.value = newValue
          compare(slider.value,newValue,"can set/get")
+     }
+
+     // SliderUtils API tests
+     function test_zzz_liveValue()
+     {
+         slider.live = true
+         slider.minimumValue = 0.0
+         slider.maximumValue = 1.0
+         slider.value = 0.2
+         compare(slider.value, SliderUtils.liveValue(slider), "are identical")
+     }
+
+     function test_zzz_normalizedValue()
+     {
+         slider.live = true
+         slider.minimumValue = 0.0
+         slider.maximumValue = 1.0
+         slider.value = 0.2557
+         compare(slider.value, SliderUtils.normalizedValue(slider), "are identical")
      }
 
      Slider {

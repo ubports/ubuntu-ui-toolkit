@@ -75,6 +75,14 @@ QtObject {
     property PageStack pageStack
 
     /*!
+      \preliminary
+      The object if it is Flickable, or the first of its children that is Flickable.
+      If neither object nor its children are Flickable, then null.
+      Automatically upadted by PageWrapperUtils.activate() after initializing the object.
+     */
+    property Flickable flickable: null
+
+    /*!
       \internal
      */
     onActiveChanged: {

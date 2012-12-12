@@ -26,24 +26,98 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    NewTabBar {
-        id: tabBar
+    Rectangle { // Hide scrolling content behind the header
+        id: header
+        z: 1 // header is on top of the tab's contents.
+        color: "white"
         anchors {
-            top: orangebar.bottom
             left: parent.left
             right: parent.right
         }
-        tabs: item
+        y: 0
+
+        Behavior on y {
+            enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
+            SmoothedAnimation {
+                duration: 200
+            }
+        }
+
+        height: tabBar.height
+
+        function show() {
+            header.y = 0;
+        }
+
+        function hide() {
+            header.y = - header.height;
+        }
+
+        NewTabBar {
+            id: tabBar
+            tabs: item
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
+        }
+
+        property Item separator: itemStyle.separator
+        onSeparatorChanged: {
+            if (separator) {
+                separator.parent = header;
+                separator.anchors.top = tabBar.bottom;
+                separator.anchors.left = header.left;
+                separator.anchors.right = header.right;
+                header.height = tabBar.height + separator.height;
+            } else {
+                header.height = tabBar.height;
+            }
+        }
+
+        property Tab selectedTab: item ? item.selectedTab : null
+        // use updateFlickable() to update selectedFlickable so that events from the
+        // previous selectedFlickable can be disconnected.
+        property Flickable selectedFlickable: null
+        property real previousContentY: 0
+        onSelectedTabChanged: updateFlickable()
+        Component.onCompleted: updateFlickable()
+
+        function updateFlickable() {
+            if (selectedFlickable) {
+                selectedFlickable.contentYChanged.disconnect(header.scrollContents);
+                selectedFlickable.movementEnded.disconnect(header.movementEnded);
+            }
+            if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
+                selectedFlickable = selectedTab.__flickable;
+                previousContentY = selectedFlickable.contentY;
+                selectedFlickable.contentYChanged.connect(header.scrollContents);
+                selectedFlickable.movementEnded.connect(header.movementEnded);
+            } else {
+                selectedFlickable = null;
+            }
+        }
+
+        function scrollContents() {
+            // Avoid updating header.y when rebounding or being dragged over the bounds.
+            if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
+                var deltaContentY = selectedFlickable.contentY - previousContentY;
+                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+            }
+            previousContentY = selectedFlickable.contentY;
+        }
+
+        function movementEnded() {
+            if (selectedFlickable.contentY < 0) header.show();
+            else if (header.y < -header.height/2) header.hide();
+            else header.show();
+        }
     }
 
     ListView {
         id: tabView
-        anchors {
-            top: tabBar.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
+        anchors.fill: parent
 
         interactive: itemStyle.swipeToSwitchTabs
         model: tabsDelegate.tabModel
@@ -58,16 +132,27 @@ Item {
         highlightRangeMode: ListView.StrictlyEnforceRange
 
         function updatePages() {
-            var tab;
             if (!tabsDelegate.tabModel) return; // not initialized yet
 
             var tabList = tabsDelegate.tabModel.children
+            var tab;
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
-                tab.width = tabView.width;
-                tab.height = tabView.height;
                 tab.anchors.fill = undefined;
+                tab.width = tabView.width;
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
+
+                // Set-up the top-margin of the contents of the tab so that
+                //  the contents is never hidden by the header:
+                if (tab.__flickable) {
+                    tab.height = tabView.height;
+                    tab.__flickable.topMargin = header.height;
+                    tab.__flickable.contentY = -header.height;
+                } else {
+                    // no flickable
+                    if (tab.parent) tab.anchors.bottom = tab.parent.bottom;
+                    tab.height = tabsDelegate.height - header.height;
+                }
             }
             tabView.updateSelectedTabIndex();
         }
@@ -77,41 +162,17 @@ Item {
             // The view is automatically updated, because highlightFollowsCurrentItem
             tabView.currentIndex = item.selectedTabIndex;
         }
-
-        Connections {
-            target: item
-            onSelectedTabIndexChanged: tabView.updateSelectedTabIndex()
-        }
     }
 
-    function updateSeparators() {
-        if (itemStyle.separator) {
-            itemStyle.separator.parent = tabsDelegate;
-            itemStyle.separator.anchors.top = tabBar.bottom;
-            itemStyle.separator.anchors.left = tabsDelegate.left;
-            itemStyle.separator.anchors.right = tabsDelegate.right;
-            tabView.anchors.top = itemStyle.separator.bottom;
-        } else {
-            // no separator
-            tabView.anchors.top = tabBar.bottom;
-        }
-
-        if (itemStyle.topSeparator) {
-            itemStyle.topSeparator.parent = tabsDelegate;
-            itemStyle.topSeparator.anchors.top = tabsDelegate.top;
-            itemStyle.topSeparator.anchors.left = tabsDelegate.left;
-            itemStyle.topSeparator.anchors.right = tabsDelegate.right;
-            tabBar.anchors.top = itemStyle.topSeparator.bottom;
-        } else {
-            // no top separator
-            tabBar.anchors.top = tabsDelegate.top;
+    Connections {
+        target: item
+        onSelectedTabIndexChanged: {
+            tabView.updateSelectedTabIndex();
+            header.show();
         }
     }
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: {
-        tabsDelegate.updateSeparators();
-        tabView.updatePages();
-    }
+    Component.onCompleted: tabView.updatePages();
 }

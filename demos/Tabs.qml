@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     property bool newTabs: false
@@ -27,20 +28,54 @@ Template {
 
         id: tabs
         Tab {
-            title: i18n.tr("Tab") + " 1"
+            title: i18n.tr("Flickable")
             page: Rectangle {
                 anchors.fill: parent
                 color: "#eeeeee"
-                Label {
-                    anchors.centerIn: parent
-                    text: i18n.tr("This is the first tab.")
-                    color: "#757373"
+
+                Flickable {
+                    id: flickable
+                    clip: true
+                    anchors.fill: parent
+                    contentHeight: column.height
+                    contentWidth: parent.width
+                    flickableDirection: Flickable.VerticalFlick
+
+                    Column {
+                        id: column
+                        width: parent.width
+                        height: childrenRect.height
+
+                        Label {
+                            text: "\n\n\n\n\n\n\n\n\n\n" +
+                                  i18n.tr("This is the first tab.") +
+                                  "\n\n\n\n\n\n\n\n\n\n\n\n(" +
+                                  i18n.tr("scroll down") + ")\n\n\n"
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Repeater {
+                            model: 20
+                            Label {
+                                text: "Lorem ipsum dolor sit amet, platea est tincidunt nunc, commodo odio elit."
+                                width: parent.width
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        Label {
+                            text: "\n\n\n" + i18n.tr("The end.")
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
                 }
             }
         }
         Tab {
             iconSource: "call_icon.png"
-            title: i18n.tr("Tab") + " 2"
+            title: i18n.tr("Buttons")
             page: Rectangle {
                 anchors.fill: parent
                 color: "tan"
@@ -60,9 +95,21 @@ Template {
             }
         }
         Tab {
-            title: i18n.tr("Tab") + " 3"
+            title: i18n.tr("External")
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
+        }
+        Tab {
+            title: i18n.tr("List view")
+            page: ListView {
+                clip: true
+                anchors.fill: parent
+                model: 20
+                delegate: ListItem.Standard {
+                    icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    text: "Item "+modelData
+                }
+            }
         }
     }
 }
