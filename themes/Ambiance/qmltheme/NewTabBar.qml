@@ -33,7 +33,7 @@ Item {
     property bool active: false
 
     onActiveChanged: {
-        indicatorImage.visible = false;
+//        indicatorImage.visible = false;
         if (active) {
             activatingTimer.restart();
         } else {
@@ -53,7 +53,7 @@ Item {
     Connections {
         target: tabs
         onSelectedTabIndexChanged: {
-            indicatorImage.visible = false;
+//            indicatorImage.visible = false;
             buttonView.selectButton(tabs.selectedTabIndex);
         }
     }
@@ -94,6 +94,7 @@ Item {
 
                     AbstractButton {
                         id: button
+                        clip: false
                         width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
                         property bool selected: (index === tabs.selectedTabIndex) &&
                                                 (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
@@ -104,6 +105,26 @@ Item {
                         property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
                         property int buttonIndex: index + theRow.rowNumber*repeater.count
                         Component.onCompleted: buttonView.buttons.push(button)
+
+                        Image {
+                            id: indicatorImage
+                            source: itemStyle.indicatorImageSource
+                            anchors {
+                                bottom: parent.bottom
+                            }
+                            x: button.width
+                            visible: button.selected && !tabBar.active
+                        }
+
+                        Image {
+                            source: itemStyle.indicatorImageSource
+                            anchors {
+                                bottom: parent.bottom
+                            }
+                            x: button.width
+                            property int lastButtonIndex: tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1
+                            visible: tabBar.active && (index === lastButtonIndex)
+                        }
 
                         Label {
                             id: text
@@ -120,6 +141,7 @@ Item {
                             anchors {
                                 left: parent.left
                                 leftMargin: units.gu(2)
+                                rightMargin: units.gu(2)
                                 baseline: parent.bottom
                             }
                             text: modelData.title
@@ -182,7 +204,7 @@ Item {
             var newOffset = buttonView.buttons[buttonView.selectedButtonIndex].offset;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
-            indicatorImage.visible = true;
+//            indicatorImage.visible = true;
         }
 
         Behavior on offset {
@@ -209,37 +231,37 @@ Item {
         }
     }
 
-    Image {
-        id: indicatorImage
-        source: itemStyle.indicatorImageSource
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: itemStyle.headerTextBottomMargin
-        }
+//    Image {
+//        id: indicatorImage
+//        source: itemStyle.indicatorImageSource
+//        anchors {
+//            bottom: parent.bottom
+//            bottomMargin: itemStyle.headerTextBottomMargin
+//        }
 
-        visible: !tabBar.active
-        opacity: visible ? 1 : 0
+//        visible: !tabBar.active
+//        opacity: visible ? 1 : 0
 
-        Behavior on opacity {
-            SequentialAnimation {
-                PropertyAction { property: "opacity"; value: 0 }
-                PauseAnimation { duration: 1000 }
-                NumberAnimation {
-                    from: 0; to: 1; duration: 600
-                    easing.type: Easing.InOutQuad
-                }
-            }
-        }
+//        Behavior on opacity {
+//            SequentialAnimation {
+//                PropertyAction { property: "opacity"; value: 0 }
+//                PauseAnimation { duration: 1000 }
+//                NumberAnimation {
+//                    from: 0; to: 1; duration: 600
+//                    easing.type: Easing.InOutQuad
+//                }
+//            }
+//        }
 
-        x: getXPosition()
+//        x: getXPosition()
 
-        function getXPosition() {
-            // getXPosition() gets called before buttonView.button is filled with buttons
-            var buttons = buttonView.children[1].children; // the first buttonRow
-            var selectedButton = buttonView.buttons[tabs.selectedTabIndex];
-            return selectedButton.width + units.gu(2);
-        }
-    }
+//        function getXPosition() {
+//            // getXPosition() gets called before buttonView.button is filled with buttons
+//            var buttons = buttonView.children[1].children; // the first buttonRow
+//            var selectedButton = buttonView.buttons[tabs.selectedTabIndex];
+//            return selectedButton.width + units.gu(2);
+//        }
+//    }
 
     MouseArea {
         // an inactive tabBar can be pressed to make it active
