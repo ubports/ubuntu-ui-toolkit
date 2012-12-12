@@ -136,8 +136,8 @@ Item {
 
                             anchors {
                                 left: parent.left
-                                leftMargin: units.gu(2)
-                                rightMargin: units.gu(2)
+                                leftMargin: itemStyle.headerTextLeftMargin
+                                rightMargin: itemStyle.headerTextRightMargin
                                 baseline: parent.bottom
                             }
                             text: modelData.title

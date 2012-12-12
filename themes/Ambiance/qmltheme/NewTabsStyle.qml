@@ -35,6 +35,8 @@ QtObject {
     property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight
+    property real headerTextLeftMargin
+    property real headerTextRightMargin
 
     property url indicatorImageSource
 

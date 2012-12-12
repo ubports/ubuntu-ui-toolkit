@@ -100,6 +100,8 @@ Examples:
     headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
     headerTextColor: "#A0333333";           /* opacity 0.6 */
     headerTextBottomMargin: units.gu(2);
+    headerTextLeftMargin: units.gu(2);
+    headerTextRightMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
     tabBarHeight: units.gu(6.5);
     deactivateTime: 3000;
