@@ -27,4 +27,10 @@ UbuntuShape {
     maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
     borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
     opacity: item.enabled ? 1.0 : 0.5
+
+    MouseArea {
+        anchors.fill: parent
+        onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+    }
+
 }

@@ -15,42 +15,25 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 EditorCursorDelegate {
     id: cursor
 
     property bool startPin: (item.positionProperty === "selectionStart")
-    property var editor: item.editor
-    property int cursorPosition: editor[item.positionProperty]
-    property bool myCursorUpdate: false
-    property bool myXYUpdate: false
+    property int cursorPosition: item.editorItem[item.positionProperty]
 
-    onCursorPositionChanged: {
-        if (myCursorUpdate)
+    visible: true
+
+    function updatePosition(pos)
+    {
+        if (undefined === pos)
             return;
-        myXYUpdate = true;
-        var rect = editor.positionToRectangle(cursorPosition);
+        var rect = item.editorItem.positionToRectangle(pos);
         x = rect.x;
         y = rect.y;
-        myXYUpdate = false;
     }
-
-    function updateEditorCursor()
-    {
-        if (myXYUpdate)
-            return;
-        myCursorUpdate = true;
-        var pos = editor.mapFromItem(item, x, y + height / 2)
-        if (startPin)
-            editor.select(editor.positionAt(pos.x, pos.y), editor.selectionEnd);
-        else
-            editor.select(editor.selectionStart, editor.positionAt(pos.x, pos.y));
-        myCursorUpdate = false;
-    }
-
-    onXChanged: updateEditorCursor()
-    onYChanged: updateEditorCursor()
-    visible: true
+    onCursorPositionChanged: updatePosition(cursorPosition)
 
     Rectangle {
         id: pinBall
@@ -66,11 +49,42 @@ EditorCursorDelegate {
         }
 
         MouseArea {
+            id: dragArea
             anchors.fill: parent
             anchors.margins: -StyleUtils.itemStyleProperty("pinSensingOffset", units.dp(3))
+
             drag {
-                target: cursor
+                target: Item{}
                 axis: Drag.XandYAxis
+                onActiveChanged: {
+                    if (drag.active) {
+                        cursorStartX = cursor.x
+                        cursorStartY = cursor.y
+                        dragStartX = dragArea.drag.target.x
+                        dragStartY = dragArea.drag.target.y
+                    }
+                }
+            }
+
+            property real dragStartX
+            property real dragStartY
+            property real cursorStartX
+            property real cursorStartY
+            property real dragDX: dragArea.drag.target.x - dragArea.dragStartX
+            property real dragDY: dragArea.drag.target.y - dragArea.dragStartY
+
+            onDragDXChanged: updateEditorCursorPosition()
+            onDragDYChanged: updateEditorCursorPosition()
+
+            function updateEditorCursorPosition()
+            {
+                var pos = item.editorItem.mapFromItem(item, cursor.x, cursor.y + cursor.height / 2);
+                var dx = dragArea.cursorStartX + dragDX;
+                var dy = dragArea.cursorStartY + dragDY;
+                if (startPin)
+                    item.editorItem.select(item.editorItem.positionAt(dx, dy), item.editorItem.selectionEnd);
+                else
+                    item.editorItem.select(item.editorItem.selectionStart, item.editorItem.positionAt(dx, dy));
             }
         }
     }

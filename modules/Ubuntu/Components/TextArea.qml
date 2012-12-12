@@ -149,7 +149,7 @@ FocusScope {
       Whether the TextArea should gain active focus on a mouse press. By default this
       is set to true.
       */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
+    property bool activeFocusOnPress: true
 
     /*!
       This property specifies a base URL which is used to resolve relative URLs within
@@ -624,6 +624,10 @@ FocusScope {
         internal.prevShowCursor = control.cursorVisible;
     }
 
+    // activation area on mouse click
+    // the editor activates automatically when pressed in the editor control,
+    // however that one can be slightly spaced to the main control area
+
     // styling
     Theming.ItemStyle.class: "textarea"
     //internals
@@ -649,9 +653,21 @@ FocusScope {
             if (selectionMode)
                 draggingMode = false;
             else {
+                toggleSelectionCursors(false);
+            }
+        }
+
+        function toggleSelectionCursors(show)
+        {
+            if (!show) {
                 leftCursorLoader.sourceComponent = undefined;
                 rightCursorLoader.sourceComponent = undefined;
                 editor.cursorVisible = prevShowCursor;
+            } else {
+                prevShowCursor = editor.cursorVisible;
+                editor.cursorVisible = false;
+                leftCursorLoader.sourceComponent = cursor;
+                rightCursorLoader.sourceComponent = cursor;
             }
         }
 
@@ -694,10 +710,7 @@ FocusScope {
                 control.cursorPosition = control.positionAt(x, y);
                 control.moveCursorSelection(control.cursorPosition + 1);
             }
-            prevShowCursor = editor.cursorVisible;
-            editor.cursorVisible = false;
-            leftCursorLoader.setCursor();
-            rightCursorLoader.setCursor();
+            toggleSelectionCursors(true);
         }
     }
 
@@ -707,7 +720,7 @@ FocusScope {
         Item {
             id: cursorItem
             // new properties
-            property var editor: control
+            property var editorItem: control
             property string positionProperty
 
             Theming.ItemStyle.class: "cursor"
@@ -717,33 +730,21 @@ FocusScope {
     // selection cursor loader
     Loader {
         id: leftCursorLoader
-        onItemChanged: {
-            if (item) {
+        onStatusChanged: {
+            if (status == Loader.Ready && item) {
                 item.Theming.ItemStyle.class = "left-pin";
                 item.positionProperty = "selectionStart";
                 item.parent = editor;
             }
         }
-        function setCursor()
-        {
-            if (internal.selectionMode) {
-                sourceComponent = cursor;
-            }
-        }
     }
     Loader {
         id: rightCursorLoader
-        onItemChanged: {
-            if (item) {
+        onStatusChanged: {
+            if (status == Loader.Ready && item) {
                 item.Theming.ItemStyle.class = "right-pin";
                 item.positionProperty = "selectionEnd";
                 item.parent = editor;
-            }
-        }
-        function setCursor()
-        {
-            if (internal.selectionMode) {
-                sourceComponent = cursor;
             }
         }
     }
@@ -828,15 +829,20 @@ FocusScope {
             // virtual keyboard handling
             activeFocusOnPress: false
             onActiveFocusChanged: {
-                if (activeFocus)
+                if (activeFocus) {
                     internal.showInputPanel();
-                else
+                } else {
                     internal.hideInputPanel();
+                }
             }
 
+            // remove selection when typing starts
+            onTextChanged: internal.selectionMode = false
+
+            // handling text selection
             MouseArea {
                 id: handler
-                enabled: control.enabled
+                enabled: control.enabled && control.activeFocusOnPress
                 anchors.fill: parent
                 propagateComposedEvents: true
                 preventStealing: true
@@ -865,8 +871,9 @@ FocusScope {
                         mouse.accepted = false;
                         return;
                     }
-                    if (internal.selectionMode && control.selectByMouse)
+                    if (internal.selectionMode && control.selectByMouse) {
                         control.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
+                    }
                 }
                 onDoubleClicked: {
                     internal.activateEditor()
