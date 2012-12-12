@@ -51,9 +51,7 @@ Item {
 
     Connections {
         target: tabs
-        onSelectedTabIndexChanged: {
-            buttonView.selectButton(tabs.selectedTabIndex);
-        }
+        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
     }
 
     Component {
@@ -73,28 +71,27 @@ Item {
 
                 AbstractButton {
                     id: button
-
                     anchors {
                         top: parent.top
                         bottom: parent.bottom
                     }
+                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
 
-                    property bool showAsSelected: tabBar.active ? selected : buttonView.selectedButtonIndex === buttonIndex
-                    opacity: showAsSelected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
+                    // When the tab bar is active, show both buttons corresponing to the tab index as selected,
+                    // but when it is not active only one to avoid seeing fading animations of the unselected
+                    // button when switching tabs from outside the tab bar.
+                    property bool selected: tabBar.active ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
+                    property int buttonIndex: index + theRow.rowNumber*repeater.count
+                    Component.onCompleted: buttonView.buttons.push(button)
 
+                    opacity: selected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
                     Behavior on opacity {
                         NumberAnimation {
                             duration: itemStyle.headerTextFadeDuration
                             easing.type: Easing.InOutQuad
                         }
                     }
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
-                    property bool selected: (index === tabs.selectedTabIndex) &&
-                                            (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
-
-                    property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
-                    property int buttonIndex: index + theRow.rowNumber*repeater.count
-                    Component.onCompleted: buttonView.buttons.push(button)
 
                     Image {
                         id: indicatorImage
