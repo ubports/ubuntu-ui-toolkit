@@ -129,9 +129,8 @@ TestCase {
      }
 
      function test_visible() {
-         expectFail("","TextField.visible = false does not set focus to false in test cases");
          textField.visible = false;
-         compare(textField.focus, false, "TextField is inactive");
+         compare(textField.activeFocus, false, "TextField is inactive");
      }
 
      RegExpValidator {
