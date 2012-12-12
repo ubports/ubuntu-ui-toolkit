@@ -108,6 +108,18 @@ Item {
                             x: button.width - width
                             property bool isLastAfterSelected: index === (tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
                             visible: tabBar.active ? isLastAfterSelected: selected
+
+                            opacity: visible ? 1 : 0
+                            Behavior on opacity {
+                                SequentialAnimation {
+                                    PropertyAction { property: "opacity"; value: 0 }
+                                    PauseAnimation { duration: 500 }
+                                    NumberAnimation {
+                                        from: 0; to: 1; duration: 600
+                                        easing.type: Easing.InOutQuad
+                                    }
+                                }
+                            }
                         }
 
                         Label {
