@@ -96,7 +96,7 @@ Item {
                                                 (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
 
                         anchors.top: parent.top
-                        height: parent.height - itemStyle.headerTextBottomMargin
+                        anchors.bottom: parent.bottom
 
                         property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
                         property int buttonIndex: index + theRow.rowNumber*repeater.count
@@ -105,7 +105,10 @@ Item {
                         Image {
                             id: indicatorImage
                             source: itemStyle.indicatorImageSource
-                            anchors.bottom: parent.bottom
+                            anchors {
+                                bottom: text.bottom
+                                bottomMargin: units.gu(0.7) // FIXME: find a good way to align with text bottom
+                            }
                             x: button.width - width
                             property bool isLastAfterSelected: index === (tabs.selectedTabIndex-1 < 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
 
@@ -136,7 +139,10 @@ Item {
                                 left: parent.left
                                 leftMargin: itemStyle.headerTextLeftMargin
                                 rightMargin: itemStyle.headerTextRightMargin
-                                baseline: parent.bottom
+//                                baseline: parent.bottom
+//                                bottom: parent.bottom
+//                                bottomMargin: itemStyle.headerTextBottomMargin
+                                verticalCenter: parent.verticalCenter
                             }
                             text: modelData.title
                             fontSize: itemStyle.headerFontSize

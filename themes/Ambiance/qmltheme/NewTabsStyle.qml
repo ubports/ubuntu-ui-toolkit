@@ -41,7 +41,6 @@ QtObject {
     property url indicatorImageSource
 
     property real tabBarHeight
-    property real headerTextBottomMargin
 
     /*!
       The time of inactivity in ms before the tab bar is automatically deactivated
