@@ -17,7 +17,12 @@
 import QtQuick 2.0
 
 Rectangle {
+    id: cursor
 
+    property bool showCursor: item.hasOwnProperty("showCursor") ? item.showCursor : item.editorItem.cursorVisible
+    property bool timerShowCursor: true
+
+    visible: showCursor && timerShowCursor
     color: itemStyle.color
     opacity: itemStyle.opacity
     width: itemStyle.width
@@ -25,12 +30,12 @@ Rectangle {
 
     Timer {
         interval: itemStyle.blinkTimeoutShown
-        running: item.showCursor && (itemStyle.blinkTimeoutShown > 0) && (itemStyle.blinkTimeoutHidden > 0)
+        running: showCursor && (itemStyle.blinkTimeoutShown > 0) && (itemStyle.blinkTimeoutHidden > 0) && itemStyle.blinking
         repeat: true
         onTriggered: {
             interval = (interval == itemStyle.blinkTimeoutShown) ?
                         itemStyle.blinkTimeoutHidden : itemStyle.blinkTimeoutShown;
-            item.timerShowCursor = !item.timerShowCursor;
+            timerShowCursor = !timerShowCursor;
         }
     }
 }
