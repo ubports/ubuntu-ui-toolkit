@@ -756,7 +756,7 @@ FocusScope {
     //hint
     Label {
         id: hint
-        anchors{
+        anchors {
             fill: parent
             margins: internal.spacing
         }
@@ -836,8 +836,20 @@ FocusScope {
                 }
             }
 
-            // remove selection when typing starts
-            onTextChanged: internal.selectionMode = false
+            // remove selection when typing starts or input method start entering text
+            onInputMethodComposingChanged: {
+                if (inputMethodComposing)
+                    internal.selectionMode = false;
+            }
+            Keys.onPressed: {
+                if ((event.text !== ""))
+                    internal.selectionMode = false;
+            }
+            Keys.onReleased: {
+                // selection positioners are updated after the keypress
+                if (selectionStart == selectionEnd)
+                    internal.selectionMode = false;
+            }
 
             // handling text selection
             MouseArea {
