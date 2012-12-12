@@ -56,6 +56,107 @@ Item {
         }
     }
 
+    Component {
+        id: tabButtonRow
+        Row {
+            id: theRow
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+            width: childrenRect.width
+            property int rowNumber // set by buttonView
+
+            Component.onCompleted: {
+                buttonView.buttonRowWidth = theRow.width;
+            }
+
+            Repeater {
+                id: repeater
+                model: tabs.__tabsModel.children
+
+                AbstractButton {
+                    id: button
+                    property bool showAsSelected: tabBar.active ? selected : buttonView.selectedButtonIndex === buttonIndex
+                    opacity: showAsSelected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: itemStyle.headerTextFadeDuration
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
+                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+                    property bool selected: (index === tabs.selectedTabIndex) &&
+                                            (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
+
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+
+                    property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
+                    property int buttonIndex: index + theRow.rowNumber*repeater.count
+                    Component.onCompleted: buttonView.buttons.push(button)
+
+                    Image {
+                        id: indicatorImage
+                        source: itemStyle.indicatorImageSource
+                        anchors {
+                            bottom: parent.bottom
+                            bottomMargin: itemStyle.headerTextBottomMargin
+                        }
+                        x: button.width - width
+
+                        // The indicator image must be visible after the selected tab button, when the
+                        // tab bar is not active, or after the "last" button (starting with the selected one),
+                        // when the tab bar is active.
+                        property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
+                        opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
+                        Behavior on opacity {
+                            SequentialAnimation {
+                                NumberAnimation {
+                                    duration: itemStyle.headerTextFadeDuration
+                                    easing.type: Easing.InOutQuad
+                                }
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: text
+                        color: selected ? itemStyle.headerTextSelectedColor : itemStyle.headerTextColor
+
+                        anchors {
+                            left: parent.left
+                            leftMargin: itemStyle.headerTextLeftMargin
+                            rightMargin: itemStyle.headerTextRightMargin
+                            baseline: parent.bottom
+                            baselineOffset: -itemStyle.headerTextBottomMargin
+                        }
+                        text: modelData.title
+                        fontSize: itemStyle.headerFontSize
+                        font.weight: itemStyle.headerFontWeight
+                    }
+
+                    onClicked: {
+                        if (!activatingTimer.running) {
+                            tabs.selectedTabIndex = index;
+                            tabBar.active = false;
+                            button.select();
+                        } else {
+                            activatingTimer.stop();
+                        }
+                    }
+
+                    // Select this button
+                    function select() {
+                        buttonView.selectedButtonIndex = button.buttonIndex;
+                        buttonView.updateOffset();
+                    }
+                }
+            }
+        }
+    }
+
     PathView {
         id: buttonView
         anchors {
@@ -69,107 +170,6 @@ Item {
 
         // Track which button was last clicked
         property int selectedButtonIndex: 0
-
-        Component {
-            id: tabButtonRow
-            Row {
-                id: theRow
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: childrenRect.width
-                property int rowNumber // set by buttonView
-
-                Component.onCompleted: {
-                    buttonView.buttonRowWidth = theRow.width;
-                }
-
-                Repeater {
-                    id: repeater
-                    model: tabs.__tabsModel.children
-
-                    AbstractButton {
-                        id: button
-                        property bool showAsSelected: tabBar.active ? selected : buttonView.selectedButtonIndex === buttonIndex
-                        opacity: showAsSelected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
-
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: itemStyle.headerTextFadeDuration
-                                easing.type: Easing.InOutQuad
-                            }
-                        }
-                        width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
-                        property bool selected: (index === tabs.selectedTabIndex) &&
-                                                (tabBar.active || buttonView.selectedButtonIndex === button.buttonIndex)
-
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-
-                        property real offset: theRow.rowNumber + 1 - button.x / buttonView.buttonRowWidth;
-                        property int buttonIndex: index + theRow.rowNumber*repeater.count
-                        Component.onCompleted: buttonView.buttons.push(button)
-
-                        Image {
-                            id: indicatorImage
-                            source: itemStyle.indicatorImageSource
-                            anchors {
-                                bottom: parent.bottom
-                                bottomMargin: itemStyle.headerTextBottomMargin
-                            }
-                            x: button.width - width
-
-                            // The indicator image must be visible after the selected tab button, when the
-                            // tab bar is not active, or after the "last" button (starting with the selected one),
-                            // when the tab bar is active.
-                            property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
-                            opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
-                            Behavior on opacity {
-                                SequentialAnimation {
-                                    NumberAnimation {
-                                        duration: itemStyle.headerTextFadeDuration
-                                        easing.type: Easing.InOutQuad
-                                    }
-                                }
-                            }
-                        }
-
-                        Label {
-                            id: text
-                            color: selected ? itemStyle.headerTextSelectedColor : itemStyle.headerTextColor
-
-                            anchors {
-                                left: parent.left
-                                leftMargin: itemStyle.headerTextLeftMargin
-                                rightMargin: itemStyle.headerTextRightMargin
-                                baseline: parent.bottom
-                                baselineOffset: -itemStyle.headerTextBottomMargin
-                            }
-                            text: modelData.title
-                            fontSize: itemStyle.headerFontSize
-                            font.weight: itemStyle.headerFontWeight
-                        }
-
-                        onClicked: {
-                            if (!activatingTimer.running) {
-                                tabs.selectedTabIndex = index;
-                                tabBar.active = false;
-                                button.select();
-                            } else {
-                                activatingTimer.stop();
-                            }
-                        }
-
-                        // Select this button
-                        function select() {
-                            buttonView.selectedButtonIndex = button.buttonIndex;
-                            buttonView.updateOffset();
-                        }
-                    }
-                }
-            }
-        }
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
