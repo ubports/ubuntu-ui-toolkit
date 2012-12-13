@@ -1,0 +1,6 @@
+@qml-import(qmltheme 0.1, current:../../../themes/Ambiance);
+@qml-mapping(.scrollbar, , ScrollbarDelegate);
+
+.scrollbar {
+   interactive: false;
+}

@@ -54,7 +54,7 @@ function animateOrSetValue(animation, target, property, endValue)
    }
   */
 function animate(property, target) {
-    if (undefined !== itemStyle[property]) {
+    if ((undefined !== itemStyle[property]) && itemStyle[property]) {
         var anim = itemStyle[property];
         // stop the previously running animation
         if (anim.running) {
