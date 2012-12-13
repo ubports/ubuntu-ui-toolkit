@@ -125,7 +125,6 @@ Template {
                         right: parent.right
                         top: parent.top
                     }
-
                     model: 20
                     height: units.gu(50)
                     delegate: ListItem.Standard {
