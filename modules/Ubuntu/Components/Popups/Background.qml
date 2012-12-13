@@ -42,6 +42,6 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onPressed: if (background.dismissOnTap) base.hide();
+        onPressed: if (background.dismissOnTap) base.hide()
     }
 }
