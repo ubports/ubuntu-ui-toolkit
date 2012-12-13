@@ -42,13 +42,6 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onPressed: {
-            if (background.dismissOnTap) {
-                base.hide();
-                mouse.accepted = false;
-            } else {
-                mouse.accepted = true;
-            }
-        }
+        onPressed: if (background.dismissOnTap) base.hide()
     }
 }

@@ -22,6 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlContext>
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 
 QuickUtils::QuickUtils(QObject *parent) :
@@ -44,7 +45,8 @@ QQuickItem *QuickUtils::rootObject()
 /*!
  * \internal
  * Creates an instance out of a delegate using the roles specified in the
- * modelData. Accepts QAbstractListModel, QStringList and QVariantList models.
+ * modelData. Accepts QAbstractListModel, QAbstractProxyModel, QStringList
+ * and QVariantList models.
  */
 
 
@@ -57,6 +59,10 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
     QQmlContext *creationContext = delegate->creationContext();
     QQmlContext *context = 0;
     QAbstractListModel *model = qvariant_cast<QAbstractListModel*>(modelData);
+    QAbstractProxyModel *proxy = qvariant_cast<QAbstractProxyModel*>(modelData);
+
+    if (proxy)
+        model = qobject_cast<QAbstractListModel*>(proxy->sourceModel());
 
     if (model) {
         // QAbstractListModel derived models

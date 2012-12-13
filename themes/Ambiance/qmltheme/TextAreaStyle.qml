@@ -1,5 +1,4 @@
 /*
-
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,33 +17,46 @@
 import QtQuick 2.0
 
 QtObject {
+
     /*!
-      Cursor color
+        These properties hold the images of the frame and background that will be drawn
+        around the input. Images represent the state and error highlight
+      */
+    property url backgroundBorder
+    property url backgroundShape
+
+    /*!
+      Background fill color
+      */
+    property color backgroundColor
+
+    /*!
+      Text color
       */
     property color color
 
     /*!
-      Cursor transparency, may be used to show text under the cursor for thick cursors.
+      Selected text color
       */
-    property real opacity
+    property color selectedTextColor
 
     /*!
-      Cursor width
+      Selection highlight color
       */
-    property real width
+    property color selectionColor
 
     /*!
-      Properties driving cursor blinking. If either of these values are 0, no
-      blinking is provided.
+      Text font
       */
-    property bool blinking
-    property int blinkTimeoutShown
-    property int blinkTimeoutHidden
+    property font font
 
     /*!
-      Selection mode pin styles
+      Spacing between overlaid elements (e.g. hint)
       */
-    property var pinSize
-    property var pinSensingOffset
-    property color pinColor
+    property var overlaySpacing
+
+    /*!
+      Spacing between the frame and the text editor area
+      */
+    property var frameSpacing
 }
