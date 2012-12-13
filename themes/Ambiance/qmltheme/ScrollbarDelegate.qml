@@ -87,8 +87,8 @@ Item {
             property int sectionHeight: sectionCounter.sectionHeight
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-            property int headerSize: flickableItem.headerItem ? flickableItem.headerItem.height : 0
-            property int footerSize: flickableItem.footerItem ? flickableItem.footerItem.height : 0
+            property int headerSize: flickableItem.header ? flickableItem.headerItem.height : 0
+            property int footerSize: flickableItem.footer ? flickableItem.footerItem.height : 0
 
             // need to capture count change otherwise the count won't be
             // reported for the proxy models
