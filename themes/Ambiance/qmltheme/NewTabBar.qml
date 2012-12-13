@@ -182,14 +182,20 @@ Item {
             }
         }
 
+        // x - y (mod a), for (x - y) <= a
+        function cyclicDistance(x, y, a) {
+            var r = x - y;
+            return Math.min(Math.abs(r), Math.abs(r - a));
+        }
+
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
             var b1 = buttons[tabIndex];
             var b2 = buttons[tabIndex + tabs.__tabsModel.children.length];
 
             // find the button with the nearest offset
-            var d1 = MathUtils.absDiffMod(b1.offset, buttonView.offset, 2);
-            var d2 = MathUtils.absDiffMod(b2.offset, buttonView.offset, 2);
+            var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);
+            var d2 = cyclicDistance(b2.offset, buttonView.offset, 2);
             if (d1 < d2) {
                 b1.select();
             } else {
