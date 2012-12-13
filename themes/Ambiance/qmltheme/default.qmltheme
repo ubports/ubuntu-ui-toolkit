@@ -148,7 +148,7 @@ Examples:
 }
 
 .scrollbar {
-    interactive: true;
+    interactive: false;
     overlay: true;
     overlayOpacityWhenShown: 0.6;
     overlayOpacityWhenHidden: 0.0;

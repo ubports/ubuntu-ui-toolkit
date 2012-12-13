@@ -66,6 +66,8 @@ Item {
     */
     property real originX: (listView) ? -item.flickableItem.contentX + Math.round(item.flickableItem.visibleArea.xPosition * contentSize) : item.flickableItem.originX
     property real originY: (listView) ? -item.flickableItem.contentY + Math.round(item.flickableItem.visibleArea.yPosition * contentSize) : item.flickableItem.originY
+    //property real originX: item.flickableItem.originX
+    //property real originY: item.flickableItem.originY
 
     // common logic for Flickable and ListView to update contentPosition when Flicked
     Connections {
@@ -83,21 +85,41 @@ Item {
                Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
                      https://bugreports.qt-project.org/browse/QTBUG-19941
             */
-            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
+            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize + headerSize + footerSize
             property int sectionHeight: sectionCounter.sectionHeight
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
+            property int headerSize: flickableItem.headerItem.height
+            property int footerSize: flickableItem.footerItem.height
+
+            Component {
+                id: fakeItem
+                Item {
+                }
+            }
 
             // need to capture count change otherwise the count won't be
             // reported for the proxy models
             Connections {
                 target: flickableItem
                 onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
+                onHeaderChanged: fixHeaderAndFooter()
+                onFooterChanged: fixHeaderAndFooter()
             }
 
             ModelSectionCounter {
                 id: sectionCounter
                 view: flickableItem
+            }
+
+            Component.onCompleted: fixHeaderAndFooter()
+
+            function fixHeaderAndFooter()
+            {
+                if (!flickableItem.header)
+                    flickableItem.header = fakeItem;
+                if (!flickableItem.footer)
+                    flickableItem.footer = fakeItem;
             }
         }
     }
