@@ -6,11 +6,8 @@ TestCase {
     name: "ScrollbarAPI"
 
     function initTestCase() {
-        //Theme.loadTheme(Qt.resolvedUrl("../../../themes/Ambiance/qmltheme/default.qmltheme"))
         Theme.loadTheme(Qt.resolvedUrl("../../resources/components.qmltheme"))
-        //compare(Theme.currentTheme, "", "Theme loading failure");
         compare(Theme.error, "", "Theme loading failure");
-        //compare(signals.count,1,"style was changed");
     }
 
     function test_a()
