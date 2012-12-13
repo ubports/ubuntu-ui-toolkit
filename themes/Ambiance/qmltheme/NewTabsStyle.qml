@@ -31,12 +31,28 @@ QtObject {
     property bool swipeToSwitchTabs
 
     property color headerTextColor
-    property color headerTextColorSelected
+    property real headerTextOpacity
+    property color headerTextSelectedColor
+    property real headerTextSelectedOpacity
+
+    property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight
+    property real headerTextLeftMargin
+    property real headerTextRightMargin
+    property real headerTextBottomMargin
 
     property url indicatorImageSource
 
     property real tabBarHeight
-    property real headerTextBottomMargin
+
+    /*!
+      The time of inactivity in ms before the tab bar is automatically deactivated
+     */
+    property int deactivateTime
+
+    /*!
+      The velocity at which buttons are repositioned when a new tab gets selected.
+     */
+    property real buttonPositioningVelocity
 }

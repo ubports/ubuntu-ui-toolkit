@@ -19,36 +19,40 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
-    height: itemStyle.tabBarHeight //units.gu(6.5)
+    height: itemStyle.tabBarHeight
 
     /*!
       The set of tabs this tab bar belongs to
      */
     property Tabs tabs
 
-    Connections {
-        target: tabs
-        onSelectedTabIndexChanged: {
-            tabBar.active = false;
-            buttonView.position()
-        }
-    }
-
     /*!
-      Use the tab bar only to display the currently selected tab,
-      or can the user interact with it and select a tab?
+      An inactive tab bar only displays the currently selected tab,
+      and an active tab bar can be interacted with to select a tab.
      */
     property bool active: false
 
     onActiveChanged: {
-        if (!active) buttonView.position();
+        if (active) {
+            activatingTimer.restart();
+        } else {
+            buttonView.selectButton(tabs.selectedTabIndex);
+        }
     }
 
-    Component.onCompleted: buttonView.position();
+    /*!
+      \internal
+      Avoid interpreting a click to activate the tab bar as a button click.
+     */
+    Timer {
+        id: activatingTimer
+        interval: 800 // same as pressAndHold time
+    }
 
-    // used to position buttons and indicator image
-    property real totalButtonWidth: 0
-    property var relativeButtonPositions: []
+    Connections {
+        target: tabs
+        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
+    }
 
     Component {
         id: tabButtonRow
@@ -59,14 +63,7 @@ Item {
                 bottom: parent.bottom
             }
             width: childrenRect.width
-
-            Component.onCompleted: {
-                tabBar.totalButtonWidth = theRow.width;
-                tabBar.relativeButtonPositions = [];
-                for (var i=0; i < children.length-1; i++) { // children[length-2] is the repeater
-                    tabBar.relativeButtonPositions.push(children[i].x / tabBar.totalButtonWidth);
-                }
-            }
+            property int rowNumber: modelData
 
             Repeater {
                 id: repeater
@@ -74,34 +71,80 @@ Item {
 
                 AbstractButton {
                     id: button
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
-                    property bool selected: (index === tabs.selectedTabIndex)
-
                     anchors {
                         top: parent.top
-//                        bottom: parent.bottom
+                        bottom: parent.bottom
                     }
-                    height: parent.height - itemStyle.headerTextBottomMargin
+                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+
+                    // When the tab bar is active, show both buttons corresponing to the tab index as selected,
+                    // but when it is not active only one to avoid seeing fading animations of the unselected
+                    // button when switching tabs from outside the tab bar.
+                    property bool selected: tabBar.active ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
+                    property int buttonIndex: index + theRow.rowNumber*repeater.count
+                    Component.onCompleted: buttonView.buttons.push(button)
+
+                    opacity: selected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: itemStyle.headerTextFadeDuration
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
+
+                    Image {
+                        id: indicatorImage
+                        source: itemStyle.indicatorImageSource
+                        anchors {
+                            bottom: parent.bottom
+                            bottomMargin: itemStyle.headerTextBottomMargin
+                        }
+                        x: button.width - width
+
+                        // The indicator image must be visible after the selected tab button, when the
+                        // tab bar is not active, or after the "last" button (starting with the selected one),
+                        // when the tab bar is active.
+                        property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
+                        opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: itemStyle.headerTextFadeDuration
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                    }
 
                     Label {
                         id: text
-                        color: selected ? itemStyle.headerTextColorSelected : itemStyle.headerTextColor
-                        visible: tabBar.active || selected
+                        color: selected ? itemStyle.headerTextSelectedColor : itemStyle.headerTextColor
+
                         anchors {
                             left: parent.left
-                            leftMargin: units.gu(2)
-                            rightMargin: units.gu(0)
+                            leftMargin: itemStyle.headerTextLeftMargin
+                            rightMargin: itemStyle.headerTextRightMargin
                             baseline: parent.bottom
+                            baselineOffset: -itemStyle.headerTextBottomMargin
                         }
-                        text: title
+                        text: modelData.title
                         fontSize: itemStyle.headerFontSize
                         font.weight: itemStyle.headerFontWeight
-                        verticalAlignment: Text.AlignBottom
                     }
 
                     onClicked: {
-                        tabs.selectedTabIndex = index;
-                        tabBar.active = false;
+                        if (!activatingTimer.running) {
+                            tabs.selectedTabIndex = index;
+                            tabBar.active = false;
+                            button.select();
+                        } else {
+                            activatingTimer.stop();
+                        }
+                    }
+
+                    // Select this button
+                    function select() {
+                        buttonView.selectedButtonIndex = button.buttonIndex;
+                        buttonView.updateOffset();
                     }
                 }
             }
@@ -115,52 +158,89 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
+
+        // initial width needs to be parent.width, otherwise the contents will be messed up
+        property real buttonRowWidth: currentItem ? currentItem.width : parent.width
+        property var buttons: []
+
+        // Track which button was last clicked
+        property int selectedButtonIndex: 0
+
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: tabBar.totalButtonWidth > tabBar.width
+        property bool needsScrolling: buttonRowWidth > tabBar.width
         interactive: needsScrolling
-        width: needsScrolling ? tabBar.width : tabBar.totalButtonWidth
+        width: needsScrolling ? tabBar.width : buttonRowWidth
         clip: !needsScrolling // avoid showing the same button twice
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0
         path: Path {
-            startX: -tabBar.totalButtonWidth/2
+            startX: -buttonView.buttonRowWidth/2
             PathLine {
-                x: tabBar.totalButtonWidth*1.5
+                x: buttonView.buttonRowWidth*1.5
             }
         }
-        function position() {
-            if (!tabBar.relativeButtonPositions) return;
-            offset = 1 - tabBar.relativeButtonPositions[tabBar.tabs.selectedTabIndex];
-        }
-    }
 
-    Image {
-        id: indicatorImage
-        source: itemStyle.indicatorImageSource
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: itemStyle.headerTextBottomMargin
+        // x - y (mod a), for (x - y) <= a
+        function cyclicDistance(x, y, a) {
+            var r = x - y;
+            return Math.min(Math.abs(r), Math.abs(r - a));
         }
 
-        visible: !tabBar.active
+        // Select the closest of the two buttons that represent the given tab index
+        function selectButton(tabIndex) {
+            var b1 = buttons[tabIndex];
+            var b2 = buttons[tabIndex + tabs.__tabsModel.children.length];
 
-        x: getXPosition()
+            // find the button with the nearest offset
+            var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);
+            var d2 = cyclicDistance(b2.offset, buttonView.offset, 2);
+            if (d1 < d2) {
+                b1.select();
+            } else {
+                b2.select();
+            }
+        }
 
-        function getXPosition() {
-            var buttons = buttonView.children[1].children; // the first buttonRow
-            var selectedButton = buttons[tabs.selectedTabIndex];
-            return selectedButton.width + units.gu(2);
+        function updateOffset() {
+            var newOffset = buttonView.buttons[buttonView.selectedButtonIndex].offset;
+            if (offset - newOffset < -1) newOffset = newOffset - 2;
+            offset = newOffset;
+        }
+
+        Behavior on offset {
+            SmoothedAnimation {
+                velocity: itemStyle.buttonPositioningVelocity
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        Component.onCompleted: {
+            selectButton(tabs.selectedTabIndex)
+        }
+
+        onDragEnded: activatingTimer.stop()
+
+        // deactivate the tab bar after inactivity
+        onMovementStarted: idleTimer.stop()
+        onMovementEnded: idleTimer.restart()
+        Timer {
+            id: idleTimer
+            interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 1000
+            running: tabBar.active
+            onTriggered: tabBar.active = false
         }
     }
 
     MouseArea {
-        // an inactive tabBar can be clicked to make it active
+        // an inactive tabBar can be pressed to make it active
+        id: mouseArea
         anchors.fill: parent
         enabled: !tabBar.active
-        onClicked: {
+        onPressed: {
             tabBar.active = true;
+            mouse.accepted = false;
         }
     }
 }

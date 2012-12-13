@@ -87,14 +87,20 @@ Examples:
 @qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
 .new-tabs {
     swipeToSwitchTabs: true;
-    separator: Divider { };
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
-    headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
-    headerTextColor: "#A0333333";           /* opacity 0.6 */
+    headerTextSelectedOpacity: 0.9;
+    headerTextSelectedColor: "#333333";
+    headerTextOpacity: 0.4;
+    headerTextColor: "#333333";
+    headerTextLeftMargin: units.gu(2);
+    headerTextRightMargin: units.gu(2);
     headerTextBottomMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
-    tabBarHeight: units.gu(6.5);
+    tabBarHeight: units.gu(7.5);
+    deactivateTime: 3000;
+    buttonPositioningVelocity: 1.0;
+    headerTextFadeDuration: 350;
 }
 
 .dark-button {
