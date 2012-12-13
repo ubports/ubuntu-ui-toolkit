@@ -83,10 +83,12 @@ Item {
                Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
                      https://bugreports.qt-project.org/browse/QTBUG-19941
             */
-            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize
+            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize + headerSize + footerSize
             property int sectionHeight: sectionCounter.sectionHeight
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
+            property int headerSize: flickableItem.header ? flickableItem.headerItem.height : 0
+            property int footerSize: flickableItem.footer ? flickableItem.footerItem.height : 0
 
             // need to capture count change otherwise the count won't be
             // reported for the proxy models

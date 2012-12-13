@@ -84,6 +84,13 @@ Template {
                     delegate: Standard {
                         text: "Data - " + label
                     }
+
+                    header: Header {
+                        text: "List header"
+                    }
+                    footer: Header {
+                        text: "List footer"
+                    }
                 }
                 ListModel {
                    id: listModel
