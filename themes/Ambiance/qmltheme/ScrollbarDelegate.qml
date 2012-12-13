@@ -66,8 +66,6 @@ Item {
     */
     property real originX: (listView) ? -item.flickableItem.contentX + Math.round(item.flickableItem.visibleArea.xPosition * contentSize) : item.flickableItem.originX
     property real originY: (listView) ? -item.flickableItem.contentY + Math.round(item.flickableItem.visibleArea.yPosition * contentSize) : item.flickableItem.originY
-    //property real originX: item.flickableItem.originX
-    //property real originY: item.flickableItem.originY
 
     // common logic for Flickable and ListView to update contentPosition when Flicked
     Connections {
