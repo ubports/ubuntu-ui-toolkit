@@ -42,6 +42,9 @@ Item {
 
     MouseArea {
         anchors.fill: parent
+        // When using onPressed, on a tested touch device, upon releasing
+        // a clicked event goes to the MouseArea behind the background,
+        // which results in unexpected behavior.
         onClicked: if (background.dismissOnTap) base.hide()
     }
 }
