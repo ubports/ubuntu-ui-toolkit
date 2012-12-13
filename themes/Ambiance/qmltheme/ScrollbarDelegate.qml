@@ -87,37 +87,19 @@ Item {
             property int sectionHeight: sectionCounter.sectionHeight
             property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
             property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-            property int headerSize: flickableItem.headerItem.height
-            property int footerSize: flickableItem.footerItem.height
-
-            Component {
-                id: fakeItem
-                Item {
-                }
-            }
+            property int headerSize: flickableItem.headerItem ? flickableItem.headerItem.height : 0
+            property int footerSize: flickableItem.footerItem ? flickableItem.footerItem.height : 0
 
             // need to capture count change otherwise the count won't be
             // reported for the proxy models
             Connections {
                 target: flickableItem
                 onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-                onHeaderChanged: fixHeaderAndFooter()
-                onFooterChanged: fixHeaderAndFooter()
             }
 
             ModelSectionCounter {
                 id: sectionCounter
                 view: flickableItem
-            }
-
-            Component.onCompleted: fixHeaderAndFooter()
-
-            function fixHeaderAndFooter()
-            {
-                if (!flickableItem.header)
-                    flickableItem.header = fakeItem;
-                if (!flickableItem.footer)
-                    flickableItem.footer = fakeItem;
             }
         }
     }
