@@ -26,11 +26,20 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Image {
+    Item {
         id: header
         z: 1 // header is on top of the tab's contents.
-        source: "artwork/background-paper.png"
-        fillMode: Image.Tile
+
+        Image {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                bottom: separator.top
+            }
+            source: "artwork/background-paper.png"
+            fillMode: Image.Tile
+        }
 
         anchors {
             left: parent.left
