@@ -30,7 +30,9 @@ Popover {
             right: parent.right
         }
 
-        ListItem.Header { text: "Standard list items" }
+//        ListItem.Header { text: "Standard list items" }
+//        ListItem.ThinDivider { }
+        ListItem.Divider { }
         ListItem.Standard { text: "Do something" }
         ListItem.Standard { text: "Do something else" }
         ListItem.Header { text: "Buttons" }
@@ -54,6 +56,9 @@ Popover {
                 }
                 onClicked: PopupUtils.close(popover)
             }
+            showDivider: false // no thin divider ..
         }
+
+        ListItem.Divider { } // .. but a thick one
     }
 }

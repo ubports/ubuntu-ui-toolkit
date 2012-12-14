@@ -40,7 +40,7 @@ Item {
         }
         height: inner.height + 2*inner.anchors.margins
 
-        radius: units.gu(1)
+//        radius: units.gu(1)
         color: "white"
 
         Rectangle {
@@ -49,9 +49,9 @@ Item {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                margins: units.gu(1)
+//                margins: units.gu(0.5)
             }
-            color: "lightgrey"
+            color: "white"
             height: childrenRect.height
         }
     }
