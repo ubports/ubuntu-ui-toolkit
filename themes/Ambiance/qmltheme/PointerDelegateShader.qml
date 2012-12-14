@@ -24,7 +24,6 @@ Item {
         anchors.fill: parent
 
         property color color: "white"
-        property color edgeColor: "grey"
 
         // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
         //  but I did not manage to get a 3x3 matrix from QML into the shader.
@@ -59,20 +58,12 @@ Item {
         fragmentShader: "
             varying highp vec2 coord;
             uniform highp vec4 color;
-            uniform highp vec4 edgeColor;
             uniform highp float opacity;
 
             void main(void) {
-                highp float epsilon = -1.0;
-                highp vec4 result;
                 if (coord.t > 2.0*(1.0 - coord.s)) discard;
                 if (coord.t > 2.0*coord.s) discard;
-                if (coord.t - 2.0*(1.0-coord.s) >= epsilon) //|| (coord.t - 2.0*coord.s) <= epsilon))
-                    result = vec4(1.0, 0.0, 0.0, 1.0);
-                else
-                    result = color * vec4(opacity);
-
-                gl_FragColor = result;
+                gl_FragColor = color * vec4(opacity);
             }
         "
     }
