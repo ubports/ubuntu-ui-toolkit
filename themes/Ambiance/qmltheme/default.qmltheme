@@ -25,7 +25,7 @@ properties typed as variant.
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
 @qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
-
+@qml-mapping(.textarea, TextAreaStyle, TextAreaDelegate);
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
 a qml-mapping.
@@ -87,14 +87,20 @@ Examples:
 @qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
 .new-tabs {
     swipeToSwitchTabs: true;
-    separator: Divider { };
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
-    headerTextColorSelected: "#E7333333";   /* opacity 0.9 */
-    headerTextColor: "#A0333333";           /* opacity 0.6 */
+    headerTextSelectedOpacity: 0.9;
+    headerTextSelectedColor: "#333333";
+    headerTextOpacity: 0.4;
+    headerTextColor: "#333333";
+    headerTextLeftMargin: units.gu(2);
+    headerTextRightMargin: units.gu(2);
     headerTextBottomMargin: units.gu(2);
     indicatorImageSource: url("artwork/chevron.png");
-    tabBarHeight: units.gu(6.5);
+    tabBarHeight: units.gu(7.5);
+    deactivateTime: 3000;
+    buttonPositioningVelocity: 1.0;
+    headerTextFadeDuration: 350;
 }
 
 .dark-button {
@@ -148,7 +154,7 @@ Examples:
 }
 
 .scrollbar {
-    interactive: true;
+    interactive: false;
     overlay: true;
     overlayOpacityWhenShown: 0.6;
     overlayOpacityWhenHidden: 0.0;
@@ -214,8 +220,50 @@ Examples:
    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
    opacity: 1.0;
    width: units.dp(1);
+   blinking: true;
    blinkTimeoutShown: 800;
    blinkTimeoutHidden: 400;
+}
+
+/*
+  TextArea styling
+*/
+.textarea {
+    backgroundShape: url("artwork/ubuntushape_small_radius_shape.sci");
+    backgroundBorder: url("artwork/ubuntushape_small_radius_idle.sci");
+    backgroundColor: "white";
+    color: (item.enabled) ? "#757373" : "darkgray";
+    selectedTextColor: "white";
+    selectionColor: "#fc7134";
+    font.family: "Ubuntu";
+    font.pixelSize: FontUtils.sizeToPixels("small");
+    overlaySpacing: units.gu(0.5);
+    frameSpacing: units.gu(0.35);
+}
+/* hint */
+.textarea .label {
+   italic: true;
+   color: "#B6B6B6";
+   fontSize: "small";
+   elide: Text.ElideRight;
+   wrapMode: Text.WordWrap;
+}
+/* selection cursors */
+@qml-mapping (.left-pin, EditorCursorStyle, SelectionCursorDelegate);
+@qml-mapping (.right-pin, EditorCursorStyle, SelectionCursorDelegate);
+.textarea .left-pin, .textarea .right-pin {
+    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
+    opacity: 1.0;
+    width: units.dp(1);
+    blinking: false;
+    pinSize: units.gu(1.2);
+    pinSensingOffset: units.dp(4);
+    pinColor: "blue";
+}
+
+/* scrollbars */
+.textarea .scrollbar {
+   interactive: false;
 }
 
 /* sliders */

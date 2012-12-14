@@ -373,6 +373,12 @@ FocusScope {
     // internals
     Theming.ItemStyle.class: "textfield"
 
+    /*! internal */
+    onVisibleChanged: {
+        if (!visible)
+            control.focus = false;
+    }
+
     Text {
         id: fontHolder
     }

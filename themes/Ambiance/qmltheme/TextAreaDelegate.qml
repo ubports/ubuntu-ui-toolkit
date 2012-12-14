@@ -1,5 +1,4 @@
 /*
-
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,35 +15,22 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-QtObject {
-    /*!
-      Cursor color
-      */
-    property color color
+// frame
+UbuntuShape {
+    id: shape
+    z: -1
 
-    /*!
-      Cursor transparency, may be used to show text under the cursor for thick cursors.
-      */
-    property real opacity
+    anchors.fill: parent
+    color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
+    borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
+    opacity: item.enabled ? 1.0 : 0.5
 
-    /*!
-      Cursor width
-      */
-    property real width
+    MouseArea {
+        anchors.fill: parent
+        onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+    }
 
-    /*!
-      Properties driving cursor blinking. If either of these values are 0, no
-      blinking is provided.
-      */
-    property bool blinking
-    property int blinkTimeoutShown
-    property int blinkTimeoutHidden
-
-    /*!
-      Selection mode pin styles
-      */
-    property var pinSize
-    property var pinSensingOffset
-    property color pinColor
 }

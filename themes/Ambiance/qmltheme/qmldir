@@ -21,5 +21,9 @@ TextFieldStyle 0.1 TextFieldStyle.qml
 TextFieldDelegate 0.1 TextFieldDelegate.qml
 EditorCursorStyle 0.1 EditorCursorStyle.qml
 EditorCursorDelegate 0.1 EditorCursorDelegate.qml
+SelectionCursorDelegate 0.1 SelectionCursorDelegate.qml
+TextAreaStyle 0.1 TextAreaStyle.qml
+TextAreaDelegate 0.1 TextAreaDelegate.qml
 SliderDelegate 0.1 SliderDelegate.qml
+
 StyleUtils 0.1 styleUtils.js

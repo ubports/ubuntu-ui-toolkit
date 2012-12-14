@@ -21,6 +21,11 @@ import Ubuntu.Components 0.1
 TestCase {
      name: "TextFieldAPI"
 
+     function initTestCase() {
+         textField.forceActiveFocus();
+         compare(textField.focus, true, "TextField si focused");
+     }
+
      function test_acceptableInput() {
          compare(textField.acceptableInput,true,"acceptableInput true by default")
      }
@@ -121,6 +126,11 @@ TestCase {
      function test_accepted() {
          signalSpy.signalName = "accepted";
          compare(signalSpy.valid,true,"accepted signal exists")
+     }
+
+     function test_visible() {
+         textField.visible = false;
+         compare(textField.activeFocus, false, "TextField is inactive");
      }
 
      RegExpValidator {
