@@ -31,7 +31,7 @@ Template {
             title: i18n.tr("Flickable")
             page: Rectangle {
                 anchors.fill: parent
-                color: "navy"// "#eeeeee"
+                color: "#eeeeee"
 
                 Flickable {
                     id: flickable
