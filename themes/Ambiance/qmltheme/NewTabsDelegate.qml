@@ -26,11 +26,20 @@ Item {
 
     property VisualItemModel tabModel: item.__tabsModel
 
-    Image {
+    Item {
         id: header
         z: 1 // header is on top of the tab's contents.
-        source: "artwork/background-paper.png"
-        fillMode: Image.Tile
+
+        Image {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                bottom: separator.bottom
+            }
+            source: "artwork/background-paper.png"
+            fillMode: Image.Tile
+        }
 
         anchors {
             left: parent.left
@@ -45,7 +54,7 @@ Item {
             }
         }
 
-        height: tabBar.height + separator.height
+        height: tabBar.height + separator.height + separatorBottom.height
 
         function show() {
             header.y = 0;
@@ -75,6 +84,15 @@ Item {
                 right: parent.right
             }
             source: "artwork/PageHeaderBaseDividerLight.sci"
+        }
+        Image {
+            id: separatorBottom
+            anchors {
+                top: separator.bottom
+                left: parent.left
+                right: parent.right
+            }
+            source: "artwork/PageHeaderBaseDividerBottom.png"
         }
 
         property Tab selectedTab: item ? item.selectedTab : null
