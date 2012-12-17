@@ -38,9 +38,9 @@ Item {
             right: parent.right
             top: parent.top
         }
+        // FIXME: margins are 0 now, but may change
         height: inner.height + 2*inner.anchors.margins
 
-        radius: units.gu(1)
         color: "white"
 
         Rectangle {
@@ -49,9 +49,8 @@ Item {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                margins: units.gu(1)
             }
-            color: "lightgrey"
+            color: "white"
             height: childrenRect.height
         }
     }
