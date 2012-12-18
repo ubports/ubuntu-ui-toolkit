@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components.Popups 0.1
 import "examples.js" as Examples
 
 /*!
@@ -28,6 +29,7 @@ import "examples.js" as Examples
   Demonstrates following Ubuntu Components:
      - PageStack
      - ListItems
+     - Popups
 
   Uses:
      - ListView
@@ -47,15 +49,36 @@ PageStack {
         id: mainPage
         title: i18n.tr("Examples Gallery")
 
+        Component {
+            id: dialogComponent
+            Dialog {
+                id: dialog
+                title: ""
+                text: ""
+                Button {
+                    text: "Close"
+                    onClicked: PopupUtils.close(dialog)
+                }
+            }
+        }
+
         ListView {
             focus: true
             anchors.fill: parent
             model: ExamplesModel { }
             delegate: ListItem.Subtitled {
+                progression: true
                 text: i18n.tr(title)
                 subText: i18n.tr(subTitle)
                 onClicked: Examples.loadApp(pageStack,example,exampleResources);
-                progression: true
+
+                onPressAndHold: {
+                    var aboutDialog = dialogComponent.createObject(parent);
+                    aboutDialog.title = i18n.tr(title);
+                    aboutDialog.text = "<b>" + i18n.tr(subTitle) + "</b><br /><p>" + i18n.tr(description) + "</p>"
+                    aboutDialog.show();
+                }
+
             }
 
             section.property: "section"

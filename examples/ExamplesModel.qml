@@ -24,5 +24,6 @@ ListModel {
         example: "uchuck/uchuck.qml"
         exampleResources: "../resources/"
         section: "Online App"
+        description: "A Joke Downloader Page for Examples Gallery. Connects to an online service which returns a JSON from which the joke is parsed into a Label."
     }
 }
