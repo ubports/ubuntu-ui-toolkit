@@ -37,7 +37,7 @@ Rectangle {
     color: "lightgray"
 
     property real margins: units.gu(2)
-    property real labelWidth: units.gu(9)
+    property real labelWidth: units.gu(12)
 
     Label {
         id: title
@@ -86,6 +86,7 @@ Rectangle {
                     spacing: units.gu(1)
                     Label {
                         text: i18n.tr(modelData.unit)
+                        fontSize: "large"
                         width: root.labelWidth
                         height: input.height
                         verticalAlignment: Text.AlignVCenter
@@ -95,6 +96,8 @@ Rectangle {
                         validator: DoubleValidator {notation: DoubleValidator.StandardNotation}
                         width: pageLayout.width - 2 * root.margins - root.labelWidth
                         text: "0.0"
+                        font.pixelSize: FontUtils.sizeToPixels("large")
+                        height: units.gu(4)
                         onAccepted: {
                             clear(input);
                             convert();
