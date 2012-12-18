@@ -26,14 +26,16 @@ import QtMultimedia 5.0
   Connects to an online service which returns a json
   from which the joke is parsed into a Label.
 
-  Demonstrates following Ubuntu Components:
+  Demonstrates following:
      - Page
      - ActivityIndicator
      - UbuntuShape
      - Label
+     - i18n
 
-  Depends on QtMultimedia:
-     - SoundEffect
+  Uses:
+     - QtMultimedia / SoundEffect
+     - QML State
  */
 
 Page {

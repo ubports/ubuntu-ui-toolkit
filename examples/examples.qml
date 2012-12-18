@@ -28,6 +28,8 @@ import "examples.js" as Examples
   Demonstrates following Ubuntu Components:
      - PageStack
      - ListItems
+
+  Uses:
      - ListView
      - ListModel
 
@@ -58,7 +60,7 @@ PageStack {
 
             section.property: "section"
             section.criteria: ViewSection.FullString
-            section.delegate: ListItem.Header { text: section }
+            section.delegate: ListItem.Header { text: i18n.tr(section) }
         }
     }
 }
