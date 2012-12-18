@@ -1,2 +1,0 @@
-#!/bin/bash
-/opt/qt5/bin/qmlscene uchuck.qml --fullscreen

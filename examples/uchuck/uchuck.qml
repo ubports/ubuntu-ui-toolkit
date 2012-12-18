@@ -18,95 +18,102 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import QtMultimedia 5.0 // depends on libdeclarative-multimedia
+import QtMultimedia 5.0 // depends on qtdeclarative-multimedia
 
-PageStack {
-    id: pageStack
-    width: units.gu(38)
-    height: units.gu(48)
-    anchors.margins: units.gu(10)
-    Component.onCompleted: push(page0)
+Page {
+    id: page
+    title: i18n.tr("uChuck")
 
-    SoundEffect {
-        id: laugh
-        source: "laugh.wav"
-    }
+    property string url : "http://api.icndb.com/jokes/random?limitTo=[nerdy,explicit]";
+    readonly property string _stateLoading : "Loading"
+    readonly property string _stateNormal : "Normal"
+    property string rootPath : ""
 
-    Page {
-        id: page0
-        title: i18n.tr("uChuck - the app which gives you the kick")
+    function getJoke() {
+        laugh.stop();
+        var xhr = new XMLHttpRequest();
 
-        property string url : "http://api.icndb.com/jokes/random?limitTo=[nerdy,explicit]";
+        xhr.open("GET",url,true);
+        xhr.onreadystatechange = function() {
 
-        function getJoke() {
-            laugh.stop();
-            var xhr = new XMLHttpRequest();
-
-            xhr.open("GET",url,true);
-            xhr.onreadystatechange = function() {
-
-                if ( xhr.readyState === xhr.DONE) {
-                    if ( xhr.status === 200) {
-                        try {
-                            var obj = JSON.parse(xhr.responseText);
-                            if (obj.type === "success") {
-                                jokeHolder.text = obj.value.joke;
-                                activityIndicator.visible = false;
-                                jokeHolder.visible = true;
-                                laugh.play();
-                            }
-                        } catch (e) {
-                            getJoke();
+            if ( xhr.readyState === xhr.DONE) {
+                if ( xhr.status === 200) {
+                    try {
+                        var obj = JSON.parse(xhr.responseText);
+                        if (obj.type === "success") {
+                            jokeHolder.text = obj.value.joke;
+                            page.state = _stateNormal;
+                            laugh.play();
                         }
+                    } catch (e) {
+                        getJoke();
                     }
                 }
             }
-
-            xhr.send();
         }
 
+        xhr.send();
+    }
+
+
+    SoundEffect {
+        id: laugh
+        source: rootPath + "laugh.wav"
+    }
 
 
 
-            UbuntuShape {
-                color: "#888888"
-                radius: "medium"
-                anchors.centerIn: parent
-                anchors.margins: units.gu(10)
-                anchors.fill: parent
+    UbuntuShape {
+        color: "#888888"
+        radius: "medium"
+        anchors.centerIn: parent
+        anchors.margins: units.gu(10)
+        anchors.fill: parent
 
-                ActivityIndicator {
-                    id: activityIndicator
-                    anchors.centerIn: parent
-                    running: true
-                    visible: false
-                }
+        ActivityIndicator {
+            id: activityIndicator
+            anchors.centerIn: parent
+            running: true
+            visible: false
+        }
 
-                Label {
-                    id: jokeHolder
+        Label {
+            id: jokeHolder
 
-                    anchors.fill: parent
-
-                    text: "Tap here!"
-                    fontSize: "x-large"
-                    color: "#f1f1f1"
-
-
-                    textFormat: Text.RichText
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    wrapMode: TextInput.WrapAtWordBoundaryOrAnywhere
-                }
-            }
-
-        MouseArea {
             anchors.fill: parent
 
-            onClicked: {
-                activityIndicator.visible = true;
-                jokeHolder.visible = false;
-                page0.getJoke();
-            }
+            text: "Tap here!"
+            fontSize: "x-large"
+            color: "#f1f1f1"
+
+
+            textFormat: Text.RichText
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: TextInput.WrapAtWordBoundaryOrAnywhere
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+
+        onClicked: {
+            page.state = _stateLoading;
+            page.getJoke();
+        }
+    }
+
+    states: [
+         State {
+             name: _stateNormal
+             PropertyChanges { target: activityIndicator; visible: false}
+             PropertyChanges { target: jokeHolder; visible: true}
+         },
+         State {
+             name: _stateLoading
+             PropertyChanges { target: activityIndicator; visible: true}
+             PropertyChanges { target: jokeHolder; visible: false}
+         }
+     ]
 }
+
