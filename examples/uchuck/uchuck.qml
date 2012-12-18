@@ -18,7 +18,23 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import QtMultimedia 5.0 // depends on qtdeclarative-multimedia
+import QtMultimedia 5.0
+
+/*!
+  \brief A Joke Downloader Page for Examples Gallery
+
+  Connects to an online service which returns a json
+  from which the joke is parsed into a Label.
+
+  Demonstrates following Ubuntu Components:
+     - Page
+     - ActivityIndicator
+     - UbuntuShape
+     - Label
+
+  Depends on QtMultimedia:
+     - SoundEffect
+ */
 
 Page {
     id: page
@@ -32,10 +48,8 @@ Page {
     function getJoke() {
         laugh.stop();
         var xhr = new XMLHttpRequest();
-
         xhr.open("GET",url,true);
         xhr.onreadystatechange = function() {
-
             if ( xhr.readyState === xhr.DONE) {
                 if ( xhr.status === 200) {
                     try {
@@ -51,17 +65,13 @@ Page {
                 }
             }
         }
-
         xhr.send();
     }
-
 
     SoundEffect {
         id: laugh
         source: rootPath + "laugh.wav"
     }
-
-
 
     UbuntuShape {
         color: "#888888"
@@ -79,14 +89,10 @@ Page {
 
         Label {
             id: jokeHolder
-
             anchors.fill: parent
-
             text: "Tap here!"
-            fontSize: "x-large"
+            fontSize: "normal"
             color: "#f1f1f1"
-
-
             textFormat: Text.RichText
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -96,7 +102,6 @@ Page {
 
     MouseArea {
         anchors.fill: parent
-
         onClicked: {
             page.state = _stateLoading;
             page.getJoke();
