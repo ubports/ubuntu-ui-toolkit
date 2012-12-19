@@ -15,6 +15,14 @@
 
  */
 
+function modelArrayToString(arr) {
+    var str = "";
+    for (var idx = 0; idx < arr.count; idx++) {
+        str += arr.get(idx).value + " ";
+    }
+    return str;
+}
+
 function checkDepends(deps, deps_pkg, par) {
     var iFailures = 0;
     for (var idx = 0; idx < deps.count; idx++) {
@@ -28,7 +36,7 @@ function checkDepends(deps, deps_pkg, par) {
             iFailures++;
         }
     }
-    return (iFailures===0);
+    return (iFailures === 0);
 }
 
 function loadApp(ps, app, res) {

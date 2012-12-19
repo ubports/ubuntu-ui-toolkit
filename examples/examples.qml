@@ -73,7 +73,10 @@ PageStack {
                     if (Examples.checkDepends(depends,depends_packages,mainPage)) {
                         Examples.loadApp(pageStack,example,exampleResources);
                     } else {
-
+                        var errorDialog = dialogComponent.createObject(parent);
+                        errorDialog.title = "Missing dependencies"
+                        errorDialog.text = Examples.modelArrayToString(depends_packages);
+                        errorDialog.show();
                     }
                 }
 
