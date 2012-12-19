@@ -19,8 +19,14 @@ import Ubuntu.Components 0.1
 /*!
   \brief Example unit converter application.
 
-  The application demonstrates the usage of the Tabs, Tab, TextField and Button
-  components.
+  The application demonstrates the usage of
+    - i18n
+    - units
+    - Label
+    - Tabs
+    - Tab
+    - TextField and
+    - Button components
 
   The application converts length and weight units between several metrics.
   Related units are grouped in the same page (Tab) and conversion happens when
@@ -39,6 +45,7 @@ Rectangle {
     property real margins: units.gu(2)
     property real labelWidth: units.gu(12)
 
+    // Title label styled using "title" style class
     Label {
         id: title
         ItemStyle.class: "title"
@@ -51,6 +58,7 @@ Rectangle {
         }
     }
 
+    // Length conversion model; the unit is Mile
     property var lengthModel: [
         {"unit": "Inch", "rate": 63360.0},
         {"unit": "Meter", "rate": 1609.344},
@@ -60,6 +68,7 @@ Rectangle {
         {"unit": "Kilometers", "rate": 1.609344},
     ]
 
+    // Weight conversion model; the base unit is Pound
     property var weightModel: [
         {"unit": "Pounds", "rate": 1.0},
         {"unit": "Kilograms", "rate": 0.45359237},
@@ -69,10 +78,14 @@ Rectangle {
         {"unit": "UK Tons", "rate": 0.000446428571},
     ]
 
+    // Page layout containing rows od Label showing the unit and an attached
+    // TextField for conversion
     Component {
         id: pageContent
         Column {
             id: pageLayout
+            // expose Repeater's model for reusability, so we can set it from
+            // outside, when we build the tabs
             property alias model: converter.model
 
             anchors {
@@ -80,6 +93,8 @@ Rectangle {
                 margins: root.margins
             }
             spacing: units.gu(1)
+            // show as many lines as many units we have in the model
+            // it is assumed that the model has "unit" and "rate" roles
             Repeater {
                 id: converter
                 Row {
@@ -91,61 +106,45 @@ Rectangle {
                         height: input.height
                         verticalAlignment: Text.AlignVCenter
                     }
+                    // input field performing conversion
                     TextField {
                         id: input
+                        errorHighlight: false
                         validator: DoubleValidator {notation: DoubleValidator.StandardNotation}
                         width: pageLayout.width - 2 * root.margins - root.labelWidth
                         text: "0.0"
                         font.pixelSize: FontUtils.sizeToPixels("large")
                         height: units.gu(4)
-                        onAccepted: {
-                            clear(input);
-                            convert();
+                        // on-the-fly conversion
+                        onTextChanged: if (activeFocus) convert(input, index)
+                    }
+                }
+            }
+            // clear content
+            Button {
+                text: i18n.tr("Clear")
+                width: units.gu(12)
+                onClicked: clear()
+            }
+
+            // the function converts the value entered in the input to the other units
+            function convert(input, index) {
+                if (input && input.text.length <= 0)
+                    return;
+                var baseValue = parseFloat(input.text) / parseFloat(converter.model[index].rate);
+                if (baseValue <= 0.0)
+                    return;
+                for (var i = 0; i < converter.count; i++) {
+                    if (converter.itemAt(i)) {
+                        var inputItem = converter.itemAt(i).children[1]
+                        if (inputItem !== input) {
+                            inputItem.text = parseFloat(converter.model[i].rate) * baseValue;
                         }
                     }
                 }
             }
-            Item {
-                width: pageLayout.width
-                height: childrenRect.height
-                Button {
-                    text: i18n.tr("Clear")
-                    anchors {
-                        top: parent.top
-                        left: parent.left
-                    }
-                    width: units.gu(12)
-                    onClicked: clear()
-                }
-                Button {
-                    text: i18n.tr("Convert")
-                    anchors{
-                        top: parent.top
-                        right: parent.right
-                    }
-                    width: units.gu(12)
-                    color: "green"
-                    onClicked: convert()
-                }
-            }
 
-            function convert() {
-                var item;
-                var baseValue = 0.0;
-                for (var i = 0; !baseValue && i < converter.count; i++) {
-                    item = converter.itemAt(i).children[1];
-                    if (item.text !== "0.0") {
-                        baseValue = parseFloat(item.text) / parseFloat(converter.model[i].rate);
-                    }
-                }
-                if (baseValue > 0) {
-                    for (i = 0; i < converter.count; i++) {
-                        item = converter.itemAt(i).children[1];
-                        item.text = parseFloat(converter.model[i].rate) * parseFloat(baseValue);
-                    }
-                }
-            }
-
+            // the function clears every input field data
             function clear(except) {
                 for (var i = 0; i < converter.count; i++) {
                     if (!except || (except && except !== converter.itemAt(i).children[1]))
@@ -155,7 +154,9 @@ Rectangle {
         }
     }
 
+    // Tabs using "new-tabs" Look and Feel (scrolling tab-bar and flickable tabs).
     Tabs {
+        // remove the following line to use tab-strips, the old-style tabs
         ItemStyle.class: "new-tabs"
         anchors {
             left: parent.left
@@ -165,6 +166,7 @@ Rectangle {
             margins: units.gu(0.5)
         }
 
+        // Tab for Length conversions
         Tab {
             title: i18n.tr("Lengths")
             property var model
@@ -179,6 +181,8 @@ Rectangle {
                 }
             }
         }
+
+        // Tab for Weight conversions
         Tab {
             title: i18n.tr("Weights")
             property var model
