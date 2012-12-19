@@ -18,7 +18,9 @@
 function checkDepends(deps,par) {
     var ok = false;
     try {
-        ok = (null !== Qt.createQmlObject(deps + "; import QtQuick 2.0; Rectangle { }",par,"dependsCheck"));
+        var obj = Qt.createQmlObject(deps + "; import QtQuick 2.0; Rectangle { }",par,"dependsCheck")
+        ok = (null !== obj);
+        delete obj;
     } catch (e) {
         console.log(e);
     }
