@@ -61,6 +61,13 @@ PageStack {
             }
         }
 
+        function showDialog(parent, title, text) {
+            var errorDialog = dialogComponent.createObject(parent);
+            errorDialog.title = title;
+            errorDialog.text = text;
+            errorDialog.show();
+        }
+
         ListView {
             focus: true
             anchors.fill: parent
@@ -73,18 +80,12 @@ PageStack {
                     if (Examples.checkDepends(depends,depends_packages,mainPage)) {
                         Examples.loadApp(pageStack,example,exampleResources);
                     } else {
-                        var errorDialog = dialogComponent.createObject(parent);
-                        errorDialog.title = "Missing dependencies"
-                        errorDialog.text = Examples.modelArrayToString(depends_packages);
-                        errorDialog.show();
+                        mainPage.showDialog(parent, "Missing dependencies", Examples.modelArrayToString(depends_packages));
                     }
                 }
 
                 onPressAndHold: {
-                    var aboutDialog = dialogComponent.createObject(parent);
-                    aboutDialog.title = i18n.tr(title);
-                    aboutDialog.text = "<b>" + i18n.tr(subTitle) + "</b><br /><p>" + i18n.tr(description) + "</p>"
-                    aboutDialog.show();
+                    mainPage.showDialog(parent, i18n.tr(title), "<b>" + i18n.tr(subTitle) + "</b><br /><p>" + i18n.tr(description) + "</p>");
                 }
 
             }
