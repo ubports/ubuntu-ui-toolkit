@@ -105,15 +105,24 @@ Rectangle {
                     }
                 }
             }
-            Row {
-                spacing: units.gu(1)
+            Item {
+                width: pageLayout.width
+                height: childrenRect.height
                 Button {
                     text: i18n.tr("Clear")
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                    }
                     width: units.gu(12)
                     onClicked: clear()
                 }
                 Button {
                     text: i18n.tr("Convert")
+                    anchors{
+                        top: parent.top
+                        right: parent.right
+                    }
                     width: units.gu(12)
                     color: "green"
                     onClicked: convert()
@@ -143,7 +152,6 @@ Rectangle {
                         converter.itemAt(i).children[1].text = "0.0";
                 }
             }
-
         }
     }
 
@@ -158,7 +166,7 @@ Rectangle {
         }
 
         Tab {
-            title: i18n.tr("Length converter")
+            title: i18n.tr("Lengths")
             property var model
             page: Loader {
                 anchors.fill: parent
@@ -172,7 +180,7 @@ Rectangle {
             }
         }
         Tab {
-            title: i18n.tr("Weight converter")
+            title: i18n.tr("Weights")
             property var model
             page: Loader {
                 anchors.fill: parent
