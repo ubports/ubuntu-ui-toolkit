@@ -73,7 +73,7 @@ PageStack {
                     if (Examples.checkDepends(depends,mainPage)) {
                         Examples.loadApp(pageStack,example,exampleResources);
                     } else {
-                        console.log("Missing dependencies " + depends)
+                        console.log("Missing dependencies " + depends_packages)
                     }
                 }
 
