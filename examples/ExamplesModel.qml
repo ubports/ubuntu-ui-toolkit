@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 import QtQuick 2.0
 
@@ -25,5 +24,6 @@ ListModel {
         exampleResources: "../resources/"
         section: "Online App"
         description: "A Joke Downloader Page for Examples Gallery. Connects to an online service which returns a JSON from which the joke is parsed into a Label."
+        depends: "import QtMultimedia 5.0"
     }
 }

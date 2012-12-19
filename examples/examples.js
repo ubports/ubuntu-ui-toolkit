@@ -12,9 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+
  */
+
+function checkDepends(deps,par) {
+    var ok = false;
+    try {
+        ok = (null !== Qt.createQmlObject(deps + "; import QtQuick 2.0; Rectangle { }",par,"dependsCheck"));
+    } catch (e) {
+        console.log(e);
+    }
+    return ok;
+}
+
 function loadApp(ps, app, res) {
     var component = Qt.createComponent(app);
     if (component.status === Component.Ready) {

@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 import QtQuick 2.0
 import Ubuntu.Components 0.1
@@ -70,7 +69,13 @@ PageStack {
                 progression: true
                 text: i18n.tr(title)
                 subText: i18n.tr(subTitle)
-                onClicked: Examples.loadApp(pageStack,example,exampleResources);
+                onClicked: {
+                    if (Examples.checkDepends(depends,mainPage)) {
+                        Examples.loadApp(pageStack,example,exampleResources);
+                    } else {
+                        console.log("Missing dependencies " + depends)
+                    }
+                }
 
                 onPressAndHold: {
                     var aboutDialog = dialogComponent.createObject(parent);
