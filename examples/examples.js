@@ -15,16 +15,20 @@
 
  */
 
-function checkDepends(deps,par) {
-    var ok = false;
-    try {
-        var obj = Qt.createQmlObject(deps + "; import QtQuick 2.0; Rectangle { }",par,"dependsCheck")
-        ok = (null !== obj);
-        delete obj;
-    } catch (e) {
-        console.log(e);
+function checkDepends(deps, deps_pkg, par) {
+    var iFailures = 0;
+    for (var idx = 0; idx < deps.count; idx++) {
+        try {
+            var obj = Qt.createQmlObject(deps.get(idx).value + "; import QtQuick 2.0; Rectangle { }",par,"dependsCheck")
+            if (null === obj) iFailures++;
+            delete obj;
+        } catch (e) {
+            console.log(e);
+            console.log("Missing dependency: " + deps_pkg.get(idx).value)
+            iFailures++;
+        }
     }
-    return ok;
+    return (iFailures===0);
 }
 
 function loadApp(ps, app, res) {

@@ -70,10 +70,10 @@ PageStack {
                 text: i18n.tr(title)
                 subText: i18n.tr(subTitle)
                 onClicked: {
-                    if (Examples.checkDepends(depends,mainPage)) {
+                    if (Examples.checkDepends(depends,depends_packages,mainPage)) {
                         Examples.loadApp(pageStack,example,exampleResources);
                     } else {
-                        console.log("Missing dependencies " + depends_packages)
+
                     }
                 }
 
