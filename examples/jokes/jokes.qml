@@ -26,7 +26,6 @@ import QtMultimedia 5.0
   from which the joke is parsed into a Label.
 
   Demonstrates following:
-     - Page
      - ActivityIndicator
      - UbuntuShape
      - Label
@@ -37,14 +36,14 @@ import QtMultimedia 5.0
      - QML State
  */
 
-Page {
+Rectangle {
     id: page
-    title: i18n.tr("uChuck")
+    width: units.gu(48)
+    height: units.gu(60)
 
     property string url : "http://api.icndb.com/jokes/random?limitTo=[nerdy,explicit]";
     readonly property string _stateLoading : "Loading"
     readonly property string _stateNormal : "Normal"
-    property string rootPath : ""
 
     function getJoke() {
         laugh.stop();
@@ -57,7 +56,7 @@ Page {
                         var obj = JSON.parse(xhr.responseText);
                         if (obj.type === "success") {
                             jokeHolder.text = obj.value.joke;
-                            page.state = _stateNormal;
+                            page.state = page._stateNormal;
                             laugh.play();
                         }
                     } catch (e) {
@@ -71,7 +70,7 @@ Page {
 
     SoundEffect {
         id: laugh
-        source: rootPath + "laugh.wav"
+        source: "laugh.wav"
     }
 
     UbuntuShape {
@@ -104,19 +103,19 @@ Page {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            page.state = _stateLoading;
+            page.state = page._stateLoading;
             page.getJoke();
         }
     }
 
     states: [
          State {
-             name: _stateNormal
+             name: page._stateNormal
              PropertyChanges { target: activityIndicator; visible: false}
              PropertyChanges { target: jokeHolder; visible: true}
          },
          State {
-             name: _stateLoading
+             name: page._stateLoading
              PropertyChanges { target: activityIndicator; visible: true}
              PropertyChanges { target: jokeHolder; visible: false}
          }
