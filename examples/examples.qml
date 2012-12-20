@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 import QtQuick 2.0
 import Ubuntu.Components 0.1
@@ -62,6 +61,13 @@ PageStack {
             }
         }
 
+        function showDialog(parent, title, text) {
+            var errorDialog = dialogComponent.createObject(parent);
+            errorDialog.title = title;
+            errorDialog.text = text;
+            errorDialog.show();
+        }
+
         ListView {
             focus: true
             anchors.fill: parent
@@ -70,13 +76,16 @@ PageStack {
                 progression: true
                 text: i18n.tr(title)
                 subText: i18n.tr(subTitle)
-                onClicked: Examples.loadApp(pageStack,example,exampleResources);
+                onClicked: {
+                    if (Examples.checkDepends(depends,depends_packages,mainPage)) {
+                        Examples.loadApp(pageStack,example,exampleResources);
+                    } else {
+                        mainPage.showDialog(parent, "Missing dependencies", Examples.modelArrayToString(depends_packages));
+                    }
+                }
 
                 onPressAndHold: {
-                    var aboutDialog = dialogComponent.createObject(parent);
-                    aboutDialog.title = i18n.tr(title);
-                    aboutDialog.text = "<b>" + i18n.tr(subTitle) + "</b><br /><p>" + i18n.tr(description) + "</p>"
-                    aboutDialog.show();
+                    mainPage.showDialog(parent, i18n.tr(title), "<b>" + i18n.tr(subTitle) + "</b><br /><p>" + i18n.tr(description) + "</p>");
                 }
 
             }
