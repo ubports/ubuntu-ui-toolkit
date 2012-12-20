@@ -1,15 +1,7 @@
 body {
 	margin: 0;
 }
-.toc {
-	font-size: 100%;
-	margin-bottom: 40px;
-    padding: 0;
-    z-index: 2;
-    position: absolute;
-    top: 240px;
-    width: 250px;
-}
+
 
 div.toc ul {
 	padding: 0;
@@ -22,10 +14,9 @@ div.toc li {
 h1.title {
 	font-size: 36px;
 	line-height: 1.1;
-	margin-bottom: 20px;
 	font-weight: normal;
 }
-h0 {
+h0, h2 {
 	font-size: 24px;
 	line-height: 1.2;
 	margin: 14px 0;
@@ -44,20 +35,27 @@ table, pre {
 .annotated td {
 	padding: 0.8em 1em 0.3em;
 }
-
-.main-content {
+.wrapper {
 	width: 940px;
 	margin: 0 auto;
-	overflow: hidden;
-	padding-top: 130px;
 }
-.descr {
+.main-content {
 	width: 668px;
 	position: relative;
 	left: 270px;
 }
 .title {
-	position: absolute;
-	top: 140px;
-	
+	margin-left: -270px;
+	margin-top: 30px;
+	margin-bottom: 50px;
+}
+.toc {
+	margin-left: -270px;
+	font-size: 100%;
+	margin-bottom: 40px;
+    padding: 0;
+    z-index: 2;
+    position: absolute;
+    top: 100px;
+    width: 250px;
 }

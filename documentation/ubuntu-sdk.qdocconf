@@ -60,9 +60,10 @@ HTML.postheader = \
     "	</div>\n" \
     "	\n" \
     "	</header>\n" \
+    "   <div class=\"wrapper\">\n" \
     "   <div class=\"main-content\">\n" 
 HTML.footer = \
-    "</div>\n" \
+    "</div></div>\n" \
     "<div class=\"shadow\"></div>\n" \
     "<footer>\n" \
     "	<div>\n" \
