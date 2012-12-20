@@ -99,17 +99,17 @@ Template {
             iconSource: "call_icon.png"
             page: Qt.resolvedUrl("MyCustomPage.qml")
         }
-//        Tab {
-//            title: i18n.tr("List view")
-//            page: ListView {
-//                clip: true
-//                anchors.fill: parent
-//                model: 20
-//                delegate: ListItem.Standard {
-//                    icon: Qt.resolvedUrl("avatar_contacts_list.png")
-//                    text: "Item "+modelData
-//                }
-//            }
-//        }
+        Tab {
+            title: i18n.tr("List view")
+            page: ListView {
+                clip: true
+                anchors.fill: parent
+                model: 20
+                delegate: ListItem.Standard {
+                    icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                    text: "Item "+modelData
+                }
+            }
+        }
     }
 }

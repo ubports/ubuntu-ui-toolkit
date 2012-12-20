@@ -151,8 +151,8 @@ Item {
 
                     onClicked: {
                         if (!activatingTimer.running) {
-                            tabBar.active = false;
                             tabs.selectedTabIndex = index;
+                            tabBar.active = false;
                             button.select();
                         } else {
                             activatingTimer.stop();

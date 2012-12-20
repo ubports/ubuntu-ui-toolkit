@@ -47,7 +47,7 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 5 // TODO TIM: revert
+        property int selectedIndex: 0
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
                 {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
                 {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
