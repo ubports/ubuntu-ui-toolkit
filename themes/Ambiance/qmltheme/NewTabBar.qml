@@ -80,7 +80,7 @@ Item {
                     // When the tab bar is active, show both buttons corresponing to the tab index as selected,
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
-                    property bool selected: (tabBar.active && buttonView.needsScrolling)? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
                     Component.onCompleted: buttonView.buttons.push(button)
