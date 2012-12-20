@@ -132,7 +132,7 @@ Examples:
     color: "#757373";
 }
 
-/* Gallery title */
+/* Component Showcase title */
 .title {
     fontSize: "x-large";
     color: "#757373";
