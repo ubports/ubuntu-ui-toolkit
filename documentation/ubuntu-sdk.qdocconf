@@ -20,11 +20,11 @@ HTML.stylesheets = \
     css/scratch.css
 
 HTML.headerstyles = \
-  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n"
-  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu+Mono:400\">\n"
-  "<link rel=\"stylesheet\" type=\"text/css\" href=\"reset.css\" />\n"
-  "<link rel=\"stylesheet\" type=\"text/css\" href=\"qtquick.css\" />\n"
-  "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu+Mono:400\">\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"reset.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"qtquick.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />\n" \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"scratch.css\" />\n"
 
 HTML.endheader = "</head>\n"
