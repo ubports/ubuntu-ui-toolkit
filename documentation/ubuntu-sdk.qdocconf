@@ -13,8 +13,98 @@ outputencoding = UTF-8
 
 HTML.templatedir = .
 HTML.nobreadcrumbs = "true"
-HTML.stylesheets = qtquick.css
-HTML.headerstyles = "  <link rel=\"stylesheet\" type=\"text/css\" href=\"style/qtquick.css\" />\n"
-HTML.endheader = "</head>\n"
-HTML.footer = "<div class=\"footer\">Copyright (C) 2012 Canonical Ltd.</div>\n"
+HTML.stylesheets = \
+    css/reset.css \
+    css/qtquick.css \
+    css/base.css \
+    css/scratch.css
 
+HTML.headerstyles = \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu+Mono:400\">\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"reset.css\" />\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"qtquick.css\" />\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />\n"
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"scratch.css\" />\n"
+
+HTML.endheader = "</head>\n"
+HTML.postheader = \
+    "<header>\n" \
+    "	<div class=\"header-login">\n" \
+    "		<ul>\n" \
+    "			<li><a href=\"https://myapps.developer.ubuntu.com/openid/login/?next\=/dev">Sign in or register</a></li>\n" \
+    "		</ul>\n" \
+    "	</div>\n" \
+    "	<div class=\"header-navigation">\n" \
+    "		<div>\n" \
+    "			<nav role=\"navigation">\n" \
+    "				<ul>\n" \
+    "					<li class=\"page_item page-item-5"><a href=\"http://developer.ubuntu.com/">Home</a></li>\n" \
+    "					<li class=\"page_item page-item-7"><a href=\"http://developer.ubuntu.com/get-started/">Get started</a></li>\n" \
+    "					<li class=\"page_item page-item-9"><a href=\"http://developer.ubuntu.com/resources/">Resources</a></li>\n" \
+    "					<li class=\"page_item page-item-11"><a href=\"http://developer.ubuntu.com/publish/">Publish</a></li>\n" \
+    "					<li class=\"page_item page-item-13"><a href=\"http://developer.ubuntu.com/community/">Community</a></li>\n" \
+    "					<li><a href=\"https://myapps.developer.ubuntu.com/dev">My Apps</a></li>\n" \
+    "					<li>\n" \
+    "						<form id=\"form-search" method=\"get" action=\"/">\n" \
+    "							<fieldset>\n" \
+    "								<input id=\"input-search" type=\"text" name=\"s" value=\"Search" />\n" \
+    "							</fieldset>\n" \
+    "						</form>\n" \
+    "					</li>\n" \
+    "				</ul>\n" \
+    "			</nav>\n" \
+    "			<a class=\"logo-ubuntu" href=\"/"><img src=\"http://developer.ubuntu.com/wp-content/themes/wordpress-theme-ubuntudeveloper/img/logo-ubuntu.png" width=\"119" height=\"27" alt=\"Ubuntu logo" /></a>\n" \
+    "			<h2><a href=\"/">App Developer</a></h2>\n" \
+    "		</div>\n" \
+    "	</div>\n" \
+    "	\n" \
+    "	</header>\n"
+HTML.footer = \
+    "<footer>\n" \
+    "	<div>\n" \
+    "		<nav role=\"navigation" class=\"clearfix">\n" \
+    "			<ul>\n" \
+    "				<li><a href=\"/get-started">Get started</a></li>\n" \
+    "				<li class=\"page_item page-item-16"><a href=\"http://developer.ubuntu.com/get-started/quickly-workflow/">Quickly workflow</a></li>\n" \
+    "<li class=\"page_item page-item-18"><a href=\"http://developer.ubuntu.com/get-started/qt-creator/">Qt Creator</a></li>\n" \
+    "<li class=\"page_item page-item-20"><a href=\"http://developer.ubuntu.com/get-started/eclipse/">Eclipse</a></li>\n" \
+    "<li class=\"page_item page-item-22"><a href=\"http://developer.ubuntu.com/get-started/monodevelop/">MonoDevelop</a></li>\n" \
+    "			</ul>\n" \
+    "			<ul>\n" \
+    "				<li><a href=\"/resources">Resources</a></li>\n" \
+    "				<li><a href=\"/resources/tools/quickly">Quickly</a></li>\n" \
+    "				<li><a href=\"/resources/platform/api">API</a></li>\n" \
+    "				<li><a href=\"/resources/platform/documentation/platform-diagram">Platform overview</a></li>\n" \
+    "			</ul>\n" \
+    "			<ul>\n" \
+    "				<li><a href=\"/publish">Publish</a></li>\n" \
+    "				<li class=\"page_item page-item-24"><a href=\"http://developer.ubuntu.com/publish/commercial-software-faqs/">Commercial software FAQs</a></li>\n" \
+    "<li class=\"page_item page-item-34"><a href=\"http://developer.ubuntu.com/publish/application-states/">Application states</a></li>\n" \
+    "<li class=\"page_item page-item-577"><a href=\"http://developer.ubuntu.com/publish/my-apps-packages/">Uploading your app</a></li>\n" \
+    "<li class=\"page_item page-item-404"><a href=\"http://developer.ubuntu.com/publish/ubuntu-software-centre/">Ubuntu Software Centre</a></li>\n" \
+    "<li class=\"page_item page-item-427"><a href=\"http://developer.ubuntu.com/publish/licence-key-infrastructure/">Licence key infrastructure</a></li>\n" \
+    "<li class=\"page_item page-item-1230"><a href=\"http://developer.ubuntu.com/publish/updating-your-app/">Updating your app</a></li>\n" \
+    "			</ul>\n" \
+    "			<ul>\n" \
+    "				<li><a href=\"/community">Community</a></li>\n" \
+    "				<li class=\"page_item page-item-28"><a href=\"http://developer.ubuntu.com/community/app-developer-blog/">App Developer Blog</a></li>\n" \
+    "<li class=\"page_item page-item-30"><a href=\"http://developer.ubuntu.com/community/submit-a-tutorial/">Submit a tutorial</a></li>\n" \
+    "<li class=\"page_item page-item-32"><a href=\"http://developer.ubuntu.com/community/app-review-board-charter/">App Review Board charter</a></li>\n" \
+    "<li class=\"page_item page-item-2987"><a href=\"http://developer.ubuntu.com/community/on-air/">On air</a>\n" \
+    "<ul class='children'>\n" \
+    "	<li class=\"page_item page-item-3066"><a href=\"http://developer.ubuntu.com/community/on-air/recordings/">Recordings</a></li>\n" \
+    "</ul>\n" \
+    "</li>\n" \
+    "			</ul>\n" \
+    "			<ul class=\"last">\n" \
+    "				<li><a href=\"https://myapps.developer.ubuntu.com/dev">My Apps</a></li>\n" \
+    "				<li><a href=\"https://myapps.developer.ubuntu.com/openid/login/?next=/dev">Sign in or register</a></li>\n" \
+    "				<li><a href=\"https://myapps.developer.ubuntu.com/dev/account">My account</a></li>\n" \
+    "			</ul>\n" \
+    "		</nav>\n" \
+    "		<p>&copy; 2013 Canonical Ltd. Ubuntu and Canonical are registered trademarks of Canonical Ltd. <a class=\"link-bug" href=\"https://bugs.launchpad.net/ubuntudeveloperportal/+filebug">Report a bug on this site</a></p>\n" \
+    "	</div>\n" \
+    "</footer>\n" \
+    "<script type=\"text/javascript" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>\n" \
+    "<script type=\"text/javascript" src=\"http://developer.ubuntu.com/wp-content/themes/wordpress-theme-ubuntudeveloper/js/base.js"></script>\n"
