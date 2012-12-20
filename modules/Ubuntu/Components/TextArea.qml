@@ -795,7 +795,6 @@ FocusScope {
         contentHeight: editor.paintedHeight
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        pressDelay: 200
 
         function ensureVisible(r)
         {
