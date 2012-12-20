@@ -20,7 +20,7 @@ export UITK_THEME_PATH=.
 
 if [ "$1" == "--phone" ]
 then
-	GRID_UNIT_PX=18 qmlscene --fullscreen -I modules demos/PhoneGallery.qml
+	GRID_UNIT_PX=18 qmlscene --fullscreen -I modules demos/PhoneComponentShowcase.qml
 else
 	qmlscene -I modules demos/ComponentShowcase.qml
 fi
