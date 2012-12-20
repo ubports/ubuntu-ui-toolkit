@@ -22,5 +22,5 @@ if [ "$1" == "--phone" ]
 then
 	GRID_UNIT_PX=18 qmlscene --fullscreen -I modules demos/PhoneGallery.qml
 else
-	qmlscene -I modules demos/Gallery.qml
+	qmlscene -I modules demos/ComponentShowcase.qml
 fi
