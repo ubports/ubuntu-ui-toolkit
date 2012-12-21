@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 examples = jokes unit-converter
-filetypes = qml png svg js qmltheme jpg
+filetypes = qml png svg js qmltheme jpg wav
  
 OTHER_FILES = ""
 
