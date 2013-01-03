@@ -60,6 +60,33 @@ Template {
             title: i18n.tr("ListView")
             height: scrollable2.height
 
+            Component {
+                id: listItem
+                Rectangle {
+                    width: scrollable2.width
+                    height: 20
+                    border.width: 1
+                }
+            }
+
+            Component {
+                id: control
+                Rectangle {
+                    width: scrollable2.width
+                    height: 30
+                    color: "lightgray"
+                }
+            }
+
+            Component {
+                id: sect
+                Rectangle {
+                    width: scrollable2.width
+                    height: 10
+                    color: "tan"
+                }
+            }
+
             Rectangle {
                 id: scrollable2
                 width: units.gu(37.5)
@@ -75,31 +102,25 @@ Template {
                     anchors.fill: parent
                     model: listModel
 
+                    highlightFollowsCurrentItem: true
+                    highlightRangeMode: ListView.ApplyRange
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
-                    section.delegate: Header {
-                        text: "Section - " + section
-                    }
+                    section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
 
-                    delegate: Standard {
-                        text: "Data - " + label
-                    }
-
-                    header: Header {
-                        text: "List header"
-                    }
-                    footer: Header {
-                        text: "List footer"
-                    }
+                    section.delegate: Header { text: "Section - " + section }
+                    delegate: Standard { text: "Data - " + label }
+                    header: Header { text: "List header" }
+                    footer: Header { text: "List footer" }
                 }
                 ListModel {
                    id: listModel
                    Component.onCompleted: {
-                       for (var i = 0; i < 100; i++) {
+                       for (var i = 0; i < 50; i++) {
                            listModel.append({"title": i, "label": i})
                        }
                    }
-               }
+                }
 
                 Scrollbar {
                     flickableItem: listView

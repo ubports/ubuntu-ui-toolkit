@@ -25,6 +25,7 @@ import QtQuick 2.0
 */
 
 Object {
+    id: counter
 
     /*!
       \preliminary
@@ -42,7 +43,14 @@ Object {
       \preliminary
       The property contains the section Item height.
     */
-    property real sectionHeight: 0
+    readonly property alias sectionHeight: internals.sectionHeight
+
+    /*!
+      \preliminary
+      Specifies the total height of the sections, which depends on how the sections
+      are shown in the ListView.
+      */
+    readonly property alias totalHeight: internals.totalHeight
 
     /*!
       \preliminary
@@ -61,6 +69,10 @@ Object {
 
     QtObject {
         id: internals
+
+        property real sectionHeight: 0.0
+        property real totalHeight: 0.0
+
         property var myView: null
         function disconnectPreviousView()
         {
@@ -80,6 +92,9 @@ Object {
 
             if (myView.model.itemsRemoved)
                 myView.model.itemsRemoved.disconnect(checkSections);
+
+            if (myView.section.delegateChanged)
+                myView.section.delegateChanged.disconnect(checkSections);
         }
 
         function initSectionCounter()
@@ -99,6 +114,9 @@ Object {
 
             if (myView.model.itemsRemoved)
                 myView.model.itemsRemoved.connect(checkSections);
+
+            if (myView.section.delegateChanged)
+                myView.section.delegateChanged.connect(checkSections);
         }
 
         function checkSections()
@@ -124,13 +142,23 @@ Object {
                         sectionStack.push(current);
                 }
             }
-            if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
-                sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
-            } else if (sections <= 0)
-                sectionHeight = 0;
-
             sectionCount = sections;
             sectionCache = sectionStack;
+
+            if (sectionCount > 0 && view.section.delegate) {
+                sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
+                calculateTotalHeight();
+            }
+        }
+
+        function calculateTotalHeight()
+        {
+            var multiplier = sectionCount;
+            if (view.section.labelPositioning & ViewSection.CurrentLabelAtStart)
+                multiplier = 1;
+            if (view.section.labelPositioning & ViewSection.NextLabelAtEnd)
+                multiplier += 1;
+            totalHeight = multiplier * sectionHeight;
         }
     }
 
@@ -138,14 +166,16 @@ Object {
 
     onViewChanged: {
         internals.disconnectPreviousView()
-        if (view && view.model) {
-            internals.initSectionCounter();
-        } else if (view) {
-            view.modelChanged.connect(function()
-            {
-                if (view.model)
-                    internals.initSectionCounter();
-            });
+        if (view && view.hasOwnProperty("model")) {
+            if (view && view.model) {
+                internals.initSectionCounter();
+            } else if (view) {
+                view.modelChanged.connect(function()
+                {
+                    if (view.model)
+                        internals.initSectionCounter();
+                });
+            }
         }
     }
 }

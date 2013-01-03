@@ -24,12 +24,39 @@ import Ubuntu.Components 0.1
   On active scrollbars, positioning is handled so that the logic updates the flickable's
   X/Y content positions, which is then synched with the contentPosition by the main
   element.
+
+  Style properties used:
+    - interactive: bool - drives the interactive behavior of the scrollbar
+    * overlay
+        - overlay: bool - true if the scrollbar is overlay type
+        - overlayOpacityWhenHidden: opacity when hidden
+        - overlayOpacityWhenShown: opacity when shown
+    * animations - where duration and easing properties are used only
+        - scrollbarFadeInAnimation: PropertyAnimation - animation used when fade in
+        - scrollbarFadeOutAnimation: PropertyAnimation - animation used when fade out
+        - scrollbarFadeOutPause: int - miliseconds to pause before fade out
+    * behaviors - animations are used as declared
+        - sliderAnimation: PropertyAnimation - animation for the slider size
+        - thumbConnectorFading: PropertyAnimation - animation for the thumb connector
+        - thumbFading: PropertyAnimation - animation for the thumb fading
+    * other styling properties
+        - color sliderColor: color for the slider
+        - color thumbConnectorColor: thumb connector color
+        - url forwardThumbReleased: forward thumb image when released
+        - url forwardThumbPressed: forward thumb image when pressed
+        - url backwardThumbReleased: backward thumb image when released
+        - url backwardThumbPressed: backward thumb image when pressed
+        - real scrollAreaThickness: scrollbar area thickness, the area where the
+                                    slider, thumb and thumb-connector appear
+        - real thumbConnectorMargin: margin of the thumb connector aligned to the
+                                    thumb visuals
   */
 
 Item {
     id: visuals
     // helper properties to ease code readability
     property Flickable flickableItem: item.flickableItem
+    property bool isListView: ScrollbarUtils.isListView(flickableItem)
     property bool interactive: item.__interactive
     property bool isScrollable: item.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
@@ -40,82 +67,48 @@ Item {
     property bool bottomAligned: (item.align === Qt.AlignBottom)
 
     property real pageSize: (isVertical) ? item.height : item.width
-    property real contentSize: (listView) ?
-                                   listView.size :
+    /* ListView.contentHeight is not reliable when section headers are defined.
+       In that case we compute 'size' manually.
+
+       Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
+             https://bugreports.qt-project.org/browse/QTBUG-19941
+    */
+    // ListView's contentX/contentY and scrolling behavior changes depending
+    // on whether there are sections in the list, how these sections are
+    // positioned, whether there is a header defined, etc. Therefore the
+    // size calculation must be made to be aware of al these factors
+    property real contentSize: (isListView) ?
+                                   sectionCounter.totalHeight + totalItemSize + spacingSize + headerSize + footerSize :
                                    ((isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth)
     property real overlayOpacityWhenShown: StyleUtils.itemStyleProperty("overlayOpacityWhenShown", 0.6)
     property real overlayOpacityWhenHidden: StyleUtils.itemStyleProperty("overlayOpacityWhenHidden", 0.0)
     property bool overlay: StyleUtils.itemStyleProperty("overlay", false) && !interactive
 
-    property real contentPosition
-    property QtObject listView: logicLoader.item
+    property real minimumSliderSize: units.gu(2)
 
-    /* Removing the first row of the ListView's model will render
-       ListView.contentY invalid and therefore break the scrollbar's position.
-       This is fixable in QtQuick 2.0 thanks to the introduction of the
-       Flickable.originY property, however the property is not reliable enough.
-       Therefore we compute originY manually using the fact that
-       ListView.visibleArea.yPosition is not rendered invalid by removing the
-       first row of the ListView's model.
-       Unfortunately the result is not flawless when the ListView uses section
-       headers because ListView.visibleArea.yPosition is often slightly incorrect.
+    // ListView specific properties
+    property real spacingSize: flickableItem.spacing * (flickableItem.count - 1)
+    property real itemSize: 0.0
+    property real totalItemSize: 0.0
+    property real headerSize: flickableItem.header ? flickableItem.headerItem.height : 0
+    property real footerSize: flickableItem.footer ? flickableItem.footerItem.height : 0
+    property int currentIndex: (isListView) ? flickableItem.currentIndex : 0
 
-       Ref.: https://bugreports.qt-project.org/browse/QTBUG-20927
-             https://bugreports.qt-project.org/browse/QTBUG-21358
-             http://doc-snapshot.qt-project.org/5.0/qml-qtquick2-flickable.html#originX-prop
-    */
-    property real originX: (listView) ? -item.flickableItem.contentX + Math.round(item.flickableItem.visibleArea.xPosition * contentSize) : item.flickableItem.originX
-    property real originY: (listView) ? -item.flickableItem.contentY + Math.round(item.flickableItem.visibleArea.yPosition * contentSize) : item.flickableItem.originY
-
-    // common logic for Flickable and ListView to update contentPosition when Flicked
+    // need to capture count change otherwise the count won't be
+    // reported for the proxy models
     Connections {
-        target: item.flickableItem
-        onContentYChanged: if (isVertical) contentPosition = MathUtils.clamp(item.flickableItem.contentY - visuals.originY, 0.0, contentSize)
-        onContentXChanged: if (!isVertical) contentPosition = MathUtils.clamp(item.flickableItem.contentX - visuals.originX, 0.0, contentSize)
-    }
-    // logic for ListView
-    Component {
-        id: listViewLogic
-        Object {
-            /* ListView.contentHeight is not reliable when section headers are defined.
-               In that case we compute 'size' manually.
-
-               Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
-                     https://bugreports.qt-project.org/browse/QTBUG-19941
-            */
-            property real size: sectionCounter.sectionCount * sectionHeight + itemsSize + spacingSize + headerSize + footerSize
-            property int sectionHeight: sectionCounter.sectionHeight
-            property int spacingSize: flickableItem.spacing * (flickableItem.count - 1)
-            property int itemsSize: flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-            property int headerSize: flickableItem.header ? flickableItem.headerItem.height : 0
-            property int footerSize: flickableItem.footer ? flickableItem.footerItem.height : 0
-
-            // need to capture count change otherwise the count won't be
-            // reported for the proxy models
-            Connections {
-                target: flickableItem
-                onCountChanged: itemsSize = flickableItem.count * QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model)
-            }
-
-            ModelSectionCounter {
-                id: sectionCounter
-                view: flickableItem
-            }
+        target: flickableItem
+        ignoreUnknownSignals: true
+        onCountChanged: {
+            itemSize = QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model);
+            totalItemSize = flickableItem.count * itemSize;
         }
     }
-    Loader { id:logicLoader }
-    onFlickableItemChanged: {
-        if (flickableItem) {
-            if (flickableItem.hasOwnProperty("header")) {
-                // we consider Grids same as Flickables
-                if (flickableItem.hasOwnProperty("cellWidth")) {
-                    logicLoader.sourceComponent = undefined;
-                } else {
-                    logicLoader.sourceComponent = listViewLogic;
-                }
-            } else
-                logicLoader.sourceComponent = undefined;
-        }
+
+    // section counter for ListViews
+    ModelSectionCounter {
+        id: sectionCounter
+        view: flickableItem
     }
 
     /*****************************************
@@ -168,6 +161,7 @@ Item {
                 target: visuals
                 property: "opacity"
                 duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
+                easing: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").easing
             }
         },
         Transition {
@@ -177,6 +171,7 @@ Item {
                 target: visuals
                 property: "opacity"
                 duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
+                easing: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").easing
             }
         },
         Transition {
@@ -187,33 +182,20 @@ Item {
                 NumberAnimation {
                     target: visuals
                     property: "opacity"
-                    //to: overlayOpacityWhenHidden
                     duration: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").duration
-                    easing.type: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").easing.type
+                    easing: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").easing
                 }
             }
         }
     ]
 
-    /* Scroll by amount pixels never overshooting */
-    function scrollBy(amount) {
-        var destination = contentPosition + amount
-        destination += (isVertical) ? visuals.originY : visuals.originX
-        scrollAnimation.to = MathUtils.clamp(destination, 0, contentSize - pageSize)
-        scrollAnimation.restart()
-    }
-
-    function scrollOnePageBackward() {
-        scrollBy(-pageSize)
-    }
-
-    function scrollOnePageForward() {
-        scrollBy(pageSize)
-    }
-
     function mapToPoint(map)
     {
         return Qt.point(map.x, map.y)
+    }
+
+    SystemPalette {
+        id: systemColors
     }
 
     SmoothedAnimation {
@@ -229,7 +211,7 @@ Item {
     Item {
         id: scrollbarArea
 
-        property real thickness: itemStyle.scrollAreaThickness
+        property real thickness: StyleUtils.itemStyleProperty("scrollAreaThickness", units.dp(2))
         property real proximityThickness: (isVertical) ? item.width - thickness : item.height - thickness
         anchors {
             fill: parent
@@ -267,7 +249,7 @@ Item {
     Rectangle {
         id: slider
 
-        color: itemStyle.sliderColor
+        color: StyleUtils.itemStyleProperty("sliderColor", systemColors.highlight)
 
         anchors {
             left: (isVertical) ? scrollbarArea.left : undefined
@@ -276,18 +258,10 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        x: (isVertical) ? 0 : MathUtils.clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.width - slider.width)
-        y: (!isVertical) ? 0 : MathUtils.clampAndProject(contentPosition, 0.0, contentSize - pageSize, 0.0, item.height - slider.height)
-        width: (isVertical) ? scrollbarArea.thickness : sliderSizer.size
-        height: (!isVertical) ? scrollbarArea.thickness : sliderSizer.size
-
-        ScrollSliderSizer {
-            id: sliderSizer
-            positionRatio: (isVertical) ? item.flickableItem.visibleArea.yPosition : item.flickableItem.visibleArea.xPosition
-            sizeRatio: (isVertical) ? item.flickableItem.visibleArea.heightRatio : item.flickableItem.visibleArea.widthRatio
-            maximumPosition: (isVertical) ? item.flickableItem.height : item.flickableItem.width
-            minimumSize: units.gu(2)
-        }
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - slider.width);
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - slider.height);
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.height)
 
         Behavior on width {
             enabled: (!isVertical)
@@ -301,12 +275,35 @@ Item {
                 script: StyleUtils.animate("sliderAnimation")
             }
         }
+
+        /* Scroll by amount pixels never overshooting */
+        function scrollTo(destination)
+        {
+            var sizeProp = isVertical ? "height" : "width";
+            destination = MathUtils.clampAndProject(destination, 0.0, item[sizeProp] - slider[sizeProp], 0.0, contentSize - pageSize);
+            return ScrollbarUtils.scrollToPosition(isVertical, destination, flickableItem, itemSize, contentSize, pageSize);
+        }
+
+        function scrollBy(amount) {
+            scrollAnimation.to = ScrollbarUtils.scrollSliderBy(isVertical, amount, flickableItem, itemSize, slider, contentSize - sectionCounter.totalHeight, pageSize);
+            scrollAnimation.restart();
+        }
+
+        function scrollOnePageBackward() {
+            scrollBy(-pageSize);
+        }
+
+        function scrollOnePageForward() {
+            scrollBy(pageSize)
+        }
+
     }
 
     // The sliderThumbConnector ensures a visual connection between the slider and the thumb
     Rectangle {
         id: sliderThumbConnector
 
+        property real thumbConnectorMargin: StyleUtils.itemStyleProperty("thumbConnectorMargin", units.dp(3))
         property bool isThumbAboveSlider: (isVertical) ? thumb.y < slider.y : thumb.x < slider.x
         anchors {
             left: (isVertical) ? scrollbarArea.left : (isThumbAboveSlider ? thumb.left : slider.right)
@@ -314,12 +311,12 @@ Item {
             top: (!isVertical) ? scrollbarArea.top : (isThumbAboveSlider ? thumb.top : slider.bottom)
             bottom: (!isVertical) ? scrollbarArea.bottom : (isThumbAboveSlider ? slider.top : thumb.bottom)
 
-            leftMargin : (isVertical) ? 0 : (isThumbAboveSlider ? itemStyle.thumbConnectorMargin : 0)
-            rightMargin : (isVertical) ? 0 : (isThumbAboveSlider ? 0 : itemStyle.thumbConnectorMargin)
-            topMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? itemStyle.thumbConnectorMargin : 0)
-            bottomMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? 0 : itemStyle.thumbConnectorMargin)
+            leftMargin : (isVertical) ? 0 : (isThumbAboveSlider ? thumbConnectorMargin : 0)
+            rightMargin : (isVertical) ? 0 : (isThumbAboveSlider ? 0 : thumbConnectorMargin)
+            topMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? thumbConnectorMargin : 0)
+            bottomMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? 0 : thumbConnectorMargin)
         }
-        color: itemStyle.thumbConnectorColor
+        color: StyleUtils.itemStyleProperty("thumbConnectorColor", "white")
         opacity: thumb.shown ? 1.0 : 0.0
         Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbConnectorFading")}}
     }
@@ -361,19 +358,19 @@ Item {
         }
         onClicked: {
             if (inThumbBottom)
-                scrollOnePageForward()
+                slider.scrollOnePageForward()
             else if (inThumbTop)
-                scrollOnePageBackward()
+                slider.scrollOnePageBackward()
         }
 
         // Dragging behaviour
         function resetDrag() {
-            dragYStart = drag.target.y
             thumbYStart = thumb.y
             sliderYStart = slider.y
-            dragXStart = drag.target.x
             thumbXStart = thumb.x
             sliderXStart = slider.x
+            dragYStart = drag.target.y
+            dragXStart = drag.target.x
         }
 
         property int sliderYStart
@@ -393,13 +390,11 @@ Item {
         // update flickableItem's and thumb's position
         // cannot use Binding as there would be a binding loop
         onDragYAmountChanged: {
-            var pos = MathUtils.clampAndProject(thumbArea.sliderYStart + thumbArea.dragYAmount, 0.0, item.height - slider.height, 0.0, contentSize - pageSize);
-            item.flickableItem.contentY = MathUtils.clamp(pos + visuals.originY, 0.0, contentSize - pageSize);
+            flickableItem.contentY = slider.scrollTo(thumbArea.sliderYStart + thumbArea.dragYAmount);
             thumb.y = MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
         }
         onDragXAmountChanged: {
-            var pos = MathUtils.clampAndProject(thumbArea.sliderXStart + thumbArea.dragXAmount, 0.0, item.width - slider.width, 0.0, contentSize - pageSize);
-            item.flickableItem.contentX = MathUtils.clamp(pos + visuals.originX, 0.0, contentSize - pageSize);
+            flickableItem.contentX = slider.scrollTo(thumbArea.sliderXStart + thumbArea.dragXAmount);
             thumb.x = MathUtils.clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
         }
     }
@@ -477,17 +472,21 @@ Item {
         opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
         Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbFading")}}
 
+        property url backwardPressed: StyleUtils.itemStyleProperty("backwardThumbPressed", "")
+        property url backwardReleased: StyleUtils.itemStyleProperty("backwardThumbReleased", "")
+        property url forwardPressed: StyleUtils.itemStyleProperty("forwardThumbPressed", "")
+        property url forwardReleased: StyleUtils.itemStyleProperty("forwardThumbReleased", "")
         Flow {
             // disable mirroring as thumbs are placed in the same way no matter of RTL or LTR
             LayoutMirroring.enabled: false
             flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
             Image {
                 id: thumbTop
-                source: thumbArea.inThumbTop && thumbArea.pressed ? itemStyle.backwardThumbPressed : itemStyle.backwardThumbReleased
+                source: thumbArea.inThumbTop && thumbArea.pressed ? thumb.backwardPressed : thumb.backwardReleased
             }
             Image {
                 id: thumbBottom
-                source: thumbArea.inThumbBottom && thumbArea.pressed ? itemStyle.forwardThumbPressed : itemStyle.forwardThumbReleased
+                source: thumbArea.inThumbBottom && thumbArea.pressed ? thumb.forwardPressed : thumb.forwardReleased
             }
         }
     }
