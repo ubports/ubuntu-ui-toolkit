@@ -38,8 +38,10 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: units.gu(4)
-    height: units.gu(4)
+//    width: units.gu(4)
+//    height: units.gu(4)
+    width: background.width
+    height: background.height
 
     /*!
       \preliminary
@@ -59,26 +61,49 @@ AbstractButton {
 
         opacity: enabled ? 1.0 : 0.5
 
-        UbuntuShape {
-            id: shape
+//        UbuntuShape {
+//            id: shape
 
-            anchors.fill: parent
-            color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
-            Behavior on color {
-                ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
+//            anchors.fill: parent
+//            color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
+//            Behavior on color {
+//                ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
+//            }
+//        }
+
+        Image {
+            id: background
+//            anchors.fill: parent
+            source: internals.thumbSource
         }
 
         Image {
             id: checkMark
 
-            anchors.fill: parent
-            anchors.margins: units.gu(0.5)
-            fillMode: Image.PreserveAspectFit
+//            anchors.fill: parent
+//            anchors.margins: units.gu(0.5)
+            anchors.centerIn: parent
+//            fillMode: Image.PreserveAspectFit
             smooth: true
-            source: internals.checkMarkSource
+            source: internals.tickerSource
 
             opacity: checkBox.checked ? 1.0 : 0.0
+            Behavior on opacity {
+                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
+            }
+        }
+
+        Image {
+            id: uncheckedMark
+
+//            anchors.fill: parent
+//            anchors.margins: units.gu(0.5)
+            anchors.centerIn: parent
+//            fillMode: Image.PreserveAspectFit
+            smooth: true
+            source: internals.crossSource
+
+            opacity: checkBox.checked ? 0.0 : 1.0
             Behavior on opacity {
                 NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
             }
@@ -88,7 +113,9 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
+        property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.png")
+        property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
+        property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
         property color uncheckedColor: checkedColor
         property color checkedColor: "#626262"
     }
