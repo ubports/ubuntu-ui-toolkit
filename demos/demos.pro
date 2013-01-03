@@ -2,14 +2,21 @@ TEMPLATE = subdirs
 
 SUBDIRS += po
 
-OTHER_FILES = $$system(ls *.qml) $$system(ls *.png) $$system(*.svg) $$system(*.js)
+filetypes = qml png svg js qmltheme jpg
 
-OTHER_FILES += *.qmltheme
+OTHER_FILES = ""
+
+for(filetype, filetypes) {
+  OTHER_FILES += *.$$filetype
+}
+
+OTHER_FILES += launch_componentshowcase launch_componentshowcase_phone
+
+desktop_files.path = /usr/share/applications
+desktop_files.files = qt-components-ubuntu-demos.desktop qt-components-ubuntu-phone-demo.desktop
 
 other_files.path = /usr/lib/qt-components-ubuntu/demos
 other_files.files = $$OTHER_FILES
 
-desktop_file.path = /usr/share/applications
-desktop_file.files = qt-components-ubuntu-demos.desktop qt-components-ubuntu-phone-demo.desktop
+INSTALLS += other_files desktop_files
 
-INSTALLS += other_files desktop_file

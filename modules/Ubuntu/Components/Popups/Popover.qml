@@ -102,7 +102,7 @@ PopupBase {
         id: internal
         // TODO: put the margins in the style
         property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(2)
+        property real callerMargins: units.gu(1)
         property bool portrait: width < height
 
         // private

@@ -62,29 +62,80 @@ Template {
         }
 
         Component {
-             id: dialog
-             Dialog {
-                 id: dialogue
+            id: dialog
+            Dialog {
+                id: dialogue
 
-                 title: "Save file"
-                 text: "Are you sure that you want to save this file?"
+                title: "Save file"
+                text: "Are you sure that you want to save this file?"
 
-                 Button {
-                     text: "cancel"
-                     onClicked: PopupUtils.close(dialogue)
-                 }
-                 Button {
-                     text: "overwrite previous version"
-                     color: "#5da357"
-                     onClicked: PopupUtils.close(dialogue)
-                 }
-                 Button {
-                     text: "save a copy"
-                     color: "#5da357"
-                     onClicked: PopupUtils.close(dialogue)
-                 }
-             }
-         }
+                Button {
+                    text: "cancel"
+                    onClicked: PopupUtils.close(dialogue)
+                }
+                Button {
+                    text: "overwrite previous version"
+                    color: "#5da357"
+                    onClicked: PopupUtils.close(dialogue)
+                }
+                Button {
+                    text: "save a copy"
+                    color: "#5da357"
+                    onClicked: PopupUtils.close(dialogue)
+                }
+            }
+        }
+
+        Component {
+            id: popoverWithFlickable
+
+            Popover {
+                id: popover
+
+                Flickable {
+                    id: flickable
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
+                    }
+                    height: units.gu(30)
+
+                    contentHeight: image.sourceSize.height
+                    contentWidth: image.sourceSize.width
+                    clip: true
+                    Image {
+                        id: image
+                        source: Qt.resolvedUrl("demo_image.jpg")
+                    }
+                }
+            }
+        }
+
+        Component {
+            id: popoverWithListView
+
+            Popover {
+                id: popover
+
+                ListView {
+                    clip: true
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
+                    }
+                    model: 20
+                    height: units.gu(50)
+                    delegate: ListItem.Standard {
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                        text: "Item "+index
+                        onClicked: print("Clicked item "+index)
+                    }
+                }
+            }
+        }
+
 
         Column {
             spacing: units.gu(4)
@@ -104,6 +155,24 @@ Template {
                     text: i18n.tr("..positioning")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), rightPopoverButton)
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Contents")
+
+                Button {
+                    id: popoverWithFlickableButton
+                    text: i18n.tr("flickable")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(popoverWithFlickable, popoverWithFlickableButton)
+                }
+
+                Button {
+                    id: popoverWithListViewButton
+                    text: i18n.tr("list view")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(popoverWithListView, popoverWithListViewButton)
                 }
             }
 
