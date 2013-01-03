@@ -705,8 +705,12 @@ FocusScope {
         function frameSize()
         {
             if (control.autoExpand) {
-                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount))
-                    control.height = frameLinesHeight(control.lineCount);
+                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount)) {
+                    // check if the control height is bigger than the value we have to set
+                    var h = frameLinesHeight(control.lineCount);
+                    if (h > control.height)
+                        control.height = h;
+                }
             }
         }
 
@@ -791,7 +795,6 @@ FocusScope {
         contentHeight: editor.paintedHeight
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        pressDelay: 200
 
         function ensureVisible(r)
         {

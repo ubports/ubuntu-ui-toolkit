@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Exec=/opt/qt5/bin/qmlscene /usr/lib/qt-components-ubuntu/demos/PhoneGallery.qml
+Exec=/usr/lib/qt-components-ubuntu/demos/launch_componentshowcase_phone
 Path=/opt/qt-components-ubuntu/
-Name=Qt Components for Ubuntu - Phone Gallery
-GenericName=Qt Components for Ubuntu phone gallery application
+Name=Qt Components for Ubuntu - Phone Component Showcase
+GenericName=Qt Components for Ubuntu phone component showcase application
 Icon=/usr/lib/qt-components-ubuntu/demos/call_icon.png
 Terminal=false
 

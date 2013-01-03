@@ -109,6 +109,6 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        i18n.domain = "gallery"
+        i18n.domain = "componentshowcase"
     }
 }

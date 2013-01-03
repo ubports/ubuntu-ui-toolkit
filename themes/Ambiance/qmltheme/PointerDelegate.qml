@@ -17,54 +17,14 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
+Image {
+    id: image
     anchors.fill: parent
-    ShaderEffect {
-        id: effect
-        anchors.fill: parent
 
-        property color color: "white"
+    visible: (item.direction !== "none")
 
-        // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
-        //  but I did not manage to get a 3x3 matrix from QML into the shader.
-
-        // rotate pointer 90 degrees
-        property bool rotate: (item.direction === "left" || item.direction === "right")
-
-        // flip the direction of the pointer
-        property bool flip: (item.direction === "left" || item.direction === "up")
-
-        visible: (item.direction !== "none")
-
-        vertexShader: "
-            uniform highp mat4 qt_Matrix;
-            attribute highp vec4 qt_Vertex;
-            attribute highp vec2 qt_MultiTexCoord0;
-
-            uniform bool flip;
-            uniform bool rotate;
-            varying highp vec2 coord;
-
-            void main() {
-                if (rotate) coord = qt_MultiTexCoord0.ts;
-                else coord = qt_MultiTexCoord0.st;
-
-                if (flip) coord = vec2(coord.x, 1.0 - coord.y);
-
-                gl_Position = qt_Matrix * qt_Vertex;
-            }
-        "
-
-        fragmentShader: "
-            varying highp vec2 coord;
-            uniform highp vec4 color;
-            uniform highp float opacity;
-
-            void main(void) {
-                if (coord.t > 2.0*(1.0 - coord.s)) discard;
-                if (coord.t > 2.0*coord.s) discard;
-                gl_FragColor = color * vec4(opacity);
-            }
-        "
-    }
+    // FIXME: We may use one image that we rotate and scale, except if that gives wrong
+    //  results because of the shading (for example, always shadow on the right side).
+    property string sourceDirection: (item.direction === "left") ? "Left" : (item.direction === "right") ? "Right" : (item.direction === "up") ? "Up" : "Down"
+    source: "artwork/" + sourceDirection + "Arrow.png"
 }
