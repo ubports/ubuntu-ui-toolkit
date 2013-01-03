@@ -50,10 +50,10 @@
       \li Retina laptops
       \li 1 gu = 16 px
     \row
-      \li Samsung Galaxy Nexus phone
+      \li Phone with 4 inch screen at HD resolution (around 720x1,280 pixels)
       \li 1 gu = 18 px
     \row
-      \li Asus Transformer TF101 tablet
+      \li Tablet with 10 inch screen at HD resolution (around 720x1,280 pixels)
       \li 1 gu = 10 px
     \endtable
 
@@ -95,9 +95,9 @@
     bitmap when needed on lower density screens.
 
     For example, if the destination size of the bitmap is 10 gu * 10 gu and the developer
-    targets a Samsung Galaxy Nexus phone (1 gu = 18 px) and an Asus Transformer TF101
-    tablet (1 gu = 10 px) then he/she only needs to create a bitmap of 180 px * 180 px
-    to support both devices.
+    targets a smart phone with 4 inch HD (720x1,280px) screen (1 gu = 18 px) and a tablet
+    with 10 inch HD screen (1 gu = 10 px) then he/she only needs to create a bitmap of 
+    180 px * 180 px to support both devices.
 
 
     \part Fonts
@@ -136,8 +136,8 @@
     \header
       \li Font Size
       \li Desktop
-      \li Nexus Galaxy Phone
-      \li Asus Transformer Tablet
+      \li Smart Phone with 4" HD screen
+      \li Tablet with 10" HD screen
     \row
       \li \b{\e x-large}
       \li 34 px
