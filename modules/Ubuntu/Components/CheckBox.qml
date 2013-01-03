@@ -61,29 +61,15 @@ AbstractButton {
 
         opacity: enabled ? 1.0 : 0.5
 
-//        UbuntuShape {
-//            id: shape
-
-//            anchors.fill: parent
-//            color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
-//            Behavior on color {
-//                ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
-//            }
-//        }
-
         Image {
             id: background
-//            anchors.fill: parent
             source: internals.thumbSource
         }
 
         Image {
             id: checkMark
 
-//            anchors.fill: parent
-//            anchors.margins: units.gu(0.5)
             anchors.centerIn: parent
-//            fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.tickerSource
 
@@ -96,10 +82,7 @@ AbstractButton {
         Image {
             id: uncheckedMark
 
-//            anchors.fill: parent
-//            anchors.margins: units.gu(0.5)
             anchors.centerIn: parent
-//            fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.crossSource
 
