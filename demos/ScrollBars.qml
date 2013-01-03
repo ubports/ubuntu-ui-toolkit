@@ -60,33 +60,6 @@ Template {
             title: i18n.tr("ListView")
             height: scrollable2.height
 
-            Component {
-                id: listItem
-                Rectangle {
-                    width: scrollable2.width
-                    height: 20
-                    border.width: 1
-                }
-            }
-
-            Component {
-                id: control
-                Rectangle {
-                    width: scrollable2.width
-                    height: 30
-                    color: "lightgray"
-                }
-            }
-
-            Component {
-                id: sect
-                Rectangle {
-                    width: scrollable2.width
-                    height: 10
-                    color: "tan"
-                }
-            }
-
             Rectangle {
                 id: scrollable2
                 width: units.gu(37.5)
