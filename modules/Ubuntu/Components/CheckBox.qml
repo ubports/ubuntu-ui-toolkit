@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype CheckBox
@@ -38,8 +43,18 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: border.width
-    height: border.height
+//    width: border.width
+//    height: border.height
+
+    // default width and height depends on the delegate width and height
+//    width: childrenRect.width
+//    height: childrenRect.height
+
+    width: units.gu(6)
+    height: units.gu(6)
+    // FIXME: see FIXME above
+    Theming.ItemStyle.class: "checkbox"
+
 
     /*!
       \preliminary
@@ -53,83 +68,4 @@ AbstractButton {
      */
     onClicked: checked = !checked
 
-    Item {
-        z: -1
-        anchors.fill: parent
-
-        opacity: enabled ? 1.0 : 0.5
-
-        ShaderEffect {
-            id: background
-            anchors.fill: parent
-
-            property ShaderEffectSource mask: ShaderEffectSource {
-                sourceItem: BorderImage {
-                    id: mask
-                    source: internals.maskSource
-                }
-            }
-
-            property color color: checked ? internals.checkedColor : internals.uncheckedColor
-
-            // TODO: Enable when CheckBox is themable
-            Behavior on color { //ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
-                ColorAnimation {
-                    duration: 100
-                }
-            }
-
-            fragmentShader:
-                "
-                varying highp vec2 qt_TexCoord0;
-                uniform lowp float qt_Opacity;
-                uniform sampler2D mask;
-                uniform lowp vec4 color;
-
-                void main(void) {
-                    lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                    if (maskColor.a == 0.0) discard;
-                    gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
-                }
-                "
-        }
-
-        BorderImage {
-            id: border
-            source: internals.thumbSource
-        }
-
-        Image {
-            id: checkMark
-
-            anchors.centerIn: parent
-            smooth: true
-            source: internals.tickerSource
-
-            visible: checkBox.checked
-        }
-
-        Image {
-            id: uncheckedMark
-
-            anchors.centerIn: parent
-            smooth: true
-            source: internals.crossSource
-
-            visible: !checkBox.checked
-        }
-    }
-
-    Object {
-        id: internals
-
-        property url maskSource: Qt.resolvedUrl("artwork/checkbox/thumb_shape.sci")
-        property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.sci")
-        property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
-        property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
-        property color uncheckedColor: "#724242" //checkedColor
-        property color checkedColor: "#427242" //#626262"
-
-        property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: 1000 }
-    }
 }
