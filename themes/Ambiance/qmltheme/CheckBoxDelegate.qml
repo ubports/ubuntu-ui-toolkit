@@ -36,6 +36,8 @@ Item {
                 sourceItem: BorderImage {
                     id: mask
                     source: internals.maskSource
+                    width: border.width
+                    height: border.height
                 }
             }
 
@@ -57,8 +59,8 @@ Item {
 
                 void main(void) {
                     lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-//                    if (maskColor.a == 0.0) discard;
-                    gl_FragColor = color;// * vec4(maskColor.a * qt_Opacity);
+                    if (maskColor.a == 0.0) discard;
+                    gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
                 }
                 "
         }

@@ -50,8 +50,8 @@ AbstractButton {
 //    width: childrenRect.width
 //    height: childrenRect.height
 
-    width: units.gu(6)
-    height: units.gu(6)
+    width: units.gu(10)
+    height: units.gu(10)
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "checkbox"
 
