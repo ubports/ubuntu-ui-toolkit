@@ -20,8 +20,8 @@ QtObject {
 //    property color color: "transparent"
 
     // TODO: update colors
-    property color checkedColor: "grey"
-    property color uncheckedColor: "black"
+    property color checkedColor
+    property color uncheckedColor
 //    property url shape: ""
 //    property url borderIdle: ""
 //    property url borderPressed: ""

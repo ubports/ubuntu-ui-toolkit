@@ -40,7 +40,7 @@ Item {
                 }
             }
 
-            property color color: checked ? internals.checkedColor : internals.uncheckedColor
+            property color color: checked ? itemStyle.checkedColor : itemStyle.uncheckedColor
 
             // TODO: Enable when CheckBox is themable
             Behavior on color { //ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
