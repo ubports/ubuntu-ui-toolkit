@@ -19,12 +19,11 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
+    implicitWidth: border.sourceSize.width
+    implicitHeight: border.sourceSize.height
 
     Item {
-//        z: -1
         anchors.fill: parent
-//        width: border.width
-//        height: border.height
 
         opacity: enabled ? 1.0 : 0.5
 

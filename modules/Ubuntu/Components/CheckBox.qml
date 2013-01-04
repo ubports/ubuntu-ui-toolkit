@@ -43,18 +43,13 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: checkBox
 
-//    width: border.width
-//    height: border.height
-
-    // default width and height depends on the delegate width and height
-//    width: childrenRect.width
-//    height: childrenRect.height
-
-    width: units.gu(10)
-    height: units.gu(10)
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "checkbox"
-
+    // FIXME: Make it work properly using the delegateProperty() function.
+    //width: Theming.ComponentUtils.delegateProperty(checkBox, implicitWidth, 10)
+    //height: Theming.ComponentUtils.delegateProperty(checkBox, implicitHeight, 10)
+    width: Theming.ItemStyle.delegate.implicitWidth
+    height: Theming.ItemStyle.delegate.implicitHeight
 
     /*!
       \preliminary
@@ -67,5 +62,4 @@ AbstractButton {
       \internal
      */
     onClicked: checked = !checked
-
 }
