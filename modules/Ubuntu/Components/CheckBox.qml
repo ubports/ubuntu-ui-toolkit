@@ -38,8 +38,6 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-//    width: units.gu(4)
-//    height: units.gu(4)
     width: border.width
     height: border.height
 
@@ -74,8 +72,8 @@ AbstractButton {
 
             property color color: checked ? internals.checkedColor : internals.uncheckedColor
 
-            // TODO: Make the animation part of the theme
-            Behavior on color {
+            // TODO: Enable when CheckBox is themable
+            Behavior on color { //ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
                 ColorAnimation {
                     duration: 100
                 }
@@ -99,13 +97,7 @@ AbstractButton {
         BorderImage {
             id: border
             source: internals.thumbSource
-//            visible: false
         }
-
-//        UbuntuShape {
-//            anchors.fill: parent
-//            color: "green"
-//        }
 
         Image {
             id: checkMark
@@ -114,10 +106,7 @@ AbstractButton {
             smooth: true
             source: internals.tickerSource
 
-            opacity: checkBox.checked ? 1.0 : 0.0
-            Behavior on opacity {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
+            visible: checkBox.checked
         }
 
         Image {
@@ -127,21 +116,20 @@ AbstractButton {
             smooth: true
             source: internals.crossSource
 
-            opacity: checkBox.checked ? 0.0 : 1.0
-            Behavior on opacity {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
+            visible: !checkBox.checked
         }
     }
 
-    QtObject {
+    Object {
         id: internals
 
         property url maskSource: Qt.resolvedUrl("artwork/checkbox/thumb_shape.sci")
         property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.sci")
         property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
         property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
-        property color uncheckedColor: "darkred" //checkedColor
-        property color checkedColor: "darkgreen" //#626262"
+        property color uncheckedColor: "#724242" //checkedColor
+        property color checkedColor: "#427242" //#626262"
+
+        property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: 1000 }
     }
 }
