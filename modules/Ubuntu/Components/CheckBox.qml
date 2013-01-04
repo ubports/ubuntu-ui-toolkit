@@ -40,8 +40,8 @@ AbstractButton {
 
 //    width: units.gu(4)
 //    height: units.gu(4)
-    width: background.width
-    height: background.height
+    width: border.width
+    height: border.height
 
     /*!
       \preliminary
@@ -61,10 +61,51 @@ AbstractButton {
 
         opacity: enabled ? 1.0 : 0.5
 
-        Image {
+        ShaderEffect {
             id: background
-            source: internals.thumbSource
+            anchors.fill: parent
+
+            property ShaderEffectSource mask: ShaderEffectSource {
+                sourceItem: BorderImage {
+                    id: mask
+                    source: internals.maskSource
+                }
+            }
+
+            property color color: checked ? internals.checkedColor : internals.uncheckedColor
+
+            // TODO: Make the animation part of the theme
+            Behavior on color {
+                ColorAnimation {
+                    duration: 100
+                }
+            }
+
+            fragmentShader:
+                "
+                varying highp vec2 qt_TexCoord0;
+                uniform lowp float qt_Opacity;
+                uniform sampler2D mask;
+                uniform lowp vec4 color;
+
+                void main(void) {
+                    lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
+                    if (maskColor.a == 0.0) discard;
+                    gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
+                }
+                "
         }
+
+        BorderImage {
+            id: border
+            source: internals.thumbSource
+//            visible: false
+        }
+
+//        UbuntuShape {
+//            anchors.fill: parent
+//            color: "green"
+//        }
 
         Image {
             id: checkMark
@@ -96,10 +137,11 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.png")
+        property url maskSource: Qt.resolvedUrl("artwork/checkbox/thumb_shape.sci")
+        property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.sci")
         property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
         property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
-        property color uncheckedColor: checkedColor
-        property color checkedColor: "#626262"
+        property color uncheckedColor: "darkred" //checkedColor
+        property color checkedColor: "darkgreen" //#626262"
     }
 }
