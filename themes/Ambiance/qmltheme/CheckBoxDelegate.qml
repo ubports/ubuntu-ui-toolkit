@@ -61,7 +61,7 @@ Item {
         BorderImage {
             id: border
             anchors.fill: parent
-            source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/thumb.sci"))
+            source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/border.sci"))
         }
 
         Image {
