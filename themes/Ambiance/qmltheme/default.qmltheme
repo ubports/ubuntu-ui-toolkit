@@ -72,6 +72,10 @@ Examples:
 .checkbox {
     uncheckedColor: "#724242";
     checkedColor: "#427242";
+    maskSource: url("artwork/checkbox/mask.sci");
+    borderSource: url("artwork/checkbox/border.sci");
+    tickerSource: url("artwork/checkbox/ticker.png");
+    crossSource: url("artwork/checkbox/cross.png");
 }
 
 .tabs {

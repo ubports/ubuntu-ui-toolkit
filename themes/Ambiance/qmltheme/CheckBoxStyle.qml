@@ -23,25 +23,26 @@ QtObject {
     /*!
       Background mask
      */
-    property url maskSource: Qt.resolvedUrl("artwork/checkbox/thumb_shape.sci")
+    property url maskSource
 
     /*!
       Border image
      */
-    property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.sci")
+    property url borderSource
 
     /*!
       The image to show when the checkbox is checked.
      */
-    property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
+    property url tickerSource
 
     /*!
       The image to show when the checkbox is not checked.
      */
-    property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
+    property url crossSource
 
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
+      FIXME: This doesn't work.
      */
     property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: 3000 }
 }

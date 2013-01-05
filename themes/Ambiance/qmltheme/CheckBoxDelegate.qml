@@ -24,7 +24,6 @@ Item {
 
     Item {
         anchors.fill: parent
-
         opacity: enabled ? 1.0 : 0.5
 
         ShaderEffect {
@@ -34,15 +33,15 @@ Item {
             property ShaderEffectSource mask: ShaderEffectSource {
                 sourceItem: BorderImage {
                     id: mask
-                    source: itemStyle.maskSource
+                    source: StyleUtils.itemStyleProperty("maskSource", Qt.resolvedUrl("artwork/checkbox/mask.sci"))
                     width: border.width
                     height: border.height
                 }
             }
 
-            property color color: checked ? itemStyle.checkedColor : itemStyle.uncheckedColor
+            property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
 
-            // FIXME: animate script doesn't work here?
+            // FIXME: animate script doesn't work with Behavior?
             Behavior on color { ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
 
             fragmentShader:
@@ -54,7 +53,6 @@ Item {
 
                 void main(void) {
                     lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                    if (maskColor.a == 0.0) discard;
                     gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
                 }
                 "
@@ -63,27 +61,14 @@ Item {
         BorderImage {
             id: border
             anchors.fill: parent
-            source: itemStyle.thumbSource
+            source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/thumb.sci"))
         }
 
         Image {
             id: checkMark
-
             anchors.centerIn: parent
             smooth: true
-            source: itemStyle.tickerSource
-
-            visible: checkBox.checked
-        }
-
-        Image {
-            id: uncheckedMark
-
-            anchors.centerIn: parent
-            smooth: true
-            source: itemStyle.crossSource
-
-            visible: !checkBox.checked
+            source: item.checked ? StyleUtils.itemStyleProperty("tickerSource") : StyleUtils.itemStyleProperty("crossSource")
         }
     }
 }
