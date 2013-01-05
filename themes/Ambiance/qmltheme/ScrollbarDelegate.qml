@@ -292,7 +292,7 @@ Item {
         Behavior on width {
             enabled: (!isVertical)
             animation: ScriptAction {
-                script: StyleUtils.animate("sliderAnimation")
+                script: StyleUtils.animate("`")
             }
         }
         Behavior on height {

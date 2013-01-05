@@ -34,7 +34,7 @@ Item {
             property ShaderEffectSource mask: ShaderEffectSource {
                 sourceItem: BorderImage {
                     id: mask
-                    source: internals.maskSource
+                    source: itemStyle.maskSource
                     width: border.width
                     height: border.height
                 }
@@ -42,12 +42,8 @@ Item {
 
             property color color: checked ? itemStyle.checkedColor : itemStyle.uncheckedColor
 
-            // TODO: Enable when CheckBox is themable
-            Behavior on color { //ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
-                ColorAnimation {
-                    duration: 100
-                }
-            }
+            // FIXME: animate script doesn't work here?
+            Behavior on color { ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
 
             fragmentShader:
                 "
@@ -67,7 +63,7 @@ Item {
         BorderImage {
             id: border
             anchors.fill: parent
-            source: internals.thumbSource
+            source: itemStyle.thumbSource
         }
 
         Image {
@@ -75,7 +71,7 @@ Item {
 
             anchors.centerIn: parent
             smooth: true
-            source: internals.tickerSource
+            source: itemStyle.tickerSource
 
             visible: checkBox.checked
         }
@@ -85,23 +81,9 @@ Item {
 
             anchors.centerIn: parent
             smooth: true
-            source: internals.crossSource
+            source: itemStyle.crossSource
 
             visible: !checkBox.checked
         }
     }
-
-    QtObject {
-        id: internals
-
-        property url maskSource: Qt.resolvedUrl("artwork/checkbox/thumb_shape.sci")
-        property url thumbSource: Qt.resolvedUrl("artwork/checkbox/thumb.sci")
-        property url tickerSource: Qt.resolvedUrl("artwork/checkbox/ticker.png")
-        property url crossSource: Qt.resolvedUrl("artwork/checkbox/cross.png")
-        property color uncheckedColor: "#724242" //checkedColor
-        property color checkedColor: "#427242" //#626262"
-
-        property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: 1000 }
-    }
-
 }
