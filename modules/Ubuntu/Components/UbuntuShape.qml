@@ -104,127 +104,16 @@ Item {
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(8)
 
-    /*! \internal */
-    onWidthChanged: __updateImageDimensions()
-    /*! \internal */
-    onHeightChanged: __updateImageDimensions()
-    /*! \internal */
-    onImageChanged: __updateImageDimensions()
-
-    /*! \internal */
-    function __updateImageDimensions() {
-        if (!image) return;
-        image.width = shape.width;
-        image.height = shape.height;
-    }
-
-    ShaderEffect {
+    Theming.Shape {
         anchors.fill: parent
-        visible: shape.image || shape.color.a != 0.0
-
-        property ShaderEffectSource mask: ShaderEffectSource {
-            sourceItem: BorderImage {
-                width: shape.width
-                height: shape.height
-                source: shape.maskSource
-                visible: false
-            }
-        }
-
-
-        // The imageScale and imageOffset properties are used in imageMaskingShader to
-        // compute the correct TexCoords for the image, depending on its fillmode and alignment.
-        // FIXME: Cases where the image fillmode is tiling, padding or PreserveAspectFit
-        //  are not covered here. Those cases need more than texture coordinate manipulations.
-        property point imageScale: getImageScale()
-        property point imageOffset: getImageOffset()
-
-        function getImageScale() {
-            var scale = Qt.point(1.0, 1.0);
-            if (image) {
-                if (image.fillMode === Image.PreserveAspectCrop) {
-                    scale.x = image.width / image.paintedWidth;
-                    scale.y = image.height / image.paintedHeight;
-                }
-            }
-            return scale;
-        }
-
-        function getImageOffset() {
-            var offset = Qt.point(0.0, 0.0);
-            if (image && image.fillMode === Image.PreserveAspectCrop) {
-                if (image.horizontalAlignment === Image.AlignRight) {
-                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth;
-                } else if (image.horizontalAlignment === Image.AlignHCenter) {
-                    offset.x = (image.paintedWidth - image.width) / image.paintedWidth / 2.0;
-                }
-                if (image.verticalAlignment === Image.AlignBottom) {
-                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight;
-                } else if (image.verticalAlignment === Image.AlignVCenter) {
-                    offset.y = (image.paintedHeight - image.height) / image.paintedHeight / 2.0;
-                }
-            }
-            return offset;
-        }
-
-        property Image image: shape.image && shape.image.status == Image.Ready ? shape.image : null
-        property color baseColor: shape.color
-        property color gradientColor: shape.gradientColor
-
-        property string colorShader:
-            "
-            varying highp vec2 qt_TexCoord0;
-            uniform lowp float qt_Opacity;
-            uniform sampler2D mask;
-            uniform lowp vec4 baseColor;
-            uniform lowp vec4 gradientColor;
-
-            lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)
-            {
-                lowp vec3 comparison = clamp(sign(base.rgb - vec3(0.5)), vec3(0.0), vec3(1.0));
-                return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), comparison);
-            }
-
-            void main(void)
-            {
-                lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-
-                // this is equivalent to using a vertical linear gradient texture going from vec3(0.0) to vec3(1.0)
-                lowp vec4 gradient = gradientColor * qt_TexCoord0.t;
-
-                // FIXME: Because blendOverlay gives incorrect results when we use pre-multiplied alpha,
-                // we remove the pre-multiplication before calling blendOverlay, and multiply again afterwards.
-                // It works, but is not very elegant.
-                lowp vec4 result = vec4(blendOverlay(baseColor.rgb/max(1.0/256.0, baseColor.a), gradient.rgb/max(1.0/256.0, gradient.a)), 1.0);
-                result *= baseColor.a;
-                gl_FragColor = mix(baseColor, result, gradient.a) * maskColor.a * qt_Opacity;
-            }
-            "
-
-        property string imageMaskingShader:
-            "
-            varying highp vec2 qt_TexCoord0;
-            uniform lowp float qt_Opacity;
-            uniform sampler2D mask;
-            uniform sampler2D image;
-            uniform highp vec2 imageScale;
-            uniform highp vec2 imageOffset;
-
-            void main(void)
-            {
-                lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                lowp vec4 imageColor = texture2D(image, imageOffset + imageScale * qt_TexCoord0.st);
-                gl_FragColor = imageColor * maskColor.a * qt_Opacity;
-            }
-            "
-
-        fragmentShader: image ? imageMaskingShader : colorShader
-    }
-
-    BorderImage {
-        id: border
-
-        anchors.fill: parent
-        source: shape.borderSource
+        visible: shape.visible
+        image: shape.image && (shape.image.status == Image.Ready) ? shape.image : null
+        baseColor: shape.color
+        gradientColor: shape.gradientColor
+        borderSource: shape.borderSource
+        radius: shape.radius
+        stretched: shape.image && (shape.image.fillMode == Image.PreserveAspectCrop) ? false : true
+        horizontalAlignment: shape.image && (shape.image.horizontalAlignment == Image.AlignLeft) ? Theming.Shape.AlignLeft : shape.image && (shape.image.horizontalAlignment == Image.AlignRight) ? Theming.Shape.AlignRight : Theming.Shape.AlignHCenter
+        verticalAlignment: shape.image && (shape.image.verticalAlignment == Image.AlignTop) ? Theming.Shape.AlignTop : shape.image && (shape.image.verticalAlignment == Image.AlignBottom) ? Theming.Shape.AlignBottom : Theming.Shape.AlignVCenter
     }
 }
