@@ -34,7 +34,9 @@ HEADERS += plugin.h \
     ucunits.h \
     ucqquickimageextension.h \
     quickutils.h \
-    giconprovider.h
+    giconprovider.h \
+    shapeitemtexture.h \
+    shapeitem.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -50,7 +52,8 @@ SOURCES += plugin.cpp \
     ucunits.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
-    giconprovider.cpp
+    giconprovider.cpp \
+    shapeitem.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
