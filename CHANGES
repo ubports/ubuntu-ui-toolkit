@@ -15,7 +15,10 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* Removed UbuntuShape::borderSource and UbuntuShape::maskSource. That API in
+  this form reveals to be too difficult to maintain while keeping an efficient
+  implementation. In the future, we plan to expose these features through
+  styling properties.
 
 
 SDK 0.1.22
