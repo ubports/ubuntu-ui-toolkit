@@ -289,7 +289,6 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // Update dirty parameters.
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
-
     if (dirtyFlags_ & ShapeItem::DirtyBaseColor)
         coloredMaterial->setBaseColor(baseColor_);
     if (dirtyFlags_ & ShapeItem::DirtyGradientColor)
