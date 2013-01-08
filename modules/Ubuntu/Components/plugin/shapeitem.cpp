@@ -355,8 +355,6 @@ ShapeNode::ShapeNode(ShapeItem* item)
     setGeometry(&geometry_);
     setMaterial(&coloredMaterial_);
     setFlag(UsePreprocess, false);
-    markDirty(DirtyGeometry);
-    markDirty(DirtyMaterial);
 }
 
 void ShapeNode::setPosition(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
@@ -513,6 +511,8 @@ void ShapeNode::setMaterialType(ShapeNode::MaterialType material)
 
 ShapeTexturedMaterial::ShapeTexturedMaterial()
     : imageTextureProvider_(NULL)
+    , shapeTexture_(NULL)
+    , filtering_(QSGTexture::Nearest)
 {
     setFlag(Blending);
 }
@@ -589,12 +589,16 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
         texture->bind();
     else
         glBindTexture(GL_TEXTURE_2D, 0);
-    QSGTexture* shapeTexture = material->shapeTexture();
     glFuncs_->glActiveTexture(GL_TEXTURE0);
-    shapeTexture->setFiltering(material->filtering());
-    shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
-    shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
-    shapeTexture->bind();
+    QSGTexture* shapeTexture = material->shapeTexture();
+    if (shapeTexture) {
+        shapeTexture->setFiltering(material->filtering());
+        shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+        shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
+        shapeTexture->bind();
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     // Bind uniforms.
     if (state.isMatrixDirty())
@@ -608,6 +612,8 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
 ShapeColoredMaterial::ShapeColoredMaterial()
     : baseColor_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
+    , shapeTexture_(NULL)
+    , filtering_(QSGTexture::Nearest)
 {
     setFlag(Blending);
 }
@@ -684,10 +690,14 @@ void ShapeColoredShader::updateState(const RenderState& state, QSGMaterial* newE
 
     // Bind texture.
     QSGTexture* shapeTexture = material->shapeTexture();
-    shapeTexture->setFiltering(material->filtering());
-    shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
-    shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
-    shapeTexture->bind();
+    if (shapeTexture) {
+        shapeTexture->setFiltering(material->filtering());
+        shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+        shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
+        shapeTexture->bind();
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     // Bind uniforms.
     if (state.isMatrixDirty())
