@@ -27,3 +27,6 @@ TextAreaDelegate 0.1 TextAreaDelegate.qml
 SliderDelegate 0.1 SliderDelegate.qml
 
 StyleUtils 0.1 styleUtils.js
+
+
+NewScrollbarDelegate 0.1 NewScrollbarDelegate.qml

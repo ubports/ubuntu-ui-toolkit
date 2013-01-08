@@ -27,6 +27,7 @@ import Ubuntu.Components 0.1
 
   Style properties used:
     - interactive: bool - drives the interactive behavior of the scrollbar
+    - minimumSliderSize: real - specifies the minimum size of the slider
     * overlay
         - overlay: bool - true if the scrollbar is overlay type
         - overlayOpacityWhenHidden: opacity when hidden
@@ -67,49 +68,12 @@ Item {
     property bool bottomAligned: (item.align === Qt.AlignBottom)
 
     property real pageSize: (isVertical) ? item.height : item.width
-    /* ListView.contentHeight is not reliable when section headers are defined.
-       In that case we compute 'size' manually.
-
-       Ref.: https://bugreports.qt-project.org/browse/QTBUG-17057
-             https://bugreports.qt-project.org/browse/QTBUG-19941
-    */
-    // ListView's contentX/contentY and scrolling behavior changes depending
-    // on whether there are sections in the list, how these sections are
-    // positioned, whether there is a header defined, etc. Therefore the
-    // size calculation must be made to be aware of al these factors
-    property real contentSize: (isListView) ?
-                                   sectionCounter.totalHeight + totalItemSize + spacingSize + headerSize + footerSize :
-                                   ((isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth)
+    property real contentSize: (isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth
     property real overlayOpacityWhenShown: StyleUtils.itemStyleProperty("overlayOpacityWhenShown", 0.6)
     property real overlayOpacityWhenHidden: StyleUtils.itemStyleProperty("overlayOpacityWhenHidden", 0.0)
     property bool overlay: StyleUtils.itemStyleProperty("overlay", false) && !interactive
 
-    property real minimumSliderSize: units.gu(2)
-
-    // ListView specific properties
-    property real spacingSize: flickableItem.spacing * (flickableItem.count - 1)
-    property real itemSize: 0.0
-    property real totalItemSize: 0.0
-    property real headerSize: flickableItem.header ? flickableItem.headerItem.height : 0
-    property real footerSize: flickableItem.footer ? flickableItem.footerItem.height : 0
-    property int currentIndex: (isListView) ? flickableItem.currentIndex : 0
-
-    // need to capture count change otherwise the count won't be
-    // reported for the proxy models
-    Connections {
-        target: flickableItem
-        ignoreUnknownSignals: true
-        onCountChanged: {
-            itemSize = QuickUtils.modelDelegateHeight(flickableItem.delegate, flickableItem.model);
-            totalItemSize = flickableItem.count * itemSize;
-        }
-    }
-
-    // section counter for ListViews
-    ModelSectionCounter {
-        id: sectionCounter
-        view: flickableItem
-    }
+    property real minimumSliderSize: StyleUtils.itemStyleProperty("minimumSliderSize", units.gu(2))
 
     /*****************************************
       Visuals
@@ -194,9 +158,7 @@ Item {
         return Qt.point(map.x, map.y)
     }
 
-    SystemPalette {
-        id: systemColors
-    }
+    SystemPalette { id: systemColors }
 
     SmoothedAnimation {
         id: scrollAnimation
@@ -246,6 +208,18 @@ Item {
     // The slider's position represents which part of the flickable is visible.
     // The slider's size represents the size the visible part relative to the
     // total size of the flickable.
+    Item {
+        id: scrollCursor
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - scrollCursor.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - scrollCursor.height)
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, 0.0, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, 0.0, flickableItem.height)
+
+        function drag() {
+            ScrollbarUtils.dragAndClamp(scrollCursor, isVertical, flickableItem, contentSize, pageSize);
+        }
+    }
+
     Rectangle {
         id: slider
 
@@ -258,8 +232,8 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - slider.width);
-        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - slider.height);
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - slider.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - slider.height)
         width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.width)
         height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.height)
 
@@ -276,27 +250,10 @@ Item {
             }
         }
 
-        /* Scroll by amount pixels never overshooting */
-        function scrollTo(destination)
-        {
-            var sizeProp = isVertical ? "height" : "width";
-            destination = MathUtils.clampAndProject(destination, 0.0, item[sizeProp] - slider[sizeProp], 0.0, contentSize - pageSize);
-            return ScrollbarUtils.scrollToPosition(isVertical, destination, flickableItem, itemSize, contentSize, pageSize);
-        }
-
-        function scrollBy(amount) {
-            scrollAnimation.to = ScrollbarUtils.scrollSliderBy(isVertical, amount, flickableItem, itemSize, slider, contentSize - sectionCounter.totalHeight, pageSize);
+        function scroll(amount) {
+            scrollAnimation.to = ScrollbarUtils.scrollAndClamp(amount, isVertical, flickableItem, 0.0, contentSize - pageSize);
             scrollAnimation.restart();
         }
-
-        function scrollOnePageBackward() {
-            scrollBy(-pageSize);
-        }
-
-        function scrollOnePageForward() {
-            scrollBy(pageSize)
-        }
-
     }
 
     // The sliderThumbConnector ensures a visual connection between the slider and the thumb
@@ -358,44 +315,54 @@ Item {
         }
         onClicked: {
             if (inThumbBottom)
-                slider.scrollOnePageForward()
+                slider.scroll(pageSize)
             else if (inThumbTop)
-                slider.scrollOnePageBackward()
+                slider.scroll(-pageSize)
         }
 
         // Dragging behaviour
         function resetDrag() {
             thumbYStart = thumb.y
-            sliderYStart = slider.y
             thumbXStart = thumb.x
-            sliderXStart = slider.x
             dragYStart = drag.target.y
             dragXStart = drag.target.x
         }
 
-        property int sliderYStart
         property int thumbYStart
         property int dragYStart
         property int dragYAmount: thumbArea.drag.target.y - thumbArea.dragYStart
-        property int sliderXStart
         property int thumbXStart
         property int dragXStart
         property int dragXAmount: thumbArea.drag.target.x - thumbArea.dragXStart
         drag {
-            target: Item {}
+            target: scrollCursor
             axis: (isVertical) ? Drag.YAxis : Drag.XAxis
-            filterChildren: true
-            onActiveChanged: if (drag.active) resetDrag()
+            minimumY: 0
+            maximumY: flickableItem.height - scrollCursor.height
+            minimumX: 0
+            maximumX: flickableItem.width - scrollCursor.width
+            onActiveChanged: {
+                print(drag.active)
+                if (drag.active) resetDrag()
+            }
         }
-        // update flickableItem's and thumb's position
-        // cannot use Binding as there would be a binding loop
+        // update thump position
         onDragYAmountChanged: {
-            flickableItem.contentY = slider.scrollTo(thumbArea.sliderYStart + thumbArea.dragYAmount);
-            thumb.y = MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
+            if (drag.active) {
+                thumb.y = MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
+            }
         }
         onDragXAmountChanged: {
-            flickableItem.contentX = slider.scrollTo(thumbArea.sliderXStart + thumbArea.dragXAmount);
-            thumb.x = MathUtils.clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
+            if (drag.active) {
+                thumb.x = MathUtils.clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
+            }
+        }
+
+        // drag slider and content to the proper position
+        onPositionChanged: {
+            if (pressedButtons == Qt.LeftButton) {
+                scrollCursor.drag()
+            }
         }
     }
 

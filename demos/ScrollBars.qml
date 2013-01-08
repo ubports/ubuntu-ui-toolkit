@@ -89,7 +89,7 @@ Template {
                 ListModel {
                    id: listModel
                    Component.onCompleted: {
-                       for (var i = 0; i < 50; i++) {
+                       for (var i = 0; i < 100; i++) {
                            listModel.append({"title": i, "label": i})
                        }
                    }
