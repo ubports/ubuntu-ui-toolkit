@@ -182,10 +182,6 @@ Examples:
     thumbConnectorColor: "white";
 }
 
-@qml-mapping(.new-scrollbar, , NewScrollbarDelegate);
-.new-scrollbar {
-}
-
 /* TextField default theme
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
