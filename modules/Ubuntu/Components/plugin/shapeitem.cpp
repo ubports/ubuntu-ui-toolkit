@@ -288,6 +288,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // FIXME(loicm) We should theoretically only update dirty parameters but for some reasons if we
     //     don't update materials and node everytime unconditionally, some applications (like the
     //     telephony-app) behave incorrectly because of invalid data.
+    //     See https://bugs.launchpad.net/manhattan/+bug/1097300
 
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
