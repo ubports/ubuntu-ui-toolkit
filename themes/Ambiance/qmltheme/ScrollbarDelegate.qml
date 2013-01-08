@@ -342,7 +342,6 @@ Item {
             minimumX: 0
             maximumX: flickableItem.width - scrollCursor.width
             onActiveChanged: {
-                print(drag.active)
                 if (drag.active) resetDrag()
             }
         }

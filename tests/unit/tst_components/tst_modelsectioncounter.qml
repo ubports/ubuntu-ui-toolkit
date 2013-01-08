@@ -5,6 +5,11 @@ import Ubuntu.Components 0.1
 TestCase {
     name: "ModelSectionCounterAPI"
 
+    function initTestCase() {
+        var component = Qt.createComponent(Qt.resolvedUrl("../../../modules/Ubuntu/Components/ModelSectionCounter.qml"));
+        counter = component.createObject(parent);
+    }
+
     function test_0_defaults() {
         compare(counter.view, null, "ModelSectionCounter does not have valid view set");
         compare(counter.count, 0, "ModelSectionCounter default sectionCount is 0");
@@ -57,9 +62,8 @@ TestCase {
             section.delegate: Item{ height: 10 }
         }
     }
-    ModelSectionCounter {
-        id: counter
-    }
+
+    property var counter
 
     property var emptyModel: ListModel {}
 

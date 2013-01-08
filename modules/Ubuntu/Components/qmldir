@@ -14,7 +14,7 @@ Switch 0.1 Switch.qml
 CheckBox 0.1 CheckBox.qml
 Slider 0.1 Slider.qml
 Scrollbar 0.1 Scrollbar.qml
-ModelSectionCounter 0.1 ModelSectionCounter.qml
+internal ModelSectionCounter ModelSectionCounter.qml
 Object 0.1 Object.qml
 TabButton 0.1 TabButton.qml
 Page 0.1 Page.qml

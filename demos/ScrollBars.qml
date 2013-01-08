@@ -75,8 +75,6 @@ Template {
                     anchors.fill: parent
                     model: listModel
 
-                    highlightFollowsCurrentItem: true
-                    highlightRangeMode: ListView.ApplyRange
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
                     section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
