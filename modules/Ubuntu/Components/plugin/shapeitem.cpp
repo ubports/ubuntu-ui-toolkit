@@ -285,11 +285,6 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         node = new ShapeNode(this);
     }
 
-    // FIXME(loicm) We should theoretically only update dirty parameters but for some reasons if we
-    //     don't update materials and node everytime unconditionally, some applications (like the
-    //     telephony-app) behave incorrectly because of invalid data.
-    //     See https://bugs.launchpad.net/manhattan/+bug/1097300
-
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
     TextureData* textureData = (gridUnit_ > lowHighTextureThreshold) ?
@@ -304,12 +299,12 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     radius *= scaleFactor;
     int scaledDown = 0;
     if (scaleFactor != 1.0f) {
-      scaledDown |= 1;
+        scaledDown |= 1;
     }
     const float halfMinWidthHeight = qMin(geometry_.width(), geometry_.height()) * 0.5f;
     if (radius > halfMinWidthHeight) {
-      radius = halfMinWidthHeight;
-      scaledDown |= 1;
+        radius = halfMinWidthHeight;
+        scaledDown |= 1;
     }
     coloredMaterial->setShapeTexture(textureData->texture, !!scaledDown);
     texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
@@ -323,7 +318,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     int index = (border_ == ShapeItem::RawBorder) ?
         0 : (border_ == ShapeItem::IdleBorder) ? 1 : 2;
     if (radius_ == ShapeItem::SmallRadius)
-      index += 3;
+        index += 3;
     node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
     node->setMaterialType(image_ ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
