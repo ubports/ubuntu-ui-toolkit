@@ -220,10 +220,9 @@ public:
     ShapeNode(ShapeItem* item);
     ShapeTexturedMaterial* texturedMaterial() { return &texturedMaterial_; }
     ShapeColoredMaterial* coloredMaterial() { return &coloredMaterial_; }
-    void setPosition(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                     ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment);
-    void setShapeCoordinate(ShapeItem::Border border, ShapeItem::Radius radius,
-                            TextureData* textureData);
+    void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
+                     ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
+                     float shapeCoordinate[][2]);
     void setMaterialType(MaterialType material);
 
 private:
