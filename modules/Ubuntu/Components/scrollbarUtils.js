@@ -63,8 +63,9 @@ function sliderSize(vertical, flickable, min, max) {
 }
 
 /*!
-  The function calculates the position to be scrolled to depending on whether the
-  flickable is a ListView or other Flickable.
+  The function calculates and clamps the position to be scrolled to the minimum
+  and maximum values.
+
   The scroll and drag functions require a slider that is not having any minimum
   size set (meaning the minimum is set to 0.0). Implementations should consider
   using an invisible cursor to drag the slider and the ListView position.
@@ -76,10 +77,10 @@ function scrollAndClamp(amount, vertical, flickable, min, max) {
 }
 
 /*!
-  The function calculates the new position of the slider scrolled by the given
-  amount. The amount is relative to the contentSize, which in order specifies
-  the total scrolling amount of th eflickable in pixels. The slider specifies
-  the QML component visualizing the slider, and the pageSize specifies the visibleArea
+  The function calculates the new position of the dragged slider. The amount is
+  relative to the contentSize, which is either the flickable's contentHeight or
+  contentWidth or other calculated value, depending on its orientation. The pageSize
+  specifies the visibleArea, and it is usually the heigtht/width of the scrolling area.
   */
 function dragAndClamp(cursor, vertical, flickable, contentSize, pageSize) {
     var propOrigin = (vertical) ? "originY" : "originX";
