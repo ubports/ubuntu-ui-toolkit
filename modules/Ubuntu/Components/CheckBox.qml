@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype CheckBox
@@ -38,8 +43,13 @@ import QtQuick 2.0
 AbstractButton {
     id: checkBox
 
-    width: units.gu(4)
-    height: units.gu(4)
+    // FIXME: see FIXME above
+    Theming.ItemStyle.class: "checkbox"
+    // FIXME: Make it work properly using the delegateProperty() function.
+    //width: Theming.ComponentUtils.delegateProperty(checkBox, implicitWidth, 10)
+    //height: Theming.ComponentUtils.delegateProperty(checkBox, implicitHeight, 10)
+    width: Theming.ItemStyle.delegate.implicitWidth
+    height: Theming.ItemStyle.delegate.implicitHeight
 
     /*!
       \preliminary
@@ -52,44 +62,4 @@ AbstractButton {
       \internal
      */
     onClicked: checked = !checked
-
-    Item {
-        z: -1
-        anchors.fill: parent
-
-        opacity: enabled ? 1.0 : 0.5
-
-        UbuntuShape {
-            id: shape
-
-            anchors.fill: parent
-            color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
-            Behavior on color {
-                ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
-        }
-
-        Image {
-            id: checkMark
-
-            anchors.fill: parent
-            anchors.margins: units.gu(0.5)
-            fillMode: Image.PreserveAspectFit
-            smooth: true
-            source: internals.checkMarkSource
-
-            opacity: checkBox.checked ? 1.0 : 0.0
-            Behavior on opacity {
-                NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
-            }
-        }
-    }
-
-    QtObject {
-        id: internals
-
-        property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
-        property color uncheckedColor: checkedColor
-        property color checkedColor: "#626262"
-    }
 }

@@ -15,6 +15,7 @@ properties typed as variant.
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
+@qml-mapping(.checkbox, CheckBoxStyle, CheckBoxDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
@@ -66,6 +67,15 @@ Examples:
 }
 
 .transparent-button {
+}
+
+.checkbox {
+    uncheckedColor: "#724242";
+    checkedColor: "#427242";
+    maskSource: url("artwork/checkbox/mask.sci");
+    borderSource: url("artwork/checkbox/border.sci");
+    tickerSource: url("artwork/checkbox/ticker.png");
+    crossSource: url("artwork/checkbox/cross.png");
 }
 
 .tabs {
