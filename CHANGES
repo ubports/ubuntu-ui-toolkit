@@ -15,8 +15,20 @@ Compatibility Breaks
 API Changes
 ***********
 
-* ThemeEngine class
-- lookupStyleRule
+* None
+
+
+SDK 0.1.25
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
 * Removed UbuntuShape::borderSource and UbuntuShape::maskSource. That API in
   this form reveals to be too difficult to maintain while keeping an efficient
   implementation. In the future, we plan to expose these features through

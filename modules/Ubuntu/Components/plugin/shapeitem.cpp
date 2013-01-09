@@ -266,7 +266,6 @@ void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeom
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
-    bool setPosition = false;
 
     // FIXME(loicm) Shape textures are stored in the read-only data section of the plugin as it
     //     avoids having to deal with paths for now. It should preferably be loaded from a file.
@@ -286,55 +285,43 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         node = new ShapeNode(this);
     }
 
-    // Update dirty parameters.
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
-    if (dirtyFlags_ & ShapeItem::DirtyBaseColor)
-        coloredMaterial->setBaseColor(baseColor_);
-    if (dirtyFlags_ & ShapeItem::DirtyGradientColor)
-        coloredMaterial->setGradientColor(gradientColor_);
-    if (dirtyFlags_ & (ShapeItem::DirtyBorder | ShapeItem::DirtyRadius
-                       | ShapeItem::DirtyGridUnit)) {
-        TextureData* textureData = (gridUnit_ > lowHighTextureThreshold) ?
-            &shapeTextureHigh : &shapeTextureLow;
-        node->setShapeCoordinate(border_, radius_, textureData);
-    }
-    if (dirtyFlags_ & (ShapeItem::DirtyGeometry | ShapeItem::DirtyRadius
-                       | ShapeItem::DirtyStretched | ShapeItem::DirtyHAlignment
-                       | ShapeItem::DirtyVAlignment | ShapeItem::DirtyGridUnit)) {
-        setPosition = true;
-    }
-    if (dirtyFlags_ & ShapeItem::DirtyImage) {
-        texturedMaterial->setImage(image_);
-        node->setMaterialType(image_ ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
-        setPosition = true;
-    }
-    dirtyFlags_ = ShapeItem::NotDirty;
+    TextureData* textureData = (gridUnit_ > lowHighTextureThreshold) ?
+        &shapeTextureHigh : &shapeTextureLow;
 
-    if (setPosition) {
-        int scaledDown = 0;
-        TextureData* textureData = (gridUnit_ > lowHighTextureThreshold) ?
-            &shapeTextureHigh : &shapeTextureLow;
-        // Get the radius considering the current grid unit and the texture raster grid unit.
-        float radius = (radius_ == ShapeItem::SmallRadius) ?
-            textureData->smallRadius : textureData->mediumRadius;
-        const float scaleFactor = gridUnit_ / textureData->gridUnit;
-        radius *= scaleFactor;
-        if (scaleFactor != 1.0f) {
-            scaledDown |= 1;
-        }
-        // When the item size is less than 2 radii, the radius is scaled down anyhow.
-        const float halfMinWidthHeight = qMin(geometry_.width(), geometry_.height()) * 0.5f;
-        if (radius > halfMinWidthHeight) {
-            radius = halfMinWidthHeight;
-            scaledDown |= 1;
-        }
-        // Set the shape texture to be used depending on current grid unit.
-        coloredMaterial->setShapeTexture(textureData->texture, !!scaledDown);
-        texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
-        // Update vertex position and shape coordinate attributes.
-        node->setPosition(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_);
+    // Set the shape texture to be used by the materials depending on current grid unit. The radius
+    // is set considering the current grid unit and the texture raster grid unit. When the item size
+    // is less than 2 radii, the radius is scaled down anyhow.
+    float radius = (radius_ == ShapeItem::SmallRadius) ?
+        textureData->smallRadius : textureData->mediumRadius;
+    const float scaleFactor = gridUnit_ / textureData->gridUnit;
+    radius *= scaleFactor;
+    int scaledDown = 0;
+    if (scaleFactor != 1.0f) {
+        scaledDown |= 1;
     }
+    const float halfMinWidthHeight = qMin(geometry_.width(), geometry_.height()) * 0.5f;
+    if (radius > halfMinWidthHeight) {
+        radius = halfMinWidthHeight;
+        scaledDown |= 1;
+    }
+    coloredMaterial->setShapeTexture(textureData->texture, !!scaledDown);
+    texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
+
+    // Update the other material properties.
+    coloredMaterial->setBaseColor(baseColor_);
+    coloredMaterial->setGradientColor(gradientColor_);
+    texturedMaterial->setImage(image_);
+
+    // Update node vertices and type.
+    int index = (border_ == ShapeItem::RawBorder) ?
+        0 : (border_ == ShapeItem::IdleBorder) ? 1 : 2;
+    if (radius_ == ShapeItem::SmallRadius)
+        index += 3;
+    node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
+                      textureData->coordinate[index]);
+    node->setMaterialType(image_ ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
 
     return node;
 }
@@ -357,8 +344,9 @@ ShapeNode::ShapeNode(ShapeItem* item)
     setFlag(UsePreprocess, false);
 }
 
-void ShapeNode::setPosition(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                            ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment)
+void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
+                            ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
+                            float shapeCoordinate[][2])
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
     const QSGTextureProvider* provider = image ? image->textureProvider() : NULL;
@@ -410,89 +398,107 @@ void ShapeNode::setPosition(const QRectF& geometry, float radius, QQuickItem* im
     // Set top row of 4 vertices.
     vertices[0].position[0] = 0.0f;
     vertices[0].position[1] = 0.0f;
+    vertices[0].shapeCoordinate[0] = shapeCoordinate[0][0];
+    vertices[0].shapeCoordinate[1] = shapeCoordinate[0][1];
     vertices[0].imageCoordinate[0] = leftCoordinate;
     vertices[0].imageCoordinate[1] = topCoordinate;
     vertices[1].position[0] = radius;
     vertices[1].position[1] = 0.0f;
+    vertices[1].shapeCoordinate[0] = shapeCoordinate[1][0];
+    vertices[1].shapeCoordinate[1] = shapeCoordinate[1][1];
     vertices[1].imageCoordinate[0] = radiusCoordinateWidth;
     vertices[1].imageCoordinate[1] = topCoordinate;
     vertices[2].position[0] = width - radius;
     vertices[2].position[1] = 0.0f;
+    vertices[2].shapeCoordinate[0] = shapeCoordinate[2][0];
+    vertices[2].shapeCoordinate[1] = shapeCoordinate[2][1];
     vertices[2].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
     vertices[2].imageCoordinate[1] = topCoordinate;
     vertices[3].position[0] = width;
     vertices[3].position[1] = 0.0f;
+    vertices[3].shapeCoordinate[0] = shapeCoordinate[3][0];
+    vertices[3].shapeCoordinate[1] = shapeCoordinate[3][1];
     vertices[3].imageCoordinate[0] = rightCoordinate;
     vertices[3].imageCoordinate[1] = topCoordinate;
 
     // Set middle-top row of 4 vertices.
     vertices[4].position[0] = 0.0f;
     vertices[4].position[1] = radius;
+    vertices[4].shapeCoordinate[0] = shapeCoordinate[4][0];
+    vertices[4].shapeCoordinate[1] = shapeCoordinate[4][1];
     vertices[4].imageCoordinate[0] = leftCoordinate;
     vertices[4].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[5].position[0] = radius;
     vertices[5].position[1] = radius;
+    vertices[5].shapeCoordinate[0] = shapeCoordinate[5][0];
+    vertices[5].shapeCoordinate[1] = shapeCoordinate[5][1];
     vertices[5].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
     vertices[5].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[6].position[0] = width - radius;
     vertices[6].position[1] = radius;
+    vertices[6].shapeCoordinate[0] = shapeCoordinate[6][0];
+    vertices[6].shapeCoordinate[1] = shapeCoordinate[6][1];
     vertices[6].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
     vertices[6].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[7].position[0] = width;
     vertices[7].position[1] = radius;
+    vertices[7].shapeCoordinate[0] = shapeCoordinate[7][0];
+    vertices[7].shapeCoordinate[1] = shapeCoordinate[7][1];
     vertices[7].imageCoordinate[0] = rightCoordinate;
     vertices[7].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
 
     // Set middle-bottom row of 4 vertices.
     vertices[8].position[0] = 0.0f;
     vertices[8].position[1] = height - radius;
+    vertices[8].shapeCoordinate[0] = shapeCoordinate[8][0];
+    vertices[8].shapeCoordinate[1] = shapeCoordinate[8][1];
     vertices[8].imageCoordinate[0] = leftCoordinate;
     vertices[8].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[9].position[0] = radius;
     vertices[9].position[1] = height - radius;
+    vertices[9].shapeCoordinate[0] = shapeCoordinate[9][0];
+    vertices[9].shapeCoordinate[1] = shapeCoordinate[9][1];
     vertices[9].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
     vertices[9].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[10].position[0] = width - radius;
     vertices[10].position[1] = height - radius;
+    vertices[10].shapeCoordinate[0] = shapeCoordinate[10][0];
+    vertices[10].shapeCoordinate[1] = shapeCoordinate[10][1];
     vertices[10].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
     vertices[10].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[11].position[0] = width;
     vertices[11].position[1] = height - radius;
+    vertices[11].shapeCoordinate[0] = shapeCoordinate[11][0];
+    vertices[11].shapeCoordinate[1] = shapeCoordinate[11][1];
     vertices[11].imageCoordinate[0] = rightCoordinate;
     vertices[11].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
 
     // Set bottom row of 4 vertices.
     vertices[12].position[0] = 0.0f;
     vertices[12].position[1] = height;
+    vertices[12].shapeCoordinate[0] = shapeCoordinate[12][0];
+    vertices[12].shapeCoordinate[1] = shapeCoordinate[12][1];
     vertices[12].imageCoordinate[0] = leftCoordinate;
     vertices[12].imageCoordinate[1] = bottomCoordinate;
     vertices[13].position[0] = radius;
     vertices[13].position[1] = height;
+    vertices[13].shapeCoordinate[0] = shapeCoordinate[13][0];
+    vertices[13].shapeCoordinate[1] = shapeCoordinate[13][1];
     vertices[13].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
     vertices[13].imageCoordinate[1] = bottomCoordinate;
     vertices[14].position[0] = width - radius;
     vertices[14].position[1] = height;
+    vertices[14].shapeCoordinate[0] = shapeCoordinate[14][0];
+    vertices[14].shapeCoordinate[1] = shapeCoordinate[14][1];
     vertices[14].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
     vertices[14].imageCoordinate[1] = bottomCoordinate;
     vertices[15].position[0] = width;
     vertices[15].position[1] = height;
+    vertices[15].shapeCoordinate[0] = shapeCoordinate[15][0];
+    vertices[15].shapeCoordinate[1] = shapeCoordinate[15][1];
     vertices[15].imageCoordinate[0] = rightCoordinate;
     vertices[15].imageCoordinate[1] = bottomCoordinate;
 
-    markDirty(DirtyGeometry);
-}
-
-void ShapeNode::setShapeCoordinate(ShapeItem::Border border, ShapeItem::Radius radius,
-                                   TextureData* textureData)
-{
-    ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
-    int index = (border == ShapeItem::RawBorder) ? 0 : (border == ShapeItem::IdleBorder) ? 1 : 2;
-    if (radius == ShapeItem::SmallRadius)
-        index += 3;
-    for (int i = 0; i < 16; i++) {
-        vertices[i].shapeCoordinate[0] = textureData->coordinate[index][i][0];
-        vertices[i].shapeCoordinate[1] = textureData->coordinate[index][i][1];
-    }
     markDirty(DirtyGeometry);
 }
 
