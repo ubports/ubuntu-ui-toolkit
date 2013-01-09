@@ -32,7 +32,6 @@ Item {
 
             property ShaderEffectSource mask: ShaderEffectSource {
                 sourceItem: BorderImage {
-                    id: mask
                     source: StyleUtils.itemStyleProperty("maskSource", Qt.resolvedUrl("artwork/checkbox/mask.sci"))
                     width: border.width
                     height: border.height
