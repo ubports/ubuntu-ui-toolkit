@@ -57,11 +57,10 @@ Item {
     id: visuals
     // helper properties to ease code readability
     property Flickable flickableItem: item.flickableItem
-    property bool isListView: ScrollbarUtils.isListView(flickableItem)
-    property bool interactive: item.__interactive
+    property bool interactive: StyleUtils.itemStyleProperty("interactive", false)
     property bool isScrollable: item.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
-    property bool isVertical: (item.__private.vertical)
+    property bool isVertical: ScrollbarUtils.isVertical(item)
     property bool frontAligned: (item.align === Qt.AlignLeading)
     property bool rearAligned: (item.align === Qt.AlignTrailing)
     property bool topAligned: (item.align === Qt.AlignTop)
@@ -92,6 +91,7 @@ Item {
         } else
             return 'shown';
     }
+    onStateChanged: print(state)
 
     states: [
         State {
@@ -199,6 +199,7 @@ Item {
         enabled: isScrollable && interactive
         hoverEnabled: true
         onEntered: thumb.show();
+
         onPressed: mouse.accepted = false
         onClicked: mouse.accepted = false
         onReleased: mouse.accepted = false
@@ -210,13 +211,13 @@ Item {
     // total size of the flickable.
     Item {
         id: scrollCursor
-        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - scrollCursor.width)
-        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - scrollCursor.height)
-        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, 0.0, flickableItem.width)
-        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, 0.0, flickableItem.height)
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.width - scrollCursor.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - scrollCursor.height)
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, 0.0, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, 0.0, flickableItem.height)
 
         function drag() {
-            ScrollbarUtils.dragAndClamp(scrollCursor, isVertical, flickableItem, contentSize, pageSize);
+            ScrollbarUtils.dragAndClamp(item, scrollCursor, contentSize, pageSize);
         }
     }
 
@@ -232,10 +233,10 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.width, 0.0, item.width - slider.width)
-        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(isVertical, flickableItem, item.height, 0.0, item.height - slider.height)
-        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.width)
-        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(isVertical, flickableItem, minimumSliderSize, flickableItem.height)
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.width - slider.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - slider.height)
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.height)
 
         Behavior on width {
             enabled: (!isVertical)
@@ -251,7 +252,7 @@ Item {
         }
 
         function scroll(amount) {
-            scrollAnimation.to = ScrollbarUtils.scrollAndClamp(amount, isVertical, flickableItem, 0.0, contentSize - pageSize);
+            scrollAnimation.to = ScrollbarUtils.scrollAndClamp(item, amount, 0.0, contentSize - pageSize);
             scrollAnimation.restart();
         }
     }
@@ -345,7 +346,7 @@ Item {
                 if (drag.active) resetDrag()
             }
         }
-        // update thump position
+        // update thumb position
         onDragYAmountChanged: {
             if (drag.active) {
                 thumb.y = MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);

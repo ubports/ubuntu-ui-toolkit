@@ -33,9 +33,6 @@ TestCase {
         list.section.property = data.sectionProperty;
         list.section.criteria = ViewSection.FirstCharacter;
         counter.view = list;
-
-        wait(0);
-
         compare(counter.count, data.expect, "Section count is wrong");
     }
 
@@ -45,7 +42,6 @@ TestCase {
         list.section.criteria = ViewSection.FirstCharacter;
         counter.view = list;
         counter.cacheSections = true;
-        wait(0);
         var cache = ["1", "2", "3", "4", "5", "6", "7", "8"];
         compare(counter.cache, cache, "Section cache is wrong");
 
