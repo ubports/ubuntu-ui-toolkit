@@ -2,10 +2,10 @@
 # Copyright 2012 Canonical
 #
 # This program is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public License version 3, as published
+# under the terms of the GNU Lesser General Public License version 3, as published
 # by the Free Software Foundation.
 
-"""Tavastia autopilot tests."""
+"""Ubuntu UI Toolkit autopilot tests."""
 
 from os import remove
 import os.path
@@ -27,7 +27,7 @@ def get_module_include_path():
         )
 
 
-class TavastiaTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
+class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
 
     """A common test case class that provides several useful methods for SDK tests."""
 

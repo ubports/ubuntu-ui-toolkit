@@ -4,7 +4,7 @@ Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 Build-Depends: debhelper (>= 8.0.0), qtbase, qtdeclarative, libgl-dev, libgles2-mesa-dev, libglib2.0-dev
 Standards-Version: 3.9.2
 Section: libs
-Homepage: https://launchpad.net/tavastia
+Homepage: https://launchpad.net/ubuntu-ui-toolkit
 
 Package: qt-components-ubuntu
 Section: libs
