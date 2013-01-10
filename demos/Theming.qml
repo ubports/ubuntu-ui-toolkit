@@ -48,6 +48,12 @@ Template {
                     property: "color"
                     value: "green"
                 }
+                InverseMouseArea {
+                    anchors.fill: parent
+                    onPressed: print()
+                    onReleased: print()
+                    onClicked: print()
+                }
             }
 
             Label {
@@ -87,6 +93,7 @@ Template {
             Button {
                 ItemStyle.class: "custom-button"
                 text: "Call"
+                onClicked: button.enabled = !button.enabled
             }
             Label {
                 ItemStyle.class: "row-label"

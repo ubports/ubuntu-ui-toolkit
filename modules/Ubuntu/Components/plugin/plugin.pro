@@ -36,7 +36,8 @@ HEADERS += plugin.h \
     quickutils.h \
     giconprovider.h \
     shapeitemtexture.h \
-    shapeitem.h
+    shapeitem.h \
+    inversemousearea.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -53,7 +54,8 @@ SOURCES += plugin.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
     giconprovider.cpp \
-    shapeitem.cpp
+    shapeitem.cpp \
+    inversemousearea.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
