@@ -72,7 +72,7 @@ Examples:
 .checkbox {
     checkedColor: "#DD4814";
     uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1);
-    checkMarkSource: url("artwork/checkbox/ticker.png");
+    checkMarkSource: url("artwork/CheckMark.png");
     backgroundColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
 }
 
