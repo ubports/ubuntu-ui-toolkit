@@ -34,7 +34,10 @@ Item {
         id: checkMark
         anchors.centerIn: parent
         smooth: true
-        source: item.checked ? StyleUtils.itemStyleProperty("checkedImageSource", "") : StyleUtils.itemStyleProperty("uncheckedImageSource", "")
-        visible: source != ""
+        source: StyleUtils.itemStyleProperty("checkMarkSource", "")
+        opacity: item.checked ? 1.0 : 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
+        }
     }
 }
