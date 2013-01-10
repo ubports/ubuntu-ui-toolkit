@@ -21,16 +21,6 @@ QtObject {
     property color uncheckedColor
 
     /*!
-      Background mask
-     */
-    property url maskSource
-
-    /*!
-      Border image
-     */
-    property url borderSource
-
-    /*!
       The image to show when the checkbox is checked.
      */
     property url checkedImageSource

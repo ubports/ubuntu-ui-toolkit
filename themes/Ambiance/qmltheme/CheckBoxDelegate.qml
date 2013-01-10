@@ -19,43 +19,14 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
-    implicitWidth: border.source == "" ? units.gu(4) : border.sourceSize.width
-    implicitHeight: border.source == "" ? units.gu(4) : border.sourceSize.height
+    implicitWidth: units.gu(4)
+    implicitHeight: units.gu(4)
     opacity: enabled ? 1.0 : 0.5
 
-    ShaderEffect {
-        id: background
+    UbuntuShape {
         anchors.fill: parent
-
-        property ShaderEffectSource mask: ShaderEffectSource {
-            sourceItem: BorderImage {
-                source: StyleUtils.itemStyleProperty("maskSource", "")
-                width: border.width
-                height: border.height
-            }
-        }
-
-        property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
+        color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
         Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
-
-        fragmentShader:
-            "
-                varying highp vec2 qt_TexCoord0;
-                uniform lowp float qt_Opacity;
-                uniform sampler2D mask;
-                uniform lowp vec4 color;
-
-                void main(void) {
-                    lowp vec4 maskColor = texture2D(mask, qt_TexCoord0.st);
-                    gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
-                }
-                "
-    }
-
-    BorderImage {
-        id: border
-        anchors.fill: parent
-        source: StyleUtils.itemStyleProperty("borderSource", "")
     }
 
     Image {
