@@ -21,7 +21,7 @@ QtObject {
     property color uncheckedColor
 
     /*!
-      The image to show when the checkbox is checked.
+      The image to show inside the checkbox when it is checked.
      */
     property url checkMarkSource
 
