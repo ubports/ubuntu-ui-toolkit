@@ -45,11 +45,8 @@ AbstractButton {
 
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "checkbox"
-    // FIXME: Make it work properly using the delegateProperty() function.
-    //width: Theming.ComponentUtils.delegateProperty(checkBox, implicitWidth, 10)
-    //height: Theming.ComponentUtils.delegateProperty(checkBox, implicitHeight, 10)
-    width: Theming.ItemStyle.delegate.implicitWidth
-    height: Theming.ItemStyle.delegate.implicitHeight
+    width: Theming.ComponentUtils.delegateProperty(checkBox, "implicitWidth", units.gu(4))
+    height: Theming.ComponentUtils.delegateProperty(checkBox, "implicitHeight", units.gu(4))
 
     /*!
       \preliminary
