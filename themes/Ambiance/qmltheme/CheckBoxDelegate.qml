@@ -40,8 +40,7 @@ Item {
 
             property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
 
-            // FIXME: animate script doesn't work with Behavior?
-            Behavior on color { ScriptAction { script: StyleUtils.animate("backgroundColorAnimation") } }
+            Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
 
             fragmentShader:
                 "
