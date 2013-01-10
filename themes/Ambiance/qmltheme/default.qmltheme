@@ -70,8 +70,8 @@ Examples:
 }
 
 .checkbox {
-    uncheckedColor: "#724242";
-    checkedColor: "#427242";
+    uncheckedColor: "#333333";
+    checkedColor: "#DD4814";
     checkedImageSource: url("artwork/checkbox/ticker.png");
     uncheckedImageSource: "";
     backgroundColorAnimation: ColorAnimation { duration: 100 };
