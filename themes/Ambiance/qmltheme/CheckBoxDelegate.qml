@@ -36,7 +36,6 @@ Item {
         }
 
         property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
-
         Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
 
         fragmentShader:
@@ -63,7 +62,7 @@ Item {
         id: checkMark
         anchors.centerIn: parent
         smooth: true
-        source: StyleUtils.itemStyleProperty("tickerSource", "")
-        visible: item.checked
+        source: StyleUtils.itemStyleProperty("checkedImageSource", "")
+        visible: item.checked && source !== ""
     }
 }

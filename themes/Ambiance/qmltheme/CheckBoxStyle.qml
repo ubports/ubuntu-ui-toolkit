@@ -33,12 +33,12 @@ QtObject {
     /*!
       The image to show when the checkbox is checked.
      */
-    property url tickerSource
+    property url checkedImageSource
 
     /*!
       The image to show when the checkbox is not checked.
      */
-    property url crossSource
+    property url uncheckedImageSource
 
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.

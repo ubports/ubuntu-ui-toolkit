@@ -74,8 +74,8 @@ Examples:
     checkedColor: "#427242";
     maskSource: url("artwork/checkbox/mask.sci");
     borderSource: url("artwork/checkbox/border.sci");
-    tickerSource: url("artwork/checkbox/ticker.png");
-    crossSource: url("artwork/checkbox/cross.png");
+    checkedImageSource: url("artwork/checkbox/ticker.png");
+    uncheckedImageSource: url("artwork/checkbox/cross.png");
     backgroundColorAnimation: ColorAnimation { duration: 300 };
 }
 
