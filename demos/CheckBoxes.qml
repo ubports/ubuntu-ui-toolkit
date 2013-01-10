@@ -38,8 +38,15 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Disabled")
-            CheckBox {
-                enabled: false
+            Row {
+                spacing: units.gu(1)
+                CheckBox {
+                    enabled: false
+                }
+                CheckBox {
+                    enabled: false
+                    checked: true
+                }
             }
         }
     }
