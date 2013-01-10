@@ -32,8 +32,8 @@ Rectangle {
             title: "Components"
             page: Flickable {
                 clip: true
-                width: units.gu(45)
-                height: units.gu(80)
+                width: parent.width
+                height: parent.height
 
                 contentWidth: width
                 contentHeight: background.height

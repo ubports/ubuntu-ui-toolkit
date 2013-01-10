@@ -64,6 +64,7 @@ AbstractButton {
 
             anchors.fill: parent
             color: checkBox.checked ? internals.checkedColor : internals.uncheckedColor
+            gradientColor: "transparent"
             Behavior on color {
                 ColorAnimation { duration: 100; easing.type: Easing.OutQuad }
             }
@@ -72,8 +73,7 @@ AbstractButton {
         Image {
             id: checkMark
 
-            anchors.fill: parent
-            anchors.margins: units.gu(0.5)
+            anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
             smooth: true
             source: internals.checkMarkSource
@@ -88,8 +88,8 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
+        property url checkMarkSource: Qt.resolvedUrl("artwork/ticker.png")
         property color uncheckedColor: checkedColor
-        property color checkedColor: "#626262"
+        property color checkedColor: "#dd4814"
     }
 }

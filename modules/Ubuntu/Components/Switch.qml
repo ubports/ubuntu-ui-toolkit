@@ -69,15 +69,17 @@ AbstractButton {
 
             anchors.fill: parent
             color: sweetch.checked ? internals.checkedColor : internals.uncheckedColor
+            gradientColor: "transparent"
         }
 
         Image {
             id: checkMark
-            width: Math.min(parent.height - internals.iconSpacing,
-                            (parent.width * 0.5) - internals.iconSpacing)
-            height: checkMark.width
-            x: internals.iconHorizontalMargin
-            y: (parent.height - checkMark.height) * 0.5 - 1.0
+            anchors {
+                left: parent.left
+                leftMargin: internals.iconHorizontalMargin
+                verticalCenter: parent.verticalCenter
+                verticalCenterOffset: -1.0
+            }
             fillMode: Image.PreserveAspectFit
             source: internals.checkMarkSource
             opacity: sweetch.checked ? 1.0 : 0.0
@@ -87,11 +89,12 @@ AbstractButton {
 
         Image {
             id: ballot
-            width: Math.min(parent.height - internals.iconSpacing,
-                            (parent.width * 0.5) - internals.iconSpacing)
-            height: ballot.width
-            x: parent.width - ballot.width - internals.iconHorizontalMargin
-            y: (parent.height - ballot.height) * 0.5 - 1.0
+            anchors {
+                right: parent.right
+                rightMargin: internals.iconHorizontalMargin
+                verticalCenter: parent.verticalCenter
+                verticalCenterOffset: -1.0
+            }
             fillMode: Image.PreserveAspectFit
             source: internals.ballotSource
             opacity: sweetch.checked ? 0.0 : 1.0
@@ -109,6 +112,7 @@ AbstractButton {
             width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
             height: backgroundShape.height - (2.0 * internals.thumbSpacing)
             color: internals.thumbColor
+            gradientColor: "transparent"
 
             Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
         }
@@ -117,14 +121,15 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property url ballotSource: Qt.resolvedUrl("artwork/Ballot.png")
-        property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
+        property url ballotSource: Qt.resolvedUrl("artwork/cross.png")
+        property url checkMarkSource: Qt.resolvedUrl("artwork/ticker.png")
         property real iconHorizontalMargin: units.gu(1)
         property real iconSpacing: units.gu(1)
         property real thumbWidth: 0.5    // In [0.0, 1.0].
         property real thumbSpacing: units.dp(2)
-        property color uncheckedColor: "#d3d3d3"
-        property color checkedColor: uncheckedColor
-        property color thumbColor: "#626262"
+        property color uncheckedColor: checkedColor
+//        property color uncheckedColor: "#333333"
+        property color checkedColor: "#dd4814"
+        property color thumbColor: "#f1e2d1"
     }
 }
