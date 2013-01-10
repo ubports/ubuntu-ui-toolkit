@@ -75,7 +75,7 @@ Examples:
     maskSource: url("artwork/checkbox/mask.sci");
     borderSource: url("artwork/checkbox/border.sci");
     checkedImageSource: url("artwork/checkbox/ticker.png");
-    uncheckedImageSource: url("artwork/checkbox/cross.png");
+    uncheckedImageSource: "";
     backgroundColorAnimation: ColorAnimation { duration: 300 };
 }
 

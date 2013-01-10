@@ -62,7 +62,7 @@ Item {
         id: checkMark
         anchors.centerIn: parent
         smooth: true
-        source: StyleUtils.itemStyleProperty("checkedImageSource", "")
-        visible: item.checked && source !== ""
+        source: item.checked ? StyleUtils.itemStyleProperty("checkedImageSource", "") : StyleUtils.itemStyleProperty("uncheckedImageSource", "")
+        visible: source != ""
     }
 }
