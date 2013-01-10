@@ -91,7 +91,6 @@ Item {
         } else
             return 'shown';
     }
-    onStateChanged: print(state)
 
     states: [
         State {
@@ -240,15 +239,11 @@ Item {
 
         Behavior on width {
             enabled: (!isVertical)
-            animation: ScriptAction {
-                script: StyleUtils.animate("sliderAnimation")
-            }
+            animation: StyleUtils.itemStyleProperty("sliderAnimation")
         }
         Behavior on height {
             enabled: (isVertical)
-            animation: ScriptAction {
-                script: StyleUtils.animate("sliderAnimation")
-            }
+            animation: StyleUtils.itemStyleProperty("sliderAnimation")
         }
 
         function scroll(amount) {
@@ -276,7 +271,7 @@ Item {
         }
         color: StyleUtils.itemStyleProperty("thumbConnectorColor", "white")
         opacity: thumb.shown ? 1.0 : 0.0
-        Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbConnectorFading")}}
+        Behavior on opacity { animation: StyleUtils.itemStyleProperty("thumbConnectorFading") }
     }
 
     MouseArea {
@@ -437,7 +432,7 @@ Item {
         }
 
         opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
-        Behavior on opacity {animation: ScriptAction {script: StyleUtils.animate("thumbFading")}}
+        Behavior on opacity { animation: StyleUtils.itemStyleProperty("thumbFading") }
 
         property url backwardPressed: StyleUtils.itemStyleProperty("backwardThumbPressed", "")
         property url backwardReleased: StyleUtils.itemStyleProperty("backwardThumbReleased", "")

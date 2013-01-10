@@ -277,7 +277,3 @@ Examples:
     color: "white";
     weight: Font.Bold;
 }
-
-.scrollbar {
-    interactive: true
-}
