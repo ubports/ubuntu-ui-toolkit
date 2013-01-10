@@ -67,7 +67,8 @@ Item {
             id: checkMark
             anchors.centerIn: parent
             smooth: true
-            source: item.checked ? StyleUtils.itemStyleProperty("tickerSource") : StyleUtils.itemStyleProperty("crossSource")
+            source: StyleUtils.itemStyleProperty("tickerSource")
+            visible: item.checked
         }
     }
 }
