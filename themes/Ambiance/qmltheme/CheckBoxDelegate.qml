@@ -19,8 +19,8 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
-    implicitWidth: border.sourceSize.width
-    implicitHeight: border.sourceSize.height
+    implicitWidth: border.source == "" ? units.gu(4) : border.sourceSize.width
+    implicitHeight: border.source == "" ? units.gu(4) : border.sourceSize.height
     opacity: enabled ? 1.0 : 0.5
 
     ShaderEffect {
@@ -29,7 +29,7 @@ Item {
 
         property ShaderEffectSource mask: ShaderEffectSource {
             sourceItem: BorderImage {
-                source: StyleUtils.itemStyleProperty("maskSource", Qt.resolvedUrl("artwork/checkbox/mask.sci"))
+                source: StyleUtils.itemStyleProperty("maskSource", "")
                 width: border.width
                 height: border.height
             }
@@ -56,14 +56,14 @@ Item {
     BorderImage {
         id: border
         anchors.fill: parent
-        source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/border.sci"))
+        source: StyleUtils.itemStyleProperty("borderSource", "")
     }
 
     Image {
         id: checkMark
         anchors.centerIn: parent
         smooth: true
-        source: StyleUtils.itemStyleProperty("tickerSource")
+        source: StyleUtils.itemStyleProperty("tickerSource", "")
         visible: item.checked
     }
 }
