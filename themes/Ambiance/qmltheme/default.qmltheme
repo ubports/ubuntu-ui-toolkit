@@ -74,7 +74,7 @@ Examples:
     checkedColor: "#DD4814";
     checkedImageSource: url("artwork/checkbox/ticker.png");
     uncheckedImageSource: "";
-    backgroundColorAnimation: ColorAnimation { duration: 100 };
+    backgroundColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
 }
 
 .tabs {

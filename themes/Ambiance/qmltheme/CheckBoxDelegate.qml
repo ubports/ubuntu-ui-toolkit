@@ -26,6 +26,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
+        gradientColor: "transparent"
         Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
     }
 
