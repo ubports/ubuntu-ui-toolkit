@@ -76,6 +76,7 @@ Examples:
     borderSource: url("artwork/checkbox/border.sci");
     tickerSource: url("artwork/checkbox/ticker.png");
     crossSource: url("artwork/checkbox/cross.png");
+    backgroundColorAnimation: ColorAnimation { duration: 300 };
 }
 
 .tabs {

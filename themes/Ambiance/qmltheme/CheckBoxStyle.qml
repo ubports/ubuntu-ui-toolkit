@@ -42,7 +42,6 @@ QtObject {
 
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
-      FIXME: This doesn't work.
      */
-    property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: 300 }
+    property PropertyAnimation backgroundColorAnimation
 }

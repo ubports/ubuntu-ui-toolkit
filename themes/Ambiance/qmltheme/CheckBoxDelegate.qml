@@ -21,29 +21,26 @@ Item {
     anchors.fill: parent
     implicitWidth: border.sourceSize.width
     implicitHeight: border.sourceSize.height
+    opacity: enabled ? 1.0 : 0.5
 
-    Item {
+    ShaderEffect {
+        id: background
         anchors.fill: parent
-        opacity: enabled ? 1.0 : 0.5
 
-        ShaderEffect {
-            id: background
-            anchors.fill: parent
-
-            property ShaderEffectSource mask: ShaderEffectSource {
-                sourceItem: BorderImage {
-                    source: StyleUtils.itemStyleProperty("maskSource", Qt.resolvedUrl("artwork/checkbox/mask.sci"))
-                    width: border.width
-                    height: border.height
-                }
+        property ShaderEffectSource mask: ShaderEffectSource {
+            sourceItem: BorderImage {
+                source: StyleUtils.itemStyleProperty("maskSource", Qt.resolvedUrl("artwork/checkbox/mask.sci"))
+                width: border.width
+                height: border.height
             }
+        }
 
-            property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
+        property color color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
 
-            Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
+        Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
 
-            fragmentShader:
-                "
+        fragmentShader:
+            "
                 varying highp vec2 qt_TexCoord0;
                 uniform lowp float qt_Opacity;
                 uniform sampler2D mask;
@@ -54,20 +51,19 @@ Item {
                     gl_FragColor = color * vec4(maskColor.a * qt_Opacity);
                 }
                 "
-        }
+    }
 
-        BorderImage {
-            id: border
-            anchors.fill: parent
-            source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/border.sci"))
-        }
+    BorderImage {
+        id: border
+        anchors.fill: parent
+        source: StyleUtils.itemStyleProperty("borderSource", Qt.resolvedUrl("artwork/checkbox/border.sci"))
+    }
 
-        Image {
-            id: checkMark
-            anchors.centerIn: parent
-            smooth: true
-            source: StyleUtils.itemStyleProperty("tickerSource")
-            visible: item.checked
-        }
+    Image {
+        id: checkMark
+        anchors.centerIn: parent
+        smooth: true
+        source: StyleUtils.itemStyleProperty("tickerSource")
+        visible: item.checked
     }
 }
