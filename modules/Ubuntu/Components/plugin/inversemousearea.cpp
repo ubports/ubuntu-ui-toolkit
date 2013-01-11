@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "inversemousearea.h"
 #include <QtQuick/QQuickWindow>
 #include <QtCore/QEvent>
@@ -6,8 +22,9 @@
 #include "quickutils.h"
 
 /*!
+ * \internal
  * \qmltype InverseMouseArea
- * \inmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
  * \brief The InverseMouseArea captures mouse events happening outside of a given
  * area.
@@ -57,6 +74,9 @@
  *
  */
 
+/*!
+ * \internal
+ */
 InverseMouseArea::InverseMouseArea(QQuickItem *parent) :
     QQuickItem(parent),
     m_pressed(false),
@@ -67,13 +87,14 @@ InverseMouseArea::InverseMouseArea(QQuickItem *parent) :
     m_lastPos(0,0)
 {
     setAcceptedMouseButtons(m_acceptedButtons);
-    //setFiltersChildMouseEvents(true);
+    setFiltersChildMouseEvents(true);
     setFlag(QQuickItem::ItemHasContents);
 
     QObject::connect(this, SIGNAL(enabledChanged()), this, SLOT(update()));
 }
 
-/*
+/*!
+ * \internal
  * Slot connected to enabledChanged signal to update the state of the handler.
  */
 void InverseMouseArea::update()
@@ -220,7 +241,8 @@ void InverseMouseArea::reset()
     m_pressedButtons = Qt::NoButton;
 }
 
-/*
+/*!
+ * \internal
  * Maps the mouse point to the root item.
  */
 QPointF InverseMouseArea::mapToRootItem(const QPointF &point)
@@ -229,7 +251,8 @@ QPointF InverseMouseArea::mapToRootItem(const QPointF &point)
     return (root) ? root->mapFromScene(point) : QPointF();
 }
 
-/*
+/*!
+ * \internal
  * Handles mouse press event. Consumes event depending on the propagateEvent state.
  */
 bool InverseMouseArea::mousePress(QMouseEvent *event)
@@ -252,7 +275,8 @@ bool InverseMouseArea::mousePress(QMouseEvent *event)
     return false;
 }
 
-/*
+/*!
+ * \internal
  * Handles mouse release and clicked composed event. Consumes event depending on
  * the propagateEvent state. Does not consume events from inside the area.
  */
@@ -280,7 +304,8 @@ bool InverseMouseArea::mouseRelease(QMouseEvent *event)
     return consume;
 }
 
-/*
+/*!
+ * \internal
  * Captures mouse move event. Consumes event depending on the propagateEvent state.
  * Depending whether the mouse was moved after being pressed, the clicked composed
  * event will not be emitted.
@@ -295,7 +320,8 @@ bool InverseMouseArea::mouseMove(QMouseEvent *event)
     return !m_propagateEvents;
 }
 
-/*
+/*!
+ * \internal
  * Filters mouse events.
  */
 bool InverseMouseArea::eventFilter(QObject *obj, QEvent *ev)
@@ -321,8 +347,9 @@ bool InverseMouseArea::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
-/*
- * Catches item specific changes such as scene and visible change.
+/*!
+ * \internal
+ * Captures item specific changes such as scene and visible change.
  */
 void InverseMouseArea::itemChange(ItemChange change, const ItemChangeData &data)
 {
@@ -332,7 +359,7 @@ void InverseMouseArea::itemChange(ItemChange change, const ItemChangeData &data)
         if (oldWindow)
             oldWindow->removeEventFilter(this);
 
-        reset();
+       reset();
 
         if (data.window)
             data.window->installEventFilter(this);
