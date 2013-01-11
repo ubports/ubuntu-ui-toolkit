@@ -21,9 +21,9 @@ cd tests/autopilot
 echo running with arg: $1
 
 if [ "$1" == "" ]; then
-	autopilot run tavastia
+	autopilot run ubuntu-ui-toolkit
 else
-	autopilot run -o ../../$1 -f xml -r -rd ../../ tavastia
+	autopilot run -o ../../$1 -f xml -r -rd ../../ ubuntu-ui-toolkit
 fi
 
 exit 0
