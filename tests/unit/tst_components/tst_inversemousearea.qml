@@ -25,24 +25,27 @@ Item {
     MouseArea {
         id: fullArea
         anchors.fill: parent
-        SignalSpy {
-            id: masterSpy
-            target: parent
-        }
     }
 
     InverseMouseArea {
         id: ima
         x: 5; y: 5
         width: 10; height: 10
-        SignalSpy {
-            id: signalSpy
-            target: parent
-        }
     }
 
     TestCase {
         name: "InverseMouseAreaAPI"
+        when: windowShown
+
+        SignalSpy {
+            id: masterSpy
+            target: fullArea
+        }
+
+        SignalSpy {
+            id: signalSpy
+            target: ima
+        }
 
         function test_0_pressed() {
             compare(ima.pressed, false, "InverseMouseArea is not pressed by default");
@@ -101,12 +104,27 @@ Item {
             ima.propagateComposedEvents = false;
             signalSpy.signalName = "clicked";
             masterSpy.signalName = "clicked";
-            mousePress(testCase, 1, 1);
+            mouseClick(testCase, 1, 1);
             tryCompare(masterSpy,"count",0,"MouseArea clicked() was not emitted");
             tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
 
             ima.propagateComposedEvents = true;
-            mousePress(testCase, 1, 1);
+            mouseClick(testCase, 1, 1);
+            tryCompare(masterSpy,"count",1,"MouseArea clicked() was not emitted");
+            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+        }
+
+        function test_onReleased() {
+            ima.acceptedButtons = Qt.LeftButton;
+            ima.propagateComposedEvents = false;
+            signalSpy.signalName = "clicked";
+            masterSpy.signalName = "clicked";
+            mouseRelease(testCase, 1, 1);
+            tryCompare(masterSpy,"count",0,"MouseArea clicked() was not emitted");
+            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+
+            ima.propagateComposedEvents = true;
+            mouseRelease(testCase, 1, 1);
             tryCompare(masterSpy,"count",1,"MouseArea clicked() was not emitted");
             tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
         }
