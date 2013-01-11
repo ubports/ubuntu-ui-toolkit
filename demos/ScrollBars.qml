@@ -77,20 +77,12 @@ Template {
 
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
-                    section.delegate: Header {
-                        text: "Section - " + section
-                    }
+                    section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
 
-                    delegate: Standard {
-                        text: "Data - " + label
-                    }
-
-                    header: Header {
-                        text: "List header"
-                    }
-                    footer: Header {
-                        text: "List footer"
-                    }
+                    section.delegate: Header { text: "Section - " + section }
+                    delegate: Standard { text: "Data - " + label }
+                    header: Header { text: "List header" }
+                    footer: Header { text: "List footer" }
                 }
                 ListModel {
                    id: listModel
@@ -99,7 +91,7 @@ Template {
                            listModel.append({"title": i, "label": i})
                        }
                    }
-               }
+                }
 
                 Scrollbar {
                     flickableItem: listView
