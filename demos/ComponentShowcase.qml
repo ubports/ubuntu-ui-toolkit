@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Rectangle {
     width: units.gu(100)
@@ -73,21 +74,12 @@ Rectangle {
                 {"label": i18n.tr("Time Picker"), "source": ""},
                ]
 
-        delegate: Button {
-            ItemStyle.class: "transparent-button"
-            height: units.gu(6)
-            width: widgetList.width
+        delegate: ListItem.Standard {
             text: modelData.label
             onClicked: widgetList.selectedIndex = index
             enabled: modelData.source != ""
-
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: units.dp(1)
-                z: -1
-                color: "#e6dede"
-                visible: index == widgetList.selectedIndex
-            }
+            selected: index == widgetList.selectedIndex
+            showDivider: false
         }
     }
 
