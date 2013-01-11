@@ -24,6 +24,48 @@ Template {
         spacing: units.gu(4)
 
         TemplateRow {
+            height: childrenRect.height
+            Item {
+                width: 640; height: 480
+                Column {
+                    spacing: 10
+                    Rectangle {
+                        width: 100; height: 30
+                        color: "red"
+                        InverseMouseArea {
+                            anchors.fill: parent
+                            propagateComposedEvents: true
+                            onPressed: print("outer red pressed")
+                        }
+                    }
+                    Rectangle {
+                        width: 100; height: 30
+                        color: "green"
+                        InverseMouseArea {
+                            anchors.fill: parent
+                            propagateComposedEvents: true
+                            onPressed: print("outer green pressed")
+                        }
+                    }
+                    Rectangle {
+                        width: 100; height: 30
+                        color: "blue"
+                        MouseArea {
+                            anchors.fill: parent
+                            onPressed: print("inner blue")
+                        }
+
+                        InverseMouseArea {
+                            anchors.fill: parent
+                            propagateComposedEvents: false
+                            onPressed: print("outer blue pressed")
+                        }
+                    }
+                }
+            }
+        }
+
+        TemplateRow {
             title: "Custom"
             Switch {
                 Component.onCompleted: checked = (Theme.currentTheme.indexOf("custom-theme") > 0)
@@ -47,12 +89,6 @@ Template {
                     target: button.ItemStyle.style
                     property: "color"
                     value: "green"
-                }
-                InverseMouseArea {
-                    anchors.fill: parent
-                    onPressed: print()
-                    onReleased: print()
-                    onClicked: print()
                 }
             }
 
@@ -93,7 +129,6 @@ Template {
             Button {
                 ItemStyle.class: "custom-button"
                 text: "Call"
-                onClicked: button.enabled = !button.enabled
             }
             Label {
                 ItemStyle.class: "row-label"
