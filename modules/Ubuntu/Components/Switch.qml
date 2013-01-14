@@ -83,6 +83,7 @@ AbstractButton {
             y: backgroundShape.y + internals.thumbSpacing
             x: sweetch.checked ? rightItem.x : leftItem.x
             // FIXME: using uncheckedColor ignores the alpha component
+//            color: sweetch.checked ? internals.checkedColor : Qt.rgba(1.0, 1.0, 1.0, 0.1)
             color: sweetch.checked ? internals.checkedColor : Qt.rgba(0.0, 0.0, 0.0, 0.1)
             gradientColor: "transparent"
 
@@ -106,6 +107,7 @@ AbstractButton {
                 id: ballot
                 anchors.centerIn: parent
                 source: internals.ballotSource
+//                opacity: 0.1
             }
         }
 
