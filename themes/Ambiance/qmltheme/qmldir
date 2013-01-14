@@ -3,6 +3,8 @@ ButtonStyle 0.1 ButtonStyle.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
 CheckBoxStyle 0.1 CheckBoxStyle.qml
 CheckBoxDelegate 0.1 CheckBoxDelegate.qml
+SwitchStyle 0.1 SwitchStyle.qml
+SwitchDelegate 0.1 SwitchDelegate.qml
 TabButtonStyle 0.1 TabButtonStyle.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
 TabsDelegate 0.1 TabsDelegate.qml
