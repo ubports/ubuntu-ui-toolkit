@@ -150,7 +150,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     connectedToEngine(false)
 {
     QString className = QString(attachee->metaObject()->className()).toLower();
-    // class name may have_QMLTYPE_XX or _QML_XX suffixes
+    // class name may have _QMLTYPE_XX or _QML_XX suffixes
     className = className.left(className.indexOf("_qml"));
     styleData.className = className;
     styleData.styleClass = className;
