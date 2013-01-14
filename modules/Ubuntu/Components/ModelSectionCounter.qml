@@ -25,6 +25,7 @@ import QtQuick 2.0
 */
 
 Object {
+    id: counter
 
     /*!
       \preliminary
@@ -36,13 +37,13 @@ Object {
       \preliminary
       The property contains the section counts of the given view.
     */
-    property int sectionCount: 0
+    property int count: 0
 
     /*!
       \preliminary
       The property contains the section Item height.
     */
-    property real sectionHeight: 0
+    readonly property alias sectionHeight: internals.sectionHeight
 
     /*!
       \preliminary
@@ -57,10 +58,19 @@ Object {
       This property holds the cached sections when the cacheSections property is set, and
       is an empty list when no caching is requested.
     */
-    property var sectionCache: []
+    property var cache: []
+
+    /*!
+      \internal
+      */
+    onCacheSectionsChanged: internals.checkSections()
 
     QtObject {
         id: internals
+
+        property real sectionHeight: (count > 0 && view.section.delegate) ?
+                                         QuickUtils.modelDelegateHeight(view.section.delegate, view.model) : 0.0
+
         property var myView: null
         function disconnectPreviousView()
         {
@@ -80,6 +90,9 @@ Object {
 
             if (myView.model.itemsRemoved)
                 myView.model.itemsRemoved.disconnect(checkSections);
+
+            if (myView.section.delegateChanged)
+                myView.section.delegateChanged.disconnect(checkSections);
         }
 
         function initSectionCounter()
@@ -99,38 +112,50 @@ Object {
 
             if (myView.model.itemsRemoved)
                 myView.model.itemsRemoved.connect(checkSections);
+
+            if (myView.section.delegateChanged)
+                myView.section.delegateChanged.connect(checkSections);
+
+            // finally check sections
+            checkSections();
         }
 
         function checkSections()
         {
-            if (undefined === view.section.property || "" === view.section.property)
-                return;
-            function sectionString(str)
-            {
-                return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(0) : str;
-            }
-
             var sections = 0, sectionStack = [];
-            var current = "",
-                    prop = view.section.property,
-                    item, section = "";
-            for (var i = 0, count = (typeof view.model.count === 'undefined' ? view.model.length : view.model.count); i < count; i++) {
-                item = view.model.get(i);
-                section = sectionString(JSON.stringify(item[prop])).toLowerCase();
-                if (section !== current) {
-                    current = section;
-                    sections++;
-                    if (cacheSections)
-                        sectionStack.push(current);
+            if (view && view.section && undefined !== view.section.property && "" !== view.section.property) {
+                function sectionString(str)
+                {
+                    if (str === undefined)
+                        return "";
+                    return (view.section.criteria === ViewSection.FirstCharacter) ? str.charAt(1) : str;
+                }
+
+                var current = "",
+                        prop = view.section.property,
+                        item = null, section = "",
+                        count = (typeof view.model.length === 'undefined' ? view.model.count : view.model.length);
+                for (var i = 0; i < count; i++) {
+                    if (view.model.hasOwnProperty("get")) {
+                        item = view.model.get(i);
+                        section = sectionString(JSON.stringify(item[prop])).toLowerCase();
+                    } else {
+                        item = view.model[i];
+                        if (item.hasOwnProperty(prop))
+                            section = sectionString(JSON.stringify(item[prop])).toLowerCase();
+                        else
+                            section = sectionString(JSON.stringify(item)).toLowerCase();
+                    }
+                    if (section !== current) {
+                        current = section;
+                        sections++;
+                        if (cacheSections)
+                            sectionStack.push(current);
+                    }
                 }
             }
-            if (sectionCount != sections && sectionCount <= 0 && sections > 0) {
-                sectionHeight = QuickUtils.modelDelegateHeight(view.section.delegate, view.model);
-            } else if (sections <= 0)
-                sectionHeight = 0;
-
-            sectionCount = sections;
-            sectionCache = sectionStack;
+            counter.count = sections;
+            counter.cache = sectionStack;
         }
     }
 
@@ -138,14 +163,16 @@ Object {
 
     onViewChanged: {
         internals.disconnectPreviousView()
-        if (view && view.model) {
-            internals.initSectionCounter();
-        } else if (view) {
-            view.modelChanged.connect(function()
-            {
-                if (view.model)
-                    internals.initSectionCounter();
-            });
+        if (view && view.hasOwnProperty("model")) {
+            if (view && view.model) {
+                internals.initSectionCounter();
+            } else if (view) {
+                view.modelChanged.connect(function()
+                {
+                    if (view && view.model)
+                        internals.initSectionCounter();
+                });
+            }
         }
     }
 }
