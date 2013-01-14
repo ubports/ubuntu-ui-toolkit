@@ -24,10 +24,7 @@ HEADERS += plugin.h \
     suffixtree_p.h \
     itemstyleattached.h \
     itemstyleattached_p.h \
-    rule.h \
-    rule_p.h \
-    qmlloader_p.h \
-    qmlthemeloader_p.h \
+    qmlthemeloader.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
@@ -43,8 +40,6 @@ SOURCES += plugin.cpp \
     suffixtree.cpp \
     themesettings.cpp \
     itemstyleattached.cpp \
-    rule.cpp \
-    qmlloader.cpp \
     qmlthemeloader.cpp \
     i18n.cpp \
     listener.cpp \
