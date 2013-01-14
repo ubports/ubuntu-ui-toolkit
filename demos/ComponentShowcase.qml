@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Rectangle {
     width: units.gu(100)
@@ -49,45 +50,36 @@ Rectangle {
 
         property int selectedIndex: 0
         model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
-                {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
-                {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
-                {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-                {"label": i18n.tr("Tabs (old)"), "source": "Tabs.qml"},
-                {"label": i18n.tr("Tabs (new)"), "source": "NewTabs.qml"},
-                {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-                {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
-                {"label": i18n.tr("Switch"), "source": "Switches.qml"},
-                {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
-                {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
-                {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
-                {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
-                {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-                {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"},
-                {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
-                {"label": i18n.tr("Popups"), "source": "Popups.qml"},
-                {"label": i18n.tr("GIcon Provider"), "source": "GIconProvider.qml"},
-                {"label": i18n.tr("Toolbars"), "source": ""},
-                {"label": i18n.tr("Grid View"), "source": ""},
-                {"label": i18n.tr("On Screen Keyboard"), "source": ""},
-                {"label": i18n.tr("Date Picker"), "source": ""},
-                {"label": i18n.tr("Time Picker"), "source": ""},
-               ]
+            {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
+            {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
+            {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
+            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
+            {"label": i18n.tr("Tabs (flickable)"), "source": "NewTabs.qml"},
+            {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
+            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
+            {"label": i18n.tr("Switch"), "source": "Switches.qml"},
+            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
+            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
+            {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
+            {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
+            {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
+            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"},
+            {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
+            {"label": i18n.tr("Popups"), "source": "Popups.qml"},
+            {"label": i18n.tr("GIcon Provider"), "source": "GIconProvider.qml"},
+            {"label": i18n.tr("Toolbars"), "source": ""},
+            {"label": i18n.tr("Grid View"), "source": ""},
+            {"label": i18n.tr("On Screen Keyboard"), "source": ""},
+            {"label": i18n.tr("Date Picker"), "source": ""},
+            {"label": i18n.tr("Time Picker"), "source": ""},
+        ]
 
-        delegate: Button {
-            ItemStyle.class: "transparent-button"
-            height: units.gu(6)
-            width: widgetList.width
+        delegate: ListItem.Standard {
             text: modelData.label
             onClicked: widgetList.selectedIndex = index
             enabled: modelData.source != ""
-
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: units.dp(1)
-                z: -1
-                color: "#e6dede"
-                visible: index == widgetList.selectedIndex
-            }
+            selected: index == widgetList.selectedIndex
+            showDivider: false
         }
     }
 
