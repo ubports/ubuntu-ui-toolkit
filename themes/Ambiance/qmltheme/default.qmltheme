@@ -15,11 +15,12 @@ properties typed as variant.
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
+@qml-mapping(.checkbox, CheckBoxStyle, CheckBoxDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
-@qml-mapping(.scrollbar, ScrollbarStyle, ScrollbarDelegate);
+@qml-mapping(.scrollbar, , ScrollbarDelegate);
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
@@ -66,6 +67,13 @@ Examples:
 }
 
 .transparent-button {
+}
+
+.checkbox {
+    checkedColor: "#DD4814";
+    uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1);
+    checkMarkSource: url("artwork/CheckMark.png");
+    backgroundColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
 }
 
 .tabs {
@@ -176,7 +184,6 @@ Examples:
     backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
     forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
     forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
-    sensingAreaThickness: units.gu(4);
     scrollAreaThickness: units.dp(2);
     thumbConnectorMargin: units.dp(3);
     sliderColor: "#fc7134";
