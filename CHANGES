@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* ThemeEngine - contains only public API, no C++ specific API
+* Role element removed
 
 
 SDK 0.1.25

@@ -50,7 +50,7 @@ public: //members
     QQmlEngine *m_engine;
     // suffix tree for the styles
     StyleTreeNode *m_styleTree;
-    QHash<Selector, Rule*> m_styleCache;
+    QHash<Selector, StyleTreeNode*> m_styleCache;
     InstanceHash m_instanceCache;
     QStringList importPaths;
     QMap<QString, ThemeLoader*> themeLoaders;
@@ -66,10 +66,10 @@ public:
     void removeWatchedFiles();
     void addWatchedFiles(const QStringList &watchedThemeFiles);
     void loadTheme(const QUrl &themeFile);
-    Selector getSelector(QQuickItem *obj, bool forceClassName) const;
-    Rule *styleRuleForPath(const Selector &path);
 
     // utility functions that are independent from the instance
+    static StyleTreeNode *styleRuleForPath(const Selector &path);
+    static bool registerName(QQuickItem *item, const QString &newName);
     static void setError(const QString &error);
     static ItemStyleAttached *attachedStyle(QObject *obj);
     static QString selectorToString(const Selector &path);
