@@ -17,14 +17,37 @@
 import QtQuick 2.0
 
 QtObject {
-    property url crossSource: Qt.resolvedUrl("artwork/Cross.png")
-    property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
+    property url crossSource
+    property url checkMarkSource
+
+    /*!
+      The opacity of the "cross" image when the switch is not checked,
+      and opacity of the "checkMark" image when the switch is checked.
+     */
     property real selectedImageOpacity: 1.0
-    property real unselectedImageOpacity: 0.4
+
+    /*!
+      The opacity of the "cross" image when the switch is checked,
+      and the opacity of the "checkMark" image when the switch is not checked.
+     */
+    property real unselectedImageOpacity: 1.0
+
+    /*!
+      Spacing around the thumb.
+     */
     property real thumbSpacing
-    property color checkedThumbColor: "#DD4814"
-    property color uncheckedThumbColor: "#bbbbbb"
-    property color backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1) //"#c7c7c71a" // ubuntu-orange with 0.1 opacity
+
+    /*!
+      Color of the thumb when the switch is checked.
+     */
+    property color checkedThumbColor
+
+    /*!
+      Color of the thumb when the switch is not checked.
+     */
+    property color uncheckedThumbColor
+
+    property color backgroundColor
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
 }

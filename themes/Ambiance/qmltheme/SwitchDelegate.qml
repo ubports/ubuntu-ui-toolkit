@@ -60,9 +60,9 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? StyleUtils.itemStyleProperty("unselectedImageOpacity")
-                                      : StyleUtils.itemStyleProperty("selectedImageOpacity")
-                source: StyleUtils.itemStyleProperty("crossSource")
+                opacity: item.checked ? StyleUtils.itemStyleProperty("unselectedImageOpacity", 1.0)
+                                      : StyleUtils.itemStyleProperty("selectedImageOpacity", 1.0)
+                source: StyleUtils.itemStyleProperty("crossSource", "")
             }
         }
 
@@ -79,9 +79,9 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? StyleUtils.itemStyleProperty("selectedImageOpacity")
-                                      : StyleUtils.itemStyleProperty("unselectedImageOpacity")
-                source: StyleUtils.itemStyleProperty("checkMarkSource")
+                opacity: item.checked ? StyleUtils.itemStyleProperty("selectedImageOpacity", 1.0)
+                                      : StyleUtils.itemStyleProperty("unselectedImageOpacity", 1.0)
+                source: StyleUtils.itemStyleProperty("checkMarkSource", "")
             }
         }
     }
