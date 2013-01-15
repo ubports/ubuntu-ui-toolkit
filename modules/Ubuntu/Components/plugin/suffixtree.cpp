@@ -62,7 +62,6 @@ QString SelectorNode::toString() const
     if (!styleClass.isEmpty())
         result += "." + styleClass;
     else if (!className.isEmpty()) {
-        qDebug() << "use" << className;
         result += '.' + className;
     }
     if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
