@@ -30,7 +30,8 @@
   area.
 
   A typical use case is hiding of a popup or tooltip when the user presses or taps
-  outside of the popup or tooltip area.
+  outside of the popup or tooltip area. The following example illustrates the use
+  of InverseMouseArea in a Popup.
 
   Popup.qml
   \qml
@@ -41,7 +42,7 @@
       anchors.centerIn: parent
       width: 200; height: 200
       color: "darkgray"
-      radous: 10
+      radius: 10
       InverseMouseArea {
          anchors.fill: parent
          acceptedButtons: Qt.LeftButton
@@ -84,7 +85,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     m_propagateEvents(false),
     m_pressedButtons(Qt::NoButton),
     m_acceptedButtons(Qt::LeftButton),
-    m_lastPos(0,0),
+    m_lastPos(-1, -1),
     m_sensingArea(QuickUtils::instance().rootObject())
 {
     setAcceptedMouseButtons(m_acceptedButtons);
