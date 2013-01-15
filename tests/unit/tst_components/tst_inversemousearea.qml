@@ -90,15 +90,15 @@ Item {
         }
 
         function test_0_propagateComposedEvents() {
-            compare(ima.propagateComposedEvents, false, "InverseMouseArea does not propagate composed events by default")
+            compare(ima.propagateComposedEvents, false, "InverseMouseArea does not propagate composed events by default");
             ima.propagateComposedEvents = true;
-            compare(ima.propagateComposedEvents, true, "InverseMouseArea does propagates composed events")
+            compare(ima.propagateComposedEvents, true, "InverseMouseArea does propagates composed events");
         }
 
-        function test_o_sensingArea() {
-            compare(ima.sensingArea, QuickUtils.rootObject, "InverseMouseArea senses the root item area")
+        function test_0_sensingArea() {
+            compare(ima.sensingArea, QuickUtils.rootObject, "InverseMouseArea senses the root item area");
             ima.sensingArea = testSensingArea
-            compare(ima.sensingArea, testSensingArea, "InverseMouseArea sensing area set to testSensingArea")
+            compare(ima.sensingArea, testSensingArea, "InverseMouseArea sensing area set to testSensingArea");
         }
 
         function test_signals_data() {
