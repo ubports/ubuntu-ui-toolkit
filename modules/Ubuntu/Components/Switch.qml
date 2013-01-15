@@ -19,6 +19,12 @@
 
 import QtQuick 2.0
 
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
+
 /*!
     \qmltype Switch
     \inqmlmodule Ubuntu.Components 0.1
@@ -44,10 +50,16 @@ AbstractButton {
     //     as a guideline to prevent that?
     id: sweetch
 
+
+    // FIXME: see FIXME above
+    Theming.ItemStyle.class: "switch"
+    width: Theming.ComponentUtils.delegateProperty(sweetch, "implicitWidth", units.gu(8))
+    height: Theming.ComponentUtils.delegateProperty(sweetch, "implicitHeight", units.gu(4))
+
     //    width: units.gu(8)
     //    height: units.gu(4)
-    width: backgroundShape.width
-    height: backgroundShape.height
+//    width: backgroundShape.width
+//    height: backgroundShape.height
 
     opacity: enabled ? 1.0 : 0.5
 
@@ -62,83 +74,4 @@ AbstractButton {
       \internal
      */
     onClicked: sweetch.checked = !sweetch.checked
-
-    UbuntuShape {
-        id: backgroundShape
-
-        anchors.fill: parent
-        color: Qt.rgba(0.86, 0.28, 0.08, 0.1) // ubuntu-orange with 0.1 opacity
-        gradientColor: "transparent"
-
-        height: thumbShape.height + 2*internals.thumbSpacing
-        width: 2*thumbShape.width + 3*internals.thumbSpacing
-
-        UbuntuShape {
-            id: thumbShape
-
-            width: units.gu(4)
-            height: units.gu(4)
-
-            y: backgroundShape.y + internals.thumbSpacing
-            x: sweetch.checked ? rightItem.x : leftItem.x
-            // FIXME: using uncheckedColor ignores the alpha component
-//            color: sweetch.checked ? internals.checkedColor : Qt.rgba(1.0, 1.0, 1.0, 0.1)
-            color: sweetch.checked ? internals.checkedColor : Qt.rgba(0.0, 0.0, 0.0, 0.1)
-            gradientColor: "transparent"
-
-            Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-            Behavior on color { ColorAnimation { duration: 100; easing.type: Easing.OutQuad } }
-        }
-
-
-        Item {
-            id: leftItem
-            anchors {
-                left: parent.left
-                top: parent.top
-                leftMargin: internals.thumbSpacing
-                topMargin: internals.thumbSpacing
-            }
-            height: thumbShape.height
-            width: thumbShape.width
-
-            Image {
-                id: ballot
-                anchors.centerIn: parent
-                source: internals.ballotSource
-            }
-        }
-
-        Item {
-            id: rightItem
-            anchors {
-                right: parent.right
-                top: parent.top
-                rightMargin: internals.thumbSpacing
-                topMargin: internals.thumbSpacing
-            }
-            height: thumbShape.height
-            width: thumbShape.width
-
-            Image {
-                id: checkMark
-                anchors.centerIn: parent
-                fillMode: Image.PreserveAspectFit
-                source: internals.checkMarkSource
-            }
-        }
-    }
-
-    QtObject {
-        id: internals
-        property url ballotSource: Qt.resolvedUrl("artwork/cross.png")
-        property url checkMarkSource: Qt.resolvedUrl("artwork/ticker.png")
-        property real iconHorizontalMargin: units.gu(1)
-        property real iconSpacing: units.gu(1)
-        property real thumbWidth: 0.5    // In [0.0, 1.0].
-        property real thumbSpacing: units.dp(2)
-        property color checkedColor: "#DD4814"
-        property color uncheckedColor: Qt.rgba(1.0, 1.0, 0.0, 0.5) //Qt.rgba(0.0, 0.0, 0.0, 0.1)
-        //        property color thumbColor: "#f1e2d1"
-    }
 }
