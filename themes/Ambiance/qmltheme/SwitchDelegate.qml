@@ -13,22 +13,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
-    opacity: item.enabled ? 1.0 : 0.5
-
     implicitWidth: 2*thumb.width + 3*thumb.spacing
     implicitHeight: thumb.height + 2*thumb.spacing
+    opacity: item.enabled ? 1.0 : 0.5
 
     UbuntuShape {
         id: background
-
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor")
+        color: StyleUtils.itemStyleProperty("backgroundColor", Qt.rgba(0.5, 0.5, 0.5, 0.5))
         gradientColor: "transparent"
 
         UbuntuShape {
@@ -39,11 +36,11 @@ Item {
 
             width: StyleUtils.itemStyleProperty("thumbHeight", units.gu(4))
             height: StyleUtils.itemStyleProperty("thumbWidth", units.gu(4))
+            x: item.checked ? rightThumbPosition.x : leftThumbPosition.x
+            y: leftThumbPosition.y
 
-            y: background.y + thumb.spacing
-            x: item.checked ? rightItem.x : leftItem.x
-            color: item.checked ? StyleUtils.itemStyleProperty("checkedThumbColor")
-                                   : StyleUtils.itemStyleProperty("uncheckedThumbColor")
+            color: item.checked ? StyleUtils.itemStyleProperty("checkedThumbColor", "grey")
+                                : StyleUtils.itemStyleProperty("uncheckedThumbColor", "grey")
             gradientColor: "transparent"
 
             Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
@@ -51,7 +48,7 @@ Item {
         }
 
         Item {
-            id: leftItem
+            id: leftThumbPosition
             anchors {
                 left: parent.left
                 top: parent.top
@@ -62,17 +59,15 @@ Item {
             width: thumb.width
 
             Image {
-                id: crossImage
                 anchors.centerIn: parent
                 opacity: item.checked ? StyleUtils.itemStyleProperty("unselectedImageOpacity")
                                       : StyleUtils.itemStyleProperty("selectedImageOpacity")
-
                 source: StyleUtils.itemStyleProperty("crossSource")
             }
         }
 
         Item {
-            id: rightItem
+            id: rightThumbPosition
             anchors {
                 right: parent.right
                 top: parent.top
@@ -83,7 +78,6 @@ Item {
             width: thumb.width
 
             Image {
-                id: checkMarkImage
                 anchors.centerIn: parent
                 opacity: item.checked ? StyleUtils.itemStyleProperty("selectedImageOpacity")
                                       : StyleUtils.itemStyleProperty("unselectedImageOpacity")
