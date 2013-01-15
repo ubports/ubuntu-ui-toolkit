@@ -63,7 +63,6 @@ AbstractButton {
      */
     onClicked: sweetch.checked = !sweetch.checked
 
-
     UbuntuShape {
         id: backgroundShape
 
@@ -107,7 +106,6 @@ AbstractButton {
                 id: ballot
                 anchors.centerIn: parent
                 source: internals.ballotSource
-//                opacity: 0.1
             }
         }
 
@@ -129,27 +127,16 @@ AbstractButton {
                 source: internals.checkMarkSource
             }
         }
-
-
-
-
-
-
-
     }
-
 
     QtObject {
         id: internals
-
         property url ballotSource: Qt.resolvedUrl("artwork/cross.png")
         property url checkMarkSource: Qt.resolvedUrl("artwork/ticker.png")
         property real iconHorizontalMargin: units.gu(1)
         property real iconSpacing: units.gu(1)
         property real thumbWidth: 0.5    // In [0.0, 1.0].
         property real thumbSpacing: units.dp(2)
-        //        property color uncheckedColor: checkedColor
-        //        property color uncheckedColor: "#333333"
         property color checkedColor: "#DD4814"
         property color uncheckedColor: Qt.rgba(1.0, 1.0, 0.0, 0.5) //Qt.rgba(0.0, 0.0, 0.0, 0.1)
         //        property color thumbColor: "#f1e2d1"
