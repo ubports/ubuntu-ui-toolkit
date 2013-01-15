@@ -61,7 +61,6 @@ AbstractButton {
 //    width: backgroundShape.width
 //    height: backgroundShape.height
 
-    opacity: enabled ? 1.0 : 0.5
 
     /*!
       \preliminary

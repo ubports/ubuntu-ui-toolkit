@@ -19,6 +19,9 @@
 #ifndef SUFFIXTREE_P_H
 #define SUFFIXTREE_P_H
 
+#include <QtCore/QHash>
+#include <QtCore/QString>
+
 // node of a selector
 class SelectorNode {
     public:
@@ -29,9 +32,10 @@ class SelectorNode {
         IgnoreStyleId = 0x02,
         IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity = Normal);
+    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship = Descendant, NodeSensitivity sensitivity = Normal);
     QString toString() const;
     bool operator==(const SelectorNode &other);
+    QString className;
     QString styleClass;
     QString styleId;
     Relationship relationship;
@@ -43,20 +47,23 @@ typedef QList<SelectorNode> Selector;
 uint qHash(const Selector &key);
 
 // style rule tree
+class QQmlComponent;
 class StyleTreeNode {
 public:
     StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule);
+    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate);
     ~StyleTreeNode();
     void clear();
-    void addStyleRule(const Selector &path, Rule *styleRule);
-    Rule *lookupStyleRule(const Selector &path, bool strict = false);
-    Rule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
+    void addStyleRule(const Selector &path, QQmlComponent *style, QQmlComponent *delegate);
+    Selector path() const;
+    StyleTreeNode *lookupStyleRule(const Selector &path, bool strict = false);
+    StyleTreeNode *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
 
 public:
     StyleTreeNode *parent;
     SelectorNode styleNode;
-    Rule *styleRule;
+    QQmlComponent *style;
+    QQmlComponent *delegate;
     // the key is the next style node's "relationship class#name" combination
     QHash<QString, StyleTreeNode*> children;
 };

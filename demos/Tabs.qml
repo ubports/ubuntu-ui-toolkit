@@ -21,7 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
     property bool newTabs: false
 
-    title: newTabs ? i18n.tr("Tabs (new)") : i18n.tr("Tabs (old)")
+    title: newTabs ? i18n.tr("Tabs (flickable)") : i18n.tr("Tabs (classic)")
 
     Tabs {
         ItemStyle.class: newTabs ? "new-tabs" : ""

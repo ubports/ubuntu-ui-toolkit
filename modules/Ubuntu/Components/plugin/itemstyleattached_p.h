@@ -20,11 +20,9 @@
 #define ITEMSTYLEATTACHED_P_H
 
 #include "itemstyleattached.h"
+#include "suffixtree_p.h"
 
-class QQmlComponent;
 class QQmlContext;
-class Rule;
-
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
 public:
@@ -35,18 +33,18 @@ public:
     QQuickItem *attachee;
     QObject *style;
     QQuickItem *delegate;
-    QString styleClass;
-    QString name;
+    SelectorNode styleData;
+    Selector styleSelector;
 
     // internal members
     QQmlContext *componentContext;
-    Rule *styleRule;
-    Rule *delegateRule;
+    StyleTreeNode *styleRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
+    bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();

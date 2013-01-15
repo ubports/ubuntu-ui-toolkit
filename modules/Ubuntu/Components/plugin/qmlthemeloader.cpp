@@ -19,7 +19,6 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "qmlthemeloader_p.h"
-#include "rule.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
@@ -82,6 +81,28 @@ Selector selectorSubset(const Selector &path, int elements, SelectorNode::NodeSe
         elements--;
     }
     return result;
+}
+
+/*!
+ * \internal
+ * Create a QQmlComponent from a given QML string using the given engine
+ */
+QQmlComponent *createComponent(QQmlEngine *engine, const QString &qmlCode)
+{
+    if (qmlCode.isEmpty())
+        return 0;
+
+    QQmlComponent *ret = new QQmlComponent(engine);
+    ret->setData(qmlCode.toLatin1(), QUrl());
+    if (ret->isError() || !ret->isReady()) {
+        QString errorString = ret->isError() ? ret->errorString() : "Component not ready";
+        ThemeEnginePrivate::setError(QString("Error on creating style rule: \n%2\n%3")
+                                     .arg(qmlCode)
+                                     .arg(errorString));
+        delete ret;
+        ret = 0;
+    }
+    return ret;
 }
 
 /*!
@@ -433,8 +454,8 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
 
 bool QmlThemeLoader::generateStyleQml()
 {
-    QString style;
-    QString delegate;
+    QString styleQml;
+    QString delegateQml;
 
     // go through the selector map and build the styles to each
     QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
@@ -443,25 +464,17 @@ bool QmlThemeLoader::generateStyleQml()
         Selector selector = i.key();
         PropertyHash properties = i.value();
 
-        buildStyleAndDelegate(selector, properties, style, delegate);
+        buildStyleAndDelegate(selector, properties, styleQml, delegateQml);
 
         // normalize selector so we build the Rule with the proper one
         normalizeSelector(selector);
 
-        // creating components from internal QML source is synchronous, unless
-        // one of the imported elements require threaded loading. Therefore we use
-        // Rule to create style and delegate components so Rule can handle
-        // asynchronous completion of those.
-
-        Rule *rule = new Rule(m_engine,
-                                ThemeEnginePrivate::selectorToString(selector),
-                                style,
-                                delegate);
-        if (!ThemeEngine::instance()->error().isEmpty()) {
-            delete rule;
+        QQmlComponent *style = createComponent(m_engine, styleQml);
+        QQmlComponent *delegate = createComponent(m_engine, delegateQml);
+        if (!style && !delegate) {
             return false;
-        } else
-            styleTree->addStyleRule(selector, rule);
+        }
+        styleTree->addStyleRule(selector, style, delegate);
     }
 
     return true;
