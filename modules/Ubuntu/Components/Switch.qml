@@ -44,32 +44,6 @@ import Ubuntu.Components 0.1 as Theming
     }
     \endqml
 */
-AbstractButton {
-
-    // FIXME(loicm) switch is a reserved keyword. Shouldn't we specify a prefix
-    //     as a guideline to prevent that?
-    id: sweetch
-
-    // FIXME: see FIXME above
+CheckBox {
     Theming.ItemStyle.class: "switch"
-    width: Theming.ComponentUtils.delegateProperty(sweetch, "implicitWidth", units.gu(8))
-    height: Theming.ComponentUtils.delegateProperty(sweetch, "implicitHeight", units.gu(4))
-
-    //    width: units.gu(8)
-    //    height: units.gu(4)
-//    width: backgroundShape.width
-//    height: backgroundShape.height
-
-
-    /*!
-      \preliminary
-      Specifies whether the switch is checked or not. By default the property
-      is set to false.
-    */
-    property bool checked: false
-
-    /*!
-      \internal
-     */
-    onClicked: sweetch.checked = !sweetch.checked
 }
