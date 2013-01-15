@@ -50,7 +50,6 @@ AbstractButton {
     //     as a guideline to prevent that?
     id: sweetch
 
-
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "switch"
     width: Theming.ComponentUtils.delegateProperty(sweetch, "implicitWidth", units.gu(8))
