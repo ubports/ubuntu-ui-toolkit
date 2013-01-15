@@ -13,14 +13,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef INVERSEMOUSEAREA_H
-#define INVERSEMOUSEAREA_H
+#ifndef INVERSEMOUSEAREATYPE_H
+#define INVERSEMOUSEAREATYPE_H
 
 #include <QtQuick/QQuickItem>
 
 class QQuickMouseEvent;
 class QMouseEvent;
-class InverseMouseArea : public QQuickItem
+class InverseMouseAreaType : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
@@ -29,7 +29,7 @@ class InverseMouseArea : public QQuickItem
     Q_PROPERTY(bool propagateComposedEvents READ propagateComposedEvents WRITE setPropagateComposedEvents NOTIFY propagateComposedEventsChanged)
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
 public:
-    explicit InverseMouseArea(QQuickItem *parent = 0);
+    explicit InverseMouseAreaType(QQuickItem *parent = 0);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -77,4 +77,4 @@ private:
     QQuickItem *m_sensingArea;
 };
 
-#endif // INVERSEMOUSEAREA_H
+#endif // INVERSEMOUSEAREATYPE_H

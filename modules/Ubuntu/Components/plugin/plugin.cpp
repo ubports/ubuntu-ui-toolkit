@@ -32,7 +32,7 @@
 #include "quickutils.h"
 #include "giconprovider.h"
 #include "shapeitem.h"
-#include "inversemousearea.h"
+#include "inversemouseareatype.h"
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -43,7 +43,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
     qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
-    qmlRegisterType<InverseMouseArea>(uri, 0, 1, "InverseMouseArea");
+    qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

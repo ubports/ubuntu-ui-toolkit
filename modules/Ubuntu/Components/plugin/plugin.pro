@@ -34,7 +34,7 @@ HEADERS += plugin.h \
     giconprovider.h \
     shapeitemtexture.h \
     shapeitem.h \
-    inversemousearea.h
+    inversemouseareatype.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -50,7 +50,7 @@ SOURCES += plugin.cpp \
     quickutils.cpp \
     giconprovider.cpp \
     shapeitem.cpp \
-    inversemousearea.cpp
+    inversemouseareatype.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
