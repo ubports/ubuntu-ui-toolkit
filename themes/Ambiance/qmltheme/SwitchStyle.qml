@@ -47,6 +47,16 @@ QtObject {
      */
     property color uncheckedThumbColor
 
+    /*!
+      The animation to fade the color from checkedColor to uncheckedColor and vice versa.
+     */
+    property ColorAnimation thumbColorAnimation
+
+    /*!
+      The animation on x to move the thumb.
+     */
+    property NumberAnimation moveThumbAnimation
+
     property color backgroundColor
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
