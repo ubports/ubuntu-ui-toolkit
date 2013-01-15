@@ -21,31 +21,28 @@ Item {
     anchors.fill: parent
     opacity: item.enabled ? 1.0 : 0.5
 
-    implicitWidth: 2*thumbShape.width + 3*thumbSpacing
-    implicitHeight: thumbShape.height + 2*thumbSpacing
-
-    // This is used a lot, so import it here once
-    property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(1))
+    implicitWidth: 2*thumb.width + 3*thumb.spacing
+    implicitHeight: thumb.height + 2*thumb.spacing
 
     UbuntuShape {
-        id: backgroundShape
+        id: background
 
         anchors.fill: parent
         color: StyleUtils.itemStyleProperty("backgroundColor")
         gradientColor: "transparent"
 
-        height: thumbShape.height + 2*thumbSpacing
-        width: 2*thumbShape.width + 3*thumbSpacing
-
         UbuntuShape {
-            id: thumbShape
+            id: thumb
+
+            // Thumb spacing is used a lot, so import it here once
+            property real spacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(1))
 
             width: StyleUtils.itemStyleProperty("thumbHeight", units.gu(4))
             height: StyleUtils.itemStyleProperty("thumbWidth", units.gu(4))
 
-            y: backgroundShape.y + thumbSpacing
-            x: sweetch.checked ? rightItem.x : leftItem.x
-            color: sweetch.checked ? StyleUtils.itemStyleProperty("checkedThumbColor")
+            y: background.y + thumb.spacing
+            x: item.checked ? rightItem.x : leftItem.x
+            color: item.checked ? StyleUtils.itemStyleProperty("checkedThumbColor")
                                    : StyleUtils.itemStyleProperty("uncheckedThumbColor")
             gradientColor: "transparent"
 
@@ -58,11 +55,11 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: thumbSpacing
-                topMargin: thumbSpacing
+                leftMargin: thumb.spacing
+                topMargin: thumb.spacing
             }
-            height: thumbShape.height
-            width: thumbShape.width
+            height: thumb.height
+            width: thumb.width
 
             Image {
                 id: crossImage
@@ -79,11 +76,11 @@ Item {
             anchors {
                 right: parent.right
                 top: parent.top
-                rightMargin: thumbSpacing
-                topMargin: thumbSpacing
+                rightMargin: thumb.spacing
+                topMargin: thumb.spacing
             }
-            height: thumbShape.height
-            width: thumbShape.width
+            height: thumb.height
+            width: thumb.width
 
             Image {
                 id: checkMarkImage
