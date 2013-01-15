@@ -24,7 +24,7 @@ HEADERS += plugin.h \
     suffixtree_p.h \
     itemstyleattached.h \
     itemstyleattached_p.h \
-    qmlthemeloader.h \
+    qmlthemeloader_p.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
