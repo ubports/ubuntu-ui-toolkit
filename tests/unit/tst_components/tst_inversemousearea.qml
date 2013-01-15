@@ -22,6 +22,14 @@ Item {
     id: testCase
     width: 100; height: 100
 
+    Item {
+        id: testSensingArea
+        anchors{
+            fill: parent
+            topMargin: 5
+        }
+    }
+
     MouseArea {
         id: fullArea
         anchors.fill: parent
@@ -29,7 +37,7 @@ Item {
 
     InverseMouseArea {
         id: ima
-        x: 5; y: 5
+        x: 10; y: 10
         width: 10; height: 10
     }
 
@@ -51,6 +59,7 @@ Item {
             compare(ima.pressed, false, "InverseMouseArea is not pressed by default");
             try {
                 ima.pressed = true;
+                compare(true, false, "This should not be reached");
             } catch (e) {
                 //expect failure
             }
@@ -73,6 +82,7 @@ Item {
             compare(ima.pressedButtons, Qt.NoButton, "InverseMouseArea has NoButton pressed by default");
             try {
                 ima.pressed = Qt.LeftButton;
+                compare(true, false, "This should not be reached");
             } catch (e) {
                 //expect failure
             }
@@ -85,48 +95,44 @@ Item {
             compare(ima.propagateComposedEvents, true, "InverseMouseArea does propagates composed events")
         }
 
-        function test_onPressed() {
-            ima.acceptedButtons = Qt.LeftButton;
-            ima.propagateComposedEvents = false;
-            signalSpy.signalName = "pressed";
-            masterSpy.signalName = "pressed";
-            mousePress(testCase, 1, 1);
-            tryCompare(masterSpy,"count",0,"MouseArea pressed was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea pressed was emitted");
-
-            ima.propagateComposedEvents = false;
-            tryCompare(masterSpy,"count",1,"MouseArea pressed was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea pressed was emitted");
+        function test_o_sensingArea() {
+            compare(ima.sensingArea, QuickUtils.rootObject, "InverseMouseArea senses the root item area")
+            ima.sensingArea = testSensingArea
+            compare(ima.sensingArea, testSensingArea, "InverseMouseArea sensing area set to testSensingArea")
         }
 
-        function test_onClicked() {
-            ima.acceptedButtons = Qt.LeftButton;
-            ima.propagateComposedEvents = false;
-            signalSpy.signalName = "clicked";
-            masterSpy.signalName = "clicked";
-            mouseClick(testCase, 1, 1);
-            tryCompare(masterSpy,"count",0,"MouseArea clicked() was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+        function test_signals_data() {
+            return [
+                {signal: "onPressed", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
+                {signal: "onPressed", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onPressed", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
+                {signal: "onPressed", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
 
-            ima.propagateComposedEvents = true;
-            mouseClick(testCase, 1, 1);
-            tryCompare(masterSpy,"count",1,"MouseArea clicked() was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+                {signal: "onReleased", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
+                {signal: "onReleased", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onReleased", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
+                {signal: "onReleased", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
+
+                {signal: "onClicked", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
+                {signal: "onClicked", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onClicked", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
+                {signal: "onClicked", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
+            ];
         }
 
-        function test_onReleased() {
+        function test_signals(data) {
+            masterSpy.clear();
+            signalSpy.clear();
+            masterSpy.signalName = data.signal;
+            signalSpy.signalName = data.signal;
             ima.acceptedButtons = Qt.LeftButton;
-            ima.propagateComposedEvents = false;
-            signalSpy.signalName = "clicked";
-            masterSpy.signalName = "clicked";
-            mouseRelease(testCase, 1, 1);
-            tryCompare(masterSpy,"count",0,"MouseArea clicked() was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+            ima.propagateComposedEvents = data.propagate;
+            ima.sensingArea = data.sensing;
 
-            ima.propagateComposedEvents = true;
-            mouseRelease(testCase, 1, 1);
-            tryCompare(masterSpy,"count",1,"MouseArea clicked() was not emitted");
-            tryCompare(signalSpy,"count",1,"InverseMouseArea clicked() was emitted");
+            mousePress(data.item, data.x, data.y);
+            mouseRelease(data.item, data.x, data.y);
+            tryCompare(masterSpy, "count", data.master, 100);
+            tryCompare(signalSpy, "count", data.inverse, 100);
         }
     }
 }

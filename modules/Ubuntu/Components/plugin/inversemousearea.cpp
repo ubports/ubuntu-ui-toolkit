@@ -84,13 +84,17 @@ InverseMouseArea::InverseMouseArea(QQuickItem *parent) :
     m_propagateEvents(false),
     m_pressedButtons(Qt::NoButton),
     m_acceptedButtons(Qt::LeftButton),
-    m_lastPos(0,0)
+    m_lastPos(0,0),
+    m_sensingArea(QuickUtils::instance().rootObject())
 {
     setAcceptedMouseButtons(m_acceptedButtons);
     setFiltersChildMouseEvents(true);
     setFlag(QQuickItem::ItemHasContents);
 
     QObject::connect(this, SIGNAL(enabledChanged()), this, SLOT(update()));
+
+    if (!m_sensingArea)
+        QObject::connect(&QuickUtils::instance(), SIGNAL(rootObjectChanged()), this, SLOT(update()));
 }
 
 /*!
@@ -99,6 +103,8 @@ InverseMouseArea::InverseMouseArea(QQuickItem *parent) :
  */
 void InverseMouseArea::update()
 {
+    if (!m_sensingArea)
+        m_sensingArea = QuickUtils::instance().rootObject();
     if (!isEnabled())
         reset();
 }
@@ -231,6 +237,28 @@ void InverseMouseArea::setPropagateComposedEvents(bool v)
 }
 
 /*!
+ * \qmlproperty Item InverseMousearea::sensingArea
+ * This property holds the sensing area of the inverse mouse area. By default it
+ * is the root item but it can be set to any other area. The area can be reset
+ * to the root item by setting null to the property.
+ */
+QQuickItem *InverseMouseArea::sensingArea() const
+{
+    return m_sensingArea;
+}
+void InverseMouseArea::setSensingArea(QQuickItem *sensing)
+{
+    if (!sensing)
+        sensing = QuickUtils::instance().rootObject();
+    if (sensing != m_sensingArea) {
+        m_sensingArea = sensing;
+        reset();
+        Q_EMIT sensingAreaChanged();
+    }
+}
+
+
+/*!
  * \internal
  * Resets the state of the mouse area.
  */
@@ -243,13 +271,23 @@ void InverseMouseArea::reset()
 
 /*!
  * \internal
- * Maps the mouse point to the root item.
+ * Maps the mouse point to the sensing area.
  */
-QPointF InverseMouseArea::mapToRootItem(const QPointF &point)
+QPointF InverseMouseArea::mapToSensingArea(const QPointF &point)
 {
-    QQuickItem *root = QuickUtils::instance().rootObject();
-    return (root) ? root->mapFromScene(point) : QPointF();
+    return (m_sensingArea) ? m_sensingArea->mapFromScene(point) : QPointF();
 }
+
+/*!
+ * \internal
+ * Checks whether a point is included in the sensing area
+ */
+bool InverseMouseArea::pointInSensingArea(const QPointF &point)
+{
+    return (m_sensingArea) ?
+                m_sensingArea->contains(m_sensingArea->mapFromScene(point)) : false;
+}
+
 
 /*!
  * \internal
@@ -257,8 +295,8 @@ QPointF InverseMouseArea::mapToRootItem(const QPointF &point)
  */
 bool InverseMouseArea::mousePress(QMouseEvent *event)
 {
-    QPointF mappedPos = mapToRootItem(event->windowPos());
-    m_pressed = !contains(mapFromScene(event->windowPos()));
+    QPointF mappedPos = mapToSensingArea(event->windowPos());
+    m_pressed = !contains(mapFromScene(event->windowPos())) && pointInSensingArea(event->windowPos());
     if (m_pressed && !(event->button() & m_acceptedButtons))
         m_pressed = false;
     if (m_pressed) {
@@ -283,8 +321,8 @@ bool InverseMouseArea::mousePress(QMouseEvent *event)
 bool InverseMouseArea::mouseRelease(QMouseEvent *event)
 {
     bool consume = !m_propagateEvents;
-    QPointF mappedPos = mapToRootItem(event->windowPos());
-    if (m_pressed && !contains(mapFromScene(event->windowPos()))) {
+    QPointF mappedPos = mapToSensingArea(event->windowPos());
+    if (m_pressed && !contains(mapFromScene(event->windowPos())) && pointInSensingArea(event->windowPos())) {
         // released outside (inside the sensing area)
         m_pressed = false;
         m_pressedButtons = Qt::NoButton;
@@ -312,7 +350,7 @@ bool InverseMouseArea::mouseRelease(QMouseEvent *event)
  */
 bool InverseMouseArea::mouseMove(QMouseEvent *event)
 {
-    QPointF mappedPos = mapToRootItem(event->windowPos());
+    QPointF mappedPos = mapToSensingArea(event->windowPos());
     if (m_pressed && (mappedPos != m_lastPos))
         m_moved = true;
     if (!m_propagateEvents)

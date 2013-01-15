@@ -27,6 +27,7 @@ class InverseMouseArea : public QQuickItem
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons WRITE setAcceptedButtons NOTIFY acceptedButtonsChanged)
     Q_PROPERTY(Qt::MouseButtons pressedButtons READ pressedButtons NOTIFY pressedButtonsChanged)
     Q_PROPERTY(bool propagateComposedEvents READ propagateComposedEvents WRITE setPropagateComposedEvents NOTIFY propagateComposedEventsChanged)
+    Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
 public:
     explicit InverseMouseArea(QQuickItem *parent = 0);
 
@@ -41,10 +42,13 @@ private: // getter/setter
     Qt::MouseButtons pressedButtons() const;
     bool propagateComposedEvents() const;
     void setPropagateComposedEvents(bool v);
+    QQuickItem *sensingArea() const;
+    void setSensingArea(QQuickItem *sensing);
 
 private:
     void reset();
-    QPointF mapToRootItem(const QPointF &point);
+    QPointF mapToSensingArea(const QPointF &point);
+    bool pointInSensingArea(const QPointF &point);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);
     bool mouseMove(QMouseEvent *event);
@@ -54,6 +58,7 @@ Q_SIGNALS:
     void acceptedButtonsChanged();
     void pressedButtonsChanged();
     void propagateComposedEventsChanged();
+    void sensingAreaChanged();
 
     void pressed(QQuickMouseEvent *mouse);
     void released(QQuickMouseEvent *mouse);
@@ -69,6 +74,7 @@ private:
     Qt::MouseButtons m_pressedButtons;
     Qt::MouseButtons m_acceptedButtons;
     QPointF m_lastPos;
+    QQuickItem *m_sensingArea;
 };
 
 #endif // INVERSEMOUSEAREA_H
