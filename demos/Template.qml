@@ -37,7 +37,6 @@ Rectangle {
     }
 
     color: "#e6e6e6"
-//    color: "#444444"
 
     Item {
         id: page
