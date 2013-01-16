@@ -38,8 +38,15 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Disabled")
-            Switch {
-                enabled: false
+            Row {
+                spacing: units.gu(1)
+                Switch {
+                    enabled: false
+                }
+                Switch {
+                    enabled: false
+                    checked: true
+                }
             }
         }
     }

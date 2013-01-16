@@ -302,10 +302,7 @@ Template {
                 Component {
                     id: controlExample
                     Switch {
-                        anchors {
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                 }
                 Column {

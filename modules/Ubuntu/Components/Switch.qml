@@ -19,6 +19,12 @@
 
 import QtQuick 2.0
 
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
+
 /*!
     \qmltype Switch
     \inqmlmodule Ubuntu.Components 0.1
@@ -38,93 +44,6 @@ import QtQuick 2.0
     }
     \endqml
 */
-AbstractButton {
-
-    // FIXME(loicm) switch is a reserved keyword. Shouldn't we specify a prefix
-    //     as a guideline to prevent that?
-    id: sweetch
-
-    width: units.gu(8)
-    height: units.gu(4)
-
-    /*!
-      \preliminary
-      Specifies whether the switch is checked or not. By default the property
-      is set to false.
-    */
-    property bool checked: false
-
-    /*!
-      \internal
-     */
-    onClicked: sweetch.checked = !sweetch.checked
-
-    Item {
-        anchors.fill: parent
-
-        opacity: enabled ? 1.0 : 0.5
-
-        UbuntuShape {
-            id: backgroundShape
-
-            anchors.fill: parent
-            color: sweetch.checked ? internals.checkedColor : internals.uncheckedColor
-        }
-
-        Image {
-            id: checkMark
-            width: Math.min(parent.height - internals.iconSpacing,
-                            (parent.width * 0.5) - internals.iconSpacing)
-            height: checkMark.width
-            x: internals.iconHorizontalMargin
-            y: (parent.height - checkMark.height) * 0.5 - 1.0
-            fillMode: Image.PreserveAspectFit
-            source: internals.checkMarkSource
-            opacity: sweetch.checked ? 1.0 : 0.0
-
-            Behavior on opacity { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-        }
-
-        Image {
-            id: ballot
-            width: Math.min(parent.height - internals.iconSpacing,
-                            (parent.width * 0.5) - internals.iconSpacing)
-            height: ballot.width
-            x: parent.width - ballot.width - internals.iconHorizontalMargin
-            y: (parent.height - ballot.height) * 0.5 - 1.0
-            fillMode: Image.PreserveAspectFit
-            source: internals.ballotSource
-            opacity: sweetch.checked ? 0.0 : 1.0
-
-            Behavior on opacity { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-        }
-
-        UbuntuShape {
-            id: thumbShape
-
-            x: backgroundShape.x + internals.thumbSpacing +
-               (sweetch.checked ? ((backgroundShape.width - (2.0 * internals.thumbSpacing))
-               * (1.0 - internals.thumbWidth)) : 0.0)
-            y: backgroundShape.y + internals.thumbSpacing
-            width: (backgroundShape.width - (2.0 * internals.thumbSpacing)) * internals.thumbWidth
-            height: backgroundShape.height - (2.0 * internals.thumbSpacing)
-            color: internals.thumbColor
-
-            Behavior on x { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
-        }
-    }
-
-    QtObject {
-        id: internals
-
-        property url ballotSource: Qt.resolvedUrl("artwork/Ballot.png")
-        property url checkMarkSource: Qt.resolvedUrl("artwork/CheckMark.png")
-        property real iconHorizontalMargin: units.gu(1)
-        property real iconSpacing: units.gu(1)
-        property real thumbWidth: 0.5    // In [0.0, 1.0].
-        property real thumbSpacing: units.dp(2)
-        property color uncheckedColor: "#d3d3d3"
-        property color checkedColor: uncheckedColor
-        property color thumbColor: "#626262"
-    }
+CheckBox {
+    Theming.ItemStyle.class: "switch"
 }
