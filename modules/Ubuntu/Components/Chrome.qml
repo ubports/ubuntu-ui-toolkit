@@ -30,4 +30,12 @@ import Ubuntu.Components 0.1 as Theming
     \b{This component is under heavy development.}
 */
 Item {
+    clip: true
+    ChromeBar {
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+    }
 }
