@@ -35,6 +35,8 @@ Template {
             }
             width: units.gu(38)
 
+            page: pageStack.currentPage
+
             PageStack {
                 id: pageStack
 //                anchors {

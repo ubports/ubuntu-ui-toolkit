@@ -3,6 +3,7 @@ plugin UbuntuComponents
 Button 0.1 Button.qml
 Chrome 0.1 Chrome.qml
 internal ChromeBar ChromeBar.qml
+internal Toolbar Toolbar.qml
 ChromeButton 0.1 ChromeButton.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml

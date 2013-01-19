@@ -30,12 +30,22 @@ import Ubuntu.Components 0.1 as Theming
     \b{This component is under heavy development.}
 */
 Item {
+    id: chrome
+
     clip: true
-    ChromeBar {
+
+    property Item page
+
+    onPageChanged: print("new page = "+page.title)
+
+    Toolbar {
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
         }
+
+        pageStack: chrome.page ? chrome.page.pageStack : null
+        onPageStackChanged: print("pageStack = "+pageStack)
     }
 }
