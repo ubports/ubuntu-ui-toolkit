@@ -27,13 +27,12 @@ ChromeBar {
      */
     property Item page: null
 
-    property alias tools: buttonsGoHere.data
-
     onPageChanged: {
         print("new page = "+page);
         print("new tools = "+page.tools);
 //        toolbar.active = false;
-        toolbar.tools = page.tools
+//        toolbar.tools = page.tools
+        buttonsGoHere.setTools(page.tools);
     }
 
     Item {
@@ -70,6 +69,11 @@ ChromeBar {
 //            width: contents.width - backButton.width
             width: childrenRect.width
 //            height: childrenRect.height
+
+
+            function setTools(newtools) {
+                print("setting tools to "+newtools);
+            }
 
 //            Rectangle {
 //                color: "pink"

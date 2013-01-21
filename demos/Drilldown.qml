@@ -23,101 +23,71 @@ Template {
     Item {
         Rectangle {
             color: "#eeeeee"
-//            clip: true // hide the toolbar when its out-of-view
-//            color: "yellow"
+            anchors.fill: pageStack
+        }
+
+        PageStack {
+            id: pageStack
             anchors {
                 top: parent.top
                 bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
             }
             width: units.gu(38)
-            border.width: 2
 
-            //            Chrome {
-            //                id: chrome
-            //                anchors.fill: parent
+            Component.onCompleted: push(page0)
 
-            //                page: pageStack.currentPage
+            Page {
+                id: page0
+                title: i18n.tr("Root page")
 
-            PageStack {
-                id: pageStack
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                    horizontalCenter: parent.horizontalCenter
-                }
-                anchors.fill: parent
-                width: units.gu(38)
-
-                Component.onCompleted: push(page0)
-
-                Page {
-                    id: page0
-                    title: i18n.tr("Root page")
-
-                    tools: Row {
-                        Button { text: "one" }
-                        Button { text: "two" }
-                        Button { text: "three" }
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: i18n.tr("Page one")
+                        onClicked: pageStack.push(page1)
+                        progression: true
                     }
-
-                    Column {
-                        anchors.fill: parent
-                        ListItem.Standard {
-                            text: i18n.tr("Page one")
-                            onClicked: pageStack.push(page1)
-                            progression: true
-                        }
-                        ListItem.Standard {
-                            text: i18n.tr("Page two (external)")
-                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                            progression: true
-                        }
-                    }
-                }
-
-                Page {
-                    id: page1
-                    title: i18n.tr("First page")
-
-                    tools: Row {
-                        Button { text: "Click!" }
-                    }
-
-                    Column {
-                        anchors.fill: parent
-                        ListItem.Standard {
-                            text: i18n.tr("External page")
-                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                            progression: true
-                        }
-                        ListItem.Standard {
-                            text: i18n.tr("Root page (again)")
-                            onClicked: pageStack.push(page0)
-                            progression: true
-                        }
-                        ListItem.Standard {
-                            text: i18n.tr("Red rectangle")
-                            onClicked: pageStack.push(rect, {color: "red"})
-                            progression: true
-                        }
-                    }
-                }
-
-                Component {
-                    id: rect
-                    Rectangle {
-                        id: rectangle
-                        anchors.fill: parent
-                        color: "green"
+                    ListItem.Standard {
+                        text: i18n.tr("Page two (external)")
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                        progression: true
                     }
                 }
             }
 
-            Toolbar {
-                page: pageStack.currentPage
+            Page {
+                id: page1
+                title: i18n.tr("First page")
+
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: i18n.tr("External page")
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("Root page (again)")
+                        onClicked: pageStack.push(page0)
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("Red rectangle")
+                        onClicked: pageStack.push(rect, {color: "red"})
+                        progression: true
+                    }
+                }
+            }
+
+            Component {
+                id: rect
+                Rectangle {
+                    id: rectangle
+                    anchors.fill: parent
+                    color: "green"
+                }
             }
         }
-        //        }
     }
 }
