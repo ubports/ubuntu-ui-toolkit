@@ -30,7 +30,8 @@ ChromeBar {
 
     onPageChanged: {
         print("new page = "+page);
-        toolbar.setBarShown(false);
+//        toolbar.setBarShown(false);
+        toolbar.active = false;
     }
 
     Item {

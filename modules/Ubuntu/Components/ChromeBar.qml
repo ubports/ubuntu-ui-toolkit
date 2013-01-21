@@ -16,12 +16,9 @@
  */
 
 import QtQuick 2.0
-//import Ubuntu.Components 0.1
-//import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     id: chromeBar
-
     anchors {
         left: parent.left
         right: parent.right
@@ -29,83 +26,67 @@ Item {
     }
     height: units.gu(6) // TODO: make themable
 
-    property alias showChromeBar: bar.shown
+    /*!
+      When active, the bar is visible, otherwise it is hidden.
+      Use bottom edge swipe up/down to activate/deactivate the bar.
+     */
+    property bool active: false
 
+    // TODO: do we document default properties?
     default property alias contents: bar.data
-//    onEnabledChanged: {
-//        if (!enabled) {
-//            setBarShown(false);
-//        }
-//    }
 
-//    Component.onCompleted: setBarShown(false)
+    Item {
+        id: bar
 
-    // do not allow hiding of the toolbar
-    property bool alwaysVisible: false
-    onAlwaysVisibleChanged: setBarShown(alwaysVisible)
-
-    function setBarShown(shown) {
-        if (shown) {
-            bar.y = 0;
-        } else {
-            bar.y = bar.height;
+        property bool shown: false
+        height: units.gu(6) // TODO: make themable. Same as parent height?
+        anchors {
+            left: parent.left
+            right: parent.right
         }
-        bar.shown = shown;
+        y: chromeBar.active ? 0 : bar.height
+
+        Rectangle { // TODO: make themable. Move to Toolbar?
+            id: background
+            anchors.fill: parent
+            color: "white"
+        }
+
+        Behavior on y { // TODO: Make themable
+            NumberAnimation {
+                duration: 200;
+                easing.type: Easing.InOutQuad;
+            }
+        }
     }
 
     MouseArea {
         anchors.fill: parent
-//        enabled: !chromeBar.alwaysVisible
         propagateComposedEvents: true
 
-        property int __pressedY
+        /*!
+          The amount that the cursor position needs to change in y-direction
+          after pressing, in order to activate/deactivate the bar.
+         */
+        property real dragThreshold: units.gu(1) // TODO: make themable?
+
+        property int pressedY
         onPressed: {
-            __pressedY = mouse.y;
+            pressedY = mouse.y;
             mouse.accepted = true;
         }
 
         onPositionChanged: {
-            var diff = __pressedY - mouse.y;
-            if (diff > dragThreshold) setBarShown(true);
-            else if (diff < -dragThreshold) setBarShown(false);
+            var diff = pressedY - mouse.y;
+            if (diff > dragThreshold) chromeBar.active = true;
+            else if (diff < -dragThreshold) chromeBar.active = false;
         }
-
-        property real dragThreshold: units.dp(2) // TODO: make themable?
 
         Rectangle {
-            id: touchAreaForDebugging
-            color: "grey"
-            opacity: 0.1
+            id: showTouchAreaForDebugging
             anchors.fill: parent
-        }
-
-        Item {
-            id: bar
-
-            property bool shown: false
-            height: units.gu(6) //+ orangeRect.height
-            anchors.left: parent.left
-            anchors.right: parent.right
-            y: parent.height
-
-            Rectangle {
-                id: background
-                anchors.fill: parent
-                color: "white"
-            }
-
-            Behavior on y {
-                NumberAnimation {
-                    duration: 150
-                }
-            }
-
-//            Item {
-//                id: contents
-//                anchors.left: parent.left
-//                anchors.right: parent.right
-//                height: units.gu(8)
-//            }
+            color: "pink"
+            opacity: 0.4
         }
     }
 }
