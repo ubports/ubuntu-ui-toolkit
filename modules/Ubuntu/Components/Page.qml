@@ -50,4 +50,7 @@ Item {
       part of a PageStack. This value is automatically updated by the \l PageStack.
      */
     property PageStack pageStack
+
+    // TODO TIM: document
+    property Item tools
 }

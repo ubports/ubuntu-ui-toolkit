@@ -34,17 +34,32 @@ Item {
 
     clip: true
 
-    property Item page
+    property alias page: toolbar.page
 
-    onPageChanged: print("new page = "+page.title)
+    onPageChanged: {
+        print("new page = "+page);
+        toolbar.tools = toolbar.page ? toolbar.page.tools : null;
+        print("page tools = "+toolbar.page.tools);
+        print("tools = "+toolbar.tools);
+        toolbar.setBarShown(false);
+    }
+
+    default property alias contents: contentsItem.children
+    Item {
+        anchors.fill: parent
+        id: contentsItem
+    }
+
 
     Toolbar {
+        id: toolbar
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
         }
 
+        tools: chrome.page && chrome.page.tools ? page.tools : null
         pageStack: chrome.page ? chrome.page.pageStack : null
         onPageStackChanged: print("pageStack = "+pageStack)
     }
