@@ -80,6 +80,10 @@ Template {
                     id: page1
                     title: i18n.tr("First page")
 
+                    tools: Row {
+                        Button { text: "Click!" }
+                    }
+
                     Column {
                         anchors.fill: parent
                         ListItem.Standard {

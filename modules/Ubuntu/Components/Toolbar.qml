@@ -16,49 +16,47 @@
  */
 
 import QtQuick 2.0
-//import Ubuntu.Components 0.1
-//import Ubuntu.Components.ListItems 0.1 as ListItem
 
 ChromeBar {
     id: toolbar
 
-//    property Item tools: null
-//    property alias tools: buttonsGoHere.data
-//    onToolsChanged: print("tools changed to "+tools)
+    /*!
+      The page of which the tools must be displayed on the toolbar,
+      and which can have a pageStack that is popped when the back button
+      is clicked.
+     */
+    property Item page: null
 
-    property Item page
+    property alias tools: buttonsGoHere.data
 
     onPageChanged: {
         print("new page = "+page);
-//        toolbar.setBarShown(false);
-        toolbar.active = false;
+        print("new tools = "+page.tools);
+//        toolbar.active = false;
+        toolbar.tools = page.tools
     }
 
     Item {
         id: contents
-        anchors.left: parent.left
-        anchors.right: parent.right
-        //                height: chromeButtons.height + units.gu(2)
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
         height: units.gu(8)
-
 
         ChromeButton {
             id: backButton
-            objectName: typeof index == 'undefined' ? "backButton" : "backButton" + index
-            anchors.left: parent.left
-            anchors.leftMargin: units.gu(1)
-            anchors.top: parent.top
+            anchors {
+                left: parent.left
+                top: parent.top
+                leftMargin: units.gu(1) // TODO: make themable
+            }
             icon: Qt.resolvedUrl("artwork/back.png")
             text: "Back"
+
             visible: toolbar.page && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
 
-            onClicked: {
-//                backButtonClicked()
-                toolbar.page.pageStack.pop();
-                toolbar.setBarShown(false);
-            }
-
-//            visible: showBackButton
+            onClicked: toolbar.page.pageStack.pop()
         }
 
         Item {
@@ -73,10 +71,10 @@ ChromeBar {
             width: childrenRect.width
 //            height: childrenRect.height
 
-            Rectangle {
-                color: "pink"
-                anchors.fill: parent
-            }
+//            Rectangle {
+//                color: "pink"
+//                anchors.fill: parent
+//            }
 
 //            Row {
 //                id: theRow
