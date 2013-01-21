@@ -32,7 +32,7 @@ import Ubuntu.Components 0.1 as Theming
 Item {
     id: chrome
 
-    clip: true
+//    clip: true
 
     property alias page: toolbar.page
 

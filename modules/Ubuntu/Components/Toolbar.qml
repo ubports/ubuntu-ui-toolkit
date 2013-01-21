@@ -21,11 +21,17 @@ import QtQuick 2.0
 
 ChromeBar {
     id: toolbar
+
 //    property Item tools: null
-    property alias tools: buttonsGoHere.data
-    onToolsChanged: print("tools changed to "+tools)
+//    property alias tools: buttonsGoHere.data
+//    onToolsChanged: print("tools changed to "+tools)
 
     property Item page
+
+    onPageChanged: {
+        print("new page = "+page);
+        toolbar.setBarShown(false);
+    }
 
     Item {
         id: contents
@@ -43,16 +49,12 @@ ChromeBar {
             anchors.top: parent.top
             icon: Qt.resolvedUrl("artwork/back.png")
             text: "Back"
+            visible: toolbar.page && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
 
             onClicked: {
 //                backButtonClicked()
-                if (toolbar.page) {
-                    if (toolbar.page.pageStack) {
-                        toolbar.page.pageStack.pop();
-                    }
-                }
-                setBarShown(false)
-
+                toolbar.page.pageStack.pop();
+                toolbar.setBarShown(false);
             }
 
 //            visible: showBackButton
