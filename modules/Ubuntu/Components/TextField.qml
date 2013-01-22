@@ -75,6 +75,26 @@ import "." 0.1 as Theming
         }
     }
     \endqml
+
+    Key presses and releases can be captured by declaring \b filterKeyPress and
+    \b filterKeyRelease functions. When these functions are declared, the component
+    automatically connects the text input to those. The syntax of these functions is
+    \code
+    function filterKeyPress(KeyEvent event)
+    function filterKeyRelease(KeyEvent event)
+    \endcode
+
+    Example:
+    \qml
+    TextField {
+        function filterKeyPress(event) {
+            console.log("pressed key: "+event.text)
+        }
+        function filterKeyRelease(event) {
+            console.log("released key: "+event.text)
+        }
+    }
+    \endqml
 */
 
 FocusScope {
@@ -534,6 +554,8 @@ FocusScope {
         font: Theming.ComponentUtils.style(editor, "font", fontHolder.font)
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
+        // forward keys to the root element so it can be captured outside of it
+        Keys.forwardTo: [control]
 
         // virtual keyboard/software input panel handling
         activeFocusOnPress: false
