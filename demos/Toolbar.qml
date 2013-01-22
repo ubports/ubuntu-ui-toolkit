@@ -23,21 +23,14 @@ Template {
     Item {
         Rectangle {
             color: "#eeeeee"
-//            clip: true // hide the toolbar when its out-of-view
-//            color: "yellow"
             anchors {
                 top: parent.top
                 bottom: parent.bottom
+                bottomMargin: units.gu(10)
                 horizontalCenter: parent.horizontalCenter
             }
             width: units.gu(38)
             border.width: 2
-
-            //            Chrome {
-            //                id: chrome
-            //                anchors.fill: parent
-
-            //                page: pageStack.currentPage
 
             PageStack {
                 id: pageStack
@@ -118,6 +111,5 @@ Template {
                 page: pageStack.currentPage
             }
         }
-        //        }
     }
 }

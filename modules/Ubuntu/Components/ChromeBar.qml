@@ -38,19 +38,12 @@ Item {
     Item {
         id: bar
 
-        property bool shown: false
         height: units.gu(6) // TODO: make themable. Same as parent height?
         anchors {
             left: parent.left
             right: parent.right
         }
         y: chromeBar.active ? 0 : bar.height
-
-        Rectangle { // TODO: make themable. Move to Toolbar?
-            id: background
-            anchors.fill: parent
-            color: "white"
-        }
 
         Behavior on y { // TODO: Make themable
             NumberAnimation {
@@ -62,7 +55,10 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        propagateComposedEvents: true
+
+        // avoid propagating events when bar is active or in the process
+        // of becoming active or inactive.
+        propagateComposedEvents: bar.y === bar.height
 
         /*!
           The amount that the cursor position needs to change in y-direction
@@ -78,15 +74,18 @@ Item {
 
         onPositionChanged: {
             var diff = pressedY - mouse.y;
-            if (diff > dragThreshold) chromeBar.active = true;
-            else if (diff < -dragThreshold) chromeBar.active = false;
+            if (diff > dragThreshold) {
+                chromeBar.active = true;
+            } else if (diff < -dragThreshold) {
+                chromeBar.active = false;
+            }
         }
 
         Rectangle {
             id: showTouchAreaForDebugging
             anchors.fill: parent
             color: "pink"
-            opacity: 0.4
+            opacity: 0.2
         }
     }
 }

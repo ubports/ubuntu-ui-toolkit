@@ -28,11 +28,8 @@ ChromeBar {
     property Item page: null
 
     onPageChanged: {
-        print("new page = "+page);
-        print("new tools = "+page.tools);
-//        toolbar.active = false;
-//        toolbar.tools = page.tools
-        buttonsGoHere.setTools(page.tools);
+        if (page.hasOwnProperty("tools")) buttonsGoHere.setTools(page.tools);
+        else buttonsGoHere.setTools(null);
     }
 
     Item {
@@ -41,7 +38,12 @@ ChromeBar {
             left: parent.left
             right: parent.right
         }
-        height: units.gu(8)
+        height: parent.height
+
+        Rectangle { // TODO: make background themable?
+            anchors.fill: parent
+            color: "white"
+        }
 
         ChromeButton {
             id: backButton
@@ -65,66 +67,22 @@ ChromeBar {
                 top: parent.top
                 bottom: parent.bottom
             }
-//            width: theRow.width
-//            width: contents.width - backButton.width
-            width: childrenRect.width
-//            height: childrenRect.height
+            width: tools ? tools.width : 0
+            visible: tools !== null
 
-
-            function setTools(newtools) {
-                print("setting tools to "+newtools);
+            property Item tools: null
+            function setTools(newTools) {
+                if (tools) tools.parent = null;
+                tools = newTools;
+                if (tools) {
+                    tools.parent = buttonsGoHere;
+                }
             }
 
-//            Rectangle {
-//                color: "pink"
-//                anchors.fill: parent
-//            }
-
-//            Row {
-//                id: theRow
-//                anchors {
-//                    right: parent.right
-//                    top: parent.top
-//                    bottom: parent.bottom
-//                }
-//                width: childrenRect.width
-
-//                Rectangle {
-//                    width: 100
-//                    height: 100
-//                    color: "pink"
-//                }
-
-                //                        ChromeButton {
-                //                            icon: Qt.resolvedUrl("artwork/back.png")
-                //                            text: "Lala"
-                //                            onClicked: print("la!")
-                //                        }
-
+            Rectangle {
+                color: "green"
+                anchors.fill: parent
             }
         }
-
-        //                Row {
-        //                    id: chromeButtons
-        //                    objectName: "viewerChromeButtons"
-        //                    anchors.top: parent.top
-        //                    anchors.right: parent.right
-        //                    anchors.rightMargin: units.gu(1)
-        //                    height: childrenRect.height
-
-        //                    Repeater {
-        //                        id: buttonsRepeater
-
-        //                        ChromeButton {
-        //                            id: chromeButton
-        //                            text: model.label
-        //                            icon: model.icon
-        //                            objectName: model.name
-        //                            enabled: (objectName !== "disabled")
-        //                            anchors.top: parent.top
-        //                            onClicked: buttonClicked(model.name, chromeButton)
-        //                        }
-        //                    }
-        //                }
-//    }
+    }
 }
