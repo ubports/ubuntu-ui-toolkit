@@ -1,4 +1,4 @@
-/*
+
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -72,26 +72,6 @@ import "." 0.1 as Theming
                     onClicked: doSomething()
                 }
             }
-        }
-    }
-    \endqml
-
-    Key presses and releases can be captured by declaring \b filterKeyPress and
-    \b filterKeyRelease functions. When these functions are declared, the component
-    automatically connects the text input to those. The syntax of these functions is
-    \code
-    function filterKeyPress(KeyEvent event)
-    function filterKeyRelease(KeyEvent event)
-    \endcode
-
-    Example:
-    \qml
-    TextField {
-        function filterKeyPress(event) {
-            console.log("pressed key: "+event.text)
-        }
-        function filterKeyRelease(event) {
-            console.log("released key: "+event.text)
         }
     }
     \endqml

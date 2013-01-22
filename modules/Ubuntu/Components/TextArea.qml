@@ -75,26 +75,6 @@ import "." 0.1 as Theming
     character or word. The editor leaves the selection mode by pressing/tapping again on it
     or by losing focus.
 
-    Key presses and releases can be captured by declaring \b filterKeyPress and
-    \b filterKeyRelease functions. When these functions are declared, the component
-    automatically connects the text input to those. The syntax of these functions is
-    \code
-    function filterKeyPress(KeyEvent event)
-    function filterKeyRelease(KeyEvent event)
-    \endcode
-
-    Example:
-    \qml
-    TextArea {
-        function filterKeyPress(event) {
-            console.log("pressed key: "+event.text)
-        }
-        function filterKeyRelease(event) {
-            console.log("released key: "+event.text)
-        }
-    }
-    \endqml
-
     The default styling uses \b textarea selector.
 
     \b{This component is under heavy development.}
