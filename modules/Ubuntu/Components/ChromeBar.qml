@@ -30,7 +30,7 @@ Item {
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
      */
-    property bool active: false
+    property bool active: true
 
     // TODO: do we document default properties?
     default property alias contents: bar.data
@@ -43,8 +43,9 @@ Item {
             left: parent.left
             right: parent.right
         }
-        y: chromeBar.active ? 0 : bar.height
+        y: chromeBar.active ? 0 : height
 
+        property bool notAnimating: (chromeBar.active && y === 0) || (!chromeBar.active && y === height)
         Behavior on y { // TODO: Make themable
             NumberAnimation {
                 duration: 200;
@@ -56,9 +57,9 @@ Item {
     MouseArea {
         anchors.fill: parent
 
-        // avoid propagating events when bar is active or in the process
+        // avoid propagating events when bar in the process
         // of becoming active or inactive.
-        propagateComposedEvents: bar.y === bar.height
+        propagateComposedEvents: bar.notAnimating
 
         /*!
           The amount that the cursor position needs to change in y-direction

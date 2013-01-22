@@ -27,9 +27,21 @@ ChromeBar {
      */
     property Item page: null
 
-    onPageChanged: {
-        if (page.hasOwnProperty("tools")) buttonsGoHere.setTools(page.tools);
-        else buttonsGoHere.setTools(null);
+    // TODO: automatically connect the tools to page.tools
+    property Item tools
+//    Binding on tools {
+//        when: page
+//        value: page.tools
+//    }
+
+//    onPageChanged: {
+//        print(page.hasOwnProperty("tools") + " "+page.tools);
+//        if (page.hasOwnProperty("tools")) buttonsGoHere.setTools(page.tools);
+//        else buttonsGoHere.setTools(null);
+//    }
+
+    onToolsChanged: {
+        buttonsGoHere.setTools(toolbar.tools);
     }
 
     Item {
@@ -43,6 +55,14 @@ ChromeBar {
         Rectangle { // TODO: make background themable?
             anchors.fill: parent
             color: "white"
+
+            MouseArea {
+                // don't let mouse events go through the toolbar
+                anchors.fill: parent
+                // FIXME: Bug in qml? Without onClicked below, this MouseArea
+                //      seems disabled.
+                onClicked: { }
+            }
         }
 
         ChromeButton {
@@ -55,7 +75,8 @@ ChromeBar {
             icon: Qt.resolvedUrl("artwork/back.png")
             text: "Back"
 
-            visible: toolbar.page && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+            visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+                     && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
 
             onClicked: toolbar.page.pageStack.pop()
         }
@@ -72,16 +93,12 @@ ChromeBar {
 
             property Item tools: null
             function setTools(newTools) {
+                print("setting tools to "+newTools)
                 if (tools) tools.parent = null;
                 tools = newTools;
                 if (tools) {
                     tools.parent = buttonsGoHere;
                 }
-            }
-
-            Rectangle {
-                color: "green"
-                anchors.fill: parent
             }
         }
     }
