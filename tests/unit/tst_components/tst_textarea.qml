@@ -21,29 +21,28 @@ import Ubuntu.Components 0.1
 Item {
     width: 200; height: 200
 
+    TextArea {
+        id: textArea
+        SignalSpy {
+            id: signalSpy
+            target: parent
+        }
+
+        property int keyPressData
+        property int keyReleaseData
+        Keys.onPressed: keyPressData = event.key
+        Keys.onReleased: keyReleaseData = event.key
+    }
+
+    TextEdit {
+        id: textEdit
+    }
+
     TestCase {
         name: "TextAreaAPI"
         when: windowShown
 
-        TextArea {
-            id: textArea
-            SignalSpy {
-                id: signalSpy
-                target: parent
-            }
-
-            property int keyPressData
-            property int keyReleaseData
-            Keys.onPressed: keyPressData = event.key
-            Keys.onReleased: keyReleaseData = event.key
-        }
-
-        TextEdit {
-            id: textEdit
-        }
-
-
-        function initTestCase() {
+        function test_1_activate() {
             textArea.forceActiveFocus();
             compare(textArea.activeFocus, true, "TextArea is active");
         }
