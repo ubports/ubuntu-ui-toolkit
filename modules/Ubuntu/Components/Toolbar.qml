@@ -37,13 +37,13 @@ GenericToolbar {
 
 //    onPageChanged: {
 //        print(page.hasOwnProperty("tools") + " "+page.tools);
-//        if (page.hasOwnProperty("tools")) buttonsGoHere.setTools(page.tools);
-//        else buttonsGoHere.setTools(null);
+//        if (page.hasOwnProperty("tools")) rightItem.setTools(page.tools);
+//        else rightItem.setTools(null);
 //    }
 
-    onToolsChanged: {
-        buttonsGoHere.setTools(toolbar.tools);
-    }
+    onToolsChanged: rightItem.setTools(toolbar.tools)
+    property Item backButton: leftItem.backButton
+    onBackButtonChanged: leftItem.setBackButton(toolbar.backButton)
 
     Item {
         id: contents
@@ -66,24 +66,39 @@ GenericToolbar {
             }
         }
 
-        ChromeButton {
-            id: backButton
+        Item {
+            id: leftItem
             anchors {
                 left: parent.left
-                top: parent.top
-                leftMargin: units.gu(1) // TODO: make themable
+                top:parent.top
+                bottom: parent.bottom
             }
-            icon: Qt.resolvedUrl("artwork/back.png")
-            text: "Back"
+            width: backButton ? backButton.width : 0
 
-            visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-                     && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+            property Item backButton: ChromeButton {
+                parent: leftItem
+                anchors.centerIn: parent
+                icon: Qt.resolvedUrl("artwork/back.png")
+                text: "Back"
 
-            onClicked: toolbar.page.pageStack.pop()
+                visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+                         && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+
+                onClicked: toolbar.page.pageStack.pop()
+            }
+
+            function setBackButton(newBackButton) {
+                if (backButton) backButton.parent = null;
+                backButton = newBackButton;
+                if (backButton) {
+                    backButton.parent = leftItem;
+                    backButton.anchors.centerIn = leftItem;
+                }
+            }
         }
 
         Item {
-            id: buttonsGoHere
+            id: rightItem
             anchors {
                 right: parent.right
                 top: parent.top
@@ -98,7 +113,7 @@ GenericToolbar {
                 if (tools) tools.parent = null;
                 tools = newTools;
                 if (tools) {
-                    tools.parent = buttonsGoHere;
+                    tools.parent = rightItem;
                 }
             }
         }
