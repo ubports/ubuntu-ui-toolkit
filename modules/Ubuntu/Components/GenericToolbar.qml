@@ -30,7 +30,7 @@ Item {
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
      */
-    property bool active: true
+    property bool active: false
 
     // TODO: do we document default properties?
     default property alias contents: bar.data
