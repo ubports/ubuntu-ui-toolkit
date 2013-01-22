@@ -43,7 +43,7 @@ Item {
         }
 
 
-        function iniTestCase() {
+        function initTestCase() {
             textArea.forceActiveFocus();
             compare(textArea.activeFocus, true, "TextArea is active");
         }
