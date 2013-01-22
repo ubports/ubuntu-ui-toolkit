@@ -824,6 +824,8 @@ FocusScope {
             mouseSelectionMode: TextEdit.SelectCharacters
             selectByMouse: false
             cursorDelegate: cursor
+            // forward keys to the root element so it can be captured outside of it
+            Keys.forwardTo: [control]
 
             // styling
             Theming.ItemStyle.style: control.Theming.ItemStyle.style

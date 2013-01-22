@@ -39,6 +39,10 @@ Template {
 
                     placeholderText: i18n.tr("simple text field")
                     hasClearButton: false
+
+                    Keys.onPressed: {
+                        print("key pressed: "+event.key)
+                    }
                 }
             }
 
