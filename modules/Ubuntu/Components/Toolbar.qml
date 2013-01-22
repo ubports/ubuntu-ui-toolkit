@@ -17,7 +17,8 @@
 
 import QtQuick 2.0
 
-ChromeBar {
+// TODO: documentation
+GenericToolbar {
     id: toolbar
 
     /*!
