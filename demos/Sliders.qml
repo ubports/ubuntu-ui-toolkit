@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Template {
     title: i18n.tr("Slider")
+    objectName: "Slider"
 
     Column {
         spacing: units.gu(4)

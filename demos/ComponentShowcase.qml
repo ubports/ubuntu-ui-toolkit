@@ -92,6 +92,7 @@ Rectangle {
 
     Loader {
         id: widgetLoader
+        objectName: "widgetLoader"
 
         anchors {
             left: widgetList.right
