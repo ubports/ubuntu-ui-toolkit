@@ -30,7 +30,12 @@ function create_test_cmd {
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
   UITK_THEME_PATH=../../.. $_CMD $_ARGS
+  # segfault
   if [ $? -eq 139 ]; then
+   return 2
+  fi
+  # abort
+  if [ $? -eq 134 ]; then
    return 2
   fi
   ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
