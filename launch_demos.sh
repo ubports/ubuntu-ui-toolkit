@@ -21,6 +21,10 @@ export UITK_THEME_PATH=.
 if [ "$1" == "--phone" ]
 then
 	GRID_UNIT_PX=18 qmlscene --fullscreen -I modules demos/PhoneComponentShowcase.qml
+elif [ "$1" == "--autopilot" ]
+then
+	qmlscene -I modules demos/ComponentShowcase.qml -testability &
+	autopilot vis
 else
 	qmlscene -I modules demos/ComponentShowcase.qml
 fi

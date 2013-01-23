@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Rectangle {
+    objectName: "componentShowcase"
     width: units.gu(100)
     height: units.gu(75)
 
@@ -41,6 +42,7 @@ Rectangle {
 
     ListView {
         id: widgetList
+        objectName: "widgetList"
 
         width: units.gu(19)
         anchors {
