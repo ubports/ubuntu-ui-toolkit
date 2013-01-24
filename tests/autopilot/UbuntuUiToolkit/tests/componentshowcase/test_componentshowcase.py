@@ -5,7 +5,7 @@
 # under the terms of the GNU Lesser General Public License version 3, as published
 # by the Free Software Foundation.
 
-"""Tests for the Ubuntu UI Toolkit Component Gallery"""
+"""Tests for the Ubuntu UI Toolkit Component Showcase"""
 
 from autopilot.matchers import Eventually
 from textwrap import dedent
@@ -16,7 +16,7 @@ from UbuntuUiToolkit.tests import UbuntuUiToolkitTestCase
 
 
 class GenericTests(UbuntuUiToolkitTestCase):
-    """Generic tests for the Gallery"""
+    """Generic tests for the Component Showcase"""
 
     test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"../../../../../demos/ComponentShowcase")
 
