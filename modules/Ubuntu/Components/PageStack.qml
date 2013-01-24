@@ -216,4 +216,7 @@ Item {
             }
         }
     }
+    Toolbar {
+        page: pageStack.currentPage
+    }
 }

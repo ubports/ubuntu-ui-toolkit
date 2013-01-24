@@ -29,7 +29,7 @@ GenericToolbar {
     property Item page: null
 
     // TODO: automatically connect the tools to page.tools
-    property Item tools
+    property var tools: page ? page.tools : null
 //    Binding on tools {
 //        when: page
 //        value: page.tools
@@ -42,8 +42,8 @@ GenericToolbar {
 //    }
 
     onToolsChanged: rightItem.setTools(toolbar.tools)
-    property Item backButton: leftItem.backButton
-    onBackButtonChanged: leftItem.setBackButton(toolbar.backButton)
+//    property Item backButton: leftItem.backButton
+//    onBackButtonChanged: leftItem.setBackButton(toolbar.backButton)
 
     Item {
         id: contents
@@ -87,35 +87,110 @@ GenericToolbar {
                 onClicked: toolbar.page.pageStack.pop()
             }
 
-            function setBackButton(newBackButton) {
-                if (backButton) backButton.parent = null;
-                backButton = newBackButton;
-                if (backButton) {
-                    backButton.parent = leftItem;
-                    backButton.anchors.centerIn = leftItem;
-                }
-            }
+//            function setBackButton(newBackButton) {
+//                if (backButton) backButton.parent = null;
+//                backButton = newBackButton;
+//                if (backButton) {
+//                    backButton.parent = leftItem;
+//                    backButton.anchors.centerIn = leftItem;
+//                }
+//            }
         }
 
-        Item {
+        Row {
             id: rightItem
             anchors {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: tools ? tools.width : 0
-            visible: tools !== null
+            width: childrenRect.width
 
-            property Item tools: null
-            function setTools(newTools) {
-                print("setting tools to "+newTools)
-                if (tools) tools.parent = null;
-                tools = newTools;
-                if (tools) {
-                    tools.parent = rightItem;
+            Repeater {
+                model: rightItem.tools ? rightItem.tools : 0
+                ChromeButton {
+                    anchors {
+                        bottom: parent.bottom
+                        top: parent.top
+                    }
+
+//                    width: 100
+//                    height: 40
+//                    border.width: 1
+//                    color: "yellow"
+                    text: modelData.text
+                    icon: modelData.icon ? modelData.icon : ""
+                    onClicked: modelData.triggered()
                 }
             }
+
+            property var tools: ["first","second","third"]
+            function setTools(newTools) {
+                print("setting tools to "+newTools)
+                // remove the old tools
+                var i; // counter
+//                for (i=0; i < rightItem.children.length; i++) {
+//                    rightItem.children[i].parent = null;
+//                }
+                rightItem.tools = newTools;
+                if (newTools === null) return;
+                for (i=0; i < newTools.length; i++) {
+                    print(newTools[i].text);
+                }
+            }
+
         }
+
+//        Item {
+//            id: rightItem
+//            anchors {
+//                right: parent.right
+//                top: parent.top
+//                bottom: parent.bottom
+//            }
+//            width: 300 //tools ? tools.width : 0
+////            visible: tools !== null
+
+//            visible: true
+
+//            property var tools: null
+//            function setTools(newTools) {
+//                print("setting tools to "+newTools)
+//                // remove the old tools
+//                var i; // counter
+//                for (i=0; i < rightItem.children.length; i++) {
+//                    rightItem.children[i].parent = null;
+//                }
+//                rightItem.tools = newTools;
+//                if (newTools === null) return;
+//                for (i=0; i < newTools.length; i++) {
+//                    print(newTools[i].text);
+//                }
+////                if (tools) tools.parent = null;
+////                tools = newTools;
+////                if (tools) {
+////                    tools.parent = rightItem;
+////                }
+//            }
+
+//            onToolsChanged: if (tools) print("tools.length = "+tools.length)
+
+//            Repeater {
+//                model: 3 //["aa", "bb", "cc"]// rightItem.tools ? rightItem.tools.length : 0
+////                ChromeButton {
+////                    text: modelData.text
+////                }
+//                Rectangle {
+//                    color: "red"
+//                    border.width: 1
+//                    width: 50
+//                    height: 60
+//                    anchors.top: parent.top
+//                    anchors.bottom: parent.bottom
+//                    anchors.right: parent.right
+//                    Component.onCompleted: print("completed rectangle "+modelData)
+//                }
+//            }
+//        }
     }
 }

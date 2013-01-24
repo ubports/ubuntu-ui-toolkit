@@ -48,11 +48,23 @@ Template {
                     id: page0
                     title: i18n.tr("Root page")
 
-                    tools: Row {
-                        Button { text: "one" }
-                        Button { text: "two" }
-                        Button { text: "three" }
-                    }
+                    tools: [
+                        Action {
+                            text: "one"
+                            icon: Qt.resolvedUrl("back.png")
+                            onTriggered: print("First action")
+                        },
+                        Action {
+                            text: "two"
+                            icon: Qt.resolvedUrl("back.png")
+                            onTriggered: print("Second action")
+                        },
+                        Action {
+                            text: "three"
+                            icon: Qt.resolvedUrl("back.png")
+                            onTriggered: print("Third action")
+                        }
+                    ]
 
                     Column {
                         anchors.fill: parent
@@ -73,9 +85,9 @@ Template {
                     id: page1
                     title: i18n.tr("First page")
 
-                    tools: Row {
-                        Button { text: "Click!" }
-                    }
+                    tools: [
+                        Action { text: "Click!"; onTriggered: print("Triggered!") }
+                    ]
 
                     Column {
                         anchors.fill: parent
@@ -107,9 +119,9 @@ Template {
                 }
             }
 
-            Toolbar {
-                page: pageStack.currentPage
-            }
+//            Toolbar {
+//                page: pageStack.currentPage
+//            }
         }
     }
 }

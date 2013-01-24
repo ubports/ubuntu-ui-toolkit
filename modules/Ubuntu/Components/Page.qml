@@ -51,6 +51,9 @@ Item {
      */
     property PageStack pageStack
 
-    // TODO TIM: document
-    property Item tools
+    /*!
+      \preliminary
+      The list of actions associated with this Page.
+     */
+    property list<Action> tools
 }
