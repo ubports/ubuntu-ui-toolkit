@@ -26,6 +26,7 @@ Item {
     }
     height: units.gu(6) // TODO: make themable
 
+    clip: true
     /*!
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
@@ -82,11 +83,11 @@ Item {
             }
         }
 
-        Rectangle {
-            id: showTouchAreaForDebugging
-            anchors.fill: parent
-            color: "pink"
-            opacity: 0.2
-        }
+//        Rectangle {
+//            id: showTouchAreaForDebugging
+//            anchors.fill: parent
+//            color: "pink"
+//            opacity: 0.2
+//        }
     }
 }

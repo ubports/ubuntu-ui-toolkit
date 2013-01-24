@@ -198,15 +198,16 @@ Item {
             }
             pageStack: pageStack
             height: units.gu(5)
+            showBackButton: false
         }
 
         function updateHeader() {
             var stackSize = stack.size();
-            if (stackSize > 1) {
-                header.showBackButton = true
-            } else {
-                header.showBackButton = false
-            }
+//            if (stackSize > 1) {
+//                header.showBackButton = true
+//            } else {
+//                header.showBackButton = false
+//            }
             if (stackSize > 0) {
                 var item = stack.top().object;
                 if (item.__isPage === true) header.title = item.title;
