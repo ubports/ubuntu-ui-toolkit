@@ -25,6 +25,10 @@ elif [ "$1" == "--autopilot" ]
 then
 	qmlscene -I modules demos/ComponentShowcase.qml -testability &
 	autopilot vis
+elif [ "$1" == "--autopilot-phone" ]
+then
+	GRID_UNIT_PX=18 qmlscene -I modules demos/PhoneComponentShowcase.qml -testability &
+	autopilot vis
 else
 	qmlscene -I modules demos/ComponentShowcase.qml
 fi
