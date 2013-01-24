@@ -118,10 +118,6 @@ Template {
                     }
                 }
             }
-
-//            Toolbar {
-//                page: pageStack.currentPage
-//            }
         }
     }
 }
