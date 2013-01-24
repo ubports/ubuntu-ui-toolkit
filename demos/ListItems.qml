@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+    objectName: "List Items"
     title: i18n.tr("List Items")
 
     Item {
