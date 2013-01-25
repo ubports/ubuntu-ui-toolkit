@@ -58,6 +58,10 @@ TestCase {
         compare(Clipboard.data.html, standalone.html, "Standalone HTML");
         compare(Clipboard.data.urls, standalone.urls, "Standalone URL list");
         compare(Clipboard.data.color, standalone.color, "Standalone color");
+
+        standalone.text = "Modified text";
+        Clipboard.push(standalone);
+        compare(Clipboard.data.text, standalone.text, "Standalone text");
     }
 
     function test_push_color() {
