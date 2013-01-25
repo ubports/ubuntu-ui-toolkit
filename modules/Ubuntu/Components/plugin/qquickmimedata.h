@@ -1,3 +1,21 @@
+/*
+ * Copyright 2012 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ */
+
 #ifndef QQUICKMIMEDATA_H
 #define QQUICKMIMEDATA_H
 
@@ -7,7 +25,6 @@
 #include <QtCore/QUrl>
 #include "qquickclipboard.h"
 
-typedef QList< QPair<QString, QVariant> > MimeDataList;
 class QQuickMimeData : public QObject
 {
     Q_OBJECT
@@ -19,7 +36,7 @@ class QQuickMimeData : public QObject
     Q_PROPERTY(QVariant data READ mimeData WRITE setMimeData NOTIFY dataChanged)
 public:
     explicit QQuickMimeData(QObject *parent = 0);
-    QQuickMimeData(const QMimeData *refData, bool referenceData = true, QObject *parent = 0);
+    QQuickMimeData(const QMimeData *refData, bool localData = true, QObject *parent = 0);
     ~QQuickMimeData();
 
     QStringList formats() const;
@@ -50,9 +67,7 @@ private:
     friend class QQuickClipboard;
 
     bool m_refData;
-    bool m_localData;
     QMimeData *m_mimeData;
-    MimeDataList m_otherData;
 };
 
 #endif // QQUICKMIMEDATA_H

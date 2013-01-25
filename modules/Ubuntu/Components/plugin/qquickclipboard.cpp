@@ -35,29 +35,91 @@
  * this object. Data can be pushed to the clipboard using push() function.
  *
  * The clipboard data cannot be modified through the type returned by the data
- * property, for this a new instance of MimeType type must be used. This instance
- * can be either a standard MimeType component or an object created using newData()
- * function.
+ * property, for this a new instance of MimeData type must be used. This instance
+ * can be either a standalone MimeDala component or an object created using newData()
+ * function. Remember that standalone MimeData types duplicate the clipboard data
+ * which may cause extensive memory use.
  *
  * Examples of use:
  *
  * 1. Using standard MimeType component - the following example copies the selected
  * text from the text area into the clipboard pushing also a color
  * \qml
- * TextArea {
- *     id: editor
+ * Item {
+ *     TextArea {
+ *         id: editor
+ *     }
+ *
+ *     MimeData {
+ *         id: mimeData
+ *         color: "green"
+ *         text: editor.text
+ *     }
+ *
+ *     Button {
+ *         onClicked: Clipboard.push(mimeData)
+ *     }
  * }
- * \qmlend
+ * \endqml
+ *
+ * 2. Pushing data straight to clipboard
+ * \qml
+ * Item {
+ *     TextArea {
+ *         id: editor
+ *     }
+ *
+ *     Button {
+ *         onClicked: {
+ *             Clipboard.push(editor.text);
+ *             Clipboard.push(["application/x-color", "green"]);
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * 3. Pushing data using MimeData object
+ * \qml
+ * Item {
+ *     TextArea {
+ *         id: editor
+ *     }
+ *
+ *     Button {
+ *         onClicked: {
+ *             var mimeData = Clipboard.newData();
+ *             mimeData.text = editor.text;
+ *             mimeData.color = "green";
+ *             Clipboard.push(mimeData);
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ */
+
+/*!
+ * \qmlsignal Clipboard::dataChanged()
+ * The signal is triggered when clipboard content gets changed.
  */
 
 QQuickClipboardPrivate::QQuickClipboardPrivate(QQuickClipboard *qq) :
     q_ptr(qq),
     clipboard(QGuiApplication::clipboard()),
     mode(QClipboard::Clipboard),
-    data(new QQuickMimeData(clipboard->mimeData(mode), q_ptr))
+    mimeData(0)
 {
     // connect to the system clipboard's dataChanged signal so we get update
     QObject::connect(clipboard, SIGNAL(dataChanged()), q_ptr, SIGNAL(dataChanged()));
+}
+
+void QQuickClipboardPrivate::updateMimeData()
+{
+    const QMimeData *data = clipboard->mimeData(mode);
+    if (!mimeData)
+        mimeData = new QQuickMimeData(clipboard->mimeData(mode), true, q_ptr);
+    else
+        mimeData->fromMimeData(data);
 }
 
 
@@ -67,20 +129,39 @@ QQuickClipboard::QQuickClipboard(QObject *parent) :
 {
 }
 
-QQuickMimeData *QQuickClipboard::data() const
+/*!
+ * \qmlproperty MimeData Clipboard::data
+ * Provides access to the Clipboard's current data.
+ */
+QQuickMimeData *QQuickClipboard::data()
 {
-    Q_D(const QQuickClipboard);
-    d->data->fromMimeData(d->clipboard->mimeData(d->mode));
-    return d->data;
+    Q_D(QQuickClipboard);
+    d->updateMimeData();
+    return d->mimeData;
 }
 
+/*!
+ * \qmlmethod MimeData Clipboard::newData()
+ * The function returns a new MimeData object that can be used in Java script code
+ * to push pultiple MIME types at the same time.
+ */
 QQuickMimeData *QQuickClipboard::newData()
 {
     // create it so that we give a QMimeData instance so it won't create a new
-    // instance of that when data is pushed tro clipboard
-    return new QQuickMimeData(new QMimeData, this);
+    // instance of that when data is pushed to clipboard
+    return new QQuickMimeData(new QMimeData, false, this);
 }
 
+/*!
+ * \qmlmethod Clipboard::push(var data)
+ * The function copies data provided as parameter to the clipboard. The parameter
+ * can be a MimeData instance or object created using newData() beside
+ * the ones listed at MimeData::data.
+ *
+ * When MimeData instance or object is given, the entire object content will be
+ * pushed to the clipboard.
+ *
+ */
 void QQuickClipboard::push(const QVariant& data)
 {
     if (!data.isValid())
@@ -92,13 +173,16 @@ void QQuickClipboard::push(const QVariant& data)
     if (mimeData)
         d->clipboard->setMimeData(mimeData->toMimeData(), d->mode);
     else {
-        QQuickMimeData newData(new QMimeData, true);
-        newData.m_refData = false;
+        QQuickMimeData newData(new QMimeData, false);
         newData.setMimeData(data);
         d->clipboard->setMimeData(newData.m_mimeData, d->mode);
     }
 }
 
+/*!
+ * \qmlmethod Clipboard::clear()
+ * The function clears the clipboard content.
+ */
 void QQuickClipboard::clear()
 {
     Q_D(QQuickClipboard);
