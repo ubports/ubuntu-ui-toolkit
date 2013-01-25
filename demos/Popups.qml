@@ -20,6 +20,7 @@ import Ubuntu.Components.Popups 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+    objectName: "Popups"
     title: i18n.tr("Popovers, Sheets & Dialogues")
 
     Item {

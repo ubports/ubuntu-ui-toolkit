@@ -17,5 +17,6 @@
 import QtQuick 2.0
 
 Tabs {
+	objectName: "Tabs (flickable)"
     newTabs: true
 }

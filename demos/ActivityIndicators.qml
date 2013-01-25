@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "Activity Indicator"
     title: i18n.tr("Activity Indicator")
     id: indicators
 

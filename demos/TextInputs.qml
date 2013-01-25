@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "Text Input"
     title: i18n.tr("Text Input")
     id: page
 
