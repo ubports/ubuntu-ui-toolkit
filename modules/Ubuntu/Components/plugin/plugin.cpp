@@ -36,6 +36,18 @@
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
 
+/*
+ * Registration function for the Clipboard type
+ */
+static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    QQuickClipboard *clipboard = new QQuickClipboard;
+    return clipboard;
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));

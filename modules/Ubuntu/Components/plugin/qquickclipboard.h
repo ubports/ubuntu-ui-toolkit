@@ -51,17 +51,4 @@ private:
     QScopedPointer<QQuickClipboardPrivate> d_ptr;
 };
 
-/*
- * Registration function for the Clipboard type
- */
-static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    QQuickClipboard *clipboard = new QQuickClipboard;
-    return clipboard;
-}
-
-
 #endif // QQUICKCLIPBOARD_H
