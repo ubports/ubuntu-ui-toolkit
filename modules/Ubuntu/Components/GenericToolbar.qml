@@ -32,9 +32,9 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-    height: units.gu(6) // TODO: make themable
+    height: units.gu(6)
 
-    clip: true // don't show the contents when the toolbar is disabled
+    clip: true
 
     /*!
       When active, the bar is visible, otherwise it is hidden.
@@ -42,7 +42,6 @@ Item {
      */
     property bool active: false
 
-    // TODO: do we document default properties?
     default property alias contents: bar.data
 
     Item {
@@ -75,7 +74,7 @@ Item {
           The amount that the cursor position needs to change in y-direction
           after pressing, in order to activate/deactivate the bar.
          */
-        property real dragThreshold: units.gu(1) // TODO: make themable?
+        property real dragThreshold: units.gu(1)
 
         property int pressedY
         onPressed: {
