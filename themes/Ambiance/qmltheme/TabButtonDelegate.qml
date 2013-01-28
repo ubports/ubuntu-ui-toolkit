@@ -33,5 +33,12 @@ Item {
     }
 
     TransparentButtonDelegate {
+        id: foreground
+        // update control's implicitWidth
+        Binding {
+            target: item
+            property: "implicitWidth"
+            value: foreground.implicitWidth + 2*foreground.horizontalPadding
+        }
     }
 }
