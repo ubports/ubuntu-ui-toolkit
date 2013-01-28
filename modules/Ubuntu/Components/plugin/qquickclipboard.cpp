@@ -57,6 +57,7 @@
  *     }
  *
  *     Button {
+ *         text: "Copy"
  *         onClicked: Clipboard.push(mimeData)
  *     }
  * }
@@ -70,6 +71,7 @@
  *     }
  *
  *     Button {
+ *         text: "Copy"
  *         onClicked: {
  *             Clipboard.push(editor.text);
  *             Clipboard.push(["application/x-color", "green"]);
@@ -86,6 +88,7 @@
  *     }
  *
  *     Button {
+ *         text: "Copy"
  *         onClicked: {
  *             var mimeData = Clipboard.newData();
  *             mimeData.text = editor.text;
