@@ -45,12 +45,12 @@ GenericToolbar {
 
     Button {
 //    ChromeButton {
-//        Theming.ItemStyle.class: "button"
+        Theming.ItemStyle.class: "button"
         anchors {
             left: parent.left
             verticalCenter: parent.verticalCenter
         }
-//        color: "green"
+        color: "green"
 
 //        iconSource: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
 //        icon: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
