@@ -17,39 +17,45 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
+//Rectangle {
+//    color: "red"
 Item {
     anchors.fill: parent
 
-    // pick either a clear or dark text color depending on the luminance of the
-    // background color to maintain good contrast (works in most cases)
-    function __luminance(hexcolor){
-        hexcolor = String(hexcolor)
-        var r = parseInt(hexcolor.substr(1,2),16);
-        var g = parseInt(hexcolor.substr(3,2),16);
-        var b = parseInt(hexcolor.substr(5,2),16);
-        return ((r*212)+(g*715)+(b*73))/1000/255;
+    implicitWidth: units.gu(6)
+    implicitHeight: units.gu(6)
+
+    Image {
+        id: icon
+        anchors {
+            top: parent.top
+            topMargin: units.gu(1)
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: units.gu(2)
+        height: units.gu(2)
+        source: item.iconSource
+        opacity: button.enabled ? 1.0 : 0.3
     }
 
-    UbuntuShape {
-        id: border
+    Label {
+        id: label
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: units.gu(1)
+        }
+        width: paintedWidth
+        text: item.text
+        fontSize: "x-small"
+        color: "#888888"
+        opacity: button.enabled ? 1.0 : 0.3
+    }
 
+    Rectangle {
         anchors.fill: parent
-        color: item.color
-        borderSource: StyleUtils.itemStyleProperty("borderIdle")
-        opacity: 1.0 - borderPressed.opacity
-    }
-
-    UbuntuShape {
-        id: borderPressed
-
-        anchors.fill: parent
-        color: item.color
-        borderSource: StyleUtils.itemStyleProperty("borderPressed")
-        opacity: item.pressed ? 1.0 : 0.0
-        Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
-    }
-
-    TransparentButtonDelegate {
-        textColor: __luminance(item.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
+        color: "white"
+        opacity: 0.4
+        visible: button.pressed
     }
 }

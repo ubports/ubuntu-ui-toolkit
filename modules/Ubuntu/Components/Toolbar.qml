@@ -44,20 +44,17 @@ GenericToolbar {
     }
 
     Button {
-//    ChromeButton {
-        Theming.ItemStyle.class: "button"
+        Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
             verticalCenter: parent.verticalCenter
         }
-        color: "green"
 
-//        iconSource: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
-//        icon: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
+        iconSource: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
         text: "Back"    // TODO: make themable in Page
 
-//        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-//                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
 
         onClicked: toolbar.page.pageStack.pop()
     }
@@ -76,10 +73,12 @@ GenericToolbar {
 
         Repeater {
             model: toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
-            ChromeButton {
+//            ChromeButton {
+            Button {
+                Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter
                 text: modelData.text
-                icon: modelData.iconSource ? modelData.iconSource : ""
+                iconSource: modelData.iconSource ? modelData.iconSource : ""
                 onClicked: modelData.triggered()
             }
         }
