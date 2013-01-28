@@ -17,6 +17,14 @@
 
 import QtQuick 2.0
 
+/*!
+    \internal
+    \qmltype GenericToolbar
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+*/
+// FIXME: This class is going to be deprecated when we use
+//  the toolbar behavior from the shell.
 Item {
     id: chromeBar
     anchors {
@@ -40,7 +48,7 @@ Item {
     Item {
         id: bar
 
-        height: units.gu(6) // TODO: make themable. Same as parent height?
+        height: parent.height
         anchors {
             left: parent.left
             right: parent.right
@@ -48,7 +56,7 @@ Item {
         y: chromeBar.active ? 0 : height
 
         property bool notAnimating: (chromeBar.active && y === 0) || (!chromeBar.active && y === height)
-        Behavior on y { // TODO: Make themable
+        Behavior on y {
             NumberAnimation {
                 duration: 200;
                 easing.type: Easing.InOutQuad;

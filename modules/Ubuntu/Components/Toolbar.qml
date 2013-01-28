@@ -16,10 +16,20 @@
  */
 
 import QtQuick 2.0
-// TODO: add FIXME
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import Ubuntu.Components 0.1 as Theming
 
-// TODO: documentation
+/*!
+    \internal
+    \qmltype Toolbar
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief Application toolbar. This class is not exposed because it will
+            be automatically added when a Page defines tools.
+*/
 GenericToolbar {
     id: toolbar
 
@@ -50,8 +60,9 @@ GenericToolbar {
             verticalCenter: parent.verticalCenter
         }
 
-        iconSource: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
-        text: "Back"    // TODO: make themable in Page
+        // TODO: Make back buton themable in Page
+        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: "Back"
 
         visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
                  && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
@@ -68,7 +79,7 @@ GenericToolbar {
         }
         width: childrenRect.width
 
-        // TODO: cross-fade buttons when tools property is updated
+        // TODO: cross-fade buttons when tools property is updated?
         property var tools: toolbar.page ? toolbar.page.tools : null
 
         Repeater {
