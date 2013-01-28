@@ -3,7 +3,7 @@ plugin UbuntuComponents
 Action 0.1 Action.qml
 Button 0.1 Button.qml
 internal GenericToolbar GenericToolbar.qml
-Toolbar  0.1 Toolbar.qml
+internal Toolbar Toolbar.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
 Label 0.1 Label.qml

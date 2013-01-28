@@ -55,10 +55,8 @@ AbstractButton {
 
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "button"
-    width: Theming.ComponentUtils.delegateProperty(button, "implicitWidth", units.gu(4))
+    width: Theming.ComponentUtils.delegateProperty(button, "implicitWidth", units.gu(9))
     height: Theming.ComponentUtils.delegateProperty(button, "implicitHeight", units.gu(4))
-//    width: units.gu(5)
-//    height: units.gu(5)
 
     /*!
        \preliminary
