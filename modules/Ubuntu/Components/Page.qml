@@ -27,7 +27,6 @@ import QtQuick 2.0
     Example:
     \qml
         Page {
-            id: page0
             title: i18n.tr("Root page")
 
             tools: [

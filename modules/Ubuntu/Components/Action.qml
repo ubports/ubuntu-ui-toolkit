@@ -24,7 +24,7 @@ import QtQuick 2.0
 
     \b{This component is under heavy development.}
 
-    Examples: TODO
+    Examples: See \l Page
 */
 QtObject {
     id: action
