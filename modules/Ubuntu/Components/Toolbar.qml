@@ -68,12 +68,11 @@ GenericToolbar {
         }
         width: childrenRect.width
 
-        // TODO: cross-fade buttons when tools changes?1
+        // TODO: cross-fade buttons when tools property is updated
         property var tools: toolbar.page ? toolbar.page.tools : null
 
         Repeater {
             model: toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
-//            ChromeButton {
             Button {
                 Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter

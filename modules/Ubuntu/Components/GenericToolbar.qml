@@ -26,7 +26,7 @@ Item {
     }
     height: units.gu(6) // TODO: make themable
 
-//    clip: true // don't show the contents when the toolbar is disabled
+    clip: true // don't show the contents when the toolbar is disabled
 
     /*!
       When active, the bar is visible, otherwise it is hidden.

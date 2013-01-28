@@ -1,4 +1,4 @@
-/*
+    /*
 qml-mapping defines the QML style and delegate QML documents that are used as base
 when building up the Rule components.
 
