@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
 Template {
+    objectName: "Scrollbar"
     title: i18n.tr("Scrollbar")
     id: scrollbars
     LayoutMirroring.childrenInherit: true

@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Row {
     id: templateRow
+    objectName: "TemplateRow"
 
     property string title
 

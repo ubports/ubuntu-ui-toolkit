@@ -534,6 +534,8 @@ FocusScope {
         font: Theming.ComponentUtils.style(editor, "font", fontHolder.font)
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
+        // forward keys to the root element so it can be captured outside of it
+        Keys.forwardTo: [control]
 
         // virtual keyboard/software input panel handling
         activeFocusOnPress: false

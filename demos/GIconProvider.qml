@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Template {
     title: i18n.tr("GIcon image provider")
+    objectName: "GIcon Provider"
 
     Column {
         spacing: units.gu(4)

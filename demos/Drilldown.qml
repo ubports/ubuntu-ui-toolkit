@@ -17,8 +17,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
+
 Template {
     title: i18n.tr("Drilldown")
+    objectName: "Page Stack"
 
     Item {
         Rectangle {

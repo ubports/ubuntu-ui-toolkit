@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Template {
     title: i18n.tr("Progress Bar")
+    objectName: "Progress Bar"
 
     Column {
         spacing: units.gu(4)

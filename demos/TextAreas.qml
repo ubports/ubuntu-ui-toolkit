@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "Text Area"
     title: i18n.tr("Text Area")
     id: page
 
@@ -95,6 +96,10 @@ Template {
                     placeholderText: "the area will expand forever"
                     autoExpand: true
                     maximumLineCount: 0
+
+                    Keys.onPressed: {
+                        print("key pressed: "+event.key)
+                    }
                 }
             }
         }

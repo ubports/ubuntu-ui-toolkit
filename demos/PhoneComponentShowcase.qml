@@ -20,17 +20,21 @@ import Ubuntu.Components.Popups 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Rectangle {
+    objectName: "phoneComponentShowcase"
     color: "lightgrey"
     width: units.gu(45)
     height: units.gu(80)
 
     Tabs {
+        objectName: "Tabs"
         ItemStyle.class: "new-tabs"
         anchors.fill: parent
 
         Tab {
+            objectName: "Components"
             title: "Components"
             page: Flickable {
+                objectName: "Flickable"
                 clip: true
                 width: units.gu(45)
                 height: units.gu(80)
@@ -59,15 +63,16 @@ Rectangle {
                         }
                         ListItem.Standard {
                             text: i18n.tr("Checkbox")
-                            control: CheckBox { }
+                            control: CheckBox { objectName: "Checkbox" }
                         }
                         ListItem.Standard {
                             text: i18n.tr("Switch")
-                            control: Switch { }
+                            control: Switch { objectName: "Switch" }
                         }
                         ListItem.Header { text: i18n.tr("Slider") }
                         ListItem.SingleControl {
                             control: Slider {
+                                objectName: "Slider" 
                                 anchors {
                                     margins: units.gu(1)
                                     fill: parent
@@ -86,6 +91,7 @@ Rectangle {
                                 }
                             }
                             ActivityIndicator {
+                                objectName: "Activity Indicator"
                                 running: true
                                 anchors {
                                     margins: units.gu(1)
@@ -98,6 +104,7 @@ Rectangle {
                         ListItem.Empty {
                             highlightWhenPressed: false
                             ProgressBar {
+                                objectName: "ProgressBar"
                                 id: progress
                                 anchors.centerIn: parent
                                 value: progress.minimumValue
@@ -128,11 +135,13 @@ Rectangle {
                             height: units.gu(40)
                             highlightWhenPressed: false
                             Tabs {
+                                objectName: "Tabs (classic)"
                                 anchors {
                                     fill: parent
                                     margins: units.gu(1)
                                 }
                                 Tab {
+                                    objectName: "Tab 1"
                                     title: i18n.tr("Tab") + " 1"
                                     page: Rectangle {
                                         anchors.fill: parent
@@ -145,6 +154,7 @@ Rectangle {
                                     }
                                 }
                                 Tab {
+                                    objectName: "Tab 2"
                                     iconSource: "call_icon.png"
                                     page: Rectangle {
                                         anchors.fill: parent
@@ -157,6 +167,7 @@ Rectangle {
                                     }
                                 }
                                 Tab {
+                                    objectName: "Tab 3"
                                     title: i18n.tr("Tab") + " 3"
                                     iconSource: "call_icon.png"
                                     page: Qt.resolvedUrl("MyCustomPage.qml")
@@ -167,6 +178,7 @@ Rectangle {
                         ListItem.Empty {
                             highlightWhenPressed: false
                             TextField {
+                                objectName: "TextField"
                                 anchors.centerIn: parent
                                 placeholderText: i18n.tr("simple text field")
                             }
@@ -177,6 +189,7 @@ Rectangle {
         }
 
         Tab {
+            objectName: "Ubuntu shape"
             title: "Ubuntu shape"
             page: UbuntuShapes {
                 showHeader: false

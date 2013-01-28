@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "Ubuntu Shape"
     title: i18n.tr("Ubuntu Shape")
 
     Column {
