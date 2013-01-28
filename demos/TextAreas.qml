@@ -96,10 +96,6 @@ Template {
                     placeholderText: "the area will expand forever"
                     autoExpand: true
                     maximumLineCount: 0
-
-                    Keys.onPressed: {
-                        print("key pressed: "+event.key)
-                    }
                 }
             }
         }
