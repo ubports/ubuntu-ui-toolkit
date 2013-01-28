@@ -51,17 +51,17 @@ Template {
                     tools: [
                         Action {
                             text: "one"
-                            icon: Qt.resolvedUrl("back.png")
+                            iconSource: Qt.resolvedUrl("back.png")
                             onTriggered: print("First action")
                         },
                         Action {
                             text: "two"
-                            icon: Qt.resolvedUrl("back.png")
+                            iconSource: Qt.resolvedUrl("back.png")
                             onTriggered: print("Second action")
                         },
                         Action {
                             text: "three"
-                            icon: Qt.resolvedUrl("back.png")
+                            iconSource: Qt.resolvedUrl("back.png")
                             onTriggered: print("Third action")
                         }
                     ]

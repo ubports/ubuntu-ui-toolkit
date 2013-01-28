@@ -37,9 +37,9 @@ QtObject {
 
     /*!
       \preliminary
-      The icon associated with the action. Can be an Image id or the url of an image.
+      The image associated with the action.
      */
-    property var icon
+    property url iconSource
 
     /*!
       Called when the action is triggered.

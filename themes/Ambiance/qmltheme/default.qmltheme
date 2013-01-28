@@ -13,13 +13,14 @@ properties typed as variant.
 */
 @qml-import(qmltheme 0.1, system:/Ambiance);
 @qml-mapping(.button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.toolbar-button, ButtonStyle, ToolbarButtonDelegate);
 @qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.checkbox, CheckBoxStyle, CheckBoxDelegate);
 @qml-mapping(.switch, SwitchStyle, SwitchDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
-@qml-mapping(.1tab-button, TabButtonStyle, TabButtonDelegate);
+@qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
 @qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
@@ -61,6 +62,13 @@ Examples:
 }
 
 .button, .custom-button {
+    color: "#cccccc";
+    shape: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+}
+
+.toolbar-button {
     color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");

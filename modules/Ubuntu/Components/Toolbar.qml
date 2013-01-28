@@ -16,6 +16,8 @@
  */
 
 import QtQuick 2.0
+// TODO: add FIXME
+import Ubuntu.Components 0.1 as Theming
 
 // TODO: documentation
 GenericToolbar {
@@ -28,70 +30,57 @@ GenericToolbar {
      */
     property Item page: null
 
-    Item {
-        id: contents
+    Rectangle { // TODO: make background themable
+        anchors.fill: parent
+        color: "white"
+
+        MouseArea {
+            // don't let mouse events go through the toolbar
+            anchors.fill: parent
+            // FIXME: Bug in qml? Without onClicked below, this MouseArea
+            //      seems disabled.
+            onClicked: { }
+        }
+    }
+
+    Button {
+//    ChromeButton {
+//        Theming.ItemStyle.class: "button"
         anchors {
             left: parent.left
+            verticalCenter: parent.verticalCenter
+        }
+//        color: "green"
+
+//        iconSource: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
+//        icon: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
+        text: "Back"    // TODO: make themable in Page
+
+//        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+//                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+
+        onClicked: toolbar.page.pageStack.pop()
+    }
+
+    Row {
+        id: toolButtonsContainer
+        anchors {
             right: parent.right
+            top: parent.top
+            bottom: parent.bottom
         }
-        height: parent.height
+        width: childrenRect.width
 
-        Rectangle { // TODO: make background themable?
-            anchors.fill: parent
-            color: "white"
+        // TODO: cross-fade buttons when tools changes?1
+        property var tools: toolbar.page ? toolbar.page.tools : null
 
-            MouseArea {
-                // don't let mouse events go through the toolbar
-                anchors.fill: parent
-                // FIXME: Bug in qml? Without onClicked below, this MouseArea
-                //      seems disabled.
-                onClicked: { }
-            }
-        }
-
-        Item {
-            id: leftItem
-            anchors {
-                left: parent.left
-                top:parent.top
-                bottom: parent.bottom
-            }
-            width: backButton ? backButton.width : 0
-
-            property Item backButton: ChromeButton {
-                parent: leftItem
-                anchors.centerIn: parent
-                icon: Qt.resolvedUrl("artwork/back.png") // TODO: make themable in Page
-                text: "Back"    // TODO: make themable in Page
-
-                visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-                         && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
-
-                onClicked: toolbar.page.pageStack.pop()
-            }
-        }
-
-        Row {
-            id: rightItem
-            anchors {
-                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-            }
-            width: childrenRect.width
-            property var tools: toolbar.page ? toolbar.page.tools : null
-
-            Repeater {
-                model: rightItem.tools ? rightItem.tools : 0
-                ChromeButton {
-                    anchors {
-                        bottom: parent.bottom
-                        top: parent.top
-                    }
-                    text: modelData.text
-                    icon: modelData.icon ? modelData.icon : ""
-                    onClicked: modelData.triggered()
-                }
+        Repeater {
+            model: toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
+            ChromeButton {
+                anchors.verticalCenter: parent.verticalCenter
+                text: modelData.text
+                icon: modelData.iconSource ? modelData.iconSource : ""
+                onClicked: modelData.triggered()
             }
         }
     }

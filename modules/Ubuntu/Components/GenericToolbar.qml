@@ -26,7 +26,8 @@ Item {
     }
     height: units.gu(6) // TODO: make themable
 
-    clip: true
+//    clip: true // don't show the contents when the toolbar is disabled
+
     /*!
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
@@ -82,12 +83,5 @@ Item {
                 chromeBar.active = false;
             }
         }
-
-//        Rectangle {
-//            id: showTouchAreaForDebugging
-//            anchors.fill: parent
-//            color: "pink"
-//            opacity: 0.2
-//        }
     }
 }
