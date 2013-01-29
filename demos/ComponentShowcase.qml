@@ -100,14 +100,9 @@ ApplicationWindow {
             bottom: parent.bottom
         }
         source: widgetList.model[widgetList.selectedIndex].source
-        onSourceChanged: {
-            if (!widgetLoader.item) return;
-            if (widgetLoader.item.hasOwnProperty("tools")) componentShowcase.tools = widgetLoader.item.tools;
-            else componentShowcase.tools = [];
-            if (widgetLoader.item.hasOwnProperty("back")) componentShowcase.back = widgetLoader.item.back;
-            else componentShowcase.back = null;
-        }
     }
+
+    tools: widgetLoader.item && widgetLoader.item.hasOwnProperty("tools") ? widgetLoader.item.tools : null
 
     Component.onCompleted: {
         i18n.domain = "componentshowcase"

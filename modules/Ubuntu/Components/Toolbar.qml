@@ -35,22 +35,13 @@ GenericToolbar {
     Theming.ItemStyle.class: "toolbar"
 
     /*!
-      The page of which the tools must be displayed on the toolbar,
-      and which can have a pageStack that is popped when the back button
-      is clicked.
-     */
-//    property Item page: null
-
-    /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property list<Action> tools
+    property ActionList tools: ActionList {
+        Action { text: "!!!" }
+    }
 
-//    property variant something: [
-//        "aaa",
-//        "bbb"
-//    ]
 
     /*!
       The action associated with the back button
@@ -106,7 +97,7 @@ GenericToolbar {
 //        property var tools: toolbar.page ? toolbar.page.tools : null
 
         Repeater {
-            model: toolbar.tools.length > 0 ? toolbar.tools : 0 //toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
+            model: toolbar.tools ? toolbar.tools.children : 0
             Button {
                 Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter

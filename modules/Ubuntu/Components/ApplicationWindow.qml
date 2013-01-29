@@ -35,7 +35,7 @@ Item {
      */
 //    property list<Action> tools
     property alias tools: toolbar.tools
-    property alias back: toolbar.back
+//    property alias back: toolbar.back
 
     default property alias contentsItem: contents.data
     Item {
@@ -47,16 +47,16 @@ Item {
         id: toolbar
 //        property Item page: pageStack.currentPage
 //        tools : page ? page.tools : null
-        tools: [
+        tools: ActionList {
             Action {
                 text: "one"
                 onTriggered: print("1")
-            },
+            }
             Action {
                 text: "two"
                 onTriggered: print("2")
             }
-        ]
+        }
         // FIXME: The toolbar back button will be made configurable from a Page property
 //        back: Action {
 //            iconSource: Qt.resolvedUrl("artwork/back.png")
