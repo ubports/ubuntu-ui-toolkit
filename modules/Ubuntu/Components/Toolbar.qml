@@ -41,6 +41,18 @@ GenericToolbar {
      */
     property Item page: null
 
+
+    /*!
+      The action associated with the back button
+     */
+    property Action back: Action {
+//        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: "Back"
+        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+        onTriggered: toolbar.page.pageStack.pop()
+    }
+
     Item {
         anchors.fill: parent
 
@@ -64,13 +76,10 @@ GenericToolbar {
         }
 
         // TODO: Make back buton themable in Page
-        iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
-
-        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
-
-        onClicked: toolbar.page.pageStack.pop()
+        iconSource: toolbar.back.iconSource
+        text: toolbar.back.text
+        visible: toolbar.back.visible
+        onClicked: back.triggered()
     }
 
     Row {

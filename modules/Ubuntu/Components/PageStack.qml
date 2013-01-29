@@ -212,5 +212,12 @@ Item {
     }
     Toolbar {
         page: pageStack.currentPage
+        // FIXME: The toolbar back button will be made configurable from a Page property
+        back: Action {
+            iconSource: Qt.resolvedUrl("artwork/back.png")
+            text: "Back"
+            visible: pageStack.depth > 1
+            onTriggered: pageStack.pop()
+        }
     }
 }

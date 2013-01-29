@@ -45,4 +45,9 @@ QtObject {
       Called when the action is triggered.
      */
     signal triggered()
+
+    /*!
+      The action is visible to the user
+     */
+    property bool visible: true
 }
