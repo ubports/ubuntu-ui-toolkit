@@ -35,7 +35,10 @@ HEADERS += plugin.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
-    bottomedgecontrollersdk.h
+    bottomedgecontrollersdk.h \
+    qquickclipboard.h \
+    qquickmimedata.h \
+    qquickclipboard_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -52,7 +55,9 @@ SOURCES += plugin.cpp \
     giconprovider.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
-    bottomedgecontrollersdk.cpp
+    bottomedgecontrollersdk.cpp \
+    qquickclipboard.cpp \
+    qquickmimedata.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)

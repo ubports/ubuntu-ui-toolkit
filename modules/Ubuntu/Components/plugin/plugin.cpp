@@ -34,6 +34,8 @@
 #include "giconprovider.h"
 #include "shapeitem.h"
 #include "inversemouseareatype.h"
+#include "qquickclipboard.h"
+#include "qquickmimedata.h"
 #include "bottomedgecontrollersdk.h"
 
 #include <sys/types.h>
@@ -41,6 +43,18 @@
 
 static const char* DBUS_SERVICE = "com.canonical.SDKApp%1";
 static const char* BOTTOM_EDGE_CONTROLLER_DBUS_PATH = "/BottomEdgeController";
+
+/*
+ * Registration function for the Clipboard type
+ */
+static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    QQuickClipboard *clipboard = new QQuickClipboard;
+    return clipboard;
+}
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -52,6 +66,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
     qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
+    qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
+    qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
