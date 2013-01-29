@@ -76,6 +76,12 @@ Examples:
 .toolbar-button {
 }
 
+.toolbar-button .label {
+    fontSize: "x-small";
+    color: "#888888";
+    opacity: item.enabled ? 1.0 : 0.3;
+}
+
 .transparent-button {
 }
 

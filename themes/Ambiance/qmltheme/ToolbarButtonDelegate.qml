@@ -33,7 +33,7 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         source: item.iconSource
-        opacity: button.enabled ? 1.0 : 0.3
+        opacity: item.enabled ? 1.0 : 0.3
     }
 
     Label {
@@ -45,15 +45,5 @@ Item {
         }
         width: paintedWidth
         text: item.text
-        fontSize: "x-small"
-        color: "#888888"
-        opacity: button.enabled ? 1.0 : 0.3
-    }
-
-    Rectangle {
-        anchors.fill: parent
-        color: "white"
-        opacity: 0.4
-        visible: button.pressed
     }
 }
