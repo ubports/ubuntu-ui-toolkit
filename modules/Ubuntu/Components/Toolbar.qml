@@ -38,10 +38,7 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ActionList tools: ActionList {
-        Action { text: "!!!" }
-    }
-
+    property ActionList tools
 
     /*!
       The action associated with the back button

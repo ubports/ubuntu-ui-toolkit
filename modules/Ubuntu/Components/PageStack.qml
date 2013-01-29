@@ -102,12 +102,12 @@ Item {
     /*!
       The tools of the current \l Page.
      */
-    property list<Action> tools
+    property ActionList tools
 
-    onToolsChanged: {
-        print("tools changed to "+tools);
-        for (var i=0; i < pageStack.tools.length; i++) print(pageStack.tools[i]);
-    }
+//    onToolsChanged: {
+//        print("tools changed to "+tools);
+//        for (var i=0; i < pageStack.tools.length; i++) print(pageStack.tools[i]);
+//    }
 
 //    Binding {
 //        target: pageStack

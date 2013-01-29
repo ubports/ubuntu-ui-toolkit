@@ -35,6 +35,7 @@ Item {
      */
 //    property list<Action> tools
     property alias tools: toolbar.tools
+//    property ActionList tools
 //    property alias back: toolbar.back
 
     default property alias contentsItem: contents.data

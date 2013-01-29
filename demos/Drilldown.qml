@@ -60,10 +60,16 @@ Template {
                     }
                 }
 
-                tools: [
-                    Action { text: "one" },
-                    Action { text: "two" }
-                ]
+                tools: ActionList {
+                    Action {
+                        text: "one"
+                        onTriggered: print("trigger")
+                    }
+                    Action {
+                        text: "two"
+                        onTriggered: print("bla")
+                    }
+                }
             }
 
             Page {
@@ -89,11 +95,11 @@ Template {
                     }
                 }
 
-                tools: [
+                tools: ActionList {
                     Action {
                         text: "page 1"
                     }
-                ]
+                }
             }
 
             Component {
