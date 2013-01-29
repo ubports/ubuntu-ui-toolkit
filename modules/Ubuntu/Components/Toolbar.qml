@@ -46,7 +46,7 @@ GenericToolbar {
       The action associated with the back button
      */
     property Action back: Action {
-//        iconSource: Qt.resolvedUrl("artwork/back.png")
+        iconSource: Qt.resolvedUrl("artwork/back.png")
         text: "Back"
         visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
                  && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
