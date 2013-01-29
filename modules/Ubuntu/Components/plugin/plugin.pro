@@ -35,7 +35,7 @@ HEADERS += plugin.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
-    bottomedgecontrollersdk.h \
+    bottomedgecontroller.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h
@@ -55,7 +55,7 @@ SOURCES += plugin.cpp \
     giconprovider.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
-    bottomedgecontrollersdk.cpp \
+    bottomedgecontroller.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp
 

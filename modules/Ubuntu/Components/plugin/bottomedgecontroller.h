@@ -15,12 +15,12 @@
  *
  */
 
-#ifndef BOTTOMEDGECONTROLLERSDK_H
-#define BOTTOMEDGECONTROLLERSDK_H
+#ifndef BOTTOMEDGECONTROLLER_H
+#define BOTTOMEDGECONTROLLER_H
 
 #include <QObject>
 
-class BottomEdgeControllerSDK : public QObject
+class BottomEdgeController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
@@ -31,8 +31,8 @@ class BottomEdgeControllerSDK : public QObject
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomEdgeController")
 public:
-    static BottomEdgeControllerSDK& instance() {
-        static BottomEdgeControllerSDK instance;
+    static BottomEdgeController& instance() {
+        static BottomEdgeController instance;
         return instance;
     }
 
@@ -59,7 +59,7 @@ Q_SIGNALS:
     void availableChanged(bool available);
 
 private:
-    BottomEdgeControllerSDK();
+    BottomEdgeController();
 
     double m_y;
     double m_height;

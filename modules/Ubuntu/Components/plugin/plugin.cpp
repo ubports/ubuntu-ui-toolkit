@@ -36,7 +36,7 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "bottomedgecontrollersdk.h"
+#include "bottomedgecontroller.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -95,9 +95,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     const QString dbusName = QString(DBUS_SERVICE).arg(getpid());
     QDBusConnection::sessionBus().registerService(dbusName);
-    BottomEdgeControllerSDK *edgeControllerSDK = &BottomEdgeControllerSDK::instance();
-    QDBusConnection::sessionBus().registerObject(BOTTOM_EDGE_CONTROLLER_DBUS_PATH, edgeControllerSDK, QDBusConnection::ExportAllContents);
-    context->setContextProperty("bottomEdgeController", edgeControllerSDK);
+    BottomEdgeController *edgeController = &BottomEdgeController::instance();
+    QDBusConnection::sessionBus().registerObject(BOTTOM_EDGE_CONTROLLER_DBUS_PATH, edgeController, QDBusConnection::ExportAllContents);
+    context->setContextProperty("bottomEdgeController", edgeController);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

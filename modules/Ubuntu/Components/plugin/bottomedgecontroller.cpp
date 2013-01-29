@@ -15,9 +15,9 @@
  *
  */
 
-#include "bottomedgecontrollersdk.h"
+#include "bottomedgecontroller.h"
 
-BottomEdgeControllerSDK::BottomEdgeControllerSDK()
+BottomEdgeController::BottomEdgeController()
  : m_y(-1),
    m_height(-1),
    m_enabled(false),
@@ -26,12 +26,12 @@ BottomEdgeControllerSDK::BottomEdgeControllerSDK()
 {
 }
 
-double BottomEdgeControllerSDK::y() const
+double BottomEdgeController::y() const
 {
     return m_y;
 }
 
-void BottomEdgeControllerSDK::setY(double y)
+void BottomEdgeController::setY(double y)
 {
     if (m_y != y) {
         m_y = y;
@@ -39,12 +39,12 @@ void BottomEdgeControllerSDK::setY(double y)
     }
 }
 
-double BottomEdgeControllerSDK::height() const
+double BottomEdgeController::height() const
 {
     return m_height;
 }
 
-void BottomEdgeControllerSDK::setHeight(double height)
+void BottomEdgeController::setHeight(double height)
 {
     if (m_height != height) {
         m_height = height;
@@ -52,12 +52,12 @@ void BottomEdgeControllerSDK::setHeight(double height)
     }
 }
 
-bool BottomEdgeControllerSDK::enabled() const
+bool BottomEdgeController::enabled() const
 {
     return m_enabled;
 }
 
-void BottomEdgeControllerSDK::setEnabled(bool enabled)
+void BottomEdgeController::setEnabled(bool enabled)
 {
     if (m_enabled != enabled) {
         m_enabled = enabled;
@@ -65,12 +65,12 @@ void BottomEdgeControllerSDK::setEnabled(bool enabled)
     }
 }
 
-bool BottomEdgeControllerSDK::forceVisible() const
+bool BottomEdgeController::forceVisible() const
 {
     return m_forceVisible;
 }
 
-void BottomEdgeControllerSDK::setForceVisible(bool visible)
+void BottomEdgeController::setForceVisible(bool visible)
 {
     if (visible != m_forceVisible) {
         m_forceVisible = visible;
@@ -78,12 +78,12 @@ void BottomEdgeControllerSDK::setForceVisible(bool visible)
     }
 }
 
-bool BottomEdgeControllerSDK::available() const
+bool BottomEdgeController::available() const
 {
     return m_available;
 }
 
-void BottomEdgeControllerSDK::setAvailable(bool available)
+void BottomEdgeController::setAvailable(bool available)
 {
     if (available != m_available) {
         m_available = available;
