@@ -29,7 +29,7 @@
     The user of this class needs to obey the following information from the shell:
      * y: This is the y the bottom bar has to be positioned to
      *    0 means the bottom bar should totally shown
-     *    height/2 means hald the bottom bar should be shown
+     *    height/2 means half the bottom bar should be shown
      *    height means the bottom bar should be hidden
      * available: This is true if the shell is available and thus will control y
      *            If this is false the user of the class should find a different way to
@@ -37,7 +37,8 @@
 
     The user of this class can control the bottom bar behaviour:
      * active: If set to true, will show the bottom bar
-     * locked: If set to true, the bottom bar will be locked in its position
+     *         If set to false, will hide the bottom bar
+     * locked: If set to true, the bottom bar will be locked in its fully open/closed position
 
 */
 BottomEdgeController::BottomEdgeController()
