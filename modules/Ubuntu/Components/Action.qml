@@ -17,31 +17,37 @@
 import QtQuick 2.0
 
 /*!
-    \internal
-    \qmltype Header
+    \qmltype Action
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Header used by \l PageStack
-*/
-Rectangle {
-    id: header
+    \brief TODO
 
-    color: "#666666"
+    \b{This component is under heavy development.}
+
+    Examples: See \l Page
+*/
+QtObject {
+    id: action
 
     /*!
       \preliminary
-      The text shown as the title in the Header
+      The title of the action.
      */
-    property alias title: headerTitle.text
+    property string text
 
-    Label {
-        id: headerTitle
-        anchors {
-            fill: parent
-            margins: units.gu(0.5)
-        }
-        color: "white"
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
+    /*!
+      \preliminary
+      The image associated with the action.
+     */
+    property url iconSource
+
+    /*!
+      Called when the action is triggered.
+     */
+    signal triggered()
+
+    /*!
+      The action is visible to the user
+     */
+    property bool visible: true
 }

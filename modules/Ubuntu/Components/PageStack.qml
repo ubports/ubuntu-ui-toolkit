@@ -196,17 +196,11 @@ Item {
                 right: parent.right
                 top: parent.top
             }
-            pageStack: pageStack
             height: units.gu(5)
         }
 
         function updateHeader() {
             var stackSize = stack.size();
-            if (stackSize > 1) {
-                header.showBackButton = true
-            } else {
-                header.showBackButton = false
-            }
             if (stackSize > 0) {
                 var item = stack.top().object;
                 if (item.__isPage === true) header.title = item.title;
@@ -214,6 +208,16 @@ Item {
             } else {
                 header.title = "";
             }
+        }
+    }
+    Toolbar {
+        page: pageStack.currentPage
+        // FIXME: The toolbar back button will be made configurable from a Page property
+        back: Action {
+            iconSource: Qt.resolvedUrl("artwork/back.png")
+            text: "Back"
+            visible: pageStack.depth > 1
+            onTriggered: pageStack.pop()
         }
     }
 }

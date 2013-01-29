@@ -13,35 +13,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-/*!
-    \internal
-    \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
-    \brief Header used by \l PageStack
-*/
 Rectangle {
-    id: header
-
-    color: "#666666"
-
-    /*!
-      \preliminary
-      The text shown as the title in the Header
-     */
-    property alias title: headerTitle.text
-
-    Label {
-        id: headerTitle
-        anchors {
-            fill: parent
-            margins: units.gu(0.5)
-        }
-        color: "white"
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
+    anchors.fill: parent
+    color: StyleUtils.itemStyleProperty("color")
 }
