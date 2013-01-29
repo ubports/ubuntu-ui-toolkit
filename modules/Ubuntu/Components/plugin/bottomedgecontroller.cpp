@@ -25,11 +25,14 @@
 
     The user of this class needs to give the following information to the shell:
      * height: This is the height of the bottom bar that will be shown when dragging up
-     * enabled: This is wheter that bottom bar actually should be shown
+     * enabled: This is whether that bottom bar actually should be shown
      *          Setting it to false is equivalent to setting height to 0
 
     The user of this class needs to obey the following information from the shell:
      * y: This is the y the bottom bar has to be positioned to
+     *    0 means the bottom bar should totally shown
+     *    height/2 means hald the bottom bar should be shown
+     *    height means the bottom bar should be hidden
      * available: This is true if the shell is available and thus will control y
      *            If this is false the user of the class should find a different way to
      *            animate the bottom edge since the shell won't do it (since the shell is not there)
