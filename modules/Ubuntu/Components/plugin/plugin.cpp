@@ -18,6 +18,7 @@
 
 #include <QtQml>
 #include <QtQuick/private/qquickimagebase_p.h>
+#include <QDBusConnection>
 
 #include "plugin.h"
 #include "themeengine.h"
@@ -33,6 +34,13 @@
 #include "giconprovider.h"
 #include "shapeitem.h"
 #include "inversemouseareatype.h"
+#include "bottomedgecontrollersdk.h"
+
+#include <sys/types.h>
+#include <unistd.h>
+
+static const char* DBUS_SERVICE = "com.canonical.SDKApp%1";
+static const char* BOTTOM_EDGE_CONTROLLER_DBUS_PATH = "/BottomEdgeController";
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -68,6 +76,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
+
+    const QString dbusName = QString(DBUS_SERVICE).arg(getpid());
+    QDBusConnection::sessionBus().registerService(dbusName);
+    BottomEdgeControllerSDK *edgeControllerSDK = &BottomEdgeControllerSDK::instance();
+    QDBusConnection::sessionBus().registerObject(BOTTOM_EDGE_CONTROLLER_DBUS_PATH, edgeControllerSDK, QDBusConnection::ExportAllContents);
+    context->setContextProperty("bottomEdgeController", edgeControllerSDK);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
