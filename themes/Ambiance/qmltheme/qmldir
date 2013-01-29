@@ -1,6 +1,7 @@
 module qmltheme
 ButtonStyle 0.1 ButtonStyle.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
+ToolbarDelegate 0.1 ToolbarDelegate.qml
 ToolbarButtonDelegate 0.1 ToolbarButtonDelegate.qml
 CheckBoxStyle 0.1 CheckBoxStyle.qml
 CheckBoxDelegate 0.1 CheckBoxDelegate.qml

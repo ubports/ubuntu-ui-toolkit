@@ -32,6 +32,7 @@ import Ubuntu.Components 0.1 as Theming
 */
 GenericToolbar {
     id: toolbar
+    Theming.ItemStyle.class: "toolbar"
 
     /*!
       The page of which the tools must be displayed on the toolbar,
@@ -40,9 +41,11 @@ GenericToolbar {
      */
     property Item page: null
 
-    Rectangle { // TODO: make background themable
+    Item {
         anchors.fill: parent
-        color: "white"
+
+        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
+        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
 
         MouseArea {
             // don't let mouse events go through the toolbar
