@@ -20,8 +20,6 @@
 
 #include <QObject>
 
-class QDBusInterface;
-
 class BottomEdgeControllerSDK : public QObject
 {
     Q_OBJECT
