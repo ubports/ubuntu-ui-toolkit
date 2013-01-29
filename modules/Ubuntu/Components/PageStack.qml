@@ -100,6 +100,35 @@ Item {
     property var stack: new Stack.Stack()
 
     /*!
+      The tools of the current \l Page.
+     */
+    property list<Action> tools
+
+    onToolsChanged: {
+        print("tools changed to "+tools);
+        for (var i=0; i < pageStack.tools.length; i++) print(pageStack.tools[i]);
+    }
+
+//    Binding {
+//        target: pageStack
+//        property: "tools"
+//        value: getTools()
+
+//    }
+
+//    function getTools() {
+//        print(currentPage.tools)
+//        if (currentPage && currentPage.hasOwnProperty("tools")) return currentPage.tools;
+//        return [];
+//    }
+    onCurrentPageChanged: {
+        print(currentPage)
+        if (currentPage) pageStack.tools = currentPage.tools;
+        else currentPage.tools = [];
+        for (var i=0; i < tools.length; i++) print("XX "+tools[i].text)
+    }
+
+    /*!
       \internal
       Create a PageWrapper for the specified page.
      */
@@ -210,14 +239,11 @@ Item {
             }
         }
     }
-    Toolbar {
-        page: pageStack.currentPage
-        // FIXME: The toolbar back button will be made configurable from a Page property
-        back: Action {
-            iconSource: Qt.resolvedUrl("artwork/back.png")
-            text: "Back"
-            visible: pageStack.depth > 1
-            onTriggered: pageStack.pop()
-        }
+
+    property Action back: Action {
+        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: "Back"
+        visible: pageStack.depth > 1
+        onTriggered: pageStack.pop()
     }
 }

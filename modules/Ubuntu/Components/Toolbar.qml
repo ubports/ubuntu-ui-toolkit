@@ -39,19 +39,30 @@ GenericToolbar {
       and which can have a pageStack that is popped when the back button
       is clicked.
      */
-    property Item page: null
+//    property Item page: null
 
+    /*!
+      \preliminary
+      The list of \l Actions to be shown on the toolbar
+     */
+    property list<Action> tools
+
+//    property variant something: [
+//        "aaa",
+//        "bbb"
+//    ]
 
     /*!
       The action associated with the back button
      */
-    property Action back: Action {
-        iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
-        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
-        onTriggered: toolbar.page.pageStack.pop()
-    }
+    property Action back: null
+//    Action {
+//        iconSource: Qt.resolvedUrl("artwork/back.png")
+//        text: "Back"
+//        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
+//                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
+//        onTriggered: toolbar.page.pageStack.pop()
+//    }
 
     Item {
         anchors.fill: parent
@@ -69,6 +80,7 @@ GenericToolbar {
     }
 
     Button {
+        visible: toolbar.back && toolbar.back.visible
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
@@ -76,10 +88,9 @@ GenericToolbar {
         }
 
         // TODO: Make back buton themable in Page
-        iconSource: toolbar.back.iconSource
-        text: toolbar.back.text
-        visible: toolbar.back.visible
-        onClicked: back.triggered()
+        iconSource: toolbar.back ? toolbar.back.iconSource : ""
+        text: toolbar.back ? toolbar.back.text : ""
+        onClicked: toolbar.back.triggered()
     }
 
     Row {
@@ -92,10 +103,10 @@ GenericToolbar {
         width: childrenRect.width
 
         // TODO: cross-fade buttons when tools property is updated?
-        property var tools: toolbar.page ? toolbar.page.tools : null
+//        property var tools: toolbar.page ? toolbar.page.tools : null
 
         Repeater {
-            model: toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
+            model: toolbar.tools.length > 0 ? toolbar.tools : 0 //toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
             Button {
                 Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter

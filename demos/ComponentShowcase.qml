@@ -18,12 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Rectangle {
+ApplicationWindow {
+    id: componentShowcase
     objectName: "componentShowcase"
     width: units.gu(100)
     height: units.gu(75)
-
-    color: "#e6e6e6"
 
     Rectangle {
         anchors.fill: widgetList
@@ -101,6 +100,13 @@ Rectangle {
             bottom: parent.bottom
         }
         source: widgetList.model[widgetList.selectedIndex].source
+        onSourceChanged: {
+            if (!widgetLoader.item) return;
+            if (widgetLoader.item.hasOwnProperty("tools")) componentShowcase.tools = widgetLoader.item.tools;
+            else componentShowcase.tools = [];
+            if (widgetLoader.item.hasOwnProperty("back")) componentShowcase.back = widgetLoader.item.back;
+            else componentShowcase.back = null;
+        }
     }
 
     Component.onCompleted: {

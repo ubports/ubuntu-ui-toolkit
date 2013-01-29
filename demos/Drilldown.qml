@@ -22,6 +22,9 @@ Template {
     title: i18n.tr("Drilldown")
     objectName: "Page Stack"
 
+    property alias tools: pageStack.tools
+    property alias back: pageStack.back
+
     Item {
         Rectangle {
             color: "#eeeeee"
@@ -56,6 +59,11 @@ Template {
                         progression: true
                     }
                 }
+
+                tools: [
+                    Action { text: "one" },
+                    Action { text: "two" }
+                ]
             }
 
             Page {
@@ -80,6 +88,12 @@ Template {
                         progression: true
                     }
                 }
+
+                tools: [
+                    Action {
+                        text: "page 1"
+                    }
+                ]
             }
 
             Component {
