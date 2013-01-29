@@ -23,11 +23,9 @@
 class BottomEdgeController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
-    Q_PROPERTY(double height READ height WRITE setHeight NOTIFY heightChanged)
-    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
-    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
-    Q_PROPERTY(bool available READ available WRITE setAvailable NOTIFY availableChanged)
+    Q_PROPERTY(double currentHeight READ currentHeight WRITE setCurrentHeight NOTIFY currentHeightChanged)
+    Q_PROPERTY(double targetHeight READ targetHeight WRITE setTargetHeight NOTIFY targetHeightChanged)
+    Q_PROPERTY(bool forceHidden READ forceHidden WRITE setForceHidden NOTIFY forceHiddenChanged)
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomEdgeController")
 public:
@@ -36,36 +34,26 @@ public:
         return instance;
     }
 
-    double y() const;
-    void setY(double y);
+    double currentHeight() const;
+    void setCurrentHeight(double currentHeight);
 
-    double height() const;
-    void setHeight(double height);
+    double targetHeight() const;
+    void setTargetHeight(double targetHeight);
 
-    bool active() const;
-    void setActive(bool active);
-
-    bool locked() const;
-    void setLocked(bool locked);
-
-    bool available() const;
-    void setAvailable(bool available);
+    bool forceHidden() const;
+    void setForceHidden(bool forceHidden);
 
 Q_SIGNALS:
-    void yChanged(double y);
-    void heightChanged(double height);
-    void activeChanged(bool active);
-    void lockedChanged(bool locked);
-    void availableChanged(bool available);
+    void currentHeightChanged(double y);
+    void targetHeightChanged(double height);
+    void forceHiddenChanged(bool forceHidden);
 
 private:
     BottomEdgeController();
 
-    double m_y;
-    double m_height;
-    bool m_active;
-    bool m_locked;
-    bool m_available;
+    double m_currentHeight;
+    double m_targetHeight;
+    bool m_forceHidden;
 };
 
 #endif

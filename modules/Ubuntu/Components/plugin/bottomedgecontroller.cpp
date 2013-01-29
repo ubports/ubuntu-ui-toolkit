@@ -21,97 +21,57 @@
     \internal
 
     BottomEdgeController controller is used to communicate with the Shell BottomEdgeController.
-    This class allows hooking a bottom bar into the shell bottom edge dragging
+    This class allows for the bottom edge interaction to happen
 
     The user of this class needs to give the following information to the shell:
-     * height: This is the height of the bottom bar that will be shown when dragging up
+     * currentHeight: This is the current height of the bottom bar
+     * targetHeight: This is the target final height of the bottom bar
 
-    The user of this class needs to obey the following information from the shell:
-     * y: This is the y the bottom bar has to be positioned to
-     *    0 means the bottom bar should totally shown
-     *    height/2 means half the bottom bar should be shown
-     *    height means the bottom bar should be hidden
-     * available: This is true if the shell is available and thus will control y
-     *            If this is false the user of the class should find a different way to
-     *            animate the bottom edge since the shell won't do it (since the shell is not there)
-
-    The user of this class can control the bottom bar behaviour:
-     * active: If set to true, will show the bottom bar
-     *         If set to false, will hide the bottom bar
-     * locked: If set to true, the bottom bar will be locked in its fully open/closed position
-
+    The shell can control the bottom bar behaviour:
+     * forceHidden: If set to true, the bottom bar has to be forced to be hidden
 */
 BottomEdgeController::BottomEdgeController()
- : m_y(-1),
-   m_height(-1),
-   m_active(false),
-   m_locked(false),
-   m_available(false)
+ : m_currentHeight(-1),
+   m_targetHeight(-1),
+   m_forceHidden(false)
 {
 }
 
-double BottomEdgeController::y() const
+double BottomEdgeController::currentHeight() const
 {
-    return m_y;
+    return m_currentHeight;
 }
 
-void BottomEdgeController::setY(double y)
+void BottomEdgeController::setCurrentHeight(double currentHeight)
 {
-    if (m_y != y) {
-        m_y = y;
-        Q_EMIT yChanged(y);
+    if (m_currentHeight != currentHeight) {
+        m_currentHeight = currentHeight;
+        Q_EMIT currentHeightChanged(currentHeight);
     }
 }
 
-double BottomEdgeController::height() const
+double BottomEdgeController::targetHeight() const
 {
-    return m_height;
+    return m_targetHeight;
 }
 
-void BottomEdgeController::setHeight(double height)
+void BottomEdgeController::setTargetHeight(double targetHeight)
 {
-    if (m_height != height) {
-        m_height = height;
-        Q_EMIT heightChanged(height);
+    if (m_targetHeight != targetHeight) {
+        m_targetHeight = targetHeight;
+        Q_EMIT targetHeightChanged(targetHeight);
     }
 }
 
-bool BottomEdgeController::active() const
+bool BottomEdgeController::forceHidden() const
 {
-    return m_active;
+    return m_forceHidden;
 }
 
-void BottomEdgeController::setActive(bool active)
+void BottomEdgeController::setForceHidden(bool forceHidden)
 {
-    if (m_active != active) {
-        m_active = active;
-        Q_EMIT activeChanged(active);
+    if (forceHidden != m_forceHidden) {
+        m_forceHidden = forceHidden;
+        Q_EMIT forceHiddenChanged(forceHidden);
     }
 }
-
-bool BottomEdgeController::locked() const
-{
-    return m_locked;
-}
-
-void BottomEdgeController::setLocked(bool locked)
-{
-    if (locked != m_locked) {
-        m_locked = locked;
-        Q_EMIT lockedChanged(locked);
-    }
-}
-
-bool BottomEdgeController::available() const
-{
-    return m_available;
-}
-
-void BottomEdgeController::setAvailable(bool available)
-{
-    if (available != m_available) {
-        m_available = available;
-        Q_EMIT availableChanged(available);
-    }
-}
-
