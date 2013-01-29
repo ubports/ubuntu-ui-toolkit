@@ -25,8 +25,8 @@ class BottomEdgeController : public QObject
     Q_OBJECT
     Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
     Q_PROPERTY(double height READ height WRITE setHeight NOTIFY heightChanged)
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(bool forceVisible READ forceVisible WRITE setForceVisible NOTIFY forceVisibleChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
     Q_PROPERTY(bool available READ available WRITE setAvailable NOTIFY availableChanged)
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomEdgeController")
@@ -42,11 +42,11 @@ public:
     double height() const;
     void setHeight(double height);
 
-    bool enabled() const;
-    void setEnabled(bool enabled);
+    bool active() const;
+    void setActive(bool active);
 
-    bool forceVisible() const;
-    void setForceVisible(bool visible);
+    bool locked() const;
+    void setLocked(bool locked);
 
     bool available() const;
     void setAvailable(bool available);
@@ -54,8 +54,8 @@ public:
 Q_SIGNALS:
     void yChanged(double y);
     void heightChanged(double height);
-    void enabledChanged(bool enabled);
-    void forceVisibleChanged(bool forceVisible);
+    void activeChanged(bool active);
+    void lockedChanged(bool locked);
     void availableChanged(bool available);
 
 private:
@@ -63,8 +63,8 @@ private:
 
     double m_y;
     double m_height;
-    bool m_enabled;
-    bool m_forceVisible;
+    bool m_active;
+    bool m_locked;
     bool m_available;
 };
 

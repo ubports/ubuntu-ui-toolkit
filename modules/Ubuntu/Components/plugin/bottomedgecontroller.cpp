@@ -25,8 +25,6 @@
 
     The user of this class needs to give the following information to the shell:
      * height: This is the height of the bottom bar that will be shown when dragging up
-     * enabled: This is whether that bottom bar actually should be shown
-     *          Setting it to false is equivalent to setting height to 0
 
     The user of this class needs to obey the following information from the shell:
      * y: This is the y the bottom bar has to be positioned to
@@ -37,15 +35,16 @@
      *            If this is false the user of the class should find a different way to
      *            animate the bottom edge since the shell won't do it (since the shell is not there)
 
-    The user of this class has a function to instruct the shell:
-     * setForceVisible: If set to true the bottom bar will be shown even
-     *                  if the user did not drag the bottom edge to show it
+    The user of this class can control the bottom bar behaviour:
+     * active: If set to true, will show the bottom bar
+     * locked: If set to true, the bottom bar will be locked in its position
+
 */
 BottomEdgeController::BottomEdgeController()
  : m_y(-1),
    m_height(-1),
-   m_enabled(false),
-   m_forceVisible(false),
+   m_active(false),
+   m_locked(false),
    m_available(false)
 {
 }
@@ -76,29 +75,29 @@ void BottomEdgeController::setHeight(double height)
     }
 }
 
-bool BottomEdgeController::enabled() const
+bool BottomEdgeController::active() const
 {
-    return m_enabled;
+    return m_active;
 }
 
-void BottomEdgeController::setEnabled(bool enabled)
+void BottomEdgeController::setActive(bool active)
 {
-    if (m_enabled != enabled) {
-        m_enabled = enabled;
-        Q_EMIT enabledChanged(enabled);
+    if (m_active != active) {
+        m_active = active;
+        Q_EMIT activeChanged(active);
     }
 }
 
-bool BottomEdgeController::forceVisible() const
+bool BottomEdgeController::locked() const
 {
-    return m_forceVisible;
+    return m_locked;
 }
 
-void BottomEdgeController::setForceVisible(bool visible)
+void BottomEdgeController::setLocked(bool locked)
 {
-    if (visible != m_forceVisible) {
-        m_forceVisible = visible;
-        Q_EMIT forceVisibleChanged(visible);
+    if (locked != m_locked) {
+        m_locked = locked;
+        Q_EMIT lockedChanged(locked);
     }
 }
 
