@@ -17,6 +17,27 @@
 
 #include "bottomedgecontroller.h"
 
+/*!
+    \internal
+
+    BottomEdgeController controller is used to communicate with the Shell BottomEdgeController.
+    This class allows hooking a bottom bar into the shell bottom edge dragging
+
+    The user of this class needs to give the following information to the shell:
+     * height: This is the height of the bottom bar that will be shown when dragging up
+     * enabled: This is wheter that bottom bar actually should be shown
+     *          Setting it to false is equivalent to setting height to 0
+
+    The user of this class needs to obey the following information from the shell:
+     * y: This is the y the bottom bar has to be positioned to
+     * available: This is true if the shell is available and thus will control y
+     *            If this is false the user of the class should find a different way to
+     *            animate the bottom edge since the shell won't do it (since the shell is not there)
+
+    The user of this class has a function to instruct the shell:
+     * setForceVisible: If set to true the bottom bar will be shown even
+     *                  if the user did not drag the bottom edge to show it
+*/
 BottomEdgeController::BottomEdgeController()
  : m_y(-1),
    m_height(-1),
