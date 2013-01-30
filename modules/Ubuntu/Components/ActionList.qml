@@ -18,7 +18,6 @@ import QtQuick 2.0
 
 /*!
     \qmltype ActionList
-    \internal
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief List of \l Actions
