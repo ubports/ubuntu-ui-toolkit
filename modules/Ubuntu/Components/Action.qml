@@ -50,4 +50,9 @@ QtObject {
       The action is visible to the user
      */
     property bool visible: true
+
+    /*!
+      Enable the action. It may be visible, but disabled.
+     */
+    property bool enabled: true
 }
