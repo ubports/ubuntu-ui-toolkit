@@ -35,23 +35,10 @@ GenericToolbar {
     Theming.ItemStyle.class: "toolbar"
 
     /*!
-      The page of which the tools must be displayed on the toolbar,
-      and which can have a pageStack that is popped when the back button
-      is clicked.
+      \preliminary
+      The list of \l Actions to be shown on the toolbar
      */
-    property Item page: null
-
-
-    /*!
-      The action associated with the back button
-     */
-    property Action back: Action {
-        iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
-        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
-        onTriggered: toolbar.page.pageStack.pop()
-    }
+    property ActionList tools
 
     Item {
         anchors.fill: parent
@@ -69,17 +56,17 @@ GenericToolbar {
     }
 
     Button {
+        id: backButton
+        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        visible: back && back.visible
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
             verticalCenter: parent.verticalCenter
         }
-
-        // TODO: Make back buton themable in Page
-        iconSource: toolbar.back.iconSource
-        text: toolbar.back.text
-        visible: toolbar.back.visible
-        onClicked: back.triggered()
+        iconSource: back ? back.iconSource : ""
+        text: back ? back.text : ""
+        onClicked: back.triggered(backButton)
     }
 
     Row {
@@ -91,17 +78,16 @@ GenericToolbar {
         }
         width: childrenRect.width
 
-        // TODO: cross-fade buttons when tools property is updated?
-        property var tools: toolbar.page ? toolbar.page.tools : null
-
         Repeater {
-            model: toolButtonsContainer.tools ? toolButtonsContainer.tools : 0
+            model: toolbar.tools ? toolbar.tools.children : 0
             Button {
+                id: toolButton
                 Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter
                 text: modelData.text
                 iconSource: modelData.iconSource ? modelData.iconSource : ""
-                onClicked: modelData.triggered()
+                onClicked: modelData.triggered(toolButton)
+                enabled: modelData.enabled
             }
         }
     }

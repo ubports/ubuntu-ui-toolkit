@@ -100,6 +100,23 @@ Item {
     property var stack: new Stack.Stack()
 
     /*!
+      The tools of currentPage. If the current page does not define tools,
+      a default set of tools is used consisting of only a back button that is
+      visible when depth > 1.
+     */
+    property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
+                               && currentPage.tools ? currentPage.tools : __defaultTools
+
+    onToolsChanged: if (tools) tools.__pageStack = pageStack;
+
+    /*!
+      \internal
+      The tools to be used if page does not define tools. It features only
+      the default back button.
+     */
+    property ActionList __defaultTools: ActionList { __pageStack: pageStack }
+
+    /*!
       \internal
       Create a PageWrapper for the specified page.
      */
@@ -208,16 +225,6 @@ Item {
             } else {
                 header.title = "";
             }
-        }
-    }
-    Toolbar {
-        page: pageStack.currentPage
-        // FIXME: The toolbar back button will be made configurable from a Page property
-        back: Action {
-            iconSource: Qt.resolvedUrl("artwork/back.png")
-            text: "Back"
-            visible: pageStack.depth > 1
-            onTriggered: pageStack.pop()
         }
     }
 }
