@@ -19,8 +19,10 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+    title: i18n.tr("Drilldown")
     objectName: "Page Stack"
-    title: i18n.tr("Page Stack")
+
+    property alias tools: pageStack.tools
 
     Item {
         Rectangle {
@@ -32,10 +34,10 @@ Template {
             id: pageStack
             anchors {
                 top: parent.top
-                bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
             }
             width: units.gu(38)
+            height: units.gu(50)
 
             Component.onCompleted: push(page0)
 
@@ -54,6 +56,17 @@ Template {
                         text: i18n.tr("Page two (external)")
                         onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                         progression: true
+                    }
+                }
+
+                tools: ActionList {
+                    Action {
+                        text: "action 1"
+                        iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    Action {
+                        text: "action 2"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
                     }
                 }
             }

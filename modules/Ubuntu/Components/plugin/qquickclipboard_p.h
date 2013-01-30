@@ -12,36 +12,28 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-import QtQuick 2.0
+#ifndef QQUICKCLIPBOARD_P_H
+#define QQUICKCLIPBOARD_P_H
 
-/*!
-    \internal
-    \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
-    \brief Header used by \l PageStack
-*/
-Rectangle {
-    id: header
+#include "qquickclipboard.h"
+#include <QtGui/QClipboard>
 
-    color: "#666666"
+class QQuickMimeData;
+class QQuickClipboardPrivate {
+    Q_DECLARE_PUBLIC(QQuickClipboard)
+public:
+    QQuickClipboardPrivate(QQuickClipboard *qq);
 
-    /*!
-      \preliminary
-      The text shown as the title in the Header
-     */
-    property alias title: headerTitle.text
+    QQuickClipboard *q_ptr;
+    QClipboard *clipboard;
+    QClipboard::Mode mode;
+    QQuickMimeData *mimeData;
 
-    Label {
-        id: headerTitle
-        anchors {
-            fill: parent
-            margins: units.gu(0.5)
-        }
-        color: "white"
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
-}
+    void updateMimeData();
+};
+
+#endif // QQUICKCLIPBOARD_P_H

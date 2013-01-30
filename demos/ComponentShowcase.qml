@@ -18,12 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Rectangle {
+MainView {
+    id: componentShowcase
     objectName: "componentShowcase"
     width: units.gu(100)
     height: units.gu(75)
-
-    color: "#e6e6e6"
 
     Rectangle {
         anchors.fill: widgetList
@@ -67,11 +66,11 @@ Rectangle {
                 source: "UbuntuShapes.qml"
                 chapter: "Style"
             }
-//            ListElement {
-//                label: "Icons"
-//                source: "GIconProvider.qml"
-//                chapter: "1"
-//            }
+            //            ListElement {
+            //                label: "Icons"
+            //                source: "GIconProvider.qml"
+            //                chapter: "1"
+            //            }
             ListElement {
                 label: "Header"
                 source: ""
@@ -88,13 +87,13 @@ Rectangle {
                 chapter: "Building blocks"
                 // Combine with Check Box
             }
-//            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "chapter": "1"}, // (remove)
+            //            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "chapter": "1"}, // (remove)
             ListElement {
                 label: "Buttons"
                 source: "Buttons.qml"
                 chapter: "Building blocks"
             }
-//            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml", "chapter": "1"}, // (remove)
+            //            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml", "chapter": "1"}, // (remove)
             ListElement {
                 label: "Tabs"
                 source: "NewTabs.qml"
@@ -102,7 +101,7 @@ Rectangle {
             }
             ListElement {
                 label: "Page Stack"
-                source: "PageStack.qml"
+                source: "Drilldown.qml" // TODO: rename
                 chapter: "Building blocks"
             }
             ListElement {
@@ -125,7 +124,7 @@ Rectangle {
                 source: "ProgressBars.qml"
                 chapter: "Building blocks"
             }
-//            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml", "chapter": "1"}, // integrate in progressbars
+            //            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml", "chapter": "1"}, // integrate in progressbars
             ListElement {
                 label: "Scrollbar"
                 source: "ScrollBars.qml"
@@ -147,7 +146,7 @@ Rectangle {
                 chapter: "Building blocks"
             }
 
-//            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml", "chapter": "1"}, // merge with text input, label single/multi line
+            //            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml", "chapter": "1"}, // merge with text input, label single/multi line
         }
         section.property: "chapter"
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
@@ -181,6 +180,8 @@ Rectangle {
         }
         source: widgetList.model.get(widgetList.currentIndex).source
     }
+
+    tools: widgetLoader.item && widgetLoader.item.hasOwnProperty("tools") ? widgetLoader.item.tools : null
 
     Component.onCompleted: {
         i18n.domain = "componentshowcase"

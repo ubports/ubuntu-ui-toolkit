@@ -100,6 +100,23 @@ Item {
     property var stack: new Stack.Stack()
 
     /*!
+      The tools of currentPage. If the current page does not define tools,
+      a default set of tools is used consisting of only a back button that is
+      visible when depth > 1.
+     */
+    property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
+                               && currentPage.tools ? currentPage.tools : __defaultTools
+
+    onToolsChanged: if (tools) tools.__pageStack = pageStack;
+
+    /*!
+      \internal
+      The tools to be used if page does not define tools. It features only
+      the default back button.
+     */
+    property ActionList __defaultTools: ActionList { __pageStack: pageStack }
+
+    /*!
       \internal
       Create a PageWrapper for the specified page.
      */
@@ -196,17 +213,11 @@ Item {
                 right: parent.right
                 top: parent.top
             }
-            pageStack: pageStack
             height: units.gu(5)
         }
 
         function updateHeader() {
             var stackSize = stack.size();
-            if (stackSize > 1) {
-                header.showBackButton = true
-            } else {
-                header.showBackButton = false
-            }
             if (stackSize > 0) {
                 var item = stack.top().object;
                 if (item.__isPage === true) header.title = item.title;

@@ -53,10 +53,10 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: button
 
-    width: units.gu(9)
-    height: units.gu(4)
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "button"
+    implicitWidth: Theming.ComponentUtils.delegateProperty(button, "implicitWidth", units.gu(9))
+    implicitHeight: Theming.ComponentUtils.delegateProperty(button, "implicitHeight", units.gu(4))
 
     /*!
        \preliminary

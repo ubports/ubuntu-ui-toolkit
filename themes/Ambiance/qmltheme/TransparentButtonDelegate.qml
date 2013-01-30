@@ -23,13 +23,6 @@ Item {
 
     property alias textColor: label.color
 
-    // update control's implicitWidth
-    Binding {
-        target: item
-        property: "implicitWidth"
-        value: foreground.implicitWidth + 2*foreground.horizontalPadding
-    }
-
     /*!
       \preliminary
       The padding on the left and right side of the button foreground.
