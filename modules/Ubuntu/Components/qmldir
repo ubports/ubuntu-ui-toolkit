@@ -2,7 +2,7 @@ module Ubuntu.Components
 plugin UbuntuComponents
 Action 0.1 Action.qml
 ActionList 0.1 ActionList.qml
-ApplicationWindow 0.1 ApplicationWindow.qml
+MainView 0.1 MainView.qml
 Button 0.1 Button.qml
 internal GenericToolbar GenericToolbar.qml
 internal Toolbar Toolbar.qml
