@@ -56,7 +56,7 @@ GenericToolbar {
     }
 
     Button {
-        property Action back: toolbar.tools && toolbar.tools.back
+        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
         visible: back && back.visible
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
