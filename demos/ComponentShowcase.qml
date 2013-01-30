@@ -53,16 +53,16 @@ Rectangle {
         property int selectedIndex: 0
         model: [
             // Get Started
-            {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
+            {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml", "section": 0},
             // Style
-            {"label": i18n.tr("Theming"), "source": "Theming.qml"},
-            {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
-            {"label": i18n.tr("Icons"), "source": "GIconProvider.qml"},
+            {"label": i18n.tr("Theming"), "source": "Theming.qml", "section": 0},
+            {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml", "section": 0},
+//            {"label": i18n.tr("Icons"), "source": "GIconProvider.qml", "section": 0}, // don't show
             // Building blocks
             // add header component
-            {"label": i18n.tr("Toolbars"), "source": ""}, // make this
-            {"label": i18n.tr("Switches"), "source": "Switches.qml"}, // Combine with Check Box
-            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"}, // (remove)
+            {"label": i18n.tr("Toolbars"), "source": "", "section": 1}, // make this
+            {"label": i18n.tr("Switches"), "source": "Switches.qml", "section": 1}, // Combine with Check Box
+            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "section": 1}, // (remove)
             {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
 //            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
             {"label": i18n.tr("Tabs"), "source": "NewTabs.qml"},
@@ -79,6 +79,13 @@ Rectangle {
             {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
             {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"}, // merge with text input, label single/multi line
         ]
+
+//        section.property: "section"
+//        section.criteria: ViewSection.FullString
+//        section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
+
+//        section.delegate: ListItem.Header { text: "Section - " + section }
+
 
         delegate: ListItem.Standard {
             text: modelData.label
