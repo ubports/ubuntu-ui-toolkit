@@ -1,7 +1,17 @@
 Source: qt-components-ubuntu
 Priority: extra
 Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
-Build-Depends: debhelper (>= 8.0.0), qtbase, qtdeclarative, libgl-dev, libgles2-mesa-dev, libglib2.0-dev
+Build-Depends: debhelper (>= 8.0.0), 
+               qtbase5-dev,
+               qtbase5-dev-tools,
+               qtdeclarative5-dev,
+               qtdeclarative5-private-dev,
+               qtdeclarative5-test-plugin,
+               qtdeclarative5-qtquick2-plugin,
+               qt5-default,
+               libgl-dev, 
+               libgles2-mesa-dev, 
+               libglib2.0-dev
 Standards-Version: 3.9.2
 Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
