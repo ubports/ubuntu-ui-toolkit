@@ -87,6 +87,7 @@ GenericToolbar {
                 text: modelData.text
                 iconSource: modelData.iconSource ? modelData.iconSource : ""
                 onClicked: modelData.triggered(toolButton)
+                enabled: modelData.enabled
             }
         }
     }
