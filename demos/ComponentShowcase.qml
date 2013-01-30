@@ -100,10 +100,7 @@ ApplicationWindow {
             bottom: parent.bottom
         }
         source: widgetList.model[widgetList.selectedIndex].source
-
-        onItemChanged: print("item = "+item)
     }
-
     tools: widgetLoader.item && widgetLoader.item.hasOwnProperty("tools") ? widgetLoader.item.tools : null
 
     Component.onCompleted: {

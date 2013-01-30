@@ -20,18 +20,18 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
-    implicitWidth: units.gu(6)
-    implicitHeight: units.gu(6)
+    implicitWidth: units.gu(10)
+    implicitHeight: units.gu(10)
 
     Image {
         id: icon
         anchors {
             top: parent.top
-            topMargin: units.gu(1)
+            topMargin: units.gu(2)
             horizontalCenter: parent.horizontalCenter
         }
-        width: units.gu(2)
-        height: units.gu(2)
+        width: units.gu(4)
+        height: units.gu(4)
         source: item.iconSource
         opacity: item.enabled ? 1.0 : 0.3
     }
@@ -41,7 +41,7 @@ Item {
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            bottomMargin: units.gu(1)
+            bottomMargin: units.gu(2)
         }
         width: paintedWidth
         text: item.text
