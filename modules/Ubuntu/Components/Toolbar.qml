@@ -56,6 +56,7 @@ GenericToolbar {
     }
 
     Button {
+        id: backButton
         property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
         visible: back && back.visible
         Theming.ItemStyle.class: "toolbar-button"
@@ -65,7 +66,7 @@ GenericToolbar {
         }
         iconSource: back ? back.iconSource : ""
         text: back ? back.text : ""
-        onClicked: back.triggered()
+        onClicked: back.triggered(backButton)
     }
 
     Row {
@@ -80,11 +81,12 @@ GenericToolbar {
         Repeater {
             model: toolbar.tools ? toolbar.tools.children : 0
             Button {
+                id: toolButton
                 Theming.ItemStyle.class: "toolbar-button"
                 anchors.verticalCenter: parent.verticalCenter
                 text: modelData.text
                 iconSource: modelData.iconSource ? modelData.iconSource : ""
-                onClicked: modelData.triggered()
+                onClicked: modelData.triggered(toolButton)
             }
         }
     }

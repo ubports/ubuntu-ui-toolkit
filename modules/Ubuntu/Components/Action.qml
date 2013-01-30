@@ -44,7 +44,7 @@ QtObject {
     /*!
       Called when the action is triggered.
      */
-    signal triggered()
+    signal triggered(var caller)
 
     /*!
       The action is visible to the user
