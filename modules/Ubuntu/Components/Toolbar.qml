@@ -40,18 +40,6 @@ GenericToolbar {
      */
     property ActionList tools
 
-    /*!
-      The action associated with the back button
-     */
-    property Action back: null
-//    Action {
-//        iconSource: Qt.resolvedUrl("artwork/back.png")
-//        text: "Back"
-//        visible: toolbar.page && toolbar.page.hasOwnProperty("pageStack")
-//                 && toolbar.page.pageStack && toolbar.page.pageStack.depth > 1
-//        onTriggered: toolbar.page.pageStack.pop()
-//    }
-
     Item {
         anchors.fill: parent
 
@@ -68,17 +56,16 @@ GenericToolbar {
     }
 
     Button {
-        visible: toolbar.back && toolbar.back.visible
+        property Action back: toolbar.tools && toolbar.tools.back
+        visible: back && back.visible
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
             verticalCenter: parent.verticalCenter
         }
-
-        // TODO: Make back buton themable in Page
-        iconSource: toolbar.back ? toolbar.back.iconSource : ""
-        text: toolbar.back ? toolbar.back.text : ""
-        onClicked: toolbar.back.triggered()
+        iconSource: back ? back.iconSource : ""
+        text: back ? back.text : ""
+        onClicked: back.triggered()
     }
 
     Row {
@@ -89,9 +76,6 @@ GenericToolbar {
             bottom: parent.bottom
         }
         width: childrenRect.width
-
-        // TODO: cross-fade buttons when tools property is updated?
-//        property var tools: toolbar.page ? toolbar.page.tools : null
 
         Repeater {
             model: toolbar.tools ? toolbar.tools.children : 0

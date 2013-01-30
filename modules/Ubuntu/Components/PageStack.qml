@@ -1,4 +1,4 @@
-/*
+   /*
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -100,33 +100,22 @@ Item {
     property var stack: new Stack.Stack()
 
     /*!
-      The tools of the current \l Page.
+      The tools of currentPage. If the current page does not define tools,
+      a default set of tools is used consisting of only a back button that is
+      visible when depth > 1.
      */
-    property ActionList tools
+    property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
+                               && currentPage.tools ? currentPage.tools : __defaultTools
 
-//    onToolsChanged: {
-//        print("tools changed to "+tools);
-//        for (var i=0; i < pageStack.tools.length; i++) print(pageStack.tools[i]);
-//    }
+    onToolsChanged: if (tools) tools.__pageStack = pageStack;
 
-//    Binding {
-//        target: pageStack
-//        property: "tools"
-//        value: getTools()
+    /*!
+      \internal
+      The tools to be used if page does not define tools. It features only
+      the default back button.
+     */
+    property ActionList __defaultTools: ActionList { __pageStack: pageStack }
 
-//    }
-
-//    function getTools() {
-//        print(currentPage.tools)
-//        if (currentPage && currentPage.hasOwnProperty("tools")) return currentPage.tools;
-//        return [];
-//    }
-    onCurrentPageChanged: {
-        print(currentPage)
-        if (currentPage) pageStack.tools = currentPage.tools;
-        else currentPage.tools = [];
-        for (var i=0; i < tools.length; i++) print("XX "+tools[i].text)
-    }
 
     /*!
       \internal
@@ -238,12 +227,5 @@ Item {
                 header.title = "";
             }
         }
-    }
-
-    property Action back: Action {
-        iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
-        visible: pageStack.depth > 1
-        onTriggered: pageStack.pop()
     }
 }

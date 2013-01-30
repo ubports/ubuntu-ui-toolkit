@@ -38,4 +38,21 @@ QtObject {
       Property list to allow adding of children.
       */
     property list<Action> __actionList: [Action {}] //QML doesn't allow an empty list here
+
+    /*!
+      The back action.
+     */
+    property Action back: Action {
+        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: "Back"
+        visible: __pageStack && __pageStack.depth > 1
+        onTriggered: __pageStack.pop()
+    }
+
+    /*!
+      \internal
+      PageStack for the back button
+     */
+    // Cannot use PageStack here that will cause a loop in parsing the qml files
+    property Item __pageStack
 }

@@ -33,11 +33,12 @@ Item {
       \preliminary
       The list of actions that will be placed on the toolbar of the application
      */
-//    property list<Action> tools
     property alias tools: toolbar.tools
-//    property ActionList tools
-//    property alias back: toolbar.back
 
+    /*!
+      \internal
+      Use default property to ensure children added do not draw over the toolbar.
+     */
     default property alias contentsItem: contents.data
     Item {
         id: contents
@@ -46,24 +47,5 @@ Item {
 
     Toolbar {
         id: toolbar
-//        property Item page: pageStack.currentPage
-//        tools : page ? page.tools : null
-        tools: ActionList {
-            Action {
-                text: "one"
-                onTriggered: print("1")
-            }
-            Action {
-                text: "two"
-                onTriggered: print("2")
-            }
-        }
-        // FIXME: The toolbar back button will be made configurable from a Page property
-//        back: Action {
-//            iconSource: Qt.resolvedUrl("artwork/back.png")
-//            text: "Back"
-//            visible: pageStack.depth > 1
-//            onTriggered: pageStack.pop()
-//        }
     }
 }
