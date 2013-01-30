@@ -8,7 +8,6 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-PATH := /opt/qt5/bin:${PATH}
 
 override_dh_install:
 	

@@ -1,5 +1,5 @@
 uri = Ubuntu.Components
-installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+installPath = $$[QT_INSTALL_LIBS]/qt5/qml/$$replace(uri, \\., /)
 
 # Components
 QML_FILES = $$system(ls *.qml)
