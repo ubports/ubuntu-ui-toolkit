@@ -150,9 +150,7 @@ Rectangle {
 //            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml", "chapter": "1"}, // merge with text input, label single/multi line
         }
         section.property: "chapter"
-//        section.criteria: ViewSection.FirstCharacter
-//        section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
-//        section.labelPositioning: ViewSection.InlineLabels
+        section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
 
         section.delegate: ListItem.Header { text: section }
 
@@ -166,10 +164,10 @@ Rectangle {
         }
     }
 
-//    Scrollbar {
-//        flickableItem: widgetList
-//        align: Qt.AlignTrailing
-//    }
+    Scrollbar {
+        flickableItem: widgetList
+        align: Qt.AlignTrailing
+    }
 
     Loader {
         id: widgetLoader
