@@ -101,7 +101,7 @@ MainView {
             }
             ListElement {
                 label: "Page Stack"
-                source: "Drilldown.qml" // TODO: rename
+                source: "PageStack.qml"
                 chapter: "Building blocks"
             }
             ListElement {
