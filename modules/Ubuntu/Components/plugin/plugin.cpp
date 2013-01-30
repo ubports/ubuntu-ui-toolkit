@@ -36,7 +36,7 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "bottomedgecontroller.h"
+#include "bottombarvisibilitycommunicator.h"
 
 #include <sys/types.h>
 #include <unistd.h>
