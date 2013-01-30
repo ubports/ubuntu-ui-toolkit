@@ -15,33 +15,35 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-/*!
-    \internal
-    \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
-    \brief Header used by \l PageStack
-*/
-Rectangle {
-    id: header
+Item {
+    anchors.fill: parent
 
-    color: "#666666"
+    implicitWidth: units.gu(6)
+    implicitHeight: units.gu(6)
 
-    /*!
-      \preliminary
-      The text shown as the title in the Header
-     */
-    property alias title: headerTitle.text
+    Image {
+        id: icon
+        anchors {
+            top: parent.top
+            topMargin: units.gu(1)
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: units.gu(2)
+        height: units.gu(2)
+        source: item.iconSource
+        opacity: item.enabled ? 1.0 : 0.3
+    }
 
     Label {
-        id: headerTitle
+        id: label
         anchors {
-            fill: parent
-            margins: units.gu(0.5)
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: units.gu(1)
         }
-        color: "white"
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
+        width: paintedWidth
+        text: item.text
     }
 }

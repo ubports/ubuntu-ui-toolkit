@@ -58,7 +58,7 @@ Rectangle {
             {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
             {"label": i18n.tr("Tabs (flickable)"), "source": "NewTabs.qml"},
             {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
+            {"label": i18n.tr("Drilldown"), "source": "Drilldown.qml"},
             {"label": i18n.tr("Switch"), "source": "Switches.qml"},
             {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
             {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
