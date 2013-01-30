@@ -20,7 +20,7 @@
 /*!
     \internal
 
-    BottomEdgeController controller is used to communicate with the Shell BottomEdgeController.
+    BottomBarVisibilityCommunicator controller is used to communicate with the Shell BottomBarVisibilityCommunicator.
     This class allows for the bottom edge interaction to happen
 
     The user of this class needs to give the following information to the shell:
@@ -30,19 +30,19 @@
     The shell can control the bottom bar behaviour:
      * forceHidden: If set to true, the bottom bar has to be forced to be hidden
 */
-BottomEdgeController::BottomEdgeController()
+BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
  : m_currentHeight(-1),
    m_targetHeight(-1),
    m_forceHidden(false)
 {
 }
 
-double BottomEdgeController::currentHeight() const
+double BottomBarVisibilityCommunicator::currentHeight() const
 {
     return m_currentHeight;
 }
 
-void BottomEdgeController::setCurrentHeight(double currentHeight)
+void BottomBarVisibilityCommunicator::setCurrentHeight(double currentHeight)
 {
     if (m_currentHeight != currentHeight) {
         m_currentHeight = currentHeight;
@@ -50,12 +50,12 @@ void BottomEdgeController::setCurrentHeight(double currentHeight)
     }
 }
 
-double BottomEdgeController::targetHeight() const
+double BottomBarVisibilityCommunicator::targetHeight() const
 {
     return m_targetHeight;
 }
 
-void BottomEdgeController::setTargetHeight(double targetHeight)
+void BottomBarVisibilityCommunicator::setTargetHeight(double targetHeight)
 {
     if (m_targetHeight != targetHeight) {
         m_targetHeight = targetHeight;
@@ -63,12 +63,12 @@ void BottomEdgeController::setTargetHeight(double targetHeight)
     }
 }
 
-bool BottomEdgeController::forceHidden() const
+bool BottomBarVisibilityCommunicator::forceHidden() const
 {
     return m_forceHidden;
 }
 
-void BottomEdgeController::setForceHidden(bool forceHidden)
+void BottomBarVisibilityCommunicator::setForceHidden(bool forceHidden)
 {
     if (forceHidden != m_forceHidden) {
         m_forceHidden = forceHidden;

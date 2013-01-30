@@ -20,17 +20,17 @@
 
 #include <QObject>
 
-class BottomEdgeController : public QObject
+class BottomBarVisibilityCommunicator : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(double currentHeight READ currentHeight WRITE setCurrentHeight NOTIFY currentHeightChanged)
     Q_PROPERTY(double targetHeight READ targetHeight WRITE setTargetHeight NOTIFY targetHeightChanged)
     Q_PROPERTY(bool forceHidden READ forceHidden WRITE setForceHidden NOTIFY forceHiddenChanged)
 
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomEdgeController")
+    Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomBarVisibilityCommunicator")
 public:
-    static BottomEdgeController& instance() {
-        static BottomEdgeController instance;
+    static BottomBarVisibilityCommunicator& instance() {
+        static BottomBarVisibilityCommunicator instance;
         return instance;
     }
 
@@ -49,7 +49,7 @@ Q_SIGNALS:
     void forceHiddenChanged(bool forceHidden);
 
 private:
-    BottomEdgeController();
+    BottomBarVisibilityCommunicator();
 
     double m_currentHeight;
     double m_targetHeight;

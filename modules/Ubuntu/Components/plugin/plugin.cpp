@@ -41,8 +41,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH = "/BottomBarVisibilityCommunicator";
 static const char* DBUS_SERVICE = "com.canonical.SDKApp%1";
-static const char* BOTTOM_EDGE_CONTROLLER_DBUS_PATH = "/BottomEdgeController";
 
 /*
  * Registration function for the Clipboard type
@@ -95,9 +95,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     const QString dbusName = QString(DBUS_SERVICE).arg(getpid());
     QDBusConnection::sessionBus().registerService(dbusName);
-    BottomEdgeController *edgeController = &BottomEdgeController::instance();
-    QDBusConnection::sessionBus().registerObject(BOTTOM_EDGE_CONTROLLER_DBUS_PATH, edgeController, QDBusConnection::ExportAllContents);
-    context->setContextProperty("bottomEdgeController", edgeController);
+    BottomBarVisibilityCommunicator *bottomBarVisibilityCommunicator = &BottomBarVisibilityCommunicator::instance();
+    QDBusConnection::sessionBus().registerObject(BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, bottomBarVisibilityCommunicator, QDBusConnection::ExportAllContents);
+    context->setContextProperty("bottomBarVisibilityCommunicator", bottomBarVisibilityCommunicator);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
