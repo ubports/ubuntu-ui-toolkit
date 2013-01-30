@@ -24,15 +24,23 @@ import QtQuick 2.0
 
     \b{This component is under heavy development.}
 
-    Examples: TODO
+    Examples:
+    \qml
+        MainView {
+            Button {
+                anchors.centerIn: parent
+                text: "Click me"
+            }
+        }
+    \endqml
 */
 Item {
-    id: applicationWindow
-
     /*!
       \preliminary
-      The list of actions that will be placed on the toolbar of the application
+      The list of actions that will be placed on the toolbar of the application.
      */
+    // TODO: Assign the list of actions automatically if the first child of MainView
+    //  is an instance of Tabs, PageStack or Page.
     property alias tools: toolbar.tools
 
     /*!
