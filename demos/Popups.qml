@@ -148,7 +148,7 @@ Template {
                     id: leftPopoverButton
                     text: i18n.tr("automatic..")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), leftPopoverButton)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), leftPopoverButton, {"width": 500})
                 }
 
                 Button {

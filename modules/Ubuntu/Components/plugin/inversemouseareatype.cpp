@@ -289,9 +289,10 @@ QPointF InverseMouseAreaType::mapToSensingArea(const QPointF &point)
 bool InverseMouseAreaType::pointInSensingArea(const QPointF &point)
 {
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-    return !contains(mapFromScene(point)) &&
-            (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(point))) &&
-            oskRect.contains(QuickUtils::instance().rootObject()->mapFromScene(point));
+    bool pointInArea = contains(mapFromScene(point));
+    bool pointInOSK = oskRect.contains(QuickUtils::instance().rootObject()->mapFromScene(point));
+    bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(point)));
+    return !pointInArea && !pointInOSK && pointOutArea;
 }
 
 /*!
