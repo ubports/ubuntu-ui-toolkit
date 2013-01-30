@@ -15,7 +15,7 @@
  *
  */
 
-#include "bottomedgecontroller.h"
+#include "bottombarvisibilitycommunicator.h"
 
 /*!
     \internal
