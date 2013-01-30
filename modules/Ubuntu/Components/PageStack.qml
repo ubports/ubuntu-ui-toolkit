@@ -116,7 +116,6 @@ Item {
      */
     property ActionList __defaultTools: ActionList { __pageStack: pageStack }
 
-
     /*!
       \internal
       Create a PageWrapper for the specified page.
