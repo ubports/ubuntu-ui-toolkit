@@ -20,7 +20,7 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
-    implicitWidth: units.gu(10)
+    implicitWidth: units.gu(6)
     implicitHeight: units.gu(10)
 
     Image {
