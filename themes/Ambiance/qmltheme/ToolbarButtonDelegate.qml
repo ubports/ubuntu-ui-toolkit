@@ -21,13 +21,13 @@ Item {
     anchors.fill: parent
 
     implicitWidth: units.gu(6)
-    implicitHeight: units.gu(6)
+    implicitHeight: units.gu(10)
 
     Image {
         id: icon
         anchors {
             top: parent.top
-            topMargin: units.gu(1)
+            topMargin: units.gu(3)
             horizontalCenter: parent.horizontalCenter
         }
         width: units.gu(2)
@@ -41,7 +41,7 @@ Item {
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            bottomMargin: units.gu(1)
+            bottomMargin: units.gu(3)
         }
         width: paintedWidth
         text: item.text

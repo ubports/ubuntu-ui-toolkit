@@ -80,5 +80,5 @@ Item {
       \preliminary
       The list of actions associated with this Page.
      */
-    property list<Action> tools
+    property ActionList tools
 }
