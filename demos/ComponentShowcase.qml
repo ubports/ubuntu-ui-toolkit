@@ -50,56 +50,126 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 0
-        model: [
-            // Get Started
-            {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml", "section": 0},
-            // Style
-            {"label": i18n.tr("Theming"), "source": "Theming.qml", "section": 0},
-            {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml", "section": 0},
-//            {"label": i18n.tr("Icons"), "source": "GIconProvider.qml", "section": 0}, // don't show
-            // Building blocks
-            // add header component
-            {"label": i18n.tr("Toolbars"), "source": "", "section": 1}, // make this
-            {"label": i18n.tr("Switches"), "source": "Switches.qml", "section": 1}, // Combine with Check Box
-            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "section": 1}, // (remove)
-            {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-//            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
-            {"label": i18n.tr("Tabs"), "source": "NewTabs.qml"},
-            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"}, // Make sure it is called PageStack
-            // dialogs
-            {"label": i18n.tr("Popups"), "source": "Popups.qml"}, // separate in Popovers, Sheets, Dialogs
-            {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-            // popover
-            {"label": i18n.tr("Progress"), "source": "ProgressBars.qml"}, //(merge with next)
-            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"}, // integrate in progressbars
-            {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
-            // sheets
-            {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
-            {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"}, // merge with text input, label single/multi line
-        ]
+        currentIndex: 0
+        model: ListModel {
+            ListElement {
+                label: "Resolution Independence"
+                source: "ResolutionIndependence.qml"
+                chapter: "Get Started"
+            }
+            ListElement {
+                label: "Theming"
+                source: "Theming.qml"
+                chapter: "Style"
+            }
+            ListElement {
+                label: "Ubuntu Shape"
+                source: "UbuntuShapes.qml"
+                chapter: "Style"
+            }
+//            ListElement {
+//                label: "Icons"
+//                source: "GIconProvider.qml"
+//                chapter: "1"
+//            }
+            ListElement {
+                label: "Header"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Toolbars"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Switches"
+                source: "Switches.qml"
+                chapter: "Building blocks"
+                // Combine with Check Box
+            }
+//            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "chapter": "1"}, // (remove)
+            ListElement {
+                label: "Buttons"
+                source: "Buttons.qml"
+                chapter: "Building blocks"
+            }
+//            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml", "chapter": "1"}, // (remove)
+            ListElement {
+                label: "Tabs"
+                source: "NewTabs.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Page Stack"
+                source: "PageStack.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Dialogs"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "List Items"
+                source: "ListItems.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Popovers"
+                source: "Popups.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Progress"
+                source: "ProgressBars.qml"
+                chapter: "Building blocks"
+            }
+//            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml", "chapter": "1"}, // integrate in progressbars
+            ListElement {
+                label: "Scrollbar"
+                source: "ScrollBars.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Sheets"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Slider"
+                source: "Sliders.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Text Input"
+                source: "TextInputs.qml"
+                chapter: "Building blocks"
+            }
 
-//        section.property: "section"
-//        section.criteria: ViewSection.FullString
+//            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml", "chapter": "1"}, // merge with text input, label single/multi line
+        }
+        section.property: "chapter"
+//        section.criteria: ViewSection.FirstCharacter
 //        section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
+//        section.labelPositioning: ViewSection.InlineLabels
 
-//        section.delegate: ListItem.Header { text: "Section - " + section }
+        section.delegate: ListItem.Header { text: section }
 
 
         delegate: ListItem.Standard {
-            text: modelData.label
-            onClicked: widgetList.selectedIndex = index
-            enabled: modelData.source != ""
-            selected: index == widgetList.selectedIndex
+            text: i18n.tr(label)
+            onClicked: widgetList.currentIndex = index
+            enabled: source != ""
+            selected: index == widgetList.currentIndex
             showDivider: false
         }
     }
 
-    Scrollbar {
-        flickableItem: widgetList
-        align: Qt.AlignTrailing
-    }
+//    Scrollbar {
+//        flickableItem: widgetList
+//        align: Qt.AlignTrailing
+//    }
 
     Loader {
         id: widgetLoader
@@ -111,7 +181,7 @@ Rectangle {
             top: parent.top
             bottom: parent.bottom
         }
-        source: widgetList.model[widgetList.selectedIndex].source
+        source: widgetList.model.get(widgetList.currentIndex).source
     }
 
     Component.onCompleted: {
