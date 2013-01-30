@@ -44,8 +44,8 @@ public:
     void setForceHidden(bool forceHidden);
 
 Q_SIGNALS:
-    void currentHeightChanged(double y);
-    void targetHeightChanged(double height);
+    void currentHeightChanged(double currentHeight);
+    void targetHeightChanged(double targetHeight);
     void forceHiddenChanged(bool forceHidden);
 
 private:
