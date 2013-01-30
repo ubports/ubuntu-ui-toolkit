@@ -27,11 +27,11 @@ Item {
         id: icon
         anchors {
             top: parent.top
-            topMargin: units.gu(2)
+            topMargin: units.gu(3)
             horizontalCenter: parent.horizontalCenter
         }
-        width: units.gu(4)
-        height: units.gu(4)
+        width: units.gu(2)
+        height: units.gu(2)
         source: item.iconSource
         opacity: item.enabled ? 1.0 : 0.3
     }
@@ -41,7 +41,7 @@ Item {
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            bottomMargin: units.gu(2)
+            bottomMargin: units.gu(3)
         }
         width: paintedWidth
         text: item.text
