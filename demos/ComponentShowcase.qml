@@ -51,29 +51,33 @@ Rectangle {
         }
 
         property int selectedIndex: 0
-        model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
+        model: [
+            // Get Started
             {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
+            // Style
+            {"label": i18n.tr("Theming"), "source": "Theming.qml"},
             {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
+            {"label": i18n.tr("Icons"), "source": "GIconProvider.qml"},
+            // Building blocks
+            // add header component
+            {"label": i18n.tr("Toolbars"), "source": ""}, // make this
+            {"label": i18n.tr("Switches"), "source": "Switches.qml"}, // Combine with Check Box
+            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"}, // (remove)
             {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
-            {"label": i18n.tr("Tabs (flickable)"), "source": "NewTabs.qml"},
+//            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
+            {"label": i18n.tr("Tabs"), "source": "NewTabs.qml"},
+            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"}, // Make sure it is called PageStack
+            // dialogs
+            {"label": i18n.tr("Popups"), "source": "Popups.qml"}, // separate in Popovers, Sheets, Dialogs
             {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
-            {"label": i18n.tr("Switch"), "source": "Switches.qml"},
-            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
-            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
-            {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
+            // popover
+            {"label": i18n.tr("Progress"), "source": "ProgressBars.qml"}, //(merge with next)
+            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"}, // integrate in progressbars
+            {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
+            // sheets
             {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
             {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"},
-            {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
-            {"label": i18n.tr("Popups"), "source": "Popups.qml"},
-            {"label": i18n.tr("GIcon Provider"), "source": "GIconProvider.qml"},
-            {"label": i18n.tr("Toolbars"), "source": ""},
-            {"label": i18n.tr("Grid View"), "source": ""},
-            {"label": i18n.tr("On Screen Keyboard"), "source": ""},
-            {"label": i18n.tr("Date Picker"), "source": ""},
-            {"label": i18n.tr("Time Picker"), "source": ""},
+            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"}, // merge with text input, label single/multi line
         ]
 
         delegate: ListItem.Standard {
