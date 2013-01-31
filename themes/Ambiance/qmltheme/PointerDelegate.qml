@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import QtGraphicalEffects 1.0
 
 Image {
     id: image
