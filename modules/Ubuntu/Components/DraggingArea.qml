@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import "Math.js" as MathLocal
+import "mathUtils.js" as MathLocal
 
 MouseArea {
     id: draggingArea

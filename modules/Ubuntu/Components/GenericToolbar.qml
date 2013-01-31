@@ -81,7 +81,8 @@ Item {
         }
     }
 
-    MouseArea {
+    //MouseArea {
+    DraggingArea {
         id: dragMouseArea
         anchors {
             bottom: parent.bottom

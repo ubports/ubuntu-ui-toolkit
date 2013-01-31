@@ -20,7 +20,12 @@
 //     set of common native C++ functions.
 
 function clamp(x, min, max) {
-    return Math.max(min, Math.min(x, max));
+    if (min <= max) {
+        return Math.max(min, Math.min(x, max))
+    } else {
+        // swap min/max if min > max
+        return clamp(x, max, min)
+    }
 }
 
 function lerp(x, a, b) {
