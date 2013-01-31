@@ -38,7 +38,6 @@ Template {
                               "ligula tortor, luctus id elementum vel, varius vel augue. "+
                               "Nunc porta mattis bibendum. Nam vitae sapien ipsum, non viverra neque."
 
-
     Item {
         MouseArea {
             anchors.fill: parent
@@ -54,6 +53,10 @@ Template {
             Column {
                 spacing: units.gu(4)
                 id: column
+
+                Label {
+                    text: "Single line"
+                }
 
                 TemplateRow {
                     title: i18n.tr("Basic")
