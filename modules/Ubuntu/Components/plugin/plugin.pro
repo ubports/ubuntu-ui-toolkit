@@ -7,7 +7,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick quick-private
+QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
 #comment in the following line to disable traces
@@ -35,6 +35,7 @@ HEADERS += plugin.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
+    bottombarvisibilitycommunicator.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h
@@ -54,6 +55,7 @@ SOURCES += plugin.cpp \
     giconprovider.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
+    bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp
 
