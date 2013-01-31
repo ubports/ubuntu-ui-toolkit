@@ -46,7 +46,6 @@ Item {
 
     Item {
         id: bar
-
         height: parent.height
         anchors {
             left: parent.left
@@ -89,8 +88,6 @@ Item {
             //maximumY: height + bar.height
         }
 
-        // avoid propagating events when bar in the process
-        // of becoming active or inactive.
         propagateComposedEvents: true
 
         // FIXME: Make all parameters below themable.
