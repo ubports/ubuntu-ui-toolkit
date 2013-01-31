@@ -33,7 +33,6 @@ Item {
         bottom: parent.bottom
     }
     height: units.gu(10)
-
     clip: true
 
     /*!
@@ -41,11 +40,7 @@ Item {
       Use bottom edge swipe up/down to activate/deactivate the bar.
      */
     property bool active: false
-    onActiveChanged: {
-        print("active changed to "+active)
-        if (active) bar.y = 0;
-        else bar.y = bar.height;
-    }
+    onActiveChanged: bar.updateYPosition();
 
     default property alias contents: bar.data
 
@@ -61,6 +56,11 @@ Item {
         // initial state only. Will be overridden because of mouseArea's drag target.
         y: bottomBar.active ? 0 : height
 
+        function updateYPosition() {
+            if (bottomBar.active) bar.y = 0;
+            else bar.y = bar.height;
+        }
+
         property bool notAnimating: (bottomBar.active && y === 0) || (!bottomBar.active && y === height)
         Behavior on y {
             SmoothedAnimation {
@@ -68,21 +68,11 @@ Item {
                 easing.type: Easing.InOutQuad;
             }
         }
-
-        property bool tickled: dragMouseArea.pressed
-        onTickledChanged: {
-            if (tickled) {
-                if (bottomBar.active) return;
-                y = height - units.gu(1);
-            } else {
-                bottomBar.active = bar.y < bar.height / 2;
-                bar.y = bottomBar.active ? 0 : bar.height;
-            }
-        }
     }
 
-    //MouseArea {
     DraggingArea {
+        // visible: toolbar.available
+        orientation: Qt.Vertical
         id: dragMouseArea
         anchors {
             bottom: parent.bottom
@@ -90,54 +80,35 @@ Item {
             right: parent.right
         }
         height: bottomBar.active ? bar.height : units.gu(3)
-//        visible: false
+        zeroVelocityCounts: true
 
         drag {
             target: bar
             axis: Drag.YAxis
             minimumY: 0
-            //            maximumY: height + bar.height
+            //maximumY: height + bar.height
         }
 
         // avoid propagating events when bar in the process
         // of becoming active or inactive.
         propagateComposedEvents: true
+
+        // FIXME: Make all parameters below themable.
+        //  The value of 44 was copied from the Launcher.
+        onPressedChanged: {
+            if (pressed) {
+                if (bottomBar.active) return;
+                y = height - units.gu(1);
+            } else {
+                if (dragMouseArea.dragVelocity < -44) {
+                    bottomBar.active = true;
+                } else if (dragMouseArea.dragVelocity > 44) {
+                    bottomBar.active = false;
+                } else {
+                    bottomBar.active = bar.y < bar.height / 2;
+                }
+                bar.updateYPosition();
+            }
+        }
     }
-
-//    MouseArea {
-//        id: quickSwipeMouseArea
-//        anchors {
-//            bottom: parent.bottom
-//            left: parent.left
-//            right: parent.right
-//        }
-//        height: units.gu(10)
-
-//        // avoid propagating events when bar in the process
-//        // of becoming active or inactive.
-////        propagateComposedEvents: bar.notAnimating
-//        propagateComposedEvents: true
-
-//        /*!
-//             The amount that the cursor position needs to change in y-direction
-//             after pressing, in order to activate/deactivate the bar.
-//            */
-//        property real dragThreshold: units.gu(1)
-
-//        property int pressedY
-//        onPressed: {
-//            pressedY = mouse.y;
-//            mouse.accepted = bottomBar.active;
-//        }
-
-////        onPositionChanged: {
-//        onReleased: {
-//            var diff = pressedY - mouse.y;
-//            if (diff > dragThreshold) {
-//                bottomBar.active = true;
-//            } else if (diff < -dragThreshold) {
-//                bottomBar.active = false;
-//            }
-//        }
-//    }
 }
