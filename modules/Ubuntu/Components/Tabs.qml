@@ -61,7 +61,7 @@ import Ubuntu.Components 0.1 as Theming
 
 Item {
     // FIXME: see above
-    Theming.ItemStyle.class: "tabs"
+    Theming.ItemStyle.class: "new-tabs"
 
     /*!
       \preliminary

@@ -32,7 +32,7 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-    height: units.gu(10)
+    height: units.gu(0) // TODO TIM: fix
 
     clip: true
 
