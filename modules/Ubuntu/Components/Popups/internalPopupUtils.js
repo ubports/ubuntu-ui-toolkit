@@ -242,8 +242,8 @@ function CallerPositioning(foreground, pointer, area, caller, edgeMargins, calle
             pointer.direction = "none";
             return;
         }
-        // position with the following priorities: above, left, right, below.
-        var order = ["positionAbove", "positionBelow", "positionInFront", "positionBehind"];
+        // position with the following priorities: above, below, right, left.
+        var order = ["positionAbove", "positionBelow", "positionBehind", "positionInFront"];
         for (var i = 0; i < order.length; i++) {
             if (this[order[i]]())
                 return;

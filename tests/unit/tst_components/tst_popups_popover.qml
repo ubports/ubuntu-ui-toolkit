@@ -41,13 +41,6 @@ TestCase {
         compare(popOver.grabDismissAreaEvents, true, "Default grabs dismiss area events");
     }
 
-    function test_operativeAreaMargins() {
-        compare(popOver.leftMargin, 0.0, "No operative left margin by default");
-        compare(popOver.topMargin, 0.0, "No operative top margin by default");
-        compare(popOver.rightMargin, 0.0, "No operative right margin by default");
-        compare(popOver.bottomMargin, 0.0, "No operative bottom margin by default");
-    }
-
     function test_contentWidth() {
         expectFail("", "Content width is wrong due to rootItem not being initialized.");
         compare(popOver.contentWidth, units.gu(40), "Content width is 40 GU");

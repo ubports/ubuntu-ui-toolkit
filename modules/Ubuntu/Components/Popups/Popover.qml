@@ -90,24 +90,6 @@ PopupBase {
     default property alias container: containerItem.data
 
     /*!
-      \qmlproperty real leftMargin: 0.0
-      \qmlproperty real rightMargin: 0.0
-      \qmlproperty real topMargin: 0.0
-      \qmlproperty real bottomMargin: 0.0
-      These properties specify the operative area margins. The operative area is
-      the area where the Popover content is placed. There can be cases when this area
-      needs to be extended to cover other components, so when those are activated
-      (tapped or pressed on them) the Popover should not disappear.
-      */
-    property real leftMargin: 0.0
-    /*! \internal */
-    property real rightMargin: 0.0
-    /*! \internal */
-    property real topMargin: 0.0
-    /*! \internal */
-    property real bottomMargin: 0.0
-
-    /*!
       \qmlproperty real contentWidth
       \qmlproperty real contentHeight
       The properties can be used to alter the default content width and heights.
@@ -138,13 +120,7 @@ PopupBase {
     }
 
     Theming.InverseMouseArea {
-        anchors{
-            fill: foreground
-            leftMargin: -popover.leftMargin
-            topMargin: -popover.topMargin
-            rightMargin: -popover.rightMargin
-            bottomMargin: -popover.bottomMargin
-        }
+        anchors.fill: foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
         onPressed: popover.hide()
