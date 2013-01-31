@@ -15,7 +15,10 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+Popover
++ dismissArea: area where mouse events cause Popover dismissal
++ grabDismissAreaEvents: specifies whether to grab events from dismiss area
++ contentWidth, contentHeight: overrides the calculated width/height of the Popover's operative area
 
 SDK 0.1.27
 ##########
