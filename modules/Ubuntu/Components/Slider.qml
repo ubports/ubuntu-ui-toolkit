@@ -84,7 +84,7 @@ AbstractButton {
     id: slider
 
     width: units.gu(38)
-    height: units.gu(4)
+    height: units.gu(5)
 
     Theming.ItemStyle.class: "slider"
 

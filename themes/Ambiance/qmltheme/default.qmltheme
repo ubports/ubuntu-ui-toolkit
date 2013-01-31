@@ -220,9 +220,9 @@ Examples:
     backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
     forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
     forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
-    scrollAreaThickness: units.dp(2);
+    scrollAreaThickness: units.gu(0.5);
     thumbConnectorMargin: units.dp(3);
-    sliderColor: "#fc7134";
+    sliderColor: Qt.rgba(0.5, 0.5, 0.5, 0.7);
     thumbConnectorColor: "white";
 }
 
@@ -243,7 +243,7 @@ Examples:
     overlaidSpacing: units.gu(0.5);
     passwordCharacter: "\u2022";
     font.family: "Ubuntu";
-    font.pixelSize: FontUtils.sizeToPixels("small");
+    font.pixelSize: FontUtils.sizeToPixels("medium");
 }
 
 /* clear button */
@@ -253,9 +253,8 @@ Examples:
 /* hint */
 .textfield .label {
    fontFamily: "Ubuntu";
-   italic: true;
    color: "#B6B6B6";
-   fontSize: "small";
+   fontSize: "medium";
    elide: Text.ElideRight;
 }
 /* cursor */
@@ -279,15 +278,13 @@ Examples:
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
     font.family: "Ubuntu";
-    font.pixelSize: FontUtils.sizeToPixels("small");
-    overlaySpacing: units.gu(0.5);
-    frameSpacing: units.gu(0.35);
+    font.pixelSize: FontUtils.sizeToPixels("medium");
+    overlaySpacing: units.gu(2);
 }
 /* hint */
 .textarea .label {
-   italic: true;
    color: "#B6B6B6";
-   fontSize: "small";
+   fontSize: "medium";
    elide: Text.ElideRight;
    wrapMode: Text.WordWrap;
 }
