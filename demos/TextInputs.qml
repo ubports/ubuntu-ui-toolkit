@@ -56,6 +56,7 @@ Template {
 
                 Label {
                     text: "Single line"
+                    ItemStyle.class: "title"
                 }
 
                 TemplateRow {
@@ -115,44 +116,13 @@ Template {
                     }
                 }
 
-                TemplateRow {
-                    title: i18n.tr("Password")
-
-                    TextField {
-                        id: textField4
-                        KeyNavigation.tab: textField5
-                        KeyNavigation.backtab: textField3
-
-                        placeholderText: i18n.tr("password echo on editing")
-                        echoMode: TextInput.PasswordEchoOnEdit
-
-                    }
+                Label {
+                    text: "Multi line"
+                    ItemStyle.class: "title"
                 }
 
                 TemplateRow {
-                    title: i18n.tr("Overlaid")
-
-                    TextField {
-                        id: textField5
-                        KeyNavigation.tab: textField1
-                        KeyNavigation.backtab: textField4
-
-                        primaryItem: Button {
-                            ItemStyle.class: "transparent-button"
-                            iconSource: "call_icon.png"
-                            width: units.gu(3)
-                        }
-                        secondaryItem: Button {
-                            ItemStyle.class: "transparent-button"
-                            iconSource: "small_avatar.png"
-                            width: height
-                            height: parent.height - units.gu(0.5)
-                        }
-                    }
-                }
-
-                TemplateRow {
-                    title: i18n.tr("Rich text")
+                    title: i18n.tr("Fixed")
                     height: richText.height
 
                     TextArea {
@@ -160,19 +130,6 @@ Template {
                         contentWidth: units.gu(62)
                         textFormat:TextEdit.RichText
                         placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
-                        text: longText
-                    }
-                }
-
-                TemplateRow {
-                    title: i18n.tr("Disabled")
-                    height: disabled.height
-
-                    TextArea {
-                        id: disabled
-                        enabled: false
-                        textFormat:TextEdit.RichText
-                        contentWidth: units.gu(62)
                         text: longText
                     }
                 }
@@ -187,20 +144,6 @@ Template {
                         placeholderText: "expands till 5 lines, then scrolls"
                         autoExpand: true
                         maximumLineCount: 5
-                    }
-                }
-
-                TemplateRow {
-                    title: i18n.tr("Expanding")
-                    height: expandUnlimited.height
-
-                    TextArea {
-                        id: expandUnlimited
-                        contentWidth: units.gu(40)
-                        textFormat:TextEdit.RichText
-                        placeholderText: "the area will expand forever"
-                        autoExpand: true
-                        maximumLineCount: 0
                     }
                 }
             }
