@@ -20,7 +20,7 @@ import QtQuick 2.0
     \qmltype Action
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Describe an action that can be re-used in \l Buttons, menus.
+    \brief Describe an action that can be re-used in, for example a \l Button
 
     \b{This component is under heavy development.}
 

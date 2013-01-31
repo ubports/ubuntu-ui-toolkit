@@ -20,7 +20,7 @@ import QtQuick 2.0
     \qmltype ActionList
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief List of \l Actions
+    \brief List of \l Action items
 
     Examples: See \l Page.
 */
@@ -47,6 +47,10 @@ QtObject {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: "Back"
         visible: __pageStack && __pageStack.depth > 1
+        /*!
+          \internal
+          FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
+         */
         onTriggered: __pageStack.pop()
     }
 
