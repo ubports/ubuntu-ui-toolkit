@@ -211,26 +211,6 @@ Examples:
     thumbConnectorColor: "white";
 }
 
-/*
-    Text input popover
-*/
-.textinput-popover {
-    color: "white";
-}
-
-.textinput-popover .highlight {
-    color: "#e6e6e6";
-    opacity: 0.7;
-}
-
-.textinput-popover .label {
-    fontSize: "medium";
-    italic: true;
-    elide: Text.ElideRight;
-    color: item.selected ? "#f37505" : Qt.rgba(0.4, 0.4, 0.4, 1.0);
-    opacity: item.enabled ? 1.0 : 0.5;
-}
-
 /* TextField default theme
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
