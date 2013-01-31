@@ -1,3 +1,9 @@
+qt-components-ubuntu (0.1.27) quantal; urgency=low
+
+  * New release
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 30 Jan 2013 20:56:23 +0200
+
 qt-components-ubuntu (0.1.26) quantal; urgency=low
 
   * New release

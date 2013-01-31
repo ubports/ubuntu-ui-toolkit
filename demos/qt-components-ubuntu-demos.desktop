@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Type=Application
 Exec=/usr/lib/qt-components-ubuntu/demos/launch_componentshowcase
-Path=/opt/qt-components-ubuntu/
+Path=/usr/lib/qt-components-ubuntu/
 Name=Qt Components for Ubuntu - Component Showcase
 GenericName=Qt Components for Ubuntu Component Showcase application
 Icon=/usr/lib/qt-components-ubuntu/demos/call_icon.png
