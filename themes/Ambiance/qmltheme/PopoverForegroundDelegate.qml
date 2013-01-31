@@ -17,41 +17,28 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
+UbuntuShape {
+    id: frame
+
+    property alias contentItem: body
+
+    color: StyleUtils.itemStyleProperty("color", "white")
+    radius: StyleUtils.itemStyleProperty("radius", "small")
+
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
         top: parent ? parent.top : undefined
     }
-    height: Math.min(outer.height, item.maxHeight)
-    property alias contentItem: inner
+    height: childrenRect.height
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the popover
-    MouseArea {
-        anchors.fill: parent
-    }
-
-    Rectangle {
-        id: outer
+    Item {
+        id: body
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
-        // FIXME: margins are 0 now, but may change
-        height: inner.height + 2*inner.anchors.margins
-
-        color: "white"
-
-        Rectangle {
-            id: inner
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-            color: "white"
-            height: childrenRect.height
-        }
+        height: childrenRect.height
     }
 }

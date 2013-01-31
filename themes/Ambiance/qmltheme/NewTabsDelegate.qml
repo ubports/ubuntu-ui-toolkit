@@ -142,7 +142,7 @@ Item {
         model: tabsDelegate.tabModel
         onModelChanged: tabView.updatePages()
         currentIndex: item.selectedTabIndex
-        onCurrentIndexChanged: item.selectedTabIndex = tabView.currentIndex
+        onCurrentIndexChanged: if (item.__tabsModel.count > 0) item.selectedTabIndex = tabView.currentIndex
 
         orientation: ListView.Horizontal
         snapMode: ListView.SnapOneItem

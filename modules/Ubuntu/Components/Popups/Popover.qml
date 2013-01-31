@@ -85,13 +85,20 @@ PopupBase {
     id: popover
 
     /*!
-      \preliminary
       Content will be put inside the foreround of the Popover.
     */
     default property alias container: containerItem.data
 
     /*!
-      \preliminary
+      \qmlproperty real contentWidth
+      \qmlproperty real contentHeight
+      The properties can be used to alter the default content width and heights.
+      */
+    property alias contentWidth: foreground.width
+    /*! \internal */
+    property alias contentHeight: foreground.height
+
+    /*!
       The Item such as a \l Button that the user interacted with to open the Dialog.
       This property will be used for the automatic positioning of the Dialog next to
       the caller, if possible.
@@ -107,25 +114,27 @@ PopupBase {
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, edgeMargins, callerMargins);
             pos.auto();
         }
     }
 
-    Background {
-        dim: false
-        dismissOnTap: true
+    Theming.InverseMouseArea {
+        anchors.fill: foreground
+        sensingArea: dismissArea
+        propagateComposedEvents: !grabDismissAreaEvents
+        onPressed: popover.hide()
     }
 
     Item {
         id: foreground
 
         // FIXME: see above
-        Theming.ItemStyle.class: "popover-foreground"
+        Theming.ItemStyle.class: "popover"
 
-        property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
-        property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
-        width: Math.min(units.gu(40), maxWidth)
+        property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
+        property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
+        width: Math.min(ComponentUtils.style(foreground, "minimumWidth", units.gu(40)), maxWidth)
         height: childrenRect.height
 
         Item {
@@ -140,11 +149,16 @@ PopupBase {
 
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
+
+        // Avoid mouse events being sent to any MouseAreas that are behind the popover
+        MouseArea {
+            anchors.fill: parent
+            z: -1
+        }
     }
 
     Pointer {
         id: pointer
-        opacity: 0.9
         longAxis: 2*internal.callerMargins
         shortAxis: internal.callerMargins
     }
