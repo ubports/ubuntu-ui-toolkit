@@ -19,14 +19,12 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
-    objectName: "Tabs (classic)"
+    objectName: "Tabs"
     property bool newTabs: false
 
     title: i18n.tr("Tabs")
 
     Tabs {
-        ItemStyle.class: "new-tabs"
-
         id: tabs
         Tab {
             title: i18n.tr("Flickable")
