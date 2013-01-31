@@ -95,7 +95,7 @@ MainView {
             //            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml", "chapter": "1"}, // (remove)
             ListElement {
                 label: "Tabs"
-                source: "NewTabs.qml"
+                source: "Tabs.qml"
                 chapter: "Building blocks"
             }
             ListElement {
@@ -123,7 +123,6 @@ MainView {
                 source: "ProgressBars.qml"
                 chapter: "Building blocks"
             }
-            //            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml", "chapter": "1"}, // integrate in progressbars
             ListElement {
                 label: "Scrollbar"
                 source: "ScrollBars.qml"

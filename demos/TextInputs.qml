@@ -65,7 +65,7 @@ Template {
                     TextField {
                         id: textField1
                         KeyNavigation.tab: textFieldDisabled
-                        KeyNavigation.backtab: textField5
+                        KeyNavigation.backtab: expandFix
 
                         placeholderText: i18n.tr("simple text field")
                         hasClearButton: false
@@ -107,7 +107,7 @@ Template {
 
                     TextField {
                         id: textField3
-                        KeyNavigation.tab: textField4
+                        KeyNavigation.tab: richText
                         KeyNavigation.backtab: textField2
 
                         placeholderText: i18n.tr("password with echo")
@@ -131,6 +131,8 @@ Template {
                         textFormat:TextEdit.RichText
                         placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
                         text: longText
+                        KeyNavigation.tab: expandFix
+                        KeyNavigation.backtab: textField3
                     }
                 }
 
@@ -144,6 +146,8 @@ Template {
                         placeholderText: "expands till 5 lines, then scrolls"
                         autoExpand: true
                         maximumLineCount: 5
+                        KeyNavigation.tab: textField1
+                        KeyNavigation.backtab: expandFix
                     }
                 }
             }

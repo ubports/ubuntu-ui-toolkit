@@ -22,10 +22,10 @@ Template {
     objectName: "Tabs (classic)"
     property bool newTabs: false
 
-    title: newTabs ? i18n.tr("Tabs (flickable)") : i18n.tr("Tabs (classic)")
+    title: i18n.tr("Tabs")
 
     Tabs {
-        ItemStyle.class: newTabs ? "new-tabs" : ""
+        ItemStyle.class: "new-tabs"
 
         id: tabs
         Tab {
