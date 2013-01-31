@@ -53,11 +53,6 @@ Item {
       PopupUtils.open() to do it automatically.
     */
     function show() {
-        /*
-        if (parent !== QuickUtils.rootObject) {
-            parent = QuickUtils.rootObject;
-        }
-        */
         if (!dismissArea)
             dismissArea = QuickUtils.rootObject
 
