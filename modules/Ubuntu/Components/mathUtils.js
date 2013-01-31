@@ -21,10 +21,10 @@
 
 function clamp(x, min, max) {
     if (min <= max) {
-        return Math.max(min, Math.min(x, max))
+        return Math.max(min, Math.min(x, max));
     } else {
         // swap min/max if min > max
-        return clamp(x, max, min)
+        return clamp(x, max, min);
     }
 }
 
