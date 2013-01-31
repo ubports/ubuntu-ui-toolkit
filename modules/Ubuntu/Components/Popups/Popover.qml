@@ -177,6 +177,7 @@ PopupBase {
         // Avoid mouse events being sent to any MouseAreas that are behind the popover
         MouseArea {
             anchors.fill: parent
+            z: -1
         }
     }
 
