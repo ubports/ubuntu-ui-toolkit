@@ -92,7 +92,6 @@ MainView {
                 source: "Buttons.qml"
                 chapter: "Building blocks"
             }
-            //            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml", "chapter": "1"}, // (remove)
             ListElement {
                 label: "Tabs"
                 source: "Tabs.qml"
