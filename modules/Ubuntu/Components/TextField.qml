@@ -81,7 +81,7 @@ FocusScope {
     id: control
 
     implicitWidth: units.gu(25)
-    implicitHeight: units.gu(3)
+    implicitHeight: units.gu(5)
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.

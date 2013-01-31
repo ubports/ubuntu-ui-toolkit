@@ -26,6 +26,8 @@ import Ubuntu.Components 0.1
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
   - thumbSpacing: spacing between the thumb and the bar
+  - backgroundOpacity: transparency for the background
+  - thumbOpacity: transparency for the thumb
   */
 
 Item {
@@ -50,6 +52,7 @@ Item {
 
         anchors.fill: parent
         color: StyleUtils.itemStyleProperty("backgroundColor", "white")
+        opacity: StyleUtils.itemStyleProperty("backgroundOpacity", 1.0)
     }
 
     UbuntuShape {
@@ -60,6 +63,7 @@ Item {
         width: thumbWidth
         height: backgroundShape.height - (2.0 * thumbSpacing)
         color: StyleUtils.itemStyleProperty("thumbColor", "darkgray")
+        opacity: StyleUtils.itemStyleProperty("thumbOpacity", 1.0)
     }
 
     Label {
