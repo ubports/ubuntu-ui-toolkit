@@ -144,8 +144,12 @@ MainView {
                 source: "TextInputs.qml"
                 chapter: "Building blocks"
             }
-
-            //            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml", "chapter": "1"}, // merge with text input, label single/multi line
+            ListElement {
+                label:"Text Area"
+                source: "TextAreas.qml"
+                chapter: "Building blocks"
+                // merge with text input, label single/multi line
+            }
         }
         section.property: "chapter"
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
