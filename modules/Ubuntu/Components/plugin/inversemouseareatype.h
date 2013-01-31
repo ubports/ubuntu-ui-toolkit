@@ -49,9 +49,14 @@ private:
     void reset();
     QPointF mapToSensingArea(const QPointF &point);
     bool pointInSensingArea(const QPointF &point);
+    bool pointInOSK(const QPointF &point);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);
     bool mouseMove(QMouseEvent *event);
+    // grab touch events too
+    bool touchPressed(QTouchEvent *event);
+    bool touchMoved(QTouchEvent *event);
+    bool touchReleased(QTouchEvent *event);
 
 Q_SIGNALS:
     void pressedChanged();
