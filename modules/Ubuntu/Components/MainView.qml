@@ -17,42 +17,43 @@
 import QtQuick 2.0
 
 /*!
-    \qmltype Action
+    \qmltype ApplicationWindow
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Describe an action that can be re-used in \l Buttons, menus.
+    \brief The root Item for all applications
 
     \b{This component is under heavy development.}
 
-    Examples: See \l Page
+    Examples:
+    \qml
+        MainView {
+            Button {
+                anchors.centerIn: parent
+                text: "Click me"
+            }
+        }
+    \endqml
 */
-QtObject {
-    id: action
-
+Item {
     /*!
       \preliminary
-      The title of the action.
+      The list of actions that will be placed on the toolbar of the application.
      */
-    property string text
+    // TODO: Assign the list of actions automatically if the first child of MainView
+    //  is an instance of Tabs, PageStack or Page.
+    property alias tools: toolbar.tools
 
     /*!
-      \preliminary
-      The image associated with the action.
+      \internal
+      Use default property to ensure children added do not draw over the toolbar.
      */
-    property url iconSource
+    default property alias contentsItem: contents.data
+    Item {
+        id: contents
+        anchors.fill: parent
+    }
 
-    /*!
-      Called when the action is triggered.
-     */
-    signal triggered(var caller)
-
-    /*!
-      The action is visible to the user
-     */
-    property bool visible: true
-
-    /*!
-      Enable the action. It may be visible, but disabled.
-     */
-    property bool enabled: true
+    Toolbar {
+        id: toolbar
+    }
 }
