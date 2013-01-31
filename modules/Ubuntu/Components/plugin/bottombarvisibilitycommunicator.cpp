@@ -24,30 +24,15 @@
     This class allows for the bottom edge interaction to happen
 
     The user of this class needs to give the following information to the shell:
-     * currentHeight: This is the current height of the bottom bar
      * targetHeight: This is the target final height of the bottom bar
 
     The shell can control the bottom bar behaviour:
      * forceHidden: If set to true, the bottom bar has to be forced to be hidden
 */
 BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
- : m_currentHeight(-1),
-   m_targetHeight(-1),
+ : m_targetHeight(-1),
    m_forceHidden(false)
 {
-}
-
-double BottomBarVisibilityCommunicator::currentHeight() const
-{
-    return m_currentHeight;
-}
-
-void BottomBarVisibilityCommunicator::setCurrentHeight(double currentHeight)
-{
-    if (m_currentHeight != currentHeight) {
-        m_currentHeight = currentHeight;
-        Q_EMIT currentHeightChanged(currentHeight);
-    }
 }
 
 double BottomBarVisibilityCommunicator::targetHeight() const

@@ -23,7 +23,6 @@
 class BottomBarVisibilityCommunicator : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double currentHeight READ currentHeight WRITE setCurrentHeight NOTIFY currentHeightChanged)
     Q_PROPERTY(double targetHeight READ targetHeight WRITE setTargetHeight NOTIFY targetHeightChanged)
     Q_PROPERTY(bool forceHidden READ forceHidden WRITE setForceHidden NOTIFY forceHiddenChanged)
 
@@ -34,9 +33,6 @@ public:
         return instance;
     }
 
-    double currentHeight() const;
-    void setCurrentHeight(double currentHeight);
-
     double targetHeight() const;
     void setTargetHeight(double targetHeight);
 
@@ -44,14 +40,12 @@ public:
     void setForceHidden(bool forceHidden);
 
 Q_SIGNALS:
-    void currentHeightChanged(double currentHeight);
     void targetHeightChanged(double targetHeight);
     void forceHiddenChanged(bool forceHidden);
 
 private:
     BottomBarVisibilityCommunicator();
 
-    double m_currentHeight;
     double m_targetHeight;
     bool m_forceHidden;
 };
