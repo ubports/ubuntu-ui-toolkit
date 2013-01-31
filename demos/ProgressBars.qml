@@ -79,5 +79,14 @@ Template {
                 indeterminate: true
             }
         }
+
+        TemplateRow {
+            title: i18n.tr("Indicator")
+
+            ActivityIndicator {
+                anchors.leftMargin: units.gu(10)
+                running: true
+            }
+        }
     }
 }

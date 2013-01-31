@@ -18,6 +18,7 @@
 
 #include <QtQml>
 #include <QtQuick/private/qquickimagebase_p.h>
+#include <QDBusConnection>
 
 #include "plugin.h"
 #include "themeengine.h"
@@ -35,6 +36,13 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
+#include "bottombarvisibilitycommunicator.h"
+
+#include <sys/types.h>
+#include <unistd.h>
+
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH = "/BottomBarVisibilityCommunicator";
+static const char* DBUS_SERVICE = "com.canonical.SDKApp%1";
 
 /*
  * Registration function for the Clipboard type
@@ -84,6 +92,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
+
+    const QString dbusName = QString(DBUS_SERVICE).arg(getpid());
+    QDBusConnection::sessionBus().registerService(dbusName);
+    BottomBarVisibilityCommunicator *bottomBarVisibilityCommunicator = &BottomBarVisibilityCommunicator::instance();
+    QDBusConnection::sessionBus().registerObject(BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, bottomBarVisibilityCommunicator, QDBusConnection::ExportAllContents);
+    context->setContextProperty("bottomBarVisibilityCommunicator", bottomBarVisibilityCommunicator);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

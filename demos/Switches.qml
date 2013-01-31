@@ -19,35 +19,60 @@ import Ubuntu.Components 0.1
 
 Template {
     objectName: "Switch"
-    title: i18n.tr("Switch")
+    title: i18n.tr("Switches")
 
     Column {
         spacing: units.gu(4)
+        width: units.gu(20)
 
-        TemplateRow {
-            title: i18n.tr("Unchecked")
+        Row {
+            height: units.gu(6)
+            width: parent.width
+            spacing: units.gu(2)
+            Label {
+                text: i18n.tr("Unchecked")
+                width: units.gu(10)
+            }
+            CheckBox {
+            }
+
             Switch {
             }
         }
 
-        TemplateRow {
-            title: i18n.tr("Checked")
+        Row {
+            spacing: units.gu(2)
+            Label {
+                text: i18n.tr("Checked")
+                width: units.gu(10)
+            }
+            CheckBox {
+                checked: true
+            }
             Switch {
                 checked: true
             }
         }
 
-        TemplateRow {
-            title: i18n.tr("Disabled")
-            Row {
-                spacing: units.gu(1)
-                Switch {
-                    enabled: false
-                }
-                Switch {
-                    enabled: false
-                    checked: true
-                }
+        Row {
+            spacing: units.gu(2)
+            Label {
+                text: i18n.tr("Disabled")
+                width: units.gu(10)
+            }
+            CheckBox {
+                enabled: false
+            }
+            Switch {
+                enabled: false
+            }
+            CheckBox {
+                enabled: false
+                checked: true
+            }
+            Switch {
+                enabled: false
+                checked: true
             }
         }
     }

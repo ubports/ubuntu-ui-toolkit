@@ -28,7 +28,7 @@ Template {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: i18n.tr("Flickable")
+            title: i18n.tr("Horizontal")
             height: scrollable.height
 
             Item {
@@ -58,7 +58,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("ListView")
+            title: i18n.tr("Vertical")
             height: scrollable2.height
 
             Rectangle {

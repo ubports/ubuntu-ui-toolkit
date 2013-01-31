@@ -1,4 +1,4 @@
-    /*
+/*
 qml-mapping defines the QML style and delegate QML documents that are used as base
 when building up the Rule components.
 
@@ -24,7 +24,7 @@ properties typed as variant.
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
-@qml-mapping (.popover-foreground, , PopoverForegroundDelegate);
+@qml-mapping (.popover, , PopoverForegroundDelegate);
 @qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
@@ -147,7 +147,10 @@ Examples:
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
-.popover-foreground {
+.popover {
+    minimumWidth: units.gu(40);
+    color: "white";
+    radius: "medium";
 }
 
 .sheet-foreground {
@@ -157,6 +160,10 @@ Examples:
 }
 
 .pointer {
+    opacity: 0.9;
+    imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
+                (item.direction === "right") ? url(artwork/RightArrow.png) :
+                (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
 }
 
 /*
