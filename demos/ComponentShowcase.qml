@@ -66,11 +66,12 @@ MainView {
                 source: "UbuntuShapes.qml"
                 chapter: "Style"
             }
-            //            ListElement {
-            //                label: "Icons"
-            //                source: "GIconProvider.qml"
-            //                chapter: "1"
-            //            }
+// TODO: To be added when we have a set of Ubuntu icons.
+//            ListElement {
+//                label: "Icons"
+//                source: "GIconProvider.qml"
+//                chapter: "1"
+//            }
             ListElement {
                 label: "Header"
                 source: ""
@@ -85,9 +86,7 @@ MainView {
                 label: "Switches"
                 source: "Switches.qml"
                 chapter: "Building blocks"
-                // Combine with Check Box
             }
-            //            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml", "chapter": "1"}, // (remove)
             ListElement {
                 label: "Buttons"
                 source: "Buttons.qml"
