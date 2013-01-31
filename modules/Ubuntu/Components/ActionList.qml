@@ -34,11 +34,12 @@ QtObject {
       Default property to allow adding of children.
       */
     default property alias children: list.__actionList
+
     /*!
       \internal
       Property list to allow adding of children.
       */
-    property list<Action> __actionList: [Action {}] //QML doesn't allow an empty list here
+    property list<Action> __actionList
 
     /*!
       The back action.
