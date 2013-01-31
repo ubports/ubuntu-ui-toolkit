@@ -14,7 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function open(popup, caller) {
+/*!
+  The function opens a popup object (component or file) aligning it to its caller.
+  The size of the popup can be given as parameter, as well as
+  */
+function open(popup, caller, params) {
     var popupComponent = null;
     if (popup.createObject) {
         // popup is a component and can create an object
@@ -27,12 +31,16 @@ function open(popup, caller) {
     }
 
     var popupObject;
-    if (caller) popupObject = popupComponent.createObject(QuickUtils.rootObject, { "caller": caller });
-    else popupObject = popupComponent.createObject(QuickUtils.rootObject);
+    if (params !== undefined) {
+        popupObject = popupComponent.createObject(QuickUtils.rootObject, params);
+    } else {
+        popupObject = popupComponent.createObject(QuickUtils.rootObject);
+    }
     if (!popupObject) {
         print("PopupUtils.open(): Failed to create the popup object.");
         return;
-    }
+    } else if (popupObject.hasOwnProperty("caller"))
+        popupObject.caller = caller;
 
     popupObject.show();
     popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);

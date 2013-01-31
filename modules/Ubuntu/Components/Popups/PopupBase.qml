@@ -26,6 +26,19 @@ import QtQuick 2.0
 Item {
     id: popupBase
 
+    /*!
+      The property holds the area used to dismiss the popups, the area from where
+      mouse and touch events will be grabbed. By default this area is the application's
+      main view.
+    */
+    property Item dismissArea: QuickUtils.rootObject
+
+    /*!
+      The property specifies whether to forward or not the mouse and touch events
+      happening outside of the popover. By default all events are grabbed.
+    */
+    property bool grabDismissAreaEvents: true
+
     anchors.fill: parent ? parent : undefined
 
     // without specifying width and height below, some width calculations go wrong in Sheet.
@@ -35,14 +48,19 @@ Item {
 
     /*!
       \preliminary
-      Make the popup visible. Reparent to the root object first if needed.
+      Make the popup visible. Reparent to the background area object first if needed.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.open() to do it automatically.
     */
     function show() {
+        /*
         if (parent !== QuickUtils.rootObject) {
             parent = QuickUtils.rootObject;
         }
+        */
+        if (!dismissArea)
+            dismissArea = QuickUtils.rootObject
+
         popupBase.visible = true;
     }
 

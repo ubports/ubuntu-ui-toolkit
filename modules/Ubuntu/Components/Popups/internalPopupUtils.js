@@ -179,6 +179,62 @@ function CallerPositioning(foreground, pointer, area, caller, edgeMargins, calle
         pointer.direction = "none";
     }
 
+    // position foreground and pointer above caller
+    this.positionAbove = function() {
+        var coord = this.above(foreground, callerMargins);
+        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.y = coord;
+            foreground.x = this.horizontalAlign(foreground);
+            pointer.direction = "down";
+            pointer.y = this.above(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return true;
+        }
+        return false;
+    }
+
+    // position foreground and pointer below caller
+    this.positionBelow = function() {
+        var coord = this.below(foreground, callerMargins);
+        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.y = coord;
+            foreground.x = this.horizontalAlign(foreground);
+            pointer.direction = "up";
+            pointer.y = this.below(pointer, 0);
+            pointer.x = this.horizontalAlign(pointer);
+            return true;
+        }
+        return false;
+    }
+
+    // position foreground and pointer in front of caller
+    this.positionInFront = function() {
+        var coord = this.left(foreground, callerMargins);
+        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.x = coord;
+            foreground.y = this.verticalAlign(foreground);
+            pointer.direction = "right";
+            pointer.x = this.left(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return true;
+        }
+        return false;
+    }
+
+    // position foreground and pointer behind caller
+    this.positionBehind = function() {
+        var coord = this.right(foreground, callerMargins)
+        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
+            foreground.x = coord;
+            foreground.y = this.verticalAlign(foreground);
+            pointer.direction = "left";
+            pointer.x = this.right(pointer, 0);
+            pointer.y = this.verticalAlign(pointer);
+            return true;
+        }
+        return false;
+    }
+
     // position foreground and pointer automatically on a large screen.
     this.autoLargeScreen = function() {
         if (!caller) {
@@ -187,41 +243,10 @@ function CallerPositioning(foreground, pointer, area, caller, edgeMargins, calle
             return;
         }
         // position with the following priorities: above, left, right, below.
-        var coord = this.above(foreground, callerMargins);
-        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
-            foreground.y = coord;
-            foreground.x = this.horizontalAlign(foreground);
-            pointer.direction = "down";
-            pointer.y = this.above(pointer, 0);
-            pointer.x = this.horizontalAlign(pointer);
-            return;
-        }
-        coord = this.left(foreground, callerMargins);
-        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
-            foreground.x = coord;
-            foreground.y = this.verticalAlign(foreground);
-            pointer.direction = "right";
-            pointer.x = this.left(pointer, 0);
-            pointer.y = this.verticalAlign(pointer);
-            return;
-        }
-        coord = this.right(foreground, callerMargins)
-        if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
-            foreground.x = coord;
-            foreground.y = this.verticalAlign(foreground);
-            pointer.direction = "left";
-            pointer.x = this.right(pointer, 0);
-            pointer.y = this.verticalAlign(pointer);
-            return;
-        }
-        coord = this.below(foreground, callerMargins);
-        if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
-            foreground.y = coord;
-            foreground.x = this.horizontalAlign(foreground);
-            pointer.direction = "up";
-            pointer.y = this.below(pointer, 0);
-            pointer.x = this.horizontalAlign(pointer);
-            return;
+        var order = ["positionAbove", "positionBelow", "positionInFront", "positionBehind"];
+        for (var i = 0; i < order.length; i++) {
+            if (this[order[i]]())
+                return;
         }
         // not enough space on any of the sides to fit within the margins.
         simplePos.autoLargeScreen();
@@ -229,6 +254,9 @@ function CallerPositioning(foreground, pointer, area, caller, edgeMargins, calle
     }
 
     this.auto = function() {
+        // area may be null some times...
+        if (!area)
+            return;
         if (foreground.width >= area.width - 2*edgeMargins) {
             // the popover uses (almost) the full width of the screen
             this.autoSmallScreenPortrait();
