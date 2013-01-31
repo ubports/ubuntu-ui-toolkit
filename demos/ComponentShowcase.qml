@@ -66,12 +66,12 @@ MainView {
                 source: "UbuntuShapes.qml"
                 chapter: "Style"
             }
-// TODO: To be added when we have a set of Ubuntu icons.
-//            ListElement {
-//                label: "Icons"
-//                source: "GIconProvider.qml"
-//                chapter: "1"
-//            }
+            // TODO: To be added when we have a set of Ubuntu icons.
+            //ListElement {
+            //    label: "Icons"
+            //    source: "GIconProvider.qml"
+            //    chapter: "1"
+            //}
             ListElement {
                 label: "Header"
                 source: ""
@@ -151,7 +151,6 @@ MainView {
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
 
         section.delegate: ListItem.Header { text: section }
-
 
         delegate: ListItem.Standard {
             text: i18n.tr(label)
