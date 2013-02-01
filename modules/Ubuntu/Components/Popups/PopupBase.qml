@@ -56,6 +56,8 @@ Item {
         if (!dismissArea)
             dismissArea = QuickUtils.rootObject
 
+        // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
+        parent = dismissArea;
         popupBase.visible = true;
     }
 
