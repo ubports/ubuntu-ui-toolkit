@@ -37,9 +37,9 @@ import QtQuick 2.0
     \b{This component is under heavy development.}
 */
 
-Image {
-    height: units.gu(3)
-    source: "artwork/ListItemDivider24px.png"
+Empty {
+    height: units.gu(4)
+    //source: "artwork/ListItemDivider24px.png"
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
@@ -60,11 +60,9 @@ Image {
 
     LabelVisual {
         id: label
-        font.italic: true
         fontSize: "medium"
         anchors {
             verticalCenter: parent.verticalCenter
-            leftMargin: units.gu(1)
             left: parent.left
             right: parent.right
         }

@@ -55,7 +55,7 @@ import QtQuick 2.0
 */
 Empty {
     id: selector
-    __height: column.height
+    __height: column.childrenRect.height
 
     /*!
       \preliminary
@@ -135,10 +135,16 @@ Empty {
     Column {
         id: column
         anchors {
+            fill: parent
+            margins: -units.gu(2)
+            /*
             left: parent.left
             right: parent.right
-            topMargin: units.dp(2)
-            bottomMargin: units.dp(2)
+            top: parent.top
+            leftMargin: -units.gu(2)
+            rightMargin: -units.gu(2)
+            topMargin: -units.gu(2)
+            */
         }
 
         Base {
@@ -210,22 +216,31 @@ Empty {
                     }
                 }
             }
+            /*
             ThinDivider {
                 anchors.bottom: parent.bottom
                 visible: valueRepeater.valueHeight > 0
             }
+            */
         }
 
         Repeater {
             id: valueRepeater
-            property int valueHeight: selector.expanded ? units.gu(5) : 0
+            property int valueHeight: selector.expanded ? units.gu(6) : 0
 
+            Behavior on valueHeight {
+                PropertyAnimation {
+                    duration: 100
+                }
+            }
+
+/*
             states: [ State {
                     name: "expanded"
                     when: selector.expanded
                     PropertyChanges {
                         target: valueRepeater
-                        valueHeight: units.gu(5)
+                        valueHeight: units.gu(6)
                     }
                 }, State {
                     name: "closed"
@@ -244,7 +259,7 @@ Empty {
                     duration: 100
                 }
             }
-
+*/
             model: selector.values
             Rectangle {
                 color: "#e0e0e0"
@@ -269,7 +284,6 @@ Empty {
                             leftMargin: units.gu(3)
                             verticalCenter: parent.verticalCenter
                         }
-                        font.italic: true
                         font.bold: valueBase.selected
                         property real heightMargin: valueBase.height - implicitHeight
                         visible: heightMargin > 0

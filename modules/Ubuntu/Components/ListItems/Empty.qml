@@ -102,7 +102,7 @@ AbstractButton {
         id: highlight
         visible: emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)
         anchors.fill: parent
-        color: "white"
+        color: "#E6E6E6"
         opacity: 0.7
     }
 
@@ -163,6 +163,7 @@ AbstractButton {
             right: parent.right
             top: parent.top
             bottom: bottomDividerLine.top
+            margins: units.gu(2)
         }
     }
 }
