@@ -32,7 +32,6 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-    height: units.gu(10)
     clip: true
 
     /*!
@@ -60,7 +59,7 @@ Item {
             else bar.y = bar.height;
         }
 
-        property bool notAnimating: (bottomBar.active && y === 0) || (!bottomBar.active && y === height)
+//        property bool notAnimating: (bottomBar.active && y === 0) || (!bottomBar.active && y === height)
         Behavior on y {
             SmoothedAnimation {
                 velocity: 500;

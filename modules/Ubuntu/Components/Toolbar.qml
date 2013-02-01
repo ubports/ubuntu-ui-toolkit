@@ -34,6 +34,8 @@ GenericToolbar {
     id: toolbar
     Theming.ItemStyle.class: "toolbar"
 
+    height: background.height
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
@@ -41,7 +43,16 @@ GenericToolbar {
     property ActionList tools
 
     Item {
-        anchors.fill: parent
+        // All visual items go into the background because only the children
+        //  of the GenericToolbar are being shown/hidden while the toolbar
+        //  itself may stay in place.
+        id: background
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(8)
 
         Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
         Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
@@ -53,41 +64,42 @@ GenericToolbar {
             //      seems disabled.
             onClicked: { }
         }
-    }
 
-    Button {
-        id: backButton
-        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        visible: back && back.visible
-        Theming.ItemStyle.class: "toolbar-button"
-        anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
+        Button {
+            id: backButton
+            property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+            visible: back && back.visible
+            Theming.ItemStyle.class: "toolbar-button"
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+            }
+            iconSource: back ? back.iconSource : ""
+            text: back ? back.text : ""
+            onClicked: back.triggered(backButton)
         }
-        iconSource: back ? back.iconSource : ""
-        text: back ? back.text : ""
-        onClicked: back.triggered(backButton)
-    }
 
-    Row {
-        id: toolButtonsContainer
-        anchors {
-            right: parent.right
-            top: parent.top
-            bottom: parent.bottom
-        }
-        width: childrenRect.width
 
-        Repeater {
-            model: toolbar.tools ? toolbar.tools.children : 0
-            Button {
-                id: toolButton
-                Theming.ItemStyle.class: "toolbar-button"
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.text
-                iconSource: modelData.iconSource ? modelData.iconSource : ""
-                onClicked: modelData.triggered(toolButton)
-                enabled: modelData.enabled
+        Row {
+            id: toolButtonsContainer
+            anchors {
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+            width: childrenRect.width
+
+            Repeater {
+                model: toolbar.tools ? toolbar.tools.children : 0
+                Button {
+                    id: toolButton
+                    Theming.ItemStyle.class: "toolbar-button"
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: modelData.text
+                    iconSource: modelData.iconSource ? modelData.iconSource : ""
+                    onClicked: modelData.triggered(toolButton)
+                    enabled: modelData.enabled
+                }
             }
         }
     }
