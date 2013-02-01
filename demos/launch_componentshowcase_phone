@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/bin/qmlscene /usr/lib/qt-components-ubuntu/demos/PhoneComponentShowcase.qml
+qmlscene /usr/lib/qt-components-ubuntu/demos/PhoneComponentShowcase.qml
