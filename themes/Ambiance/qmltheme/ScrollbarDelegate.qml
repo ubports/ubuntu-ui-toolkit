@@ -239,11 +239,17 @@ Item {
 
         Behavior on width {
             enabled: (!isVertical)
-            animation: StyleUtils.itemStyleProperty("sliderAnimation")
+            NumberAnimation {
+                duration: StyleUtils.itemStyleProperty("sliderAnimation").duration
+                easing: StyleUtils.itemStyleProperty("sliderAnimation").easing
+            }
         }
         Behavior on height {
             enabled: (isVertical)
-            animation: StyleUtils.itemStyleProperty("sliderAnimation")
+            NumberAnimation {
+                duration: StyleUtils.itemStyleProperty("sliderAnimation").duration
+                easing: StyleUtils.itemStyleProperty("sliderAnimation").easing
+            }
         }
 
         function scroll(amount) {
@@ -271,7 +277,12 @@ Item {
         }
         color: StyleUtils.itemStyleProperty("thumbConnectorColor", "white")
         opacity: thumb.shown ? 1.0 : 0.0
-        Behavior on opacity { animation: StyleUtils.itemStyleProperty("thumbConnectorFading") }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: StyleUtils.itemStyleProperty("thumbConnectorFading").duration
+                easing: StyleUtils.itemStyleProperty("thumbConnectorFading").easing
+            }
+        }
     }
 
     MouseArea {
@@ -432,7 +443,12 @@ Item {
         }
 
         opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
-        Behavior on opacity { animation: StyleUtils.itemStyleProperty("thumbFading") }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: StyleUtils.itemStyleProperty("thumbFading").duration
+                easing: StyleUtils.itemStyleProperty("thumbFading").easing
+            }
+        }
 
         property url backwardPressed: StyleUtils.itemStyleProperty("backwardThumbPressed", "")
         property url backwardReleased: StyleUtils.itemStyleProperty("backwardThumbReleased", "")
