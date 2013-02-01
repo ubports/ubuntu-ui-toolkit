@@ -5,7 +5,6 @@ ActionList 0.1 ActionList.qml
 MainView 0.1 MainView.qml
 Button 0.1 Button.qml
 internal GenericToolbar GenericToolbar.qml
-internal Toolbar Toolbar.qml
 internal DraggingArea DraggingArea.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
