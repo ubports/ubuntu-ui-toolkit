@@ -16,7 +16,29 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
+Item {
     anchors.fill: parent
-    color: StyleUtils.itemStyleProperty("color")
+
+    Rectangle {
+        id: background
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: parent.height //- dropshadow.height
+        color: StyleUtils.itemStyleProperty("color")
+        opacity: StyleUtils.itemStyleProperty("opacity")
+    }
+
+    Image {
+        id: dropshadow
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: background.top
+        }
+        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
+        opacity: 0.5
+    }
 }

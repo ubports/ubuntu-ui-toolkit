@@ -71,9 +71,12 @@ Examples:
 
 .toolbar {
     color: "white";
+    opacity: 0.95;
 }
 
 .toolbar-button {
+    iconWidth: units.gu(2);
+    iconHeight: units.gu(2);
 }
 
 .toolbar-button .label {

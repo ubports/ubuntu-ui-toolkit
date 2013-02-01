@@ -64,43 +64,49 @@ GenericToolbar {
             //      seems disabled.
             onClicked: { }
         }
+    }
 
-        Button {
-            id: backButton
-            property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-            visible: back && back.visible
-            Theming.ItemStyle.class: "toolbar-button"
-            anchors {
-                left: parent.left
-                verticalCenter: parent.verticalCenter
-            }
-            iconSource: back ? back.iconSource : ""
-            text: back ? back.text : ""
-            onClicked: back.triggered(backButton)
+    Button {
+        id: backButton
+        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        visible: back && back.visible
+        Theming.ItemStyle.class: "toolbar-button"
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
         }
+        iconSource: back ? back.iconSource : ""
+        text: back ? back.text : ""
+        onClicked: back.triggered(backButton)
+    }
 
 
-        Row {
-            id: toolButtonsContainer
-            anchors {
-                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-            }
-            width: childrenRect.width
+    Row {
+        id: toolButtonsContainer
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            top: parent.top
+            rightMargin: units.gu(2)
+//            verticalCenter: parent.verticalCenter
+        }
+        width: childrenRect.width
+//        height: parent.height //childrenRect.height
 
-            Repeater {
-                model: toolbar.tools ? toolbar.tools.children : 0
-                Button {
-                    id: toolButton
-                    Theming.ItemStyle.class: "toolbar-button"
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.text
-                    iconSource: modelData.iconSource ? modelData.iconSource : ""
-                    onClicked: modelData.triggered(toolButton)
-                    enabled: modelData.enabled
-                }
+        spacing: 5
+
+        Repeater {
+            model: toolbar.tools ? toolbar.tools.children : 0
+            Button {
+                id: toolButton
+                Theming.ItemStyle.class: "toolbar-button"
+                anchors.verticalCenter: parent.verticalCenter
+                text: modelData.text
+                iconSource: modelData.iconSource ? modelData.iconSource : ""
+                onClicked: modelData.triggered(toolButton)
+                enabled: modelData.enabled
             }
         }
     }
+
 }

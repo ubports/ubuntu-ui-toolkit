@@ -32,7 +32,7 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-    clip: true
+//    clip: true
 
     /*!
       When active, the bar is visible, otherwise it is hidden.
