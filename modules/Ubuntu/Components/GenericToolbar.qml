@@ -26,14 +26,13 @@ import QtQuick 2.0
 // FIXME: This class is going to be deprecated when we use
 //  the toolbar behavior from the shell.
 Item {
-    id: chromeBar
+    id: bottomBar
     anchors {
         left: parent.left
         right: parent.right
         bottom: parent.bottom
     }
-    height: units.gu(0) // TODO TIM: fix
-
+    height: units.gu(10)
     clip: true
 
     /*!
@@ -41,53 +40,71 @@ Item {
       Use bottom edge swipe up/down to activate/deactivate the bar.
      */
     property bool active: false
+    onActiveChanged: bar.updateYPosition();
 
     default property alias contents: bar.data
 
     Item {
         id: bar
-
         height: parent.height
         anchors {
             left: parent.left
             right: parent.right
         }
-        y: chromeBar.active ? 0 : height
 
-        property bool notAnimating: (chromeBar.active && y === 0) || (!chromeBar.active && y === height)
+        // initial state only. Will be overridden because of mouseArea's drag target.
+        y: bottomBar.active ? 0 : height
+
+        function updateYPosition() {
+            if (bottomBar.active) bar.y = 0;
+            else bar.y = bar.height;
+        }
+
+        property bool notAnimating: (bottomBar.active && y === 0) || (!bottomBar.active && y === height)
         Behavior on y {
-            NumberAnimation {
-                duration: 200;
+            SmoothedAnimation {
+                velocity: 500;
                 easing.type: Easing.InOutQuad;
             }
         }
     }
 
-    MouseArea {
-        anchors.fill: parent
+    DraggingArea {
+        // visible: toolbar.available
+        orientation: Qt.Vertical
+        id: dragMouseArea
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        height: bottomBar.active ? bar.height : units.gu(3)
+        zeroVelocityCounts: true
 
-        // avoid propagating events when bar in the process
-        // of becoming active or inactive.
-        propagateComposedEvents: bar.notAnimating
-
-        /*!
-          The amount that the cursor position needs to change in y-direction
-          after pressing, in order to activate/deactivate the bar.
-         */
-        property real dragThreshold: units.gu(1)
-
-        property int pressedY
-        onPressed: {
-            pressedY = mouse.y;
-            mouse.accepted = true;
+        drag {
+            target: bar
+            axis: Drag.YAxis
+            minimumY: 0
+            //maximumY: height + bar.height
         }
 
-        onPositionChanged: {
-            var diff = pressedY - mouse.y;
-            if (diff > dragThreshold) {
-                chromeBar.active = true;
-            } else if (diff < -dragThreshold) {
-                chromeBar.active = false;
+        propagateComposedEvents: true
+
+        // FIXME: Make all parameters below themable.
+        //  The value of 44 was copied from the Launcher.
+        onPressedChanged: {
+            if (pressed) {
+                if (bottomBar.active) return;
+                y = height - units.gu(1);
+            } else {
+                if (dragMouseArea.dragVelocity < -44) {
+                    bottomBar.active = true;
+                } else if (dragMouseArea.dragVelocity > 44) {
+                    bottomBar.active = false;
+                } else {
+                    bottomBar.active = bar.y < bar.height / 2;
+                }
+                bar.updateYPosition();
             }
         }
     }

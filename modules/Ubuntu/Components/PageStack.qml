@@ -107,6 +107,7 @@ Item {
     property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
                                && currentPage.tools ? currentPage.tools : __defaultTools
 
+    /*! \internal */
     onToolsChanged: if (tools) tools.__pageStack = pageStack;
 
     /*!
