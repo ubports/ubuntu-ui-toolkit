@@ -60,7 +60,7 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp
 
 # deployment rules for the plugin
-installPath = $$[QT_INSTALL_LIBS]/qt5/qml/$$replace(uri, \\., /)
+installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
 
