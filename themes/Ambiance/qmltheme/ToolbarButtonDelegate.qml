@@ -26,8 +26,6 @@ Item {
     Item {
         anchors.centerIn: parent
         height: icon.height + label.height + label.anchors.topMargin
-//        width: childrenRect.width
-
 
         Image {
             id: icon
@@ -47,7 +45,6 @@ Item {
                 horizontalCenter: parent.horizontalCenter
                 top: icon.bottom
                 topMargin: units.gu(1)
-                //            bottomMargin: units.gu(3)
             }
             width: paintedWidth
             text: item.text

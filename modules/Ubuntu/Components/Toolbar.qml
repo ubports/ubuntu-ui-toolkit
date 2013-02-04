@@ -73,13 +73,13 @@ GenericToolbar {
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
+            leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
         iconSource: back ? back.iconSource : ""
         text: back ? back.text : ""
         onClicked: back.triggered(backButton)
     }
-
 
     Row {
         id: toolButtonsContainer
@@ -88,11 +88,8 @@ GenericToolbar {
             bottom: parent.bottom
             top: parent.top
             rightMargin: units.gu(2)
-//            verticalCenter: parent.verticalCenter
         }
         width: childrenRect.width
-//        height: parent.height //childrenRect.height
-
         spacing: 5
 
         Repeater {
@@ -108,5 +105,4 @@ GenericToolbar {
             }
         }
     }
-
 }

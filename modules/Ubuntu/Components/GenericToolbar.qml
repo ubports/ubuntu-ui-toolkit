@@ -32,7 +32,6 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-//    clip: true
 
     /*!
       When active, the bar is visible, otherwise it is hidden.
@@ -59,7 +58,6 @@ Item {
             else bar.y = bar.height;
         }
 
-//        property bool notAnimating: (bottomBar.active && y === 0) || (!bottomBar.active && y === height)
         Behavior on y {
             SmoothedAnimation {
                 velocity: 500;
@@ -69,7 +67,6 @@ Item {
     }
 
     DraggingArea {
-        // visible: toolbar.available
         orientation: Qt.Vertical
         id: dragMouseArea
         anchors {
@@ -84,7 +81,6 @@ Item {
             target: bar
             axis: Drag.YAxis
             minimumY: 0
-            //maximumY: height + bar.height
         }
 
         propagateComposedEvents: true
