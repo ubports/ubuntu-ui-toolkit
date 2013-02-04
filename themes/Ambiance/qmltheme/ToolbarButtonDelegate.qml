@@ -20,30 +20,35 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
-    implicitWidth: units.gu(6)
-    implicitHeight: units.gu(10)
+    implicitWidth: units.gu(5)
+    implicitHeight: units.gu(5)
 
-    Image {
-        id: icon
-        anchors {
-            top: parent.top
-            topMargin: units.gu(3)
-            horizontalCenter: parent.horizontalCenter
+    Item {
+        anchors.centerIn: parent
+        height: icon.height + label.height + label.anchors.topMargin
+
+        Image {
+            id: icon
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+            }
+            width: StyleUtils.itemStyleProperty("iconWidth")
+            height: StyleUtils.itemStyleProperty("iconWidth")
+            source: item.iconSource
+            opacity: item.enabled ? 1.0 : 0.3
         }
-        width: units.gu(2)
-        height: units.gu(2)
-        source: item.iconSource
-        opacity: item.enabled ? 1.0 : 0.3
+
+        Label {
+            id: label
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: icon.bottom
+                topMargin: units.gu(1)
+            }
+            width: paintedWidth
+            text: item.text
+        }
     }
 
-    Label {
-        id: label
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            bottom: parent.bottom
-            bottomMargin: units.gu(3)
-        }
-        width: paintedWidth
-        text: item.text
-    }
 }

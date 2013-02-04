@@ -34,6 +34,8 @@ GenericToolbar {
     id: toolbar
     Theming.ItemStyle.class: "toolbar"
 
+    height: background.height
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
@@ -41,7 +43,16 @@ GenericToolbar {
     property ActionList tools
 
     Item {
-        anchors.fill: parent
+        // All visual items go into the background because only the children
+        //  of the GenericToolbar are being shown/hidden while the toolbar
+        //  itself may stay in place.
+        id: background
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(8)
 
         Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
         Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
@@ -62,6 +73,7 @@ GenericToolbar {
         Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
+            leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
         iconSource: back ? back.iconSource : ""
@@ -73,10 +85,12 @@ GenericToolbar {
         id: toolButtonsContainer
         anchors {
             right: parent.right
-            top: parent.top
             bottom: parent.bottom
+            top: parent.top
+            rightMargin: units.gu(2)
         }
         width: childrenRect.width
+        spacing: units.gu(1)
 
         Repeater {
             model: toolbar.tools ? toolbar.tools.children : 0
