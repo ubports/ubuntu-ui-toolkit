@@ -30,8 +30,28 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
-
     default property alias contents: bar.data
+
+    /*!
+      When active, the bar is visible, otherwise it is hidden.
+      Use bottom edge swipe up/down to activate/deactivate the bar.
+      The active property is not updated until the swipe gesture is completed.
+     */
+    property bool active: false
+    onActiveChanged: {
+        if (active) state = "spread";
+        else state = "";
+    }
+
+    /*!
+      Disable bottom edge swipe to activate/deactivate the toolbar.
+     */
+    property bool lock: false
+    onLockChanged: {
+        if (state == "hint" || state == "moving") {
+            dragMouseArea.finishMoving();
+        }
+    }
 
     /*!
       How much of the toolbar to show when starting interaction"
@@ -110,6 +130,10 @@ Item {
             internal.movingDelta = bottomBar.hintSize + dragMouseArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = dragMouseArea.initialY;
+        } else if (state == "spread") {
+            bottomBar.active = true;
+        } else if (state == "") {
+            bottomBar.active = false;
         }
         internal.previousState = state;
     }
@@ -122,7 +146,7 @@ Item {
             right: parent.right
         }
 
-        y: height
+        y: bottomBar.active ? 0 : height
     }
 
     DraggingArea {
@@ -135,7 +159,8 @@ Item {
         }
         height: bar.height
         zeroVelocityCounts: true
-        propagateComposedEvents: true
+        propagateComposedEvents: bottomBar.state == ""
+        visible: !bottomBar.lock
 
         property int initialY
         onPressed: {
