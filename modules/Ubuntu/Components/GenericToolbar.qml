@@ -153,8 +153,9 @@ Item {
         onExited: print("EXIT!")
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
-        onReleased: {
-            print("RELEASE")
+        onReleased: finishMoving()
+
+        function finishMoving() {
             if (dragMouseArea.dragVelocity < -44) {
                 bottomBar.state = "spread";
             } else if (dragMouseArea.dragVelocity > 44) {
@@ -164,6 +165,8 @@ Item {
             }
         }
 
+        // Mouse cursor moving out of the window while pressed on desktop
+        onCanceled: finishMoving()
 //        onPressedChanged: {
 //            if (pressed) {
 //                if (bottomBar.active) return;
