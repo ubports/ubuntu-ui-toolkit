@@ -23,8 +23,6 @@ import QtQuick 2.0
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
 */
-// FIXME: This class is going to be deprecated when we use
-//  the toolbar behavior from the shell.
 Item {
     id: bottomBar
     anchors {
