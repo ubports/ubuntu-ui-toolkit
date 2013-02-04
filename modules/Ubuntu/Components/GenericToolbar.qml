@@ -69,15 +69,43 @@ Item {
         }
     ]
 
+    transitions: [
+        Transition {
+            to: ""
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        },
+        Transition {
+            to: "hint"
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        },
+        Transition {
+            to: "spread"
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        }
+    ]
+
     QtObject {
         id: internal
         property string previousState: ""
         property int movingDelta
-        onMovingDeltaChanged: print("movingDelta = "+movingDelta)
     }
 
     onStateChanged: {
-        print("state = "+state);
         if (state == "hint") {
             internal.movingDelta = bottomBar.hintSize + dragMouseArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
@@ -95,13 +123,6 @@ Item {
         }
 
         y: height
-
-//        Behavior on y {
-//            SmoothedAnimation {
-//                velocity: 500;
-//                easing.type: Easing.InOutQuad;
-//            }
-//        }
     }
 
     DraggingArea {
