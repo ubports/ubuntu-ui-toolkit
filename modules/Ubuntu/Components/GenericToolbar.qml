@@ -35,8 +35,8 @@ Item {
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
      */
-    property bool active: false
-    onActiveChanged: bar.updateYPosition();
+//    property bool active: false
+//    onActiveChanged: bar.updateYPosition();
 
     default property alias contents: bar.data
 
@@ -44,6 +44,52 @@ Item {
       How much of the toolbar to show when starting interaction"
      */
     property real hintSize: units.gu(1)
+
+    states: [
+        State {
+            name: "hint"
+            PropertyChanges {
+                target: bar
+                y: bar.height - bottomBar.hintSize
+            }
+        },
+        State {
+            name: "moving"
+            PropertyChanges {
+                target: bar
+                y: MathUtils.clamp(0, bar.height, dragMouseArea.mouseY - dragMouseArea.movingDelta)
+            }
+        },
+        State {
+            name: "spread"
+            PropertyChanges {
+                target: bar
+                y: 0
+            }
+        },
+        State {
+            name: ""
+            PropertyChanges {
+                target: bar
+                y: bar.height
+            }
+        }
+    ]
+
+    QtObject {
+        id: internal
+        property string previousState: ""
+    }
+
+    onStateChanged: {
+        print("state = "+state);
+        if (state == "hint") {
+            dragMouseArea.movingDelta = bottomBar.hintSize + dragMouseArea.mouseY - bar.height;
+        } else if (state == "moving" && internal.previousState == "spread") {
+            dragMouseArea.movingDelta = dragMouseArea.mouseY;
+        }
+        internal.previousState = state;
+    }
 
     Item {
         id: bar
@@ -54,12 +100,13 @@ Item {
         }
 
         // initial state only. Will be overridden because of mouseArea's drag target.
-        y: bottomBar.active ? 0 : height
+//        y: bottomBar.active ? 0 : height
+        y: height
 
-        function updateYPosition() {
-            if (bottomBar.active) bar.y = 0;
-            else bar.y = bar.height;
-        }
+//        function updateYPosition() {
+//            if (bottomBar.active) bar.y = 0;
+//            else bar.y = bar.height;
+//        }
 
 //        Behavior on y {
 //            SmoothedAnimation {
@@ -77,33 +124,58 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bottomBar.active ? bar.height : units.gu(3)
+        height: bar.height //bottomBar.active ? bar.height : units.gu(3)
         zeroVelocityCounts: true
 
-        drag {
-            target: bar
-            axis: Drag.YAxis
-            minimumY: 0
-        }
+        property int movingDelta //: bottomBar.hintSize + initialY
+        onMovingDeltaChanged: print("movingDelta = "+movingDelta)
+
+        onMouseYChanged: print(mouseY)
+//        drag {
+//            target: bar
+//            axis: Drag.YAxis
+//            minimumY: 0
+//        }
 
         propagateComposedEvents: true
 
-        // FIXME: Make all parameters below themable.
-        //  The value of 44 was copied from the Launcher.
-        onPressedChanged: {
-            if (pressed) {
-                if (bottomBar.active) return;
-                bar.y = bar.height - bottomBar.hintSize;
-            } else {
-                if (dragMouseArea.dragVelocity < -44) {
-                    bottomBar.active = true;
-                } else if (dragMouseArea.dragVelocity > 44) {
-                    bottomBar.active = false;
-                } else {
-                    bottomBar.active = bar.y < bar.height / 2;
-                }
-                bar.updateYPosition();
+        onPressed: {
+            if (bottomBar.state == "") bottomBar.state = "hint";
+            else bottomBar.state = "moving";
+        }
+
+        onPositionChanged: {
+            if (bottomBar.state == "hint" && mouseY < initialY) {
+                bottomBar.state = "moving";
             }
         }
+
+        // FIXME: Make all parameters below themable.
+        //  The value of 44 was copied from the Launcher.
+        onReleased: {
+            if (dragMouseArea.dragVelocity < -44) {
+                bottomBar.state = "spread";
+            } else if (dragMouseArea.dragVelocity > 44) {
+                bottomBar.state = "";
+            } else {
+                bottomBar.state = (bar.y < bar.height / 2) ? "spread" : "";
+            }
+        }
+
+//        onPressedChanged: {
+//            if (pressed) {
+//                if (bottomBar.active) return;
+//                //bar.y = bar.height - bottomBar.hintSize;
+//            } else {
+//                if (dragMouseArea.dragVelocity < -44) {
+//                    bottomBar.active = true;
+//                } else if (dragMouseArea.dragVelocity > 44) {
+//                    bottomBar.active = false;
+//                } else {
+//                    bottomBar.active = bar.y < bar.height / 2;
+//                }
+//                bar.updateYPosition();
+//            }
+//        }
     }
 }
