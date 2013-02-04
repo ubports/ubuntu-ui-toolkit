@@ -169,40 +169,40 @@ Item {
         }
 
     // TextArea specific properties
-        function test_contentHeight() {
+        function test_1_contentHeight() {
             compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
             var newValue = 200;
             textArea.contentHeight = newValue;
             compare(textArea.contentHeight,newValue,"set/get");
         }
 
-        function test_contentWidth() {
+        function test_1_contentWidth() {
             compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
         }
 
-        function test_placeholderText() {
+        function test_1_placeholderText() {
             compare(textArea.placeholderText,"","placeholderText is '' on default")
             var newValue = "Hello Placeholder";
             textArea.placeholderText = newValue;
             compare(textArea.placeholderText,newValue,"set/get");
         }
 
-        function test_autoExpand() {
+        function test_1_autoExpand() {
             compare(textArea.autoExpand,false,"TextArea.autoExpand is set to false");
             var newValue = true;
             textArea.autoExpand = newValue;
             compare(textArea.autoExpand,newValue,"set/get");
         }
 
-        function test_baseUrl() {
+        function test_1_baseUrl() {
             expectFail("","TODO")
             compare(textArea.baseUrl,"tst_textarea.qml","baseUrl is QML file instantiating the TextArea item on default")
         }
 
-        function test_displayText() {
+        function test_1_displayText() {
             compare(textArea.displayText,"","displayText is '' on default")
             var newValue = "Hello Display Text";
             try {
@@ -214,14 +214,14 @@ Item {
 
         }
 
-        function test_maximumLineCount() {
+        function test_1_maximumLineCount() {
             compare(textArea.maximumLineCount,5,"maximumLineCount is 0 on default")
             var newValue = 10;
             textArea.maximumLineCount = newValue;
             compare(textArea.maximumLineCount,newValue,"set/get");
         }
 
-        function test_visible() {
+        function test_0_visible() {
             textArea.visible = false;
             compare(textArea.activeFocus, false, "TextArea is inactive");
         }
@@ -232,7 +232,21 @@ Item {
         }
 
         function test_cut() {
+            Clipboard.clear();
+            textArea.readOnly = false;
+            textArea.text = "test text";
+            textArea.cursorPosition = textArea.text.indexOf("text");
+            textArea.selectWord();
             textArea.cut();
+            compare(textArea.text, "test ", "Text cut properly");
+            compare(Clipboard.data.text, "text", "Clipboard contains cut text");
+            // we should have the "text" only ones
+            var plainTextCount = 0;
+            for (var i in Clipboard.data.formats) {
+                if (Clipboard.data.formats[i] === "text/plain")
+                    plainTextCount++;
+            }
+            compare(plainTextCount, 1, "Clipboard is correct");
         }
 
         function test_deselect() {
@@ -260,7 +274,11 @@ Item {
         }
 
         function test_paste() {
-            textArea.paste();
+            textArea.readOnly = false;
+            textArea.text = "test";
+            textArea.cursorPosition = textArea.text.length;
+            textArea.paste(" text");
+            compare(textArea.text, "test text", "Data pasted");
         }
 
         function test_positionAt() {
@@ -303,12 +321,15 @@ Item {
         }
 
     // filters
-        function text_keyPressAndReleaseFilter() {
+        function test_keyPressAndReleaseFilter() {
+            textArea.visible = true;
+            textArea.forceActiveFocus();
+            textArea.readOnly = false;
             textArea.keyPressData = 0;
             textArea.keyReleaseData = 0;
-            keyClick(Qt.Key_K, Qt.NoModifier, 100);
-            compare(textArea.keyPressData, Qt.Key_K, "Key press filtered");
-            compare(textArea.keyReleaseData, Qt.Key_K, "Key release filtered");
+            keyClick(Qt.Key_Control, Qt.NoModifier, 100);
+            compare(textArea.keyPressData, Qt.Key_Control, "Key press filtered");
+            compare(textArea.keyReleaseData, Qt.Key_Control, "Key release filtered");
         }
     }
 }
