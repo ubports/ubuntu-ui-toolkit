@@ -151,14 +151,14 @@ Item {
         }
 
         function test_keyPressAndReleaseFilter() {
+            textField.visible = true;
             textField.forceActiveFocus();
+            textField.readOnly = false;
             textField.keyPressData = 0;
             textField.keyReleaseData = 0;
-            textField.readOnly = false;
-            //keyClick(Qt.Key_K, Qt.NoModifier, 200);
-            keyPress(Qt.Key_K, Qt.NoModifier, 100);
-            compare(textField.keyPressData, Qt.Key_K, "Key press filtered");
-            compare(textField.keyReleaseData, Qt.Key_K, "Key release filtered");
+            keyClick(Qt.Key_Control, Qt.NoModifier, 200);
+            compare(textField.keyPressData, Qt.Key_Control, "Key press filtered");
+            compare(textField.keyReleaseData, Qt.Key_Control, "Key release filtered");
         }
 
         function test_cut() {

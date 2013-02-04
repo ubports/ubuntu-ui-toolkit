@@ -274,7 +274,11 @@ Item {
         }
 
         function test_paste() {
-            textArea.paste();
+            textArea.readOnly = false;
+            textArea.text = "test";
+            textArea.cursorPosition = textArea.text.length;
+            textArea.paste(" text");
+            compare(textArea.text, "test text", "Data pasted");
         }
 
         function test_positionAt() {
@@ -317,12 +321,15 @@ Item {
         }
 
     // filters
-        function text_keyPressAndReleaseFilter() {
+        function test_keyPressAndReleaseFilter() {
+            textArea.visible = true;
+            textArea.forceActiveFocus();
+            textArea.readOnly = false;
             textArea.keyPressData = 0;
             textArea.keyReleaseData = 0;
-            keyClick(Qt.Key_K, Qt.NoModifier, 100);
-            compare(textArea.keyPressData, Qt.Key_K, "Key press filtered");
-            compare(textArea.keyReleaseData, Qt.Key_K, "Key release filtered");
+            keyClick(Qt.Key_Control, Qt.NoModifier, 100);
+            compare(textArea.keyPressData, Qt.Key_Control, "Key press filtered");
+            compare(textArea.keyReleaseData, Qt.Key_Control, "Key release filtered");
         }
     }
 }
