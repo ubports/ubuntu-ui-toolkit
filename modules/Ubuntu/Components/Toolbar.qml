@@ -90,7 +90,7 @@ GenericToolbar {
             rightMargin: units.gu(2)
         }
         width: childrenRect.width
-        spacing: 5
+        spacing: units.gu(1)
 
         Repeater {
             model: toolbar.tools ? toolbar.tools.children : 0
