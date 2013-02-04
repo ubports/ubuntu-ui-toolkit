@@ -31,13 +31,6 @@ Item {
         bottom: parent.bottom
     }
 
-    /*!
-      When active, the bar is visible, otherwise it is hidden.
-      Use bottom edge swipe up/down to activate/deactivate the bar.
-     */
-//    property bool active: false
-//    onActiveChanged: bar.updateYPosition();
-
     default property alias contents: bar.data
 
     /*!
@@ -101,14 +94,7 @@ Item {
             right: parent.right
         }
 
-        // initial state only. Will be overridden because of mouseArea's drag target.
-//        y: bottomBar.active ? 0 : height
         y: height
-
-//        function updateYPosition() {
-//            if (bottomBar.active) bar.y = 0;
-//            else bar.y = bar.height;
-//        }
 
 //        Behavior on y {
 //            SmoothedAnimation {
@@ -126,16 +112,13 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bar.height //bottomBar.active ? bar.height : units.gu(3)
+        height: bar.height
         zeroVelocityCounts: true
-
-        property int initialY
-
         propagateComposedEvents: true
 
+        property int initialY
         onPressed: {
             initialY = mouseY;
-            print("initialY = "+initialY);
             if (bottomBar.state == "") bottomBar.state = "hint";
             else bottomBar.state = "moving";
         }
@@ -144,17 +127,14 @@ Item {
             if (bottomBar.state == "hint" && mouseY < initialY) {
                 bottomBar.state = "moving";
             }
-            // detect moving out of the window without releasing on desktop
-//            print(bar.height - mouseY);
         }
 
+        onReleased: finishMoving()
+        // Mouse cursor moving out of the window while pressed on desktop
+        onCanceled: finishMoving()
 
-//        onExited: released(mouse)
-        onExited: print("EXIT!")
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
-        onReleased: finishMoving()
-
         function finishMoving() {
             if (dragMouseArea.dragVelocity < -44) {
                 bottomBar.state = "spread";
@@ -164,23 +144,5 @@ Item {
                 bottomBar.state = (bar.y < bar.height / 2) ? "spread" : "";
             }
         }
-
-        // Mouse cursor moving out of the window while pressed on desktop
-        onCanceled: finishMoving()
-//        onPressedChanged: {
-//            if (pressed) {
-//                if (bottomBar.active) return;
-//                //bar.y = bar.height - bottomBar.hintSize;
-//            } else {
-//                if (dragMouseArea.dragVelocity < -44) {
-//                    bottomBar.active = true;
-//                } else if (dragMouseArea.dragVelocity > 44) {
-//                    bottomBar.active = false;
-//                } else {
-//                    bottomBar.active = bar.y < bar.height / 2;
-//                }
-//                bar.updateYPosition();
-//            }
-//        }
     }
 }
