@@ -224,6 +224,7 @@ Examples:
     forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
     forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
     scrollAreaThickness: units.gu(0.5);
+    sliderRadius: units.gu(0.5);
     thumbConnectorMargin: units.dp(3);
     sliderColor: Qt.rgba(0.5, 0.5, 0.5, 0.7);
     thumbConnectorColor: "white";
