@@ -43,8 +43,18 @@ Item {
                                 : StyleUtils.itemStyleProperty("uncheckedThumbColor", "grey")
             gradientColor: "transparent"
 
-            Behavior on x { animation: StyleUtils.itemStyleProperty("moveThumbAnimation") }
-            Behavior on color { animation: StyleUtils.itemStyleProperty("thumbColorAnimation") }
+            Behavior on x {
+                NumberAnimation {
+                    duration: StyleUtils.itemStyleProperty("moveThumbAnimation").duration
+                    easing: StyleUtils.itemStyleProperty("moveThumbAnimation").easing
+                }
+            }
+            Behavior on color {
+                ColorAnimation {
+                    duration: StyleUtils.itemStyleProperty("thumbColorAnimation").duration
+                    easing: StyleUtils.itemStyleProperty("thumbColorAnimation").easing
+                }
+            }
         }
 
         Item {

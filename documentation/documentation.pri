@@ -1,4 +1,4 @@
-QDOC = /usr/bin/qdoc
+QDOC = /usr/lib/*/qt5/bin/qdoc
 system($$QDOC $$PWD/ubuntu-sdk.qdocconf)
 
 install_docs.files = $$PWD/html

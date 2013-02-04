@@ -27,7 +27,12 @@ Item {
         anchors.fill: parent
         color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
         gradientColor: "transparent"
-        Behavior on color { animation: StyleUtils.itemStyleProperty("backgroundColorAnimation") }
+        Behavior on color {
+            ColorAnimation {
+                duration: StyleUtils.itemStyleProperty("backgroundColorAnimation").duration
+                easing: StyleUtils.itemStyleProperty("backgroundColorAnimation").easing
+            }
+        }
     }
 
     Image {
