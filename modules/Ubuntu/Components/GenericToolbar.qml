@@ -57,7 +57,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                y: MathUtils.clamp(0, bar.height, dragMouseArea.mouseY - dragMouseArea.movingDelta)
+                y: MathUtils.clamp(bar.height, dragMouseArea.mouseY - internal.movingDelta, 0, bar.height)
             }
         },
         State {
@@ -79,14 +79,16 @@ Item {
     QtObject {
         id: internal
         property string previousState: ""
+        property int movingDelta
+        onMovingDeltaChanged: print("movingDelta = "+movingDelta)
     }
 
     onStateChanged: {
         print("state = "+state);
         if (state == "hint") {
-            dragMouseArea.movingDelta = bottomBar.hintSize + dragMouseArea.mouseY - bar.height;
+            internal.movingDelta = bottomBar.hintSize + dragMouseArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
-            dragMouseArea.movingDelta = dragMouseArea.mouseY;
+            internal.movingDelta = dragMouseArea.initialY;
         }
         internal.previousState = state;
     }
@@ -127,19 +129,13 @@ Item {
         height: bar.height //bottomBar.active ? bar.height : units.gu(3)
         zeroVelocityCounts: true
 
-        property int movingDelta //: bottomBar.hintSize + initialY
-        onMovingDeltaChanged: print("movingDelta = "+movingDelta)
-
-        onMouseYChanged: print(mouseY)
-//        drag {
-//            target: bar
-//            axis: Drag.YAxis
-//            minimumY: 0
-//        }
+        property int initialY
 
         propagateComposedEvents: true
 
         onPressed: {
+            initialY = mouseY;
+            print("initialY = "+initialY);
             if (bottomBar.state == "") bottomBar.state = "hint";
             else bottomBar.state = "moving";
         }
@@ -148,11 +144,17 @@ Item {
             if (bottomBar.state == "hint" && mouseY < initialY) {
                 bottomBar.state = "moving";
             }
+            // detect moving out of the window without releasing on desktop
+//            print(bar.height - mouseY);
         }
 
+
+//        onExited: released(mouse)
+        onExited: print("EXIT!")
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
         onReleased: {
+            print("RELEASE")
             if (dragMouseArea.dragVelocity < -44) {
                 bottomBar.state = "spread";
             } else if (dragMouseArea.dragVelocity > 44) {
