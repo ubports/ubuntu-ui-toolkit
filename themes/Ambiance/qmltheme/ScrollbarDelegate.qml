@@ -236,6 +236,7 @@ Item {
         y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - slider.height)
         width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.width)
         height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.height)
+        radius: StyleUtils.itemStyleProperty("sliderRadius", units.gu(0.5))
 
         Behavior on width {
             enabled: (!isVertical)
