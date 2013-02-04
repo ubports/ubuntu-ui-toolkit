@@ -71,7 +71,7 @@ Examples:
 
 .toolbar {
     color: "white";
-    opacity: 0.95;
+    opacity: 0.9;
 }
 
 .toolbar-button {
