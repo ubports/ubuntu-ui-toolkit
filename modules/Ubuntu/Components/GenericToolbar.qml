@@ -159,7 +159,7 @@ Item {
         }
         height: bottomBar.active ? bar.height + units.gu(1) : units.gu(3)
         zeroVelocityCounts: true
-        propagateComposedEvents: bottomBar.state == ""
+        propagateComposedEvents: true
         visible: !bottomBar.lock
 
         property int initialY
