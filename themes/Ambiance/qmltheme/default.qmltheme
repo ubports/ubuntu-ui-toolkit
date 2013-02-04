@@ -72,6 +72,7 @@ Examples:
 .toolbar {
     color: "white";
     opacity: 0.9;
+    hintSize: units.gu(2);
 }
 
 .toolbar-button {

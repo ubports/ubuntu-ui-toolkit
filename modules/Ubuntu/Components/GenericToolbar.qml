@@ -40,6 +40,11 @@ Item {
 
     default property alias contents: bar.data
 
+    /*!
+      How much of the toolbar to show when starting interaction"
+     */
+    property real hintSize: units.gu(1)
+
     Item {
         id: bar
         height: parent.height
@@ -56,12 +61,12 @@ Item {
             else bar.y = bar.height;
         }
 
-        Behavior on y {
-            SmoothedAnimation {
-                velocity: 500;
-                easing.type: Easing.InOutQuad;
-            }
-        }
+//        Behavior on y {
+//            SmoothedAnimation {
+//                velocity: 500;
+//                easing.type: Easing.InOutQuad;
+//            }
+//        }
     }
 
     DraggingArea {
@@ -88,7 +93,7 @@ Item {
         onPressedChanged: {
             if (pressed) {
                 if (bottomBar.active) return;
-                y = height - units.gu(1);
+                bar.y = bar.height - bottomBar.hintSize;
             } else {
                 if (dragMouseArea.dragVelocity < -44) {
                     bottomBar.active = true;
