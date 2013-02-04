@@ -49,7 +49,7 @@ Item {
     property bool lock: false
     onLockChanged: {
         if (state == "hint" || state == "moving") {
-            dragMouseArea.finishMoving();
+            draggingArea.finishMoving();
         }
     }
 
@@ -70,7 +70,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                y: MathUtils.clamp(bar.height, dragMouseArea.mouseY - internal.movingDelta, 0, bar.height)
+                y: MathUtils.clamp(bar.height, draggingArea.mouseY - internal.movingDelta, 0, bar.height)
             }
         },
         State {
@@ -127,9 +127,9 @@ Item {
 
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = bottomBar.hintSize + dragMouseArea.initialY - bar.height;
+            internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
-            internal.movingDelta = dragMouseArea.initialY;
+            internal.movingDelta = draggingArea.initialY;
         } else if (state == "spread") {
             bottomBar.active = true;
         } else if (state == "") {
@@ -151,7 +151,7 @@ Item {
 
     DraggingArea {
         orientation: Qt.Vertical
-        id: dragMouseArea
+        id: draggingArea
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -182,9 +182,9 @@ Item {
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
         function finishMoving() {
-            if (dragMouseArea.dragVelocity < -44) {
+            if (draggingArea.dragVelocity < -44) {
                 bottomBar.state = "spread";
-            } else if (dragMouseArea.dragVelocity > 44) {
+            } else if (draggingArea.dragVelocity > 44) {
                 bottomBar.state = "";
             } else {
                 bottomBar.state = (bar.y < bar.height / 2) ? "spread" : "";
