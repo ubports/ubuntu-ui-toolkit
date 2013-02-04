@@ -252,7 +252,7 @@ Examples:
 
 /* clear button */
 .textfield .clear-button {
-    iconSource: url("artwork/TextFieldClear@8.png");
+    iconSource: url("artwork/icon_clear.png");
 }
 /* hint */
 .textfield .label {
