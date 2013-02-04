@@ -20,6 +20,9 @@ Popover
 + grabDismissAreaEvents: specifies whether to grab events from dismiss area
 + contentWidth, contentHeight: overrides the calculated width/height of the Popover's operative area
 
+TextField, TextArea
++ paste(data): parameter added to paste custom data other than Clipboard content.
+
 SDK 0.1.27
 ##########
 
