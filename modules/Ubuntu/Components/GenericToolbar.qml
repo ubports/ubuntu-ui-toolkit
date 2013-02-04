@@ -54,7 +54,7 @@ Item {
     }
 
     /*!
-      How much of the toolbar to show when starting interaction"
+      How much of the toolbar to show when starting interaction.
      */
     property real hintSize: units.gu(1)
 
@@ -157,7 +157,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bar.height
+        height: bottomBar.active ? bar.height + units.gu(1) : units.gu(3)
         zeroVelocityCounts: true
         propagateComposedEvents: bottomBar.state == ""
         visible: !bottomBar.lock
