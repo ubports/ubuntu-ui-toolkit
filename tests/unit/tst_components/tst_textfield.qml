@@ -151,11 +151,40 @@ Item {
         }
 
         function test_keyPressAndReleaseFilter() {
+            textField.forceActiveFocus();
             textField.keyPressData = 0;
             textField.keyReleaseData = 0;
-            keyClick(Qt.Key_K, Qt.NoModifier, 100);
+            textField.readOnly = false;
+            //keyClick(Qt.Key_K, Qt.NoModifier, 200);
+            keyPress(Qt.Key_K, Qt.NoModifier, 100);
             compare(textField.keyPressData, Qt.Key_K, "Key press filtered");
             compare(textField.keyReleaseData, Qt.Key_K, "Key release filtered");
+        }
+
+        function test_cut() {
+            Clipboard.clear();
+            textField.readOnly = false;
+            textField.text = "test text";
+            textField.cursorPosition = textField.text.indexOf("text");
+            textField.selectWord();
+            textField.cut();
+            compare(textField.text, "test ", "Text cut properly");
+            compare(Clipboard.data.text, "text", "Clipboard has the text cut");
+            // we should have the "text" only ones
+            var plainTextCount = 0;
+            for (var i in Clipboard.data.formats) {
+                if (Clipboard.data.formats[i] === "text/plain")
+                    plainTextCount++;
+            }
+            compare(plainTextCount, 1, "Clipboard is correct");
+        }
+
+        function test_paste() {
+            textField.readOnly = false;
+            textField.text = "test";
+            textField.cursorPosition = textField.text.length;
+            textField.paste(" text");
+            compare(textField.text, "test text", "Data pasted");
         }
 
         RegExpValidator {

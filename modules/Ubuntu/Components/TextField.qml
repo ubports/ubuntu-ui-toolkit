@@ -275,11 +275,23 @@ FocusScope {
 
     /*!
       \preliminary
-      Replaces the currently selected text by the contents of the system clipboard.
+      Places the clipboard or the data given as parameter into the text input.
+      The selected text will be replaces with the data.
     */
-    function paste()
+    function paste(data)
     {
-        editor.paste();
+        if ((data !== undefined) && (typeof data === "string") && !editor.readOnly) {
+            var selTxt = editor.selectedText;
+            var txt = editor.text;
+            var pos = (selTxt !== "") ? txt.indexOf(selTxt) : editor.cursorPosition
+            if (selTxt !== "") {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos + selTxt.length);
+            } else {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos);
+            }
+            editor.cursorPosition = pos + data.length;
+        } else
+            editor.paste();
     }
 
     /*!
