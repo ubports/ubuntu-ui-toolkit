@@ -27,7 +27,6 @@ Item {
     Image {
         id: progressIcon
         source: "artwork/ListItemProgressionArrow.png"
-//        anchors.centerIn: parent
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left

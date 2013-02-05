@@ -60,7 +60,6 @@ import Ubuntu.Components 0.1
 Empty {
     id: listItem
 
-//    __contentsMargins: units.gu(2)
     /*!
       \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
@@ -151,14 +150,12 @@ Empty {
     Rectangle {
         id: progressionHighlight
         visible: listItem.progression && listItem.pressed
-//        anchors.fill: progressionHelper
         anchors {
             left: progressionHelper.left
             top: parent.top
             bottom: parent.bottom
             right: parent.right
         }
-
         color: "#E6E6E6"
         opacity: 0.7
     }
@@ -225,7 +222,6 @@ Empty {
             right: listItem.progression ? progressionHelper.left : parent.right
             top: parent.top
             bottom: parent.bottom
-            //margins: units.gu(0.5)
             margins: units.gu(2)
         }
         onControlChanged: {

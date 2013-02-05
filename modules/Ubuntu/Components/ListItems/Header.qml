@@ -37,14 +37,11 @@ import QtQuick 2.0
     \b{This component is under heavy development.}
 */
 
-//Empty {
 Item {
     height: units.gu(4)
-    //source: "artwork/ListItemDivider24px.png"
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
-//        margins: units.gu(2)
     }
 
     /*!
