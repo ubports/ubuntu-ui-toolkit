@@ -163,7 +163,13 @@ AbstractButton {
             right: parent.right
             top: parent.top
             bottom: bottomDividerLine.top
-            margins: units.gu(2)
+//            margins: units.gu(2)
+            margins: emptyListItem.__contentsMargins
         }
     }
+
+    /*! \internal
+      The spacing inside the list item.
+     */
+    property real __contentsMargins: units.gu(0)
 }

@@ -45,6 +45,8 @@ Empty {
         right: parent ? parent.right : undefined
     }
 
+    __contentsMargins: units.gu(2)
+
     /*!
      \preliminary
      The text that is shown as the header text.
