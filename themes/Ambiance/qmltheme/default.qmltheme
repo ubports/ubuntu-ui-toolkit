@@ -275,10 +275,10 @@ Examples:
   TextArea styling
 */
 .textarea {
-    backgroundShape: url("artwork/ubuntushape_small_radius_shape.sci");
-    backgroundBorder: url("artwork/ubuntushape_small_radius_idle.sci");
-    backgroundColor: "white";
-    color: (item.enabled) ? "#757373" : "darkgray";
+    radius: "small";
+    backgroundColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    backgroundColorAnimationDuration: 300;
+    color: (item.enabled) ? (item.focus ? "#757373" : "white") : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
     font.family: "Ubuntu";
