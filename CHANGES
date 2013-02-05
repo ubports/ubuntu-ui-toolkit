@@ -21,7 +21,7 @@ SDK 0.1.28
 Compatibility Breaks
 ********************
 
-* None
+* TextArea - autoExpand: marked as deprecated. Use autoSize instead
 
 API Changes
 ***********
@@ -36,7 +36,6 @@ API Changes
 
 * TextArea
   + autoSize: specifies to resize the area based on lineCount property
-  / autoExpand: marked as deprecated, use autoSize instead
 
 SDK 0.1.27
 ##########
