@@ -58,5 +58,17 @@ Item {
 
     Toolbar {
         id: toolbar
+        tools: getTools()
+
+        function getTools() {
+            if (contents.children.length < 1) return null;
+            if (!contents.children[0].hasOwnProperty("tools")) return null;
+            var tools = contents.children[0].tools;
+            if (!tools.hasOwnProperty("back")) return null;
+            if (!tools.hasOwnProperty("__pageStack")) return null;
+            if (!tools.hasOwnProperty("active")) return null;
+            if (!tools.hasOwnProperty("lock")) return null;
+            return tools;
+        }
     }
 }

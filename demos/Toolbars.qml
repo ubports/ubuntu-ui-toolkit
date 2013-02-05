@@ -41,6 +41,35 @@ Template {
                     anchors.fill: parent
                 }
 
+                tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
+
+                ToolbarActions {
+                    id: toolbarActions1
+                    Action {
+                        text: "action 1"
+                        iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+                    }
+                    Action {
+                        text: "action 2"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                    }
+                    lock: lockSwitch.checked
+                }
+
+                ToolbarActions {
+                    id: toolbarActions2
+                    Action {
+                        text: "action 3"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                    }
+                    lock: lockSwitch.checked
+                    back {
+                        visible: true
+                        onTriggered: toolsSwitch.checked = false
+                    }
+                }
+
+
                 Column {
                     anchors.centerIn: parent
                     spacing: units.gu(1)
@@ -95,34 +124,6 @@ Template {
                             text: toolsSwitch.checked ? "Tools 2" : "Tools 1"
                         }
                     }
-                }
-            }
-
-            tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
-
-            ToolbarActions {
-                id: toolbarActions1
-                Action {
-                    text: "action 1"
-                    iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
-                }
-                Action {
-                    text: "action 2"
-                    iconSource: Qt.resolvedUrl("call_icon.png")
-                }
-                lock: lockSwitch.checked
-            }
-
-            ToolbarActions {
-                id: toolbarActions2
-                Action {
-                    text: "action 3"
-                    iconSource: Qt.resolvedUrl("call_icon.png")
-                }
-                lock: lockSwitch.checked
-                back {
-                    visible: true
-                    onTriggered: toolsSwitch.checked = false
                 }
             }
         }
