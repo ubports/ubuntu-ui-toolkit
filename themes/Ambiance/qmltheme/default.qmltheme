@@ -241,7 +241,7 @@ Examples:
     backgroundBorder: url("artwork/ubuntushape_small_radius_idle.sci");
     normalFillColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorFillColor: "red";
-    color: (item.enabled) ? "#757373" : "darkgray";
+    color: (item.enabled) ? (item.focus ? "#757373" : "white") : "darkgray";
     selectedTextColor: "white";
     selectionColor: "#fc7134";
     overlaidSpacing: units.gu(0.5);
