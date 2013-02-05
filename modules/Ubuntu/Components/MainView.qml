@@ -43,6 +43,8 @@ Item {
     //  is an instance of Tabs, PageStack or Page.
     property alias tools: toolbar.tools
 
+    clip: true
+
     /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.

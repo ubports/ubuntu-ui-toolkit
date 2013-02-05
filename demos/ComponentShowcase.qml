@@ -79,7 +79,7 @@ MainView {
             }
             ListElement {
                 label: "Toolbars"
-                source: ""
+                source: "Toolbars.qml"
                 chapter: "Building blocks"
             }
             ListElement {
