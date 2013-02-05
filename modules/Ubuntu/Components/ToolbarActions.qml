@@ -46,4 +46,14 @@ ActionList {
      */
     // Cannot use PageStack here that will cause a loop in parsing the qml files
     property Item __pageStack
+
+    /*!
+      The toolbar is active
+     */
+    property bool active: false
+
+    /*!
+      The toolbar is locked in its current position.
+     */
+    property bool lock: false
 }

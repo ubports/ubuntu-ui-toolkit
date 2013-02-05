@@ -42,6 +42,8 @@ GenericToolbar {
      */
     property ToolbarActions tools
 
+    lock: tools ? tools.lock : false
+
     hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
 
     Item {

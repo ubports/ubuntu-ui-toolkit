@@ -58,6 +58,7 @@ Template {
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: units.gu(2)
                         Switch {
+                            id: lockSwitch
                         }
                         Label {
                             anchors {
@@ -80,8 +81,8 @@ Template {
                     text: "action 2"
                     iconSource: Qt.resolvedUrl("call_icon.png")
                 }
+                lock: lockSwitch.checked
             }
-
         }
     }
 }
