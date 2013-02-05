@@ -37,4 +37,8 @@ listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
 popups_files.path = $$installPath/Popups
 popups_files.files = $$POPUPS_FILES
 
-INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files
+plugins_qmltypes.path = $$installPath
+plugins_qmltypes.files = plugins.qmltypes
+plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.Components 0.1 ../../ > $$PWD/plugins.qmltypes
+
+INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files plugins_qmltypes

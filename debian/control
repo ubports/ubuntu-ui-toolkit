@@ -6,6 +6,7 @@ Build-Depends: debhelper (>= 8.0.0),
                qtdeclarative5-private-dev,
                qtdeclarative5-test-plugin,
                qtdeclarative5-qtquick2-plugin,
+               qtdeclarative5-dev-tools,
                qt5-default,
                libgles2-mesa-dev, 
                libglib2.0-dev
