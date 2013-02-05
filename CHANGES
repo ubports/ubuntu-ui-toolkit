@@ -23,6 +23,10 @@ Popover
 TextField, TextArea
 + paste(data): parameter added to paste custom data other than Clipboard content.
 
+TextArea
++ autoSize: specifies to resize the area based on lineCount property
+/ autoExpand: marked as deprecated, use autoSize instead
+
 SDK 0.1.27
 ##########
 
