@@ -49,10 +49,12 @@ Template {
                     Button {
                         width: parent.width
                         text: "Show toolbar"
+                        onClicked: mainView.tools.active = true
                     }
                     Button {
                         width: parent.width
                         text: "Hide toolbar"
+                        onClicked: mainView.tools.active = false
                     }
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -69,10 +71,37 @@ Template {
                             text: "Lock position"
                         }
                     }
+                    Label {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        text: lockSwitch.checked ?
+                                  "Swiping will not show/hide the toolbar,\nbut the buttons above still work." :
+                                  "Swipe up/down near the bottom of this\nview to show/hide the toolbar."
+                    }
+                    Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: units.gu(2)
+                        Switch {
+                            id: toolsSwitch
+                        }
+                        Label {
+                            anchors {
+                                top: parent.top
+                                bottom: parent.bottom
+                            }
+                            verticalAlignment: Text.AlignVCenter
+                            text: toolsSwitch.checked ? "Tools 2" : "Tools 1"
+                        }
+                    }
                 }
             }
 
-            tools: ToolbarActions {
+            tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
+
+            ToolbarActions {
+                id: toolbarActions1
                 Action {
                     text: "action 1"
                     iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
@@ -82,6 +111,19 @@ Template {
                     iconSource: Qt.resolvedUrl("call_icon.png")
                 }
                 lock: lockSwitch.checked
+            }
+
+            ToolbarActions {
+                id: toolbarActions2
+                Action {
+                    text: "action 3"
+                    iconSource: Qt.resolvedUrl("call_icon.png")
+                }
+                lock: lockSwitch.checked
+                back {
+                    visible: true
+                    onTriggered: toolsSwitch.checked = false
+                }
             }
         }
     }

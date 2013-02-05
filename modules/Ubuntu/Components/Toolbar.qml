@@ -44,6 +44,12 @@ GenericToolbar {
 
     lock: tools ? tools.lock : false
 
+    Connections {
+        target: tools
+        onActiveChanged: toolbar.active = tools.active;
+    }
+    onActiveChanged: if (tools) tools.active = toolbar.active
+
     hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
 
     Item {

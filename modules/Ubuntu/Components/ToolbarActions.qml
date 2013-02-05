@@ -37,7 +37,7 @@ ActionList {
           \internal
           FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
          */
-        onTriggered: __pageStack.pop()
+        onTriggered: if (__pageStack && __pageStack.depth > 1) __pageStack.pop()
     }
 
     /*!
