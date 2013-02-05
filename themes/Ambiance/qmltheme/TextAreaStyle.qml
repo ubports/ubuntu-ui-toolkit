@@ -51,9 +51,12 @@ QtObject {
     property font font
 
     /*!
+      \deprecated
       Spacing between overlaid elements (e.g. hint)
+      The property is deprecated, use frameSpacing instead
       */
     property var overlaySpacing
+    onOverlaySpacingChanged: console.debug("DEPRECATED overlaySpacing, use frameSpacing")
 
     /*!
       Spacing between the frame and the text editor area

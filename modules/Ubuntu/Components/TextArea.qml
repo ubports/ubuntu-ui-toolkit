@@ -42,28 +42,29 @@ import "." 0.1 as Theming
     }
     \endqml
 
-    The auto-expand mode is realized using two properties: autoExpand and maximumLineCount.
-    Setting autoExpand will set the implicit height to one line, and the height is aligned
-    to the font's pixel size. The maximumLineCount specifies how much the editor should be
-    expanded. If this value is set to 0, the area will always expand vertically to fit the
-    content. When autoExpand is set, the contentHeight property value is ignored, and the
-    expansion only happens vertically.
+    The auto-expand mode is realized using two properties: autoSize and maximumLineCount.
+    Setting autoSize will set implicitHeight to one line, and the height will follow
+    the line count, meaning when lines are added the area will expand and when
+    removed the area will shrink. The maximumLineCount specifies how much the
+    editor should be expanded. If this value is set to 0, the area will always
+    expand vertically to fit the content. When autoSize is set, the contentHeight
+    property value is ignored, and the expansion only happens vertically.
 
     \qml
     TextArea {
         width: units.gu(20)
         height: units.gu(12)
         contentWidth: units.gu(30)
-        autoExpand: true
+        autoSize: true
         maximumLineCount: 0
     }
     \endqml
 
-    TextArea comes with 30 grid-units implicit width and one line height on auto-expanding
+    TextArea comes with 30 grid-units implicit width and one line height on auto-sizing
     mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
     ovarlay and frame spacing specified in the style.
 
-    Scrolling the editing area can happen when the size is fixed or in auto-expand mode when
+    Scrolling the editing area can happen when the size is fixed or in auto-sizing mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
 
@@ -83,7 +84,7 @@ import "." 0.1 as Theming
 FocusScope {
     id: control
     implicitWidth: units.gu(30)
-    implicitHeight: (autoExpand) ? internal.frameLinesHeight(1) : internal.frameLinesHeight(4)
+    implicitHeight: (autoSize) ? internal.linesHeight(1) : internal.linesHeight(4)
 
     // new properties
     /*!
@@ -117,13 +118,23 @@ FocusScope {
     property bool selectByMouse: true
 
     /*!
+      \deprecated
       This property specifies whether the text area expands following the entered
       text or not. The default value is false.
+      The property is deprecated, use autoSize instead
       */
-    property bool autoExpand: false
+    property bool autoExpand
+    /*! \internal */
+    onAutoExpandChanged: console.debug("WARNING: autoExpand deprecated, use autoSize instead.")
 
     /*!
-      The property holds the maximum amount of lines to expand when autoExpand is
+      This property specifies whether the text area sizes following the line count
+      or not. The default value is false.
+      */
+    property bool autoSize: false
+
+    /*!
+      The property holds the maximum amount of lines to expand when autoSize is
       enabled. The value of 0 does not put any upper limit and the control will
       expand forever.
 
@@ -654,11 +665,9 @@ FocusScope {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property real spacing: ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
         property real lineSpacing: units.dp(3)
         property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
         property real lineSize: editor.font.pixelSize + lineSpacing
-        property real frameLineHeight: editor.font.pixelSize + 2 * spacing + frameSpacing
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
@@ -704,25 +713,19 @@ FocusScope {
             Qt.inputMethod.hide();
         }
 
-        function lineHeight(lines)
+        function linesHeight(lines)
         {
-            return editor.font.pixelSize * lines + lineSpacing * (lines - 1);
-        }
-
-        function frameLinesHeight(lines)
-        {
-            return lineHeight(lines) + 2 * spacing + frameSpacing;
+            var lineHeight = editor.font.pixelSize * lines + lineSpacing * (lines - 1)
+            return lineHeight + 2 * frameSpacing;
         }
 
         function frameSize()
         {
-            if (control.autoExpand) {
-                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount)) {
-                    // check if the control height is bigger than the value we have to set
-                    var h = frameLinesHeight(control.lineCount);
-                    if (h > control.height)
-                        control.height = h;
-                }
+            if (control.autoSize) {
+                var max = (control.maximumLineCount <= 0) ?
+                            control.lineCount :
+                            Math.min(control.maximumLineCount, control.lineCount);
+                control.height = linesHeight(MathUtils.clamp(control.lineCount, 1, max));
             }
         }
 
@@ -780,7 +783,7 @@ FocusScope {
         id: hint
         anchors {
             fill: parent
-            margins: internal.spacing
+            margins: internal.frameSpacing
         }
         // hint is shown till user types something in the field
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
@@ -800,7 +803,7 @@ FocusScope {
         id: flicker
         anchors {
             fill: parent
-            margins: internal.spacing
+            margins: internal.frameSpacing
         }
         clip: true
         contentWidth: editor.paintedWidth
@@ -846,7 +849,7 @@ FocusScope {
             selectionColor: ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
             font: ComponentUtils.style(editor, "font", fontHolder.font)
 
-            // autoexpand handling
+            // autosize handling
             onLineCountChanged: internal.frameSize()
 
             // virtual keyboard handling

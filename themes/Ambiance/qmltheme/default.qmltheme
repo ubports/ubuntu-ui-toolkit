@@ -283,7 +283,7 @@ Examples:
     selectionColor: "#19B6EE";
     font.family: "Ubuntu";
     font.pixelSize: FontUtils.sizeToPixels("medium");
-    overlaySpacing: units.gu(2);
+    frameSpacing: units.gu(2);
 }
 /* hint */
 .textarea .label {
