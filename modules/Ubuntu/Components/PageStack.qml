@@ -104,7 +104,7 @@ Item {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-    property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
+    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
                                && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */

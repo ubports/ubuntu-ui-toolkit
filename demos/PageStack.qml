@@ -37,8 +37,6 @@ Template {
             width: units.gu(38)
             height: units.gu(50)
 
-            tools: pageStack.tools
-
             PageStack {
                 id: pageStack
                 anchors.fill: parent
