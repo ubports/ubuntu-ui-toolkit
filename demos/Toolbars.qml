@@ -42,7 +42,6 @@ Template {
                 }
 
                 tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
-
                 ToolbarActions {
                     id: toolbarActions1
                     Action {
@@ -55,7 +54,6 @@ Template {
                     }
                     lock: lockSwitch.checked
                 }
-
                 ToolbarActions {
                     id: toolbarActions2
                     Action {
@@ -68,7 +66,6 @@ Template {
                         onTriggered: toolsSwitch.checked = false
                     }
                 }
-
 
                 Column {
                     anchors.centerIn: parent

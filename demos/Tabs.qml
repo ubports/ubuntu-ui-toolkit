@@ -100,7 +100,6 @@ Template {
                             iconSource: Qt.resolvedUrl("small_avatar.png")
                             onTriggered: tabs.selectedTabIndex++
                         }
-
                         back {
                             visible: true
                             onTriggered: tabs.selectedTabIndex--
