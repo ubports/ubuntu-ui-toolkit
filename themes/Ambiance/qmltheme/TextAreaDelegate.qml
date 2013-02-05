@@ -23,9 +23,8 @@ UbuntuShape {
     z: -1
 
     anchors.fill: parent
+    radius:StyleUtils.itemStyleProperty("radius", "small")
     color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
-    maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
-    borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
     opacity: item.enabled ? 1.0 : 0.5
 
     MouseArea {

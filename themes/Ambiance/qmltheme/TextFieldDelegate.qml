@@ -17,30 +17,19 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-
-    anchors.fill: parent
+UbuntuShape {
+    id: shape
     // Cannot use contentItem property as the overlaid controls will also be
     // re-parented to it, and those shouldn't be. Need to come up with a better
     // reparenting filter, till then we have to manipulate the z-order to have the
     // frame/background properly layouted
     z: -1
 
-    // frame
     property bool error: item.errorHighlight && !item.acceptableInput
-    UbuntuShape {
-        id: shape
-
-        anchors.fill: parent
-        color: (error) ? itemStyle.errorFillColor : itemStyle.normalFillColor
-        maskSource: StyleUtils.itemStyleProperty("backgroundShape", "")
-        borderSource: ""
-        opacity: item.enabled ? 1.0 : 0.5
-    }
-
-    UbuntuShape {
-        id: border
-        anchors.fill: parent
-        borderSource: StyleUtils.itemStyleProperty("backgroundBorder", "")
-    }
+    anchors.fill: parent
+    radius: StyleUtils.itemStyleProperty("radius", "small")
+    color: (error) ?
+               StyleUtils.itemStyleProperty("errorFillColor", "red") :
+               StyleUtils.itemStyleProperty("normalFillColor", "white")
+    opacity: StyleUtils.itemStyleProperty("opacity", 1.0)
 }
