@@ -32,7 +32,6 @@ UbuntuShape {
     Behavior on color {
         ColorAnimation {
             duration: StyleUtils.itemStyleProperty("backgroundColorAnimationDuration", 0)
-            easing.type: Easing.InOutQuad
         }
     }
 
