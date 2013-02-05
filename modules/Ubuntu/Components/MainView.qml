@@ -43,6 +43,7 @@ Item {
     //  is an instance of Tabs, PageStack or Page.
     property alias tools: toolbar.tools
 
+    // clip if the MainView is not fullscreen
     clip: true
 
     /*!

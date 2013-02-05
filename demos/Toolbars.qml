@@ -32,9 +32,43 @@ Template {
             width: units.gu(50)
             height: units.gu(50)
 
-            Rectangle {
-                color: "green"
+            Page {
                 anchors.fill: parent
+                title: "Toolbar demo"
+                Rectangle {
+                    color: "black"
+                    opacity: 0.1
+                    anchors.fill: parent
+                }
+
+                Column {
+                    anchors.centerIn: parent
+                    spacing: units.gu(1)
+                    width: units.gu(30)
+
+                    Button {
+                        width: parent.width
+                        text: "Show toolbar"
+                    }
+                    Button {
+                        width: parent.width
+                        text: "Hide toolbar"
+                    }
+                    Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: units.gu(2)
+                        Switch {
+                        }
+                        Label {
+                            anchors {
+                                top: parent.top
+                                bottom: parent.bottom
+                            }
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Lock position"
+                        }
+                    }
+                }
             }
         }
     }

@@ -55,7 +55,7 @@ Item {
     id: page
 
     anchors.fill: parent ? parent : undefined
-    visible: false
+//    visible: false
 
     /*!
       \preliminary
