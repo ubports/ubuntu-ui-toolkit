@@ -17,17 +17,20 @@
 import QtQuick 2.0
 
 /*!
-    \qmltype ActionList
+    \qmltype ToolbarActions
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief List of \l Action items
+    \brief List of \l Action items with additional properties to control a toolbar.
 
     Examples: See \l Page.
 */
 
 ActionList {
     /*!
-      The back action.
+      The back \l Action. If the action is visible, the back button will be shown
+      on the left-side of the toolbar.
+      If there is a \l PageStack with depth greater than 1, it will always be popped
+      when this action is triggered. Override the back action to avoid that behavior.
      */
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
@@ -53,7 +56,7 @@ ActionList {
     property bool active: false
 
     /*!
-      The toolbar is locked in its current position.
+      The toolbar cannot be made active or inactive by bottom-edge swipes.
      */
     property bool lock: false
 }
