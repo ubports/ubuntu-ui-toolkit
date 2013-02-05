@@ -140,7 +140,7 @@ Template {
                         id: expandFix
                         contentWidth: units.gu(40)
                         placeholderText: "expands till 5 lines, then scrolls"
-                        autoExpand: true
+                        autoSize: true
                         maximumLineCount: 5
                         KeyNavigation.tab: textField1
                         KeyNavigation.backtab: expandFix

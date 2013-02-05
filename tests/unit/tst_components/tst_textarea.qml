@@ -190,11 +190,11 @@ Item {
             compare(textArea.placeholderText,newValue,"set/get");
         }
 
-        function test_1_autoExpand() {
-            compare(textArea.autoExpand,false,"TextArea.autoExpand is set to false");
+        function test_1_autoSize() {
+            compare(textArea.autoSize,false,"TextArea.autoSize is set to false");
             var newValue = true;
-            textArea.autoExpand = newValue;
-            compare(textArea.autoExpand,newValue,"set/get");
+            textArea.autoSize = newValue;
+            compare(textArea.autoSize, newValue,"set/get");
         }
 
         function test_1_baseUrl() {
