@@ -42,6 +42,8 @@ GenericToolbar {
      */
     property ActionList tools
 
+    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
+
     Item {
         // All visual items go into the background because only the children
         //  of the GenericToolbar are being shown/hidden while the toolbar

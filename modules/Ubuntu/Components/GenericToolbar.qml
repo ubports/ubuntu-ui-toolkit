@@ -23,8 +23,6 @@ import QtQuick 2.0
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
 */
-// FIXME: This class is going to be deprecated when we use
-//  the toolbar behavior from the shell.
 Item {
     id: bottomBar
     anchors {
@@ -32,15 +30,113 @@ Item {
         right: parent.right
         bottom: parent.bottom
     }
+    default property alias contents: bar.data
 
     /*!
       When active, the bar is visible, otherwise it is hidden.
       Use bottom edge swipe up/down to activate/deactivate the bar.
+      The active property is not updated until the swipe gesture is completed.
      */
     property bool active: false
-    onActiveChanged: bar.updateYPosition();
+    onActiveChanged: {
+        if (active) state = "spread";
+        else state = "";
+    }
 
-    default property alias contents: bar.data
+    /*!
+      Disable bottom edge swipe to activate/deactivate the toolbar.
+     */
+    property bool lock: false
+    onLockChanged: {
+        if (state == "hint" || state == "moving") {
+            draggingArea.finishMoving();
+        }
+    }
+
+    /*!
+      How much of the toolbar to show when starting interaction.
+     */
+    property real hintSize: units.gu(1)
+
+    states: [
+        State {
+            name: "hint"
+            PropertyChanges {
+                target: bar
+                y: bar.height - bottomBar.hintSize
+            }
+        },
+        State {
+            name: "moving"
+            PropertyChanges {
+                target: bar
+                y: MathUtils.clamp(bar.height, draggingArea.mouseY - internal.movingDelta, 0, bar.height)
+            }
+        },
+        State {
+            name: "spread"
+            PropertyChanges {
+                target: bar
+                y: 0
+            }
+        },
+        State {
+            name: ""
+            PropertyChanges {
+                target: bar
+                y: bar.height
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            to: ""
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        },
+        Transition {
+            to: "hint"
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        },
+        Transition {
+            to: "spread"
+            PropertyAnimation {
+                target: bar
+                properties: "y"
+                duration: 100
+                easing.type: Easing.OutQuad
+            }
+        }
+    ]
+
+    QtObject {
+        id: internal
+        property string previousState: ""
+        property int movingDelta
+    }
+
+    onStateChanged: {
+        if (state == "hint") {
+            internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
+        } else if (state == "moving" && internal.previousState == "spread") {
+            internal.movingDelta = draggingArea.initialY;
+        } else if (state == "spread") {
+            bottomBar.active = true;
+        } else if (state == "") {
+            bottomBar.active = false;
+        }
+        internal.previousState = state;
+    }
 
     Item {
         id: bar
@@ -50,56 +146,48 @@ Item {
             right: parent.right
         }
 
-        // initial state only. Will be overridden because of mouseArea's drag target.
         y: bottomBar.active ? 0 : height
-
-        function updateYPosition() {
-            if (bottomBar.active) bar.y = 0;
-            else bar.y = bar.height;
-        }
-
-        Behavior on y {
-            SmoothedAnimation {
-                velocity: 500;
-                easing.type: Easing.InOutQuad;
-            }
-        }
     }
 
     DraggingArea {
         orientation: Qt.Vertical
-        id: dragMouseArea
+        id: draggingArea
         anchors {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
         }
-        height: bottomBar.active ? bar.height : units.gu(3)
+        height: bottomBar.active ? bar.height + units.gu(1) : units.gu(3)
         zeroVelocityCounts: true
+        propagateComposedEvents: true
+        visible: !bottomBar.lock
 
-        drag {
-            target: bar
-            axis: Drag.YAxis
-            minimumY: 0
+        property int initialY
+        onPressed: {
+            initialY = mouseY;
+            if (bottomBar.state == "") bottomBar.state = "hint";
+            else bottomBar.state = "moving";
         }
 
-        propagateComposedEvents: true
+        onPositionChanged: {
+            if (bottomBar.state == "hint" && mouseY < initialY) {
+                bottomBar.state = "moving";
+            }
+        }
+
+        onReleased: finishMoving()
+        // Mouse cursor moving out of the window while pressed on desktop
+        onCanceled: finishMoving()
 
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
-        onPressedChanged: {
-            if (pressed) {
-                if (bottomBar.active) return;
-                y = height - units.gu(1);
+        function finishMoving() {
+            if (draggingArea.dragVelocity < -44) {
+                bottomBar.state = "spread";
+            } else if (draggingArea.dragVelocity > 44) {
+                bottomBar.state = "";
             } else {
-                if (dragMouseArea.dragVelocity < -44) {
-                    bottomBar.active = true;
-                } else if (dragMouseArea.dragVelocity > 44) {
-                    bottomBar.active = false;
-                } else {
-                    bottomBar.active = bar.y < bar.height / 2;
-                }
-                bar.updateYPosition();
+                bottomBar.state = (bar.y < bar.height / 2) ? "spread" : "";
             }
         }
     }
