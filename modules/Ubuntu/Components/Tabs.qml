@@ -96,7 +96,7 @@ Item {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    property ToolbarActions tools: selectedTab && selectedTab.page &&
-                                   selectedTab.page.hasOwnProperty("tools") ?
-                                       selectedTab.page.tools : null
+    property ToolbarActions tools: selectedTab && selectedTab.__pageObject &&
+                                   selectedTab.__pageObject.hasOwnProperty("tools") ?
+                                       selectedTab.__pageObject.tools : null
 }
