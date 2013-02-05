@@ -29,6 +29,8 @@ QtObject {
     property color backgroundColor
     property int backgroundColorAnimationDuration
 
+    property real opacity
+
     /*!
       Text color
       */

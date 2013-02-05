@@ -241,11 +241,11 @@ Examples:
     radius: "small";
     normalFillColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorFillColor: "red";
-    fillColorAnimationDuration: 300;
-    color: (item.enabled) ? (item.focus ? "#757373" : "white") : "darkgray";
+    opacity: item.enabled ? 1.0 : 0.1;
+    color: (item.enabled) ? "#757373" : "darkgray";
     selectedTextColor: "white";
-    selectionColor: "#fc7134";
-    overlaidSpacing: units.gu(0.5);
+    selectionColor: "#19B6EE";
+    overlaySpacing: units.gu(0.5);
     passwordCharacter: "\u2022";
     font.family: "Ubuntu";
     font.pixelSize: FontUtils.sizeToPixels("medium");
@@ -258,7 +258,7 @@ Examples:
 /* hint */
 .textfield .label {
    fontFamily: "Ubuntu";
-   color: "#B6B6B6";
+   color: Qt.rgba(0.5, 0.5, 0.5, 0.5);
    fontSize: "medium";
    elide: Text.ElideRight;
 }
@@ -278,17 +278,17 @@ Examples:
 .textarea {
     radius: "small";
     backgroundColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
-    backgroundColorAnimationDuration: 300;
-    color: (item.enabled) ? (item.focus ? "#757373" : "white") : "darkgray";
+    opacity: item.enabled ? 1.0 : 0.1;
+    color: (item.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
     font.family: "Ubuntu";
     font.pixelSize: FontUtils.sizeToPixels("medium");
-    frameSpacing: units.gu(2);
+    frameSpacing: units.gu(1);
 }
 /* hint */
 .textarea .label {
-   color: "#B6B6B6";
+   color: Qt.rgba(0.5, 0.5, 0.5, 0.5);
    fontSize: "medium";
    elide: Text.ElideRight;
    wrapMode: Text.WordWrap;

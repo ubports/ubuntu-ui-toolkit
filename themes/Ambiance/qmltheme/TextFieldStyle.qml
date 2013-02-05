@@ -30,6 +30,8 @@ QtObject {
     property color errorFillColor
     property int fillColorAnimationDuration
 
+    property real opacity
+
     /*!
       Text color
       */
@@ -53,7 +55,7 @@ QtObject {
     /*!
       Spacing between overlaid elements (primary, secondary and clear button)
       */
-    property real overlaidSpacing
+    property real overlaySpacing
 
     /*!
       Password character
