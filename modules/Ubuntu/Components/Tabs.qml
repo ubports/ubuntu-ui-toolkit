@@ -92,4 +92,11 @@ Item {
     VisualItemModel {
         id: tabsModel
     }
+
+    /*!
+      The tools of the \l Page of the active \l Tab.
+     */
+    property ToolbarActions tools: selectedTab && selectedTab.page &&
+                                   selectedTab.page.hasOwnProperty("tools") ?
+                                       selectedTab.page.tools : null
 }
