@@ -49,6 +49,5 @@ function open(popup, caller, params) {
 
 function close(popupObject) {
     popupObject.hide();
-    popupObject.parent  = null;
     popupObject.destroy();
 }

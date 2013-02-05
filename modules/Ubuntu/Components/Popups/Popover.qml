@@ -105,6 +105,13 @@ PopupBase {
      */
     property Item caller
 
+    /*!
+      The property holds the item to which the pointer should be anchored to.
+      This can be same as the caller or any child of the caller. By default the
+      property is set to caller.
+      */
+    property Item pointerAnchorItem: caller
+
     QtObject {
         id: internal
         // TODO: put the margins in the style
@@ -114,7 +121,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerAnchorItem, edgeMargins, callerMargins);
             pos.auto();
         }
     }
@@ -165,6 +172,9 @@ PopupBase {
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
+
+    /*! \internal */
+    onPointerAnchorItemChanged: internal.updatePosition()
 
     /*! \internal */
     onWidthChanged: internal.updatePosition()
