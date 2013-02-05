@@ -236,7 +236,7 @@ Empty {
             left: parent.left
             right: listItem.progression ? progressionHelper.left : parent.right
         }
-        enabled: control !== null
+        visible: control !== null
 
         onClicked: control.clicked(mouse)
         onPressedChanged: control.pressed = pressed
