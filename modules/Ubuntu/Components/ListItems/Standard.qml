@@ -60,7 +60,7 @@ import Ubuntu.Components 0.1
 Empty {
     id: listItem
 
-    __contentsMargins: units.gu(2)
+//    __contentsMargins: units.gu(2)
     /*!
       \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
@@ -145,19 +145,27 @@ Empty {
         id: controlHighlight
         visible: controlArea.pressed
         anchors.fill: controlArea
-        color: "white"
+        color: "#E6E6E6"
         opacity: 0.7
     }
     Rectangle {
         id: progressionHighlight
-        visible: listItem.pressed
-        anchors.fill: progressionHelper
-        color: "white"
+        visible: listItem.progression && listItem.pressed
+//        anchors.fill: progressionHelper
+        anchors {
+            left: progressionHelper.left
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+        }
+
+        color: "#E6E6E6"
         opacity: 0.7
     }
 
     IconVisual {
         id: iconHelper
+        anchors.leftMargin: units.gu(2)
     }
 
     /*!
@@ -203,7 +211,7 @@ Empty {
         anchors {
             verticalCenter: parent.verticalCenter
             left: __iconIsItem ? parent.left : iconHelper.right
-            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.rightMargin : 0
+            leftMargin: (__iconIsItem) ? icon.width + units.gu(2) + icon.anchors.rightMargin : 0
             right: controlContainer.left
         }
     }
@@ -214,10 +222,11 @@ Empty {
         // or full width available if there is no text.
         width: control ? control.width : undefined
         anchors {
-            right: progressionHelper.left
+            right: listItem.progression ? progressionHelper.left : parent.right
             top: parent.top
             bottom: parent.bottom
             //margins: units.gu(0.5)
+            margins: units.gu(2)
         }
         onControlChanged: {
             control.parent = controlContainer;
@@ -229,7 +238,7 @@ Empty {
             top: parent.top
             bottom: parent.bottom
             left: parent.left
-            right: progressionHelper.left
+            right: listItem.progression ? progressionHelper.left : parent.right
         }
         enabled: control !== null
 
@@ -243,6 +252,7 @@ Empty {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
+            rightMargin: units.gu(2)
         }
         showSplit: control ? true : false
     }

@@ -37,15 +37,15 @@ import QtQuick 2.0
     \b{This component is under heavy development.}
 */
 
-Empty {
+//Empty {
+Item {
     height: units.gu(4)
     //source: "artwork/ListItemDivider24px.png"
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
+//        margins: units.gu(2)
     }
-
-    __contentsMargins: units.gu(2)
 
     /*!
      \preliminary
@@ -67,6 +67,15 @@ Empty {
             verticalCenter: parent.verticalCenter
             left: parent.left
             right: parent.right
+            margins: units.gu(2)
+        }
+    }
+
+    ThinDivider {
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
         }
     }
 }

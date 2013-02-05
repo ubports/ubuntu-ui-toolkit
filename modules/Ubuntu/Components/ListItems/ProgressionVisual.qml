@@ -20,14 +20,20 @@ import QtQuick 2.0
 // the progression symbol.
 Item {
     id: progressionVisual
-    width: visible ? units.gu(6) : 0
+    width: visible ? units.gu(4) : 0
 
     property bool showSplit: false
 
     Image {
         id: progressIcon
         source: "artwork/ListItemProgressionArrow.png"
-        anchors.centerIn: parent
+//        anchors.centerIn: parent
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            leftMargin: units.gu(2)
+        }
+
         opacity: enabled ? 1.0 : 0.5
     }
 
