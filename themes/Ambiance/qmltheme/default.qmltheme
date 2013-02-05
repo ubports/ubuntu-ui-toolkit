@@ -239,7 +239,7 @@ Examples:
 .textfield {
     backgroundShape: url("artwork/ubuntushape_small_radius_shape.sci");
     backgroundBorder: url("artwork/ubuntushape_small_radius_idle.sci");
-    normalFillColor: "white";
+    normalFillColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorFillColor: "red";
     color: (item.enabled) ? "#757373" : "darkgray";
     selectedTextColor: "white";
