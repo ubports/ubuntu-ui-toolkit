@@ -237,10 +237,10 @@ Examples:
 @qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
-    backgroundShape: url("artwork/ubuntushape_small_radius_shape.sci");
-    backgroundBorder: url("artwork/ubuntushape_small_radius_idle.sci");
+    radius: "small";
     normalFillColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorFillColor: "red";
+    fillColorAnimationDuration: 300;
     color: (item.enabled) ? (item.focus ? "#757373" : "white") : "darkgray";
     selectedTextColor: "white";
     selectionColor: "#fc7134";
