@@ -115,7 +115,7 @@ Item {
       The tools to be used if page does not define tools. It features only
       the default back button.
      */
-    property ActionList __defaultTools: ActionList { __pageStack: pageStack }
+    property ToolbarActions __defaultTools: ToolbarActions { __pageStack: pageStack }
 
     /*!
       \internal

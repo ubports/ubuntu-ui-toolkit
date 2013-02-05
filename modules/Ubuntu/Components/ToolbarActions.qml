@@ -25,19 +25,25 @@ import QtQuick 2.0
     Examples: See \l Page.
 */
 
-QtObject {
-    id: list
-    // internal objects using nested elements,
-    // which isn't allowed by QtObject; this fix makes this possible
+ActionList {
     /*!
-      \internal
-      Default property to allow adding of children.
-      */
-    default property alias children: list.__actionList
+      The back action.
+     */
+    property Action back: Action {
+        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: "Back"
+        visible: __pageStack && __pageStack.depth > 1
+        /*!
+          \internal
+          FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
+         */
+        onTriggered: __pageStack.pop()
+    }
 
     /*!
       \internal
-      Property list to allow adding of children.
-      */
-    property list<Action> __actionList
+      PageStack for the back button
+     */
+    // Cannot use PageStack here that will cause a loop in parsing the qml files
+    property Item __pageStack
 }

@@ -70,6 +70,18 @@ Template {
                     }
                 }
             }
+
+            tools: ToolbarActions {
+                Action {
+                    text: "action 1"
+                    iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+                }
+                Action {
+                    text: "action 2"
+                    iconSource: Qt.resolvedUrl("call_icon.png")
+                }
+            }
+
         }
     }
 }

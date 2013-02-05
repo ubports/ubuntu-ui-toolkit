@@ -44,6 +44,7 @@ Template {
             Page {
                 id: page0
                 title: i18n.tr("Root page")
+                visible: false
 
                 Column {
                     anchors.fill: parent
@@ -59,7 +60,7 @@ Template {
                     }
                 }
 
-                tools: ActionList {
+                tools: ToolbarActions {
                     Action {
                         text: "action 1"
                         iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
@@ -74,6 +75,7 @@ Template {
             Page {
                 id: page1
                 title: i18n.tr("First page")
+                visible: false
 
                 Column {
                     anchors.fill: parent

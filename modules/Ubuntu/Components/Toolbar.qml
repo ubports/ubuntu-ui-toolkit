@@ -40,7 +40,7 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ActionList tools
+    property ToolbarActions tools
 
     hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
 
