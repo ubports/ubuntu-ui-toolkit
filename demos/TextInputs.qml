@@ -123,7 +123,6 @@ Template {
 
                     TextArea {
                         id: richText
-                        contentWidth: units.gu(62)
                         textFormat:TextEdit.RichText
                         placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
                         text: longText
@@ -138,7 +137,6 @@ Template {
 
                     TextArea {
                         id: expandFix
-                        contentWidth: units.gu(40)
                         placeholderText: "expands till 5 lines, then scrolls"
                         autoSize: true
                         maximumLineCount: 5

@@ -81,7 +81,7 @@ FocusScope {
     id: control
 
     implicitWidth: units.gu(25)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
@@ -403,7 +403,7 @@ FocusScope {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: Theming.ComponentUtils.style(control, "overlaidSpacing", units.gu(0.5))
+        property real spacing: Theming.ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
@@ -500,7 +500,10 @@ FocusScope {
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Image {
-            anchors.fill: parent
+            //anchors.fill: parent
+            anchors.verticalCenter: parent.verticalCenter
+            width: units.gu(3)
+            height: width
             smooth: true
             source: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
             onSourceChanged: print(source)
