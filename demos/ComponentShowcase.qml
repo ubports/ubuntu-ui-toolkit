@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-MainView {
+Item {
     id: componentShowcase
     objectName: "componentShowcase"
     width: units.gu(100)
@@ -79,7 +79,7 @@ MainView {
             }
             ListElement {
                 label: "Toolbars"
-                source: ""
+                source: "Toolbars.qml"
                 chapter: "Building blocks"
             }
             ListElement {
@@ -174,8 +174,6 @@ MainView {
         }
         source: widgetList.model.get(widgetList.currentIndex).source
     }
-
-    tools: widgetLoader.item && widgetLoader.item.hasOwnProperty("tools") ? widgetLoader.item.tools : null
 
     Component.onCompleted: {
         i18n.domain = "componentshowcase"
