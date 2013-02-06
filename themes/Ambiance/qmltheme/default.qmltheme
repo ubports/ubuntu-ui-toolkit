@@ -322,6 +322,7 @@ Examples:
     backgroundColor: "#c0c0c0";
     backgroundOpacity: 0.1;
     thumbColor: "#bbbbbb";
+    thumbOpacity: 1.0;
     thumbSpacing: units.dp(2);
 }
 .slider .label {
