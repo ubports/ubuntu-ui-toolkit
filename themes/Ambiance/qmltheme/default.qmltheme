@@ -160,12 +160,16 @@ Examples:
     minimumWidth: units.gu(40);
     color: "white";
     radius: "medium";
+    edgeMargins: units.gu(2);
+    callerMargins: units.gu(1);
 }
 
 .sheet-foreground {
 }
 
 .dialog-foreground {
+    edgeMargins: units.gu(2);
+    callerMargins: units.gu(1);
 }
 
 .pointer {
