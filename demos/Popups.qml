@@ -163,12 +163,14 @@ Template {
                     placeholderText: "press to activate"
                     primaryItem: Button {
                         id: overlay
+                        ItemStyle.class: "transparent-button"
                         iconSource: Qt.resolvedUrl("call_icon.png")
                         width: units.gu(4)
+                        height: parent.height
                         onClicked: {
                             PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), textItem,
                                             {
-                                                "pointerAnchorItem": overlay,
+                                                "pointerTarget": overlay,
                                                 "contentWidth": textItem.width
                                             })
                         }

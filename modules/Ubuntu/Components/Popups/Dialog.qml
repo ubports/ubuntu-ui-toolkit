@@ -107,7 +107,7 @@ PopupBase {
       This can be same as the caller or any child of the caller. By default the
       property is set to caller.
       */
-    property Item pointerAnchorItem: caller
+    property Item pointerTarget: caller
 
     QtObject {
         id: internal
@@ -117,7 +117,7 @@ PopupBase {
         property real callerMargins: units.gu(2)
 
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerAnchorItem, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargins);
             pos.auto();
 
         }
@@ -173,7 +173,7 @@ PopupBase {
     /*! \internal */
     onCallerChanged: internal.updatePosition()
     /*! \internal */
-    onPointerAnchorItemChanged: internal.updatePosition()
+    onPointerTargetChanged: internal.updatePosition()
     /*! \internal */
     onWidthChanged: internal.updatePosition()
     /*! \internal */
