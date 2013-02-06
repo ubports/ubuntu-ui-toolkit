@@ -86,7 +86,7 @@ function SimplePositioning(foreground, area, edgeMargins) {
 
 // caller is optional.
 // if caller is given, pointer and callerMargins must be specified, otherwise they are ignored.
-function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edgeMargins, callerMargins) {
+function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edgeMargins, callerMargins) {
     var simplePos = new SimplePositioning(foreground, area, edgeMargins);
     // -1 values are not relevant.
 
@@ -135,7 +135,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.y = ycoord;
             pointer.direction = "down";
             pointer.y = this.above(pointer, 0, caller);
-            pointer.x = this.horizontalAlign(pointer, pointerAnchor);
+            pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return;
         }
         ycoord = this.below(foreground, callerMargins, caller);
@@ -143,7 +143,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.y = ycoord;
             pointer.direction = "up";
             pointer.y = this.below(pointer, 0, caller);
-            pointer.x = this.horizontalAlign(pointer, pointerAnchor);
+            pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return;
         }
         simplePos.autoSmallScreenPortrait();
@@ -163,7 +163,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.x = xcoord;
             pointer.direction = "right";
             pointer.x = this.left(pointer, 0, caller);
-            pointer.y = this.verticalAlign(pointer, pointerAnchor);
+            pointer.y = this.verticalAlign(pointer, pointerTarget);
             return;
         }
         xcoord = this.right(foreground, callerMargins, caller);
@@ -171,7 +171,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.x = xcoord;
             pointer.direction = "left";
             pointer.x = this.right(pointer, 0, caller);
-            pointer.y = this.verticalAlign(pointer, pointerAnchor);
+            pointer.y = this.verticalAlign(pointer, pointerTarget);
             return;
         }
         // position at the left of the screen
@@ -180,7 +180,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
     }
 
     // position foreground and pointer above caller; the pointer's y will be aligned
-    // to the caller, and x to the pointerAnchor
+    // to the caller, and x to the pointerTarget
     this.positionAbove = function() {
         var coord = this.above(foreground, callerMargins, caller);
         if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
@@ -188,14 +188,14 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "down";
             pointer.y = this.above(pointer, 0, caller);
-            pointer.x = this.horizontalAlign(pointer, pointerAnchor);
+            pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }
         return false;
     }
 
     // position foreground and pointer below caller; the pointer's y will be aligned
-    // to the caller, and x to the pointerAnchor
+    // to the caller, and x to the pointerTarget
     this.positionBelow = function() {
         var coord = this.below(foreground, callerMargins, caller);
         if (simplePos.checkVerticalPosition(foreground, coord, edgeMargins, 0)) {
@@ -203,14 +203,14 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "up";
             pointer.y = this.below(pointer, 0, caller);
-            pointer.x = this.horizontalAlign(pointer, pointerAnchor);
+            pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }
         return false;
     }
 
     // position foreground and pointer in front of caller; the pointer's x will be aligned
-    // to the caller, and y to the pointerAnchor
+    // to the caller, and y to the pointerTarget
     this.positionInFront = function() {
         var coord = this.left(foreground, callerMargins, caller);
         if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
@@ -218,14 +218,14 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.y = this.verticalAlign(foreground, caller);
             pointer.direction = "right";
             pointer.x = this.left(pointer, 0, caller);
-            pointer.y = this.verticalAlign(pointer, pointerAnchor);
+            pointer.y = this.verticalAlign(pointer, pointerTarget);
             return true;
         }
         return false;
     }
 
     // position foreground and pointer behind caller; the pointer's x will be aligned
-    // to the caller, and y to the pointerAnchor
+    // to the caller, and y to the pointerTarget
     this.positionBehind = function() {
         var coord = this.right(foreground, callerMargins, caller)
         if (simplePos.checkHorizontalPosition(foreground, coord, edgeMargins, 0)) {
@@ -233,7 +233,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
             foreground.y = this.verticalAlign(foreground, caller);
             pointer.direction = "left";
             pointer.x = this.right(pointer, 0, caller);
-            pointer.y = this.verticalAlign(pointer, pointerAnchor);
+            pointer.y = this.verticalAlign(pointer, pointerTarget);
             return true;
         }
         return false;
@@ -261,8 +261,8 @@ function CallerPositioning(foreground, pointer, area, caller, pointerAnchor, edg
         // area may be null some times...
         if (!area)
             return;
-        if (!pointerAnchor)
-            pointerAnchor = caller;
+        if (!pointerTarget)
+            pointerTarget = caller;
         if (foreground.width >= area.width - 2*edgeMargins) {
             // the popover uses (almost) the full width of the screen
             this.autoSmallScreenPortrait();
