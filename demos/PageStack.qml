@@ -23,11 +23,6 @@ Template {
     objectName: "Page Stack"
 
     Item {
-        Rectangle {
-            color: "#eeeeee"
-            anchors.fill: mainView
-        }
-
         MainView {
             id: mainView
             anchors {
