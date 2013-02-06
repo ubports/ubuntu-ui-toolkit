@@ -153,7 +153,6 @@ MainView {
             onClicked: widgetList.currentIndex = index
             enabled: source != ""
             selected: index == widgetList.currentIndex
-//            showDivider: false
         }
     }
 
