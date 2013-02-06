@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype ApplicationWindow
@@ -35,6 +40,10 @@ import QtQuick 2.0
     \endqml
 */
 Item {
+    id: view
+    // FIXME: see FIXME above
+    Theming.ItemStyle.class: "mainview"
+
     /*!
       \preliminary
       The list of actions that will be placed on the toolbar of the application.
@@ -46,10 +55,10 @@ Item {
     // clip if the MainView is not fullscreen
     clip: true
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#ededf0"
-    }
+//    Rectangle {
+//        anchors.fill: parent
+//        color: "#ededf0"
+//    }
 
     /*!
       \internal
@@ -59,6 +68,8 @@ Item {
     Item {
         id: contents
         anchors.fill: parent
+//        Theming.ItemStyle.style: view.Theming.ItemStyle.style
+//        Theming.ItemStyle.delegate: view.Theming.ItemStyle.delegate
     }
 
     Toolbar {

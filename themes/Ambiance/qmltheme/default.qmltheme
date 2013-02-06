@@ -30,6 +30,7 @@ properties typed as variant.
 @qml-mapping (.pointer, , PointerDelegate);
 @qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
 @qml-mapping(.textarea, TextAreaStyle, TextAreaDelegate);
+@qml-mapping(.mainview, , MainViewDelegate);
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
 a qml-mapping.
@@ -84,6 +85,10 @@ Examples:
     fontSize: "x-small";
     color: "#888888";
     opacity: item.enabled ? 1.0 : 0.3;
+}
+
+.mainview {
+    backgroundColor: "#ededf0"
 }
 
 .transparent-button {
