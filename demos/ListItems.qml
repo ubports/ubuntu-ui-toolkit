@@ -143,7 +143,7 @@ Template {
                          * the others are 6 grid units high and there are 3 headings
                          * at 3 grid units high.
                          */
-                        contentHeight: (units.gu(6) + units.dp(2)) * count - 2 * units.dp(2) + 3 * units.gu(3)
+                        contentHeight: (units.gu(6) + units.dp(2)) * count + 3 * units.gu(4)
                         interactive: false
 
                         delegate: ListItem.Standard {
