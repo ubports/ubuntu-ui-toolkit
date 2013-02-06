@@ -88,7 +88,7 @@ Examples:
 }
 
 .mainview {
-    backgroundColor: "#ededf0"
+    backgroundColor: "#ededf0";
 }
 
 .transparent-button {
