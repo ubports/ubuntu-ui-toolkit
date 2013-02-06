@@ -145,15 +145,19 @@ FocusScope {
     // altered TextEdit properties
     /*!
       The property folds the width of the text editing content. This can be equal or
-      bigger than the frame width.
+      bigger than the frame width minus the spacing between the frame and the input
+      area defined in the current theme. The default value is the same as the visible
+      input area's width.
       */
-    property alias contentWidth: editor.width
+    property real contentWidth: internal.inputAreaWidth
 
     /*!
       The property folds the height of the text editing content. This can be equal or
-      bigger than the frame height.
+      bigger than the frame height minus the spacing between the frame and the input
+      area defined in the current theme. The default value is the same as the visible
+      input area's height.
       */
-    property alias contentHeight: editor.height
+    property real contentHeight: internal.inputAreaHeight
 
     // forwarded properties
     /*!
@@ -661,6 +665,15 @@ FocusScope {
             control.focus = false;
     }
 
+    /*!\internal */
+    onContentWidthChanged: internal.inputAreaWidth = control.contentWidth
+    /*!\internal */
+    onContentHeightChanged: internal.inputAreaHeight = control.contentHeight
+    /*!\internal */
+    onWidthChanged: internal.inputAreaWidth = control.width - 2 * internal.frameSpacing
+    /*!\internal */
+    onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
+
     QtObject {
         id: internal
         // public property locals enabling aliasing
@@ -669,6 +682,8 @@ FocusScope {
         property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
+        property real inputAreaWidth: control.width - 2 * frameSpacing
+        property real inputAreaHeight: control.height - 2 * frameSpacing
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
@@ -834,8 +849,8 @@ FocusScope {
             id: editor
             focus: true
             onCursorRectangleChanged: flicker.ensureVisible(cursorRectangle)
-            width: Math.max(control.width, editor.contentWidth)
-            height: Math.max(control.height, editor.contentHeight)
+            width: internal.inputAreaWidth
+            height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectCharacters
             selectByMouse: false
