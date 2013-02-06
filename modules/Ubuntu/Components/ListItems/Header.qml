@@ -64,7 +64,7 @@ Item {
             verticalCenter: parent.verticalCenter
             left: parent.left
             right: parent.right
-            margins: units.gu(2)
+            margins: units.gu(1)
         }
     }
 

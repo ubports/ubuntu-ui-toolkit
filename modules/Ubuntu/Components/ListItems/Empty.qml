@@ -130,19 +130,20 @@ AbstractButton {
        + if this is the final item in the list, and ListView.footer is set (again as thin
          divider line won't look well with footer below it)
      */
+    // FIXME: The new design shows dividers everywhere, so if it does not change anymore,
+    //  the __showDivider() function may be removed.
     function __showDivider() {
         // if we're not in ListView, always show a thin dividing line at the bottom
-        if (ListView.view !== null) {
+        //if (ListView.view !== null) {
 
             // if we're last item in ListView, show divider if no footer is defined
             // and hide it if footer defined
             //if (index === ListView.view.model.count - 1) return !ListView.footer;
 
             // if section.delegate is positioned between this item and the next
-            //else
-            if (ListView.section !== ListView.nextSection) return true;
-            else return false;
-        }
+            //else if (ListView.section !== ListView.nextSection) return true;
+            //else return false;
+        //}
         return true;
     }
 
