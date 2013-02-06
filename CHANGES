@@ -10,10 +10,13 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
-* None
+* Property tools of Page and Toolbar must now be of type
+  ToolbarActions (was: ActionList).
 
 API Changes
 ***********
+
+* None
 
 SDK 0.1.28
 ##########
