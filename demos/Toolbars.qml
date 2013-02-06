@@ -35,11 +35,6 @@ Template {
             Page {
                 anchors.fill: parent
                 title: "Toolbar demo"
-                Rectangle {
-                    color: "black"
-                    opacity: 0.1
-                    anchors.fill: parent
-                }
 
                 tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
                 ToolbarActions {

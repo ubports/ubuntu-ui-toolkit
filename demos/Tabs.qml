@@ -30,9 +30,8 @@ Template {
             anchors.fill: parent
             Tab {
                 title: i18n.tr("Flickable")
-                page: Rectangle {
+                page: Item {
                     anchors.fill: parent
-                    color: "#eeeeee"
 
                     Flickable {
                         id: flickable
