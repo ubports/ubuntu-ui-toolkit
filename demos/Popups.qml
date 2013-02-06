@@ -157,6 +157,25 @@ Template {
                     width: units.gu(16)
                     onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), rightPopoverButton)
                 }
+
+                TextField {
+                    id: textItem
+                    placeholderText: "press to activate"
+                    primaryItem: Button {
+                        id: overlay
+                        ItemStyle.class: "transparent-button"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                        width: units.gu(4)
+                        height: parent.height
+                        onClicked: {
+                            PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), textItem,
+                                            {
+                                                "pointerTarget": overlay,
+                                                "contentWidth": textItem.width
+                                            })
+                        }
+                    }
+                }
             }
 
             TemplateRow {
