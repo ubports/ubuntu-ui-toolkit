@@ -42,7 +42,7 @@ Description: Qt Components for Ubuntu - demos
 Package: qt-components-ubuntu-examples
 Section: devel
 Architecture: any
-Depends: qt-components-ubuntu, libqt5declarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
+Depends: qt-components-ubuntu, qtdeclarative5-xmllistmodel-plugin, libqt5declarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu - examples
  The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
  .
