@@ -18,11 +18,10 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
+    z: -1
 
     Rectangle {
-        id: background
-        z: -1
         anchors.fill: parent
-        color: "pink"
+        color: StyleUtils.itemStyleProperty("backgroundColor")
     }
 }

@@ -40,7 +40,6 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
 */
 Item {
-    id: view
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "mainview"
 
@@ -55,11 +54,6 @@ Item {
     // clip if the MainView is not fullscreen
     clip: true
 
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "#ededf0"
-//    }
-
     /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
@@ -68,8 +62,6 @@ Item {
     Item {
         id: contents
         anchors.fill: parent
-//        Theming.ItemStyle.style: view.Theming.ItemStyle.style
-//        Theming.ItemStyle.delegate: view.Theming.ItemStyle.delegate
     }
 
     Toolbar {
