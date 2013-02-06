@@ -16,7 +16,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* Popover, Dialog
+  + pointerAnchorItem: caller or a child/sibling of it where the pointer should be aligned to
 
 SDK 0.1.28
 ##########
