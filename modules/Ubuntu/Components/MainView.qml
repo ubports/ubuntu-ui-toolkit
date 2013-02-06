@@ -46,6 +46,11 @@ Item {
     // clip if the MainView is not fullscreen
     clip: true
 
+    Rectangle {
+        anchors.fill: parent
+        color: "#ededf0"
+    }
+
     /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
