@@ -29,18 +29,18 @@ import QtQuick 2.0
         Page {
             title: i18n.tr("Root page")
 
-            tools: [
+            tools: ToolbarActions {
                 Action {
                     text: "one"
                     iconSource: Qt.resolvedUrl("1.png")
                     onTriggered: print("First action")
-                 },
+                 }
                  Action {
                     text: "two"
                     iconSource: Qt.resolvedUrl("2.png")
                     onTriggered: print("Second action")
                  }
-            ]
+            }
 
             Rectangle {
                 anchors.fill: parent
@@ -55,7 +55,6 @@ Item {
     id: page
 
     anchors.fill: parent ? parent : undefined
-    visible: false
 
     /*!
       \preliminary
@@ -80,5 +79,5 @@ Item {
       \preliminary
       The list of actions associated with this Page.
      */
-    property ActionList tools
+    property ToolbarActions tools
 }

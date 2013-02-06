@@ -40,25 +40,4 @@ QtObject {
       Property list to allow adding of children.
       */
     property list<Action> __actionList
-
-    /*!
-      The back action.
-     */
-    property Action back: Action {
-        iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
-        visible: __pageStack && __pageStack.depth > 1
-        /*!
-          \internal
-          FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
-         */
-        onTriggered: __pageStack.pop()
-    }
-
-    /*!
-      \internal
-      PageStack for the back button
-     */
-    // Cannot use PageStack here that will cause a loop in parsing the qml files
-    property Item __pageStack
 }

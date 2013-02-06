@@ -104,7 +104,7 @@ Item {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-    property ActionList tools: currentPage && currentPage.hasOwnProperty("tools")
+    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
                                && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */
@@ -115,7 +115,7 @@ Item {
       The tools to be used if page does not define tools. It features only
       the default back button.
      */
-    property ActionList __defaultTools: ActionList { __pageStack: pageStack }
+    property ToolbarActions __defaultTools: ToolbarActions { __pageStack: pageStack }
 
     /*!
       \internal
