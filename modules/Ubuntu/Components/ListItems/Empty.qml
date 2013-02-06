@@ -136,10 +136,11 @@ AbstractButton {
 
             // if we're last item in ListView, show divider if no footer is defined
             // and hide it if footer defined
-            if (index === ListView.view.model.count - 1) return !ListView.footer;
+            //if (index === ListView.view.model.count - 1) return !ListView.footer;
 
             // if section.delegate is positioned between this item and the next
-            else if (ListView.section !== ListView.nextSection) return true;
+            //else
+            if (ListView.section !== ListView.nextSection) return true;
             else return false;
         }
         return true;
