@@ -1,6 +1,6 @@
 Source: qt-components-ubuntu
 Priority: extra
-Maintainer: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 8.0.0), 
                qtbase5-dev,
                qtdeclarative5-private-dev,
