@@ -120,7 +120,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Resizing")
-            height: units.gu(20)
+            height: units.gu(10)
 
             UbuntuShape {
                 color: "#c94212"
@@ -134,8 +134,22 @@ Template {
 
             UbuntuShape {
                 color: "#c94212"
-                width: units.gu(10)
-                height: units.gu(20)
+                width: units.gu(20)
+                height: units.gu(10)
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Children")
+            height: units.gu(8)
+
+            UbuntuShape {
+                Rectangle {
+                    color: "purple"
+                    width: units.gu(10)
+                    height: units.gu(8)
+                    opacity: 0.5
+                }
             }
         }
     }
