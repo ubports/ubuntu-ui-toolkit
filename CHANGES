@@ -15,17 +15,27 @@ Compatibility Breaks
 API Changes
 ***********
 
-Popover
-+ dismissArea: area where mouse events cause Popover dismissal
-+ grabDismissAreaEvents: specifies whether to grab events from dismiss area
-+ contentWidth, contentHeight: overrides the calculated width/height of the Popover's operative area
+SDK 0.1.28
+##########
 
-TextField, TextArea
-+ paste(data): parameter added to paste custom data other than Clipboard content.
+Compatibility Breaks
+********************
 
-TextArea
-+ autoSize: specifies to resize the area based on lineCount property
-/ autoExpand: marked as deprecated, use autoSize instead
+* TextArea - autoExpand: marked as deprecated. Use autoSize instead
+
+API Changes
+***********
+
+* Popover
+  + dismissArea: area where mouse events cause Popover dismissal
+  + grabDismissAreaEvents: specifies whether to grab events from dismiss area
+  + contentWidth, contentHeight: overrides the calculated width/height of the Popover's operative area
+
+* TextField, TextArea
+  + paste(data): parameter added to paste custom data other than Clipboard content.
+
+* TextArea
+  + autoSize: specifies to resize the area based on lineCount property
 
 SDK 0.1.27
 ##########

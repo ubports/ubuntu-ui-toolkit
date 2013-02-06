@@ -84,7 +84,7 @@ import "." 0.1 as Theming
 FocusScope {
     id: control
     implicitWidth: units.gu(30)
-    implicitHeight: (autoSize) ? internal.linesHeight(1) : internal.linesHeight(4)
+    implicitHeight: (autoSize) ? internal.minimumSize : internal.linesHeight(4)
 
     // new properties
     /*!
@@ -668,6 +668,7 @@ FocusScope {
         property real lineSpacing: units.dp(3)
         property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
         property real lineSize: editor.font.pixelSize + lineSpacing
+        property real minimumSize: units.gu(4)
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
@@ -715,7 +716,7 @@ FocusScope {
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + lineSpacing * (lines - 1)
+            var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
             return lineHeight + 2 * frameSpacing;
         }
 

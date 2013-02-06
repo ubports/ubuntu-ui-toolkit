@@ -19,17 +19,18 @@ import QtQuick 2.0
 QtObject {
 
     /*!
-        These properties hold the images of the frame and background that will be drawn
-        around the input. Images represent the state and error highlight
+        Radius of the text input frame drawn around the input.
       */
-    property url backgroundBorder
-    property url backgroundShape
+    property string radius
 
     /*!
       Background fill colors for accepted input and erronous inputs
       */
     property color normalFillColor
     property color errorFillColor
+    property int fillColorAnimationDuration
+
+    property real opacity
 
     /*!
       Text color
@@ -54,7 +55,7 @@ QtObject {
     /*!
       Spacing between overlaid elements (primary, secondary and clear button)
       */
-    property real overlaidSpacing
+    property real overlaySpacing
 
     /*!
       Password character
