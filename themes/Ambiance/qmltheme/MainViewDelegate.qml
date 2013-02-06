@@ -13,26 +13,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Page {
-    title: i18n.tr("My custom page")
-    Label {
-        anchors.centerIn: parent
-        text: i18n.tr("This is an external page.")
-        color: "#757373"
-    }
+Item {
+    anchors.fill: parent
+    z: -1
 
-    tools: ToolbarActions {
-        Action {
-            text: "action 1"
-            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
-        }
-        Action {
-            text: "action 2"
-            iconSource: Qt.resolvedUrl("call_icon.png")
-        }
+    Rectangle {
+        anchors.fill: parent
+        color: StyleUtils.itemStyleProperty("backgroundColor")
     }
 }

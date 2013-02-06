@@ -132,6 +132,8 @@ Empty {
      */
     property bool expanded: false
 
+    showDivider: false
+
     Column {
         id: column
         anchors {
@@ -144,7 +146,7 @@ Empty {
         Base {
             id: selectorMain
             height: units.gu(6)
-            showDivider: false
+            showDivider: true
             onClicked: selector.expanded = !selector.expanded
             selected: selector.selected
 
@@ -210,10 +212,6 @@ Empty {
                     }
                 }
             }
-            ThinDivider {
-                anchors.bottom: parent.bottom
-                visible: valueRepeater.valueHeight > 0
-            }
         }
 
         Repeater {
@@ -269,7 +267,6 @@ Empty {
                             leftMargin: units.gu(3)
                             verticalCenter: parent.verticalCenter
                         }
-                        font.italic: true
                         font.bold: valueBase.selected
                         property real heightMargin: valueBase.height - implicitHeight
                         visible: heightMargin > 0

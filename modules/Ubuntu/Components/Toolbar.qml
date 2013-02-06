@@ -40,7 +40,15 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ActionList tools
+    property ToolbarActions tools
+
+    lock: tools ? tools.lock : false
+
+    Connections {
+        target: tools
+        onActiveChanged: toolbar.active = tools.active;
+    }
+    onActiveChanged: if (tools) tools.active = toolbar.active
 
     hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
 
