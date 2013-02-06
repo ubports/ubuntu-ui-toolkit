@@ -139,8 +139,8 @@ AbstractButton {
             if (index === ListView.view.model.count - 1) return !ListView.footer;
 
             // if section.delegate is positioned between this item and the next
-            // UPDATE: no longer needed with the new visuals, but may be updated again.
-            // else if (ListView.section !== ListView.nextSection) return false;
+            else if (ListView.section !== ListView.nextSection) return true;
+            else return false;
         }
         return true;
     }
