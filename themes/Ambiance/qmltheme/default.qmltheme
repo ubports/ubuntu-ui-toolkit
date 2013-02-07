@@ -244,7 +244,7 @@ Examples:
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
     radius: "small";
-    normalFillColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    normalFillColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorFillColor: "red";
     opacity: item.enabled ? 1.0 : 0.1;
     color: (item.enabled) ? "#757373" : "darkgray";
@@ -282,7 +282,7 @@ Examples:
 */
 .textarea {
     radius: "small";
-    backgroundColor: item.focus ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
     opacity: item.enabled ? 1.0 : 0.1;
     color: (item.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";

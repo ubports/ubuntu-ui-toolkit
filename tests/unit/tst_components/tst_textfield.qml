@@ -43,6 +43,10 @@ Item {
             compare(textField.focus, true, "TextField is focused");
         }
 
+        function test_0_highlighted() {
+            compare(textField.highlighted, textField.focus, "highlighted is the same as focused");
+        }
+
         function test_0_acceptableInput() {
             compare(textField.acceptableInput,true,"acceptableInput true by default")
         }
