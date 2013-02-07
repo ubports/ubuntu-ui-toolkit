@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* TextField, TextArea
+  + highlighted: enables to control highlighted state separately from focused 
 
 SDK 0.1.29
 ##########
