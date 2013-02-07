@@ -110,6 +110,7 @@ Template {
             UbuntuShape {
                 width: units.gu(12)
                 image: Image {
+                    objectName: "MAP"
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
                     horizontalAlignment: Image.AlignHCenter
@@ -143,12 +144,46 @@ Template {
             title: i18n.tr("Children")
             height: units.gu(8)
 
-            UbuntuShape {
+
+            EvilUbuntuShape {
+                id: fboShape
+                clip: true
+                radius: "medium"
+                width: units.gu(10)
+                height: units.gu(8)
+                image: fbo
+
                 Rectangle {
+                    id: rect
                     color: "purple"
-                    width: units.gu(10)
-                    height: units.gu(8)
-                    opacity: 0.5
+                    anchors.fill: parent
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: units.gu(1)
+                        Button {
+                            text: "Button one"
+                            onClicked: print("bla")
+                            width: units.gu(14)
+                        }
+                        Button {
+                            text: "Button two"
+                            onClicked: print("bla")
+                            width: units.gu(14)
+                        }
+                    }
+                }
+
+                ShaderEffectSource {
+                    smooth: false // prevent linear interpolation
+                    id: fbo
+                    objectName: "FBO"
+                    hideSource: true
+                    sourceItem: rect
+                    format: ShaderEffectSource.RGBA
+                    live: true
+                    width: parent.width
+                    height: parent.height
+                    x: width
                 }
             }
         }
