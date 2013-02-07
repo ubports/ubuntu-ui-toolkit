@@ -143,7 +143,7 @@ AbstractButton {
 
     /*!
        \preliminary
-       This handler is called when there is a click on the slider. The onThumb parameter provides information if the click, was inside of the Thumb element.
+       The signal is emitted when there is a click on the slider. The onThumb parameter provides information if the click, was inside of the thumb element.
     */
     signal sliderClicked(bool onThumb)
 
