@@ -49,7 +49,6 @@ Item {
     ShaderEffectSource {
         smooth: false // prevent linear interpolation
         id: effectSource
-        objectName: "FBO"
         hideSource: true
         sourceItem: frame.contentItem
         format: ShaderEffectSource.RGBA
