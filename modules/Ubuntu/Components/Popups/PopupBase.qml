@@ -87,22 +87,22 @@ Item {
 
     /*!
       \internal
-      Foreground component excluded from IMA
+      Foreground component excluded from InverseMouseArea
       */
     property Item __foreground
 
     /*!
       \internal
-      Set to true if the IMA should dismiss the area
+      Set to true if the InverseMouseArea should dismiss the area
       */
     property bool __closeOnDismissAreaPress: false
 
     // dimmer
     Rectangle {
         anchors.fill: parent
-        color: Theming.ComponentUtils.style(popupBase, "dimmColor", "black")
-        opacity: Theming.ComponentUtils.style(popupBase, "dimmOpacity", 0.6)
-        visible: Theming.ComponentUtils.style(popupBase, "dimm", false)
+        color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")
+        opacity: Theming.ComponentUtils.style(popupBase, "dimOpacity", 0.6)
+        visible: Theming.ComponentUtils.style(popupBase, "dim", false)
     }
 
     Theming.InverseMouseArea {
