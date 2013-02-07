@@ -5,7 +5,22 @@ SDK Release Notes
    :depth: 1
 
 UNRELEASED
-#########
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* Popover, Dialog
+  + edgeMargins: specifies the margins from the dismissArea when positioning the foreground
+  + callerMargin: specifies the margin from the caller when positioning the pointer
+
+SDK 0.1.30
+##########
 
 Compatibility Breaks
 ********************
