@@ -93,13 +93,13 @@ Item {
 
     /*!
       \internal
-      Foreground component excluded from IMA
+      Foreground component excluded from InverseMouseArea
       */
     property Item __foreground
 
     /*!
       \internal
-      Set to true if the IMA should dismiss the area
+      Set to true if the InverseMouseArea should dismiss the area
       */
     property bool __closeOnDismissAreaPress: false
 

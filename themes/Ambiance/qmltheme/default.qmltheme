@@ -168,7 +168,7 @@ Examples:
 }
 
 .popover {
-    dimm: false;
+    dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
 }
@@ -184,7 +184,7 @@ Examples:
 }
 
 .sheet {
-    dimm: false;
+    dim: false;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -194,9 +194,9 @@ Examples:
 }
 
 .dialog {
-    dimm: true;
-    dimmColor: "black";
-    dimmOpacity: 0.6;
+    dim: true;
+    dimColor: "black";
+    dimOpacity: 0.6;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
 }
