@@ -109,12 +109,23 @@ PopupBase {
       */
     property Item pointerTarget: caller
 
+    /*!
+      The property holds the margins from the dialog's dismissArea. The property
+      is themed.
+      */
+    property alias edgeMargins: internal.edgeMargins
+
+    /*!
+      The property holds the margin from the dialog's caller. The property
+      is themed.
+      */
+    property alias callerMargin: internal.callerMargins
+
     QtObject {
         id: internal
 
-        // TODO: Move the two properties below, and various margins and colors, to style.
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(2)
+        property real edgeMargins: ComponentUtils.style(foreground, "edgeMargins", 0)
+        property real callerMargins: ComponentUtils.style(foreground, "callerMargins", 0)
 
         function updatePosition() {
             var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargins);

@@ -112,11 +112,22 @@ PopupBase {
       */
     property Item pointerTarget: caller
 
+    /*!
+      The property holds the margins from the popover's dismissArea. The property
+      is themed.
+      */
+    property alias edgeMargins: internal.edgeMargins
+
+    /*!
+      The property holds the margin from the popover's caller. The property
+      is themed.
+      */
+    property alias callerMargin: internal.callerMargins
+
     QtObject {
         id: internal
-        // TODO: put the margins in the style
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(1)
+        property real edgeMargins: ComponentUtils.style(foreground, "edgeMargins", 0)
+        property real callerMargins: ComponentUtils.style(foreground, "callerMargins", 0)
         property bool portrait: width < height
 
         // private
