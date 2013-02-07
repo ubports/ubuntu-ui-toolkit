@@ -28,51 +28,75 @@ Item {
     property alias contentItem: columnContainer
 
     Rectangle {
-        color: "grey"
+        id: container
+        color: StyleUtils.itemStyleProperty("color", "white")
         anchors.fill: parent
-        radius: units.gu(1)
+
+        Label {
+            id: headerText
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+                margins: units.gu(1)
+            }
+            property real totalHeight: height + 2*anchors.margins
+            fontSize: "large"
+            horizontalAlignment: Text.AlignHCenter
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            text: item.title
+        }
+
+        Label {
+            id: questionText
+            anchors {
+                top: headerText.bottom
+                left: parent.left
+                right: parent.right
+                margins: units.gu(1)
+            }
+            property real totalHeight: height + 2*anchors.margins
+            width: parent.width - 2*anchors.margins
+            fontSize: "medium"
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.Wrap
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            text: item.text
+        }
+
+        Item {
+            id: columnContainer
+            anchors {
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+                margins: units.gu(1)
+            }
+            height: childrenRect.height
+        }
     }
 
-    Label {
-        id: headerText
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            margins: units.gu(1)
-        }
-        property real totalHeight: height + 2*anchors.margins
-        fontSize: "large"
-        horizontalAlignment: Text.AlignHCenter
-        color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-        text: item.title
+    clip: true // hide the ShaderEffectSource
+    Shape {
+        anchors.fill: parent
+        image: effectSource
+        radius: StyleUtils.itemStyleProperty("radius", "small")
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
     }
 
-    Label {
-        id: questionText
-        anchors {
-            top: headerText.bottom
-            left: parent.left
-            right: parent.right
-            margins: units.gu(1)
-        }
-        property real totalHeight: height + 2*anchors.margins
-        width: parent.width - 2*anchors.margins
-        fontSize: "medium"
-        horizontalAlignment: Text.AlignHCenter
-        wrapMode: Text.Wrap
-        color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-        text: item.text
-    }
+    ShaderEffectSource {
+        smooth: false // prevent linear interpolation
+        id: effectSource
+        hideSource: true
+        sourceItem: container
+        format: ShaderEffectSource.RGBA
+        live: true
 
-    Item {
-        id: columnContainer
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-            margins: units.gu(1)
-        }
-        height: childrenRect.height
+        // Do not set visible to false because it will leave the FBO empty,
+        //  but position the ShaderEffectSource somewhere that it will be clipped
+        //  so it is not visible.
+        x: width
+        width: sourceItem.width
+        height: sourceItem.height
     }
 }

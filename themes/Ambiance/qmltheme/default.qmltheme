@@ -203,6 +203,8 @@ Examples:
     minimumHeight: units.gu(32);
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
+    radius: "medium";
+    color: "grey";
 }
 .dialog .pointer {
     opacity: 0.9;
