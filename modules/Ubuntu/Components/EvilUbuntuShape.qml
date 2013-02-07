@@ -18,54 +18,18 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1 as Theming
 
 /*!
-    \qmltype UbuntuShape
+    \internal
+    \qmltype EvilUbuntuShape
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
-
-    The UbuntuShape is used where a rounded rectangle is needed either filled
-    with a color or an image that it crops.
-
-    When given with a \l color it is applied with an overlay blending as a
-    vertical gradient going from \l color to \l gradientColor.
-    Two corner \l radius are available, "small" (default) and "medium", that
-    determine the size of the corners.
-    Optionally, an Image can be passed that will be displayed inside the
-    UbuntuShape and cropped to fit it.
-
-    Examples:
-    \qml
-        import Ubuntu.Components 0.1
-
-        UbuntuShape {
-            color: "lightblue"
-            radius: "medium"
-        }
-    \endqml
-
-    \qml
-        import Ubuntu.Components 0.1
-
-        UbuntuShape {
-            image: Image {
-                source: "icon.png"
-            }
-        }
-    \endqml
-
-    \qml
-        import Ubuntu.Components 0.1
-
-        UbuntuShape {
-            maskSource: "customMask.sci"
-            borderSource: "customBorder.sci"
-        }
-    \endqml
-
+    \brief Temporary alternative for \l UbuntuShape that clips the children.
+        This class may be deprecated when UbuntuShape is updated.
+        It lacks basic features from \l UbuntuShape such as specifying a color or Image.
 */
 Item {
     id: shape
 
+    clip: true
     Theming.ItemStyle.class: "UbuntuShape-radius-" + radius
 
     /*!
@@ -74,54 +38,57 @@ Item {
     property string radius: "small"
 
     /*!
-      The top color of the gradient used to fill the shape. Setting only this
-      one is enough to set the overall color the shape.
-    */
-    property color color: Qt.rgba(0, 0, 0, 0)
-
-    /*!
-      The bottom color of the gradient used for the overlay blending of the
-      color that fills the shape. It is optional to set this one as setting
-      \l color is enough to set the overall color of the shape.
-    */
-    property color gradientColor: Theming.ComponentUtils.style(shape, "gradientColor", Qt.rgba(0, 0, 0, 0))
-
-    /*!
-      \deprecated
-      The image used to mask the \l image.
-      We plan to expose that feature through styling properties.
-    */
-    property url maskSource: Theming.ComponentUtils.style(shape, "maskSource", "")
-
-    /*!
       \deprecated
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
     property url borderSource: Theming.ComponentUtils.style(shape, "borderIdle", "")
 
-    /*!
-      The image used to fill the shape.
-    */
-//    property Image image
-    property Item image
-
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(8)
+
+//    default property alias contents: contentsContainer.data
+//    Item {
+//        id: contentsContainer
+//        anchors.fill: parent
+//    }
+
+    property alias color: background.color
+
+    property alias item: fbo.sourceItem
+    onItemChanged: item.parent = shape
 
     Theming.Shape {
         anchors.fill: parent
         visible: shape.visible
-//        image: shape.image && (shape.image.status == Image.Ready) ? shape.image : null
-//        image: shape.image && shape.image.isReady ? shape.image : null
-        image: shape.image && (shape.image.status === Image.Ready || shape.image.hasOwnProperty("hideSource")) ? shape.image : null
-        onImageChanged: print("image is now "+image)
-        baseColor: shape.color
-        gradientColor: shape.gradientColor
+        image: fbo
         borderSource: shape.borderSource
         radius: shape.radius
-        stretched: shape.image && (shape.image.fillMode == Image.PreserveAspectCrop) ? false : true
-        horizontalAlignment: shape.image && (shape.image.horizontalAlignment == Image.AlignLeft) ? Theming.Shape.AlignLeft : shape.image && (shape.image.horizontalAlignment == Image.AlignRight) ? Theming.Shape.AlignRight : Theming.Shape.AlignHCenter
-        verticalAlignment: shape.image && (shape.image.verticalAlignment == Image.AlignTop) ? Theming.Shape.AlignTop : shape.image && (shape.image.verticalAlignment == Image.AlignBottom) ? Theming.Shape.AlignBottom : Theming.Shape.AlignVCenter
+    }
+
+    ShaderEffectSource {
+        smooth: false // prevent linear interpolation
+        id: fbo
+        objectName: "FBO"
+        hideSource: true
+        sourceItem: contentsContainer
+//        format: ShaderEffectSource.RGBA
+        live: true
+
+        // Do not set visible to false because it will leave the FBO empty,
+        //  but position the ShaderEffectSource somewhere that it will be clipped
+        //  so it is not visible.
+        x: width
+        width: parent.width
+        height: parent.height
+//        width: sourceItem ? sourceItem.width : 0
+//        height: sourceItem ? sourceItem.height: 0
+
+        Rectangle {
+            id: background
+            parent: shape.item ? shape.item: undefined
+            anchors.fill: parent ? parent: undefined
+            color: "transparent"
+        }
     }
 }

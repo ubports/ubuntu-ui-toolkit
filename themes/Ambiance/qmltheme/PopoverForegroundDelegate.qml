@@ -17,9 +17,11 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-UbuntuShape {
+EvilUbuntuShape {
+//UbuntuShape {
     id: frame
 
+    item: contentItem
     property alias contentItem: body
 
     color: StyleUtils.itemStyleProperty("color", "white")

@@ -147,15 +147,16 @@ Template {
 
             EvilUbuntuShape {
                 id: fboShape
-                clip: true
+//                clip: true
                 radius: "medium"
                 width: units.gu(10)
                 height: units.gu(8)
-                image: fbo
+//                item: rect
 
-                Rectangle {
+                item: Rectangle {
                     id: rect
                     color: "purple"
+//                    parent: fboShape
                     anchors.fill: parent
                     Column {
                         anchors.centerIn: parent
@@ -173,18 +174,18 @@ Template {
                     }
                 }
 
-                ShaderEffectSource {
-                    smooth: false // prevent linear interpolation
-                    id: fbo
-                    objectName: "FBO"
-                    hideSource: true
-                    sourceItem: rect
-                    format: ShaderEffectSource.RGBA
-                    live: true
-                    width: parent.width
-                    height: parent.height
-                    x: width
-                }
+//                ShaderEffectSource {
+//                    smooth: false // prevent linear interpolation
+//                    id: fbo
+//                    objectName: "FBO"
+//                    hideSource: true
+//                    sourceItem: rect
+//                    format: ShaderEffectSource.RGBA
+//                    live: true
+//                    width: parent.width
+//                    height: parent.height
+//                    x: width
+//                }
             }
         }
     }
