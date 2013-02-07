@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 /*!
     \qmltype PopupBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
@@ -78,5 +83,36 @@ Item {
      */
     function __closeIfHidden() {
         if (!visible) PopupUtils.close(popupBase);
+    }
+
+    /*!
+      \internal
+      Foreground component excluded from IMA
+      */
+    property Item __foreground
+
+    /*!
+      \internal
+      Set to true if the IMA should dismiss the area
+      */
+    property bool __closeOnDismissAreaPress: false
+
+    // dimmer
+    Rectangle {
+        anchors.fill: parent
+        color: Theming.ComponentUtils.style(popupBase, "dimmColor", "black")
+        opacity: Theming.ComponentUtils.style(popupBase, "dimmOpacity", 0.6)
+        visible: Theming.ComponentUtils.style(popupBase, "dimm", false)
+    }
+
+    Theming.InverseMouseArea {
+        anchors.fill: __foreground
+        sensingArea: dismissArea
+        propagateComposedEvents: !grabDismissAreaEvents
+        onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
+    }
+
+    MouseArea {
+        anchors.fill: __foreground
     }
 }

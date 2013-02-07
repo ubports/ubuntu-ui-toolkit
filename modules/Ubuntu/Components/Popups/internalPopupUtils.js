@@ -134,7 +134,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
         if (simplePos.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
             pointer.direction = "down";
-            pointer.y = this.above(pointer, 0, caller);
+            pointer.y = this.above(pointer, callerMargins - pointer.height, caller);
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return;
         }
@@ -142,7 +142,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
         if (simplePos.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
             pointer.direction = "up";
-            pointer.y = this.below(pointer, 0, caller);
+            pointer.y = this.below(pointer, callerMargins - pointer.height, caller);
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return;
         }
@@ -162,7 +162,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
         if (simplePos.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
             foreground.x = xcoord;
             pointer.direction = "right";
-            pointer.x = this.left(pointer, 0, caller);
+            pointer.x = this.left(pointer, callerMargins - pointer.width, caller);
             pointer.y = this.verticalAlign(pointer, pointerTarget);
             return;
         }
@@ -170,7 +170,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
         if (simplePos.checkHorizontalPosition(foreground, xcoord, 0, area.width/4)) {
             foreground.x = xcoord;
             pointer.direction = "left";
-            pointer.x = this.right(pointer, 0, caller);
+            pointer.x = this.right(pointer, callerMargins - pointer.width, caller);
             pointer.y = this.verticalAlign(pointer, pointerTarget);
             return;
         }
@@ -187,7 +187,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "down";
-            pointer.y = this.above(pointer, 0, caller);
+            pointer.y = this.above(pointer, callerMargins - pointer.height, caller);
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }
@@ -202,7 +202,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "up";
-            pointer.y = this.below(pointer, 0, caller);
+            pointer.y = this.below(pointer, callerMargins - pointer.height, caller);
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }
@@ -217,7 +217,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.x = coord;
             foreground.y = this.verticalAlign(foreground, caller);
             pointer.direction = "right";
-            pointer.x = this.left(pointer, 0, caller);
+            pointer.x = this.left(pointer, callerMargins - pointer.width, caller);
             pointer.y = this.verticalAlign(pointer, pointerTarget);
             return true;
         }
@@ -232,7 +232,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.x = coord;
             foreground.y = this.verticalAlign(foreground, caller);
             pointer.direction = "left";
-            pointer.x = this.right(pointer, 0, caller);
+            pointer.x = this.right(pointer, callerMargins - pointer.width, caller);
             pointer.y = this.verticalAlign(pointer, pointerTarget);
             return true;
         }

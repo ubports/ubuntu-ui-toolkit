@@ -113,50 +113,41 @@ PopupBase {
       The property holds the margins from the dialog's dismissArea. The property
       is themed.
       */
-    property alias edgeMargins: internal.edgeMargins
+    property real edgeMargins: ComponentUtils.style(dialog, "edgeMargins", 0)
 
     /*!
       The property holds the margin from the dialog's caller. The property
       is themed.
       */
-    property alias callerMargin: internal.callerMargins
+    property real callerMargin: ComponentUtils.style(dialog, "callerMargin", 0)
+
+    Theming.ItemStyle.class: "dialog"
 
     QtObject {
         id: internal
 
-        property real edgeMargins: ComponentUtils.style(foreground, "edgeMargins", 0)
-        property real callerMargins: ComponentUtils.style(foreground, "callerMargins", 0)
-
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
 
         }
     }
 
-    Background {
-        dim: true
-        dismissOnTap: false
-    }
+    Pointer { id: pointer }
 
-    Pointer {
-        id: pointer
-        opacity: 0.9
-        longAxis: 2*internal.callerMargins
-        shortAxis: internal.callerMargins
-    }
-
+    __foreground: foreground
     Item {
         id: foreground
         // FIXME: see above
-        Theming.ItemStyle.class: "dialog-foreground"
-        width: Math.min(units.gu(40), dialog.width)
+        Theming.ItemStyle.class: "foreground"
+        width: Math.min(minWidth, dialog.width)
 
         // used in the delegate
         property string title
         property string text
-        property string minHeight: units.gu(32)
-        property string maxHeight: 3*dialog.height/4
+        property real minWidth: Theming.ComponentUtils.style(foreground, "minimumWidth", 0)
+        property real minHeight: Theming.ComponentUtils.style(foreground, "minimumHeight", 0)
+        property real maxHeight: 3*dialog.height/4
 
         height: childrenRect.height
 

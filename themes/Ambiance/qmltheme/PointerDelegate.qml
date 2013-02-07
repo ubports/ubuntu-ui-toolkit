@@ -27,5 +27,7 @@ Image {
     //  results because of the shading (for example, always shadow on the right side).
     source: StyleUtils.itemStyleProperty("imageSource")
 
+    smooth: true
+
     opacity: StyleUtils.itemStyleProperty("opacity", 1.0)
 }

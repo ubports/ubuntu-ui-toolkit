@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* TextField, TextArea
+  + highlighted: enables to control highlighted state separately from focused 
 
 SDK 0.1.29
 ##########
@@ -31,8 +32,6 @@ API Changes
 
 * Popover, Dialog
   + pointerAnchorItem: caller or a child/sibling of it where the pointer should be aligned to
-  + edgeMargins: exposed property to configure foreground margins from the dismissArea edges; also themed
-  + callerMargin: exposed property to configure foreground margin from the caller; also themed
 
 SDK 0.1.28
 ##########
