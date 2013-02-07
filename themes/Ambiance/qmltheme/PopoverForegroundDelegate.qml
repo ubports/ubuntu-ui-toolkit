@@ -48,8 +48,8 @@ Item {
     Shape {
         anchors.fill: parent
         image: effectSource
-        radius: "small"
-        borderSource: Qt.resolvedUrl("artwork/ubuntushape_small_radius_idle.sci")
+        radius: "medium"
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
     }
 
     ShaderEffectSource {
