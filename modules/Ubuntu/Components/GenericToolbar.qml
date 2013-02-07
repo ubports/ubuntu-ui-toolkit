@@ -16,6 +16,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \internal
@@ -123,6 +128,30 @@ Item {
         id: internal
         property string previousState: ""
         property int movingDelta
+
+        // Used for recovering the state from before
+        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
+        property bool savedLock: bottomBar.lock
+        property bool savedActive: bottomBar.active
+    }
+
+    Connections {
+        target: bottomBarVisibilityCommunicator
+        onForceHiddenChanged: {
+            if (bottomBarVisibilityCommunicator.forceHidden) {
+                internal.savedLock = bottomBar.lock;
+                internal.savedActive = bottomBar.active;
+                bottomBar.active = false;
+                bottomBar.lock = true;
+            } else { // don't force hidden
+                bottomBar.active = internal.savedActive;
+                bottomBar.lock = internal.savedLock;
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        print(bottomBarVisibilityCommunicator.forceHidden);
     }
 
     onStateChanged: {
