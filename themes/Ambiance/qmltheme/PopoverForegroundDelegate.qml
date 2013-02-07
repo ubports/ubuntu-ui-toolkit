@@ -17,18 +17,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-//EvilUbuntuShape {
-//UbuntuShape {
-
 Item {
     id: frame
 
-//    item: contentItem
     property alias contentItem: body
-
-    clip: true
-//    color: StyleUtils.itemStyleProperty("color", "white")
-//    radius: StyleUtils.itemStyleProperty("radius", "small")
 
     anchors {
         left: parent ? parent.left : undefined
@@ -47,44 +39,35 @@ Item {
         height: childrenRect.height
     }
 
-
+    clip: true // hide the ShaderEffectSource
     Shape {
         anchors.fill: parent
-//        visible: shape.visible
-        image: fbo
-//        borderSource: shape.borderSource
-        borderSource: Qt.resolvedUrl("artwork/ubuntushape_small_radius_idle.sci")
-//        radius: shape.radius
+        image: effectSource
         radius: "small"
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_small_radius_idle.sci")
     }
 
     ShaderEffectSource {
         smooth: false // prevent linear interpolation
-        id: fbo
+        id: effectSource
         objectName: "FBO"
         hideSource: true
-//        sourceItem: contentsContainer
-//        sourceItem:
         sourceItem: frame.contentItem
-//        format: ShaderEffectSource.RGBA
+        format: ShaderEffectSource.RGBA
         live: true
 
         // Do not set visible to false because it will leave the FBO empty,
         //  but position the ShaderEffectSource somewhere that it will be clipped
         //  so it is not visible.
         x: width
-        width: parent.width
-        height: parent.height
-//        width: sourceItem ? sourceItem.width : 0
-//        height: sourceItem ? sourceItem.height: 0
+        width: sourceItem.width
+        height: sourceItem.height
 
         Rectangle {
             id: background
             parent: frame.contentItem
             anchors.fill: parent ? parent: undefined
-//            color: "transparent"
             color: StyleUtils.itemStyleProperty("color", "white")
         }
     }
-
 }
