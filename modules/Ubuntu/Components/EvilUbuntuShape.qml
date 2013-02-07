@@ -63,6 +63,7 @@ Item {
         visible: shape.visible
         image: fbo
         borderSource: shape.borderSource
+//        borderSource: Qt.resolvedUrl("artwork/ubuntushape_small_radius_idle.sci")
         radius: shape.radius
     }
 
