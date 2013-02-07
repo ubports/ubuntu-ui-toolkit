@@ -139,11 +139,13 @@ Item {
         target: bottomBarVisibilityCommunicator
         onForceHiddenChanged: {
             if (bottomBarVisibilityCommunicator.forceHidden) {
+                print("HIDING TOOLBAR");
                 internal.savedLock = bottomBar.lock;
                 internal.savedActive = bottomBar.active;
                 bottomBar.active = false;
                 bottomBar.lock = true;
             } else { // don't force hidden
+                print("UN-HIDING TOOLBAR");
                 bottomBar.active = internal.savedActive;
                 bottomBar.lock = internal.savedLock;
             }
@@ -155,6 +157,7 @@ Item {
     }
 
     onStateChanged: {
+        print("new state = "+state);
         if (state == "hint") {
             internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
