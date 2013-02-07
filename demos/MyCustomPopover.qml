@@ -54,7 +54,6 @@ Popover {
                 }
                 onClicked: PopupUtils.close(popover)
             }
-//            showDivider: false
         }
     }
 }
