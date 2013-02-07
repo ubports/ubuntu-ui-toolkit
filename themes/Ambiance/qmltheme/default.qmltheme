@@ -197,12 +197,12 @@ Examples:
     dimm: true;
     dimmColor: "black";
     dimmOpacity: 0.6;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
 }
 .dialog .foreground {
     minimumWidth: units.gu(40);
     minimumHeight: units.gu(32);
-    edgeMargins: units.gu(2);
-    callerMargin: units.gu(1);
     radius: "medium";
     color: "grey";
 }
