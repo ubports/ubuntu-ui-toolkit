@@ -169,6 +169,10 @@ Item {
         }
 
     // TextArea specific properties
+        function test_1_highlighted() {
+            compare(textArea.highlighted, textArea.focus, "highlighted is the same as focused");
+        }
+
         function test_1_contentHeight() {
             compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
             var newValue = 200;

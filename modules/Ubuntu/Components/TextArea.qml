@@ -88,6 +88,13 @@ FocusScope {
 
     // new properties
     /*!
+      The property presents whether the TextArea is highlighted or not. By
+      default the TextArea gets highlighted when gets the focus, so can accept
+      text input. This property allows to control the highlight separately from
+      the focused behavior.
+      */
+    property bool highlighted: focus
+    /*!
       Text that appears when there is no focus and no content in the component
       (hint text). The hint style can be customized by defining a style selector which
       styles a label. For example the default styling defines the hint styling using

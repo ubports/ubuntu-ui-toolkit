@@ -69,6 +69,7 @@ Template {
 
                         placeholderText: i18n.tr("simple text field")
                         hasClearButton: false
+                        onActiveFocusChanged: highlighted = true
                     }
                 }
 
