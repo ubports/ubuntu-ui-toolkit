@@ -83,6 +83,14 @@ FocusScope {
     implicitWidth: units.gu(25)
     implicitHeight: units.gu(4)
     /*!
+      The property presents whether the TextField is highlighted or not. By
+      default the TextField gets highlighted when gets the focus, so can accept
+      text input. This property allows to control the highlight separately from
+      the focused behavior.
+      */
+    property bool highlighted: focus
+
+    /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
     */

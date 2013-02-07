@@ -17,7 +17,7 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 Package: qt-components-ubuntu
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: qtdeclarative5-qtquick2-plugin, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu
  The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
 
@@ -42,7 +42,7 @@ Description: Qt Components for Ubuntu - demos
 Package: qt-components-ubuntu-examples
 Section: devel
 Architecture: any
-Depends: qt-components-ubuntu, qmlscene, ${shlibs:Depends}, ${misc:Depends}
+Depends: qt-components-ubuntu, qtdeclarative5-xmllistmodel-plugin, libqt5declarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu - examples
  The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
  .
