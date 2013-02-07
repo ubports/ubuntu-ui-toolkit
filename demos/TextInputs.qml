@@ -69,7 +69,6 @@ Template {
 
                         placeholderText: i18n.tr("simple text field")
                         hasClearButton: false
-                        onActiveFocusChanged: highlighted = true
                     }
                 }
 
@@ -96,7 +95,6 @@ Template {
 
                         placeholderText: i18n.tr("type to show clear button")
                         text: i18n.tr("sample text")
-                        onTextChanged: textField1.highlighted = false
                     }
                 }
 
@@ -110,7 +108,7 @@ Template {
 
                         placeholderText: i18n.tr("password with echo")
                         echoMode: TextInput.Password
-                        onTextChanged: textField1.highlighted = false
+
                     }
                 }
 
@@ -128,7 +126,6 @@ Template {
                         textFormat:TextEdit.RichText
                         placeholderText: "the placeholder text is a text which is displayed when there is no content in the TextArea"
                         text: longText
-                        onTextChanged: textField1.highlighted = false
                         KeyNavigation.tab: expandFix
                         KeyNavigation.backtab: textField3
                     }
@@ -141,7 +138,6 @@ Template {
                     TextArea {
                         id: expandFix
                         placeholderText: "expands till 5 lines, then scrolls"
-                        onTextChanged: textField1.highlighted = false
                         autoSize: true
                         maximumLineCount: 5
                         KeyNavigation.tab: textField1
