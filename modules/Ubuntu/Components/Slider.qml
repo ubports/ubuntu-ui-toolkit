@@ -145,7 +145,7 @@ AbstractButton {
        \preliminary
        The signal is emitted when there is a click on the slider. The onThumb parameter provides information if the click, was inside of the thumb element.
     */
-    signal sliderClicked(bool onThumb)
+    signal touched(bool onThumb)
 
 
     /*!
@@ -207,7 +207,7 @@ AbstractButton {
                         // Button pressed inside the thumb.
                         dragInitMouseX = mouseX;
                         dragInitNormalizedValue = normalizedValue;
-                        slider.sliderClicked(true);
+                        slider.touched(true);
                     } else if (mouseX > thumbSpacing &&
                                mouseX < bar.width - thumbSpacing) {
                         // Button pressed outside the thumb.
@@ -219,7 +219,7 @@ AbstractButton {
                         if (slider.live) {
                             slider.value = liveValue;
                         }
-                        slider.sliderClicked(false);
+                        slider.touched(false);
                     }
                 }
             } else {
