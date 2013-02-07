@@ -36,6 +36,12 @@ Item {
             top: parent.top
         }
         height: childrenRect.height
+
+        Rectangle {
+            id: background
+            anchors.fill: parent
+            color: StyleUtils.itemStyleProperty("color", "white")
+        }
     }
 
     clip: true // hide the ShaderEffectSource
@@ -60,12 +66,5 @@ Item {
         x: width
         width: sourceItem.width
         height: sourceItem.height
-
-        Rectangle {
-            id: background
-            parent: frame.contentItem
-            anchors.fill: parent ? parent: undefined
-            color: StyleUtils.itemStyleProperty("color", "white")
-        }
     }
 }
