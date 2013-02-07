@@ -48,7 +48,7 @@ Item {
     Shape {
         anchors.fill: parent
         image: effectSource
-        radius: "medium"
+        radius: StyleUtils.itemStyleProperty("radius", "small")
         borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
     }
 
