@@ -230,6 +230,30 @@ Template {
                     onClicked: PopupUtils.open(dialog, saveButton)
                 }
             }
+
+            TemplateRow {
+                title: i18n.tr("Non-modal")
+
+                Button {
+                    id: nonModalPopover
+                    text: i18n.tr("Popover")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), nonModalPopover, {"modal": false})
+                }
+
+                Button {
+                    text: i18n.tr("Sheet")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(composerSheet, 0, {"modal": false, "contentWidth": units.gu(20)})
+                }
+
+                Button {
+                    id: nonModalDialog
+                    text: i18n.tr("save")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(dialog, nonModalDialog, {"modal": false})
+                }
+            }
         }
     }
 }

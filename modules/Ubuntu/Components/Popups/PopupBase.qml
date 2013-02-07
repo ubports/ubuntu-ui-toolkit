@@ -44,6 +44,12 @@ Item {
     */
     property bool grabDismissAreaEvents: true
 
+    /*!
+      The property specifies whether the popup is a modal item or not. The default
+      is modal.
+      */
+    property bool modal: true
+
     anchors.fill: parent ? parent : undefined
 
     // without specifying width and height below, some width calculations go wrong in Sheet.
@@ -100,12 +106,13 @@ Item {
     // dimmer
     Rectangle {
         anchors.fill: parent
-        color: Theming.ComponentUtils.style(popupBase, "dimmColor", "black")
-        opacity: Theming.ComponentUtils.style(popupBase, "dimmOpacity", 0.6)
-        visible: Theming.ComponentUtils.style(popupBase, "dimm", false)
+        color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")
+        opacity: Theming.ComponentUtils.style(popupBase, "dimOpacity", 0.6)
+        visible: Theming.ComponentUtils.style(popupBase, "dim", false) && modal
     }
 
     Theming.InverseMouseArea {
+        enabled: modal
         anchors.fill: __foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
