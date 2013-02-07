@@ -110,7 +110,6 @@ Template {
             UbuntuShape {
                 width: units.gu(12)
                 image: Image {
-                    objectName: "MAP"
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
                     horizontalAlignment: Image.AlignHCenter
@@ -121,7 +120,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Resizing")
-            height: units.gu(10)
+            height: units.gu(20)
 
             UbuntuShape {
                 color: "#c94212"
@@ -135,57 +134,8 @@ Template {
 
             UbuntuShape {
                 color: "#c94212"
-                width: units.gu(20)
-                height: units.gu(10)
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Children")
-            height: units.gu(8)
-
-
-            EvilUbuntuShape {
-                id: fboShape
-//                clip: true
-                radius: "medium"
                 width: units.gu(10)
-                height: units.gu(8)
-//                item: rect
-
-                item: Rectangle {
-                    id: rect
-                    color: "purple"
-//                    parent: fboShape
-                    anchors.fill: parent
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: units.gu(1)
-                        Button {
-                            text: "Button one"
-                            onClicked: print("bla")
-                            width: units.gu(14)
-                        }
-                        Button {
-                            text: "Button two"
-                            onClicked: print("bla")
-                            width: units.gu(14)
-                        }
-                    }
-                }
-
-//                ShaderEffectSource {
-//                    smooth: false // prevent linear interpolation
-//                    id: fbo
-//                    objectName: "FBO"
-//                    hideSource: true
-//                    sourceItem: rect
-//                    format: ShaderEffectSource.RGBA
-//                    live: true
-//                    width: parent.width
-//                    height: parent.height
-//                    x: width
-//                }
+                height: units.gu(20)
             }
         }
     }
