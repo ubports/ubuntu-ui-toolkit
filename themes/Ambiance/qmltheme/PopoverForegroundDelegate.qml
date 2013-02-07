@@ -17,13 +17,9 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-UbuntuShape {
+Item {
     id: frame
-
     property alias contentItem: body
-
-    color: StyleUtils.itemStyleProperty("color", "white")
-    radius: StyleUtils.itemStyleProperty("radius", "small")
 
     anchors {
         left: parent ? parent.left : undefined
@@ -40,5 +36,35 @@ UbuntuShape {
             top: parent.top
         }
         height: childrenRect.height
+
+        Rectangle {
+            id: background
+            anchors.fill: parent
+            color: StyleUtils.itemStyleProperty("color", "white")
+        }
+    }
+
+    clip: true // hide the ShaderEffectSource
+    Shape {
+        anchors.fill: parent
+        image: effectSource
+        radius: StyleUtils.itemStyleProperty("radius", "small")
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
+    }
+
+    ShaderEffectSource {
+        smooth: false // prevent linear interpolation
+        id: effectSource
+        hideSource: true
+        sourceItem: frame.contentItem
+        format: ShaderEffectSource.RGBA
+        live: true
+
+        // Do not set visible to false because it will leave the FBO empty,
+        //  but position the ShaderEffectSource somewhere that it will be clipped
+        //  so it is not visible.
+        x: width
+        width: sourceItem.width
+        height: sourceItem.height
     }
 }
