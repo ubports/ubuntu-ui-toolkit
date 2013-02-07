@@ -83,7 +83,7 @@ Item {
 
     Component.onCompleted: {
         // TODO TIM: remove print
-        print("setting height to toolbar.height");
+        print("setting height to "+toolbar.height);
         bottomBarVisibilityCommunicator.targetHeight = toolbar.height;
     }
 }
