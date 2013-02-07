@@ -68,16 +68,14 @@ PopupBase {
     /*! \internal */
     property alias __rightButton: foreground.rightButton
 
-    Background {
-        dim: false
-        dismissOnTap: false
-    }
+    Theming.ItemStyle.class: "sheet"
 
+    __foreground: foreground
     Item {
         id: foreground
 
         // FIXME: see above
-        Theming.ItemStyle.class: "sheet-foreground"
+        Theming.ItemStyle.class: "foreground"
 
         property string title
         property real contentsWidth: units.gu(64)

@@ -28,8 +28,9 @@ Item {
 
     // Using Item.Rotation does not play well with the
     //  translation that would be needed after rotating.
-    property real longAxis
-    property real shortAxis
+    property real longAxis: Theming.ComponentUtils.style(pointer, "longAxis", 0)
+    property real shortAxis: Theming.ComponentUtils.style(pointer, "shortAxis", 0)
+    opacity: Theming.ComponentUtils.style(pointer, "shortAxis", 1.0)
 
     // up, down, left or right, or none to hide the pointer
     property string direction: "down"

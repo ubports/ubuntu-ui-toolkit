@@ -24,9 +24,9 @@ properties typed as variant.
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
-@qml-mapping (.popover, , PopoverForegroundDelegate);
-@qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
-@qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
+@qml-mapping (.popover .foreground, , PopoverForegroundDelegate);
+@qml-mapping (.sheet .foreground, , SheetForegroundDelegate);
+@qml-mapping (.dialog .foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
 @qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
 @qml-mapping(.textarea, TextAreaStyle, TextAreaDelegate);
@@ -156,27 +156,56 @@ Examples:
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
-.popover {
-    minimumWidth: units.gu(40);
-    color: "white";
-    radius: "medium";
-    edgeMargins: units.gu(2);
-    callerMargins: units.gu(1);
-}
-
-.sheet-foreground {
-}
-
-.dialog-foreground {
-    edgeMargins: units.gu(2);
-    callerMargins: units.gu(1);
-}
-
+/*
+    Popups (Popover, Dialog, Sheet)
+*/
 .pointer {
-    opacity: 0.9;
     imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
                 (item.direction === "right") ? url(artwork/RightArrow.png) :
                 (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
+    longAxis: units.gu(2);
+    shortAxis: units.gu(1);
+}
+
+.popover {
+    dimm: false;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+}
+
+.popover .foreground {
+    minimumWidth: units.gu(40);
+    color: "white";
+    radius: "medium";
+}
+
+.popover .pointer {
+    opacity: 1.0;
+}
+
+.sheet {
+    dimm: false;
+}
+.sheet .foreground {
+    headerColor: "darkgray";
+    headerHeight: units.gu(8);
+    backgroundColor: "lightgray";
+    buttonContainerWidth: units.gu(14);
+}
+
+.dialog {
+    dimm: true;
+    dimmColor: "black";
+    dimmOpacity: 0.6;
+}
+.dialog .foreground {
+    minimumWidth: units.gu(40);
+    minimumHeight: units.gu(32);
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+}
+.dialog .pointer {
+    opacity: 0.9;
 }
 
 /*
