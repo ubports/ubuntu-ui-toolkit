@@ -24,9 +24,9 @@ properties typed as variant.
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
 @qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
-@qml-mapping (.popover, , PopoverForegroundDelegate);
-@qml-mapping (.sheet-foreground, , SheetForegroundDelegate);
-@qml-mapping (.dialog-foreground, , DialogForegroundDelegate);
+@qml-mapping (.popover .foreground, , PopoverForegroundDelegate);
+@qml-mapping (.sheet .foreground, , SheetForegroundDelegate);
+@qml-mapping (.dialog .foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
 @qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
 @qml-mapping(.textarea, TextAreaStyle, TextAreaDelegate);
@@ -156,25 +156,58 @@ Examples:
     borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
+/*
+    Popups (Popover, Dialog, Sheet)
+*/
+.pointer {
+    imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
+                (item.direction === "right") ? url(artwork/RightArrow.png) :
+                (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
+    longAxis: units.gu(2);
+    shortAxis: units.gu(1);
+}
+
 .popover {
+    dim: false;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+}
+
+.popover .foreground {
     minimumWidth: units.gu(40);
     color: "white";
     radius: "medium";
 }
 
-.sheet-foreground {
+.popover .pointer {
+    opacity: 1.0;
 }
 
-.dialog-foreground {
+.sheet {
+    dim: false;
+}
+.sheet .foreground {
+    headerColor: "darkgray";
+    headerHeight: units.gu(8);
+    backgroundColor: "lightgray";
+    buttonContainerWidth: units.gu(14);
+}
+
+.dialog {
+    dim: true;
+    dimColor: "black";
+    dimOpacity: 0.6;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+}
+.dialog .foreground {
+    minimumWidth: units.gu(40);
+    minimumHeight: units.gu(32);
     radius: "medium";
     color: "grey";
 }
-
-.pointer {
+.dialog .pointer {
     opacity: 0.9;
-    imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
-                (item.direction === "right") ? url(artwork/RightArrow.png) :
-                (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
 }
 
 /*

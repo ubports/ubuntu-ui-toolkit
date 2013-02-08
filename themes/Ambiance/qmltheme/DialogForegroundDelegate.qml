@@ -27,11 +27,6 @@ Item {
     height: MathUtils.clamp(totalHeight, item.minHeight, item.maxHeight)
     property alias contentItem: columnContainer
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the dialog
-    MouseArea {
-        anchors.fill: parent
-    }
-
     Rectangle {
         id: container
         color: StyleUtils.itemStyleProperty("color", "white")

@@ -118,6 +118,7 @@ Template {
 
             Popover {
                 id: popover
+                callerMargin: units.gu(5)
 
                 ListView {
                     clip: true
@@ -171,7 +172,8 @@ Template {
                             PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), textItem,
                                             {
                                                 "pointerTarget": overlay,
-                                                "contentWidth": textItem.width
+                                                "contentWidth": textItem.width,
+                                                "callerMargin": units.gu(2)
                                             })
                         }
                     }

@@ -112,32 +112,38 @@ PopupBase {
       */
     property Item pointerTarget: caller
 
+    /*!
+      The property holds the margins from the popover's dismissArea. The property
+      is themed.
+      */
+    property real edgeMargins: ComponentUtils.style(popover, "edgeMargins", 0)
+
+    /*!
+      The property holds the margin from the popover's caller. The property
+      is themed.
+      */
+    property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
+
+    Theming.ItemStyle.class: "popover"
+
     QtObject {
         id: internal
-        // TODO: put the margins in the style
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(1)
         property bool portrait: width < height
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
         }
     }
 
-    Theming.InverseMouseArea {
-        anchors.fill: foreground
-        sensingArea: dismissArea
-        propagateComposedEvents: !grabDismissAreaEvents
-        onPressed: popover.hide()
-    }
-
+    __foreground: foreground
+    __closeOnDismissAreaPress: true
     Item {
         id: foreground
 
         // FIXME: see above
-        Theming.ItemStyle.class: "popover"
+        Theming.ItemStyle.class: "foreground"
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
@@ -156,29 +162,16 @@ PopupBase {
 
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
-
-        // Avoid mouse events being sent to any MouseAreas that are behind the popover
-        MouseArea {
-            anchors.fill: parent
-            z: -1
-        }
     }
 
-    Pointer {
-        id: pointer
-        longAxis: 2*internal.callerMargins
-        shortAxis: internal.callerMargins
-    }
+    Pointer { id: pointer }
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
-
     /*! \internal */
     onPointerTargetChanged: internal.updatePosition()
-
     /*! \internal */
     onWidthChanged: internal.updatePosition()
-
     /*! \internal */
     onHeightChanged: internal.updatePosition()
 }
