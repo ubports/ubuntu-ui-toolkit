@@ -138,6 +138,7 @@ Item {
     Connections {
         target: bottomBarVisibilityCommunicator
         onForceHiddenChanged: {
+            print("LALA");
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 print("HIDING TOOLBAR");
                 internal.savedLock = bottomBar.lock;
@@ -153,6 +154,7 @@ Item {
     }
 
     Component.onCompleted: {
+        bottomBarVisibilityCommunicator.targetHeight = toolbar.height;
         print(bottomBarVisibilityCommunicator.forceHidden);
     }
 
