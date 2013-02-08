@@ -155,7 +155,6 @@ Item {
     }
 
     onStateChanged: {
-        print("new state = "+state);
         if (state == "hint") {
             internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
