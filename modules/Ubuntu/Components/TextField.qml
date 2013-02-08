@@ -399,6 +399,14 @@ FocusScope {
             control.focus = false;
     }
 
+    // grab clicks from the area between the frame and the input
+    MouseArea {
+        anchors.fill: parent
+        // us it only when there is space between the frame and input
+        enabled: internal.spacing > 0
+        onClicked: editor.forceActiveFocus()
+    }
+
     Text {
         id: fontHolder
     }
