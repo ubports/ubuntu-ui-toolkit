@@ -39,7 +39,7 @@ Q_SIGNALS:
     void forceHiddenChanged(bool forceHidden);
 
 private Q_SLOTS:
-    void onForceHiddenChanged(bool forceHidden);
+    void onShellForceHiddenChanged(bool forceHidden);
 
 private:
     BottomBarVisibilityCommunicator();

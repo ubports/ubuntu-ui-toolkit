@@ -39,10 +39,10 @@ BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
 {
     m_shellDbusIface = new QDBusInterface(DBUS_SERVICE, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE, QDBusConnection::sessionBus(), this);
     if (m_shellDbusIface->isValid()) {
-        connect(m_shellDbusIface, SIGNAL(forceHiddenChanged(bool)), SLOT(onForceHiddenChanged(bool)));
+        connect(m_shellDbusIface, SIGNAL(forceHiddenChanged(bool)), SLOT(onShellForceHiddenChanged(bool)));
 
         const bool forceHidden = m_shellDbusIface->property("forceHidden").toDouble();
-        onForceHiddenChanged(forceHidden);
+        onShellForceHiddenChanged(forceHidden);
     }
 }
 
@@ -51,7 +51,7 @@ bool BottomBarVisibilityCommunicator::forceHidden() const
     return m_forceHidden;
 }
 
-void BottomBarVisibilityCommunicator::onForceHiddenChanged(bool forceHidden)
+void BottomBarVisibilityCommunicator::onShellForceHiddenChanged(bool forceHidden)
 {
     if (forceHidden != m_forceHidden) {
         m_forceHidden = forceHidden;
