@@ -25,6 +25,8 @@ import QtQuick 2.0
     Examples: See \l Page.
 */
 ActionList {
+    id: toolbarActions
+
     /*!
       The back \l Action. If the action is visible, the back button will be shown
       on the left-side of the toolbar.
@@ -34,7 +36,7 @@ ActionList {
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: "Back"
-        visible: __pageStack && __pageStack.depth > 1
+        visible: (toolbarActions.__pageStack !== null) && toolbarActions.__pageStack.depth > 1
         /*!
           \internal
           FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
@@ -47,7 +49,7 @@ ActionList {
       PageStack for the back button
      */
     // Cannot use PageStack here that will cause a loop in parsing the qml files
-    property Item __pageStack
+    property Item __pageStack: null
 
     /*!
       The toolbar is active
@@ -56,6 +58,26 @@ ActionList {
 
     /*!
       The toolbar cannot be made active or inactive by bottom-edge swipes.
+      If the ToolbarActions contains no visible actions, it is automatically
+      locked (in inactive state).
      */
-    property bool lock: false
+    property bool lock: !toolbarActions.hasVisibleActions()
+
+    /*!
+      Determine whether this ToolbarActions has any visible actions
+     */
+    function hasVisibleActions() {
+        print("TBA checking!");
+        print(back);
+        print(back.visible);
+        if (back && back.visible) return true;
+        for (var i=0; i < __actionList.length; i++) {
+            print("actionList["+i+"] = "+__actionList[i].visible);
+            if (__actionList[i].visible) return true;
+        }
+        print("locking!");
+        return false;
+
+//        return ActionList.hasVisibleActions();
+    }
 }
