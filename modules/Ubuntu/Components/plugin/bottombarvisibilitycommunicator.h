@@ -20,33 +20,33 @@
 
 #include <QObject>
 
+class QDBusInterface;
+
 class BottomBarVisibilityCommunicator : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double targetHeight READ targetHeight WRITE setTargetHeight NOTIFY targetHeightChanged)
-    Q_PROPERTY(bool forceHidden READ forceHidden WRITE setForceHidden NOTIFY forceHiddenChanged)
+    Q_PROPERTY(bool forceHidden READ forceHidden NOTIFY forceHiddenChanged)
 
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.Shell.BottomBarVisibilityCommunicator")
 public:
     static BottomBarVisibilityCommunicator& instance() {
         static BottomBarVisibilityCommunicator instance;
         return instance;
     }
 
-    double targetHeight() const;
-    void setTargetHeight(double targetHeight);
-
     bool forceHidden() const;
-    void setForceHidden(bool forceHidden);
 
 Q_SIGNALS:
-    void targetHeightChanged(double targetHeight);
     void forceHiddenChanged(bool forceHidden);
+
+private Q_SLOTS:
+    void onForceHiddenChanged(bool forceHidden);
 
 private:
     BottomBarVisibilityCommunicator();
 
-    double m_targetHeight;
+    QDBusInterface* m_shellDbusIface;
+
+    // This is cached from dbus
     bool m_forceHidden;
 };
 

@@ -145,10 +145,6 @@ Item {
         }
     }
 
-    Component.onCompleted: {
-        bottomBarVisibilityCommunicator.targetHeight = toolbar.height;
-    }
-
     onStateChanged: {
         if (state == "hint") {
             internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
