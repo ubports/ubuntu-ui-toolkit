@@ -24,7 +24,6 @@ import QtQuick 2.0
 
     Examples: See \l Page.
 */
-
 ActionList {
     /*!
       The back \l Action. If the action is visible, the back button will be shown
