@@ -41,6 +41,10 @@ GenericToolbar {
       The list of \l Actions to be shown on the toolbar
      */
     property ToolbarActions tools
+    onToolsChanged: {
+        if (tools && tools.active && tools.lock) active = true;
+        else active = false;
+    }
 
     lock: tools ? tools.lock : false
 
