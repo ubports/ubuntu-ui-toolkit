@@ -46,7 +46,7 @@ GenericToolbar {
         else active = false;
     }
 
-    lock: tools ? tools.lock : false
+    lock: tools ? tools.lock : true
 
     Connections {
         target: tools

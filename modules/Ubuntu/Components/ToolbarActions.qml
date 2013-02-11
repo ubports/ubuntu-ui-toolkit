@@ -36,12 +36,12 @@ ActionList {
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: "Back"
-        visible: (toolbarActions.__pageStack !== null) && toolbarActions.__pageStack.depth > 1
+        visible: toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
         /*!
           \internal
           FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
          */
-        onTriggered: if (__pageStack && __pageStack.depth > 1) __pageStack.pop()
+        onTriggered: if (toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1) toolbarActions.__pageStack.pop()
     }
 
     /*!
@@ -61,23 +61,16 @@ ActionList {
       If the ToolbarActions contains no visible actions, it is automatically
       locked (in inactive state).
      */
-    property bool lock: !toolbarActions.hasVisibleActions()
+    property bool lock: !toolbarActions.__hasVisibleActions()
 
     /*!
       Determine whether this ToolbarActions has any visible actions
      */
-    function hasVisibleActions() {
-        print("TBA checking!");
-        print(back);
-        print(back.visible);
+    function __hasVisibleActions() {
         if (back && back.visible) return true;
         for (var i=0; i < __actionList.length; i++) {
-            print("actionList["+i+"] = "+__actionList[i].visible);
             if (__actionList[i].visible) return true;
         }
-        print("locking!");
         return false;
-
-//        return ActionList.hasVisibleActions();
     }
 }
