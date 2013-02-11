@@ -46,6 +46,7 @@ GenericToolbar {
         else active = false;
     }
 
+    // if tools is not specified, lock the toolbar in inactive position
     lock: tools ? tools.lock : true
 
     Connections {
