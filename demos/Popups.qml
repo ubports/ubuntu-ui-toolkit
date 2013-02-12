@@ -202,21 +202,24 @@ Template {
                 title: i18n.tr("Sheets")
 
                 Button {
+                    id: sheet1
                     text: i18n.tr("close button")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(closeButtonSheet)
+                    onClicked: PopupUtils.open(closeButtonSheet, sheet1)
                 }
 
                 Button {
+                    id: sheet2
                     text: i18n.tr("done button")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(doneButtonSheet)
+                    onClicked: PopupUtils.open(doneButtonSheet, sheet2)
                 }
 
                 Button {
+                    id: sheet3
                     text: i18n.tr("composer")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(composerSheet)
+                    onClicked: PopupUtils.open(composerSheet, sheet3)
                 }
             }
 
@@ -238,13 +241,14 @@ Template {
                     id: nonModalPopover
                     text: i18n.tr("Popover")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), nonModalPopover, {"modal": false})
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), nonModalPopover, {"autoClose": false})
                 }
 
                 Button {
+                    id: nonModalSheet
                     text: i18n.tr("Sheet")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(composerSheet, 0, {"modal": false, "contentWidth": units.gu(20)})
+                    onClicked: PopupUtils.open(composerSheet, nonModalSheet, {"modal": false, "contentWidth": units.gu(20)})
                 }
 
                 Button {

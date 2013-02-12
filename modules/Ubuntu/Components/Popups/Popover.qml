@@ -124,6 +124,16 @@ PopupBase {
       */
     property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
 
+    /*!
+      The property drives the automatic closing of the Popover when user tapps
+      on the dismissArea. The default behavior is to close the Popover, therefore
+      set to true.
+
+      When set to false, closing the Popover is the responsibility of the caller.
+      Also, the mouse and touch events are not bnlocked from the dismissArea.
+      */
+    property bool autoClose: true
+
     Theming.ItemStyle.class: "popover"
 
     QtObject {
@@ -138,7 +148,9 @@ PopupBase {
     }
 
     __foreground: foreground
+    __eventGrabber.enabled: autoClose
     __closeOnDismissAreaPress: true
+
     Item {
         id: foreground
 
