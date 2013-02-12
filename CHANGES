@@ -15,7 +15,11 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* Popover
+  + autoClose: property to drive automatic closing of Popovers when tapped on the dismissArea
+
+*SheetBase, Dialog
+  + modal: property to drive modal state of the sheets and dialogs
 
 SDK 0.1.31
 ##########

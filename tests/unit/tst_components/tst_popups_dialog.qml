@@ -50,6 +50,23 @@ TestCase {
         compare(dialog.title,newTitle,"set/get")
     }
 
+    function test_contentWidth() {
+        expectFail("", "Content width is wrong due to rootItem not being initialized.");
+        compare(dialog.contentWidth, units.gu(40), "Content width is 40 GU");
+    }
+
+    function test_edgeMargins() {
+        compare(dialog.edgeMargins, units.gu(2), "Default edgeMargins are 2 GU");
+    }
+
+    function test_callerMargin() {
+        compare(dialog.callerMargin, units.gu(1), "Default callerMargin is 1 GU");
+    }
+
+    function test_modal() {
+        compare(dialog.modal, true, "Dialogs are modal by default");
+    }
+
     Dialog {
         id: dialog
     }

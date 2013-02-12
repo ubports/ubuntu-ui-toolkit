@@ -121,6 +121,16 @@ PopupBase {
       */
     property real callerMargin: ComponentUtils.style(dialog, "callerMargin", 0)
 
+    /*!
+      The property controls whether the dialog is modal or not. Modal dialogs block
+      event propagation to items under dismissArea, when non-modal ones let these
+      events passed to these items. In addition, non-modal dialogs do not dim the
+      dismissArea.
+
+      The default value is true.
+      */
+    property bool modal: true
+
     Theming.ItemStyle.class: "dialog"
 
     QtObject {
@@ -136,6 +146,9 @@ PopupBase {
     Pointer { id: pointer }
 
     __foreground: foreground
+    __eventGrabber.enabled: modal
+    __dimBackground: modal
+
     Item {
         id: foreground
         // FIXME: see above
