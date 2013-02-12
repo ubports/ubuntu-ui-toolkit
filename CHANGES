@@ -35,8 +35,6 @@ API Changes
 * Popover, Dialog
   + edgeMargins: specifies the margins from the dismissArea when positioning the foreground
   + callerMargin: specifies the margin from the caller when positioning the pointer
-* PopupBase
-  + modal: controls the modal/non-modal behavior of the popups
 
 SDK 0.1.30
 ##########
