@@ -93,7 +93,8 @@ Item {
       longer valid.
       */
     function __closePopup() {
-        PopupUtils.close(popupBase)
+        if (popupBase !== undefined)
+            popupBase.destroy();
     }
 
     /*!
@@ -110,7 +111,7 @@ Item {
 
     /*!
       \internal
-      Property driving dimming the popup's background. The default is the same as
+      Property driving diming the popup's background. The default is the same as
       defined in the style
       */
     property bool __dimBackground: Theming.ComponentUtils.style(popupBase, "dim", false)
@@ -121,7 +122,7 @@ Item {
       */
     property alias __eventGrabber: eventGrabber
 
-    // dimmer
+    // dimer
     Rectangle {
         anchors.fill: parent
         color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")

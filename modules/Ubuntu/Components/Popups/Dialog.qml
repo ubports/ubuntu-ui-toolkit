@@ -124,7 +124,7 @@ PopupBase {
     /*!
       The property controls whether the dialog is modal or not. Modal dialogs block
       event propagation to items under dismissArea, when non-modal ones let these
-      events passed to these items. In addition, non-modal dialogs do not dimm the
+      events passed to these items. In addition, non-modal dialogs do not dim the
       dismissArea.
 
       The default value is true.

@@ -125,12 +125,12 @@ PopupBase {
     property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
 
     /*!
-      The property drives the automatic closing of the Popover when user tapps
+      The property drives the automatic closing of the Popover when user taps
       on the dismissArea. The default behavior is to close the Popover, therefore
       set to true.
 
       When set to false, closing the Popover is the responsibility of the caller.
-      Also, the mouse and touch events are not bnlocked from the dismissArea.
+      Also, the mouse and touch events are not blocked from the dismissArea.
       */
     property bool autoClose: true
 
