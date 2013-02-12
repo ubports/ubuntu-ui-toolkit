@@ -107,8 +107,8 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
  */
 void InverseMouseAreaType::update()
 {
-    if (!m_sensingArea)
-        m_sensingArea = QuickUtils::instance().rootObject();
+    // update sensing area
+    sensing();
     if (!isEnabled())
         reset();
 }
@@ -273,13 +273,20 @@ void InverseMouseAreaType::reset()
     m_pressedButtons = Qt::NoButton;
 }
 
+QQuickItem *InverseMouseAreaType::sensing()
+{
+    if (!m_sensingArea)
+        m_sensingArea = QuickUtils::instance().rootObject();
+    return m_sensingArea;
+}
+
 /*!
   \internal
   Maps the mouse point to the sensing area.
  */
 QPointF InverseMouseAreaType::mapToSensingArea(const QPointF &point)
 {
-    return (m_sensingArea) ? m_sensingArea->mapFromScene(point) : QPointF();
+    return (sensing()) ? sensing()->mapFromScene(point) : QPointF();
 }
 
 /*!
@@ -291,7 +298,7 @@ bool InverseMouseAreaType::pointInSensingArea(const QPointF &point)
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
     bool pointInArea = contains(mapFromScene(point));
     bool pointInOSK = oskRect.contains(QuickUtils::instance().rootObject()->mapFromScene(point));
-    bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(point)));
+    bool pointOutArea = (sensing() && sensing()->contains(sensing()->mapFromScene(point)));
     return !pointInArea && !pointInOSK && pointOutArea;
 }
 
