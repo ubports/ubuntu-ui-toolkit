@@ -111,7 +111,7 @@ Item {
 
     /*!
       \internal
-      Property driving diming the popup's background. The default is the same as
+      Property driving dimming the popup's background. The default is the same as
       defined in the style
       */
     property bool __dimBackground: Theming.ComponentUtils.style(popupBase, "dim", false)
@@ -122,7 +122,7 @@ Item {
       */
     property alias __eventGrabber: eventGrabber
 
-    // dimer
+    // dimmer
     Rectangle {
         anchors.fill: parent
         color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")
