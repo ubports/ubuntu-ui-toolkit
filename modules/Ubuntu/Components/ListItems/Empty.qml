@@ -98,6 +98,11 @@ AbstractButton {
     */
     property bool highlightWhenPressed: true
 
+    /*!
+      The property holds the attached action to the list item.
+      */
+    property Action action
+
     Rectangle {
         id: highlight
         visible: emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)

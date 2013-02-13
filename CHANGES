@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* TextArea
+  + popover: overrides the default popover of the text area
 
 SDK 0.1.32
 ##########
