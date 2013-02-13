@@ -15,7 +15,10 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* Slider
+  + touched(bool onThumb): The signal is emitted when there is a click on the
+    slider. The onThumb parameter provides information if the click, was inside
+    of the thumb element
 
 SDK 0.1.32
 ##########
