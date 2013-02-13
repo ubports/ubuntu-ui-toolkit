@@ -658,14 +658,6 @@ FocusScope {
                 if (!containsMouse)
                     internal.selectionMode = false;
             }
-
-            onPositionChanged: {
-                if (!editor.activeFocus || !internal.selectionMode)
-                    return;
-                // update selectionEnd
-                internal.selectionEnd = editor.positionAt(mouse.x);
-                editor.select(internal.selectionStart, internal.selectionEnd);
-            }
         }
     }
 
