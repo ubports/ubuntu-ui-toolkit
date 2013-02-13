@@ -20,7 +20,6 @@ import QtQuick 2.0
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import "." 0.1 as Theming
-import "Popups" 0.1
 
 /*!
     \qmltype TextArea
@@ -880,7 +879,7 @@ FocusScope {
             height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
-            selectByMouse: false
+            selectByMouse: true
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
