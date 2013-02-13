@@ -147,9 +147,9 @@ Popover {
                         if (item.hasOwnProperty("action"))
                             item.action = modelData;
                         if (item.hasOwnProperty("refModelData"))
-                            item.modelData = modelData;
+                            item.refModelData = modelData;
                         if (item.hasOwnProperty("modelData"))
-                            item.modelData= modelData;
+                            item.modelData = modelData;
                         // auto-connect trigger
                         // FIXME: define all these signals to the action to be in sync with HUD
                         if (item.hasOwnProperty("clicked"))
