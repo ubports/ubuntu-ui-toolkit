@@ -21,7 +21,7 @@ Page {
     title: i18n.tr("My custom page")
     Label {
         anchors.centerIn: parent
-        text: i18n.tr("This is an external page.")
+        text: i18n.tr("This is an external page\nwith a locked toolbar.")
         color: "#757373"
     }
 
@@ -34,5 +34,7 @@ Page {
             text: "action 2"
             iconSource: Qt.resolvedUrl("call_icon.png")
         }
+        active: true
+        lock: true
     }
 }
