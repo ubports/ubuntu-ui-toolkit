@@ -15,7 +15,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* TextArea
+* TextArea and TextField
   + popover: overrides the default popover of the text area
 
 * Slider
