@@ -112,6 +112,7 @@ GenericToolbar {
                 iconSource: modelData.iconSource ? modelData.iconSource : ""
                 onClicked: modelData.triggered(toolButton)
                 enabled: modelData.enabled
+                visible: modelData.visible
             }
         }
     }
