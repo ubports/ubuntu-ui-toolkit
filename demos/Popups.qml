@@ -131,8 +131,36 @@ Template {
                     height: units.gu(50)
                     delegate: ListItem.Standard {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        text: "Item "+index
+                        text: "Item "+modelData
                         onClicked: print("Clicked item "+index)
+                    }
+                }
+            }
+        }
+
+        Component {
+            id: actionSelectionPopover
+            ActionSelectionPopover {
+                actions: ActionList {
+                    Action {
+                        text: i18n.tr("Selection #1")
+                        onTriggered: print(text)
+                    }
+                    Action {
+                        text: i18n.tr("Selection #2")
+                        onTriggered: print(text)
+                    }
+                    Action {
+                        text: i18n.tr("Selection #3")
+                        onTriggered: print(text)
+                    }
+                    Action {
+                        text: i18n.tr("Selection #4")
+                        onTriggered: print(text)
+                    }
+                    Action {
+                        text: i18n.tr("Selection #5")
+                        onTriggered: print(text)
                     }
                 }
             }
@@ -195,6 +223,13 @@ Template {
                     text: i18n.tr("list view")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(popoverWithListView, popoverWithListViewButton)
+                }
+
+                Button {
+                    id: actionSelectionPopoverButton
+                    text: i18n.tr("action list")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(actionSelectionPopover, actionSelectionPopoverButton)
                 }
             }
 
