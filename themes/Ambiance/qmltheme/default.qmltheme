@@ -171,6 +171,7 @@ Examples:
     dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
+    dismissDelay: 200;
 }
 
 .popover .foreground {
@@ -185,6 +186,7 @@ Examples:
 
 .sheet {
     dim: false;
+    dismissDelay: 200;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -199,6 +201,7 @@ Examples:
     dimOpacity: 0.6;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
+    dismissDelay: 200;
 }
 .dialog .foreground {
     minimumWidth: units.gu(40);

@@ -75,7 +75,7 @@ Item {
       PopupUtils.close() to do it automatically.
     */
     function hide() {
-        popupBase.visible = false;
+        internal.state = 'closing';
     }
 
     /*!
@@ -84,7 +84,7 @@ Item {
         onVisibleChanged is connected to __closeIfHidden().
      */
     function __closeIfHidden() {
-        if (!visible) PopupUtils.close(popupBase);
+        if (!visible) popupBase.destroy();
     }
 
     /*!
@@ -141,5 +141,24 @@ Item {
 
     MouseArea {
         anchors.fill: __foreground
+    }
+
+    Item {
+        id: internal
+        states: [
+            State {
+                name: 'closing'
+            }
+        ]
+        transitions: [
+            Transition {
+                from: "*"
+                to: "closing"
+                SequentialAnimation {
+                    PauseAnimation { duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 200) }
+                    ScriptAction { script: popupBase.visible = false; }
+                }
+            }
+        ]
     }
 }
