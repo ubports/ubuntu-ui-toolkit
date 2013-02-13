@@ -789,6 +789,7 @@ FocusScope {
             editorItem: control
             height: internal.lineSize
             popover: control.popover
+            visible: editor.cursorVisible
 
             Component.onCompleted: internal.popupTriggered.connect(cursorItem.openPopover)
         }
