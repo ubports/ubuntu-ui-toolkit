@@ -139,17 +139,17 @@ Popover {
             model: body.isActionsObject ? popover.actions.children : popover.actions
             Loader {
                 width: parent.width
-                height: item.height
+                height: modelData.visible ? item.height : 0
                 sourceComponent: delegate
                 onStatusChanged: {
                     if (item && status == Loader.Ready) {
                         // set model data
                         if (item.hasOwnProperty("action"))
-                            item.modelData = modelData;
+                            item.action = modelData;
                         if (item.hasOwnProperty("refModelData"))
                             item.modelData = modelData;
                         if (item.hasOwnProperty("modelData"))
-                            item.action= modelData;
+                            item.modelData= modelData;
                         // auto-connect trigger
                         // FIXME: define all these signals to the action to be in sync with HUD
                         if (item.hasOwnProperty("clicked"))
