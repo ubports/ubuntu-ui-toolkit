@@ -89,6 +89,7 @@ GenericToolbar {
         iconSource: back ? back.iconSource : ""
         text: back ? back.text : ""
         onClicked: back.triggered(backButton)
+        height: parent.height
     }
 
     Row {
@@ -113,6 +114,7 @@ GenericToolbar {
                 onClicked: modelData.triggered(toolButton)
                 enabled: modelData.enabled
                 visible: modelData.visible
+                height: parent.height
             }
         }
     }
