@@ -140,6 +140,14 @@ AbstractButton {
     */
     property bool live: false
 
+
+    /*!
+       \preliminary
+       The signal is emitted when there is a click on the slider. The onThumb parameter provides information if the click, was inside of the thumb element.
+    */
+    signal touched(bool onThumb)
+
+
     /*!
       \preliminary
       This function is used by the value indicator to show the current value.
@@ -199,6 +207,7 @@ AbstractButton {
                         // Button pressed inside the thumb.
                         dragInitMouseX = mouseX;
                         dragInitNormalizedValue = normalizedValue;
+                        slider.touched(true);
                     } else if (mouseX > thumbSpacing &&
                                mouseX < bar.width - thumbSpacing) {
                         // Button pressed outside the thumb.
@@ -210,6 +219,7 @@ AbstractButton {
                         if (slider.live) {
                             slider.value = liveValue;
                         }
+                        slider.touched(false);
                     }
                 }
             } else {
