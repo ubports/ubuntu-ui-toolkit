@@ -50,7 +50,7 @@ private:
     QQuickItem *sensing();
     QPointF mapToSensingArea(const QPointF &point);
     bool pointInSensingArea(const QPointF &point);
-    bool pointInOSK(const QPointF &point);
+    void asyncEmit(const char *signal, QQuickMouseEvent *event);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);
     bool mouseMove(QMouseEvent *event);

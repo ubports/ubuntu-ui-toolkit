@@ -302,6 +302,11 @@ bool InverseMouseAreaType::pointInSensingArea(const QPointF &point)
     return !pointInArea && !pointInOSK && pointOutArea;
 }
 
+void InverseMouseAreaType::asyncEmit(const char *signal, QQuickMouseEvent *event)
+{
+    metaObject()->invokeMethod(this, signal, Qt::QueuedConnection, Q_ARG(QQuickMouseEvent*, event));
+}
+
 /*!
   \internal
   Handles mouse press event. Consumes event depending on the propagateEvent state.
@@ -316,8 +321,7 @@ bool InverseMouseAreaType::mousePress(QMouseEvent *event)
         m_lastPos = mapToSensingArea(event->windowPos());
         Q_EMIT pressedChanged();
         Q_EMIT pressedButtonsChanged();
-        QQuickMouseEvent me(m_lastPos.x(), m_lastPos.y(), event->button(), event->buttons(), event->modifiers(), true, false);
-        Q_EMIT pressed(&me);
+        asyncEmit("pressed", new QQuickMouseEvent(m_lastPos.x(), m_lastPos.y(), event->button(), event->buttons(), event->modifiers(), true, false));
         if (!m_propagateEvents)
             event->accept();
         return !m_propagateEvents;
@@ -340,8 +344,7 @@ bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
             m_lastPos = mapToSensingArea(point.scenePos());
             Q_EMIT pressedChanged();
             Q_EMIT pressedButtonsChanged();
-            QQuickMouseEvent me(m_lastPos.x(), m_lastPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, true, false);
-            Q_EMIT pressed(&me);
+            asyncEmit("pressed", new QQuickMouseEvent(m_lastPos.x(), m_lastPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, true, false));
             if (!m_propagateEvents)
                 event->accept();
             return !m_propagateEvents;
@@ -363,11 +366,10 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
         QPointF mappedPos = mapToSensingArea(event->windowPos());
         m_pressed = false;
         m_pressedButtons = Qt::NoButton;
-        QQuickMouseEvent me(mappedPos.x(), mappedPos.y(), event->button(), event->buttons(), event->modifiers(), false, false);
-        Q_EMIT released(&me);
+        asyncEmit("released", new QQuickMouseEvent(mappedPos.x(), mappedPos.y(), event->button(), event->buttons(), event->modifiers(), false, false));
         Q_EMIT pressedChanged();
         if (!m_moved)
-            Q_EMIT clicked(&me);
+            asyncEmit("clicked", new QQuickMouseEvent(mappedPos.x(), mappedPos.y(), event->button(), event->buttons(), event->modifiers(), false, false));
         m_moved = false;
     } else {
         // the release happened inside the area, which is outside of the active area
@@ -393,11 +395,10 @@ bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
             QPointF mappedPos = mapToSensingArea(point.scenePos());
             m_pressed = false;
             m_pressedButtons = Qt::NoButton;
-            QQuickMouseEvent me(mappedPos.x(), mappedPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, false, false);
-            Q_EMIT released(&me);
+            asyncEmit("released", new QQuickMouseEvent(mappedPos.x(), mappedPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, false, false));
             Q_EMIT pressedChanged();
             if (!m_moved)
-                Q_EMIT clicked(&me);
+                asyncEmit("clicked", new QQuickMouseEvent(mappedPos.x(), mappedPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, false, false));
             m_moved = false;
             break;
         } else {
