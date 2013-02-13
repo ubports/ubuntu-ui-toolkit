@@ -109,6 +109,13 @@ FocusScope {
     property Component customSoftwareInputPanel
 
     /*!
+      The property overrides the default popover of the TextField. When set, the TextField
+      will open the given popover instead of the defaul tone defined. The popover can either
+      be a component or a URL to be loaded.
+      */
+    property var popover
+
+    /*!
       \preliminary
       Overlaid component that can be set for the fore side of the TextField,
       e.g.showing a magnifier to implement search functionality.
@@ -407,12 +414,8 @@ FocusScope {
         onClicked: editor.forceActiveFocus()
     }
 
-    Text {
-        id: fontHolder
-    }
-    SystemPalette {
-        id: systemColors
-    }
+    Text { id: fontHolder }
+    SystemPalette { id: systemColors }
 
     //internals
     QtObject {
@@ -420,10 +423,20 @@ FocusScope {
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
         property real spacing: Theming.ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
+        property real lineSpacing: units.dp(3)
+        property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
+
+        signal popupTriggered()
+
+        function activateEditor()
+        {
+            if (!control.activeFocus)
+                control.forceActiveFocus();
+        }
 
         function showInputPanel()
         {
@@ -432,6 +445,7 @@ FocusScope {
             } else {
                 Qt.inputMethod.show();
             }
+            textChanged = false;
         }
         function hideInputPanel()
         {
@@ -440,11 +454,23 @@ FocusScope {
             } else {
                 Qt.inputMethod.hide();
             }
+            // emit accepted signal if changed
+            if (textChanged)
+                control.accepted();
         }
         // reset selection
         function resetEditorSelection(mouseX)
         {
             editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX);
+        }
+
+        // positions the cursor depending on whether there is a selection active or not
+        function positionCursor(x) {
+            var cursorPos = control.positionAt(x);
+            if (internal.selectionEnd == internal.selectionStart)
+                control.cursorPosition = control.positionAt(x);
+            else
+                control.select(internal.selectionStart, internal.selectionEnd);
         }
     }
 
@@ -491,14 +517,14 @@ FocusScope {
     // cursor
     Component {
         id: cursor
-        Item {
-            id: customCursor
-            property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
-            property bool timerShowCursor: true
+        TextCursor {
+            //FIXME: connect to root object once we have all TextInput properties exposed
+            editorItem: editor
+            height: internal.lineSize
+            popover: control.popover
+            visible: editor.cursorVisible
 
-            Theming.ItemStyle.class: "cursor"
-            height: parent.height
-            visible: showCursor && timerShowCursor
+            Component.onCompleted: internal.popupTriggered.connect(openPopover)
         }
     }
 
@@ -573,12 +599,8 @@ FocusScope {
         onActiveFocusChanged: {
             if (activeFocus) {
                 internal.showInputPanel();
-                internal.textChanged = false;
             } else {
                 internal.hideInputPanel();
-                // emit accepted signal if changed
-                if (internal.textChanged)
-                    control.accepted();
             }
         }
 
@@ -593,12 +615,9 @@ FocusScope {
             onClicked: {
                 // activate control
                 if (!control.activeFocus) {
-                    control.forceActiveFocus();
+                    internal.activateEditor();
                     // set cursor position if no selection was previously set
-                    if (internal.selectionEnd == internal.selectionStart)
-                        editor.cursorPosition = editor.positionAt(mouse.x);
-                    else
-                        editor.select(internal.selectionStart, internal.selectionEnd);
+                    internal.positionCursor(mouse.x)
                 } else if (!internal.selectionMode){
                     // reset selection and move cursor unde mouse click
                     internal.resetEditorSelection(mouse.x);
@@ -608,6 +627,12 @@ FocusScope {
                     // previous if-clause
                     internal.selectionMode = false;
                 }
+            }
+
+            onPressAndHold: {
+                internal.activateEditor();
+                internal.positionCursor(mouse.x);
+                internal.popupTriggered();
             }
 
             onDoubleClicked: {
