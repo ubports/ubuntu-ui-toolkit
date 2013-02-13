@@ -131,8 +131,8 @@ Template {
                     height: units.gu(50)
                     delegate: ListItem.Standard {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        text: "Item "+modelData
-                        onClicked: print("Clicked item "+index)
+                        text: "Item " + modelData
+                        onClicked: print("Clicked item " + modelData)
                     }
                 }
             }
