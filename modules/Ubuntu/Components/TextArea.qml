@@ -168,9 +168,9 @@ FocusScope {
     property real contentHeight: internal.inputAreaHeight
 
     /*!
-      The property overrides the default popover of the TextArea. When set, the TextArea
-      will open the given popover instead of the defaul tone defined.The popover can either
-      be a component or a URL to be loaded.
+      The property overrides the default popover of the TextArea. When set, the
+      TextArea will open the given popover instead of the default one defined.
+      The popover can either be a component or a URL to be loaded.
       */
     property var popover
 
@@ -853,7 +853,6 @@ FocusScope {
         interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        //pressDelay: 600
 
         function ensureVisible(r)
         {
@@ -948,8 +947,7 @@ FocusScope {
                     internal.draggingMode = false;
                 }
                 onDoubleClicked: {
-                    print()
-                    internal.activateEditor()
+                    internal.activateEditor();
                     if (control.selectByMouse)
                         control.selectWord();
                 }
