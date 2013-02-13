@@ -46,6 +46,10 @@ TestCase {
         compare(composerSheet.contentsHeight,units.gu(40),"contentsHeight is 40 grid units by default")
     }
 
+    function test_modal() {
+        compare(composerSheet.modal, true, "Sheets are modal by default");
+    }
+
     ComposerSheet {
         id: composerSheet
     }

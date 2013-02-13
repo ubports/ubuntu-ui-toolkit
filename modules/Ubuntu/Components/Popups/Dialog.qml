@@ -109,43 +109,58 @@ PopupBase {
       */
     property Item pointerTarget: caller
 
+    /*!
+      The property holds the margins from the dialog's dismissArea. The property
+      is themed.
+      */
+    property real edgeMargins: ComponentUtils.style(dialog, "edgeMargins", 0)
+
+    /*!
+      The property holds the margin from the dialog's caller. The property
+      is themed.
+      */
+    property real callerMargin: ComponentUtils.style(dialog, "callerMargin", 0)
+
+    /*!
+      The property controls whether the dialog is modal or not. Modal dialogs block
+      event propagation to items under dismissArea, when non-modal ones let these
+      events passed to these items. In addition, non-modal dialogs do not dim the
+      dismissArea.
+
+      The default value is true.
+      */
+    property bool modal: true
+
+    Theming.ItemStyle.class: "dialog"
+
     QtObject {
         id: internal
 
-        // TODO: Move the two properties below, and various margins and colors, to style.
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(2)
-
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
 
         }
     }
 
-    Background {
-        dim: true
-        dismissOnTap: false
-    }
+    Pointer { id: pointer }
 
-    Pointer {
-        id: pointer
-        opacity: 0.9
-        longAxis: 2*internal.callerMargins
-        shortAxis: internal.callerMargins
-    }
+    __foreground: foreground
+    __eventGrabber.enabled: modal
+    __dimBackground: modal
 
     Item {
         id: foreground
         // FIXME: see above
-        Theming.ItemStyle.class: "dialog-foreground"
-        width: Math.min(units.gu(40), dialog.width)
+        Theming.ItemStyle.class: "foreground"
+        width: Math.min(minWidth, dialog.width)
 
         // used in the delegate
         property string title
         property string text
-        property string minHeight: units.gu(32)
-        property string maxHeight: 3*dialog.height/4
+        property real minWidth: Theming.ComponentUtils.style(foreground, "minimumWidth", 0)
+        property real minHeight: Theming.ComponentUtils.style(foreground, "minimumHeight", 0)
+        property real maxHeight: 3*dialog.height/4
 
         height: childrenRect.height
 

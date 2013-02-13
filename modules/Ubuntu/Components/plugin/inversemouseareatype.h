@@ -47,6 +47,7 @@ private: // getter/setter
 
 private:
     void reset();
+    QQuickItem *sensing();
     QPointF mapToSensingArea(const QPointF &point);
     bool pointInSensingArea(const QPointF &point);
     bool pointInOSK(const QPointF &point);

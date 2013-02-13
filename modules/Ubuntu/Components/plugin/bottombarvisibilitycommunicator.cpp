@@ -17,34 +17,32 @@
 
 #include "bottombarvisibilitycommunicator.h"
 
+#include <QDBusInterface>
+
 /*!
     \internal
 
     BottomBarVisibilityCommunicator controller is used to communicate with the Shell BottomBarVisibilityCommunicator.
     This class allows for the bottom edge interaction to happen
 
-    The user of this class needs to give the following information to the shell:
-     * targetHeight: This is the target final height of the bottom bar
-
     The shell can control the bottom bar behaviour:
      * forceHidden: If set to true, the bottom bar has to be forced to be hidden
 */
+
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH = "/BottomBarVisibilityCommunicator";
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
+static const char* DBUS_SERVICE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
+
 BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
- : m_targetHeight(-1),
+ : m_shellDbusIface(NULL),
    m_forceHidden(false)
 {
-}
+    m_shellDbusIface = new QDBusInterface(DBUS_SERVICE, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE, QDBusConnection::sessionBus(), this);
+    if (m_shellDbusIface->isValid()) {
+        connect(m_shellDbusIface, SIGNAL(forceHiddenChanged(bool)), SLOT(onShellForceHiddenChanged(bool)));
 
-double BottomBarVisibilityCommunicator::targetHeight() const
-{
-    return m_targetHeight;
-}
-
-void BottomBarVisibilityCommunicator::setTargetHeight(double targetHeight)
-{
-    if (m_targetHeight != targetHeight) {
-        m_targetHeight = targetHeight;
-        Q_EMIT targetHeightChanged(targetHeight);
+        const bool forceHidden = m_shellDbusIface->property("forceHidden").toDouble();
+        onShellForceHiddenChanged(forceHidden);
     }
 }
 
@@ -53,7 +51,7 @@ bool BottomBarVisibilityCommunicator::forceHidden() const
     return m_forceHidden;
 }
 
-void BottomBarVisibilityCommunicator::setForceHidden(bool forceHidden)
+void BottomBarVisibilityCommunicator::onShellForceHiddenChanged(bool forceHidden)
 {
     if (forceHidden != m_forceHidden) {
         m_forceHidden = forceHidden;

@@ -15,6 +15,13 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Components 0.1
+
 /*!
     \qmltype PopupBase
     \inqmlmodule Ubuntu.Components.Popups 0.1
@@ -78,5 +85,61 @@ Item {
      */
     function __closeIfHidden() {
         if (!visible) PopupUtils.close(popupBase);
+    }
+
+    /*!
+      \internal
+      The function closes the popup. This is called when popup's caller is no
+      longer valid.
+      */
+    function __closePopup() {
+        if (popupBase !== undefined)
+            popupBase.destroy();
+    }
+
+    /*!
+      \internal
+      Foreground component excluded from InverseMouseArea
+      */
+    property Item __foreground
+
+    /*!
+      \internal
+      Set to true if the InverseMouseArea should dismiss the area
+      */
+    property bool __closeOnDismissAreaPress: false
+
+    /*!
+      \internal
+      Property driving dimming the popup's background. The default is the same as
+      defined in the style
+      */
+    property bool __dimBackground: Theming.ComponentUtils.style(popupBase, "dim", false)
+
+    /*!
+      \internal
+      Property to control dismissArea event capture.
+      */
+    property alias __eventGrabber: eventGrabber
+
+    // dimmer
+    Rectangle {
+        anchors.fill: parent
+        color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")
+        opacity: Theming.ComponentUtils.style(popupBase, "dimOpacity", 0.6)
+        visible: Theming.ComponentUtils.style(popupBase, "dim", false) && __dimBackground
+    }
+
+    Theming.InverseMouseArea {
+        id: eventGrabber
+        enabled: true
+        anchors.fill: __foreground
+        sensingArea: dismissArea
+        propagateComposedEvents: !grabDismissAreaEvents
+        onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
+    }
+
+    MouseArea {
+        anchors.fill: __foreground
     }
 }
