@@ -879,7 +879,7 @@ FocusScope {
             height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
-            selectByMouse: true
+            selectByMouse: false
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
