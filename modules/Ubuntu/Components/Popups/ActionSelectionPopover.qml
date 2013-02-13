@@ -44,10 +44,10 @@ import "../" 0.1 as Theming
     An example presenting list of actions using ActionList:
     \qml
     ActionSelectionPopover {
-      delegate: ListItems.Standard {
+        delegate: ListItems.Standard {
           text: action.text
-      }
-      actions: ActionList {
+        }
+        actions: ActionList {
           Action {
               text: "Action one"
               onTriggered: print(text)
@@ -56,7 +56,7 @@ import "../" 0.1 as Theming
               text: "Action two"
               onTriggered: print(text)
           }
-      }
+        }
     }
     \endqml
 
@@ -64,27 +64,27 @@ import "../" 0.1 as Theming
     from a set of predefined actions:
     \qml
     Item {
-      Action {
-          id: action1
-          text: "Action one"
-          onTriggered: print(text)
-      }
-      Action {
-          id: action2
-          text: "Action two"
-          onTriggered: print(text)
-      }
-      Action {
-          id: action3
-          text: "Action three"
-          onTriggered: print(text)
-      }
-      ActionListPopover {
-          actions: [action1, action3]
-          delegate: ListItems.Standard {
-              text: action.text
-          }
-      }
+        Action {
+            id: action1
+            text: "Action one"
+            onTriggered: print(text)
+        }
+        Action {
+            id: action2
+            text: "Action two"
+            onTriggered: print(text)
+        }
+        Action {
+            id: action3
+            text: "Action three"
+            onTriggered: print(text)
+        }
+        ActionListPopover {
+            actions: [action1, action3]
+            delegate: ListItems.Standard {
+                text: action.text
+            }
+        }
     }
     \endqml
   */
