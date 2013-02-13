@@ -64,6 +64,7 @@ ActionList {
     property bool lock: !toolbarActions.__hasVisibleActions()
 
     /*!
+      \internal
       Determine whether this ToolbarActions has any visible actions
      */
     function __hasVisibleActions() {
