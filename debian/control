@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qt5-default,
                libgles2-mesa-dev, 
                libglib2.0-dev
-Standards-Version: 3.9.2
+Standards-Version: 3.9.4
 Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 
@@ -19,14 +19,16 @@ Section: libs
 Architecture: any
 Depends: qtdeclarative5-qtquick2-plugin, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu
- The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
+ Qt Components for Ubuntu offers a set of reusable user interface 
+ components for Qt Quick 2 / QML.
 
 Package: qt-components-ubuntu-doc
 Section: doc
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu - documentation
- The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
+ Qt Components for Ubuntu offers a set of reusable user interface 
+ components for Qt Quick 2 / QML.
  .
  This package contains developer documentation.
 
@@ -35,15 +37,52 @@ Section: devel
 Architecture: any
 Depends: qt-components-ubuntu, qmlscene, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu - demos
- The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
+ Qt Components for Ubuntu offers a set of reusable user interface 
+ components for Qt Quick 2 / QML.
  .
- This package contains component demos
+ This package contains the component demos.
 
 Package: qt-components-ubuntu-examples
 Section: devel
 Architecture: any
-Depends: qt-components-ubuntu, qtdeclarative5-xmllistmodel-plugin, libqt5declarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
+Depends: qt-components-ubuntu, qtdeclarative5-xmllistmodel-plugin, qtdeclarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu - examples
- The qt-components-ubuntu project aims to deliver a set of reusable components for Qt Quick on Ubuntu
+ Qt Components for Ubuntu offers a set of reusable user interface 
+ components for Qt Quick 2 / QML.
  .
- This package contains example applications
+ This package contains the example applications.
+
+Package: ubuntu-sdk
+Section: metapackages
+Architecture: any
+Depends: ${misc:Depends},
+         qt5-default,
+         qtbase5-dev,
+         libqt5v8-5-dev,
+         qtdeclarative5-dev,
+         libqt5xmlpatterns5-dev,
+         qtscript5-dev,
+         qttools5-dev,
+         libqt5webkit5-dev,
+         qt3d5-dev,
+         qtmultimedia5-dev,
+         libqt5svg5-dev,
+         libqt5graphicaleffects5,
+         qmlscene,
+         qtdeclarative5-dev-tools,
+         qttools5-dev-tools,
+         qtlocation5-dev,
+         qtsensors5-dev,
+         qtpim5-dev,
+         qtcreator,
+         qt-components-ubuntu,
+         qt-components-ubuntu-demos,
+         qt-components-ubuntu-examples,
+Description: Ubuntu SDK
+ This metapackage depends on all the packages of the Ubuntu SDK:
+ .
+  - Qt 5
+  - Qt Creator
+  - Qt Components for Ubuntu
+  - Demos and examples
+
