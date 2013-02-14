@@ -49,6 +49,13 @@ Examples:
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
 
+@qml-mapping(.activity-indicator, , ActivityIndicatorDelegate);
+.activity-indicator {
+    sprite: url(artwork/spinner_spritesheet@20.png);
+    frameWidth: units.gu(7.5);
+    frameCount: 18;
+}
+
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
