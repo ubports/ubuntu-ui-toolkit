@@ -43,6 +43,9 @@ public:
 Q_SIGNALS:
     void rootObjectChanged();
 
+protected:
+    bool eventFilter(QObject *, QEvent *);
+
 private:
     explicit QuickUtils(QObject *parent = 0);
     QQuickView *m_rootView;
