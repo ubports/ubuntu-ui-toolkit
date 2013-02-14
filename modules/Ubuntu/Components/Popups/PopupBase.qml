@@ -65,7 +65,7 @@ Item {
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
         parent = dismissArea;
-        popupBase.visible = true;
+        internal.state = 'opening';
     }
 
     /*!
@@ -75,7 +75,7 @@ Item {
       PopupUtils.close() to do it automatically.
     */
     function hide() {
-        popupBase.visible = false;
+        internal.state = 'closing';
     }
 
     /*!
@@ -84,7 +84,7 @@ Item {
         onVisibleChanged is connected to __closeIfHidden().
      */
     function __closeIfHidden() {
-        if (!visible) PopupUtils.close(popupBase);
+        if (!visible) popupBase.destroy();
     }
 
     /*!
@@ -136,10 +136,55 @@ Item {
         anchors.fill: __foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
+        // if dismiss is active, delete the popup immediately
         onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
     }
 
     MouseArea {
         anchors.fill: __foreground
+    }
+
+    Item {
+        id: internal
+        states: [
+            State {
+                name: 'closing'
+            },
+            State {
+                name: 'opening'
+            }
+        ]
+        transitions: [
+            Transition {
+                from: ""
+                to: "opening"
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                        duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 0)
+                        easing.type: Theming.ComponentUtils.style(popupBase, "dismissEasing", 0)
+                    }
+                    ScriptAction { script: popupBase.visible = true; }
+                }
+            },
+            Transition {
+                from: "opening"
+                to: "closing"
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                        duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 0)
+                        easing.type: Theming.ComponentUtils.style(popupBase, "dismissEasing", 0)
+                    }
+                    ScriptAction { script: popupBase.visible = false; }
+                }
+            }
+        ]
     }
 }
