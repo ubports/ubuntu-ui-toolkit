@@ -42,7 +42,7 @@ import Ubuntu.Components 0.1 as Theming
 Item {
     // FIXME: any use of theming some times hides the children of the MainView,
     //  so it is disabled for now. Make the background themable again after
-    //  this issue is resolved, and make sure that bug ug https://bugs.launchpad.net/manhattan/+bug/1124076
+    //  this issue is resolved, and make sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076
     //  does not come back
     // FIXME: see FIXME above
     //Theming.ItemStyle.class: "mainview"
