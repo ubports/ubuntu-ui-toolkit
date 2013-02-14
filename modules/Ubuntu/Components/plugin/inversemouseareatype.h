@@ -20,7 +20,6 @@
 
 class QQuickMouseEvent;
 class QMouseEvent;
-
 class InverseMouseAreaType : public QQuickItem
 {
     Q_OBJECT
@@ -39,7 +38,6 @@ public:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
-    //virtual void itemChange(ItemChange change, const ItemChangeData &data);
 
 private: // getter/setter
     bool pressed() const;

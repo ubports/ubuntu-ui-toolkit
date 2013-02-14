@@ -23,8 +23,6 @@
 #include <QtQuick/private/qquickevents_p_p.h>
 #include "quickutils.h"
 
-#include <QDebug>
-
 /*!
   \internal
   \qmltype InverseMouseArea
@@ -486,7 +484,6 @@ bool InverseMouseAreaType::eventFilter(QObject *obj, QEvent *ev)
     switch (ev->type()) {
     case QEvent::MouseButtonPress: {
         return mousePress(static_cast<QMouseEvent*>(ev));
-        break;
     }
     case QEvent::MouseButtonRelease: {
         return mouseRelease(static_cast<QMouseEvent*>(ev));
