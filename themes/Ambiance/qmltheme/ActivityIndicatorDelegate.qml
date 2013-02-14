@@ -26,4 +26,5 @@ AnimatedSprite {
     source: StyleUtils.itemStyleProperty("sprite", "")
     frameWidth: StyleUtils.itemStyleProperty("frameWidth", 0)
     frameCount: StyleUtils.itemStyleProperty("frameCount", 0)
+    frameRate: StyleUtils.itemStyleProperty("frameRate", 0)
 }

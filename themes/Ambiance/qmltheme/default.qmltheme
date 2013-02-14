@@ -51,9 +51,12 @@ Examples:
 
 @qml-mapping(.activity-indicator, , ActivityIndicatorDelegate);
 .activity-indicator {
+    /* FIXME: AnimatedSprite is not supported by the resolution independence.
+       Fix the properties below once it gets support. */
     sprite: url(artwork/spinner_spritesheet@20.png);
-    frameWidth: units.gu(7.5);
+    frameWidth: 60;
     frameCount: 18;
+    frameRate: 14.0;
 }
 
 .UbuntuShape-radius-small {
