@@ -86,9 +86,15 @@ Item {
             PropertyChanges {
                 target: bar
                 y: bar.height
+                explicit: true
             }
         }
     ]
+
+    /*!
+      The toolbar is currently not in a stable hidden or visible state.
+     */
+    readonly property bool animating: draggingArea.pressed || (state == "" && bar.y != bar.height) || (state == "spread" && bar.y != 0)
 
     transitions: [
         Transition {
