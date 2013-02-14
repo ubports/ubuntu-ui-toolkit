@@ -187,7 +187,8 @@ Examples:
 
 .sheet {
     dim: false;
-    dismissDelay: 200;
+    dismissDelay: 50;
+    dismissEasing: Easing.OutQuad;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -202,7 +203,8 @@ Examples:
     dimOpacity: 0.6;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    dismissDelay: 200;
+    dismissDelay: 50;
+    dismissEasing: Easing.OutQuad;
 }
 .dialog .foreground {
     minimumWidth: units.gu(40);
