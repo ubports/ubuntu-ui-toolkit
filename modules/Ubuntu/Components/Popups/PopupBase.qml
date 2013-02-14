@@ -65,7 +65,7 @@ Item {
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
         parent = dismissArea;
-        popupBase.visible = true;
+        internal.state = 'opening';
     }
 
     /*!
@@ -137,7 +137,7 @@ Item {
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
         // if dismiss is active, delete the popup immediately
-        onPressed: if (__closeOnDismissAreaPress) popupBase.destroy()
+        onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
     }
 
     MouseArea {
@@ -149,14 +149,39 @@ Item {
         states: [
             State {
                 name: 'closing'
+            },
+            State {
+                name: 'opening'
             }
         ]
         transitions: [
             Transition {
-                from: "*"
+                from: ""
+                to: "opening"
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                        duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 0)
+                        easing.type: Theming.ComponentUtils.style(popupBase, "dismissEasing", 0)
+                    }
+                    ScriptAction { script: popupBase.visible = true; }
+                }
+            },
+            Transition {
+                from: "opening"
                 to: "closing"
                 SequentialAnimation {
-                    PauseAnimation { duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 200) }
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                        duration: Theming.ComponentUtils.style(popupBase, "dismissDelay", 0)
+                        easing.type: Theming.ComponentUtils.style(popupBase, "dismissEasing", 0)
+                    }
                     ScriptAction { script: popupBase.visible = false; }
                 }
             }

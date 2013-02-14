@@ -171,7 +171,8 @@ Examples:
     dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    dismissDelay: 200;
+    dismissDelay: 50;
+    dismissEasing: Easing.OutQuad;
 }
 
 .popover .foreground {
