@@ -26,6 +26,7 @@ Item {
         id: container
         color: StyleUtils.itemStyleProperty("color", "white")
         anchors.fill: parent
+        radius: 10
     }
 
     clip: true // hide the ShaderEffectSource
@@ -33,7 +34,7 @@ Item {
         anchors.fill: parent
         image: effectSource
         radius: StyleUtils.itemStyleProperty("radius", "small")
-        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_mask.sci")
     }
 
     ShaderEffectSource {
