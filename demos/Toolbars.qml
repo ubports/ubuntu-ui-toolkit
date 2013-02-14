@@ -48,6 +48,12 @@ Template {
                         iconSource: Qt.resolvedUrl("call_icon.png")
                     }
                     lock: lockSwitch.checked
+
+                    property Item leftItem: Button {
+                        text: "cancel"
+                        onClicked: toolbarActions1.active = false
+                        anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                    }
                 }
                 ToolbarActions {
                     id: toolbarActions2
