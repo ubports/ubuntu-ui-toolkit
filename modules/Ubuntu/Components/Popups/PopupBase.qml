@@ -136,7 +136,8 @@ Item {
         anchors.fill: __foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
-        onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
+        // if dismiss is active, delete the popup immediately
+        onPressed: if (__closeOnDismissAreaPress) popupBase.destroy()
     }
 
     MouseArea {
