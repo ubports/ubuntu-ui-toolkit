@@ -23,6 +23,22 @@ Template {
     objectName: "Popups"
     title: i18n.tr("Popovers, Sheets & Dialogues")
 
+    property string longText: "<i>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</i> "+
+                              "<b>Nunc pretium iaculis risus, sed vehicula odio varius ac.</b> "+
+                              "<u>Etiam orci lectus, bibendum in vulputate ac, tristique quis dui.</u> "+
+                              "Suspendisse sed nulla in arcu dapibus vehicula ac eu tellus. "+
+                              "Mauris malesuada nisl vitae neque auctor placerat. Ut vitae "+
+                              "luctus libero. Praesent tempus nisl faucibus tellus semper "+
+                              "eget iaculis purus congue. Donec elit tellus, malesuada non "+
+                              "vehicula a, sagittis vel purus. Ut elementum vehicula accumsan. "+
+                              "Pellentesque habitant morbi tristique senectus et netus et malesuada "+
+                              "fames ac turpis egestas. Suspendisse ut rutrum sapien. Nullam id lobortis mauris"+
+                              "Maecenas sollicitudin ipsum eu mauris vehicula rutrum. Proin aliquet "+
+                              "justo ut mi luctus eu lobortis risus elementum. Cras sit amet "+
+                              "sollicitudin magna. Quisque facilisis sodales tincidunt. Maecenas "+
+                              "ligula tortor, luctus id elementum vel, varius vel augue. "+
+                              "Nunc porta mattis bibendum. Nam vitae sapien ipsum, non viverra neque."
+
     Item {
         Component {
             id: closeButtonSheet
@@ -68,7 +84,7 @@ Template {
                 id: dialogue
 
                 title: "Save file"
-                text: "Are you sure that you want to save this file?"
+                text: "Are you sure you want to save this file?"
 
                 Button {
                     text: "cancel"
