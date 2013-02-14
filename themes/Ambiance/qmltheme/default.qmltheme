@@ -49,6 +49,16 @@ Examples:
     @qml-import("Utils.js" as Utility) translates into import "Utils.js" as Utility
 */
 
+@qml-mapping(.activity-indicator, , ActivityIndicatorDelegate);
+.activity-indicator {
+    /* FIXME: AnimatedSprite is not supported by the resolution independence.
+       Fix the properties below once it gets support. */
+    sprite: url(artwork/spinner_spritesheet@20.png);
+    frameWidth: 60;
+    frameCount: 18;
+    frameRate: 14.0;
+}
+
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
