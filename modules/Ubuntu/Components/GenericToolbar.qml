@@ -16,6 +16,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Toolkit
 
 /*!
     \internal
@@ -167,6 +168,18 @@ Item {
         }
 
         y: bottomBar.active ? 0 : height
+    }
+
+    Toolkit.InverseMouseArea {
+        anchors.fill: draggingArea
+        onClicked: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of lock by the clicked Item behind
+            if (!bottomBar.lock) bottomBar.active = false;
+        }
+        propagateComposedEvents: true
+        visible: bottomBar.lock == false && bottomBar.state == "spread"
     }
 
     DraggingArea {

@@ -42,6 +42,8 @@ GenericToolbar {
      */
     property ToolbarActions tools
     onToolsChanged: {
+        // TODO: Store the previous tools, and do not show the new
+        //  buttons on the toolbar while deactivating it.
         if (tools && tools.active && tools.lock) active = true;
         else active = false;
     }
