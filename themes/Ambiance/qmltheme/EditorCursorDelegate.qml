@@ -19,7 +19,7 @@ import QtQuick 2.0
 Rectangle {
     id: cursor
 
-    property bool showCursor: item.hasOwnProperty("showCursor") ? item.showCursor : item.editorItem.cursorVisible
+    property bool showCursor: item.visible
     property bool timerShowCursor: true
 
     visible: showCursor && timerShowCursor

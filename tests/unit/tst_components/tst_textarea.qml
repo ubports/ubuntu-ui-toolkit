@@ -112,8 +112,8 @@ Item {
             compare(textArea.lineCount,textEdit.lineCount,"TextArea.lineCount is same as TextEdit.lineCount")
         }
 
-        function test_0_mouseSelectionMode() {
-            compare(textArea.mouseSelectionMode,textEdit.mouseSelectionMode,"TextArea.mouseSelectionMode is same as TextEdit.mouseSelectionMode")
+        function test_1_mouseSelectionMode() {
+            compare(textArea.mouseSelectionMode, TextEdit.SelectWords,"TextArea.mouseSelectionMode is SelectWords")
         }
 
         function test_0_persistentSelection() {
@@ -181,7 +181,7 @@ Item {
         }
 
         function test_1_contentWidth() {
-            compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
+            compare(textArea.contentWidth,units.gu(28),"contentWidth is 30 units on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
@@ -216,6 +216,10 @@ Item {
                 compare(true,true,"Unable to set value as it is read-only");
             }
 
+        }
+
+        function test_1_popover() {
+            compare(textArea.popover, undefined, "Uses default popover");
         }
 
         function test_1_maximumLineCount() {

@@ -26,6 +26,7 @@ Item {
     Item {
         anchors.centerIn: parent
         height: icon.height + label.height + label.anchors.topMargin
+        opacity: item.enabled ? 1.0 : 0.3
 
         Image {
             id: icon
@@ -36,7 +37,6 @@ Item {
             width: StyleUtils.itemStyleProperty("iconWidth")
             height: StyleUtils.itemStyleProperty("iconWidth")
             source: item.iconSource
-            opacity: item.enabled ? 1.0 : 0.3
         }
 
         Label {
@@ -50,5 +50,4 @@ Item {
             text: item.text
         }
     }
-
 }

@@ -55,6 +55,17 @@ Template {
                         text: "action 3"
                         iconSource: Qt.resolvedUrl("call_icon.png")
                     }
+                    Action {
+                        text: "disabled"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                        enabled: false
+                    }
+                    Action {
+                        text: "invisible"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                        visible: false
+                    }
+
                     lock: lockSwitch.checked
                     back {
                         visible: true

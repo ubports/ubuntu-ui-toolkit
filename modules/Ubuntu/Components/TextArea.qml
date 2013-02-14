@@ -166,6 +166,13 @@ FocusScope {
       */
     property real contentHeight: internal.inputAreaHeight
 
+    /*!
+      The property overrides the default popover of the TextArea. When set, the
+      TextArea will open the given popover instead of the default one defined.
+      The popover can either be a component or a URL to be loaded.
+      */
+    property var popover
+
     // forwarded properties
     /*!
       Whether the TextArea should gain active focus on a mouse press. By default this
@@ -696,6 +703,8 @@ FocusScope {
         property bool selectionMode: false
         property bool prevShowCursor
 
+        signal popupTriggered(int pos)
+
         onDraggingModeChanged: {
             if (draggingMode) selectionMode = false;
         }
@@ -760,19 +769,28 @@ FocusScope {
             }
             toggleSelectionCursors(true);
         }
+
+        function positionCursor(x, y) {
+            var cursorPos = control.positionAt(x, y);
+            if (control.selectedText === "")
+                control.cursorPosition = cursorPos;
+            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
+                control.cursorPosition = cursorPos;
+            }
+        }
     }
 
     // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
-        Item {
+        TextCursor {
             id: cursorItem
-            // new properties
-            property var editorItem: control
-            property string positionProperty
-
-            Theming.ItemStyle.class: "cursor"
+            editorItem: control
             height: internal.lineSize
+            popover: control.popover
+            visible: editor.cursorVisible
+
+            Component.onCompleted: internal.popupTriggered.connect(cursorItem.openPopover)
         }
     }
     // selection cursor loader
@@ -831,6 +849,7 @@ FocusScope {
         clip: true
         contentWidth: editor.paintedWidth
         contentHeight: editor.paintedHeight
+        interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
 
@@ -859,7 +878,7 @@ FocusScope {
             width: internal.inputAreaWidth
             height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
-            mouseSelectionMode: TextEdit.SelectCharacters
+            mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
@@ -909,8 +928,8 @@ FocusScope {
                 preventStealing: true
 
                 onPressed: {
-                    internal.activateEditor()
-                    internal.draggingMode = true
+                    internal.activateEditor();
+                    internal.draggingMode = true;
                 }
                 onPressAndHold: {
                     // move mode gets false if there was a mouse move after the press;
@@ -918,35 +937,22 @@ FocusScope {
                     // press -> move-pressed ->stop-and-hold-pressed gesture is performed
                     if (!internal.draggingMode)
                         return;
-                    internal.selectionMode = control.selectByMouse;
-                    if (internal.selectionMode && control.selectByMouse) {
-                        internal.enterSelectionMode(mouse.x, mouse.y);
-                    }
+                    internal.draggingMode = false;
+                    // open popup
+                    internal.positionCursor(mouse.x, mouse.y);
+                    internal.popupTriggered(editor.cursorPosition);
                 }
                 onReleased: {
                     internal.draggingMode = false;
                 }
-                onPositionChanged: {
-                    if (internal.draggingMode) {
-                        internal.draggingMode = false;
-                        mouse.accepted = false;
-                        return;
-                    }
-                    if (internal.selectionMode && control.selectByMouse) {
-                        control.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
-                    }
-                }
                 onDoubleClicked: {
-                    internal.activateEditor()
-                    internal.selectionMode = control.selectByMouse;
-                    if (internal.selectionMode && control.selectByMouse) {
-                        control.selectWord()
-                        internal.enterSelectionMode();
-                    }
+                    internal.activateEditor();
+                    if (control.selectByMouse)
+                        control.selectWord();
                 }
                 onClicked: {
-                    internal.activateEditor()
-                    control.cursorPosition = control.positionAt(mouse.x, mouse.y)
+                    internal.activateEditor();
+                    internal.positionCursor(mouse.x, mouse.y);
                 }
             }
         }
