@@ -140,8 +140,10 @@ Item {
                 bottomBar.active = false;
                 bottomBar.lock = true;
             } else { // don't force hidden
-                bottomBar.active = internal.savedActive;
                 bottomBar.lock = internal.savedLock;
+                if (internal.savedLock) bottomBar.active = internal.savedActive;
+                // if the toolbar was locked, do not slide it back in
+                // until the user performs a bottom-edge-swipe.
             }
         }
     }
