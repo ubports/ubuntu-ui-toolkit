@@ -1,5 +1,6 @@
 Source: qt-components-ubuntu
 Priority: optional
+Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
                libgles2-mesa-dev,
@@ -11,7 +12,6 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-test-plugin,
 Standards-Version: 3.9.4
-Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 
 Package: qtdeclarative5-ubuntucomponents-plugin
@@ -19,6 +19,7 @@ Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: qtdeclarative5-qtquick2-plugin,
+         qt-components-ubuntu-theme,
          ${misc:Depends},
          ${shlibs:Depends},
 Recommends: qt-components-ubuntu-theme
