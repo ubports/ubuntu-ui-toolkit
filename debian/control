@@ -1,4 +1,4 @@
-Source: qt-components-ubuntu
+Source: ubuntu-ui-toolkit
 Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -18,25 +18,24 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
-Package: qtdeclarative5-ubuntucomponents-plugin
+Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: qtdeclarative5-qtquick2-plugin,
-         qt-components-ubuntu-theme,
+         ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
-Recommends: qt-components-ubuntu-theme
 Description: Qt Components for Ubuntu - QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu Components QML plugin.
 
-Package: qt-components-ubuntu-theme
+Package: ubuntu-ui-toolkit-theme
 Architecture: all
-Depends: qtdeclarative5-ubuntucomponents-plugin,
-         ${misc:Depends},
+Multi-Arch: foreign
+Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -44,9 +43,10 @@ Description: Qt Components for Ubuntu - Ubuntu Theme
  .
  This package contains the Ambiance theme for Qt Ubuntu Components.
 
-Package: qt-components-ubuntu-doc
+Package: ubuntu-ui-toolkit-doc
 Section: doc
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Qt Components for Ubuntu - documentation
@@ -55,12 +55,12 @@ Description: Qt Components for Ubuntu - documentation
  .
  This package contains developer documentation.
 
-Package: qt-components-ubuntu-demos
+Package: ubuntu-ui-toolkit-demos
 Section: devel
 Architecture: any
 Depends: qmlscene,
-         qtdeclarative5-ubuntucomponents-plugin,
-         qt-components-ubuntu-theme,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Qt Components for Ubuntu - demos
@@ -69,12 +69,12 @@ Description: Qt Components for Ubuntu - demos
  .
  This package contains the component demos.
 
-Package: qt-components-ubuntu-examples
+Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
 Depends: qmlscene,
-         qtdeclarative5-ubuntucomponents-plugin,
-         qt-components-ubuntu-theme,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         ubuntu-ui-toolkit-theme,
          qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
@@ -94,10 +94,10 @@ Depends: libqt5graphicaleffects5,
          libqt5webkit5-dev,
          libqt5xmlpatterns5-dev,
          qmlscene,
-         qtdeclarative5-ubuntucomponents-plugin,
-         qt-components-ubuntu-theme,
-         qt-components-ubuntu-demos,
-         qt-components-ubuntu-examples,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         ubuntu-ui-toolkit-theme,
+         ubuntu-ui-toolkit-demos,
+         ubuntu-ui-toolkit-examples,
          qt3d5-dev,
          qt5-default,
          qtbase5-dev,

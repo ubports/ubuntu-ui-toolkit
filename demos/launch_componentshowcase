@@ -1,2 +1,2 @@
 #!/bin/bash
-qmlscene /usr/lib/qt-components-ubuntu/demos/ComponentShowcase.qml
+qmlscene /usr/lib/ubuntu-ui-toolkit/demos/ComponentShowcase.qml

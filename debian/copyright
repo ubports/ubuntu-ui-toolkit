@@ -1,5 +1,5 @@
 Format: http://dep.debian.net/deps/dep5
-Upstream-Name: qt-components-ubuntu
+Upstream-Name: ubuntu-ui-toolkit
 Source: https://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Files: *

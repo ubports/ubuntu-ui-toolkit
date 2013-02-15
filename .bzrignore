@@ -1,7 +1,7 @@
 Makefile
-modules/Makefile.qt-components-ubuntu
-modules/Ubuntu/Components/Makefile.qt-components-ubuntu
-modules/Ubuntu/Components/plugin/Makefile.qt-components-ubuntu
+modules/Makefile.ubuntu-ui-toolkit
+modules/Ubuntu/Components/Makefile.ubuntu-ui-toolkit
+modules/Ubuntu/Components/plugin/Makefile.ubuntu-ui-toolkit
 documentation/html/*
 *.moc
 moc_*.cpp
