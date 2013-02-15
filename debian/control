@@ -15,7 +15,6 @@ Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 
 Package: qt-components-ubuntu
-Section: libs
 Architecture: any
 Depends: qtdeclarative5-qtquick2-plugin, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu
@@ -53,7 +52,7 @@ Description: Qt Components for Ubuntu - examples
  This package contains the example applications.
 
 Package: ubuntu-sdk
-Section: metapackages
+Section: devel
 Architecture: any
 Depends: ${misc:Depends},
          qt5-default,
@@ -81,8 +80,8 @@ Depends: ${misc:Depends},
 Description: Ubuntu SDK
  This metapackage depends on all the packages of the Ubuntu SDK:
  .
-  - Qt 5
-  - Qt Creator
-  - Qt Components for Ubuntu
-  - Demos and examples
+ - Qt 5
+ - Qt Creator
+ - Qt Components for Ubuntu
+ - Demos and examples
 
