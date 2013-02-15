@@ -6,10 +6,6 @@ Files: *
 Copyright: 2012 Canonical Ltd.
 License: LGPL-3.0
 
-Files: debian/*
-Copyright: 2012 Canonical Ltd.
-License: LGPL-3.0
-
 License: LGPL-3.0
  This package is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
