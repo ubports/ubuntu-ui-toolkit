@@ -107,7 +107,11 @@ PopupBase {
       This can be same as the caller or any child of the caller. By default the
       property is set to caller.
       */
-    property Item pointerTarget: caller
+    property Item pointerTarget
+    /*! \internal */
+    onPointerTargetChanged: {
+        console.debug("pointerTarget DEPRECATED")
+    }
 
     /*!
       The property holds the margins from the dialog's dismissArea. The property
@@ -133,6 +137,7 @@ PopupBase {
 
     Theming.ItemStyle.class: "dialog"
 
+    /*
     QtObject {
         id: internal
 
@@ -144,6 +149,7 @@ PopupBase {
     }
 
     Pointer { id: pointer }
+    */
 
     __foreground: foreground
     __eventGrabber.enabled: modal
@@ -154,6 +160,7 @@ PopupBase {
         // FIXME: see above
         Theming.ItemStyle.class: "foreground"
         width: Math.min(minWidth, dialog.width)
+        anchors.centerIn: parent
 
         // used in the delegate
         property string title
@@ -167,30 +174,33 @@ PopupBase {
         Column {
             id: contentsColumn
             anchors {
+                top: parent.top
                 left: parent.left
                 right: parent.right
+                margins: Theming.ComponentUtils.style(foreground, "margins", 0)
             }
-            spacing: units.gu(1)
-            height: childrenRect.height + anchors.bottomMargin
+            spacing: Theming.ComponentUtils.style(foreground, "itemSpacing", 0)
+            height: childrenRect.height + Theming.ComponentUtils.style(foreground, "margins", 0)
+            onWidthChanged: updateChildrenWidths();
 
-            onChildrenChanged: {
+            Label {
+                ItemStyle.class: "title"
+                horizontalAlignment: Text.AlignHCenter
+                text: dialog.title
+            }
+
+            Label {
+                horizontalAlignment: Text.AlignHCenter
+                text: dialog.text
+            }
+
+            onChildrenChanged: updateChildrenWidths()
+
+            function updateChildrenWidths() {
                 for (var i = 0; i < children.length; i++) {
-                    children[i].anchors.left = contentsColumn.left;
-                    children[i].anchors.right = contentsColumn.right;
+                    children[i].width = contentsColumn.width;
                 }
             }
         }
-
-        onWidthChanged: internal.updatePosition()
-        onHeightChanged: internal.updatePosition()
     }
-
-    /*! \internal */
-    onCallerChanged: internal.updatePosition()
-    /*! \internal */
-    onPointerTargetChanged: internal.updatePosition()
-    /*! \internal */
-    onWidthChanged: internal.updatePosition()
-    /*! \internal */
-    onHeightChanged: internal.updatePosition()
 }

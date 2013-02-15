@@ -209,21 +209,32 @@ Examples:
 
 .dialog {
     dim: true;
-    dimColor: "black";
-    dimOpacity: 0.6;
+    dimColor: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    dimOpacity: 1.0;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
     dismissDelay: 50;
     dismissEasing: Easing.OutQuad;
 }
 .dialog .foreground {
-    minimumWidth: units.gu(40);
+    minimumWidth: units.gu(38);
     minimumHeight: units.gu(32);
+    margins: units.gu(4);
+    itemSpacing: units.gu(2);
     radius: "medium";
-    color: "grey";
+    visible: QuickUtils.rootObject.width > units.gu(60);
+    color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent";
 }
-.dialog .pointer {
-    opacity: 0.9;
+.dialog .foreground .title {
+    fontSize: "large";
+    color: Qt.rgba(1, 1, 1, 0.9);
+    style: Text.Normal;
+}
+
+.dialog .foreground .label {
+    fontSize: "medium";
+    color: Qt.rgba(1, 1, 1, 0.6);
+    wrapMode: Text.Wrap;
 }
 
 /*
