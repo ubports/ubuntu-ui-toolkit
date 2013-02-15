@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-dev-tools,
                qtdeclarative5-private-dev,
                qtdeclarative5-qtquick2-plugin,
-               qtdeclarative5-test-plugin
+               qtdeclarative5-test-plugin,
 Standards-Version: 3.9.4
 Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
@@ -18,24 +18,32 @@ Package: qtdeclarative5-ubuntucomponents-plugin
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
+Depends: qtdeclarative5-qtquick2-plugin,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Recommends: qt-components-ubuntu-theme
+Description: Qt Components for Ubuntu - QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu Components QML plugin.
 
-Package: qt-components-ubuntu-theme-ambiance
-Architecture: any
-Depends: qtdeclarative5-qtquick2-plugin, ${misc:Depends}, ${shlibs:Depends}
-Description: Qt Components for Ubuntu
+Package: qt-components-ubuntu-theme
+Architecture: all
+Depends: qtdeclarative5-ubuntucomponents-plugin,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
+ .
+ This package contains the Ambiance theme for Qt Ubuntu Components.
 
 Package: qt-components-ubuntu-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
 Description: Qt Components for Ubuntu - documentation
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -45,7 +53,11 @@ Description: Qt Components for Ubuntu - documentation
 Package: qt-components-ubuntu-demos
 Section: devel
 Architecture: any
-Depends: qmlscene, qt-components-ubuntu, ${misc:Depends}, ${shlibs:Depends}
+Depends: qmlscene,
+         qtdeclarative5-ubuntucomponents-plugin,
+         qt-components-ubuntu-theme,
+         ${misc:Depends},
+         ${shlibs:Depends},
 Description: Qt Components for Ubuntu - demos
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -56,7 +68,8 @@ Package: qt-components-ubuntu-examples
 Section: devel
 Architecture: any
 Depends: qmlscene,
-         qt-components-ubuntu,
+         qtdeclarative5-ubuntucomponents-plugin,
+         qt-components-ubuntu-theme,
          qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
@@ -76,7 +89,8 @@ Depends: libqt5graphicaleffects5,
          libqt5webkit5-dev,
          libqt5xmlpatterns5-dev,
          qmlscene,
-         qt-components-ubuntu,
+         qtdeclarative5-ubuntucomponents-plugin,
+         qt-components-ubuntu-theme,
          qt-components-ubuntu-demos,
          qt-components-ubuntu-examples,
          qt3d5-dev,
@@ -92,11 +106,10 @@ Depends: libqt5graphicaleffects5,
          qtsensors5-dev,
          qttools5-dev,
          qttools5-dev-tools,
-         ${misc:Depends}
+         ${misc:Depends},
 Description: Ubuntu SDK
  This metapackage depends on all the packages of the Ubuntu SDK:
- .
- - Qt 5
- - Qt Creator
- - Qt Components for Ubuntu
- - Demos and examples
+  - Qt 5
+  - Qt Creator
+  - Qt Components for Ubuntu
+  - Demos and examples
