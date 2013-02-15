@@ -1,5 +1,5 @@
 Source: qt-components-ubuntu
-Priority: extra
+Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0), 
                qtbase5-dev,
