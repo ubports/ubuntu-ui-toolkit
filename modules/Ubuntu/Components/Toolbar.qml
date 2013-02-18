@@ -36,6 +36,7 @@ GenericToolbar {
 
     height: background.height
     hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
+    triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(1))
 
     /*!
       \preliminary
