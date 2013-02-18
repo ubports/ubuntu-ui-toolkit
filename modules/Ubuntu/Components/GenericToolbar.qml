@@ -63,7 +63,7 @@ Item {
       The height of the mouse area used to detect edge swipes to
       activate the toolbar.
      */
-    property real triggerSize: units.gu(1)
+    property real triggerSize: units.gu(2)
 
     states: [
         State {
