@@ -288,17 +288,7 @@ void InverseMouseAreaType::reset()
  */
 void InverseMouseAreaType::saveEvent(const QMouseEvent &event)
 {
-    QPointF pos = mapToSensingArea(event.windowPos());
-    *m_event = QMouseEvent(event.type(), pos, event.button(), event.buttons(), event.modifiers());
-}
-
-/*!
-  \internal
-  Maps the mouse point to the sensing area.
- */
-QPointF InverseMouseAreaType::mapToSensingArea(const QPointF &point)
-{
-    return (m_sensingArea) ? m_sensingArea->mapFromScene(point) : QPointF();
+    *m_event = event;
 }
 
 /*!
@@ -323,7 +313,8 @@ void InverseMouseAreaType::asyncEmit(SignalType signal, bool isClick, bool wasHe
  */
 bool InverseMouseAreaType::mousePress(QMouseEvent *event)
 {
-    m_pressed = contains(event->windowPos());
+    // events' positions are all in screen coordinates as we filter App events straight.
+    m_pressed = contains(mapFromScene(event->windowPos()));
     if (m_pressed && !(event->button() & m_acceptedButtons))
         m_pressed = false;
     if (m_pressed) {
@@ -331,9 +322,8 @@ bool InverseMouseAreaType::mousePress(QMouseEvent *event)
         Q_EMIT pressedChanged();
         Q_EMIT pressedButtonsChanged();
         asyncEmit(&InverseMouseAreaType::pressed);
-        if (!m_propagateEvents)
-            event->accept();
-        return !m_propagateEvents;
+        event->setAccepted(!m_propagateEvents);
+        return true;
     }
     return false;
 }
@@ -344,19 +334,12 @@ bool InverseMouseAreaType::mousePress(QMouseEvent *event)
  */
 bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
 {
-    QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-    // check if any of the points fall into the area
-    Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-        m_pressed = contains(point.scenePos());
-        if (m_pressed) {
-            saveEvent(QMouseEvent(QEvent::MouseButtonPress, point.scenePos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-            Q_EMIT pressedChanged();
-            Q_EMIT pressedButtonsChanged();
-            asyncEmit(&InverseMouseAreaType::pressed);
-            if (!m_propagateEvents)
-                event->accept();
-            return !m_propagateEvents;
-        }
+    // check only the first touch point
+    QTouchEvent::TouchPoint point = event->touchPoints()[0];
+    QMouseEvent mev(QEvent::MouseButtonPress, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    if (mousePress(&mev)) {
+        event->setAccepted(mev.isAccepted());
+        return true;
     }
     return false;
 }
@@ -368,8 +351,8 @@ bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
  */
 bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
 {
-    bool consume = !m_propagateEvents;
-    if (m_pressed && contains(event->windowPos())) {
+    bool consume = true;
+    if (m_pressed && contains(mapFromScene(event->windowPos()))) {
         // released outside (inside the sensing area)
         saveEvent(*event);
         m_pressed = false;
@@ -383,8 +366,7 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
         reset();
         consume = false;
     }
-    if (consume)
-        event->accept();
+    event->setAccepted(!m_propagateEvents && consume);
     return consume;
 }
 
@@ -394,28 +376,14 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
  */
 bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
 {
-    bool consume = !m_propagateEvents;
-    QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-    // check if any of the points fall into the area
-    Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-        if (m_pressed && contains(point.scenePos())) {
-            saveEvent(QMouseEvent(QEvent::MouseButtonRelease, point.scenePos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
-            m_pressed = false;
-            asyncEmit(&InverseMouseAreaType::released, !m_moved);
-            Q_EMIT pressedChanged();
-            if (!m_moved)
-                asyncEmit(&InverseMouseAreaType::clicked, true);
-            m_moved = false;
-            break;
-        } else {
-            // the release happened inside the area, which is outside of the active area
-            reset();
-            consume = false;
-        }
+    // check only the first touch point
+    QTouchEvent::TouchPoint point = event->touchPoints()[0];
+    QMouseEvent mev(QEvent::MouseButtonRelease, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    if (mouseRelease(&mev)) {
+        event->setAccepted(mev.isAccepted());
+        return true;
     }
-    if (consume)
-        event->accept();
-    return consume;
+    return false;
 }
 
 /*!
@@ -426,12 +394,10 @@ bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
  */
 bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 {
-    QPointF mappedPos = mapToSensingArea(event->windowPos());
     // use localPos as we saved the mapped position as
-    if (m_pressed && (mappedPos != m_event->localPos())) {
+    if (m_pressed && (event->windowPos() != m_event->localPos())) {
         m_moved = true;
-        if (!m_propagateEvents)
-            event->accept();
+        event->setAccepted(!m_propagateEvents);
     }
     return false;
 }
@@ -443,31 +409,26 @@ bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 bool InverseMouseAreaType::touchMoved(QTouchEvent *event)
 {
     if (m_pressed) {
-        QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-        // check if any of the points fall into the area
-        Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-            QPointF mappedPos = mapToSensingArea(point.scenePos());
-            // use localPos as we saved the mapped position as
-            if (mappedPos != m_event->localPos()) {
-                m_moved = true;
-                if (!m_propagateEvents)
-                    event->accept();
-                break;
-            }
-        }
+        // check only the first touch point
+        QTouchEvent::TouchPoint point = event->touchPoints()[0];
+        // use localPos as we saved the mapped position as
+        QMouseEvent mev(QEvent::MouseMove, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        mouseMove(&mev);
+        event->setAccepted(mev.isAccepted());
     }
     return false;
 }
 
 /*
- * Overrides QQuickItem's contains method.
+ * Overrides QQuickItem's contains method. Point is in local coordinates.
  */
 bool InverseMouseAreaType::contains(const QPointF &point) const
 {
+    QPointF scenePos = mapToScene(point);
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-    bool pointInArea = QQuickItem::contains(mapFromScene(point));
-    bool pointInOSK = oskRect.contains(QuickUtils::instance().rootObject()->mapFromScene(point));
-    bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(point)));
+    bool pointInArea = QQuickItem::contains(point);
+    bool pointInOSK = oskRect.contains(scenePos);
+    bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(scenePos)));
     return !pointInArea && !pointInOSK && pointOutArea;
 }
 
@@ -481,28 +442,36 @@ bool InverseMouseAreaType::eventFilter(QObject *obj, QEvent *ev)
 
     if (!isEnabled() || !isVisible())
         return false;
+
+    bool handled = false;
     switch (ev->type()) {
     case QEvent::MouseButtonPress: {
-        return mousePress(static_cast<QMouseEvent*>(ev));
+        handled = mousePress(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::MouseButtonRelease: {
-        return mouseRelease(static_cast<QMouseEvent*>(ev));
+        handled = mouseRelease(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::MouseMove: {
-        return mouseMove(static_cast<QMouseEvent*>(ev));
+        handled = mouseMove(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::TouchBegin: {
-        return touchPressed(static_cast<QTouchEvent*>(ev));
+        handled = touchPressed(static_cast<QTouchEvent*>(ev));
+        break;
     }
     case QEvent::TouchUpdate: {
-        return touchMoved(static_cast<QTouchEvent*>(ev));
+        handled = touchMoved(static_cast<QTouchEvent*>(ev));
+        break;
     }
     case QEvent::TouchEnd: {
-        return touchReleased(static_cast<QTouchEvent*>(ev));
+        handled = touchReleased(static_cast<QTouchEvent*>(ev));
+        break;
     }
     default:
         break;
     }
 
-    return false;
+    return (handled) ? !m_propagateEvents : false;
 }
