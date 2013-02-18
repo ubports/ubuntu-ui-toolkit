@@ -22,21 +22,22 @@ SDK 0.1.35
 
 Bugs Fixed
 **********
+
 Theming-related:
-* Bug #1128993: [POPOVER] is themed in correctly
-* Bug #1123433: [TOOLKIT] Activity indicator is themed incorrectly
-* Bug #1123431: [TOOLKIT] dialogue is themed incorrectly
+* [POPOVER] is themed in correctly
+* [TOOLKIT] Activity indicator is themed incorrectly
+* [TOOLKIT] dialogue is themed incorrectly
 
 Toolbar-related:
-* Bug #1126557: [sdk-toolbar] share button in on gallery image does not function on the first button press
-* Bug #1126771: Sharing after post/cancel is not possible
-* Bug #1126784: [sdk-toolbar] after tap to dismiss toolbar doesn't work
-* Bug #1116684: [sdk] toolbar trigger area too big
-* Bug #1129203: when first showing the toolbar after opening a photo, it shows the toolbar buttons for the overview, not for the current photo
+* [sdk-toolbar] share button in on gallery image does not function on the first button press
+* Sharing after post/cancel is not possible
+* [sdk-toolbar] after tap to dismiss toolbar doesn't work
+* [sdk] toolbar trigger area too big
+* when first showing the toolbar after opening a photo, it shows the toolbar buttons for the overview, not for the current photo
 
 Other:
-* Bug #1125458: [HUD, OSK] OSK doesn't focus on input field
-* Bug #1119214: Popover sometimes not dismissed
+* [HUD, OSK] OSK doesn't focus on input field
+* Popover sometimes not dismissed
 
 Compatibility Breaks
 ********************
