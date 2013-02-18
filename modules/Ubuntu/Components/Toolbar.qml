@@ -45,10 +45,13 @@ GenericToolbar {
     property ToolbarActions tools
     onToolsChanged: {
         if (tools && tools.active && tools.lock) {
+            // toolbar is locked in visible state.
             internal.visibleTools = tools;
             active = true;
-        }
-        else {
+        } else if (!active && !animating) {
+            // toolbar is invisible
+            internal.visibleTools = tools;
+        } else {
             active = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
