@@ -83,6 +83,7 @@ Examples:
 .toolbar {
     color: "white";
     opacity: 0.9;
+    triggerSize: units.gu(2);
     hintSize: units.gu(2);
 }
 
@@ -181,8 +182,6 @@ Examples:
     dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    dismissDelay: 50;
-    dismissEasing: Easing.OutQuad;
 }
 
 .popover .foreground {
@@ -197,8 +196,6 @@ Examples:
 
 .sheet {
     dim: false;
-    dismissDelay: 50;
-    dismissEasing: Easing.OutQuad;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -213,8 +210,6 @@ Examples:
     dimOpacity: 1.0;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    dismissDelay: 50;
-    dismissEasing: Easing.OutQuad;
 }
 .dialog .foreground {
     minimumWidth: units.gu(38);

@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import QtGraphicalEffects 1.0
 
 Item {
     id: frame
@@ -29,42 +30,59 @@ Item {
     height: childrenRect.height
 
     Item {
-        id: body
+        id: content
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
         height: childrenRect.height
+        Item {
+            id: body
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+            }
+            height: childrenRect.height
 
-        Rectangle {
-            id: background
+            Rectangle {
+                id: background
+                anchors.fill: parent
+                color: StyleUtils.itemStyleProperty("color", "white")
+            }
+        }
+
+        clip: true // hide the ShaderEffectSource
+        Shape {
             anchors.fill: parent
-            color: StyleUtils.itemStyleProperty("color", "white")
+            image: effectSource
+            radius: StyleUtils.itemStyleProperty("radius", "small")
+        }
+
+        ShaderEffectSource {
+            smooth: false // prevent linear interpolation
+            id: effectSource
+            hideSource: true
+            sourceItem: frame.contentItem
+            format: ShaderEffectSource.RGBA
+            live: true
+
+            // Do not set visible to false because it will leave the FBO empty,
+            //  but position the ShaderEffectSource somewhere that it will be clipped
+            //  so it is not visible.
+            x: width
+            width: sourceItem.width
+            height: sourceItem.height
         }
     }
-
-    clip: true // hide the ShaderEffectSource
-    Shape {
-        anchors.fill: parent
-        image: effectSource
-        radius: StyleUtils.itemStyleProperty("radius", "small")
-        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
-    }
-
-    ShaderEffectSource {
-        smooth: false // prevent linear interpolation
-        id: effectSource
-        hideSource: true
-        sourceItem: frame.contentItem
-        format: ShaderEffectSource.RGBA
-        live: true
-
-        // Do not set visible to false because it will leave the FBO empty,
-        //  but position the ShaderEffectSource somewhere that it will be clipped
-        //  so it is not visible.
-        x: width
-        width: sourceItem.width
-        height: sourceItem.height
+    DropShadow {
+        anchors.fill: content
+        source: content
+        radius: units.gu(1)
+        samples: 3 * radius
+        fast: true
+        spread: 0
+        transparentBorder: true
     }
 }
