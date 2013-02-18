@@ -22,6 +22,7 @@ AnimatedSprite {
     height: item.height
     anchors.centerIn: parent
     visible: item.running
+    running: item.running
     interpolate: true
     source: StyleUtils.itemStyleProperty("sprite", "")
     frameWidth: StyleUtils.itemStyleProperty("frameWidth", 0)
