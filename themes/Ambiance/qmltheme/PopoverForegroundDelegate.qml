@@ -79,8 +79,8 @@ Item {
     DropShadow {
         anchors.fill: content
         source: content
-        radius: 8
-        samples: 24
+        radius: units.gu(1)
+        samples: 3 * radius
         fast: true
         spread: 0
         transparentBorder: true
