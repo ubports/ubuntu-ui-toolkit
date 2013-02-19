@@ -50,13 +50,11 @@ Template {
                     lock: lockSwitch.checked
 
                     back {
-                        itemHint: Component {
-                            Button {
-                                id: cancelButton
-                                text: "cancel"
-                                onClicked: toolbarActions1.back.triggered(cancelButton)
-                                anchors.centerIn: parent
-                            }
+                        itemHint: Button {
+                            id: cancelButton
+                            text: "cancel"
+//                            onClicked: toolbarActions1.back.triggered(cancelButton)
+                            anchors.centerIn: parent
                         }
                         onTriggered: {
                             print("cancel!");

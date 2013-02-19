@@ -117,13 +117,20 @@ GenericToolbar {
     }
 
     Loader {
-        id: something
+        id: backButton
         property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
         sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
+        }
+        onStatusChanged: {
+            if (item && status == Loader.Ready && action && action.itemHint) {
+                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
+                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
+                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+            }
         }
     }
 
