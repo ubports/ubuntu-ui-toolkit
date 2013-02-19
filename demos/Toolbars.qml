@@ -46,16 +46,6 @@ Template {
                     Action {
                         text: "action 2"
                         iconSource: Qt.resolvedUrl("call_icon.png")
-
-                        itemHint: Component {
-                            Button {
-                                id: actionTwoButton
-                                //                                ItemStyle.class: "button"
-                                text: "action2"
-                                onClicked: print("bla");
-                            }
-                        }
-                        onTriggered: print("trigger!");
                     }
                     lock: lockSwitch.checked
 
@@ -63,12 +53,10 @@ Template {
                         itemHint: Component {
                             Button {
                                 id: cancelButton
-                                ItemStyle.class: "button"
                                 text: "cancel"
                                 onClicked: toolbarActions1.back.triggered(cancelButton)
                             }
                         }
-
                         onTriggered: {
                             print("cancel!");
                             toolbarActions1.active = false;
