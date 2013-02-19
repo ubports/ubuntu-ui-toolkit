@@ -65,7 +65,7 @@ Item {
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
         parent = dismissArea;
-        popupBase.visible = true;
+        stateWrapper.state = 'opened';
     }
 
     /*!
@@ -75,7 +75,7 @@ Item {
       PopupUtils.close() to do it automatically.
     */
     function hide() {
-        popupBase.visible = false;
+        stateWrapper.state = 'closed';
     }
 
     /*!
@@ -84,7 +84,7 @@ Item {
         onVisibleChanged is connected to __closeIfHidden().
      */
     function __closeIfHidden() {
-        if (!visible) PopupUtils.close(popupBase);
+        if (!visible) __closePopup();
     }
 
     /*!
@@ -93,8 +93,9 @@ Item {
       longer valid.
       */
     function __closePopup() {
-        if (popupBase !== undefined)
+        if (popupBase !== undefined) {
             popupBase.destroy();
+        }
     }
 
     /*!
@@ -141,5 +142,65 @@ Item {
 
     MouseArea {
         anchors.fill: __foreground
+    }
+
+    // set visible as false by default
+    visible: false
+    opacity: 0.0
+    /*! \internal */
+    onVisibleChanged: stateWrapper.state = (visible) ? 'opened' : 'closed'
+
+    Item {
+        id: stateWrapper
+
+        property int fadingDuration: Theming.ComponentUtils.style(popupBase, "fadingDuration", 0)
+        property int fadingEasing: Theming.ComponentUtils.style(popupBase, "fadingEasing", Easing.InOutQuad)
+        states: [
+            State {
+                name: 'closed'
+                extend: ''
+            },
+            State {
+                name: 'opened'
+            }
+        ]
+        transitions: [
+            Transition {
+                from: "*"
+                to: "opened"
+                SequentialAnimation {
+                    ScriptAction {
+                        script: popupBase.visible = true
+                    }
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                        duration: stateWrapper.fadingDuration
+                        easing.type: stateWrapper.fadingEasing
+                    }
+                }
+            },
+            Transition {
+                from: "opened"
+                to: "closed"
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: popupBase
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                        duration: stateWrapper.fadingDuration
+                        easing.type: stateWrapper.fadingEasing
+                    }
+                    ScriptAction {
+                        script: {
+                            popupBase.visible = false;
+                        }
+                    }
+                }
+            }
+        ]
     }
 }
