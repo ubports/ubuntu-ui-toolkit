@@ -53,7 +53,6 @@ Template {
                         itemHint: Button {
                             id: cancelButton
                             text: "cancel"
-//                            anchors.centerIn: parent
                         }
                         onTriggered: {
                             print("cancel!");
