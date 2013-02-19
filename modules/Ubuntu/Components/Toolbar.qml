@@ -101,37 +101,20 @@ GenericToolbar {
         }
     }
 
-    Component {
-        id: toolButtonComponent
-        Button {
-            id: toolButton
-            Theming.ItemStyle.class: "toolbar-button"
-            text: action.text
-            iconSource: action.iconSource ? action.iconSource : ""
-            onClicked: action.triggered(toolButton)
-            enabled: action.enabled
-            visible: action.visible
-            width: visible ? implicitWidth : 0
-            height: toolbar.height
-        }
-    }
-
-    Loader {
+    Button {
         id: backButton
-        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
+        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        visible: back && back.visible
+        Theming.ItemStyle.class: "toolbar-button"
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
-        onStatusChanged: {
-            if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
-            }
-        }
+        iconSource: back ? back.iconSource : ""
+        text: back ? back.text : ""
+        onClicked: back.triggered(backButton)
+        height: parent.height
     }
 
     Row {
@@ -147,10 +130,16 @@ GenericToolbar {
 
         Repeater {
             model: internal.visibleTools ? internal.visibleTools.children : 0
-            Loader {
-                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                property Action action: modelData
-                anchors.verticalCenter: toolButtonsContainer.verticalCenter
+            Button {
+                id: toolButton
+                Theming.ItemStyle.class: "toolbar-button"
+                anchors.verticalCenter: parent.verticalCenter
+                text: modelData.text
+                iconSource: modelData.iconSource ? modelData.iconSource : ""
+                onClicked: modelData.triggered(toolButton)
+                enabled: modelData.enabled
+                visible: modelData.visible
+                height: parent.height
             }
         }
     }
