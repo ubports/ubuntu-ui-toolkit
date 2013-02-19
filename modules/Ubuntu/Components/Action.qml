@@ -57,10 +57,9 @@ QtObject {
     property bool enabled: true
 
     /*!
-      Proposed Item to use as a representation for this action.
-      Depending on the component that displays the action, the Item
+      Proposed Component to use as a representation for this action.
+      Depending on the component that displays the action, the Component
       given here can replace the default representation of the action.
      */
-    // TODO: Support component that will be automatically instantiated.
     property Component itemHint
 }
