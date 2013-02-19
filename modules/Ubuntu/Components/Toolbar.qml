@@ -101,40 +101,8 @@ GenericToolbar {
         }
     }
 
-    // FIXME: It would be better to use a single Loader for the backButton and
-    //  back.itemHint, but that gives problems in setting the height of the component
-    Loader {
-        id: something
-        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-//        sourceComponent: back && back.itemHint ? back.itemHint : null
-        property Action action: back
-        sourceComponent: back && back.itemHint ? back.itemHint : toolButtonComponent
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
-        }
-        height: back && back.itemHint ? undefined : parent.height
-    }
-//    Button {
-//        id: backButton
-//        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-//        visible: back && back.visible && !back.itemHint
-//        Theming.ItemStyle.class: "toolbar-button"
-//        anchors {
-//            left: parent.left
-//            leftMargin: units.gu(2)
-//            verticalCenter: parent.verticalCenter
-//        }
-//        iconSource: back ? back.iconSource : ""
-//        text: back ? back.text : ""
-//        onClicked: back.triggered(backButton)
-//        height: parent.height
-//    }
-
     Component {
         id: toolButtonComponent
-
         Button {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
@@ -144,6 +112,18 @@ GenericToolbar {
             enabled: action.enabled
             visible: action.visible
             width: visible ? implicitWidth : 0
+            height: toolbar.height
+        }
+    }
+
+    Loader {
+        id: something
+        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            verticalCenter: parent.verticalCenter
         }
     }
 
@@ -164,7 +144,6 @@ GenericToolbar {
                 sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
                 property Action action: modelData
                 anchors.verticalCenter: toolButtonsContainer.verticalCenter
-                height: modelData.itemHint ? implicitHeight : toolButtonsContainer.height
             }
         }
     }

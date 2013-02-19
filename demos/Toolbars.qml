@@ -55,13 +55,13 @@ Template {
                                 id: cancelButton
                                 text: "cancel"
                                 onClicked: toolbarActions1.back.triggered(cancelButton)
+                                anchors.centerIn: parent
                             }
                         }
                         onTriggered: {
                             print("cancel!");
                             toolbarActions1.active = false;
                         }
-                        visible: true
                     }
                 }
                 ToolbarActions {
