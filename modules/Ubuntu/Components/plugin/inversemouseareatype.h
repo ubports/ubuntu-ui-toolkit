@@ -52,7 +52,6 @@ private: // getter/setter
 private:
     void reset();
     void saveEvent(const QMouseEvent &event);
-    QPointF mapToSensingArea(const QPointF &point);
     void asyncEmit(SignalType signal, bool isClick = false, bool wasHeld = false);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);

@@ -68,7 +68,7 @@ Template {
                 id: dialogue
 
                 title: "Save file"
-                text: "Are you sure that you want to save this file?"
+                text: "Are you sure you want to save this file?"
 
                 Button {
                     text: "cancel"

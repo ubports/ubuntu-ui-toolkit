@@ -59,6 +59,12 @@ Item {
      */
     property real hintSize: units.gu(1)
 
+    /*!
+      The height of the mouse area used to detect edge swipes to
+      activate the toolbar.
+     */
+    property real triggerSize: units.gu(2)
+
     states: [
         State {
             name: "hint"
@@ -198,7 +204,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bottomBar.active ? bar.height + units.gu(1) : units.gu(3)
+        height: bottomBar.active ? bar.height + units.gu(1) : toolbar.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !bottomBar.lock

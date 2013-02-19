@@ -35,7 +35,8 @@ GenericToolbar {
     Theming.ItemStyle.class: "toolbar"
 
     height: background.height
-    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
+    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
+    triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
 
     /*!
       \preliminary
@@ -44,10 +45,13 @@ GenericToolbar {
     property ToolbarActions tools
     onToolsChanged: {
         if (tools && tools.active && tools.lock) {
+            // toolbar is locked in visible state.
             internal.visibleTools = tools;
             active = true;
-        }
-        else {
+        } else if (!active && !animating) {
+            // toolbar is invisible
+            internal.visibleTools = tools;
+        } else {
             active = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished

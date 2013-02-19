@@ -394,7 +394,7 @@ FocusScope {
     */
     function forceActiveFocus()
     {
-        editor.forceActiveFocus();
+        internal.activateEditor();
     }
 
     // internals
@@ -411,7 +411,7 @@ FocusScope {
         anchors.fill: parent
         // us it only when there is space between the frame and input
         enabled: internal.spacing > 0
-        onClicked: editor.forceActiveFocus()
+        onClicked: internal.activateEditor()
     }
 
     Text { id: fontHolder }
@@ -435,7 +435,9 @@ FocusScope {
         function activateEditor()
         {
             if (!control.activeFocus)
-                control.forceActiveFocus();
+                editor.forceActiveFocus();
+            else
+                showInputPanel();
         }
 
         function showInputPanel()
@@ -443,7 +445,8 @@ FocusScope {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                Qt.inputMethod.show();
+                if (!Qt.inputMethod.visible)
+                    Qt.inputMethod.show();
             }
             textChanged = false;
         }
@@ -649,6 +652,7 @@ FocusScope {
                 // don't do anything while the control is inactive
                 if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
                     return;
+                internal.activateEditor();
                 if (internal.selectionEnd == internal.selectionStart) {
                     internal.resetEditorSelection(mouse.x);
                     internal.selectionMode = true;
