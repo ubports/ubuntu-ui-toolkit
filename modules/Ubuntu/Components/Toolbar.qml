@@ -117,25 +117,20 @@ GenericToolbar {
         height: parent.height
     }
 
-    // FIXME: The detection of a "leftItem" was introduced in order to be able to have
-    //  a back button with different styling. Currently we cannot re-use backButton for that
-    //  because setting Theming.ItemStyle.class dynamically gives errors.
-    Item {
-        id: leftItemContainer
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-            leftMargin: units.gu(2)
-        }
-        width: childrenRect.width
+    Component {
+        id: toolButtonComponent
 
-        property Item item: toolbar.tools && toolbar.tools.back ? toolbar.tools.back.itemHint : null
-        onItemChanged: {
-            for (var i=leftItemContainer.children.length-1; i >= 0; i--) leftItemContainer.children[i].parent = null;
-            if (item) item.parent = leftItemContainer;
+        Button {
+            id: toolButton
+            Theming.ItemStyle.class: "toolbar-button"
+            text: action.text
+            iconSource: action.iconSource ? action.iconSource : ""
+            onClicked: action.triggered(toolButton)
+            enabled: action.enabled
+            visible: action.visible
         }
     }
+
 
     Row {
         id: toolButtonsContainer
@@ -148,18 +143,14 @@ GenericToolbar {
         width: childrenRect.width
         spacing: units.gu(1)
 
+
         Repeater {
             model: internal.visibleTools ? internal.visibleTools.children : 0
-            Button {
-                id: toolButton
-                Theming.ItemStyle.class: "toolbar-button"
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.text
-                iconSource: modelData.iconSource ? modelData.iconSource : ""
-                onClicked: modelData.triggered(toolButton)
-                enabled: modelData.enabled
-                visible: modelData.visible
-                height: parent.height
+            Loader {
+                sourceComponent: toolButtonComponent
+                property Action action: modelData
+                anchors.verticalCenter: toolButtonsContainer.verticalCenter
+                height: toolButtonsContainer.height
             }
         }
     }

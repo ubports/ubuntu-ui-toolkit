@@ -50,17 +50,19 @@ Template {
                     lock: lockSwitch.checked
 
                     back {
-                        itemHint: Button {
-                            id: cancelButton
-                            ItemStyle.class: "button"
-                            text: "cancel"
-                            onClicked: toolbarActions1.back.triggered(cancelButton)
-//                            onPressed: print("pressing!")
-                            anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                        itemHint: Component {
+                            Button {
+                                id: cancelButton
+                                ItemStyle.class: "button"
+                                text: "cancel"
+                                onClicked: toolbarActions1.back.triggered(cancelButton)
+                                //                            onPressed: print("pressing!")
+                                anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                            }
                         }
                         onTriggered: {
                             print("cancel!");
-//                            toolbarActions1.active = false;
+                            //                            toolbarActions1.active = false;
                         }
                     }
                 }
