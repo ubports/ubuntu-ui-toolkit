@@ -117,7 +117,7 @@ Examples:
     checkMarkSource: url("artwork/CheckMark.png");
     selectedImageOpacity: 1.0;
     unselectedImageOpacity: 0.4;
-    thumbSpacing: units.dp(1);
+    thumbSpacing: units.dp(2);
     checkedThumbColor: "#DD4814";
     uncheckedThumbColor: "#bbbbbb";
     thumbColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
