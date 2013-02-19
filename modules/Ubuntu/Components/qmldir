@@ -37,3 +37,4 @@ ScrollbarUtils 0.1 scrollbarUtils.js
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
+internal HudIntegration HudIntegration.qml
