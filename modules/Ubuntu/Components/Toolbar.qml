@@ -104,29 +104,33 @@ GenericToolbar {
     // FIXME: It would be better to use a single Loader for the backButton and
     //  back.itemHint, but that gives problems in setting the height of the component
     Loader {
+        id: something
         property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: back && back.itemHint ? back.itemHint : null
+//        sourceComponent: back && back.itemHint ? back.itemHint : null
+        property Action action: back
+        sourceComponent: back && back.itemHint ? back.itemHint : toolButtonComponent
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
+        height: back && back.itemHint ? undefined : parent.height
     }
-    Button {
-        id: backButton
-        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        visible: back && back.visible && !back.itemHint
-        Theming.ItemStyle.class: "toolbar-button"
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
-        }
-        iconSource: back ? back.iconSource : ""
-        text: back ? back.text : ""
-        onClicked: back.triggered(backButton)
-        height: parent.height
-    }
+//    Button {
+//        id: backButton
+//        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+//        visible: back && back.visible && !back.itemHint
+//        Theming.ItemStyle.class: "toolbar-button"
+//        anchors {
+//            left: parent.left
+//            leftMargin: units.gu(2)
+//            verticalCenter: parent.verticalCenter
+//        }
+//        iconSource: back ? back.iconSource : ""
+//        text: back ? back.text : ""
+//        onClicked: back.triggered(backButton)
+//        height: parent.height
+//    }
 
     Component {
         id: toolButtonComponent
