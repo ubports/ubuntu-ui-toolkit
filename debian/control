@@ -18,7 +18,7 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 Package: qt-components-ubuntu
 Section: libs
 Architecture: any
-Depends: qtdeclarative5-qtquick2-plugin, libqt5graphicaleffects5, ${shlibs:Depends}, ${misc:Depends}
+Depends: qtdeclarative5-qtquick2-plugin, libqt5graphicaleffects5, libhud-qt-qml, ${shlibs:Depends}, ${misc:Depends}
 Description: Qt Components for Ubuntu
  Qt Components for Ubuntu offers a set of reusable user interface 
  components for Qt Quick 2 / QML.

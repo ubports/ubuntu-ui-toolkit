@@ -40,6 +40,14 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
 */
 Item {
+
+    /*!
+      \preliminary
+      The property holds the application' sname, which must be the same as the
+      desktop file's name.
+      */
+    property string applicationName
+
     // FIXME: any use of theming some times hides the children of the MainView,
     //  so it is disabled for now. Make the background themable again after
     //  this issue is resolved, and make sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076
@@ -91,6 +99,39 @@ Item {
             if (!tools.hasOwnProperty("active")) return null;
             if (!tools.hasOwnProperty("lock")) return null;
             return tools;
+        }
+    }
+
+    id: mainView
+    property QtObject __hud: null
+    /*! \internal */
+    onApplicationNameChanged: {
+        if (applicationName !== "") {
+            var component = Qt.createComponent(Qt.resolvedUrl("HudIntegration.qml"));
+            if (component && (component.state == Component.Ready)) {
+                __hud = component.createObject(mainView);
+                if (__hud) {
+                    __hud.applicationIdentifier = applicationName;
+                }
+            }
+        } else if (__hud)
+            __hud.destroy();
+/*
+        hudLoader.source = (applicationName !== "") ?
+                    Qt.resolvedUrl("HudIntegration.qml") : "";
+*/
+    }
+
+    /*!
+      \internal
+      Loads the HUD and registers the app to quit
+      */
+    Loader {
+        id: hudLoader
+        onStateChanged: {
+            if (state == Loader.Ready && item) {
+                item.applicationIdentifier = applicationName
+            }
         }
     }
 }
