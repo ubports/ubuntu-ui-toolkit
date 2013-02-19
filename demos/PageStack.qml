@@ -25,6 +25,7 @@ Template {
     Item {
         MainView {
             id: mainView
+            applicationName: "qmlscene"
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
