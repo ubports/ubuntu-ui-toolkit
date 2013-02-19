@@ -187,7 +187,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "down";
-            pointer.y = this.above(pointer, callerMargins - pointer.height, caller) - units.dp(2);
+            pointer.y = this.above(pointer, callerMargins - pointer.height, caller);
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }
