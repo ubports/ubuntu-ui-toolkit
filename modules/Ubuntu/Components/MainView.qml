@@ -40,10 +40,11 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
 */
 Item {
+    id: mainView
 
     /*!
       \preliminary
-      The property holds the application' sname, which must be the same as the
+      The property holds the application's name, which must be the same as the
       desktop file's name.
       */
     property string applicationName
@@ -102,36 +103,14 @@ Item {
         }
     }
 
-    id: mainView
     property QtObject __hud: null
     /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
             var component = Qt.createComponent(Qt.resolvedUrl("HudIntegration.qml"));
-            if (component && (component.state == Component.Ready)) {
-                __hud = component.createObject(mainView);
-                if (__hud) {
-                    __hud.applicationIdentifier = applicationName;
-                }
-            }
+            if (component)
+                __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});
         } else if (__hud)
             __hud.destroy();
-/*
-        hudLoader.source = (applicationName !== "") ?
-                    Qt.resolvedUrl("HudIntegration.qml") : "";
-*/
-    }
-
-    /*!
-      \internal
-      Loads the HUD and registers the app to quit
-      */
-    Loader {
-        id: hudLoader
-        onStateChanged: {
-            if (state == Loader.Ready && item) {
-                item.applicationIdentifier = applicationName
-            }
-        }
     }
 }
