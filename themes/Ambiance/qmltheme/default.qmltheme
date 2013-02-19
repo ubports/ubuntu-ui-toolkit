@@ -182,8 +182,6 @@ Examples:
     dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
 }
 
 .popover .foreground {
@@ -198,8 +196,6 @@ Examples:
 
 .sheet {
     dim: false;
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -214,8 +210,6 @@ Examples:
     dimOpacity: 1.0;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
 }
 .dialog .foreground {
     minimumWidth: units.gu(38);
