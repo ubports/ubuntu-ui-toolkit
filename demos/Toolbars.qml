@@ -49,13 +49,12 @@ Template {
                     }
                     lock: lockSwitch.checked
 
-                    // FIXME: This leftItem example will be removed because the
-                    //  leftItem support is a temporary solution.
-                    property Item leftItem: Button {
+                    back.hintItem: Button {
                         text: "cancel"
-                        onClicked: toolbarActions1.active = false
+                        onClicked: back.triggered()
                         anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                     }
+                    back.onTriggered: toolbarActions1.active = false
                 }
                 ToolbarActions {
                     id: toolbarActions2
