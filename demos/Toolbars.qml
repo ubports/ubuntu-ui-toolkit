@@ -46,6 +46,16 @@ Template {
                     Action {
                         text: "action 2"
                         iconSource: Qt.resolvedUrl("call_icon.png")
+
+                        itemHint: Component {
+                            Button {
+                                id: actionTwoButton
+                                //                                ItemStyle.class: "button"
+                                text: "action2"
+                                onClicked: print("bla");
+                            }
+                        }
+                        onTriggered: print("trigger!");
                     }
                     lock: lockSwitch.checked
 
@@ -56,14 +66,14 @@ Template {
                                 ItemStyle.class: "button"
                                 text: "cancel"
                                 onClicked: toolbarActions1.back.triggered(cancelButton)
-                                //                            onPressed: print("pressing!")
-                                anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                             }
                         }
+
                         onTriggered: {
                             print("cancel!");
-                            //                            toolbarActions1.active = false;
+                            toolbarActions1.active = false;
                         }
+                        visible: true
                     }
                 }
                 ToolbarActions {
