@@ -62,5 +62,5 @@ QtObject {
       given here can replace the default representation of the action.
      */
     // TODO: Support component that will be automatically instantiated.
-    property var hintItem
+    property var itemHint: null
 }

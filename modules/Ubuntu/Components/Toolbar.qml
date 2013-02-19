@@ -130,7 +130,7 @@ GenericToolbar {
         }
         width: childrenRect.width
 
-        property Item item: toolbar.tools && toolbar.tools.hasOwnProperty("leftItem") ? toolbar.tools.leftItem : null
+        property Item item: toolbar.tools && toolbar.tools.back ? toolbar.tools.back.itemHint : null
         onItemChanged: {
             for (var i=leftItemContainer.children.length-1; i >= 0; i--) leftItemContainer.children[i].parent = null;
             if (item) item.parent = leftItemContainer;
