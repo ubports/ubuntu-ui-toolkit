@@ -53,8 +53,7 @@ Template {
                         itemHint: Button {
                             id: cancelButton
                             text: "cancel"
-//                            onClicked: toolbarActions1.back.triggered(cancelButton)
-                            anchors.centerIn: parent
+//                            anchors.centerIn: parent
                         }
                         onTriggered: {
                             print("cancel!");
