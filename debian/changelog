@@ -1,3 +1,10 @@
+qt-components-ubuntu (0.1.36) quantal; urgency=low
+
+  * New release
+  * Bug fixed: HUD integration to the MainView 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Tue, 19 Feb 2013 20:54:40 +0100
+
 qt-components-ubuntu (0.1.35) quantal; urgency=low
 
   * New release 
