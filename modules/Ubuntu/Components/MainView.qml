@@ -69,8 +69,6 @@ Item {
       \preliminary
       The list of actions that will be placed on the toolbar of the application.
      */
-    // TODO: Assign the list of actions automatically if the first child of MainView
-    //  is an instance of Tabs, PageStack or Page.
     property alias tools: toolbar.tools
 
     // clip if the MainView is not fullscreen
