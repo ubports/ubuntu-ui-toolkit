@@ -26,6 +26,7 @@ TabButton 0.1 TabButton.qml
 Page 0.1 Page.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
+internal Header Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
