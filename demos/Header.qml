@@ -31,15 +31,49 @@ Template {
             }
             width: units.gu(38)
             height: units.gu(50)
+            selectedFlickable: flickable
 
             Page {
                 anchors.fill: parent
                 title: i18n.tr("Header demo")
 
-                Label {
-                    text: "Page contents"
-                    anchors.centerIn: parent
-                    // TODO: make this scrollable to test the header.
+                Flickable {
+                    id: flickable
+                    clip: true
+                    anchors.fill: parent
+                    contentHeight: column.height
+                    contentWidth: parent.width //* 2
+//                    flickableDirection: Flickable.VerticalFlick
+
+                    Column {
+                        id: column
+                        width: parent.width
+                        height: childrenRect.height
+
+                        Label {
+                            text: "\n\n\n\n\n\n\n\n\n\n" +
+                                  i18n.tr("This is the first tab.") +
+                                  "\n\n\n\n\n\n\n\n\n\n\n\n(" +
+                                  i18n.tr("scroll down") + ")\n\n\n"
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Repeater {
+                            model: 20
+                            Label {
+                                text: "Lorem ipsum dolor sit amet, platea est tincidunt nunc, commodo odio elit."
+                                width: parent.width
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        Label {
+                            text: "\n\n\n" + i18n.tr("The end.")
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
                 }
             }
         }

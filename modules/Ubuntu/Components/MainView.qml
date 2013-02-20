@@ -84,6 +84,14 @@ Item {
         anchors.fill: parent
     }
 
+    Header {
+        id: header
+        title: "tadaa"
+    }
+
+    // TODO: get rid of this
+    property alias selectedFlickable: header.selectedFlickable
+
     Toolbar {
         id: toolbar
         tools: getTools()
