@@ -104,6 +104,7 @@ Examples:
 }
 
 .header {
+/*    height: units.gu(2); */
 }
 
 .transparent-button {

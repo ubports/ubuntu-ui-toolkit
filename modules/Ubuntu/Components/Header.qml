@@ -30,20 +30,9 @@ import Ubuntu.Components 0.1 as Theming
 */
 Item {
     id: header
-//    z: 1 // header is on top of the tab's contents.
     // FIXME: see above
     Theming.ItemStyle.class: "header"
 
-//    Image {
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            top: parent.top
-//            bottom: separator.bottom
-//        }
-//        source: "" //"artwork/background-paper.png"
-//        fillMode: Image.Tile
-//    }
 
     property string title
 
@@ -53,10 +42,6 @@ Item {
     }
     y: 0
 
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "red"
-//    }
 
     Behavior on y {
         enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
@@ -66,7 +51,11 @@ Item {
     }
 
 //    height: tabBar.height + separator.height + separatorBottom.height
-    height: units.gu(10)
+//    height: tabBar.height //units.gu(10)
+    height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(5))
+    onHeightChanged: print("header height = "+height)
+//    height: units.gu(5)
+
 
     function show() {
         header.y = 0;
@@ -86,26 +75,15 @@ Item {
 //        }
 //    }
 
-    // FIXME: Define the separator in the theme when this bug is fixed:
-    // https://bugs.launchpad.net/goodhope/+bug/1089614
-//    BorderImage {
-//        id: separator
-//        anchors {
-//            top: tabBar.bottom
-//            left: parent.left
-//            right: parent.right
-//        }
-//        source: "artwork/PageHeaderBaseDividerLight.sci"
-//    }
-//    Image {
-//        id: separatorBottom
-//        anchors {
-//            top: separator.bottom
-//            left: parent.left
-//            right: parent.right
-//        }
-//        source: "artwork/PageHeaderBaseDividerBottom.png"
-//    }
+    Item {
+        id: tabBar
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+        height: units.gu(20)
+    }
 
 //    property Tab selectedTab: item ? item.selectedTab : null
 //    // use updateFlickable() to update selectedFlickable so that events from the

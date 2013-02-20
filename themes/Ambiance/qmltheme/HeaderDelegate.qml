@@ -19,36 +19,47 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
-    z: 10
-    Rectangle {
-        anchors.fill: parent
-        color: "pink"
-        z: 10
+//    Rectangle {
+//        anchors.fill: parent
+//        color: "pink"
+//    }
+
+    height: background.height + separator.height + separatorBottom.height
+    Image {
+        id: background
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+//            bottom: separator.bottom
+        }
+        source: Qt.resolvedUrl("artwork/background-paper.png")
+        fillMode: Image.Tile
+//        height: item.height //units.gu(5)
+        height: units.gu(5)
     }
 
-//    Rectangle {
-//        id: background
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: parent.bottom
-//        }
-//        height: parent.height //- dropshadow.height
-//        color: StyleUtils.itemStyleProperty("color")
-//        opacity: StyleUtils.itemStyleProperty("opacity")
-//    }
+    // FIXME: Define the separator in the theme when this bug is fixed:
+    // https://bugs.launchpad.net/goodhope/+bug/1089614
+    BorderImage {
+        id: separator
+        anchors {
+//            top: item.tabBar.bottom
+            top: background.bottom
+            left: parent.left
+            right: parent.right
+        }
+        source: Qt.resolvedUrl("artwork/PageHeaderBaseDividerLight.sci")
+    }
+    Image {
+        id: separatorBottom
+        anchors {
+            top: separator.bottom
+            left: parent.left
+            right: parent.right
+        }
+        source: Qt.resolvedUrl("artwork/PageHeaderBaseDividerBottom.png")
+    }
 
-//    Image {
-//        id: dropshadow
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: background.top
-//        }
-//        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-//        opacity: item.state == "" ? 0.0 : 0.5
-//        Behavior on opacity {
-//            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
-//        }
-//    }
+
 }
