@@ -138,30 +138,28 @@ Template {
             }
         }
 
-        Component {
+        ActionSelectionPopover {
             id: actionSelectionPopover
-            ActionSelectionPopover {
-                actions: ActionList {
-                    Action {
-                        text: i18n.tr("Selection #1")
-                        onTriggered: print(text)
-                    }
-                    Action {
-                        text: i18n.tr("Selection #2")
-                        onTriggered: print(text)
-                    }
-                    Action {
-                        text: i18n.tr("Selection #3")
-                        onTriggered: print(text)
-                    }
-                    Action {
-                        text: i18n.tr("Selection #4")
-                        onTriggered: print(text)
-                    }
-                    Action {
-                        text: i18n.tr("Selection #5")
-                        onTriggered: print(text)
-                    }
+            actions: ActionList {
+                Action {
+                    text: i18n.tr("Selection #1")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #2")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #3")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #4")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #5")
+                    onTriggered: print(text)
                 }
             }
         }
@@ -229,7 +227,10 @@ Template {
                     id: actionSelectionPopoverButton
                     text: i18n.tr("action list")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(actionSelectionPopover, actionSelectionPopoverButton)
+                    onClicked: {
+                        actionSelectionPopover.caller = actionSelectionPopoverButton;
+                        actionSelectionPopover.show();
+                    }
                 }
             }
 
