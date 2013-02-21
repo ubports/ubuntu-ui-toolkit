@@ -84,5 +84,6 @@ Item {
         fast: true
         spread: 0
         transparentBorder: true
+        color: Qt.rgba(0, 0, 0, 0.7)
     }
 }
