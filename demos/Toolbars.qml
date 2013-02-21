@@ -48,6 +48,17 @@ Template {
                         iconSource: Qt.resolvedUrl("call_icon.png")
                     }
                     lock: lockSwitch.checked
+
+                    back {
+                        itemHint: Button {
+                            id: cancelButton
+                            text: "cancel"
+                        }
+                        onTriggered: {
+                            print("cancel!");
+                            toolbarActions1.active = false;
+                        }
+                    }
                 }
                 ToolbarActions {
                     id: toolbarActions2
