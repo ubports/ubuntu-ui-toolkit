@@ -33,7 +33,6 @@ Item {
     // FIXME: see above
     Theming.ItemStyle.class: "header"
 
-
     property string title
 
     anchors {
@@ -50,14 +49,7 @@ Item {
             duration: 200
         }
     }
-
-//    height: tabBar.height + separator.height + separatorBottom.height
-//    height: tabBar.height //units.gu(10)
-    height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(5))
-//    height: units.gu(10)
-    onHeightChanged: print("header height = "+height)
-//    height: units.gu(5)
-
+    height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(10))
 
     function show() {
         header.y = 0;
@@ -67,25 +59,16 @@ Item {
         header.y = - header.height;
     }
 
-//    NewTabBar {
+//    Rectangle {
 //        id: tabBar
-//        tabs: item
+//        color: "#00ff00aa"
 //        anchors {
 //            top: parent.top
 //            left: parent.left
 //            right: parent.right
 //        }
+//        height: units.gu(20)
 //    }
-
-    Item {
-        id: tabBar
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-        height: units.gu(20)
-    }
 
 //    property Tab selectedTab: item ? item.selectedTab : null
 //    // use updateFlickable() to update selectedFlickable so that events from the
@@ -124,9 +107,7 @@ Item {
         // Avoid updating header.y when rebounding or being dragged over the bounds.
         if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
             var deltaContentY = selectedFlickable.contentY - previousContentY;
-            print("scrolling by "+deltaContentY)
             header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-            print("header.y = "+header.y);
         }
         previousContentY = selectedFlickable.contentY;
     }

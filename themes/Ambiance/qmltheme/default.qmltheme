@@ -103,10 +103,6 @@ Examples:
     backgroundColor: "#ededf0";
 }
 
-.header {
-    height: units.gu(2);
-}
-
 .transparent-button {
 }
 
@@ -163,6 +159,14 @@ Examples:
     deactivateTime: 3000;
     buttonPositioningVelocity: 1.0;
     headerTextFadeDuration: 350;
+}
+
+.header {
+    height: units.gu(9);
+    contentHeight: units.gu(7.5);
+    backgroundSource: url("artwork/background-paper.png");
+    separatorSource: url("artwork/PageHeaderBaseDividerLight.sci");
+    separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
 }
 
 .dark-button {

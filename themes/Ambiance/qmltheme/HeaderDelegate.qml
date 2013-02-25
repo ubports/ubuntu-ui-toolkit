@@ -17,39 +17,32 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    anchors.fill: parent
-
-    Rectangle {
-        anchors.fill: parent
-        color: "pink"
+    anchors {
+        left: parent.left
+        right: parent.right
+        top: parent.top
     }
+    height: background.height + separatorBottom.height
 
-    height: background.height + separator.height + separatorBottom.height
     Image {
         id: background
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
-//            bottom: separator.bottom
         }
-        source: Qt.resolvedUrl("artwork/background-paper.png")
+        source: itemStyle.backgroundSource
         fillMode: Image.Tile
-//        height: item.height //units.gu(5)
-        height: units.gu(5)
+        height: itemStyle.contentHeight + separator.height
     }
-
-    // FIXME: Define the separator in the theme when this bug is fixed:
-    // https://bugs.launchpad.net/goodhope/+bug/1089614
     BorderImage {
         id: separator
         anchors {
-//            top: item.tabBar.bottom
-            top: background.bottom
+            bottom: background.bottom
             left: parent.left
             right: parent.right
         }
-        source: Qt.resolvedUrl("artwork/PageHeaderBaseDividerLight.sci")
+        source: itemStyle.separatorSource
     }
     Image {
         id: separatorBottom
@@ -58,8 +51,6 @@ Item {
             left: parent.left
             right: parent.right
         }
-        source: Qt.resolvedUrl("artwork/PageHeaderBaseDividerBottom.png")
+        source: itemStyle.separatorBottomSource
     }
-
-
 }
