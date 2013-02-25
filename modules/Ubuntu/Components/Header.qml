@@ -41,8 +41,6 @@ Item {
     }
     y: 0
 
-    onYChanged: print("y = "+y)
-
     Behavior on y {
         enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
         SmoothedAnimation {
@@ -59,62 +57,71 @@ Item {
         header.y = - header.height;
     }
 
-//    Rectangle {
-//        id: tabBar
-//        color: "#00ff00aa"
-//        anchors {
-//            top: parent.top
-//            left: parent.left
-//            right: parent.right
-//        }
-//        height: units.gu(20)
-//    }
+    //    Rectangle {
+    //        id: tabBar
+    //        color: "#00ff00aa"
+    //        anchors {
+    //            top: parent.top
+    //            left: parent.left
+    //            right: parent.right
+    //        }
+    //        height: units.gu(20)
+    //    }
 
-//    property Tab selectedTab: item ? item.selectedTab : null
-//    // use updateFlickable() to update selectedFlickable so that events from the
-//    // previous selectedFlickable can be disconnected.
     property Flickable selectedFlickable: null
-    property real previousContentY: 0
-//    onSelectedTabChanged: updateFlickable()
-//    Component.onCompleted: updateFlickable()
-    onSelectedFlickableChanged: connectFlickable()
-    Component.onCompleted: connectFlickable()
+    onSelectedFlickableChanged: internal.connectFlickable()
+    Component.onCompleted: internal.connectFlickable()
 
-    function connectFlickable() {
-        if (selectedFlickable) {
+    QtObject {
+        id: internal
+
+
+        property real previousContentY: 0
+        //    onSelectedTabChanged: updateFlickable()
+        //    Component.onCompleted: updateFlickable()
+
+        function connectFlickable() {
+            if (selectedFlickable) {
+                previousContentY = selectedFlickable.contentY;
+                selectedFlickable.contentYChanged.connect(internal.scrollContents);
+                selectedFlickable.movementEnded.connect(internal.movementEnded);
+            }
+        }
+
+        //    function updateFlickable() {
+        //        if (selectedFlickable) {
+        //            selectedFlickable.contentYChanged.disconnect(header.scrollContents);
+        //            selectedFlickable.movementEnded.disconnect(header.movementEnded);
+        //        }
+        //        if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
+        //            selectedFlickable = selectedTab.__flickable;
+        //            previousContentY = selectedFlickable.contentY;
+        //            selectedFlickable.contentYChanged.connect(header.scrollContents);
+        //            selectedFlickable.movementEnded.connect(header.movementEnded);
+        //        } else {
+        //            selectedFlickable = null;
+        //        }
+        //    }
+
+        /*!
+      Update the position of the header to scroll with the flickable.
+     */
+        function scrollContents() {
+            // Avoid updating header.y when rebounding or being dragged over the bounds.
+            if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
+                var deltaContentY = selectedFlickable.contentY - previousContentY;
+                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+            }
             previousContentY = selectedFlickable.contentY;
-            selectedFlickable.contentYChanged.connect(header.scrollContents);
-            selectedFlickable.movementEnded.connect(header.movementEnded);
         }
-    }
 
-//    function updateFlickable() {
-//        if (selectedFlickable) {
-//            selectedFlickable.contentYChanged.disconnect(header.scrollContents);
-//            selectedFlickable.movementEnded.disconnect(header.movementEnded);
-//        }
-//        if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
-//            selectedFlickable = selectedTab.__flickable;
-//            previousContentY = selectedFlickable.contentY;
-//            selectedFlickable.contentYChanged.connect(header.scrollContents);
-//            selectedFlickable.movementEnded.connect(header.movementEnded);
-//        } else {
-//            selectedFlickable = null;
-//        }
-//    }
-
-    function scrollContents() {
-        // Avoid updating header.y when rebounding or being dragged over the bounds.
-        if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
-            var deltaContentY = selectedFlickable.contentY - previousContentY;
-            header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+        /*!
+      Fully show or hide the header, depending on its current y.
+     */
+        function movementEnded() {
+            if (selectedFlickable.contentY < 0) header.show();
+            else if (header.y < -header.height/2) header.hide();
+            else header.show();
         }
-        previousContentY = selectedFlickable.contentY;
-    }
-
-    function movementEnded() {
-        if (selectedFlickable.contentY < 0) header.show();
-        else if (header.y < -header.height/2) header.hide();
-        else header.show();
     }
 }
