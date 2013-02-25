@@ -68,8 +68,6 @@ SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensit
         derives = styleClass.mid(derivesIndex);
         styleClass = styleClass.left(derivesIndex);
     }
-    qDebug() << selectorString;
-    qDebug() << styleClass << styleId << derives;
 }
 
 /*!

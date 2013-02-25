@@ -57,8 +57,8 @@ private:
     static void patchDeclarationValue(QString &value, const QTextStream &stream);
     void handleSelector(const Selector &path, const PropertyMap &newProperties);
     void normalizeStyles();
-    bool updateRuleProperties(Selector &selector, PropertyMap &propertyMap);
-    void normalizeSelector(const Selector &selector);
+    bool updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override);
+    bool normalizeSelector(const Selector &selector);
     bool parseTheme(const QUrl &url);
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);

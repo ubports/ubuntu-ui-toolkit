@@ -255,7 +255,7 @@ void tst_ThemeEnginePrivate::testCase_selectorToString()
     QCOMPARE(selector.toString(), expected);
 
     selector = Selector(".classA.attribute>.classB#id");
-    expected = ".classa.attribute>.classb#id";
+    expected = ".classa>.classb#id";
     QCOMPARE(selector.toString(), expected);
 }
 
@@ -264,10 +264,15 @@ void tst_ThemeEnginePrivate::testCase_inheritance()
     engine->errorString = QString();
     engine->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
     QCOMPARE(engine->errorString, QString());
-    test_styleProperties(".derivate", QString("propertyDerivate,propertyBaseA").split(','));
+    test_styleProperties(".derivate", QString("pDerivate:pDerivate,pBaseA:pBaseA").split(','));
+    test_styleProperties(".derivate2", QString("pDerivate:pDerivate,pBaseA:derivate2").split(','));
+    test_styleProperties(".multiple", QString("pBaseA:pBaseA,pBaseB:pBaseB").split(','));
+    test_styleProperties(".multiple2", QString("pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2").split(','));
+    test_styleProperties(".multiple3", QString("pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB").split(','));
+    test_styleProperties(".restore", QString("pBaseA:pBaseA,pDerivate:pDerivate").split(','));
 }
 
-// tests the properties of a style class, where property value is the same as the property name
+// tests the properties of a style class, propertyList is a pair of property:value
 void tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QStringList &propertyList)
 {
     Selector selector = engine->parseSelector(styleClass)[0];
@@ -278,9 +283,10 @@ void tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, con
         QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
         QVERIFY2(style, "FAILURE");
 
-        Q_FOREACH(const QString &propertyName, propertyList) {
-            QString data = style->property(propertyName.toLatin1()).toString();
-            QCOMPARE(data, propertyName);
+        Q_FOREACH(const QString &propertyPair, propertyList) {
+            QStringList pair = propertyPair.split(':');
+            QString data = style->property(pair[0].toLatin1()).toString();
+            QCOMPARE(data, pair[1]);
         }
         style->deleteLater();
     }

@@ -333,16 +333,19 @@ void QmlThemeLoader::normalizeStyles()
     while (i.hasNext()) {
         i.next();
         Selector selector = i.key();
-        normalizeSelector(selector);
+        if (normalizeSelector(selector))
+            // start all over as hash iterator is not valid anymore
+            i.toFront();
     }
 }
 
 /*!
   \internal
   Updates the properties of a rule based on the subset of the proeprty. May ignore relation
-  and/or style ID when collecting properties
+  and/or style ID when collecting properties. override should be true when properties from
+  derivates are collected.
   */
-bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap)
+bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override)
 {
     bool result = false;
     // check if we have a style that is a subset of the current one and if yes
@@ -358,7 +361,7 @@ bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &prope
         QHashIterator<QString, QString> baseProperty = selectorTable.value(selector).properties;
         while (baseProperty.hasNext()) {
             baseProperty.next();
-            if (!propertyMap.properties.contains(baseProperty.key())) {
+            if (override || !propertyMap.properties.contains(baseProperty.key())) {
                 propertyMap.properties.insert(baseProperty.key(), baseProperty.value());
                 result = true;
             }
@@ -369,34 +372,49 @@ bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &prope
 
 /*!
  * \internal
- * Normalizes a given selector.
+ * Normalizes a given selector. Returns true if the selector was normalized(updated)
+ * otherwise returns false.
  */
-void QmlThemeLoader::normalizeSelector(const Selector &selector)
+bool QmlThemeLoader::normalizeSelector(const Selector &selector)
 {
     PropertyMap propertyMap = selectorTable.value(selector);
     if (propertyMap.normalized)
-        return;
+        return false;
     // not normalized yet
 
     // collect properties from the derived ones
     SelectorNode last = selector.last();
-    qDebug() << "begin-normalize" << ThemeEnginePrivate::selectorToString(selector) << last.derives;
-    Q_FOREACH(const QString& derived, last.derives.split('.')) {
-        if (!derived.isEmpty()) {
-            Selector derivedSelector;
-            derivedSelector << SelectorNode(derived, SelectorNode::IgnoreAll);
-            updateRuleProperties(derivedSelector, propertyMap);
+    if (!last.derives.isEmpty()) {
+        // get the deriveds first then override those with the current properties
+        PropertyMap derivedMap;
+        Q_FOREACH(const QString& derived, last.derives.split('.')) {
+            if (!derived.isEmpty()) {
+                Selector derivedSelector(derived, SelectorNode::IgnoreAll);
+                QHash<Selector, PropertyMap>::iterator i = selectorTable.find(derivedSelector);
+                if (i != selectorTable.end() && i.key() == derivedSelector) {
+                    // update to the real selector as that may also be derived
+                    derivedSelector = i.key();
+                    updateRuleProperties(derivedSelector, derivedMap, true);
+                }
+            }
         }
+        // override with the current stuff
+        QHashIterator<QString, QString> i(propertyMap.properties);
+        while (i.hasNext()) {
+            i.next();
+            derivedMap.properties.insert(i.key(), i.value());
+        }
+        propertyMap.properties = derivedMap.properties;
     }
-
+    // parse the cascade
     if (selector.count() > 1) {
         // need to check only the last node from the selector path
         Selector subset = selectorSubset(selector, 1);
-        updateRuleProperties(subset, propertyMap);
+        updateRuleProperties(subset, propertyMap, false);
     }
-    qDebug() << "normalized" << ThemeEnginePrivate::selectorToString(selector) << propertyMap.properties;
     propertyMap.normalized = true;
     selectorTable.insert(selector, propertyMap);
+    return true;
 }
 
 
@@ -499,8 +517,6 @@ bool QmlThemeLoader::generateStyleQml()
         // reset selector so we build the Rule with the proper one
         resetSelector(selector);
 
-        qDebug() << ThemeEnginePrivate::selectorToString(selector);
-        qDebug() << styleQml;
         QQmlComponent *style = createComponent(m_engine, styleQml);
         QQmlComponent *delegate = createComponent(m_engine, delegateQml);
         if (!style && !delegate) {
