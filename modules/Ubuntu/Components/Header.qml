@@ -42,6 +42,7 @@ Item {
     }
     y: 0
 
+    onYChanged: print("y = "+y)
 
     Behavior on y {
         enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
@@ -53,6 +54,7 @@ Item {
 //    height: tabBar.height + separator.height + separatorBottom.height
 //    height: tabBar.height //units.gu(10)
     height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(5))
+//    height: units.gu(10)
     onHeightChanged: print("header height = "+height)
 //    height: units.gu(5)
 
@@ -122,7 +124,9 @@ Item {
         // Avoid updating header.y when rebounding or being dragged over the bounds.
         if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
             var deltaContentY = selectedFlickable.contentY - previousContentY;
+            print("scrolling by "+deltaContentY)
             header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+            print("header.y = "+header.y);
         }
         previousContentY = selectedFlickable.contentY;
     }

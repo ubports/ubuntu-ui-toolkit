@@ -19,10 +19,10 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "pink"
-//    }
+    Rectangle {
+        anchors.fill: parent
+        color: "pink"
+    }
 
     height: background.height + separator.height + separatorBottom.height
     Image {
