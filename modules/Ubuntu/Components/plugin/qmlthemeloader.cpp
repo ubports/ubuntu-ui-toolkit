@@ -333,7 +333,7 @@ void QmlThemeLoader::normalizeStyles()
     while (i.hasNext()) {
         i.next();
         Selector selector = i.key();
-        normalizeSelector(i.key());
+        normalizeSelector(selector);
     }
 }
 
@@ -377,11 +377,24 @@ void QmlThemeLoader::normalizeSelector(const Selector &selector)
     if (propertyMap.normalized)
         return;
     // not normalized yet
+
+    // collect properties from the derived ones
+    SelectorNode last = selector.last();
+    qDebug() << "begin-normalize" << ThemeEnginePrivate::selectorToString(selector) << last.derives;
+    Q_FOREACH(const QString& derived, last.derives.split('.')) {
+        if (!derived.isEmpty()) {
+            Selector derivedSelector;
+            derivedSelector << SelectorNode(derived, SelectorNode::IgnoreAll);
+            updateRuleProperties(derivedSelector, propertyMap);
+        }
+    }
+
     if (selector.count() > 1) {
         // need to check only the last node from the selector path
         Selector subset = selectorSubset(selector, 1);
         updateRuleProperties(subset, propertyMap);
     }
+    qDebug() << "normalized" << ThemeEnginePrivate::selectorToString(selector) << propertyMap.properties;
     propertyMap.normalized = true;
     selectorTable.insert(selector, propertyMap);
 }
@@ -486,6 +499,8 @@ bool QmlThemeLoader::generateStyleQml()
         // reset selector so we build the Rule with the proper one
         resetSelector(selector);
 
+        qDebug() << ThemeEnginePrivate::selectorToString(selector);
+        qDebug() << styleQml;
         QQmlComponent *style = createComponent(m_engine, styleQml);
         QQmlComponent *delegate = createComponent(m_engine, delegateQml);
         if (!style && !delegate) {

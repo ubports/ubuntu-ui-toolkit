@@ -1,13 +1,13 @@
 .baseA {
-    propertyBaseA: "baseA";
+    propertyBaseA: "propertyBaseA";
 }
 
 .baseB {
-    propertyBaseB: "baseB";
+    propertyBaseB: "propertyBaseB";
 }
 
 .derivate.baseA {
-    propertyDerivate: "derivate";
+    propertyDerivate: "propertyDerivate";
 }
 
 .derivate2.derivate {
@@ -18,7 +18,7 @@
 }
 
 .multiple2.baseA.derivate {
-    propertyMultiple2: "multiple2";
+    propertyMultiple2: "propertyMultiple2";
 }
 
 .multiple3.derivate2.baseB {

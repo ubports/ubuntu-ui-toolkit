@@ -47,6 +47,8 @@ private Q_SLOTS:
     void testCase_selectorToString();
     void testCase_inheritance();
 private:
+    void test_styleProperties(const QString &styleClass, const QStringList &propertyList);
+private:
     QQmlEngine *quickEngine;
     ThemeEnginePrivate *engine;
     friend class ThemeEnginePrivate;
@@ -293,8 +295,13 @@ void tst_ThemeEnginePrivate::testCase_inheritance()
     engine->errorString = QString();
     engine->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
     QCOMPARE(engine->errorString, QString());
+    test_styleProperties(".derivate", QString("propertyDerivate,propertyBaseA").split(','));
+}
 
-    Selector selector = engine->parseSelector(".derivate")[0];
+// tests the properties of a style class, where property value is the same as the property name
+void tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QStringList &propertyList)
+{
+    Selector selector = engine->parseSelector(styleClass)[0];
     StyleTreeNode *rule = engine->styleRuleForPath(selector);
     QVERIFY2(rule, "Failure");
     if (rule) {
@@ -302,10 +309,10 @@ void tst_ThemeEnginePrivate::testCase_inheritance()
         QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
         QVERIFY2(style, "FAILURE");
 
-        QString url = style->property("propertyDerivate").toString();
-        QFileInfo fi("../../resources/inheritance.qmltheme");
-        QCOMPARE(url, fi.absoluteFilePath());
-
+        Q_FOREACH(const QString &propertyName, propertyList) {
+            QString data = style->property(propertyName.toLatin1()).toString();
+            QCOMPARE(data, propertyName);
+        }
         style->deleteLater();
     }
 }
