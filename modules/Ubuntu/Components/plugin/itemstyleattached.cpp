@@ -297,7 +297,6 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
 bool ItemStyleAttachedPrivate::registerName(const QString &id)
 {
     bool result = true;
-    Q_Q(ItemStyleAttached);
     if (ThemeEnginePrivate::registerName(attachee, id)) {
         styleData.styleId = id;
         attachee->setProperty("name", styleData.styleId);
@@ -461,7 +460,7 @@ QString ItemStyleAttached::path() const
 {
     Q_D(const ItemStyleAttached);
     return d->styleRule ?
-                ThemeEnginePrivate::selectorToString(d->styleRule->path()) :
+                d->styleRule->path().toString() :
                 QString("(null)");
 }
 

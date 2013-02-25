@@ -23,6 +23,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
+#include <QtCore/QRegularExpression>
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
@@ -96,12 +97,58 @@ bool SelectorNode::operator==(const SelectorNode &other)
 }
 
 /*!
+ * \internal
+ * Converts a selector string into Selector object.
+ * Current support (ref: www.w3.org/TR/selector.html):
+ *  - Type selectors, e.g: "Button"
+ *  - Descendant selectors, e.g: "Dialog Button"
+ *  - Child selectors, e.g: "Dialog>Button"
+ *  - ID selectors, e.g: "Button#mySpecialButton"
+ */
+Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity)
+{
+    QString tmp(string);
+    // prepare for split
+    if (tmp.contains('>')) {
+        tmp.replace(QRegularExpression(" (>) "), ">").replace('>', "|>");
+    }
+    tmp.replace(' ', '|');
+
+    QStringList nodes = tmp.simplified().split('|');
+    QStringListIterator inodes(nodes);
+    inodes.toBack();
+    while (inodes.hasPrevious()) {
+        const QString &node = inodes.previous();
+        if (node.isEmpty())
+            continue;
+        prepend(SelectorNode(node, sensitivity));
+    }
+}
+
+/*!
+  \internal
+  Converts a style path back to selector string.
+*/
+QString Selector::toString() const
+{
+    QString result;
+
+    QListIterator<SelectorNode> i(*this);
+    while (i.hasNext()) {
+        SelectorNode node = i.next();
+        result += ' ' + node.toString();
+    }
+    result.replace(" >", ">");
+    return result.simplified();
+}
+
+/*!
   \internal
   Hash key for Selector. Uses QString's hash function.
   */
 uint qHash(const Selector &key)
 {
-    return qHash(ThemeEnginePrivate::selectorToString(key));
+    return qHash(key.toString());
 }
 
 
