@@ -231,62 +231,18 @@ ItemStyleAttached *ThemeEnginePrivate::attachedStyle(QObject *obj)
     return qobject_cast<ItemStyleAttached*>(attached);
 }
 
-
-/*!
-  \internal
-  Converts a style path back to selector string.
-*/
-QString ThemeEnginePrivate::selectorToString(const Selector &path)
-{
-    QString result;
-    Q_FOREACH (SelectorNode node, path) {
-        result += ' ' + node.toString();
-    }
-    result.replace(" >", ">");
-    return result.simplified();
-}
-
 /*!
   \internal
   Parses and returns the path described by \a selector as a list of
-  class and name pairs.
-  Current support (ref: www.w3.org/TR/selector.html):
-    - Type selectors, e.g: "Button"
-    - Descendant selectors, e.g: "Dialog Button"
-    - Child selectors, e.g: "Dialog>Button"
-    - ID selectors, e.g: "Button#mySpecialButton"
-    - Grouping, e.g: "Button#foo, Checkbox, #bar"
+  class and name pairs. Supports selector grouping (separated with commas).
   */
 QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity)
 {
     QList<Selector> pathList;
     QStringList groupList = selectorString.split(",");
 
-    Q_FOREACH (QString group, groupList) {
-        Selector selector;
-        group = group.simplified();
-        // prepare for split
-        if (group.contains('>')) {
-            group.replace(QRegularExpression(" (>) "), ">").replace('>', "|>");
-        }
-        group.replace(' ', '|');
-
-        QStringList nodes = group.simplified().split('|');
-        QStringListIterator inodes(nodes);
-        inodes.toBack();
-        while (inodes.hasPrevious()) {
-            const QString &node = inodes.previous();
-            if (node.isEmpty())
-                continue;
-            selector.prepend(SelectorNode(node, sensitivity));
-            if (!selector[0].derives.isEmpty() && selector.length() > 1) {
-                // no reason to specify derivates if the selector node is not the leaf.
-                qmlInfo(themeEngine)
-                        << "Inheritance is only considered for the last node of a selector path: [" << node << "] in selector " << group;
-                selector[0].derives.clear();
-            }
-        }
-        pathList.append(selector);
+    Q_FOREACH (const QString &group, groupList) {
+        pathList.append(Selector(group, sensitivity));
     }
     return pathList;
 }

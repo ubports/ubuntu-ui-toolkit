@@ -21,6 +21,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QString>
+#include <QtCore/QList>
 
 // node of a selector
 class SelectorNode {
@@ -44,7 +45,15 @@ class SelectorNode {
 };
 
 // selector type
-typedef QList<SelectorNode> Selector;
+class Selector : public QList<SelectorNode> {
+public:
+    inline Selector() {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
+    virtual ~Selector() {}
+    QString toString() const;
+};
+Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
 
 // style rule tree
