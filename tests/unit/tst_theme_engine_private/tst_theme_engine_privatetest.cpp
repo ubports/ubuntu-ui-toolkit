@@ -197,6 +197,7 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     path << SelectorNode("testB", "", SelectorNode::Descendant);
     path << SelectorNode("baseA", "", SelectorNode::Descendant);
     rule = engine->styleRuleForPath(path);
+    QVERIFY2(rule != 0, "Rule not found.");
     // should fail
     result = (rule != 0) && (rule->path() != path);
     QCOMPARE(result, true);

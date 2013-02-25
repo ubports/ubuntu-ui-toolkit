@@ -61,7 +61,7 @@ const char *stylePropertyFormat = \
   searching in the selector hash for the base selectors (subsets of the current
   selector).
 */
-void normalizeSelector(Selector &selector)
+void resetSelector(Selector &selector)
 {
     for (int i = 0; i < selector.count(); i++)
         selector[i].sensitivity = SelectorNode::Normal;
@@ -385,8 +385,10 @@ void QmlThemeLoader::normalizeSelector(const Selector &selector)
     }
     // need to check only the last node from the selector path
     Selector subset = selectorSubset(selector, 1);
-    if (updateRuleProperties(subset, propertyMap))
+    if (updateRuleProperties(subset, propertyMap)) {
+        propertyMap.normalized = true;
         selectorTable.insert(selector, propertyMap);
+    }
 }
 
 
@@ -486,8 +488,8 @@ bool QmlThemeLoader::generateStyleQml()
 
         buildStyleAndDelegate(selector, propertyMap.properties, styleQml, delegateQml);
 
-        // normalize selector so we build the Rule with the proper one
-        normalizeSelector(selector);
+        // reset selector so we build the Rule with the proper one
+        resetSelector(selector);
 
         QQmlComponent *style = createComponent(m_engine, styleQml);
         QQmlComponent *delegate = createComponent(m_engine, delegateQml);
