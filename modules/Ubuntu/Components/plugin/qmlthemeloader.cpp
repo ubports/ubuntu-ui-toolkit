@@ -377,18 +377,13 @@ void QmlThemeLoader::normalizeSelector(const Selector &selector)
     if (propertyMap.normalized)
         return;
     // not normalized yet
-    if (selector.count() == 1) {
-        // only one node, so it's normalized
-        propertyMap.normalized = true;
-        selectorTable.insert(selector, propertyMap);
-        return;
+    if (selector.count() > 1) {
+        // need to check only the last node from the selector path
+        Selector subset = selectorSubset(selector, 1);
+        updateRuleProperties(subset, propertyMap);
     }
-    // need to check only the last node from the selector path
-    Selector subset = selectorSubset(selector, 1);
-    if (updateRuleProperties(subset, propertyMap)) {
-        propertyMap.normalized = true;
-        selectorTable.insert(selector, propertyMap);
-    }
+    propertyMap.normalized = true;
+    selectorTable.insert(selector, propertyMap);
 }
 
 
