@@ -264,6 +264,7 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
 
     Q_FOREACH (QString group, groupList) {
         Selector selector;
+        group = group.simplified();
         // prepare for split
         if (group.contains('>')) {
             group.replace(QRegularExpression(" (>) "), ">").replace('>', "|>");
@@ -278,6 +279,12 @@ QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString,
             if (node.isEmpty())
                 continue;
             selector.prepend(SelectorNode(node, sensitivity));
+            if (!selector[0].derives.isEmpty() && selector.length() > 1) {
+                // no reason to specify derivates if the selector node is not the leaf.
+                qmlInfo(themeEngine)
+                        << "Inheritance is only considered for the last node of a selector path: [" << node << "] in selector " << group;
+                selector[0].derives.clear();
+            }
         }
         pathList.append(selector);
     }

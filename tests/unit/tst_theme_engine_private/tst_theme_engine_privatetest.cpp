@@ -45,6 +45,7 @@ private Q_SLOTS:
     void testCase_styleRuleForPath();
     void testCase_parseSelector();
     void testCase_selectorToString();
+    void testCase_inheritance();
 private:
     QQmlEngine *quickEngine;
     ThemeEnginePrivate *engine;
@@ -282,10 +283,33 @@ void tst_ThemeEnginePrivate::testCase_selectorToString()
     selector.clear();
     selector << SelectorNode("classA.attribute");
     selector << SelectorNode(">classB#id");
-    expected = ".classa.attribute>.classb#id";
+    expected = ".classa>.classb#id";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 }
+
+void tst_ThemeEnginePrivate::testCase_inheritance()
+{
+    engine->errorString = QString();
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
+    QCOMPARE(engine->errorString, QString());
+
+    Selector selector = engine->parseSelector(".derivate")[0];
+    StyleTreeNode *rule = engine->styleRuleForPath(selector);
+    QVERIFY2(rule, "Failure");
+    if (rule) {
+        // create style from the rule so we can check the validity of the URLs
+        QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
+        QVERIFY2(style, "FAILURE");
+
+        QString url = style->property("propertyDerivate").toString();
+        QFileInfo fi("../../resources/inheritance.qmltheme");
+        QCOMPARE(url, fi.absoluteFilePath());
+
+        style->deleteLater();
+    }
+}
+
 
 QTEST_MAIN(tst_ThemeEnginePrivate)
 

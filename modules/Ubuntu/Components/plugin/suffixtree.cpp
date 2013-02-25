@@ -61,6 +61,12 @@ SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensit
     } else if (styleClass[0] == '.')
         styleClass = styleClass.mid(1);
     styleClass = styleClass.toLower();
+    // check whether the selector derives from any other node
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
 }
 
 /*!

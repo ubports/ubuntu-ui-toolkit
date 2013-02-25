@@ -1,0 +1,30 @@
+.baseA {
+    propertyBaseA: "baseA";
+}
+
+.baseB {
+    propertyBaseB: "baseB";
+}
+
+.derivate.baseA {
+    propertyDerivate: "derivate";
+}
+
+.derivate2.derivate {
+    propertyBaseA: "derivate2";
+}
+
+.multiple.baseA.baseB {
+}
+
+.multiple2.baseA.derivate {
+    propertyMultiple2: "multiple2";
+}
+
+.multiple3.derivate2.baseB {
+    propertyDerivate: "multiple3";
+}
+
+.restore.derivate2.baseA {
+    // baseA should bring back the propertyBaseA value
+}
