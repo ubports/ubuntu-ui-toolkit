@@ -32,7 +32,7 @@ class SelectorNode {
         IgnoreStyleId = 0x02,
         IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship = Descendant, NodeSensitivity sensitivity = Normal);
+    SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
     QString toString() const;
     bool operator==(const SelectorNode &other);
     QString className;

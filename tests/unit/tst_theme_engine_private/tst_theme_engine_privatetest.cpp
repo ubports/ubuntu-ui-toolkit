@@ -161,41 +161,41 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     StyleTreeNode *rule;
     Selector path, expected;
 
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path << SelectorNode(".baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
-    path << SelectorNode("testA", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path << SelectorNode("testA");
+    path << SelectorNode("baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
-    path << SelectorNode("testA", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Child);
-    expected << SelectorNode("testA", "", SelectorNode::Descendant);
-    expected << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path << SelectorNode("testA");
+    path << SelectorNode(">baseA");
+    expected << SelectorNode("testA");
+    expected << SelectorNode("baseA");
     rule = engine->styleRuleForPath(path);
     // should pass, but should be ".testA .baseA"
     result = (rule != 0) && (rule->path() == expected);
     QCOMPARE(result, true);
 
     path.clear();
-    path << SelectorNode("testB", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Child);
+    path << SelectorNode("testB");
+    path << SelectorNode(">baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
     path.clear();
-    path << SelectorNode("testB", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path << SelectorNode("testB");
+    path << SelectorNode("baseA");
     rule = engine->styleRuleForPath(path);
     QVERIFY2(rule != 0, "Rule not found.");
     // should fail
@@ -210,8 +210,8 @@ void tst_ThemeEnginePrivate::testCase_parseSelector()
     // build selector path
     QList<Selector> selectors = engine->parseSelector(".testB .baseA");
     Selector expected, expected2;
-    expected << SelectorNode("testB", "", SelectorNode::Descendant);
-    expected << SelectorNode("baseA", "", SelectorNode::Descendant);
+    expected << SelectorNode("testB");
+    expected << SelectorNode("baseA");
     // should match
     bool result = (selectors.count() == 1) && (selectors[0] == expected);
     QCOMPARE(result, true);
@@ -222,22 +222,22 @@ void tst_ThemeEnginePrivate::testCase_parseSelector()
     QCOMPARE(result, true);
 
     expected.clear();
-    expected << SelectorNode("root", "id", SelectorNode::Descendant);
-    expected << SelectorNode("testB", "", SelectorNode::Child);
-    expected << SelectorNode("baseB", "", SelectorNode::Descendant);
+    expected << SelectorNode("root#id");
+    expected << SelectorNode(">testB");
+    expected << SelectorNode("baseB");
     selectors = engine->parseSelector(".root#id .testB > .baseA");
     // should not match!
     result = (selectors.count() == 1) && !(selectors[0] == expected);
     QCOMPARE(result, true);
 
-    selectors = engine->parseSelector(".root#id > .testB .baseB");
+    selectors = engine->parseSelector(".root#id>.testB .baseB");
     // should match
     result = (selectors.count() == 1) && (selectors[0] == expected);
     QCOMPARE(result, true);
 
     selectors = engine->parseSelector(".root#id > .testB .baseB, .oneNode.bing .baseC");
-    expected2 << SelectorNode("oneNode.bing", "", SelectorNode::Descendant);
-    expected2 << SelectorNode("baseC", "", SelectorNode::Descendant);
+    expected2 << SelectorNode("oneNode.bing");
+    expected2 << SelectorNode("baseC");
     result = (selectors.count() == 2) &&
             (selectors[0] == expected) &&
             (selectors[1] == expected2);
@@ -252,37 +252,37 @@ void tst_ThemeEnginePrivate::testCase_selectorToString()
     QString expected;
 
     selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Descendant);
+    selector << SelectorNode("classA");
+    selector << SelectorNode("classB");
     expected = ".classa .classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Child);
-    expected = ".classa > .classb";
+    selector << SelectorNode("classA");
+    selector << SelectorNode(">classB");
+    expected = ".classa>.classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
-    selector << SelectorNode("classA", "id", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Descendant);
+    selector << SelectorNode("classA#id");
+    selector << SelectorNode("classB");
     expected = ".classa#id .classb";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classa > .classb#id";
+    selector << SelectorNode("classA");
+    selector << SelectorNode(">classB#id");
+    expected = ".classa>.classb#id";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 
     selector.clear();
-    selector << SelectorNode("classA.attribute", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classa.attribute > .classb#id";
+    selector << SelectorNode("classA.attribute");
+    selector << SelectorNode(">classB#id");
+    expected = ".classa.attribute>.classb#id";
     result = engine->selectorToString(selector) == expected;
     QCOMPARE(result, true);
 }

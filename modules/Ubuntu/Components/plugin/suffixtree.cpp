@@ -36,16 +36,31 @@ SelectorNode::SelectorNode() :
     relationship(Descendant),
     sensitivity(Normal)
 {}
+
 /*!
     \internal
-    Creates an instance of a SelectorNode with a given class, name
-    and relationship. The sensitivity parameter configures the node so that during
-    string conversion and comparison ignores the relationship, the name
-    both or none. This feature is used when building up QmlTheme selectorTable.
+    Creates an instance of a SelectorNode by parsing the selectorString. The
+    sensitivity parameter configures the node so that during string conversion
+    and comparison ignores the relationship, the name both or none. This feature
+    is used when building up QmlTheme selectorTable.
 */
-SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
-    styleClass(styleClass.toLower()), styleId(styleId.toLower()), relationship(relationship), sensitivity(sensitivity)
+SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensitivity) :
+    relationship(Descendant), sensitivity(sensitivity)
 {
+    styleClass = selectorString;
+    if (styleClass.startsWith('>')) {
+        relationship = Child;
+        styleClass.remove('>');
+    }
+    int idIndex = styleClass.indexOf('#');
+    if (idIndex != -1) {
+        styleId = styleClass.mid(idIndex + 1).toLower();
+        styleClass = styleClass.left(idIndex);
+        if (idIndex > 1 && styleClass[0] == '.')
+            styleClass = styleClass.mid(1, idIndex - 1);
+    } else if (styleClass[0] == '.')
+        styleClass = styleClass.mid(1);
+    styleClass = styleClass.toLower();
 }
 
 /*!
@@ -58,7 +73,7 @@ QString SelectorNode::toString() const
     QString result;
     if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
             (relationship == SelectorNode::Child))
-        result += "> ";
+        result += ">";
     if (!styleClass.isEmpty())
         result += "." + styleClass;
     else if (!className.isEmpty()) {
@@ -91,7 +106,7 @@ uint qHash(const Selector &key)
 
 
 StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
-    parent(parent), styleNode("", "", SelectorNode::Descendant), style(0), delegate(0)
+    parent(parent), style(0), delegate(0)
 {
 }
 
