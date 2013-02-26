@@ -167,6 +167,7 @@ Examples:
     backgroundSource: url("artwork/background_paper.png");
     separatorSource: url("artwork/PageHeaderBaseDividerLight.sci");
     separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
+    margins: units.gu(2);
 }
 
 .header .label {

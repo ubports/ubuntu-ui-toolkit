@@ -68,9 +68,9 @@ Item {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
+                margins: itemStyle.margins
             }
             text: item.title
-//            opacity: 0.1
         }
     }
 }

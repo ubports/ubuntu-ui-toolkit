@@ -37,4 +37,5 @@ QtObject {
 //    property real headerTextRightMargin
 //    property real headerTextBottomMargin
 
+    property real margins
 }
