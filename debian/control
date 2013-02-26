@@ -28,6 +28,9 @@ Depends: libqt5graphicaleffects5,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: qt-components-ubuntu
+Replaces: qt-components-ubuntu
+Provides: qt-components-ubuntu
 Description: Qt Components for Ubuntu - QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -39,6 +42,9 @@ Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: qt-components-ubuntu
+Replaces: qt-components-ubuntu
+Provides: qt-components-ubuntu
 Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -51,6 +57,9 @@ Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: qt-components-ubuntu-doc
+Replaces: qt-components-ubuntu-doc
+Provides: qt-components-ubuntu-doc
 Description: Qt Components for Ubuntu - documentation
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -65,6 +74,9 @@ Depends: qmlscene,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: qt-components-ubuntu-demos
+Replaces: qt-components-ubuntu-demos
+Provides: qt-components-ubuntu-demos
 Description: Qt Components for Ubuntu - demos
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -81,6 +93,9 @@ Depends: qmlscene,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
+Conflicts: qt-components-ubuntu-examples
+Replaces: qt-components-ubuntu-examples
+Provides: qt-components-ubuntu-examples
 Description: Qt Components for Ubuntu - examples
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
