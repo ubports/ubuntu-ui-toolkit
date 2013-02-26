@@ -116,7 +116,7 @@ Item {
             previousContentY = selectedFlickable.contentY;
         }
 
-        /*!
+     /*!
       Fully show or hide the header, depending on its current y.
      */
         function movementEnded() {
