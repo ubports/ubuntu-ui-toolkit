@@ -67,7 +67,7 @@ import "stack.js" as Stack
     \endqml
 */
 
-Item {
+Page {
     id: pageStack
 
     /*!
@@ -93,6 +93,8 @@ Item {
      */
     property Item currentPage
 
+    title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
+
     /*!
       \internal
       The instance of the stack from javascript
@@ -104,7 +106,8 @@ Item {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
+//    property ToolbarActions
+    tools: currentPage && currentPage.hasOwnProperty("tools")
                                && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */

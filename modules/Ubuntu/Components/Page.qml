@@ -73,7 +73,8 @@ Item {
       The \l PageStack that this Page has been pushed on, or null if it is not
       part of a PageStack. This value is automatically updated by the \l PageStack.
      */
-    property PageStack pageStack
+//    property PageStack pageStack
+    property var pageStack
 
     /*!
       \preliminary
