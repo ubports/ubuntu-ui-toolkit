@@ -3,7 +3,7 @@ Upstream-Name: ubuntu-ui-toolkit
 Source: https://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Files: *
-Copyright: 2012 Canonical Ltd.
+Copyright: 2012-2013 Canonical Ltd.
 License: LGPL-3.0
 
 License: LGPL-3.0
