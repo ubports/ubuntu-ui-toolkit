@@ -35,8 +35,8 @@ class SelectorNode {
         IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
     SelectorNode();
     SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
-    void setStyleClasses(const QString &value);
-    QString styleClasses() const;
+    void setMultipleClasses(const QString &value);
+    QString multipleClasses() const;
     QString toString(bool appendDerivates = false) const;
     bool operator==(const SelectorNode &other);
     QString className;

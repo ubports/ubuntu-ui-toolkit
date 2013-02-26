@@ -73,7 +73,7 @@ SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensit
  * \internal
  * Updates style class from ItemStyle.
  */
-void SelectorNode::setStyleClasses(const QString &value)
+void SelectorNode::setMultipleClasses(const QString &value)
 {
     // replace spaces with dots
     styleClass = value.toLower().simplified();
@@ -91,7 +91,7 @@ void SelectorNode::setStyleClasses(const QString &value)
  * Returns the style class and its derivates in one string that is presentable
  * to QML.
  */
-QString SelectorNode::styleClasses() const
+QString SelectorNode::multipleClasses() const
 {
     return QString(styleClass + derives).replace('.', ' ');
 }

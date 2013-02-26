@@ -436,7 +436,7 @@ void ItemStyleAttached::setName(const QString &name)
 QString ItemStyleAttached::styleClass() const
 {
     Q_D(const ItemStyleAttached);
-    return d->styleData.styleClasses();
+    return d->styleData.multipleClasses();
 }
 /*!
   Sets the class property value.
@@ -445,7 +445,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
     Q_D(ItemStyleAttached);
     if (d->styleData.styleClass.compare(styleClass, Qt::CaseInsensitive)) {
-        d->styleData.setStyleClasses(styleClass);
+        d->styleData.setMultipleClasses(styleClass);
         d->listenThemeEngine();
         if (d->updateStyleSelector())
             d->updateCurrentStyle();
