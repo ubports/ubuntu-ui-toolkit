@@ -1,1 +1,4 @@
 usr/lib/ubuntu-ui-toolkit/examples
+usr/lib/ubuntu-ui-toolkit/demos
+usr/share/applications
+usr/share/locale/*/LC_MESSAGES

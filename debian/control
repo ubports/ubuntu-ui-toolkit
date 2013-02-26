@@ -66,23 +66,6 @@ Description: Qt Components for Ubuntu - documentation
  .
  This package contains developer documentation.
 
-Package: ubuntu-ui-toolkit-demos
-Section: devel
-Architecture: any
-Depends: qmlscene,
-         qtdeclarative5-ubuntu-ui-toolkit-plugin,
-         ubuntu-ui-toolkit-theme,
-         ${misc:Depends},
-         ${shlibs:Depends},
-Conflicts: qt-components-ubuntu-demos
-Replaces: qt-components-ubuntu-demos
-Provides: qt-components-ubuntu-demos
-Description: Qt Components for Ubuntu - demos
- Qt Components for Ubuntu offers a set of reusable user interface
- components for Qt Quick 2 / QML.
- .
- This package contains the component demos.
-
 Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
@@ -93,14 +76,14 @@ Depends: qmlscene,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
-Conflicts: qt-components-ubuntu-examples
-Replaces: qt-components-ubuntu-examples
-Provides: qt-components-ubuntu-examples
-Description: Qt Components for Ubuntu - examples
+Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Description: Qt Components for Ubuntu - demos and examples
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
- This package contains the example applications.
+ This package contains the component demos and example applications.
 
 Package: ubuntu-sdk
 Section: devel
