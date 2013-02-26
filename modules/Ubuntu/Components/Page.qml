@@ -80,4 +80,26 @@ Item {
       The list of actions associated with this Page.
      */
     property ToolbarActions tools
+
+    onParentChanged: internal.updateHeader();
+    onTitleChanged: internal.updateHeader();
+    QtObject {
+        id: internal
+        function updateHeader() {
+            var mainView = findMainView();
+            if (mainView) {
+                mainView.header.title = page.title;
+            }
+        }
+
+        function findMainView() {
+            var item = page.parent;
+            var mainView = null;
+            while (item && !mainView) {
+                if (item.hasOwnProperty("__isMainView") && item.__isMainView) mainView = item;
+                item = item.parent;
+            }
+            return mainView;
+        }
+    }
 }

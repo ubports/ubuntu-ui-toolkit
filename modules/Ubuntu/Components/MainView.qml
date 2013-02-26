@@ -84,9 +84,9 @@ Item {
         anchors.fill: parent
     }
 
+    property alias header: header
     Header {
         id: header
-        title: "tadaa"
     }
 
     // TODO: get rid of this
@@ -119,4 +119,10 @@ Item {
         } else if (__hud)
             __hud.destroy();
     }
+
+    /*!
+      \internal
+      Internal helper property to indicate that this is a MainView
+     */
+    property bool __isMainView: true
 }

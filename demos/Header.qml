@@ -35,7 +35,7 @@ Template {
 
             Page {
                 anchors.fill: parent
-                title: i18n.tr("Header demo")
+                title: i18n.tr("Title")
 
                 Flickable {
                     id: flickable
