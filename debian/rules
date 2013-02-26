@@ -5,4 +5,4 @@
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 
 %:
-	dh $@ --fail-missing
+	dh $@ --list-missing
