@@ -71,15 +71,6 @@ Page {
     id: pageStack
 
     /*!
-      \internal
-      Show a header bar at the top of the page stack which shows a back button
-      to pop the top, and the title of the current page on top.
-     */
-    // TODO: Decide on our approach to Toolbars. For now, we always show a
-    // header toolbar, but it is not part of the public API.
-    property alias __showHeader: header.visible
-
-    /*!
       \preliminary
       The current size of the stack
      */
@@ -106,7 +97,7 @@ Page {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-//    property ToolbarActions
+//    property ToolbarActions // TODO: remove
     tools: currentPage && currentPage.hasOwnProperty("tools")
                                && currentPage.tools ? currentPage.tools : __defaultTools
 
@@ -189,7 +180,7 @@ Page {
         pageStack.depth = stack.size();
         if (pageStack.depth > 0) currentPage = stack.top().object;
         else currentPage = null;
-        contents.updateHeader();
+//        contents.updateHeader();
     }
 
     Item {
@@ -199,36 +190,37 @@ Page {
 
         Item {
             id: pageContents
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                top: header.visible ? header.bottom : parent.top
-            }
+            anchors.fill: parent
+//            anchors {
+//                left: parent.left
+//                right: parent.right
+//                bottom: parent.bottom
+//                top: header.visible ? header.bottom : parent.top
+//            }
         }
 
         // The header comes after the contents to ensure its z-order is higher.
         // This ensures flickable contents never overlap the header,
         // without having to resort to clipping.
-        Header {
-            id: header
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-            }
-            height: units.gu(5)
-        }
+//        Header {
+//            id: header
+//            anchors {
+//                left: parent.left
+//                right: parent.right
+//                top: parent.top
+//            }
+//            height: units.gu(5)
+//        }
 
-        function updateHeader() {
-            var stackSize = stack.size();
-            if (stackSize > 0) {
-                var item = stack.top().object;
-                if (item.__isPage === true) header.title = item.title;
-                else header.title = "";
-            } else {
-                header.title = "";
-            }
-        }
+//        function updateHeader() {
+//            var stackSize = stack.size();
+//            if (stackSize > 0) {
+//                var item = stack.top().object;
+//                if (item.__isPage === true) header.title = item.title;
+//                else header.title = "";
+//            } else {
+//                header.title = "";
+//            }
+//        }
     }
 }
