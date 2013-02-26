@@ -364,10 +364,13 @@
   \endcode
 
   \section2 Inheritance
+  One aspect that differs radically from CSS is the ability to derive selectors.
   Selectors can be built to use previous declared selectors. When so, the new
   selectors will "inherit" the properties of all derived ones. The syntax of such
-  inheritance is selector[.base-selector]*. The new selector can be referred without
-  its derivates.
+  inheritance is \b{derived-selector[.base-selector]*}. The new selector can be referred without
+  its derivates within the theme file, however widgets must specify all the classes
+  the selector is derived from in the same order as defined in th etheme (see
+  example below).
   The following example defines two button styles, one deriving from the other,
   and derived one overriding one property of its base style.
 
@@ -381,28 +384,32 @@
   .red-button.button {
       pressedColor: "red";
   }
+  // define one more property for red-button
+  .red-button {
+      moreProperty: "extra";
+  }
   \endcode
 
   Somewhere in QML...
   \qml
   Button {
       text: "Normal"
-      ItemStyle.class: "button"
   }
   Button {
       text: "Normal"
-      ItemStyle.class: "red-button"
+      // style must specify the entire selector chain with space separators
+      ItemStyle.class: "red-button button"
   }
   \endqml
-  The selector properties are built up in the following order:
+  The derived selector properties are built up in the following order:
   \list
-  \li properties from the derived selectors are collected in order of their appearance
-  in the derivates list
-  \li the properties from the next derived base overrides the previous values of
-  the same property
-  \li the local properties override any previous declaration of the same property
+  \li properties from the base selectors are collected in the order of appearance
+  in the derivates list;
+  \li the next base selector properties override any previous occurence of the
+  same named properties;
+  \li the local properties override any previous declaration of the same property;
   \li properties from previous definitions of the same selector are added without
-  overriding the existing values
+  overriding the existing values.
   \endlist
   The following example illustrates building the properties
   \code
@@ -438,7 +445,7 @@
       hoveredColor: "green";
       pressedColor: "gray";
   }
-  .button.color {
+  .button.colors {
       color: item.hovered ? hoveredColor : "lightgray";
       background: url(someimage.png);
   }

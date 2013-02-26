@@ -31,10 +31,13 @@ class SelectorNode {
         Normal = 0,
         IgnoreRelationship = 0x01,
         IgnoreStyleId = 0x02,
-        IgnoreAll = IgnoreRelationship | IgnoreStyleId};
+        IgnoreDerivates = 0x04,
+        IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
     SelectorNode();
     SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
-    QString toString() const;
+    void setStyleClasses(const QString &value);
+    QString styleClasses() const;
+    QString toString(bool appendDerivates = false) const;
     bool operator==(const SelectorNode &other);
     QString className;
     QString styleClass;
@@ -51,7 +54,7 @@ public:
     inline Selector(const Selector& s) : QList<SelectorNode>(s){}
     Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
     virtual ~Selector() {}
-    QString toString() const;
+    QString toString(bool appendDerivates = true) const;
 };
 Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
