@@ -40,8 +40,10 @@ Description: Qt Components for Ubuntu - QML plugin
 Package: ubuntu-ui-toolkit-theme
 Architecture: all
 Multi-Arch: foreign
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Replaces: qt-components-ubuntu
 Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -52,6 +54,7 @@ Package: ubuntu-ui-toolkit-doc
 Section: doc
 Architecture: all
 Multi-Arch: foreign
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu-doc
