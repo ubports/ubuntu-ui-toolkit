@@ -97,6 +97,7 @@ Item {
             var item = page.parent;
             var mainView = null;
             while (item && !mainView) {
+                if (item.hasOwnProperty("__isPage") && item.__isPage) break;
                 if (item.hasOwnProperty("__isMainView") && item.__isMainView) mainView = item;
                 item = item.parent;
             }
