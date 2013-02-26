@@ -86,10 +86,9 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     m_pressed(false),
     m_moved(false),
     m_propagateEvents(false),
-    m_pressedButtons(Qt::NoButton),
     m_acceptedButtons(Qt::LeftButton),
-    m_lastPos(-1, -1),
-    m_sensingArea(QuickUtils::instance().rootObject())
+    m_sensingArea(QuickUtils::instance().rootObject()),
+    m_event(new QMouseEvent(QEvent::None, QPointF(), Qt::NoButton, Qt::NoButton, Qt::NoModifier))
 {
     setAcceptedMouseButtons(m_acceptedButtons);
     setFiltersChildMouseEvents(true);
@@ -99,7 +98,17 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
 
     if (!m_sensingArea)
         QObject::connect(&QuickUtils::instance(), SIGNAL(rootObjectChanged()), this, SLOT(update()));
+
+    QGuiApplication::instance()->installEventFilter(this);
 }
+
+InverseMouseAreaType::~InverseMouseAreaType()
+{
+    if (m_event)
+        delete m_event;
+    m_event = 0;
+}
+
 
 /*!
   \internal
@@ -108,8 +117,9 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
 void InverseMouseAreaType::update()
 {
     // update sensing area
-    sensing();
-    if (!isEnabled())
+    if (!m_sensingArea)
+        m_sensingArea = QuickUtils::instance().rootObject();
+    if (!isEnabled() || !isVisible())
         reset();
 }
 
@@ -164,7 +174,7 @@ void InverseMouseAreaType::setAcceptedButtons(Qt::MouseButtons buttons)
  */
 Qt::MouseButtons InverseMouseAreaType::pressedButtons() const
 {
-    return m_pressedButtons;
+    return m_event->buttons();
 }
 
 /*!
@@ -269,37 +279,32 @@ void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
 void InverseMouseAreaType::reset()
 {
     m_pressed = m_moved = false;
-    m_lastPos = QPointF();
-    m_pressedButtons = Qt::NoButton;
-}
-
-QQuickItem *InverseMouseAreaType::sensing()
-{
-    if (!m_sensingArea)
-        m_sensingArea = QuickUtils::instance().rootObject();
-    return m_sensingArea;
+    *m_event = QMouseEvent(QEvent::None, QPointF(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 }
 
 /*!
-  \internal
-  Maps the mouse point to the sensing area.
+ * \internal
+ * Saves the mouse event.
  */
-QPointF InverseMouseAreaType::mapToSensingArea(const QPointF &point)
+void InverseMouseAreaType::saveEvent(const QMouseEvent &event)
 {
-    return (sensing()) ? sensing()->mapFromScene(point) : QPointF();
+    *m_event = event;
 }
 
 /*!
-  \internal
-  Checks whether a point is included in the sensing area
+ * \internal
+ * Emits a signal asynchronously no matter of how it is being connected.
  */
-bool InverseMouseAreaType::pointInSensingArea(const QPointF &point)
+void InverseMouseAreaType::asyncEmit(SignalType signal, bool isClick, bool wasHeld)
 {
-    QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-    bool pointInArea = contains(mapFromScene(point));
-    bool pointInOSK = oskRect.contains(QuickUtils::instance().rootObject()->mapFromScene(point));
-    bool pointOutArea = (sensing() && sensing()->contains(sensing()->mapFromScene(point)));
-    return !pointInArea && !pointInOSK && pointOutArea;
+    // slight optimization, don't allocate event if the signal is not connected
+    QMetaMethod metaSignal = QMetaMethod::fromSignal(signal);
+    if (isSignalConnected(metaSignal)) {
+        QQuickMouseEvent *ev = new QQuickMouseEvent(m_event->x(), m_event->y(),
+                                                    m_event->button(), m_event->buttons(), m_event->modifiers(),
+                                                    isClick, wasHeld);
+        metaSignal.invoke(this, Qt::QueuedConnection, Q_ARG(QQuickMouseEvent*, ev));
+    }
 }
 
 /*!
@@ -308,19 +313,17 @@ bool InverseMouseAreaType::pointInSensingArea(const QPointF &point)
  */
 bool InverseMouseAreaType::mousePress(QMouseEvent *event)
 {
-    m_pressed = pointInSensingArea(event->windowPos());
+    // events' positions are all in screen coordinates as we filter App events straight.
+    m_pressed = contains(mapFromScene(event->windowPos()));
     if (m_pressed && !(event->button() & m_acceptedButtons))
         m_pressed = false;
     if (m_pressed) {
-        m_pressedButtons = event->buttons();
-        m_lastPos = mapToSensingArea(event->windowPos());
+        saveEvent(*event);
         Q_EMIT pressedChanged();
         Q_EMIT pressedButtonsChanged();
-        QQuickMouseEvent me(m_lastPos.x(), m_lastPos.y(), event->button(), event->buttons(), event->modifiers(), true, false);
-        Q_EMIT pressed(&me);
-        if (!m_propagateEvents)
-            event->accept();
-        return !m_propagateEvents;
+        asyncEmit(&InverseMouseAreaType::pressed);
+        event->setAccepted(!m_propagateEvents);
+        return true;
     }
     return false;
 }
@@ -331,21 +334,12 @@ bool InverseMouseAreaType::mousePress(QMouseEvent *event)
  */
 bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
 {
-    QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-    // check if any of the points fall into the area
-    Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-        m_pressed = pointInSensingArea(point.scenePos());
-        if (m_pressed) {
-            m_pressedButtons = Qt::LeftButton;
-            m_lastPos = mapToSensingArea(point.scenePos());
-            Q_EMIT pressedChanged();
-            Q_EMIT pressedButtonsChanged();
-            QQuickMouseEvent me(m_lastPos.x(), m_lastPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, true, false);
-            Q_EMIT pressed(&me);
-            if (!m_propagateEvents)
-                event->accept();
-            return !m_propagateEvents;
-        }
+    // check only the first touch point
+    QTouchEvent::TouchPoint point = event->touchPoints()[0];
+    QMouseEvent mev(QEvent::MouseButtonPress, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    if (mousePress(&mev)) {
+        event->setAccepted(mev.isAccepted());
+        return true;
     }
     return false;
 }
@@ -357,25 +351,22 @@ bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
  */
 bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
 {
-    bool consume = !m_propagateEvents;
-    if (m_pressed && pointInSensingArea(event->windowPos())) {
+    bool consume = true;
+    if (m_pressed && contains(mapFromScene(event->windowPos()))) {
         // released outside (inside the sensing area)
-        QPointF mappedPos = mapToSensingArea(event->windowPos());
+        saveEvent(*event);
         m_pressed = false;
-        m_pressedButtons = Qt::NoButton;
-        QQuickMouseEvent me(mappedPos.x(), mappedPos.y(), event->button(), event->buttons(), event->modifiers(), false, false);
-        Q_EMIT released(&me);
+        asyncEmit(&InverseMouseAreaType::released, !m_moved);
         Q_EMIT pressedChanged();
         if (!m_moved)
-            Q_EMIT clicked(&me);
+            asyncEmit(&InverseMouseAreaType::clicked, true);
         m_moved = false;
     } else {
         // the release happened inside the area, which is outside of the active area
         reset();
         consume = false;
     }
-    if (consume)
-        event->accept();
+    event->setAccepted(!m_propagateEvents && consume);
     return consume;
 }
 
@@ -385,30 +376,14 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
  */
 bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
 {
-    bool consume = !m_propagateEvents;
-    QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-    // check if any of the points fall into the area
-    Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-        if (m_pressed && pointInSensingArea(point.scenePos())) {
-            QPointF mappedPos = mapToSensingArea(point.scenePos());
-            m_pressed = false;
-            m_pressedButtons = Qt::NoButton;
-            QQuickMouseEvent me(mappedPos.x(), mappedPos.y(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, false, false);
-            Q_EMIT released(&me);
-            Q_EMIT pressedChanged();
-            if (!m_moved)
-                Q_EMIT clicked(&me);
-            m_moved = false;
-            break;
-        } else {
-            // the release happened inside the area, which is outside of the active area
-            reset();
-            consume = false;
-        }
+    // check only the first touch point
+    QTouchEvent::TouchPoint point = event->touchPoints()[0];
+    QMouseEvent mev(QEvent::MouseButtonRelease, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    if (mouseRelease(&mev)) {
+        event->setAccepted(mev.isAccepted());
+        return true;
     }
-    if (consume)
-        event->accept();
-    return consume;
+    return false;
 }
 
 /*!
@@ -419,12 +394,10 @@ bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
  */
 bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 {
-    QPointF mappedPos = mapToSensingArea(event->windowPos());
-    if (m_pressed && (mappedPos != m_lastPos)) {
+    // use localPos as we saved the mapped position as
+    if (m_pressed && (event->windowPos() != m_event->localPos())) {
         m_moved = true;
-        m_lastPos = mappedPos;
-        if (!m_propagateEvents)
-            event->accept();
+        event->setAccepted(!m_propagateEvents);
     }
     return false;
 }
@@ -436,20 +409,27 @@ bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 bool InverseMouseAreaType::touchMoved(QTouchEvent *event)
 {
     if (m_pressed) {
-        QList<QTouchEvent::TouchPoint> points = event->touchPoints();
-        // check if any of the points fall into the area
-        Q_FOREACH(const QTouchEvent::TouchPoint &point, points) {
-            QPointF mappedPos = mapToSensingArea(point.scenePos());
-            if (mappedPos != m_lastPos) {
-                m_moved = true;
-                m_lastPos = mappedPos;
-                if (!m_propagateEvents)
-                    event->accept();
-                break;
-            }
-        }
+        // check only the first touch point
+        QTouchEvent::TouchPoint point = event->touchPoints()[0];
+        // use localPos as we saved the mapped position as
+        QMouseEvent mev(QEvent::MouseMove, point.pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        mouseMove(&mev);
+        event->setAccepted(mev.isAccepted());
     }
     return false;
+}
+
+/*
+ * Overrides QQuickItem's contains method. Point is in local coordinates.
+ */
+bool InverseMouseAreaType::contains(const QPointF &point) const
+{
+    QPointF scenePos = mapToScene(point);
+    QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
+    bool pointInArea = QQuickItem::contains(point);
+    bool pointInOSK = oskRect.contains(scenePos);
+    bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(scenePos)));
+    return !pointInArea && !pointInOSK && pointOutArea;
 }
 
 /*!
@@ -462,58 +442,36 @@ bool InverseMouseAreaType::eventFilter(QObject *obj, QEvent *ev)
 
     if (!isEnabled() || !isVisible())
         return false;
+
+    bool handled = false;
     switch (ev->type()) {
     case QEvent::MouseButtonPress: {
-        return mousePress(static_cast<QMouseEvent*>(ev));
+        handled = mousePress(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::MouseButtonRelease: {
-        return mouseRelease(static_cast<QMouseEvent*>(ev));
+        handled = mouseRelease(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::MouseMove: {
-        return mouseMove(static_cast<QMouseEvent*>(ev));
+        handled = mouseMove(static_cast<QMouseEvent*>(ev));
+        break;
     }
     case QEvent::TouchBegin: {
-        return touchPressed(static_cast<QTouchEvent*>(ev));
+        handled = touchPressed(static_cast<QTouchEvent*>(ev));
+        break;
     }
     case QEvent::TouchUpdate: {
-        return touchMoved(static_cast<QTouchEvent*>(ev));
+        handled = touchMoved(static_cast<QTouchEvent*>(ev));
+        break;
     }
     case QEvent::TouchEnd: {
-        return touchReleased(static_cast<QTouchEvent*>(ev));
-    }
-    default:
-        break;
-    }
-
-    return false;
-}
-
-/*!
-  \internal
-  Captures item specific changes such as scene and visible change.
- */
-void InverseMouseAreaType::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    switch (change) {
-    case ItemSceneChange: {
-        QQuickWindow *oldWindow = window();
-        if (oldWindow)
-            oldWindow->removeEventFilter(this);
-
-       reset();
-
-        if (data.window)
-            data.window->installEventFilter(this);
-        break;
-    }
-    case ItemVisibleHasChanged: {
-        if (!isVisible())
-            reset();
+        handled = touchReleased(static_cast<QTouchEvent*>(ev));
         break;
     }
     default:
         break;
     }
 
-    QQuickItem::itemChange(change, data);
+    return (handled) ? !m_propagateEvents : false;
 }

@@ -83,6 +83,7 @@ Examples:
 .toolbar {
     color: "white";
     opacity: 0.9;
+    triggerSize: units.gu(2);
     hintSize: units.gu(2);
 }
 
@@ -116,7 +117,7 @@ Examples:
     checkMarkSource: url("artwork/CheckMark.png");
     selectedImageOpacity: 1.0;
     unselectedImageOpacity: 0.4;
-    thumbSpacing: units.dp(1);
+    thumbSpacing: units.dp(2);
     checkedThumbColor: "#DD4814";
     uncheckedThumbColor: "#bbbbbb";
     thumbColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
@@ -181,6 +182,8 @@ Examples:
     dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
 }
 
 .popover .foreground {
@@ -195,6 +198,8 @@ Examples:
 
 .sheet {
     dim: false;
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -205,19 +210,32 @@ Examples:
 
 .dialog {
     dim: true;
-    dimColor: "black";
-    dimOpacity: 0.6;
+    dimColor: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    dimOpacity: 1.0;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
 }
 .dialog .foreground {
-    minimumWidth: units.gu(40);
+    minimumWidth: units.gu(38);
     minimumHeight: units.gu(32);
+    margins: units.gu(4);
+    itemSpacing: units.gu(2);
     radius: "medium";
-    color: "grey";
+    visible: QuickUtils.rootObject.width > units.gu(60);
+    color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent";
 }
-.dialog .pointer {
-    opacity: 0.9;
+.dialog .foreground .title {
+    fontSize: "large";
+    color: Qt.rgba(1, 1, 1, 0.9);
+    style: Text.Normal;
+}
+
+.dialog .foreground .label {
+    fontSize: "medium";
+    color: Qt.rgba(1, 1, 1, 0.6);
+    wrapMode: Text.Wrap;
 }
 
 /*

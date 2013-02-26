@@ -5,6 +5,7 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
                libgles2-mesa-dev,
                libglib2.0-dev,
+               libqt5graphicaleffects5,
                qt5-default,
                qtbase5-dev,
                qtdeclarative5-dev-tools,
@@ -22,7 +23,8 @@ Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: qtdeclarative5-qtquick2-plugin,
+Depends: libqt5graphicaleffects5,
+         qtdeclarative5-qtquick2-plugin,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},

@@ -658,6 +658,15 @@ FocusScope {
         editor.undo();
     }
 
+    /*!
+      \internal
+       Ensure focus propagation
+    */
+    function forceActiveFocus()
+    {
+        internal.activateEditor();
+    }
+
     // logic
     /*!\internal - to remove warnings */
     Component.onCompleted: {
@@ -733,12 +742,16 @@ FocusScope {
         function activateEditor()
         {
             if (!control.activeFocus)
-                control.forceActiveFocus();
+                editor.forceActiveFocus();
+            else
+                showInputPanel();
+
         }
 
         function showInputPanel()
         {
-            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                Qt.inputMethod.show();
         }
         function hideInputPanel()
         {

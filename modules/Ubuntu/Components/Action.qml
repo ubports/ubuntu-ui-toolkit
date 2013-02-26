@@ -55,4 +55,11 @@ QtObject {
       Enable the action. It may be visible, but disabled.
      */
     property bool enabled: true
+
+    /*!
+      Proposed Component to use as a representation for this action.
+      Depending on the component that displays the action, the Component
+      given here can replace the default representation of the action.
+     */
+    property Component itemHint
 }

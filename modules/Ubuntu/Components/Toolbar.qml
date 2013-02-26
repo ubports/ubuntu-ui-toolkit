@@ -35,6 +35,8 @@ GenericToolbar {
     Theming.ItemStyle.class: "toolbar"
 
     height: background.height
+    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
+    triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
 
     /*!
       \preliminary
@@ -42,8 +44,18 @@ GenericToolbar {
      */
     property ToolbarActions tools
     onToolsChanged: {
-        if (tools && tools.active && tools.lock) active = true;
-        else active = false;
+        if (tools && tools.active && tools.lock) {
+            // toolbar is locked in visible state.
+            internal.visibleTools = tools;
+            active = true;
+        } else if (!active && !animating) {
+            // toolbar is invisible
+            internal.visibleTools = tools;
+        } else {
+            active = false;
+            // internal.visibleTools will be updated
+            // when the hide animation is finished
+        }
     }
 
     // if tools is not specified, lock the toolbar in inactive position
@@ -54,8 +66,16 @@ GenericToolbar {
         onActiveChanged: toolbar.active = tools.active;
     }
     onActiveChanged: if (tools) tools.active = toolbar.active
+    QtObject {
+        id: internal
+        property ToolbarActions visibleTools: tools
+    }
 
-    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(1))
+    onAnimatingChanged: {
+        if (!animating && !active) {
+            internal.visibleTools = toolbar.tools;
+        }
+    }
 
     Item {
         // All visual items go into the background because only the children
@@ -81,20 +101,37 @@ GenericToolbar {
         }
     }
 
-    Button {
+    Component {
+        id: toolButtonComponent
+        Button {
+            id: toolButton
+            Theming.ItemStyle.class: "toolbar-button"
+            text: action.text
+            iconSource: action.iconSource ? action.iconSource : ""
+            onClicked: action.triggered(toolButton)
+            enabled: action.enabled
+            visible: action.visible
+            width: visible ? implicitWidth : 0
+            height: toolbar.height
+        }
+    }
+
+    Loader {
         id: backButton
-        property Action back: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        visible: back && back.visible
-        Theming.ItemStyle.class: "toolbar-button"
+        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
-        iconSource: back ? back.iconSource : ""
-        text: back ? back.text : ""
-        onClicked: back.triggered(backButton)
-        height: parent.height
+        onStatusChanged: {
+            if (item && status == Loader.Ready && action && action.itemHint) {
+                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
+                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
+                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+            }
+        }
     }
 
     Row {
@@ -109,17 +146,11 @@ GenericToolbar {
         spacing: units.gu(1)
 
         Repeater {
-            model: toolbar.tools ? toolbar.tools.children : 0
-            Button {
-                id: toolButton
-                Theming.ItemStyle.class: "toolbar-button"
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.text
-                iconSource: modelData.iconSource ? modelData.iconSource : ""
-                onClicked: modelData.triggered(toolButton)
-                enabled: modelData.enabled
-                visible: modelData.visible
-                height: parent.height
+            model: internal.visibleTools ? internal.visibleTools.children : 0
+            Loader {
+                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
+                property Action action: modelData
+                anchors.verticalCenter: toolButtonsContainer.verticalCenter
             }
         }
     }

@@ -18,62 +18,15 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    anchors {
-        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        top: parent ? parent.top : undefined
-    }
-    property real totalHeight: headerText.totalHeight + questionText.totalHeight + columnContainer.height
-    height: MathUtils.clamp(totalHeight, item.minHeight, item.maxHeight)
-    property alias contentItem: columnContainer
+    anchors.fill: parent
+    z: -1
+    visible:  StyleUtils.itemStyleProperty("visible", true)
 
     Rectangle {
         id: container
         color: StyleUtils.itemStyleProperty("color", "white")
         anchors.fill: parent
-
-        Label {
-            id: headerText
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                margins: units.gu(1)
-            }
-            property real totalHeight: height + 2*anchors.margins
-            fontSize: "large"
-            horizontalAlignment: Text.AlignHCenter
-            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            text: item.title
-        }
-
-        Label {
-            id: questionText
-            anchors {
-                top: headerText.bottom
-                left: parent.left
-                right: parent.right
-                margins: units.gu(1)
-            }
-            property real totalHeight: height + 2*anchors.margins
-            width: parent.width - 2*anchors.margins
-            fontSize: "medium"
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.Wrap
-            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            text: item.text
-        }
-
-        Item {
-            id: columnContainer
-            anchors {
-                bottom: parent.bottom
-                left: parent.left
-                right: parent.right
-                margins: units.gu(1)
-            }
-            height: childrenRect.height
-        }
+        radius: 10
     }
 
     clip: true // hide the ShaderEffectSource
@@ -81,7 +34,7 @@ Item {
         anchors.fill: parent
         image: effectSource
         radius: StyleUtils.itemStyleProperty("radius", "small")
-        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_idle.sci")
+        borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_mask.sci")
     }
 
     ShaderEffectSource {

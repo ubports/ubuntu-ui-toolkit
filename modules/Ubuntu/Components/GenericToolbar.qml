@@ -16,6 +16,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Toolkit
 
 /*!
     \internal
@@ -58,6 +59,12 @@ Item {
      */
     property real hintSize: units.gu(1)
 
+    /*!
+      The height of the mouse area used to detect edge swipes to
+      activate the toolbar.
+     */
+    property real triggerSize: units.gu(2)
+
     states: [
         State {
             name: "hint"
@@ -85,9 +92,15 @@ Item {
             PropertyChanges {
                 target: bar
                 y: bar.height
+                explicit: true
             }
         }
     ]
+
+    /*!
+      The toolbar is currently not in a stable hidden or visible state.
+     */
+    readonly property bool animating: draggingArea.pressed || (state == "" && bar.y != bar.height) || (state == "spread" && bar.y != 0)
 
     transitions: [
         Transition {
@@ -95,7 +108,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "y"
-                duration: 100
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -104,7 +117,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "y"
-                duration: 100
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -113,7 +126,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "y"
-                duration: 100
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         }
@@ -139,8 +152,10 @@ Item {
                 bottomBar.active = false;
                 bottomBar.lock = true;
             } else { // don't force hidden
-                bottomBar.active = internal.savedActive;
                 bottomBar.lock = internal.savedLock;
+                if (internal.savedLock) bottomBar.active = internal.savedActive;
+                // if the toolbar was locked, do not slide it back in
+                // until the user performs a bottom-edge-swipe.
             }
         }
     }
@@ -169,6 +184,18 @@ Item {
         y: bottomBar.active ? 0 : height
     }
 
+    Toolkit.InverseMouseArea {
+        anchors.fill: draggingArea
+        onClicked: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of lock by the clicked Item behind
+            if (!bottomBar.lock) bottomBar.active = false;
+        }
+        propagateComposedEvents: true
+        visible: bottomBar.lock == false && bottomBar.state == "spread"
+    }
+
     DraggingArea {
         orientation: Qt.Vertical
         id: draggingArea
@@ -177,7 +204,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bottomBar.active ? bar.height + units.gu(1) : units.gu(3)
+        height: bottomBar.active ? bar.height + units.gu(1) : toolbar.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !bottomBar.lock
