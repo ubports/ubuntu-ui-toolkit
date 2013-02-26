@@ -119,7 +119,7 @@ GenericToolbar {
     Loader {
         id: backButton
         property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
+        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
