@@ -42,9 +42,6 @@ Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Conflicts: qt-components-ubuntu
-Replaces: qt-components-ubuntu
-Provides: qt-components-ubuntu
 Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
