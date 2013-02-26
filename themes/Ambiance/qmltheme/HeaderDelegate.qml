@@ -53,4 +53,24 @@ Item {
         }
         source: itemStyle.separatorBottomSource
     }
+
+    Rectangle {
+        color: "transparent"
+        id: foreground
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: itemStyle.contentHeight
+
+        Label {
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+            }
+            text: item.title
+//            opacity: 0.1
+        }
+    }
 }

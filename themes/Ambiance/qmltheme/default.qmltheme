@@ -169,6 +169,12 @@ Examples:
     separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
 }
 
+.header .label {
+    fontSize: "x-large";
+    fontWeight: Font.Light;
+    color: Qt.rgba(0.51, 0.51, 0.51, 0.9);
+}
+
 .dark-button {
     color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");

@@ -75,6 +75,7 @@ Item {
     QtObject {
         id: internal
 
+        // TODO: buffer flickable and disconnect when header.flickable changes
 
         property real previousContentY: 0
         //    onSelectedTabChanged: updateFlickable()
