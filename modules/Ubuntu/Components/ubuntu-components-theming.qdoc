@@ -156,8 +156,7 @@
 
   Style rules are identified through selectors. Selectors follow
   the syntax defined by the \l{http://www.w3.org/TR/selector.html}{W3C for CSS selectors}
-  however does not provide full support. This
-  syntax is used in both QML- and QmlTheme file formats.
+  however does not provide full support.
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
@@ -361,6 +360,91 @@
       color: item.hovered ? "lightgreen" : "lightgray";
       frame: Qt.resolvedUrl("resources/button-frame.png");
       pressedColor: Qt.darker(color, 1.2);
+  }
+  \endcode
+
+  \section2 Inheritance
+  Selectors can be built to use previous declared selectors. When so, the new
+  selectors will "inherit" the properties of all derived ones. The syntax of such
+  inheritance is selector[.base-selector]*. The new selector can be referred without
+  its derivates.
+  The following example defines two button styles, one deriving from the other,
+  and derived one overriding one property of its base style.
+
+  theme.qmltheme:
+  \code
+  .button {
+      color: item.hovered ? "lightgreen" : "lightgray";
+      frame: Qt.resolvedUrl("resources/button-frame.png");
+      pressedColor: Qt.darker(color, 1.2);
+  }
+  .red-button.button {
+      pressedColor: "red";
+  }
+  \endcode
+
+  Somewhere in QML...
+  \qml
+  Button {
+      text: "Normal"
+      ItemStyle.class: "button"
+  }
+  Button {
+      text: "Normal"
+      ItemStyle.class: "red-button"
+  }
+  \endqml
+  The selector properties are built up in the following order:
+  \list
+  \li properties from the derived selectors are collected in order of their appearance
+  in the derivates list
+  \li the properties from the next derived base overrides the previous values of
+  the same property
+  \li the local properties override any previous declaration of the same property
+  \li properties from previous definitions of the same selector are added without
+  overriding the existing values
+  \endlist
+  The following example illustrates building the properties
+  \code
+  .baseA {
+      baseAProperty: "baseA";
+  }
+  // extends .baseA
+  .baseA {
+      baseAProperty2: "baseA2";
+  }
+  //define few properties
+  .derived {
+      property: "some base stuff";
+  }
+  //then derive from bases
+  .derived.baseA {
+      baseAProperty: "override";
+  }
+  \endcode
+  So, derived would have properties with the following values:
+  \list
+  \li baseAProperty: "override"
+  \li baseAProperty2: "baseA2"
+  \li property: "some base stuff"
+  \endlist
+
+  Selectors can be built of as many base selectors as needed, and selectors used
+  as base can also be derived ones. More, there can be situations when some of the
+  properties' base values are needed to be brought back.
+  \code
+  .colors {
+      color: "lightgreen";
+      hoveredColor: "green";
+      pressedColor: "gray";
+  }
+  .button.color {
+      color: item.hovered ? hoveredColor : "lightgray";
+      background: url(someimage.png);
+  }
+  // create red-button derived from button but restore properties as were defined
+  // in colors
+  .red-button.button.colors {
   }
   \endcode
 
