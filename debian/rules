@@ -5,4 +5,9 @@
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 
 %:
-	dh $@ --list-missing
+	dh $@ --fail-missing
+
+override_dh_install:
+	rm -rf debian/tmp/usr/share/locale
+	dh_install --fail-missing
+
