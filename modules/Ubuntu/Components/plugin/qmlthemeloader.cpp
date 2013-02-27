@@ -503,7 +503,7 @@ QPair<QString, QString> QmlThemeLoader::selectorMapping(const Selector &selector
     QString qmap;
     for (int count = selector.count(); count > 0; count--) {
         subset = selectorSubset(selector, count, SelectorNode::Normal);
-        qmap = ThemeEnginePrivate::selectorToString(subset);
+        qmap = subset.toString();
         if (qmlMap.contains(qmap)) {
             return qmlMap.value(qmap);
         }

@@ -206,7 +206,7 @@
   named as "red" and which are direct children of QML elements styled as class "frame"
   \code
   //QmlTheme rule
-  .frame > .Button#red {
+  .frame>.Button#red {
      ...
   }
   \endcode
