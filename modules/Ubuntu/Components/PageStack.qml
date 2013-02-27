@@ -84,9 +84,8 @@ Page {
      */
     property Item currentPage
 
-    title: "stack" //currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
+    title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
     flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
-    onFlickableChanged: print("updated flickable")
 
     /*!
       \internal
