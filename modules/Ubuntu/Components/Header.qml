@@ -72,8 +72,8 @@ Item {
 
         function connectFlickable() {
             if (previousFlickable) {
-                previousFlickable.contentYChanged.disconnect(header.scrollContents);
-                previousFlickable.movementEnded.disconnect(header.movementEnded);
+                previousFlickable.contentYChanged.disconnect(internal.scrollContents);
+                previousFlickable.movementEnded.disconnect(internal.movementEnded);
             }
 
             if (flickable) {
@@ -88,6 +88,8 @@ Item {
                 flickable.movementEnded.connect(internal.movementEnded);
             }
             previousFlickable = flickable;
+
+            header.show();
         }
 
         /*!

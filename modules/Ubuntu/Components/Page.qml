@@ -84,14 +84,22 @@ Item {
 
     onParentChanged: internal.updateHeader();
     onTitleChanged: internal.updateHeader();
+
+    /*!
+      Optional flickable that controls the header. This property
+      is automatically set if the Flickable is one of the Page's children.
+     */
+    property Flickable flickable: internal.getFlickableChild()
+    onFlickableChanged: internal.updateHeader();
     QtObject {
         id: internal
 
         function updateHeader() {
+            print("updating header for "+page.title);
             var mainView = getMainView();
             if (mainView) {
                 mainView.header.title = page.title;
-                mainView.header.flickable = getFlickableChild();
+                mainView.header.flickable = page.flickable; //getFlickableChild();
             }
         }
 
