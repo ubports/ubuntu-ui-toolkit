@@ -19,11 +19,13 @@ import Ubuntu.Components 0.1
 
 Image {
     id: container
-    anchors.centerIn: parent
+    anchors.fill: parent
     source: StyleUtils.itemStyleProperty("source", "")
     smooth: true
     visible: item.running
     fillMode: Image.PreserveAspectFit
+    horizontalAlignment: Image.AlignHCenter
+    verticalAlignment: Image.AlignVCenter
 
     NumberAnimation on rotation {
         running: item.running
