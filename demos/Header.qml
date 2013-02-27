@@ -31,7 +31,7 @@ Template {
             }
             width: units.gu(38)
             height: units.gu(50)
-            selectedFlickable: flickable
+//            selectedFlickable: flickable
 
             Page {
                 anchors.fill: parent

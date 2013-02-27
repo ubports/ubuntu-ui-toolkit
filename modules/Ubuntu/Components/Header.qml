@@ -41,7 +41,7 @@ Item {
     y: 0
 
     Behavior on y {
-        enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
+        enabled: !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
             duration: 200
         }
@@ -67,39 +67,51 @@ Item {
     //        height: units.gu(20)
     //    }
 
-    property Flickable selectedFlickable: null
-    onSelectedFlickableChanged: internal.connectFlickable()
+    property Flickable flickable: null
+    onFlickableChanged: internal.connectFlickable()
     Component.onCompleted: internal.connectFlickable()
 
     QtObject {
         id: internal
 
-        // TODO: buffer flickable and disconnect when header.flickable changes
-
         property real previousContentY: 0
         //    onSelectedTabChanged: updateFlickable()
         //    Component.onCompleted: updateFlickable()
 
+        property Flickable previousFlickable: null
+
         function connectFlickable() {
-            if (selectedFlickable) {
-                previousContentY = selectedFlickable.contentY;
-                selectedFlickable.contentYChanged.connect(internal.scrollContents);
-                selectedFlickable.movementEnded.connect(internal.movementEnded);
+            if (previousFlickable) {
+                previousFlickable.contentYChanged.disconnect(header.scrollContents);
+                previousFlickable.movementEnded.disconnect(header.movementEnded);
             }
+
+            if (flickable) {
+                // Set-up the top-margin of the contents of the Flickable so that
+                //  the contents is never hidden by the header:
+                flickable.contentY = -header.height;
+                flickable.topMargin = header.height;
+
+                // Connect moving inside the flickable to movements of the header
+                previousContentY = flickable.contentY;
+                flickable.contentYChanged.connect(internal.scrollContents);
+                flickable.movementEnded.connect(internal.movementEnded);
+            }
+            previousFlickable = flickable;
         }
 
         //    function updateFlickable() {
-        //        if (selectedFlickable) {
-        //            selectedFlickable.contentYChanged.disconnect(header.scrollContents);
-        //            selectedFlickable.movementEnded.disconnect(header.movementEnded);
+        //        if (flickable) {
+        //            flickable.contentYChanged.disconnect(header.scrollContents);
+        //            flickable.movementEnded.disconnect(header.movementEnded);
         //        }
         //        if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
-        //            selectedFlickable = selectedTab.__flickable;
-        //            previousContentY = selectedFlickable.contentY;
-        //            selectedFlickable.contentYChanged.connect(header.scrollContents);
-        //            selectedFlickable.movementEnded.connect(header.movementEnded);
+        //            flickable = selectedTab.__flickable;
+        //            previousContentY = flickable.contentY;
+        //            flickable.contentYChanged.connect(header.scrollContents);
+        //            flickable.movementEnded.connect(header.movementEnded);
         //        } else {
-        //            selectedFlickable = null;
+        //            flickable = null;
         //        }
         //    }
 
@@ -108,18 +120,18 @@ Item {
      */
         function scrollContents() {
             // Avoid updating header.y when rebounding or being dragged over the bounds.
-            if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
-                var deltaContentY = selectedFlickable.contentY - previousContentY;
+            if (!flickable.atYBeginning && !flickable.atYEnd) {
+                var deltaContentY = flickable.contentY - previousContentY;
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
             }
-            previousContentY = selectedFlickable.contentY;
+            previousContentY = flickable.contentY;
         }
 
-     /*!
+        /*!
       Fully show or hide the header, depending on its current y.
      */
         function movementEnded() {
-            if (selectedFlickable.contentY < 0) header.show();
+            if (flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();
         }

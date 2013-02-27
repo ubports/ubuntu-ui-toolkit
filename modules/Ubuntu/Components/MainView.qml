@@ -81,7 +81,12 @@ Item {
     default property alias contentsItem: contents.data
     Item {
         id: contents
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: header.flickable ? parent.top : header.bottom
+            bottom: parent.bottom
+        }
     }
 
     property alias header: header
@@ -90,7 +95,7 @@ Item {
     }
 
     // TODO: get rid of this
-    property alias selectedFlickable: header.selectedFlickable
+//    property alias selectedFlickable: header.flickable
 
     Toolbar {
         id: toolbar

@@ -73,7 +73,7 @@ Item {
       The \l PageStack that this Page has been pushed on, or null if it is not
       part of a PageStack. This value is automatically updated by the \l PageStack.
      */
-//    property PageStack pageStack
+    //    property PageStack pageStack
     property var pageStack
 
     /*!
@@ -86,14 +86,16 @@ Item {
     onTitleChanged: internal.updateHeader();
     QtObject {
         id: internal
+
         function updateHeader() {
-            var mainView = findMainView();
+            var mainView = getMainView();
             if (mainView) {
                 mainView.header.title = page.title;
+                mainView.header.flickable = getFlickableChild();
             }
         }
 
-        function findMainView() {
+        function getMainView() {
             var item = page.parent;
             var mainView = null;
             while (item && !mainView) {
@@ -102,6 +104,17 @@ Item {
                 item = item.parent;
             }
             return mainView;
+        }
+
+        function isFlickable(object) {
+            return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
+        }
+
+        function getFlickableChild() {
+            for (var i=0; i < page.children.length; i++) {
+                if (internal.isFlickable(page.children[i])) return page.children[i];
+            }
+            return null;
         }
     }
 }
