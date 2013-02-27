@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.36.1-0ubuntu1) UNRELEASED; urgency=low
+ubuntu-ui-toolkit (0.1.36.1-0ubuntu1) raring; urgency=low
 
   * debian/control:
     - drop qtpim5-dev dep on the metapackage, not supported upstream and not
