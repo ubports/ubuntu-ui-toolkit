@@ -392,13 +392,15 @@
 
   Somewhere in QML...
   \qml
-  Button {
-      text: "Normal"
-  }
-  Button {
-      text: "Normal"
-      // style must specify the entire selector chain with space separators
-      ItemStyle.class: "red-button button"
+  Item {
+      Button {
+          text: "Normal"
+      }
+      Button {
+          text: "Normal"
+          // style must specify the entire selector chain with space separators
+          ItemStyle.class: "red-button button"
+      }
   }
   \endqml
   The derived selector properties are built up in the following order:
