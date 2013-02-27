@@ -21,7 +21,15 @@ Item {
     z: -1
 
     Rectangle {
+        id: backgroundColor
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor")
+        color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    }
+
+    Image {
+        id: backgroundTexture
+        anchors.fill: parent
+        source: StyleUtils.itemStyleProperty("backgroundSource", "")
+        fillMode: Image.Tile
     }
 }

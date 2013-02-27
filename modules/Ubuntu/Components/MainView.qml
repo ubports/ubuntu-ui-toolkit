@@ -49,20 +49,13 @@ Item {
       */
     property string applicationName
 
-    // FIXME: any use of theming some times hides the children of the MainView,
-    //  so it is disabled for now. Make the background themable again after
-    //  this issue is resolved, and make sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076
-    //  does not come back
-    // FIXME: see FIXME above
-    //Theming.ItemStyle.class: "mainview"
-
-    /*!
-      \internal
-      FIXME: Make background themable.
-     */
-    Rectangle {
+    // FIXME: Make sure that the theming is only in the background, and the delegate
+    //  should not occlude contents of the MainView. When making changes here, make
+    //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
+    Item {
+        id: background
+        Theming.ItemStyle.class: "mainview"
         anchors.fill: parent
-        color: "#ededf0"
     }
 
     /*!

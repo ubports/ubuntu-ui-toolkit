@@ -29,9 +29,8 @@ Template {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: units.gu(38)
-            height: units.gu(50)
-//            selectedFlickable: flickable
+            width: units.gu(40)
+            height: units.gu(55)
 
             Page {
                 anchors.fill: parent
@@ -49,8 +48,7 @@ Template {
                     clip: true
                     anchors.fill: parent
                     contentHeight: column.height
-                    contentWidth: parent.width //* 2
-//                    flickableDirection: Flickable.VerticalFlick
+                    contentWidth: parent.width
 
                     Column {
                         id: column

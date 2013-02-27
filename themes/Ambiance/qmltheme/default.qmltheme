@@ -99,10 +99,6 @@ Examples:
     opacity: item.enabled ? 1.0 : 0.3;
 }
 
-.mainview {
-    backgroundColor: "#ededf0";
-}
-
 .transparent-button {
 }
 
@@ -159,6 +155,11 @@ Examples:
     deactivateTime: 3000;
     buttonPositioningVelocity: 1.0;
     headerTextFadeDuration: 350;
+}
+
+.mainview {
+    backgroundColor: "#ededf0";
+    backgroundSource: url("artwork/background_paper.png");
 }
 
 .header {
