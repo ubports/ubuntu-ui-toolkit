@@ -87,6 +87,12 @@ Template {
                 anchors.leftMargin: units.gu(10)
                 running: true
             }
+            ActivityIndicator {
+                anchors.leftMargin: units.gu(10)
+                running: true
+                width: units.gu(6)
+                height: units.gu(6)
+            }
         }
     }
 }

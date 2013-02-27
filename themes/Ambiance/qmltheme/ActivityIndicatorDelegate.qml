@@ -23,7 +23,10 @@ Image {
     source: StyleUtils.itemStyleProperty("source", "")
     smooth: true
     visible: item.running
-    fillMode: Image.Stretch
+    fillMode: Image.PreserveAspectFit
+    horizontalAlignment: Image.AlignHCenter
+    verticalAlignment: Image.AlignVCenter
+
     NumberAnimation on rotation {
         running: item.running
         from: 0
