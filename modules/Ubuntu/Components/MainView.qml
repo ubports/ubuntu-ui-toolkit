@@ -112,6 +112,8 @@ Item {
             if (!tools.hasOwnProperty("lock")) return null;
             return tools;
         }
+
+        onActiveChanged: if (active) header.show()
     }
 
     property QtObject __hud: null

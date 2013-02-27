@@ -38,7 +38,6 @@ Item {
         else header.hide();
     }
 
-
     anchors {
         left: parent.left
         right: parent.right

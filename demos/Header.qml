@@ -37,6 +37,13 @@ Template {
                 anchors.fill: parent
                 title: i18n.tr("Title")
 
+                tools: ToolbarActions {
+                    Action {
+                        text: "example"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                    }
+                }
+
                 Flickable {
                     id: flickable
                     clip: true
