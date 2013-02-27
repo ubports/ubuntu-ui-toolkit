@@ -84,8 +84,11 @@ Item {
         anchors {
             left: parent.left
             right: parent.right
-            top: header.flickable ? parent.top : header.bottom
             bottom: parent.bottom
+            // If there is no flickable, anchor to the bottom of the header because
+            //  it will never hide. If there is a flickable, header will set its margins
+            //  so that the page will start at the bottom of the header initially.
+            top: header.flickable ? parent.top : header.bottom
         }
     }
 
@@ -93,9 +96,6 @@ Item {
     Header {
         id: header
     }
-
-    // TODO: get rid of this
-//    property alias selectedFlickable: header.flickable
 
     Toolbar {
         id: toolbar
