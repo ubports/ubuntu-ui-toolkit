@@ -17,15 +17,18 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-AnimatedSprite {
-    width: item.width
-    height: item.height
-    anchors.centerIn: parent
+Image {
+    id: container
+    anchors.fill: parent
+    source: StyleUtils.itemStyleProperty("source", "")
+    smooth: true
     visible: item.running
-    running: item.running
-    interpolate: true
-    source: StyleUtils.itemStyleProperty("sprite", "")
-    frameWidth: StyleUtils.itemStyleProperty("frameWidth", 0)
-    frameCount: StyleUtils.itemStyleProperty("frameCount", 0)
-    frameRate: StyleUtils.itemStyleProperty("frameRate", 0)
+    fillMode: Image.Stretch
+    NumberAnimation on rotation {
+        running: item.running
+        from: 0
+        to: 360
+        loops: Animation.Infinite
+        duration: StyleUtils.itemStyleProperty("rotationDuration", 0)
+    }
 }
