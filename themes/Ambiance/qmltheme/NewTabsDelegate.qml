@@ -37,7 +37,7 @@ Item {
                 top: parent.top
                 bottom: separator.bottom
             }
-            source: "artwork/background-paper.png"
+            source: "artwork/background_paper.png"
             fillMode: Image.Tile
         }
 
