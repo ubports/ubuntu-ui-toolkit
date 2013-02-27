@@ -33,6 +33,11 @@ Item {
     Theming.ItemStyle.class: "header"
 
     property string title
+    onTitleChanged: {
+        if (title) header.show();
+        else header.hide();
+    }
+
 
     anchors {
         left: parent.left
