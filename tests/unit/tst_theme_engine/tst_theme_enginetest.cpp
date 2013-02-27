@@ -163,8 +163,6 @@ void tst_ThemeEngine::testCase_blockDeclaration()
 
     QObject *style = qvariant_cast<QObject*>(attached->property("style"));
     QVERIFY(style);
-
-    QObject *anim = qvariant_cast<QObject*>(style->property(""));
 }
 
 void tst_ThemeEngine::testCase_selectorDelegates()
