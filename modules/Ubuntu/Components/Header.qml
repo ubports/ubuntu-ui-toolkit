@@ -60,17 +60,6 @@ Item {
         header.y = - header.height;
     }
 
-    //    Rectangle {
-    //        id: tabBar
-    //        color: "#00ff00aa"
-    //        anchors {
-    //            top: parent.top
-    //            left: parent.left
-    //            right: parent.right
-    //        }
-    //        height: units.gu(20)
-    //    }
-
     property Flickable flickable: null
     onFlickableChanged: internal.connectFlickable()
     Component.onCompleted: internal.connectFlickable()
@@ -79,9 +68,6 @@ Item {
         id: internal
 
         property real previousContentY: 0
-        //    onSelectedTabChanged: updateFlickable()
-        //    Component.onCompleted: updateFlickable()
-
         property Flickable previousFlickable: null
 
         function connectFlickable() {
@@ -104,24 +90,9 @@ Item {
             previousFlickable = flickable;
         }
 
-        //    function updateFlickable() {
-        //        if (flickable) {
-        //            flickable.contentYChanged.disconnect(header.scrollContents);
-        //            flickable.movementEnded.disconnect(header.movementEnded);
-        //        }
-        //        if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
-        //            flickable = selectedTab.__flickable;
-        //            previousContentY = flickable.contentY;
-        //            flickable.contentYChanged.connect(header.scrollContents);
-        //            flickable.movementEnded.connect(header.movementEnded);
-        //        } else {
-        //            flickable = null;
-        //        }
-        //    }
-
         /*!
-      Update the position of the header to scroll with the flickable.
-     */
+          Update the position of the header to scroll with the flickable.
+         */
         function scrollContents() {
             // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!flickable.atYBeginning && !flickable.atYEnd) {
@@ -132,8 +103,8 @@ Item {
         }
 
         /*!
-      Fully show or hide the header, depending on its current y.
-     */
+          Fully show or hide the header, depending on its current y.
+         */
         function movementEnded() {
             if (flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
