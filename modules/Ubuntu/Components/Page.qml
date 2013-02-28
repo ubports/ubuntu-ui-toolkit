@@ -69,6 +69,11 @@ Item {
     onTitleChanged: internal.updateHeader();
 
     /*!
+      The contents of the header. If this is set, \l title will be ignored.
+     */
+    property Component headerContents: null
+
+    /*!
       \internal
       Used to determine whether an Item is a Page.
      */

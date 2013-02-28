@@ -84,6 +84,7 @@ Item {
     Header {
         id: header
         title: activePage && activePage.hasOwnProperty("title") ? activePage.title : ""
+        contents: activePage && activePage.hasOwnProperty("headerContents") ? activePage.headerContents : null
         flickable: activePage && activePage.hasOwnProperty("flickable") ? activePage.flickable : null
     }
 

@@ -64,15 +64,19 @@ Item {
 //            header.y = - header.height;
 //        }
 
-//        NewTabBar {
-//            id: tabBar
-//            tabs: item
-//            anchors {
-//                top: parent.top
-//                left: parent.left
-//                right: parent.right
-//            }
-//        }
+    // use theTabs property because item gives problems in the loader
+    property Tabs theTabs: item
+    property Component headerContents: Component {
+        NewTabBar {
+            id: tabBar
+            tabs: theTabs
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
+        }
+    }
 
 //        // FIXME: Define the separator in the theme when this bug is fixed:
 //        // https://bugs.launchpad.net/goodhope/+bug/1089614
@@ -162,18 +166,6 @@ Item {
                 tab.height = tabView.height
 
                 if (tab.hasOwnProperty("__active")) tab.__active = true;
-
-                // Set-up the top-margin of the contents of the tab so that
-                //  the contents is never hidden by the header:
-//                if (tab.__flickable) {
-//                    tab.height = tabView.height;
-//                    tab.__flickable.topMargin = header.height;
-//                    tab.__flickable.contentY = -header.height;
-//                } else {
-//                    // no flickable
-//                    if (tab.parent) tab.anchors.bottom = tab.parent.bottom;
-//                    tab.height = tabsDelegate.height - header.height;
-//                }
             }
             tabView.updateSelectedTabIndex();
         }
@@ -190,7 +182,6 @@ Item {
         target: item
         onSelectedTabIndexChanged: {
             tabView.updateSelectedTabIndex();
-//            header.show();
         }
     }
 

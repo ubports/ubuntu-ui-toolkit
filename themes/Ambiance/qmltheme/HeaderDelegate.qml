@@ -54,8 +54,7 @@ Item {
         source: itemStyle.separatorBottomSource
     }
 
-    Rectangle {
-        color: "transparent"
+    Item  {
         id: foreground
         anchors {
             left: parent.left
@@ -71,7 +70,16 @@ Item {
                 margins: itemStyle.margins
             }
             text: item.title
-//            font.weight: itemStyle.fontWeight
+            //font.weight: itemStyle.fontWeight
+            visible: contentsLoader.status != Loader.Ready
+        }
+
+        // Link to item here, because Loader has its own item property
+        property Header header: item
+        Loader {
+            id: contentsLoader
+            sourceComponent: header.contents
+            anchors.fill: foreground
         }
     }
 }

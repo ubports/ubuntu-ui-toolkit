@@ -87,6 +87,7 @@ Page {
     readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
     title: "Tabs"
     flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
+    headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"

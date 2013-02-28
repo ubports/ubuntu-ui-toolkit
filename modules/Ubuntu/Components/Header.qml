@@ -32,15 +32,6 @@ Item {
     // FIXME: see above
     Theming.ItemStyle.class: "header"
 
-    /*!
-      The text to display in the header
-     */
-    property string title
-    onTitleChanged: {
-        if (title) header.show();
-        else header.hide();
-    }
-
     anchors {
         left: parent.left
         right: parent.right
@@ -55,31 +46,67 @@ Item {
     }
     height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(10))
 
+    /*!
+      Show the header
+     */
     function show() {
         header.y = 0;
     }
 
+    /*!
+      Hide the header
+     */
     function hide() {
         header.y = - header.height;
     }
 
+    /*!
+      The text to display in the header
+     */
+    property string title
+    onTitleChanged: {
+        if (title) header.show();
+        else header.hide();
+    }
+
+    /*!
+      The contents of the header. If this is set, \l title will be ignored.
+     */
+    property Component contents: null
+    onContentsChanged: print("header contents = "+contents)
+
+    /*!
+      The flickable that controls the movement of the header.
+      Will be set automatically by Pages inside a MainView, but can
+      be overridden.
+     */
     property Flickable flickable: null
     onFlickableChanged: {
         internal.connectFlickable();
+        header.show();
     }
 
     QtObject {
         id: internal
 
+        /*!
+          Track the y-position inside the flickable.
+         */
         property real previousContentY: 0
+
+        /*!
+          The previous flickable to disconnect events
+         */
         property Flickable previousFlickable: null
 
+        /*!
+          Disconnect previous flickable, and connect the new one.
+         */
         function connectFlickable() {
             if (previousFlickable) {
                 previousFlickable.contentYChanged.disconnect(internal.scrollContents);
                 previousFlickable.movementEnded.disconnect(internal.movementEnded);
             }
-
             if (flickable) {
                 // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
@@ -87,7 +114,6 @@ Item {
                 flickable.movementEnded.connect(internal.movementEnded);
             }
             previousFlickable = flickable;
-            header.show();
         }
 
         /*!
