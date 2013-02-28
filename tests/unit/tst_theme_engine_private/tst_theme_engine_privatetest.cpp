@@ -249,7 +249,7 @@ void tst_ThemeEnginePrivate::testCase_selectorToString()
     expected = ".classa#id .classb";
     QCOMPARE(selector.toString(), expected);
 
-    selector = Selector(".classA > .classB#id");
+    selector = Selector("   .classA   >   .classB#id  ");
     expected = ".classa>.classb#id";
     QCOMPARE(selector.toString(), expected);
 

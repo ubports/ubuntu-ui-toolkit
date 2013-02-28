@@ -141,10 +141,10 @@ bool SelectorNode::operator==(const SelectorNode &other)
  */
 Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity)
 {
-    QString tmp(string);
+    QString tmp(string.trimmed());
     // prepare for split
     if (tmp.contains('>')) {
-        tmp.replace(QRegularExpression(" (>) "), ">").replace('>', "|>");
+        tmp.replace(QRegularExpression("[ ]*(>)[ ]*"), ">").replace('>', "|>");
     }
     tmp.replace(' ', '|');
 
