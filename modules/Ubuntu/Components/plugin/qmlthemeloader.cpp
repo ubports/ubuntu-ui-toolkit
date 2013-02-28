@@ -312,12 +312,8 @@ void QmlThemeLoader::handleSelector(const Selector &selector, const PropertyMap 
     PropertyMap propertyMap;
     if (selectorTable.contains(selector))
         propertyMap = selectorTable.value(selector);
-    // merge tables; cannot use QHash::unite as that one uses insertMulti() for the existing keys.
-    QHashIterator<QString, QString> i(newProperties.properties);
-    while (i.hasNext()) {
-        i.next();
-        propertyMap.properties.insert(i.key(), i.value());
-    }
+    // merge tables;newProperties override the existing ones
+    propertyMap.merge(newProperties, true);
     // save them (back) into the table
     selectorTable.insert(selector, propertyMap);
 }
@@ -358,14 +354,7 @@ bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &prope
         // make sure the selector is normalized
         normalizeSelector(selector);
         // get the properties and copy the base ones into the current selector
-        QHashIterator<QString, QString> baseProperty = selectorTable.value(selector).properties;
-        while (baseProperty.hasNext()) {
-            baseProperty.next();
-            if (override || !propertyMap.properties.contains(baseProperty.key())) {
-                propertyMap.properties.insert(baseProperty.key(), baseProperty.value());
-                result = true;
-            }
-        }
+        propertyMap.merge(selectorTable.value(selector), override);
     }
     return result;
 }

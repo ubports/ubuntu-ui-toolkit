@@ -34,6 +34,19 @@ public:
     PropertyMap() : normalized(false){}
     bool normalized;
     PropertyHash properties;
+    inline bool merge(const PropertyMap &other, bool overrides)
+    {
+        bool result = false;
+        QHashIterator<QString, QString> i(other.properties);
+        while (i.hasNext()) {
+            i.next();
+            if (overrides || !properties.contains(i.key())) {
+                properties.insert(i.key(), i.value());
+                result = true;
+            }
+        }
+        return result;
+    }
 };
 
 class QmlThemeLoader : public ThemeLoader {

@@ -228,7 +228,6 @@ void tst_ThemeEnginePrivate::testCase_parseSelector()
     Selector expected2(".oneNode.bing .baseC");
     QCOMPARE(selectors.count(), 2);
     QCOMPARE(selectors[0], expected);
-    qDebug() << selectors[1].toString();
     QCOMPARE(selectors[1], expected2);
 }
 
