@@ -72,7 +72,6 @@ public:
     static bool registerName(QQuickItem *item, const QString &newName);
     static void setError(const QString &error);
     static ItemStyleAttached *attachedStyle(QObject *obj);
-    static QString selectorToString(const Selector &path);
     static QList<Selector> parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
 
 // private slots

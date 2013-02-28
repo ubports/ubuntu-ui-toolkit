@@ -19,6 +19,10 @@
 
 #include <QDBusInterface>
 
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH = "/BottomBarVisibilityCommunicator";
+static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
+static const char* DBUS_SERVICE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
+
 /*!
     \internal
 
@@ -28,10 +32,6 @@
     The shell can control the bottom bar behaviour:
      * forceHidden: If set to true, the bottom bar has to be forced to be hidden
 */
-
-static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH = "/BottomBarVisibilityCommunicator";
-static const char* BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
-static const char* DBUS_SERVICE = "com.canonical.Shell.BottomBarVisibilityCommunicator";
 
 BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
  : m_shellDbusIface(NULL),

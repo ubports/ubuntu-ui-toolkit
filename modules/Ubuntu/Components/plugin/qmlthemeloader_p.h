@@ -29,6 +29,13 @@ typedef bool (*ParserCallback)(QmlThemeLoader *loader, QTextStream &stream);
 
 typedef QHash<QString, QString> PropertyHash;
 
+class PropertyMap {
+public:
+    PropertyMap() : normalized(false){}
+    bool normalized;
+    PropertyHash properties;
+};
+
 class QmlThemeLoader : public ThemeLoader {
     Q_INTERFACES(ThemeLoader)
 public:
@@ -46,11 +53,12 @@ private:
     static QString readChar(QTextStream &stream, const QRegExp &bypassTokens = QRegExp("[ \t\r\n]"));
     static QString readTillToken(QTextStream &stream, const QRegExp &tokens, const QRegExp &bypassTokens = QRegExp(), bool excludeToken = true);
     static QString readDeclarationBlock(QTextStream &stream);
-    static void parseDeclarationBlock(const QString &blockData, QHash<QString, QString> &properties, const QTextStream &stream);
+    static void parseDeclarationBlock(const QString &blockData, PropertyMap &properties, const QTextStream &stream);
     static void patchDeclarationValue(QString &value, const QTextStream &stream);
-    void handleSelector(const Selector &path,  const QHash<QString, QString> &newProperties);
+    void handleSelector(const Selector &path, const PropertyMap &newProperties);
     void normalizeStyles();
-    bool updateRuleProperties(Selector &selector, QHash<QString, QString> &propertyMap);
+    bool updateRuleProperties(Selector &selector, PropertyMap &propertyMap);
+    void normalizeSelector(const Selector &selector);
     bool parseTheme(const QUrl &url);
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);
@@ -67,7 +75,7 @@ private:
     QString ruleString;
     QHash<QString, ParserCallback> rules;
     QHash<QString, QPair<QString, QString> > qmlMap;
-    QHash<Selector, PropertyHash > selectorTable;
+    QHash<Selector, PropertyMap > selectorTable;
 };
 
 

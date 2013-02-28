@@ -21,6 +21,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QString>
+#include <QtCore/QList>
 
 // node of a selector
 class SelectorNode {
@@ -32,7 +33,7 @@ class SelectorNode {
         IgnoreStyleId = 0x02,
         IgnoreAll = IgnoreRelationship | IgnoreStyleId};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship = Descendant, NodeSensitivity sensitivity = Normal);
+    SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
     QString toString() const;
     bool operator==(const SelectorNode &other);
     QString className;
@@ -43,7 +44,15 @@ class SelectorNode {
 };
 
 // selector type
-typedef QList<SelectorNode> Selector;
+class Selector : public QList<SelectorNode> {
+public:
+    inline Selector() {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
+    virtual ~Selector() {}
+    QString toString() const;
+};
+Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
 
 // style rule tree
