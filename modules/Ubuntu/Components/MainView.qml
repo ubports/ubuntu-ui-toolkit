@@ -63,6 +63,7 @@ Item {
       The list of actions that will be placed on the toolbar of the application.
      */
     property alias tools: toolbar.tools
+    //    property ToolbarActions tools
 
     // clip if the MainView is not fullscreen
     clip: true
@@ -74,20 +75,16 @@ Item {
     default property alias contentsItem: contents.data
     Item {
         id: contents
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            // If there is no flickable, anchor to the bottom of the header because
-            //  it will never hide. If there is a flickable, header will set its margins
-            //  so that the page will start at the bottom of the header initially.
-            top: header.flickable ? parent.top : header.bottom
-        }
+        anchors.fill: parent
     }
+
+    property var activePage: null
 
     property alias header: header
     Header {
         id: header
+        title: activePage && activePage.hasOwnProperty("title") ? activePage.title : ""
+        flickable: activePage && activePage.hasOwnProperty("flickable") ? activePage.flickable : null
     }
 
     Toolbar {

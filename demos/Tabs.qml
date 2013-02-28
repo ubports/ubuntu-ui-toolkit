@@ -27,12 +27,10 @@ Template {
     MainView {
         Tabs {
             id: tabs
-            anchors.fill: parent
+//            anchors.fill: parent
             Tab {
                 title: i18n.tr("Flickable")
-                page: Item {
-                    anchors.fill: parent
-
+                page: Page {
                     Flickable {
                         id: flickable
                         clip: true
@@ -76,9 +74,9 @@ Template {
             Tab {
                 iconSource: "call_icon.png"
                 title: i18n.tr("Buttons")
-                page: Rectangle {
-                    anchors.fill: parent
-                    color: "tan"
+                page: Page {
+//                    anchors.fill: parent
+                    //                    color: "tan"
                     Row {
                         anchors.centerIn: parent
                         Button {
@@ -113,13 +111,15 @@ Template {
             }
             Tab {
                 title: i18n.tr("List view")
-                page: ListView {
-                    clip: true
-                    anchors.fill: parent
-                    model: 20
-                    delegate: ListItem.Standard {
-                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        text: "Item "+modelData
+                page: Page {
+                    ListView {
+                        clip: true
+                        anchors.fill: parent
+                        model: 20
+                        delegate: ListItem.Standard {
+                            icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                            text: "Item "+modelData
+                        }
                     }
                 }
             }

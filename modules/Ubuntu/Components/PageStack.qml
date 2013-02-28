@@ -70,6 +70,10 @@ import "stack.js" as Stack
 Page {
     id: pageStack
 
+    // override automatic height from Page
+    height: undefined
+    anchors.fill: parent
+
     /*!
       \preliminary
       The current size of the stack

@@ -71,6 +71,7 @@ Item {
                 margins: itemStyle.margins
             }
             text: item.title
+//            font.weight: itemStyle.fontWeight
         }
     }
 }

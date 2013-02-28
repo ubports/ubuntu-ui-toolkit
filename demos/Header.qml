@@ -57,8 +57,8 @@ Template {
 
                         Label {
                             text: "\n\n\n\n\n\n\n\n\n\n" +
-                                  i18n.tr("This is the first tab.") +
-                                  "\n\n\n\n\n\n\n\n\n\n\n\n(" +
+                                  i18n.tr("This is a page with a flickable.") +
+                                  "\n\n\n\n\n\n\n\n\n\n(" +
                                   i18n.tr("scroll down") + ")\n\n\n"
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter

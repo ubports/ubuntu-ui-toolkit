@@ -59,9 +59,13 @@ import Ubuntu.Components 0.1 as Theming
     \b{This component is under heavy development.}
 */
 
-Item {
+Page {
     // FIXME: see above
     Theming.ItemStyle.class: "new-tabs"
+
+    // override automatic height from Page
+    height: undefined
+    anchors.fill: parent
 
     /*!
       \preliminary
@@ -76,6 +80,13 @@ Item {
       The currently selected tab.
      */
     readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+
+    /*!
+      The page of the currently selected tab.
+     */
+    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
+    title: "Tabs"
+    flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"

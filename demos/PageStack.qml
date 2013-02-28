@@ -34,7 +34,7 @@ Template {
 
             PageStack {
                 id: pageStack
-                anchors.fill: parent
+//                anchors.fill: parent
                 Component.onCompleted: push(page0)
 
                 Page {

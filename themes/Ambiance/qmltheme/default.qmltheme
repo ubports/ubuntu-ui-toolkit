@@ -158,7 +158,7 @@ Examples:
 }
 
 .mainview {
-    backgroundColor: "#ededf0";
+    backgroundColor: Qt.rgba(1.0, 0.0, 0.0, 0.1); /*"#ededf0";* TODO update */
     backgroundSource: url("artwork/background_paper.png");
 }
 
@@ -173,7 +173,7 @@ Examples:
 
 .header .label {
     fontSize: "x-large";
-    fontWeight: Font.Light;
+    fontWeight: Font.Light; /* TODO: FIX. fontWeight is not a property of Label */
     color: Qt.rgba(0.51, 0.51, 0.51, 0.9);
 }
 

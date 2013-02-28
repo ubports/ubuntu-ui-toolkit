@@ -10,7 +10,11 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
-* None
+* MainView now adds a header, also for the PageStack and Tabs
+  which must be placed inside a MainView. Non-Page items can still be
+  added to a PageStack or Tabs, but their margins will not be automatically
+  set-up to align with the header, so it is recommended to always use
+  Pages for Tabs or to push on a PageStack.
 
 API Changes
 ***********

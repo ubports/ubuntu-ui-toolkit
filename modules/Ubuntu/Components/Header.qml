@@ -32,6 +32,9 @@ Item {
     // FIXME: see above
     Theming.ItemStyle.class: "header"
 
+    /*!
+      The text to display in the header
+     */
     property string title
     onTitleChanged: {
         if (title) header.show();
@@ -61,8 +64,9 @@ Item {
     }
 
     property Flickable flickable: null
-    onFlickableChanged: internal.connectFlickable()
-    Component.onCompleted: internal.connectFlickable()
+    onFlickableChanged: {
+        internal.connectFlickable();
+    }
 
     QtObject {
         id: internal
@@ -79,8 +83,9 @@ Item {
             if (flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
-                flickable.contentY = -header.height;
-                flickable.topMargin = header.height;
+                // XXX: moving these to Page
+//                flickable.contentY = -header.height;
+//                flickable.topMargin = header.height;
 
                 // Connect moving inside the flickable to movements of the header
                 previousContentY = flickable.contentY;
@@ -88,7 +93,6 @@ Item {
                 flickable.movementEnded.connect(internal.movementEnded);
             }
             previousFlickable = flickable;
-
             header.show();
         }
 

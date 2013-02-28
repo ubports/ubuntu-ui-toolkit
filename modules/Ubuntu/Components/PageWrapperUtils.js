@@ -73,7 +73,7 @@ function __initPage(pageWrapper) {
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
         __initPage(pageWrapper);
-        __detectFlickable(pageWrapper);
+//        __detectFlickable(pageWrapper);
     }
     pageWrapper.object.visible = true;
 }
@@ -117,31 +117,31 @@ function updatePageStack(pageWrapper) {
     }
 }
 
-function __isFlickable(object) {
-    if (object) {
-        if (object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection")) {
-            return true;
-        }
-    }
-    return false;
-}
+//function __isFlickable(object) {
+//    if (object) {
+//        if (object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection")) {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
-function __detectFlickable(pageWrapper) {
-    pageWrapper.flickable = null;
-    var pageObject = pageWrapper.object;
-    if (pageObject !== null) {
-        if (__isFlickable(pageObject)) {
-            pageWrapper.flickable = pageObject;
-        } else {
-            // detect whether any of pageObject's children is flickable
-            var i = 0;
-            var child;
-            while (flickable === null && i < pageObject.children.length) {
-                if (__isFlickable(pageObject.children[i])) {
-                    pageWrapper.flickable = pageObject.children[i];
-                }
-                i++;
-            }
-        }
-    }
-}
+//function __detectable(pageWrapper) {
+//    pageWrapper.flickable = null;
+//    var pageObject = pageWrapper.object;
+//    if (pageObject !== null) {
+//        if (__isFlickable(pageObject)) {
+//            pageWrapper.flickable = pageObject;
+//        } else {
+//            // detect whether any of pageObject's children is flickable
+//            var i = 0;
+//            var child;
+//            while (flickable === null && i < pageObject.children.length) {
+//                if (__isFlickable(pageObject.children[i])) {
+//                    pageWrapper.flickable = pageObject.children[i];
+//                }
+//                i++;
+//            }
+//        }
+//    }
+//}

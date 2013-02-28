@@ -20,9 +20,10 @@ import QtQuick 2.0
     \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief A page that can be included in \l Tab object or pushed on a \l PageStack
-
-    \b{This component is under heavy development.}
+    \brief A page inside a \l MainView will have a header and toolbar.
+        Pages can also can be included in \l Tab object or pushed on a \l PageStack.
+        Anchors and height of a Page are automatically determined to align with
+        the header of the \l MainView, but can be overridden.
 
     Example:
     \qml
@@ -54,60 +55,83 @@ import QtQuick 2.0
 Item {
     id: page
 
-    anchors.fill: parent ? parent : undefined
+    anchors {
+        left: parent.left
+        right: parent.right
+        bottom: parent.bottom
+    }
+    height: flickable ? parent.height : parent.height - internal.headerHeight
 
     /*!
-      \preliminary
-      The title of the page. May be shown in a \l PageStack header (optional).
+      The title of the page. Will be shown in the header of the \l MainView.
      */
     property string title
+    onTitleChanged: internal.updateHeader();
 
     /*!
       \internal
-      Used in PageContainer to determine whether an Item is a Page.
+      Used to determine whether an Item is a Page.
      */
     property bool __isPage: true
 
     /*!
-      \preliminary
       The \l PageStack that this Page has been pushed on, or null if it is not
       part of a PageStack. This value is automatically updated by the \l PageStack.
      */
-    //    property PageStack pageStack
     property var pageStack
 
     /*!
-      \preliminary
       The list of actions associated with this Page.
      */
     property ToolbarActions tools
 
-    onParentChanged: internal.updateHeader();
-    onTitleChanged: internal.updateHeader();
-
     /*!
       Optional flickable that controls the header. This property
-      is automatically set if the Flickable is one of the Page's children.
+      is automatically set if the Flickable is one of the Page's direct children.
+      May be set to null to avoid the header from hiding.
      */
     property Flickable flickable: internal.getFlickableChild()
-    onFlickableChanged: internal.updateHeader();
-    QtObject {
+
+    Item {
         id: internal
 
+        Connections {
+            target: page
+            onFlickableChanged: internal.updateFlickableMargins()
+        }
+        onHeaderHeightChanged: internal.updateFlickableMargins()
+
+        function updateFlickableMargins() {
+            if (flickable) {
+                page.flickable.contentY = -headerHeight;
+                page.flickable.topMargin = headerHeight;
+            }
+        }
+
+        /*!
+          One of the ancestors of this Page, before finding the MainView,
+          is a Page. If true, do not set the current Page to the activePage of the
+          MainView.
+         */
+        property bool hasAncestorPage: false;
+
+        property var mainView: getMainView()
+        onMainViewChanged: updateHeader()
+        property real headerHeight: mainView && mainView.header ? mainView.header.height : 0
+
         function updateHeader() {
-            print("updating header for "+page.title);
             var mainView = getMainView();
-            if (mainView) {
-                mainView.header.title = page.title;
-                mainView.header.flickable = page.flickable; //getFlickableChild();
+            if (mainView && !hasAncestorPage) {
+                mainView.activePage = page;
             }
         }
 
         function getMainView() {
+            hasAncestorPage = false;
             var item = page.parent;
             var mainView = null;
             while (item && !mainView) {
-                if (item.hasOwnProperty("__isPage") && item.__isPage) break;
+                if (item.hasOwnProperty("__isPage") && item.__isPage) hasAncestorPage = true;
                 if (item.hasOwnProperty("__isMainView") && item.__isMainView) mainView = item;
                 item = item.parent;
             }
@@ -118,6 +142,9 @@ Item {
             return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
         }
 
+        /*!
+          Return the first flickable child of this page.
+         */
         function getFlickableChild() {
             for (var i=0; i < page.children.length; i++) {
                 if (internal.isFlickable(page.children[i])) return page.children[i];

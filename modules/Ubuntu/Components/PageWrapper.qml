@@ -80,7 +80,7 @@ QtObject {
       If neither object nor its children are Flickable, then null.
       Automatically upadted by PageWrapperUtils.activate() after initializing the object.
      */
-    property Flickable flickable: null
+//    property Flickable flickable: null
 
     /*!
       \internal
