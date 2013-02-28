@@ -21,48 +21,9 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Item {
     id: tabsDelegate
     anchors.fill: parent
-
     clip: true
 
     property VisualItemModel tabModel: item.__tabsModel
-
-//    Item {
-//        id: header
-//        z: 1 // header is on top of the tab's contents.
-
-//        Image {
-//            anchors {
-//                left: parent.left
-//                right: parent.right
-//                top: parent.top
-//                bottom: separator.bottom
-//            }
-//            source: "artwork/background_paper.png"
-//            fillMode: Image.Tile
-//        }
-
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//        }
-//        y: 0
-
-//        Behavior on y {
-//            enabled: !(header.selectedFlickable && header.selectedFlickable.moving)
-//            SmoothedAnimation {
-//                duration: 200
-//            }
-//        }
-
-//        height: tabBar.height + separator.height + separatorBottom.height
-
-//        function show() {
-//            header.y = 0;
-//        }
-
-//        function hide() {
-//            header.y = - header.height;
-//        }
 
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item
@@ -77,66 +38,6 @@ Item {
             }
         }
     }
-
-//        // FIXME: Define the separator in the theme when this bug is fixed:
-//        // https://bugs.launchpad.net/goodhope/+bug/1089614
-//        BorderImage {
-//            id: separator
-//            anchors {
-//                top: tabBar.bottom
-//                left: parent.left
-//                right: parent.right
-//            }
-//            source: "artwork/PageHeaderBaseDividerLight.sci"
-//        }
-//        Image {
-//            id: separatorBottom
-//            anchors {
-//                top: separator.bottom
-//                left: parent.left
-//                right: parent.right
-//            }
-//            source: "artwork/PageHeaderBaseDividerBottom.png"
-//        }
-
-//        property Tab selectedTab: item ? item.selectedTab : null
-//        // use updateFlickable() to update selectedFlickable so that events from the
-//        // previous selectedFlickable can be disconnected.
-//        property Flickable selectedFlickable: null
-//        property real previousContentY: 0
-//        onSelectedTabChanged: updateFlickable()
-//        Component.onCompleted: updateFlickable();
-
-//        function updateFlickable() {
-//            if (selectedFlickable) {
-//                selectedFlickable.contentYChanged.disconnect(header.scrollContents);
-//                selectedFlickable.movementEnded.disconnect(header.movementEnded);
-//            }
-//            if (selectedTab && selectedTab.autoHideTabBar && selectedTab.__flickable) {
-//                selectedFlickable = selectedTab.__flickable;
-//                previousContentY = selectedFlickable.contentY;
-//                selectedFlickable.contentYChanged.connect(header.scrollContents);
-//                selectedFlickable.movementEnded.connect(header.movementEnded);
-//            } else {
-//                selectedFlickable = null;
-//            }
-//        }
-
-//        function scrollContents() {
-//            // Avoid updating header.y when rebounding or being dragged over the bounds.
-//            if (!selectedFlickable.atYBeginning && !selectedFlickable.atYEnd) {
-//                var deltaContentY = selectedFlickable.contentY - previousContentY;
-//                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-//            }
-//            previousContentY = selectedFlickable.contentY;
-//        }
-
-//        function movementEnded() {
-//            if (selectedFlickable.contentY < 0) header.show();
-//            else if (header.y < -header.height/2) header.hide();
-//            else header.show();
-//        }
-//    }
 
     ListView {
         id: tabView
