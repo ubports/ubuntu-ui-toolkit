@@ -312,12 +312,8 @@ void QmlThemeLoader::handleSelector(const Selector &selector, const PropertyMap 
     PropertyMap propertyMap;
     if (selectorTable.contains(selector))
         propertyMap = selectorTable.value(selector);
-    // merge tables; cannot use QHash::unite as that one uses insertMulti() for the existing keys.
-    QHashIterator<QString, QString> i(newProperties.properties);
-    while (i.hasNext()) {
-        i.next();
-        propertyMap.properties.insert(i.key(), i.value());
-    }
+    // merge tables;newProperties override the existing ones
+    propertyMap.merge(newProperties, true);
     // save them (back) into the table
     selectorTable.insert(selector, propertyMap);
 }
@@ -333,16 +329,19 @@ void QmlThemeLoader::normalizeStyles()
     while (i.hasNext()) {
         i.next();
         Selector selector = i.key();
-        normalizeSelector(i.key());
+        if (normalizeSelector(selector))
+            // start all over as hash iterator is not valid anymore
+            i.toFront();
     }
 }
 
 /*!
   \internal
   Updates the properties of a rule based on the subset of the proeprty. May ignore relation
-  and/or style ID when collecting properties
+  and/or style ID when collecting properties. override should be true when properties from
+  derivates are collected.
   */
-bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap)
+bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override)
 {
     bool result = false;
     // check if we have a style that is a subset of the current one and if yes
@@ -355,35 +354,56 @@ bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &prope
         // make sure the selector is normalized
         normalizeSelector(selector);
         // get the properties and copy the base ones into the current selector
-        QHashIterator<QString, QString> baseProperty = selectorTable.value(selector).properties;
-        while (baseProperty.hasNext()) {
-            baseProperty.next();
-            if (!propertyMap.properties.contains(baseProperty.key())) {
-                propertyMap.properties.insert(baseProperty.key(), baseProperty.value());
-                result = true;
-            }
-        }
+        propertyMap.merge(selectorTable.value(selector), override);
     }
     return result;
 }
 
 /*!
  * \internal
- * Normalizes a given selector.
+ * Normalizes a given selector. Returns true if the selector was normalized(updated)
+ * otherwise returns false.
  */
-void QmlThemeLoader::normalizeSelector(const Selector &selector)
+bool QmlThemeLoader::normalizeSelector(const Selector &selector)
 {
     PropertyMap propertyMap = selectorTable.value(selector);
     if (propertyMap.normalized)
-        return;
+        return false;
     // not normalized yet
+
+    // collect properties from the derived ones
+    SelectorNode last = selector.last();
+    if (!last.derives.isEmpty()) {
+        // get the deriveds first then override those with the current properties
+        PropertyMap derivedMap;
+        Q_FOREACH(const QString& derived, last.derives.split('.')) {
+            if (!derived.isEmpty()) {
+                Selector derivedSelector(derived, SelectorNode::IgnoreAll);
+                QHash<Selector, PropertyMap>::iterator i = selectorTable.find(derivedSelector);
+                if (i != selectorTable.end() && i.key() == derivedSelector) {
+                    // update to the real selector as that may also be derived
+                    derivedSelector = i.key();
+                    updateRuleProperties(derivedSelector, derivedMap, true);
+                }
+            }
+        }
+        // override with the current stuff
+        QHashIterator<QString, QString> i(propertyMap.properties);
+        while (i.hasNext()) {
+            i.next();
+            derivedMap.properties.insert(i.key(), i.value());
+        }
+        propertyMap.properties = derivedMap.properties;
+    }
+    // parse the cascade
     if (selector.count() > 1) {
         // need to check only the last node from the selector path
         Selector subset = selectorSubset(selector, 1);
-        updateRuleProperties(subset, propertyMap);
+        updateRuleProperties(subset, propertyMap, false);
     }
     propertyMap.normalized = true;
     selectorTable.insert(selector, propertyMap);
+    return true;
 }
 
 

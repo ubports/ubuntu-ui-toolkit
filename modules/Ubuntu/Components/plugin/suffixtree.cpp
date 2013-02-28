@@ -48,7 +48,7 @@ SelectorNode::SelectorNode() :
 SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensitivity) :
     relationship(Descendant), sensitivity(sensitivity)
 {
-    styleClass = selectorString;
+    styleClass = selectorString.toLower();
     if (styleClass.startsWith('>')) {
         relationship = Child;
         styleClass.remove('>');
@@ -61,7 +61,39 @@ SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensit
             styleClass = styleClass.mid(1, idIndex - 1);
     } else if (styleClass[0] == '.')
         styleClass = styleClass.mid(1);
-    styleClass = styleClass.toLower();
+    // check whether the selector derives from any other node
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Updates style class from ItemStyle.
+ */
+void SelectorNode::setMultipleClasses(const QString &value)
+{
+    // replace spaces with dots
+    styleClass = value.toLower().simplified();
+    styleClass.replace(' ', '.');
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        // there are multiple classes specified
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Returns the style class and its derivates in one string that is presentable
+ * to QML.
+ */
+QString SelectorNode::multipleClasses() const
+{
+    return QString(styleClass + derives).replace('.', ' ');
 }
 
 /*!
@@ -69,7 +101,7 @@ SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensit
     Converts a SelectorNode into string using "<relation> .<class>#<name>"
     format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
-QString SelectorNode::toString() const
+QString SelectorNode::toString(bool appendDerivates) const
 {
     QString result;
     if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
@@ -80,6 +112,8 @@ QString SelectorNode::toString() const
     else if (!className.isEmpty()) {
         result += '.' + className;
     }
+    if (appendDerivates)
+        result += derives;
     if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
@@ -107,10 +141,10 @@ bool SelectorNode::operator==(const SelectorNode &other)
  */
 Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity)
 {
-    QString tmp(string);
+    QString tmp(string.trimmed());
     // prepare for split
     if (tmp.contains('>')) {
-        tmp.replace(QRegularExpression(" (>) "), ">").replace('>', "|>");
+        tmp.replace(QRegularExpression("[ ]*(>)[ ]*"), ">").replace('>', "|>");
     }
     tmp.replace(' ', '|');
 
@@ -129,14 +163,14 @@ Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitiv
   \internal
   Converts a style path back to selector string.
 */
-QString Selector::toString() const
+QString Selector::toString(bool appendDerivates) const
 {
     QString result;
 
     QListIterator<SelectorNode> i(*this);
     while (i.hasNext()) {
         SelectorNode node = i.next();
-        result += ' ' + node.toString();
+        result += ' ' + node.toString(appendDerivates);
     }
     result.replace(" >", ">");
     return result.simplified();
@@ -148,7 +182,7 @@ QString Selector::toString() const
   */
 uint qHash(const Selector &key)
 {
-    return qHash(key.toString());
+    return qHash(key.toString(false));
 }
 
 

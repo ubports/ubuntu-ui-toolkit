@@ -34,6 +34,19 @@ public:
     PropertyMap() : normalized(false){}
     bool normalized;
     PropertyHash properties;
+    inline bool merge(const PropertyMap &other, bool overrides)
+    {
+        bool result = false;
+        QHashIterator<QString, QString> i(other.properties);
+        while (i.hasNext()) {
+            i.next();
+            if (overrides || !properties.contains(i.key())) {
+                properties.insert(i.key(), i.value());
+                result = true;
+            }
+        }
+        return result;
+    }
 };
 
 class QmlThemeLoader : public ThemeLoader {
@@ -57,8 +70,8 @@ private:
     static void patchDeclarationValue(QString &value, const QTextStream &stream);
     void handleSelector(const Selector &path, const PropertyMap &newProperties);
     void normalizeStyles();
-    bool updateRuleProperties(Selector &selector, PropertyMap &propertyMap);
-    void normalizeSelector(const Selector &selector);
+    bool updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override);
+    bool normalizeSelector(const Selector &selector);
     bool parseTheme(const QUrl &url);
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);
