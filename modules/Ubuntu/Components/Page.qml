@@ -103,6 +103,8 @@ Item {
 
         function updateFlickableMargins() {
             if (flickable) {
+                // Set-up the top-margin of the contents of the Flickable so that
+                //  the contents is never hidden by the header:
                 page.flickable.contentY = -headerHeight;
                 page.flickable.topMargin = headerHeight;
             }

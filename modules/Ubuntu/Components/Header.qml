@@ -81,13 +81,7 @@ Item {
             }
 
             if (flickable) {
-                // Set-up the top-margin of the contents of the Flickable so that
-                //  the contents is never hidden by the header:
-                // XXX: moving these to Page
-//                flickable.contentY = -header.height;
-//                flickable.topMargin = header.height;
-
-                // Connect moving inside the flickable to movements of the header
+                // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
                 flickable.contentYChanged.connect(internal.scrollContents);
                 flickable.movementEnded.connect(internal.movementEnded);

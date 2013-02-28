@@ -15,6 +15,8 @@ Compatibility Breaks
   added to a PageStack or Tabs, but their margins will not be automatically
   set-up to align with the header, so it is recommended to always use
   Pages for Tabs or to push on a PageStack.
+* Page, PageStack and Tabs can automatically determine its anchors and height
+  inside a MainView, so there is no need to set them explicitly.
 
 API Changes
 ***********

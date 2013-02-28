@@ -27,7 +27,6 @@ Template {
     MainView {
         Tabs {
             id: tabs
-//            anchors.fill: parent
             Tab {
                 title: i18n.tr("Flickable")
                 page: Page {
@@ -75,8 +74,10 @@ Template {
                 iconSource: "call_icon.png"
                 title: i18n.tr("Buttons")
                 page: Page {
-//                    anchors.fill: parent
-                    //                    color: "tan"
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "tan"
+                    }
                     Row {
                         anchors.centerIn: parent
                         Button {
