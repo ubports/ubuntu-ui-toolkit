@@ -297,7 +297,6 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
 bool ItemStyleAttachedPrivate::registerName(const QString &id)
 {
     bool result = true;
-    Q_Q(ItemStyleAttached);
     if (ThemeEnginePrivate::registerName(attachee, id)) {
         styleData.styleId = id;
         attachee->setProperty("name", styleData.styleId);
@@ -437,7 +436,7 @@ void ItemStyleAttached::setName(const QString &name)
 QString ItemStyleAttached::styleClass() const
 {
     Q_D(const ItemStyleAttached);
-    return d->styleData.styleClass;
+    return d->styleData.multipleClasses();
 }
 /*!
   Sets the class property value.
@@ -446,7 +445,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
 {
     Q_D(ItemStyleAttached);
     if (d->styleData.styleClass.compare(styleClass, Qt::CaseInsensitive)) {
-        d->styleData.styleClass = styleClass.toLower();
+        d->styleData.setMultipleClasses(styleClass);
         d->listenThemeEngine();
         if (d->updateStyleSelector())
             d->updateCurrentStyle();
@@ -461,7 +460,7 @@ QString ItemStyleAttached::path() const
 {
     Q_D(const ItemStyleAttached);
     return d->styleRule ?
-                ThemeEnginePrivate::selectorToString(d->styleRule->path()) :
+                d->styleRule->path().toString() :
                 QString("(null)");
 }
 

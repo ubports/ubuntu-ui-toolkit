@@ -107,7 +107,9 @@ Item {
         onActiveChanged: if (active) header.show()
     }
 
+    /*! \internal */
     property QtObject __hud: null
+
     /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {

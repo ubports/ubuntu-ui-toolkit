@@ -63,6 +63,6 @@ AnimatedItem {
     implicitWidth: units.gu(3)
     implicitHeight: units.gu(3)
 
-    Theming.ItemStyle.class: "activity-indicator"
+    Theming.ItemStyle.class: "activityindicator"
 
 }

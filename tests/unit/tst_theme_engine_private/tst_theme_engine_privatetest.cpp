@@ -29,6 +29,30 @@
 #include "itemstyleattached.h"
 #include "suffixtree_p.h"
 
+#define QVERIFY2_RET(statement, description) \
+do {\
+    if (statement) {\
+        if (!QTest::qVerify(true, #statement, (description), __FILE__, __LINE__))\
+            return false;\
+    } else {\
+        if (!QTest::qVerify(false, #statement, (description), __FILE__, __LINE__))\
+            return false;\
+    }\
+} while (0)
+
+#define QVERIFY_RET(statement) \
+do {\
+    if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
+        return false;\
+} while (0)
+
+#define QCOMPARE_RET(actual, expected) \
+do {\
+    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__))\
+        return false;\
+} while (0)
+
+
 class tst_ThemeEnginePrivate : public QObject
 {
     Q_OBJECT
@@ -45,6 +69,9 @@ private Q_SLOTS:
     void testCase_styleRuleForPath();
     void testCase_parseSelector();
     void testCase_selectorToString();
+    void testCase_inheritance();
+private:
+    bool test_styleProperties(const QString &styleClass, const QString &propertyList);
 private:
     QQmlEngine *quickEngine;
     ThemeEnginePrivate *engine;
@@ -161,42 +188,34 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     StyleTreeNode *rule;
     Selector path, expected;
 
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path = Selector(".baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
-    path.clear();
-    path << SelectorNode("testA", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path = Selector("testA baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
-    path.clear();
-    path << SelectorNode("testA", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Child);
-    expected << SelectorNode("testA", "", SelectorNode::Descendant);
-    expected << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path = Selector("testA>baseA");
+    expected = Selector("testA baseA");
     rule = engine->styleRuleForPath(path);
     // should pass, but should be ".testA .baseA"
     result = (rule != 0) && (rule->path() == expected);
     QCOMPARE(result, true);
 
-    path.clear();
-    path << SelectorNode("testB", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Child);
+    path = Selector("testB>baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
     result = (rule != 0) && (rule->path() == path);
     QCOMPARE(result, true);
 
-    path.clear();
-    path << SelectorNode("testB", "", SelectorNode::Descendant);
-    path << SelectorNode("baseA", "", SelectorNode::Descendant);
+    path = Selector("testB baseA");
     rule = engine->styleRuleForPath(path);
+    QVERIFY2(rule != 0, "Rule not found.");
     // should fail
     result = (rule != 0) && (rule->path() != path);
     QCOMPARE(result, true);
@@ -208,9 +227,7 @@ void tst_ThemeEnginePrivate::testCase_parseSelector()
 
     // build selector path
     QList<Selector> selectors = engine->parseSelector(".testB .baseA");
-    Selector expected, expected2;
-    expected << SelectorNode("testB", "", SelectorNode::Descendant);
-    expected << SelectorNode("baseA", "", SelectorNode::Descendant);
+    Selector expected("testB baseA");
     // should match
     bool result = (selectors.count() == 1) && (selectors[0] == expected);
     QCOMPARE(result, true);
@@ -220,71 +237,93 @@ void tst_ThemeEnginePrivate::testCase_parseSelector()
     result = (selectors.count() == 1) && !(selectors[0] == expected);
     QCOMPARE(result, true);
 
-    expected.clear();
-    expected << SelectorNode("root", "id", SelectorNode::Descendant);
-    expected << SelectorNode("testB", "", SelectorNode::Child);
-    expected << SelectorNode("baseB", "", SelectorNode::Descendant);
+    expected = Selector("root#id>testB baseB");
     selectors = engine->parseSelector(".root#id .testB > .baseA");
     // should not match!
     result = (selectors.count() == 1) && !(selectors[0] == expected);
     QCOMPARE(result, true);
 
-    selectors = engine->parseSelector(".root#id > .testB .baseB");
+    selectors = engine->parseSelector(".root#id>.testB .baseB");
     // should match
     result = (selectors.count() == 1) && (selectors[0] == expected);
     QCOMPARE(result, true);
 
     selectors = engine->parseSelector(".root#id > .testB .baseB, .oneNode.bing .baseC");
-    expected2 << SelectorNode("oneNode.bing", "", SelectorNode::Descendant);
-    expected2 << SelectorNode("baseC", "", SelectorNode::Descendant);
-    result = (selectors.count() == 2) &&
-            (selectors[0] == expected) &&
-            (selectors[1] == expected2);
-    QCOMPARE(result, true);
+    Selector expected2(".oneNode.bing .baseC");
+    QCOMPARE(selectors.count(), 2);
+    QCOMPARE(selectors[0], expected);
+    QCOMPARE(selectors[1], expected2);
 }
 
 void tst_ThemeEnginePrivate::testCase_selectorToString()
 {
     engine->errorString = QString();
-    bool result = true;
     Selector selector;
     QString expected;
 
-    selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Descendant);
+    selector = Selector(".classA .classB");
     expected = ".classa .classb";
-    result = engine->selectorToString(selector) == expected;
-    QCOMPARE(result, true);
+    QCOMPARE(selector.toString(), expected);
 
-    selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Child);
-    expected = ".classa > .classb";
-    result = engine->selectorToString(selector) == expected;
-    QCOMPARE(result, true);
+    selector = Selector(".classA > .classB");
+    expected = ".classa>.classb";
+    QCOMPARE(selector.toString(), expected);
 
-    selector.clear();
-    selector << SelectorNode("classA", "id", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "", SelectorNode::Descendant);
+    selector = Selector(".classA#id .classB");
     expected = ".classa#id .classb";
-    result = engine->selectorToString(selector) == expected;
-    QCOMPARE(result, true);
+    QCOMPARE(selector.toString(), expected);
 
-    selector.clear();
-    selector << SelectorNode("classA", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classa > .classb#id";
-    result = engine->selectorToString(selector) == expected;
-    QCOMPARE(result, true);
+    selector = Selector("   .classA   >   .classB#id  ");
+    expected = ".classa>.classb#id";
+    QCOMPARE(selector.toString(), expected);
 
-    selector.clear();
-    selector << SelectorNode("classA.attribute", "", SelectorNode::Descendant);
-    selector << SelectorNode("classB", "id", SelectorNode::Child);
-    expected = ".classa.attribute > .classb#id";
-    result = engine->selectorToString(selector) == expected;
-    QCOMPARE(result, true);
+    selector = Selector(".classA.attribute>.classB#id");
+    expected = ".classa.attribute>.classb#id";
+    QCOMPARE(selector.toString(), expected);
 }
+
+void tst_ThemeEnginePrivate::testCase_inheritance()
+{
+    engine->errorString = QString();
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
+    QCOMPARE(engine->errorString, QString());
+    // using root selector node (first node of derived list)
+    QVERIFY(test_styleProperties(".derivate", "pDerivate:pDerivate,pBaseA:pBaseA"));
+    QVERIFY(test_styleProperties(".derivate2", "pDerivate:pDerivate,pBaseA:derivate2"));
+    QVERIFY(test_styleProperties(".multiple", "pBaseA:pBaseA,pBaseB:pBaseB"));
+    QVERIFY(test_styleProperties(".multiple2", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2"));
+    QVERIFY(test_styleProperties(".multiple3", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB"));
+    QVERIFY(test_styleProperties(".restore", "pBaseA:pBaseA,pDerivate:pDerivate"));
+    // use complete selector (multiple classes)
+    QVERIFY(test_styleProperties(".derivate.basea", "pDerivate:pDerivate,pBaseA:pBaseA"));
+    QVERIFY(test_styleProperties(".derivate2.derivate", "pDerivate:pDerivate,pBaseA:derivate2"));
+    QVERIFY(test_styleProperties(".multiple.basea.baseb", "pBaseA:pBaseA,pBaseB:pBaseB"));
+    QVERIFY(test_styleProperties(".multiple2.baseA.derivate", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2"));
+    QVERIFY(test_styleProperties(".multiple3.derivate2.baseB", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB"));
+    QVERIFY(test_styleProperties(".restore.derivate2.baseA", "pBaseA:pBaseA,pDerivate:pDerivate"));
+}
+
+// tests the properties of a style class, propertyList is a pair of property:value
+bool tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QString &propertyList)
+{
+    Selector selector = engine->parseSelector(styleClass)[0];
+    StyleTreeNode *rule = engine->styleRuleForPath(selector);
+    QVERIFY2_RET(rule, "Failure");
+    if (rule) {
+        // create style from the rule so we can check the validity of the URLs
+        QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
+        QVERIFY2_RET(style, "FAILURE");
+
+        Q_FOREACH(const QString &propertyPair, propertyList.split(',')) {
+            QStringList pair = propertyPair.split(':');
+            QString data = style->property(pair[0].toLatin1()).toString();
+            QCOMPARE_RET(data, pair[1]);
+        }
+        style->deleteLater();
+    }
+    return true;
+}
+
 
 QTEST_MAIN(tst_ThemeEnginePrivate)
 

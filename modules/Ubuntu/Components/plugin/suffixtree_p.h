@@ -21,6 +21,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QString>
+#include <QtCore/QList>
 
 // node of a selector
 class SelectorNode {
@@ -30,20 +31,32 @@ class SelectorNode {
         Normal = 0,
         IgnoreRelationship = 0x01,
         IgnoreStyleId = 0x02,
-        IgnoreAll = IgnoreRelationship | IgnoreStyleId};
+        IgnoreDerivates = 0x04,
+        IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship = Descendant, NodeSensitivity sensitivity = Normal);
-    QString toString() const;
+    SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
+    void setMultipleClasses(const QString &value);
+    QString multipleClasses() const;
+    QString toString(bool appendDerivates = false) const;
     bool operator==(const SelectorNode &other);
     QString className;
     QString styleClass;
     QString styleId;
+    QString derives;
     Relationship relationship;
     int sensitivity;
 };
 
 // selector type
-typedef QList<SelectorNode> Selector;
+class Selector : public QList<SelectorNode> {
+public:
+    inline Selector() {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
+    virtual ~Selector() {}
+    QString toString(bool appendDerivates = true) const;
+};
+Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
 
 // style rule tree

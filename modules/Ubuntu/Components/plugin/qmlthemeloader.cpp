@@ -61,7 +61,7 @@ const char *stylePropertyFormat = \
   searching in the selector hash for the base selectors (subsets of the current
   selector).
 */
-void normalizeSelector(Selector &selector)
+void resetSelector(Selector &selector)
 {
     for (int i = 0; i < selector.count(); i++)
         selector[i].sensitivity = SelectorNode::Normal;
@@ -240,7 +240,7 @@ QString QmlThemeLoader::readDeclarationBlock(QTextStream &stream)
  * Parses the declaration block and fills the property map from it. Also resolves
  * macros and any other special tokens/tags in property value.
  */
-void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, QHash<QString, QString> &properties, const QTextStream &stream)
+void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, PropertyMap &propertyMap, const QTextStream &stream)
 {
     // parse data
     QString propertyName, propertyValue;
@@ -270,7 +270,7 @@ void QmlThemeLoader::parseDeclarationBlock(const QString &blockData, QHash<QStri
             if (!propertyValue.isEmpty()) {
                 // resolve all macros and special tags/tokens
                 patchDeclarationValue(propertyValue, stream);
-                properties.insert(propertyName.trimmed(), propertyValue);
+                propertyMap.properties.insert(propertyName.trimmed(), propertyValue);
             }
             // check if we reached the end of the data
             if (data->isNull())
@@ -307,19 +307,15 @@ void QmlThemeLoader::patchDeclarationValue(QString &value, const QTextStream &st
   \internal
   Resolves the "inheritance" between atomic selector items (the last items in a CSS selector component).
   */
-void QmlThemeLoader::handleSelector(const Selector &selector, const QHash<QString, QString> &newProperties)
+void QmlThemeLoader::handleSelector(const Selector &selector, const PropertyMap &newProperties)
 {
-    QHash<QString, QString> properties;
+    PropertyMap propertyMap;
     if (selectorTable.contains(selector))
-        properties = selectorTable.value(selector);
-    // merge tables; cannot use QHash::unite as that one uses insertMulti() for the existing keys.
-    QHashIterator<QString, QString> i(newProperties);
-    while (i.hasNext()) {
-        i.next();
-        properties.insert(i.key(), i.value());
-    }
+        propertyMap = selectorTable.value(selector);
+    // merge tables;newProperties override the existing ones
+    propertyMap.merge(newProperties, true);
     // save them (back) into the table
-    selectorTable.insert(selector, properties);
+    selectorTable.insert(selector, propertyMap);
 }
 
 /*!
@@ -329,25 +325,23 @@ void QmlThemeLoader::handleSelector(const Selector &selector, const QHash<QStrin
   */
 void QmlThemeLoader::normalizeStyles()
 {
-    QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
+    QHashIterator<Selector, PropertyMap > i(selectorTable);
     while (i.hasNext()) {
         i.next();
         Selector selector = i.key();
-        QHash<QString, QString> propertyMap = i.value();
-
-        // need to check only the last node from the selector path
-        Selector subset = selectorSubset(selector, 1);
-        if (updateRuleProperties(subset, propertyMap))
-            selectorTable.insert(i.key(), propertyMap);
+        if (normalizeSelector(selector))
+            // start all over as hash iterator is not valid anymore
+            i.toFront();
     }
 }
 
 /*!
   \internal
   Updates the properties of a rule based on the subset of the proeprty. May ignore relation
-  and/or style ID when collecting properties
+  and/or style ID when collecting properties. override should be true when properties from
+  derivates are collected.
   */
-bool QmlThemeLoader::updateRuleProperties(Selector &selector, QHash<QString, QString> &propertyMap)
+bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override)
 {
     bool result = false;
     // check if we have a style that is a subset of the current one and if yes
@@ -357,18 +351,61 @@ bool QmlThemeLoader::updateRuleProperties(Selector &selector, QHash<QString, QSt
         selector[0].styleId = QString();
     }
     if (selectorTable.contains(selector)) {
+        // make sure the selector is normalized
+        normalizeSelector(selector);
         // get the properties and copy the base ones into the current selector
-        QHashIterator<QString, QString> baseProperty(selectorTable.value(selector));
-        while (baseProperty.hasNext()) {
-            baseProperty.next();
-            if (!propertyMap.contains(baseProperty.key())) {
-                propertyMap.insert(baseProperty.key(), baseProperty.value());
-                result = true;
-            }
-        }
+        propertyMap.merge(selectorTable.value(selector), override);
     }
     return result;
 }
+
+/*!
+ * \internal
+ * Normalizes a given selector. Returns true if the selector was normalized(updated)
+ * otherwise returns false.
+ */
+bool QmlThemeLoader::normalizeSelector(const Selector &selector)
+{
+    PropertyMap propertyMap = selectorTable.value(selector);
+    if (propertyMap.normalized)
+        return false;
+    // not normalized yet
+
+    // collect properties from the derived ones
+    SelectorNode last = selector.last();
+    if (!last.derives.isEmpty()) {
+        // get the deriveds first then override those with the current properties
+        PropertyMap derivedMap;
+        Q_FOREACH(const QString& derived, last.derives.split('.')) {
+            if (!derived.isEmpty()) {
+                Selector derivedSelector(derived, SelectorNode::IgnoreAll);
+                QHash<Selector, PropertyMap>::iterator i = selectorTable.find(derivedSelector);
+                if (i != selectorTable.end() && i.key() == derivedSelector) {
+                    // update to the real selector as that may also be derived
+                    derivedSelector = i.key();
+                    updateRuleProperties(derivedSelector, derivedMap, true);
+                }
+            }
+        }
+        // override with the current stuff
+        QHashIterator<QString, QString> i(propertyMap.properties);
+        while (i.hasNext()) {
+            i.next();
+            derivedMap.properties.insert(i.key(), i.value());
+        }
+        propertyMap.properties = derivedMap.properties;
+    }
+    // parse the cascade
+    if (selector.count() > 1) {
+        // need to check only the last node from the selector path
+        Selector subset = selectorSubset(selector, 1);
+        updateRuleProperties(subset, propertyMap, false);
+    }
+    propertyMap.normalized = true;
+    selectorTable.insert(selector, propertyMap);
+    return true;
+}
+
 
 /*!
   \internal
@@ -438,12 +475,12 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
     } else {
         // load declarator and apply on each selector
         data = readDeclarationBlock(stream);
-        QHash<QString, QString> properties;
+        PropertyMap propertyMap;
         if (!data.isEmpty())
-            parseDeclarationBlock(data, properties, stream);
+            parseDeclarationBlock(data, propertyMap, stream);
 
         Q_FOREACH (const Selector &selector, selectors) {
-            handleSelector(selector, properties);
+            handleSelector(selector, propertyMap);
         }
     }
 
@@ -458,16 +495,16 @@ bool QmlThemeLoader::generateStyleQml()
     QString delegateQml;
 
     // go through the selector map and build the styles to each
-    QHashIterator<Selector, QHash<QString, QString> > i(selectorTable);
+    QHashIterator<Selector, PropertyMap > i(selectorTable);
     while (i.hasNext()) {
         i.next();
         Selector selector = i.key();
-        PropertyHash properties = i.value();
+        PropertyMap propertyMap = i.value();
 
-        buildStyleAndDelegate(selector, properties, styleQml, delegateQml);
+        buildStyleAndDelegate(selector, propertyMap.properties, styleQml, delegateQml);
 
-        // normalize selector so we build the Rule with the proper one
-        normalizeSelector(selector);
+        // reset selector so we build the Rule with the proper one
+        resetSelector(selector);
 
         QQmlComponent *style = createComponent(m_engine, styleQml);
         QQmlComponent *delegate = createComponent(m_engine, delegateQml);
@@ -486,7 +523,7 @@ QPair<QString, QString> QmlThemeLoader::selectorMapping(const Selector &selector
     QString qmap;
     for (int count = selector.count(); count > 0; count--) {
         subset = selectorSubset(selector, count, SelectorNode::Normal);
-        qmap = ThemeEnginePrivate::selectorToString(subset);
+        qmap = subset.toString();
         if (qmlMap.contains(qmap)) {
             return qmlMap.value(qmap);
         }

@@ -1,0 +1,30 @@
+.baseA {
+    pBaseA: "pBaseA";
+}
+
+.baseB {
+    pBaseB: "pBaseB";
+}
+
+.derivate.baseA {
+    pDerivate: "pDerivate";
+}
+
+.derivate2.derivate {
+    pBaseA: "derivate2";
+}
+
+.multiple.baseA.baseB {
+}
+
+.multiple2.baseA.derivate {
+    pMultiple2: "multiple2";
+}
+
+.multiple3.derivate2.baseB {
+    pDerivate: "multiple3";
+}
+
+.restore.derivate2.baseA {
+    // baseA should bring back the pBaseA value
+}

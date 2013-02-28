@@ -23,6 +23,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
+#include <QtCore/QRegularExpression>
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
@@ -36,16 +37,63 @@ SelectorNode::SelectorNode() :
     relationship(Descendant),
     sensitivity(Normal)
 {}
+
 /*!
     \internal
-    Creates an instance of a SelectorNode with a given class, name
-    and relationship. The sensitivity parameter configures the node so that during
-    string conversion and comparison ignores the relationship, the name
-    both or none. This feature is used when building up QmlTheme selectorTable.
+    Creates an instance of a SelectorNode by parsing the selectorString. The
+    sensitivity parameter configures the node so that during string conversion
+    and comparison ignores the relationship, the name both or none. This feature
+    is used when building up QmlTheme selectorTable.
 */
-SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
-    styleClass(styleClass.toLower()), styleId(styleId.toLower()), relationship(relationship), sensitivity(sensitivity)
+SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensitivity) :
+    relationship(Descendant), sensitivity(sensitivity)
 {
+    styleClass = selectorString.toLower();
+    if (styleClass.startsWith('>')) {
+        relationship = Child;
+        styleClass.remove('>');
+    }
+    int idIndex = styleClass.indexOf('#');
+    if (idIndex != -1) {
+        styleId = styleClass.mid(idIndex + 1).toLower();
+        styleClass = styleClass.left(idIndex);
+        if (idIndex > 1 && styleClass[0] == '.')
+            styleClass = styleClass.mid(1, idIndex - 1);
+    } else if (styleClass[0] == '.')
+        styleClass = styleClass.mid(1);
+    // check whether the selector derives from any other node
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Updates style class from ItemStyle.
+ */
+void SelectorNode::setMultipleClasses(const QString &value)
+{
+    // replace spaces with dots
+    styleClass = value.toLower().simplified();
+    styleClass.replace(' ', '.');
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        // there are multiple classes specified
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Returns the style class and its derivates in one string that is presentable
+ * to QML.
+ */
+QString SelectorNode::multipleClasses() const
+{
+    return QString(styleClass + derives).replace('.', ' ');
 }
 
 /*!
@@ -53,17 +101,19 @@ SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Re
     Converts a SelectorNode into string using "<relation> .<class>#<name>"
     format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
-QString SelectorNode::toString() const
+QString SelectorNode::toString(bool appendDerivates) const
 {
     QString result;
     if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
             (relationship == SelectorNode::Child))
-        result += "> ";
+        result += ">";
     if (!styleClass.isEmpty())
         result += "." + styleClass;
     else if (!className.isEmpty()) {
         result += '.' + className;
     }
+    if (appendDerivates)
+        result += derives;
     if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
@@ -81,17 +131,63 @@ bool SelectorNode::operator==(const SelectorNode &other)
 }
 
 /*!
+ * \internal
+ * Converts a selector string into Selector object.
+ * Current support (ref: www.w3.org/TR/selector.html):
+ *  - Type selectors, e.g: "Button"
+ *  - Descendant selectors, e.g: "Dialog Button"
+ *  - Child selectors, e.g: "Dialog>Button"
+ *  - ID selectors, e.g: "Button#mySpecialButton"
+ */
+Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity)
+{
+    QString tmp(string.trimmed());
+    // prepare for split
+    if (tmp.contains('>')) {
+        tmp.replace(QRegularExpression("[ ]*(>)[ ]*"), ">").replace('>', "|>");
+    }
+    tmp.replace(' ', '|');
+
+    QStringList nodes = tmp.simplified().split('|');
+    QStringListIterator inodes(nodes);
+    inodes.toBack();
+    while (inodes.hasPrevious()) {
+        const QString &node = inodes.previous();
+        if (node.isEmpty())
+            continue;
+        prepend(SelectorNode(node, sensitivity));
+    }
+}
+
+/*!
+  \internal
+  Converts a style path back to selector string.
+*/
+QString Selector::toString(bool appendDerivates) const
+{
+    QString result;
+
+    QListIterator<SelectorNode> i(*this);
+    while (i.hasNext()) {
+        SelectorNode node = i.next();
+        result += ' ' + node.toString(appendDerivates);
+    }
+    result.replace(" >", ">");
+    return result.simplified();
+}
+
+/*!
   \internal
   Hash key for Selector. Uses QString's hash function.
   */
 uint qHash(const Selector &key)
 {
-    return qHash(ThemeEnginePrivate::selectorToString(key));
+    return qHash(key.toString(false));
 }
 
 
 StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
-    parent(parent), styleNode("", "", SelectorNode::Descendant), style(0), delegate(0)
+    parent(parent), style(0), delegate(0)
 {
 }
 
