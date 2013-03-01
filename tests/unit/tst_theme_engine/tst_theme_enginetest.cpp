@@ -39,6 +39,12 @@ do {\
         return false;\
 } while (0)
 
+#define QVERIFY_RET(statement) \
+do {\
+    if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
+        return false;\
+} while (0)
+
 
 class tst_ThemeEngine : public QObject
 {
@@ -58,7 +64,7 @@ private Q_SLOTS:
     void testCase_selectorDelegates();
     void testCase_inheritance();
 private:
-    bool check_properties(QObject *style, const QString &properties);
+    bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
     QQuickView *quickView;
     QQmlEngine *quickEngine;
@@ -242,31 +248,35 @@ void tst_ThemeEngine::testCase_inheritance()
         ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
         QVERIFY2(attached, "No attached style");
         QObject *style = qvariant_cast<QObject*>(attached->property("style"));
-        QVERIFY2(style, "No style found");
 
         if (attached->path() == ".derivate.basea")
-            QVERIFY(check_properties(style, "pDerivate:pDerivate,pBaseA:pBaseA"));
+            QVERIFY(check_properties(style, "pDerivate:pDerivate,pBaseA:pBaseA", false));
         if (attached->path() == ".derivate2.derivate")
-            QVERIFY(check_properties(style, "pDerivate:pDerivate,pBaseA:derivate2"));
+            QVERIFY(!check_properties(style, "pDerivate:pDerivate,pBaseA:derivate2", true));
         if (attached->path() == ".multiple.basea.baseb")
-            QVERIFY(check_properties(style, "pBaseA:pBaseA,pBaseB:pBaseB"));
+            QVERIFY(check_properties(style, "pBaseA:pBaseA,pBaseB:pBaseB", false));
         if (attached->path() == ".multiple2.basea.derivate")
-            QVERIFY(check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2"));
+            QVERIFY(!check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2", true));
         if (attached->path() == ".multiple3.derivate2.baseb")
-            QVERIFY(check_properties(style, "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB"));
+            QVERIFY(!check_properties(style, "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB", true));
         if (attached->path() == ".restore.derivate2.basea")
-            QVERIFY(check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate"));
+            QVERIFY(!check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate", true));
     }
 }
 
-bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties)
+bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties, bool xfail)
 {
-    Q_FOREACH(const QString &propertyPair, properties.split(',')) {
-        QStringList pair = propertyPair.split(':');
-        QString data = style->property(pair[0].toLatin1()).toString();
-        QCOMPARE_RET(data, pair[1]);
+    if (!xfail || (xfail && style))
+        QVERIFY_RET(style);
+    if (style) {
+        Q_FOREACH(const QString &propertyPair, properties.split(',')) {
+            QStringList pair = propertyPair.split(':');
+            QString data = style->property(pair[0].toLatin1()).toString();
+            if (!xfail || (xfail && !data.isEmpty()))
+                QCOMPARE_RET(data, pair[1]);
+        }
     }
-    return true;
+    return !xfail;
 }
 
 

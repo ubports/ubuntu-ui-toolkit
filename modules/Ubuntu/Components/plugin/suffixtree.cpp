@@ -35,7 +35,7 @@
 
 SelectorNode::SelectorNode() :
     relationship(Descendant),
-    sensitivity(Normal)
+    sensitivity(IgnoreNone)
 {}
 
 /*!
@@ -45,7 +45,7 @@ SelectorNode::SelectorNode() :
     and comparison ignores the relationship, the name both or none. This feature
     is used when building up QmlTheme selectorTable.
 */
-SelectorNode::SelectorNode(const QString &selectorString, NodeSensitivity sensitivity) :
+SelectorNode::SelectorNode(const QString &selectorString, IgnoreFlags sensitivity) :
     relationship(Descendant), sensitivity(sensitivity)
 {
     styleClass = selectorString.toLower();
@@ -101,10 +101,11 @@ QString SelectorNode::multipleClasses() const
     Converts a SelectorNode into string using "<relation> .<class>#<name>"
     format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
-QString SelectorNode::toString(bool appendDerivates) const
+QString SelectorNode::toString(int ignore) const
 {
     QString result;
-    if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
+    ignore |= sensitivity;
+    if (((ignore & IgnoreRelationship) !=  IgnoreRelationship) &&
             (relationship == SelectorNode::Child))
         result += ">";
     if (!styleClass.isEmpty())
@@ -112,9 +113,9 @@ QString SelectorNode::toString(bool appendDerivates) const
     else if (!className.isEmpty()) {
         result += '.' + className;
     }
-    if (appendDerivates)
+    if ((ignore & IgnoreDerivates) != IgnoreDerivates)
         result += derives;
-    if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
+    if (((ignore & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
 }
@@ -123,6 +124,9 @@ bool SelectorNode::operator==(const SelectorNode &other)
 {
     QString myClass = (styleClass.isEmpty()) ? className : styleClass;
     QString otherClass = (other.styleClass.isEmpty()) ? other.className : other.styleClass;
+
+    myClass += derives;
+    otherClass += other.derives;
 
     bool ret = (myClass == otherClass) &&
                (((sensitivity & IgnoreStyleId) ==  IgnoreStyleId) ? true : styleId == other.styleId) &&
@@ -139,7 +143,7 @@ bool SelectorNode::operator==(const SelectorNode &other)
  *  - Child selectors, e.g: "Dialog>Button"
  *  - ID selectors, e.g: "Button#mySpecialButton"
  */
-Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity)
+Selector::Selector(const QString &string, SelectorNode::IgnoreFlags sensitivity)
 {
     QString tmp(string.trimmed());
     // prepare for split
@@ -166,11 +170,12 @@ Selector::Selector(const QString &string, SelectorNode::NodeSensitivity sensitiv
 QString Selector::toString(bool appendDerivates) const
 {
     QString result;
+    int ignoreFlags = (!appendDerivates) ? SelectorNode::IgnoreDerivates : SelectorNode::IgnoreNone;
 
     QListIterator<SelectorNode> i(*this);
     while (i.hasNext()) {
         SelectorNode node = i.next();
-        result += ' ' + node.toString(appendDerivates);
+        result += ' ' + node.toString(ignoreFlags);
     }
     result.replace(" >", ">");
     return result.simplified();

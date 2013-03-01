@@ -25,6 +25,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
+#include <QtQml/QQmlInfo>
 #include <QDebug>
 
 /*
@@ -64,7 +65,7 @@ const char *stylePropertyFormat = \
 void resetSelector(Selector &selector)
 {
     for (int i = 0; i < selector.count(); i++)
-        selector[i].sensitivity = SelectorNode::Normal;
+        selector[i].sensitivity = SelectorNode::IgnoreNone;
 }
 
 /*!
@@ -72,7 +73,7 @@ void resetSelector(Selector &selector)
     Returns a subset from the given selector and configures it to ignore relation
     and name.
   */
-Selector selectorSubset(const Selector &path, int elements, SelectorNode::NodeSensitivity sensitivity = SelectorNode::IgnoreAll)
+Selector selectorSubset(const Selector &path, int elements, SelectorNode::IgnoreFlags sensitivity = SelectorNode::IgnoreAll)
 {
     Selector result;
     while (elements > 0) {
@@ -384,16 +385,17 @@ bool QmlThemeLoader::normalizeSelector(const Selector &selector)
                     // update to the real selector as that may also be derived
                     derivedSelector = i.key();
                     updateRuleProperties(derivedSelector, derivedMap, true);
+                } else {
+                    //FIXME: fire a warning in ThemeEngine, when error handling is done properly
+                    qmlInfo(ThemeEnginePrivate::themeEngine) << QString("Undefined selector: [%1]")
+                                .arg(derivedSelector.toString());
                 }
             }
         }
-        // override with the current stuff
-        QHashIterator<QString, QString> i(propertyMap.properties);
-        while (i.hasNext()) {
-            i.next();
-            derivedMap.properties.insert(i.key(), i.value());
+        if (!derivedMap.properties.isEmpty()) {
+            // override with the current stuff
+            propertyMap.merge(derivedMap, false);
         }
-        propertyMap.properties = derivedMap.properties;
     }
     // parse the cascade
     if (selector.count() > 1) {
@@ -522,7 +524,7 @@ QPair<QString, QString> QmlThemeLoader::selectorMapping(const Selector &selector
     Selector subset;
     QString qmap;
     for (int count = selector.count(); count > 0; count--) {
-        subset = selectorSubset(selector, count, SelectorNode::Normal);
+        subset = selectorSubset(selector, count, SelectorNode::IgnoreNone);
         qmap = subset.toString();
         if (qmlMap.contains(qmap)) {
             return qmlMap.value(qmap);

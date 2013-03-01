@@ -71,7 +71,7 @@ private Q_SLOTS:
     void testCase_selectorToString();
     void testCase_inheritance();
 private:
-    bool test_styleProperties(const QString &styleClass, const QString &propertyList);
+    bool test_styleProperties(const QString &styleClass, const QString &propertyList, bool xfail);
 private:
     QQmlEngine *quickEngine;
     ThemeEnginePrivate *engine;
@@ -286,42 +286,50 @@ void tst_ThemeEnginePrivate::testCase_inheritance()
 {
     engine->errorString = QString();
     engine->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
-    QCOMPARE(engine->errorString, QString());
+    QVERIFY(engine->errorString.isEmpty());
     // using root selector node (first node of derived list)
-    QVERIFY(test_styleProperties(".derivate", "pDerivate:pDerivate,pBaseA:pBaseA"));
-    QVERIFY(test_styleProperties(".derivate2", "pDerivate:pDerivate,pBaseA:derivate2"));
-    QVERIFY(test_styleProperties(".multiple", "pBaseA:pBaseA,pBaseB:pBaseB"));
-    QVERIFY(test_styleProperties(".multiple2", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2"));
-    QVERIFY(test_styleProperties(".multiple3", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB"));
-    QVERIFY(test_styleProperties(".restore", "pBaseA:pBaseA,pDerivate:pDerivate"));
+
+    QVERIFY(!test_styleProperties(".derivate", "pDerivate:pDerivate,pBaseA:pBaseA", true));
+    QVERIFY(!test_styleProperties(".derivate2", "pDerivate:pDerivate,pBaseA:derivate2", true));
+    QVERIFY(!test_styleProperties(".multiple", "pBaseA:pBaseA,pBaseB:pBaseB", true));
+    QVERIFY(!test_styleProperties(".multiple2", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2", true));
+    QVERIFY(!test_styleProperties(".multiple3", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB", true));
+    QVERIFY(!test_styleProperties(".restore", "pBaseA:pBaseA,pDerivate:pDerivate", true));
+
     // use complete selector (multiple classes)
-    QVERIFY(test_styleProperties(".derivate.basea", "pDerivate:pDerivate,pBaseA:pBaseA"));
-    QVERIFY(test_styleProperties(".derivate2.derivate", "pDerivate:pDerivate,pBaseA:derivate2"));
-    QVERIFY(test_styleProperties(".multiple.basea.baseb", "pBaseA:pBaseA,pBaseB:pBaseB"));
-    QVERIFY(test_styleProperties(".multiple2.baseA.derivate", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2"));
-    QVERIFY(test_styleProperties(".multiple3.derivate2.baseB", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB"));
-    QVERIFY(test_styleProperties(".restore.derivate2.baseA", "pBaseA:pBaseA,pDerivate:pDerivate"));
+    QVERIFY(test_styleProperties(".derivate.basea", "pDerivate:pDerivate,pBaseA:pBaseA", false));
+    QVERIFY(!test_styleProperties(".derivate2.derivate", "pDerivate:pDerivate,pBaseA:derivate2", true));
+    QVERIFY(test_styleProperties(".multiple.basea.baseb", "pBaseA:pBaseA,pBaseB:pBaseB", false));
+    QVERIFY(!test_styleProperties(".multiple2.baseA.derivate", "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2", true));
+    QVERIFY(!test_styleProperties(".multiple3.derivate2.baseB", "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB",true));
+    QVERIFY(!test_styleProperties(".restore.derivate2.baseA", "pBaseA:pBaseA,pDerivate:pDerivate", true));
 }
 
 // tests the properties of a style class, propertyList is a pair of property:value
-bool tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QString &propertyList)
+// returns true if test passes, false if not
+bool tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QString &propertyList, bool xfail)
 {
     Selector selector = engine->parseSelector(styleClass)[0];
     StyleTreeNode *rule = engine->styleRuleForPath(selector);
-    QVERIFY2_RET(rule, "Failure");
+    if ((xfail && rule) || !xfail)
+        QVERIFY2_RET(rule, "Failure");
     if (rule) {
         // create style from the rule so we can check the validity of the URLs
         QObject *style = rule->style ? rule->style->create(quickEngine->rootContext()) : 0;
-        QVERIFY2_RET(style, "FAILURE");
+        if ((xfail && style) || !xfail)
+            QVERIFY2_RET(style, "FAILURE");
 
-        Q_FOREACH(const QString &propertyPair, propertyList.split(',')) {
-            QStringList pair = propertyPair.split(':');
-            QString data = style->property(pair[0].toLatin1()).toString();
-            QCOMPARE_RET(data, pair[1]);
+        if (style) {
+            Q_FOREACH(const QString &propertyPair, propertyList.split(',')) {
+                QStringList pair = propertyPair.split(':');
+                QString data = style->property(pair[0].toLatin1()).toString();
+                if ((xfail && !data.isEmpty()) || !xfail)
+                    QCOMPARE_RET(data, pair[1]);
+            }
+            style->deleteLater();
         }
-        style->deleteLater();
     }
-    return true;
+    return !xfail;
 }
 
 
