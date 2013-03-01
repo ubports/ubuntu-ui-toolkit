@@ -33,7 +33,6 @@ Template {
             height: units.gu(50)
 
             Page {
-                anchors.fill: parent
                 title: "Toolbar demo"
 
                 tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1

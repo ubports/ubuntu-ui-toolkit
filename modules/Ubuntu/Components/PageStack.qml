@@ -34,14 +34,11 @@ import "stack.js" as Stack
 
         PageStack {
             id: pageStack
-            anchors.fill: parent
-
             Component.onCompleted: pageStack.push(page0)
 
             Page {
                 id: page0
                 title: "Root page"
-                anchors.fill: parent
 
                 Column {
                     anchors.fill: parent
