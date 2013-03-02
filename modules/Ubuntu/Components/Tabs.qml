@@ -60,6 +60,7 @@ import Ubuntu.Components 0.1 as Theming
 */
 
 Page {
+    id: tabs
     // FIXME: see above
     Theming.ItemStyle.class: "new-tabs"
 

@@ -97,6 +97,10 @@ Item {
      */
     property Flickable flickable: internal.getFlickableChild()
 
+    /*!
+      The height of the header of the page.
+     */
+    readonly property real headerHeight: internal.headerHeight
     Item {
         id: internal
 

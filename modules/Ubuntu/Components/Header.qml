@@ -106,12 +106,14 @@ Item {
             if (previousFlickable) {
                 previousFlickable.contentYChanged.disconnect(internal.scrollContents);
                 previousFlickable.movementEnded.disconnect(internal.movementEnded);
+                previousFlickable.interactiveChanged.disconnect(internal.interactiveChanged);
             }
             if (flickable) {
                 // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
                 flickable.contentYChanged.connect(internal.scrollContents);
                 flickable.movementEnded.connect(internal.movementEnded);
+                flickable.interactiveChanged.connect(internal.interactiveChanged);
             }
             previousFlickable = flickable;
         }
@@ -135,6 +137,13 @@ Item {
             if (flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();
+        }
+
+        /*
+          Flickable became interactive or non-interactive.
+         */
+        function interactiveChanged() {
+            if (flickable && !flickable.interactive) header.show();
         }
     }
 }
