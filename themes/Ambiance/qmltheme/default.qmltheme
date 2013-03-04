@@ -154,7 +154,7 @@ Examples:
 }
 
 .mainview {
-    backgroundColor: Qt.rgba(1.0, 0.0, 0.0, 0.1); /*"#ededf0";* TODO update */
+    backgroundColor: "#ededf0";
     backgroundSource: url("artwork/background_paper.png");
 }
 
