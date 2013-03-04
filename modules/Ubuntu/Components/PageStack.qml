@@ -99,9 +99,8 @@ Page {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-//    property ToolbarActions // TODO: remove
     tools: currentPage && currentPage.hasOwnProperty("tools")
-                               && currentPage.tools ? currentPage.tools : __defaultTools
+           && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */
     onToolsChanged: if (tools) tools.__pageStack = pageStack;
@@ -182,47 +181,10 @@ Page {
         pageStack.depth = stack.size();
         if (pageStack.depth > 0) currentPage = stack.top().object;
         else currentPage = null;
-//        contents.updateHeader();
     }
 
     Item {
-        id: contents
-        parent: pageStack
-        anchors.fill: pageStack
-
-        Item {
-            id: pageContents
-            anchors.fill: parent
-//            anchors {
-//                left: parent.left
-//                right: parent.right
-//                bottom: parent.bottom
-//                top: header.visible ? header.bottom : parent.top
-//            }
-        }
-
-        // The header comes after the contents to ensure its z-order is higher.
-        // This ensures flickable contents never overlap the header,
-        // without having to resort to clipping.
-//        Header {
-//            id: header
-//            anchors {
-//                left: parent.left
-//                right: parent.right
-//                top: parent.top
-//            }
-//            height: units.gu(5)
-//        }
-
-//        function updateHeader() {
-//            var stackSize = stack.size();
-//            if (stackSize > 0) {
-//                var item = stack.top().object;
-//                if (item.__isPage === true) header.title = item.title;
-//                else header.title = "";
-//            } else {
-//                header.title = "";
-//            }
-//        }
+        id: pageContents
+        anchors.fill: parent
     }
 }
