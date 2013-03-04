@@ -165,11 +165,11 @@ Examples:
     separatorSource: url("artwork/PageHeaderBaseDividerLight.sci");
     separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
     margins: units.gu(2);
+    fontWeight: Font.Light;
 }
 
 .header .label {
     fontSize: "x-large";
-    fontWeight: Font.Light; /* TODO: FIX. fontWeight is not a property of Label */
     color: Qt.rgba(0.51, 0.51, 0.51, 0.9);
 }
 

@@ -61,7 +61,7 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: itemStyle.contentHeight
+        height: StyleUtils.itemStyleProperty("contentHeight", units.gu(7.5))
 
         Label {
             anchors {
@@ -70,7 +70,7 @@ Item {
                 margins: itemStyle.margins
             }
             text: item.title
-            //font.weight: itemStyle.fontWeight
+            font.weight: StyleUtils.itemStyleProperty("fontWeight")
             visible: contentsLoader.status != Loader.Ready
         }
 
