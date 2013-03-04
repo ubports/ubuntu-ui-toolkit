@@ -66,7 +66,6 @@ Item {
       The title of the page. Will be shown in the header of the \l MainView.
      */
     property string title
-    onTitleChanged: internal.updateHeader();
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
@@ -127,10 +126,10 @@ Item {
         property bool hasAncestorPage: false;
 
         property var mainView: getMainView()
-        onMainViewChanged: updateHeader()
+        onMainViewChanged: updateActivePage()
         property real headerHeight: mainView && mainView.header ? mainView.header.height : 0
 
-        function updateHeader() {
+        function updateActivePage() {
             var mainView = getMainView();
             if (mainView && !hasAncestorPage) {
                 mainView.activePage = page;
