@@ -27,17 +27,17 @@
 class SelectorNode {
     public:
     enum Relationship {Child, Descendant, Sibling};
-    enum NodeSensitivity {
-        Normal = 0,
+    enum IgnoreFlags {
+        IgnoreNone = 0,
         IgnoreRelationship = 0x01,
         IgnoreStyleId = 0x02,
         IgnoreDerivates = 0x04,
         IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
     SelectorNode();
-    SelectorNode(const QString &selectorString, NodeSensitivity sensitivity = Normal);
+    SelectorNode(const QString &selectorString, IgnoreFlags sensitivity = IgnoreNone);
     void setMultipleClasses(const QString &value);
     QString multipleClasses() const;
-    QString toString(bool appendDerivates = false) const;
+    QString toString(int ignore = IgnoreNone) const;
     bool operator==(const SelectorNode &other);
     QString className;
     QString styleClass;
@@ -52,7 +52,7 @@ class Selector : public QList<SelectorNode> {
 public:
     inline Selector() {}
     inline Selector(const Selector& s) : QList<SelectorNode>(s){}
-    Selector(const QString &string, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
+    Selector(const QString &string, SelectorNode::IgnoreFlags sensitivity = SelectorNode::IgnoreNone);
     virtual ~Selector() {}
     QString toString(bool appendDerivates = true) const;
 };
