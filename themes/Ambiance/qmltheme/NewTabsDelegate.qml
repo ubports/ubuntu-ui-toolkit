@@ -74,7 +74,6 @@ Item {
         function updateSelectedTabIndex() {
             if (tabView.currentIndex === item.selectedTabIndex) return;
             // The view is automatically updated, because highlightFollowsCurrentItem
-            print("setting tabView.currentIndex = "+item.selectedTabIndex);
             tabView.currentIndex = item.selectedTabIndex;
         }
     }
