@@ -22,19 +22,23 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1 as Theming
 
 /*!
-    \qmltype ApplicationWindow
+    \qmltype MainView
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The root Item for all applications
+    \brief The root Item for all applications. It automatically adds a header
+        and toolbar for its contents.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
         MainView {
-            Button {
-                anchors.centerIn: parent
-                text: "Click me"
+            Page {
+                title: "Header text"
+                Button {
+                    anchors.centerIn: parent
+                    text: "Click me"
+                }
             }
         }
     \endqml
@@ -63,7 +67,6 @@ Item {
       The list of actions that will be placed on the toolbar of the application.
      */
     property alias tools: toolbar.tools
-    //    property ToolbarActions tools
 
     // clip if the MainView is not fullscreen
     clip: true
@@ -78,8 +81,16 @@ Item {
         anchors.fill: parent
     }
 
+    /*!
+      The currently active page. This page will be set automatically, and
+      its properties will be used to set-up the toolbar and header for MainView.
+     */
     property var activePage: null
 
+    /*!
+      The header of the MainView. Can be used to obtain the height of the header
+      in \l Page to determine the area for the \l Page to fill.
+     */
     property alias header: header
     Header {
         id: header
