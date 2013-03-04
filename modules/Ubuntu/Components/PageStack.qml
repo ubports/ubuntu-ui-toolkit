@@ -119,9 +119,9 @@ Page {
     function __createWrapper(page, properties) {
         var wrapperComponent = Qt.createComponent("PageWrapper.qml");
         // TODO: cache the component?
-        var wrapperObject = wrapperComponent.createObject(pageContents);
+        var wrapperObject = wrapperComponent.createObject(pageContainer);
         wrapperObject.reference = page;
-        wrapperObject.parent = pageContents;
+        wrapperObject.parent = pageContainer;
         wrapperObject.properties = properties;
         wrapperObject.pageStack = pageStack;
         return wrapperObject;
@@ -184,7 +184,7 @@ Page {
     }
 
     Item {
-        id: pageContents
+        id: pageContainer
         anchors.fill: parent
     }
 }
