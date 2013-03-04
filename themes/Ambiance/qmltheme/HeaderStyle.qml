@@ -28,14 +28,7 @@ QtObject {
     property url separatorSource
     property url separatorBottomSource
 
-    property color textColor
-//    property real textOpacity
-
-    property string fontSize
     property int fontWeight
     property real textLeftMargin
-//    property real headerTextRightMargin
-//    property real headerTextBottomMargin
-
     property real margins
 }

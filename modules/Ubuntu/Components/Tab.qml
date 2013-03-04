@@ -63,13 +63,6 @@ Item {
 
     /*!
       \internal
-      If the page is flickable, __flickable refers to the page, otherwise it refers to the first
-      of the children that is flickable, or null if none of the children is flickable.
-     */
-//    readonly property Flickable __flickable: pageWrapper.flickable
-
-    /*!
-      \internal
       Specifies whether this tab is the active one. Automatically updated by \l Tabs.
     */
     property alias __active: pageWrapper.active
