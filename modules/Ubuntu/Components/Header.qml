@@ -73,7 +73,6 @@ Item {
       The contents of the header. If this is set, \l title will be ignored.
      */
     property Component contents: null
-    onContentsChanged: print("header contents = "+contents)
 
     /*!
       The flickable that controls the movement of the header.

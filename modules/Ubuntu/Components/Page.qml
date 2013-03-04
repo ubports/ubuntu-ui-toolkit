@@ -100,6 +100,15 @@ Item {
       The height of the header of the page.
      */
     readonly property real headerHeight: internal.headerHeight
+
+    /*!
+      The \l MainView that this Page is associated to. This property is automatically
+       set and the Page will update the header of the main view. To disable this behavior,
+       set mainView to null.
+     */
+    property var mainView: internal.getMainView()
+    onMainViewChanged: internal.updateActivePage()
+
     Item {
         id: internal
 
@@ -125,14 +134,11 @@ Item {
          */
         property bool hasAncestorPage: false;
 
-        property var mainView: getMainView()
-        onMainViewChanged: updateActivePage()
         property real headerHeight: mainView && mainView.header ? mainView.header.height : 0
 
         function updateActivePage() {
-            var mainView = getMainView();
-            if (mainView && !hasAncestorPage) {
-                mainView.activePage = page;
+            if (page.mainView && !hasAncestorPage) {
+                page.mainView.activePage = page;
             }
         }
 

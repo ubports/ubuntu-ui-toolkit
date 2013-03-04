@@ -86,7 +86,7 @@ Page {
       The page of the currently selected tab.
      */
     readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
-    title: "Tabs"
+    title: "Tabs" // not visible because headerContents is overwritten
     flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
     headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
@@ -109,7 +109,7 @@ Page {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    property ToolbarActions tools: selectedTab && selectedTab.__pageObject &&
-                                   selectedTab.__pageObject.hasOwnProperty("tools") ?
-                                       selectedTab.__pageObject.tools : null
+    tools: selectedTab && selectedTab.__pageObject &&
+            selectedTab.__pageObject.hasOwnProperty("tools") ?
+            selectedTab.__pageObject.tools : null
 }

@@ -32,9 +32,9 @@ Item {
             id: tabBar
             tabs: theTabs
             anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
+                top: parent ? parent.top : undefined
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
             }
         }
     }

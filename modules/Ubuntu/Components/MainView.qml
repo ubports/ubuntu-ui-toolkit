@@ -114,8 +114,6 @@ Item {
             if (!tools.hasOwnProperty("lock")) return null;
             return tools;
         }
-
-        onActiveChanged: if (active) header.show()
     }
 
     /*! \internal */
