@@ -43,7 +43,7 @@ import Ubuntu.Components 0.1 as Theming
         }
     \endqml
 */
-Item {
+PageTreeNode {
     id: mainView
 
     /*!
@@ -85,7 +85,7 @@ Item {
       The currently active page. This page will be set automatically, and
       its properties will be used to set-up the toolbar and header for MainView.
      */
-    property var activePage: null
+//    property var activePage: null
 
     /*!
       The header of the MainView. Can be used to obtain the height of the header
@@ -94,9 +94,15 @@ Item {
     property alias header: header
     Header {
         id: header
-        title: activePage && activePage.hasOwnProperty("title") ? activePage.title : ""
-        contents: activePage && activePage.hasOwnProperty("headerContents") ? activePage.headerContents : null
-        flickable: activePage && activePage.hasOwnProperty("flickable") ? activePage.flickable : null
+//        title: activePage && activePage.hasOwnProperty("title") ? activePage.title : ""
+//        contents: activePage && activePage.hasOwnProperty("headerContents") ? activePage.headerContents : null
+//        flickable: activePage && activePage.hasOwnProperty("flickable") ? activePage.flickable : null
+
+        title: activeChildNode && activeChildNode.hasOwnProperty("title") ? activeChildNode.title : ""
+        contents: activeChildNode && activeChildNode.hasOwnProperty("headerContents") ? activeChildNode.headerContents : null
+        flickable: activeChildNode && activeChildNode.hasOwnProperty("flickable") ? activeChildNode.flickable : null
+
+
     }
 
     Toolbar {

@@ -39,3 +39,31 @@ function getFlickableChild(item) {
     }
     return null;
 }
+
+/*!
+  Return the parent node in the PageTreeNode, or null if the item is the root node or invalid.
+ */
+function getParentPageTreeNode(item) {
+    var node = null;
+    if (item) {
+        var i = item.parent;
+        while (i && !node) {
+            if (isPage(i)) node = i;
+            i = i.parent;
+        }
+    }
+    return node;
+}
+
+//function getMainView() {
+//    hasAncestorPage = false;
+//    var item = page.parent;
+//    var mainView = null;
+//    while (item && !mainView) {
+//        if (PageUtils.isPage(item)) hasAncestorPage = true;
+//        if (PageUtils.isMainView(item)) mainView = item;
+//        item = item.parent;
+//    }
+//    return mainView;
+//}
+

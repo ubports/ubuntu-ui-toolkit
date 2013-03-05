@@ -52,15 +52,14 @@ import "pageUtils.js" as PageUtils
 
     See also \l Tabs and \l PageStack.
 */
-Item {
+PageTreeNode {
     id: page
-
     anchors {
         left: parent.left
         right: parent.right
         bottom: parent.bottom
     }
-    height: flickable ? parent.height : parent.height - internal.headerHeight
+    height: flickable ? parent.height : parent.height - page.headerHeight
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
@@ -72,11 +71,11 @@ Item {
      */
     property Component headerContents: null
 
-    /*!
-      \internal
-      Used to determine whether an Item is a Page.
-     */
-    property bool __isPage: true
+//    /*!
+//      \internal
+//      Used to determine whether an Item is a Page.
+//     */
+//    property bool __isPage: true
 
     /*!
       The \l PageStack that this Page has been pushed on, or null if it is not
@@ -97,17 +96,12 @@ Item {
     property Flickable flickable: PageUtils.getFlickableChild(page)
 
     /*!
-      The height of the header of the page.
-     */
-    readonly property real headerHeight: internal.headerHeight
-
-    /*!
       The \l MainView that this Page is associated to. This property is automatically
        set and the Page will update the header of the main view. To disable this behavior,
        set mainView to null.
      */
-    property var mainView: internal.getMainView()
-    onMainViewChanged: internal.updateActivePage()
+//    property var mainView: internal.getMainView()
+//    onMainViewChanged: internal.updateActivePage()
 
     Item {
         id: internal
@@ -115,8 +109,8 @@ Item {
         Connections {
             target: page
             onFlickableChanged: internal.updateFlickableMargins()
+            onHeaderHeightChanged: internal.updateFlickableMargins()
         }
-        onHeaderHeightChanged: internal.updateFlickableMargins()
 
         function updateFlickableMargins() {
             if (flickable) {
@@ -132,22 +126,20 @@ Item {
           is a Page. If true, do not set the current Page to the activePage of the
           MainView.
          */
-        property bool hasAncestorPage: false;
-
-        property real headerHeight: mainView && mainView.header ? mainView.header.height : 0
+//        property bool hasAncestorPage: false;
 
         function updateActivePage() {
-            if (page.mainView && !hasAncestorPage) {
+            if (page.mainView) { // && !hasAncestorPage) {
                 page.mainView.activePage = page;
             }
         }
 
         function getMainView() {
-            hasAncestorPage = false;
+//            hasAncestorPage = false;
             var item = page.parent;
             var mainView = null;
             while (item && !mainView) {
-                if (PageUtils.isPage(item)) hasAncestorPage = true;
+//                if (PageUtils.isPage(item)) hasAncestorPage = true;
                 if (PageUtils.isMainView(item)) mainView = item;
                 item = item.parent;
             }

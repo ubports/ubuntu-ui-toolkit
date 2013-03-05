@@ -20,6 +20,7 @@ import QtQuick 2.0
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import Ubuntu.Components 0.1 as Theming
+import "pageUtils.js" as PageUtils
 
 /*!
     \qmltype Tabs
@@ -59,7 +60,7 @@ import Ubuntu.Components 0.1 as Theming
     \b{This component is under heavy development.}
 */
 
-Page {
+PageTreeNode {
     id: tabs
     // FIXME: see above
     Theming.ItemStyle.class: "new-tabs"
@@ -85,10 +86,12 @@ Page {
     /*!
       The page of the currently selected tab.
      */
+    // TODO: make currentPage private?
     readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
-    title: "Tabs" // not visible because headerContents is overwritten
-    flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
-    headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+    activeChildNode: PageUtils.isPage(currentPage) ? currentPage : null
+    property string title: "Tabs" // not visible because headerContents is overwritten
+    property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
+    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
@@ -109,7 +112,7 @@ Page {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    tools: selectedTab && selectedTab.__pageObject &&
+    property var tools: selectedTab && selectedTab.__pageObject &&
             selectedTab.__pageObject.hasOwnProperty("tools") ?
             selectedTab.__pageObject.tools : null
 }
