@@ -111,6 +111,7 @@ PageTreeNode {
             onFlickableChanged: internal.updateFlickableMargins()
             onHeaderHeightChanged: internal.updateFlickableMargins()
         }
+        Component.onCompleted: updateFlickableMargins()
 
         function updateFlickableMargins() {
             if (flickable) {

@@ -101,8 +101,6 @@ PageTreeNode {
         title: activeChildNode && activeChildNode.hasOwnProperty("title") ? activeChildNode.title : ""
         contents: activeChildNode && activeChildNode.hasOwnProperty("headerContents") ? activeChildNode.headerContents : null
         flickable: activeChildNode && activeChildNode.hasOwnProperty("flickable") ? activeChildNode.flickable : null
-
-
     }
 
     Toolbar {
