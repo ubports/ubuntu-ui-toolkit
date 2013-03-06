@@ -78,15 +78,8 @@ PageTreeNode {
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
     /*!
-      \preliminary
-      The currently selected tab.
-     */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
-
-    /*!
       The page of the currently selected tab.
      */
-//    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
     readonly property Item currentPage: (selectedTabIndex >= 0) ? tabs.childNodes[selectedTabIndex] : null
     property string title: "Tabs" // not visible because headerContents is overwritten
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
