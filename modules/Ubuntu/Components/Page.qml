@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import "pageUtils.js" as PageUtils
 /*!
     \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
@@ -87,7 +86,7 @@ PageTreeNode {
       is automatically set if the Flickable is one of the Page's direct children.
       May be set to null to avoid the header from hiding.
      */
-    property Flickable flickable: PageUtils.getFlickableChild(page)
+    property Flickable flickable: internal.getFlickableChild(page)
 
     Item {
         id: internal
@@ -98,6 +97,23 @@ PageTreeNode {
             onHeaderHeightChanged: internal.updateFlickableMargins()
         }
         Component.onCompleted: updateFlickableMargins()
+
+        function isFlickable(object) {
+            return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
+        }
+
+        /*!
+          Return the first flickable child of this page.
+         */
+        function getFlickableChild(item) {
+            if (item && item.hasOwnProperty("children")) {
+                for (var i=0; i < item.children.length; i++) {
+                    if (internal.isFlickable(item.children[i])) return item.children[i];
+                }
+            }
+            return null;
+        }
+
 
         function updateFlickableMargins() {
             if (flickable) {
