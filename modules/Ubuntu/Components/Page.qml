@@ -71,12 +71,6 @@ PageTreeNode {
      */
     property Component headerContents: null
 
-//    /*!
-//      \internal
-//      Used to determine whether an Item is a Page.
-//     */
-//    property bool __isPage: true
-
     /*!
       The \l PageStack that this Page has been pushed on, or null if it is not
       part of a PageStack. This value is automatically updated by the \l PageStack.
@@ -95,14 +89,6 @@ PageTreeNode {
      */
     property Flickable flickable: PageUtils.getFlickableChild(page)
 
-    /*!
-      The \l MainView that this Page is associated to. This property is automatically
-       set and the Page will update the header of the main view. To disable this behavior,
-       set mainView to null.
-     */
-//    property var mainView: internal.getMainView()
-//    onMainViewChanged: internal.updateActivePage()
-
     Item {
         id: internal
 
@@ -120,31 +106,6 @@ PageTreeNode {
                 page.flickable.contentY = -headerHeight;
                 page.flickable.topMargin = headerHeight;
             }
-        }
-
-        /*!
-          One of the ancestors of this Page, before finding the MainView,
-          is a Page. If true, do not set the current Page to the activePage of the
-          MainView.
-         */
-//        property bool hasAncestorPage: false;
-
-        function updateActivePage() {
-            if (page.mainView) { // && !hasAncestorPage) {
-                page.mainView.activePage = page;
-            }
-        }
-
-        function getMainView() {
-//            hasAncestorPage = false;
-            var item = page.parent;
-            var mainView = null;
-            while (item && !mainView) {
-//                if (PageUtils.isPage(item)) hasAncestorPage = true;
-                if (PageUtils.isMainView(item)) mainView = item;
-                item = item.parent;
-            }
-            return mainView;
         }
     }
 }

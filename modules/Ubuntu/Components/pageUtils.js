@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library // FIXME: cannot refer to Component.Error if I use this.
+.pragma library
 
 function isPage(object) {
     return (object && object.hasOwnProperty("__isPage") && object.__isPage);
@@ -54,16 +54,3 @@ function getParentPageTreeNode(item) {
     }
     return node;
 }
-
-//function getMainView() {
-//    hasAncestorPage = false;
-//    var item = page.parent;
-//    var mainView = null;
-//    while (item && !mainView) {
-//        if (PageUtils.isPage(item)) hasAncestorPage = true;
-//        if (PageUtils.isMainView(item)) mainView = item;
-//        item = item.parent;
-//    }
-//    return mainView;
-//}
-
