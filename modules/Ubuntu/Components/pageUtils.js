@@ -16,14 +16,6 @@
 
 .pragma library
 
-function isPage(object) {
-    return (object && object.hasOwnProperty("__isPage") && object.__isPage);
-}
-
-function isMainView(object) {
-    return (object && object.hasOwnProperty("__isMainView") && object.__isMainView);
-}
-
 function isFlickable(object) {
     return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
 }
@@ -38,19 +30,4 @@ function getFlickableChild(item) {
         }
     }
     return null;
-}
-
-/*!
-  Return the parent node in the PageTreeNode, or null if the item is the root node or invalid.
- */
-function getParentPageTreeNode(item) {
-    var node = null;
-    if (item) {
-        var i = item.parent;
-        while (i && !node) {
-            if (isPage(i)) node = i;
-            i = i.parent;
-        }
-    }
-    return node;
 }

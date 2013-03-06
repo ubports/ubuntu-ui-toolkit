@@ -20,7 +20,6 @@ import QtQuick 2.0
 // by the QML engine. As workaround, we use Theming named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
 import Ubuntu.Components 0.1 as Theming
-import "pageUtils.js" as PageUtils
 
 /*!
     \qmltype Tabs
@@ -86,9 +85,7 @@ PageTreeNode {
     /*!
       The page of the currently selected tab.
      */
-//    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
     readonly property Item currentPage: (selectedTabIndex >= 0) ? tabs.childNodes[selectedTabIndex] : null
-    property string title: "Tabs" // not visible because headerContents is overwritten
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
@@ -111,7 +108,6 @@ PageTreeNode {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    property var tools: selectedTab && selectedTab.__pageObject &&
-            selectedTab.__pageObject.hasOwnProperty("tools") ?
+    property var tools: currentPage && currentPage.hasOwnProperty("tools") ?
             selectedTab.__pageObject.tools : null
 }

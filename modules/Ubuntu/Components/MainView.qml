@@ -98,10 +98,12 @@ PageTreeNode {
         id: toolbar
         tools: getTools()
 
+        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
         function getTools() {
-            if (contents.children.length < 1) return null;
-            if (!contents.children[0].hasOwnProperty("tools")) return null;
-            var tools = contents.children[0].tools;
+            // FIXME: this can be done prettier
+            if (!page) return null;
+            if (!page.hasOwnProperty("tools")) return null;
+            var tools = page.tools;
             if (!tools) return null;
             if (!tools.hasOwnProperty("back")) return null;
             if (!tools.hasOwnProperty("__pageStack")) return null;
@@ -123,10 +125,4 @@ PageTreeNode {
         } else if (__hud)
             __hud.destroy();
     }
-
-    /*!
-      \internal
-      Internal helper property to indicate that this is a MainView
-     */
-    property bool __isMainView: true
 }

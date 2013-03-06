@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "pageUtils.js" as PageUtils
+
 /*!
     \internal
     \qmltype PageTreeNode
@@ -29,9 +29,10 @@ Item {
       \internal
       Used to determine whether an Item is a Page.
      */
-    property bool __isPage: true
+    property bool __isPageTreeNode: true
 
     onParentChanged: internal.updatePageTree()
+    Component.onCompleted: internal.updatePageTree()
 
     /*!
       The child nodes in the page tree.
@@ -42,20 +43,47 @@ Item {
       The header of the node. Propagates down from the root node.
      */
     property Header header: internal.parentNode ? internal.parentNode.header : null
+    /*!
+      The height of the header. Used to position the Pages and set Flickable margins.
+     */
     readonly property real headerHeight: header ? header.height : 0
+
     // TODO: Take the same approach with the toolbar, as with the header.
 
     Item {
         id: internal
         property var parentNode: null
+
+        function isPageTreeNode(object) {
+            return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);
+        }
+
+        /*!
+          Return the parent node in the PageTreeNode, or null if the item is the root node or invalid.
+         */
+        function getParentPageTreeNode(item) {
+            var node = null;
+            if (item) {
+                var i = item.parent;
+                while (i && !node) {
+                    if (internal.isPageTreeNode(i)) node = i;
+                    i = i.parent;
+                }
+            }
+            return node;
+        }
+
         /*!
           Find the parent node.
          */
         function updatePageTree() {
-            internal.parentNode = PageUtils.getParentPageTreeNode(node);
+//            if (internal.parentNode) {
+//                // remove node from the list of childNodes
+//                var index = internal.parentNode.childNodes.indexOf(node);
+//                internal.parentNode.childNodes.splice(index, 1);
+//            }
+            internal.parentNode = internal.getParentPageTreeNode(node);
             if (internal.parentNode) {
-                // FIXME: The child node is not automatically removed from the
-                //  parent node when the tree is changed.
                 internal.parentNode.childNodes.push(node);
             }
         }
