@@ -34,17 +34,9 @@ Item {
     onParentChanged: internal.updatePageTree()
 
     /*!
-      The node is active. When a node becomes active, it updates the
-      activePage property of its parent node.
-      True by default, but inside a \l PageStack or \l Tabs Item, the
-      active property of all \l Page Items except one will be set to false.
+      The child nodes in the page tree.
      */
-//    property bool active: true
-
-    /*!
-      The active child node in the page tree.
-     */
-    property Item activeChildNode: null
+    property var childNodes: []
 
     /*!
       The header of the node. Propagates down from the root node.
@@ -52,7 +44,6 @@ Item {
     property Header header: internal.parentNode ? internal.parentNode.header : null
     readonly property real headerHeight: header ? header.height : 0
     // TODO: Take the same approach with the toolbar, as with the header.
-
 
     Item {
         id: internal
@@ -62,18 +53,10 @@ Item {
          */
         function updatePageTree() {
             internal.parentNode = PageUtils.getParentPageTreeNode(node);
-            internal.updateParentNode();
-        }
-
-        /*!
-          Update the activePage property of the parent node.
-         */
-        function updateParentNode() {
-//            if (internal.parentNode && node.active) {
-//                internal.parentNode.activeChildNode = node;
-//            }
             if (internal.parentNode) {
-                internal.parentNode.activeChildNode = node;
+                // FIXME: The child node is not automatically removed from the
+                //  parent node when the tree is changed.
+                internal.parentNode.childNodes.push(node);
             }
         }
     }

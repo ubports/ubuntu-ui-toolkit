@@ -88,8 +88,6 @@ Page {
     title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
     flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
 
-    activeChildNode: PageUtils.isPage(currentPage) ? currentPage : null
-
     /*!
       \internal
       The instance of the stack from javascript

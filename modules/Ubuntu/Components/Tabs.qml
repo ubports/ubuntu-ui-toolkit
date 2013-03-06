@@ -86,9 +86,8 @@ PageTreeNode {
     /*!
       The page of the currently selected tab.
      */
-    // TODO: make currentPage private?
-    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
-    activeChildNode: PageUtils.isPage(currentPage) ? currentPage : null
+//    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
+    readonly property Item currentPage: (selectedTabIndex >= 0) ? tabs.childNodes[selectedTabIndex] : null
     property string title: "Tabs" // not visible because headerContents is overwritten
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)

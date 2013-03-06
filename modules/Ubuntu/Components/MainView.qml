@@ -85,12 +85,13 @@ PageTreeNode {
       The header of the MainView. Can be used to obtain the height of the header
       in \l Page to determine the area for the \l Page to fill.
      */
-    property alias header: header
+    header: headerItem
     Header {
-        id: header
-        title: activeChildNode && activeChildNode.hasOwnProperty("title") ? activeChildNode.title : ""
-        contents: activeChildNode && activeChildNode.hasOwnProperty("headerContents") ? activeChildNode.headerContents : null
-        flickable: activeChildNode && activeChildNode.hasOwnProperty("flickable") ? activeChildNode.flickable : null
+        id: headerItem
+        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
+        title: page && page.hasOwnProperty("title") ? page.title : ""
+        contents: page && page.hasOwnProperty("headerContents") ? page.headerContents : null
+        flickable: page && page.hasOwnProperty("flickable") ? page.flickable : null
     }
 
     Toolbar {
