@@ -24,7 +24,12 @@ Page {
         anchors.fill: parent
         contentHeight: parent.height + units.gu(10)
         Label {
-            anchors.centerIn: parent
+            anchors {
+                top: parent.top
+                topMargin: units.gu(16)
+                horizontalCenter: parent.horizontalCenter
+            }
+
             text: i18n.tr("This is an external page\nwith a locked toolbar.")
             color: "#757373"
         }
