@@ -300,11 +300,16 @@ void InverseMouseAreaType::asyncEmit(SignalType signal, bool isClick, bool wasHe
     // slight optimization, don't allocate event if the signal is not connected
     QMetaMethod metaSignal = QMetaMethod::fromSignal(signal);
     if (isSignalConnected(metaSignal)) {
-        QQuickMouseEvent *ev = new QQuickMouseEvent(m_event->x(), m_event->y(),
-                                                    m_event->button(), m_event->buttons(), m_event->modifiers(),
-                                                    isClick, wasHeld);
-        Qt::ConnectionType connectionType = (m_propagateEvents) ? Qt::AutoConnection : Qt::QueuedConnection;
-        metaSignal.invoke(this, connectionType, Q_ARG(QQuickMouseEvent*, ev));
+        if (m_propagateEvents) {
+            QQuickMouseEvent ev(m_event->x(), m_event->y(), m_event->button(), m_event->buttons(),
+                                m_event->modifiers(), isClick, wasHeld);
+            metaSignal.invoke(this, Qt::AutoConnection, Q_ARG(QQuickMouseEvent*, &ev));
+        } else {
+            QQuickMouseEvent *ev = new QQuickMouseEvent(m_event->x(), m_event->y(),
+                                                        m_event->button(), m_event->buttons(), m_event->modifiers(),
+                                                        isClick, wasHeld);
+            metaSignal.invoke(this, Qt::QueuedConnection, Q_ARG(QQuickMouseEvent*, ev));
+        }
     }
 }
 
