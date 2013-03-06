@@ -64,7 +64,7 @@ import "stack.js" as Stack
     \endqml
 */
 
-Page {
+PageTreeNode {
     id: pageStack
 
     // override automatic height from Page
@@ -85,8 +85,15 @@ Page {
      */
     property Item currentPage
 
-    title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
-    flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
+    /*!
+      The title of the current page.
+     */
+    property string title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
+
+    /*!
+      The flickable of the current page.
+     */
+    property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
 
     /*!
       \internal
@@ -99,7 +106,7 @@ Page {
       a default set of tools is used consisting of only a back button that is
       visible when depth > 1.
      */
-    tools: currentPage && currentPage.hasOwnProperty("tools")
+    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
            && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */
