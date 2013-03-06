@@ -19,8 +19,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* Removed property selectedTab from Tabs because it is not useful any more.
-  Use Tabs.currentPage to get the currently selected page.
+* None
 
 SDK 0.1.36
 ##########

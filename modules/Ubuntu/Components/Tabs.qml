@@ -78,9 +78,17 @@ PageTreeNode {
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
     /*!
+      \preliminary
+      The currently selected tab.
+     */
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+
+    /*!
       The page of the currently selected tab.
      */
+//    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
     readonly property Item currentPage: (selectedTabIndex >= 0) ? tabs.childNodes[selectedTabIndex] : null
+    property string title: "Tabs" // not visible because headerContents is overwritten
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
@@ -103,5 +111,7 @@ PageTreeNode {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    property var tools: currentPage && currentPage.hasOwnProperty("tools") ? currentPage.tools : null
+    property var tools: selectedTab && selectedTab.__pageObject &&
+            selectedTab.__pageObject.hasOwnProperty("tools") ?
+            selectedTab.__pageObject.tools : null
 }
