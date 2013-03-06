@@ -107,7 +107,7 @@ PageTreeNode {
       visible when depth > 1.
      */
     property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
-           && currentPage.tools ? currentPage.tools : __defaultTools
+                                   && currentPage.tools ? currentPage.tools : __defaultTools
 
     /*! \internal */
     onToolsChanged: if (tools) tools.__pageStack = pageStack;

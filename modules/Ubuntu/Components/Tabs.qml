@@ -85,7 +85,7 @@ PageTreeNode {
     /*!
       The page of the currently selected tab.
      */
-    readonly property Item currentPage: (selectedTabIndex >= 0) ? tabs.childNodes[selectedTabIndex] : null
+    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 

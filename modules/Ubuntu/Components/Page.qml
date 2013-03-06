@@ -59,7 +59,7 @@ PageTreeNode {
         right: parent.right
         bottom: parent.bottom
     }
-    height: flickable ? parent.height : parent.height - internal.headerHeight
+    height: page.flickable ? parent.height : parent.height - page.headerHeight
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
