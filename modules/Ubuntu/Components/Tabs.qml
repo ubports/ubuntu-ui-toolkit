@@ -72,9 +72,6 @@ PageTreeNode {
     id: tabs
     // FIXME: see above
     Theming.ItemStyle.class: "new-tabs"
-
-    // override automatic height from Page
-    height: undefined
     anchors.fill: parent
 
     /*!

@@ -26,25 +26,27 @@ import QtQuick 2.0
 
     Example:
     \qml
-        Page {
-            title: i18n.tr("Root page")
+        MainView {
+            Page {
+                title: i18n.tr("Root page")
 
-            tools: ToolbarActions {
-                Action {
-                    text: "one"
-                    iconSource: Qt.resolvedUrl("1.png")
-                    onTriggered: print("First action")
-                 }
-                 Action {
-                    text: "two"
-                    iconSource: Qt.resolvedUrl("2.png")
-                    onTriggered: print("Second action")
-                 }
-            }
+                tools: ToolbarActions {
+                    Action {
+                        text: "one"
+                        iconSource: Qt.resolvedUrl("1.png")
+                        onTriggered: print("First action")
+                     }
+                     Action {
+                        text: "two"
+                        iconSource: Qt.resolvedUrl("2.png")
+                        onTriggered: print("Second action")
+                     }
+                }
 
-            Rectangle {
-                anchors.fill: parent
-                color: "red"
+                Rectangle {
+                    anchors.fill: parent
+                    color: "red"
+                }
             }
         }
     \endqml

@@ -74,9 +74,6 @@ import "stack.js" as Stack
 
 PageTreeNode {
     id: pageStack
-
-    // override automatic height from Page
-    height: undefined
     anchors.fill: parent
 
     /*!
