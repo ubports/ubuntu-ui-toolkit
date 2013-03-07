@@ -31,37 +31,45 @@ import "stack.js" as Stack
     \qml
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
+        MainView {
+            PageStack {
+                id: pageStack
+                Component.onCompleted: pageStack.push(page0)
 
-        PageStack {
-            id: pageStack
-            Component.onCompleted: pageStack.push(page0)
+                Page {
+                    id: page0
+                    title: "Root page"
 
-            Page {
-                id: page0
-                title: "Root page"
-
-                Column {
-                    anchors.fill: parent
-                    ListItem.Standard {
-                        text: "Page one"
-                        onClicked: pageStack.push(rect, {color: "red"})
-                        progression: true
+                    Column {
+                        anchors.fill: parent
+                        ListItem.Standard {
+                            text: "Page one"
+                            onClicked: pageStack.push(rect, {fillColor: "red"})
+                            progression: true
+                        }
+                        ListItem.Standard {
+                            text: "Page two (external)"
+                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                            progression: true
+                        }
                     }
-                    ListItem.Standard {
-                        text: "Page two (external)"
-                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                        progression: true
+                }
+
+                Page {
+                    id: fillColor
+                    property alias color: rect.color
+                    Rectangle {
+                        id: rect
+                        anchors.fill: parent
+                        visible: false
                     }
                 }
             }
-
-            Rectangle {
-                id: rect
-                anchors.fill: parent
-                visible: false
-            }
         }
     \endqml
+
+    Use PageStack inside \l MainView and push \l Page items onto the stack to ensure
+    automatic header and toolbar.
 */
 
 PageTreeNode {
