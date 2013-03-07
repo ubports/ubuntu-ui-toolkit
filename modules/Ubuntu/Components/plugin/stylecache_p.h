@@ -28,6 +28,13 @@
 class QQmlComponent;
 class StyleCache {
 public:
+    enum MatchResult {
+        NoMatch,
+        Match,
+        ExactMatch
+    };
+
+public:
     class StyleData {
     public:
         QQmlComponent *style;
@@ -40,15 +47,17 @@ public:
         Selector selector() const;
         void clear();
         void add(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
-        StyleData *lookup(const Selector &selector);
+        MatchResult lookup(const Selector &selector, StyleData **match, int64_t matchRank, int64_t searchRank);
     private:
-        StyleData *test(SelectorNode &nextNode, const Selector &leftover);
+        MatchResult test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t matchRank, int64_t searchRank);
+        MatchResult setMatch(StyleData **match, int64_t matchRank, int64_t searchRank);
         friend class StyleCache;
 
         StyleData *parent;
         SelectorNode node;
         QHash<SelectorNode, StyleData*> children;
         short refCount;
+        const unsigned short depth;
     };
 
 public:
@@ -57,7 +66,10 @@ public:
     void clear();
     StyleCache &operator=(StyleCache &other);
     void addStyleRule(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
-    StyleCache::StyleData *lookupStyleRule(const Selector &selector);
+    StyleCache::StyleData *match(const Selector &selector);
+
+    // the following property is just for benchmarking
+    bool enableStyleCache;
 
 private:
     StyleData *styles;
