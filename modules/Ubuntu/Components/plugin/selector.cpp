@@ -85,6 +85,7 @@ SelectorNode::SelectorNode(const QString &stype, const QString &sclass, const QS
     format. Depending on the ignore flags set, may ignore the relationship, derivates
     and styleId. The default ignore flag is Nothing.
   */
+//FIXME: remove ignore flags after the lookup is cleaned&fixed
 QString SelectorNode::toString(int ignore) const
 {
     QString result;
@@ -224,15 +225,14 @@ Selector::Selector(const QString &string)
   \internal
   Converts a style path back to selector string.
 */
-QString Selector::toString(bool appendDerivates) const
+QString Selector::toString() const
 {
     QString result;
-    int ignoreFlags = (!appendDerivates) ? SelectorNode::NoDerivates : SelectorNode::IgnoreNone;
 
     QListIterator<SelectorNode> i(*this);
     while (i.hasNext()) {
         SelectorNode node = i.next();
-        result += ' ' + node.toString(ignoreFlags);
+        result += ' ' + node.toString();
     }
     result.replace(" >", ">");
     return result.simplified();
