@@ -28,8 +28,6 @@ import Ubuntu.Components 0.1 as Theming
     \brief The root Item for all applications. It automatically adds a header
         and toolbar for its contents.
 
-    \b{This component is under heavy development.}
-
     Examples:
     \qml
         MainView {
@@ -42,6 +40,8 @@ import Ubuntu.Components 0.1 as Theming
             }
         }
     \endqml
+
+    Header and toolbar contents are automatically taken from \l Page, \l Tabs and \l PageStack
 */
 PageTreeNode {
     id: mainView
