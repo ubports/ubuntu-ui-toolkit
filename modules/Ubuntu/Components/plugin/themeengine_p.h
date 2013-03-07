@@ -25,7 +25,7 @@
 #include <QtCore/QCoreApplication>
 #include "themeengine.h"
 #include "themesettings_p.h"
-#include "suffixtree_p.h"
+#include "stylecache_p.h"
 
 #include <QDebug>
 
@@ -49,8 +49,7 @@ public: //members
 
     QQmlEngine *m_engine;
     // suffix tree for the styles
-    StyleTreeNode *m_styleTree;
-    QHash<Selector, StyleTreeNode*> m_styleCache;
+    StyleCache m_styleCache;
     InstanceHash m_instanceCache;
     QStringList importPaths;
     QMap<QString, ThemeLoader*> themeLoaders;
@@ -68,7 +67,7 @@ public:
     void loadTheme(const QUrl &themeFile);
 
     // utility functions that are independent from the instance
-    static StyleTreeNode *styleRuleForPath(const Selector &path);
+    static StyleCache::StyleData *styleRuleForPath(const Selector &path);
     static bool registerName(QQuickItem *item, const QString &newName);
     static void setError(const QString &error);
     static ItemStyleAttached *attachedStyle(QObject *obj);

@@ -27,7 +27,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "itemstyleattached.h"
-#include "suffixtree_p.h"
+#include "stylecache_p.h"
 
 #define QVERIFY2_RET(statement, description) \
 do {\
@@ -144,7 +144,7 @@ void tst_ThemeEnginePrivate::testCase_urlMacro()
     engine->loadTheme(themeFile);
 
     Selector selector = engine->parseSelector(".baseA")[0];
-    StyleTreeNode *rule = engine->styleRuleForPath(selector);
+    StyleCache::StyleData *rule = engine->styleRuleForPath(selector);
     QVERIFY2(rule, "Failure");
     if (rule) {
         // create style from the rule so we can check the validity of the URLs
@@ -185,39 +185,58 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     QCOMPARE(engine->errorString, QString());
 
     bool result = true;
-    StyleTreeNode *rule;
+    StyleCache::StyleData *rule;
     Selector path, expected;
 
     path = Selector(".baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (rule->path() == path);
+    result = (rule != 0) && (rule->selector() == path);
     QCOMPARE(result, true);
 
     path = Selector("testA baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (rule->path() == path);
+    result = (rule != 0) && (rule->selector() == path);
     QCOMPARE(result, true);
 
     path = Selector("testA>baseA");
     expected = Selector("testA baseA");
     rule = engine->styleRuleForPath(path);
     // should pass, but should be ".testA .baseA"
-    result = (rule != 0) && (rule->path() == expected);
+    result = (rule != 0) && (rule->selector() == expected);
     QCOMPARE(result, true);
 
     path = Selector("testB>baseA");
     rule = engine->styleRuleForPath(path);
     // should pass
-    result = (rule != 0) && (rule->path() == path);
+    result = (rule != 0) && (rule->selector() == path);
     QCOMPARE(result, true);
 
     path = Selector("testB baseA");
     rule = engine->styleRuleForPath(path);
     QVERIFY2(rule != 0, "Rule not found.");
     // should fail
-    result = (rule != 0) && (rule->path() != path);
+    result = (rule != 0) && (rule->selector() != path);
+    QCOMPARE(result, true);
+
+    path = Selector("testC testB baseA");
+    rule = engine->styleRuleForPath(path);
+    QVERIFY2(rule != 0, "Rule not found.");
+    result = (rule != 0) && (rule->selector() == path);
+    QCOMPARE(result, true);
+
+    path = Selector("testC>testB baseA");
+    rule = engine->styleRuleForPath(path);
+    QVERIFY2(rule != 0, "Rule not found.");
+    result = (rule != 0) && (rule->selector() == path);
+    QCOMPARE(result, true);
+
+    path = Selector("testC>testB baseA");
+    rule = engine->styleRuleForPath(Selector("testC>testB>baseA"));
+    QVERIFY2(rule != 0, "Rule not found.");
+    // FIXME: this is a bug, need to have a fix in a separate MR
+    result = (rule != 0) && (rule->selector() != path);
     QCOMPARE(result, true);
 }
 
@@ -310,7 +329,7 @@ void tst_ThemeEnginePrivate::testCase_inheritance()
 bool tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, const QString &propertyList, bool xfail)
 {
     Selector selector = engine->parseSelector(styleClass)[0];
-    StyleTreeNode *rule = engine->styleRuleForPath(selector);
+    StyleCache::StyleData *rule = engine->styleRuleForPath(selector);
     if ((xfail && rule) || !xfail)
         QVERIFY2_RET(rule, "Failure");
     if (rule) {

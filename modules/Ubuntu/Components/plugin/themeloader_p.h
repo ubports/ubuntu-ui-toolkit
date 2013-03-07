@@ -20,13 +20,13 @@
 #define THEMELOADER_P_H
 
 class QQmlEngine;
-class StyleTreeNode;
+class StyleCache;
 
 class ThemeLoader {
 public:
     ThemeLoader() : m_engine(0) {}
     virtual ~ThemeLoader(){}
-    virtual StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles) = 0;
+    virtual bool loadTheme(const QUrl &path, QStringList &themeFiles, StyleCache &cache) = 0;
 protected:
     QQmlEngine *m_engine;
 };

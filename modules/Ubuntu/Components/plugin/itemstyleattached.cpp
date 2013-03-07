@@ -463,7 +463,7 @@ QString ItemStyleAttached::path() const
 {
     Q_D(const ItemStyleAttached);
     return d->styleRule ?
-                d->styleRule->path().toString() :
+                d->styleRule->selector().toString() :
                 QString("(null)");
 }
 
