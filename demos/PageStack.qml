@@ -39,7 +39,8 @@ Template {
                 Page {
                     id: page0
                     title: i18n.tr("Root page")
-                    visible: false
+//                    visible: false
+//                    visible: true
 
                     Column {
                         anchors.fill: parent
@@ -57,11 +58,11 @@ Template {
 
                     tools: ToolbarActions {
                         Action {
-                            text: "action 1"
+                            text: "action 0"
                             iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
                         }
                         Action {
-                            text: "action 2"
+                            text: "action 1"
                             iconSource: Qt.resolvedUrl("call_icon.png")
                         }
                     }

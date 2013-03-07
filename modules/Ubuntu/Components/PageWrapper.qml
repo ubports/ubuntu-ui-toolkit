@@ -22,12 +22,14 @@ import "PageWrapperUtils.js" as Utils
     \qmltype PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Internal class used by \l Tab
+    \brief Internal class used by \l PageStack
 
     \b{This component is under heavy development.}
 */
-QtObject {
+//QtObject {
+PageTreeNode {
     id: pageWrapper
+    anchors.fill: parent
 
     /*!
       \preliminary
@@ -46,7 +48,7 @@ QtObject {
       \preliminary
       The parent Item of the page object.
      */
-    property Item parent
+//    property Item parent
 
     /*!
       \preliminary
@@ -59,7 +61,40 @@ QtObject {
       \preliminary
       Determines whether the wrapped page is currently visible.
      */
-    property bool active: false
+//    property bool active: false
+//    active: pageStack && pageStack.stack.top() == pageWrapper
+    active: false
+    /*!
+      \internal
+     */
+    onActiveChanged: {
+        print("PAGEWRAPPER ACTIVE = "+active)
+        if (reference) {
+            if (pageWrapper.active) Utils.activate(pageWrapper);
+            else Utils.deactivate(pageWrapper);
+        }
+    }
+
+//    {
+//        print(pageStack)
+//        print(pageStack.stack)
+//        print(pageStack.stack.size())
+//        if (pageStack) {
+//            return (pageStack.stack.top() == pageWrapper);
+//        } else {
+//            return false;
+//        }
+//    }
+    visible: active
+
+//    Connections {
+//        target: pageStack
+//        onDepthChanged: pageWrapper.active = pageStack.stack.top() == pageWrapper;
+//    }
+
+//    visible: pageWrapper.active
+//    visible: true
+//    onActiveChanged: print("pagewrapper.active = "+active)
 
     /*!
       \preliminary
@@ -72,17 +107,8 @@ QtObject {
       \preliminary
       The \l PageStack that the \l Page is part of, if any (null otherwise).
      */
-    property PageStack pageStack
+//    property PageStack pageStack
 
-    /*!
-      \internal
-     */
-    onActiveChanged: {
-        if (reference) {
-            if (pageWrapper.active) Utils.activate(pageWrapper);
-            else Utils.deactivate(pageWrapper);
-        }
-    }
 
     /*!
       \internal
@@ -98,12 +124,12 @@ QtObject {
     /*!
       \internal
      */
-    onParentChanged: Utils.updateParent(pageWrapper)
+//    onParentChanged: Utils.updateParent(pageWrapper)
 
     /*!
       \internal
      */
-    onPageStackChanged: Utils.updatePageStack(pageWrapper)
+//    onPageStackChanged: Utils.updatePageStack(pageWrapper)
 
     /*!
       \internal

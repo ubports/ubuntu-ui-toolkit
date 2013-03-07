@@ -40,16 +40,16 @@ function __initPage(pageWrapper) {
             // create the object
             if (pageWrapper.properties) {
                 // initialize the object with the given properties
-                pageObject = pageComponent.createObject(pageWrapper.parent, pageWrapper.properties);
+                pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
             } else {
-                pageObject = pageComponent.createObject(pageWrapper.parent);
+                pageObject = pageComponent.createObject(pageWrapper);
             }
             pageWrapper.canDestroy = true;
         }
     } else {
         // page reference is an object
         pageObject = pageWrapper.reference;
-        pageObject.parent = pageWrapper.parent;
+        pageObject.parent = pageWrapper;
         pageWrapper.canDestroy = false;
 
         // copy the properties to the page object
@@ -75,6 +75,8 @@ function activate(pageWrapper) {
         __initPage(pageWrapper);
     }
     pageWrapper.object.visible = true;
+    pageWrapper.active = true;
+//    pageWrapper.object.active = true;
 }
 
 /*!
@@ -82,8 +84,10 @@ function activate(pageWrapper) {
   Hide page object.
  */
 function deactivate(pageWrapper) {
+    pageWrapper.active = false;
     if (pageWrapper.object) {
-        pageWrapper.object.visible = false;
+//        pageWrapper.object.visible = false;
+//        pageWrapper.object.active = false;
     }
 }
 
@@ -101,17 +105,15 @@ function destroyObject(pageWrapper) {
 }
 
 function updateParent(pageWrapper) {
-    if (pageWrapper.object) {
-        pageWrapper.object.parent = pageWrapper.parent;
-        pageWrapper.object.visible = pageWrapper.active;
-    }
+//    if (pageWrapper.object) {
+//        pageWrapper.object.parent = pageWrapper;
+//        pageWrapper.object.visible = pageWrapper.active;
+//    }
 }
 
 function updatePageStack(pageWrapper) {
-    var pageObject = pageWrapper.object;
-    if (pageObject) {
-        if (pageObject.__isPage) {
-            pageObject.pageStack = pageWrapper.pageStack;
-        }
-    }
+//    var pageObject = pageWrapper.object;
+//    if (pageObject && pageObject.hasOwnProperty("pageStack")) {
+//        pageObject.pageStack = pageWrapper.pageStack;
+//    }
 }

@@ -53,10 +53,13 @@ Item {
     // TODO: document
     property bool active: internal.parentNode ? internal.parentNode.active : false
 
+    // TODO: document
+    property Item pageStack: internal.parentNode ? internal.parentNode.pageStack : null
+
     property alias parentNode: internal.parentNode
     Item {
         id: internal
-        property var parentNode: null
+        property Item parentNode: null
 
         function isPageTreeNode(object) {
             return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);
