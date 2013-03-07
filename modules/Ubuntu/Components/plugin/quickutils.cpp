@@ -134,6 +134,16 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
     return result;
 }
 
+/*!
+ * \internal
+ * Returns the class name (type) of a QtQuick item.
+ */
+QString QuickUtils::className(QQuickItem *item)
+{
+    QString result = item->metaObject()->className();
+    return result.left(result.indexOf("_QML"));
+}
+
 
 /*!
  * \internal

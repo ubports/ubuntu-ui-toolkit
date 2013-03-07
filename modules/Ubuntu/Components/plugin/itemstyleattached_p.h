@@ -33,7 +33,8 @@ public:
     QQuickItem *attachee;
     QObject *style;
     QQuickItem *delegate;
-    SelectorNode styleData;
+    QString styleClass;
+    QString styleId;
     Selector styleSelector;
 
     // internal members
