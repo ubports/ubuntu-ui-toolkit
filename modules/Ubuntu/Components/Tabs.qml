@@ -86,7 +86,16 @@ PageTreeNode {
       The page of the currently selected tab.
      */
     readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
+
+    /*!
+      The flickable fo the current page. This will be used for scrolling of the header.
+     */
     property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
+
+    /*!
+      Header contents that will be used to override the default title inside the header,
+      and provides scrollable tab buttons.
+     */
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
