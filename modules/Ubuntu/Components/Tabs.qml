@@ -31,32 +31,41 @@ import Ubuntu.Components 0.1 as Theming
 
     Examples:
     \qml
-        Tabs {
-            Tab {
-                title: "tab 1"
-                page: Text {
-                    text: "This is the first tab."
-                }
-            }
-            Tab {
-                title: "tab 2"
-                iconSource: "icon.png"
-                page: Rectangle {
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Colorful tab."
+        MainView {
+            Tabs {
+                Tab {
+                    title: "tab 1"
+                    page: Page {
+                        Text {
+                            anchors.centerIn: parent
+                            text: "This is the first tab."
+                        }
                     }
-                    color: "lightblue"
                 }
-            }
-            Tab {
-                title: "tab 3"
-                page: Qt.resolvedUrl("MyCustomPage.qml")
+                Tab {
+                    title: "tab 2"
+                    iconSource: "icon.png"
+                    page: Page {
+                        Rectangle {
+                            anchors.fill: parent
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Colorful tab."
+                            }
+                        }
+                        color: "lightblue"
+                    }
+                }
+                Tab {
+                    title: "tab 3"
+                    page: Qt.resolvedUrl("MyCustomPage.qml")
+                }
             }
         }
     \endqml
 
-    \b{This component is under heavy development.}
+    Use Tabs inside a \l MainView and use \l Page items for the page property of
+    \l Tab to enable automatic header and toolbar.
 */
 
 PageTreeNode {
