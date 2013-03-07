@@ -64,3 +64,9 @@ installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
 
+HEADERS += \
+    selector_p.h
+
+SOURCES += \
+    selector.cpp
+

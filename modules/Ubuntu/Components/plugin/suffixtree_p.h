@@ -22,42 +22,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QString>
 #include <QtCore/QList>
-
-// node of a selector
-class SelectorNode {
-    public:
-    enum Relationship {Child, Descendant, Sibling};
-    enum IgnoreFlags {
-        IgnoreNone = 0,
-        IgnoreRelationship = 0x01,
-        IgnoreStyleId = 0x02,
-        IgnoreDerivates = 0x04,
-        IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
-    SelectorNode();
-    SelectorNode(const QString &selectorString, IgnoreFlags sensitivity = IgnoreNone);
-    void setMultipleClasses(const QString &value);
-    QString multipleClasses() const;
-    QString toString(int ignore = IgnoreNone) const;
-    bool operator==(const SelectorNode &other);
-    QString className;
-    QString styleClass;
-    QString styleId;
-    QString derives;
-    Relationship relationship;
-    int sensitivity;
-};
-
-// selector type
-class Selector : public QList<SelectorNode> {
-public:
-    inline Selector() {}
-    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
-    Selector(const QString &string, SelectorNode::IgnoreFlags sensitivity = SelectorNode::IgnoreNone);
-    virtual ~Selector() {}
-    QString toString(bool appendDerivates = true) const;
-};
-Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
-uint qHash(const Selector &key);
+#include "selector_p.h"
 
 // style rule tree
 class QQmlComponent;
@@ -80,7 +45,6 @@ public:
     // the key is the next style node's "relationship class#name" combination
     QHash<QString, StyleTreeNode*> children;
 };
-
 
 
 #endif // SUFFIXTREE_P_H
