@@ -42,23 +42,4 @@ Item {
     Item {
         ItemStyle.class: "restore derivate2 baseA"
     }
-    // base class spec
-    Item {
-        ItemStyle.class: "derivate"
-    }
-    Item {
-        ItemStyle.class: "derivate2"
-    }
-    Item {
-        ItemStyle.class: "multiple"
-    }
-    Item {
-        ItemStyle.class: "multiple2"
-    }
-    Item {
-        ItemStyle.class: "multiple3"
-    }
-    Item {
-        ItemStyle.class: "restore"
-    }
 }

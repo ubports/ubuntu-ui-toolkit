@@ -60,7 +60,7 @@ import Ubuntu.Components 0.1 as Theming
                     title: "tab 3"
                     page: Qt.resolvedUrl("MyCustomPage.qml")
                 }
-            }~
+            }
         }
     \endqml
 

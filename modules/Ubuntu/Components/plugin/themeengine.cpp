@@ -236,7 +236,7 @@ ItemStyleAttached *ThemeEnginePrivate::attachedStyle(QObject *obj)
   Parses and returns the path described by \a selector as a list of
   class and name pairs. Supports selector grouping (separated with commas).
   */
-QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity)
+QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, SelectorNode::IgnoreFlags sensitivity)
 {
     QList<Selector> pathList;
     QStringList groupList = selectorString.split(",");
