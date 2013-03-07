@@ -88,7 +88,7 @@ public:
     inline Selector(const Selector& s) : QList<SelectorNode>(s){}
     Selector(const QString &string);
     virtual ~Selector() {}
-    QString toString(bool appendDerivates = true) const;
+    QString toString() const;
     int64_t rank() const;
 };
 Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
