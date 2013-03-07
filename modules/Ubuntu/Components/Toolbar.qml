@@ -106,11 +106,11 @@ GenericToolbar {
         Button {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            text: action.text
-            iconSource: action.iconSource ? action.iconSource : ""
+            text: action && action.text ? action.text : ""
+            iconSource: action && action.iconSource ? action.iconSource : ""
             onClicked: action.triggered(toolButton)
-            enabled: action.enabled
-            visible: action.visible
+            enabled: action && action.enabled
+            visible: action && action.visible
             width: visible ? implicitWidth : 0
             height: toolbar.height
         }

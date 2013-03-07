@@ -30,6 +30,7 @@ Template {
             Tab {
                 title: i18n.tr("Flickable")
                 page: Page {
+                    title: "Flickable" // TODO: remove
                     Flickable {
                         id: flickable
                         clip: true
@@ -74,6 +75,7 @@ Template {
                 iconSource: "call_icon.png"
                 title: i18n.tr("Buttons")
                 page: Page {
+                    title: "Buttons" // TODO: remove
                     Rectangle {
                         anchors.fill: parent
                         color: "tan"
@@ -106,13 +108,20 @@ Template {
                 }
             }
             Tab {
+                id: externalTab
                 title: i18n.tr("External")
                 iconSource: "call_icon.png"
-                page: Qt.resolvedUrl("MyCustomPage.qml")
+//                page: Qt.resolvedUrl("MyCustomPage.qml")
+                page: Loader {
+                    parent: externalTab
+                    anchors.fill: parent
+                    source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
+                }
             }
             Tab {
                 title: i18n.tr("List view")
                 page: Page {
+                    title: "List view" // TODO: remove
                     ListView {
                         clip: true
                         anchors.fill: parent

@@ -56,11 +56,11 @@ import QtQuick 2.0
 PageTreeNode {
     id: page
     anchors {
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        bottom: parent ? parent.bottom : undefined
     }
-    height: page.flickable ? parent.height : parent.height - page.headerHeight
+    height: parent ? page.flickable ? parent.height : parent.height - internal.headerHeight : undefined
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
@@ -70,7 +70,7 @@ PageTreeNode {
     /*!
       The contents of the header. If this is set, \l title will be ignored.
      */
-    property Component headerContents: null
+    //    property Component headerContents: null
 
     /*!
       The \l PageStack that this Page has been pushed on, or null if it is not
@@ -90,15 +90,32 @@ PageTreeNode {
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
+    onActiveChanged: internal.updateHeaderAndToolbar()
+    onHeaderChanged: internal.updateHeaderAndToolbar()
+    onToolbarChanged: internal.updateHeaderAndToolbar()
+
     Item {
         id: internal
+        function updateHeaderAndToolbar() {
+            if (page.active) {
+                if (page.header) {
+                    page.header.title = page.title;
+                    page.header.flickable = page.flickable;
+                }
+                if (page.toolbar) {
+                    page.toolbar.tools = page.tools;
+                }
+            }
+        }
 
         Connections {
             target: page
             onFlickableChanged: internal.updateFlickableMargins()
-            onHeaderHeightChanged: internal.updateFlickableMargins()
         }
-        Component.onCompleted: updateFlickableMargins()
+        onHeaderHeightChanged: internal.updateFlickableMargins()
+        Component.onCompleted: internal.updateFlickableMargins()
+
+        property real headerHeight: page.header ? page.header.height : 0
 
         function isFlickable(object) {
             return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
@@ -115,7 +132,6 @@ PageTreeNode {
             }
             return null;
         }
-
 
         function updateFlickableMargins() {
             if (flickable) {

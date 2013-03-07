@@ -43,13 +43,17 @@ Item {
       The header of the node. Propagates down from the root node.
      */
     property Header header: internal.parentNode ? internal.parentNode.header : null
+
     /*!
-      The height of the header. Used to position the Pages and set Flickable margins.
+      The toolbar of the node. Propagates down from the root node.
      */
-    readonly property real headerHeight: header ? header.height : 0
+    property Toolbar toolbar: internal.parentNode ? internal.parentNode.toolbar : null
 
-    // TODO: Take the same approach with the toolbar, as with the header.
 
+    // TODO: document
+    property bool active: internal.parentNode ? internal.parentNode.active : false
+
+    property alias parentNode: internal.parentNode
     Item {
         id: internal
         property var parentNode: null
@@ -77,6 +81,7 @@ Item {
           Find the parent node.
          */
         function updatePageTree() {
+            // TODO: uncomment and make this work.
 //            if (internal.parentNode) {
 //                // remove node from the list of childNodes
 //                var index = internal.parentNode.childNodes.indexOf(node);

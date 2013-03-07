@@ -66,10 +66,13 @@ PageTreeNode {
       \preliminary
       The list of actions that will be placed on the toolbar of the application.
      */
-    property alias tools: toolbar.tools
+//    property alias tools: toolbar.tools
 
     // clip if the MainView is not fullscreen
     clip: true
+
+    // TODO: say something
+    active: true
 
     /*!
       \internal
@@ -88,29 +91,30 @@ PageTreeNode {
     header: headerItem
     Header {
         id: headerItem
-        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
-        title: page && page.hasOwnProperty("title") ? page.title : ""
-        contents: page && page.hasOwnProperty("headerContents") ? page.headerContents : null
-        flickable: page && page.hasOwnProperty("flickable") ? page.flickable : null
+//        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
+//        title: page && page.hasOwnProperty("title") ? page.title : ""
+//        contents: page && page.hasOwnProperty("headerContents") ? page.headerContents : null
+//        flickable: page && page.hasOwnProperty("flickable") ? page.flickable : null
     }
 
+    toolbar: toolbarItem
     Toolbar {
-        id: toolbar
-        tools: getTools()
+        id: toolbarItem
+//        tools: getTools()
 
-        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
-        function getTools() {
-            // FIXME: this can be done prettier
-            if (!page) return null;
-            if (!page.hasOwnProperty("tools")) return null;
-            var tools = page.tools;
-            if (!tools) return null;
-            if (!tools.hasOwnProperty("back")) return null;
-            if (!tools.hasOwnProperty("__pageStack")) return null;
-            if (!tools.hasOwnProperty("active")) return null;
-            if (!tools.hasOwnProperty("lock")) return null;
-            return tools;
-        }
+//        property Item page: mainView.childNodes.length > 0 ? mainView.childNodes[0] : null
+//        function getTools() {
+//            // FIXME: this can be done prettier
+//            if (!page) return null;
+//            if (!page.hasOwnProperty("tools")) return null;
+//            var tools = page.tools;
+//            if (!tools) return null;
+//            if (!tools.hasOwnProperty("back")) return null;
+//            if (!tools.hasOwnProperty("__pageStack")) return null;
+//            if (!tools.hasOwnProperty("active")) return null;
+//            if (!tools.hasOwnProperty("lock")) return null;
+//            return tools;
+//        }
     }
 
     /*! \internal */

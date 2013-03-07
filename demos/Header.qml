@@ -33,6 +33,7 @@ Template {
             height: units.gu(55)
 
             Page {
+                id: page
                 anchors.fill: parent
                 title: i18n.tr("Title")
 

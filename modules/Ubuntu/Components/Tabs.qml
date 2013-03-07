@@ -81,6 +81,9 @@ PageTreeNode {
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
     property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
+    onSelectedTabIndexChanged: {
+        print("selectedTabIndex = "+selectedTabIndex)
+    }
 
     /*!
       \preliminary
@@ -91,18 +94,30 @@ PageTreeNode {
     /*!
       The page of the currently selected tab.
      */
-    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
+//    readonly property Item currentPage: selectedTab ? selectedTab.__pageObject : null
+    readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
       The flickable fo the current page. This will be used for scrolling of the header.
      */
-    property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
+//    property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
 
     /*!
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
      */
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+
+    // TODO: document
+    onActiveChanged: __updateHeader()
+    onHeaderChanged: __updateHeader()
+//    Component.onCompleted: __updateHeader()
+    function __updateHeader() {
+        if (tabs.header) {
+            if (tabs.active) tabs.header.contents = headerContents;
+            else tabs.header.contents = null;
+        }
+    }
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
@@ -123,6 +138,6 @@ PageTreeNode {
     /*!
       The tools of the \l Page of the active \l Tab.
      */
-    property var tools: currentPage && currentPage.hasOwnProperty("tools") ?
-            selectedTab.__pageObject.tools : null
+//    property var tools: currentPage && currentPage.hasOwnProperty("tools") ?
+//            selectedTab.__pageObject.tools : null
 }
