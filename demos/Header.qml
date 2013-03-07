@@ -45,7 +45,6 @@ Template {
 
                 Flickable {
                     id: flickable
-                    clip: true
                     anchors.fill: parent
                     contentHeight: column.height
                     contentWidth: parent.width
