@@ -21,7 +21,7 @@ HEADERS += plugin.h \
     themeengine_p.h \
     themeloader_p.h \
     themesettings_p.h \
-    suffixtree_p.h \
+    stylecache_p.h \
     itemstyleattached.h \
     itemstyleattached_p.h \
     qmlthemeloader_p.h \
@@ -43,7 +43,7 @@ HEADERS += plugin.h \
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
-    suffixtree.cpp \
+    stylecache.cpp \
     themesettings.cpp \
     itemstyleattached.cpp \
     qmlthemeloader.cpp \

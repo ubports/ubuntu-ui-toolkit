@@ -21,7 +21,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
-#include "suffixtree_p.h"
+#include "stylecache_p.h"
 
 class QQmlEngine;
 class QJSEngine;

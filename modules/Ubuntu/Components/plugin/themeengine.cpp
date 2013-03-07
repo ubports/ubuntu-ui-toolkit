@@ -50,7 +50,6 @@ ThemeEngine *ThemeEnginePrivate::themeEngine = 0;
 ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
     q_ptr(qq),
     m_engine(qobject_cast<QQmlEngine*>(qq->parent())),
-    m_styleTree(new StyleTreeNode(0)),
     firstThemeLoaded(false)
 {
     themeEngine = q_ptr;
@@ -69,7 +68,6 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
 {
-    delete m_styleTree;
 }
 
 void ThemeEnginePrivate::_q_reloadTheme()
@@ -135,20 +133,16 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
     if (themeLoaders.contains(fileType)) {
         removeWatchedFiles();
         QStringList watchedThemeFiles;
-        StyleTreeNode *styleTree = themeLoaders.value(fileType)->loadTheme(url, watchedThemeFiles);
-        if (errorString.isEmpty() && styleTree) {
+        StyleCache newCache;
+        bool ok = themeLoaders.value(fileType)->loadTheme(url, watchedThemeFiles, newCache);
+        if (ok && errorString.isEmpty()) {
             // clear the previous style and use the loaded one
-            delete m_styleTree;
-            m_styleCache.clear();
-            m_styleTree = styleTree;
+            m_styleCache = newCache;
             addWatchedFiles(watchedThemeFiles);
             // emit themeChanged() to update style
             currentTheme = url;
             Q_Q(ThemeEngine);
             Q_EMIT q->themeChanged();
-        } else {
-            delete styleTree;
-            // continue using the previous style
         }
     } else {
         setError("Unknown theme URL" + url.toString());
@@ -159,17 +153,11 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
   \internal
   This method searches for styling components matching the given selector (style path).
 */
-StyleTreeNode *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
+StyleCache::StyleData *ThemeEnginePrivate::styleRuleForPath(const Selector &path)
 {
-    if (!themeEngine->d_ptr->m_styleTree)
+    if (!themeEngine)
         return 0;
-    if (themeEngine->d_ptr->m_styleCache.contains(path))
-        return themeEngine->d_ptr->m_styleCache.value(path);
-
-    StyleTreeNode *rule = themeEngine->d_ptr->m_styleTree->lookupStyleRule(path);
-    if (rule)
-        themeEngine->d_ptr->m_styleCache.insert(path, rule);
-    return rule;
+    return themeEngine->d_ptr->m_styleCache.lookupStyleRule(path);
 }
 
 
