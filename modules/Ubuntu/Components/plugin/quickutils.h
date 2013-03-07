@@ -39,6 +39,7 @@ public:
     QQuickItem *rootObject();
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
+    Q_INVOKABLE QString className(QQuickItem *item);
 
 Q_SIGNALS:
     void rootObjectChanged();
