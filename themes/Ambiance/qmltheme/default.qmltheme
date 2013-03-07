@@ -159,18 +159,15 @@ Examples:
 }
 
 .header {
-    height: units.gu(9);
     contentHeight: units.gu(7.5);
     backgroundSource: url("artwork/background_paper.png");
+    backgroundColor: "#ededf0";
     separatorSource: url("artwork/PageHeaderBaseDividerLight.sci");
     separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
-    margins: units.gu(2);
+    textLeftMargin: units.gu(2);
     fontWeight: Font.Light;
-}
-
-.header .label {
     fontSize: "x-large";
-    color: Qt.rgba(0.51, 0.51, 0.51, 0.9);
+    textColor: Qt.rgba(0.51, 0.51, 0.51, 0.9);
 }
 
 .dark-button {

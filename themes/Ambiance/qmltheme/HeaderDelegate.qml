@@ -18,12 +18,23 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors {
-        left: parent.left
-        right: parent.right
-        top: parent.top
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        top: parent ? parent.top : undefined
     }
-    height: background.height + separatorBottom.height
+    height: itemStyle.contentHeight + separator.height + separatorBottom.height
 
+    Rectangle {
+        id: backgroundColor
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+        visible: color != "transparent"
+        height: itemStyle.contentHeight + separator.height
+    }
     Image {
         id: background
         anchors {
@@ -32,6 +43,7 @@ Item {
             top: parent.top
         }
         source: itemStyle.backgroundSource
+        visible: source != ""
         fillMode: Image.Tile
         height: itemStyle.contentHeight + separator.height
     }
@@ -67,11 +79,13 @@ Item {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                margins: itemStyle.margins
+                leftMargin: itemStyle.textLeftMargin
             }
             text: item.title
             font.weight: StyleUtils.itemStyleProperty("fontWeight")
             visible: contentsLoader.status != Loader.Ready
+            fontSize: StyleUtils.itemStyleProperty("fontSize", "x-large")
+            color: StyleUtils.itemStyleProperty("textColor", "black")
         }
 
         // Link to item here, because Loader has its own item property

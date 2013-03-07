@@ -17,18 +17,19 @@
 import QtQuick 2.0
 
 QtObject {
-    property real height
     /*!
       The height of the headercontents, which is the full height of
       the header minus the separators shown at the bottom of it.
      */
     property real contentHeight
 
+    property color backgroundColor
     property url backgroundSource
     property url separatorSource
     property url separatorBottomSource
 
     property int fontWeight
+    property string fontSize
+    property color textColor
     property real textLeftMargin
-    property real margins
 }
