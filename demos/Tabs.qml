@@ -30,7 +30,6 @@ Template {
             Tab {
                 title: i18n.tr("Flickable")
                 page: Page {
-                    title: "Flickable" // TODO: remove
                     Flickable {
                         id: flickable
                         clip: true
@@ -75,7 +74,6 @@ Template {
                 iconSource: "call_icon.png"
                 title: i18n.tr("Buttons")
                 page: Page {
-                    title: "Buttons" // TODO: remove
                     Rectangle {
                         anchors.fill: parent
                         color: "tan"
@@ -121,7 +119,6 @@ Template {
             Tab {
                 title: i18n.tr("List view")
                 page: Page {
-                    title: "List view" // TODO: remove
                     ListView {
                         clip: true
                         anchors.fill: parent

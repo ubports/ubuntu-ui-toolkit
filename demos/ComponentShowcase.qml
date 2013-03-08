@@ -49,7 +49,7 @@ Item {
             bottom: parent.bottom
         }
 
-        currentIndex: 8 // TODO TIM: revert to 0
+        currentIndex: 0
         model: ListModel {
             ListElement {
                 label: "Resolution Independence"

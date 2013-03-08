@@ -39,8 +39,7 @@ Template {
                 Page {
                     id: page0
                     title: i18n.tr("Root page")
-//                    visible: false
-//                    visible: true
+                    visible: false
 
                     Column {
                         anchors.fill: parent
