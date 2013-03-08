@@ -115,14 +115,13 @@ PageTreeNode {
         id: tabsModel
     }
 
-    Item {
-        id: internal
-        Connections {
-            target: tabs
-            onActiveChanged: internal.updateHeader();
-            onHeaderChanged: internal.updateHeader();
-        }
+    /*! \internal */
+    onActiveChanged: internal.updateHeader();
+    /*! \internal */
+    onHeaderChanged: internal.updateHeader();
 
+    QtObject {
+        id: internal
         function updateHeader() {
             if (tabs.header) {
                 if (tabs.active) tabs.header.contents = headerContents;
