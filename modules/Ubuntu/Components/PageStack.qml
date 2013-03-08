@@ -135,7 +135,7 @@ PageTreeNode {
         var wrapperObject = wrapperComponent.createObject(pageStack);
         wrapperObject.reference = page;
 //        wrapperObject.parent = pageContainer;
-        wrapperObject.parent = pageStack;
+//        wrapperObject.parent = pageStack;
         wrapperObject.pageStack = pageStack;
         wrapperObject.properties = properties;
 //        wrapperObject.pageStack = pageStack;
@@ -169,13 +169,16 @@ PageTreeNode {
         print("POPPING")
 //        stack.top().pageStack = null;
         stack.top().active = false;
-        if (stack.top().canDestroy) print("DESTROYING!!")
-        if (stack.top().canDestroy) stack.top().destroyObject();
-        stack.pop();
-        print("STACKSIZE = "+stack.size())
+
+   // TODO: enable destroy again
+        //        if (stack.top().canDestroy) print("DESTROYING!!")
+        //        if (stack.top().canDestroy) stack.top().destroyObject();
+                stack.pop();
+                print("STACKSIZE = "+stack.size())
+        __stackUpdated();
+
         if (stack.size() > 0) stack.top().active = true;
 
-        __stackUpdated();
     }
 
     /*!
@@ -196,14 +199,15 @@ PageTreeNode {
       \internal
      */
     function __stackUpdated() {
-        pageStack.depth = stack.size();
+        print("UPDATED  "+stack.size()+" "+stack.top().object);
+        pageStack.depth =+ stack.size();
         if (pageStack.depth > 0) currentPage = stack.top().object;
         else currentPage = null;
     }
 
     // TODO: unneeded? remove.
-    Item {
-        id: pageContainer
-        anchors.fill: parent
-    }
+//    Item {
+//        id: pageContainer
+//        anchors.fill: parent
+//    }
 }

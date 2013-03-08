@@ -74,9 +74,14 @@ function activate(pageWrapper) {
     if (!pageWrapper.object) {
         __initPage(pageWrapper);
     }
+    // Having the same page pushed multiple times on a stack changes
+    // the parent of the page object. Change it back here.
+    pageWrapper.object.parent = pageWrapper;
+
+    // Some page objects are invisible initially. Make visible.
+
     pageWrapper.object.visible = true;
     pageWrapper.active = true;
-//    pageWrapper.object.active = true;
 }
 
 /*!
