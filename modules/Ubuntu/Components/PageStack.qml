@@ -91,38 +91,10 @@ PageTreeNode {
     property Item currentPage
 
     /*!
-      The title of the current page.
-     */
-//    property string title: currentPage && currentPage.hasOwnProperty("title") ? currentPage.title : ""
-
-    /*!
-      The flickable of the current page.
-     */
-//    property Flickable flickable: currentPage && currentPage.hasOwnProperty("flickable") ? currentPage.flickable : null
-
-    /*!
       \internal
       The instance of the stack from javascript
      */
     property var stack: new Stack.Stack()
-
-    /*!
-      The tools of currentPage. If the current page does not define tools,
-      a default set of tools is used consisting of only a back button that is
-      visible when depth > 1.
-     */
-//    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
-//                                   && currentPage.tools ? currentPage.tools : __defaultTools
-
-    /*! \internal */
-//    onToolsChanged: if (tools) tools.__pageStack = pageStack;
-
-    /*!
-      \internal
-      The tools to be used if page does not define tools. It features only
-      the default back button.
-     */
-//    property ToolbarActions __defaultTools: ToolbarActions { __pageStack: pageStack }
 
     /*!
       \internal
@@ -130,15 +102,10 @@ PageTreeNode {
      */
     function __createWrapper(page, properties) {
         var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-        // TODO: cache the component?
-//        var wrapperObject = wrapperComponent.createObject(pageContainer);
         var wrapperObject = wrapperComponent.createObject(pageStack);
         wrapperObject.reference = page;
-//        wrapperObject.parent = pageContainer;
-//        wrapperObject.parent = pageStack;
         wrapperObject.pageStack = pageStack;
         wrapperObject.properties = properties;
-//        wrapperObject.pageStack = pageStack;
         return wrapperObject;
     }
 
@@ -148,9 +115,7 @@ PageTreeNode {
      */
     function push(page, properties) {
         if (stack.size() > 0) stack.top().active = false;
-        var item = __createWrapper(page, properties);
-//        stack.push(__createWrapper(page, properties));
-        stack.push(item);
+        stack.push(__createWrapper(page, properties));
         stack.top().active = true;
 
         __stackUpdated();
@@ -166,15 +131,9 @@ PageTreeNode {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
-        print("POPPING")
-//        stack.top().pageStack = null;
         stack.top().active = false;
-
-   // TODO: enable destroy again
-        //        if (stack.top().canDestroy) print("DESTROYING!!")
-        //        if (stack.top().canDestroy) stack.top().destroyObject();
-                stack.pop();
-                print("STACKSIZE = "+stack.size())
+        if (stack.top().canDestroy) stack.top().destroyObject();
+        stack.pop();
         __stackUpdated();
 
         if (stack.size() > 0) stack.top().active = true;
@@ -187,8 +146,7 @@ PageTreeNode {
      */
     function clear() {
         while (stack.size() > 0) {
-//            stack.top().pageStack = null;
-//            stack.top().active = false;
+            stack.top().active = false;
             if (stack.top().canDestroy) stack.top().destroyObject();
             stack.pop();
         }
@@ -199,15 +157,8 @@ PageTreeNode {
       \internal
      */
     function __stackUpdated() {
-        print("UPDATED  "+stack.size()+" "+stack.top().object);
         pageStack.depth =+ stack.size();
         if (pageStack.depth > 0) currentPage = stack.top().object;
         else currentPage = null;
     }
-
-    // TODO: unneeded? remove.
-//    Item {
-//        id: pageContainer
-//        anchors.fill: parent
-//    }
 }

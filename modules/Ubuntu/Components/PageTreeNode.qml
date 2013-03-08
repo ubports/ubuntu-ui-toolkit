@@ -49,13 +49,22 @@ Item {
      */
     property Toolbar toolbar: internal.parentNode ? internal.parentNode.toolbar : null
 
-
-    // TODO: document
+    /*!
+      At any time, there is exactly one path from the root node to a Page leaf node
+      where all nodes are active. All other nodes are not active. This is used by
+      \l Tabs and \l PageStack to determine which of multiple nodes in the Tabs or
+      PageStack is the currently active one.
+     */
     property bool active: internal.parentNode ? internal.parentNode.active : false
 
-    // TODO: document
+    /*!
+      The \l PageStack that this Page has been pushed on, or null if it is not
+      part of a PageStack. This value is automatically set for pages that are pushed
+      on a PageStack, and propagates to its child nodes.
+     */
     property Item pageStack: internal.parentNode ? internal.parentNode.pageStack : null
 
+    // TODO: document (and remove from internal)
     property alias parentNode: internal.parentNode
     Item {
         id: internal

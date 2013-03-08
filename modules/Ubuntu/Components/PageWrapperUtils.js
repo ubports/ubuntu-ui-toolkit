@@ -61,8 +61,6 @@ function __initPage(pageWrapper) {
     }
 
     pageWrapper.object = pageObject;
-    updatePageStack(pageWrapper)
-
     return pageObject;
 }
 
@@ -90,10 +88,6 @@ function activate(pageWrapper) {
  */
 function deactivate(pageWrapper) {
     pageWrapper.active = false;
-    if (pageWrapper.object) {
-//        pageWrapper.object.visible = false;
-//        pageWrapper.object.active = false;
-    }
 }
 
 /*!
@@ -107,18 +101,4 @@ function destroyObject(pageWrapper) {
         pageWrapper.object = null;
         pageWrapper.canDestroy = false;
     }
-}
-
-function updateParent(pageWrapper) {
-//    if (pageWrapper.object) {
-//        pageWrapper.object.parent = pageWrapper;
-//        pageWrapper.object.visible = pageWrapper.active;
-//    }
-}
-
-function updatePageStack(pageWrapper) {
-//    var pageObject = pageWrapper.object;
-//    if (pageObject && pageObject.hasOwnProperty("pageStack")) {
-//        pageObject.pageStack = pageWrapper.pageStack;
-//    }
 }

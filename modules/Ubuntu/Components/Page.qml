@@ -68,17 +68,6 @@ PageTreeNode {
     property string title
 
     /*!
-      The contents of the header. If this is set, \l title will be ignored.
-     */
-    //    property Component headerContents: null
-
-    /*!
-      The \l PageStack that this Page has been pushed on, or null if it is not
-      part of a PageStack. This value is automatically updated by the \l PageStack.
-     */
-//    property var pageStack: null
-
-    /*!
       The list of actions associated with this Page.
      */
     property ToolbarActions tools: ToolbarActions { }
@@ -99,9 +88,7 @@ PageTreeNode {
     Item {
         id: internal
         function updateHeaderAndToolbar() {
-            print("updating page "+title + " "+page.active + " " +page.visible)
             if (page.active) {
-//                page.visible = true;
                 if (page.header) {
                     page.header.title = page.title;
                     page.header.flickable = page.flickable;
