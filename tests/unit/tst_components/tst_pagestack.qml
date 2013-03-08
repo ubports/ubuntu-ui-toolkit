@@ -29,7 +29,38 @@ TestCase {
          compare(pageStack.currentPage,null,"is not set by default")
      }
 
+     function test_pushAndPopOne() {
+         pageStack.push(page1);
+         compare(pageStack.currentPage, page1, "was pushed");
+         compare(pageStack.depth, 1, "One page was pushed");
+         pageStack.pop();
+         compare(pageStack.currentPage, null, "was popped");
+         compare(pageStack.depth, 0, "one page was pushed and popped");
+     }
+
+     function test_pushAndPopTwo() {
+         pageStack.push(page1);
+         pageStack.push(page2);
+         compare(pageStack.currentPage, page2, "was pushed");
+         compare(pageStack.depth, 2, "Two pages were pushed");
+         pageStack.pop();
+         compare(pageStack.currentPage, page1, "was pushed");
+         compare(pageStack.depth, 1, "one page left");
+
+         pageStack.clear();
+         test_depth();
+         test_currentPage();
+     }
+
      PageStack {
          id: pageStack
+     }
+
+     Page {
+         id: page1
+     }
+
+     Page {
+         id: page2
      }
 }
