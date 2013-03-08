@@ -58,43 +58,21 @@ PageTreeNode {
     property bool canDestroy: false
 
     /*!
-      \preliminary
-      Determines whether the wrapped page is currently visible.
+      This value is updated when a PageWrapper is pushed to/popped from a PageStack.
      */
-//    property bool active: false
-//    active: pageStack && pageStack.stack.top() == pageWrapper
     active: false
+
     /*!
       \internal
      */
     onActiveChanged: {
-        print("PAGEWRAPPER ACTIVE = "+active)
         if (reference) {
             if (pageWrapper.active) Utils.activate(pageWrapper);
             else Utils.deactivate(pageWrapper);
         }
     }
 
-//    {
-//        print(pageStack)
-//        print(pageStack.stack)
-//        print(pageStack.stack.size())
-//        if (pageStack) {
-//            return (pageStack.stack.top() == pageWrapper);
-//        } else {
-//            return false;
-//        }
-//    }
     visible: active
-
-//    Connections {
-//        target: pageStack
-//        onDepthChanged: pageWrapper.active = pageStack.stack.top() == pageWrapper;
-//    }
-
-//    visible: pageWrapper.active
-//    visible: true
-//    onActiveChanged: print("pagewrapper.active = "+active)
 
     /*!
       \preliminary
@@ -102,13 +80,6 @@ PageTreeNode {
       is already an object, properties are copied to the object when activated.
      */
     property variant properties
-
-    /*!
-      \preliminary
-      The \l PageStack that the \l Page is part of, if any (null otherwise).
-     */
-//    property PageStack pageStack
-
 
     /*!
       \internal
@@ -120,16 +91,6 @@ PageTreeNode {
             Utils.activate(pageWrapper);
         }
     }
-
-    /*!
-      \internal
-     */
-//    onParentChanged: Utils.updateParent(pageWrapper)
-
-    /*!
-      \internal
-     */
-//    onPageStackChanged: Utils.updatePageStack(pageWrapper)
 
     /*!
       \internal

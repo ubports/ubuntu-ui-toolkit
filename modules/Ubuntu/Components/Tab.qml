@@ -52,44 +52,10 @@ PageTreeNode {
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
-//    property alias page: pageWrapper.reference
     property Item page: null
-    onPageChanged: page.parent = tab
 
-    // parent must be of type Tabs
-//    active: parentNode && parentNode.hasOwnProperty("selectedTab") //&& parentNode.selectedTab == tab
-//    active: parentNode ? (parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab) : false
-    active: {
-        if (parentNode) {
-            return (parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab == tab);
-        } else {
-            return false;
-        }
-    }
 
-    /*!
-      \preliminary
-      Depending on the theme, \l Tabs can have a header that is automatically hidden
-      by scrolling down in the Tab's flickable. To disable this behavior for a Tab, set
-      autoHideTabBar to false.
-     */
-//    property bool autoHideTabBar: true
+    onPageChanged: if (page) page.parent = tab
 
-    /*!
-      \internal
-      Specifies whether this tab is the active one. Automatically updated by \l Tabs.
-    */
-
-//    property alias __active: pageWrapper.active
-
-    /*!
-      \internal
-      The actual page object.
-     */
-//    property alias __pageObject: pageWrapper.object
-
-//    PageWrapper {
-//        id: pageWrapper
-//        parent: tab
-//    }
+    active: parentNode && parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 }

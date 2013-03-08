@@ -27,7 +27,7 @@ Item {
 
     /*!
       \internal
-      Used to determine whether an Item is a Page.
+      Used to determine whether an Item is a PageTreeNode
      */
     property bool __isPageTreeNode: true
 
@@ -93,15 +93,17 @@ Item {
           Find the parent node.
          */
         function updatePageTree() {
-            // TODO: uncomment and make this work.
-//            if (internal.parentNode) {
-//                // remove node from the list of childNodes
-//                var index = internal.parentNode.childNodes.indexOf(node);
-//                internal.parentNode.childNodes.splice(index, 1);
-//            }
-            internal.parentNode = internal.getParentPageTreeNode(node);
-            if (internal.parentNode) {
-                internal.parentNode.childNodes.push(node);
+            var newParentNode = internal.getParentPageTreeNode(node);
+            if (newParentNode !== internal.parentNode) {
+                if (internal.parentNode) {
+                    // remove node from the list of childNodes
+                    var index = internal.parentNode.childNodes.indexOf(node);
+                    internal.parentNode.childNodes.splice(index, 1);
+                }
+                internal.parentNode = newParentNode;
+                if (internal.parentNode) {
+                    internal.parentNode.childNodes.push(node);
+                }
             }
         }
     }
