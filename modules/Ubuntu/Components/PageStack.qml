@@ -88,37 +88,17 @@ PageTreeNode {
       \preliminary
       The currently active page
      */
-    property Item currentPage
-
-    /*!
-      \internal
-      The instance of the stack from javascript
-     */
-    property var stack: new Stack.Stack()
-
-    /*!
-      \internal
-      Create a PageWrapper for the specified page.
-     */
-    function __createWrapper(page, properties) {
-        var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-        var wrapperObject = wrapperComponent.createObject(pageStack);
-        wrapperObject.reference = page;
-        wrapperObject.pageStack = pageStack;
-        wrapperObject.properties = properties;
-        return wrapperObject;
-    }
+    property Item currentPage: null
 
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
      */
     function push(page, properties) {
-        if (stack.size() > 0) stack.top().active = false;
-        stack.push(__createWrapper(page, properties));
-        stack.top().active = true;
-
-        __stackUpdated();
+        if (internal.stack.size() > 0) internal.stack.top().active = false;
+        internal.stack.push(internal.createWrapper(page, properties));
+        internal.stack.top().active = true;
+        internal.stackUpdated();
     }
 
     /*!
@@ -127,17 +107,16 @@ PageTreeNode {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (stack.size() < 1) {
+        if (internal.stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
-        stack.top().active = false;
-        if (stack.top().canDestroy) stack.top().destroyObject();
-        stack.pop();
-        __stackUpdated();
+        internal.stack.top().active = false;
+        if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+        internal.stack.pop();
+        internal.stackUpdated();
 
-        if (stack.size() > 0) stack.top().active = true;
-
+        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -146,19 +125,34 @@ PageTreeNode {
      */
     function clear() {
         while (stack.size() > 0) {
-            stack.top().active = false;
-            if (stack.top().canDestroy) stack.top().destroyObject();
+            internal.stack.top().active = false;
+            if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
             stack.pop();
         }
-        __stackUpdated();
+        internal.stackUpdated();
     }
 
-    /*!
-      \internal
-     */
-    function __stackUpdated() {
-        pageStack.depth =+ stack.size();
-        if (pageStack.depth > 0) currentPage = stack.top().object;
-        else currentPage = null;
+    QtObject {
+        id: internal
+
+        /*!
+          The instance of the stack from javascript
+         */
+        property var stack: new Stack.Stack()
+
+        function createWrapper(page, properties) {
+            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
+            var wrapperObject = wrapperComponent.createObject(pageStack);
+            wrapperObject.reference = page;
+            wrapperObject.pageStack = pageStack;
+            wrapperObject.properties = properties;
+            return wrapperObject;
+        }
+
+        function stackUpdated() {
+            pageStack.depth =+ stack.size();
+            if (pageStack.depth > 0) currentPage = stack.top().object;
+            else currentPage = null;
+        }
     }
 }

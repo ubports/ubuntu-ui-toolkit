@@ -26,7 +26,6 @@ import QtQuick 2.0
 
     Examples: See \l Tabs.
 */
-//Item {
 PageTreeNode {
     id: tab
 
@@ -54,8 +53,14 @@ PageTreeNode {
      */
     property Item page: null
 
-
+    /*!
+      When page is updated, set its parent to be tab.
+     */
     onPageChanged: if (page) page.parent = tab
 
+    /*!
+      The tab is active when it is the selected tab of its parent Tabs item.
+      Setting tab to active will automatically make child nodes active.
+     */
     active: parentNode && parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 }

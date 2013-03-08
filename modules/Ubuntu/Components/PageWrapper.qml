@@ -26,7 +26,6 @@ import "PageWrapperUtils.js" as Utils
 
     \b{This component is under heavy development.}
 */
-//QtObject {
 PageTreeNode {
     id: pageWrapper
     anchors.fill: parent
