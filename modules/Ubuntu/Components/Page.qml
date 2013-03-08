@@ -80,6 +80,7 @@ PageTreeNode {
     property Flickable flickable: internal.getFlickableChild(page)
 
     onActiveChanged: internal.updateHeaderAndToolbar()
+    onTitleChanged: internal.updateHeaderAndToolbar()
     onHeaderChanged: internal.updateHeaderAndToolbar()
     onToolbarChanged: internal.updateHeaderAndToolbar()
     onToolsChanged: internal.updateHeaderAndToolbar()
