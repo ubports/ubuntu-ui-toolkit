@@ -79,11 +79,17 @@ PageTreeNode {
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
+    /*! \internal */
     onActiveChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
     onTitleChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
     onHeaderChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
     onToolbarChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
     onToolsChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
 
     Item {
