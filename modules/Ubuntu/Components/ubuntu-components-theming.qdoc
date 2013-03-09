@@ -44,7 +44,7 @@
      fillColor: "lightgray";
      opacity: 0.8;
   }
-  .button {
+  .pushbutton {
      color: item.hovered ? "tan" : "#757373";
   }
   \endcode
@@ -67,9 +67,9 @@
   }
   \endqml
 
-  The Button document:
+  The PushButton document:
   \qml
-  // Button.qml
+  // PushButton.qml
   import QtQuick 2.0
 
   Item {
@@ -99,7 +99,7 @@
     ItemStyle.class: "frame"
     width: 100
     height: 100
-    Button {
+    PushButton {
        width: 100
        height: 40
        anchors {
@@ -108,7 +108,7 @@
           leftMargin: 20
           topMargin: 20
        }
-       ItemStyle.class: "button"
+       ItemStyle.class: "pushbutton"
        ItemStyle.delegate: Rectangle {
           anchors.fill: parent
           color: (ItemStyle.style) ? ItemStyle.style.color : "transparent"
@@ -156,8 +156,7 @@
 
   Style rules are identified through selectors. Selectors follow
   the syntax defined by the \l{http://www.w3.org/TR/selector.html}{W3C for CSS selectors}
-  however does not provide full support. This
-  syntax is used in both QML- and QmlTheme file formats.
+  however does not provide full support.
   The supported syntax is:
   \list
    \li - element name is either the style class defined on the QML element or the
@@ -167,9 +166,9 @@
    \li - hierarchy on a style rule is represented in two ways:
    \list
     \li * either with a space character in between selectors (e.g. “.Toolbar
-        .Button”), when the style should be applied only if the widget occurs
+        .PushButton”), when the style should be applied only if the widget occurs
         inside a particular widget
-    \li * or with a ‘>’ character between selectors (“.Toolbar > .Button”), which
+    \li * or with a ‘>’ character between selectors (“.Toolbar > .PushButton”), which
         is a restriction of the previous case, when a direct child relationship is
         mandated in the widget hierarchy
    \endlist
@@ -179,34 +178,34 @@
 
   Examples:
 
-  1) a Rule having its selector identifying QML elements styled with class "Button"
+  1) a Rule having its selector identifying QML elements styled with class "PushButton"
   \code
   // QmlTheme rule
-  .Button {
+  .PushButton {
      ...
   }
   \endcode
-  2) a Rule having its selector identifying QML elements styled with class "button"
+  2) a Rule having its selector identifying QML elements styled with class "pushbutton"
   and named as "red"
   \code
   //QmlTheme rule
-  .button#red {
+  .pushbutton#red {
      ...
   }
   \endcode
-  3) a Rule having its selector identifying QML elements styled with class "Button"
+  3) a Rule having its selector identifying QML elements styled with class "PushButton"
   named as "red" and which are children of QML elements styled as class "frame"
   \code
   //QmlTheme rule
-  .frame .Button#red {
+  .frame .PushButton#red {
      ...
   }
   \endcode
-  4) a Rule having its selector identifying QML elements styled with class "Button"
+  4) a Rule having its selector identifying QML elements styled with class "PushButton"
   named as "red" and which are direct children of QML elements styled as class "frame"
   \code
   //QmlTheme rule
-  .frame > .Button#red {
+  .frame>.PushButton#red {
      ...
   }
   \endcode
@@ -290,12 +289,13 @@
 
   Example:
   \list
-   \li \code@qml-mapping(.button, ButtonStyle, ButtonDelegate);\endcode maps \c .button
-   selector to use \c ButtonStyle element for styling and \c ButtonDelegate for
-   visuals.
-   \li \code@qml-mapping(.frame .button, OtherStyle, );\endcode maps "\c{.frame .button}"
+   \li \code@qml-mapping(.pushbutton, PushButtonStyle, PushButtonDelegate);\endcode
+   maps \c .pushbutton selector to use \c PushButtonStyle element for styling and
+   \c PushButtonDelegate for visuals.
+   \li \code@qml-mapping(.frame .pushbutton, OtherStyle, );\endcode maps "\c{.frame
+   .pushbutton}"
    selector to use \c OtherStyle styling. As no delegate element is given, the
-   system will use the visuals defined for the \c .button selector.
+   system will use the visuals defined for the \c .pushbutton selector.
   \endlist
 
   \section2 The url() macro
@@ -308,9 +308,9 @@
   theme file parsed.
 
   Modifying the previous example having resources under a subfolder of the theme
-  named "resources". The declaration block of the button would look as follows:
+  named "resources". The declaration block of the pushbutton would look as follows:
   \code
-  .button {
+  .pushbutton {
       color: "lightgray";
       frame: url("resources/button-frame.png");
       pressedColor: Qt.darker(color, 1.2);
@@ -323,16 +323,17 @@
   block follow QML syntax to ease transfering of those to QML. \b Note: Unlike QML
   every line in the declaration block must be separated with semicolon character.
 
-  The following example defines styling for a Button element identified with ".button"
+  The following example defines styling for a PushButton element identified with
+  ".pushbutton"
   \code
-  .button {
+  .pushbutton {
       color: "lightgray";
       frame: Qt.resolvedUrl("resources/button-frame.png");
       pressedColor: Qt.darker(color, 1.2);
   }
   \endcode
 
-  Assuming the theme defines a mapping for the style called \c ButtonStyle, the
+  Assuming the theme defines a mapping for the style called \c PushButtonStyle, the
   engine will map the property values listed in the rule using the type. In case the
   style type is not defined, the engine will create a \c QtObject using \c var property
   type for each declaration. Note that the engine does not perform any type checking
@@ -346,7 +347,7 @@
     uses delegates (visuals), therefore accessible within delegates
   \endlist
 
-  For example, assume the Button widget is defined as follows:
+  For example, assume the PushButton widget is defined as follows:
   \qml
   Item {
       property bool hovered
@@ -354,13 +355,109 @@
   }
   \endqml
   where \a hovered specifies the hovered state and \a pressed the pressed state. The
-  previous style could be modified to change the button color to lightgreen when hovered
+  previous style could be modified to change the pushbutton color to lightgreen when hovered
   as follows:
   \code
-  .button {
+  .pushbutton {
       color: item.hovered ? "lightgreen" : "lightgray";
       frame: Qt.resolvedUrl("resources/button-frame.png");
       pressedColor: Qt.darker(color, 1.2);
+  }
+  \endcode
+
+  \section2 Inheritance
+  One aspect that differs radically from CSS is the ability to derive selectors.
+  Selectors can be built to use previous declared selectors. When so, the new
+  selectors will "inherit" the properties of all derived ones. The syntax of such
+  inheritance is \b{derived-selector[.base-selector]*}. The new selector can be referred without
+  its derivates within the theme file, however widgets must specify all the classes
+  the selector is derived from in the same order as defined in the theme (see
+  example below).
+  The following example defines two button styles, one deriving from the other,
+  and derived one overriding one property of its base style.
+
+  theme.qmltheme:
+  \code
+  .pushbutton {
+      color: item.hovered ? "lightgreen" : "lightgray";
+      frame: Qt.resolvedUrl("resources/button-frame.png");
+      pressedColor: Qt.darker(color, 1.2);
+  }
+  .red-button.pushbutton {
+      pressedColor: "red";
+  }
+  // define one more property for red-button
+  .red-button {
+      moreProperty: "extra";
+  }
+  \endcode
+
+  Somewhere in QML...
+  \qml
+  Item {
+      PushButton {
+          text: "Normal"
+      }
+      PushButton {
+          text: "Normal"
+          // style must specify the entire selector chain with space separators
+          ItemStyle.class: "red-button pushbutton"
+      }
+  }
+  \endqml
+  ... so the second PushButton will have all the properties \c .red-button and
+  \c .pushbutton has, with \c .pushbutton properties overriding \c .red-button
+  properties of the same name.
+
+  The derived selector properties are built up in the following order:
+  \list
+  \li properties from the base selectors are collected in the order of appearance
+  in the derivates list;
+  \li the next base selector properties override any previous occurence of the
+  same named properties;
+  \li the local properties override any previous declaration of the same property;
+  \li properties from previous definitions of the same selector are added without
+  overriding the existing values.
+  \endlist
+  The following example illustrates building the properties
+  \code
+  .baseA {
+      baseAProperty: "baseA";
+  }
+  // extends .baseA
+  .baseA {
+      baseAProperty2: "baseA2";
+  }
+  //define few properties
+  .derived {
+      property: "some base stuff";
+  }
+  //then derive from bases
+  .derived.baseA {
+      baseAProperty: "override";
+  }
+  \endcode
+  So, derived would have properties with the following values:
+  \list
+  \li baseAProperty: "override"
+  \li baseAProperty2: "baseA2"
+  \li property: "some base stuff"
+  \endlist
+
+  Selectors can be built of as many base selectors as needed, and selectors used
+  as base can also be derived ones.
+  \code
+  .colors {
+      color: "lightgreen";
+      hoveredColor: "green";
+      pressedColor: "gray";
+  }
+  .pushbutton.colors {
+      color: item.hovered ? hoveredColor : "lightgray";
+      background: url(someimage.png);
+  }
+  // create red-button derived from pushbutton and colors
+  .red-button.pushbutton.colors {
   }
   \endcode
 
@@ -377,16 +474,16 @@
   the selector node that identifies the widget. The format used to build it is
   \c{.<class>[#<name>]}. If neither of these are specified, but the
   widget still uses styling, the engine will apply the default style class,
-  by substituting class with the meta class name (i.e. Button.qml this will be
-  \c Button).
+  by substituting class with the meta class name (i.e. PushButton.qml this will be
+  \c PushButton).
 
-  Updating the previous example, the complete Button widget with style information
+  Updating the previous example, the complete PushButton widget with style information
   would look like
   \qml
   Item {
       property bool hovered
       property bool pressed
-      ItemStyle.class: "button"
+      ItemStyle.class: "pushbutton"
   }
   \endqml
 
@@ -397,22 +494,20 @@
   \qml
   Toolbar {
       ItemStyle.class: "toolbar"
-      Button {
-          ItemStyle.class: "button"
+      PushButton {
       }
   }
   \endqml
   In this sample, the button will be styled using the rules defined for \a{".toolbar >
-  .button"} or if not defined, according to the rules defined by \a ".button" selector.
-  However, the following example will create a selector like \a{".toolbar .button"}
-  as there is a non-styled element between Toolbar and Button, so Button is no
+  .pushbutton"} or if not defined, according to the rules defined by \a ".pushbutton" selector.
+  However, the following example will create a selector like \a{".toolbar .pushbutton"}
+  as there is a non-styled element between Toolbar and Button, so PushButton is no
   longer a direct child of Toolbar.
   \qml
   Toolbar {
       ItemStyle.class: "toolbar"
       Row {
-          Button {
-              ItemStyle.class: "button"
+          PushButton {
           }
       }
   }
@@ -478,9 +573,8 @@
   just rely on the theme for both.
   A button that uses a private delegate but style from theme would look like
   \qml
-  Button {
+  PushButton {
       id: button
-      ItemStyle.class: "button"
       ItemStyle.delegate: Rectangle {
           anchors.fill: parent
           color: button.pressed ? button.ItemStyle.style.pressedColor : button.ItemStyle.style.color
@@ -494,11 +588,10 @@
 
   default.qmltheme
   \code
-  @qml-mapping(.button, ButtonStyle, ButtonDelegate);
-  @qml-mapping(.Button, ButtonStyle, ButtonDelegate);
+  @qml-mapping(.pushbutton, PushButtonStyle, PushButtonDelegate);
   @qml-import(Ubuntu.Components 0.1);
 
-  .Button, .button {
+  .pushbutton {
       color: "#e3e5e8";
       shapeDark: url("artwork/ButtonShapeDark.png");
       shapeNormal: url("artwork/ButtonShape.png");
@@ -522,15 +615,11 @@
   @qml-import(themes 1.0, current:/demos);
   @qml-mapping(.frame, , TestFrameDelegate);
 
-  .Button {
-      color: item.hovered ? "tan" : "lightgray";
-  }
-
-  .button {
+  .pushbutton {
       color: item.hovered ? "lightgray" : "#a3e5e8";
   }
 
-  .button#red {
+  .pushbutton#red {
       color: "red";
   }
 

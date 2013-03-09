@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Template {
     title: i18n.tr("Progress Bar")
+    objectName: "Progress Bar"
 
     Column {
         spacing: units.gu(4)
@@ -76,6 +77,15 @@ Template {
 
             ProgressBar {
                 indeterminate: true
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Indicator")
+
+            ActivityIndicator {
+                anchors.leftMargin: units.gu(10)
+                running: true
             }
         }
     }

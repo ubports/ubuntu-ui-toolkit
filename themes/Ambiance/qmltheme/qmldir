@@ -1,6 +1,13 @@
 module qmltheme
 ButtonStyle 0.1 ButtonStyle.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
+ToolbarDelegate 0.1 ToolbarDelegate.qml
+ToolbarButtonDelegate 0.1 ToolbarButtonDelegate.qml
+MainViewDelegate 0.1 MainViewDelegate.qml
+CheckBoxStyle 0.1 CheckBoxStyle.qml
+CheckBoxDelegate 0.1 CheckBoxDelegate.qml
+SwitchStyle 0.1 SwitchStyle.qml
+SwitchDelegate 0.1 SwitchDelegate.qml
 TabButtonStyle 0.1 TabButtonStyle.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
 TabsDelegate 0.1 TabsDelegate.qml
@@ -25,5 +32,6 @@ SelectionCursorDelegate 0.1 SelectionCursorDelegate.qml
 TextAreaStyle 0.1 TextAreaStyle.qml
 TextAreaDelegate 0.1 TextAreaDelegate.qml
 SliderDelegate 0.1 SliderDelegate.qml
+ActivityIndicatorDelegate 0.1 ActivityIndicatorDelegate.qml
 
 StyleUtils 0.1 styleUtils.js

@@ -30,51 +30,14 @@ Rectangle {
 
     /*!
       \preliminary
-      Should a button to pop the current page from the stack be visible,
-      if there is more than one page currently on the stack?
-     */
-    property alias showBackButton: backButton.visible
-
-    /*!
-      \preliminary
       The text shown as the title in the Header
      */
     property alias title: headerTitle.text
 
-    /*!
-      \preliminary
-      The PageStack to pop() when the back button is clicked.
-     */
-    property Item pageStack
-
-    AbstractButton {
-        id: backButton
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-            margins: units.gu(0.5)
-        }
-        width: visible ? backImage.width + units.gu(3) : 0
-        visible: false
-        onClicked: if (header.pageStack) pageStack.pop()
-
-        Image {
-            id: backImage
-            anchors.centerIn: parent
-            source: "ListItems/artwork/ListItemProgressionArrow.png"
-            fillMode: Image.PreserveAspectFit
-            rotation: 180
-        }
-    }
-
     Label {
         id: headerTitle
         anchors {
-            left: backButton.right
-            top: parent.top
-            bottom: parent.bottom
-            right: parent.right
+            fill: parent
             margins: units.gu(0.5)
         }
         color: "white"

@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
 Template {
+    objectName: "Scrollbar"
     title: i18n.tr("Scrollbar")
     id: scrollbars
     LayoutMirroring.childrenInherit: true
@@ -27,7 +28,7 @@ Template {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: i18n.tr("Flickable")
+            title: i18n.tr("Horizontal")
             height: scrollable.height
 
             Item {
@@ -57,7 +58,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("ListView")
+            title: i18n.tr("Vertical")
             height: scrollable2.height
 
             Rectangle {
@@ -77,20 +78,12 @@ Template {
 
                     section.property: "title"
                     section.criteria: ViewSection.FirstCharacter
-                    section.delegate: Header {
-                        text: "Section - " + section
-                    }
+                    section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
 
-                    delegate: Standard {
-                        text: "Data - " + label
-                    }
-
-                    header: Header {
-                        text: "List header"
-                    }
-                    footer: Header {
-                        text: "List footer"
-                    }
+                    section.delegate: Header { text: "Section - " + section }
+                    delegate: Standard { text: "Data - " + label }
+                    header: Header { text: "List header" }
+                    footer: Header { text: "List footer" }
                 }
                 ListModel {
                    id: listModel
@@ -99,7 +92,7 @@ Template {
                            listModel.append({"title": i, "label": i})
                        }
                    }
-               }
+                }
 
                 Scrollbar {
                     flickableItem: listView

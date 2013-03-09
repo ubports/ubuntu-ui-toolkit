@@ -19,44 +19,64 @@
 #ifndef SUFFIXTREE_P_H
 #define SUFFIXTREE_P_H
 
+#include <QtCore/QHash>
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 // node of a selector
 class SelectorNode {
     public:
     enum Relationship {Child, Descendant, Sibling};
-    enum NodeSensitivity {
-        Normal = 0,
+    enum IgnoreFlags {
+        IgnoreNone = 0,
         IgnoreRelationship = 0x01,
         IgnoreStyleId = 0x02,
-        IgnoreAll = IgnoreRelationship | IgnoreStyleId};
+        IgnoreDerivates = 0x04,
+        IgnoreAll = IgnoreRelationship | IgnoreStyleId | IgnoreDerivates};
     SelectorNode();
-    SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity = Normal);
-    QString toString() const;
+    SelectorNode(const QString &selectorString, IgnoreFlags sensitivity = IgnoreNone);
+    void setMultipleClasses(const QString &value);
+    QString multipleClasses() const;
+    QString toString(int ignore = IgnoreNone) const;
     bool operator==(const SelectorNode &other);
+    QString className;
     QString styleClass;
     QString styleId;
+    QString derives;
     Relationship relationship;
     int sensitivity;
 };
 
 // selector type
-typedef QList<SelectorNode> Selector;
+class Selector : public QList<SelectorNode> {
+public:
+    inline Selector() {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    Selector(const QString &string, SelectorNode::IgnoreFlags sensitivity = SelectorNode::IgnoreNone);
+    virtual ~Selector() {}
+    QString toString(bool appendDerivates = true) const;
+};
+Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
 
 // style rule tree
+class QQmlComponent;
 class StyleTreeNode {
 public:
     StyleTreeNode(StyleTreeNode *parent = 0);
-    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule);
+    StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate);
     ~StyleTreeNode();
     void clear();
-    void addStyleRule(const Selector &path, Rule *styleRule);
-    Rule *lookupStyleRule(const Selector &path, bool strict = false);
-    Rule *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
+    void addStyleRule(const Selector &path, QQmlComponent *style, QQmlComponent *delegate);
+    Selector path() const;
+    StyleTreeNode *lookupStyleRule(const Selector &path, bool strict = false);
+    StyleTreeNode *testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict);
 
 public:
     StyleTreeNode *parent;
     SelectorNode styleNode;
-    Rule *styleRule;
+    QQmlComponent *style;
+    QQmlComponent *delegate;
     // the key is the next style node's "relationship class#name" combination
     QHash<QString, StyleTreeNode*> children;
 };

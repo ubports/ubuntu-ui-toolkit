@@ -18,12 +18,12 @@
 
 #include "themeengine.h"
 #include "themeengine_p.h"
-#include "rule.h"
 #include "suffixtree_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
+#include <QtCore/QRegularExpression>
 
 /*
   This file contains the Rule-element suffix-tree handling classes. The suffix-tree
@@ -34,18 +34,66 @@
 */
 
 SelectorNode::SelectorNode() :
-    relationship(Descendant)
+    relationship(Descendant),
+    sensitivity(IgnoreNone)
 {}
+
 /*!
     \internal
-    Creates an instance of a SelectorNode with a given class, name
-    and relationship. The sensitivity parameter configures the node so that during
-    string conversion and comparison ignores the relationship, the name
-    both or none. This feature is used when building up QmlTheme selectorTable.
+    Creates an instance of a SelectorNode by parsing the selectorString. The
+    sensitivity parameter configures the node so that during string conversion
+    and comparison ignores the relationship, the name both or none. This feature
+    is used when building up QmlTheme selectorTable.
 */
-SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Relationship relationship, NodeSensitivity sensitivity) :
-    styleClass(styleClass.toLower()), styleId(styleId.toLower()), relationship(relationship), sensitivity(sensitivity)
+SelectorNode::SelectorNode(const QString &selectorString, IgnoreFlags sensitivity) :
+    relationship(Descendant), sensitivity(sensitivity)
 {
+    styleClass = selectorString.toLower();
+    if (styleClass.startsWith('>')) {
+        relationship = Child;
+        styleClass.remove('>');
+    }
+    int idIndex = styleClass.indexOf('#');
+    if (idIndex != -1) {
+        styleId = styleClass.mid(idIndex + 1).toLower();
+        styleClass = styleClass.left(idIndex);
+        if (idIndex > 1 && styleClass[0] == '.')
+            styleClass = styleClass.mid(1, idIndex - 1);
+    } else if (styleClass[0] == '.')
+        styleClass = styleClass.mid(1);
+    // check whether the selector derives from any other node
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Updates style class from ItemStyle.
+ */
+void SelectorNode::setMultipleClasses(const QString &value)
+{
+    // replace spaces with dots
+    styleClass = value.toLower().simplified();
+    styleClass.replace(' ', '.');
+    int derivesIndex = styleClass.indexOf('.');
+    if (derivesIndex != -1) {
+        // there are multiple classes specified
+        derives = styleClass.mid(derivesIndex);
+        styleClass = styleClass.left(derivesIndex);
+    }
+}
+
+/*!
+ * \internal
+ * Returns the style class and its derivates in one string that is presentable
+ * to QML.
+ */
+QString SelectorNode::multipleClasses() const
+{
+    return QString(styleClass + derives).replace('.', ' ');
 }
 
 /*!
@@ -53,25 +101,84 @@ SelectorNode::SelectorNode(const QString &styleClass, const QString &styleId, Re
     Converts a SelectorNode into string using "<relation> .<class>#<name>"
     format. Depending on the sensitivity set, may ignore the relationship and styleId.
   */
-QString SelectorNode::toString() const
+QString SelectorNode::toString(int ignore) const
 {
     QString result;
-    if (((sensitivity & IgnoreRelationship) !=  IgnoreRelationship) &&
+    ignore |= sensitivity;
+    if (((ignore & IgnoreRelationship) !=  IgnoreRelationship) &&
             (relationship == SelectorNode::Child))
-        result += "> ";
+        result += ">";
     if (!styleClass.isEmpty())
         result += "." + styleClass;
-    if (((sensitivity & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
+    else if (!className.isEmpty()) {
+        result += '.' + className;
+    }
+    if ((ignore & IgnoreDerivates) != IgnoreDerivates)
+        result += derives;
+    if (((ignore & IgnoreStyleId) !=  IgnoreStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
 }
 
 bool SelectorNode::operator==(const SelectorNode &other)
 {
-    bool ret = (styleClass == other.styleClass) &&
+    QString myClass = (styleClass.isEmpty()) ? className : styleClass;
+    QString otherClass = (other.styleClass.isEmpty()) ? other.className : other.styleClass;
+
+    myClass += derives;
+    otherClass += other.derives;
+
+    bool ret = (myClass == otherClass) &&
                (((sensitivity & IgnoreStyleId) ==  IgnoreStyleId) ? true : styleId == other.styleId) &&
                (((sensitivity & IgnoreRelationship) ==  IgnoreRelationship) ? true : relationship == other.relationship);
     return ret;
+}
+
+/*!
+ * \internal
+ * Converts a selector string into Selector object.
+ * Current support (ref: www.w3.org/TR/selector.html):
+ *  - Type selectors, e.g: "Button"
+ *  - Descendant selectors, e.g: "Dialog Button"
+ *  - Child selectors, e.g: "Dialog>Button"
+ *  - ID selectors, e.g: "Button#mySpecialButton"
+ */
+Selector::Selector(const QString &string, SelectorNode::IgnoreFlags sensitivity)
+{
+    QString tmp(string.trimmed());
+    // prepare for split
+    if (tmp.contains('>')) {
+        tmp.replace(QRegularExpression("[ ]*(>)[ ]*"), ">").replace('>', "|>");
+    }
+    tmp.replace(' ', '|');
+
+    QStringList nodes = tmp.simplified().split('|');
+    QStringListIterator inodes(nodes);
+    inodes.toBack();
+    while (inodes.hasPrevious()) {
+        const QString &node = inodes.previous();
+        if (node.isEmpty())
+            continue;
+        prepend(SelectorNode(node, sensitivity));
+    }
+}
+
+/*!
+  \internal
+  Converts a style path back to selector string.
+*/
+QString Selector::toString(bool appendDerivates) const
+{
+    QString result;
+    int ignoreFlags = (!appendDerivates) ? SelectorNode::IgnoreDerivates : SelectorNode::IgnoreNone;
+
+    QListIterator<SelectorNode> i(*this);
+    while (i.hasNext()) {
+        SelectorNode node = i.next();
+        result += ' ' + node.toString(ignoreFlags);
+    }
+    result.replace(" >", ">");
+    return result.simplified();
 }
 
 /*!
@@ -80,17 +187,17 @@ bool SelectorNode::operator==(const SelectorNode &other)
   */
 uint qHash(const Selector &key)
 {
-    return qHash(ThemeEnginePrivate::selectorToString(key));
+    return qHash(key.toString(false));
 }
 
 
 StyleTreeNode::StyleTreeNode(StyleTreeNode *parent) :
-    parent(parent), styleNode("", "", SelectorNode::Descendant), styleRule(0)
+    parent(parent), style(0), delegate(0)
 {
 }
 
-StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, Rule *styleRule) :
-    parent(parent), styleNode(node), styleRule(styleRule)
+StyleTreeNode::StyleTreeNode(StyleTreeNode *parent, const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate) :
+    parent(parent), styleNode(node), style(style), delegate(delegate)
 {
 }
 
@@ -116,7 +223,7 @@ void StyleTreeNode::clear()
   \internal
   Adds a style rule to the style tree based on the selector path specified.
   */
-void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
+void StyleTreeNode::addStyleRule(const Selector &path, QQmlComponent *style, QQmlComponent *delegate)
 {
     Selector sparePath = path;
     SelectorNode nextNode = path.last();
@@ -130,24 +237,47 @@ void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
         // check if we have the node already, as it could be part of a previous path that
         // had not yet have a style set
         if (children.contains(nodeKey)) {
-            children.value(nodeKey)->styleRule = styleRule;
+            StyleTreeNode *node = children.value(nodeKey);
+            node->style = style;
+            node->delegate = delegate;
         } else {
             // new leaf
-            StyleTreeNode * node = new StyleTreeNode(this, nextNode, styleRule);
+            StyleTreeNode * node = new StyleTreeNode(this, nextNode, style, delegate);
             children.insert(nodeKey, node);
         }
     } else {
         // check if we have the node in the hash
         if (children.contains(nodeKey)) {
-            children.value(nodeKey)->addStyleRule(sparePath, styleRule);
+            children.value(nodeKey)->addStyleRule(sparePath, style, delegate);
         } else {
-            // new node
-            StyleTreeNode *node = new StyleTreeNode(this, nextNode, 0);
+            // new intermediate node
+            StyleTreeNode *node = new StyleTreeNode(this, nextNode, 0, 0);
             children.insert(nodeKey, node);
-            node->addStyleRule(sparePath, styleRule);
+            node->addStyleRule(sparePath, style, delegate);
         }
     }
 }
+
+/*!
+ * \internal
+ * The method returns the selector path from the current node built using its parent
+ * nodes.
+ */
+Selector StyleTreeNode::path() const
+{
+    Selector result;
+
+    result << styleNode;
+
+    StyleTreeNode *p = parent;
+    while (p) {
+        if (p->parent)
+            result.append(p->styleNode);
+        p = p->parent;
+    }
+    return result;
+}
+
 
 /*!
   \internal
@@ -165,7 +295,7 @@ void StyleTreeNode::addStyleRule(const Selector &path, Rule *styleRule)
   returned for the ".box > .frame > .button" Item. If the theme would have only
   the ".box .frame .button" rule defined, the lookup would not match that rule.
 */
-Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
+StyleTreeNode *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
 {
     // the spare contains the remainder
     Selector sparePath = path;
@@ -175,17 +305,17 @@ Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
         sparePath.removeLast();
     }
 
+    StyleTreeNode *rule = 0;
+
     // special case: root node forwards the lookup to its children
     if (!parent) {
-        return testNode(nextPathNode, sparePath, strict);
+        rule = testNode(nextPathNode, sparePath, strict);
     } else {
         // check whether we have a child that satisfies the node
         // try to remove elements from the path, maybe we still can get a match
-        while (true) {
-            Rule *rule = testNode(nextPathNode, sparePath, strict);
-            if (rule)
-                return rule;
-            if (!sparePath.isEmpty()) {
+        while (!rule) {
+            rule = testNode(nextPathNode, sparePath, strict);
+            if (!rule && !sparePath.isEmpty()) {
                 nextPathNode = sparePath.last();
                 sparePath.removeLast();
             } else
@@ -194,41 +324,35 @@ Rule *StyleTreeNode::lookupStyleRule(const Selector &path, bool strict)
     }
 
     // we have consumed the path, return the style from the node/leaf
-    return styleRule;
+    if (!rule && (style || delegate))
+        rule = this;
+
+    return rule;
 }
 
 /*!
   \internal
   Test whether a child matches the criteria
 */
-Rule *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict)
+StyleTreeNode *StyleTreeNode::testNode(SelectorNode &nextNode, const Selector &sparePath, bool &strict)
 {
-    Rule *rule = 0;
+    StyleTreeNode *rule = 0;
     QString nodeKey = nextNode.toString();
+
     if (children.contains(nodeKey)) {
         rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
-    //if (!rule && !strict && (nextNode.relationship == SelectorNode::Child)) {
-    if (!rule && !strict) {
-        // check if we find something without the style name
-        if (!nextNode.styleId.isEmpty())
-            nextNode.styleId = QString();
+    if (!rule && !nextNode.styleId.isEmpty()) {
+        nextNode.sensitivity |= SelectorNode::IgnoreStyleId;
         nodeKey = nextNode.toString();
-        strict = true;
-        if (children.contains(nodeKey)) {
+        if (children.contains(nodeKey))
             rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
-        }
-        if (!rule && (nextNode.relationship == SelectorNode::Child)) {
-            // check if the searched node had Child relationship; if yes,
-            // change it to Descendant and look after the style again; if
-            // found, the lookup after this point should be strict
-            nextNode.relationship = SelectorNode::Descendant;
-            nodeKey = nextNode.toString();
-            strict = true;
-            if (children.contains(nodeKey)) {
-                rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
-            }
-        }
+    }
+    if (!rule && (nextNode.relationship == SelectorNode::Child)) {
+        nextNode.sensitivity |= SelectorNode::IgnoreRelationship;
+        nodeKey = nextNode.toString();
+        if (children.contains(nodeKey))
+            rule = children.value(nodeKey)->lookupStyleRule(sparePath, strict);
     }
 
     return rule;

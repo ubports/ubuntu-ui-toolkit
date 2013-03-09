@@ -81,7 +81,15 @@ FocusScope {
     id: control
 
     implicitWidth: units.gu(25)
-    implicitHeight: units.gu(3)
+    implicitHeight: units.gu(4)
+    /*!
+      The property presents whether the TextField is highlighted or not. By
+      default the TextField gets highlighted when gets the focus, so can accept
+      text input. This property allows to control the highlight separately from
+      the focused behavior.
+      */
+    property bool highlighted: focus
+
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
@@ -99,6 +107,13 @@ FocusScope {
       Component to be shown and used instead of the default On Screen Keyboard.
     */
     property Component customSoftwareInputPanel
+
+    /*!
+      The property overrides the default popover of the TextField. When set, the TextField
+      will open the given popover instead of the defaul tone defined. The popover can either
+      be a component or a URL to be loaded.
+      */
+    property var popover
 
     /*!
       \preliminary
@@ -275,11 +290,23 @@ FocusScope {
 
     /*!
       \preliminary
-      Replaces the currently selected text by the contents of the system clipboard.
+      Places the clipboard or the data given as parameter into the text input.
+      The selected text will be replaces with the data.
     */
-    function paste()
+    function paste(data)
     {
-        editor.paste();
+        if ((data !== undefined) && (typeof data === "string") && !editor.readOnly) {
+            var selTxt = editor.selectedText;
+            var txt = editor.text;
+            var pos = (selTxt !== "") ? txt.indexOf(selTxt) : editor.cursorPosition
+            if (selTxt !== "") {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos + selTxt.length);
+            } else {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos);
+            }
+            editor.cursorPosition = pos + data.length;
+        } else
+            editor.paste();
     }
 
     /*!
@@ -367,7 +394,7 @@ FocusScope {
     */
     function forceActiveFocus()
     {
-        editor.forceActiveFocus();
+        internal.activateEditor();
     }
 
     // internals
@@ -379,31 +406,49 @@ FocusScope {
             control.focus = false;
     }
 
-    Text {
-        id: fontHolder
+    // grab clicks from the area between the frame and the input
+    MouseArea {
+        anchors.fill: parent
+        // us it only when there is space between the frame and input
+        enabled: internal.spacing > 0
+        onClicked: internal.activateEditor()
     }
-    SystemPalette {
-        id: systemColors
-    }
+
+    Text { id: fontHolder }
+    SystemPalette { id: systemColors }
 
     //internals
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: Theming.ComponentUtils.style(control, "overlaidSpacing", units.gu(0.5))
+        property real spacing: Theming.ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
+        property real lineSpacing: units.dp(3)
+        property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
         property bool selectionMode: false
         property int selectionStart: 0
         property int selectionEnd: 0
+
+        signal popupTriggered()
+
+        function activateEditor()
+        {
+            if (!control.activeFocus)
+                editor.forceActiveFocus();
+            else
+                showInputPanel();
+        }
 
         function showInputPanel()
         {
             if (control.customSoftwareInputPanel != undefined) {
                 // TODO implement once we have the SIP ready
             } else {
-                Qt.inputMethod.show();
+                if (!Qt.inputMethod.visible)
+                    Qt.inputMethod.show();
             }
+            textChanged = false;
         }
         function hideInputPanel()
         {
@@ -412,11 +457,23 @@ FocusScope {
             } else {
                 Qt.inputMethod.hide();
             }
+            // emit accepted signal if changed
+            if (textChanged)
+                control.accepted();
         }
         // reset selection
         function resetEditorSelection(mouseX)
         {
             editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX);
+        }
+
+        // positions the cursor depending on whether there is a selection active or not
+        function positionCursor(x) {
+            var cursorPos = control.positionAt(x);
+            if (internal.selectionEnd == internal.selectionStart)
+                control.cursorPosition = control.positionAt(x);
+            else
+                control.select(internal.selectionStart, internal.selectionEnd);
         }
     }
 
@@ -463,14 +520,14 @@ FocusScope {
     // cursor
     Component {
         id: cursor
-        Item {
-            id: customCursor
-            property bool showCursor: (editor.forceCursorVisible || editor.activeFocus)
-            property bool timerShowCursor: true
+        TextCursor {
+            //FIXME: connect to root object once we have all TextInput properties exposed
+            editorItem: editor
+            height: internal.lineSize
+            popover: control.popover
+            visible: editor.cursorVisible
 
-            Theming.ItemStyle.class: "cursor"
-            height: parent.height
-            visible: showCursor && timerShowCursor
+            Component.onCompleted: internal.popupTriggered.connect(openPopover)
         }
     }
 
@@ -488,7 +545,10 @@ FocusScope {
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Image {
-            anchors.fill: parent
+            //anchors.fill: parent
+            anchors.verticalCenter: parent.verticalCenter
+            width: units.gu(3)
+            height: width
             smooth: true
             source: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
             onSourceChanged: print(source)
@@ -534,18 +594,16 @@ FocusScope {
         font: Theming.ComponentUtils.style(editor, "font", fontHolder.font)
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
+        // forward keys to the root element so it can be captured outside of it
+        Keys.forwardTo: [control]
 
         // virtual keyboard/software input panel handling
         activeFocusOnPress: false
         onActiveFocusChanged: {
             if (activeFocus) {
                 internal.showInputPanel();
-                internal.textChanged = false;
             } else {
                 internal.hideInputPanel();
-                // emit accepted signal if changed
-                if (internal.textChanged)
-                    control.accepted();
             }
         }
 
@@ -560,12 +618,9 @@ FocusScope {
             onClicked: {
                 // activate control
                 if (!control.activeFocus) {
-                    control.forceActiveFocus();
+                    internal.activateEditor();
                     // set cursor position if no selection was previously set
-                    if (internal.selectionEnd == internal.selectionStart)
-                        editor.cursorPosition = editor.positionAt(mouse.x);
-                    else
-                        editor.select(internal.selectionStart, internal.selectionEnd);
+                    internal.positionCursor(mouse.x)
                 } else if (!internal.selectionMode){
                     // reset selection and move cursor unde mouse click
                     internal.resetEditorSelection(mouse.x);
@@ -575,6 +630,12 @@ FocusScope {
                     // previous if-clause
                     internal.selectionMode = false;
                 }
+            }
+
+            onPressAndHold: {
+                internal.activateEditor();
+                internal.positionCursor(mouse.x);
+                internal.popupTriggered();
             }
 
             onDoubleClicked: {
@@ -591,6 +652,7 @@ FocusScope {
                 // don't do anything while the control is inactive
                 if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
                     return;
+                internal.activateEditor();
                 if (internal.selectionEnd == internal.selectionStart) {
                     internal.resetEditorSelection(mouse.x);
                     internal.selectionMode = true;
@@ -599,14 +661,6 @@ FocusScope {
             onReleased: {
                 if (!containsMouse)
                     internal.selectionMode = false;
-            }
-
-            onPositionChanged: {
-                if (!editor.activeFocus || !internal.selectionMode)
-                    return;
-                // update selectionEnd
-                internal.selectionEnd = editor.positionAt(mouse.x);
-                editor.select(internal.selectionStart, internal.selectionEnd);
             }
         }
     }

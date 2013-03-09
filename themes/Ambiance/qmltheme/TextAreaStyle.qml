@@ -19,16 +19,17 @@ import QtQuick 2.0
 QtObject {
 
     /*!
-        These properties hold the images of the frame and background that will be drawn
-        around the input. Images represent the state and error highlight
+        Radius of the text input frame drawn around the input.
       */
-    property url backgroundBorder
-    property url backgroundShape
+    property string radius
 
     /*!
       Background fill color
       */
     property color backgroundColor
+    property int backgroundColorAnimationDuration
+
+    property real opacity
 
     /*!
       Text color
@@ -51,9 +52,12 @@ QtObject {
     property font font
 
     /*!
+      \deprecated
       Spacing between overlaid elements (e.g. hint)
+      The property is deprecated, use frameSpacing instead
       */
     property var overlaySpacing
+    onOverlaySpacingChanged: console.debug("DEPRECATED overlaySpacing, use frameSpacing")
 
     /*!
       Spacing between the frame and the text editor area

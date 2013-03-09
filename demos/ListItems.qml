@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+    objectName: "List Items"
     title: i18n.tr("List Items")
 
     Item {
@@ -142,7 +143,7 @@ Template {
                          * the others are 6 grid units high and there are 3 headings
                          * at 3 grid units high.
                          */
-                        contentHeight: (units.gu(6) + units.dp(2)) * count - 2 * units.dp(2) + 3 * units.gu(3)
+                        contentHeight: (units.gu(6) + units.dp(2)) * count + 3 * units.gu(4)
                         interactive: false
 
                         delegate: ListItem.Standard {
@@ -302,10 +303,7 @@ Template {
                 Component {
                     id: controlExample
                     Switch {
-                        anchors {
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                 }
                 Column {

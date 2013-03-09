@@ -7,7 +7,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick quick-private
+QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
 #comment in the following line to disable traces
@@ -24,9 +24,6 @@ HEADERS += plugin.h \
     suffixtree_p.h \
     itemstyleattached.h \
     itemstyleattached_p.h \
-    rule.h \
-    rule_p.h \
-    qmlloader_p.h \
     qmlthemeloader_p.h \
     i18n.h \
     listener.h \
@@ -34,15 +31,20 @@ HEADERS += plugin.h \
     ucunits.h \
     ucqquickimageextension.h \
     quickutils.h \
-    giconprovider.h
+    giconprovider.h \
+    shapeitemtexture.h \
+    shapeitem.h \
+    inversemouseareatype.h \
+    bottombarvisibilitycommunicator.h \
+    qquickclipboard.h \
+    qquickmimedata.h \
+    qquickclipboard_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
     suffixtree.cpp \
     themesettings.cpp \
     itemstyleattached.cpp \
-    rule.cpp \
-    qmlloader.cpp \
     qmlthemeloader.cpp \
     i18n.cpp \
     listener.cpp \
@@ -50,10 +52,15 @@ SOURCES += plugin.cpp \
     ucunits.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
-    giconprovider.cpp
+    giconprovider.cpp \
+    shapeitem.cpp \
+    inversemouseareatype.cpp \
+    bottombarvisibilitycommunicator.cpp \
+    qquickclipboard.cpp \
+    qquickmimedata.cpp
 
 # deployment rules for the plugin
-installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
 

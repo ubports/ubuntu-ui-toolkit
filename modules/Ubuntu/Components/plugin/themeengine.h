@@ -21,8 +21,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
+#include "suffixtree_p.h"
 
-class Rule;
 class QQmlEngine;
 class QJSEngine;
 class QQuickItem;
@@ -41,9 +41,6 @@ public:
 
     static QObject *initializeEngine(QQmlEngine *engine);
     static ThemeEngine *instance();
-
-    bool registerName(QQuickItem *item, const QString &newId);
-    Rule *lookupStyleRule(QQuickItem *item, bool forceClassName = false);
 
     // getter/setters
     QString error() const;

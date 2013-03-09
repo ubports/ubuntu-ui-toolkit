@@ -74,6 +74,12 @@ Item {
     */
     property alias __active: pageWrapper.active
 
+    /*!
+      \internal
+      The actual page object.
+     */
+    property alias __pageObject: pageWrapper.object
+
     PageWrapper {
         id: pageWrapper
         parent: tab

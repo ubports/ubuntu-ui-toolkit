@@ -20,6 +20,9 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
+    implicitWidth: units.gu(9)
+    implicitHeight: units.gu(4)
+
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
     function __luminance(hexcolor){
@@ -31,18 +34,10 @@ Item {
     }
 
     UbuntuShape {
-        id: shape
-
-        anchors.fill: parent
-        color: item.color
-        maskSource: StyleUtils.itemStyleProperty("shape", "")
-        borderSource: ""
-    }
-
-    UbuntuShape {
         id: border
 
         anchors.fill: parent
+        color: item.color
         borderSource: StyleUtils.itemStyleProperty("borderIdle")
         opacity: 1.0 - borderPressed.opacity
     }
@@ -51,6 +46,7 @@ Item {
         id: borderPressed
 
         anchors.fill: parent
+        color: item.color
         borderSource: StyleUtils.itemStyleProperty("borderPressed")
         opacity: item.pressed ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }

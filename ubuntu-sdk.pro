@@ -2,7 +2,7 @@ include( common.pri )
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += demos themes modules/qt-components-ubuntu.pro tests/unit
+SUBDIRS += demos themes modules/qt-components-ubuntu.pro tests/unit examples
 
 tests/unit.depends = modules/qt-components-ubuntu.pro
 

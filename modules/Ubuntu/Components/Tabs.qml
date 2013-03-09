@@ -61,7 +61,7 @@ import Ubuntu.Components 0.1 as Theming
 
 Item {
     // FIXME: see above
-    Theming.ItemStyle.class: "tabs"
+    Theming.ItemStyle.class: "new-tabs"
 
     /*!
       \preliminary
@@ -92,4 +92,11 @@ Item {
     VisualItemModel {
         id: tabsModel
     }
+
+    /*!
+      The tools of the \l Page of the active \l Tab.
+     */
+    property ToolbarActions tools: selectedTab && selectedTab.__pageObject &&
+                                   selectedTab.__pageObject.hasOwnProperty("tools") ?
+                                       selectedTab.__pageObject.tools : null
 }

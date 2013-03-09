@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import "." 0.1 as Theming
 
 /*!
     \qmltype ActivityIndicator
@@ -55,41 +60,9 @@ AnimatedItem {
     */
     property bool running: false
 
-    implicitWidth: center.sourceSize.width
-    implicitHeight: center.sourceSize.height
-    // embedd visuals
-    Image {
-        id: center
-        anchors.fill: parent
+    implicitWidth: units.gu(3)
+    implicitHeight: units.gu(3)
 
-        fillMode: Image.PreserveAspectFit
-        source: internals.centralSource
-        smooth: internals.smooth
-        visible: internals.active
+    Theming.ItemStyle.class: "activityindicator"
 
-        Image {
-            id: animation
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectFit
-            source: internals.movingSource
-            smooth: internals.smooth
-            visible: internals.active
-            NumberAnimation on rotation {
-                running: internals.active & indicator.onScreen
-                from: 0; to: 360; loops: Animation.Infinite
-                duration: internals.animationDuration
-            }
-        }
-    }
-
-    // internal properties
-    QtObject {
-        id: internals
-        property bool active: indicator.running && indicator.enabled
-        // preliminary theming introduced to ease styling introduction
-        property url centralSource: Qt.resolvedUrl("artwork/ActivityIndicatorCentre.png")
-        property url movingSource: Qt.resolvedUrl("artwork/ActivityIndicatorMoving.png")
-        property bool smooth: true
-        property int animationDuration: 1000
-    }
 }

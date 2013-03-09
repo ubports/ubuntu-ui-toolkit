@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Template {
     title: i18n.tr("Resolution Independence")
+    objectName: "Resolution Independence"
 
     Column {
         spacing: units.gu(4)

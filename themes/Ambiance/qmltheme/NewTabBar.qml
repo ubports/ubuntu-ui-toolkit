@@ -80,12 +80,30 @@ Item {
                     // When the tab bar is active, show both buttons corresponing to the tab index as selected,
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
-                    property bool selected: tabBar.active ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
                     Component.onCompleted: buttonView.buttons.push(button)
 
-                    opacity: selected ? itemStyle.headerTextSelectedOpacity : tabBar.active ? itemStyle.headerTextOpacity : 0
+                    // Use opacity 0 to hide instead of setting visibility to false in order to
+                    // make fading work well, and not to mess up width/offset computations
+                    opacity: isVisible() ? selected ? itemStyle.headerTextSelectedOpacity : itemStyle.headerTextOpacity : 0
+                    function isVisible() {
+                        if (selected) return true;
+                        if (!tabBar.active) return false;
+                        if (buttonView.needsScrolling) return true;
+
+                        // When we don't need scrolling, we want to avoid showing a button that is fading
+                        // while sliding in from the right side when a new button was selected
+                        var numTabs = tabs.__tabsModel.count;
+                        var minimum = buttonView.selectedButtonIndex;
+                        var maximum = buttonView.selectedButtonIndex + numTabs - 1;
+                        if (MathUtils.clamp(buttonIndex, minimum, maximum) === buttonIndex) return true;
+                        // working modulus numTabs:
+                        if (buttonIndex < buttonView.selectedButtonIndex - numTabs) return true;
+                        return false;
+                    }
+
                     Behavior on opacity {
                         NumberAnimation {
                             duration: itemStyle.headerTextFadeDuration
@@ -171,7 +189,6 @@ Item {
         property bool needsScrolling: buttonRowWidth > tabBar.width
         interactive: needsScrolling
         width: needsScrolling ? tabBar.width : buttonRowWidth
-        clip: !needsScrolling // avoid showing the same button twice
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0

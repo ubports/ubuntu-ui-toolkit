@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Exec=/opt/qt5/bin/qmlscene /usr/lib/qt-components-ubuntu/demos/Gallery.qml
-Path=/opt/qt-components-ubuntu/
-Name=Qt Components for Ubuntu - Gallery
-GenericName=Qt Components for Ubuntu gallery application
+Exec=/usr/lib/qt-components-ubuntu/demos/launch_componentshowcase
+Path=/usr/lib/qt-components-ubuntu/
+Name=Qt Components for Ubuntu - Component Showcase
+GenericName=Qt Components for Ubuntu Component Showcase application
 Icon=/usr/lib/qt-components-ubuntu/demos/call_icon.png
 Terminal=false
 
