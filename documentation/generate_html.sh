@@ -15,4 +15,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-/usr/lib/*/qt5/bin/qdoc ubuntu-sdk.qdocconf
+/usr/lib/*/qt5/bin/qdoc ubuntu-ui-toolkit-online.qdocconf
