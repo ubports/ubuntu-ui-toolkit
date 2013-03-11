@@ -1,0 +1,348 @@
+.activityindicator {
+    source: url(artwork/spinner.png);
+    rotationDuration: 1300;
+}
+
+.UbuntuShape-radius-small {
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
+    maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+}
+
+.UbuntuShape-radius-medium {
+    gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
+    maskSource: url("artwork/ubuntushape_medium_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_medium_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_medium_radius_pressed.sci");
+}
+
+.button, .custom-button {
+    color: "#cccccc";
+    shape: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+}
+
+.toolbar {
+    color: "white";
+    opacity: 0.9;
+    triggerSize: units.gu(2);
+    hintSize: units.gu(2);
+}
+
+.toolbar-button {
+    iconWidth: units.gu(2);
+    iconHeight: units.gu(2);
+}
+
+.toolbar-button .label {
+    fontSize: "x-small";
+    color: "#888888";
+    opacity: item.enabled ? 1.0 : 0.3;
+}
+
+.mainview {
+    backgroundColor: "#ededf0";
+}
+
+.transparent-button {
+    dumy: 0;
+}
+
+.checkbox {
+    checkedColor: "#DD4814";
+    uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1);
+    checkMarkSource: url("artwork/CheckMark.png");
+    backgroundColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
+}
+
+.switch {
+    crossSource: url("artwork/Cross.png");
+    checkMarkSource: url("artwork/CheckMark.png");
+    selectedImageOpacity: 1.0;
+    unselectedImageOpacity: 0.4;
+    thumbSpacing: units.dp(2);
+    checkedThumbColor: "#DD4814";
+    uncheckedThumbColor: "#bbbbbb";
+    thumbColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
+    moveThumbAnimation: NumberAnimation { duration: 100; easing.type: Easing.OutQuad };
+    backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1);
+}
+
+.tabs {
+    buttonsExpanded: false;
+    separator: Rectangle {
+        color: "white";
+        height: units.dp(1);
+    };
+    horizontalPadding: units.gu(1);
+    minimumButtonWidth: units.gu(8);
+}
+
+.tab-button {
+    backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
+    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
+    backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
+}
+
+.new-tabs {
+    swipeToSwitchTabs: true;
+    headerFontSize: "x-large";
+    headerFontWeight: Font.Light;
+    headerTextSelectedOpacity: 0.9;
+    headerTextSelectedColor: "#333333";
+    headerTextOpacity: 0.4;
+    headerTextColor: "#333333";
+    headerTextLeftMargin: units.gu(2);
+    headerTextRightMargin: units.gu(2);
+    headerTextBottomMargin: units.gu(2);
+    indicatorImageSource: url("artwork/chevron.png");
+    tabBarHeight: units.gu(7.5);
+    deactivateTime: 3000;
+    buttonPositioningVelocity: 1.0;
+    headerTextFadeDuration: 350;
+}
+
+.dark-button {
+    color: "#cccccc";
+    shape: url("artwork/ubuntushape_small_radius_shape.sci");
+    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+}
+
+.pointer {
+    imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
+                (item.direction === "right") ? url(artwork/RightArrow.png) :
+                (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
+    longAxis: units.gu(2);
+    shortAxis: units.gu(1);
+}
+
+.popover {
+    dim: false;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
+}
+
+.popover .foreground {
+    minimumWidth: units.gu(40);
+    color: "white";
+    radius: "medium";
+}
+
+.popover .pointer {
+    opacity: 1.0;
+}
+
+.sheet {
+    dim: false;
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
+}
+.sheet .foreground {
+    headerColor: "darkgray";
+    headerHeight: units.gu(8);
+    backgroundColor: "lightgray";
+    buttonContainerWidth: units.gu(14);
+}
+
+.dialog {
+    dim: true;
+    dimColor: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    dimOpacity: 1.0;
+    edgeMargins: units.gu(2);
+    callerMargin: units.gu(1);
+    fadingDuration: 50;
+    fadingEasing: Easing.OutQuad;
+}
+.dialog .foreground {
+    minimumWidth: units.gu(38);
+    minimumHeight: units.gu(32);
+    margins: units.gu(4);
+    itemSpacing: units.gu(2);
+    radius: "medium";
+    visible: QuickUtils.rootObject.width > units.gu(60);
+    color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent";
+}
+.dialog .foreground .title {
+    fontSize: "large";
+    color: Qt.rgba(1, 1, 1, 0.9);
+    style: Text.Normal;
+}
+
+.dialog .foreground .label {
+    fontSize: "medium";
+    color: Qt.rgba(1, 1, 1, 0.6);
+    wrapMode: Text.Wrap;
+}
+
+/*
+    Label does not have any QML mapping, therefore the engine will not assign any
+    style rule or delegate to the Rule object. Instead a QtObject based style rule
+    will be used with all declared properties as variant.
+*/
+.label {
+    fontSize: "medium";
+    color: "#757373";
+}
+
+/* Component Showcase title */
+.title {
+    fontSize: "x-large";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}
+
+/* Note: the following could be done using
+.row-label.title {
+    fontSize: "medium";
+}
+
+*/
+.row-label {
+    fontSize: "medium";
+    color: "#757373";
+    styleColor: "white";
+    style: Text.Raised;
+}
+
+.scrollbar {
+    interactive: false;
+    overlay: true;
+    overlayOpacityWhenShown: 0.6;
+    overlayOpacityWhenHidden: 0.0;
+
+    scrollbarFadeInAnimation: NumberAnimation {
+        duration: 100;
+        easing.type: Easing.InOutQuad;
+    };
+    scrollbarFadeOutPause: 300;
+    scrollbarFadeOutAnimation: NumberAnimation {
+        duration: 500;
+        easing.type: Easing.InOutQuad;
+    };
+
+    sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
+    thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    backwardThumbReleased : (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
+    backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
+    forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
+    forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
+    scrollAreaThickness: units.gu(0.5);
+    sliderRadius: units.gu(0.5);
+    thumbConnectorMargin: units.dp(3);
+    sliderColor: Qt.rgba(0.5, 0.5, 0.5, 0.7);
+    thumbConnectorColor: "white";
+}
+
+.textfield {
+    radius: "small";
+    normalFillColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    errorFillColor: "red";
+    opacity: item.enabled ? 1.0 : 0.1;
+    color: (item.enabled) ? "#757373" : "darkgray";
+    selectedTextColor: "white";
+    selectionColor: "#19B6EE";
+    overlaySpacing: units.gu(0.5);
+    passwordCharacter: "\u2022";
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
+}
+
+.textfield .clear-button {
+    iconSource: url("artwork/icon_clear.png");
+}
+
+.textfield .label {
+   fontFamily: "Ubuntu";
+   color: Qt.rgba(0.5, 0.5, 0.5, 0.5);
+   fontSize: "medium";
+   elide: Text.ElideRight;
+}
+
+.cursor {
+   color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
+   opacity: 1.0;
+   width: units.dp(1);
+   blinking: true;
+   blinkTimeoutShown: 800;
+   blinkTimeoutHidden: 400;
+}
+
+.textarea {
+    radius: "small";
+    backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    opacity: item.enabled ? 1.0 : 0.1;
+    color: (item.enabled) ? "#757373"  : "darkgray";
+    selectedTextColor: "#F3F3E7";
+    selectionColor: "#19B6EE";
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
+    frameSpacing: units.gu(1);
+}
+/* hint */
+.textarea .label {
+   color: Qt.rgba(0.5, 0.5, 0.5, 0.5);
+   fontSize: "medium";
+   elide: Text.ElideRight;
+   wrapMode: Text.WordWrap;
+}
+/* selection cursors */
+.textarea .left-pin, .textarea .right-pin {
+    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
+    opacity: 1.0;
+    width: units.dp(1);
+    blinking: false;
+    pinSize: units.gu(1.2);
+    pinSensingOffset: units.dp(4);
+    pinColor: "blue";
+}
+
+/* scrollbars */
+.textarea .scrollbar {
+   interactive: false;
+}
+
+/* sliders */
+.slider {
+    backgroundColor: "#c0c0c0";
+    backgroundOpacity: 0.1;
+    thumbColor: "#bbbbbb";
+    thumbOpacity: 1.0;
+    thumbSpacing: units.dp(2);
+}
+.slider .label {
+    fontSize: "medium";
+    color: "white";
+    weight: Font.Bold;
+}
+
+
+@import url("qrc:/base.qmltheme");
+
+.baseA {
+    test_base_A_A: "new:: test.qmltheme/.baseA";
+    prop_baseA_A: "overload:: test.qmltheme/.baseA";
+}
+.testA {
+    prop_testA_A: "testA.prop_testA_A"
+}
+
+.testA .baseA {
+    prop_baseA_C: "overload-> test.qmltheme/.testA .baseA";
+}
+
+.testB > .baseA {
+    prop_baseA_A: "overload:: test.qmltheme/.testB > .baseA";
+}
+
+.testC .testB .baseA {
+    test_base_A_A: "overload:: test.qmltheme/.testC .textB .baseA";
+    prop_baseA_B: "overload:: test.qmltheme/.testC .textB .baseA";
+}
+
+.testC>.testB .baseA {
+}

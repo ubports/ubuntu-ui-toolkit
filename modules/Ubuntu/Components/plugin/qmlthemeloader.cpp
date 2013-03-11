@@ -35,7 +35,7 @@
   1. load file and build up selectorTable
   2. normalize selectorTable by updating each selector with the non-overridden
      properties from the base selector
-  3. build ThemeEngine's styleTree by creating Rule elements using the styles,
+  3. build ThemeEngine's styleCache by creating Rule elements using the styles,
      mappings and imports specified.
 
   TODOs:
@@ -57,28 +57,14 @@ const char *stylePropertyFormat = \
 
 /*!
   \internal
-  Resets the node sensitivity flag for the selector nodes so the selector is
-  interpreted as defined in CSS. Sensitivity flags are set by the parser to ease
-  searching in the selector hash for the base selectors (subsets of the current
-  selector).
-*/
-void resetSelector(Selector &selector)
-{
-    for (int i = 0; i < selector.count(); i++)
-        selector[i].sensitivity = SelectorNode::IgnoreNone;
-}
-
-/*!
-  \internal
     Returns a subset from the given selector and configures it to ignore relation
     and name.
   */
-Selector selectorSubset(const Selector &path, int elements, SelectorNode::IgnoreFlags sensitivity = SelectorNode::IgnoreAll)
+Selector selectorSubset(const Selector &path, int elements, int ignoreFlags = SelectorNode::IgnoreAll)
 {
     Selector result;
     while (elements > 0) {
-        result << path[path.length() - elements];
-        result.last().sensitivity = sensitivity;
+        result << SelectorNode(path[path.length() - elements], ignoreFlags);
         elements--;
     }
     return result;
@@ -345,12 +331,8 @@ void QmlThemeLoader::normalizeStyles()
 bool QmlThemeLoader::updateRuleProperties(Selector &selector, PropertyMap &propertyMap, bool override)
 {
     bool result = false;
-    // check if we have a style that is a subset of the current one and if yes
-    // copy the base propertyes that are not overloaded by the current one
-    if (!selector[0].styleId.isEmpty()) {
-        selector[0].sensitivity |= SelectorNode::IgnoreStyleId;
-        selector[0].styleId = QString();
-    }
+    // make sure we don't have the styleId disturbing
+    selector[0] = SelectorNode(selector[0], SelectorNode::NoStyleId);
     if (selectorTable.contains(selector)) {
         // make sure the selector is normalized
         normalizeSelector(selector);
@@ -374,12 +356,13 @@ bool QmlThemeLoader::normalizeSelector(const Selector &selector)
 
     // collect properties from the derived ones
     SelectorNode last = selector.last();
-    if (!last.derives.isEmpty()) {
+    QString derivates = last.derivates();
+    if (!derivates.isEmpty()) {
         // get the deriveds first then override those with the current properties
         PropertyMap derivedMap;
-        Q_FOREACH(const QString& derived, last.derives.split('.')) {
+        Q_FOREACH(const QString& derived, derivates.split('.')) {
             if (!derived.isEmpty()) {
-                Selector derivedSelector(derived, SelectorNode::IgnoreAll);
+                Selector derivedSelector(derived);
                 QHash<Selector, PropertyMap>::iterator i = selectorTable.find(derivedSelector);
                 if (i != selectorTable.end() && i.key() == derivedSelector) {
                     // update to the real selector as that may also be derived
@@ -470,7 +453,7 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
     if (data.isEmpty())
         return false;
 
-    QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data, SelectorNode::IgnoreRelationship);
+    QList<Selector> selectors = ThemeEnginePrivate::parseSelector(data);
     if (selectors.isEmpty()) {
         ThemeEnginePrivate::setError(QString("Syntax error!\n%1").arg(data));
         return false;
@@ -505,15 +488,12 @@ bool QmlThemeLoader::generateStyleQml()
 
         buildStyleAndDelegate(selector, propertyMap.properties, styleQml, delegateQml);
 
-        // reset selector so we build the Rule with the proper one
-        resetSelector(selector);
-
         QQmlComponent *style = createComponent(m_engine, styleQml);
         QQmlComponent *delegate = createComponent(m_engine, delegateQml);
         if (!style && !delegate) {
             return false;
         }
-        styleTree->addStyleRule(selector, style, delegate);
+        styleCache->addStyleRule(selector, style, delegate);
     }
 
     return true;
@@ -531,7 +511,7 @@ QPair<QString, QString> QmlThemeLoader::selectorMapping(const Selector &selector
         }
     }
     // if none found, check the last node's style class
-    qmap = '.' + selector.last().styleClass;
+    qmap = '.' + selector.last().getClass();
     return (qmlMap.contains(qmap)) ? qmlMap.value(qmap) : QPair<QString, QString>();
 }
 
@@ -705,7 +685,7 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
 =============================================================================*/
 
 QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
-    styleTree(0)
+    styleCache(0)
 {
     m_engine = engine;
     // fill the callback maps
@@ -714,18 +694,17 @@ QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
     rules["qml-import"] = handleQmlImport;
 }
 
-StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles)
+bool QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles, StyleCache &cache)
 {
-    styleTree = 0;
+    bool ok = true;
+    styleCache = &cache;
     // parses the theme
     if (parseTheme(url)) {
 
         normalizeStyles();
         // build up the QML style tree
-        styleTree = new StyleTreeNode(0);
         if (!generateStyleQml()) {
-            delete styleTree;
-            styleTree = 0;
+            ok = false;
         } else
             themeFiles<< url.path() << this->themeFiles;
 
@@ -736,5 +715,5 @@ StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFil
         selectorTable.clear();
     }
 
-    return styleTree;
+    return ok;
 }

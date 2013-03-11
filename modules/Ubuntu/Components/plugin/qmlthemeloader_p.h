@@ -54,10 +54,10 @@ class QmlThemeLoader : public ThemeLoader {
 public:
     QmlThemeLoader(QQmlEngine *engine);
     virtual ~QmlThemeLoader(){}
-    StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles);
+    bool loadTheme(const QUrl &path, QStringList &themeFiles, StyleCache &cache);
 
 private:
-    StyleTreeNode *styleTree;
+    StyleCache *styleCache;
     QStringList themeFiles;
 
 private:

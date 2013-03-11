@@ -21,7 +21,7 @@ HEADERS += plugin.h \
     themeengine_p.h \
     themeloader_p.h \
     themesettings_p.h \
-    suffixtree_p.h \
+    stylecache_p.h \
     itemstyleattached.h \
     itemstyleattached_p.h \
     qmlthemeloader_p.h \
@@ -38,11 +38,12 @@ HEADERS += plugin.h \
     bottombarvisibilitycommunicator.h \
     qquickclipboard.h \
     qquickmimedata.h \
-    qquickclipboard_p.h
+    qquickclipboard_p.h \
+    selector_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
-    suffixtree.cpp \
+    stylecache.cpp \
     themesettings.cpp \
     itemstyleattached.cpp \
     qmlthemeloader.cpp \
@@ -57,10 +58,10 @@ SOURCES += plugin.cpp \
     inversemouseareatype.cpp \
     bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
-    qquickmimedata.cpp
+    qquickmimedata.cpp \
+    selector.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
-

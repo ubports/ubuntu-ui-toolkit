@@ -47,7 +47,7 @@ public Q_SLOTS:
 
 public: //getters
     QString name() const;
-    QString styleClass() const;
+    QString styleClass();
     QString path() const;
 
 private:
