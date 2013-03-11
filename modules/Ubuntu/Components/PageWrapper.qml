@@ -35,7 +35,7 @@ PageTreeNode {
       The reference to the page object. This can be the page
       itself (which is an Item), but also a url pointing to a QML file.
      */
-    property variant reference
+    property var reference
 
     /*!
       \preliminary
@@ -78,7 +78,7 @@ PageTreeNode {
       Properties are use to initialize a new object, or if reference
       is already an object, properties are copied to the object when activated.
      */
-    property variant properties
+    property var properties
 
     /*!
       \internal
