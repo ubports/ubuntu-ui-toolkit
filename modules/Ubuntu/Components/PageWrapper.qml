@@ -45,12 +45,6 @@ PageTreeNode {
 
     /*!
       \preliminary
-      The parent Item of the page object.
-     */
-//    property Item parent
-
-    /*!
-      \preliminary
       This variable will be true if \l object holds an object that was created
       from the given reference, and thus can be destroyed when no the page is deactivated.
      */
