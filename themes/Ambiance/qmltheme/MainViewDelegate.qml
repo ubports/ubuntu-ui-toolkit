@@ -19,17 +19,21 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
     z: -1
+    id: mainViewDelegate
+
+    property color backgroundColor: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    property url backgroundSource: StyleUtils.itemStyleProperty("backgroundSource", "")
 
     Rectangle {
         id: backgroundColor
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+        color: mainViewDelegate.backgroundColor
     }
 
     Image {
         id: backgroundTexture
         anchors.fill: parent
-        source: StyleUtils.itemStyleProperty("backgroundSource", "")
+        source: mainViewDelegate.backgroundSource
         fillMode: Image.Tile
     }
 }
