@@ -4,7 +4,6 @@ ButtonDelegate 0.1 ButtonDelegate.qml
 ToolbarDelegate 0.1 ToolbarDelegate.qml
 ToolbarButtonDelegate 0.1 ToolbarButtonDelegate.qml
 HeaderDelegate 0.1 HeaderDelegate.qml
-HeaderStyle 0.1 HeaderStyle.qml
 MainViewDelegate 0.1 MainViewDelegate.qml
 CheckBoxStyle 0.1 CheckBoxStyle.qml
 CheckBoxDelegate 0.1 CheckBoxDelegate.qml
