@@ -67,11 +67,11 @@ import "." 0.1 as Theming
 
     The slider's default style class is \b slider and style properties depend on
     the actual delegate defined by the theme, except of one property which defines
-    the spacing units between the slider's bar and thumb, called \b thumbSpacing.
+    the spacing units between the slider's __bar and thumb, called \b __thumbSpacing.
     The slider uses one single touch sensing area to position the thumb within the
-    bar. Therefore However delegates must define the following properties:
+    __bar. Therefore However delegates must define the following properties:
     \list
-    \li * \b bar - the slider's bar object
+    \li * \b __bar - the slider's __bar object
     \li * \b thumb - the slider's thumb object
     \endlist
 
@@ -173,13 +173,16 @@ AbstractButton {
     onPressedChanged: internals.mouseAreaPressed()
 
     /*! \internal */
+    property Item __bar
+    /*! \internal */
+    property Item __thumb
+    /*! \internal */
+    property real __thumbSpacing: 0.0
+
+    /*! \internal */
     property alias __internals: internals
     QtObject {
         id: internals
-
-        property real thumbSpacing: ComponentUtils.style(slider, "thumbSpacing", 0.0)
-        property Item bar: ComponentUtils.delegateProperty(slider, "bar", null)
-        property Item thumb: ComponentUtils.delegateProperty(slider, "thumb", null)
 
         property real liveValue: 0.0
         property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
@@ -188,30 +191,30 @@ AbstractButton {
 
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
-        property real thumbWidth: thumb ? thumb.width - thumbSpacing : 0.0
-        property real thumbSpace: bar ? bar.width - (2.0 * thumbSpacing + thumbWidth) : 0.0
+        property real thumbWidth: __thumb ? __thumb.width - __thumbSpacing : 0.0
+        property real thumbSpace: __bar ? __bar.width - (2.0 * __thumbSpacing + thumbWidth) : 0.0
 
         function updateMouseArea() {
             slider.__mouseArea.positionChanged.connect(internals.mouseAreaPositionchanged);
         }
 
         function mouseAreaPressed() {
-            if (!thumb || !bar)
+            if (!__thumb || !__bar)
                 return;
             if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
                 // Left button pressed.
                 var mouseX = slider.__mouseArea.mouseX;
                 var mouseY = slider.__mouseArea.mouseY;
-                if (mouseY >= thumb.y && mouseY <= thumb.y + thumb.height) {
-                    if (mouseX >= thumb.x && mouseX <= thumb.x + thumb.width) {
+                if (mouseY >= __thumb.y && mouseY <= __thumb.y + __thumb.height) {
+                    if (mouseX >= __thumb.x && mouseX <= __thumb.x + __thumb.width) {
                         // Button pressed inside the thumb.
                         dragInitMouseX = mouseX;
                         dragInitNormalizedValue = normalizedValue;
                         slider.touched(true);
-                    } else if (mouseX > thumbSpacing &&
-                               mouseX < bar.width - thumbSpacing) {
+                    } else if (mouseX > __thumbSpacing &&
+                               mouseX < __bar.width - __thumbSpacing) {
                         // Button pressed outside the thumb.
-                        var normalizedPosition = (slider.__mouseArea.mouseX - thumbSpacing - thumbWidth * 0.5) / thumbSpace;
+                        var normalizedPosition = (slider.__mouseArea.mouseX - __thumbSpacing - thumbWidth * 0.5) / thumbSpace;
                         normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
                         liveValue = MathUtils.lerp(normalizedPosition, slider.minimumValue, slider.maximumValue);
                         dragInitMouseX = mouseX;

@@ -22,6 +22,11 @@ Item {
     implicitHeight: thumb.height + 2*thumb.spacing
     opacity: item.enabled ? 1.0 : 0.5
 
+    Component.onCompleted: {
+        item.implicitWidth = implicitWidth;
+        item.implicitHeight = implicitHeight;
+    }
+
     UbuntuShape {
         id: background
         anchors.fill: parent

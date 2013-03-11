@@ -18,9 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Image {
+
+    property int rotationDuration
+    onRotationDurationChanged: print(rotationDuration)
+
     id: container
     anchors.fill: parent
-    source: StyleUtils.itemStyleProperty("source", "")
     smooth: true
     visible: item.running
     fillMode: Image.PreserveAspectFit
@@ -32,6 +35,6 @@ Image {
         from: 0
         to: 360
         loops: Animation.Infinite
-        duration: StyleUtils.itemStyleProperty("rotationDuration", 0)
+        duration: rotationDuration
     }
 }

@@ -19,8 +19,6 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
-    implicitWidth: units.gu(4)
-    implicitHeight: units.gu(4)
     opacity: enabled ? 1.0 : 0.5
 
     UbuntuShape {

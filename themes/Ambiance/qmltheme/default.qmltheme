@@ -58,22 +58,19 @@ Examples:
 .UbuntuShape-radius-small {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_small_radius_shape.sci");
-    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
-    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
 }
 
 .UbuntuShape-radius-medium {
     gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4);
     maskSource: url("artwork/ubuntushape_medium_radius_shape.sci");
-    borderIdle: url("artwork/ubuntushape_medium_radius_idle.sci");
-    borderPressed: url("artwork/ubuntushape_medium_radius_pressed.sci");
+    borderSource: url("artwork/ubuntushape_medium_radius_idle.sci");
 }
 
 .button, .custom-button {
     color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
-    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
-    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
 }
 
 .toolbar {
@@ -159,8 +156,7 @@ Examples:
 .dark-button {
     color: "#cccccc";
     shape: url("artwork/ubuntushape_small_radius_shape.sci");
-    borderIdle: url("artwork/ubuntushape_small_radius_idle.sci");
-    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
+    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
 }
 
 /*
@@ -240,12 +236,14 @@ Examples:
     will be used with all declared properties as variant.
 */
 .label {
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "medium";
     color: "#757373";
 }
 
 /* Component Showcase title */
 .title {
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "x-large";
     color: "#757373";
     styleColor: "white";
@@ -259,6 +257,7 @@ Examples:
 
 */
 .row-label {
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "medium";
     color: "#757373";
     styleColor: "white";

@@ -39,17 +39,29 @@ public:
     // internal members
     QQmlContext *componentContext;
     StyleTreeNode *styleRule;
+    QString stylableProperties;
+    QString connectedToAttachee;
+    bool propertyUpdate;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
+
+    void watchAttacheeProperties();
+    void bindStyleWithAttachee();
+    void bindStyleWithDelegate();
+    void connectStyleToAttachee(int styleIndex);
+    void disconnectStyleFromAttachee(const QString &property);
     bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
     bool registerName(const QString &id);
     void listenThemeEngine();
+    void _q_attacheePropertyChanged();
+    void _q_updateAttacheeProperty();
+    void _q_updateDelegateProperty();
     void _q_refreshStyle();
     void _q_reapplyStyling(QQuickItem *);
 

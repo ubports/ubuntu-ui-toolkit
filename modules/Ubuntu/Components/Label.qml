@@ -35,52 +35,9 @@ Text {
 
     Theming.ItemStyle.class: "label"
 
-    /*!
-       \preliminary
-       DOCME
-    */
-    property string fontSize: Theming.ComponentUtils.style(label, "fontSize", "medium")
-
-    color: Theming.ComponentUtils.style(label, "color", "black")
-
-    elide: Theming.ComponentUtils.style(label, "elide", Text.ElideNone)
-
-    font.capitalization: Theming.ComponentUtils.style(label, "capitalization", Font.MixedCase)
-
-    font.family: Theming.ComponentUtils.style(label, "fontFamily", "Ubuntu")
-
-    font.italic: Theming.ComponentUtils.style(label, "italic", false)
-
-    font.letterSpacing: Theming.ComponentUtils.style(label, "letterSpacing", 0.0)
-
+    property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
-
-    font.strikeout: Theming.ComponentUtils.style(label, "strikeout", false)
-
-    font.underline: Theming.ComponentUtils.style(label, "underline", false)
-
-    font.wordSpacing: Theming.ComponentUtils.style(label, "wordSpacing", 0.0)
-
-    horizontalAlignment: Theming.ComponentUtils.style(label, "horizontalAlignment", Text.AlignLeft)
-
-    lineHeight: Theming.ComponentUtils.style(label, "lineHeight", 1.0)
-
-    lineHeightMode: Theming.ComponentUtils.style(label, "lineHeightMode", Text.ProportionalHeight)
-
-    maximumLineCount: Theming.ComponentUtils.style(label, "maximumLineCount")
-
-    style: Theming.ComponentUtils.style(label, "style", Text.Normal)
-
-    styleColor: Theming.ComponentUtils.style(label, "styleColor", color)
-
-    wrapMode: Theming.ComponentUtils.style(label, "wrapMode", Text.NoWrap)
-
-    opacity: Theming.ComponentUtils.style(label, "textOpacity", 1.0)
-
-    verticalAlignment: Theming.ComponentUtils.style(label, "verticalAlignment", Text.AlignTop)
-
-    visible: Theming.ComponentUtils.style(label, "visible", true)
-
+/*
     Theming.ItemStyle.onStyleChanged: {
         // only set font.bold and font.weight if they're defined in the style
         if (Theming.ComponentUtils.hasStyle(label, "bold")) {
@@ -90,4 +47,5 @@ Text {
             font.weight = Theming.ItemStyle.style.weight
         }
     }
+*/
 }

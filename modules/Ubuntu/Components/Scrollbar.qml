@@ -92,15 +92,16 @@ Item {
       This property holds whether the scrollbar is active or passive. It is present
       for testing purposes.
     */
-    property bool __interactive: Theming.ComponentUtils.style(scrollbar, "interactive", false)
+    property bool __interactive: false
 
     // styling
     Theming.ItemStyle.class: "scrollbar"
+    /*
     // FIXME: see FIXME at the top
     implicitWidth: Theming.ComponentUtils.style(scrollbar, "sensingAreaThickness", units.gu(4))
     // FIXME: see FIXME at the top
     implicitHeight: Theming.ComponentUtils.style(scrollbar, "sensingAreaThickness", units.gu(4))
-
+    */
     anchors {
         left: internals.leftAnchor(flickableItem)
         right: internals.rightAnchor(flickableItem)
