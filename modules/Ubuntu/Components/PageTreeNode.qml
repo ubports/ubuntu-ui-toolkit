@@ -42,12 +42,12 @@ Item {
     /*!
       The header of the node. Propagates down from the root node.
      */
-    property Header header: internal.parentNode ? internal.parentNode.header : null
+    property Header header: node.parentNode ? node.parentNode.header : null
 
     /*!
       The toolbar of the node. Propagates down from the root node.
      */
-    property Toolbar toolbar: internal.parentNode ? internal.parentNode.toolbar : null
+    property Toolbar toolbar: node.parentNode ? node.parentNode.toolbar : null
 
     /*!
       At any time, there is exactly one path from the root node to a Page leaf node
@@ -55,21 +55,22 @@ Item {
       \l Tabs and \l PageStack to determine which of multiple nodes in the Tabs or
       PageStack is the currently active one.
      */
-    property bool active: internal.parentNode ? internal.parentNode.active : false
+    property bool active: node.parentNode ? node.parentNode.active : false
 
     /*!
       The \l PageStack that this Page has been pushed on, or null if it is not
       part of a PageStack. This value is automatically set for pages that are pushed
       on a PageStack, and propagates to its child nodes.
      */
-    property Item pageStack: internal.parentNode ? internal.parentNode.pageStack : null
+    property Item pageStack: node.parentNode ? node.parentNode.pageStack : null
 
-    // TODO: document (and remove from internal)
-    property alias parentNode: internal.parentNode
+    /*!
+      The parent node of the current node in the page tree.
+     */
+    property Item parentNode: null
+
     Item {
         id: internal
-        property Item parentNode: null
-
         function isPageTreeNode(object) {
             return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);
         }
@@ -94,15 +95,15 @@ Item {
          */
         function updatePageTree() {
             var newParentNode = internal.getParentPageTreeNode(node);
-            if (newParentNode !== internal.parentNode) {
-                if (internal.parentNode) {
+            if (newParentNode !== node.parentNode) {
+                if (node.parentNode) {
                     // remove node from the list of childNodes
-                    var index = internal.parentNode.childNodes.indexOf(node);
-                    internal.parentNode.childNodes.splice(index, 1);
+                    var index = node.parentNode.childNodes.indexOf(node);
+                    node.parentNode.childNodes.splice(index, 1);
                 }
-                internal.parentNode = newParentNode;
-                if (internal.parentNode) {
-                    internal.parentNode.childNodes.push(node);
+                node.parentNode = newParentNode;
+                if (node.parentNode) {
+                    node.parentNode.childNodes.push(node);
                 }
             }
         }
