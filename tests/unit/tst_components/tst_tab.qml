@@ -29,7 +29,7 @@ TestCase {
      }
 
      function test_page() {
-        compare(tab.page,undefined,"page is undefined by default")
+        compare(tab.page,null,"page is null by default")
      }
 
      function test_title() {
