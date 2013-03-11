@@ -62,5 +62,6 @@ PageTreeNode {
       The tab is active when it is the selected tab of its parent Tabs item.
       Setting tab to active will automatically make child nodes active.
      */
-    active: parentNode && parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
+    active: parentNode && parentNode.active &&
+            parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 }
