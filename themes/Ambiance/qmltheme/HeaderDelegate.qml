@@ -17,12 +17,29 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: headerDelegate
+    /*!
+      The height of the headercontents, which is the full height of
+      the header minus the separators shown at the bottom of it.
+     */
+    property real contentHeight: StyleUtils.itemStyleProperty("contentHeight", units.gu(7.5))
+
+    property color backgroundColor: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    property url backgroundSource: itemStyle.backgroundSource
+    property url separatorSource: itemStyle.separatorSource
+    property url separatorBottomSource: itemStyle.separatorBottomSource
+
+    property int fontWeight: StyleUtils.itemStyleProperty("fontWeight")
+    property string fontSize: StyleUtils.itemStyleProperty("fontSize", "x-large")
+    property color textColor: StyleUtils.itemStyleProperty("textColor", "black")
+    property real textLeftMargin: itemStyle.textLeftMargin
+
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
         top: parent ? parent.top : undefined
     }
-    height: itemStyle.contentHeight + separator.height + separatorBottom.height
+    height: headerDelegate.contentHeight + separator.height + separatorBottom.height
 
     Rectangle {
         id: backgroundColor
@@ -31,9 +48,9 @@ Item {
             right: parent.right
             top: parent.top
         }
-        color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+        color: headerDelegate.backgroundColor
         visible: color != "transparent"
-        height: itemStyle.contentHeight + separator.height
+        height: headerDelegate.contentHeight + separator.height
     }
     Image {
         id: background
@@ -42,10 +59,10 @@ Item {
             right: parent.right
             top: parent.top
         }
-        source: itemStyle.backgroundSource
+        source: headerDelegate.backgroundSource
         visible: source != ""
         fillMode: Image.Tile
-        height: itemStyle.contentHeight + separator.height
+        height: headerDelegate.contentHeight + separator.height
     }
     BorderImage {
         id: separator
@@ -54,7 +71,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        source: itemStyle.separatorSource
+        source: headerDelegate.separatorSource
     }
     Image {
         id: separatorBottom
@@ -63,7 +80,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        source: itemStyle.separatorBottomSource
+        source: headerDelegate.separatorBottomSource
     }
 
     Item {
@@ -73,19 +90,19 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: StyleUtils.itemStyleProperty("contentHeight", units.gu(7.5))
+        height: headerDelegate.contentHeight
 
         Label {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: itemStyle.textLeftMargin
+                leftMargin: headerDelegate.textLeftMargin
             }
             text: item.title
-            font.weight: StyleUtils.itemStyleProperty("fontWeight")
+            font.weight: headerDelegate.fontWeight
             visible: contentsLoader.status != Loader.Ready
-            fontSize: StyleUtils.itemStyleProperty("fontSize", "x-large")
-            color: StyleUtils.itemStyleProperty("textColor", "black")
+            fontSize: headerDelegate.fontSize
+            color: headerDelegate.textColor
         }
 
         // Link to item here, because Loader has its own item property
