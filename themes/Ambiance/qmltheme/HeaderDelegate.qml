@@ -66,7 +66,7 @@ Item {
         source: itemStyle.separatorBottomSource
     }
 
-    Item  {
+    Item {
         id: foreground
         anchors {
             left: parent.left
@@ -93,7 +93,7 @@ Item {
         Loader {
             id: contentsLoader
             sourceComponent: header.contents
-            anchors.fill: foreground
+            anchors.fill: parent
         }
     }
 }

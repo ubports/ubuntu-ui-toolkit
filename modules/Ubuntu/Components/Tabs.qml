@@ -86,7 +86,8 @@ PageTreeNode {
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
+                                           null : __tabs[selectedTabIndex]
 
     /*!
       The page of the currently selected tab.
@@ -119,6 +120,8 @@ PageTreeNode {
     onActiveChanged: internal.updateHeader();
     /*! \internal */
     onHeaderChanged: internal.updateHeader();
+    /*! \internal */
+    onParentNodeChanged: internal.updateHeader();
 
     QtObject {
         id: internal

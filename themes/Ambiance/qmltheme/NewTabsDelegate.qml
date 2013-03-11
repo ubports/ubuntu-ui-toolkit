@@ -65,7 +65,6 @@ Item {
                 tab.anchors.fill = undefined;
                 tab.width = tabView.width;
                 tab.height = tabView.height
-//                if (tab.hasOwnProperty("__active")) tab.__active = true;
             }
             tabView.updateSelectedTabIndex();
         }

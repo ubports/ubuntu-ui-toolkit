@@ -177,8 +177,9 @@ Item {
             bottom: parent.bottom
         }
 
-        // initial width needs to be parent.width, otherwise the contents will be messed up
-        property real buttonRowWidth: currentItem ? currentItem.width : parent.width
+        // set to the width of one tabButtonRow in Component.onCompleted.
+        property real buttonRowWidth
+
         property var buttons: []
 
         // Track which button was last clicked
@@ -234,7 +235,8 @@ Item {
         }
 
         Component.onCompleted: {
-            selectButton(tabs.selectedTabIndex)
+            selectButton(tabs.selectedTabIndex);
+            buttonRowWidth = currentItem.width;
         }
 
         onDragEnded: activatingTimer.stop()
