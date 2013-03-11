@@ -72,6 +72,7 @@ Item {
     Item {
         id: internal
         function isPageTreeNode(object) {
+            // FIXME: Use QuickUtils.className() when it becomes available.
             return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);
         }
 
