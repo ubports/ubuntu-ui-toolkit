@@ -34,7 +34,7 @@ Template {
 
             Page {
                 title: "Toolbar demo"
-
+                id: page
                 tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
                 ToolbarActions {
                     id: toolbarActions1
@@ -91,12 +91,12 @@ Template {
                     Button {
                         width: parent.width
                         text: "Show toolbar"
-                        onClicked: mainView.tools.active = true
+                        onClicked: page.tools.active = true
                     }
                     Button {
                         width: parent.width
                         text: "Hide toolbar"
-                        onClicked: mainView.tools.active = false
+                        onClicked: page.tools.active = false
                     }
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
