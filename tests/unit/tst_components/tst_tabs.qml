@@ -26,41 +26,52 @@ TestCase {
         compare(emptyTabs.selectedTab, null, "The default selected tab is null when there are no tabs");
         compare(emptyTabs.currentPage, null, "The default currentPage is null when there are no tabs");
     }
+
     function test_tabsDefaults() {
         compare(tabs.selectedTabIndex, 0, "The default selectedTabIndex is 0 when Tabs has contents");
         compare(tabs.selectedTab, tab1, "The default selectedTab is the first tab");
         compare(tabs.currentPage, page1, "The default currentPage is the page of the first tab");
+        compare(mainView.toolbar.tools, page1.tools, "The default tools are the tools of the first tab");
+        compare(mainView.header.contents, tabs.headerContents, "Tabs updates the Header contents");
     }
+
     function test_tabsSetSelectedTab() {
-        var newSelectedTabIndex = 1;
-        tabs.selectedTabIndex = newSelectedTabIndex;
-        compare(tabs.selectedTabIndex, newSelectedTabIndex, "Can set selectedTabIndex");
-        compare(tabs.selectedTab, tab2, "Can update selectedTab by setting selectedTabIndex");
-        compare(tabs.currentPage, page2, "Can update currentPage by setting selectedTabIndex");
+        var tabArray = [tab1, tab2, tab3];
+        var pageArray = [page1, page2, page3];
+        for (var i=0; i < 3; i++) {
+            tabs.selectedTabIndex = i;
+            compare(tabs.selectedTabIndex, i, "Can set selectedTabIndex");
+            compare(tabs.selectedTab, tabArray[i], "Can update selectedTab by setting selectedTabIndex");
+            compare(tabs.currentPage, pageArray[i], "Can update currentPage by setting selectedTabIndex");
+            compare(mainView.toolbar.tools, pageArray[i].tools, "Activating a Tab updates the tools of the Toolbar");
+        }
     }
 
     Tabs {
         id: emptyTabs
     }
 
-    Tabs {
-        id: tabs
-        Tab {
-            id: tab1
-            page: Page {
-                id: page1
+    MainView {
+        id: mainView
+        Tabs {
+            id: tabs
+            Tab {
+                id: tab1
+                page: Page {
+                    id: page1
+                }
             }
-        }
-        Tab {
-            id: tab2
-            page: Page {
-                id: page2
+            Tab {
+                id: tab2
+                page: Page {
+                    id: page2
+                }
             }
-        }
-        Tab {
-            id: tab3
-            page: Page {
-                id: page3
+            Tab {
+                id: tab3
+                page: Page {
+                    id: page3
+                }
             }
         }
     }

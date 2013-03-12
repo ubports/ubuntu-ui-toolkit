@@ -42,7 +42,7 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools
+    property ToolbarActions tools: null
     onToolsChanged: {
         if (tools && tools.active && tools.lock) {
             // toolbar is locked in visible state.
