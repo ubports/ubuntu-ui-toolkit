@@ -44,6 +44,9 @@ TestCase {
             compare(tabs.selectedTab, tabArray[i], "Can update selectedTab by setting selectedTabIndex");
             compare(tabs.currentPage, pageArray[i], "Can update currentPage by setting selectedTabIndex");
             compare(mainView.toolbar.tools, pageArray[i].tools, "Activating a Tab updates the tools of the Toolbar");
+            for (var j=0; j < 3; j++) {
+                compare(pageArray[j].active, j===i, "Only the page of the selected tab is active");
+            }
         }
     }
 
