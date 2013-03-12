@@ -24,9 +24,28 @@ Item {
      */
     property real contentHeight: StyleUtils.itemStyleProperty("contentHeight", units.gu(7.5))
 
+    /*!
+      The background color of the header.
+     */
     property color backgroundColor: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+
+    /*!
+      The source of the background image of the header. If the image is has (semi-)transparent
+      pixels, \l backgroundColor can be set to specify the color behind those (semi-)transparent
+      pixels.
+     */
     property url backgroundSource: itemStyle.backgroundSource
+
+    /*!
+      The source of the image that separates the header from the contents of a \l MainView.
+      The separator will be drawn over the contents.
+     */
     property url separatorSource: itemStyle.separatorSource
+
+    /*!
+      The source of an additional image attached to the bottom of the separator. The contents
+      of the \l MainView will be drawn on top of the separator bottom image.
+     */
     property url separatorBottomSource: itemStyle.separatorBottomSource
 
     property int fontWeight: StyleUtils.itemStyleProperty("fontWeight")
