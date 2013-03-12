@@ -21,7 +21,15 @@ Item {
     z: -1
     id: mainViewDelegate
 
+    /*!
+      The background color of the main view.
+     */
     property color backgroundColor: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+
+    /*!
+      The background texture of the main view. The image will be drawn over the background color,
+      so if it has (semi-)transparent pixels, in those pixels the background color will be visible.
+     */
     property url backgroundSource: StyleUtils.itemStyleProperty("backgroundSource", "")
 
     Rectangle {
