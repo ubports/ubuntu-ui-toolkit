@@ -109,7 +109,6 @@ Template {
                 id: externalTab
                 title: i18n.tr("External")
                 iconSource: "call_icon.png"
-//                page: Qt.resolvedUrl("MyCustomPage.qml")
                 page: Loader {
                     parent: externalTab
                     anchors.fill: parent
