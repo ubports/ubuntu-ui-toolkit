@@ -39,7 +39,6 @@ TestCase {
          compare(tab.title,newTitle,"can set/get")
      }
 
-
      Tab {
          id: tab
      }
