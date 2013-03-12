@@ -19,20 +19,33 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-     name: "PageAPI"
+    name: "PageAPI"
 
-     function test_title() {
-         compare(page.title,"","is not set by default")
-         var newTitle = "Hello World!"
-         page.title = newTitle
-         compare(page.title,newTitle,"can set/get")
-     }
+    function test_title() {
+        compare(page.title, "", "is not set by default")
+        compare(mainView.header.title, "", "header title is not set by default")
+        var newTitle = "Hello World!"
+        page.title = newTitle
+        compare(page.title, newTitle, "can set/get")
+        compare(mainView.header.title, newTitle, "header title updated by changing page title")
+    }
 
-     function test_pageStack() {
-         compare(page.pageStack,null,"is not set by default")
-     }
+    function test_tools() {
+        compare(mainView.toolbar.tools, page.tools, "Page updates toolbar tools");
+    }
 
-     Page {
-         id: page
-     }
+    function test_active() {
+        compare(page.active, true, "Page is active by default");
+    }
+
+    function test_pageStack() {
+        compare(page.pageStack, null, "is not set by default")
+    }
+
+    MainView {
+        id: mainView
+        Page {
+            id: page
+        }
+    }
 }
