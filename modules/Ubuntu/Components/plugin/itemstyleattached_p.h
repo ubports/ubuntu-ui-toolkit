@@ -40,24 +40,27 @@ public:
     // internal members
     QQmlContext *componentContext;
     StyleCache::StyleData *styleRule;
-    QString stylableProperties;
-    QString connectedToAttachee;
-    bool propertyUpdate;
+    // hash of attachee property indexes as key, containing enabled/disabled value
+    QHash<int, bool> watchedProperties;
+    // hash of styled item (attachee or delegate) with style property index as keys
+    QHash<int, QQuickItem*> styleBindings;
+    QString propertyUpdated;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
-
     void watchAttacheeProperties();
     void bindStyleWithAttachee();
     void bindStyleWithDelegate();
-    void connectStyleToAttachee(int styleIndex);
-    void disconnectStyleFromAttachee(const QString &property);
+    void bindStyle(const QString &property, QQuickItem *item, const char *watcherSlot);
+    void unbindStyle(const QString &property, const char *watcherSlot);
     bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
+    void resetStyle();
+    void resetDelegate();
     bool registerName(const QString &id);
     void listenThemeEngine();
     void _q_attacheePropertyChanged();

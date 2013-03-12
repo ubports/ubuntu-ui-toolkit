@@ -31,9 +31,6 @@
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
 
-// QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
-#define QML_SIGNAL(metaSignal)  QByteArray('2' + (metaSignal).methodSignature()).constData()
-
 /*!
   \qmltype ItemStyle
   \inqmlmodule Ubuntu.Components 0.1
@@ -149,7 +146,6 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     delegate(0),
     componentContext(0),
     styleRule(0),
-    propertyUpdate(false),
     delayApplyingStyle(true),
     customStyle(false),
     customDelegate(false),
@@ -205,16 +201,14 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
 
         // we cannot detect whether a signal is connected as isSignalConnected() is
         // a protected method of QObject, and we cannot access attachee's protected
-        // functions; therefore store the property index in a dynamic property of ItemStyle
-        // so when style is updated we know which attachee property can be updated
-        stylableProperties += QString::number(i) + ' ';
+        // functions
+        watchedProperties.insert(i, true);
     }
 }
 
 void ItemStyleAttachedPrivate::bindStyleWithAttachee()
 {
     QString omit("objectName");
-    connectedToAttachee.clear();
     const QMetaObject *styleMo = style->metaObject();
     const QMetaObject *attacheeMo = attachee->metaObject();
 
@@ -226,14 +220,15 @@ void ItemStyleAttachedPrivate::bindStyleWithAttachee()
         // check if the property has equivalent in the attachee and if we can style it
         // this means that the equivalent property index in attachee is present in stylableProperties
         int attacheeIndex = attacheeMo->indexOfProperty(styleProperty.name());
-        if (stylableProperties.contains(QString::number(attacheeIndex))) {
+        if (watchedProperties.value(attacheeIndex) && !styleBindings.value(i)) {
             // write first
-            propertyUpdate = true;
-            QQmlProperty::write(attachee, styleProperty.name(), style->property(styleProperty.name()), QQmlEngine::contextForObject(attachee));
-            propertyUpdate = false;
+            QQmlProperty property(attachee, styleProperty.name(), QQmlEngine::contextForObject(attachee));
+            propertyUpdated = property.name();
+            property.write(styleProperty.read(style));
+            propertyUpdated.clear();
 
-            // then connect
-            connectStyleToAttachee(i);
+            // then bind
+            bindStyle(property.name(), attachee, SLOT(_q_updateAttacheeProperty()));
         }
     }
 }
@@ -248,9 +243,7 @@ void ItemStyleAttachedPrivate::bindStyleWithDelegate()
     if (!style || !delegate)
         return;
 
-    Q_Q(ItemStyleAttached);
     QString omit("objectName");
-    connectedToAttachee.clear();
     const QMetaObject *styleMo = style->metaObject();
     const QMetaObject *delegateMo = delegate->metaObject();
 
@@ -259,23 +252,16 @@ void ItemStyleAttachedPrivate::bindStyleWithDelegate()
         if (!delegateProperty.hasNotifySignal() || omit.contains(delegateProperty.name()))
             continue;
 
-        // find out whether the delegate property was already connected to attachee or the delegate
+        // find out whether the property was already connected to attachee or the
         // property is not in the style
-        int stylePropertyIndex = styleMo->indexOfProperty(delegateProperty.name());
-        if ((stylePropertyIndex == -1) || connectedToAttachee.contains(QString::number(stylePropertyIndex)))
+        int styleIndex = styleMo->indexOfProperty(delegateProperty.name());
+        if ((styleIndex == -1) || styleBindings.value(styleIndex))
             continue;
 
-        QString debug = QString("delegate of [%1]: %2(%3) index(%4)").
-                    arg(styleRule->selector().toString()).
-                    arg(delegateProperty.name()).
-                    arg(delegateProperty.typeName()).
-                    arg(i);
-        qDebug() << debug << style->property(delegateProperty.name());
-
-        // write delegate and do binding
-        QQmlProperty::write(delegate, delegateProperty.name(), style->property(delegateProperty.name()), componentContext);
-        QMetaMethod signal = styleMo->property(stylePropertyIndex).notifySignal();
-        QObject::connect(style, QML_SIGNAL(signal), q, SLOT(_q_updateDelegateProperty()));
+        // write and memorize
+        QQmlProperty property(delegate, delegateProperty.name(), componentContext);
+        property.write(style->property(property.name().toLatin1()));
+        bindStyle(property.name(), delegate, SLOT(_q_updateDelegateProperty()));
     }
 }
 
@@ -284,18 +270,21 @@ void ItemStyleAttachedPrivate::bindStyleWithDelegate()
  * Marks a style property as connected to attachee (styled) and connects style property's notify
  * signal to be able to update attachee when style property changes - binding.
  */
-void ItemStyleAttachedPrivate::connectStyleToAttachee(int styleIndex)
+void ItemStyleAttachedPrivate::bindStyle(const QString &property, QQuickItem *item, const char *watcherSlot)
 {
     if (!style)
         return;
-    // need to remember the property index as isSignalConnected() is a protected method we cannot access
-    // to test whenther a property's notify signal is connected or not.
-    connectedToAttachee += QString::number(styleIndex) + ' ';
+    // need to remember the property index as isSignalConnected() is a protected
+    // method we cannot access to test whenther a property's notify signal is
+    // connected or not.
+    const QMetaObject *mo = style->metaObject();
+    int styleIndex = mo->indexOfProperty(property.toLatin1());
+    styleBindings.insert(styleIndex, item);
 
     // connect signal
     Q_Q(ItemStyleAttached);
-    QMetaMethod signal = style->metaObject()->property(styleIndex).notifySignal();
-    QObject::connect(style, QML_SIGNAL(signal), q, SLOT(_q_updateAttacheeProperty()));
+    QQmlProperty styleProperty(style, property, componentContext);
+    styleProperty.connectNotifySignal(q, watcherSlot);
 }
 
 /*!
@@ -303,19 +292,20 @@ void ItemStyleAttachedPrivate::connectStyleToAttachee(int styleIndex)
  * Breaks binding between style property and attachee, so we won't update attachee anymore when
  * style property is changed.
  */
-void ItemStyleAttachedPrivate::disconnectStyleFromAttachee(const QString &property)
+void ItemStyleAttachedPrivate::unbindStyle(const QString &property, const char *watcherSlot)
 {
     if (!style)
         return;
-    int styleIndex = style->metaObject()->indexOfProperty(property.toLatin1());
-    QString styleIndexStr = QString::number(styleIndex);
-    if (connectedToAttachee.contains(styleIndexStr)) {
-        connectedToAttachee.remove(styleIndexStr);
-
-        // connect signal
+    const QMetaObject *mo = style->metaObject();
+    int styleIndex = mo->indexOfProperty(property.toLatin1());
+    QQuickItem *item = styleBindings.value(styleIndex);
+    if (item) {
         Q_Q(ItemStyleAttached);
-        QMetaMethod signal = style->metaObject()->property(styleIndex).notifySignal();
-        QObject::disconnect(style, QML_SIGNAL(signal), q, SLOT(_q_updateAttacheeProperty()));
+        QMetaMethod metaSignal = mo->property(styleIndex).notifySignal();
+        // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
+        QByteArray signal('2' + metaSignal.methodSignature());
+        QObject::disconnect(style, signal.constData(), q, watcherSlot);
+        styleBindings.remove(styleIndex);
     }
 }
 
@@ -326,20 +316,19 @@ void ItemStyleAttachedPrivate::disconnectStyleFromAttachee(const QString &proper
 void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
 {
     Q_Q(ItemStyleAttached);
-    // the sender is the attachee even if we change the property from within
-    if (propertyUpdate)
-        return;
 
     const QMetaObject *mo = attachee->metaObject();
     QMetaMethod signal = mo->method(q->senderSignalIndex());
     QString property = QString(signal.name()).remove("Changed");
+    // the sender is the attachee even if we change the property from within
+    if (propertyUpdated == property)
+        return;
 
-    // disconnect style updater signal, but keep this connection alive
-    disconnectStyleFromAttachee(property);
+    // ban property from being styled
+    watchedProperties.insert(mo->indexOfProperty(property.toLatin1()), false);
 
-    // remove property index from the stylables
-    int propertyIndex = mo->indexOfProperty(property.toLatin1().constData());
-    stylableProperties.remove(QString::number(propertyIndex));
+    // unbind style from attachee
+    unbindStyle(property, SLOT(_q_updateAttacheeProperty()));
 }
 
 /*!
@@ -358,9 +347,9 @@ void ItemStyleAttachedPrivate::_q_updateAttacheeProperty()
         return;
     }
     QString property = QString(signal.name()).remove("Changed");
-    propertyUpdate = true;
+    propertyUpdated = property;
     QQmlProperty::write(attachee, property, style->property(property.toLatin1()), QQmlEngine::contextForObject(attachee));
-    propertyUpdate = false;
+    propertyUpdated.clear();
 }
 
 /*!
@@ -414,8 +403,7 @@ bool ItemStyleAttachedPrivate::updateStyleSelector()
         styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
         return true;
     }
-    // FIXME: if no rule found and styleClass wasn't empty, search for a style that
-    // uses the className as style class
+
     return false;
 }
 
@@ -426,13 +414,8 @@ bool ItemStyleAttachedPrivate::updateStyle()
     if (delayApplyingStyle)
        return result;
 
+    resetStyle();
     if (!customStyle) {
-        // check if we have a forced update
-        if (style) {
-            style->setParent(0);
-            style->deleteLater();
-            style = 0;
-        }
         // make sure we have a theme
         if (styleRule && styleRule->style) {
             style = styleRule->style->create(componentContext);
@@ -458,14 +441,9 @@ bool ItemStyleAttachedPrivate::updateDelegate()
     if (delayApplyingStyle)
        return result;
 
+    // delete delegate as the function can be called from elsewhere than updateCurrentStyle
+    resetDelegate();
     if (!customDelegate) {
-        // delete delegate as the function can be called from elsewhere than updateCurrentStyle
-        if (delegate) {
-            delegate->setParent(0);
-            delegate->setParentItem(0);
-            delegate->deleteLater();
-            delegate = 0;
-        }
         // make sure we have a theme
         if (styleRule && styleRule->delegate) {
             delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(componentContext));
@@ -503,17 +481,8 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
 {
     // the order is: clean up delegate then style, then create style and then delegate
     // so that when delegate is built we already have the styles ready for that
-    if (delegate && !customDelegate) {
-        delegate->setParent(0);
-        delegate->setParentItem(0);
-        delegate->deleteLater();
-        delegate = 0;
-    }
-    if (style && !customStyle) {
-        style->setParent(0);
-        style->deleteLater();
-        style = 0;
-    }
+    resetDelegate();
+    resetStyle();
     bool styleUpdated = updateStyle();
     bool delegateUpdated = updateDelegate();
     if (styleUpdated || delegateUpdated) {
@@ -521,6 +490,45 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
         Q_EMIT q->styleChanged();
     }
 }
+
+void ItemStyleAttachedPrivate::resetStyle()
+{
+    if (style && !customStyle) {
+        // clear bindings, disconnect as properties may change before the style
+        // is deleted
+        if (styleBindings.count() > 0) {
+            if (delegate)
+                style->disconnect(delegate);
+            style->disconnect(attachee);
+            styleBindings.clear();
+        }
+        style->setParent(0);
+        style->deleteLater();
+        style = 0;
+    }
+}
+
+void ItemStyleAttachedPrivate::resetDelegate()
+{
+    if (delegate && !customDelegate) {
+        // remove all bindings between style and delegate
+        if (style && styleBindings.count() > 0) {
+            QHashIterator<int, QQuickItem*> i(styleBindings);
+            while (i.hasNext()) {
+                i.next();
+                if (i.value() == delegate)
+                    styleBindings.remove(i.key());
+            }
+            // finally disconnect
+            style->disconnect(delegate);
+        }
+        delegate->setParent(0);
+        delegate->setParentItem(0);
+        delegate->deleteLater();
+        delegate = 0;
+    }
+}
+
 
 /*!
   \internal
