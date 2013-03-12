@@ -304,6 +304,17 @@ StyleCache::StyleData *StyleCache::match(const Selector &selector)
             int64_t searchRank = selector.rank();
             int64_t matchRank = 0L;
             styles->lookup(selector, &result, matchRank, searchRank);
+
+            if (!result) {
+                Selector copy(selector);
+                SelectorNode last = selector.last();
+                // check if the class wasn't empty and if it was, search with the type
+                if (!last.getClass().isEmpty() && !last.type().isEmpty()) {
+                    copy.last() = SelectorNode("", last.type(), last.id(), last.relation());
+                    styles->lookup(copy, &result, matchRank, searchRank);
+                }
+            }
+
             if (result && enableStyleCache)
                 cache.insert(selector, result);
         }
