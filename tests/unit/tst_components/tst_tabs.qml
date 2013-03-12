@@ -21,12 +21,22 @@ import Ubuntu.Components 0.1
 TestCase {
     name: "TabsAPI"
 
-    function test_selectedTabIndex() {
-        compare(emptyTabs.selectedTabIndex,-1,"The default value for selectedTabIndex is -1 when there are no tabs");
-        compare(tabs.selectedTabIndex,0,"The default selectedTabIndex is 0 when Tabs has contents");
+    function test_emptyTabs() {
+        compare(emptyTabs.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
+        compare(emptyTabs.selectedTab, null, "The default selected tab is null when there are no tabs");
+        compare(emptyTabs.currentPage, null, "The default currentPage is null when there are no tabs");
+    }
+    function test_tabsDefaults() {
+        compare(tabs.selectedTabIndex, 0, "The default selectedTabIndex is 0 when Tabs has contents");
+        compare(tabs.selectedTab, tab1, "The default selectedTab is the first tab");
+        compare(tabs.currentPage, page1, "The default currentPage is the page of the first tab");
+    }
+    function test_tabsSetSelectedTab() {
         var newSelectedTabIndex = 1;
         tabs.selectedTabIndex = newSelectedTabIndex;
-        compare(tabs.selectedTabIndex, newSelectedTabIndex,"can set selectedTabIndex");
+        compare(tabs.selectedTabIndex, newSelectedTabIndex, "Can set selectedTabIndex");
+        compare(tabs.selectedTab, tab2, "Can update selectedTab by setting selectedTabIndex");
+        compare(tabs.currentPage, page2, "Can update currentPage by setting selectedTabIndex");
     }
 
     Tabs {
@@ -37,12 +47,21 @@ TestCase {
         id: tabs
         Tab {
             id: tab1
+            page: Page {
+                id: page1
+            }
         }
         Tab {
             id: tab2
+            page: Page {
+                id: page2
+            }
         }
         Tab {
             id: tab3
+            page: Page {
+                id: page3
+            }
         }
     }
 }
