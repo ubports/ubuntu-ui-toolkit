@@ -35,11 +35,6 @@ Item {
     Component.onCompleted: internal.updatePageTree()
 
     /*!
-      The child nodes in the page tree.
-     */
-    property var childNodes: []
-
-    /*!
       The header of the node. Propagates down from the root node.
      */
     property Header header: node.parentNode ? node.parentNode.header : null
@@ -77,14 +72,17 @@ Item {
         }
 
         /*!
-          Return the parent node in the PageTreeNode, or null if the item is the root node or invalid.
+          Return the parent node in the page tree, or null if the item is the root node or invalid.
          */
         function getParentPageTreeNode(item) {
             var node = null;
             if (item) {
                 var i = item.parent;
-                while (i && !node) {
-                    if (internal.isPageTreeNode(i)) node = i;
+                while (i) {
+                    if (internal.isPageTreeNode(i)) {
+                        node = i;
+                        break;
+                    }
                     i = i.parent;
                 }
             }
@@ -95,18 +93,7 @@ Item {
           Find the parent node.
          */
         function updatePageTree() {
-            var newParentNode = internal.getParentPageTreeNode(node);
-            if (newParentNode !== node.parentNode) {
-                if (node.parentNode) {
-                    // remove node from the list of childNodes
-                    var index = node.parentNode.childNodes.indexOf(node);
-                    node.parentNode.childNodes.splice(index, 1);
-                }
-                node.parentNode = newParentNode;
-                if (node.parentNode) {
-                    node.parentNode.childNodes.push(node);
-                }
-            }
+            node.parentNode = internal.getParentPageTreeNode(node);
         }
     }
 }
