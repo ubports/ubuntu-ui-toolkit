@@ -41,7 +41,8 @@ import Ubuntu.Components 0.1 as Theming
         }
     \endqml
 
-    Header and toolbar contents are automatically taken from \l Page, \l Tabs and \l PageStack
+    Header and toolbar contents are automatically taken from \l Page, \l Tabs and \l PageStack.
+    Only one MainView must be used per application, and it should be the root Item of the application.
 */
 PageTreeNode {
     id: mainView
