@@ -17,6 +17,46 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // style properties
+    property url crossSource
+    property url checkMarkSource
+    /*!
+      The opacity of the "cross" image when the switch is not checked,
+      and opacity of the "checkMark" image when the switch is checked.
+     */
+    property real selectedImageOpacity: 1.0
+    /*!
+      The opacity of the "cross" image when the switch is checked,
+      and the opacity of the "checkMark" image when the switch is not checked.
+     */
+    property real unselectedImageOpacity: 1.0
+    /*!
+      Spacing around the thumb.
+     */
+    property real thumbSpacing: units.dp(1)
+    /*!
+      Color of the thumb when the switch is checked.
+     */
+    property color checkedThumbColor
+    /*!
+      Color of the thumb when the switch is not checked.
+     */
+    property color uncheckedThumbColor
+    /*!
+      The animation to fade the color from checkedColor to uncheckedColor and vice versa.
+     */
+    property ColorAnimation thumbColorAnimation: ColorAnimation{duration: 0}
+    /*!
+      The animation on x to move the thumb.
+     */
+    property NumberAnimation moveThumbAnimation: NumberAnimation{duration: 0}
+
+    property color backgroundColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+    property real thumbWidth: units.gu(4)
+    property real thumbHeight: units.gu(4)
+
+    // code
     anchors.fill: parent
     implicitWidth: 2*thumb.width + 3*thumb.spacing
     implicitHeight: thumb.height + 2*thumb.spacing
@@ -30,34 +70,34 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor", Qt.rgba(0.5, 0.5, 0.5, 0.5))
+        color: backgroundColor
         gradientColor: "transparent"
 
         UbuntuShape {
             id: thumb
 
             // Thumb spacing is used a lot, so import it here once
-            property real spacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(1))
+            property real spacing: visuals.thumbSpacing
 
-            width: StyleUtils.itemStyleProperty("thumbHeight", units.gu(4))
-            height: StyleUtils.itemStyleProperty("thumbWidth", units.gu(4))
+            width: visuals.thumbHeight
+            height: visuals.thumbWidth
             x: item.checked ? rightThumbPosition.x : leftThumbPosition.x
             y: leftThumbPosition.y
 
-            color: item.checked ? StyleUtils.itemStyleProperty("checkedThumbColor", "grey")
-                                : StyleUtils.itemStyleProperty("uncheckedThumbColor", "grey")
+            color: item.checked ? visuals.checkedThumbColor
+                                : visuals.uncheckedThumbColor
             gradientColor: "transparent"
 
             Behavior on x {
                 NumberAnimation {
-                    duration: StyleUtils.itemStyleProperty("moveThumbAnimation").duration
-                    easing: StyleUtils.itemStyleProperty("moveThumbAnimation").easing
+                    duration: visuals.moveThumbAnimation.duration
+                    easing: visuals.moveThumbAnimation.easing
                 }
             }
             Behavior on color {
                 ColorAnimation {
-                    duration: StyleUtils.itemStyleProperty("thumbColorAnimation").duration
-                    easing: StyleUtils.itemStyleProperty("thumbColorAnimation").easing
+                    duration: visuals.thumbColorAnimation.duration
+                    easing: visuals.thumbColorAnimation.easing
                 }
             }
         }
@@ -75,9 +115,9 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? StyleUtils.itemStyleProperty("unselectedImageOpacity", 1.0)
-                                      : StyleUtils.itemStyleProperty("selectedImageOpacity", 1.0)
-                source: StyleUtils.itemStyleProperty("crossSource", "")
+                opacity: item.checked ? visuals.unselectedImageOpacity
+                                      : visuals.selectedImageOpacity
+                source: visuals.crossSource
             }
         }
 
@@ -94,9 +134,9 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? StyleUtils.itemStyleProperty("selectedImageOpacity", 1.0)
-                                      : StyleUtils.itemStyleProperty("unselectedImageOpacity", 1.0)
-                source: StyleUtils.itemStyleProperty("checkMarkSource", "")
+                opacity: item.checked ? visuals.selectedImageOpacity
+                                      : visuals.unselectedImageOpacity
+                source: visuals.checkMarkSource
             }
         }
     }
