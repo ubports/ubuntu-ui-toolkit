@@ -21,7 +21,7 @@ import Ubuntu.Components 0.1
 TestCase {
     name: "PageStackAPI"
 
-    function test_0_initialization() {
+    function initTestCase() {
         compare(pageStack.currentPage, null, "is not set by default");
         compare(mainView.toolbar.tools, null, "no tools by default");
         compare(mainView.header.title, "", "empty title by default");
