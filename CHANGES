@@ -15,13 +15,14 @@ Compatibility Breaks
 * It is now recommended to always use Pages inside Tabs or PageStack.
   Non-Page items can still be used, but their margins will not automatically
   be set-up to align with the header of the MainView.
-* Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
-  Use a Loader if you were using a URL first.
 
 API Changes
 ***********
 
-* None
+* Property tools was removed for MainView, Tabs and PageStack. Pages now automatically
+  update MainView.toolbar.tools when they become active.
+* Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
+  Use a Loader if you were using a URL first.
 
 SDK 0.1.36
 ##########
