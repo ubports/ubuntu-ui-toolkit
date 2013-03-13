@@ -17,11 +17,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    // styling properties
+    property color backgroundColor
     anchors.fill: parent
     z: -1
 
     Rectangle {
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor")
+        color: backgroundColor
     }
 }
