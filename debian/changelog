@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) UNRELEASED; urgency=low
+
+  * New snapshot release
+  * Add more recommended packages
+  * Co-exist better with PPAs
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 13 Mar 2013 11:21:06 +0200
+
 ubuntu-ui-toolkit (0.1.36.1-0ubuntu1) raring; urgency=low
 
   * debian/control:
