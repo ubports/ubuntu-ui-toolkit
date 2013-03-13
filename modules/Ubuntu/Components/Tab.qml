@@ -26,7 +26,7 @@ import QtQuick 2.0
 
     Examples: See \l Tabs.
 */
-Item {
+PageTreeNode {
     id: tab
 
     anchors.fill: parent ? parent : undefined
@@ -51,37 +51,17 @@ Item {
       Deactivate the Tab before changing the page, to ensure proper destruction of the
       old page object first, if needed.
      */
-    property alias page: pageWrapper.reference
+    property Item page: null
 
     /*!
-      \preliminary
-      Depending on the theme, \l Tabs can have a header that is automatically hidden
-      by scrolling down in the Tab's flickable. To disable this behavior for a Tab, set
-      autoHideTabBar to false.
+      When page is updated, set its parent to be tab.
      */
-    property bool autoHideTabBar: true
+    onPageChanged: if (page) page.parent = tab
 
     /*!
-      \internal
-      If the page is flickable, __flickable refers to the page, otherwise it refers to the first
-      of the children that is flickable, or null if none of the children is flickable.
+      The tab is active when it is the selected tab of its parent Tabs item.
+      Setting tab to active will automatically make child nodes active.
      */
-    readonly property Flickable __flickable: pageWrapper.flickable
-
-    /*!
-      \internal
-      Specifies whether this tab is the active one. Automatically updated by \l Tabs.
-    */
-    property alias __active: pageWrapper.active
-
-    /*!
-      \internal
-      The actual page object.
-     */
-    property alias __pageObject: pageWrapper.object
-
-    PageWrapper {
-        id: pageWrapper
-        parent: tab
-    }
+    active: parentNode && parentNode.active &&
+            parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 }

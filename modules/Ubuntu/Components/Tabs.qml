@@ -31,37 +31,48 @@ import Ubuntu.Components 0.1 as Theming
 
     Examples:
     \qml
-        Tabs {
-            Tab {
-                title: "tab 1"
-                page: Text {
-                    text: "This is the first tab."
-                }
-            }
-            Tab {
-                title: "tab 2"
-                iconSource: "icon.png"
-                page: Rectangle {
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Colorful tab."
+        MainView {
+            Tabs {
+                Tab {
+                    title: "tab 1"
+                    page: Page {
+                        Text {
+                            anchors.centerIn: parent
+                            text: "This is the first tab."
+                        }
                     }
-                    color: "lightblue"
                 }
-            }
-            Tab {
-                title: "tab 3"
-                page: Qt.resolvedUrl("MyCustomPage.qml")
+                Tab {
+                    title: "tab 2"
+                    iconSource: "icon.png"
+                    page: Page {
+                        Rectangle {
+                            anchors.fill: parent
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Colorful tab."
+                            }
+                        }
+                        color: "lightblue"
+                    }
+                }
+                Tab {
+                    title: "tab 3"
+                    page: Qt.resolvedUrl("MyCustomPage.qml")
+                }
             }
         }
     \endqml
 
-    \b{This component is under heavy development.}
+    Use Tabs inside a \l MainView and use \l Page items for the page property of
+    \l Tab to enable automatic header and toolbar.
 */
 
-Item {
+PageTreeNode {
+    id: tabs
     // FIXME: see above
     Theming.ItemStyle.class: "new-tabs"
+    anchors.fill: parent
 
     /*!
       \preliminary
@@ -75,7 +86,19 @@ Item {
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ? null : __tabs[selectedTabIndex]
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
+                                           null : __tabs[selectedTabIndex]
+
+    /*!
+      The page of the currently selected tab.
+     */
+    readonly property Item currentPage: selectedTab ? selectedTab.page : null
+
+    /*!
+      Header contents that will be used to override the default title inside the header,
+      and provides scrollable tab buttons.
+     */
+    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
@@ -93,10 +116,20 @@ Item {
         id: tabsModel
     }
 
-    /*!
-      The tools of the \l Page of the active \l Tab.
-     */
-    property ToolbarActions tools: selectedTab && selectedTab.__pageObject &&
-                                   selectedTab.__pageObject.hasOwnProperty("tools") ?
-                                       selectedTab.__pageObject.tools : null
+    /*! \internal */
+    onActiveChanged: internal.updateHeader();
+    /*! \internal */
+    onHeaderChanged: internal.updateHeader();
+    /*! \internal */
+    onParentNodeChanged: internal.updateHeader();
+
+    QtObject {
+        id: internal
+        function updateHeader() {
+            if (tabs.header) {
+                if (tabs.active) tabs.header.contents = headerContents;
+                else tabs.header.contents = null;
+            }
+        }
+    }
 }

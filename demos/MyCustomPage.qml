@@ -19,10 +19,20 @@ import Ubuntu.Components 0.1
 
 Page {
     title: i18n.tr("My custom page")
-    Label {
-        anchors.centerIn: parent
-        text: i18n.tr("This is an external page\nwith a locked toolbar.")
-        color: "#757373"
+
+    Flickable {
+        anchors.fill: parent
+        contentHeight: parent.height + units.gu(10)
+        Label {
+            anchors {
+                top: parent.top
+                topMargin: units.gu(16)
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            text: i18n.tr("This is an external page\nwith a locked toolbar.")
+            color: "#757373"
+        }
     }
 
     tools: ToolbarActions {

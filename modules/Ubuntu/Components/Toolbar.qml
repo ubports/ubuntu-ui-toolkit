@@ -42,7 +42,7 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools
+    property ToolbarActions tools: null
     onToolsChanged: {
         if (tools && tools.active && tools.lock) {
             // toolbar is locked in visible state.
@@ -106,11 +106,11 @@ GenericToolbar {
         Button {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            text: action.text
-            iconSource: action.iconSource ? action.iconSource : ""
+            text: action && action.text ? action.text : ""
+            iconSource: action && action.iconSource ? action.iconSource : ""
             onClicked: action.triggered(toolButton)
-            enabled: action.enabled
-            visible: action.visible
+            enabled: action && action.enabled
+            visible: action && action.visible
             width: visible ? implicitWidth : 0
             height: toolbar.height
         }
@@ -119,7 +119,7 @@ GenericToolbar {
     Loader {
         id: backButton
         property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
+        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
