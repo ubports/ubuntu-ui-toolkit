@@ -20,7 +20,7 @@ properties typed as variant.
 @qml-mapping(.checkbox, , CheckBoxDelegate);
 @qml-mapping(.switch, , SwitchDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
-@qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
+@qml-mapping(.new-tabs, , NewTabsDelegate);
 @qml-mapping(.tab-button, , TabButtonDelegate);
 @qml-mapping(.custom-button, , ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);

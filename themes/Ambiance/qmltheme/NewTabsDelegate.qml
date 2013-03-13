@@ -20,6 +20,47 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     id: tabsDelegate
+    // styling properties
+    /*!
+      If this optional property is specified, it will be positioned
+      between the bar with tab buttons, and the tab pages to act
+      as a separator.
+     */
+    property Item separator
+
+    /*!
+      Enable left/right swiping in the contents area to go to
+      the next/previous tab.
+     */
+    property bool swipeToSwitchTabs
+
+    property color headerTextColor
+    property color headerTextSelectedColor
+    property real headerTextOpacity
+    property real headerTextSelectedOpacity
+
+    property int headerTextFadeDuration
+    property string headerFontSize
+    property int headerFontWeight
+    property real headerTextLeftMargin
+    property real headerTextRightMargin
+    property real headerTextBottomMargin
+
+    property url indicatorImageSource
+
+    property real tabBarHeight
+
+    /*!
+      The time of inactivity in ms before the tab bar is automatically deactivated
+     */
+    property int deactivateTime: 1000
+
+    /*!
+      The velocity at which buttons are repositioned when a new tab gets selected.
+     */
+    property real buttonPositioningVelocity
+
+    // visual
     anchors.fill: parent
 
     clip: true
@@ -67,6 +108,20 @@ Item {
         NewTabBar {
             id: tabBar
             tabs: item
+            height: tabBarHeight
+            headerTextColor: tabsDelegate.headerTextColor
+            headerTextSelectedColor: tabsDelegate.headerTextSelectedColor
+            headerTextOpacity: tabsDelegate.headerTextOpacity
+            headerTextSelectedOpacity: tabsDelegate.headerTextSelectedOpacity
+            headerTextFadeDuration: tabsDelegate.headerTextFadeDuration
+            indicatorImageSource: tabsDelegate.indicatorImageSource
+            headerFontSize: tabsDelegate.headerFontSize
+            headerFontWeight: tabsDelegate.headerFontWeight
+            headerTextLeftMargin: tabsDelegate.headerTextLeftMargin
+            headerTextRightMargin: tabsDelegate.headerTextRightMargin
+            headerTextBottomMargin: tabsDelegate.headerTextBottomMargin
+            buttonPositioningVelocity: tabsDelegate.buttonPositioningVelocity
+            deactivateTime: tabsDelegate.deactivateTime
             anchors {
                 top: parent.top
                 left: parent.left
@@ -138,7 +193,7 @@ Item {
         id: tabView
         anchors.fill: parent
 
-        interactive: itemStyle.swipeToSwitchTabs
+        interactive: tabsDelegate.swipeToSwitchTabs
         model: tabsDelegate.tabModel
         onModelChanged: tabView.updatePages()
         currentIndex: item.selectedTabIndex

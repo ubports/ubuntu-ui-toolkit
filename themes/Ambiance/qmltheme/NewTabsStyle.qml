@@ -55,4 +55,6 @@ QtObject {
       The velocity at which buttons are repositioned when a new tab gets selected.
      */
     property real buttonPositioningVelocity
+
+    Component.onCompleted: print("NewTabsStyle deprecated")
 }

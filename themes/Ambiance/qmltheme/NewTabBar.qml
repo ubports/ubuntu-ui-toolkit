@@ -19,8 +19,22 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBar
-    height: itemStyle.tabBarHeight
+    // styling properties
+    property color headerTextColor
+    property color headerTextSelectedColor
+    property real headerTextOpacity
+    property real headerTextSelectedOpacity
+    property int headerTextFadeDuration
+    property url indicatorImageSource
 
+    property string headerFontSize
+    property int headerFontWeight
+    property real headerTextLeftMargin
+    property real headerTextRightMargin
+    property real headerTextBottomMargin
+
+    property real buttonPositioningVelocity
+    property int deactivateTime
     /*!
       The set of tabs this tab bar belongs to
      */
@@ -87,7 +101,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-                    opacity: isVisible() ? selected ? itemStyle.headerTextSelectedOpacity : itemStyle.headerTextOpacity : 0
+                    opacity: isVisible() ? (selected ? headerTextSelectedOpacity : headerTextOpacity) : 0
                     function isVisible() {
                         if (selected) return true;
                         if (!tabBar.active) return false;
@@ -106,17 +120,17 @@ Item {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: itemStyle.headerTextFadeDuration
+                            duration: headerTextFadeDuration
                             easing.type: Easing.InOutQuad
                         }
                     }
 
                     Image {
                         id: indicatorImage
-                        source: itemStyle.indicatorImageSource
+                        source: indicatorImageSource
                         anchors {
                             bottom: parent.bottom
-                            bottomMargin: itemStyle.headerTextBottomMargin
+                            bottomMargin: headerTextBottomMargin
                         }
                         x: button.width - width
 
@@ -127,7 +141,7 @@ Item {
                         opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: itemStyle.headerTextFadeDuration
+                                duration: headerTextFadeDuration
                                 easing.type: Easing.InOutQuad
                             }
                         }
@@ -135,18 +149,18 @@ Item {
 
                     Label {
                         id: text
-                        color: selected ? itemStyle.headerTextSelectedColor : itemStyle.headerTextColor
+                        color: selected ? headerTextSelectedColor : headerTextColor
 
                         anchors {
                             left: parent.left
-                            leftMargin: itemStyle.headerTextLeftMargin
-                            rightMargin: itemStyle.headerTextRightMargin
+                            leftMargin: headerTextLeftMargin
+                            rightMargin: headerTextRightMargin
                             baseline: parent.bottom
-                            baselineOffset: -itemStyle.headerTextBottomMargin
+                            baselineOffset: -headerTextBottomMargin
                         }
                         text: modelData.title
-                        fontSize: itemStyle.headerFontSize
-                        font.weight: itemStyle.headerFontWeight
+                        fontSize: headerFontSize
+                        font.weight: headerFontWeight
                     }
 
                     onClicked: {
@@ -228,7 +242,7 @@ Item {
 
         Behavior on offset {
             SmoothedAnimation {
-                velocity: itemStyle.buttonPositioningVelocity
+                velocity: buttonPositioningVelocity
                 easing.type: Easing.InOutQuad
             }
         }
@@ -244,7 +258,7 @@ Item {
         onMovementEnded: idleTimer.restart()
         Timer {
             id: idleTimer
-            interval: (itemStyle && itemStyle.deactivateTime) ?  itemStyle.deactivateTime : 1000
+            interval: 1000
             running: tabBar.active
             onTriggered: tabBar.active = false
         }
