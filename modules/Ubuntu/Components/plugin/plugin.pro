@@ -7,7 +7,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick quick-private
+QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
 #comment in the following line to disable traces
@@ -34,7 +34,12 @@ HEADERS += plugin.h \
     giconprovider.h \
     shapeitemtexture.h \
     shapeitem.h \
-    inversemouseareatype.h
+    inversemouseareatype.h \
+    bottombarvisibilitycommunicator.h \
+    qquickclipboard.h \
+    qquickmimedata.h \
+    qquickclipboard_p.h \
+    selector_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -50,10 +55,13 @@ SOURCES += plugin.cpp \
     quickutils.cpp \
     giconprovider.cpp \
     shapeitem.cpp \
-    inversemouseareatype.cpp
+    inversemouseareatype.cpp \
+    bottombarvisibilitycommunicator.cpp \
+    qquickclipboard.cpp \
+    qquickmimedata.cpp \
+    selector.cpp
 
 # deployment rules for the plugin
-installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
-

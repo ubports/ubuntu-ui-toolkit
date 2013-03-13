@@ -33,6 +33,19 @@
 #include "themeengine_p.h"
 #include "itemstyleattached.h"
 
+#define QCOMPARE_RET(actual, expected) \
+do {\
+    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__))\
+        return false;\
+} while (0)
+
+#define QVERIFY_RET(statement) \
+do {\
+    if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
+        return false;\
+} while (0)
+
+
 class tst_ThemeEngine : public QObject
 {
     Q_OBJECT
@@ -49,7 +62,9 @@ private Q_SLOTS:
     void testCase_reparenting();
     void testCase_blockDeclaration();
     void testCase_selectorDelegates();
-
+    void testCase_inheritance();
+private:
+    bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
     QQuickView *quickView;
     QQmlEngine *quickEngine;
@@ -163,8 +178,6 @@ void tst_ThemeEngine::testCase_blockDeclaration()
 
     QObject *style = qvariant_cast<QObject*>(attached->property("style"));
     QVERIFY(style);
-
-    QObject *anim = qvariant_cast<QObject*>(style->property(""));
 }
 
 void tst_ThemeEngine::testCase_selectorDelegates()
@@ -207,6 +220,63 @@ void tst_ThemeEngine::testCase_selectorDelegates()
             QCOMPARE(delegateClass, QString("QQuickText"));
         }
     }
+}
+
+void tst_ThemeEngine::testCase_inheritance()
+{
+    ThemeEngine::initializeEngine(quickEngine);
+    ThemeEngine::instance()->resetError();
+    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/inheritance.qmltheme"));
+    quickView->setSource(QUrl::fromLocalFile("InheritanceTest.qml"));
+    QCoreApplication::processEvents();
+
+    QObject *root = quickView->rootObject();
+    QVERIFY2(root, "FAILURE");
+
+    QCOMPARE(root->property("themeError").toString(), QString());
+
+    QList<QQuickItem*> items = root->findChildren<QQuickItem*>();
+    QVERIFY(items.count());
+
+    Q_FOREACH(QQuickItem *item, items) {
+        // if a style has Item-derived properties (Animations, etc), those will be listed here too
+        // therefore skip those
+        QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+        if (!obj)
+            continue;
+
+        ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
+        QVERIFY2(attached, "No attached style");
+        QObject *style = qvariant_cast<QObject*>(attached->property("style"));
+
+        if (attached->path() == ".derivate.basea")
+            QVERIFY(check_properties(style, "pDerivate:pDerivate,pBaseA:pBaseA", false));
+        if (attached->path() == ".derivate2.derivate")
+            QVERIFY(!check_properties(style, "pDerivate:pDerivate,pBaseA:derivate2", true));
+        if (attached->path() == ".multiple.basea.baseb")
+            QVERIFY(check_properties(style, "pBaseA:pBaseA,pBaseB:pBaseB", false));
+        if (attached->path() == ".multiple2.basea.derivate")
+            QVERIFY(!check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate,pMultiple2:multiple2", true));
+        if (attached->path() == ".multiple3.derivate2.baseb")
+            QVERIFY(!check_properties(style, "pDerivate:multiple3,pBaseA:derivate2,pBaseB:pBaseB", true));
+        if (attached->path() == ".restore.derivate2.basea")
+            QVERIFY(!check_properties(style, "pBaseA:pBaseA,pDerivate:pDerivate", true));
+    }
+}
+
+bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties, bool xfail)
+{
+    if (!xfail || (xfail && style))
+        QVERIFY_RET(style);
+    if (style) {
+        Q_FOREACH(const QString &propertyPair, properties.split(',')) {
+            QStringList pair = propertyPair.split(':');
+            QString data = style->property(pair[0].toLatin1()).toString();
+            if (!xfail || (xfail && !data.isEmpty()))
+                QCOMPARE_RET(data, pair[1]);
+        }
+    }
+    return !xfail;
 }
 
 

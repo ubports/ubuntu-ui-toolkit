@@ -16,42 +16,74 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import QtGraphicalEffects 1.0
 
 Item {
+    id: frame
+    property alias contentItem: body
+
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
         top: parent ? parent.top : undefined
     }
-    height: Math.min(outer.height, item.maxHeight)
-    property alias contentItem: inner
+    height: childrenRect.height
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the popover
-    MouseArea {
-        anchors.fill: parent
-    }
-
-    Rectangle {
-        id: outer
+    Item {
+        id: content
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
-        // FIXME: margins are 0 now, but may change
-        height: inner.height + 2*inner.anchors.margins
-
-        color: "white"
-
-        Rectangle {
-            id: inner
+        height: childrenRect.height
+        Item {
+            id: body
             anchors {
-                top: parent.top
                 left: parent.left
                 right: parent.right
+                top: parent.top
             }
-            color: "white"
             height: childrenRect.height
+
+            Rectangle {
+                id: background
+                anchors.fill: parent
+                color: StyleUtils.itemStyleProperty("color", "white")
+            }
         }
+
+        clip: true // hide the ShaderEffectSource
+        Shape {
+            anchors.fill: parent
+            image: effectSource
+            radius: StyleUtils.itemStyleProperty("radius", "small")
+        }
+
+        ShaderEffectSource {
+            smooth: false // prevent linear interpolation
+            id: effectSource
+            hideSource: true
+            sourceItem: frame.contentItem
+            format: ShaderEffectSource.RGBA
+            live: true
+
+            // Do not set visible to false because it will leave the FBO empty,
+            //  but position the ShaderEffectSource somewhere that it will be clipped
+            //  so it is not visible.
+            x: width
+            width: sourceItem.width
+            height: sourceItem.height
+        }
+    }
+    DropShadow {
+        anchors.fill: content
+        source: content
+        radius: units.gu(1)
+        samples: 3 * radius
+        fast: true
+        spread: 0
+        transparentBorder: true
+        color: Qt.rgba(0, 0, 0, 0.7)
     }
 }

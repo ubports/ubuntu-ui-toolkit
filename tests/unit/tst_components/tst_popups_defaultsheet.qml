@@ -54,6 +54,10 @@ TestCase {
         compare(defaultSheet.doneButton,newValue,"set/get")
     }
 
+    function test_modal() {
+        compare(defaultSheet.modal, true, "Sheets are modal by default");
+    }
+
     DefaultSheet {
         id: defaultSheet
     }

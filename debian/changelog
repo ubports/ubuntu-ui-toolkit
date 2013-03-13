@@ -1,3 +1,73 @@
+qt-components-ubuntu (0.1.36) quantal; urgency=low
+
+  * New release
+  * Bug fixed: HUD integration to the MainView 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Tue, 19 Feb 2013 20:54:40 +0100
+
+qt-components-ubuntu (0.1.35) quantal; urgency=low
+
+  * New release 
+  * SDK now depends on libqt5graphicaleffects5 for dropshadow of Popovers
+  * Bugs fixed
+    Theming-related:
+    - [POPOVER] is themed in correctly
+    - [TOOLKIT] Activity indicator is themed incorrectly
+    - [TOOLKIT] dialogue is themed incorrectly
+    Toolbar-related:
+    - [sdk-toolbar] share button in on gallery image does not function on the first button press
+    - Sharing after post/cancel is not possible
+    - [sdk-toolbar] after tap to dismiss toolbar doesn't work
+    - [sdk] toolbar trigger area too big
+    - when first showing the toolbar after opening a photo, it shows the toolbar buttons for the overview, not for the current photo
+    Other:
+    - [HUD, OSK] OSK doesn't focus on input field
+    - Popover sometimes not dismissed
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Mon, 18 Feb 2013 19:14:44 +0100
+
+qt-components-ubuntu (0.1.34) quantal; urgency=low
+
+  * New release 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Thu, 14 Feb 2013 21:42:21 +0100
+
+qt-components-ubuntu (0.1.33) quantal; urgency=low
+
+  * New release 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 13 Feb 2013 23:44:39 +0100
+
+qt-components-ubuntu (0.1.32) quantal; urgency=low
+
+  * New release 
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 12 Feb 2013 14:21:29 +0200
+
+qt-components-ubuntu (0.1.31) quantal; urgency=low
+
+  * New release 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Thu, 07 Feb 2013 17:13:56 +0100
+
+qt-components-ubuntu (0.1.30) quantal; urgency=low
+
+  * New release
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 06 Feb 2013 18:11:51 +0100
+
+qt-components-ubuntu (0.1.28) quantal; urgency=low
+
+  * New release 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Tue, 05 Feb 2013 19:20:20 +0100
+
+qt-components-ubuntu (0.1.27) quantal; urgency=low
+
+  * New release
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 30 Jan 2013 20:56:23 +0200
+
 qt-components-ubuntu (0.1.26) quantal; urgency=low
 
   * New release

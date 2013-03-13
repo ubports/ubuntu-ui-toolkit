@@ -18,11 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Rectangle {
+Item {
+    id: componentShowcase
+    objectName: "componentShowcase"
     width: units.gu(100)
     height: units.gu(75)
-
-    color: "#e6e6e6"
 
     Rectangle {
         anchors.fill: widgetList
@@ -41,6 +41,7 @@ Rectangle {
 
     ListView {
         id: widgetList
+        objectName: "widgetList"
 
         width: units.gu(19)
         anchors {
@@ -48,38 +49,110 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        property int selectedIndex: 0
-        model: [{"label": i18n.tr("Theming"), "source": "Theming.qml"},
-            {"label": i18n.tr("Resolution Independence"), "source": "ResolutionIndependence.qml"},
-            {"label": i18n.tr("Ubuntu Shape"), "source": "UbuntuShapes.qml"},
-            {"label": i18n.tr("Buttons"), "source": "Buttons.qml"},
-            {"label": i18n.tr("Tabs (classic)"), "source": "Tabs.qml"},
-            {"label": i18n.tr("Tabs (flickable)"), "source": "NewTabs.qml"},
-            {"label": i18n.tr("List Items"), "source": "ListItems.qml"},
-            {"label": i18n.tr("Page Stack"), "source": "PageStack.qml"},
-            {"label": i18n.tr("Switch"), "source": "Switches.qml"},
-            {"label": i18n.tr("Check Box"), "source": "CheckBoxes.qml"},
-            {"label": i18n.tr("Activity Indicator"), "source": "ActivityIndicators.qml"},
-            {"label": i18n.tr("Progress Bar"), "source": "ProgressBars.qml"},
-            {"label": i18n.tr("Slider"), "source": "Sliders.qml"},
-            {"label": i18n.tr("Text Input"), "source": "TextInputs.qml"},
-            {"label": i18n.tr("Text Area"), "source": "TextAreas.qml"},
-            {"label": i18n.tr("Scrollbar"), "source": "ScrollBars.qml"},
-            {"label": i18n.tr("Popups"), "source": "Popups.qml"},
-            {"label": i18n.tr("GIcon Provider"), "source": "GIconProvider.qml"},
-            {"label": i18n.tr("Toolbars"), "source": ""},
-            {"label": i18n.tr("Grid View"), "source": ""},
-            {"label": i18n.tr("On Screen Keyboard"), "source": ""},
-            {"label": i18n.tr("Date Picker"), "source": ""},
-            {"label": i18n.tr("Time Picker"), "source": ""},
-        ]
+        currentIndex: 0
+        model: ListModel {
+            ListElement {
+                label: "Resolution Independence"
+                source: "ResolutionIndependence.qml"
+                chapter: "Get Started"
+            }
+            ListElement {
+                label: "Theming"
+                source: "Theming.qml"
+                chapter: "Style"
+            }
+            ListElement {
+                label: "Ubuntu Shape"
+                source: "UbuntuShapes.qml"
+                chapter: "Style"
+            }
+            // TODO: To be added when we have a set of Ubuntu icons.
+            //ListElement {
+            //    label: "Icons"
+            //    source: "GIconProvider.qml"
+            //    chapter: "1"
+            //}
+            ListElement {
+                label: "Header"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Toolbars"
+                source: "Toolbars.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Switches"
+                source: "Switches.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Buttons"
+                source: "Buttons.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Tabs"
+                source: "Tabs.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Page Stack"
+                source: "PageStack.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Dialogs"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "List Items"
+                source: "ListItems.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Popovers"
+                source: "Popups.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Progress"
+                source: "ProgressBars.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Scrollbar"
+                source: "ScrollBars.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Sheets"
+                source: ""
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Slider"
+                source: "Sliders.qml"
+                chapter: "Building blocks"
+            }
+            ListElement {
+                label: "Text Input"
+                source: "TextInputs.qml"
+                chapter: "Building blocks"
+            }
+        }
+        section.property: "chapter"
+        section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
+
+        section.delegate: ListItem.Header { text: section }
 
         delegate: ListItem.Standard {
-            text: modelData.label
-            onClicked: widgetList.selectedIndex = index
-            enabled: modelData.source != ""
-            selected: index == widgetList.selectedIndex
-            showDivider: false
+            text: i18n.tr(label)
+            onClicked: widgetList.currentIndex = index
+            enabled: source != ""
+            selected: index == widgetList.currentIndex
         }
     }
 
@@ -90,6 +163,7 @@ Rectangle {
 
     Loader {
         id: widgetLoader
+        objectName: "widgetLoader"
 
         anchors {
             left: widgetList.right
@@ -97,7 +171,7 @@ Rectangle {
             top: parent.top
             bottom: parent.bottom
         }
-        source: widgetList.model[widgetList.selectedIndex].source
+        source: widgetList.model.get(widgetList.currentIndex).source
     }
 
     Component.onCompleted: {

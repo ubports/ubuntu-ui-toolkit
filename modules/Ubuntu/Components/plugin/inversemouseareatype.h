@@ -29,11 +29,15 @@ class InverseMouseAreaType : public QQuickItem
     Q_PROPERTY(bool propagateComposedEvents READ propagateComposedEvents WRITE setPropagateComposedEvents NOTIFY propagateComposedEventsChanged)
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
 public:
+    typedef void (InverseMouseAreaType::*SignalType)(QQuickMouseEvent*);
+
     explicit InverseMouseAreaType(QQuickItem *parent = 0);
+    ~InverseMouseAreaType();
+
+    Q_INVOKABLE virtual bool contains(const QPointF &point) const;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
-    virtual void itemChange(ItemChange change, const ItemChangeData &data);
 
 private: // getter/setter
     bool pressed() const;
@@ -47,11 +51,15 @@ private: // getter/setter
 
 private:
     void reset();
-    QPointF mapToSensingArea(const QPointF &point);
-    bool pointInSensingArea(const QPointF &point);
+    void saveEvent(const QMouseEvent &event);
+    void asyncEmit(SignalType signal, bool isClick = false, bool wasHeld = false);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);
     bool mouseMove(QMouseEvent *event);
+    // grab touch events too
+    bool touchPressed(QTouchEvent *event);
+    bool touchMoved(QTouchEvent *event);
+    bool touchReleased(QTouchEvent *event);
 
 Q_SIGNALS:
     void pressedChanged();
@@ -71,10 +79,9 @@ private:
     bool m_pressed;
     bool m_moved;
     bool m_propagateEvents;
-    Qt::MouseButtons m_pressedButtons;
     Qt::MouseButtons m_acceptedButtons;
-    QPointF m_lastPos;
     QQuickItem *m_sensingArea;
+    QMouseEvent *m_event;
 };
 
 #endif // INVERSEMOUSEAREATYPE_H

@@ -43,6 +43,14 @@ Item {
             compare(textField.focus, true, "TextField is focused");
         }
 
+        function test_0_popover() {
+            compare(textField.popover, undefined, "No poppover defined by default.");
+        }
+
+        function test_0_highlighted() {
+            compare(textField.highlighted, textField.focus, "highlighted is the same as focused");
+        }
+
         function test_0_acceptableInput() {
             compare(textField.acceptableInput,true,"acceptableInput true by default")
         }
@@ -151,11 +159,40 @@ Item {
         }
 
         function test_keyPressAndReleaseFilter() {
+            textField.visible = true;
+            textField.forceActiveFocus();
+            textField.readOnly = false;
             textField.keyPressData = 0;
             textField.keyReleaseData = 0;
-            keyClick(Qt.Key_K, Qt.NoModifier, 100);
-            compare(textField.keyPressData, Qt.Key_K, "Key press filtered");
-            compare(textField.keyReleaseData, Qt.Key_K, "Key release filtered");
+            keyClick(Qt.Key_Control, Qt.NoModifier, 200);
+            compare(textField.keyPressData, Qt.Key_Control, "Key press filtered");
+            compare(textField.keyReleaseData, Qt.Key_Control, "Key release filtered");
+        }
+
+        function test_cut() {
+            Clipboard.clear();
+            textField.readOnly = false;
+            textField.text = "test text";
+            textField.cursorPosition = textField.text.indexOf("text");
+            textField.selectWord();
+            textField.cut();
+            compare(textField.text, "test ", "Text cut properly");
+            compare(Clipboard.data.text, "text", "Clipboard has the text cut");
+            // we should have the "text" only ones
+            var plainTextCount = 0;
+            for (var i in Clipboard.data.formats) {
+                if (Clipboard.data.formats[i] === "text/plain")
+                    plainTextCount++;
+            }
+            compare(plainTextCount, 1, "Clipboard is correct");
+        }
+
+        function test_paste() {
+            textField.readOnly = false;
+            textField.text = "test";
+            textField.cursorPosition = textField.text.length;
+            textField.paste(" text");
+            compare(textField.text, "test text", "Data pasted");
         }
 
         RegExpValidator {

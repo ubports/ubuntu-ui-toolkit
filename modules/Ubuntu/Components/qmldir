@@ -1,6 +1,12 @@
 module Ubuntu.Components
 plugin UbuntuComponents
+Action 0.1 Action.qml
+ActionList 0.1 ActionList.qml
+ToolbarActions 0.1 ToolbarActions.qml
+MainView 0.1 MainView.qml
 Button 0.1 Button.qml
+internal GenericToolbar GenericToolbar.qml
+internal DraggingArea DraggingArea.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
 Label 0.1 Label.qml
@@ -28,3 +34,7 @@ MathUtils 0.1 mathUtils.js
 ComponentUtils 0.1 componentUtils.js
 SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
+
+internal TextCursor TextCursor.qml
+internal TextInputPopover TextInputPopover.qml
+internal HudIntegration HudIntegration.qml

@@ -77,7 +77,17 @@ TestCase {
          compare(slider.value, SliderUtils.normalizedValue(slider), "are identical")
      }
 
+     function test_signal_touched()     
+     {
+        signalSpy.signalName = "touched";
+        compare(signalSpy.valid,true,"touched signal exists")
+     }
+
      Slider {
-         id: slider
+        id: slider
+        SignalSpy {
+            id: signalSpy
+            target: parent
+        }
      }
 }

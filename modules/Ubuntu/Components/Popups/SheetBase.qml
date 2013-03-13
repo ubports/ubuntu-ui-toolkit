@@ -62,22 +62,31 @@ PopupBase {
      */
     property alias title: foreground.title
 
+    /*!
+      The property controls whether the sheet is modal or not. Modal sheets block
+      event propagation to items under dismissArea, when non-modal ones let these
+      events passed to these items.
+
+      The default value is true.
+      */
+    property bool modal: true
+
     /*! \internal */
     property alias __leftButton: foreground.leftButton
 
     /*! \internal */
     property alias __rightButton: foreground.rightButton
 
-    Background {
-        dim: false
-        dismissOnTap: false
-    }
+    Theming.ItemStyle.class: "sheet"
+
+    __foreground: foreground
+    __eventGrabber.enabled: modal
 
     Item {
         id: foreground
 
         // FIXME: see above
-        Theming.ItemStyle.class: "sheet-foreground"
+        Theming.ItemStyle.class: "foreground"
 
         property string title
         property real contentsWidth: units.gu(64)

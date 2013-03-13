@@ -85,47 +85,81 @@ PopupBase {
     id: popover
 
     /*!
-      \preliminary
       Content will be put inside the foreround of the Popover.
     */
     default property alias container: containerItem.data
 
     /*!
-      \preliminary
+      \qmlproperty real contentWidth
+      \qmlproperty real contentHeight
+      The properties can be used to alter the default content width and heights.
+      */
+    property alias contentWidth: foreground.width
+    /*! \internal */
+    property alias contentHeight: foreground.height
+
+    /*!
       The Item such as a \l Button that the user interacted with to open the Dialog.
       This property will be used for the automatic positioning of the Dialog next to
       the caller, if possible.
      */
     property Item caller
 
+    /*!
+      The property holds the item to which the pointer should be anchored to.
+      This can be same as the caller or any child of the caller. By default the
+      property is set to caller.
+      */
+    property Item pointerTarget: caller
+
+    /*!
+      The property holds the margins from the popover's dismissArea. The property
+      is themed.
+      */
+    property real edgeMargins: ComponentUtils.style(popover, "edgeMargins", 0)
+
+    /*!
+      The property holds the margin from the popover's caller. The property
+      is themed.
+      */
+    property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
+
+    /*!
+      The property drives the automatic closing of the Popover when user taps
+      on the dismissArea. The default behavior is to close the Popover, therefore
+      set to true.
+
+      When set to false, closing the Popover is the responsibility of the caller.
+      Also, the mouse and touch events are not blocked from the dismissArea.
+      */
+    property bool autoClose: true
+
+    Theming.ItemStyle.class: "popover"
+
     QtObject {
         id: internal
-        // TODO: put the margins in the style
-        property real edgeMargins: units.gu(2)
-        property real callerMargins: units.gu(1)
         property bool portrait: width < height
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, popover, caller, edgeMargins, callerMargins);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
         }
     }
 
-    Background {
-        dim: false
-        dismissOnTap: true
-    }
+    __foreground: foreground
+    __eventGrabber.enabled: autoClose
+    __closeOnDismissAreaPress: true
 
     Item {
         id: foreground
 
         // FIXME: see above
-        Theming.ItemStyle.class: "popover-foreground"
+        Theming.ItemStyle.class: "foreground"
 
-        property real maxWidth: internal.portrait ? popover.width : popover.width * 3/4
-        property real maxHeight: internal.portrait ? popover.height * 3/4 : popover.height
-        width: Math.min(units.gu(40), maxWidth)
+        property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
+        property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
+        width: Math.min(ComponentUtils.style(foreground, "minimumWidth", units.gu(40)), maxWidth)
         height: childrenRect.height
 
         Item {
@@ -142,19 +176,14 @@ PopupBase {
         onHeightChanged: internal.updatePosition()
     }
 
-    Pointer {
-        id: pointer
-        opacity: 0.9
-        longAxis: 2*internal.callerMargins
-        shortAxis: internal.callerMargins
-    }
+    Pointer { id: pointer }
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
-
+    /*! \internal */
+    onPointerTargetChanged: internal.updatePosition()
     /*! \internal */
     onWidthChanged: internal.updatePosition()
-
     /*! \internal */
     onHeightChanged: internal.updatePosition()
 }

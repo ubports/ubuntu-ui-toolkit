@@ -30,6 +30,7 @@ import Ubuntu.Components 0.1
 Empty {
     id: baseListItem
 
+    __contentsMargins: units.gu(2)
     /*!
       \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
@@ -112,6 +113,8 @@ Empty {
 
             icon.parent = baseListItem;
             icon.anchors.left = baseListItem.left;
+            // FIXME: __contentsMargins value is not set yet
+            icon.anchors.leftMargin = units.gu(2) //baseListItem.__contentsMargins
             if (!icon.height) {
                 icon.anchors.top = baseListItem.top;
                 icon.anchors.bottom = baseListItem.bottom;
@@ -130,7 +133,7 @@ Empty {
             bottom: parent.bottom
             left: __iconIsItem ? parent.left : iconHelper.right
             right: progressionHelper.left
-            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.leftMargin + icon.anchors.rightMargin : 0
+            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.rightMargin : 0
         }
     }
 

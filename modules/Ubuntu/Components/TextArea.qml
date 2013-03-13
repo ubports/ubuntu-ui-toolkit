@@ -42,28 +42,29 @@ import "." 0.1 as Theming
     }
     \endqml
 
-    The auto-expand mode is realized using two properties: autoExpand and maximumLineCount.
-    Setting autoExpand will set the implicit height to one line, and the height is aligned
-    to the font's pixel size. The maximumLineCount specifies how much the editor should be
-    expanded. If this value is set to 0, the area will always expand vertically to fit the
-    content. When autoExpand is set, the contentHeight property value is ignored, and the
-    expansion only happens vertically.
+    The auto-expand mode is realized using two properties: autoSize and maximumLineCount.
+    Setting autoSize will set implicitHeight to one line, and the height will follow
+    the line count, meaning when lines are added the area will expand and when
+    removed the area will shrink. The maximumLineCount specifies how much the
+    editor should be expanded. If this value is set to 0, the area will always
+    expand vertically to fit the content. When autoSize is set, the contentHeight
+    property value is ignored, and the expansion only happens vertically.
 
     \qml
     TextArea {
         width: units.gu(20)
         height: units.gu(12)
         contentWidth: units.gu(30)
-        autoExpand: true
+        autoSize: true
         maximumLineCount: 0
     }
     \endqml
 
-    TextArea comes with 30 grid-units implicit width and one line height on auto-expanding
+    TextArea comes with 30 grid-units implicit width and one line height on auto-sizing
     mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
     ovarlay and frame spacing specified in the style.
 
-    Scrolling the editing area can happen when the size is fixed or in auto-expand mode when
+    Scrolling the editing area can happen when the size is fixed or in auto-sizing mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
 
@@ -83,9 +84,16 @@ import "." 0.1 as Theming
 FocusScope {
     id: control
     implicitWidth: units.gu(30)
-    implicitHeight: (autoExpand) ? internal.frameLinesHeight(1) : internal.frameLinesHeight(4)
+    implicitHeight: (autoSize) ? internal.minimumSize : internal.linesHeight(4)
 
     // new properties
+    /*!
+      The property presents whether the TextArea is highlighted or not. By
+      default the TextArea gets highlighted when gets the focus, so can accept
+      text input. This property allows to control the highlight separately from
+      the focused behavior.
+      */
+    property bool highlighted: focus
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text). The hint style can be customized by defining a style selector which
@@ -117,13 +125,23 @@ FocusScope {
     property bool selectByMouse: true
 
     /*!
+      \deprecated
       This property specifies whether the text area expands following the entered
       text or not. The default value is false.
+      The property is deprecated, use autoSize instead
       */
-    property bool autoExpand: false
+    property bool autoExpand
+    /*! \internal */
+    onAutoExpandChanged: console.debug("WARNING: autoExpand deprecated, use autoSize instead.")
 
     /*!
-      The property holds the maximum amount of lines to expand when autoExpand is
+      This property specifies whether the text area sizes following the line count
+      or not. The default value is false.
+      */
+    property bool autoSize: false
+
+    /*!
+      The property holds the maximum amount of lines to expand when autoSize is
       enabled. The value of 0 does not put any upper limit and the control will
       expand forever.
 
@@ -134,15 +152,26 @@ FocusScope {
     // altered TextEdit properties
     /*!
       The property folds the width of the text editing content. This can be equal or
-      bigger than the frame width.
+      bigger than the frame width minus the spacing between the frame and the input
+      area defined in the current theme. The default value is the same as the visible
+      input area's width.
       */
-    property alias contentWidth: editor.width
+    property real contentWidth: internal.inputAreaWidth
 
     /*!
       The property folds the height of the text editing content. This can be equal or
-      bigger than the frame height.
+      bigger than the frame height minus the spacing between the frame and the input
+      area defined in the current theme. The default value is the same as the visible
+      input area's height.
       */
-    property alias contentHeight: editor.height
+    property real contentHeight: internal.inputAreaHeight
+
+    /*!
+      The property overrides the default popover of the TextArea. When set, the
+      TextArea will open the given popover instead of the default one defined.
+      The popover can either be a component or a URL to be loaded.
+      */
+    property var popover
 
     // forwarded properties
     /*!
@@ -522,11 +551,23 @@ FocusScope {
     }
 
     /*!
-      Replaces the currently selected text by the contents of the system clipboard.
-      */
-    function paste()
-    {
-        editor.paste();
+      \preliminary
+      Places the clipboard or the data given as parameter into the text input.
+      The selected text will be replaces with the data.
+    */
+    function paste(data) {
+        if ((data !== undefined) && (typeof data === "string") && !editor.readOnly) {
+            var selTxt = editor.selectedText;
+            var txt = editor.text;
+            var pos = (selTxt !== "") ? txt.indexOf(selTxt) : editor.cursorPosition
+            if (selTxt !== "") {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos + selTxt.length);
+            } else {
+                editor.text = txt.substring(0, pos) + data + txt.substr(pos);
+            }
+            editor.cursorPosition = pos + data.length;
+        } else
+            editor.paste();
     }
 
     /*!
@@ -617,6 +658,15 @@ FocusScope {
         editor.undo();
     }
 
+    /*!
+      \internal
+       Ensure focus propagation
+    */
+    function forceActiveFocus()
+    {
+        internal.activateEditor();
+    }
+
     // logic
     /*!\internal - to remove warnings */
     Component.onCompleted: {
@@ -638,19 +688,31 @@ FocusScope {
             control.focus = false;
     }
 
+    /*!\internal */
+    onContentWidthChanged: internal.inputAreaWidth = control.contentWidth
+    /*!\internal */
+    onContentHeightChanged: internal.inputAreaHeight = control.contentHeight
+    /*!\internal */
+    onWidthChanged: internal.inputAreaWidth = control.width - 2 * internal.frameSpacing
+    /*!\internal */
+    onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
+
     QtObject {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property real spacing: ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
         property real lineSpacing: units.dp(3)
         property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
         property real lineSize: editor.font.pixelSize + lineSpacing
-        property real frameLineHeight: editor.font.pixelSize + 2 * spacing + frameSpacing
+        property real minimumSize: units.gu(4)
+        property real inputAreaWidth: control.width - 2 * frameSpacing
+        property real inputAreaHeight: control.height - 2 * frameSpacing
         //selection properties
         property bool draggingMode: false
         property bool selectionMode: false
         property bool prevShowCursor
+
+        signal popupTriggered(int pos)
 
         onDraggingModeChanged: {
             if (draggingMode) selectionMode = false;
@@ -680,37 +742,35 @@ FocusScope {
         function activateEditor()
         {
             if (!control.activeFocus)
-                control.forceActiveFocus();
+                editor.forceActiveFocus();
+            else
+                showInputPanel();
+
         }
 
         function showInputPanel()
         {
-            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                Qt.inputMethod.show();
         }
         function hideInputPanel()
         {
             Qt.inputMethod.hide();
         }
 
-        function lineHeight(lines)
+        function linesHeight(lines)
         {
-            return editor.font.pixelSize * lines + lineSpacing * (lines - 1);
-        }
-
-        function frameLinesHeight(lines)
-        {
-            return lineHeight(lines) + 2 * spacing + frameSpacing;
+            var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
+            return lineHeight + 2 * frameSpacing;
         }
 
         function frameSize()
         {
-            if (control.autoExpand) {
-                if ((control.maximumLineCount <= 0) || (control.maximumLineCount > 0) && (control.lineCount <= control.maximumLineCount)) {
-                    // check if the control height is bigger than the value we have to set
-                    var h = frameLinesHeight(control.lineCount);
-                    if (h > control.height)
-                        control.height = h;
-                }
+            if (control.autoSize) {
+                var max = (control.maximumLineCount <= 0) ?
+                            control.lineCount :
+                            Math.min(control.maximumLineCount, control.lineCount);
+                control.height = linesHeight(MathUtils.clamp(control.lineCount, 1, max));
             }
         }
 
@@ -722,19 +782,28 @@ FocusScope {
             }
             toggleSelectionCursors(true);
         }
+
+        function positionCursor(x, y) {
+            var cursorPos = control.positionAt(x, y);
+            if (control.selectedText === "")
+                control.cursorPosition = cursorPos;
+            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
+                control.cursorPosition = cursorPos;
+            }
+        }
     }
 
     // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
-        Item {
+        TextCursor {
             id: cursorItem
-            // new properties
-            property var editorItem: control
-            property string positionProperty
-
-            Theming.ItemStyle.class: "cursor"
+            editorItem: control
             height: internal.lineSize
+            popover: control.popover
+            visible: editor.cursorVisible
+
+            Component.onCompleted: internal.popupTriggered.connect(cursorItem.openPopover)
         }
     }
     // selection cursor loader
@@ -768,7 +837,7 @@ FocusScope {
         id: hint
         anchors {
             fill: parent
-            margins: internal.spacing
+            margins: internal.frameSpacing
         }
         // hint is shown till user types something in the field
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
@@ -788,11 +857,12 @@ FocusScope {
         id: flicker
         anchors {
             fill: parent
-            margins: internal.spacing
+            margins: internal.frameSpacing
         }
         clip: true
         contentWidth: editor.paintedWidth
         contentHeight: editor.paintedHeight
+        interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
 
@@ -818,10 +888,10 @@ FocusScope {
             id: editor
             focus: true
             onCursorRectangleChanged: flicker.ensureVisible(cursorRectangle)
-            width: Math.max(control.width, editor.contentWidth)
-            height: Math.max(control.height, editor.contentHeight)
+            width: internal.inputAreaWidth
+            height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
-            mouseSelectionMode: TextEdit.SelectCharacters
+            mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
@@ -834,7 +904,7 @@ FocusScope {
             selectionColor: ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
             font: ComponentUtils.style(editor, "font", fontHolder.font)
 
-            // autoexpand handling
+            // autosize handling
             onLineCountChanged: internal.frameSize()
 
             // virtual keyboard handling
@@ -871,8 +941,8 @@ FocusScope {
                 preventStealing: true
 
                 onPressed: {
-                    internal.activateEditor()
-                    internal.draggingMode = true
+                    internal.activateEditor();
+                    internal.draggingMode = true;
                 }
                 onPressAndHold: {
                     // move mode gets false if there was a mouse move after the press;
@@ -880,35 +950,22 @@ FocusScope {
                     // press -> move-pressed ->stop-and-hold-pressed gesture is performed
                     if (!internal.draggingMode)
                         return;
-                    internal.selectionMode = control.selectByMouse;
-                    if (internal.selectionMode && control.selectByMouse) {
-                        internal.enterSelectionMode(mouse.x, mouse.y);
-                    }
+                    internal.draggingMode = false;
+                    // open popup
+                    internal.positionCursor(mouse.x, mouse.y);
+                    internal.popupTriggered(editor.cursorPosition);
                 }
                 onReleased: {
                     internal.draggingMode = false;
                 }
-                onPositionChanged: {
-                    if (internal.draggingMode) {
-                        internal.draggingMode = false;
-                        mouse.accepted = false;
-                        return;
-                    }
-                    if (internal.selectionMode && control.selectByMouse) {
-                        control.moveCursorSelection(editor.positionAt(mouse.x, mouse.y))
-                    }
-                }
                 onDoubleClicked: {
-                    internal.activateEditor()
-                    internal.selectionMode = control.selectByMouse;
-                    if (internal.selectionMode && control.selectByMouse) {
-                        control.selectWord()
-                        internal.enterSelectionMode();
-                    }
+                    internal.activateEditor();
+                    if (control.selectByMouse)
+                        control.selectWord();
                 }
                 onClicked: {
-                    internal.activateEditor()
-                    control.cursorPosition = control.positionAt(mouse.x, mouse.y)
+                    internal.activateEditor();
+                    internal.positionCursor(mouse.x, mouse.y);
                 }
             }
         }

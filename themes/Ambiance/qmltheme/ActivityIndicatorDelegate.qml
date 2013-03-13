@@ -15,7 +15,23 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-Tabs {
-    newTabs: true
+Image {
+    id: container
+    anchors.fill: parent
+    source: StyleUtils.itemStyleProperty("source", "")
+    smooth: true
+    visible: item.running
+    fillMode: Image.PreserveAspectFit
+    horizontalAlignment: Image.AlignHCenter
+    verticalAlignment: Image.AlignVCenter
+
+    NumberAnimation on rotation {
+        running: item.running
+        from: 0
+        to: 360
+        loops: Animation.Infinite
+        duration: StyleUtils.itemStyleProperty("rotationDuration", 0)
+    }
 }

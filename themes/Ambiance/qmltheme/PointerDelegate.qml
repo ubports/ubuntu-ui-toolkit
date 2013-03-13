@@ -25,6 +25,9 @@ Image {
 
     // FIXME: We may use one image that we rotate and scale, except if that gives wrong
     //  results because of the shading (for example, always shadow on the right side).
-    property string sourceDirection: (item.direction === "left") ? "Left" : (item.direction === "right") ? "Right" : (item.direction === "up") ? "Up" : "Down"
-    source: "artwork/" + sourceDirection + "Arrow.png"
+    source: StyleUtils.itemStyleProperty("imageSource")
+
+    smooth: true
+
+    opacity: StyleUtils.itemStyleProperty("opacity", 1.0)
 }

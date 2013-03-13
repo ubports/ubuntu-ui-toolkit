@@ -19,13 +19,22 @@ import Ubuntu.Components 0.1
 
 Page {
     title: i18n.tr("My custom page")
-    Rectangle {
-        anchors.fill: parent
-        color: "#dddddd"
-        Label {
-            anchors.centerIn: parent
-            text: i18n.tr("This is an external page.")
-            color: "#757373"
+    Label {
+        anchors.centerIn: parent
+        text: i18n.tr("This is an external page\nwith a locked toolbar.")
+        color: "#757373"
+    }
+
+    tools: ToolbarActions {
+        Action {
+            text: "action 1"
+            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
         }
+        Action {
+            text: "action 2"
+            iconSource: Qt.resolvedUrl("call_icon.png")
+        }
+        active: true
+        lock: true
     }
 }

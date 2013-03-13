@@ -17,24 +17,29 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Template {
-    title: i18n.tr("Activity Indicator")
-    id: indicators
+Item {
+    id: root
 
-    Column {
-        spacing: units.gu(4)
+    property string themeError: Theme.error
+    property string themeFile: Theme.currentTheme
 
-        Button {
-            id: button
-            text: (indicator.running) ? i18n.tr("Hide") : i18n.tr("Show")
-            onClicked: indicator.running = !indicator.running
-        }
-
-        ActivityIndicator {
-            id: indicator
-            anchors.horizontalCenter: button.horizontalCenter
-        }
+    // full class spec
+    Item {
+        ItemStyle.class: "derivate basea"
     }
-
-    Component.onCompleted: indicator.running = true
+    Item {
+        ItemStyle.class: "derivate2 derivate"
+    }
+    Item {
+        ItemStyle.class: "multiple baseA baseB"
+    }
+    Item {
+        ItemStyle.class: "multiple2 baseA derivate"
+    }
+    Item {
+        ItemStyle.class: "multiple3 derivate2 baseB"
+    }
+    Item {
+        ItemStyle.class: "restore derivate2 baseA"
+    }
 }

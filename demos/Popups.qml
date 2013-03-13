@@ -20,6 +20,7 @@ import Ubuntu.Components.Popups 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
+    objectName: "Popups"
     title: i18n.tr("Popovers, Sheets & Dialogues")
 
     Item {
@@ -67,7 +68,7 @@ Template {
                 id: dialogue
 
                 title: "Save file"
-                text: "Are you sure that you want to save this file?"
+                text: "Are you sure you want to save this file?"
 
                 Button {
                     text: "cancel"
@@ -117,6 +118,7 @@ Template {
 
             Popover {
                 id: popover
+                callerMargin: units.gu(5)
 
                 ListView {
                     clip: true
@@ -129,9 +131,35 @@ Template {
                     height: units.gu(50)
                     delegate: ListItem.Standard {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        text: "Item "+index
-                        onClicked: print("Clicked item "+index)
+                        text: "Item " + modelData
+                        onClicked: print("Clicked item " + modelData)
                     }
+                }
+            }
+        }
+
+        ActionSelectionPopover {
+            id: actionSelectionPopover
+            actions: ActionList {
+                Action {
+                    text: i18n.tr("Selection #1")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #2")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #3")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #4")
+                    onTriggered: print(text)
+                }
+                Action {
+                    text: i18n.tr("Selection #5")
+                    onTriggered: print(text)
                 }
             }
         }
@@ -147,7 +175,7 @@ Template {
                     id: leftPopoverButton
                     text: i18n.tr("automatic..")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), leftPopoverButton)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), leftPopoverButton, {"leftMargin": 20, "contentWidth": 400})
                 }
 
                 Button {
@@ -155,6 +183,26 @@ Template {
                     text: i18n.tr("..positioning")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), rightPopoverButton)
+                }
+
+                TextField {
+                    id: textItem
+                    placeholderText: "press to activate"
+                    primaryItem: Button {
+                        id: overlay
+                        ItemStyle.class: "transparent-button"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                        width: units.gu(4)
+                        height: parent.height
+                        onClicked: {
+                            PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), textItem,
+                                            {
+                                                "pointerTarget": overlay,
+                                                "contentWidth": textItem.width,
+                                                "callerMargin": units.gu(2)
+                                            })
+                        }
+                    }
                 }
             }
 
@@ -174,27 +222,40 @@ Template {
                     width: units.gu(16)
                     onClicked: PopupUtils.open(popoverWithListView, popoverWithListViewButton)
                 }
+
+                Button {
+                    id: actionSelectionPopoverButton
+                    text: i18n.tr("action list")
+                    width: units.gu(16)
+                    onClicked: {
+                        actionSelectionPopover.caller = actionSelectionPopoverButton;
+                        actionSelectionPopover.show();
+                    }
+                }
             }
 
             TemplateRow {
                 title: i18n.tr("Sheets")
 
                 Button {
+                    id: sheet1
                     text: i18n.tr("close button")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(closeButtonSheet)
+                    onClicked: PopupUtils.open(closeButtonSheet, sheet1)
                 }
 
                 Button {
+                    id: sheet2
                     text: i18n.tr("done button")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(doneButtonSheet)
+                    onClicked: PopupUtils.open(doneButtonSheet, sheet2)
                 }
 
                 Button {
+                    id: sheet3
                     text: i18n.tr("composer")
                     width: units.gu(16)
-                    onClicked: PopupUtils.open(composerSheet)
+                    onClicked: PopupUtils.open(composerSheet, sheet3)
                 }
             }
 
@@ -206,6 +267,31 @@ Template {
                     text: i18n.tr("save")
                     width: units.gu(16)
                     onClicked: PopupUtils.open(dialog, saveButton)
+                }
+            }
+
+            TemplateRow {
+                title: i18n.tr("Non-modal")
+
+                Button {
+                    id: nonModalPopover
+                    text: i18n.tr("Popover")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(Qt.resolvedUrl("MyCustomPopover.qml"), nonModalPopover, {"autoClose": false})
+                }
+
+                Button {
+                    id: nonModalSheet
+                    text: i18n.tr("Sheet")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(composerSheet, nonModalSheet, {"modal": false, "contentWidth": units.gu(20)})
+                }
+
+                Button {
+                    id: nonModalDialog
+                    text: i18n.tr("save")
+                    width: units.gu(16)
+                    onClicked: PopupUtils.open(dialog, nonModalDialog, {"modal": false})
                 }
             }
         }

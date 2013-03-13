@@ -13,41 +13,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Template {
-    title: i18n.tr("Check Box")
+Item {
+    anchors.fill: parent
+    z: -1
 
-    Column {
-        spacing: units.gu(4)
-
-        TemplateRow {
-            title: i18n.tr("Unchecked")
-            CheckBox {
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Checked")
-            CheckBox {
-                checked: true
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Disabled")
-            Row {
-                spacing: units.gu(1)
-                CheckBox {
-                    enabled: false
-                }
-                CheckBox {
-                    enabled: false
-                    checked: true
-                }
-            }
-        }
+    Rectangle {
+        anchors.fill: parent
+        color: StyleUtils.itemStyleProperty("backgroundColor")
     }
 }

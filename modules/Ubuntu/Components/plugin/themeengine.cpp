@@ -231,64 +231,18 @@ ItemStyleAttached *ThemeEnginePrivate::attachedStyle(QObject *obj)
     return qobject_cast<ItemStyleAttached*>(attached);
 }
 
-
-/*!
-  \internal
-  Converts a style path back to selector string.
-*/
-QString ThemeEnginePrivate::selectorToString(const Selector &path)
-{
-    QString result;
-    Q_FOREACH (SelectorNode node, path) {
-        result += " " + node.toString();
-    }
-    return result.simplified();
-}
-
 /*!
   \internal
   Parses and returns the path described by \a selector as a list of
-  class and name pairs.
-  Current support (ref: www.w3.org/TR/selector.html):
-    - Type selectors, e.g: "Button"
-    - Descendant selectors, e.g: "Dialog Button"
-    - Child selectors, e.g: "Dialog > Button"
-    - ID selectors, e.g: "Button#mySpecialButton"
-    - Grouping, e.g: "Button#foo, Checkbox, #bar"
+  class and name pairs. Supports selector grouping (separated with commas).
   */
-QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity)
+QList<Selector> ThemeEnginePrivate::parseSelector(const QString &selectorString)
 {
     QList<Selector> pathList;
     QStringList groupList = selectorString.split(",");
-    SelectorNode::Relationship nextRelationShip = SelectorNode::Descendant;
 
-    Q_FOREACH (QString group, groupList) {
-        Selector selector;
-        QStringList tokens = group.simplified().split(' ');
-
-        Q_FOREACH (QString token, tokens) {
-            if (token.isEmpty() || token == " ")
-                continue;
-            if (token == ">") {
-                nextRelationShip = SelectorNode::Child;
-            } else {
-                QString styleClass;
-                QString styleId;
-                int idIndex = token.indexOf('#');
-                if (idIndex != -1) {
-                    styleId = token.mid(idIndex + 1);
-                    if (idIndex > 1 && token[0] == '.')
-                        styleClass = token.mid(1, idIndex - 1);
-                } else if (token[0] == '.') {
-                    styleClass = token.mid(1);
-                } else
-                    styleClass = token;
-                if (!styleClass.isEmpty() || !styleId.isEmpty())
-                    selector.append(SelectorNode(styleClass.toLower(), styleId.toLower(), nextRelationShip, sensitivity));
-                nextRelationShip = SelectorNode::Descendant;
-            }
-        }
-        pathList.append(selector);
+    Q_FOREACH (const QString &group, groupList) {
+        pathList.append(Selector(group));
     }
     return pathList;
 }

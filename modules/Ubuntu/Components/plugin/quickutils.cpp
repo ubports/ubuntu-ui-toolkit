@@ -28,8 +28,23 @@
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
 {
-    lookupQuickView();
+    QGuiApplication::instance()->installEventFilter(this);
 }
+
+/*!
+ * \internal
+ * Filter events to catch ChildAdded, when the the application gets the topmost
+ * window assigned. Need to check the topmost windows each time as widgets added
+ * to the application are not signaled in any other way.
+ */
+bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
+{
+    if (!m_rootView && (event->type() == QEvent::ChildAdded))
+        lookupQuickView();
+
+    return QObject::eventFilter(obj, event);
+}
+
 
 /*!
  * \internal
@@ -119,6 +134,16 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
     return result;
 }
 
+/*!
+ * \internal
+ * Returns the class name (type) of a QtQuick item.
+ */
+QString QuickUtils::className(QQuickItem *item)
+{
+    QString result = item->metaObject()->className();
+    return result.left(result.indexOf("_QML"));
+}
+
 
 /*!
  * \internal
@@ -127,11 +152,17 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
  */
 void QuickUtils::lookupQuickView()
 {
-    Q_FOREACH (QWindow *w, QGuiApplication::allWindows()) {
+    if (m_rootView)
+        return;
+    Q_FOREACH (QWindow *w, QGuiApplication::topLevelWindows()) {
         m_rootView = qobject_cast<QQuickView*>(w);
         if (m_rootView) {
+            // connect in case we get the root object changed
             QObject::connect(m_rootView, SIGNAL(statusChanged(QQuickView::Status)),
                              this, SIGNAL(rootObjectChanged()));
+            // emit changed signal so we update the eventual bindings
+            if (m_rootView->rootObject())
+                Q_EMIT rootObjectChanged();
             break;
         }
     }

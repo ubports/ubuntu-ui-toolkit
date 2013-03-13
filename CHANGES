@@ -17,6 +17,185 @@ API Changes
 
 * None
 
+SDK 0.1.36
+##########
+
+Bugs Fixed
+**********
+
+*  HUD integration to the MainView
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+**********
+
+* None
+
+SDK 0.1.35
+##########
+
+Bugs Fixed
+**********
+
+Theming-related:
+* [POPOVER] is themed in correctly
+* [TOOLKIT] Activity indicator is themed incorrectly
+* [TOOLKIT] dialogue is themed incorrectly
+
+Toolbar-related:
+* [sdk-toolbar] share button in on gallery image does not function on the first button press
+* Sharing after post/cancel is not possible
+* [sdk-toolbar] after tap to dismiss toolbar doesn't work
+* [sdk] toolbar trigger area too big
+* when first showing the toolbar after opening a photo, it shows the toolbar buttons for the overview, not for the current photo
+
+Other:
+* [HUD, OSK] OSK doesn't focus on input field
+* Popover sometimes not dismissed
+
+Compatibility Breaks
+********************
+
+* SDK now depends on libqt5graphicaleffects5 for dropshadow of Popovers.
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.34
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.33
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* TextArea and TextField
+  + popover: overrides the default popover of the text area
+
+* Slider
+  + touched(bool onThumb): The signal is emitted when there is a click on the
+    slider. The onThumb parameter provides information if the click, was inside
+    of the thumb element
+
+SDK 0.1.32
+##########
+
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* Popover
+  + autoClose: property to drive automatic closing of Popovers when tapped on the dismissArea
+
+*SheetBase, Dialog
+  + modal: property to drive modal state of the sheets and dialogs
+
+SDK 0.1.31
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* Popover, Dialog
+  + edgeMargins: specifies the margins from the dismissArea when positioning the foreground
+  + callerMargin: specifies the margin from the caller when positioning the pointer
+
+SDK 0.1.30
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* TextField, TextArea
+  + highlighted: enables to control highlighted state separately from focused 
+
+SDK 0.1.29
+##########
+
+Compatibility Breaks
+********************
+
+* Property tools of Page and Toolbar must now be of type
+  ToolbarActions (was: ActionList).
+
+API Changes
+***********
+
+* Popover, Dialog
+  + pointerAnchorItem: caller or a child/sibling of it where the pointer should be aligned to
+
+SDK 0.1.28
+##########
+
+Compatibility Breaks
+********************
+
+* TextArea - autoExpand: marked as deprecated. Use autoSize instead
+
+API Changes
+***********
+
+* Popover
+  + dismissArea: area where mouse events cause Popover dismissal
+  + grabDismissAreaEvents: specifies whether to grab events from dismiss area
+  + contentWidth, contentHeight: overrides the calculated width/height of the Popover's operative area
+
+* TextField, TextArea
+  + paste(data): parameter added to paste custom data other than Clipboard content.
+
+* TextArea
+  + autoSize: specifies to resize the area based on lineCount property
+
+SDK 0.1.27
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
 
 SDK 0.1.26
 ##########

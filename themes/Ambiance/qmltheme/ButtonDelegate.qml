@@ -20,6 +20,9 @@ import Ubuntu.Components 0.1
 Item {
     anchors.fill: parent
 
+    implicitWidth: units.gu(9)
+    implicitHeight: units.gu(4)
+
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
     function __luminance(hexcolor){

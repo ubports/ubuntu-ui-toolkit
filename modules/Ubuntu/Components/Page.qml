@@ -24,13 +24,37 @@ import QtQuick 2.0
 
     \b{This component is under heavy development.}
 
-    Examples: See \l Tabs and \l PageStack.
+    Example:
+    \qml
+        Page {
+            title: i18n.tr("Root page")
+
+            tools: ToolbarActions {
+                Action {
+                    text: "one"
+                    iconSource: Qt.resolvedUrl("1.png")
+                    onTriggered: print("First action")
+                 }
+                 Action {
+                    text: "two"
+                    iconSource: Qt.resolvedUrl("2.png")
+                    onTriggered: print("Second action")
+                 }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "red"
+            }
+        }
+    \endqml
+
+    See also \l Tabs and \l PageStack.
 */
 Item {
     id: page
 
     anchors.fill: parent ? parent : undefined
-    visible: false
 
     /*!
       \preliminary
@@ -50,4 +74,10 @@ Item {
       part of a PageStack. This value is automatically updated by the \l PageStack.
      */
     property PageStack pageStack
+
+    /*!
+      \preliminary
+      The list of actions associated with this Page.
+     */
+    property ToolbarActions tools
 }

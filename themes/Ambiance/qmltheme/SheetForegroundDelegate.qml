@@ -23,15 +23,10 @@ Item {
 
     property alias contentItem: containerItem
 
-    // Avoid mouse events being sent to any MouseAreas that are behind the sheet
-    MouseArea {
-        anchors.fill: parent
-    }
-
     Rectangle {
         id: header
-        color: "darkgrey"
-        height: units.gu(8)
+        color: StyleUtils.itemStyleProperty("headerColor", "darkgray")
+        height: StyleUtils.itemStyleProperty("headerHeight", units.gu(8))
         anchors {
             top: parent.top
             left: parent.left
@@ -53,12 +48,13 @@ Item {
 
         Item {
             id: leftButtonContainer
-            width: units.gu(14)
             anchors {
                 left: parent.left
                 top: parent.top
                 bottom: parent.bottom
             }
+            width: StyleUtils.itemStyleProperty("buttonContainerWidth", units.gu(14))
+            Component.onCompleted: header.updateButton(item.leftButton, leftButtonContainer)
         }
 
         Item {
@@ -68,7 +64,8 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: units.gu(14)
+            width: StyleUtils.itemStyleProperty("buttonContainerWidth", units.gu(14))
+            Component.onCompleted: header.updateButton(item.rightButton, rightButtonContainer)
         }
 
         function updateButton(button, container) {
@@ -89,7 +86,7 @@ Item {
 
     Rectangle {
         id: containerItem
-        color: "lightgrey"
+        color: StyleUtils.itemStyleProperty("backgroundColor", "lightgray")
         height: MathUtils.clamp(item.contentsHeight, item.minHeight - header.height, item.maxHeight - header.height)
         anchors {
             top: header.bottom

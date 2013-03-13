@@ -18,6 +18,7 @@
 
 #include <QtQml>
 #include <QtQuick/private/qquickimagebase_p.h>
+#include <QDBusConnection>
 
 #include "plugin.h"
 #include "themeengine.h"
@@ -33,6 +34,24 @@
 #include "giconprovider.h"
 #include "shapeitem.h"
 #include "inversemouseareatype.h"
+#include "qquickclipboard.h"
+#include "qquickmimedata.h"
+#include "bottombarvisibilitycommunicator.h"
+
+#include <sys/types.h>
+#include <unistd.h>
+
+/*
+ * Registration function for the Clipboard type
+ */
+static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    QQuickClipboard *clipboard = new QQuickClipboard;
+    return clipboard;
+}
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
@@ -44,6 +63,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
     qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
+    qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
+    qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -68,6 +89,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
+
+    context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

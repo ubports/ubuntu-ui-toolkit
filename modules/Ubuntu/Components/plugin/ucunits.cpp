@@ -23,6 +23,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QRegularExpression>
+#include <QtCore/qmath.h>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -90,7 +91,13 @@ void UCUnits::setGridUnit(float gridUnit)
 */
 float UCUnits::dp(float value)
 {
-    return qRound(value * m_gridUnit / DEFAULT_GRID_UNIT_PX);
+    const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX;
+    if (value <= 2.0) {
+        // for values under 2dp, return only multiples of the value
+        return qRound(value * qFloor(ratio));
+    } else {
+        return qRound(value * ratio);
+    }
 }
 
 /*!
