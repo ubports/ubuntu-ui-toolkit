@@ -296,7 +296,7 @@ Examples:
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
 
-@qml-mapping(.cursor, EditorCursorStyle, EditorCursorDelegate);
+@qml-mapping(.cursor, , EditorCursorDelegate);
 @qml-import(Ubuntu.Components 0.1);
 .textfield {
     radius: "small";

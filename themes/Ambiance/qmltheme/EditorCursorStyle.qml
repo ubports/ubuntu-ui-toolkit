@@ -17,21 +17,11 @@
 
 import QtQuick 2.0
 
-QtObject {
+Item {
     /*!
       Cursor color
       */
     property color color
-
-    /*!
-      Cursor transparency, may be used to show text under the cursor for thick cursors.
-      */
-    property real opacity
-
-    /*!
-      Cursor width
-      */
-    property real width
 
     /*!
       Properties driving cursor blinking. If either of these values are 0, no
