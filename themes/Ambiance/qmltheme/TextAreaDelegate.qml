@@ -20,16 +20,33 @@ import Ubuntu.Components 0.1
 // frame
 UbuntuShape {
     id: shape
+
+    // style properties
+    /*!
+      Background fill color
+      */
+    property color backgroundColor
+    property int backgroundColorAnimationDuration
+
+    /*!
+      Spacing between the frame and the text editor area
+      */
+    property var frameSpacing
+
+    // visuals
     z: -1
 
     anchors.fill: parent
-    radius:StyleUtils.itemStyleProperty("radius", "small")
-    color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
-    opacity: item.enabled ? 1.0 : 0.5
+    color: backgroundColor
 
     MouseArea {
         anchors.fill: parent
         onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
     }
 
+    Binding {
+        target: item.__internal
+        property: "frameSpacing"
+        value: shape.frameSpacing
+    }
 }

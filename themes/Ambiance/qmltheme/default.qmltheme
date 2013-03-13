@@ -29,7 +29,7 @@ properties typed as variant.
 @qml-mapping (.dialog .foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
 @qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
-@qml-mapping(.textarea, TextAreaStyle, TextAreaDelegate);
+@qml-mapping(.textarea, , TextAreaDelegate);
 @qml-mapping(.mainview, , MainViewDelegate);
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
@@ -337,8 +337,8 @@ Examples:
 */
 .textarea {
     radius: "small";
-    backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
-    opacity: item.enabled ? 1.0 : 0.1;
+    backgroundColor: (item.enabled) ? ((item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1)) :
+        Qt.rgba(1, 1, 1, 0.1);
     color: (item.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
