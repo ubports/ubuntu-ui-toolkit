@@ -21,11 +21,11 @@ import Ubuntu.Components 0.1
 TestCase {
     name: "PageStackAPI"
 
-    function test_depth() {
+    function test_0init_depth() {
         compare(pageStack.depth, 0, "depth is 0 by default");
     }
 
-    function test_currentPage() {
+    function test_0init_currentPage() {
         compare(pageStack.currentPage, null, "is not set by default");
         compare(mainView.toolbar.tools, null, "no tools by default");
         compare(mainView.header.title, "", "empty title by default");
@@ -62,7 +62,17 @@ TestCase {
         compare(page1.active, true, "Page on top of the stack is active");
         compare(page2.active, false, "Page popped from the stack is inactive");
         pageStack.clear();
-        test_depth();
+        compare(pageStack.depth, 0, "depth is 0 after clearing");
+    }
+
+    function test_bug1143345() {
+        pageStack.clear();
+        pageStack.push(page1);
+        page1.title = "New title";
+        compare(mainView.header.title, "New title", "Header title correctly updated by page");
+        page1.title = "Title 1";
+        compare(mainView.header.title, "Title 1", "Header title correctly updated by page again");
+        pageStack.clear();
     }
 
     MainView {
