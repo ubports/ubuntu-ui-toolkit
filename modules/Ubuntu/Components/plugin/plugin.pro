@@ -38,7 +38,8 @@ HEADERS += plugin.h \
     bottombarvisibilitycommunicator.h \
     qquickclipboard.h \
     qquickmimedata.h \
-    qquickclipboard_p.h
+    qquickclipboard_p.h \
+    selector_p.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -57,10 +58,10 @@ SOURCES += plugin.cpp \
     inversemouseareatype.cpp \
     bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
-    qquickmimedata.cpp
+    qquickmimedata.cpp \
+    selector.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath
 INSTALLS += target
-

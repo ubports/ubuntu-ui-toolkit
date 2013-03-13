@@ -72,7 +72,7 @@ public:
     static bool registerName(QQuickItem *item, const QString &newName);
     static void setError(const QString &error);
     static ItemStyleAttached *attachedStyle(QObject *obj);
-    static QList<Selector> parseSelector(const QString &selectorString, SelectorNode::NodeSensitivity sensitivity = SelectorNode::Normal);
+    static QList<Selector> parseSelector(const QString &selectorString);
 
 // private slots
     void _q_updateTheme();
