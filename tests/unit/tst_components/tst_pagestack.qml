@@ -21,57 +21,60 @@ import Ubuntu.Components 0.1
 TestCase {
     name: "PageStackAPI"
 
-    function test_0init_depth() {
-        compare(pageStack.depth, 0, "depth is 0 by default");
-    }
-
-    function test_0init_currentPage() {
+    function test_0_initialization() {
         compare(pageStack.currentPage, null, "is not set by default");
         compare(mainView.toolbar.tools, null, "no tools by default");
         compare(mainView.header.title, "", "empty title by default");
     }
 
-    function test_pushAndPopOne() {
+    function test_depth() {
+        compare(pageStack.depth, 0, "depth is 0 by default");
         pageStack.push(page1);
-        compare(pageStack.currentPage, page1, "was pushed");
-        compare(pageStack.depth, 1, "One page was pushed");
-        compare(mainView.header.title, "Title 1", "Title was set to the pushed page title");
-        compare(mainView.toolbar.tools, page1.tools, "Tools were set to the pusehd page tools");
-        compare(page1.active, true, "Page at top of the stack is active");
-        pageStack.pop();
-        compare(pageStack.currentPage, null, "was popped");
-        compare(pageStack.depth, 0, "one page was pushed and popped");
-        compare(page1.active, false, "Popped page is inactive");
-        // previous title and tools were not unset.
-    }
-
-    function test_pushAndPopTwo() {
-        pageStack.push(page1);
+        compare(pageStack.depth, 1, "depth is correctly increased when pushing a page");
         pageStack.push(page2);
-        compare(pageStack.currentPage, page2, "was pushed");
-        compare(pageStack.depth, 2, "Two pages were pushed");
-        compare(mainView.header.title, "Title 2", "Last pushed page set the title");
-        compare(mainView.toolbar.tools, page2.tools, "Last pushed page set the tools");
-        compare(page2.active, true, "Page on top of the stack is active");
-        compare(page1.active, false, "Page on stack but not on top is inactive");
+        compare(pageStack.depth, 2, "depth is correctly updated when pushing a page");
         pageStack.pop();
-        compare(pageStack.currentPage, page1, "was pushed");
-        compare(pageStack.depth, 1, "one page left");
-        compare(mainView.header.title, "Title 1", "Page at top of the stack set the title");
-        compare(mainView.toolbar.tools, page1.tools, "Page at top of the stack set the tools");
-        compare(page1.active, true, "Page on top of the stack is active");
-        compare(page2.active, false, "Page popped from the stack is inactive");
+        compare(pageStack.depth, 1, "depth is correctly decreased when popping a page");
         pageStack.clear();
-        compare(pageStack.depth, 0, "depth is 0 after clearing");
+        compare(pageStack.depth, 0, "depth is after clearing");
     }
 
-    function test_bug1143345() {
-        pageStack.clear();
+    function test_currentPage() {
+        compare(pageStack.currentPage, null, "currentPage is null by default");
         pageStack.push(page1);
+        compare(pageStack.currentPage, page1, "currentPage properly updated");
+        pageStack.clear();
+        compare(pageStack.currentPage, null, "currentPage properly reset");
+    }
+
+    function test_active() {
+        pageStack.push(page1);
+        compare(page1.active, true, "Page is active after pushing");
+        pageStack.push(page2);
+        compare(page1.active, false, "Page no longer active after pushing a new page");
+        compare(page2.active, true, "New page is active after pushing");
+        pageStack.pop();
+        compare(page1.active, true, "Page re-activated when on top of the stack");
+        compare(page2.active, false, "Page no longer active after being popped");
+        pageStack.clear();
+    }
+
+    function test_title_bug1143345() {
+        pageStack.push(page1);
+        compare(mainView.header.title, "Title 1", "Header is correctly set by page");
         page1.title = "New title";
         compare(mainView.header.title, "New title", "Header title correctly updated by page");
+        pageStack.push(page2);
+        compare(mainView.header.title, "Title 2", "Header is correctly set by page");
+        pageStack.clear();
         page1.title = "Title 1";
-        compare(mainView.header.title, "Title 1", "Header title correctly updated by page again");
+    }
+
+    function test_tools_bug1126197() {
+        pageStack.push(page1);
+        compare(mainView.toolbar.tools, page1.tools, "Page successfully updated toolbar tools");
+        pageStack.push(page2);
+        compare(mainView.toolbar.tools, page2.tools, "Page successfully updated toolbar tools again");
         pageStack.clear();
     }
 
@@ -84,9 +87,15 @@ TestCase {
     Page {
         id: page1
         title: "Title 1"
+        tools: ToolbarActions {
+            id: tools1
+        }
     }
     Page {
         id: page2
         title: "Title 2"
+        tools: ToolbarActions {
+            id: tools2
+        }
     }
 }
