@@ -130,7 +130,7 @@ Selector StyleCache::StyleData::selector() const
   valid for the case when the theme has rule for ".box>.frame>.button" selector
   and loking after ".box .frame .button" or ".box>.frame .button" selectors.
 */
-StyleCache::MatchResult StyleCache::StyleData::lookup(const Selector &path, StyleData **match, int64_t matchRank, int64_t searchRank)
+StyleCache::MatchResult StyleCache::StyleData::lookup(const Selector &path, StyleData **match, int64_t &matchRank, int64_t searchRank)
 {
     // the spare contains the remainder
     Selector leftover = path;
@@ -180,7 +180,7 @@ StyleCache::MatchResult StyleCache::StyleData::lookup(const Selector &path, Styl
   \internal
   Test whether a child matches the criteria
 */
-StyleCache::MatchResult StyleCache::StyleData::test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t matchRank, int64_t searchRank)
+StyleCache::MatchResult StyleCache::StyleData::test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t &matchRank, int64_t searchRank)
 {
     // depending on the relation in nextNode we check in strict or loose children
     bool strict = nextNode.relation() == SelectorNode::Child;
@@ -216,7 +216,7 @@ StyleCache::MatchResult StyleCache::StyleData::test(SelectorNode &nextNode, cons
     return ret;
 }
 
-StyleCache::MatchResult StyleCache::StyleData::setMatch(StyleData **match, int64_t matchRank, int64_t searchRank)
+StyleCache::MatchResult StyleCache::StyleData::setMatch(StyleData **match, int64_t &matchRank, int64_t searchRank)
 {
     if (*match && ((*match)->depth > depth))
         // the current match depth (selector length) is higher
@@ -224,7 +224,7 @@ StyleCache::MatchResult StyleCache::StyleData::setMatch(StyleData **match, int64
 
     int64_t rank = selector().rank();
     if (*match && ((*match)->depth == depth) && ((searchRank - matchRank) <= (searchRank - rank))) {
-        // the previous match has highre rank (is closer to the searched path)
+        // the previous match has higher rank (is closer to the searched path)
         return !(searchRank - matchRank) ? ExactMatch : Match;
     }
     matchRank = rank;
@@ -304,6 +304,17 @@ StyleCache::StyleData *StyleCache::match(const Selector &selector)
             int64_t searchRank = selector.rank();
             int64_t matchRank = 0L;
             styles->lookup(selector, &result, matchRank, searchRank);
+
+            if (!result) {
+                Selector copy(selector);
+                SelectorNode last = selector.last();
+                // check if the class wasn't empty and if it was, search with the type
+                if (!last.getClass().isEmpty() && !last.type().isEmpty()) {
+                    copy.last() = SelectorNode("", last.type(), last.id(), last.relation());
+                    styles->lookup(copy, &result, matchRank, searchRank);
+                }
+            }
+
             if (result && enableStyleCache)
                 cache.insert(selector, result);
         }

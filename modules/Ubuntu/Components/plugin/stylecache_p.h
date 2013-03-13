@@ -47,10 +47,10 @@ public:
         Selector selector() const;
         void clear();
         void add(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
-        MatchResult lookup(const Selector &selector, StyleData **match, int64_t matchRank, int64_t searchRank);
+        MatchResult lookup(const Selector &selector, StyleData **match, int64_t &matchRank, int64_t searchRank);
     private:
-        MatchResult test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t matchRank, int64_t searchRank);
-        MatchResult setMatch(StyleData **match, int64_t matchRank, int64_t searchRank);
+        MatchResult test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t &matchRank, int64_t searchRank);
+        MatchResult setMatch(StyleData **match, int64_t &matchRank, int64_t searchRank);
         friend class StyleCache;
 
         StyleData *parent;
