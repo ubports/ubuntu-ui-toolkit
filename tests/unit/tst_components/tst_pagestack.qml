@@ -75,6 +75,8 @@ TestCase {
         compare(mainView.toolbar.tools, page1.tools, "Page successfully updated toolbar tools");
         pageStack.push(page2);
         compare(mainView.toolbar.tools, page2.tools, "Page successfully updated toolbar tools again");
+        pageStack.pop();
+        compare(mainView.toolbar.tools, page1.tools, "Tools updated after popping a page");
         pageStack.clear();
     }
 
