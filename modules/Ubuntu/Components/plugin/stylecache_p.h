@@ -57,7 +57,7 @@ public:
     void clear();
     StyleCache &operator=(StyleCache &other);
     void addStyleRule(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
-    StyleCache::StyleData *lookupStyleRule(const Selector &selector);
+    StyleCache::StyleData *match(const Selector &selector);
 
 private:
     StyleData *styles;

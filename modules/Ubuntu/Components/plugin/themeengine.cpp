@@ -157,7 +157,7 @@ StyleCache::StyleData *ThemeEnginePrivate::styleRuleForPath(const Selector &path
 {
     if (!themeEngine)
         return 0;
-    return themeEngine->d_ptr->m_styleCache.lookupStyleRule(path);
+    return themeEngine->d_ptr->m_styleCache.match(path);
 }
 
 

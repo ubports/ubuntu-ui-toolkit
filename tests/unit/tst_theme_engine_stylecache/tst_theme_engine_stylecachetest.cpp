@@ -47,79 +47,79 @@ private Q_SLOTS:
 
         selector = Selector(".baseA");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseB");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA>.baseB");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB .baseC");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB>.baseC");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA>.baseB .baseC");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB .baseC .baseD");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB>.baseC .baseD");
         cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
     }
 
-    void testCase_lookupStyleRule()
+    void testCase_match()
     {
         Selector selector, expected;
         StyleCache::StyleData *rule;
 
         selector = Selector(".baseA>.baseB>.baseC");
         expected = Selector(".baseA .baseB>.baseC");
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), expected);
 
         selector = Selector(".baseA>.baseB>.baseC#id");
         expected = Selector(".baseA .baseB>.baseC");
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), expected);
 
         selector = Selector(".baseA>.baseB#id>.baseC");
         expected = Selector(".baseA .baseB .baseC");
-        rule = cache.lookupStyleRule(selector);
+        rule = cache.match(selector);
         QVERIFY(rule);
         // FIXME: this fails now, should be fixed in an upcomming branch
         QVERIFY(!(rule->selector() == expected));

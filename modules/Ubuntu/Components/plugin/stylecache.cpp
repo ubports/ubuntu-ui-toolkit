@@ -262,7 +262,7 @@ void StyleCache::addStyleRule(const Selector &path, QQmlComponent *style, QQmlCo
   returned for the ".box > .frame > .button" Item. If the theme would have only
   the ".box .frame .button" rule defined, the lookup would not match that rule.
 */
-StyleCache::StyleData *StyleCache::lookupStyleRule(const Selector &selector)
+StyleCache::StyleData *StyleCache::match(const Selector &selector)
 {
     StyleData *result = 0;
 
