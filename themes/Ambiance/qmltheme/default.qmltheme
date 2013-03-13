@@ -21,7 +21,7 @@ properties typed as variant.
 @qml-mapping(.switch, , SwitchDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
-@qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
+@qml-mapping(.tab-button, , TabButtonDelegate);
 @qml-mapping(.custom-button, , ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
 @qml-mapping (.popover .foreground, , PopoverForegroundDelegate);
