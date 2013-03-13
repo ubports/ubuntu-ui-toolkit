@@ -21,4 +21,6 @@ QtObject {
 
     property url shape: ""
     property url borderSource: ""
+
+    Component.onCompleted: print("ButtonStyle is deprecated")
 }

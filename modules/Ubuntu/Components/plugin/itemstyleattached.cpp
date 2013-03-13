@@ -28,6 +28,8 @@
 #include "themeengine_p.h"
 #include "quickutils.h"
 
+#include <private/qqmlproperty_p.h>
+
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
 
@@ -195,8 +197,13 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
 
         if (!prop.hasNotifySignal() || omit.contains(prop.name()))
             continue;
-        // connect property's notify signal to watch when it gets changed so we can stop watching it
+        // check if attachee property has already bindings, leave if it has
         QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProp);
+        if (binding)
+            continue;
+
+        // connect property's notify signal to watch when it gets changed so we can stop watching it
         qmlProp.connectNotifySignal(q, SLOT(_q_attacheePropertyChanged()));
 
         // we cannot detect whether a signal is connected as isSignalConnected() is
@@ -220,7 +227,16 @@ void ItemStyleAttachedPrivate::bindStyleWithAttachee()
         // check if the property has equivalent in the attachee and if we can style it
         // this means that the equivalent property index in attachee is present in stylableProperties
         int attacheeIndex = attacheeMo->indexOfProperty(styleProperty.name());
+        QQmlProperty attacheeProperty(attachee, styleProperty.name(), QQmlEngine::contextForObject(attachee));
+        QQmlAbstractBinding *binded = QQmlPropertyPrivate::binding(attacheeProperty);
+        if (binded) {
+            // mark as not stylable
+            watchedProperties.insert(attacheeIndex, false);
+            continue;
+        }
+        // if not bound, check if we can still style it
         if (watchedProperties.value(attacheeIndex) && !styleBindings.value(i)) {
+
             // write first
             QQmlProperty property(attachee, styleProperty.name(), QQmlEngine::contextForObject(attachee));
             propertyUpdated = property.name();
@@ -320,6 +336,7 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
     const QMetaObject *mo = attachee->metaObject();
     QMetaMethod signal = mo->method(q->senderSignalIndex());
     QString property = QString(signal.name()).remove("Changed");
+
     // the sender is the attachee even if we change the property from within
     if (propertyUpdated == property)
         return;

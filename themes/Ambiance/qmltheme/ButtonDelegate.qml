@@ -38,7 +38,6 @@ Item {
 
         anchors.fill: parent
         color: item.color
-        borderSource: StyleUtils.itemStyleProperty("borderIdle")
         opacity: 1.0 - borderPressed.opacity
     }
 
@@ -47,7 +46,6 @@ Item {
 
         anchors.fill: parent
         color: item.color
-        borderSource: StyleUtils.itemStyleProperty("borderPressed")
         opacity: item.pressed ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
     }

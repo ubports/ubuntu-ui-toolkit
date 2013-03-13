@@ -10,6 +10,10 @@ TARGET = ../UbuntuComponents
 QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
+#needed by ItemStyleAttached
+QT += qml-private core-private
+QT_PRIVATE = v8-private
+
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
 

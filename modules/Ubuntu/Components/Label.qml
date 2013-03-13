@@ -35,17 +35,10 @@ Text {
 
     Theming.ItemStyle.class: "label"
 
+    /*!
+      The property is DOCME
+      */
     property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
-/*
-    Theming.ItemStyle.onStyleChanged: {
-        // only set font.bold and font.weight if they're defined in the style
-        if (Theming.ComponentUtils.hasStyle(label, "bold")) {
-            font.bold = Theming.ItemStyle.style.bold
-        }
-        if (Theming.ComponentUtils.hasStyle(label, "weight")) {
-            font.weight = Theming.ItemStyle.style.weight
-        }
-    }
-*/
+    font.family: "Ubuntu"
 }

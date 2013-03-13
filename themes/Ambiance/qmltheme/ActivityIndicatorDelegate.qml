@@ -17,24 +17,42 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Image {
+Item {
+    id: visuals
 
-    property int rotationDuration
-    onRotationDurationChanged: print(rotationDuration)
+    // styling properties
+    property url source
+    property PropertyAnimation animation
 
-    id: container
     anchors.fill: parent
-    smooth: true
     visible: item.running
-    fillMode: Image.PreserveAspectFit
-    horizontalAlignment: Image.AlignHCenter
-    verticalAlignment: Image.AlignVCenter
 
-    NumberAnimation on rotation {
-        running: item.running
-        from: 0
-        to: 360
-        loops: Animation.Infinite
-        duration: rotationDuration
+    Image {
+        id: container
+        anchors.fill: parent
+        source: visuals.source
+        smooth: true
+        fillMode: Image.PreserveAspectFit
+        horizontalAlignment: Image.AlignHCenter
+        verticalAlignment: Image.AlignVCenter
+
+        states: State {
+            name: 'animate'
+            when: item.running && (animation != null)
+            PropertyChanges {
+                target: container
+                rotation: 360
+            }
+        }
+        transitions: [
+            Transition {
+                from: ""
+                to: "animate"
+                RotationAnimation {
+                    loops: Animation.Infinite
+                    duration: visuals.animation.duration
+                }
+            }
+        ]
     }
 }

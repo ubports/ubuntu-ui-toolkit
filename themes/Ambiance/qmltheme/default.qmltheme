@@ -12,17 +12,17 @@ If no style is given, the theme engine will use QtObject for style and will decl
 properties typed as variant.
 */
 @qml-import(qmltheme 0.1, system:/Ambiance);
-@qml-mapping(.button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.button, , ButtonDelegate);
 @qml-mapping(.toolbar, , ToolbarDelegate);
 @qml-mapping(.toolbar-button, , ToolbarButtonDelegate);
-@qml-mapping(.dark-button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.dark-button, , ButtonDelegate);
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
-@qml-mapping(.checkbox, CheckBoxStyle, CheckBoxDelegate);
+@qml-mapping(.checkbox, , CheckBoxDelegate);
 @qml-mapping(.switch, SwitchStyle, SwitchDelegate);
 @qml-mapping(.tabs, TabsStyle, TabsDelegate);
 @qml-mapping(.new-tabs, NewTabsStyle, NewTabsDelegate);
 @qml-mapping(.tab-button, TabButtonStyle, TabButtonDelegate);
-@qml-mapping(.custom-button, ButtonStyle, ButtonDelegate);
+@qml-mapping(.custom-button, , ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
 @qml-mapping (.popover .foreground, , PopoverForegroundDelegate);
 @qml-mapping (.sheet .foreground, , SheetForegroundDelegate);
@@ -52,7 +52,7 @@ Examples:
 @qml-mapping(.activityindicator, , ActivityIndicatorDelegate);
 .activityindicator {
     source: url(artwork/spinner.png);
-    rotationDuration: 1300;
+    animation: PropertyAnimation{duration: 1300};
 }
 
 .UbuntuShape-radius-small {
@@ -87,6 +87,7 @@ Examples:
 
 .toolbar-button .label {
     fontSize: "x-small";
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     color: "#888888";
     opacity: item.enabled ? 1.0 : 0.3;
 }
@@ -236,14 +237,12 @@ Examples:
     will be used with all declared properties as variant.
 */
 .label {
-    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "medium";
     color: "#757373";
 }
 
 /* Component Showcase title */
 .title {
-    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "x-large";
     color: "#757373";
     styleColor: "white";
@@ -257,7 +256,6 @@ Examples:
 
 */
 .row-label {
-    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     fontSize: "medium";
     color: "#757373";
     styleColor: "white";
@@ -310,8 +308,7 @@ Examples:
     selectionColor: "#19B6EE";
     overlaySpacing: units.gu(0.5);
     passwordCharacter: "\u2022";
-    font.family: "Ubuntu";
-    font.pixelSize: FontUtils.sizeToPixels("medium");
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
 }
 
 /* clear button */
@@ -345,8 +342,7 @@ Examples:
     color: (item.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
-    font.family: "Ubuntu";
-    font.pixelSize: FontUtils.sizeToPixels("medium");
+    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
     frameSpacing: units.gu(1);
 }
 /* hint */
@@ -386,5 +382,5 @@ Examples:
 .slider .label {
     fontSize: "medium";
     color: "white";
-    weight: Font.Bold;
+    font: Qt.font({family: "Ubuntu", weight: Font.Bold, pixelSize: FontUtils.sizeToPixels(fontSize)});
 }
