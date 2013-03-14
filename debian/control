@@ -73,7 +73,7 @@ Architecture: any
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
-         qtdeclarative5-qtmultimedia-plugin,
+         qtdeclarative5-qtmultimedia-plugin | libqt5declarative5-qtmultimedia-plugin,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
