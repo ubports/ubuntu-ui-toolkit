@@ -148,11 +148,11 @@ Empty {
     /*!
       \internal
      */
-    property bool controlAreaPressed: false
+    property bool __controlAreaPressed: false
     Rectangle {
         id: controlHighlight
 
-        visible: control && controlAreaPressed
+        visible: control && __controlAreaPressed
         anchors {
             top: parent.top
             right: progressionHelper.visible ? progressionHelper.left : parent.right
@@ -165,7 +165,7 @@ Empty {
 
     Rectangle {
         id: progressionHighlight
-        visible: listItem.progression && listItem.pressed && !controlAreaPressed
+        visible: listItem.progression && listItem.pressed && !__controlAreaPressed
         anchors {
             left: progressionHelper.left
             top: parent.top
@@ -271,9 +271,9 @@ Empty {
 
     onPressedChanged: {
         if (pressed && control && (__mouseArea.mouseX <= progressionHelper.x)) {
-            controlAreaPressed = true
+            __controlAreaPressed = true
         } else {
-            controlAreaPressed = false
+            __controlAreaPressed = false
         }
     }
 }
