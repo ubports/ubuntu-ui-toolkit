@@ -170,11 +170,9 @@ Examples:
 }
 
 .popover {
-    dim: false;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
+    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
 }
 
 .popover .foreground {
@@ -188,9 +186,7 @@ Examples:
 }
 
 .sheet {
-    dim: false;
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
+    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -200,13 +196,14 @@ Examples:
 }
 
 .dialog {
-    dim: true;
-    dimColor: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
-    dimOpacity: 1.0;
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingDuration: 50;
-    fadingEasing: Easing.OutQuad;
+    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
+}
+.dialog .background {
+    dim: true;
+    color: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    opacity: 1.0;
 }
 .dialog .foreground {
     minimumWidth: units.gu(38);

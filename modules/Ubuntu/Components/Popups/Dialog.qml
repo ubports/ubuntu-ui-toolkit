@@ -117,13 +117,13 @@ PopupBase {
       The property holds the margins from the dialog's dismissArea. The property
       is themed.
       */
-    property real edgeMargins: ComponentUtils.style(dialog, "edgeMargins", 0)
+    property real edgeMargins
 
     /*!
       The property holds the margin from the dialog's caller. The property
       is themed.
       */
-    property real callerMargin: ComponentUtils.style(dialog, "callerMargin", 0)
+    property real callerMargin
 
     /*!
       The property controls whether the dialog is modal or not. Modal dialogs block
@@ -159,15 +159,17 @@ PopupBase {
         id: foreground
         // FIXME: see above
         Theming.ItemStyle.class: "foreground"
-        width: Math.min(minWidth, dialog.width)
+        width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
 
         // used in the delegate
         property string title
         property string text
-        property real minWidth: Theming.ComponentUtils.style(foreground, "minimumWidth", 0)
-        property real minHeight: Theming.ComponentUtils.style(foreground, "minimumHeight", 0)
+        property real minimumWidth
+        property real minimumHeight
         property real maxHeight: 3*dialog.height/4
+        property real margins
+        property real itemSpacing
 
         height: childrenRect.height
 
@@ -177,10 +179,10 @@ PopupBase {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                margins: Theming.ComponentUtils.style(foreground, "margins", 0)
+                margins: foreground.margins
             }
-            spacing: Theming.ComponentUtils.style(foreground, "itemSpacing", 0)
-            height: childrenRect.height + Theming.ComponentUtils.style(foreground, "margins", 0)
+            spacing: foreground.itemSpacing
+            height: childrenRect.height + foreground.margins
             onWidthChanged: updateChildrenWidths();
 
             Label {
