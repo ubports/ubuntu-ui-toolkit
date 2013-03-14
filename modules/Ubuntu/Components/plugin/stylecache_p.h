@@ -48,7 +48,6 @@ public:
         StyleData *parent;
         SelectorNode node;
         QHash<SelectorNode, StyleData*> children;
-        short refCount;
     };
 
 public:

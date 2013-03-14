@@ -26,19 +26,15 @@
 #include <QtCore/QRegularExpression>
 
 StyleCache::StyleData::StyleData(StyleData *parent) :
-    style(0), delegate(0), parent(parent), refCount(0)
+    style(0), delegate(0), parent(parent)
 {}
 
 StyleCache::StyleData::StyleData(const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate, StyleData *parent) :
-    style(style), delegate(delegate), parent(parent), node(node), refCount(0)
+    style(style), delegate(delegate), parent(parent), node(node)
 {}
 
 StyleCache::StyleData::~StyleData()
 {
-    if (--refCount > 0) {
-        return;
-    }
-
     if (style)
         delete style;
     style = 0;
@@ -212,27 +208,9 @@ StyleCache::~StyleCache()
 void StyleCache::clear()
 {
     cache.clear();
-    if (styles && styles->refCount > 0) {
-        // decrement data reference counter
-        styles->refCount--;
-    } else
-        delete styles;
-    // detach or reset data
-    styles = 0;
-}
-
-/*!
- * \internal
- * Assignment operator, copies the style data from other to this, increasing reference count
- * of the data copied.
- */
-StyleCache &StyleCache::operator=(StyleCache &other)
-{
-    clear();
-    styles = other.styles;
     if (styles)
-        styles->refCount++;
-    return *this;
+        delete styles;
+    styles = 0;
 }
 
 /*!
