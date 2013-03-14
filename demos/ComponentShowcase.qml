@@ -74,7 +74,7 @@ Item {
             //}
             ListElement {
                 label: "Header"
-                source: ""
+                source: "Header.qml"
                 chapter: "Building blocks"
             }
             ListElement {

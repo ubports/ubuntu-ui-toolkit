@@ -31,53 +31,50 @@ import "stack.js" as Stack
     \qml
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
+        MainView {
+            PageStack {
+                id: pageStack
+                Component.onCompleted: pageStack.push(page0)
 
-        PageStack {
-            id: pageStack
-            anchors.fill: parent
+                Page {
+                    id: page0
+                    title: "Root page"
 
-            Component.onCompleted: pageStack.push(page0)
-
-            Page {
-                id: page0
-                title: "Root page"
-                anchors.fill: parent
-
-                Column {
-                    anchors.fill: parent
-                    ListItem.Standard {
-                        text: "Page one"
-                        onClicked: pageStack.push(rect, {color: "red"})
-                        progression: true
+                    Column {
+                        anchors.fill: parent
+                        ListItem.Standard {
+                            text: "Page one"
+                            onClicked: pageStack.push(rect, {fillColor: "red"})
+                            progression: true
+                        }
+                        ListItem.Standard {
+                            text: "Page two (external)"
+                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                            progression: true
+                        }
                     }
-                    ListItem.Standard {
-                        text: "Page two (external)"
-                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                        progression: true
+                }
+
+                Page {
+                    id: fillColor
+                    property alias color: rect.color
+                    Rectangle {
+                        id: rect
+                        anchors.fill: parent
+                        visible: false
                     }
                 }
             }
-
-            Rectangle {
-                id: rect
-                anchors.fill: parent
-                visible: false
-            }
         }
     \endqml
+
+    Use PageStack inside \l MainView and push \l Page items onto the stack to ensure
+    automatic header and toolbar.
 */
 
-Item {
+PageTreeNode {
     id: pageStack
-
-    /*!
-      \internal
-      Show a header bar at the top of the page stack which shows a back button
-      to pop the top, and the title of the current page on top.
-     */
-    // TODO: Decide on our approach to Toolbars. For now, we always show a
-    // header toolbar, but it is not part of the public API.
-    property alias __showHeader: header.visible
+    anchors.fill: parent
 
     /*!
       \preliminary
@@ -91,58 +88,17 @@ Item {
       \preliminary
       The currently active page
      */
-    property Item currentPage
-
-    /*!
-      \internal
-      The instance of the stack from javascript
-     */
-    property var stack: new Stack.Stack()
-
-    /*!
-      The tools of currentPage. If the current page does not define tools,
-      a default set of tools is used consisting of only a back button that is
-      visible when depth > 1.
-     */
-    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
-                               && currentPage.tools ? currentPage.tools : __defaultTools
-
-    /*! \internal */
-    onToolsChanged: if (tools) tools.__pageStack = pageStack;
-
-    /*!
-      \internal
-      The tools to be used if page does not define tools. It features only
-      the default back button.
-     */
-    property ToolbarActions __defaultTools: ToolbarActions { __pageStack: pageStack }
-
-    /*!
-      \internal
-      Create a PageWrapper for the specified page.
-     */
-    function __createWrapper(page, properties) {
-        var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-        // TODO: cache the component?
-        var wrapperObject = wrapperComponent.createObject(pageContents);
-        wrapperObject.reference = page;
-        wrapperObject.parent = pageContents;
-        wrapperObject.properties = properties;
-        wrapperObject.pageStack = pageStack;
-        return wrapperObject;
-    }
+    property Item currentPage: null
 
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
      */
     function push(page, properties) {
-        if (stack.size() > 0) stack.top().active = false;
-
-        stack.push(__createWrapper(page, properties));
-        stack.top().active = true;
-
-        __stackUpdated();
+        if (internal.stack.size() > 0) internal.stack.top().active = false;
+        internal.stack.push(internal.createWrapper(page, properties));
+        internal.stack.top().active = true;
+        internal.stackUpdated();
     }
 
     /*!
@@ -151,18 +107,16 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (stack.size() < 1) {
+        if (internal.stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
+        internal.stack.top().active = false;
+        if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+        internal.stack.pop();
+        internal.stackUpdated();
 
-        stack.top().pageStack = null;
-        stack.top().active = false;
-        if (stack.top().canDestroy) stack.top().destroyObject();
-        stack.pop();
-        if (stack.size() > 0) stack.top().active = true;
-
-        __stackUpdated();
+        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -170,62 +124,35 @@ Item {
       Deactivate the active page and clear the stack.
      */
     function clear() {
-        while (stack.size() > 0) {
-            stack.top().pageStack = null;
-            stack.top().active = false;
-            if (stack.top().canDestroy) stack.top().destroyObject();
-            stack.pop();
+        while (internal.stack.size() > 0) {
+            internal.stack.top().active = false;
+            if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+            internal.stack.pop();
         }
-        __stackUpdated();
+        internal.stackUpdated();
     }
 
-    /*!
-      \internal
-     */
-    function __stackUpdated() {
-        pageStack.depth = stack.size();
-        if (pageStack.depth > 0) currentPage = stack.top().object;
-        else currentPage = null;
-        contents.updateHeader();
-    }
+    QtObject {
+        id: internal
 
-    Item {
-        id: contents
-        parent: pageStack
-        anchors.fill: pageStack
+        /*!
+          The instance of the stack from javascript
+         */
+        property var stack: new Stack.Stack()
 
-        Item {
-            id: pageContents
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                top: header.visible ? header.bottom : parent.top
-            }
+        function createWrapper(page, properties) {
+            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
+            var wrapperObject = wrapperComponent.createObject(pageStack);
+            wrapperObject.reference = page;
+            wrapperObject.pageStack = pageStack;
+            wrapperObject.properties = properties;
+            return wrapperObject;
         }
 
-        // The header comes after the contents to ensure its z-order is higher.
-        // This ensures flickable contents never overlap the header,
-        // without having to resort to clipping.
-        Header {
-            id: header
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-            }
-            height: units.gu(5)
-        }
-
-        function updateHeader() {
-            var stackSize = stack.size();
-            if (stackSize > 0) {
-                var item = stack.top().object;
-                if (item.__isPage === true) header.title = item.title;
-                else header.title = "";
-            } else {
-                header.title = "";
-            }
+        function stackUpdated() {
+            pageStack.depth =+ stack.size();
+            if (pageStack.depth > 0) currentPage = stack.top().object;
+            else currentPage = null;
         }
     }
 }

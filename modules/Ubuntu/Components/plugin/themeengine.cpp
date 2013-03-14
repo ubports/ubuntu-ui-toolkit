@@ -133,11 +133,9 @@ void ThemeEnginePrivate::loadTheme(const QUrl &themeFile)
     if (themeLoaders.contains(fileType)) {
         removeWatchedFiles();
         QStringList watchedThemeFiles;
-        StyleCache newCache;
-        bool ok = themeLoaders.value(fileType)->loadTheme(url, watchedThemeFiles, newCache);
+        m_styleCache.clear();
+        bool ok = themeLoaders.value(fileType)->loadTheme(url, watchedThemeFiles, m_styleCache);
         if (ok && errorString.isEmpty()) {
-            // clear the previous style and use the loaded one
-            m_styleCache = newCache;
             addWatchedFiles(watchedThemeFiles);
             // emit themeChanged() to update style
             currentTheme = url;

@@ -22,7 +22,7 @@
         property is not found.
  */
 function itemStyleProperty(property, defaultValue) {
-    print("StyleUtils.itemStyleProperty is DEPRECATED");
+    print("StyleUtils.itemStyleProperty is DEPRECATED, called by "+parent);
     if (undefined !== itemStyle[property]) {
         return itemStyle[property];
     }

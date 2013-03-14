@@ -18,12 +18,31 @@ import Ubuntu.Components 0.1
 
 Item {
     // styling properties
-    property color backgroundColor
     anchors.fill: parent
     z: -1
+    id: mainViewDelegate
+
+    /*!
+      The background color of the main view.
+     */
+    property color backgroundColor
+
+    /*!
+      The background texture of the main view. The image will be drawn over the background color,
+      so if it has (semi-)transparent pixels, in those pixels the background color will be visible.
+     */
+    property url backgroundSource: ""
 
     Rectangle {
+        id: backgroundColor
         anchors.fill: parent
-        color: backgroundColor
+        color: mainViewDelegate.backgroundColor
+    }
+
+    Image {
+        id: backgroundTexture
+        anchors.fill: parent
+        source: mainViewDelegate.backgroundSource
+        fillMode: Image.Tile
     }
 }

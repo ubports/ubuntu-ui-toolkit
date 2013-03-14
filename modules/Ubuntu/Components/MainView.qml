@@ -22,24 +22,29 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1 as Theming
 
 /*!
-    \qmltype ApplicationWindow
+    \qmltype MainView
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The root Item for all applications
-
-    \b{This component is under heavy development.}
+    \brief The root Item for all applications. It automatically adds a header
+        and toolbar for its contents.
 
     Examples:
     \qml
         MainView {
-            Button {
-                anchors.centerIn: parent
-                text: "Click me"
+            Page {
+                title: "Header text"
+                Button {
+                    anchors.centerIn: parent
+                    text: "Click me"
+                }
             }
         }
     \endqml
+
+    Header and toolbar contents are automatically taken from \l Page, \l Tabs and \l PageStack.
+    Only one MainView must be used per application, and it should be the root Item of the application.
 */
-Item {
+PageTreeNode {
     id: mainView
 
     /*!
@@ -49,32 +54,22 @@ Item {
       */
     property string applicationName
 
-    // FIXME: any use of theming some times hides the children of the MainView,
-    //  so it is disabled for now. Make the background themable again after
-    //  this issue is resolved, and make sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076
-    //  does not come back
-    // FIXME: see FIXME above
-    //Theming.ItemStyle.class: "mainview"
-
-    /*!
-      \internal
-      FIXME: Make background themable.
-     */
-    Rectangle {
+    // FIXME: Make sure that the theming is only in the background, and the delegate
+    //  should not occlude contents of the MainView. When making changes here, make
+    //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
+    Item {
+        id: background
+        Theming.ItemStyle.class: "mainview"
         anchors.fill: parent
-        color: "#ededf0"
     }
-
-    /*!
-      \preliminary
-      The list of actions that will be placed on the toolbar of the application.
-     */
-    // TODO: Assign the list of actions automatically if the first child of MainView
-    //  is an instance of Tabs, PageStack or Page.
-    property alias tools: toolbar.tools
 
     // clip if the MainView is not fullscreen
     clip: true
+
+    /*!
+      MainView is active by default.
+     */
+    active: true
 
     /*!
       \internal
@@ -86,21 +81,18 @@ Item {
         anchors.fill: parent
     }
 
-    Toolbar {
-        id: toolbar
-        tools: getTools()
+    /*!
+      The header of the MainView. Can be used to obtain the height of the header
+      in \l Page to determine the area for the \l Page to fill.
+     */
+    header: headerItem
+    Header {
+        id: headerItem
+    }
 
-        function getTools() {
-            if (contents.children.length < 1) return null;
-            if (!contents.children[0].hasOwnProperty("tools")) return null;
-            var tools = contents.children[0].tools;
-            if (!tools) return null;
-            if (!tools.hasOwnProperty("back")) return null;
-            if (!tools.hasOwnProperty("__pageStack")) return null;
-            if (!tools.hasOwnProperty("active")) return null;
-            if (!tools.hasOwnProperty("lock")) return null;
-            return tools;
-        }
+    toolbar: toolbarItem
+    Toolbar {
+        id: toolbarItem
     }
 
     /*! \internal */

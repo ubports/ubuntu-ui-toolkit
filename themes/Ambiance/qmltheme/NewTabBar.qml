@@ -34,7 +34,7 @@ Item {
     property real headerTextBottomMargin
 
     property real buttonPositioningVelocity
-    property int deactivateTime
+    property int deactivateTime: 1000
     /*!
       The set of tabs this tab bar belongs to
      */
@@ -191,8 +191,9 @@ Item {
             bottom: parent.bottom
         }
 
-        // initial width needs to be parent.width, otherwise the contents will be messed up
-        property real buttonRowWidth: currentItem ? currentItem.width : parent.width
+        // set to the width of one tabButtonRow in Component.onCompleted.
+        property real buttonRowWidth
+
         property var buttons: []
 
         // Track which button was last clicked
@@ -248,7 +249,8 @@ Item {
         }
 
         Component.onCompleted: {
-            selectButton(tabs.selectedTabIndex)
+            selectButton(tabs.selectedTabIndex);
+            buttonRowWidth = currentItem.width;
         }
 
         onDragEnded: activatingTimer.stop()
@@ -258,7 +260,7 @@ Item {
         onMovementEnded: idleTimer.restart()
         Timer {
             id: idleTimer
-            interval: 1000
+            interval: tabBar.deactivateTime
             running: tabBar.active
             onTriggered: tabBar.active = false
         }

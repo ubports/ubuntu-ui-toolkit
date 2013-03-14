@@ -40,16 +40,16 @@ function __initPage(pageWrapper) {
             // create the object
             if (pageWrapper.properties) {
                 // initialize the object with the given properties
-                pageObject = pageComponent.createObject(pageWrapper.parent, pageWrapper.properties);
+                pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
             } else {
-                pageObject = pageComponent.createObject(pageWrapper.parent);
+                pageObject = pageComponent.createObject(pageWrapper);
             }
             pageWrapper.canDestroy = true;
         }
     } else {
         // page reference is an object
         pageObject = pageWrapper.reference;
-        pageObject.parent = pageWrapper.parent;
+        pageObject.parent = pageWrapper;
         pageWrapper.canDestroy = false;
 
         // copy the properties to the page object
@@ -61,8 +61,6 @@ function __initPage(pageWrapper) {
     }
 
     pageWrapper.object = pageObject;
-    updatePageStack(pageWrapper)
-
     return pageObject;
 }
 
@@ -73,9 +71,15 @@ function __initPage(pageWrapper) {
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
         __initPage(pageWrapper);
-        __detectFlickable(pageWrapper);
     }
+    // Having the same page pushed multiple times on a stack changes
+    // the parent of the page object. Change it back here.
+    pageWrapper.object.parent = pageWrapper;
+
+    // Some page objects are invisible initially. Make visible.
+
     pageWrapper.object.visible = true;
+    pageWrapper.active = true;
 }
 
 /*!
@@ -83,9 +87,7 @@ function activate(pageWrapper) {
   Hide page object.
  */
 function deactivate(pageWrapper) {
-    if (pageWrapper.object) {
-        pageWrapper.object.visible = false;
-    }
+    pageWrapper.active = false;
 }
 
 /*!
@@ -98,50 +100,5 @@ function destroyObject(pageWrapper) {
         pageWrapper.object.destroy();
         pageWrapper.object = null;
         pageWrapper.canDestroy = false;
-    }
-}
-
-function updateParent(pageWrapper) {
-    if (pageWrapper.object) {
-        pageWrapper.object.parent = pageWrapper.parent;
-        pageWrapper.object.visible = pageWrapper.active;
-    }
-}
-
-function updatePageStack(pageWrapper) {
-    var pageObject = pageWrapper.object;
-    if (pageObject) {
-        if (pageObject.__isPage) {
-            pageObject.pageStack = pageWrapper.pageStack;
-        }
-    }
-}
-
-function __isFlickable(object) {
-    if (object) {
-        if (object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection")) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function __detectFlickable(pageWrapper) {
-    pageWrapper.flickable = null;
-    var pageObject = pageWrapper.object;
-    if (pageObject !== null) {
-        if (__isFlickable(pageObject)) {
-            pageWrapper.flickable = pageObject;
-        } else {
-            // detect whether any of pageObject's children is flickable
-            var i = 0;
-            var child;
-            while (flickable === null && i < pageObject.children.length) {
-                if (__isFlickable(pageObject.children[i])) {
-                    pageWrapper.flickable = pageObject.children[i];
-                }
-                i++;
-            }
-        }
     }
 }

@@ -31,6 +31,7 @@ properties typed as variant.
 @qml-mapping(.textfield, , TextAreaDelegate);
 @qml-mapping(.textarea, , TextAreaDelegate);
 @qml-mapping(.mainview, , MainViewDelegate);
+@qml-mapping(.header, , HeaderDelegate);
 /*
 qml-import defines the QML modules defining the style rules and delegates defined in
 a qml-mapping.
@@ -90,10 +91,6 @@ Examples:
     color: "#888888";
 }
 
-.mainview {
-    backgroundColor: "#ededf0";
-}
-
 .transparent-button {
 }
 
@@ -150,6 +147,23 @@ Examples:
     deactivateTime: 3000;
     buttonPositioningVelocity: 1.0;
     headerTextFadeDuration: 350;
+}
+
+.mainview {
+    backgroundColor: "#ededf0";
+    backgroundSource: url("artwork/background_paper.png");
+}
+
+.header {
+    contentHeight: units.gu(7.5);
+    backgroundSource: url("artwork/background_paper.png");
+    backgroundColor: "#ededf0";
+    separatorSource: url("artwork/PageHeaderBaseDividerLight.sci");
+    separatorBottomSource: url("artwork/PageHeaderBaseDividerBottom.png");
+    textLeftMargin: units.gu(2);
+    fontWeight: Font.Light;
+    fontSize: "x-large";
+    textColor: Qt.rgba(0.51, 0.51, 0.51, 0.9);
 }
 
 .dark-button {
