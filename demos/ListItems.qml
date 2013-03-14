@@ -327,7 +327,7 @@ Template {
                         text: i18n.tr("Split")
                         control: controlExample.createObject(parent)
                         progression: true
-                        onClicked: print("Progression clicked!")
+                        onProgressionClicked: print("Progression clicked!")
                     }
                     ListItem.Standard {
                         text: i18n.tr("Icon")
