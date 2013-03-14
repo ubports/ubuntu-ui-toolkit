@@ -54,10 +54,9 @@ class QmlThemeLoader : public ThemeLoader {
 public:
     QmlThemeLoader(QQmlEngine *engine);
     virtual ~QmlThemeLoader(){}
-    StyleTreeNode *loadTheme(const QUrl &path, QStringList &themeFiles);
+    bool loadTheme(const QUrl &path, QStringList &themeFiles, StyleCache &cache);
 
 private:
-    StyleTreeNode *styleTree;
     QStringList themeFiles;
 
 private:
@@ -75,7 +74,7 @@ private:
     bool parseTheme(const QUrl &url);
     bool parseAtRules(QTextStream &stream);
     bool parseDeclarations(QString &data, QTextStream &stream);
-    bool generateStyleQml();
+    bool generateStyleQml(StyleCache &cache);
     QPair<QString, QString> selectorMapping(const Selector &selector);
     void buildStyleAndDelegate(Selector &selector, PropertyHash &properties, QString &style, QString &delegate);
 

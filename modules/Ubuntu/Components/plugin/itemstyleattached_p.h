@@ -20,7 +20,7 @@
 #define ITEMSTYLEATTACHED_P_H
 
 #include "itemstyleattached.h"
-#include "suffixtree_p.h"
+#include "stylecache_p.h"
 
 class QQmlContext;
 class ItemStyleAttachedPrivate {
@@ -39,7 +39,7 @@ public:
 
     // internal members
     QQmlContext *componentContext;
-    StyleTreeNode *styleRule;
+    StyleCache::StyleData *styleRule;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;

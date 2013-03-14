@@ -35,7 +35,7 @@
   1. load file and build up selectorTable
   2. normalize selectorTable by updating each selector with the non-overridden
      properties from the base selector
-  3. build ThemeEngine's styleTree by creating Rule elements using the styles,
+  3. build ThemeEngine's styleCache by creating Rule elements using the styles,
      mappings and imports specified.
 
   TODOs:
@@ -474,7 +474,7 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
     return true;
 }
 
-bool QmlThemeLoader::generateStyleQml()
+bool QmlThemeLoader::generateStyleQml(StyleCache &cache)
 {
     QString styleQml;
     QString delegateQml;
@@ -493,7 +493,7 @@ bool QmlThemeLoader::generateStyleQml()
         if (!style && !delegate) {
             return false;
         }
-        styleTree->addStyleRule(selector, style, delegate);
+        cache.addStyleRule(selector, style, delegate);
     }
 
     return true;
@@ -684,8 +684,7 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
   CSS-LIKE THEME LOADER
 =============================================================================*/
 
-QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
-    styleTree(0)
+QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine)
 {
     m_engine = engine;
     // fill the callback maps
@@ -694,18 +693,16 @@ QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
     rules["qml-import"] = handleQmlImport;
 }
 
-StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles)
+bool QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles, StyleCache &cache)
 {
-    styleTree = 0;
+    bool ok = true;
     // parses the theme
     if (parseTheme(url)) {
 
         normalizeStyles();
         // build up the QML style tree
-        styleTree = new StyleTreeNode(0);
-        if (!generateStyleQml()) {
-            delete styleTree;
-            styleTree = 0;
+        if (!generateStyleQml(cache)) {
+            ok = false;
         } else
             themeFiles<< url.path() << this->themeFiles;
 
@@ -716,5 +713,5 @@ StyleTreeNode * QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFil
         selectorTable.clear();
     }
 
-    return styleTree;
+    return ok;
 }
