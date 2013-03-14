@@ -273,6 +273,9 @@ void ItemStyleAttachedPrivate::bindStyleWithDelegate()
         int styleIndex = styleMo->indexOfProperty(delegateProperty.name());
         if ((styleIndex == -1) || styleBindings.value(styleIndex))
             continue;
+        int attacheeIndex = attachee->metaObject()->indexOfProperty(delegateProperty.name());
+        if ((attacheeIndex != -1) && watchedProperties.contains(attacheeIndex) && !watchedProperties.value(attacheeIndex))
+            continue;
 
         // write and memorize
         QQmlProperty property(delegate, delegateProperty.name(), componentContext);

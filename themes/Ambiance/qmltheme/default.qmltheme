@@ -28,7 +28,7 @@ properties typed as variant.
 @qml-mapping (.sheet .foreground, , SheetForegroundDelegate);
 @qml-mapping (.dialog .foreground, , DialogForegroundDelegate);
 @qml-mapping (.pointer, , PointerDelegate);
-@qml-mapping(.textfield, TextFieldStyle, TextFieldDelegate);
+@qml-mapping(.textfield, , TextAreaDelegate);
 @qml-mapping(.textarea, , TextAreaDelegate);
 @qml-mapping(.mainview, , MainViewDelegate);
 /*
@@ -296,33 +296,21 @@ Examples:
    Clear button, hint and cursor are declared in atomic form (not hierarchically) so they can be reused.
 */
 
-@qml-mapping(.cursor, , EditorCursorDelegate);
-@qml-import(Ubuntu.Components 0.1);
-.textfield {
-    radius: "small";
-    normalFillColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
-    errorFillColor: "red";
-    opacity: item.enabled ? 1.0 : 0.1;
-    color: (item.enabled) ? "#757373" : "darkgray";
-    selectedTextColor: "white";
-    selectionColor: "#19B6EE";
-    overlaySpacing: units.gu(0.5);
-    passwordCharacter: "\u2022";
-    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
-}
-
 /* clear button */
 .textfield .clear-button {
     iconSource: url("artwork/icon_clear.png");
 }
+
 /* hint */
 .textfield .label {
-   fontFamily: "Ubuntu";
    color: Qt.rgba(0.5, 0.5, 0.5, 0.5);
    fontSize: "medium";
    elide: Text.ElideRight;
 }
+
 /* cursor */
+@qml-mapping(.cursor, , EditorCursorDelegate);
+@qml-import(Ubuntu.Components 0.1);
 .cursor {
    color: Qt.rgba(0.4, 0.4, 0.4, 1.0);
    opacity: 1.0;
@@ -335,15 +323,19 @@ Examples:
 /*
   TextArea styling
 */
-.textarea {
+.textfield, .textarea{
     radius: "small";
-    backgroundColor: (item.enabled) ? ((item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1)) :
-        Qt.rgba(1, 1, 1, 0.1);
+    error: false;
+    backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    errorColor: "red";
+    backgroundOpacity: item.enabled ? 1.0 : 0.1;
     color: (item.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
     font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});
     frameSpacing: units.gu(1);
+    overlaySpacing: units.gu(0.5);
+    passwordCharacter: "\u2022";
 }
 /* hint */
 .textarea .label {
