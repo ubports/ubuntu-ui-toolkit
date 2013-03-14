@@ -162,7 +162,7 @@ Examples:
     Popups (Popover, Dialog, Sheet)
 */
 .pointer {
-    imageSource: (item.direction === "left") ? url(artwork/LeftArrow.png) :
+    source: (item.direction === "left") ? url(artwork/LeftArrow.png) :
                 (item.direction === "right") ? url(artwork/RightArrow.png) :
                 (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
     longAxis: units.gu(2);
