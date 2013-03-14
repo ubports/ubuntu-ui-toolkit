@@ -136,20 +136,36 @@ Empty {
      */
     property alias iconFrame: iconHelper.hasFrame
 
+    /*!
+      Called when clicked on progression button
+    */
+    signal progressionClicked
+
     // If there is a control, the controlArea covers the listItem's mouseArea,
     // so in that case use the highlights below when pressed
     highlightWhenPressed: !listItem.control
 
+    /*!
+      \internal
+     */
+    property bool controlAreaPressed: false
     Rectangle {
         id: controlHighlight
-        visible: controlArea.pressed
-        anchors.fill: controlArea
+
+        visible: control && controlAreaPressed
+        anchors {
+            top: parent.top
+            right: progressionHelper.visible ? progressionHelper.left : parent.right
+            bottom: parent.bottom
+            left: parent.left
+        }
         color: "#E6E6E6"
         opacity: 0.7
     }
+
     Rectangle {
         id: progressionHighlight
-        visible: listItem.progression && listItem.pressed
+        visible: listItem.progression && listItem.pressed && !controlAreaPressed
         anchors {
             left: progressionHelper.left
             top: parent.top
@@ -212,6 +228,7 @@ Empty {
             right: controlContainer.left
         }
     }
+
     Item {
         id: controlContainer
         property AbstractButton control
@@ -228,19 +245,7 @@ Empty {
             control.parent = controlContainer;
         }
     }
-    MouseArea {
-        id: controlArea
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            left: parent.left
-            right: listItem.progression ? progressionHelper.left : parent.right
-        }
-        visible: control !== null
 
-        onClicked: control.clicked(mouse)
-        onPressedChanged: control.pressed = pressed
-    }
     ProgressionVisual {
         id: progressionHelper
         visible: listItem.progression
@@ -251,5 +256,24 @@ Empty {
             rightMargin: units.gu(2)
         }
         showSplit: control ? true : false
+    }
+
+    onClicked: {
+        if (__mouseArea.mouseX >= progressionHelper.x) {
+            progressionClicked()
+        } else if (control) {
+            control.clicked(mouse)
+            mouse.accepted = true
+            return
+        }
+        mouse.accepted = false
+    }
+
+    onPressedChanged: {
+        if (pressed && control && (__mouseArea.mouseX <= progressionHelper.x)) {
+            controlAreaPressed = true
+        } else {
+            controlAreaPressed = false
+        }
     }
 }
