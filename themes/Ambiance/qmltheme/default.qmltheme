@@ -75,7 +75,7 @@ Examples:
 
 .toolbar {
     color: "white";
-    opacity: 0.9;
+    barOpacity: 0.9;
     triggerSize: units.gu(2);
     hintSize: units.gu(2);
 }
@@ -87,9 +87,7 @@ Examples:
 
 .toolbar-button .label {
     fontSize: "x-small";
-    font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels(fontSize)});
     color: "#888888";
-    opacity: item.enabled ? 1.0 : 0.3;
 }
 
 .mainview {

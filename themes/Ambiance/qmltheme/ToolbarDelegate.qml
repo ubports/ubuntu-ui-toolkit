@@ -17,6 +17,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property color color
+    property real barOpacity
+
     anchors.fill: parent
 
     Rectangle {
@@ -27,8 +32,8 @@ Item {
             bottom: parent.bottom
         }
         height: parent.height //- dropshadow.height
-        color: StyleUtils.itemStyleProperty("color")
-        opacity: StyleUtils.itemStyleProperty("opacity")
+        color: visuals.color
+        opacity: barOpacity
     }
 
     Image {
