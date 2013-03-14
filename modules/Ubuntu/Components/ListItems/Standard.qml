@@ -270,7 +270,7 @@ Empty {
     }
 
     onPressedChanged: {
-        if (pressed && control && (__mouseArea.mouseX <= progressionHelper.x)) {
+        if (pressed && control && (__mouseArea.mouseX >= progressionHelper.x)) {
             __controlAreaPressed = true
         } else {
             __controlAreaPressed = false
