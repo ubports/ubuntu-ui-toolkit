@@ -77,7 +77,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                y: MathUtils.clamp(bar.height, draggingArea.mouseY - internal.movingDelta, 0, bar.height)
+                y: MathUtils.clamp(draggingArea.mouseY - internal.movingDelta, 0, bar.height)
             }
         },
         State {

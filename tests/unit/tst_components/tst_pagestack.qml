@@ -19,17 +19,85 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 TestCase {
-     name: "PageStackAPI"
+    name: "PageStackAPI"
 
-     function test_depth() {
-         compare(pageStack.depth,0,"depth is 0 by default")
-     }
+    function initTestCase() {
+        compare(pageStack.currentPage, null, "is not set by default");
+        compare(mainView.toolbar.tools, null, "no tools by default");
+        compare(mainView.header.title, "", "empty title by default");
+    }
 
-     function test_currentPage() {
-         compare(pageStack.currentPage,null,"is not set by default")
-     }
+    function test_depth() {
+        compare(pageStack.depth, 0, "depth is 0 by default");
+        pageStack.push(page1);
+        compare(pageStack.depth, 1, "depth is correctly increased when pushing a page");
+        pageStack.push(page2);
+        compare(pageStack.depth, 2, "depth is correctly updated when pushing a page");
+        pageStack.pop();
+        compare(pageStack.depth, 1, "depth is correctly decreased when popping a page");
+        pageStack.clear();
+        compare(pageStack.depth, 0, "depth is after clearing");
+    }
 
-     PageStack {
-         id: pageStack
-     }
+    function test_currentPage() {
+        compare(pageStack.currentPage, null, "currentPage is null by default");
+        pageStack.push(page1);
+        compare(pageStack.currentPage, page1, "currentPage properly updated");
+        pageStack.clear();
+        compare(pageStack.currentPage, null, "currentPage properly reset");
+    }
+
+    function test_active() {
+        pageStack.push(page1);
+        compare(page1.active, true, "Page is active after pushing");
+        pageStack.push(page2);
+        compare(page1.active, false, "Page no longer active after pushing a new page");
+        compare(page2.active, true, "New page is active after pushing");
+        pageStack.pop();
+        compare(page1.active, true, "Page re-activated when on top of the stack");
+        compare(page2.active, false, "Page no longer active after being popped");
+        pageStack.clear();
+    }
+
+    function test_title_bug1143345() {
+        pageStack.push(page1);
+        compare(mainView.header.title, "Title 1", "Header is correctly set by page");
+        page1.title = "New title";
+        compare(mainView.header.title, "New title", "Header title correctly updated by page");
+        pageStack.push(page2);
+        compare(mainView.header.title, "Title 2", "Header is correctly set by page");
+        pageStack.clear();
+        page1.title = "Title 1";
+    }
+
+    function test_tools_bug1126197() {
+        pageStack.push(page1);
+        compare(mainView.toolbar.tools, page1.tools, "Page successfully updated toolbar tools");
+        pageStack.push(page2);
+        compare(mainView.toolbar.tools, page2.tools, "Page successfully updated toolbar tools again");
+        pageStack.pop();
+        compare(mainView.toolbar.tools, page1.tools, "Tools updated after popping a page");
+        pageStack.clear();
+    }
+
+    MainView {
+        id: mainView
+        PageStack {
+            id: pageStack
+        }
+    }
+    Page {
+        id: page1
+        title: "Title 1"
+        tools: ToolbarActions {
+            id: tools1
+        }
+    }
+    Page {
+        id: page2
+        title: "Title 2"
+        tools: ToolbarActions {
+            id: tools2
+        }
+    }
 }
