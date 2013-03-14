@@ -19,7 +19,7 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.checkbox, , CheckBoxDelegate);
 @qml-mapping(.switch, , SwitchDelegate);
-@qml-mapping(.tabs, TabsStyle, TabsDelegate);
+@qml-mapping(.tabs, , TabsDelegate);
 @qml-mapping(.new-tabs, , NewTabsDelegate);
 @qml-mapping(.tab-button, , TabButtonDelegate);
 @qml-mapping(.custom-button, , ButtonDelegate);
