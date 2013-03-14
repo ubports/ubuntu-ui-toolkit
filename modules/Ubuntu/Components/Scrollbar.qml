@@ -96,12 +96,10 @@ Item {
 
     // styling
     Theming.ItemStyle.class: "scrollbar"
-    /*
-    // FIXME: see FIXME at the top
-    implicitWidth: Theming.ComponentUtils.style(scrollbar, "sensingAreaThickness", units.gu(4))
-    // FIXME: see FIXME at the top
-    implicitHeight: Theming.ComponentUtils.style(scrollbar, "sensingAreaThickness", units.gu(4))
-    */
+
+    implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
+    implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
+
     anchors {
         left: internals.leftAnchor(flickableItem)
         right: internals.rightAnchor(flickableItem)
