@@ -80,6 +80,7 @@ import Ubuntu.Components 0.1
 */
 AbstractButton {
     id: emptyListItem
+
     width: parent ? parent.width : units.gu(31)
     height: __height + bottomDividerLine.height
 
@@ -160,7 +161,7 @@ AbstractButton {
     ThinDivider {
         id: bottomDividerLine
         anchors.bottom: parent.bottom
-        visible: showDivider
+        visible: showDivider && (__height > 0)
     }
 
     /*!
@@ -169,8 +170,29 @@ AbstractButton {
       occlude the bottom divider line.
      */
     default property alias children: body.children
+
+    /*!
+      \preliminary
+      Defines the background color of the rectangle used in the background during the item removal
+     */
+    property alias backgroundColor: __backgroundItem.color
+
+    /*!
+      \preliminary
+      Defines the text color of the rectangle used in the background during the item removal
+     */
+    property alias backgroundTextColor: __backgroundText.color
+
+    /*!
+      \preliminary
+      Defines the display text visible during the item removal
+     */
+    property alias backgroundTex: __backgroundText.text
+
     Item {
-        id: body
+        id: bodyMargins
+
+        clip: true
         anchors {
             left: parent.left
             right: parent.right
@@ -178,10 +200,263 @@ AbstractButton {
             bottom: bottomDividerLine.top
             margins: emptyListItem.__contentsMargins
         }
+
+        Item {
+            id: body
+
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            width: parent.width
+
+            Behavior on x {
+                SequentialAnimation {
+                    NumberAnimation {
+                        duration: 200
+                    }
+                    ScriptAction {
+                         script: {
+                             emptyListItem.commitDrag()
+                        }
+                    }
+                }
+            }
+
+            onXChanged: {
+                if (x > 0) {
+                    __backgroundItem.state = "SLIDING-RIGHT"
+                } else {
+                    __backgroundItem.state = "SLIDING-LEFT"
+                }
+            }
+        }
+
+        Rectangle {
+            id: __backgroundItem
+
+            color: "gray"
+            opacity: 0.0
+
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            Label {
+                id: __backgroundText
+
+                property int slidingMargin: units.gu(3)
+
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                text: "Clear"
+                fontSize: "medium"
+                color: "#e8e1d0"
+                font.bold: true
+            }
+
+            states: [
+                State {
+                    name: "SLIDING-RIGHT"
+                    AnchorChanges {
+                        target: __backgroundItem
+                        anchors.left: parent.left
+                        anchors.right: body.left
+                    }
+                    PropertyChanges {
+                        target: __backgroundText
+                        anchors.rightMargin: slidingMargin
+                        anchors.leftMargin: 0
+                        horizontalAlignment: Text.AlignRight
+
+                    }
+                    PropertyChanges {
+                        target: __backgroundItem
+                        opacity: 1.0
+                    }
+                },
+                State {
+                    name: "SLIDING-LEFT"
+                    AnchorChanges {
+                        target: __backgroundItem
+                        anchors.left: body.right
+                        anchors.right: parent.right
+                    }
+                    PropertyChanges {
+                        target: __backgroundText
+                        anchors.rightMargin: 0
+                        anchors.leftMargin: slidingMargin
+                        horizontalAlignment: Text.AlignLeft
+                    }
+                    PropertyChanges {
+                        target: __backgroundItem
+                        opacity: 1.0
+                    }
+                }
+            ]
+        }
     }
 
     /*! \internal
       The spacing inside the list item.
      */
     property real __contentsMargins: units.gu(0)
+
+    /*!
+      \preliminary
+      Enable or disble this item
+     */
+    property bool removable: false
+
+    /*!
+      \preliminary
+      This is a read-only property that notify when the item is swiping
+     */
+    property bool swiping: false
+
+    /*! \internal
+      Defines the offset used when the item will start to move
+     */
+    property int __mouseMoveOffset: units.gu(4)
+
+    /*! \internal
+      Defines the offset limit to consider the item removed
+     */
+    property int __itemMoveOffset: width * 0.3
+
+    /*! \internal
+      Defines the inital pressed possition
+     */
+    property int __pressedPosition: 0
+
+    /*! \internal
+      Defines the final pressed possition
+     */
+    property int __positionEnded: 0
+
+    /*! \internal
+      Defines if the item is moving or not
+     */
+    property bool __held: false
+
+    /*! \internal
+      Defines if the item should be removed after the animation or not
+     */
+    property bool __removeItem: false
+
+    /*!
+      \preliminary
+      This handler is called when the item is removed from the list
+     */
+    signal itemRemoved
+
+    __mouseArea.drag.axis: Drag.XAxis
+
+    SequentialAnimation {
+        id: __removeItemAnimation
+        NumberAnimation {
+            target: emptyListItem
+            property: "__height"
+            to: 0
+            duration: 200
+        }
+        ScriptAction {
+             script: itemRemoved()
+        }
+    }
+
+    Connections {
+        target: __mouseArea
+
+        onPressed: {
+            if (!emptyListItem.removable) {
+                return;
+            }
+
+            emptyListItem.__pressedPosition = mouse.x
+        }
+
+        onMouseXChanged: {
+            if (!emptyListItem.removable) {
+                return;
+            }
+
+            var mouseOffset = emptyListItem.__pressedPosition - mouse.x
+            if ((emptyListItem.__pressedPosition != -1) && !emptyListItem.__held && ( Math.abs(mouseOffset) >= emptyListItem.__mouseMoveOffset)) {
+                emptyListItem.startDrag();
+            }
+        }
+
+        onPositionChanged: {
+            if (!emptyListItem.removable) {
+                return;
+            }
+
+            if (emptyListItem.__held) {
+                emptyListItem.__positionEnded = body.x;
+            }
+        }
+
+        onReleased: {
+            if (!emptyListItem.removable) {
+                return;
+            }
+
+            if (emptyListItem.__held) {
+                emptyListItem.endDrag();
+            }
+        }
+    }
+
+    // notify the start of the drag operation
+    function startDrag() {
+        swiping = true
+        body.anchors.left = undefined
+        __mouseArea.drag.target = body
+
+        __held = true
+        __mouseArea.drag.maximumX = parent.width
+        __mouseArea.drag.minimumX = (width * -1)
+        __backgroundItem.visible = true
+    }
+
+    // Commit the necessary changes to remove or not the item based on the mouse final position
+    function commitDrag() {
+        __pressedPosition = -1
+        __mouseArea.drag.target = null
+        __mouseArea.drag.target = null
+        __held = false
+        __positionEnded = body.x
+
+        if (__removeItem) {
+            __removeItemAnimation.start()
+        }
+        __removeItem = false
+
+        swiping = false
+        __backgroundItem.state = ""
+    }
+
+    // notify the releaso of the mouse button and the end of the drag operation
+    function endDrag() {
+        if (Math.abs(body.x) < __itemMoveOffset && __held == true) {
+            __removeItem = false
+            if (body.x == 0) {
+                commitDrag()
+            } else {
+                body.x = 0;
+            }
+        } else if (__held == true) {
+            __removeItem = true
+            if (body.x > 0) {
+                body.x = body.width
+            } else {
+                body.x = body.width * -1
+            }
+        }
+    }
 }

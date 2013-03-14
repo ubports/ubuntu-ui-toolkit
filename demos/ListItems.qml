@@ -38,7 +38,7 @@ Template {
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
                     "Value selector", "Subtitled", "Controls", "Captions and Dividers",
-                    "Grouped List"]
+                    "Grouped List", "Removable"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: i18n.tr("Types of list items") }
@@ -404,6 +404,45 @@ Template {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
                             i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
+                    }
+                }
+            }
+
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Removable"
+                Column {
+                    width: units.gu(31)
+                    ListItem.Header { text: i18n.tr("Removable") }
+                    ListItem.Standard {
+                        removable: true
+                        text: i18n.tr("Label")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        enabled: false
+                        removable: true
+                        text: i18n.tr("Disabled")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        selected: true
+                        removable: true
+                        text: i18n.tr("Selected")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("Split")
+                        removable: true
+                        control: controlExample.createObject(parent)
+                        progression: true
+                        onProgressionClicked: print("Progression clicked!")
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("Icon")
+                        removable: true
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                        control: controlExample.createObject(parent)
+                        showDivider: false
                     }
                 }
             }
