@@ -474,7 +474,7 @@ bool QmlThemeLoader::parseDeclarations(QString &data, QTextStream &stream)
     return true;
 }
 
-bool QmlThemeLoader::generateStyleQml()
+bool QmlThemeLoader::generateStyleQml(StyleCache &cache)
 {
     QString styleQml;
     QString delegateQml;
@@ -493,7 +493,7 @@ bool QmlThemeLoader::generateStyleQml()
         if (!style && !delegate) {
             return false;
         }
-        styleCache->addStyleRule(selector, style, delegate);
+        cache.addStyleRule(selector, style, delegate);
     }
 
     return true;
@@ -684,8 +684,7 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
   CSS-LIKE THEME LOADER
 =============================================================================*/
 
-QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
-    styleCache(0)
+QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine)
 {
     m_engine = engine;
     // fill the callback maps
@@ -697,13 +696,12 @@ QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine):
 bool QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles, StyleCache &cache)
 {
     bool ok = true;
-    styleCache = &cache;
     // parses the theme
     if (parseTheme(url)) {
 
         normalizeStyles();
         // build up the QML style tree
-        if (!generateStyleQml()) {
+        if (!generateStyleQml(cache)) {
             ok = false;
         } else
             themeFiles<< url.path() << this->themeFiles;

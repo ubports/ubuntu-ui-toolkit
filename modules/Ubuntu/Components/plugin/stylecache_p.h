@@ -56,7 +56,6 @@ public:
         StyleData *parent;
         SelectorNode node;
         QHash<SelectorNode, StyleData*> children;
-        short refCount;
         const unsigned short depth;
     };
 
@@ -64,7 +63,6 @@ public:
     StyleCache();
     ~StyleCache();
     void clear();
-    StyleCache &operator=(StyleCache &other);
     void addStyleRule(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
     StyleCache::StyleData *match(const Selector &selector);
 
