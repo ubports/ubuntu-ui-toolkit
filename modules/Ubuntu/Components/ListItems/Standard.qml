@@ -268,6 +268,9 @@ Empty {
         }
     }
 
+    /*!
+      \internal
+     */
     onPressedChanged: {
         if (listItem.pressed && control && (__mouseArea.mouseX < progressionHelper.x)) {
             listItem.__controlAreaPressed = true
