@@ -56,7 +56,7 @@ Item {
       \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
-    property bool hovered: mouseArea.containsMouse
+    property bool hovered: __acceptEvents && mouseArea.containsMouse
 
 
     /*! \internal
