@@ -100,6 +100,16 @@ PageTreeNode {
      */
     property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
+    /*!
+      \deprecated
+      This property is deprecated. Pages will now automatically update the toolbar when activated.
+     */
+    property ToolbarActions tools: null
+    onToolsChanged: print("Tabs.tools property was deprecated. "+
+                          "Pages will automatically update the toolbar when activated. "+
+                          "See CHANGES file, and use toolbar.tools instead when needed.");
+
+
     // FIXME: Using the VisualItemModel as a workaround for this bug:
     //  "theming: contentItem does work when it is a VisualItemModel"
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
