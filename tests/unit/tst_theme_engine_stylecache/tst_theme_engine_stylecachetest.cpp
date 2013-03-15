@@ -118,11 +118,46 @@ private Q_SLOTS:
         QCOMPARE(rule->selector(), expected);
 
         selector = Selector(".baseA>.baseB#id>.baseC");
-        expected = Selector(".baseA .baseB .baseC");
+        rule = cache.match(selector);
+        QVERIFY(!rule);
+
+        selector = Selector(".baseA>.baseB>.baseC>.baseD");
+        expected = Selector(".baseA .baseB>.baseC .baseD");
         rule = cache.match(selector);
         QVERIFY(rule);
-        // FIXME: this fails now, should be fixed in an upcomming branch
-        QVERIFY(!(rule->selector() == expected));
+        QCOMPARE(rule->selector(), expected);
+
+        selector = Selector(".baseA>.baseB .baseC>.baseD");
+        expected = Selector(".baseA .baseB .baseC .baseD");
+        rule = cache.match(selector);
+        QVERIFY(rule);
+        QCOMPARE(rule->selector(), expected);
+
+        selector = Selector(".baseA>.baseB .baseC>.baseD#id");
+        expected = Selector(".baseA .baseB .baseC .baseD");
+        rule = cache.match(selector);
+        QVERIFY(rule);
+        QCOMPARE(rule->selector(), expected);
+
+        selector = Selector(".baseA>.baseB .baseC .baseD");
+        expected = Selector(".baseA .baseB .baseC .baseD");
+        rule = cache.match(selector);
+        QVERIFY(rule);
+        QCOMPARE(rule->selector(), expected);
+
+        selector = Selector(".baseA .baseB .baseC .baseD#id");
+        expected = Selector(".baseA .baseB .baseC .baseD");
+        rule = cache.match(selector);
+        QVERIFY(rule);
+        QCOMPARE(rule->selector(), expected);
+
+        selector = Selector(".baseA .baseB>.baseC#id .baseD");
+        rule = cache.match(selector);
+        QVERIFY(!rule);
+
+        selector = Selector(".baseA .baseB .baseC#id .baseD");
+        rule = cache.match(selector);
+        QVERIFY(!rule);
     }
 
 };

@@ -70,6 +70,7 @@ private Q_SLOTS:
     void testCase_parseSelector();
     void testCase_selectorToString();
     void testCase_inheritance();
+    void testCase_lookupBenchmark();
 private:
     bool test_styleProperties(const QString &styleClass, const QString &propertyList, bool xfail);
 private:
@@ -235,9 +236,13 @@ void tst_ThemeEnginePrivate::testCase_styleRuleForPath()
     path = Selector("testC>testB baseA");
     rule = engine->styleRuleForPath(Selector("testC>testB>baseA"));
     QVERIFY2(rule != 0, "Rule not found.");
-    // FIXME: this is a bug, need to have a fix in a separate MR
-    result = (rule != 0) && (rule->selector() != path);
+    result = (rule != 0) && (rule->selector() == path);
     QCOMPARE(result, true);
+
+    path = Selector("testC testB baseA");
+    rule = engine->styleRuleForPath(Selector("testC testB>baseA"));
+    QVERIFY2(rule != 0, "Rule not found.");
+    QVERIFY((rule != 0) && (rule->selector() == path));
 }
 
 void tst_ThemeEnginePrivate::testCase_parseSelector()
@@ -349,6 +354,29 @@ bool tst_ThemeEnginePrivate::test_styleProperties(const QString &styleClass, con
         }
     }
     return !xfail;
+}
+
+void tst_ThemeEnginePrivate::testCase_lookupBenchmark()
+{
+    engine->errorString = QString();
+    engine->loadTheme(QUrl::fromLocalFile("../../resources/benchmark.qmltheme"));
+    QVERIFY(engine->errorString.isEmpty());
+    // disable cache
+    engine->m_styleCache.enableStyleCache = false;
+    Selector path("testC testB>baseA");
+    QTime t = QTime::currentTime();
+    int i;
+    for (i = 0; i < 100000; i++) {
+        // look for a path that doesn't exist
+        StyleCache::StyleData *rule = engine->styleRuleForPath(path);
+        //QCOMPARE(rule->selector().toString(), QString(".testc .testb .basea"));
+    }
+    qDebug() << QString("%1 loops for [%2] took %3 miliseconds")
+                .arg(i)
+                .arg(path.toString())
+                .arg(t.elapsed());
+    // enable cache
+    engine->m_styleCache.enableStyleCache = true;
 }
 
 

@@ -26,11 +26,11 @@
 #include <QtCore/QRegularExpression>
 
 StyleCache::StyleData::StyleData(StyleData *parent) :
-    style(0), delegate(0), parent(parent)
+    style(0), delegate(0), parent(parent), depth(parent ? parent->depth + 1 : 0)
 {}
 
 StyleCache::StyleData::StyleData(const SelectorNode &node, QQmlComponent *style, QQmlComponent *delegate, StyleData *parent) :
-    style(style), delegate(delegate), parent(parent), node(node)
+    style(style), delegate(delegate), parent(parent), node(node), depth(parent ? parent->depth + 1 : 0)
 {}
 
 StyleCache::StyleData::~StyleData()
@@ -126,7 +126,7 @@ Selector StyleCache::StyleData::selector() const
   valid for the case when the theme has rule for ".box>.frame>.button" selector
   and loking after ".box .frame .button" or ".box>.frame .button" selectors.
 */
-StyleCache::StyleData *StyleCache::StyleData::lookup(const Selector &path)
+StyleCache::MatchResult StyleCache::StyleData::lookup(const Selector &path, StyleData **match, int64_t &matchRank, int64_t searchRank)
 {
     // the spare contains the remainder
     Selector leftover = path;
@@ -134,58 +134,98 @@ StyleCache::StyleData *StyleCache::StyleData::lookup(const Selector &path)
     if (!leftover.isEmpty()) {
         nextPathNode = leftover.last();
         leftover.removeLast();
+    } else {
+        // there's nothing to do here
+        if (style || delegate) {
+            return setMatch(match, matchRank, searchRank);
+        } else
+            return NoMatch;
     }
-
-    StyleData *rule = 0;
 
     // special case: root node forwards the lookup to its children
     if (!parent) {
-        rule = test(nextPathNode, leftover);
+        return test(nextPathNode, leftover, match, matchRank, searchRank);
     } else {
+        if (leftover.isEmpty() && (node == nextPathNode)) {
+            if (style || delegate) {
+                return setMatch(match, matchRank, searchRank);
+            } else
+                return NoMatch;
+        }
         // check whether we have a child that satisfies the node
         // try to remove elements from the path, maybe we still can get a match
-        while (!rule) {
-            rule = test(nextPathNode, leftover);
-            if (!rule && !leftover.isEmpty()) {
+        MatchResult result = NoMatch;
+        while (!result) {
+            result = test(nextPathNode, leftover, match, matchRank, searchRank);
+            if ((result == NoMatch) && !leftover.isEmpty()) {
                 nextPathNode = leftover.last();
                 leftover.removeLast();
-            } else
-                break;
+            } else if ((result == NoMatch) && leftover.isEmpty()) {
+                // nothing to parse anymore, set rule as this
+                if (style || delegate) {
+                    result = setMatch(match, matchRank, searchRank);
+                } else
+                    break;
+            }
         }
+        return result;
     }
-
-    // we have consumed the path, return the style from the node/leaf
-    if (!rule && (style || delegate))
-        rule = this;
-
-    return rule;
 }
 
 /*!
   \internal
   Test whether a child matches the criteria
 */
-StyleCache::StyleData *StyleCache::StyleData::test(SelectorNode &nextNode, const Selector &leftover)
+StyleCache::MatchResult StyleCache::StyleData::test(SelectorNode &nextNode, const Selector &leftover, StyleData **match, int64_t &matchRank, int64_t searchRank)
 {
-    StyleData *rule = 0;
-    unsigned nodeRank = nextNode.rank();
+    // depending on the relation in nextNode we check in strict or loose children
+    bool strict = nextNode.relation() == SelectorNode::Child;
+    MatchResult ret = NoMatch;
 
-    StyleData *child = children.value(nextNode);
-    if (child) {
-        rule = child->lookup(leftover);
-    }
-    if (!rule && ((nodeRank & SelectorNode::RankId) == SelectorNode::RankId)) {
-        child = children.value(SelectorNode(nextNode, SelectorNode::NoStyleId));
-        if (child)
-            rule = child->lookup(leftover);
-    }
-    if (!rule && ((nodeRank & SelectorNode::RankChild) == SelectorNode::RankChild)) {
-        child = children.value(SelectorNode(nextNode, SelectorNode::NoRelation));
-        if (child)
-            rule = child->lookup(leftover);
+    StyleData *childNode = children.value(nextNode);
+    if (childNode)
+        ret = childNode->lookup(leftover, match, matchRank, searchRank);
+
+    if ((ret == NoMatch) && !nextNode.id().isEmpty() && !parent) {
+        // we have style name, check without that; this can be applied only on the first node
+        // in the selector
+        childNode = children.value(SelectorNode(nextNode, SelectorNode::NoStyleId));
+        if (childNode)
+            ret = childNode->lookup(leftover, match, matchRank, searchRank);
     }
 
-    return rule;
+    if (strict) {
+        // try to lookup with loose relation
+        nextNode = SelectorNode(nextNode, SelectorNode::NoRelation);
+        childNode = children.value(nextNode);
+        if (childNode)
+            ret = childNode->lookup(leftover, match, matchRank, searchRank);
+        if ((ret == NoMatch) && !nextNode.id().isEmpty() && !parent) {
+            // same for loose relationship: we have style name, check without that; this can be applied only on the first node
+            // in the selector
+            childNode = children.value(SelectorNode(nextNode, SelectorNode::NoStyleId));
+            if (childNode)
+                ret = childNode->lookup(leftover, match, matchRank, searchRank);
+        }
+    }
+
+    return ret;
+}
+
+StyleCache::MatchResult StyleCache::StyleData::setMatch(StyleData **match, int64_t &matchRank, int64_t searchRank)
+{
+    if (*match && ((*match)->depth > depth))
+        // the current match depth (selector length) is higher
+        return !(searchRank - matchRank) ? ExactMatch : Match;
+
+    int64_t rank = selector().rank();
+    if (*match && ((*match)->depth == depth) && ((searchRank - matchRank) <= (searchRank - rank))) {
+        // the previous match has higher rank (is closer to the searched path)
+        return !(searchRank - matchRank) ? ExactMatch : Match;
+    }
+    matchRank = rank;
+    *match = this;
+    return !(searchRank - matchRank) ? ExactMatch : Match;
 }
 
 /*
@@ -193,7 +233,7 @@ StyleCache::StyleData *StyleCache::StyleData::test(SelectorNode &nextNode, const
  *
  */
 
-StyleCache::StyleCache() : styles(0)
+StyleCache::StyleCache() : enableStyleCache(true), styles(0)
 {}
 
 StyleCache::~StyleCache()
@@ -230,25 +270,30 @@ void StyleCache::addStyleRule(const Selector &path, QQmlComponent *style, QQmlCo
   tail as the styles are stored in the tree in suffix form. The \a strict
   parameter specifies whether the search should be strict on the relationship or
   not.
-
-  For example we have a style which defines a rule identified by the ".box > .frame .button"
-  selector. A styled Item is looking after ".box > .frame > .button" selector,
-  but as there is no exact match found for "> .button" node, as the strictness
-  is loose the algorithm will ignore the relationship and start looking after the
-  ".button" node, and continue the search in its children by no longer ignoring
-  the relationship. This means that the ".box > .frame .button" rule will be
-  returned for the ".box > .frame > .button" Item. If the theme would have only
-  the ".box .frame .button" rule defined, the lookup would not match that rule.
 */
 StyleCache::StyleData *StyleCache::match(const Selector &selector)
 {
     StyleData *result = 0;
 
     if (styles) {
-        result = cache.value(selector);
+        if (enableStyleCache)
+            result = cache.value(selector);
         if (!result) {
-            result = styles->lookup(selector);
-            if (result)
+            int64_t searchRank = selector.rank();
+            int64_t matchRank = 0L;
+            styles->lookup(selector, &result, matchRank, searchRank);
+
+            if (!result) {
+                Selector copy(selector);
+                SelectorNode last = selector.last();
+                // check if the class wasn't empty and if it was, search with the type
+                if (!last.getClass().isEmpty() && !last.type().isEmpty()) {
+                    copy.last() = SelectorNode("", last.type(), last.id(), last.relation());
+                    styles->lookup(copy, &result, matchRank, searchRank);
+                }
+            }
+
+            if (result && enableStyleCache)
                 cache.insert(selector, result);
         }
     }
