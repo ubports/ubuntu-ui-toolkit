@@ -56,12 +56,12 @@ Item {
       \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
-    property bool hovered: mouseArea.containsMouse
+    property bool hovered: __acceptEvents && mouseArea.containsMouse
 
 
     /*! \internal
       Disable or enable signal emition by default.
-      Some classes whant to emit the signal by theyselfs (Standard)
+      Some classes want to emit the signal by themselves (ListItem.Standard)
      */
     property bool __acceptEvents: true
 

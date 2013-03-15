@@ -192,6 +192,7 @@ AbstractButton {
     Item {
         id: bodyMargins
 
+        z: -1
         clip: true
         anchors {
             left: parent.left
