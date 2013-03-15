@@ -308,7 +308,7 @@ AbstractButton {
 
     /*!
       \preliminary
-      Enable or disble this item
+      Defines if this item can be removed or not.
      */
     property bool removable: false
 
