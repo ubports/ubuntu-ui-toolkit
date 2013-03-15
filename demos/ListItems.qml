@@ -435,7 +435,7 @@ Template {
                         removable: true
                         control: controlExample.createObject(parent)
                         progression: true
-                        onProgressionClicked: print("Progression clicked!")
+                        onClicked: print("Progression clicked!")
                     }
                     ListItem.Standard {
                         text: i18n.tr("Icon")
