@@ -77,6 +77,26 @@ PageTreeNode {
     anchors.fill: parent
 
     /*!
+      \internal
+      Please do not use this property any more. \l MainView now has a header
+      property that controls when the header is shown/hidden.
+     */
+    property bool __showHeader: true
+    QtObject {
+        property alias showHeader: pageStack.__showHeader
+        onShowHeaderChanged: print("__showHeader is deprecated. Do not use it.")
+    }
+
+    /*!
+      \deprecated
+      This property is deprecated. Pages will now automatically update the toolbar when activated.
+     */
+    property ToolbarActions tools: null
+    onToolsChanged: print("MainView.tools property was deprecated. "+
+                          "Pages will automatically update the toolbar when activated. "+
+                          "See CHANGES file, and use toolbar.tools instead when needed.");
+
+    /*!
       \preliminary
       The current size of the stack
      */
