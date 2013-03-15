@@ -58,6 +58,13 @@ Item {
      */
     property bool hovered: mouseArea.containsMouse
 
+
+    /*! \internal
+      Disable or enable signal emition by default.
+      Some classes whant to emit the signal by theyselfs (Standard)
+     */
+    property bool __acceptEvents: true
+
     /*!
       \internal
       To get the properties of the mouse area in subclasses.
@@ -71,7 +78,15 @@ Item {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
-        onClicked: button.clicked(mouse)
-        onPressAndHold: button.pressAndHold(mouse)
+        onClicked: {
+            if (button.__acceptEvents) {
+                button.clicked(mouse)
+            }
+        }
+        onPressAndHold: {
+            if (button.__acceptEvents) {
+                button.pressAndHold(mouse)
+            }
+        }
     }
 }

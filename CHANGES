@@ -23,8 +23,6 @@ API Changes
   update MainView.toolbar.tools when they become active.
 * Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
   Use a Loader if you were using a URL first.
-* ListItem.Standard
-  + new signal 'progressionClicked' : Called when clicked on progression button.
 
 SDK 0.1.36
 ##########
