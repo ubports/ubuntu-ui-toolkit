@@ -61,7 +61,7 @@ Item {
 
     /*! \internal
       Disable or enable signal emition by default.
-      Some classes whant to emit the signal by theyselfs (Standard)
+      Some classes whant to emit the signal by themselves (ListItem.Standard)
      */
     property bool __acceptEvents: true
 
