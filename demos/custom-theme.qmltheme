@@ -11,7 +11,7 @@
 }
 
 .custom-button {
-    color: item.hovered ? "lightgray" : "#a3e5e8";
+    color: item.hovered ? Qt.rgba(0.6, 0.2, 0.6, 0) : "#a3e5e8";
 }
 
 .button#custom-name {
