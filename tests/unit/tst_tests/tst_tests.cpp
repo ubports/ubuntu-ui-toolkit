@@ -15,4 +15,4 @@
  *
  */
 #include <QtQuickTest/quicktest.h>
-QUICK_TEST_MAIN(test)
+QUICK_TEST_MAIN(tests)

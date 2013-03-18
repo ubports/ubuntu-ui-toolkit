@@ -22,14 +22,8 @@ TestCase {
         id: root
     }
 
-    function test_canLoad_UbuntuTest() {
-        var obj = Qt.createQmlObject("import QtQuick 2.0; import Ubuntu.Test 0.1; Rectangle { id: root; }",root);
+    function test_canLoad_UbuntuTests() {
+        var obj = Qt.createQmlObject("import QtQuick 2.0; import Ubuntu.Tests 0.1; Rectangle { id: root; Rectangle { objectName: \"myObj\"} Component.onCompleted: Tools.findChild(root,\"myObj\")}",root);
         compare(obj!==undefined,true,"Object was created");
-    }
-
-    function test_findChild() {
-        var obj = Qt.createQmlObject("import QtQuick 2.0; import Ubuntu.Test 0.1; Rectangle { id: root; property variant val; Rectangle { objectName: \"myObj\"} Component.onCompleted: val = Tools.findChild(root,\"myObj\")}",root);
-        compare(obj!==undefined,true,"Object was created");
-        compare(obj.val.objectName,"myObj","child object was found");
     }
 }
