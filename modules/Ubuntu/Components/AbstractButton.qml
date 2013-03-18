@@ -56,7 +56,14 @@ Item {
       \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
-    property bool hovered: mouseArea.containsMouse
+    property bool hovered: __acceptEvents && mouseArea.containsMouse
+
+
+    /*! \internal
+      Disable or enable signal emition by default.
+      Some classes want to emit the signal by themselves (ListItem.Standard)
+     */
+    property bool __acceptEvents: true
 
     /*!
       \internal
@@ -71,7 +78,15 @@ Item {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
-        onClicked: button.clicked(mouse)
-        onPressAndHold: button.pressAndHold(mouse)
+        onClicked: {
+            if (button.__acceptEvents) {
+                button.clicked(mouse)
+            }
+        }
+        onPressAndHold: {
+            if (button.__acceptEvents) {
+                button.pressAndHold(mouse)
+            }
+        }
     }
 }

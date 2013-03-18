@@ -171,6 +171,8 @@ AbstractButton {
     default property alias children: body.children
     Item {
         id: body
+
+        z: -1
         anchors {
             left: parent.left
             right: parent.right
