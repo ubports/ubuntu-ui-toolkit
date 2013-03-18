@@ -53,12 +53,12 @@ const char *styleProperty = "itemStyle";
 
   \qml
   Item {
-     ItemStyle.class: "button"
+      ItemStyle.class: "button"
   }
   \endqml
   \qml
   Text {
-     color: (ItemStyle.style) ? ItemStyle.style.color : "black"
+      ItemStyle.class: "text"
   }
   \endqml
 
@@ -75,7 +75,7 @@ const char *styleProperty = "itemStyle";
      id: root
      property bool pressed: false
      property bool hovered: false
-     property color color: (ItemStyle.style) ? ItemStyle.style.color : "lightgray"
+     property color color: "lightgray"
 
      signal clicked
 
@@ -87,7 +87,7 @@ const char *styleProperty = "itemStyle";
   \endqml
   In the example above the Button document refers to the style property of the attached
   styling, therefore the element by default will use the style defined using
-  the ".Button" selector.
+  the ".button" selector.
 
   The following example shows a Button item that uses a private delegate but the
   styles from the themes.
@@ -107,37 +107,9 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  The style is usually applied immediately when a styling property is changed. This
-  may cause performance problems as there are two properties that can affect the
-  style applied. In case the component handles the "Component.onCompleted" signal,
-  the styling will be applied only when the completion occurs. Therefore items
-  can handle the completion by simply adding an empty handler to delay styling.
-  Modifying the Button.qml example above, the component that applies styling on
-  completion would look as follows:
-
-  \qml
-  Item {
-     id: root
-     property bool pressed: false
-     property bool hovered: false
-     property color color: (ItemStyle.style) ? ItemStyle.style.color : "lightgray"
-
-     signal clicked
-
-     MouseArea {
-        anchors.fill: parent
-        onClicked: control.clicked()
-     }
-
-     Component.onCompleted:{}
-  }
-  \endqml
-
- Attached styling defines two properties in the styling context that can be
- used from delegates to access the item and the style proeprties. item
- properties can be accessed through "item", and styling properties through
- "itemStyle" property.
-
+ Attached styling defines a context property which can be used from delegates and
+ also in style declaration to access the item properties. This property is called
+ \b item.
 */
 
 
@@ -223,6 +195,8 @@ void ItemStyleAttachedPrivate::bindStyleWithAttachee()
     for (int i = 0; i < attacheeMo->propertyCount(); i++) {
         const QMetaProperty attacheeProperty = attacheeMo->property(i);
         int styleIndex = styleMo->indexOfProperty(attacheeProperty.name());
+        if (styleIndex == -1)
+            continue;
         const QMetaProperty styleProperty = styleMo->property(styleIndex);
         if (!styleProperty.hasNotifySignal() || omit.contains(styleProperty.name()))
             continue;
