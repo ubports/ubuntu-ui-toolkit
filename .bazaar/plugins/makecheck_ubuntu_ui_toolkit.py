@@ -20,9 +20,12 @@ from bzrlib import branch
 def execute_makecheck(local_branch, master_branch, old_revision_number, old_revision_id, future_revision_number, future_revision_id, tree_delta, future_tree):
     import os,subprocess
     from bzrlib import errors
-    
+    from bzrlib.urlutils import (dirname,local_path_from_url)
+        
     if (master_branch.get_parent() != "bzr+ssh://bazaar.launchpad.net/+branch/ubuntu-ui-toolkit/"):
-        return 
+        return
+    
+    os.chdir(local_path_from_url(master_branch.base))
     if (subprocess.call("make check", shell=True) != 0):
         raise errors.BzrError("Tests failed, fix them before commit!")
 
