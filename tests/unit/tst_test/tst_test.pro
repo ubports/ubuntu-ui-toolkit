@@ -2,8 +2,8 @@ TESTS += $$system(ls tst_*.qml)
 
 include(../qmltest-include.pri)
 
-TARGET = tst_tests
+TARGET = tst_test
 
-SOURCES += tst_tests.cpp
+SOURCES += tst_test.cpp
 
 OTHER_FILES += $$system(ls *.qml)
