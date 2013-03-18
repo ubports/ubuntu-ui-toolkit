@@ -15,17 +15,18 @@
 #
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 
-from bzrlib import branch
+import os, subprocess
+from bzrlib import branch, errors
+from bzrlib.urlutils import dirname, local_path_from_url
 
 def execute_makecheck(local_branch, master_branch, old_revision_number, old_revision_id, future_revision_number, future_revision_id, tree_delta, future_tree):
-    import os,subprocess
-    from bzrlib import errors
-    from bzrlib.urlutils import (dirname,local_path_from_url)
-        
-    if (master_branch.get_parent() != "bzr+ssh://bazaar.launchpad.net/+branch/ubuntu-ui-toolkit/"):
+    if (master_branch.get_parent().find("ubuntu-ui-toolkit") == -1):
         return
     
+    print "Set work directory to %s" % local_path_from_url(master_branch.base)
     os.chdir(local_path_from_url(master_branch.base))
+
+    print "Execute 'make check'.."
     if (subprocess.call("make check", shell=True) != 0):
         raise errors.BzrError("Tests failed, fix them before commit!")
 
