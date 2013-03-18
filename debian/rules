@@ -2,6 +2,12 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 
 %:
 	dh $@ --fail-missing
+
+override_dh_install:
+	rm -rf debian/tmp/usr/share/locale
+	dh_install --fail-missing
+
