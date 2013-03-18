@@ -82,6 +82,16 @@ PageTreeNode {
     }
 
     /*!
+      \deprecated
+      The tools of the main view's toolbar.
+      This property is deprecated. Pages will now automatically update the toolbar when activated.
+     */
+    property ToolbarActions tools: null
+    onToolsChanged: print("MainView.tools property was deprecated. "+
+                          "Pages will automatically update the toolbar when activated. "+
+                          "See CHANGES file, and use toolbar.tools instead when needed.");
+
+    /*!
       The header of the MainView. Can be used to obtain the height of the header
       in \l Page to determine the area for the \l Page to fill.
      */
