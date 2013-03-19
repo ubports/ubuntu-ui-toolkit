@@ -17,7 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
+TabsStyle {
     id: visuals
     anchors.fill: parent
 
@@ -39,13 +39,13 @@ Item {
         // largest button needs to fit all its contents.
         // Scrolling in case the buttons don't fit in the available space is currently
         // not implemented.
-        property real maximumButtonWidth: (visuals.width - 2*itemStyle.horizontalPadding) / repeater.count
-        property bool needsScrolling: maximumButtonWidth < itemStyle.minimumButtonWidth
+        property real maximumButtonWidth: (visuals.width - 2*horizontalPadding) / repeater.count
+        property bool needsScrolling: maximumButtonWidth < minimumButtonWidth
         property real widestButtonWidth
         property real buttonWidth
         buttonWidth: {
-            if (buttonRow.needsScrolling) return itemStyle.minimumButtonWidth;
-            else if (itemStyle.buttonsExpanded) return buttonRow.maximumButtonWidth;
+            if (buttonRow.needsScrolling) return minimumButtonWidth;
+            else if (buttonsExpanded) return buttonRow.maximumButtonWidth;
             else return Math.min(buttonRow.maximumButtonWidth, buttonRow.widestButtonWidth);
         }
 
@@ -129,12 +129,12 @@ Item {
     }
 
     function updateSeparator() {
-        if (itemStyle.separator) {
-            itemStyle.separator.parent = visuals;
-            itemStyle.separator.anchors.top = buttonRow.bottom;
-            itemStyle.separator.anchors.left = visuals.left;
-            itemStyle.separator.anchors.right = visuals.right;
-            tabsContainer.anchors.top = itemStyle.separator.bottom;
+        if (separator) {
+            separator.parent = visuals;
+            separator.anchors.top = buttonRow.bottom;
+            separator.anchors.left = visuals.left;
+            separator.anchors.right = visuals.right;
+            tabsContainer.anchors.top = separator.bottom;
         } else {
             // no separator
             tabsContainer.anchors.top = buttonRow.bottom;

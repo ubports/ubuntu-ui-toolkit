@@ -98,7 +98,7 @@ PageTreeNode {
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
      */
-    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+    property Component headerContents
 
     /*!
       \deprecated

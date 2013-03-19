@@ -18,6 +18,20 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 UbuntuShape {
+    // styling properties
+    // FIXME move this property to to TextField
+    /*!
+      Spacing between overlaid elements (primary, secondary and clear button)
+      */
+    property real overlaySpacing
+
+    /*!
+      Background fill colors for accepted input and erronous inputs
+      */
+    property color normalFillColor
+    property color errorFillColor
+    property real backgroundOpacity
+
     id: shape
     // Cannot use contentItem property as the overlaid controls will also be
     // re-parented to it, and those shouldn't be. Need to come up with a better
@@ -27,9 +41,13 @@ UbuntuShape {
 
     property bool error: item.errorHighlight && !item.acceptableInput
     anchors.fill: parent
-    radius: StyleUtils.itemStyleProperty("radius", "small")
-    color: (error) ?
-               StyleUtils.itemStyleProperty("errorFillColor", "red") :
-               StyleUtils.itemStyleProperty("normalFillColor", "white")
-    opacity: StyleUtils.itemStyleProperty("opacity", 1.0)
+    color: (error) ? errorFillColor : normalFillColor
+    opacity: backgroundOpacity
+
+    Binding {
+        target: item.__internal
+        property: "spacing"
+        value: overlaySpacing
+    }
+    Component.onCompleted: print("TextFieldDelegate deprecated, use TextAreaDelegate")
 }

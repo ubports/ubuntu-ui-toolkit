@@ -46,6 +46,12 @@ Item {
     */
     property bool grabDismissAreaEvents: true
 
+    /*!
+      \internal
+      FIXME: publish this property once agreed
+      */
+    property PropertyAnimation fadingAnimation: PropertyAnimation{duration: 0}
+
     anchors.fill: parent ? parent : undefined
 
     // without specifying width and height below, some width calculations go wrong in Sheet.
@@ -115,7 +121,7 @@ Item {
       Property driving dimming the popup's background. The default is the same as
       defined in the style
       */
-    property bool __dimBackground: Theming.ComponentUtils.style(popupBase, "dim", false)
+    property alias __dimBackground: background.dim
 
     /*!
       \internal
@@ -125,10 +131,12 @@ Item {
 
     // dimmer
     Rectangle {
+        id: background
+        Theming.ItemStyle.class: "background"
+        // styling properties
+        property bool dim: false
         anchors.fill: parent
-        color: Theming.ComponentUtils.style(popupBase, "dimColor", "black")
-        opacity: Theming.ComponentUtils.style(popupBase, "dimOpacity", 0.6)
-        visible: Theming.ComponentUtils.style(popupBase, "dim", false) && __dimBackground
+        visible: dim
     }
 
     Theming.InverseMouseArea {
@@ -153,8 +161,6 @@ Item {
     Item {
         id: stateWrapper
 
-        property int fadingDuration: Theming.ComponentUtils.style(popupBase, "fadingDuration", 0)
-        property int fadingEasing: Theming.ComponentUtils.style(popupBase, "fadingEasing", Easing.InOutQuad)
         states: [
             State {
                 name: 'closed'
@@ -177,8 +183,8 @@ Item {
                         property: "opacity"
                         from: 0.0
                         to: 1.0
-                        duration: stateWrapper.fadingDuration
-                        easing.type: stateWrapper.fadingEasing
+                        duration: fadingAnimation.duration
+                        easing: fadingAnimation.easing
                     }
                 }
             },
@@ -191,8 +197,8 @@ Item {
                         property: "opacity"
                         from: 1.0
                         to: 0.0
-                        duration: stateWrapper.fadingDuration
-                        easing.type: stateWrapper.fadingEasing
+                        duration: fadingAnimation.duration
+                        easing: fadingAnimation.easing
                     }
                     ScriptAction {
                         script: {

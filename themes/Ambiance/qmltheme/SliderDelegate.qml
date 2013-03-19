@@ -34,13 +34,21 @@ Item {
     id: main
     anchors.fill: parent
 
-    // properties to be published:
-    property Item bar: backgroundShape
-    property Item thumb: thumbShape
+    // set item properties
+    Component.onCompleted: {
+        item.__thumbSpacing = thumbSpacing;
+        item.__thumb = thumbShape;
+        item.__bar = backgroundShape;
+    }
 
-    // private properties
+    // style properties
+    property real thumbSpacing: units.dp(2)
+    property color backgroundColor: "white"
+    property real backgroundOpacity: 1.0
+    property color thumbColor: "darkgray"
+    property real thumbOpacity: 1.0
 
-    property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(2))
+    // delegate properties
     property real liveValue: SliderUtils.liveValue(item)
     property real normalizedValue: SliderUtils.normalizedValue(item)
 
@@ -51,8 +59,8 @@ Item {
         id: backgroundShape
 
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor", "white")
-        opacity: StyleUtils.itemStyleProperty("backgroundOpacity", 1.0)
+        color: backgroundColor
+        opacity: backgroundOpacity
     }
 
     UbuntuShape {
@@ -62,8 +70,8 @@ Item {
         y: backgroundShape.y + thumbSpacing
         width: thumbWidth
         height: backgroundShape.height - (2.0 * thumbSpacing)
-        color: StyleUtils.itemStyleProperty("thumbColor", "darkgray")
-        opacity: StyleUtils.itemStyleProperty("thumbOpacity", 1.0)
+        color: thumbColor
+        opacity: thumbOpacity
     }
 
     Label {

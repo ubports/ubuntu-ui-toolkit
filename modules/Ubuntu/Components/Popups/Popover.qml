@@ -116,13 +116,13 @@ PopupBase {
       The property holds the margins from the popover's dismissArea. The property
       is themed.
       */
-    property real edgeMargins: ComponentUtils.style(popover, "edgeMargins", 0)
+    property real edgeMargins
 
     /*!
       The property holds the margin from the popover's caller. The property
       is themed.
       */
-    property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
+    property real callerMargin
 
     /*!
       The property drives the automatic closing of the Popover when user taps
@@ -156,10 +156,12 @@ PopupBase {
 
         // FIXME: see above
         Theming.ItemStyle.class: "foreground"
+        //styling properties
+        property real minimumWidth
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
-        width: Math.min(ComponentUtils.style(foreground, "minimumWidth", units.gu(40)), maxWidth)
+        width: Math.min(minimumWidth, maxWidth)
         height: childrenRect.height
 
         Item {

@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 
-QtObject {
+Item {
     /*!
       Setting this property to true will cause the tab buttons to expand
       their widths equally to fill the Tabs bar.

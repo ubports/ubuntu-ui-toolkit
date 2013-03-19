@@ -55,15 +55,15 @@ AbstractButton {
 
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "button"
-    implicitWidth: Theming.ComponentUtils.delegateProperty(button, "implicitWidth", units.gu(9))
-    implicitHeight: Theming.ComponentUtils.delegateProperty(button, "implicitHeight", units.gu(4))
+    implicitWidth: units.gu(9)
+    implicitHeight: units.gu(4)
 
     /*!
        \preliminary
        The foreground color of the button in idle state.
     */
     // FIXME: see FIXME above
-    property color color: Theming.ComponentUtils.style(button, "color", "transparent")
+    property color color: "transparent"
 
     /*!
        \preliminary
@@ -71,7 +71,7 @@ AbstractButton {
        Leave this value blank for a text-only button.
        \qmlproperty url iconSource
     */
-    property url iconSource: Theming.ComponentUtils.style(button, "iconSource", "")
+    property url iconSource: ""
 
     /*!
        \preliminary
@@ -96,5 +96,5 @@ AbstractButton {
        support for enums:
        https://bugreports.qt-project.org/browse/QTBUG-14861
     */
-    property string iconPosition: Theming.ComponentUtils.style(button, "iconPosition", "left")
+    property string iconPosition: "left"
 }
