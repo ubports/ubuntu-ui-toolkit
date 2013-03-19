@@ -33,6 +33,7 @@
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
 
+
 /*!
   \qmltype ItemStyle
   \inqmlmodule Ubuntu.Components 0.1
@@ -144,6 +145,13 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     // remove name from the theming engine
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
+    // delete and style must be deleted delayed
+    if (delegate)
+        delegate->deleteLater();
+    delegate = 0;
+    if (style)
+        style->deleteLater();
+    style = 0;
     if (componentContext)
         delete componentContext;
     componentContext = 0;
@@ -462,7 +470,12 @@ bool ItemStyleAttachedPrivate::updateDelegate()
     if (!customDelegate) {
         // make sure we have a theme
         if (styleRule && styleRule->delegate) {
-            delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(componentContext));
+            QObject *obj = styleRule->delegate->create(componentContext);
+            delegate = qobject_cast<QQuickItem*>(obj);
+            if (!delegate && obj) {
+                qDebug() << "WRONG DELEGATE!!!";
+                delete obj;
+            }
             result = (delegate != 0);
         }
     } else
@@ -519,7 +532,8 @@ void ItemStyleAttachedPrivate::resetStyle()
             styleBindings.clear();
         }
         style->setParent(0);
-        style->deleteLater();
+        //style->deleteLater();
+        delete style;
         style = 0;
     }
 }
@@ -541,7 +555,9 @@ void ItemStyleAttachedPrivate::resetDelegate()
         }
         delegate->setParent(0);
         delegate->setParentItem(0);
-        delegate->deleteLater();
+        //delegate->deleteLater();
+        qDebug() << "delete" << delegate;
+        delete delegate;
         delegate = 0;
     }
 }
@@ -589,6 +605,19 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
     }
 }
 
+void ItemStyleAttachedPrivate::updateStyledItem(QQuickItem *item)
+{
+    //QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
+    QList<QQuickItem*> children = item->childItems();
+    Q_FOREACH(QQuickItem *child, children) {
+        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
+        if (style)
+            style->d_ptr->_q_reapplyStyling(child->parentItem());
+        else
+            updateStyledItem(child);
+    }
+}
+
 
 /*!
   \internal
@@ -624,12 +653,7 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
-    QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
-    Q_FOREACH(QQuickItem *child, children) {
-        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
-        if (style)
-            style->d_ptr->_q_reapplyStyling(child->parentItem());
-    }
+    updateStyledItem(attachee);
 }
 
 /*==============================================================================
