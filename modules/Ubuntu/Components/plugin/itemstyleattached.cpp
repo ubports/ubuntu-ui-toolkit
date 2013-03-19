@@ -118,7 +118,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     attachee(qobject_cast<QQuickItem*>(attached)),
     style(0),
     delegate(0),
-    componentContext(0),
+    componentContext(new QQmlContext(QQmlEngine::contextForObject(attachee))),
     styleRule(0),
     delayApplyingStyle(true),
     customStyle(false),
@@ -133,10 +133,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
 
     listenThemeEngine();
 
-    if (!componentContext) {
-        componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
-        componentContext->setContextProperty(itemProperty, attachee);
-    }
+    componentContext->setContextProperty(itemProperty, attachee);
 
     //enum attachee properties and watch them
     watchAttacheeProperties();
@@ -147,6 +144,9 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     // remove name from the theming engine
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
+    if (componentContext)
+        delete componentContext;
+    componentContext = 0;
 }
 
 /*!

@@ -17,9 +17,20 @@
 #define INVERSEMOUSEAREATYPE_H
 
 #include <QtQuick/QQuickItem>
+#include <QtQuick/private/qquickevents_p_p.h>
 
-class QQuickMouseEvent;
 class QMouseEvent;
+// need to subclass QQuickMouseEvent as cannot declare metatype for it
+class UCMouseEvent : public QQuickMouseEvent
+{
+    Q_OBJECT
+public:
+    UCMouseEvent();
+    UCMouseEvent(const UCMouseEvent &);
+    UCMouseEvent(QMouseEvent *event, bool isClick, bool wasHeld);
+};
+Q_DECLARE_METATYPE(UCMouseEvent)
+
 class InverseMouseAreaType : public QQuickItem
 {
     Q_OBJECT
@@ -29,7 +40,7 @@ class InverseMouseAreaType : public QQuickItem
     Q_PROPERTY(bool propagateComposedEvents READ propagateComposedEvents WRITE setPropagateComposedEvents NOTIFY propagateComposedEventsChanged)
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
 public:
-    typedef void (InverseMouseAreaType::*SignalType)(QQuickMouseEvent*);
+    typedef void (InverseMouseAreaType::*SignalType)(const UCMouseEvent&);
 
     explicit InverseMouseAreaType(QQuickItem *parent = 0);
     ~InverseMouseAreaType();
@@ -68,19 +79,20 @@ Q_SIGNALS:
     void propagateComposedEventsChanged();
     void sensingAreaChanged();
 
-    void pressed(QQuickMouseEvent *mouse);
-    void released(QQuickMouseEvent *mouse);
-    void clicked(QQuickMouseEvent *mouse);
+    void pressed(const UCMouseEvent &mouse);
+    void released(const UCMouseEvent &mouse);
+    void clicked(const UCMouseEvent &mouse);
     
 private Q_SLOTS:
     void update();
     
 private:
-    bool m_pressed;
-    bool m_moved;
-    bool m_propagateEvents;
+    bool m_pressed:1;
+    bool m_moved:1;
+    bool m_propagateEvents:1;
     Qt::MouseButtons m_acceptedButtons;
     QQuickItem *m_sensingArea;
+    // FIXME: use UCMouseEvent to save heap
     QMouseEvent *m_event;
 };
 
