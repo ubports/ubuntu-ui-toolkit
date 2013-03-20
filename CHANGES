@@ -24,11 +24,10 @@ API Changes
 * Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
   Use a Loader if you were using a URL first.
 * ListItem.Empty:
-   + backgroundColor: Defines the background color of the rectangle used in the background during the item removal
-   + backgroundTextColor: Defines the text color of the rectangle used in the background during the item removal
-   + backgroundTex: Defines the display text visible during the item removal
+   + backgroundIdicator: Defines the item background item to be showed during the item swiping
    + removable: Defines if the item can be removed or not
-   + swiping: This is a read-only property that notify when the item is swiping
+   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
+   + itemRemoved: This handler is called when the item is removed from the list
 
 SDK 0.1.36
 ##########

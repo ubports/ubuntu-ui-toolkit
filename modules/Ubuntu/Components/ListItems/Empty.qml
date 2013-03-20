@@ -173,21 +173,9 @@ AbstractButton {
 
     /*!
       \preliminary
-      Defines the background color of the rectangle used in the background during the item removal
+      Defines the item background item to be showed during the item swiping
      */
-    property alias backgroundColor: __backgroundItem.color
-
-    /*!
-      \preliminary
-      Defines the text color of the rectangle used in the background during the item removal
-     */
-    property alias backgroundTextColor: __backgroundText.color
-
-    /*!
-      \preliminary
-      Defines the display text visible during the item removal
-     */
-    property alias backgroundTex: __backgroundText.text
+    property alias backgroundIdicator: __backgroundIdicator.children
 
     Item {
         id: bodyMargins
@@ -227,19 +215,17 @@ AbstractButton {
 
             onXChanged: {
                 if (x > 0) {
-                    __backgroundItem.state = "SLIDING-RIGHT"
+                    __backgroundIdicator.state = "SwipingRight"
                 } else {
-                    __backgroundItem.state = "SLIDING-LEFT"
+                    __backgroundIdicator.state = "SwipingLeft"
                 }
             }
         }
 
-        Rectangle {
-            id: __backgroundItem
+        Item {
+            id: __backgroundIdicator
 
-            color: "gray"
             opacity: 0.0
-
             anchors {
                 left: parent.left
                 right: parent.right
@@ -247,54 +233,28 @@ AbstractButton {
                 bottom: parent.bottom
             }
 
-            Label {
-                id: __backgroundText
-
-                property int slidingMargin: units.gu(3)
-
-                anchors.fill: parent
-                verticalAlignment: Text.AlignVCenter
-                text: "Clear"
-                fontSize: "medium"
-                color: "#e8e1d0"
-                font.bold: true
-            }
-
             states: [
                 State {
-                    name: "SLIDING-RIGHT"
+                    name: "SwipingRight"
                     AnchorChanges {
-                        target: __backgroundItem
+                        target: __backgroundIdicator
                         anchors.left: parent.left
                         anchors.right: body.left
                     }
                     PropertyChanges {
-                        target: __backgroundText
-                        anchors.rightMargin: slidingMargin
-                        anchors.leftMargin: 0
-                        horizontalAlignment: Text.AlignRight
-
-                    }
-                    PropertyChanges {
-                        target: __backgroundItem
+                        target: __backgroundIdicator
                         opacity: 1.0
                     }
                 },
                 State {
-                    name: "SLIDING-LEFT"
+                    name: "SwipingLeft"
                     AnchorChanges {
-                        target: __backgroundItem
+                        target: __backgroundIdicator
                         anchors.left: body.right
                         anchors.right: parent.right
                     }
                     PropertyChanges {
-                        target: __backgroundText
-                        anchors.rightMargin: 0
-                        anchors.leftMargin: slidingMargin
-                        horizontalAlignment: Text.AlignLeft
-                    }
-                    PropertyChanges {
-                        target: __backgroundItem
+                        target: __backgroundIdicator
                         opacity: 1.0
                     }
                 }
@@ -315,9 +275,9 @@ AbstractButton {
 
     /*!
       \preliminary
-      This is a read-only property that notify when the item is swiping
+      The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
-    property bool swiping: false
+    readonly property alias swipingState: __backgroundIdicator.state
 
     /*! \internal
       Defines the offset used when the item will start to move
@@ -417,14 +377,13 @@ AbstractButton {
         notify the start of the drag operation
      */
     function startDrag() {
-        swiping = true
         body.anchors.left = undefined
         __mouseArea.drag.target = body
 
         __held = true
         __mouseArea.drag.maximumX = parent.width
         __mouseArea.drag.minimumX = (width * -1)
-        __backgroundItem.visible = true
+        __backgroundIdicator.visible = true
     }
 
     /*! \internal
@@ -442,8 +401,7 @@ AbstractButton {
         }
         __removeItem = false
 
-        swiping = false
-        __backgroundItem.state = ""
+        __backgroundIdicator.state = ""
     }
 
     /*! \internal
