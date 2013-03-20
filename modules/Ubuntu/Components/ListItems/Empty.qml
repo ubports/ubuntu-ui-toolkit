@@ -189,7 +189,8 @@ AbstractButton {
             right: parent.right
             top: parent.top
             bottom: bottomDividerLine.top
-            margins: emptyListItem.__contentsMargins
+            leftMargin: emptyListItem.__contentsMargins
+            rightMargin: emptyListItem.__contentsMargins
         }
 
         Item {
