@@ -6,7 +6,7 @@ ubuntu-ui-toolkit (0.1.37) raring; urgency=low
     - It is now recommended to always use Pages inside Tabs or PageStack.
       Non-Page items can still be used, but their margins will not automatically
       be set-up to align with the header of the MainView.
-  * API Changes
+  * API Changes (LP: 1157191)
     - Property tools was deprecated for MainView, Tabs and PageStack. Pages now automatically
       update MainView.toolbar.tools when they become active.
     - Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
