@@ -90,6 +90,7 @@ Package: ubuntu-sdk
 Section: devel
 Architecture: any
 Depends: libqt5graphicaleffects5,
+         libqt5sql5-sqlite,
          libqt5svg5-dev,
          libqt5v8-5-dev,
          libqt5webkit5-dev,
@@ -113,7 +114,8 @@ Depends: libqt5graphicaleffects5,
          ubuntu-ui-toolkit-examples,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends}
-Recommends: qtdeclarative5-folderlistmodel-plugin,
+Recommends: libqt5webkit5-qmlwebkitplugin,
+            qtdeclarative5-folderlistmodel-plugin,
             qtdeclarative5-localstorage-plugin,
             qtdeclarative5-particles-plugin,
             qtdeclarative5-qtaudioengine-plugin,
