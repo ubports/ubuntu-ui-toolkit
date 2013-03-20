@@ -107,6 +107,7 @@ AbstractButton {
     Rectangle {
         id: highlight
 
+        z: -1
         visible: emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
         anchors {
             left: parent.left
