@@ -1,6 +1,6 @@
-ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) UNRELEASED; urgency=low
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) raring; urgency=low
 
-  * New snapshot release
+  * New snapshot release (LP: #1157191)
   * Add more recommended packages
   * Co-exist better with PPAs
 
