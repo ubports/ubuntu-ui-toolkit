@@ -81,9 +81,6 @@ import Ubuntu.Components 0.1
 AbstractButton {
     id: emptyListItem
 
-    width: parent ? parent.width : units.gu(31)
-    height: __height + bottomDividerLine.height
-
     /*!
       \preliminary
       Specifies whether the list item is selected.
@@ -104,20 +101,25 @@ AbstractButton {
       */
     property Action action
 
-    Rectangle {
-        id: highlight
+    /*!
+      \preliminary
+      Defines if this item can be removed or not.
+     */
+    property bool removable: false
 
-        z: -1
-        visible: emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: __height
-        color: "#E6E6E6"
-        opacity: 0.7
-    }
+    /*!
+      \preliminary
+      The current swiping state ("SwipingLeft", "SwipingRight", "")
+     */
+    readonly property alias swipingState: __backgroundIdicator.state
+
+
+    /*!
+      \preliminary
+      This handler is called when the item is removed from the list
+     */
+    signal itemRemoved
+
 
     /*!
       \internal
@@ -160,12 +162,6 @@ AbstractButton {
         return true;
     }
 
-    ThinDivider {
-        id: bottomDividerLine
-        anchors.bottom: parent.bottom
-        visible: showDivider && (__height > 0)
-    }
-
     /*!
       \internal
       Reparent so that the visuals of the children does not
@@ -179,6 +175,124 @@ AbstractButton {
      */
     property alias backgroundIdicator: __backgroundIdicator.children
 
+    /*! \internal
+      The spacing inside the list item.
+     */
+    property real __contentsMargins: units.gu(0)
+
+    width: parent ? parent.width : units.gu(31)
+    height: __height + bottomDividerLine.height
+    __mouseArea.drag.axis: Drag.XAxis
+
+    /*! \internal */
+    QtObject {
+        id: _priv
+
+        /*! \internal
+          Defines the offset used when the item will start to move
+         */
+        property int mouseMoveOffset: units.gu(4)
+
+        /*! \internal
+          Defines the offset limit to consider the item removed
+         */
+        property int itemMoveOffset: width * 0.3
+
+        /*! \internal
+          Defines the inital pressed possition
+         */
+        property int pressedPosition: 0
+
+        /*! \internal
+          Defines the final pressed possition
+         */
+        property int positionEnded: 0
+
+        /*! \internal
+          Defines if the item is moving or not
+         */
+        property bool held: false
+
+        /*! \internal
+          Defines if the item should be removed after the animation or not
+         */
+        property bool removeItem: false
+
+        /*! \internal
+            notify the start of the drag operation
+         */
+        function startDrag() {
+            body.anchors.left = undefined
+            __mouseArea.drag.target = body
+
+            held = true
+            __mouseArea.drag.maximumX = parent.width
+            __mouseArea.drag.minimumX = (width * -1)
+            __backgroundIdicator.visible = true
+        }
+
+        /*! \internal
+           Commit the necessary changes to remove or not the item based on the mouse final position
+        */
+        function commitDrag() {
+            pressedPosition = -1
+            __mouseArea.drag.target = null
+            __mouseArea.drag.target = null
+            held = false
+            positionEnded = body.x
+
+            if (removeItem) {
+                removeItemAnimation.start()
+            }
+            removeItem = false
+
+            __backgroundIdicator.state = ""
+        }
+
+        /*! \internal
+            notify the releaso of the mouse button and the end of the drag operation
+        */
+        function endDrag() {
+            if (Math.abs(body.x) < itemMoveOffset && held == true) {
+                removeItem = false
+                if (body.x == 0) {
+                    commitDrag()
+                } else {
+                    body.x = 0;
+                }
+            } else if (held == true) {
+                removeItem = true
+                if (body.x > 0) {
+                    body.x = body.width
+                } else {
+                    body.x = body.width * -1
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: highlight
+
+        z: -1
+        visible: emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: __height
+        color: "#E6E6E6"
+        opacity: 0.7
+    }
+
+
+    ThinDivider {
+        id: bottomDividerLine
+        anchors.bottom: parent.bottom
+        visible: showDivider && (__height > 0)
+    }
+
     Item {
         id: bodyMargins
 
@@ -189,8 +303,8 @@ AbstractButton {
             right: parent.right
             top: parent.top
             bottom: bottomDividerLine.top
-            leftMargin: emptyListItem.__contentsMargins
-            rightMargin: emptyListItem.__contentsMargins
+            leftMargin: __contentsMargins
+            rightMargin: __contentsMargins
         }
 
         Item {
@@ -210,7 +324,7 @@ AbstractButton {
                     }
                     ScriptAction {
                          script: {
-                             emptyListItem.commitDrag()
+                             _priv.commitDrag()
                         }
                     }
                 }
@@ -265,63 +379,8 @@ AbstractButton {
         }
     }
 
-    /*! \internal
-      The spacing inside the list item.
-     */
-    property real __contentsMargins: units.gu(0)
-
-    /*!
-      \preliminary
-      Defines if this item can be removed or not.
-     */
-    property bool removable: false
-
-    /*!
-      \preliminary
-      The current swiping state ("SwipingLeft", "SwipingRight", "")
-     */
-    readonly property alias swipingState: __backgroundIdicator.state
-
-    /*! \internal
-      Defines the offset used when the item will start to move
-     */
-    property int __mouseMoveOffset: units.gu(4)
-
-    /*! \internal
-      Defines the offset limit to consider the item removed
-     */
-    property int __itemMoveOffset: width * 0.3
-
-    /*! \internal
-      Defines the inital pressed possition
-     */
-    property int __pressedPosition: 0
-
-    /*! \internal
-      Defines the final pressed possition
-     */
-    property int __positionEnded: 0
-
-    /*! \internal
-      Defines if the item is moving or not
-     */
-    property bool __held: false
-
-    /*! \internal
-      Defines if the item should be removed after the animation or not
-     */
-    property bool __removeItem: false
-
-    /*!
-      \preliminary
-      This handler is called when the item is removed from the list
-     */
-    signal itemRemoved
-
-    __mouseArea.drag.axis: Drag.XAxis
-
     SequentialAnimation {
-        id: __removeItemAnimation
+        id: removeItemAnimation
         NumberAnimation {
             target: emptyListItem
             property: "__height"
@@ -341,7 +400,7 @@ AbstractButton {
                 return;
             }
 
-            emptyListItem.__pressedPosition = mouse.x
+            _priv.pressedPosition = mouse.x
         }
 
         onMouseXChanged: {
@@ -349,9 +408,9 @@ AbstractButton {
                 return;
             }
 
-            var mouseOffset = emptyListItem.__pressedPosition - mouse.x
-            if ((emptyListItem.__pressedPosition != -1) && !emptyListItem.__held && ( Math.abs(mouseOffset) >= emptyListItem.__mouseMoveOffset)) {
-                emptyListItem.startDrag();
+            var mouseOffset = _priv.pressedPosition - mouse.x
+            if ((_priv.pressedPosition != -1) && !_priv.held && ( Math.abs(mouseOffset) >= _priv.mouseMoveOffset)) {
+                _priv.startDrag();
             }
         }
 
@@ -360,8 +419,8 @@ AbstractButton {
                 return;
             }
 
-            if (emptyListItem.__held) {
-                emptyListItem.__positionEnded = body.x;
+            if (_priv.held) {
+                _priv.positionEnded = body.x;
             }
         }
 
@@ -370,8 +429,8 @@ AbstractButton {
                 return;
             }
 
-            if (emptyListItem.__held) {
-                emptyListItem.endDrag();
+            if (_priv.held) {
+                _priv.endDrag();
             }
         }
 
@@ -380,60 +439,8 @@ AbstractButton {
                 return;
             }
 
-            if (emptyListItem.__held) {
-                emptyListItem.endDrag();
-            }
-        }
-    }
-
-    /*! \internal
-        notify the start of the drag operation
-     */
-    function startDrag() {
-        body.anchors.left = undefined
-        __mouseArea.drag.target = body
-
-        __held = true
-        __mouseArea.drag.maximumX = parent.width
-        __mouseArea.drag.minimumX = (width * -1)
-        __backgroundIdicator.visible = true
-    }
-
-    /*! \internal
-       Commit the necessary changes to remove or not the item based on the mouse final position
-    */
-    function commitDrag() {
-        __pressedPosition = -1
-        __mouseArea.drag.target = null
-        __mouseArea.drag.target = null
-        __held = false
-        __positionEnded = body.x
-
-        if (__removeItem) {
-            __removeItemAnimation.start()
-        }
-        __removeItem = false
-
-        __backgroundIdicator.state = ""
-    }
-
-    /*! \internal
-        notify the releaso of the mouse button and the end of the drag operation
-    */
-    function endDrag() {
-        if (Math.abs(body.x) < __itemMoveOffset && __held == true) {
-            __removeItem = false
-            if (body.x == 0) {
-                commitDrag()
-            } else {
-                body.x = 0;
-            }
-        } else if (__held == true) {
-            __removeItem = true
-            if (body.x > 0) {
-                body.x = body.width
-            } else {
-                body.x = body.width * -1
+            if (_priv.held) {
+                _priv.endDrag();
             }
         }
     }
