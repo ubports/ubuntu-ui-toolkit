@@ -47,8 +47,6 @@ import Ubuntu.Components.ListItems 0.1
 Empty {
     id: singleControlListItem
 
-    height: control ? control.height + control.anchors.topMargin + control.anchors.bottomMargin : undefined
-
     /*!
       \preliminary
       The control of this SingleControl list item.
@@ -67,8 +65,8 @@ Empty {
      */
     function __updateControl() {
         if (control) {
-            control.parent = singleControlListItem;
-            control.anchors.centerIn = singleControlListItem;
+            control.parent = __contents;
+            control.anchors.centerIn = __contents;
         }
     }
 

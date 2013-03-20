@@ -169,6 +169,12 @@ AbstractButton {
      */
     default property alias children: body.children
 
+     /*!
+      \inernal
+      Allows derived class to proper add items inside of this element
+      */
+    property alias __contents: body
+
     /*!
       \preliminary
       Defines the item background item to be showed during the item swiping
