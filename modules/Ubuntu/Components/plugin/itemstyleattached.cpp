@@ -146,12 +146,8 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
     // delete and style must be deleted delayed
-    if (delegate)
-        delegate->deleteLater();
-    delegate = 0;
-    if (style)
-        style->deleteLater();
-    style = 0;
+    resetDelegate();
+    resetStyle();
     if (componentContext)
         delete componentContext;
     componentContext = 0;
@@ -532,8 +528,7 @@ void ItemStyleAttachedPrivate::resetStyle()
             styleBindings.clear();
         }
         style->setParent(0);
-        //style->deleteLater();
-        delete style;
+        style->deleteLater();
         style = 0;
     }
 }
@@ -555,9 +550,7 @@ void ItemStyleAttachedPrivate::resetDelegate()
         }
         delegate->setParent(0);
         delegate->setParentItem(0);
-        //delegate->deleteLater();
-        qDebug() << "delete" << delegate;
-        delete delegate;
+        delegate->deleteLater();
         delegate = 0;
     }
 }
@@ -607,14 +600,11 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
 
 void ItemStyleAttachedPrivate::updateStyledItem(QQuickItem *item)
 {
-    //QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
-    QList<QQuickItem*> children = item->childItems();
+    QList<QQuickItem*> children = item->findChildren<QQuickItem*>();
     Q_FOREACH(QQuickItem *child, children) {
         ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
         if (style)
             style->d_ptr->_q_reapplyStyling(child->parentItem());
-        else
-            updateStyledItem(child);
     }
 }
 
