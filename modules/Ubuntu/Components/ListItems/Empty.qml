@@ -413,7 +413,9 @@ AbstractButton {
         }
     }
 
-    // notify the start of the drag operation
+    /*! \internal
+        notify the start of the drag operation
+     */
     function startDrag() {
         swiping = true
         body.anchors.left = undefined
@@ -425,7 +427,9 @@ AbstractButton {
         __backgroundItem.visible = true
     }
 
-    // Commit the necessary changes to remove or not the item based on the mouse final position
+    /*! \internal
+       Commit the necessary changes to remove or not the item based on the mouse final position
+    */
     function commitDrag() {
         __pressedPosition = -1
         __mouseArea.drag.target = null
@@ -442,7 +446,9 @@ AbstractButton {
         __backgroundItem.state = ""
     }
 
-    // notify the releaso of the mouse button and the end of the drag operation
+    /*! \internal
+        notify the releaso of the mouse button and the end of the drag operation
+    */
     function endDrag() {
         if (Math.abs(body.x) < __itemMoveOffset && __held == true) {
             __removeItem = false
