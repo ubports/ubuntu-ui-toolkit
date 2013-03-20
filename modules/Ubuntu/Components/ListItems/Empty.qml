@@ -371,6 +371,16 @@ AbstractButton {
                 emptyListItem.endDrag();
             }
         }
+
+        onCanceled: {
+            if (!emptyListItem.removable) {
+                return;
+            }
+
+            if (emptyListItem.__held) {
+                emptyListItem.endDrag();
+            }
+        }
     }
 
     /*! \internal
