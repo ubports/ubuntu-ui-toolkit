@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu2) raring; urgency=low
+
+  * debian/control
+    - libqt5v8-5-dev only supports amd64, i386 and armhf so setting
+      Architecture to just those
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 20 Mar 2013 12:44:41 -0400
+
 ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) raring; urgency=low
 
   * New snapshot release (LP: #1157191)
