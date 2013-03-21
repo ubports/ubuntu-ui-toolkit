@@ -1,58 +1,132 @@
-Source: qt-components-ubuntu
-Priority: extra
+Source: ubuntu-ui-toolkit
+Priority: optional
+Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Build-Depends: debhelper (>= 9.0.0), 
+Build-Depends: debhelper (>= 9.0.0),
+               libgles2-mesa-dev,
+               libglib2.0-dev,
+               libqt5graphicaleffects5,
+               qt5-default,
                qtbase5-dev,
                qtbase5-private-dev,
                libqt5v8-5-private-dev,
                qtbase5-dev-tools,
-               qtdeclarative5-private-dev,
-               qtdeclarative5-test-plugin,
-               qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-dev-tools,
-               qt5-default,
-               libgles2-mesa-dev, 
-               libglib2.0-dev,
-               libqt5graphicaleffects5
+               qtdeclarative5-private-dev,
+               qtdeclarative5-qtquick2-plugin,
+               qtdeclarative5-test-plugin,
 Standards-Version: 3.9.4
-Section: libs
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
+# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
+# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code 
+# again.
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
-Package: qt-components-ubuntu
-Section: libs
-Architecture: any
-Depends: qtdeclarative5-qtquick2-plugin, libqt5graphicaleffects5, ${shlibs:Depends}, ${misc:Depends}
-Description: Qt Components for Ubuntu
- Qt Components for Ubuntu offers a set of reusable user interface 
+Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
+Architecture: amd64 i386 armhf
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: libqt5graphicaleffects5,
+         qtdeclarative5-qtquick2-plugin,
+         ubuntu-ui-toolkit-theme,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Conflicts: qt-components-ubuntu
+Replaces: qt-components-ubuntu
+Provides: qt-components-ubuntu
+Description: Qt Components for Ubuntu - QML plugin
+ Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Components QML plugin.
 
-Package: qt-components-ubuntu-doc
+Package: ubuntu-ui-toolkit-theme
+Architecture: all
+Multi-Arch: foreign
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Replaces: qt-components-ubuntu
+Description: Qt Components for Ubuntu - Ubuntu Theme
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ambiance theme for Qt Ubuntu Components.
+
+Package: ubuntu-ui-toolkit-doc
 Section: doc
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Multi-Arch: foreign
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Conflicts: qt-components-ubuntu-doc
+Replaces: qt-components-ubuntu-doc
+Provides: qt-components-ubuntu-doc
 Description: Qt Components for Ubuntu - documentation
- Qt Components for Ubuntu offers a set of reusable user interface 
+ Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains developer documentation.
 
-Package: qt-components-ubuntu-demos
+Package: ubuntu-ui-toolkit-examples
 Section: devel
-Architecture: any
-Depends: qt-components-ubuntu, qmlscene, ${shlibs:Depends}, ${misc:Depends}
-Description: Qt Components for Ubuntu - demos
- Qt Components for Ubuntu offers a set of reusable user interface 
+Architecture: amd64 i386 armhf
+Depends: qmlscene,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         ubuntu-ui-toolkit-theme,
+         qtdeclarative5-qtmultimedia-plugin | libqt5declarative5-qtmultimedia-plugin,
+         qtdeclarative5-xmllistmodel-plugin,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+Description: Qt Components for Ubuntu - demos and examples
+ Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
- This package contains the component demos.
+ This package contains the component demos and example applications.
 
-Package: qt-components-ubuntu-examples
+Package: ubuntu-sdk
 Section: devel
-Architecture: any
-Depends: qt-components-ubuntu, qtdeclarative5-xmllistmodel-plugin, libqt5declarative5-qtmultimedia-plugin, qmlscene, ${shlibs:Depends}, ${misc:Depends}
-Description: Qt Components for Ubuntu - examples
- Qt Components for Ubuntu offers a set of reusable user interface 
- components for Qt Quick 2 / QML.
- .
- This package contains the example applications.
-
+Architecture: amd64 i386 armhf
+Depends: libqt5graphicaleffects5,
+         libqt5svg5-dev,
+         libqt5v8-5-dev,
+         libqt5webkit5-dev,
+         libqt5xmlpatterns5-dev,
+         qmlscene,
+         qt3d5-dev,
+         qt5-default,
+         qtbase5-dev (>= 5.0.1) | ubuntu-qtcreator-qt5libs,
+         qtcreator,
+         qtcreator-plugin-ubuntu | ubuntu-qtcreator-plugins,
+         qtdeclarative5-dev,
+         qtdeclarative5-dev-tools,
+         qtdeclarative5-test-plugin,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         qtlocation5-dev,
+         qtmultimedia5-dev,
+         qtscript5-dev,
+         qtsensors5-dev,
+         qttools5-dev,
+         qttools5-dev-tools,
+         ubuntu-ui-toolkit-examples,
+         ubuntu-ui-toolkit-theme,
+         ${misc:Depends}
+Recommends: qtdeclarative5-folderlistmodel-plugin,
+            qtdeclarative5-localstorage-plugin,
+            qtdeclarative5-particles-plugin,
+            qtdeclarative5-qtaudioengine-plugin,
+            qtdeclarative5-qtmultimedia-plugin,
+            qtdeclarative5-qtquick2-plugin,
+            qtdeclarative5-qtsensors-plugin,
+            qtdeclarative5-window-plugin,
+            qtdeclarative5-xmllistmodel-plugin
+Description: Ubuntu SDK
+ This metapackage depends on all the packages of the Ubuntu SDK:
+  - Qt 5
+  - Qt Creator
+  - Qt Components for Ubuntu
+  - Demos and examples

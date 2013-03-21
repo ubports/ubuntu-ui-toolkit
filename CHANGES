@@ -10,6 +10,19 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
+* None
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.37
+##########
+
+Compatibility Breaks
+********************
+
 * Page, PageStack and Tabs automatically determine their anchors and height
   inside a MainView, so there is no need to set them explicitly.
 * It is now recommended to always use Pages inside Tabs or PageStack.
