@@ -23,7 +23,11 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
+<<<<<<< TREE
 Architecture: any
+=======
+Architecture: amd64 i386 armhf
+>>>>>>> MERGE-SOURCE
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: libqt5graphicaleffects5,
@@ -71,7 +75,11 @@ Description: Qt Components for Ubuntu - documentation
 
 Package: ubuntu-ui-toolkit-examples
 Section: devel
+<<<<<<< TREE
 Architecture: any
+=======
+Architecture: amd64 i386 armhf
+>>>>>>> MERGE-SOURCE
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
@@ -90,7 +98,11 @@ Description: Qt Components for Ubuntu - demos and examples
 
 Package: ubuntu-sdk
 Section: devel
+<<<<<<< TREE
 Architecture: any
+=======
+Architecture: amd64 i386 armhf
+>>>>>>> MERGE-SOURCE
 Depends: libqt5graphicaleffects5,
          libqt5svg5-dev,
          libqt5v8-5-dev,

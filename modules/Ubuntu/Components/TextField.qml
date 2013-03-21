@@ -441,6 +441,7 @@ FocusScope {
     SystemPalette { id: systemColors }
 
     //internals
+    /*! \internal */
     property alias __internal: internal
     QtObject {
         id: internal
