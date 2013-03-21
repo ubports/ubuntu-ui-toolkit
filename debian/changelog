@@ -1,3 +1,9 @@
+ubuntu-ui-toolkit (0.1.38) quantal; urgency=low
+
+  * Fix bug in list items. 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Thu, 21 Mar 2013 19:25:15 +0100
+
 ubuntu-ui-toolkit (0.1.37) raring; urgency=low
 
   * Compatibility Breaks
