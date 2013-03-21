@@ -19,7 +19,10 @@
     prop_baseA_A: "overload:: test.qmltheme/.testB > .baseA";
 }
 
-.testC .textB .baseA {
+.testC .testB .baseA {
     test_base_A_A: "overload:: test.qmltheme/.testC .textB .baseA";
     prop_baseA_B: "overload:: test.qmltheme/.testC .textB .baseA";
+}
+
+.testC>.testB .baseA {
 }

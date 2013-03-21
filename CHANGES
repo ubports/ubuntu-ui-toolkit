@@ -10,6 +10,19 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
+* None
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.37
+##########
+
+Compatibility Breaks
+********************
+
 * Page, PageStack and Tabs automatically determine their anchors and height
   inside a MainView, so there is no need to set them explicitly.
 * It is now recommended to always use Pages inside Tabs or PageStack.
@@ -19,7 +32,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* Property tools was removed for MainView, Tabs and PageStack. Pages now automatically
+* Property tools was deprecated for MainView, Tabs and PageStack. Pages now automatically
   update MainView.toolbar.tools when they become active.
 * Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
   Use a Loader if you were using a URL first.

@@ -170,7 +170,7 @@ AbstractButton {
     default property alias children: body.children
 
      /*!
-      \inernal
+      \internal
       Allows derived class to proper add items inside of this element
       */
     property alias __contents: body

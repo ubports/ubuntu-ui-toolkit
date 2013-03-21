@@ -11,7 +11,7 @@ for(example, examples) {
   }
 }
 
-other_files.path = /usr/lib/qt-components-ubuntu/examples
+other_files.path = /usr/lib/ubuntu-ui-toolkit/examples
 other_files.files = $$OTHER_FILES
 
 INSTALLS += other_files
