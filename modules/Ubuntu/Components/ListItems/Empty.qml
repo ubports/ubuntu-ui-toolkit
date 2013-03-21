@@ -28,47 +28,38 @@ import Ubuntu.Components 0.1
     item is suitable, but this behaviour can be over-ridden (using \l showDivider).
     For specific types of list items, see its subclasses.
 
+    After the item removal the item will still alive is up to the application to destroy it,
+    this can be handled by the signal \l itemRemoved that is fired after all animation is done.
+
     Examples:
     \qml
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
-        Column {
-            ListItem.Empty {
-                height: units.gu(6)
-                Text {
-                    text: "Hello world"
-                    anchors.centerIn: parent
+
+        Item {
+            Model {
+                id: contactModel
+
+                ListElement {
+                    name: "Bill Smith"
+                    number: "555 3264"
+                }
+                ListElement {
+                    name: "John Brown"
+                    number: "555 8426"
                 }
             }
-            ListItem.Empty {
-                height: units.gu(13)
-                Tabs {
-                    height: parent.height - units.gu(3)
-                    width: parent.width - units.gu(3)
-                    anchors.centerIn: parent
-                    Tab {
-                        text: "Tab 1"
-                        page: Label {
-                            anchors.centerIn: parent
-                            text: "Page one"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
-                    }
-                    Tab {
-                        text: "Tab 2"
-                        page: Label {
-                            anchors.centerIn: parent
-                            text: "Page two"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
-                    }
-                    Tab {
-                        text: "Tab 3"
-                        page: Label {
-                            anchors.centerIn: parent
-                            text: "Page three"
-                            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
-                        }
+
+            ListView {
+                 width: 180; height: 200
+                 model: contactModel
+
+                 delegate: ListItem.Empty {
+                    height: units.gu(6)
+                    onItemRemoved: contactModel.remove(index)
+                    Text {
+                        text: name + " " + number
+                        anchors.centerIn: parent
                     }
                 }
             }
