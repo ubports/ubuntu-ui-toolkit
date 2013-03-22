@@ -15,7 +15,12 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* ListItem.Empty:
+   + backgroundIdicator: Defines the item background item to be showed during the item swiping
+   + removable: Defines if the item can be removed or not
+   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
+   + itemRemoved: This handler is called when the item is removed from the list
+
 
 0.1.38
 ##########
@@ -49,11 +54,6 @@ API Changes
   update MainView.toolbar.tools when they become active.
 * Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
   Use a Loader if you were using a URL first.
-* ListItem.Empty:
-   + backgroundIdicator: Defines the item background item to be showed during the item swiping
-   + removable: Defines if the item can be removed or not
-   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
-   + itemRemoved: This handler is called when the item is removed from the list
 
 SDK 0.1.36
 ##########
