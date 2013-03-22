@@ -56,6 +56,7 @@ import Ubuntu.Components 0.1
 
                  delegate: ListItem.Empty {
                     height: units.gu(6)
+                    removable: true
                     onItemRemoved: contactModel.remove(index)
                     Text {
                         text: name + " " + number
