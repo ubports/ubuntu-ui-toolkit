@@ -292,7 +292,8 @@ AbstractButton {
     Item {
         id: bodyMargins
 
-        clip: true
+        clip: body.x != 0
+        visible: body.height > 0
         anchors {
             left: parent.left
             right: parent.right
