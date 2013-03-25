@@ -534,7 +534,7 @@ QString ItemStyleAttached::path() const
 }
 
 /*!
-  \qmlproperty QtObject ItemStyle::style
+  \qmlproperty Style ItemStyle::style
   The property holds the object containing the style configuration properties. This can
   either be defined by a theme style rule or the private style. When set, the item will
   no longer use the theme defined style properties but the ones set. The property must be
