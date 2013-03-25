@@ -20,10 +20,10 @@
   */
 
 /*!
+  \deprecated
   The function checks the existence of a style property.
   */
 function hasStyle(object, property) {
-    print("ComponentUtils.hasStyle is DEPRECATED, called by " + object);
     // FIXME: When a module contains QML, C++ and JavaScript elements exported,
     // we need to use named imports otherwise namespace collision is reported
     // by the QML engine. As workaround, we use Theming named import.
@@ -32,6 +32,7 @@ function hasStyle(object, property) {
 }
 
 /*!
+  \deprecated
   The function returns the style property specified for the given object. If the
   property is not found, the specified default value is returned.
   Example:
@@ -39,7 +40,6 @@ function hasStyle(object, property) {
     ComponentUtils.style(label, "maximumLineCount")
   */
 function style(object, property, defaultValue) {
-    print("ComponentUtils.style is DEPRECATED, called by " + object);
     // FIXME: When a module contains QML, C++ and JavaScript elements exported,
     // we need to use named imports otherwise namespace collision is reported
     // by the QML engine. As workaround, we use Theming named import.
@@ -50,11 +50,11 @@ function style(object, property, defaultValue) {
 }
 
 /*!
+  \deprecated
   The function checks the existence of the delegate property of a given component.
   Returns the property or undefined.
   */
 function delegateProperty(object, property, defaultValue) {
-    print("ComponentUtils.delegateProperty is DEPRECATED, called by " + object);
     if (object && property && object.Theming.ItemStyle.delegate && (undefined !== object.Theming.ItemStyle.delegate[property]))
         return object.Theming.ItemStyle.delegate[property];
     return defaultValue;

@@ -527,13 +527,9 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
     if (properties.count() > 0) {
         QString propertyPrefix("    ");
 
-        if (!qmlTypes.first.isEmpty()) {
-            // we have the mapping!!
-            style = QString(stylePropertyFormat).arg(qmlTypes.first);
-        } else {
-            style = QString(stylePropertyFormat).arg("Style");
-            propertyPrefix += "property var";
-        }
+        // do not consider style types
+        style = QString(stylePropertyFormat).arg("Style");
+        propertyPrefix += "property var";
 
         // add properties
         QHashIterator<QString, QString> i(properties);
