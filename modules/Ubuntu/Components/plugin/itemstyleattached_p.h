@@ -21,6 +21,7 @@
 
 #include "itemstyleattached.h"
 #include "stylecache_p.h"
+#include "ucstyle.h"
 
 class QQmlContext;
 class ItemStyleAttachedPrivate {
@@ -39,7 +40,7 @@ public:
 
     ItemStyleAttached *q_ptr;
     QQuickItem *attachee;
-    QObject *style;
+    UCStyle *style;
     QQuickItem *delegate;
     QString styleClass;
     QString styleId;
@@ -49,20 +50,13 @@ public:
     QQmlContext *componentContext;
     StyleCache::StyleData *styleRule;
     // hash of attachee property indexes as key, containing enabled/disabled value
-    QHash<int, bool> watchedProperties;
-    // hash of styled item (attachee or delegate) with style property index as keys
-    QHash<int, Binding> styleBindings;
-    QString propertyUpdated;
+    StyledPropertyMap watchedProperties;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
     void watchAttacheeProperties();
-    void bindStyleWithAttachee();
-    void bindStyleWithDelegate();
-    void bindStyle(const QQmlProperty &property, const char *watcherSlot);
-    void unbindStyle(const QString &property);
     void applyStyleOnProperty(const QQmlProperty &property);
     bool updateStyleSelector();
     bool updateStyle();
@@ -78,6 +72,9 @@ public:
     void _q_refreshStyle();
     void _q_reapplyStyling(QQuickItem *);
 
+#ifdef QT_TESTLIB_LIB
+    friend class tst_ThemeEngineStyle;
+#endif
 };
 
 #endif // ITEMSTYLEATTACHED_P_H
