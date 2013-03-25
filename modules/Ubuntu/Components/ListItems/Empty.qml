@@ -392,21 +392,13 @@ AbstractButton {
     }
 
     Connections {
-        target: __mouseArea
+        target: (emptyListItem.removable) ? __mouseArea : null
 
         onPressed: {
-            if (!emptyListItem.removable) {
-                return;
-            }
-
             _priv.pressedPosition = mouse.x
         }
 
         onMouseXChanged: {
-            if (!emptyListItem.removable) {
-                return;
-            }
-
             var mouseOffset = _priv.pressedPosition - mouse.x
             if ((_priv.pressedPosition != -1) && !_priv.held && ( Math.abs(mouseOffset) >= _priv.mouseMoveOffset)) {
                 _priv.startDrag();
@@ -414,18 +406,10 @@ AbstractButton {
         }
 
         onReleased: {
-            if (!emptyListItem.removable) {
-                return;
-            }
-
             _priv.endDrag();
         }
 
         onCanceled: {
-            if (!emptyListItem.removable) {
-                return;
-            }
-
             _priv.endDrag();
         }
     }
