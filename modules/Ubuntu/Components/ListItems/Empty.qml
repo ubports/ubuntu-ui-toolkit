@@ -223,7 +223,7 @@ AbstractButton {
             __mouseArea.drag.target = body
             held = true
             __mouseArea.drag.maximumX = parent.width
-            __mouseArea.drag.minimumX = (width * -1)
+            __mouseArea.drag.minimumX = (parent.width * -1)
             __backgroundIndicator.visible = true
         }
 
@@ -428,9 +428,7 @@ AbstractButton {
                 return;
             }
 
-            if (_priv.held) {
-                _priv.endDrag();
-            }
+            _priv.endDrag();
         }
 
         onCanceled: {
@@ -438,9 +436,7 @@ AbstractButton {
                 return;
             }
 
-            if (_priv.held) {
-                _priv.endDrag();
-            }
+            _priv.endDrag();
         }
     }
 }
