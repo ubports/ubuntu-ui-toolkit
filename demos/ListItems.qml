@@ -471,20 +471,6 @@ Template {
                         control: controlExample.createObject(parent)
                         showDivider: false
                     }
-                    ListItem.SingleControl {
-                        id: _item5
-
-                        removable: true
-                        backgroundIndicator: RemovableBG {
-                            state: _item5.swipingState
-                        }
-                        control: Slider {
-                            anchors {
-                                margins: units.gu(1)
-                                fill: parent
-                            }
-                        }
-                    }
                 }
             }
         }
