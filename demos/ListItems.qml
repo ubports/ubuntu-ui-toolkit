@@ -417,7 +417,7 @@ Template {
                         id: _item0
 
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item0.swipingState
                         }
 
@@ -429,7 +429,7 @@ Template {
 
                         enabled: false
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item1.swipingState
                         }
 
@@ -441,7 +441,7 @@ Template {
 
                         selected: true
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item2.swipingState
                         }
                         text: i18n.tr("Selected")
@@ -452,7 +452,7 @@ Template {
 
                         text: i18n.tr("Split")
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item3.swipingState
                         }
                         control: controlExample.createObject(parent)
@@ -464,7 +464,7 @@ Template {
 
                         text: i18n.tr("Icon")
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item4.swipingState
                         }
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
@@ -475,7 +475,7 @@ Template {
                         id: _item5
 
                         removable: true
-                        backgroundIdicator: RemovableBG {
+                        backgroundIndicator: RemovableBG {
                             state: _item5.swipingState
                         }
                         control: Slider {

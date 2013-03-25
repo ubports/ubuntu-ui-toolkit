@@ -103,7 +103,7 @@ AbstractButton {
       \preliminary
       The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
-    readonly property alias swipingState: __backgroundIdicator.state
+    readonly property alias swipingState: __backgroundIndicator.state
 
 
     /*!
@@ -171,7 +171,7 @@ AbstractButton {
       \preliminary
       Defines the item background item to be showed during the item swiping
      */
-    property alias backgroundIdicator: __backgroundIdicator.children
+    property alias backgroundIndicator: __backgroundIndicator.children
 
     /*! \internal
       The spacing inside the list item.
@@ -224,7 +224,7 @@ AbstractButton {
             held = true
             __mouseArea.drag.maximumX = parent.width
             __mouseArea.drag.minimumX = (width * -1)
-            __backgroundIdicator.visible = true
+            __backgroundIndicator.visible = true
         }
 
         /*! \internal
@@ -241,7 +241,7 @@ AbstractButton {
             }
             removeItem = false
 
-            __backgroundIdicator.state = ""
+            __backgroundIndicator.state = ""
         }
 
         /*! \internal
@@ -329,15 +329,15 @@ AbstractButton {
 
             onXChanged: {
                 if (x > 0) {
-                    __backgroundIdicator.state = "SwipingRight"
+                    __backgroundIndicator.state = "SwipingRight"
                 } else {
-                    __backgroundIdicator.state = "SwipingLeft"
+                    __backgroundIndicator.state = "SwipingLeft"
                 }
             }
         }
 
         Item {
-            id: __backgroundIdicator
+            id: __backgroundIndicator
 
             opacity: 0.0
             anchors {
@@ -351,24 +351,24 @@ AbstractButton {
                 State {
                     name: "SwipingRight"
                     AnchorChanges {
-                        target: __backgroundIdicator
+                        target: __backgroundIndicator
                         anchors.left: parent.left
                         anchors.right: body.left
                     }
                     PropertyChanges {
-                        target: __backgroundIdicator
+                        target: __backgroundIndicator
                         opacity: 1.0
                     }
                 },
                 State {
                     name: "SwipingLeft"
                     AnchorChanges {
-                        target: __backgroundIdicator
+                        target: __backgroundIndicator
                         anchors.left: body.right
                         anchors.right: parent.right
                     }
                     PropertyChanges {
-                        target: __backgroundIdicator
+                        target: __backgroundIndicator
                         opacity: 1.0
                     }
                 }
