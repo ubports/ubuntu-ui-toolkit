@@ -531,7 +531,7 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
             // we have the mapping!!
             style = QString(stylePropertyFormat).arg(qmlTypes.first);
         } else {
-            style = QString(stylePropertyFormat).arg("QtObject");
+            style = QString(stylePropertyFormat).arg("Style");
             propertyPrefix += "property var";
         }
 
