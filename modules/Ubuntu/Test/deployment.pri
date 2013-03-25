@@ -1,4 +1,4 @@
-uri = Ubuntu.Tests
+uri = Ubuntu.Test
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 # Components
