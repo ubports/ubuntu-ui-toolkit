@@ -202,11 +202,6 @@ AbstractButton {
         property int pressedPosition: -1
 
         /*! \internal
-          Defines the final pressed possition
-         */
-        property int positionEnded: 0
-
-        /*! \internal
           Defines if the item is moving or not
          */
         property bool held: false
@@ -228,20 +223,24 @@ AbstractButton {
         }
 
         /*! \internal
-           Commit the necessary changes to remove or not the item based on the mouse final position
-        */
-        function commitDrag() {
+            Resets the item dragging state
+         */
+        function resetDrag() {
             pressedPosition = -1
             __mouseArea.drag.target = null
             held = false
-            positionEnded = body.x
+            removeItem = false
+            __backgroundIndicator.state = ""
+        }
 
+        /*! \internal
+           Commit the necessary changes to remove or not the item based on the mouse final position
+        */
+        function commitDrag() {
             if (removeItem) {
                 removeItemAnimation.start()
             }
-            removeItem = false
-
-            __backgroundIndicator.state = ""
+            resetDrag()
         }
 
         /*! \internal
@@ -252,7 +251,7 @@ AbstractButton {
                 held = false
                 removeItem = false
                 if (body.x == 0) {
-                    commitDrag()
+                    resetDrag()
                 } else {
                     body.x = 0;
                 }
@@ -410,16 +409,6 @@ AbstractButton {
             var mouseOffset = _priv.pressedPosition - mouse.x
             if ((_priv.pressedPosition != -1) && !_priv.held && ( Math.abs(mouseOffset) >= _priv.mouseMoveOffset)) {
                 _priv.startDrag();
-            }
-        }
-
-        onPositionChanged: {
-            if (!emptyListItem.removable) {
-                return;
-            }
-
-            if (_priv.held) {
-                _priv.positionEnded = body.x;
             }
         }
 
