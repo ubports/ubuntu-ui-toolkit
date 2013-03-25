@@ -189,17 +189,17 @@ AbstractButton {
         /*! \internal
           Defines the offset used when the item will start to move
          */
-        property int mouseMoveOffset: units.gu(4)
+        readonly property int mouseMoveOffset: units.gu(1)
 
         /*! \internal
           Defines the offset limit to consider the item removed
          */
-        property int itemMoveOffset: width * 0.3
+        readonly property int itemMoveOffset: width * 0.3
 
         /*! \internal
           Defines the inital pressed possition
          */
-        property int pressedPosition: 0
+        property int pressedPosition: -1
 
         /*! \internal
           Defines the final pressed possition
@@ -220,9 +220,7 @@ AbstractButton {
             notify the start of the drag operation
          */
         function startDrag() {
-            body.anchors.left = undefined
             __mouseArea.drag.target = body
-
             held = true
             __mouseArea.drag.maximumX = parent.width
             __mouseArea.drag.minimumX = (width * -1)
@@ -234,7 +232,6 @@ AbstractButton {
         */
         function commitDrag() {
             pressedPosition = -1
-            __mouseArea.drag.target = null
             __mouseArea.drag.target = null
             held = false
             positionEnded = body.x
@@ -252,6 +249,7 @@ AbstractButton {
         */
         function endDrag() {
             if (Math.abs(body.x) < itemMoveOffset && held == true) {
+                held = false
                 removeItem = false
                 if (body.x == 0) {
                     commitDrag()
@@ -259,6 +257,7 @@ AbstractButton {
                     body.x = 0;
                 }
             } else if (held == true) {
+                held = false
                 removeItem = true
                 if (body.x > 0) {
                     body.x = body.width
@@ -315,6 +314,7 @@ AbstractButton {
             width: parent.width
 
             Behavior on x {
+                enabled: !_priv.held
                 SequentialAnimation {
                     NumberAnimation {
                         duration: 200
@@ -378,6 +378,8 @@ AbstractButton {
 
     SequentialAnimation {
         id: removeItemAnimation
+
+        running: false
         NumberAnimation {
             target: emptyListItem
             property: "__height"
