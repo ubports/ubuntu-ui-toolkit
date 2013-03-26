@@ -130,7 +130,6 @@ Examples:
     backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
 }
 
-@qml-import(Ubuntu.Components.ListItems 0.1); /* Needed for ListItem.Divider { } */
 .new-tabs {
     swipeToSwitchTabs: true;
     headerFontSize: "x-large";
