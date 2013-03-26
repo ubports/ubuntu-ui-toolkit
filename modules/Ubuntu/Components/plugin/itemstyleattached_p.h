@@ -67,6 +67,7 @@ public:
     bool registerName(const QString &id);
     void listenThemeEngine();
     void _q_attacheePropertyChanged();
+    void _q_updateStyledItem();
     void _q_updateAttacheeProperty();
     void _q_updateDelegateProperty();
     void _q_refreshStyle();

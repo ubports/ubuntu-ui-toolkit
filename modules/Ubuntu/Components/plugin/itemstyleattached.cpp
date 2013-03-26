@@ -178,7 +178,7 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
         // we cannot detect whether a signal is connected as isSignalConnected() is
         // a protected method of QObject, and we cannot access attachee's protected
         // functions
-        watchedProperties.insert(i, true);
+        watchedProperties.insert(i, StyledPropertyMap::Enabled);
     }
 }
 
@@ -198,8 +198,12 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
     if (style && style->isUpdating(property))
         return;
 
+    int index = mo->indexOfProperty(property.toLatin1());
+    if (watchedProperties.isBanned(index))
+        return;
+
     // ban property from being styled
-    watchedProperties.insert(mo->indexOfProperty(property.toLatin1()), false);
+    watchedProperties.insert(index, StyledPropertyMap::Banned);
 
     // unbind style from attachee
     if (style)
@@ -335,8 +339,8 @@ void ItemStyleAttachedPrivate::resetStyle()
     if (style && !customStyle) {
         // clear bindings, disconnect as properties may change before the style
         // is deleted
-        style->unbindItem(delegate);
-        style->unbindItem(attachee);
+        style->unbindItem(delegate, watchedProperties);
+        style->unbindItem(attachee, watchedProperties);
         style->setParent(0);
         style->deleteLater();
         style = 0;
@@ -348,7 +352,7 @@ void ItemStyleAttachedPrivate::resetDelegate()
     if (delegate && !customDelegate) {
         // remove all bindings between style and delegate
         if (style)
-            style->unbindItem(delegate);
+            style->unbindItem(delegate, watchedProperties);
         delegate->setParent(0);
         delegate->setParentItem(0);
         delegate->deleteLater();

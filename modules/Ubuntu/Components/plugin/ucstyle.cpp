@@ -22,6 +22,12 @@
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
 
+#define foreach Q_FOREACH
+#include <private/qqmlbinding_p.h>
+#undef foreach
+
+//#define USE_BINDING
+
 /*!
  * \qmltype Style
  * \instantiates UCStyle
@@ -85,10 +91,11 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
             continue;
         }
         // if not bound, check if we can still style it
-        if (propertyMap.value(i) && !m_bindings.contains(styleIndex)) {
+        if (propertyMap.isEnabled(i) && !m_bindings.contains(styleIndex)) {
 
             // bind
-            bind(styleIndex, item, qmlProperty);
+            propertyMap.insert(i, StyledPropertyMap::Styled);
+            bind(styleIndex, item, qmlProperty, i);
         }
     }
 }
@@ -127,12 +134,12 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
         if ((styleIndex == -1) || m_bindings.contains(styleIndex))
             continue;
         int styledItemIndex = styledItem->metaObject()->indexOfProperty(delegateProperty.name());
-        if ((styledItemIndex != -1) && propertyMap.contains(styledItemIndex) && !propertyMap.value(styledItemIndex))
+        if ((styledItemIndex != -1) && propertyMap.isEnabled(styledItemIndex) && !propertyMap.isStyled(styledItemIndex))
             continue;
 
         // write and memorize
         QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
-        bind(styleIndex, item, qmlProperty);
+        bind(styleIndex, item, qmlProperty, -1);
     }
 }
 
@@ -140,7 +147,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
  * \internal
  * The method removes all the style bindings between the item and the style.
  */
-void UCStyle::unbindItem(QQuickItem *item)
+void UCStyle::unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
 {
     if (!item)
         return;
@@ -151,6 +158,8 @@ void UCStyle::unbindItem(QQuickItem *item)
         if (binding.target == item) {
             unbind(i.key());
         }
+        if ((binding.styledIndex != -1) && propertyMap.isStyled(binding.styledIndex))
+            propertyMap.insert(binding.styledIndex, StyledPropertyMap::Enabled);
     }
 }
 
@@ -172,7 +181,9 @@ void UCStyle::unbindProperty(const QString &property)
  */
 bool UCStyle::isUpdating(const QString &property)
 {
-    return property == m_propertyUpdated;
+    bool result = property == m_propertyUpdated;
+    m_propertyUpdated.clear();
+    return result;
 }
 
 
@@ -189,35 +200,14 @@ void UCStyle::updateStyledItem()
         return;
     }
 
-    m_propertyUpdated = QString(signal.name()).remove("Changed");
-
-    QQmlProperty styleProperty(this, m_propertyUpdated, qmlContext(this));
+    QString property = QString(signal.name()).remove("Changed");
+    QQmlProperty styleProperty(this, property, qmlContext(this));
     int index = styleProperty.index();
-    if (m_bindings.contains(index)) {
-        Binding binding = m_bindings.value(styleProperty.index());
-        QVariant::Type targetType = binding.styledProperty.property().type();
-
-        // update binding
-
-        QQmlAbstractBinding *tmp = QQmlPropertyPrivate::setBinding(binding.styledProperty, 0);
-        if (tmp && binding.prevBind)
-            tmp->destroy();
-        else if (!binding.prevBind) {
-            binding.prevBind = tmp;
-            m_bindings.insert(index, binding);
-        }
-
+    Binding binding = m_bindings.value(index);
+    if (binding.target) {
         // update value
-        if (targetType == QVariant::Color) {
-            // color requires special attention, when transformed to variant then back to color
-            // the alpha value is lost, meaning the destination will get value of 255
-            // therefore we need to convert the variant to color and set the color falue
-            binding.styledProperty.write(styleProperty.read().value<QColor>());
-        } else
-            binding.styledProperty.write(styleProperty.read());
+        write(styleProperty, binding.styledProperty);
     }
-
-    m_propertyUpdated.clear();
 }
 
 /*!
@@ -226,24 +216,21 @@ void UCStyle::updateStyledItem()
  * delegate). The binding consist of creating the QML binding, writing the data
  * and connecting the style properties' notify signal to the updater slot.
  */
-void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
+void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex)
 {
     // bind
     Binding binding;
     binding.styledProperty = property;
-    binding.prevBind = QQmlPropertyPrivate::setBinding(binding.styledProperty, 0);
     binding.target = target;
+    binding.styledIndex = propertyIndex;
     m_bindings.insert(index, binding);
 
-    // then write
-    const QMetaProperty styleProperty = metaObject()->property(index);
-    m_propertyUpdated = property.name();
-    binding.styledProperty.write(styleProperty.read(this));
-    m_propertyUpdated.clear();
-
-    // finally connect to update styled property
+    // connect the style property's notify signal so we can guard
+    // styled item property changes when change occurs because of style changes
     QQmlProperty qmlProperty(this, property.name(), qmlContext(this));
-    qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
+    if (propertyIndex != -1)
+        qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
+    write(qmlProperty, property);
 }
 
 /*!
@@ -253,20 +240,31 @@ void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
 void UCStyle::unbind(int index)
 {
     Binding binding = m_bindings.value(index);
-    if (binding.prevBind) {
-        // unbind
-        QQmlAbstractBinding *tmp = QQmlPropertyPrivate::setBinding(binding.styledProperty, binding.prevBind);
-        if (tmp)
-            tmp->destroy();
+    if (binding.styledProperty.isValid()) {
 
-        // disconnect from update
-        QMetaMethod metaSignal = metaObject()->property(index).notifySignal();
-        // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
-        QByteArray signal('2' + metaSignal.methodSignature());
-        QObject::disconnect(this, signal.constData(), this, SLOT(updateStyledItem()));
+        if (binding.styledIndex != -1) {
+            // disconnect from update
+            QMetaMethod metaSignal = metaObject()->property(index).notifySignal();
+            // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
+            QByteArray signal('2' + metaSignal.methodSignature());
+            QObject::disconnect(this, signal.constData(), this, SLOT(updateStyledItem()));
+        }
 
         // finally remove from bindings
         m_bindings.remove(index);
     }
 }
 
+void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
+{
+    m_propertyUpdated = destination.name();
+    const QMetaProperty target = destination.property();
+    if (target.type() == QVariant::Color) {
+        // color requires special attention, when transformed to variant then back to color
+        // the alpha value is lost, meaning the destination will get value of 255
+        // therefore we need to convert the variant to color and set the color falue
+        destination.write(source.read().value<QColor>());
+    } else
+        destination.write(source.read());
+    m_propertyUpdated.clear();
+}
