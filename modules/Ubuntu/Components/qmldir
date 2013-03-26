@@ -31,6 +31,7 @@ Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
+Icon 0.1 Icon.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
 ComponentUtils 0.1 componentUtils.js
