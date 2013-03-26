@@ -103,7 +103,7 @@ AbstractButton {
       \preliminary
       The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
-    readonly property alias swipingState: __backgroundIndicator.state
+    readonly property alias swipingState: backgroundIndicator.state
 
 
     /*!
@@ -171,7 +171,7 @@ AbstractButton {
       \preliminary
       Defines the item background item to be showed during the item swiping
      */
-    property alias backgroundIndicator: __backgroundIndicator.children
+    property alias backgroundIndicator: backgroundIndicator.children
 
     /*! \internal
       The spacing inside the list item.
@@ -184,7 +184,7 @@ AbstractButton {
 
     /*! \internal */
     QtObject {
-        id: _priv
+        id: priv
 
         /*! \internal
           Defines the offset used when the item will start to move
@@ -219,7 +219,7 @@ AbstractButton {
             held = true
             __mouseArea.drag.maximumX = parent.width
             __mouseArea.drag.minimumX = (parent.width * -1)
-            __backgroundIndicator.visible = true
+            backgroundIndicator.visible = true
         }
 
         /*! \internal
@@ -230,7 +230,7 @@ AbstractButton {
             __mouseArea.drag.target = null
             held = false
             removeItem = false
-            __backgroundIndicator.state = ""
+            backgroundIndicator.state = ""
         }
 
         /*! \internal
@@ -314,14 +314,14 @@ AbstractButton {
             width: parent.width
 
             Behavior on x {
-                enabled: !_priv.held
+                enabled: !priv.held
                 SequentialAnimation {
                     NumberAnimation {
                         duration: 200
                     }
                     ScriptAction {
                          script: {
-                             _priv.commitDrag()
+                             priv.commitDrag()
                         }
                     }
                 }
@@ -329,15 +329,15 @@ AbstractButton {
 
             onXChanged: {
                 if (x > 0) {
-                    __backgroundIndicator.state = "SwipingRight"
+                    backgroundIndicator.state = "SwipingRight"
                 } else {
-                    __backgroundIndicator.state = "SwipingLeft"
+                    backgroundIndicator.state = "SwipingLeft"
                 }
             }
         }
 
         Item {
-            id: __backgroundIndicator
+            id: backgroundIndicator
 
             opacity: 0.0
             anchors {
@@ -351,24 +351,24 @@ AbstractButton {
                 State {
                     name: "SwipingRight"
                     AnchorChanges {
-                        target: __backgroundIndicator
+                        target: backgroundIndicator
                         anchors.left: parent.left
                         anchors.right: body.left
                     }
                     PropertyChanges {
-                        target: __backgroundIndicator
+                        target: backgroundIndicator
                         opacity: 1.0
                     }
                 },
                 State {
                     name: "SwipingLeft"
                     AnchorChanges {
-                        target: __backgroundIndicator
+                        target: backgroundIndicator
                         anchors.left: body.right
                         anchors.right: parent.right
                     }
                     PropertyChanges {
-                        target: __backgroundIndicator
+                        target: backgroundIndicator
                         opacity: 1.0
                     }
                 }
@@ -395,22 +395,23 @@ AbstractButton {
         target: (emptyListItem.removable) ? __mouseArea : null
 
         onPressed: {
-            _priv.pressedPosition = mouse.x
+            priv.pressedPosition = mouse.x
         }
 
         onMouseXChanged: {
-            var mouseOffset = _priv.pressedPosition - mouse.x
-            if ((_priv.pressedPosition != -1) && !_priv.held && ( Math.abs(mouseOffset) >= _priv.mouseMoveOffset)) {
-                _priv.startDrag();
+            var mouseOffset = priv.pressedPosition - mouse.x
+            if ((priv.pressedPosition != -1) && !priv.held && ( Math.abs(mouseOffset) >= priv.mouseMoveOffset)) {
+                priv.startDrag();
             }
         }
 
         onReleased: {
-            _priv.endDrag();
+            priv.endDrag();
         }
 
         onCanceled: {
-            _priv.endDrag();
+
+            priv.endDrag();
         }
     }
 }
