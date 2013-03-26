@@ -33,9 +33,36 @@
     "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus," \
     "activeFocus,rotation"
 
-typedef QHash<int, bool> StyledPropertyMap;
+class StyledPropertyMap : public QHash<int, unsigned> {
+public: enum Type {
+        Invalid,
+        Enabled,
+        Banned,
+        Styled
+    };
 
-class QQmlAbstractBinding;
+public:
+    StyledPropertyMap(){}
+
+    inline bool isEnabled(int key)
+    {
+        Type t = (Type)value(key);
+        return (t == Enabled) || (t == Styled);
+    }
+
+    inline bool isBanned(int key)
+    {
+        return (Type)value(key) == Banned;
+    }
+
+    inline bool isStyled(int key)
+    {
+        return (Type)value(key) == Styled;
+    }
+};
+
+
+class QQmlBinding;
 class QQuickItem;
 class UCStyle : public QObject
 {
@@ -48,7 +75,7 @@ protected:
     // these methods are supposed to be used internally by the styling
     void bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void unbindItem(QQuickItem *item);
+    void unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     void unbindProperty(const QString &property);
     bool isUpdating(const QString &property);
     friend class ItemStyleAttachedPrivate;
@@ -58,16 +85,17 @@ private Q_SLOTS:
     
 private:
     struct Binding {
-        QQmlAbstractBinding *prevBind;
         QQuickItem *target;
         QQmlProperty styledProperty;
+        int styledIndex;
     };
 
     QHash<int, Binding> m_bindings;
     QString m_propertyUpdated;
 
-    void bind(int index, QQuickItem *target, const QQmlProperty &property);
+    void bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex);
     void unbind(int index);
+    void write(const QQmlProperty &source, const QQmlProperty &destination);
 };
 
 #endif // UCSTYLE_H
