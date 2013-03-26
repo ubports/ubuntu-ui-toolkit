@@ -97,18 +97,18 @@ Item {
         visible: icon.__colorize && image.status == Image.Ready
 
         property Image source: visible ? image : null
-        property color color: icon.color
-        property color replacedColor: "#bebebe"
+        property color keyColorOut: icon.color
+        property color keyColorIn: "#bebebe"
 
         fragmentShader: "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
-            uniform highp vec4 color;
-            uniform highp vec4 replacedColor;
+            uniform highp vec4 keyColorOut;
+            uniform highp vec4 keyColorIn;
             uniform lowp float qt_Opacity;
             void main() {
                 lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
-                gl_FragColor = mix(vec4(color.rgb, 1.0) * sourceColor.a, sourceColor, step(0.1, distance(sourceColor.rgb / sourceColor.a, replacedColor.rgb))) * qt_Opacity;
+                gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(0.1, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
             }"
     }
 }
