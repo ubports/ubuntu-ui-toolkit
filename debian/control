@@ -25,6 +25,7 @@ Architecture: amd64 i386 armhf
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: libqt5graphicaleffects5,
+         libqt5svg5,
          qtdeclarative5-qtquick2-plugin,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
