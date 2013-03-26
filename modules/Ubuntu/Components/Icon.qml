@@ -65,13 +65,7 @@ Item {
        The color that all pixels that originally are #bebebe should take.
        \qmlproperty color color
     */
-    property color color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
-
-    /*!
-      \internal
-      Whether or not a color has been set.
-     */
-    property bool __colorize: color != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+    property alias color: colorizedImage.keyColorOut
 
     Image {
         id: image
@@ -87,17 +81,20 @@ Item {
             height: height
         }
         cache: true
-        visible: !icon.__colorize
+        visible: !colorizedImage.active
     }
 
     ShaderEffect {
         id: colorizedImage
 
         anchors.fill: parent
-        visible: icon.__colorize && image.status == Image.Ready
+        visible: active && image.status == Image.Ready
+
+        // Whether or not a color has been set.
+        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
 
         property Image source: visible ? image : null
-        property color keyColorOut: icon.color
+        property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: "#bebebe"
         property real threshold: 0.1
 
