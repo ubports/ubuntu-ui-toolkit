@@ -298,7 +298,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             QObject *obj = styleRule->delegate->create(componentContext);
             delegate = qobject_cast<QQuickItem*>(obj);
             if (!delegate && obj) {
-                qDebug() << "WRONG DELEGATE!!!";
+                qmlInfo(q_ptr) << "Wrong delegate for selector" << styleRule->selector().toString();
                 delete obj;
             }
             result = (delegate != 0);
