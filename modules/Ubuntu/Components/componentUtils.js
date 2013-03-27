@@ -28,6 +28,7 @@ function hasStyle(object, property) {
     // we need to use named imports otherwise namespace collision is reported
     // by the QML engine. As workaround, we use Theming named import.
     // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+    print("ComponentUtils.hasStyle DEPRECATED");
     return (object && property && object.Theming.ItemStyle.style && (undefined !== object.Theming.ItemStyle.style[property]))
 }
 
@@ -44,6 +45,7 @@ function style(object, property, defaultValue) {
     // we need to use named imports otherwise namespace collision is reported
     // by the QML engine. As workaround, we use Theming named import.
     // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+    print("ComponentUtils.style DEPRECATED, called from " + parent);
     if (hasStyle(object, property))
         return object.Theming.ItemStyle.style[property];
     return defaultValue;
@@ -55,6 +57,7 @@ function style(object, property, defaultValue) {
   Returns the property or undefined.
   */
 function delegateProperty(object, property, defaultValue) {
+    print("ComponentUtils.delegateProperty DEPRECATED, called from " + parent);
     if (object && property && object.Theming.ItemStyle.delegate && (undefined !== object.Theming.ItemStyle.delegate[property]))
         return object.Theming.ItemStyle.delegate[property];
     return defaultValue;
