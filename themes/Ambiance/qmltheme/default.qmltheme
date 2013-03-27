@@ -166,8 +166,8 @@ Examples:
 
 .dark-button {
     color: "#cccccc";
-    shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 /*
