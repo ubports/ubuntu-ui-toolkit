@@ -27,8 +27,8 @@ UbuntuShape {
       */
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
-    property var backgroundColor: Qt.rgba(0, 0, 0, 0.1)
-    property var errorColor: "red"
+    property color backgroundColor: Qt.rgba(0, 0, 0, 0.1)
+    property color errorColor: "red"
     property real backgroundOpacity
 
     /*!
@@ -40,8 +40,9 @@ UbuntuShape {
     // visuals
     z: -1
     property bool error: (item.hasOwnProperty("errorHighlight") && item.errorHighlight && !item.acceptableInput)
+    onErrorChanged: color = (error) ? errorColor : backgroundColor;
+    color: backgroundColor
     anchors.fill: parent
-    color: !error ? backgroundColor : "red"
     opacity: backgroundOpacity
 
     MouseArea {

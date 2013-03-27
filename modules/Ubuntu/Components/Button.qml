@@ -63,7 +63,7 @@ AbstractButton {
        The foreground color of the button in idle state.
     */
     // FIXME: see FIXME above
-    property color color: "transparent"
+    property color color: "blue"
 
     /*!
        \preliminary

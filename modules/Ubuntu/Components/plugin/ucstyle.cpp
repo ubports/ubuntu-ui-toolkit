@@ -21,12 +21,11 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
+#include "quickutils.h"
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
 #undef foreach
-
-//#define USE_BINDING
 
 /*!
  * \qmltype Style
@@ -228,8 +227,7 @@ void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property, 
     // connect the style property's notify signal so we can guard
     // styled item property changes when change occurs because of style changes
     QQmlProperty qmlProperty(this, property.name(), qmlContext(this));
-    if (propertyIndex != -1)
-        qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
+    qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
     write(qmlProperty, property);
 }
 
@@ -242,13 +240,11 @@ void UCStyle::unbind(int index)
     Binding binding = m_bindings.value(index);
     if (binding.styledProperty.isValid()) {
 
-        if (binding.styledIndex != -1) {
-            // disconnect from update
-            QMetaMethod metaSignal = metaObject()->property(index).notifySignal();
-            // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
-            QByteArray signal('2' + metaSignal.methodSignature());
-            QObject::disconnect(this, signal.constData(), this, SLOT(updateStyledItem()));
-        }
+        // disconnect from update
+        QMetaMethod metaSignal = metaObject()->property(index).notifySignal();
+        // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
+        QByteArray signal('2' + metaSignal.methodSignature());
+        QObject::disconnect(this, signal.constData(), this, SLOT(updateStyledItem()));
 
         // finally remove from bindings
         m_bindings.remove(index);
