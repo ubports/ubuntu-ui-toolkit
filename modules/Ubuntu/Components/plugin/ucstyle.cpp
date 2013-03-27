@@ -86,7 +86,7 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
         QQmlProperty qmlProperty(item, itemProperty.name(), qmlContext(item));
         if (QQmlPropertyPrivate::binding(qmlProperty)) {
             // mark as not stylable
-            propertyMap.insert(i, false);
+            propertyMap.insert(i, StyledPropertyMap::Banned);
             continue;
         }
         // if not bound, check if we can still style it
