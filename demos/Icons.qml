@@ -18,41 +18,45 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("GIcon image provider")
-    objectName: "GIcon Provider"
+    title: i18n.tr("Icons")
+    objectName: "Icons"
 
     Column {
         spacing: units.gu(4)
 
         TemplateRow {
-            title: i18n.tr("color")
+            title: i18n.tr("scaling")
+            spacing: units.gu(2)
 
-            Image {
-                source: "image://gicon/preferences-color"
-                height: 48
+            Icon {
+                name: "call-start"
+                width: 16
+                height: 16
+            }
+
+            Icon {
+                name: "call-start"
                 width: 48
+                height: 48
             }
         }
 
         TemplateRow {
-            title: i18n.tr("display")
+            title: i18n.tr("colorization")
+            spacing: units.gu(2)
 
-            Image {
-                source: "image://gicon/preferences-desktop-display"
-                height: 48
-                width: 48
+            Icon {
+                name: "computer-symbolic"
+                width: 24
+                height: 24
+            }
+
+            Icon {
+                name: "computer-symbolic"
+                color: "red"
+                width: 24
+                height: 24
             }
         }
-
-        TemplateRow {
-            title: i18n.tr("time")
-
-            Image {
-                source: "image://gicon/preferences-system-time"
-                height: 48
-                width: 48
-            }
-        }
-
     }
 }
