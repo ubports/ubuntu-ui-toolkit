@@ -36,7 +36,7 @@ Item {
         left: parent.left
         right: parent.right
     }
-    y: (title) ? 0 : -header.height
+    y: 0
 
     Behavior on y {
         enabled: !(header.flickable && header.flickable.moving)
