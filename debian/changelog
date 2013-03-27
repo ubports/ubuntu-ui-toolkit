@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (0.1.39) UNRELEASED; urgency=low
+
+  * New Icon component that displays icons from the icon theme.
+  * Added libqt5svg5 as a dependency thus allowing use of SVGs in icon themes.
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 26 Mar 2013 11:27:19 -0300
+
 ubuntu-ui-toolkit (0.1.38) quantal; urgency=low
 
   * Fix bug in list items. 
