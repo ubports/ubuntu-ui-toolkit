@@ -15,7 +15,12 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* ListItem.Empty:
+   + backgroundIndicator: Defines the item background item to be showed during the item swiping
+   + removable: Defines if the item can be removed or not
+   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
+   + itemRemoved: This handler is called when the item is removed from the list
+
 
 0.1.38
 ##########
