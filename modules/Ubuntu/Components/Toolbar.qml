@@ -34,8 +34,8 @@ GenericToolbar {
     Theming.ItemStyle.class: "toolbar"
 
     height: background.height
-    //hintSize: units.gu(2)
-    //triggerSize: units.gu(2)
+    hintSize: units.gu(2)
+    triggerSize: units.gu(2)
 
     /*!
       \preliminary

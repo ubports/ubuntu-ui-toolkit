@@ -177,8 +177,7 @@ AbstractButton {
     QtObject {
         id: internals
 
-        // FIXME: should be removed once
-        property real thumbSpacing: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumbSpacing : null
+        property real thumbSpacing: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumbSpacing : 0
         property Item bar: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.bar : null
         property Item thumb: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumb :  null
 

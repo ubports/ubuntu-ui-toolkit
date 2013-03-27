@@ -262,25 +262,25 @@ FocusScope {
 
     /*!
       \internal
-      FIXME: property added for styling purposes, complete ina separate MR
+      FIXME: property added for styling purposes
       */
     property alias passwordCharacter: editor.passwordCharacter
 
     /*!
       \internal
-      FIXME: property added for styling purposes, complete ina separate MR
+      FIXME: property added for styling purposes
       */
     property alias color: editor.color
 
     /*!
       \internal
-      FIXME: property added for styling purposes, complete ina separate MR
+      FIXME: property added for styling purposes
       */
     property alias selectionColor: editor.selectionColor
 
     /*!
       \internal
-      FIXME: property added for styling purposes, complete ina separate MR
+      FIXME: property added for styling purposes
       */
     property alias selectedTextColor: editor.selectedTextColor
 

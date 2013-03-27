@@ -18,10 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
     anchors.fill: parent
 
-    implicitWidth: units.gu(9)
-    implicitHeight: units.gu(4)
+    // styling properties
+    property url borderSource
+    property url borderPressed
 
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
@@ -38,6 +40,7 @@ Item {
 
         anchors.fill: parent
         color: item.color
+        borderSource: visuals.borderSource
         opacity: 1.0 - borderPressed.opacity
     }
 
@@ -46,6 +49,7 @@ Item {
 
         anchors.fill: parent
         color: item.color
+        borderSource: visuals.borderPressed
         opacity: item.pressed ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
     }

@@ -70,8 +70,8 @@ Examples:
 
 .button, .custom-button {
     color: "#cccccc";
-    shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 .toolbar {
@@ -333,7 +333,6 @@ Examples:
 */
 .textfield, .textarea{
     radius: "small";
-    error: false;
     backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorColor: "red";
     backgroundOpacity: item.enabled ? 1.0 : 0.1;
