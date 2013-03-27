@@ -33,31 +33,44 @@
     "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus," \
     "activeFocus,rotation"
 
-class StyledPropertyMap : public QHash<int, unsigned> {
+class QQmlAbstractBinding;
+typedef QPair<unsigned, QQmlAbstractBinding*> PropertyPair;
+class StyledPropertyMap : public QHash<int, PropertyPair> {
 public: enum Type {
         Invalid,
-        Enabled,
         Banned,
+        Enabled,
+        Bound,
         Styled
     };
 
 public:
     StyledPropertyMap(){}
 
+    inline void mark(int key, Type type, QQmlAbstractBinding *binding = 0)
+    {
+        insert(key, PropertyPair(type, binding));
+    }
+
+    inline QQmlAbstractBinding *binding(int key)
+    {
+        return value(key).second;
+    }
+
     inline bool isEnabled(int key)
     {
-        Type t = (Type)value(key);
-        return (t == Enabled) || (t == Styled);
+        Type t = (Type)value(key).first;
+        return (t >= Enabled);
     }
 
     inline bool isBanned(int key)
     {
-        return (Type)value(key) == Banned;
+        return (Type)value(key).first == Banned;
     }
 
     inline bool isStyled(int key)
     {
-        return (Type)value(key) == Styled;
+        return (Type)value(key).first == Styled;
     }
 };
 
