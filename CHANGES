@@ -15,7 +15,20 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* New
+- Style QML type as base type for all custom style objects
+    * provides automatic property styling of styled item and its assotiated delegate
+
+* Deprecated APIs
+- ComponentUtils module is deprecated
+  (affects componentUtils.js: hasStyle(), style(), delegateProperty() functions)
+- StyleUtils module is deprecated
+  (affects styleUtils.js: itemStyleProperty(), animateOrSetValue(), animate() functions)
+- itemStype context properties published for delegates deprecated
+- Deprecated theme specific styles and delegates:
+    ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
+    TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle
+
 
 0.1.38
 ##########
