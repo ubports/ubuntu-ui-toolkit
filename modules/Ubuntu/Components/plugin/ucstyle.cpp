@@ -84,16 +84,23 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
         // check if the property has equivalent in the attachee and if we can style it
         // this means that the equivalent property index in attachee is present in stylableProperties
         QQmlProperty qmlProperty(item, itemProperty.name(), qmlContext(item));
-        if (QQmlPropertyPrivate::binding(qmlProperty)) {
-            // mark as not stylable
-            propertyMap.insert(i, false);
-            continue;
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
+        if (binding) {
+            // check if this binding is the original one
+            if (binding == propertyMap.binding(i)) {
+                // delete binding so we can style it
+                binding->destroy();
+            } else {
+                // mark as banned
+                propertyMap.mark(i, StyledPropertyMap::Banned);
+                continue;
+            }
         }
         // if not bound, check if we can still style it
         if (propertyMap.isEnabled(i) && !m_bindings.contains(styleIndex)) {
 
             // bind
-            propertyMap.insert(i, StyledPropertyMap::Styled);
+            propertyMap.mark(i, StyledPropertyMap::Styled);
             bind(styleIndex, item, qmlProperty, i);
         }
     }
@@ -158,7 +165,7 @@ void UCStyle::unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
             unbind(i.key());
         }
         if ((binding.styledIndex != -1) && propertyMap.isStyled(binding.styledIndex))
-            propertyMap.insert(binding.styledIndex, StyledPropertyMap::Enabled);
+            propertyMap.mark(binding.styledIndex, StyledPropertyMap::Enabled);
     }
 }
 

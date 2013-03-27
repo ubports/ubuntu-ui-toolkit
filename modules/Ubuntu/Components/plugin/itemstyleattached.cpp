@@ -173,7 +173,10 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
             continue;
         // check if attachee property has already bindings, leave if it has
         QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
-        if (QQmlPropertyPrivate::binding(qmlProp)) {
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProp);
+        if (binding) {
+            // mark as first time bound, so further styling can unbind it and do styling
+            watchedProperties.mark(i, StyledPropertyMap::Bound, binding);
             continue;
         }
         // connect property's notify signal to watch when it gets changed so we can stop watching it
@@ -182,7 +185,7 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
         // we cannot detect whether a signal is connected as isSignalConnected() is
         // a protected method of QObject, and we cannot access attachee's protected
         // functions
-        watchedProperties.insert(i, StyledPropertyMap::Enabled);
+        watchedProperties.mark(i, StyledPropertyMap::Enabled);
     }
 }
 
@@ -207,7 +210,7 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
         return;
 
     // ban property from being styled
-    watchedProperties.insert(index, StyledPropertyMap::Banned);
+    watchedProperties.mark(index, StyledPropertyMap::Banned);
 
     // unbind style from attachee
     if (style)

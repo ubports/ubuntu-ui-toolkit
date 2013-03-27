@@ -53,7 +53,6 @@ Examples:
 @qml-mapping(.activityindicator, , ActivityIndicatorDelegate);
 .activityindicator {
     source: url(artwork/spinner.png);
-    animation: PropertyAnimation{duration: 1300};
 }
 
 .UbuntuShape-radius-small {
@@ -167,8 +166,8 @@ Examples:
 
 .dark-button {
     color: "#cccccc";
-    shape: url("artwork/ubuntushape_small_radius_shape.sci");
     borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
+    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 /*
