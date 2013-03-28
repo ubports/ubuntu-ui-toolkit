@@ -185,11 +185,9 @@ void UCStyle::unbindProperty(const QString &property)
  * \internal
  * Returns whether the updated styled property is the one given as parameter.
  */
-bool UCStyle::isUpdating(const QString &property)
+bool UCStyle::isUpdating(const QString &property) const
 {
-    bool result = property == m_propertyUpdated;
-    m_propertyUpdated.clear();
-    return result;
+    return property == m_propertyUpdated;
 }
 
 

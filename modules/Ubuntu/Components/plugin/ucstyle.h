@@ -90,7 +90,7 @@ protected:
     void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
     void unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     void unbindProperty(const QString &property);
-    bool isUpdating(const QString &property);
+    bool isUpdating(const QString &property) const;
     friend class ItemStyleAttachedPrivate;
 
 private Q_SLOTS:
