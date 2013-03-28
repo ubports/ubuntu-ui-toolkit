@@ -45,7 +45,7 @@ UCStyle::UCStyle(QObject *parent) :
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QHashIterator<int, Binding> i(m_bindings);
+    QHashIterator<int, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
@@ -99,7 +99,7 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
 
             // bind
             propertyMap.mark(i, StyledPropertyMap::Styled);
-            bind(styleIndex, item, qmlProperty);
+            bind(styleIndex, qmlProperty);
         }
     }
 }
@@ -142,7 +142,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
 
         // write and memorize
         QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
-        bind(styleIndex, item, qmlProperty);
+        bind(styleIndex, qmlProperty);
     }
 }
 
@@ -154,11 +154,10 @@ void UCStyle::unbindItem(QQuickItem *item)
 {
     if (!item)
         return;
-    QHashIterator<int, Binding> i(m_bindings);
+    QHashIterator<int, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
-        Binding binding = i.value();
-        if (binding.target == item) {
+        if (i.value().object() == item) {
             unbind(i.key());
         }
     }
@@ -202,11 +201,8 @@ void UCStyle::updateStyledItem()
     QString property = QString(signal.name()).remove("Changed");
     QQmlProperty styleProperty(this, property, qmlContext(this));
     int index = styleProperty.index();
-    Binding binding = m_bindings.value(index);
-    if (binding.target) {
-        // update value
-        write(styleProperty, binding.styledProperty);
-    }
+    // update value
+    write(styleProperty, m_bindings.value(index));
 }
 
 /*!
@@ -215,13 +211,10 @@ void UCStyle::updateStyledItem()
  * delegate). The binding consist of creating the QML binding, writing the data
  * and connecting the style properties' notify signal to the updater slot.
  */
-void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
+void UCStyle::bind(int index, const QQmlProperty &property)
 {
-    // bind
-    Binding binding;
-    binding.styledProperty = property;
-    binding.target = target;
-    m_bindings.insert(index, binding);
+    // store target proeprty
+    m_bindings.insert(index, property);
 
     // connect the style property's notify signal so we can guard
     // styled item property changes when change occurs because of style changes

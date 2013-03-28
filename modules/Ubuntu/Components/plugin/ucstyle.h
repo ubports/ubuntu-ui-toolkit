@@ -101,15 +101,10 @@ private Q_SLOTS:
     void updateStyledItem();
     
 private:
-    struct Binding {
-        QQuickItem *target;
-        QQmlProperty styledProperty;
-    };
-
-    QHash<int, Binding> m_bindings;
+    QHash<int, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
 
-    void bind(int index, QQuickItem *target, const QQmlProperty &property);
+    void bind(int index, const QQmlProperty &property);
     void unbind(int index);
     void write(const QQmlProperty &source, const QQmlProperty &destination);
 };
