@@ -226,7 +226,7 @@ void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
     // connect the style property's notify signal so we can guard
     // styled item property changes when change occurs because of style changes
     QQmlProperty qmlProperty(this, property.name(), qmlContext(this));
-    //qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
+    qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
     write(qmlProperty, property);
 }
 
