@@ -106,7 +106,7 @@ private:
 
     void bind(const QQmlProperty &property);
     void unbind(const QString &name);
-    void write(const QQmlProperty &source, const QQmlProperty &destination);
+    void write(const QString &source, const QQmlProperty &destination);
 };
 
 #endif // UCSTYLE_H

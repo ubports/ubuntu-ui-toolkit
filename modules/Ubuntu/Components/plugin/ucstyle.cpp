@@ -198,9 +198,8 @@ void UCStyle::updateStyledItem()
     }
 
     QString property = QString(signal.name()).remove("Changed");
-    QQmlProperty styleProperty(this, property, qmlContext(this));
     // update value
-    write(styleProperty, m_bindings.value(property));
+    write(property, m_bindings.value(property));
 }
 
 /*!
@@ -218,7 +217,7 @@ void UCStyle::bind(const QQmlProperty &property)
     // styled item property changes when change occurs because of style changes
     QQmlProperty qmlProperty(this, property.name(), qmlContext(this));
     qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
-    write(qmlProperty, property);
+    write(property.name(), property);
 }
 
 /*!
@@ -237,7 +236,7 @@ void UCStyle::unbind(const QString &property)
     m_bindings.remove(property);
 }
 
-void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
+void UCStyle::write(const QString &source, const QQmlProperty &destination)
 {
     m_propertyUpdated = destination.name();
     const QMetaProperty target = destination.property();
@@ -245,8 +244,8 @@ void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
         // color requires special attention, when transformed to variant then back to color
         // the alpha value is lost, meaning the destination will get value of 255
         // therefore we need to convert the variant to color and set the color falue
-        destination.write(source.read().value<QColor>());
+        destination.write(property(source.toLatin1()).value<QColor>());
     } else
-        destination.write(source.read());
+        destination.write(property(source.toLatin1()));
     m_propertyUpdated.clear();
 }
