@@ -73,38 +73,30 @@ void UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool is
 
     for (int i = 0; i < targetMo->propertyCount(); i++) {
         const QMetaProperty targetProperty = targetMo->property(i);
+        const char *name = targetProperty.name();
 
         // check if it should be omitted
-        if (isStyledItem && omitStyledProperty(targetProperty.name()))
+        if (isStyledItem && omitStyledProperty(name))
             continue;
-        if (!isStyledItem && omitDelegateProperty(targetProperty.name()))
+        if (!isStyledItem && omitDelegateProperty(name))
             continue;
 
         // check if we have a corresponding style property
         // all style properties have notify signals; therefore no need to check those
-        if (styleMo->indexOfProperty(targetProperty.name()) == -1)
+        if (styleMo->indexOfProperty(name) == -1)
             continue;
 
-        if (isStyledItem) {
-            // check if we can style it still or whether we have it already styled
-            // this latest is needed because shadowed or extended properties are listed twice
-            // or because the styled item already has the property so the one from delegate
-            // won't be styled
-            if (isStyledItem && (!propertyMap.isEnabled(i) || m_bindings.contains(targetProperty.name()))) {
-                continue;
-            }
+        // check whether we have it already styled
+        // this check is needed because shadowed or extended properties are listed twice
+        // or because the styled item already has the property and the main item's property
+        // is not banned from styling, in which case the delegate one shouldn't be styled
+        if (m_bindings.contains(name))
+            continue;
+        // if the styled item property is banned, skip
+        if (isStyledItem && !propertyMap.isEnabled(i))
+            continue;
 
-        } else {
-            if (!targetProperty.hasNotifySignal())
-                continue;
-            // delegate specific: check whether the delegate proeprty has equivalent in
-            // the main styled item, and whether that was already styled
-            int mainIndex = styledItem->metaObject()->indexOfProperty(targetProperty.name());
-            if ((mainIndex != -1) && propertyMap.isEnabled(mainIndex) && propertyMap.isStyled(mainIndex))
-                continue;
-        }
-
-        QQmlProperty qmlProperty(item, targetProperty.name(), qmlContext(item));
+        QQmlProperty qmlProperty(item, name, qmlContext(item));
 
         if (isStyledItem) {
             // styled item specific: check if it has a QML binding and whether the binding
