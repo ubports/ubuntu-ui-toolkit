@@ -340,8 +340,8 @@ void ItemStyleAttachedPrivate::resetStyle()
     if (style && !customStyle) {
         // clear bindings, disconnect as properties may change before the style
         // is deleted
-        style->unbindItem(delegate, watchedProperties);
-        style->unbindItem(attachee, watchedProperties);
+        style->unbindItem(delegate);
+        style->unbindItem(attachee);
         style->setParent(0);
         style->deleteLater();
         style = 0;
@@ -353,7 +353,7 @@ void ItemStyleAttachedPrivate::resetDelegate()
     if (delegate && !customDelegate) {
         // remove all bindings between style and delegate
         if (style)
-            style->unbindItem(delegate, watchedProperties);
+            style->unbindItem(delegate);
         delegate->setParent(0);
         delegate->setParentItem(0);
         delegate->deleteLater();

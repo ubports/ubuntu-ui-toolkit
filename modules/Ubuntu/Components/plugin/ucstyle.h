@@ -92,7 +92,7 @@ protected:
     }
     void bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
+    void unbindItem(QQuickItem *item);
     void unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
     friend class ItemStyleAttachedPrivate;
@@ -104,13 +104,12 @@ private:
     struct Binding {
         QQuickItem *target;
         QQmlProperty styledProperty;
-        int styledIndex;
     };
 
     QHash<int, Binding> m_bindings;
     QString m_propertyUpdated;
 
-    void bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex);
+    void bind(int index, QQuickItem *target, const QQmlProperty &property);
     void unbind(int index);
     void write(const QQmlProperty &source, const QQmlProperty &destination);
 };

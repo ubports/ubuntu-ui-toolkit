@@ -99,7 +99,7 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
 
             // bind
             propertyMap.mark(i, StyledPropertyMap::Styled);
-            bind(styleIndex, item, qmlProperty, i);
+            bind(styleIndex, item, qmlProperty);
         }
     }
 }
@@ -142,7 +142,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
 
         // write and memorize
         QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
-        bind(styleIndex, item, qmlProperty, -1);
+        bind(styleIndex, item, qmlProperty);
     }
 }
 
@@ -150,7 +150,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
  * \internal
  * The method removes all the style bindings between the item and the style.
  */
-void UCStyle::unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
+void UCStyle::unbindItem(QQuickItem *item)
 {
     if (!item)
         return;
@@ -161,8 +161,6 @@ void UCStyle::unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
         if (binding.target == item) {
             unbind(i.key());
         }
-        if ((binding.styledIndex != -1) && propertyMap.isStyled(binding.styledIndex))
-            propertyMap.mark(binding.styledIndex, StyledPropertyMap::Enabled);
     }
 }
 
@@ -217,13 +215,12 @@ void UCStyle::updateStyledItem()
  * delegate). The binding consist of creating the QML binding, writing the data
  * and connecting the style properties' notify signal to the updater slot.
  */
-void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex)
+void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
 {
     // bind
     Binding binding;
     binding.styledProperty = property;
     binding.target = target;
-    binding.styledIndex = propertyIndex;
     m_bindings.insert(index, binding);
 
     // connect the style property's notify signal so we can guard
