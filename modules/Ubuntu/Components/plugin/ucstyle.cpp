@@ -63,7 +63,6 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
     // the styled item must be the parent of the style object
     if (!item || (parent() != item))
         return;
-    QString omit(OMIT_STYLED_PROPERTIES);
     const QMetaObject *styleMo = metaObject();
     const QMetaObject *itemMo = item->metaObject();
 
@@ -71,7 +70,7 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
     // depend on previous properties (i.e. Label's fontSize depends on font)
     for (int i = 0; i < itemMo->propertyCount(); i++) {
         const QMetaProperty itemProperty = itemMo->property(i);
-        if (omit.contains(itemProperty.name()))
+        if (omitStyledProperty(itemProperty.name()))
             continue;
         int styleIndex = styleMo->indexOfProperty(itemProperty.name());
         if (styleIndex == -1)
@@ -124,13 +123,12 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
         return;
 
     // omit different amoutn of properties for delegates
-    QString omit(OMIT_DELEGATE_PROPERTIES);
     const QMetaObject *styleMo = metaObject();
     const QMetaObject *delegateMo = item->metaObject();
 
     for (int i = 0; i < delegateMo->propertyCount(); i++) {
         const QMetaProperty delegateProperty = delegateMo->property(i);
-        if (!delegateProperty.hasNotifySignal() || omit.contains(delegateProperty.name()))
+        if (!delegateProperty.hasNotifySignal() || omitDelegateProperty(delegateProperty.name()))
             continue;
 
         // find out whether the property was already connected to attachee or the

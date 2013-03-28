@@ -22,17 +22,6 @@
 #include <QtCore/QObject>
 #include <QtQml/QQmlProperty>
 
-#define OMIT_STYLED_PROPERTIES    \
-    "objectName,parent,children,x,y,z,states,transitions,childrenRect,"\
-    "visibleChildren,anchors,left,right,top,bottom,horizontalCenter,"\
-    "verticalCenter,baseline,baselineOffset,clip,focus," \
-    "activeFocus,rotation,data"
-
-#define OMIT_DELEGATE_PROPERTIES    \
-    "objectName,parent,children,x,y,z,states,transitions,childrenRect,"\
-    "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus," \
-    "activeFocus,rotation"
-
 class QQmlAbstractBinding;
 typedef QPair<unsigned, QQmlAbstractBinding*> PropertyPair;
 class StyledPropertyMap : public QHash<int, PropertyPair> {
@@ -86,6 +75,21 @@ public:
 
 protected:
     // these methods are supposed to be used internally by the styling
+    inline static bool omitStyledProperty(const char *name)
+    {
+        static QString properties("objectName,parent,children,x,y,z,states,transitions,childrenRect,"
+                                    "visibleChildren,anchors,left,right,top,bottom,horizontalCenter,"
+                                    "verticalCenter,baseline,baselineOffset,clip,focus,"
+                                    "activeFocus,rotation,data");
+        return properties.contains(name);
+    }
+    static bool omitDelegateProperty(const char *name)
+    {
+        static QString properties("objectName,parent,children,x,y,z,states,transitions,childrenRect,"
+                                    "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus,"
+                                    "activeFocus");
+        return properties.contains(name);
+    }
     void bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
     void unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap);

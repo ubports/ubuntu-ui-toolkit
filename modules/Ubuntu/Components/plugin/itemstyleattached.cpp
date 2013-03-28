@@ -158,14 +158,12 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
 void ItemStyleAttachedPrivate::watchAttacheeProperties()
 {
     Q_Q(ItemStyleAttached);
-    // list of properties we omit i.e. don't care or don't allow to be styled
-    QString omit(OMIT_STYLED_PROPERTIES);
     // enumerate properties and figure out which one has binding
     const QMetaObject *mo = attachee->metaObject();
     for (int i = 0; i < mo->propertyCount(); i++) {
         const QMetaProperty prop = mo->property(i);
 
-        if (!prop.hasNotifySignal() || omit.contains(prop.name()))
+        if (!prop.hasNotifySignal() || UCStyle::omitStyledProperty(prop.name()))
             continue;
         // check if attachee property has already bindings, leave if it has
         QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
