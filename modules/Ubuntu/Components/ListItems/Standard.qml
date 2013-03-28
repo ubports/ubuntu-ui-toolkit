@@ -150,7 +150,7 @@ Empty {
     Rectangle {
         id: controlHighlight
 
-        visible: control && __controlAreaPressed
+        visible: listItem.swipingState === "" ? control && __controlAreaPressed : false
         anchors {
             top: parent.top
             right: progressionHelper.visible ? progressionHelper.left : parent.right
@@ -163,7 +163,8 @@ Empty {
 
     Rectangle {
         id: progressionHighlight
-        visible: listItem.progression && listItem.pressed && !__controlAreaPressed
+
+        visible: listItem.swipingState === "" ? listItem.progression && listItem.pressed && !__controlAreaPressed : false
         anchors {
             left: progressionHelper.left
             top: parent.top
