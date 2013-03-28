@@ -236,18 +236,14 @@ void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property)
  */
 void UCStyle::unbind(int index)
 {
-    Binding binding = m_bindings.value(index);
-    if (binding.styledProperty.isValid()) {
+    // disconnect from update
+    const QMetaObject *mo = metaObject();
+    QMetaMethod metaSignal = mo->property(index).notifySignal();
+    QMetaMethod updateSlot = mo->method(mo->indexOfSlot("updateStyledItem()"));
+    QObject::disconnect(this, metaSignal, this, updateSlot);
 
-        // disconnect from update
-        const QMetaObject *mo = metaObject();
-        QMetaMethod metaSignal = mo->property(index).notifySignal();
-        QMetaMethod updateSlot = mo->method(mo->indexOfSlot("updateStyledItem()"));
-        QObject::disconnect(this, metaSignal, this, updateSlot);
-
-        // finally remove from bindings
-        m_bindings.remove(index);
-    }
+    // finally remove from bindings
+    m_bindings.remove(index);
 }
 
 void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
