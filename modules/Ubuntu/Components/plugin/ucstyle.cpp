@@ -76,9 +76,7 @@ void UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool is
         const char *name = targetProperty.name();
 
         // check if it should be omitted
-        if (isStyledItem && omitStyledProperty(name))
-            continue;
-        if (!isStyledItem && omitDelegateProperty(name))
+        if (omitProperty(name))
             continue;
 
         // check if we have a corresponding style property

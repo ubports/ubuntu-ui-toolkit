@@ -75,19 +75,13 @@ public:
 
 protected:
     // these methods are supposed to be used internally by the styling
-    inline static bool omitStyledProperty(const char *name)
+    inline static bool omitProperty(const char *name)
     {
-        static QString properties("objectName,parent,children,x,y,z,states,transitions,childrenRect,"
-                                    "visibleChildren,anchors,left,right,top,bottom,horizontalCenter,"
-                                    "verticalCenter,baseline,baselineOffset,clip,focus,"
-                                    "activeFocus,rotation,data");
-        return properties.contains(name);
-    }
-    static bool omitDelegateProperty(const char *name)
-    {
-        static QString properties("objectName,parent,children,x,y,z,states,transitions,childrenRect,"
-                                    "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus,"
-                                    "activeFocus");
+        static QString properties(
+                    "activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
+                    "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
+                    "resources,right,states,top,transform,transformOrigin,transitions,"
+                    "verticalCenter,visibleChildren,x,y");
         return properties.contains(name);
     }
     void bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool isStyledItem = true);

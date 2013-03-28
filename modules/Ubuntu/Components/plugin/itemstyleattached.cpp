@@ -163,7 +163,7 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
     for (int i = 0; i < mo->propertyCount(); i++) {
         const QMetaProperty prop = mo->property(i);
 
-        if (!prop.hasNotifySignal() || UCStyle::omitStyledProperty(prop.name()))
+        if (!prop.hasNotifySignal() || UCStyle::omitProperty(prop.name()))
             continue;
         // check if attachee property has already bindings, leave if it has
         QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
