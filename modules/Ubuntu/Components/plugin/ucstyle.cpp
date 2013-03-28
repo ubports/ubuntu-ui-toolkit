@@ -21,7 +21,6 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
-#include "quickutils.h"
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
