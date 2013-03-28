@@ -188,7 +188,7 @@ void UCStyle::updateStyledItem()
  */
 void UCStyle::bind(const QQmlProperty &property)
 {
-    // store target proeprty
+    // store target property
     m_bindings.insert(property.name(), property);
 
     // connect the style property's notify signal so we can guard

@@ -171,7 +171,6 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
         if (binding) {
             // mark as first time bound, so further styling can unbind it and do styling
             watchedProperties.mark(i, StyledPropertyMap::Bound, binding);
-            continue;
         }
         // connect property's notify signal to watch when it gets changed so we can stop watching it
         qmlProp.connectNotifySignal(q, SLOT(_q_attacheePropertyChanged()));
