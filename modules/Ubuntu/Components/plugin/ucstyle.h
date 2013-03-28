@@ -101,11 +101,11 @@ private Q_SLOTS:
     void updateStyledItem();
     
 private:
-    QHash<int, QQmlProperty> m_bindings;
+    QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
 
-    void bind(int index, const QQmlProperty &property);
-    void unbind(int index);
+    void bind(const QQmlProperty &property);
+    void unbind(const QString &name);
     void write(const QQmlProperty &source, const QQmlProperty &destination);
 };
 

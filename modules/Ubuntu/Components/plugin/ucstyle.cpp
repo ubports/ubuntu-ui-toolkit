@@ -45,7 +45,7 @@ UCStyle::UCStyle(QObject *parent) :
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QHashIterator<int, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
@@ -95,11 +95,11 @@ void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
             }
         }
         // if not bound, check if we can still style it
-        if (propertyMap.isEnabled(i) && !m_bindings.contains(styleIndex)) {
+        if (propertyMap.isEnabled(i) && !m_bindings.contains(qmlProperty.name())) {
 
             // bind
             propertyMap.mark(i, StyledPropertyMap::Styled);
-            bind(styleIndex, qmlProperty);
+            bind(qmlProperty);
         }
     }
 }
@@ -134,7 +134,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
         // find out whether the property was already connected to attachee or the
         // property is not in the style
         int styleIndex = styleMo->indexOfProperty(delegateProperty.name());
-        if ((styleIndex == -1) || m_bindings.contains(styleIndex))
+        if ((styleIndex == -1) || m_bindings.contains(delegateProperty.name()))
             continue;
         int styledItemIndex = styledItem->metaObject()->indexOfProperty(delegateProperty.name());
         if ((styledItemIndex != -1) && propertyMap.isEnabled(styledItemIndex) && !propertyMap.isStyled(styledItemIndex))
@@ -142,7 +142,7 @@ void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
 
         // write and memorize
         QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
-        bind(styleIndex, qmlProperty);
+        bind(qmlProperty);
     }
 }
 
@@ -154,7 +154,7 @@ void UCStyle::unbindItem(QQuickItem *item)
 {
     if (!item)
         return;
-    QHashIterator<int, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         if (i.value().object() == item) {
@@ -169,10 +169,9 @@ void UCStyle::unbindItem(QQuickItem *item)
  */
 void UCStyle::unbindProperty(const QString &property)
 {
-    int index = metaObject()->indexOfProperty(property.toLatin1());
-    if ((index == -1) || !m_bindings.contains(index))
+    if (!m_bindings.contains(property))
         return;
-    unbind(index);
+    unbind(property);
 }
 
 /*!
@@ -200,9 +199,8 @@ void UCStyle::updateStyledItem()
 
     QString property = QString(signal.name()).remove("Changed");
     QQmlProperty styleProperty(this, property, qmlContext(this));
-    int index = styleProperty.index();
     // update value
-    write(styleProperty, m_bindings.value(index));
+    write(styleProperty, m_bindings.value(property));
 }
 
 /*!
@@ -211,10 +209,10 @@ void UCStyle::updateStyledItem()
  * delegate). The binding consist of creating the QML binding, writing the data
  * and connecting the style properties' notify signal to the updater slot.
  */
-void UCStyle::bind(int index, const QQmlProperty &property)
+void UCStyle::bind(const QQmlProperty &property)
 {
     // store target proeprty
-    m_bindings.insert(index, property);
+    m_bindings.insert(property.name(), property);
 
     // connect the style property's notify signal so we can guard
     // styled item property changes when change occurs because of style changes
@@ -227,16 +225,16 @@ void UCStyle::bind(int index, const QQmlProperty &property)
  * \internal
  * Removes the binding.
  */
-void UCStyle::unbind(int index)
+void UCStyle::unbind(const QString &property)
 {
     // disconnect from update
     const QMetaObject *mo = metaObject();
-    QMetaMethod metaSignal = mo->property(index).notifySignal();
+    QMetaMethod metaSignal = mo->property(mo->indexOfProperty(property.toLatin1())).notifySignal();
     QMetaMethod updateSlot = mo->method(mo->indexOfSlot("updateStyledItem()"));
     QObject::disconnect(this, metaSignal, this, updateSlot);
 
     // finally remove from bindings
-    m_bindings.remove(index);
+    m_bindings.remove(property);
 }
 
 void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
