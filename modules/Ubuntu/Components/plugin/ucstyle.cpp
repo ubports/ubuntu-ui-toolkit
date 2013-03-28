@@ -54,94 +54,80 @@ UCStyle::~UCStyle()
 
 /*!
  * \internal
- * The method creates the property bindings between the styled item properties
- * and the style. The propertyMap contains the styled item properties that can
- * still be bound.
+ * The method creates the property bindings between the item properties and the
+ * style. The propertyMap contains the item properties that can still be bound.
+ * isStyledItem is specifies whether the item styled is the main one or its delegate.
  */
-void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
+void UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool isStyledItem)
 {
-    // the styled item must be the parent of the style object
-    if (!item || (parent() != item))
+    if (!item)
         return;
+    if (isStyledItem && (parent() != item))
+        return;
+    QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
+    if (!isStyledItem && !styledItem)
+        return;
+
     const QMetaObject *styleMo = metaObject();
-    const QMetaObject *itemMo = item->metaObject();
+    const QMetaObject *targetMo = item->metaObject();
 
-    // loop through styled item properties as some new properties in the derivates may
-    // depend on previous properties (i.e. Label's fontSize depends on font)
-    for (int i = 0; i < itemMo->propertyCount(); i++) {
-        const QMetaProperty itemProperty = itemMo->property(i);
-        if (omitStyledProperty(itemProperty.name()))
+    for (int i = 0; i < targetMo->propertyCount(); i++) {
+        const QMetaProperty targetProperty = targetMo->property(i);
+
+        // check if it should be omitted
+        if (isStyledItem && omitStyledProperty(targetProperty.name()))
             continue;
-        int styleIndex = styleMo->indexOfProperty(itemProperty.name());
-        if (styleIndex == -1)
-            continue;
-        const QMetaProperty styleProperty = styleMo->property(styleIndex);
-        if (!styleProperty.hasNotifySignal())
+        if (!isStyledItem && omitDelegateProperty(targetProperty.name()))
             continue;
 
-        // check if the property has equivalent in the attachee and if we can style it
-        // this means that the equivalent property index in attachee is present in stylableProperties
-        QQmlProperty qmlProperty(item, itemProperty.name(), qmlContext(item));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
-        if (binding) {
-            // check if this binding is the original one
-            if (binding == propertyMap.binding(i)) {
-                // delete binding so we can style it
-                binding->destroy();
-            } else {
-                // mark as banned
-                propertyMap.mark(i, StyledPropertyMap::Banned);
+        // check if we have a corresponding style property
+        // all style properties have notify signals; therefore no need to check those
+        if (styleMo->indexOfProperty(targetProperty.name()) == -1)
+            continue;
+
+        if (isStyledItem) {
+            // check if we can style it still or whether we have it already styled
+            // this latest is needed because shadowed or extended properties are listed twice
+            // or because the styled item already has the property so the one from delegate
+            // won't be styled
+            if (isStyledItem && (!propertyMap.isEnabled(i) || m_bindings.contains(targetProperty.name()))) {
                 continue;
             }
-        }
-        // if not bound, check if we can still style it
-        if (propertyMap.isEnabled(i) && !m_bindings.contains(qmlProperty.name())) {
 
-            // bind
+        } else {
+            if (!targetProperty.hasNotifySignal())
+                continue;
+            // delegate specific: check whether the delegate proeprty has equivalent in
+            // the main styled item, and whether that was already styled
+            int mainIndex = styledItem->metaObject()->indexOfProperty(targetProperty.name());
+            if ((mainIndex != -1) && propertyMap.isEnabled(mainIndex) && propertyMap.isStyled(mainIndex))
+                continue;
+        }
+
+        QQmlProperty qmlProperty(item, targetProperty.name(), qmlContext(item));
+
+        if (isStyledItem) {
+            // styled item specific: check if it has a QML binding and whether the binding
+            // is the original one or a newer one
+            QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
+            if (binding) {
+                // check if this binding is the original one
+                if (binding == propertyMap.binding(i)) {
+                    // we can destroy it and style
+                    binding->destroy();
+                } else {
+                    // newer binding, mark as banned
+                    propertyMap.mark(i, StyledPropertyMap::Banned);
+                    continue;
+                }
+            }
+        }
+
+        // finally do the binding
+        if (isStyledItem)
+            // mark it as styled
             propertyMap.mark(i, StyledPropertyMap::Styled);
-            bind(qmlProperty);
-        }
-    }
-}
 
-/*!
- * \internal
- * The method creates the property bindings between the delegate properties
- * and the style. The propertyMap contains the styled item properties that can
- * still be bound. The method uses this parameter to detect which delegate
- * property can be styled which has an equivalent in styled item, and the
- * styled item property is not banned from styling.
- * Example: The style ditem has a color property and the delegate has also a
- * color property. If styled item's color property gets banned from styling (got
- * bound or got assigned a value), delegate's colo rproperty should also be
- * excluded from styling.
- */
-void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
-{
-    QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
-    if (!item || !styledItem)
-        return;
-
-    // omit different amoutn of properties for delegates
-    const QMetaObject *styleMo = metaObject();
-    const QMetaObject *delegateMo = item->metaObject();
-
-    for (int i = 0; i < delegateMo->propertyCount(); i++) {
-        const QMetaProperty delegateProperty = delegateMo->property(i);
-        if (!delegateProperty.hasNotifySignal() || omitDelegateProperty(delegateProperty.name()))
-            continue;
-
-        // find out whether the property was already connected to attachee or the
-        // property is not in the style
-        int styleIndex = styleMo->indexOfProperty(delegateProperty.name());
-        if ((styleIndex == -1) || m_bindings.contains(delegateProperty.name()))
-            continue;
-        int styledItemIndex = styledItem->metaObject()->indexOfProperty(delegateProperty.name());
-        if ((styledItemIndex != -1) && propertyMap.isEnabled(styledItemIndex) && !propertyMap.isStyled(styledItemIndex))
-            continue;
-
-        // write and memorize
-        QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
         bind(qmlProperty);
     }
 }

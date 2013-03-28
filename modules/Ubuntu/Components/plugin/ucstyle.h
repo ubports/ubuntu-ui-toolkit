@@ -90,8 +90,7 @@ protected:
                                     "activeFocus");
         return properties.contains(name);
     }
-    void bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
+    void bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool isStyledItem = true);
     void unbindItem(QQuickItem *item);
     void unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
