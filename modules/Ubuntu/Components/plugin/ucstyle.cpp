@@ -243,7 +243,7 @@ void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
 {
     m_propertyUpdated = destination.name();
     const QMetaProperty target = destination.property();
-    if (target.type() == QVariant::Color) {
+    if (target.type() == QMetaType::QColor) {
         // color requires special attention, when transformed to variant then back to color
         // the alpha value is lost, meaning the destination will get value of 255
         // therefore we need to convert the variant to color and set the color falue
