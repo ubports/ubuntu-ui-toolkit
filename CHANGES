@@ -15,6 +15,20 @@ Compatibility Breaks
 API Changes
 ***********
 
+* None
+
+
+SDK 0.1.39
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
 * ListItem.Empty:
    + backgroundIndicator: Defines the item background item to be showed during the item swiping
    + removable: Defines if the item can be removed or not
@@ -22,7 +36,7 @@ API Changes
    + itemRemoved: This handler is called when the item is removed from the list
 
 
-0.1.38
+SDK 0.1.38
 ##########
 
 Compatibility Breaks
