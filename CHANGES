@@ -15,14 +15,7 @@ Compatibility Breaks
 API Changes
 ***********
 
-* ListItem.Empty:
-   + backgroundIndicator: Defines the item background item to be showed during the item swiping
-   + removable: Defines if the item can be removed or not
-   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
-   + itemRemoved: This handler is called when the item is removed from the list
-
-* New
-- Style QML type as base type for all custom style objects
+* Style QML type as base type for all custom style objects
     * provides automatic property styling of styled item and its assotiated delegate
 
 * Deprecated APIs
@@ -35,7 +28,25 @@ API Changes
     ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
     TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle
 
-0.1.38
+
+SDK 0.1.39
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* ListItem.Empty:
+   + backgroundIndicator: Defines the item background item to be showed during the item swiping
+   + removable: Defines if the item can be removed or not
+   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
+   + itemRemoved: This handler is called when the item is removed from the list
+
+SDK 0.1.38
 ##########
 
 Compatibility Breaks
