@@ -19,39 +19,13 @@ import QtQuick 2.0
     \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief A page inside a \l MainView will have a header and toolbar.
-        Pages can also can be included in \l Tab object or pushed on a \l PageStack.
+    \brief A page is the basic Item that must be used inside the \l MainView,
+        \l PageStack and \l Tabs.
         Anchors and height of a Page are automatically determined to align with
         the header of the \l MainView, but can be overridden.
 
-    Example:
-    \qml
-        MainView {
-            Page {
-                title: i18n.tr("Root page")
-
-                tools: ToolbarActions {
-                    Action {
-                        text: "one"
-                        iconSource: Qt.resolvedUrl("1.png")
-                        onTriggered: print("First action")
-                     }
-                     Action {
-                        text: "two"
-                        iconSource: Qt.resolvedUrl("2.png")
-                        onTriggered: print("Second action")
-                     }
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: "red"
-                }
-            }
-        }
-    \endqml
-
-    See also \l Tabs and \l PageStack.
+    See \l MainView for basic Page examples, or \l PageStack and \l Tabs to learn
+    how to create application structures using Pages.
 */
 PageTreeNode {
     id: page
