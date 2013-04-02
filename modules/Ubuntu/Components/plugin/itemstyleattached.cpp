@@ -270,7 +270,7 @@ bool ItemStyleAttachedPrivate::updateStyle()
     if (result && style) {
         style->setParent(attachee);
         style->bindItem(attachee, watchedProperties);
-        style->bindItem(delegate, watchedProperties, false);
+        style->bindItem(delegate, watchedProperties);
         componentContext->setContextProperty(styleProperty, style);
     }
     return result;
@@ -310,7 +310,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         }
         // setup property "bindings" towards delegate properties
         if (style)
-            style->bindItem(delegate, watchedProperties, false);
+            style->bindItem(delegate, watchedProperties);
     }
     return result;
 }

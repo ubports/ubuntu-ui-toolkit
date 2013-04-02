@@ -56,20 +56,23 @@ UCStyle::~UCStyle()
  * \internal
  * The method creates the property bindings between the item properties and the
  * style. The propertyMap contains the item properties that can still be bound.
- * isStyledItem is specifies whether the item styled is the main one or its delegate.
+ * Returns the number of properties bound, -1 on error.
  */
-void UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool isStyledItem)
+int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
 {
-    if (!item)
-        return;
-    if (isStyledItem && (parent() != item))
-        return;
+    if (!item || !parent())
+        return -1;
+    // style object's parent is always the styled item
+    bool isStyledItem = (item == parent());
     QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
     if (!isStyledItem && !styledItem)
-        return;
+        return -1;
+    if (!isStyledItem && (item->parentItem() != styledItem))
+        return -1;
 
     const QMetaObject *styleMo = metaObject();
     const QMetaObject *targetMo = item->metaObject();
+    int result = 0;
 
     for (int i = 0; i < targetMo->propertyCount(); i++) {
         const QMetaProperty targetProperty = targetMo->property(i);
@@ -119,35 +122,44 @@ void UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool is
             propertyMap.mark(i, StyledPropertyMap::Styled);
 
         bind(qmlProperty);
+        result++;
     }
+    return result;
 }
 
 /*!
  * \internal
  * The method removes all the style bindings between the item and the style.
+ * Returns true if the bindings were successfully removed.
  */
-void UCStyle::unbindItem(QQuickItem *item)
+bool UCStyle::unbindItem(QQuickItem *item)
 {
     if (!item)
-        return;
+        return false;
+
+    bool result = false;
     QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         if (i.value().object() == item) {
             unbind(i.key());
+            result = true;
         }
     }
+    return result;
 }
 
 /*!
  * \internal
- * The method removes style binding on a given property.
+ * The method removes style binding on a given property. Returns true on
+ * success.
  */
-void UCStyle::unbindProperty(const QString &property)
+bool UCStyle::unbindProperty(const QString &property)
 {
     if (!m_bindings.contains(property))
-        return;
+        return false;
     unbind(property);
+    return true;
 }
 
 /*!

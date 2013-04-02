@@ -73,7 +73,6 @@ public:
     explicit UCStyle(QObject *parent = 0);
     ~UCStyle();
 
-protected:
     // these methods are supposed to be used internally by the styling
     inline static bool omitProperty(const char *name)
     {
@@ -84,11 +83,11 @@ protected:
                     "verticalCenter,visibleChildren,x,y");
         return properties.contains(name);
     }
-    void bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool isStyledItem = true);
-    void unbindItem(QQuickItem *item);
-    void unbindProperty(const QString &property);
+    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
+    bool unbindItem(QQuickItem *item);
+    bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
-    friend class ItemStyleAttachedPrivate;
+    //friend class ItemStyleAttachedPrivate;
 
 private Q_SLOTS:
     void updateStyledItem();
