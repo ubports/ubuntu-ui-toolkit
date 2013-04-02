@@ -611,6 +611,8 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
+        if (d->style)
+            d->style->unbindItem(d->delegate);
         // clear the previous theme delegate
         if (!d->customDelegate && d->delegate) {
             d->delegate->setVisible(false);
