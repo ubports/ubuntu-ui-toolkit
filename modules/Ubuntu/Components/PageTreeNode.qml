@@ -17,10 +17,13 @@
 import QtQuick 2.0
 
 /*!
-    \internal
     \qmltype PageTreeNode
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
+    \brief The common parent of \l Page, \l MainView, \l PageStack and \l Tabs.
+
+    It is used to propagate properties such as \l header and \l toolbar from a
+    \l MainView (the root node) to each \l Page (leaf node) in the tree.
 */
 Item {
     id: node
@@ -31,7 +34,9 @@ Item {
      */
     property bool __isPageTreeNode: true
 
+    /*! \internal */
     onParentChanged: internal.updatePageTree()
+    /*! \internal */
     Component.onCompleted: internal.updatePageTree()
 
     /*!

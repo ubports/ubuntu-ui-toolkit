@@ -24,8 +24,56 @@ import QtQuick 2.0
         Anchors and height of a Page are automatically determined to align with
         the header of the \l MainView, but can be overridden.
 
-    See \l MainView for basic Page examples, or \l PageStack and \l Tabs to learn
-    how to create application structures using Pages.
+    \l MainView provides a header and toolbar for Pages it includes. Each page automatically
+    has its header and toolbar property linked to that of its parent \l MainView.
+    The text of the header, and the buttons in the toolbar are determined by the \l title
+    and \l tools properties of the page:
+
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Example page"
+
+                Flickable {
+                    anchors.fill: parent
+                    contentHeight: column.height
+                    id: flickable
+
+                    Column {
+                        id: column
+                        Repeater {
+                            model: 100
+                            Label {
+                                text: "line "+index
+                            }
+                        }
+                    }
+                }
+
+                tools: ToolbarActions {
+                    Action {
+                        text: "top"
+                        onTriggered: {
+                            header.show();
+                            flickable.contentY = -header.height;
+                        }
+                    }
+                    Action {
+                        text: "bottom"
+                        onTriggered: flickable.contentY = flickable.contentHeight - flickable.height
+                    }
+                }
+            }
+        }
+    \endqml
+    See \l MainView for more basic examples that show how to use a header and toolbar.
+    Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
 */
 PageTreeNode {
     id: page
