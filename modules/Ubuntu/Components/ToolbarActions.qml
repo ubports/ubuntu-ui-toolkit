@@ -22,7 +22,100 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief List of \l Action items with additional properties to control a toolbar.
 
-    Examples: See \l Page.
+    Each \l Page has a tools property that can be set to change the tools of toolbar supplied
+    by \l MainView when the \l Page is active. Each ToolbarActions consists of a set of
+    \l Action items and several properties that specify the behavior of the toolbar when the \l Page
+    is active.
+
+    When a \l Page is used inside a \l Tabs or \l PageStack, the toolbar will automatically show
+    the tools of the active \l Page. When the active \l Page inside the \l Tabs or \l PageStack
+    is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
+    the toolbar will automatically hide, except if the new active \l Page has the \l lock property set.
+
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1 as ListItem
+
+        MainView {
+            width: units.gu(50)
+            height: units.gu(50)
+
+            Tabs {
+                id: tabs
+                Tab {
+                    title: "One"
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: "Simple actions"
+                        }
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                        }
+                    }
+                }
+                Tab {
+                    title: "Two"
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: "Back button, toolbar always visible"
+                        }
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            back {
+                                visible: true
+                                onTriggered: tabs.selectedTabIndex--
+                            }
+                            lock: true
+                            active: true
+                        }
+                    }
+                }
+                Tab {
+                    title: "Three"
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: "Custom back button"
+                        }
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            back {
+                                itemHint: Button {
+                                    id: cancelButton
+                                    text: "cancel"
+                                }
+                                onTriggered: tabs.selectedTabIndex--
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    \endqml
 */
 ActionList {
     id: toolbarActions
@@ -30,8 +123,10 @@ ActionList {
     /*!
       The back \l Action. If the action is visible, the back button will be shown
       on the left-side of the toolbar.
-      If there is a \l PageStack with depth greater than 1, it will always be popped
-      when this action is triggered. Override the back action to avoid that behavior.
+      If there is a \l PageStack with depth greater than 1, the back action will be
+      visible and triggering it will pop the page on top of the stack. If there is no
+      \l PageStack with depth greater than 1, the back action is hidden by default
+      (but the default setting can be changed by setting its visible property).
      */
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
