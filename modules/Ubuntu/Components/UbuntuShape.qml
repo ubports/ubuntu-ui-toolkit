@@ -98,7 +98,7 @@ Item {
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
-    property url borderSource: ""
+    property url borderSource: "*"
 
     /*!
       The image used to fill the shape.
