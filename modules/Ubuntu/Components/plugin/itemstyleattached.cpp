@@ -360,6 +360,20 @@ void ItemStyleAttachedPrivate::resetDelegate()
     }
 }
 
+/*!
+ * \internal
+ * Applies styling on children recoursively.
+ */
+void ItemStyleAttachedPrivate::applyStyleOnChildren(QQuickItem *item)
+{
+    QList<QQuickItem*> children = item->childItems();
+    Q_FOREACH(QQuickItem *child, children) {
+        applyStyleOnChildren(child);
+        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
+        if (style)
+            style->d_ptr->_q_reapplyStyling(child->parentItem());
+    }
+}
 
 /*!
   \internal
@@ -438,12 +452,7 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
-    QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
-    Q_FOREACH(QQuickItem *child, children) {
-        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
-        if (style)
-            style->d_ptr->_q_reapplyStyling(child->parentItem());
-    }
+    applyStyleOnChildren(attachee);
 }
 
 /*==============================================================================
@@ -569,6 +578,10 @@ void ItemStyleAttached::setStyle(UCStyle *style)
     Q_D(ItemStyleAttached);
     if (d->style != style) {
         // clear the previous style
+        if (d->style) {
+            d->style->unbindItem(d->delegate);
+            d->style->unbindItem(d->attachee);
+        }
         if (!d->customStyle && d->style) {
             d->style->deleteLater();
             d->style = 0;

@@ -229,6 +229,10 @@ void UCStyle::unbind(const QString &property)
 
 void UCStyle::write(const QString &source, const QQmlProperty &destination)
 {
+    if (!property(source.toLocal8Bit()).isValid()) {
+        qmlInfo(this) << "invalid property: " << source;
+        return;
+    }
     m_propertyUpdated = destination.name();
     const QMetaProperty target = destination.property();
     if (target.type() == QMetaType::QColor) {

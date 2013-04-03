@@ -64,6 +64,7 @@ public:
     void updateCurrentStyle();
     void resetStyle();
     void resetDelegate();
+    void applyStyleOnChildren(QQuickItem *item);
     bool registerName(const QString &id);
     void listenThemeEngine();
     void _q_attacheePropertyChanged();

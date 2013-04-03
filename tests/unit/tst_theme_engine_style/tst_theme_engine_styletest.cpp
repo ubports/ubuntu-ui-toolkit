@@ -96,9 +96,9 @@ private Q_SLOTS:
         quickEngine->setImportPathList(imports);
 
         bool result = (ThemeEngine::initializeEngine(quickEngine) != 0);
-        // theme loading might fail, however don't care about it
         QVERIFY(result);
-        ThemeEngine::instance()->resetError();
+        // check if theme gets loaded
+        QCOMPARE(ThemeEngine::instance()->error(), QString(""));
 
         boundItem = testItem();
         QVERIFY(boundItem);
