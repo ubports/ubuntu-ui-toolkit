@@ -179,8 +179,11 @@ AbstractButton {
     property real __contentsMargins: units.gu(0)
 
     width: parent ? parent.width : units.gu(31)
-    height: __height + bottomDividerLine.height
+    implicitHeight: __height + bottomDividerLine.height
     __mouseArea.drag.axis: Drag.XAxis
+
+    // Keep compatible with the old version
+    height: implicitHeight
 
     /*! \internal */
     QtObject {
@@ -239,8 +242,9 @@ AbstractButton {
         function commitDrag() {
             if (removeItem) {
                 removeItemAnimation.start()
+            } else {
+                resetDrag()
             }
-            resetDrag()
         }
 
         /*! \internal
@@ -382,12 +386,15 @@ AbstractButton {
         running: false
         NumberAnimation {
             target: emptyListItem
-            property: "__height"
+            property: "implicitHeight"
             to: 0
             duration: 200
         }
         ScriptAction {
-             script: itemRemoved()
+             script: {
+                 itemRemoved()
+                 priv.resetDrag()
+             }
         }
     }
 
