@@ -81,13 +81,12 @@ public:
                     "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
                     "resources,right,states,top,transform,transformOrigin,transitions,"
                     "verticalCenter,visibleChildren,x,y");
-        return properties.contains(name);
+        return properties.contains(QString(name).prepend(',').append(','));
     }
     int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
     bool unbindItem(QQuickItem *item);
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
-    //friend class ItemStyleAttachedPrivate;
 
 private Q_SLOTS:
     void updateStyledItem();
