@@ -77,14 +77,14 @@ Item {
       The top color of the gradient used to fill the shape. Setting only this
       one is enough to set the overall color the shape.
     */
-    property color color
+    property color color: Qt.rgba(0, 0, 0, 0)
 
     /*!
       The bottom color of the gradient used for the overlay blending of the
       color that fills the shape. It is optional to set this one as setting
       \l color is enough to set the overall color of the shape.
     */
-    property color gradientColor
+    property color gradientColor: Qt.rgba(0, 0, 0, 0)
 
     /*!
       \deprecated
@@ -98,7 +98,7 @@ Item {
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
-    property url borderSource: ""
+    property url borderSource: "*"
 
     /*!
       The image used to fill the shape.

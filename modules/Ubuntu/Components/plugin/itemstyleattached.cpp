@@ -162,14 +162,12 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
 void ItemStyleAttachedPrivate::watchAttacheeProperties()
 {
     Q_Q(ItemStyleAttached);
-    // list of properties we omit i.e. don't care or don't allow to be styled
-    QString omit(OMIT_STYLED_PROPERTIES);
     // enumerate properties and figure out which one has binding
     const QMetaObject *mo = attachee->metaObject();
     for (int i = 0; i < mo->propertyCount(); i++) {
         const QMetaProperty prop = mo->property(i);
 
-        if (!prop.hasNotifySignal() || omit.contains(prop.name()))
+        if (!prop.hasNotifySignal() || UCStyle::omitProperty(prop.name()))
             continue;
         // check if attachee property has already bindings, leave if it has
         QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
@@ -177,7 +175,6 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
         if (binding) {
             // mark as first time bound, so further styling can unbind it and do styling
             watchedProperties.mark(i, StyledPropertyMap::Bound, binding);
-            continue;
         }
         // connect property's notify signal to watch when it gets changed so we can stop watching it
         qmlProp.connectNotifySignal(q, SLOT(_q_attacheePropertyChanged()));
@@ -276,8 +273,8 @@ bool ItemStyleAttachedPrivate::updateStyle()
     // reparent also custom styles!
     if (result && style) {
         style->setParent(attachee);
-        style->bindStyledItem(attachee, watchedProperties);
-        style->bindDelegate(delegate, watchedProperties);
+        style->bindItem(attachee, watchedProperties);
+        style->bindItem(delegate, watchedProperties);
         componentContext->setContextProperty(styleProperty, style);
     }
     return result;
@@ -322,7 +319,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         }
         // setup property "bindings" towards delegate properties
         if (style)
-            style->bindDelegate(delegate, watchedProperties);
+            style->bindItem(delegate, watchedProperties);
     }
     return result;
 }
@@ -351,8 +348,8 @@ void ItemStyleAttachedPrivate::resetStyle()
     if (style && !customStyle) {
         // clear bindings, disconnect as properties may change before the style
         // is deleted
-        style->unbindItem(delegate, watchedProperties);
-        style->unbindItem(attachee, watchedProperties);
+        style->unbindItem(delegate);
+        style->unbindItem(attachee);
         style->setParent(0);
         style->deleteLater();
         style = 0;
@@ -364,7 +361,7 @@ void ItemStyleAttachedPrivate::resetDelegate()
     if (delegate && !customDelegate) {
         // remove all bindings between style and delegate
         if (style)
-            style->unbindItem(delegate, watchedProperties);
+            style->unbindItem(delegate);
         delegate->setParent(0);
         delegate->setParentItem(0);
         delegate->deleteLater();
@@ -372,6 +369,20 @@ void ItemStyleAttachedPrivate::resetDelegate()
     }
 }
 
+/*!
+ * \internal
+ * Applies styling on children recoursively.
+ */
+void ItemStyleAttachedPrivate::applyStyleOnChildren(QQuickItem *item)
+{
+    QList<QQuickItem*> children = item->childItems();
+    Q_FOREACH(QQuickItem *child, children) {
+        applyStyleOnChildren(child);
+        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
+        if (style)
+            style->d_ptr->_q_reapplyStyling(child->parentItem());
+    }
+}
 
 /*!
   \internal
@@ -415,16 +426,6 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
     }
 }
 
-void ItemStyleAttachedPrivate::updateStyledItem(QQuickItem *item)
-{
-    QList<QQuickItem*> children = item->findChildren<QQuickItem*>();
-    Q_FOREACH(QQuickItem *child, children) {
-        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
-        if (style)
-            style->d_ptr->_q_reapplyStyling(child->parentItem());
-    }
-}
-
 
 /*!
   \internal
@@ -460,7 +461,7 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
-    updateStyledItem(attachee);
+    applyStyleOnChildren(attachee);
 }
 
 /*==============================================================================
@@ -586,6 +587,10 @@ void ItemStyleAttached::setStyle(UCStyle *style)
     Q_D(ItemStyleAttached);
     if (d->style != style) {
         // clear the previous style
+        if (d->style) {
+            d->style->unbindItem(d->delegate);
+            d->style->unbindItem(d->attachee);
+        }
         if (!d->customStyle && d->style) {
             d->style->deleteLater();
             d->style = 0;
@@ -628,6 +633,8 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
+        if (d->style)
+            d->style->unbindItem(d->delegate);
         // clear the previous theme delegate
         if (!d->customDelegate && d->delegate) {
             d->delegate->setVisible(false);

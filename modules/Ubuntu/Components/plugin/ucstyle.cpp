@@ -21,7 +21,6 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
-#include "quickutils.h"
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
@@ -46,7 +45,7 @@ UCStyle::UCStyle(QObject *parent) :
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QHashIterator<int, Binding> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
@@ -55,141 +54,121 @@ UCStyle::~UCStyle()
 
 /*!
  * \internal
- * The method creates the property bindings between the styled item properties
- * and the style. The propertyMap contains the styled item properties that can
- * still be bound.
+ * The method creates the property bindings between the item properties and the
+ * style. The propertyMap contains the item properties that can still be bound.
+ * Returns the number of properties bound, -1 on error.
  */
-void UCStyle::bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap)
+int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
 {
-    // the styled item must be the parent of the style object
-    if (!item || (parent() != item))
-        return;
-    QString omit(OMIT_STYLED_PROPERTIES);
+    if (!item || !parent())
+        return -1;
+    // style object's parent is always the styled item
+    bool isStyledItem = (item == parent());
+    QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
+    if (!isStyledItem && !styledItem)
+        return -1;
+    if (!isStyledItem && (item->parentItem() != styledItem))
+        return -1;
+
     const QMetaObject *styleMo = metaObject();
-    const QMetaObject *itemMo = item->metaObject();
+    const QMetaObject *targetMo = item->metaObject();
+    int result = 0;
 
-    // loop through styled item properties as some new properties in the derivates may
-    // depend on previous properties (i.e. Label's fontSize depends on font)
-    for (int i = 0; i < itemMo->propertyCount(); i++) {
-        const QMetaProperty itemProperty = itemMo->property(i);
-        if (omit.contains(itemProperty.name()))
-            continue;
-        int styleIndex = styleMo->indexOfProperty(itemProperty.name());
-        if (styleIndex == -1)
-            continue;
-        const QMetaProperty styleProperty = styleMo->property(styleIndex);
-        if (!styleProperty.hasNotifySignal())
+    for (int i = 0; i < targetMo->propertyCount(); i++) {
+        const QMetaProperty targetProperty = targetMo->property(i);
+        const char *name = targetProperty.name();
+
+        // check if it should be omitted
+        if (omitProperty(name))
             continue;
 
-        // check if the property has equivalent in the attachee and if we can style it
-        // this means that the equivalent property index in attachee is present in stylableProperties
-        QQmlProperty qmlProperty(item, itemProperty.name(), qmlContext(item));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
-        if (binding) {
-            // check if this binding is the original one
-            if (binding == propertyMap.binding(i)) {
-                // delete binding so we can style it
-                binding->destroy();
-            } else {
-                // mark as banned
-                propertyMap.mark(i, StyledPropertyMap::Banned);
-                continue;
+        // check if we have a corresponding style property
+        // all style properties have notify signals; therefore no need to check those
+        if (styleMo->indexOfProperty(name) == -1)
+            continue;
+
+        // check whether we have it already styled
+        // this check is needed because shadowed or extended properties are listed twice
+        // or because the styled item already has the property and the main item's property
+        // is not banned from styling, in which case the delegate one shouldn't be styled
+        if (m_bindings.contains(name))
+            continue;
+        // if the styled item property is banned, skip
+        if (isStyledItem && !propertyMap.isEnabled(i))
+            continue;
+
+        QQmlProperty qmlProperty(item, name, qmlContext(item));
+
+        if (isStyledItem) {
+            // styled item specific: check if it has a QML binding and whether the binding
+            // is the original one or a newer one
+            QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
+            if (binding) {
+                // check if this binding is the original one
+                if (binding == propertyMap.binding(i)) {
+                    // we can destroy it and style
+                    binding->destroy();
+                } else {
+                    // newer binding, mark as banned
+                    propertyMap.mark(i, StyledPropertyMap::Banned);
+                    continue;
+                }
             }
         }
-        // if not bound, check if we can still style it
-        if (propertyMap.isEnabled(i) && !m_bindings.contains(styleIndex)) {
 
-            // bind
+        // finally do the binding
+        if (isStyledItem)
+            // mark it as styled
             propertyMap.mark(i, StyledPropertyMap::Styled);
-            bind(styleIndex, item, qmlProperty, i);
-        }
+
+        bind(qmlProperty);
+        result++;
     }
-}
-
-/*!
- * \internal
- * The method creates the property bindings between the delegate properties
- * and the style. The propertyMap contains the styled item properties that can
- * still be bound. The method uses this parameter to detect which delegate
- * property can be styled which has an equivalent in styled item, and the
- * styled item property is not banned from styling.
- * Example: The style ditem has a color property and the delegate has also a
- * color property. If styled item's color property gets banned from styling (got
- * bound or got assigned a value), delegate's colo rproperty should also be
- * excluded from styling.
- */
-void UCStyle::bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap)
-{
-    QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
-    if (!item || !styledItem)
-        return;
-
-    // omit different amoutn of properties for delegates
-    QString omit(OMIT_DELEGATE_PROPERTIES);
-    const QMetaObject *styleMo = metaObject();
-    const QMetaObject *delegateMo = item->metaObject();
-
-    for (int i = 0; i < delegateMo->propertyCount(); i++) {
-        const QMetaProperty delegateProperty = delegateMo->property(i);
-        if (!delegateProperty.hasNotifySignal() || omit.contains(delegateProperty.name()))
-            continue;
-
-        // find out whether the property was already connected to attachee or the
-        // property is not in the style
-        int styleIndex = styleMo->indexOfProperty(delegateProperty.name());
-        if ((styleIndex == -1) || m_bindings.contains(styleIndex))
-            continue;
-        int styledItemIndex = styledItem->metaObject()->indexOfProperty(delegateProperty.name());
-        if ((styledItemIndex != -1) && propertyMap.isEnabled(styledItemIndex) && !propertyMap.isStyled(styledItemIndex))
-            continue;
-
-        // write and memorize
-        QQmlProperty qmlProperty(item, delegateProperty.name(), qmlContext(item));
-        bind(styleIndex, item, qmlProperty, -1);
-    }
+    return result;
 }
 
 /*!
  * \internal
  * The method removes all the style bindings between the item and the style.
+ * Returns true if the bindings were successfully removed.
  */
-void UCStyle::unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
+bool UCStyle::unbindItem(QQuickItem *item)
 {
     if (!item)
-        return;
-    QHashIterator<int, Binding> i(m_bindings);
+        return false;
+
+    bool result = false;
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
-        Binding binding = i.value();
-        if (binding.target == item) {
+        if (i.value().object() == item) {
             unbind(i.key());
+            result = true;
         }
-        if ((binding.styledIndex != -1) && propertyMap.isStyled(binding.styledIndex))
-            propertyMap.mark(binding.styledIndex, StyledPropertyMap::Enabled);
     }
+    return result;
 }
 
 /*!
  * \internal
- * The method removes style binding on a given property.
+ * The method removes style binding on a given property. Returns true on
+ * success.
  */
-void UCStyle::unbindProperty(const QString &property)
+bool UCStyle::unbindProperty(const QString &property)
 {
-    int index = metaObject()->indexOfProperty(property.toLatin1());
-    if ((index == -1) || !m_bindings.contains(index))
-        return;
-    unbind(index);
+    if (!m_bindings.contains(property))
+        return false;
+    unbind(property);
+    return true;
 }
 
 /*!
  * \internal
  * Returns whether the updated styled property is the one given as parameter.
  */
-bool UCStyle::isUpdating(const QString &property)
+bool UCStyle::isUpdating(const QString &property) const
 {
-    bool result = property == m_propertyUpdated;
-    m_propertyUpdated.clear();
-    return result;
+    return property == m_propertyUpdated;
 }
 
 
@@ -207,13 +186,8 @@ void UCStyle::updateStyledItem()
     }
 
     QString property = QString(signal.name()).remove("Changed");
-    QQmlProperty styleProperty(this, property, qmlContext(this));
-    int index = styleProperty.index();
-    Binding binding = m_bindings.value(index);
-    if (binding.target) {
-        // update value
-        write(styleProperty, binding.styledProperty);
-    }
+    // update value
+    write(property, m_bindings.value(property));
 }
 
 /*!
@@ -222,52 +196,51 @@ void UCStyle::updateStyledItem()
  * delegate). The binding consist of creating the QML binding, writing the data
  * and connecting the style properties' notify signal to the updater slot.
  */
-void UCStyle::bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex)
+void UCStyle::bind(const QQmlProperty &property)
 {
-    // bind
-    Binding binding;
-    binding.styledProperty = property;
-    binding.target = target;
-    binding.styledIndex = propertyIndex;
-    m_bindings.insert(index, binding);
+    // store target property
+    m_bindings.insert(property.name(), property);
 
     // connect the style property's notify signal so we can guard
     // styled item property changes when change occurs because of style changes
-    QQmlProperty qmlProperty(this, property.name(), qmlContext(this));
-    qmlProperty.connectNotifySignal(this, SLOT(updateStyledItem()));
-    write(qmlProperty, property);
+    const QMetaObject *mo = metaObject();
+    QMetaMethod notifySignal = mo->property(mo->indexOfProperty(property.name().toLocal8Bit())).notifySignal();
+    QMetaMethod updateSlot = mo->method(mo->indexOfSlot("updateStyledItem()"));
+    QObject::connect(this, notifySignal, this, updateSlot);
+
+    write(property.name(), property);
 }
 
 /*!
  * \internal
  * Removes the binding.
  */
-void UCStyle::unbind(int index)
+void UCStyle::unbind(const QString &property)
 {
-    Binding binding = m_bindings.value(index);
-    if (binding.styledProperty.isValid()) {
+    // disconnect from update
+    const QMetaObject *mo = metaObject();
+    QMetaMethod metaSignal = mo->property(mo->indexOfProperty(property.toLatin1())).notifySignal();
+    QMetaMethod updateSlot = mo->method(mo->indexOfSlot("updateStyledItem()"));
+    QObject::disconnect(this, metaSignal, this, updateSlot);
 
-        // disconnect from update
-        QMetaMethod metaSignal = metaObject()->property(index).notifySignal();
-        // QML signals are preseeded with a '2' character, see qqmlproperty.cpp, connectNotifySignal
-        QByteArray signal('2' + metaSignal.methodSignature());
-        QObject::disconnect(this, signal.constData(), this, SLOT(updateStyledItem()));
-
-        // finally remove from bindings
-        m_bindings.remove(index);
-    }
+    // finally remove from bindings
+    m_bindings.remove(property);
 }
 
-void UCStyle::write(const QQmlProperty &source, const QQmlProperty &destination)
+void UCStyle::write(const QString &source, const QQmlProperty &destination)
 {
+    if (!property(source.toLocal8Bit()).isValid()) {
+        qmlInfo(this) << "invalid property: " << source;
+        return;
+    }
     m_propertyUpdated = destination.name();
     const QMetaProperty target = destination.property();
-    if (target.type() == QVariant::Color) {
+    if (target.type() == QMetaType::QColor) {
         // color requires special attention, when transformed to variant then back to color
         // the alpha value is lost, meaning the destination will get value of 255
         // therefore we need to convert the variant to color and set the color falue
-        destination.write(source.read().value<QColor>());
+        destination.write(property(source.toLatin1()).value<QColor>());
     } else
-        destination.write(source.read());
+        destination.write(property(source.toLatin1()));
     m_propertyUpdated.clear();
 }

@@ -22,17 +22,6 @@
 #include <QtCore/QObject>
 #include <QtQml/QQmlProperty>
 
-#define OMIT_STYLED_PROPERTIES    \
-    "objectName,parent,children,x,y,z,states,transitions,childrenRect,"\
-    "visibleChildren,anchors,left,right,top,bottom,horizontalCenter,"\
-    "verticalCenter,baseline,baselineOffset,clip,focus," \
-    "activeFocus,rotation,data"
-
-#define OMIT_DELEGATE_PROPERTIES    \
-    "objectName,parent,children,x,y,z,states,transitions,childrenRect,"\
-    "visibleChildren,verticalCenter,baseline,baselineOffset,clip,focus," \
-    "activeFocus,rotation"
-
 class QQmlAbstractBinding;
 typedef QPair<unsigned, QQmlAbstractBinding*> PropertyPair;
 class StyledPropertyMap : public QHash<int, PropertyPair> {
@@ -84,31 +73,31 @@ public:
     explicit UCStyle(QObject *parent = 0);
     ~UCStyle();
 
-protected:
     // these methods are supposed to be used internally by the styling
-    void bindStyledItem(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void bindDelegate(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void unbindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
-    void unbindProperty(const QString &property);
-    bool isUpdating(const QString &property);
-    friend class ItemStyleAttachedPrivate;
+    inline static bool omitProperty(const char *name)
+    {
+        static QString properties(
+                    "activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
+                    "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
+                    "resources,right,states,top,transform,transformOrigin,transitions,"
+                    "verticalCenter,visibleChildren,x,y");
+        return properties.contains(QString(name).prepend(',').append(','));
+    }
+    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
+    bool unbindItem(QQuickItem *item);
+    bool unbindProperty(const QString &property);
+    bool isUpdating(const QString &property) const;
 
 private Q_SLOTS:
     void updateStyledItem();
     
 private:
-    struct Binding {
-        QQuickItem *target;
-        QQmlProperty styledProperty;
-        int styledIndex;
-    };
-
-    QHash<int, Binding> m_bindings;
+    QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
 
-    void bind(int index, QQuickItem *target, const QQmlProperty &property, int propertyIndex);
-    void unbind(int index);
-    void write(const QQmlProperty &source, const QQmlProperty &destination);
+    void bind(const QQmlProperty &property);
+    void unbind(const QString &name);
+    void write(const QString &source, const QQmlProperty &destination);
 };
 
 #endif // UCSTYLE_H
