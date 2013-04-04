@@ -65,7 +65,7 @@ Item {
     /*!
       The text to display in the header
      */
-    property string title
+    property string title: ""
     onTitleChanged: contentsChanged()
 
     /*!

@@ -36,9 +36,15 @@ Item {
 
         function initTestCase() {
             compare(page.title, "", "is not set by default")
-            compare(mainView.header.title, "", "header title is not set by default")
             compare(page.header, mainView.header, "page header equals mainView header")
+            compare(page.header.title, page.title, "header title is same as page title")
             compare(page.header.visible, false, "header is not visible initially because there is no title")
+        }
+
+        function test_0_noHeader_bug1162028_bug1161910() {
+            compare(mainView.header.title, "", "no header title by default")
+            compare(mainView.header.visible, false, "header is hidden when title is not set")
+            compare(page.height, mainView.height, "page uses full height when there is no header")
         }
 
         function test_title() {
