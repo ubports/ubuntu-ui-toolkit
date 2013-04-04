@@ -65,9 +65,6 @@ Item {
             compare(mainView.header.visible, false, "header is hidden when title is unset")
         }
 
-        function test_notitle() {
-        }
-
         function test_tools() {
             compare(mainView.toolbar.tools, page.tools, "Page updates toolbar tools");
         }
