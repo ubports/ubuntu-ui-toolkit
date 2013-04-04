@@ -98,6 +98,10 @@ Item {
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
+    // the property styling is not visible for the QML parser, therefore this
+    // property will be modified only if the value set upon component use differs
+    // from the default value; therefore we must set a default value, which does
+    // not disturbe the component functionality
     property url borderSource: "*"
 
     /*!
