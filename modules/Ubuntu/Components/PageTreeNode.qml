@@ -17,6 +17,7 @@
 import QtQuick 2.0
 
 /*!
+    \internal
     \qmltype PageTreeNode
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
