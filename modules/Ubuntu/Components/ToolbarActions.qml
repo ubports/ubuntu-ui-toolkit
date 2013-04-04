@@ -41,77 +41,29 @@ import QtQuick 2.0
             width: units.gu(50)
             height: units.gu(50)
 
-            Tabs {
-                id: tabs
-                Tab {
-                    title: "One"
-                    page: Page {
-                        Label {
-                            anchors.centerIn: parent
-                            text: "Simple actions"
-                        }
-                        tools: ToolbarActions {
-                            Action {
-                                text: "action 1"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                            Action {
-                                text: "action 2"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                        }
-                    }
+            Page {
+                title: "Tools example"
+                Label {
+                    anchors.centerIn: parent
+                    text: "Custom back button\nToolbar locked"
                 }
-                Tab {
-                    title: "Two"
-                    page: Page {
-                        Label {
-                            anchors.centerIn: parent
-                            text: "Back button, toolbar always visible"
-                        }
-                        tools: ToolbarActions {
-                            Action {
-                                text: "action 1"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                            Action {
-                                text: "action 2"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                            back {
-                                visible: true
-                                onTriggered: tabs.selectedTabIndex--
-                            }
-                            lock: true
-                            active: true
+                tools: ToolbarActions {
+                    Action {
+                        text: "action 1"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                    }
+                    Action {
+                        text: "action 2"
+                        iconSource: Qt.resolvedUrl("call_icon.png")
+                    }
+                    back {
+                        itemHint: Button {
+                            id: cancelButton
+                            text: "cancel"
                         }
                     }
-                }
-                Tab {
-                    title: "Three"
-                    page: Page {
-                        Label {
-                            anchors.centerIn: parent
-                            text: "Custom back button"
-                        }
-                        tools: ToolbarActions {
-                            Action {
-                                text: "action 1"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                            Action {
-                                text: "action 2"
-                                iconSource: Qt.resolvedUrl("call_icon.png")
-                            }
-                            back {
-                                itemHint: Button {
-                                    id: cancelButton
-                                    text: "cancel"
-                                }
-                                onTriggered: tabs.selectedTabIndex--
-                            }
-                        }
-                    }
+                    lock: true
+                    active: true
                 }
             }
         }
