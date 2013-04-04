@@ -119,10 +119,12 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      \internal
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
+      FIXME: headerContents may be specified here directly, not taken from the delegate.
      */
-    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+    property Component __headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     /*!
       \deprecated
@@ -165,7 +167,7 @@ PageTreeNode {
         id: internal
         function updateHeader() {
             if (tabs.header) {
-                if (tabs.active) tabs.header.contents = headerContents;
+                if (tabs.active) tabs.header.contents = __headerContents;
                 else tabs.header.contents = null;
             }
         }
