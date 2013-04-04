@@ -40,33 +40,17 @@ import QtQuick 2.0
             Page {
                 title: "Example page"
 
-                Flickable {
-                    anchors.fill: parent
-                    contentHeight: column.height
-                    id: flickable
-
-                    Column {
-                        id: column
-                        Repeater {
-                            model: 100
-                            Label {
-                                text: "line "+index
-                            }
-                        }
-                    }
+                Label {
+                    anchors.centerIn: parent
+                    text: "Hello world!"
                 }
 
                 tools: ToolbarActions {
                     Action {
-                        text: "top"
-                        onTriggered: {
-                            header.show();
-                            flickable.contentY = -header.height;
-                        }
+                        text: "one"
                     }
                     Action {
-                        text: "bottom"
-                        onTriggered: flickable.contentY = flickable.contentHeight - flickable.height
+                        text: "two"
                     }
                 }
             }
