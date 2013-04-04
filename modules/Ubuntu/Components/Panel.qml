@@ -25,13 +25,37 @@ import Ubuntu.Components 0.1 as Toolkit
     TODO: document
 */
 Item {
-    id: bottomBar
+    id: panel
+//    anchors {
+//        left: parent.left
+//        right: parent.right
+//        bottom: parent.bottom
+//    }
+
     anchors {
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
+        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
+        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
+        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
+        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
     }
+
     default property alias contents: bar.data
+
+    /*!
+      The property defines the alignment of the panel.
+      The implementation supports the following values:
+        \list
+        \li Qt.AlignLeft anchors to the left
+        \li Qt.AlignRight anchors to the right
+        \li Qt.AlignTop anchors to the top
+        \li Qt.AlignBottom anchors to the bottom
+        \endlist
+        The default value is \b Qt.AlignBottom.
+
+        By default, the panel will anchor to the specified side and fill the whole edge, but the
+        anchors of the panel may be overridden.
+      */
+    property int align: Qt.AlignBottom
 
     /*!
       When active, the bar is visible, otherwise it is hidden.
@@ -70,7 +94,7 @@ Item {
             name: "hint"
             PropertyChanges {
                 target: bar
-                y: bar.height - bottomBar.hintSize
+                y: bar.height - panel.hintSize
             }
         },
         State {
@@ -138,22 +162,24 @@ Item {
         property int movingDelta
 
         // Used for recovering the state from before
-        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedLock: bottomBar.lock
-        property bool savedActive: bottomBar.active
+        //  panelVisibilityCommunicator forced the toolbar to hide.
+        property bool savedLock: panel.lock
+        property bool savedActive: panel.active
+
+        readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom) ? Qt.Horizontal : Qt.Vertical
     }
 
     Connections {
         target: bottomBarVisibilityCommunicator
         onForceHiddenChanged: {
             if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLock = bottomBar.lock;
-                internal.savedActive = bottomBar.active;
-                bottomBar.active = false;
-                bottomBar.lock = true;
+                internal.savedLock = panel.lock;
+                internal.savedActive = panel.active;
+                panel.active = false;
+                panel.lock = true;
             } else { // don't force hidden
-                bottomBar.lock = internal.savedLock;
-                if (internal.savedLock) bottomBar.active = internal.savedActive;
+                panel.lock = internal.savedLock;
+                if (internal.savedLock) panel.active = internal.savedActive;
                 // if the toolbar was locked, do not slide it back in
                 // until the user performs a bottom-edge-swipe.
             }
@@ -162,13 +188,13 @@ Item {
 
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = bottomBar.hintSize + draggingArea.initialY - bar.height;
+            internal.movingDelta = panel.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialY;
         } else if (state == "spread") {
-            bottomBar.active = true;
+            panel.active = true;
         } else if (state == "") {
-            bottomBar.active = false;
+            panel.active = false;
         }
         internal.previousState = state;
     }
@@ -181,7 +207,7 @@ Item {
             right: parent.right
         }
 
-        y: bottomBar.active ? 0 : height
+        y: panel.active ? 0 : height
     }
 
     Toolkit.InverseMouseArea {
@@ -190,10 +216,10 @@ Item {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of lock by the clicked Item behind
-            if (!bottomBar.lock) bottomBar.active = false;
+            if (!panel.lock) panel.active = false;
         }
         propagateComposedEvents: true
-        visible: bottomBar.lock == false && bottomBar.state == "spread"
+        visible: panel.lock == false && panel.state == "spread"
     }
 
     DraggingArea {
@@ -204,21 +230,21 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: bottomBar.active ? bar.height + units.gu(1) : toolbar.triggerSize
+        height: panel.active ? bar.height + units.gu(1) : toolbar.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
-        visible: !bottomBar.lock
+        visible: !panel.lock
 
         property int initialY
         onPressed: {
             initialY = mouseY;
-            if (bottomBar.state == "") bottomBar.state = "hint";
-            else bottomBar.state = "moving";
+            if (panel.state == "") panel.state = "hint";
+            else panel.state = "moving";
         }
 
         onPositionChanged: {
-            if (bottomBar.state == "hint" && mouseY < initialY) {
-                bottomBar.state = "moving";
+            if (panel.state == "hint" && mouseY < initialY) {
+                panel.state = "moving";
             }
         }
 
@@ -230,11 +256,11 @@ Item {
         //  The value of 44 was copied from the Launcher.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
-                bottomBar.state = "spread";
+                panel.state = "spread";
             } else if (draggingArea.dragVelocity > 44) {
-                bottomBar.state = "";
+                panel.state = "";
             } else {
-                bottomBar.state = (bar.y < bar.height / 2) ? "spread" : "";
+                panel.state = (bar.y < bar.height / 2) ? "spread" : "";
             }
         }
     }
