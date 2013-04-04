@@ -368,10 +368,11 @@ void ItemStyleAttachedPrivate::applyStyleOnChildren(QQuickItem *item)
 {
     QList<QQuickItem*> children = item->childItems();
     Q_FOREACH(QQuickItem *child, children) {
-        applyStyleOnChildren(child);
         ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
         if (style)
             style->d_ptr->_q_reapplyStyling(child->parentItem());
+        else
+            applyStyleOnChildren(child);
     }
 }
 
