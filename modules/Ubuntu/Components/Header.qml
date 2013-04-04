@@ -46,7 +46,7 @@ Item {
     }
     height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(10))
 
-    visible: contents || title
+    visible: title || contents
 
     /*!
       Show the header
@@ -72,9 +72,7 @@ Item {
       The contents of the header. If this is set, \l title will be ignored.
      */
     property Component contents: null
-    onContentsChanged: {
-        if (visible) header.show();
-    }
+    onContentsChanged: header.show()
 
     /*!
       The flickable that controls the movement of the header.
