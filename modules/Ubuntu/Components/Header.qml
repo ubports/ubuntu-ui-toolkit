@@ -46,6 +46,8 @@ Item {
     }
     height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(10))
 
+    visible: contents || title
+
     /*!
       Show the header
      */
@@ -64,15 +66,15 @@ Item {
       The text to display in the header
      */
     property string title
-    onTitleChanged: {
-        if (title) header.show();
-        else header.hide();
-    }
+    onTitleChanged: contentsChanged()
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
      */
     property Component contents: null
+    onContentsChanged: {
+        if (visible) header.show();
+    }
 
     /*!
       The flickable that controls the movement of the header.
