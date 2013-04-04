@@ -59,7 +59,7 @@ import "stack.js" as Stack
                         anchors.fill: parent
                         ListItem.Standard {
                             text: i18n.tr("Page one")
-                            onClicked: pageStack.push(page1)
+                            onClicked: pageStack.push(page1, {color: "red"})
                             progression: true
                         }
                         ListItem.Standard {
@@ -71,28 +71,8 @@ import "stack.js" as Stack
                 }
 
                 Page {
-                    id: page1
-                    title: i18n.tr("First page")
-                    visible: false
-
-                    Column {
-                        anchors.fill: parent
-                        ListItem.Standard {
-                            text: i18n.tr("Root page (again)")
-                            onClicked: pageStack.push(page0)
-                            progression: true
-                        }
-                        ListItem.Standard {
-                            text: i18n.tr("Red rectangle")
-                            onClicked: pageStack.push(page2, {color: "red"})
-                            progression: true
-                        }
-                    }
-                }
-
-                Page {
                     title: "Rectangle"
-                    id: page2
+                    id: page1
                     visible: false
                     property alias color: rectangle.color
                     Rectangle {
