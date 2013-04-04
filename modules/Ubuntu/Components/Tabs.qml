@@ -119,6 +119,12 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      Header contents that will be used to override the default title inside the header,
+      and provides scrollable tab buttons.
+     */
+    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+
+    /*!
       \deprecated
       This property is deprecated. Pages will now automatically update the toolbar when activated.
      */
@@ -157,12 +163,6 @@ PageTreeNode {
 
     QtObject {
         id: internal
-        /*!
-          Header contents that will be used to override the default title inside the header,
-          and provides scrollable tab buttons.
-         */
-        property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
-
         function updateHeader() {
             if (tabs.header) {
                 if (tabs.active) tabs.header.contents = headerContents;
