@@ -18,10 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1 as Toolkit
 
 /*!
-    \internal
-    \qmltype GenericToolbar
+    \qmltype Panel
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
+
+    TODO: document
 */
 Item {
     id: bottomBar

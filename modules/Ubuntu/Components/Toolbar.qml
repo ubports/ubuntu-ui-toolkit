@@ -29,7 +29,7 @@ import Ubuntu.Components 0.1 as Theming
     \brief Application toolbar. This class is not exposed because it will
             be automatically added when a Page defines tools.
 */
-GenericToolbar {
+Panel {
     id: toolbar
     Theming.ItemStyle.class: "toolbar"
 
