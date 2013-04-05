@@ -89,7 +89,7 @@ PopupBase {
         Theming.ItemStyle.class: "foreground"
 
         property string title
-        property real contentsWidth: units.gu(20)
+        property real contentsWidth: units.gu(64)
         property real contentsHeight: units.gu(40)
         property Button leftButton
         property Button rightButton
@@ -97,8 +97,8 @@ PopupBase {
         y: Math.min(units.gu(15), (sheet.height - height)/2)
         anchors.horizontalCenter: parent.horizontalCenter
 
-//        property real minWidth: Math.min(units.gu(50), sheet.width)
-//        property real maxWidth: sheet.width
+        property real minWidth: Math.min(units.gu(50), sheet.width)
+        property real maxWidth: sheet.width
         property real minHeight: Math.min(units.gu(40), sheet.height)
         property real maxHeight: sheet.height
 
