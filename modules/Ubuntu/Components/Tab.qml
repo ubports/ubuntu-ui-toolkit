@@ -22,8 +22,6 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief Component to represent a single tab in a \l Tabs environment.
 
-    \b{This component is under heavy development.}
-
     Examples: See \l Tabs.
 */
 PageTreeNode {
@@ -32,24 +30,21 @@ PageTreeNode {
     anchors.fill: parent ? parent : undefined
 
     /*!
-      \preliminary
-      The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
+      The title that is shown on the tab button used to select this tab.
      */
     property string title
 
     /*!
       \preliminary
+      \deprecated
       The location of the icon that is displayed inside the button used to select this tab (optional).
       Either \l title or iconSource, or both must be defined.
+      Deprecated because our new tab buttons in the header do not display an icon.
      */
     property url iconSource
 
     /*!
-      \preliminary
-      The contents of the page. This can also be a string referring to a qml file.
-      Deactivate the Tab before changing the page, to ensure proper destruction of the
-      old page object first, if needed.
+      The contents of the page. Use a \l Page or a Loader that loads an external \l Page.
      */
     property Item page: null
 

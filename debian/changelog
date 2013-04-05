@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (0.1.40) raring; urgency=low
+
+  * Improve header and toolbar documentation for MainView/Page/PageStack/Tabs.
+  * Fix bug in header (hide it when the header is empty) 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Fri, 05 Apr 2013 15:12:25 +0200
+
 ubuntu-ui-toolkit (0.1.39) quantal; urgency=low
 
   * New Icon component that displays icons from the icon theme.

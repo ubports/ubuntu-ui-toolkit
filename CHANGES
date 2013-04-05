@@ -17,6 +17,19 @@ API Changes
 
 * None
 
+SDK 0.1.40
+##########
+
+Compatibility Breaks
+********************
+
+* Header is now hidden when it has no title or contents
+
+API Changes
+***********
+
+* None
+
 
 SDK 0.1.39
 ##########

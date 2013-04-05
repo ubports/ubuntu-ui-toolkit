@@ -24,31 +24,46 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
         The page on top of the stack is the visible one.
-        Any non-Page Item that you want to use with PageStack should be created
-        with its visible property set to false.
+
+    PageStack should be used inside a \l MainView in order to automatically add
+    a header and toolbar to control the stack. The PageStack will automatically
+    set the header title to the title of the \l Page that is currently on top
+    of the stack, and the tools of the toolbar to the tools of the \l Page on top
+    of the stack. When more than one Pages are on the stack, the toolbar will
+    automatically feature a back-button that pop the stack when triggered.
+
+    Pages that are defined inside the PageStack must initially set their visibility
+    to false to avoid the pages occluding the PageStack before they are pushed.
+    When pushing a \l Page, its visibility is automatically updated.
 
     Example:
     \qml
+        import QtQuick 2.0
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
+
         MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
             PageStack {
                 id: pageStack
-                Component.onCompleted: pageStack.push(page0)
+                Component.onCompleted: push(page0)
 
                 Page {
                     id: page0
-                    title: "Root page"
+                    title: i18n.tr("Root page")
+                    visible: false
 
                     Column {
                         anchors.fill: parent
                         ListItem.Standard {
-                            text: "Page one"
-                            onClicked: pageStack.push(rect, {fillColor: "red"})
+                            text: i18n.tr("Page one")
+                            onClicked: pageStack.push(page1, {color: "red"})
                             progression: true
                         }
                         ListItem.Standard {
-                            text: "Page two (external)"
+                            text: i18n.tr("External page")
                             onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                             progression: true
                         }
@@ -56,20 +71,22 @@ import "stack.js" as Stack
                 }
 
                 Page {
-                    id: fillColor
-                    property alias color: rect.color
+                    title: "Rectangle"
+                    id: page1
+                    visible: false
+                    property alias color: rectangle.color
                     Rectangle {
-                        id: rect
-                        anchors.fill: parent
-                        visible: false
+                        id: rectangle
+                        anchors {
+                            fill: parent
+                            margins: units.gu(5)
+                        }
                     }
                 }
             }
         }
     \endqml
-
-    Use PageStack inside \l MainView and push \l Page items onto the stack to ensure
-    automatic header and toolbar.
+    As shown in the example above, the push() function can take an Item, Component or URL as input.
 */
 
 PageTreeNode {
@@ -92,6 +109,10 @@ PageTreeNode {
       This property is deprecated. Pages will now automatically update the toolbar when activated.
      */
     property ToolbarActions tools: null
+    /*!
+      \deprecated
+      \internal
+     */
     onToolsChanged: print("MainView.tools property was deprecated. "+
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
@@ -113,6 +134,7 @@ PageTreeNode {
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
+      The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
         if (internal.stack.size() > 0) internal.stack.top().active = false;
