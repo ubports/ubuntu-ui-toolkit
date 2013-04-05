@@ -62,6 +62,8 @@ public:
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
+    void detachStyle();
+    void detachDelegate();
     void resetStyle();
     void resetDelegate();
     void applyStyleOnChildren(QQuickItem *item);
@@ -73,6 +75,7 @@ public:
     void _q_updateDelegateProperty();
     void _q_refreshStyle();
     void _q_reapplyStyling(QQuickItem *);
+    void _q_detachStyleElement(QObject *);
 
 #ifdef QT_TESTLIB_LIB
     friend class tst_ThemeEngineStyle;
