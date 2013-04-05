@@ -10,7 +10,7 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
-* Header is now hidden when it has no title or contents
+* None
 
 API Changes
 ***********
@@ -23,7 +23,7 @@ SDK 0.1.40
 Compatibility Breaks
 ********************
 
-* None
+* Header is now hidden when it has no title or contents
 
 API Changes
 ***********
