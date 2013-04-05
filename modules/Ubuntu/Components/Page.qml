@@ -116,7 +116,7 @@ PageTreeNode {
         onHeaderHeightChanged: internal.updateFlickableMargins()
         Component.onCompleted: internal.updateFlickableMargins()
 
-        property real headerHeight: page.header ? page.header.height : 0
+        property real headerHeight: page.header && page.header.visible ? page.header.height : 0
 
         function isFlickable(object) {
             return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
