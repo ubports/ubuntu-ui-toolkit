@@ -102,6 +102,12 @@ PopupBase {
         property real minHeight: Math.min(units.gu(40), sheet.height)
         property real maxHeight: sheet.height
 
+        // childrenRect includes the delegate which may add decoration
+        // to the sheet (such as a header with title), and thus width and height
+        // can differ from contentsWidth and contentsHeight.
+        // Delegate makes use of minWidth/maxWidth/minHeight/maxHeight properties
+        // which are defined above. Those properties are not moved to the delegate
+        // because here we have easy access to sheet.width and sheet.height.
         width: childrenRect.width
         height: childrenRect.height
 
