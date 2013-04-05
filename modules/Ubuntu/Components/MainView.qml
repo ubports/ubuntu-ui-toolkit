@@ -25,24 +25,101 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype MainView
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The root Item for all applications. It automatically adds a header
-        and toolbar for its contents.
+    \brief MainView is the root Item that should be used for all applications.
+        It automatically adds a header and toolbar for its contents.
 
-    Examples:
+    The simplest way to use a MainView is to include a \l Page object inside the MainView:
     \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
         MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
             Page {
-                title: "Header text"
+                title: "Simple page"
                 Button {
                     anchors.centerIn: parent
-                    text: "Click me"
+                    text: "Push me"
+                    width: units.gu(15)
+                    onClicked: print("Click!")
                 }
             }
         }
     \endqml
+    It is not required to set the anchors of the \l Page as it will automatically fill its parent.
+    The MainView has a header that automatically shows the title of the \l Page.
+    If the \l Page inside the MainView includes a Flickable with enough contents for scrolling, the header
+    will automatically hide and show when the user scrolls up or down:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
 
-    Header and toolbar contents are automatically taken from \l Page, \l Tabs and \l PageStack.
-    Only one MainView must be used per application, and it should be the root Item of the application.
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Page with Flickable"
+
+                Flickable {
+                    anchors.fill: parent
+                    contentHeight: column.height
+
+                    Column {
+                        id: column
+                        Repeater {
+                            model: 100
+                            Label {
+                                text: "line "+index
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    \endqml
+    The same header behavior is automatic when using a ListView instead of a Flickable in the above
+    example.
+
+    A toolbar can be added to the application by setting the tools property of the \l Page:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Page title"
+                Rectangle {
+                    id: rectangle
+                    anchors.centerIn: parent
+                    width: units.gu(20)
+                    height: units.gu(20)
+                    color: "blue"
+                }
+
+                tools: ToolbarActions {
+                    Action {
+                        text: "red"
+                        onTriggered: rectangle.color = "red"
+                    }
+                    Action {
+                        text: "green"
+                        onTriggered: rectangle.color = "green"
+                    }
+                }
+            }
+        }
+    \endqml
+    The toolbar is hidden by default, but will be made visible when the user performs a bottom-edge-swipe gesture, and
+    hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
+    The examples above show how to include a single \l Page inside a MainView, but more advanced application
+    structures are possible using \l PageStack and \l Tabs.
+    See \l ToolbarActions for details on how to to control the behavior and contents of the toolbar.
 */
 PageTreeNode {
     id: mainView
@@ -87,6 +164,10 @@ PageTreeNode {
       This property is deprecated. Pages will now automatically update the toolbar when activated.
      */
     property ToolbarActions tools: null
+    /*!
+      \internal
+      \deprecated
+     */
     onToolsChanged: print("MainView.tools property was deprecated. "+
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");

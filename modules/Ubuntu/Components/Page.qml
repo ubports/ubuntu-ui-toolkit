@@ -19,39 +19,45 @@ import QtQuick 2.0
     \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief A page inside a \l MainView will have a header and toolbar.
-        Pages can also can be included in \l Tab object or pushed on a \l PageStack.
+    \brief A page is the basic Item that must be used inside the \l MainView,
+        \l PageStack and \l Tabs.
         Anchors and height of a Page are automatically determined to align with
         the header of the \l MainView, but can be overridden.
 
-    Example:
+    \l MainView provides a header and toolbar for Pages it includes. Each page automatically
+    has its header and toolbar property linked to that of its parent \l MainView.
+    The text of the header, and the buttons in the toolbar are determined by the \l title
+    and \l tools properties of the page:
+
     \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
         MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
             Page {
-                title: i18n.tr("Root page")
+                title: "Example page"
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Hello world!"
+                }
 
                 tools: ToolbarActions {
                     Action {
                         text: "one"
-                        iconSource: Qt.resolvedUrl("1.png")
-                        onTriggered: print("First action")
-                     }
-                     Action {
+                    }
+                    Action {
                         text: "two"
-                        iconSource: Qt.resolvedUrl("2.png")
-                        onTriggered: print("Second action")
-                     }
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: "red"
+                    }
                 }
             }
         }
     \endqml
-
-    See also \l Tabs and \l PageStack.
+    See \l MainView for more basic examples that show how to use a header and toolbar.
+    Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
 */
 PageTreeNode {
     id: page

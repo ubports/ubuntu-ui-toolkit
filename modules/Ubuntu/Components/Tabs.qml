@@ -25,47 +25,71 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype Tabs
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The Tabs class provides an environment where multible Tab
+    \brief The Tabs class provides an environment where multible \l Tab
     children can be added, and the user is presented with a tab
     bar with tab buttons to select different tab pages.
 
-    Examples:
+    Tabs must be placed inside a \l MainView so that it will automatically
+    have a header that shows the tabs that can be selected, and the toolbar
+    which contains the tools of the \l Page in the currently selected \l Tab.
+
+    Example:
     \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1 as ListItem
+
         MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
             Tabs {
+                id: tabs
                 Tab {
-                    title: "tab 1"
+                    title: i18n.tr("Simple page")
                     page: Page {
-                        Text {
+                        Label {
+                            id: label
                             anchors.centerIn: parent
-                            text: "This is the first tab."
+                            text: "A centered label"
                         }
-                    }
-                }
-                Tab {
-                    title: "tab 2"
-                    iconSource: "icon.png"
-                    page: Page {
-                        Rectangle {
-                            anchors.fill: parent
-                            Text {
-                                anchors.centerIn: parent
-                                text: "Colorful tab."
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action"
+                                onTriggered: print("action triggered")
                             }
                         }
-                        color: "lightblue"
                     }
                 }
                 Tab {
-                    title: "tab 3"
-                    page: Qt.resolvedUrl("MyCustomPage.qml")
+                    id: externalTab
+                    title: i18n.tr("External")
+                    iconSource: "call_icon.png"
+                    page: Loader {
+                        parent: externalTab
+                        anchors.fill: parent
+                        source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
+                    }
+                }
+                Tab {
+                    title: i18n.tr("List view")
+                    page: Page {
+                        ListView {
+                            clip: true
+                            anchors.fill: parent
+                            model: 20
+                            delegate: ListItem.Standard {
+                                icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                                text: "Item "+modelData
+                            }
+                        }
+                    }
                 }
             }
         }
-    \endqml
 
-    Use Tabs inside a \l MainView and use \l Page items for the page property of
-    \l Tab to enable automatic header and toolbar.
+    \endqml
+    As the example above shows, an external \l Page inside a \l Tab can be loaded using a Loader.
 */
 
 PageTreeNode {
@@ -95,16 +119,22 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      \internal
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
+      FIXME: headerContents may be specified here directly, not taken from the delegate.
      */
-    property Component headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+    property Component __headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
 
     /*!
       \deprecated
       This property is deprecated. Pages will now automatically update the toolbar when activated.
      */
     property ToolbarActions tools: null
+    /*!
+      \deprecated
+      \internal
+     */
     onToolsChanged: print("Tabs.tools property was deprecated. "+
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
@@ -137,7 +167,7 @@ PageTreeNode {
         id: internal
         function updateHeader() {
             if (tabs.header) {
-                if (tabs.active) tabs.header.contents = headerContents;
+                if (tabs.active) tabs.header.contents = __headerContents;
                 else tabs.header.contents = null;
             }
         }
