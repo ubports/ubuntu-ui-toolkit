@@ -26,11 +26,6 @@ import Ubuntu.Components 0.1 as Toolkit
 */
 Item {
     id: panel
-//    anchors {
-//        left: parent.left
-//        right: parent.right
-//        bottom: parent.bottom
-//    }
 
     anchors {
         left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
