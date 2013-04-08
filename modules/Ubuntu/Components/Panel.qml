@@ -208,17 +208,23 @@ Item {
         y: panel.active ? 0 : height
     }
 
-    Toolkit.InverseMouseArea {
-        anchors.fill: draggingArea
-        onClicked: {
-            mouse.accepted = false;
-            // the mouse click may cause an update
-            //  of lock by the clicked Item behind
-            if (!panel.lock) panel.active = false;
-        }
-        propagateComposedEvents: true
-        visible: panel.lock == false && panel.state == "spread"
-    }
+    // commented out because it is not working, see
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166127
+
+//    Toolkit.InverseMouseArea {
+//        z: 1
+//        anchors.fill: draggingArea
+//        onClicked: {
+//            print("clicked!")
+//            mouse.accepted = true //false;
+//            // the mouse click may cause an update
+//            //  of lock by the clicked Item behind
+//            if (!panel.lock) panel.active = false;
+//        }
+//        propagateComposedEvents: true
+//        visible: panel.lock == false && panel.state == "spread"
+////        sensingArea: panel.parent
+//    }
 
     DraggingArea {
         orientation: Qt.Vertical
@@ -238,12 +244,14 @@ Item {
             initialY = mouseY;
             if (panel.state == "") panel.state = "hint";
             else panel.state = "moving";
+            mouse.accepted = false;
         }
 
         onPositionChanged: {
             if (panel.state == "hint" && mouseY < initialY) {
                 panel.state = "moving";
             }
+            mouse.accepted = false;
         }
 
         onReleased: finishMoving()
