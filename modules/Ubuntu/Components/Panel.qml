@@ -33,6 +33,8 @@ Item {
         top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
         bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
     }
+    height: (internal.orientation === Qt.Horizontal) ? units.gu(10) : undefined
+    width: (internal.orientation === Qt.Vertical) ? units.gu(10) : undefined
 
     default property alias contents: bar.data
 
@@ -182,6 +184,7 @@ Item {
     }
 
     onStateChanged: {
+        print("panel state = "+state);
         if (state == "hint") {
             internal.movingDelta = panel.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
@@ -225,7 +228,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: panel.active ? bar.height + units.gu(1) : toolbar.triggerSize
+        height: panel.active ? bar.height + units.gu(1) : panel.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !panel.lock
