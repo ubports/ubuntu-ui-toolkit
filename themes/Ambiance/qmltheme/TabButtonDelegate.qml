@@ -17,17 +17,23 @@
 import QtQuick 2.0
 
 Item {
+    id: visuals
+    // styling properties
+    property url backgroundLeft: ""
+    property url backgroundRight: ""
+    property url backgroundMiddle: ""
+
     anchors.fill: parent
 
     BorderImage {
         anchors.fill: parent
         source: {
             if (tabButton.__isFirst) {
-                return itemStyle.backgroundLeft;
+                return visuals.backgroundLeft;
             } else if (tabButton.__isLast) {
-                return itemStyle.backgroundRight;
+                return visuals.backgroundRight;
             } else {
-                return itemStyle.backgroundMiddle;
+                return visuals.backgroundMiddle;
             }
         }
     }

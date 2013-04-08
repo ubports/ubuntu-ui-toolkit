@@ -55,9 +55,34 @@ import Ubuntu.Components 0.1
 
 Item {
     id: visuals
+    // styling properties
+    property bool interactive: false
+    property real minimumSliderSize: units.gu(2)
+
+    property bool overlay: true
+    property real overlayOpacityWhenShown: 0.6
+    property real overlayOpacityWhenHidden: 0.0
+
+    property PropertyAnimation scrollbarFadeInAnimation: PropertyAnimation{duration: 100}
+    property PropertyAnimation scrollbarFadeOutAnimation: PropertyAnimation{duration: 100}
+    property int scrollbarFadeOutPause: 100
+    property PropertyAnimation sliderAnimation: PropertyAnimation{duration: 100}
+    property PropertyAnimation thumbConnectorFading: PropertyAnimation{duration: 100}
+    property PropertyAnimation thumbFading: PropertyAnimation{duration: 100}
+
+    property color sliderColor
+    property real sliderRadius
+    property color thumbConnectorColor
+    property url forwardThumbReleased
+    property url forwardThumbPressed
+    property url backwardThumbReleased
+    property url backwardThumbPressed
+
+    property real scrollAreaThickness
+    property real thumbConnectorMargin
+
     // helper properties to ease code readability
     property Flickable flickableItem: item.flickableItem
-    property bool interactive: StyleUtils.itemStyleProperty("interactive", false)
     property bool isScrollable: item.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
     property bool isVertical: ScrollbarUtils.isVertical(item)
@@ -68,11 +93,6 @@ Item {
 
     property real pageSize: (isVertical) ? item.height : item.width
     property real contentSize: (isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth
-    property real overlayOpacityWhenShown: StyleUtils.itemStyleProperty("overlayOpacityWhenShown", 0.6)
-    property real overlayOpacityWhenHidden: StyleUtils.itemStyleProperty("overlayOpacityWhenHidden", 0.0)
-    property bool overlay: StyleUtils.itemStyleProperty("overlay", false) && !interactive
-
-    property real minimumSliderSize: StyleUtils.itemStyleProperty("minimumSliderSize", units.gu(2))
 
     /*****************************************
       Visuals
@@ -123,8 +143,8 @@ Item {
             NumberAnimation {
                 target: visuals
                 property: "opacity"
-                duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
-                easing: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").easing
+                duration: scrollbarFadeInAnimation.duration
+                easing: scrollbarFadeInAnimation.easing
             }
         },
         Transition {
@@ -133,20 +153,20 @@ Item {
             NumberAnimation {
                 target: visuals
                 property: "opacity"
-                duration: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").duration
-                easing: StyleUtils.itemStyleProperty("scrollbarFadeInAnimation").easing
+                duration: scrollbarFadeInAnimation.duration
+                easing: scrollbarFadeInAnimation.easing
             }
         },
         Transition {
             from: "overlay"
             to: "stopped"
             SequentialAnimation {
-                PauseAnimation { duration: StyleUtils.itemStyleProperty("scrollbarFadeOutPause", 0) }
+                PauseAnimation { duration: scrollbarFadeOutPause }
                 NumberAnimation {
                     target: visuals
                     property: "opacity"
-                    duration: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").duration
-                    easing: StyleUtils.itemStyleProperty("scrollbarFadeOutAnimation").easing
+                    duration: scrollbarFadeOutAnimation.duration
+                    easing: scrollbarFadeOutAnimation.easing
                 }
             }
         }
@@ -172,7 +192,7 @@ Item {
     Item {
         id: scrollbarArea
 
-        property real thickness: StyleUtils.itemStyleProperty("scrollAreaThickness", units.dp(2))
+        property real thickness: scrollAreaThickness
         property real proximityThickness: (isVertical) ? item.width - thickness : item.height - thickness
         anchors {
             fill: parent
@@ -223,7 +243,7 @@ Item {
     Rectangle {
         id: slider
 
-        color: StyleUtils.itemStyleProperty("sliderColor", systemColors.highlight)
+        color: visuals.sliderColor
 
         anchors {
             left: (isVertical) ? scrollbarArea.left : undefined
@@ -236,20 +256,20 @@ Item {
         y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - slider.height)
         width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.width)
         height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.height)
-        radius: StyleUtils.itemStyleProperty("sliderRadius", units.gu(0.5))
+        radius: visuals.sliderRadius
 
         Behavior on width {
             enabled: (!isVertical)
             NumberAnimation {
-                duration: StyleUtils.itemStyleProperty("sliderAnimation").duration
-                easing: StyleUtils.itemStyleProperty("sliderAnimation").easing
+                duration: visuals.sliderAnimation.duration
+                easing: visuals.sliderAnimation.easing
             }
         }
         Behavior on height {
             enabled: (isVertical)
             NumberAnimation {
-                duration: StyleUtils.itemStyleProperty("sliderAnimation").duration
-                easing: StyleUtils.itemStyleProperty("sliderAnimation").easing
+                duration: visuals.sliderAnimation.duration
+                easing: visuals.sliderAnimation.easing
             }
         }
 
@@ -263,7 +283,7 @@ Item {
     Rectangle {
         id: sliderThumbConnector
 
-        property real thumbConnectorMargin: StyleUtils.itemStyleProperty("thumbConnectorMargin", units.dp(3))
+        property real thumbConnectorMargin: visuals.thumbConnectorMargin
         property bool isThumbAboveSlider: (isVertical) ? thumb.y < slider.y : thumb.x < slider.x
         anchors {
             left: (isVertical) ? scrollbarArea.left : (isThumbAboveSlider ? thumb.left : slider.right)
@@ -276,12 +296,12 @@ Item {
             topMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? thumbConnectorMargin : 0)
             bottomMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? 0 : thumbConnectorMargin)
         }
-        color: StyleUtils.itemStyleProperty("thumbConnectorColor", "white")
+        color: visuals.thumbConnectorColor
         opacity: thumb.shown ? 1.0 : 0.0
         Behavior on opacity {
             NumberAnimation {
-                duration: StyleUtils.itemStyleProperty("thumbConnectorFading").duration
-                easing: StyleUtils.itemStyleProperty("thumbConnectorFading").easing
+                duration: visuals.thumbConnectorFading.duration
+                easing: visuals.thumbConnectorFading.easing
             }
         }
     }
@@ -446,26 +466,22 @@ Item {
         opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
         Behavior on opacity {
             NumberAnimation {
-                duration: StyleUtils.itemStyleProperty("thumbFading").duration
-                easing: StyleUtils.itemStyleProperty("thumbFading").easing
+                duration: visuals.thumbFading.duration
+                easing: visuals.thumbFading.easing
             }
         }
 
-        property url backwardPressed: StyleUtils.itemStyleProperty("backwardThumbPressed", "")
-        property url backwardReleased: StyleUtils.itemStyleProperty("backwardThumbReleased", "")
-        property url forwardPressed: StyleUtils.itemStyleProperty("forwardThumbPressed", "")
-        property url forwardReleased: StyleUtils.itemStyleProperty("forwardThumbReleased", "")
         Flow {
             // disable mirroring as thumbs are placed in the same way no matter of RTL or LTR
             LayoutMirroring.enabled: false
             flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
             Image {
                 id: thumbTop
-                source: thumbArea.inThumbTop && thumbArea.pressed ? thumb.backwardPressed : thumb.backwardReleased
+                source: thumbArea.inThumbTop && thumbArea.pressed ? visuals.backwardThumbPressed : visuals.backwardThumbReleased
             }
             Image {
                 id: thumbBottom
-                source: thumbArea.inThumbBottom && thumbArea.pressed ? thumb.forwardPressed : thumb.forwardReleased
+                source: thumbArea.inThumbBottom && thumbArea.pressed ? visuals.forwardThumbPressed : visuals.forwardThumbReleased
             }
         }
     }

@@ -18,6 +18,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property color backgroundColor
+    property color headerColor
+    property real headerHeight
+    property real buttonContainerWidth
+
     width: MathUtils.clamp(item.contentsWidth, item.minWidth, item.maxWidth)
     height: header.height + containerItem.height
 
@@ -25,8 +32,8 @@ Item {
 
     Rectangle {
         id: header
-        color: StyleUtils.itemStyleProperty("headerColor", "darkgray")
-        height: StyleUtils.itemStyleProperty("headerHeight", units.gu(8))
+        color: visuals.headerColor
+        height: visuals.headerHeight
         anchors {
             top: parent.top
             left: parent.left
@@ -53,7 +60,7 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: StyleUtils.itemStyleProperty("buttonContainerWidth", units.gu(14))
+            width: visuals.buttonContainerWidth
             Component.onCompleted: header.updateButton(item.leftButton, leftButtonContainer)
         }
 
@@ -64,7 +71,7 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: StyleUtils.itemStyleProperty("buttonContainerWidth", units.gu(14))
+            width: visuals.buttonContainerWidth
             Component.onCompleted: header.updateButton(item.rightButton, rightButtonContainer)
         }
 
@@ -86,7 +93,7 @@ Item {
 
     Rectangle {
         id: containerItem
-        color: StyleUtils.itemStyleProperty("backgroundColor", "lightgray")
+        color: visuals.backgroundColor
         height: MathUtils.clamp(item.contentsHeight, item.minHeight - header.height, item.maxHeight - header.height)
         anchors {
             top: header.bottom

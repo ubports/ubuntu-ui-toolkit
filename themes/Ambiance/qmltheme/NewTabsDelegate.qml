@@ -19,6 +19,47 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
+    // styling properties
+    /*!
+      If this optional property is specified, it will be positioned
+      between the bar with tab buttons, and the tab pages to act
+      as a separator.
+     */
+    property Item separator
+
+    /*!
+      Enable left/right swiping in the contents area to go to
+      the next/previous tab.
+     */
+    property bool swipeToSwitchTabs
+
+    property color headerTextColor
+    property color headerTextSelectedColor
+    property real headerTextOpacity
+    property real headerTextSelectedOpacity
+
+    property int headerTextFadeDuration
+    property string headerFontSize
+    property int headerFontWeight
+    property real headerTextLeftMargin
+    property real headerTextRightMargin
+    property real headerTextBottomMargin
+
+    property url indicatorImageSource
+
+    property real tabBarHeight
+
+    /*!
+      The time of inactivity in ms before the tab bar is automatically deactivated
+     */
+    property int deactivateTime: 1000
+
+    /*!
+      The velocity at which buttons are repositioned when a new tab gets selected.
+     */
+    property real buttonPositioningVelocity
+
+    // visuals
     id: tabsDelegate
     anchors.fill: parent
     clip: true
@@ -36,6 +77,20 @@ Item {
                 left: parent ? parent.left : undefined
                 right: parent ? parent.right : undefined
             }
+            //height: tabBarHeight
+            headerTextColor: tabsDelegate.headerTextColor
+            headerTextSelectedColor: tabsDelegate.headerTextSelectedColor
+            headerTextOpacity: tabsDelegate.headerTextOpacity
+            headerTextSelectedOpacity: tabsDelegate.headerTextSelectedOpacity
+            headerTextFadeDuration: tabsDelegate.headerTextFadeDuration
+            indicatorImageSource: tabsDelegate.indicatorImageSource
+            headerFontSize: tabsDelegate.headerFontSize
+            headerFontWeight: tabsDelegate.headerFontWeight
+            headerTextLeftMargin: tabsDelegate.headerTextLeftMargin
+            headerTextRightMargin: tabsDelegate.headerTextRightMargin
+            headerTextBottomMargin: tabsDelegate.headerTextBottomMargin
+            buttonPositioningVelocity: tabsDelegate.buttonPositioningVelocity
+            deactivateTime: tabsDelegate.deactivateTime
         }
     }
 
@@ -85,5 +140,8 @@ Item {
 
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
-    Component.onCompleted: tabView.updatePages();
+    Component.onCompleted: {
+        item.__headerContents = headerContents;
+        tabView.updatePages();
+    }
 }

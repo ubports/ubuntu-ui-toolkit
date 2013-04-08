@@ -20,4 +20,6 @@ QtObject {
     property url backgroundLeft: ""
     property url backgroundRight: ""
     property url backgroundMiddle: ""
+
+    Component.onCompleted: print("TabButtonStyle deprecated")
 }

@@ -17,21 +17,19 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Image {
-    id: container
+Item {
+    id: root
 
-    anchors.fill: parent
-    smooth: true
-    visible: item.running
-    fillMode: Image.PreserveAspectFit
-    horizontalAlignment: Image.AlignHCenter
-    verticalAlignment: Image.AlignVCenter
+    property string themeError: Theme.error
+    property string themeFile: Theme.currentTheme
 
-    NumberAnimation on rotation {
-        running: item.running
-        from: 0
-        to: 360
-        loops: Animation.Infinite
-        duration: 1300
+    Item {
+        // fake style to enable styling of the item
+        ItemStyle.class: "fake"
+        // test item reflecting button properties styled
+        property color color
+        property url iconSource
+        property string text
+        property string iconPosition
     }
 }

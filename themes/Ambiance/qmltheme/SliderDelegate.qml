@@ -32,6 +32,15 @@ import Ubuntu.Components 0.1
 
 Item {
     id: main
+    // styling properties
+
+    property color backgroundColor: "white"
+    property color thumbColor: "darkgray"
+    property real thumbSpacing: 0
+    property real backgroundOpacity: 1.0
+    property real thumbOpacity: 1.0
+
+    // visuals
     anchors.fill: parent
 
     // properties to be published:
@@ -40,10 +49,8 @@ Item {
 
     // private properties
 
-    property real thumbSpacing: StyleUtils.itemStyleProperty("thumbSpacing", units.dp(2))
     property real liveValue: SliderUtils.liveValue(item)
     property real normalizedValue: SliderUtils.normalizedValue(item)
-
     property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
     property real thumbWidth: item.height - thumbSpacing
 
@@ -51,8 +58,8 @@ Item {
         id: backgroundShape
 
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("backgroundColor", "white")
-        opacity: StyleUtils.itemStyleProperty("backgroundOpacity", 1.0)
+        color: main.backgroundColor
+        opacity: main.backgroundOpacity
     }
 
     UbuntuShape {
@@ -62,8 +69,8 @@ Item {
         y: backgroundShape.y + thumbSpacing
         width: thumbWidth
         height: backgroundShape.height - (2.0 * thumbSpacing)
-        color: StyleUtils.itemStyleProperty("thumbColor", "darkgray")
-        opacity: StyleUtils.itemStyleProperty("thumbOpacity", 1.0)
+        color: main.thumbColor
+        opacity: main.thumbOpacity
     }
 
     Label {

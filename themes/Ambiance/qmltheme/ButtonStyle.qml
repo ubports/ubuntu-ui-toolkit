@@ -20,6 +20,7 @@ QtObject {
     property color color: "transparent"
 
     property url shape: ""
-    property url borderIdle: ""
-    property url borderPressed: ""
+    property url borderSource: ""
+
+    Component.onCompleted: print("ButtonStyle is deprecated")
 }

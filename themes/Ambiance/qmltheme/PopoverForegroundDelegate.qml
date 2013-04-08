@@ -20,6 +20,10 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: frame
+    // styling properties
+    property string radius: "small"
+    property color color
+
     property alias contentItem: body
 
     anchors {
@@ -49,7 +53,7 @@ Item {
             Rectangle {
                 id: background
                 anchors.fill: parent
-                color: StyleUtils.itemStyleProperty("color", "white")
+                color: frame.color
             }
         }
 
@@ -57,7 +61,7 @@ Item {
         Shape {
             anchors.fill: parent
             image: effectSource
-            radius: StyleUtils.itemStyleProperty("radius", "small")
+            radius: frame.radius
         }
 
         ShaderEffectSource {
