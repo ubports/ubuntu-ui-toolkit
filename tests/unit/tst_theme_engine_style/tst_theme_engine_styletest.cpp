@@ -145,14 +145,14 @@ private Q_SLOTS:
         QQuickItem *delegate = qobject_cast<QQuickItem*>(obj);
         QVERIFY(delegate);
 
-        QCOMPARE(style->bindItem(0, watchList), -1);
-        QCOMPARE(style->bindItem(boundItem, watchList), -1);
-        QCOMPARE(style->bindItem(delegate, watchList), -1);
+        QCOMPARE(style->bindItem(0, watchList, false), -1);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), -1);
+        QCOMPARE(style->bindItem(delegate, watchList, false), -1);
         style->setParent(boundItem);
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
-        QCOMPARE(style->bindItem(delegate, watchList), -1);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
+        QCOMPARE(style->bindItem(delegate, watchList, false), -1);
         delegate->setParentItem(boundItem);
-        QCOMPARE(style->bindItem(delegate, watchList), 2);
+        QCOMPARE(style->bindItem(delegate, watchList, false), 2);
 
         delete delegate;
         delete style;
@@ -171,7 +171,7 @@ private Q_SLOTS:
         QVERIFY(style);
 
         style->setParent(boundItem);
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
 
         obj = rule->delegate->create(context);
         QVERIFY(obj);
@@ -208,8 +208,8 @@ private Q_SLOTS:
         delegate->setParent(boundItem);
         delegate->setParentItem(boundItem);
 
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
-        QCOMPARE(style->bindItem(delegate, watchList), 2);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
+        QCOMPARE(style->bindItem(delegate, watchList, false), 2);
 
         QVERIFY(style->unbindProperty("color"));
         QVERIFY(!style->unbindProperty("width"));

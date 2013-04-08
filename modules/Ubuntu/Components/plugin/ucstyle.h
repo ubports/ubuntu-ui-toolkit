@@ -83,7 +83,7 @@ public:
                     "verticalCenter,visibleChildren,x,y");
         return properties.contains(QString(name).prepend(',').append(','));
     }
-    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
+    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool usePropertyMap);
     bool unbindItem(QQuickItem *item);
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;

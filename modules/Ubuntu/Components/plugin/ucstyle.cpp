@@ -59,16 +59,9 @@ UCStyle::~UCStyle()
  * style. The propertyMap contains the item properties that can still be bound.
  * Returns the number of properties bound, -1 on error.
  */
-int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
+int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool usePropertyMap)
 {
-    if (!item || !parent())
-        return -1;
-    // style object's parent is always the styled item
-    bool isStyledItem = (item == parent());
-    QQuickItem *styledItem = qobject_cast<QQuickItem*>(parent());
-    if (!isStyledItem && !styledItem)
-        return -1;
-    if (!isStyledItem && (item->parentItem() != styledItem))
+    if (!item)
         return -1;
 
     const QMetaObject *styleMo = metaObject();
@@ -95,12 +88,12 @@ int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
         if (m_bindings.contains(name))
             continue;
         // if the styled item property is banned, skip
-        if (isStyledItem && !propertyMap.isEnabled(i))
+        if (usePropertyMap && !propertyMap.isEnabled(i))
             continue;
 
         QQmlProperty qmlProperty(item, name, qmlContext(item));
 
-        if (isStyledItem) {
+        if (usePropertyMap) {
             // styled item specific: check if it has a QML binding and whether the binding
             // is the original one or a newer one
             QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
@@ -118,7 +111,7 @@ int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap)
         }
 
         // finally do the binding
-        if (isStyledItem)
+        if (usePropertyMap)
             // mark it as styled
             propertyMap.mark(i, StyledPropertyMap::Styled);
 
