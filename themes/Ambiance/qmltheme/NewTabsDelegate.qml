@@ -141,7 +141,7 @@ Item {
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
-        item.headerContents = headerContents;
+        item.__headerContents = headerContents;
         tabView.updatePages();
     }
 }
