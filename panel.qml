@@ -11,6 +11,7 @@ Rectangle {
     }
 
     Panel {
+        align: Qt.alignleft
         Rectangle {
             anchors.fill: parent
             color: "red"

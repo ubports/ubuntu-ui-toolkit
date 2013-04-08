@@ -205,7 +205,10 @@ Item {
             right: parent.right
         }
 
-        y: panel.active ? 0 : height
+//        y: panel.active ? 0 : height
+        property real w: panel.active ? 0 : internal.orientation === Qt.Horizontal ? height : width
+        y: internal.orientation === Qt.Horizontal ? w : 0
+        x: internal.orientation === Qt.Vertical ? w : 0
     }
 
     // commented out because it is not working, see
@@ -251,7 +254,6 @@ Item {
             if (panel.state == "hint" && mouseY < initialY) {
                 panel.state = "moving";
             }
-//            mouse.accepted = false;
         }
 
         onReleased: finishMoving()
