@@ -33,8 +33,6 @@ Item {
         top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
         bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
     }
-    height: (internal.orientation === Qt.Horizontal) ? units.gu(10) : undefined
-    width: (internal.orientation === Qt.Vertical) ? units.gu(10) : undefined
 
     default property alias contents: bar.data
 
@@ -184,7 +182,6 @@ Item {
     }
 
     onStateChanged: {
-        print("panel state = "+state);
         if (state == "hint") {
             internal.movingDelta = panel.hintSize + draggingArea.initialY - bar.height;
         } else if (state == "moving" && internal.previousState == "spread") {
@@ -205,29 +202,20 @@ Item {
             right: parent.right
         }
 
-//        y: panel.active ? 0 : height
-        property real w: panel.active ? 0 : internal.orientation === Qt.Horizontal ? height : width
-        y: internal.orientation === Qt.Horizontal ? w : 0
-        x: internal.orientation === Qt.Vertical ? w : 0
+        y: panel.active ? 0 : height
     }
 
-    // commented out because it is not working, see
-    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166127
-
-//    Toolkit.InverseMouseArea {
-//        z: 1
-//        anchors.fill: draggingArea
-//        onClicked: {
-//            print("clicked!")
-//            mouse.accepted = true //false;
-//            // the mouse click may cause an update
-//            //  of lock by the clicked Item behind
-//            if (!panel.lock) panel.active = false;
-//        }
-//        propagateComposedEvents: true
-//        visible: panel.lock == false && panel.state == "spread"
-////        sensingArea: panel.parent
-//    }
+    Toolkit.InverseMouseArea {
+        anchors.fill: draggingArea
+        onClicked: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of lock by the clicked Item behind
+            if (!panel.lock) panel.active = false;
+        }
+        propagateComposedEvents: true
+        visible: panel.lock == false && panel.state == "spread"
+    }
 
     DraggingArea {
         orientation: Qt.Vertical
@@ -237,7 +225,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: panel.active ? bar.height + units.gu(1) : panel.triggerSize
+        height: panel.active ? bar.height + units.gu(1) : toolbar.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !panel.lock
@@ -247,7 +235,6 @@ Item {
             initialY = mouseY;
             if (panel.state == "") panel.state = "hint";
             else panel.state = "moving";
-            mouse.accepted = false;
         }
 
         onPositionChanged: {
