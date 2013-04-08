@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    width: item.contentsWidth
+    width: MathUtils.clamp(item.contentsWidth, item.minWidth, item.maxWidth)
     height: header.height + containerItem.height
 
     property alias contentItem: containerItem
