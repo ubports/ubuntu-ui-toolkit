@@ -96,7 +96,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                y: MathUtils.clamp(draggingArea.mouseY - internal.movingDelta, 0, bar.height)
+                y: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.height)
             }
         },
         State {
@@ -230,15 +230,22 @@ Item {
         propagateComposedEvents: true
         visible: !panel.lock
 
+        // FIXME: Weird construction below, but it doesn't seem to work
+        //  in onPressed when using mouseW directly.
+        property int mouseW: getMouseW()
+        function getMouseW() {
+            return internal.orientation === Qt.Horizontal ? mouseY : mouseX
+        }
+
         property int initialY
         onPressed: {
-            initialY = mouseY;
+            initialY = getMouseW();
             if (panel.state == "") panel.state = "hint";
             else panel.state = "moving";
         }
 
         onPositionChanged: {
-            if (panel.state == "hint" && mouseY < initialY) {
+            if (panel.state == "hint" && mouseW < initialY) {
                 panel.state = "moving";
             }
         }
