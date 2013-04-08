@@ -251,7 +251,7 @@ Item {
             if (panel.state == "hint" && mouseY < initialY) {
                 panel.state = "moving";
             }
-            mouse.accepted = false;
+//            mouse.accepted = false;
         }
 
         onReleased: finishMoving()
