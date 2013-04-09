@@ -34,6 +34,14 @@ Item {
         bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
     }
 
+    height: units.gu(10)
+
+    Rectangle {
+        color: "green"
+        opacity: 0.5
+        anchors.fill: bar
+    }
+
     default property alias contents: bar.data
 
     /*!
@@ -76,7 +84,7 @@ Item {
     /*!
       How much of the toolbar to show when starting interaction.
      */
-    property real hintSize: units.gu(1)
+    property real hintSize: units.gu(2)
 
     /*!
       The height of the mouse area used to detect edge swipes to
@@ -225,7 +233,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: panel.active ? bar.height + units.gu(1) : toolbar.triggerSize
+        height: panel.active ? bar.height + units.gu(1) : panel.triggerSize
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !panel.lock
@@ -240,6 +248,7 @@ Item {
         property int initialY
         onPressed: {
             initialY = getMouseW();
+//            if (panel.state == "spread") mouse.accepted = false;
             if (panel.state == "") panel.state = "hint";
             else panel.state = "moving";
         }
