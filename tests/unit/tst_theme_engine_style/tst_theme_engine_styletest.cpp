@@ -127,6 +127,25 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void testCase_omitProperty()
+    {
+        // from mid
+        QVERIFY(UCStyle::omitProperty("anchors"));
+        QVERIFY(UCStyle::omitProperty("focus"));
+        // from beginning of omit list
+        QVERIFY(UCStyle::omitProperty("activeFocus"));
+        // from end of omit list
+        QVERIFY(UCStyle::omitProperty("y"));
+        // do not omit
+        QVERIFY(!UCStyle::omitProperty("item"));
+        QVERIFY(!UCStyle::omitProperty("z"));
+        QVERIFY(!UCStyle::omitProperty("width"));
+        QVERIFY(!UCStyle::omitProperty("height"));
+        // properties that may be prersent as subset of an omitted property
+        // source->resources
+        QVERIFY(!UCStyle::omitProperty("source"));
+    }
+
     void testCase_bindItem()
     {
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));

@@ -77,10 +77,10 @@ public:
     inline static bool omitProperty(const char *name)
     {
         static QString properties(
-                    "activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
+                    ",activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
                     "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
                     "resources,right,states,top,transform,transformOrigin,transitions,"
-                    "verticalCenter,visibleChildren,x,y");
+                    "verticalCenter,visibleChildren,x,y,");
         return properties.contains(QString(name).prepend(',').append(','));
     }
     int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool usePropertyMap);
