@@ -63,6 +63,7 @@ private Q_SLOTS:
     void testCase_blockDeclaration();
     void testCase_selectorDelegates();
     void testCase_inheritance();
+    void testCase_customStyle();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
@@ -279,6 +280,67 @@ bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties
     return !xfail;
 }
 
+void tst_ThemeEngine::testCase_customStyle()
+{
+    /*
+     * The ownership of custom styles and delegates owned by other styled items
+     * must be transferred to the item the style/delegate object is set to (the
+     * item which "steals" the style objects). These style objects then are no
+     * longer considered to be custom ones but owned by the new styled item.
+     * Example: Toolbar component
+     */
+
+    ThemeEngine::instance()->loadTheme(QUrl());
+    QVERIFY(ThemeEngine::instance()->error().isEmpty());
+    quickView->setSource(QUrl::fromLocalFile("CustomStyle.qml"));
+    QCoreApplication::processEvents();
+
+    QObject *root = quickView->rootObject();
+    QVERIFY2(root, "FAILURE");
+
+    QCOMPARE(root->property("themeError").toString(), QString());
+
+    QList<QQuickItem*> items = root->findChildren<QQuickItem*>();
+    QCOMPARE(items.count(), 2);
+
+    // create attached properties to both items
+    QVERIFY(qmlAttachedPropertiesObject<ItemStyleAttached>(items[0], true));
+    QVERIFY(qmlAttachedPropertiesObject<ItemStyleAttached>(items[1], true));
+
+    // reparent items so styling gets active
+    Q_FOREACH(QQuickItem *item, items) {
+        QQuickItem *parent = item->parentItem();
+        item->setParentItem(0);
+        item->setParentItem(parent);
+    }
+
+    // style the first one
+    ItemStyleAttached *styleItem1 = qobject_cast<ItemStyleAttached*>
+            (qmlAttachedPropertiesObject<ItemStyleAttached>(items[0], false));
+    QVERIFY(styleItem1);
+    styleItem1->setProperty("class", "button");
+    QObject *style = styleItem1->property("style").value<QObject*>();
+    QQuickItem *delegate = styleItem1->property("delegate").value<QQuickItem*>();
+    QVERIFY(style);
+    QVERIFY(delegate);
+
+    cleanup.add(style);
+    cleanup.add(delegate);
+
+    // set to the other component
+    ItemStyleAttached *styleItem2 = qobject_cast<ItemStyleAttached*>
+            (qmlAttachedPropertiesObject<ItemStyleAttached>(items[1], false));
+    QVERIFY(styleItem2);
+    styleItem2->setProperty("style", QVariant::fromValue(style));
+    styleItem2->setProperty("delegate", QVariant::fromValue(delegate));
+
+    style = styleItem1->property("style").value<QObject*>();
+    QVERIFY(!style);
+    // FIXME: the delegate is not yet detached from the first item, should be detached once
+    // Toolbar fixes the visuals
+    delegate = styleItem1->property("delegate").value<QQuickItem*>();
+    QVERIFY(delegate);
+}
 
 QTEST_MAIN(tst_ThemeEngine)
 

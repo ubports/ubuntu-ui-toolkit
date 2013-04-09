@@ -47,7 +47,6 @@ public:
     Selector styleSelector;
 
     // internal members
-    QQmlContext *componentContext;
     StyleCache::StyleData *styleRule;
     // hash of attachee property indexes as key, containing enabled/disabled value
     StyledPropertyMap watchedProperties;

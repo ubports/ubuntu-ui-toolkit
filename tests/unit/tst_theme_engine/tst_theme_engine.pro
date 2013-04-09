@@ -7,4 +7,5 @@ RESOURCES += \
 
 OTHER_FILES += ReparentingTest.qml \
     SelectorTest.qml \
-    InheritanceTest.qml
+    InheritanceTest.qml \
+    CustomStyle.qml
