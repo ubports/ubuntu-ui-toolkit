@@ -32,6 +32,7 @@
 #include "themeengine.h"
 #include "themeengine_p.h"
 #include "itemstyleattached.h"
+#include "ucstyle.h"
 
 #define QCOMPARE_RET(actual, expected) \
 do {\
@@ -286,7 +287,9 @@ void tst_ThemeEngine::testCase_customStyle()
      * The ownership of custom styles and delegates owned by other styled items
      * must be transferred to the item the style/delegate object is set to (the
      * item which "steals" the style objects). These style objects then are no
-     * longer considered to be custom ones but owned by the new styled item.
+     * longer considered to be custom ones but owned by the new styled item. Also
+     * the "item" context properties must be updated to reflect the new style
+     * owner.
      * Example: Toolbar component
      */
 
@@ -324,15 +327,31 @@ void tst_ThemeEngine::testCase_customStyle()
     QVERIFY(style);
     QVERIFY(delegate);
 
-    cleanup.add(style);
-    cleanup.add(delegate);
-
     // set to the other component
     ItemStyleAttached *styleItem2 = qobject_cast<ItemStyleAttached*>
             (qmlAttachedPropertiesObject<ItemStyleAttached>(items[1], false));
     QVERIFY(styleItem2);
     styleItem2->setProperty("style", QVariant::fromValue(style));
     styleItem2->setProperty("delegate", QVariant::fromValue(delegate));
+
+    // check context properties for both style and delegate
+    QQmlContext *context = style->property("_q_context").value<QQmlContext*>();
+    QVERIFY(context);
+    // style context has no context property called "item" as it is defined as property
+    // for UCStyle
+    QQuickItem *styledItem = context->contextProperty("item").value<QQuickItem*>();
+    QVERIFY(!styledItem);
+    UCStyle *ucStyle = qobject_cast<UCStyle*>(style);
+    QCOMPARE(ucStyle->item(), styleItem2->parent());
+    QVERIFY(ucStyle->item() != styleItem1->parent());
+
+    // delegate context
+    context = delegate->property("_q_context").value<QQmlContext*>();
+    QVERIFY(context);
+    styledItem = context->contextProperty("item").value<QQuickItem*>();
+    QVERIFY(styledItem);
+    QCOMPARE(styledItem, styleItem2->parent());
+    QVERIFY(styledItem != styleItem1->parent());
 
     style = styleItem1->property("style").value<QObject*>();
     QVERIFY(!style);
