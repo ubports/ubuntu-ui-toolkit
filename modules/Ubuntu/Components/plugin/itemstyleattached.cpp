@@ -160,24 +160,16 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
     Q_Q(ItemStyleAttached);
     // enumerate properties and figure out which one has binding
     const QMetaObject *mo = attachee->metaObject();
+    QMetaMethod onAttacheePropertyChanged = q->metaObject()->method(q->metaObject()->indexOfSlot("_q_attacheePropertyChanged()"));
     for (int i = 0; i < mo->propertyCount(); i++) {
         const QMetaProperty prop = mo->property(i);
 
-        if (!prop.hasNotifySignal() || UCStyle::omitProperty(prop.name()))
+        if (!prop.hasNotifySignal() || UCStyle::omitProperty(prop.name())) {
             continue;
-        // check if attachee property has already bindings, leave if it has
-        QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProp);
-        if (binding) {
-            // mark as first time bound, so further styling can unbind it and do styling
-            watchedProperties.mark(i, StyledPropertyMap::Bound, binding);
         }
-        // connect property's notify signal to watch when it gets changed so we can stop watching it
-        qmlProp.connectNotifySignal(q, SLOT(_q_attacheePropertyChanged()));
 
-        // we cannot detect whether a signal is connected as isSignalConnected() is
-        // a protected method of QObject, and we cannot access attachee's protected
-        // functions
+        // connect property's notify signal to watch when it gets changed so we can stop watching it
+        QObject::connect(attachee, prop.notifySignal(), q, onAttacheePropertyChanged);
         watchedProperties.mark(i, StyledPropertyMap::Enabled);
     }
 }
