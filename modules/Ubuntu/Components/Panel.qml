@@ -30,14 +30,15 @@ import Ubuntu.Components 0.1 as Toolkit
 Item {
     id: panel
 
-    anchors {
-        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
-        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
-        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
-        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
-    }
+//    anchors {
+//        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
+//        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
+//        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
+//        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
+//    }
 
-    height: units.gu(10)
+//      anchors.fill: parent
+//    height: units.gu(10)
 
 //    Rectangle {
 //        color: "red"
@@ -278,11 +279,17 @@ Item {
     Item {
         id: bar
         height: parent.height
+        width: parent.width
         anchors {
-            left: parent.left
-            right: parent.right
+            left: internal.orientation === Qt.Horizontal ? parent.left : undefined
+            right: internal.orientation === Qt.Horizontal ? parent.right : undefined
+            top: internal.orientation === Qt.Vertical ? parent.top : undefined
+            bottom: internal.orientation === Qt.Vertical ? parent.bottom : undefined
         }
 
+        property real size: units.gu(8)
+//        height: internal.orientation === Qt.Horizontal ? size : undefined
+//        width: internal.orientation === Qt.Vertical ? size : undefined
         y: panel.active ? 0 : height
     }
 

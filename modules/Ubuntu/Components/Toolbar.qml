@@ -33,6 +33,11 @@ Panel {
     id: toolbar
 //        Theming.ItemStyle.class: "toolbar"
 
+    anchors {
+        left: parent.left
+        right: parent.right
+        bottom: parent.bottom
+    }
     height: background.height
     hintSize: Theming.ComponentUtils.style(background, "hintSize", units.gu(2))
     triggerSize: Theming.ComponentUtils.style(background, "triggerSize", units.gu(2))

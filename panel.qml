@@ -11,7 +11,14 @@ Rectangle {
     }
 
     Panel {
-        align: Qt.AlignLeft
+        align: Qt.AlignBottom
+
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            top: parent.top
+        }
+        width: units.gu(20)
 
         Rectangle {
             anchors.fill: parent
