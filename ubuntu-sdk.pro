@@ -13,5 +13,5 @@ test.depends = license
 QMAKE_EXTRA_TARGETS += test
 
 license.target = license
-license.commands = ./tests/license/checklicense
+license.commands = ./tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
