@@ -30,21 +30,21 @@ import Ubuntu.Components 0.1 as Toolkit
 Item {
     id: panel
 
-//    anchors {
-//        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
-//        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
-//        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
-//        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
-//    }
+    //    anchors {
+    //        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
+    //        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
+    //        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
+    //        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
+    //    }
 
-//      anchors.fill: parent
-//    height: units.gu(10)
+    //      anchors.fill: parent
+    //    height: units.gu(10)
 
-//    Rectangle {
-//        color: "red"
-//        opacity: 0.5
-//        anchors.fill: bar
-//    }
+    //    Rectangle {
+    //        color: "red"
+    //        opacity: 0.5
+    //        anchors.fill: bar
+    //    }
 
     default property alias contents: bar.data
 
@@ -205,20 +205,20 @@ Item {
 
     // not working for now.
     // TODO: link to bug report or uncomment
-//    Toolkit.InverseMouseArea {
-//        anchors.fill: draggingArea
-//        onClicked: {
-//            mouse.accepted = false;
-//            // the mouse click may cause an update
-//            //  of lock by the clicked Item behind
-//            if (!panel.lock) panel.active = false;
-//        }
-//        propagateComposedEvents: true
-//        visible: panel.lock == false && panel.state == "spread"
-//    }
+    //    Toolkit.InverseMouseArea {
+    //        anchors.fill: draggingArea
+    //        onClicked: {
+    //            mouse.accepted = false;
+    //            // the mouse click may cause an update
+    //            //  of lock by the clicked Item behind
+    //            if (!panel.lock) panel.active = false;
+    //        }
+    //        propagateComposedEvents: true
+    //        visible: panel.lock == false && panel.state == "spread"
+    //    }
 
     DraggingArea {
-        orientation: Qt.Vertical
+        orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         id: draggingArea
         anchors {
             top: panel.align === Qt.AlignBottom ? undefined : parent.top
@@ -243,12 +243,12 @@ Item {
         property int initialW
         onPressed: {
             initialW = getMouseW();
-//            mouse.accepted = false
-//            if (panel.state == "spread") mouse.accepted = false;
-//            mouse.accepted = false;
+            //            mouse.accepted = false
+            //            if (panel.state == "spread") mouse.accepted = false;
+            //            mouse.accepted = false;
             if (panel.state == "") panel.state = "hint";
-//            else mouse.accepted = false;
-//            else panel.state = "moving";
+            //            else mouse.accepted = false;
+            //            else panel.state = "moving";
         }
 
         onPositionChanged: {
@@ -268,9 +268,17 @@ Item {
         // TODO: deal with top/right aligned panels here by swapping 44 and -44.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
-                panel.state = "spread";
+                if (panel.align === Qt.AlignBottom || panel.align === Qt.AlignRight) {
+                    panel.state = "spread";
+                } else {
+                    panel.state = "";
+                }
             } else if (draggingArea.dragVelocity > 44) {
-                panel.state = "";
+                if (panel.align === Qt.AlignBottom || panel.align === Qt.AlignRight) {
+                    panel.state = "";
+                } else {
+                    panel.state = "spread";
+                }
             } else {
                 panel.state = (bar.w < bar.size / 2) ? "spread" : "";
             }
@@ -289,9 +297,9 @@ Item {
         }
 
         property real size: internal.orientation === Qt.Horizontal ? height : width
-//        height: internal.orientation === Qt.Horizontal ? size : undefined
-//        width: internal.orientation === Qt.Vertical ? size : undefined
-//        y: panel.active ? 0 : height
+        //        height: internal.orientation === Qt.Horizontal ? size : undefined
+        //        width: internal.orientation === Qt.Vertical ? size : undefined
+        //        y: panel.active ? 0 : height
         property real w: panel.active ? 0 : size
         // TODO: deal with top or right-aligned panels here in the computation of x and y.
         y: internal.orientation === Qt.Horizontal ? w : 0

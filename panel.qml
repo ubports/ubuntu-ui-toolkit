@@ -11,7 +11,7 @@ Rectangle {
     }
 
     Panel {
-        align: Qt.AlignBottom
+        align: Qt.AlignRight
 
         anchors {
             right: parent.right
