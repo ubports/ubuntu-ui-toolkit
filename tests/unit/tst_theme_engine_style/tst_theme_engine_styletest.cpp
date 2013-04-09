@@ -127,6 +127,25 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void testCase_omitProperty()
+    {
+        // from mid
+        QVERIFY(UCStyle::omitProperty("anchors"));
+        QVERIFY(UCStyle::omitProperty("focus"));
+        // from beginning of omit list
+        QVERIFY(UCStyle::omitProperty("activeFocus"));
+        // from end of omit list
+        QVERIFY(UCStyle::omitProperty("y"));
+        // do not omit
+        QVERIFY(!UCStyle::omitProperty("item"));
+        QVERIFY(!UCStyle::omitProperty("z"));
+        QVERIFY(!UCStyle::omitProperty("width"));
+        QVERIFY(!UCStyle::omitProperty("height"));
+        // properties that may be prersent as subset of an omitted property
+        // source->resources
+        QVERIFY(!UCStyle::omitProperty("source"));
+    }
+
     void testCase_bindItem()
     {
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
@@ -145,14 +164,9 @@ private Q_SLOTS:
         QQuickItem *delegate = qobject_cast<QQuickItem*>(obj);
         QVERIFY(delegate);
 
-        QCOMPARE(style->bindItem(0, watchList), -1);
-        QCOMPARE(style->bindItem(boundItem, watchList), -1);
-        QCOMPARE(style->bindItem(delegate, watchList), -1);
-        style->setParent(boundItem);
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
-        QCOMPARE(style->bindItem(delegate, watchList), -1);
-        delegate->setParentItem(boundItem);
-        QCOMPARE(style->bindItem(delegate, watchList), 2);
+        QCOMPARE(style->bindItem(0, watchList, false), -1);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
+        QCOMPARE(style->bindItem(delegate, watchList, false), 2);
 
         delete delegate;
         delete style;
@@ -170,8 +184,7 @@ private Q_SLOTS:
         UCStyle *style = qobject_cast<UCStyle*>(obj);
         QVERIFY(style);
 
-        style->setParent(boundItem);
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
 
         obj = rule->delegate->create(context);
         QVERIFY(obj);
@@ -208,8 +221,8 @@ private Q_SLOTS:
         delegate->setParent(boundItem);
         delegate->setParentItem(boundItem);
 
-        QCOMPARE(style->bindItem(boundItem, watchList), 1);
-        QCOMPARE(style->bindItem(delegate, watchList), 2);
+        QCOMPARE(style->bindItem(boundItem, watchList, true), 1);
+        QCOMPARE(style->bindItem(delegate, watchList, false), 2);
 
         QVERIFY(style->unbindProperty("color"));
         QVERIFY(!style->unbindProperty("width"));

@@ -69,6 +69,7 @@ class QQuickItem;
 class UCStyle : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQuickItem *item READ item NOTIFY itemChanged)
 public:
     explicit UCStyle(QObject *parent = 0);
     ~UCStyle();
@@ -77,21 +78,27 @@ public:
     inline static bool omitProperty(const char *name)
     {
         static QString properties(
-                    "activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
+                    ",activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
                     "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
                     "resources,right,states,top,transform,transformOrigin,transitions,"
-                    "verticalCenter,visibleChildren,x,y");
+                    "verticalCenter,visibleChildren,x,y,");
         return properties.contains(QString(name).prepend(',').append(','));
     }
-    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap);
+    int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool usePropertyMap);
     bool unbindItem(QQuickItem *item);
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
+    QQuickItem *item() const;
+    void setItem(QQuickItem *item);
+
+Q_SIGNALS:
+    void itemChanged();
 
 private Q_SLOTS:
     void updateStyledItem();
     
 private:
+    QQuickItem *m_item;
     QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
 

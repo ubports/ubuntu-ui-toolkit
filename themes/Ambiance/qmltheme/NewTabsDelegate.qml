@@ -98,7 +98,7 @@ Item {
         id: tabView
         anchors.fill: parent
 
-        interactive: itemStyle.swipeToSwitchTabs
+        interactive: tabsDelegate.swipeToSwitchTabs
         model: tabsDelegate.tabModel
         onModelChanged: tabView.updatePages()
         currentIndex: item.selectedTabIndex
@@ -141,7 +141,7 @@ Item {
     onWidthChanged: tabView.updatePages();
     onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
-        item.headerContents = headerContents;
+        item.__headerContents = headerContents;
         tabView.updatePages();
     }
 }

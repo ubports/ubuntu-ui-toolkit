@@ -25,7 +25,7 @@ Item {
     property real headerHeight
     property real buttonContainerWidth
 
-    width: item.contentsWidth
+    width: MathUtils.clamp(item.contentsWidth, item.minWidth, item.maxWidth)
     height: header.height + containerItem.height
 
     property alias contentItem: containerItem
