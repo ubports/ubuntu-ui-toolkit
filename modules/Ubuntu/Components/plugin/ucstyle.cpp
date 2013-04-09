@@ -21,7 +21,6 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
-#include <private/qqmlcomponentattached_p.h>
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
@@ -46,7 +45,7 @@ UCStyle::UCStyle(QObject *parent) :
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QMutableHashIterator<QString, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
@@ -132,7 +131,7 @@ bool UCStyle::unbindItem(QQuickItem *item)
         return false;
 
     bool result = false;
-    QMutableHashIterator<QString, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         if (i.value().object() == item) {
