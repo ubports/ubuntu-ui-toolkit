@@ -68,6 +68,7 @@ Item {
      */
     property bool active: false
     onActiveChanged: {
+        print("active = "+active ) // TODO TIM: remove
         if (active) state = "spread";
         else state = "";
     }
@@ -105,7 +106,8 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                w: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.size)
+//                w: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.size)
+                w: draggingArea.mouseW - internal.movingDelta
             }
         },
         State {
@@ -200,6 +202,7 @@ Item {
         } else if (state == "") {
             panel.active = false;
         }
+//        if (panel.align === Qt.AlignLeft || panel.align === Qt.AlignTop) internal.movingDelta = -internal.movingDelta;
         internal.previousState = state;
     }
 
@@ -218,6 +221,11 @@ Item {
     //    }
 
     DraggingArea {
+        Rectangle {
+            color: "yellow"
+            anchors.fill: parent
+        }
+
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         id: draggingArea
         anchors {
@@ -265,7 +273,6 @@ Item {
 
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
-        // TODO: deal with top/right aligned panels here by swapping 44 and -44.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
                 if (panel.align === Qt.AlignBottom || panel.align === Qt.AlignRight) {
@@ -303,7 +310,9 @@ Item {
         property real w: panel.active ? 0 : size
         // TODO: deal with top or right-aligned panels here in the computation of x and y.
         y: internal.orientation === Qt.Horizontal ? w : 0
+//        x: internal.orientation === Qt.Vertical ? w : 0
         x: internal.orientation === Qt.Vertical ? w : 0
+        onWChanged: print("w = "+w)
     }
 
 }
