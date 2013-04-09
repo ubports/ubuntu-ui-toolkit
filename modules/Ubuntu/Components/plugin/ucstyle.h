@@ -20,6 +20,8 @@
 #define UCSTYLE_H
 
 #include <QtCore/QObject>
+#include <QtCore/QLatin1String>
+#include <QtCore/QSet>
 #include <QtQml/QQmlProperty>
 
 class QQmlAbstractBinding;
@@ -76,12 +78,13 @@ public:
     // these methods are supposed to be used internally by the styling
     inline static bool omitProperty(const char *name)
     {
-        static QString properties(
-                    ",activeFocus,anchors,antialiasing,baseline,baselineOffset,bottom,children,"
-                    "childrenRect,clip,data,focus,horizontalCenter,layer,left,objectName,parent,"
-                    "resources,right,states,top,transform,transformOrigin,transitions,"
-                    "verticalCenter,visibleChildren,x,y,");
-        return properties.contains(QString(name).prepend(',').append(','));
+        static QSet<QLatin1String> properties = QSet<QLatin1String>() <<
+            QLatin1String("activeFocus") << QLatin1String("anchors") << QLatin1String("antialiasing") << QLatin1String("baseline") << QLatin1String("baselineOffset") <<
+            QLatin1String("bottom") << QLatin1String("children") << QLatin1String("childrenRect") << QLatin1String("clip") << QLatin1String("data") << QLatin1String("focus") <<
+            QLatin1String("horizontalCenter") << QLatin1String("layer") << QLatin1String("left") << QLatin1String("objectName") << QLatin1String("parent") <<
+            QLatin1String("resources") << QLatin1String("right") << QLatin1String("states") << QLatin1String("top") << QLatin1String("transform") << QLatin1String("transformOrigin") <<
+            QLatin1String("transitions") << QLatin1String( "verticalCenter") << QLatin1String("visibleChildren") << QLatin1String("x") << QLatin1String("y");
+        return properties.contains(QLatin1String(name));
     }
     int bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool usePropertyMap);
     bool unbindItem(QQuickItem *item);
