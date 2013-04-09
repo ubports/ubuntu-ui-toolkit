@@ -39,8 +39,7 @@
  */
 
 UCStyle::UCStyle(QObject *parent) :
-    QObject(parent),
-    m_item(qobject_cast<QQuickItem*>(parent))
+    QObject(parent)
 {
 }
 
@@ -52,22 +51,6 @@ UCStyle::~UCStyle()
         i.next();
         unbind(i.key());
     }
-}
-
-/*!
- * \qmlproperty Item UCStyle::item
- * The property holds the instance of the component styled.
- */
-QQuickItem *UCStyle::item() const
-{
-    return m_item;
-}
-void UCStyle::setItem(QQuickItem *item)
-{
-    if (!item || m_item == item)
-        return;
-    m_item = item;
-    Q_EMIT itemChanged();
 }
 
 /*!

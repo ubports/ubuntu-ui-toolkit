@@ -69,7 +69,6 @@ class QQuickItem;
 class UCStyle : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQuickItem *item READ item NOTIFY itemChanged)
 public:
     explicit UCStyle(QObject *parent = 0);
     ~UCStyle();
@@ -88,17 +87,11 @@ public:
     bool unbindItem(QQuickItem *item);
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
-    QQuickItem *item() const;
-    void setItem(QQuickItem *item);
-
-Q_SIGNALS:
-    void itemChanged();
 
 private Q_SLOTS:
     void updateStyledItem();
     
 private:
-    QQuickItem *m_item;
     QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
 

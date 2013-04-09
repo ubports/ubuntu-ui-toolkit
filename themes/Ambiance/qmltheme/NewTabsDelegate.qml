@@ -98,7 +98,7 @@ Item {
         id: tabView
         anchors.fill: parent
 
-        interactive: tabsDelegate.swipeToSwitchTabs
+        interactive: itemStyle.swipeToSwitchTabs
         model: tabsDelegate.tabModel
         onModelChanged: tabView.updatePages()
         currentIndex: item.selectedTabIndex
