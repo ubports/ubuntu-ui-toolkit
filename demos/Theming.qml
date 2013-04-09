@@ -44,11 +44,7 @@ Template {
             Button {
                 id: button
                 text: "Call"
-                Binding {
-                    target: button.ItemStyle.style
-                    property: "color"
-                    value: "green"
-                }
+                color: "green"
             }
 
             Label {
@@ -71,10 +67,7 @@ Template {
                     text: "Button {\n"+
                           "    id: button\n"+
                           "    text: \"Call\"\n"+
-                          "    Binding {\n"+
-                          "        target: button.ItemStyle.style\n"+
-                          "        property: \"color\"\n"+
-                          "        value: \"green\"\n"+
+                          "    color: \"green\"\n"+
                           "    }\n"+
                           "}"
                 }
