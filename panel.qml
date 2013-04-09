@@ -28,7 +28,8 @@ Rectangle {
 
         Slider {
             anchors.centerIn: parent
-            width: parent.width / 2
+            width: parent.width / 1.1
+            value: 50
         }
     }
 }

@@ -52,15 +52,12 @@ Item {
       The property defines the alignment of the panel.
       The implementation supports the following values:
         \list
-        \li Qt.AlignLeft anchors to the left
-        \li Qt.AlignRight anchors to the right
-        \li Qt.AlignTop anchors to the top
-        \li Qt.AlignBottom anchors to the bottom
+        \li Qt.AlignLeft to swipe in the panel from the left
+        \li Qt.AlignRight to swipe in the panel from the right
+        \li Qt.AlignTop to swipe in the panel from the top
+        \li Qt.AlignBottom to swipe in the panel from the bottom
         \endlist
         The default value is \b Qt.AlignBottom.
-
-        By default, the panel will anchor to the specified side and fill the whole edge, but the
-        anchors of the panel may be overridden.
       */
     property int align: Qt.AlignBottom
 
@@ -101,28 +98,28 @@ Item {
             name: "hint"
             PropertyChanges {
                 target: bar
-                y: bar.height - panel.hintSize
+                w: bar.size - panel.hintSize
             }
         },
         State {
             name: "moving"
             PropertyChanges {
                 target: bar
-                y: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.height)
+                w: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.size)
             }
         },
         State {
             name: "spread"
             PropertyChanges {
                 target: bar
-                y: 0
+                w: 0
             }
         },
         State {
             name: ""
             PropertyChanges {
                 target: bar
-                y: bar.height
+                w: bar.size
                 explicit: true
             }
         }
@@ -131,15 +128,15 @@ Item {
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
-    readonly property bool animating: draggingArea.pressed || (state == "" && bar.y != bar.height) || (state == "spread" && bar.y != 0)
+    readonly property bool animating: draggingArea.pressed || (state == "" && bar.w != bar.size) || (state == "spread" && bar.w != 0)
 
     transitions: [
         Transition {
             to: ""
             PropertyAnimation {
                 target: bar
-                properties: "y"
-                duration: 50
+                properties: "w"
+                duration: 500 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -147,8 +144,8 @@ Item {
             to: "hint"
             PropertyAnimation {
                 target: bar
-                properties: "y"
-                duration: 50
+                properties: "w"
+                duration: 50 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -156,8 +153,8 @@ Item {
             to: "spread"
             PropertyAnimation {
                 target: bar
-                properties: "y"
-                duration: 50
+                properties: "w"
+                duration: 500 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
         }
@@ -195,9 +192,9 @@ Item {
 
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = panel.hintSize + draggingArea.initialY - bar.height;
+            internal.movingDelta = panel.hintSize + draggingArea.initialW - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
-            internal.movingDelta = draggingArea.initialY;
+            internal.movingDelta = draggingArea.initialW;
         } else if (state == "spread") {
             panel.active = true;
         } else if (state == "") {
@@ -240,9 +237,9 @@ Item {
             return internal.orientation === Qt.Horizontal ? mouseY : mouseX
         }
 
-        property int initialY
+        property int initialW
         onPressed: {
-            initialY = getMouseW();
+            initialW = getMouseW();
 //            mouse.accepted = false
 //            if (panel.state == "spread") mouse.accepted = false;
 //            mouse.accepted = false;
@@ -252,9 +249,9 @@ Item {
         }
 
         onPositionChanged: {
-            if (panel.state == "hint" && mouseW < initialY) {
+            if (panel.state == "hint" && mouseW < initialW) {
                 panel.state = "moving";
-            } else if (panel.state == "spread" && mouseW > initialY) {
+            } else if (panel.state == "spread" && mouseW > initialW) {
                 panel.state = "moving";
             }
         }
@@ -271,7 +268,7 @@ Item {
             } else if (draggingArea.dragVelocity > 44) {
                 panel.state = "";
             } else {
-                panel.state = (bar.y < bar.height / 2) ? "spread" : "";
+                panel.state = (bar.w < bar.size / 2) ? "spread" : "";
             }
         }
     }
@@ -287,10 +284,13 @@ Item {
             bottom: internal.orientation === Qt.Vertical ? parent.bottom : undefined
         }
 
-        property real size: units.gu(8)
+        property real size: internal.orientation === Qt.Horizontal ? height : width
 //        height: internal.orientation === Qt.Horizontal ? size : undefined
 //        width: internal.orientation === Qt.Vertical ? size : undefined
-        y: panel.active ? 0 : height
+//        y: panel.active ? 0 : height
+        property real w: panel.active ? 0 : size
+        y: internal.orientation === Qt.Horizontal ? w : 0
+        x: internal.orientation === Qt.Vertical ? w : 0
     }
 
 }
