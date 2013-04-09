@@ -45,5 +45,29 @@ Item {
             compare(mainView.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
             compare(mainView.toolbar.tools.active, false, "Toolbar is inactive initially");
         }
+
+        function test_active() {
+            compare(mainView.toolbar.tools.active, false, "Toolbar initially inactive");
+            mainView.toolbar.active = true;
+            compare(mainView.toolbar.active, true, "Toolbar can be made active");
+            mainView.toolbar.active = false;
+            compare(mainView.toolbar.active, false, "Toolbar can be made inactive");
+            page.tools.active = true;
+            compare(mainView.toolbar.active, true, "Toolbar can be made active by setting page.tools.active");
+            page.tools.active = false;
+            compare(mainView.toolbar.active, false, "Toolbar can be made inactive by setting page.tools.active to false");
+        }
+
+        function test_lock() {
+            compare(mainView.toolbar.tools.lock, false, "Toolbar initially not locked");
+            mainView.toolbar.lock = true;
+            compare(mainView.toolbar.lock, true, "Toolbar can be locked");
+            mainView.toolbar.lock = false;
+            compare(mainView.toolbar.lock, false, "Toolbar can be unlocked");
+            page.tools.lock = true;
+            compare(mainView.toolbar.lock = true, "Toolbar can be locked by setting page.tools.lock");
+            page.tools.lock = false;
+            compare(mainView.toolbar.lock = false, "Toolbar can be unlocked by setting page.tools.lock to false");
+        }
     }
 }
