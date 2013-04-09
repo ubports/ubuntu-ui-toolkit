@@ -44,10 +44,12 @@ Template {
                             Action {
                                 text: "action 1"
                                 iconSource: Qt.resolvedUrl("call_icon.png")
+                                onTriggered: print("triggered action 1")
                             }
                             Action {
                                 text: "action 2"
                                 iconSource: Qt.resolvedUrl("call_icon.png")
+                                onTriggered: print("triggered action 2")
                             }
                         }
                     }

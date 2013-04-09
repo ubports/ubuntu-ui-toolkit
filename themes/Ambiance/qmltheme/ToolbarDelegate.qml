@@ -18,6 +18,7 @@ import Ubuntu.Components 0.1
 
 Item {
     anchors.fill: parent
+    property alias contentItem: contents
 
     Rectangle {
         id: background
@@ -31,17 +32,22 @@ Item {
         opacity: StyleUtils.itemStyleProperty("opacity")
     }
 
-    Image {
-        id: dropshadow
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: background.top
-        }
-        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: item.state == "" ? 0.0 : 0.5
-        Behavior on opacity {
-            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
-        }
+    Item {
+        id: contents
+        anchors.fill: parent
     }
+
+//    Image {
+//        id: dropshadow
+//        anchors {
+//            left: parent.left
+//            right: parent.right
+//            bottom: background.top
+//        }
+//        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
+//        opacity: item.state == "" ? 0.0 : 0.5
+//        Behavior on opacity {
+//            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
+//        }
+//    }
 }

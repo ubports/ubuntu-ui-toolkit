@@ -31,11 +31,11 @@ import Ubuntu.Components 0.1 as Theming
 */
 Panel {
     id: toolbar
-    Theming.ItemStyle.class: "toolbar"
+    //    Theming.ItemStyle.class: "toolbar"
 
-    height: background.height
-    hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
-    triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
+        height: background.height
+        hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
+        triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
 
     /*!
       \preliminary
@@ -80,6 +80,8 @@ Panel {
         // All theming items go into the background because only the children
         //  of the GenericToolbar are being shown/hidden while the toolbar
         //  itself may stay in place.
+        // FIXME: I tried to put the toolbar buttons inside the background as
+        //  well, but then the delegate draws the background over the buttons.
         id: background
         anchors {
             left: parent.left
@@ -88,17 +90,27 @@ Panel {
         }
         height: units.gu(8)
 
-        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
-        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
+        // FIXME: Use theming. Currently when I enable this, the delegate
+        //  background always goes in front of all the items given below!
+        Theming.ItemStyle.class: "toolbar"
 
-        MouseArea {
-            // don't let mouse events go through the toolbar
-            anchors.fill: parent
-            // FIXME: Bug in qml? Without onClicked below, this MouseArea
-            //      seems disabled.
-            onClicked: { }
-        }
+        //        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
+        //        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
+
     }
+    Button {
+        text: "test"
+        anchors.centerIn: parent
+        onClicked: print("click!")
+    }
+
+    //        MouseArea {
+    //            // don't let mouse events go through the toolbar
+    //            anchors.fill: parent
+    //            // FIXME: Bug in qml? Without onClicked below, this MouseArea
+    //            //      seems disabled.
+    //            onClicked: { }
+    //        }
 
     Component {
         id: toolButtonComponent
@@ -154,3 +166,4 @@ Panel {
         }
     }
 }
+//}

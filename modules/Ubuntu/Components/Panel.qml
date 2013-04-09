@@ -37,7 +37,7 @@ Item {
     height: units.gu(10)
 
     Rectangle {
-        color: "green"
+        color: "red"
         opacity: 0.5
         anchors.fill: bar
     }
@@ -202,28 +202,19 @@ Item {
         internal.previousState = state;
     }
 
-    Item {
-        id: bar
-        height: parent.height
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-
-        y: panel.active ? 0 : height
-    }
-
-    Toolkit.InverseMouseArea {
-        anchors.fill: draggingArea
-        onClicked: {
-            mouse.accepted = false;
-            // the mouse click may cause an update
-            //  of lock by the clicked Item behind
-            if (!panel.lock) panel.active = false;
-        }
-        propagateComposedEvents: true
-        visible: panel.lock == false && panel.state == "spread"
-    }
+    // not working for now.
+    // TODO: link to bug report or uncomment
+//    Toolkit.InverseMouseArea {
+//        anchors.fill: draggingArea
+//        onClicked: {
+//            mouse.accepted = false;
+//            // the mouse click may cause an update
+//            //  of lock by the clicked Item behind
+//            if (!panel.lock) panel.active = false;
+//        }
+//        propagateComposedEvents: true
+//        visible: panel.lock == false && panel.state == "spread"
+//    }
 
     DraggingArea {
         orientation: Qt.Vertical
@@ -248,13 +239,18 @@ Item {
         property int initialY
         onPressed: {
             initialY = getMouseW();
+//            mouse.accepted = false
 //            if (panel.state == "spread") mouse.accepted = false;
+//            mouse.accepted = false;
             if (panel.state == "") panel.state = "hint";
-            else panel.state = "moving";
+//            else mouse.accepted = false;
+//            else panel.state = "moving";
         }
 
         onPositionChanged: {
             if (panel.state == "hint" && mouseW < initialY) {
+                panel.state = "moving";
+            } else if (panel.state == "spread" && mouseW > initialY) {
                 panel.state = "moving";
             }
         }
@@ -275,4 +271,16 @@ Item {
             }
         }
     }
+
+    Item {
+        id: bar
+        height: parent.height
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+
+        y: panel.active ? 0 : height
+    }
+
 }
