@@ -21,7 +21,6 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
-#include <private/qqmlcomponentattached_p.h>
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
@@ -39,35 +38,18 @@
  */
 
 UCStyle::UCStyle(QObject *parent) :
-    QObject(parent),
-    m_item(qobject_cast<QQuickItem*>(parent))
+    QObject(parent)
 {
 }
 
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QMutableHashIterator<QString, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
     }
-}
-
-/*!
- * \qmlproperty Item UCStyle::item
- * The property holds the instance of the component styled.
- */
-QQuickItem *UCStyle::item() const
-{
-    return m_item;
-}
-void UCStyle::setItem(QQuickItem *item)
-{
-    if (!item || m_item == item)
-        return;
-    m_item = item;
-    Q_EMIT itemChanged();
 }
 
 /*!
@@ -149,7 +131,7 @@ bool UCStyle::unbindItem(QQuickItem *item)
         return false;
 
     bool result = false;
-    QMutableHashIterator<QString, QQmlProperty> i(m_bindings);
+    QHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         if (i.value().object() == item) {

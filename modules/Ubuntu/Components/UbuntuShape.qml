@@ -132,7 +132,8 @@ Item {
        }
 
        The final value of the 'borderSource' property will be "themeSource" and not "*".
-    */    property url borderSource: "*"
+    */
+    property url borderSource: "*"
 
     /*!
       The image used to fill the shape.

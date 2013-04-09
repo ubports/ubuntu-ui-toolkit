@@ -68,7 +68,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_attacheePropertyChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_reapplyStyling(QQuickItem *))
     Q_PRIVATE_SLOT(d_func(), void _q_refreshStyle())
-    Q_PRIVATE_SLOT(d_func(), void _q_detachStyleElement(QObject *))
 };
 
 QML_DECLARE_TYPEINFO(ItemStyleAttached, QML_HAS_ATTACHED_PROPERTIES)

@@ -32,7 +32,6 @@
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
-const char *contextProperty = "_q_context";
 
 /*!
   \qmltype ItemStyle
@@ -119,6 +118,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     attachee(qobject_cast<QQuickItem*>(attached)),
     style(0),
     delegate(0),
+    componentContext(0),
     styleRule(0),
     delayApplyingStyle(true),
     customStyle(false),
@@ -133,6 +133,11 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
 
     listenThemeEngine();
 
+    if (!componentContext) {
+        componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
+        componentContext->setContextProperty(itemProperty, attachee);
+    }
+
     //enum attachee properties and watch them
     watchAttacheeProperties();
 }
@@ -142,8 +147,6 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     // remove name from the theming engine
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
-    resetDelegate();
-    resetStyle();
 }
 
 /*!
@@ -245,101 +248,50 @@ bool ItemStyleAttachedPrivate::updateStyleSelector()
 
 bool ItemStyleAttachedPrivate::updateStyle()
 {
-    Q_Q(ItemStyleAttached);
     bool result = false;
     // do not do anything till the component gets complete?
     if (delayApplyingStyle)
        return result;
 
+    resetStyle();
     if (!customStyle) {
         // make sure we have a theme
         if (styleRule && styleRule->style) {
-            // split component instantiation so we can set the item property before
-            // the bindings and component completion
-            QQmlContext *context = new QQmlContext(qmlContext(attachee));
-            QObject *obj = styleRule->style->beginCreate(context);
-            if (obj) {
-                style = qobject_cast<UCStyle*>(obj);
-                if (!style) {
-                    qmlInfo(q) << "Invalid style object for " << styleRule->selector().toString();
-                    delete obj;
-                } else {
-                    style->setItem(attachee);
-                    styleRule->style->completeCreate();
-                    // hook context to delegate so we can carry with it in case
-                    // the delegate is moved to other item
-                    style->setProperty(contextProperty, QVariant::fromValue(context));
-                }
-            }
+            QObject *obj = styleRule->style->create(componentContext);
+            style = qobject_cast<UCStyle*>(obj);
+            if (!style)
+                delete obj;
             result = (style != 0);
         }
-    } else {
+    } else
         result = true;
-        if (style) {
-            // steal style from previous styled item
-            QQuickItem *prevParent = qobject_cast<QQuickItem*>(style->item());
-            ItemStyleAttached *itemStyle = ThemeEnginePrivate::attachedStyle(prevParent);
-            if (itemStyle) {
-                itemStyle->d_ptr->detachStyle();
-                itemStyle->d_ptr->style = 0;
-                // this is not a custom style object anymore, as it has been removed
-                // from the previous owner
-                customStyle = false;
-            }
-            style->setItem(attachee);
-        }
-    }
 
     // reparent also custom styles!
     if (result && style) {
         style->bindItem(attachee, watchedProperties, true);
         style->bindItem(delegate, watchedProperties, false);
+        componentContext->setContextProperty(styleProperty, style);
     }
     return result;
 }
 
 bool ItemStyleAttachedPrivate::updateDelegate()
 {
-    Q_Q(ItemStyleAttached);
     bool result = false;
     // do not do anything till the component gets complete?
     if (delayApplyingStyle)
        return result;
 
+    // delete delegate as the function can be called from elsewhere than updateCurrentStyle
+    resetDelegate();
     if (!customDelegate) {
         // make sure we have a theme
         if (styleRule && styleRule->delegate) {
-            QQmlContext *context = new QQmlContext(qmlContext(attachee));
-            context->setContextProperty(itemProperty, attachee);
-            QObject *object = styleRule->delegate->create(context);
-            delegate = qobject_cast<QQuickItem*>(object);
-            if (!delegate) {
-                qmlInfo(q) << "Invalid delegate object for " << styleRule->selector().toString();
-                delete object;
-            } else {
-                delegate->setParent(attachee);
-                // hook context to delegate so we can carry with it in case
-                // the delegate is moved to other item
-                delegate->setProperty(contextProperty, QVariant::fromValue(context));
-            }
+            delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(componentContext));
             result = (delegate != 0);
         }
-    } else {
-        QQuickItem *prevParent = qobject_cast<QQuickItem*>(style->item());
-        ItemStyleAttached *itemStyle = ThemeEnginePrivate::attachedStyle(prevParent);
-        if (itemStyle) {
-            // FIXME if the custom delegate belongs to an other styled item, detach
-            // the delegate from it as an item can have only one parent item. This
-            // is not yet doable as Toolbar gets broken. Yet just watch for the delegate
-            // deletion
-            QObject::connect(delegate, SIGNAL(destroyed(QObject*)), q, SLOT(_q_detachStyleElement(QObject*)));
-            // update delegate's "item" context property
-            QQmlContext *context = delegate->property(contextProperty).value<QQmlContext*>();
-            if (context)
-                context->setContextProperty(itemProperty, attachee);
-        }
+    } else
         result = true;
-    }
 
     if (delegate && ((delegate->parent() != attachee) || (delegate->parentItem() != attachee))) {
         delegate->setParent(attachee);
@@ -381,34 +333,14 @@ void ItemStyleAttachedPrivate::updateCurrentStyle()
     }
 }
 
-void ItemStyleAttachedPrivate::detachStyle()
-{
-    if (!style)
-        return;
-    style->unbindItem(attachee);
-    style->unbindItem(delegate);
-}
-
-void ItemStyleAttachedPrivate::detachDelegate()
-{
-    if (!delegate)
-        return;
-    if (style)
-        style->unbindItem(delegate);
-    delegate->setParentItem(0);
-    delegate->setParent(0);
-}
-
 void ItemStyleAttachedPrivate::resetStyle()
 {
-    // clear bindings, disconnect as properties may change before the style
-    // is deleted
-    detachStyle();
     if (style && !customStyle) {
-        // must delay object deletion due to crashes in gallery
-        QObject *context = style->property(contextProperty).value<QObject*>();
-        if (context)
-            context->deleteLater();
+        // clear bindings, disconnect as properties may change before the style
+        // is deleted
+        style->unbindItem(delegate);
+        style->unbindItem(attachee);
+        style->setParent(0);
         style->deleteLater();
         style = 0;
     }
@@ -416,13 +348,12 @@ void ItemStyleAttachedPrivate::resetStyle()
 
 void ItemStyleAttachedPrivate::resetDelegate()
 {
-    // remove all bindings between style and delegate
-    detachDelegate();
     if (delegate && !customDelegate) {
-        // must delay delegate deletion due to crashes in gallery
-        QObject *context = delegate->property(contextProperty).value<QObject*>();
-        if (context)
-            context->deleteLater();
+        // remove all bindings between style and delegate
+        if (style)
+            style->unbindItem(delegate);
+        delegate->setParent(0);
+        delegate->setParentItem(0);
         delegate->deleteLater();
         delegate = 0;
     }
@@ -522,14 +453,6 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
     applyStyleOnChildren(attachee);
-}
-
-void ItemStyleAttachedPrivate::_q_detachStyleElement(QObject *object)
-{
-    if (object == style)
-        style = 0;
-    if (object == delegate)
-        delegate = 0;
 }
 
 /*==============================================================================
@@ -655,8 +578,14 @@ void ItemStyleAttached::setStyle(UCStyle *style)
     Q_D(ItemStyleAttached);
     if (d->style != style) {
         // clear the previous style
-        d->resetStyle();
-
+        if (d->style) {
+            d->style->unbindItem(d->delegate);
+            d->style->unbindItem(d->attachee);
+        }
+        if (!d->customStyle && d->style) {
+            d->style->deleteLater();
+            d->style = 0;
+        }
         d->customStyle = (style != 0);
         if (d->customStyle && d->customDelegate)
             d->styleRule = 0;
@@ -695,9 +624,13 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
+        if (d->style)
+            d->style->unbindItem(d->delegate);
         // clear the previous theme delegate
-        d->resetDelegate();
-
+        if (!d->customDelegate && d->delegate) {
+            d->delegate->setVisible(false);
+            d->delegate->deleteLater();
+        }
         d->customDelegate = (delegate != 0);
         d->delegate = delegate;
         d->listenThemeEngine();

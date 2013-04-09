@@ -133,7 +133,7 @@ Item {
         property Header header: item
         Loader {
             id: contentsLoader
-            sourceComponent: foreground.header.contents
+            sourceComponent: header.contents
             anchors.fill: parent
         }
     }
