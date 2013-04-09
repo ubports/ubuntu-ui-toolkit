@@ -65,7 +65,6 @@ Template {
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
                     text: "Button {\n"+
-                          "    id: button\n"+
                           "    text: \"Call\"\n"+
                           "    color: \"green\"\n"+
                           "}"
