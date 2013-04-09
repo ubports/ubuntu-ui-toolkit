@@ -15,4 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-/usr/lib/*/qt5/bin/qdoc ubuntu-ui-toolkit-online.qdocconf
+QDOCCONF_FILE=ubuntu-ui-toolkit-online.qdocconf
+QDOC_BIN=/usr/lib/*/qt5/bin/qdoc
+
+sed "s|documentation/||" < $QDOCCONF_FILE > $QDOCCONF_FILE.tmp
+$QDOC_BIN $QDOCCONF_FILE.tmp
+rm $QDOCCONF_FILE.tmp
