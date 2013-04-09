@@ -68,7 +68,6 @@ Template {
                           "    id: button\n"+
                           "    text: \"Call\"\n"+
                           "    color: \"green\"\n"+
-                          "    }\n"+
                           "}"
                 }
             }
