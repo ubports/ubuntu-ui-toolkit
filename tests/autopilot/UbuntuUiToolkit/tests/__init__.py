@@ -47,14 +47,14 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
             self.addCleanup(remove, qml_path)
 
             self.app = self.launch_test_application(
-                "qmlscene",
+                "/usr/lib/*/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
                 qml_path)
 
         if hasattr(self, 'test_qml_file') and isinstance(self.test_qml_file, basestring):
             qml_path = self.test_qml_file
             self.app = self.launch_test_application(
-                "qmlscene",
+                "/usr/lib/*/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
                 qml_path)
 

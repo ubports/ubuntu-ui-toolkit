@@ -22,24 +22,106 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1 as Theming
 
 /*!
-    \qmltype ApplicationWindow
+    \qmltype MainView
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The root Item for all applications
+    \brief MainView is the root Item that should be used for all applications.
+        It automatically adds a header and toolbar for its contents.
 
-    \b{This component is under heavy development.}
-
-    Examples:
+    The simplest way to use a MainView is to include a \l Page object inside the MainView:
     \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
         MainView {
-            Button {
-                anchors.centerIn: parent
-                text: "Click me"
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Simple page"
+                Button {
+                    anchors.centerIn: parent
+                    text: "Push me"
+                    width: units.gu(15)
+                    onClicked: print("Click!")
+                }
             }
         }
     \endqml
+    It is not required to set the anchors of the \l Page as it will automatically fill its parent.
+    The MainView has a header that automatically shows the title of the \l Page.
+    If the \l Page inside the MainView includes a Flickable with enough contents for scrolling, the header
+    will automatically hide and show when the user scrolls up or down:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Page with Flickable"
+
+                Flickable {
+                    anchors.fill: parent
+                    contentHeight: column.height
+
+                    Column {
+                        id: column
+                        Repeater {
+                            model: 100
+                            Label {
+                                text: "line "+index
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    \endqml
+    The same header behavior is automatic when using a ListView instead of a Flickable in the above
+    example.
+
+    A toolbar can be added to the application by setting the tools property of the \l Page:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Page title"
+                Rectangle {
+                    id: rectangle
+                    anchors.centerIn: parent
+                    width: units.gu(20)
+                    height: units.gu(20)
+                    color: "blue"
+                }
+
+                tools: ToolbarActions {
+                    Action {
+                        text: "red"
+                        onTriggered: rectangle.color = "red"
+                    }
+                    Action {
+                        text: "green"
+                        onTriggered: rectangle.color = "green"
+                    }
+                }
+            }
+        }
+    \endqml
+    The toolbar is hidden by default, but will be made visible when the user performs a bottom-edge-swipe gesture, and
+    hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
+    The examples above show how to include a single \l Page inside a MainView, but more advanced application
+    structures are possible using \l PageStack and \l Tabs.
+    See \l ToolbarActions for details on how to to control the behavior and contents of the toolbar.
 */
-Item {
+PageTreeNode {
     id: mainView
 
     /*!
@@ -49,32 +131,22 @@ Item {
       */
     property string applicationName
 
-    // FIXME: any use of theming some times hides the children of the MainView,
-    //  so it is disabled for now. Make the background themable again after
-    //  this issue is resolved, and make sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076
-    //  does not come back
-    // FIXME: see FIXME above
-    //Theming.ItemStyle.class: "mainview"
-
-    /*!
-      \internal
-      FIXME: Make background themable.
-     */
-    Rectangle {
+    // FIXME: Make sure that the theming is only in the background, and the delegate
+    //  should not occlude contents of the MainView. When making changes here, make
+    //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
+    Item {
+        id: background
+        Theming.ItemStyle.class: "mainview"
         anchors.fill: parent
-        color: "#ededf0"
     }
-
-    /*!
-      \preliminary
-      The list of actions that will be placed on the toolbar of the application.
-     */
-    // TODO: Assign the list of actions automatically if the first child of MainView
-    //  is an instance of Tabs, PageStack or Page.
-    property alias tools: toolbar.tools
 
     // clip if the MainView is not fullscreen
     clip: true
+
+    /*!
+      MainView is active by default.
+     */
+    active: true
 
     /*!
       \internal
@@ -86,21 +158,32 @@ Item {
         anchors.fill: parent
     }
 
-    Toolbar {
-        id: toolbar
-        tools: getTools()
+    /*!
+      \deprecated
+      The tools of the main view's toolbar.
+      This property is deprecated. Pages will now automatically update the toolbar when activated.
+     */
+    property ToolbarActions tools: null
+    /*!
+      \internal
+      \deprecated
+     */
+    onToolsChanged: print("MainView.tools property was deprecated. "+
+                          "Pages will automatically update the toolbar when activated. "+
+                          "See CHANGES file, and use toolbar.tools instead when needed.");
 
-        function getTools() {
-            if (contents.children.length < 1) return null;
-            if (!contents.children[0].hasOwnProperty("tools")) return null;
-            var tools = contents.children[0].tools;
-            if (!tools) return null;
-            if (!tools.hasOwnProperty("back")) return null;
-            if (!tools.hasOwnProperty("__pageStack")) return null;
-            if (!tools.hasOwnProperty("active")) return null;
-            if (!tools.hasOwnProperty("lock")) return null;
-            return tools;
-        }
+    /*!
+      The header of the MainView. Can be used to obtain the height of the header
+      in \l Page to determine the area for the \l Page to fill.
+     */
+    header: headerItem
+    Header {
+        id: headerItem
+    }
+
+    toolbar: toolbarItem
+    Toolbar {
+        id: toolbarItem
     }
 
     /*! \internal */

@@ -18,21 +18,63 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
 
-TestCase {
-     name: "PageAPI"
+Item {
+    width: 200
+    height: 200
 
-     function test_title() {
-         compare(page.title,"","is not set by default")
-         var newTitle = "Hello World!"
-         page.title = newTitle
-         compare(page.title,newTitle,"can set/get")
-     }
+    MainView {
+        anchors.fill: parent
+        id: mainView
+        Page {
+            id: page
+        }
+    }
 
-     function test_pageStack() {
-         compare(page.pageStack,null,"is not set by default")
-     }
+    TestCase {
+        name: "PageAPI"
+        when: windowShown
 
-     Page {
-         id: page
-     }
+        function initTestCase() {
+            compare(page.title, "", "is not set by default")
+            compare(page.header, mainView.header, "page header equals mainView header")
+            compare(page.header.title, page.title, "header title is same as page title")
+            compare(page.header.visible, false, "header is not visible initially because there is no title")
+        }
+
+        function test_0_noHeader_bug1162028_bug1161910() {
+            compare(mainView.header.title, "", "no header title by default")
+            compare(mainView.header.visible, false, "header is hidden when title is not set")
+            compare(page.height, mainView.height, "page uses full height when there is no header")
+        }
+
+        function test_title() {
+            var newTitle = "Hello World!"
+            page.title = newTitle
+            compare(page.title, newTitle, "can set/get")
+            page.title = ""
+            compare(page.title, "", "can unset")
+        }
+
+        function test_header() {
+            var newTitle = "Hello header!"
+            page.title = newTitle
+            compare(mainView.header.title, newTitle, "header title updated by changing page title")
+            compare(mainView.header.visible, true, "header is visible when title is set")
+            page.title = ""
+            compare(mainView.header.title, "", "header title unset by unsetting page title")
+            compare(mainView.header.visible, false, "header is hidden when title is unset")
+        }
+
+        function test_tools() {
+            compare(mainView.toolbar.tools, page.tools, "Page updates toolbar tools");
+        }
+
+        function test_active() {
+            compare(page.active, true, "Page is active by default");
+        }
+
+        function test_pageStack() {
+            compare(page.pageStack, null, "is not set by default")
+        }
+    }
 }

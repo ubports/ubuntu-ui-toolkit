@@ -1,18 +1,17 @@
 /*
- * Copyright (C) 2013 Canonical Ltd
+ * Copyright (C) 2013 Canonical Ltd.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3 as
- * published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 import QtQuick 2.0
@@ -42,7 +41,7 @@ GenericToolbar {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools
+    property ToolbarActions tools: null
     onToolsChanged: {
         if (tools && tools.active && tools.lock) {
             // toolbar is locked in visible state.
@@ -106,11 +105,11 @@ GenericToolbar {
         Button {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            text: action.text
-            iconSource: action.iconSource ? action.iconSource : ""
+            text: action && action.text ? action.text : ""
+            iconSource: action && action.iconSource ? action.iconSource : ""
             onClicked: action.triggered(toolButton)
-            enabled: action.enabled
-            visible: action.visible
+            enabled: action && action.enabled
+            visible: action && action.visible
             width: visible ? implicitWidth : 0
             height: toolbar.height
         }
@@ -119,7 +118,7 @@ GenericToolbar {
     Loader {
         id: backButton
         property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action && action.itemHint ? action.itemHint : toolButtonComponent
+        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
         anchors {
             left: parent.left
             leftMargin: units.gu(2)

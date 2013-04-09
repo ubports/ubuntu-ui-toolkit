@@ -22,66 +22,41 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief Component to represent a single tab in a \l Tabs environment.
 
-    \b{This component is under heavy development.}
-
     Examples: See \l Tabs.
 */
-Item {
+PageTreeNode {
     id: tab
 
     anchors.fill: parent ? parent : undefined
 
     /*!
-      \preliminary
-      The title that is shown on the tab button used to select this tab (optional).
-      Either title or \l iconSource, or both must be defined.
+      The title that is shown on the tab button used to select this tab.
      */
     property string title
 
     /*!
       \preliminary
+      \deprecated
       The location of the icon that is displayed inside the button used to select this tab (optional).
       Either \l title or iconSource, or both must be defined.
+      Deprecated because our new tab buttons in the header do not display an icon.
      */
     property url iconSource
 
     /*!
-      \preliminary
-      The contents of the page. This can also be a string referring to a qml file.
-      Deactivate the Tab before changing the page, to ensure proper destruction of the
-      old page object first, if needed.
+      The contents of the page. Use a \l Page or a Loader that loads an external \l Page.
      */
-    property alias page: pageWrapper.reference
+    property Item page: null
 
     /*!
-      \preliminary
-      Depending on the theme, \l Tabs can have a header that is automatically hidden
-      by scrolling down in the Tab's flickable. To disable this behavior for a Tab, set
-      autoHideTabBar to false.
+      When page is updated, set its parent to be tab.
      */
-    property bool autoHideTabBar: true
+    onPageChanged: if (page) page.parent = tab
 
     /*!
-      \internal
-      If the page is flickable, __flickable refers to the page, otherwise it refers to the first
-      of the children that is flickable, or null if none of the children is flickable.
+      The tab is active when it is the selected tab of its parent Tabs item.
+      Setting tab to active will automatically make child nodes active.
      */
-    readonly property Flickable __flickable: pageWrapper.flickable
-
-    /*!
-      \internal
-      Specifies whether this tab is the active one. Automatically updated by \l Tabs.
-    */
-    property alias __active: pageWrapper.active
-
-    /*!
-      \internal
-      The actual page object.
-     */
-    property alias __pageObject: pageWrapper.object
-
-    PageWrapper {
-        id: pageWrapper
-        parent: tab
-    }
+    active: parentNode && parentNode.active &&
+            parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 }

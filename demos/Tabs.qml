@@ -27,99 +27,43 @@ Template {
     MainView {
         Tabs {
             id: tabs
-            anchors.fill: parent
             Tab {
-                title: i18n.tr("Flickable")
-                page: Item {
-                    anchors.fill: parent
-
-                    Flickable {
-                        id: flickable
-                        clip: true
-                        anchors.fill: parent
-                        contentHeight: column.height
-                        contentWidth: parent.width
-                        flickableDirection: Flickable.VerticalFlick
-
-                        Column {
-                            id: column
-                            width: parent.width
-                            height: childrenRect.height
-
-                            Label {
-                                text: "\n\n\n\n\n\n\n\n\n\n" +
-                                      i18n.tr("This is the first tab.") +
-                                      "\n\n\n\n\n\n\n\n\n\n\n\n(" +
-                                      i18n.tr("scroll down") + ")\n\n\n"
-                                width: parent.width
-                                horizontalAlignment: Text.AlignHCenter
-                            }
-
-                            Repeater {
-                                model: 20
-                                Label {
-                                    text: "Lorem ipsum dolor sit amet, platea est tincidunt nunc, commodo odio elit."
-                                    width: parent.width
-                                    horizontalAlignment: Text.AlignHCenter
-                                }
-                            }
-
-                            Label {
-                                text: "\n\n\n" + i18n.tr("The end.")
-                                width: parent.width
-                                horizontalAlignment: Text.AlignHCenter
-                            }
-                        }
-                    }
-                }
-            }
-            Tab {
-                iconSource: "call_icon.png"
-                title: i18n.tr("Buttons")
-                page: Rectangle {
-                    anchors.fill: parent
-                    color: "tan"
-                    Row {
+                title: i18n.tr("Simple page")
+                page: Page {
+                    Label {
+                        id: label
                         anchors.centerIn: parent
-                        Button {
-                            width: units.gu(20)
-                            text: i18n.tr("Go to previous tab")
-                            onClicked: tabs.selectedTabIndex--
-                        }
-                        Button {
-                            width: units.gu(20)
-                            text: i18n.tr("Go to next tab")
-                            onClicked: tabs.selectedTabIndex++
-                        }
+                        text: "A centered label"
                     }
-
-                    property ToolbarActions tools: ToolbarActions {
+                    tools: ToolbarActions {
                         Action {
-                            text: "Forward"
-                            iconSource: Qt.resolvedUrl("small_avatar.png")
-                            onTriggered: tabs.selectedTabIndex++
-                        }
-                        back {
-                            visible: true
-                            onTriggered: tabs.selectedTabIndex--
+                            text: "action"
+                            onTriggered: print("action triggered")
                         }
                     }
                 }
             }
             Tab {
+                id: externalTab
                 title: i18n.tr("External")
                 iconSource: "call_icon.png"
-                page: Qt.resolvedUrl("MyCustomPage.qml")
+                page: Loader {
+                    parent: externalTab
+                    anchors.fill: parent
+                    source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
+                }
             }
             Tab {
                 title: i18n.tr("List view")
-                page: ListView {
-                    clip: true
-                    anchors.fill: parent
-                    model: 20
-                    delegate: ListItem.Standard {
-                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
-                        text: "Item "+modelData
+                page: Page {
+                    ListView {
+                        clip: true
+                        anchors.fill: parent
+                        model: 20
+                        delegate: ListItem.Standard {
+                            icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                            text: "Item "+modelData
+                        }
                     }
                 }
             }

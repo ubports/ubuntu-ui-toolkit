@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Exec=/usr/lib/qt-components-ubuntu/demos/launch_componentshowcase_phone
-Path=/usr/lib/qt-components-ubuntu/
+Exec=/usr/lib/ubuntu-ui-toolkit/demos/launch_componentshowcase_phone
+Path=/usr/lib/ubuntu-ui-toolkit/
 Name=Qt Components for Ubuntu - Phone Component Showcase
 GenericName=Qt Components for Ubuntu phone component showcase application
-Icon=/usr/lib/qt-components-ubuntu/demos/call_icon.png
+Icon=/usr/lib/ubuntu-ui-toolkit/demos/call_icon.png
 Terminal=false
 

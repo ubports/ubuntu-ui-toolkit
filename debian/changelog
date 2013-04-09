@@ -1,234 +1,65 @@
-qt-components-ubuntu (0.1.36) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.40) raring; urgency=low
 
-  * New release
-  * Bug fixed: HUD integration to the MainView 
+  * Improve header and toolbar documentation for MainView/Page/PageStack/Tabs.
+  * Fix bug in header (hide it when the header is empty) 
 
- -- Tim Peeters <tim.peeters@canonical.com>  Tue, 19 Feb 2013 20:54:40 +0100
+ -- Tim Peeters <tim.peeters@canonical.com>  Fri, 05 Apr 2013 15:12:25 +0200
 
-qt-components-ubuntu (0.1.35) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.39) quantal; urgency=low
 
-  * New release 
-  * SDK now depends on libqt5graphicaleffects5 for dropshadow of Popovers
-  * Bugs fixed
-    Theming-related:
-    - [POPOVER] is themed in correctly
-    - [TOOLKIT] Activity indicator is themed incorrectly
-    - [TOOLKIT] dialogue is themed incorrectly
-    Toolbar-related:
-    - [sdk-toolbar] share button in on gallery image does not function on the first button press
-    - Sharing after post/cancel is not possible
-    - [sdk-toolbar] after tap to dismiss toolbar doesn't work
-    - [sdk] toolbar trigger area too big
-    - when first showing the toolbar after opening a photo, it shows the toolbar buttons for the overview, not for the current photo
-    Other:
-    - [HUD, OSK] OSK doesn't focus on input field
-    - Popover sometimes not dismissed
+  * New Icon component that displays icons from the icon theme.
+  * Added libqt5svg5 as a dependency thus allowing use of SVGs in icon themes.
 
- -- Tim Peeters <tim.peeters@canonical.com>  Mon, 18 Feb 2013 19:14:44 +0100
+ -- Florian Boucault <florian.boucault@canonical.com>  Mon, 01 Apr 2013 10:03:49 -0300
 
-qt-components-ubuntu (0.1.34) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.38) quantal; urgency=low
 
-  * New release 
+  * Fix bug in list items. 
 
- -- Tim Peeters <tim.peeters@canonical.com>  Thu, 14 Feb 2013 21:42:21 +0100
+ -- Tim Peeters <tim.peeters@canonical.com>  Thu, 21 Mar 2013 19:25:15 +0100
 
-qt-components-ubuntu (0.1.33) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.37) raring; urgency=low
 
-  * New release 
+  * Compatibility Breaks
+    - Page, PageStack and Tabs automatically determine their anchors and height
+      inside a MainView, so there is no need to set them explicitly.
+    - It is now recommended to always use Pages inside Tabs or PageStack.
+      Non-Page items can still be used, but their margins will not automatically
+      be set-up to align with the header of the MainView.
+  * API Changes (LP: #1157191)
+    - Property tools was deprecated for MainView, Tabs and PageStack. Pages now automatically
+      update MainView.toolbar.tools when they become active.
+    - Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
+      Use a Loader if you were using a URL first.
 
- -- Tim Peeters <tim.peeters@canonical.com>  Wed, 13 Feb 2013 23:44:39 +0100
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 20 Mar 2013 19:15:08 +0100
 
-qt-components-ubuntu (0.1.32) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu2) raring; urgency=low
 
-  * New release 
+  * debian/control
+    - libqt5v8-5-dev only supports amd64, i386 and armhf so setting
+      Architecture to just those
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 12 Feb 2013 14:21:29 +0200
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 20 Mar 2013 12:44:41 -0400
 
-qt-components-ubuntu (0.1.31) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) raring; urgency=low
 
-  * New release 
+  * New snapshot release (LP: #1157191)
+  * Add more recommended packages
+  * Co-exist better with PPAs
 
- -- Tim Peeters <tim.peeters@canonical.com>  Thu, 07 Feb 2013 17:13:56 +0100
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 13 Mar 2013 11:21:06 +0200
 
-qt-components-ubuntu (0.1.30) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.36.1-0ubuntu1) raring; urgency=low
 
-  * New release
+  * debian/control:
+    - drop qtpim5-dev dep on the metapackage, not supported upstream and not
+      in distro
 
- -- Tim Peeters <tim.peeters@canonical.com>  Wed, 06 Feb 2013 18:11:51 +0100
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 27 Feb 2013 10:19:43 +0100
 
-qt-components-ubuntu (0.1.28) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.36-0ubuntu1) raring; urgency=low
 
-  * New release 
+  * Initial release 
 
- -- Tim Peeters <tim.peeters@canonical.com>  Tue, 05 Feb 2013 19:20:20 +0100
-
-qt-components-ubuntu (0.1.27) quantal; urgency=low
-
-  * New release
-
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 30 Jan 2013 20:56:23 +0200
-
-qt-components-ubuntu (0.1.26) quantal; urgency=low
-
-  * New release
-
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 15 Jan 2013 10:23:18 -0800
-
-qt-components-ubuntu (0.1.25) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 08 Jan 2013 18:46:47 +0000
-
-qt-components-ubuntu (0.1.24) quantal; urgency=low
-
-  * New release 
-
- -- Tim Peeters <tim.peeters@canonical.com>  Fri, 21 Dec 2012 10:37:23 +0100
-
-qt-components-ubuntu (0.1.23) quantal; urgency=low
-
-  * New release 
-
- -- Tim Peeters <tim.peeters@canonical.com>  Mon, 17 Dec 2012 21:29:03 +0100
-
-qt-components-ubuntu (0.1.22) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 14 Dec 2012 18:19:54 +0000
-
-qt-components-ubuntu (0.1.21) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 11 Dec 2012 20:45:49 +0000
-
-qt-components-ubuntu (0.1.20) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Mon, 10 Dec 2012 18:44:27 +0000
-
-qt-components-ubuntu (0.1.19) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 07 Dec 2012 18:42:25 +0000
-
-qt-components-ubuntu (0.1.18) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 06 Dec 2012 17:57:34 +0000
-
-qt-components-ubuntu (0.1.17) quantal; urgency=low
-
-  * New release 
-
- -- Tim Peeters <tim.peeters@canonical.com>  Thu, 06 Dec 2012 15:49:25 +0000
-
-qt-components-ubuntu (0.1.16) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Sat, 01 Dec 2012 01:22:43 +0000
-
-qt-components-ubuntu (0.1.15) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 30 Nov 2012 00:38:31 +0000
-
-qt-components-ubuntu (0.1.14) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 28 Nov 2012 20:28:17 +0000
-
-qt-components-ubuntu (0.1.13) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Mon, 26 Nov 2012 18:07:06 +0000
-
-qt-components-ubuntu (0.1.12) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 23 Nov 2012 18:38:58 +0000
-
-qt-components-ubuntu (0.1.11) quantal; urgency=low
-
-  * Daily release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 22 Nov 2012 09:34:17 +0000
-
-qt-components-ubuntu (0.1.10) quantal; urgency=low
-
-  * Daily release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 23:54:28 +0000
-
-qt-components-ubuntu (0.1.9) quantal; urgency=low
-
-  * Daily release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 14:33:06 +0000
-
-qt-components-ubuntu (0.1.8) quantal; urgency=low
-
-  * Daily release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 13:14:07 +0000
-
-qt-components-ubuntu (0.1.7) quantal; urgency=low
-
-  * New release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 21 Nov 2012 01:02:57 +0000
-
-qt-components-ubuntu (0.1.6) quantal; urgency=low
-
-  * Daily release
-
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 20 Nov 2012 17:43:40 +0000
-
-qt-components-ubuntu (0.1.5) quantal; urgency=low
-
-  * Add qt-components-ubuntu-doc package containing HTML generated documentation
-  * Move demos from usr/lib/ubuntu-demos/uitk/demos to usr/lib/qt-components-ubuntu/demos
-
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 01 Nov 2012 10:35:21 +0100
-
-qt-components-ubuntu (0.1.4) quantal; urgency=low
-
-  * Version bump
-
- -- Ricardo Mendoza <ricardo.mendoza@canonical.com>  Tue, 16 Oct 2012 19:49:26 +0000
-
-qt-components-ubuntu (0.1.3) quantal; urgency=low
-
-  * Rebuild for armhf
-
- -- Ricardo Mendoza <ricardo.mendoza@canonical.com>  Thu, 11 Oct 2012 14:42:20 -0430
-
-qt-components-ubuntu (0.1.2) quantal; urgency=low
-
-  * Bump version number
-
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 11 Oct 2012 18:25:40 +0100
-
-qt-components-ubuntu (0.1.1) quantal; urgency=low
-
-  * Ported to Qt 5.0 and QtQuick 2.0.
-  * Install QML plugin in usr/lib/*/qt5/imports 
-  * Prepend /opt/qt5/bin to PATH so that Qt5's qmake is used instead of Qt4's
-
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 03 Oct 2012 12:08:21 +0100
-
-qt-components-ubuntu (0.1) unstable; urgency=low
-
-  * Initial release
-
- -- Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>  Wed, 01 Aug 2012 11:39:58 -0400
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Tue, 26 Feb 2013 09:52:05 +0200

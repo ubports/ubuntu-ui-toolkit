@@ -24,60 +24,98 @@ import "stack.js" as Stack
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
         The page on top of the stack is the visible one.
-        Any non-Page Item that you want to use with PageStack should be created
-        with its visible property set to false.
+
+    PageStack should be used inside a \l MainView in order to automatically add
+    a header and toolbar to control the stack. The PageStack will automatically
+    set the header title to the title of the \l Page that is currently on top
+    of the stack, and the tools of the toolbar to the tools of the \l Page on top
+    of the stack. When more than one Pages are on the stack, the toolbar will
+    automatically feature a back-button that pop the stack when triggered.
+
+    Pages that are defined inside the PageStack must initially set their visibility
+    to false to avoid the pages occluding the PageStack before they are pushed.
+    When pushing a \l Page, its visibility is automatically updated.
 
     Example:
     \qml
+        import QtQuick 2.0
         import Ubuntu.Components 0.1
         import Ubuntu.Components.ListItems 0.1 as ListItem
 
-        PageStack {
-            id: pageStack
-            anchors.fill: parent
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
 
-            Component.onCompleted: pageStack.push(page0)
+            PageStack {
+                id: pageStack
+                Component.onCompleted: push(page0)
 
-            Page {
-                id: page0
-                title: "Root page"
-                anchors.fill: parent
+                Page {
+                    id: page0
+                    title: i18n.tr("Root page")
+                    visible: false
 
-                Column {
-                    anchors.fill: parent
-                    ListItem.Standard {
-                        text: "Page one"
-                        onClicked: pageStack.push(rect, {color: "red"})
-                        progression: true
+                    Column {
+                        anchors.fill: parent
+                        ListItem.Standard {
+                            text: i18n.tr("Page one")
+                            onClicked: pageStack.push(page1, {color: "red"})
+                            progression: true
+                        }
+                        ListItem.Standard {
+                            text: i18n.tr("External page")
+                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                            progression: true
+                        }
                     }
-                    ListItem.Standard {
-                        text: "Page two (external)"
-                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                        progression: true
+                }
+
+                Page {
+                    title: "Rectangle"
+                    id: page1
+                    visible: false
+                    property alias color: rectangle.color
+                    Rectangle {
+                        id: rectangle
+                        anchors {
+                            fill: parent
+                            margins: units.gu(5)
+                        }
                     }
                 }
             }
-
-            Rectangle {
-                id: rect
-                anchors.fill: parent
-                visible: false
-            }
         }
     \endqml
+    As shown in the example above, the push() function can take an Item, Component or URL as input.
 */
 
-Item {
+PageTreeNode {
     id: pageStack
+    anchors.fill: parent
 
     /*!
       \internal
-      Show a header bar at the top of the page stack which shows a back button
-      to pop the top, and the title of the current page on top.
+      Please do not use this property any more. \l MainView now has a header
+      property that controls when the header is shown/hidden.
      */
-    // TODO: Decide on our approach to Toolbars. For now, we always show a
-    // header toolbar, but it is not part of the public API.
-    property alias __showHeader: header.visible
+    property bool __showHeader: true
+    QtObject {
+        property alias showHeader: pageStack.__showHeader
+        onShowHeaderChanged: print("__showHeader is deprecated. Do not use it.")
+    }
+
+    /*!
+      \deprecated
+      This property is deprecated. Pages will now automatically update the toolbar when activated.
+     */
+    property ToolbarActions tools: null
+    /*!
+      \deprecated
+      \internal
+     */
+    onToolsChanged: print("MainView.tools property was deprecated. "+
+                          "Pages will automatically update the toolbar when activated. "+
+                          "See CHANGES file, and use toolbar.tools instead when needed.");
 
     /*!
       \preliminary
@@ -91,58 +129,18 @@ Item {
       \preliminary
       The currently active page
      */
-    property Item currentPage
-
-    /*!
-      \internal
-      The instance of the stack from javascript
-     */
-    property var stack: new Stack.Stack()
-
-    /*!
-      The tools of currentPage. If the current page does not define tools,
-      a default set of tools is used consisting of only a back button that is
-      visible when depth > 1.
-     */
-    property ToolbarActions tools: currentPage && currentPage.hasOwnProperty("tools")
-                               && currentPage.tools ? currentPage.tools : __defaultTools
-
-    /*! \internal */
-    onToolsChanged: if (tools) tools.__pageStack = pageStack;
-
-    /*!
-      \internal
-      The tools to be used if page does not define tools. It features only
-      the default back button.
-     */
-    property ToolbarActions __defaultTools: ToolbarActions { __pageStack: pageStack }
-
-    /*!
-      \internal
-      Create a PageWrapper for the specified page.
-     */
-    function __createWrapper(page, properties) {
-        var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-        // TODO: cache the component?
-        var wrapperObject = wrapperComponent.createObject(pageContents);
-        wrapperObject.reference = page;
-        wrapperObject.parent = pageContents;
-        wrapperObject.properties = properties;
-        wrapperObject.pageStack = pageStack;
-        return wrapperObject;
-    }
+    property Item currentPage: null
 
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
+      The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
-        if (stack.size() > 0) stack.top().active = false;
-
-        stack.push(__createWrapper(page, properties));
-        stack.top().active = true;
-
-        __stackUpdated();
+        if (internal.stack.size() > 0) internal.stack.top().active = false;
+        internal.stack.push(internal.createWrapper(page, properties));
+        internal.stack.top().active = true;
+        internal.stackUpdated();
     }
 
     /*!
@@ -151,18 +149,16 @@ Item {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
-        if (stack.size() < 1) {
+        if (internal.stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
+        internal.stack.top().active = false;
+        if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+        internal.stack.pop();
+        internal.stackUpdated();
 
-        stack.top().pageStack = null;
-        stack.top().active = false;
-        if (stack.top().canDestroy) stack.top().destroyObject();
-        stack.pop();
-        if (stack.size() > 0) stack.top().active = true;
-
-        __stackUpdated();
+        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -170,62 +166,35 @@ Item {
       Deactivate the active page and clear the stack.
      */
     function clear() {
-        while (stack.size() > 0) {
-            stack.top().pageStack = null;
-            stack.top().active = false;
-            if (stack.top().canDestroy) stack.top().destroyObject();
-            stack.pop();
+        while (internal.stack.size() > 0) {
+            internal.stack.top().active = false;
+            if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+            internal.stack.pop();
         }
-        __stackUpdated();
+        internal.stackUpdated();
     }
 
-    /*!
-      \internal
-     */
-    function __stackUpdated() {
-        pageStack.depth = stack.size();
-        if (pageStack.depth > 0) currentPage = stack.top().object;
-        else currentPage = null;
-        contents.updateHeader();
-    }
+    QtObject {
+        id: internal
 
-    Item {
-        id: contents
-        parent: pageStack
-        anchors.fill: pageStack
+        /*!
+          The instance of the stack from javascript
+         */
+        property var stack: new Stack.Stack()
 
-        Item {
-            id: pageContents
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                top: header.visible ? header.bottom : parent.top
-            }
+        function createWrapper(page, properties) {
+            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
+            var wrapperObject = wrapperComponent.createObject(pageStack);
+            wrapperObject.reference = page;
+            wrapperObject.pageStack = pageStack;
+            wrapperObject.properties = properties;
+            return wrapperObject;
         }
 
-        // The header comes after the contents to ensure its z-order is higher.
-        // This ensures flickable contents never overlap the header,
-        // without having to resort to clipping.
-        Header {
-            id: header
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-            }
-            height: units.gu(5)
-        }
-
-        function updateHeader() {
-            var stackSize = stack.size();
-            if (stackSize > 0) {
-                var item = stack.top().object;
-                if (item.__isPage === true) header.title = item.title;
-                else header.title = "";
-            } else {
-                header.title = "";
-            }
+        function stackUpdated() {
+            pageStack.depth =+ stack.size();
+            if (pageStack.depth > 0) currentPage = stack.top().object;
+            else currentPage = null;
         }
     }
 }

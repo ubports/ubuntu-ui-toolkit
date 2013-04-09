@@ -22,19 +22,20 @@ import "PageWrapperUtils.js" as Utils
     \qmltype PageWrapper
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Internal class used by \l Tab
+    \brief Internal class used by \l PageStack
 
     \b{This component is under heavy development.}
 */
-QtObject {
+PageTreeNode {
     id: pageWrapper
+    anchors.fill: parent
 
     /*!
       \preliminary
       The reference to the page object. This can be the page
       itself (which is an Item), but also a url pointing to a QML file.
      */
-    property variant reference
+    property var reference
 
     /*!
       \preliminary
@@ -44,43 +45,15 @@ QtObject {
 
     /*!
       \preliminary
-      The parent Item of the page object.
-     */
-    property Item parent
-
-    /*!
-      \preliminary
       This variable will be true if \l object holds an object that was created
       from the given reference, and thus can be destroyed when no the page is deactivated.
      */
     property bool canDestroy: false
 
     /*!
-      \preliminary
-      Determines whether the wrapped page is currently visible.
+      This value is updated when a PageWrapper is pushed to/popped from a PageStack.
      */
-    property bool active: false
-
-    /*!
-      \preliminary
-      Properties are use to initialize a new object, or if reference
-      is already an object, properties are copied to the object when activated.
-     */
-    property variant properties
-
-    /*!
-      \preliminary
-      The \l PageStack that the \l Page is part of, if any (null otherwise).
-     */
-    property PageStack pageStack
-
-    /*!
-      \preliminary
-      The object if it is Flickable, or the first of its children that is Flickable.
-      If neither object nor its children are Flickable, then null.
-      Automatically upadted by PageWrapperUtils.activate() after initializing the object.
-     */
-    property Flickable flickable: null
+    active: false
 
     /*!
       \internal
@@ -92,6 +65,15 @@ QtObject {
         }
     }
 
+    visible: active
+
+    /*!
+      \preliminary
+      Properties are use to initialize a new object, or if reference
+      is already an object, properties are copied to the object when activated.
+     */
+    property var properties
+
     /*!
       \internal
       */
@@ -102,16 +84,6 @@ QtObject {
             Utils.activate(pageWrapper);
         }
     }
-
-    /*!
-      \internal
-     */
-    onParentChanged: Utils.updateParent(pageWrapper)
-
-    /*!
-      \internal
-     */
-    onPageStackChanged: Utils.updatePageStack(pageWrapper)
 
     /*!
       \internal

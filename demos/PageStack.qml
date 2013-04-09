@@ -34,7 +34,6 @@ Template {
 
             PageStack {
                 id: pageStack
-                anchors.fill: parent
                 Component.onCompleted: push(page0)
 
                 Page {
@@ -50,20 +49,9 @@ Template {
                             progression: true
                         }
                         ListItem.Standard {
-                            text: i18n.tr("Page two (external)")
+                            text: i18n.tr("External page")
                             onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                             progression: true
-                        }
-                    }
-
-                    tools: ToolbarActions {
-                        Action {
-                            text: "action 1"
-                            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
-                        }
-                        Action {
-                            text: "action 2"
-                            iconSource: Qt.resolvedUrl("call_icon.png")
                         }
                     }
                 }
@@ -76,29 +64,29 @@ Template {
                     Column {
                         anchors.fill: parent
                         ListItem.Standard {
-                            text: i18n.tr("External page")
-                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                            progression: true
-                        }
-                        ListItem.Standard {
                             text: i18n.tr("Root page (again)")
                             onClicked: pageStack.push(page0)
                             progression: true
                         }
                         ListItem.Standard {
                             text: i18n.tr("Red rectangle")
-                            onClicked: pageStack.push(rect, {color: "red"})
+                            onClicked: pageStack.push(page2, {color: "red"})
                             progression: true
                         }
                     }
                 }
 
-                Component {
-                    id: rect
+                Page {
+                    title: "Rectangle"
+                    id: page2
+                    visible: false
+                    property alias color: rectangle.color
                     Rectangle {
                         id: rectangle
-                        anchors.fill: parent
-                        color: "green"
+                        anchors {
+                            fill: parent
+                            margins: units.gu(5)
+                        }
                     }
                 }
             }
