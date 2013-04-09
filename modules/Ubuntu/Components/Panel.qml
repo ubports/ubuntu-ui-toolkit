@@ -221,11 +221,14 @@ Item {
         orientation: Qt.Vertical
         id: draggingArea
         anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
+            top: panel.align === Qt.AlignBottom ? undefined : parent.top
+            bottom: panel.align === Qt.AlignTop ? undefined : parent.bottom
+            left: panel.align === Qt.AlignRight ? undefined : parent.left
+            right: panel.align === Qt.AlignLeft ? undefined : parent.right
         }
-        height: panel.active ? bar.height + units.gu(1) : panel.triggerSize
+        height: internal.orientation === Qt.Horizontal ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
+        width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
+
         zeroVelocityCounts: true
         propagateComposedEvents: true
         visible: !panel.lock
@@ -262,6 +265,7 @@ Item {
 
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
+        // TODO: deal with top/right aligned panels here by swapping 44 and -44.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
                 panel.state = "spread";
@@ -289,6 +293,7 @@ Item {
 //        width: internal.orientation === Qt.Vertical ? size : undefined
 //        y: panel.active ? 0 : height
         property real w: panel.active ? 0 : size
+        // TODO: deal with top or right-aligned panels here in the computation of x and y.
         y: internal.orientation === Qt.Horizontal ? w : 0
         x: internal.orientation === Qt.Vertical ? w : 0
     }
