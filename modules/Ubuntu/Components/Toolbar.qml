@@ -31,11 +31,11 @@ import Ubuntu.Components 0.1 as Theming
 */
 Panel {
     id: toolbar
-    //    Theming.ItemStyle.class: "toolbar"
+//        Theming.ItemStyle.class: "toolbar"
 
-        height: background.height
-//        hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
-//        triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
+    height: background.height
+    hintSize: Theming.ComponentUtils.style(background, "hintSize", units.gu(2))
+    triggerSize: Theming.ComponentUtils.style(background, "triggerSize", units.gu(2))
 
     /*!
       \preliminary
@@ -92,84 +92,73 @@ Panel {
 
         // FIXME: Use theming. Currently when I enable this, the delegate
         //  background always goes in front of all the items given below!
+        // FIXME: I am using theming.. but it is not in the panel toolbar component
         Theming.ItemStyle.class: "toolbar"
 
         //        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
         //        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
 
-    Button {
-        text: "test"
-        anchors.centerIn: parent
-        onClicked: print("click!")
-    }
 
-    Rectangle {
-        color: "red"
-        width: 50
-        height: 50
-        anchors.centerIn: parent
-    }
+//                MouseArea {
+//                    // don't let mouse events go through the toolbar
+//                    anchors.fill: parent
+//                    // FIXME: Bug in qml? Without onClicked below, this MouseArea
+//                    //      seems disabled.
+//                    onClicked: { }
+//                }
 
-    //        MouseArea {
-    //            // don't let mouse events go through the toolbar
-    //            anchors.fill: parent
-    //            // FIXME: Bug in qml? Without onClicked below, this MouseArea
-    //            //      seems disabled.
-    //            onClicked: { }
-    //        }
-
-    Component {
-        id: toolButtonComponent
-        Button {
-            id: toolButton
-            Theming.ItemStyle.class: "toolbar-button"
-            text: action && action.text ? action.text : ""
-            iconSource: action && action.iconSource ? action.iconSource : ""
-            onClicked: action.triggered(toolButton)
-            enabled: action && action.enabled
-            visible: action && action.visible
-            width: visible ? implicitWidth : 0
-            height: toolbar.height
+        Component {
+            id: toolButtonComponent
+            Button {
+                id: toolButton
+                Theming.ItemStyle.class: "toolbar-button"
+                text: action && action.text ? action.text : ""
+                iconSource: action && action.iconSource ? action.iconSource : ""
+                onClicked: action.triggered(toolButton)
+                enabled: action && action.enabled
+                visible: action && action.visible
+                width: visible ? implicitWidth : 0
+                height: toolbar.height
+            }
         }
-    }
 
-    Loader {
-        id: backButton
-        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
+        Loader {
+            id: backButton
+            property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+            sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
+            anchors {
+                left: parent.left
+                leftMargin: units.gu(2)
+                verticalCenter: parent.verticalCenter
+            }
+            onStatusChanged: {
+                if (item && status == Loader.Ready && action && action.itemHint) {
+                    if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
+                    if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
+                    if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+                }
+            }
         }
-        onStatusChanged: {
-            if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+
+        Row {
+            id: toolButtonsContainer
+            anchors {
+                right: parent.right
+                bottom: parent.bottom
+                top: parent.top
+                rightMargin: units.gu(2)
+            }
+            width: childrenRect.width
+            spacing: units.gu(1)
+
+            Repeater {
+                model: internal.visibleTools ? internal.visibleTools.children : 0
+                Loader {
+                    sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
+                    property Action action: modelData
+                    anchors.verticalCenter: toolButtonsContainer.verticalCenter
+                }
             }
         }
     }
-
-    Row {
-        id: toolButtonsContainer
-        anchors {
-            right: parent.right
-            bottom: parent.bottom
-            top: parent.top
-            rightMargin: units.gu(2)
-        }
-        width: childrenRect.width
-        spacing: units.gu(1)
-
-        Repeater {
-            model: internal.visibleTools ? internal.visibleTools.children : 0
-            Loader {
-                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                property Action action: modelData
-                anchors.verticalCenter: toolButtonsContainer.verticalCenter
-            }
-        }
-    }
-}
 }

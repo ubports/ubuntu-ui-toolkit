@@ -11,12 +11,12 @@ Rectangle {
     }
 
     Panel {
-        align: Qt.AlignBottom
+        align: Qt.AlignLeft
 
         Rectangle {
             anchors.fill: parent
-            color: "red"
-            opacity: 0.1
+            color: "black"
+            opacity: 1.0
         }
 
         Slider {

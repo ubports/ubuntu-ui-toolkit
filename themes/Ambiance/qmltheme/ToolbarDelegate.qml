@@ -31,8 +31,8 @@ Item {
 //        }
 //        height: parent.height //- dropshadow.height
         anchors.fill: parent
-        color: "green" //StyleUtils.itemStyleProperty("color")
-        opacity: 0.9 //StyleUtils.itemStyleProperty("opacity")
+        color: StyleUtils.itemStyleProperty("color")
+        opacity: StyleUtils.itemStyleProperty("opacity")
 
         Item {
             id: contents
@@ -42,17 +42,17 @@ Item {
 
 
 
-//    Image {
-//        id: dropshadow
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: background.top
-//        }
-//        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-//        opacity: item.state == "" ? 0.0 : 0.5
-//        Behavior on opacity {
-//            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
-//        }
-//    }
+    Image {
+        id: dropshadow
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: background.top
+        }
+        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
+        opacity: item.state == "" ? 0.0 : 0.5
+        Behavior on opacity {
+            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
+        }
+    }
 }

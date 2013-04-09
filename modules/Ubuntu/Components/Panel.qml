@@ -23,6 +23,9 @@ import Ubuntu.Components 0.1 as Toolkit
     \ingroup ubuntu
 
     TODO: document
+    Panel should not be themed, but the contents of the Panel.
+    The reason is that the panel itself should not have visible elements, since it is
+    in the view (to detect mouse events) even when its contents should be invisible
 */
 Item {
     id: panel
