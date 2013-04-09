@@ -36,11 +36,11 @@ Item {
 
     height: units.gu(10)
 
-    Rectangle {
-        color: "red"
-        opacity: 0.5
-        anchors.fill: bar
-    }
+//    Rectangle {
+//        color: "red"
+//        opacity: 0.5
+//        anchors.fill: bar
+//    }
 
     default property alias contents: bar.data
 

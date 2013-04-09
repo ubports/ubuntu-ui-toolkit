@@ -34,8 +34,8 @@ Panel {
     //    Theming.ItemStyle.class: "toolbar"
 
         height: background.height
-        hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
-        triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
+//        hintSize: Theming.ComponentUtils.style(toolbar, "hintSize", units.gu(2))
+//        triggerSize: Theming.ComponentUtils.style(toolbar, "triggerSize", units.gu(2))
 
     /*!
       \preliminary
@@ -97,11 +97,17 @@ Panel {
         //        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
         //        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
 
-    }
     Button {
         text: "test"
         anchors.centerIn: parent
         onClicked: print("click!")
+    }
+
+    Rectangle {
+        color: "red"
+        width: 50
+        height: 50
+        anchors.centerIn: parent
     }
 
     //        MouseArea {
@@ -166,4 +172,4 @@ Panel {
         }
     }
 }
-//}
+}

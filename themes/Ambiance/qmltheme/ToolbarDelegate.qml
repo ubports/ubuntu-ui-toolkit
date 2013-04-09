@@ -20,22 +20,27 @@ Item {
     anchors.fill: parent
     property alias contentItem: contents
 
+//    z: -1
     Rectangle {
+//        z: -1
         id: background
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
+//        anchors {
+//            left: parent.left
+//            right: parent.right
+//            bottom: parent.bottom
+//        }
+//        height: parent.height //- dropshadow.height
+        anchors.fill: parent
+        color: "green" //StyleUtils.itemStyleProperty("color")
+        opacity: 0.9 //StyleUtils.itemStyleProperty("opacity")
+
+        Item {
+            id: contents
+            anchors.fill: parent
         }
-        height: parent.height //- dropshadow.height
-        color: StyleUtils.itemStyleProperty("color")
-        opacity: StyleUtils.itemStyleProperty("opacity")
     }
 
-    Item {
-        id: contents
-        anchors.fill: parent
-    }
+
 
 //    Image {
 //        id: dropshadow

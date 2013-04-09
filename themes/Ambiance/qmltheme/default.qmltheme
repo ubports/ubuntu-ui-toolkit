@@ -78,7 +78,7 @@ Examples:
 }
 
 .toolbar {
-    color: "white";
+    color: "pink";
     opacity: 0.9;
     triggerSize: units.gu(2);
     hintSize: units.gu(2);
