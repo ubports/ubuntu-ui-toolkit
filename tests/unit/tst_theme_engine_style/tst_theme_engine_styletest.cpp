@@ -128,21 +128,24 @@ private Q_SLOTS:
 
     void testCase_omitProperty()
     {
-        // from mid
-        QVERIFY(UCStyle::omitProperty("anchors"));
-        QVERIFY(UCStyle::omitProperty("focus"));
-        // from beginning of omit list
-        QVERIFY(UCStyle::omitProperty("activeFocus"));
-        // from end of omit list
-        QVERIFY(UCStyle::omitProperty("y"));
-        // do not omit
-        QVERIFY(!UCStyle::omitProperty("item"));
-        QVERIFY(!UCStyle::omitProperty("z"));
-        QVERIFY(!UCStyle::omitProperty("width"));
-        QVERIFY(!UCStyle::omitProperty("height"));
-        // properties that may be prersent as subset of an omitted property
-        // source->resources
-        QVERIFY(!UCStyle::omitProperty("source"));
+        // to be omitted
+        QString omitList(
+                "activeFocus,anchors,antialiasing,baseline,baselineOffset,"
+                "bottom,children,childrenRect,clip,data,focus,"
+                "horizontalCenter,implicitHeight,implicitWidth,layer,left,objectName,parent,"
+                "resources,right,rotation,scale,smooth,state,states,top,transform,transformOrigin,"
+                "transitions,verticalCenter,visibleChildren,x,yz");
+        QString allowedList(
+                    "enabled,width,height,opacity,visible,source,item"
+                    );
+
+        Q_FOREACH(const QString &property, omitList.split(',')) {
+            QVERIFY2(UCStyle::omitProperty(property.toLocal8Bit()), property.toLocal8Bit());
+        }
+
+        Q_FOREACH(const QString &property, allowedList.split(',')) {
+            QVERIFY2(!UCStyle::omitProperty(property.toLocal8Bit()), property.toLocal8Bit());
+        }
     }
 
     void testCase_bindItem()
