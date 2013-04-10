@@ -92,16 +92,8 @@ Panel {
         height: units.gu(8)
 
         Theming.ItemStyle.class: "toolbar"
-
-        //                MouseArea {
-        //                    // don't let mouse events go through the toolbar
-        //                    anchors.fill: parent
-        //                    // FIXME: Bug in qml? Without onClicked below, this MouseArea
-        //                    //      seems disabled.
-        //                    onClicked: { }
-        //                }
-
     }
+
     Component {
         id: toolButtonComponent
         Button {
@@ -156,4 +148,3 @@ Panel {
         }
     }
 }
-//}
