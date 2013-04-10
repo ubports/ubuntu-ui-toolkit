@@ -40,8 +40,6 @@ Item {
         }
     }
 
-
-
     Image {
         id: dropshadow
         anchors {

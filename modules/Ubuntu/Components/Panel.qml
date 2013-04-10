@@ -30,22 +30,6 @@ import Ubuntu.Components 0.1 as Toolkit
 Item {
     id: panel
 
-    //    anchors {
-    //        left: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignLeft ? parent.left : undefined
-    //        right: internal.orientation === Qt.Horizontal || panel.align === Qt.AlignRight ? parent.right : undefined
-    //        top: internal.orientation === Qt.Vertical || panel.align === Qt.AlignTop ? parent.top : undefined
-    //        bottom: internal.orientation === Qt.Vertical || panel.align === Qt.AlignBottom ? parent.bottom : undefined
-    //    }
-
-    //      anchors.fill: parent
-    //    height: units.gu(10)
-
-    //    Rectangle {
-    //        color: "red"
-    //        opacity: 0.5
-    //        anchors.fill: bar
-    //    }
-
     default property alias contents: bar.data
 
     /*!
@@ -57,7 +41,10 @@ Item {
         \li Qt.AlignTop to swipe in the panel from the top
         \li Qt.AlignBottom to swipe in the panel from the bottom
         \endlist
-        The default value is \b Qt.AlignBottom.
+        The default value is \b Qt.AlignBottom, and it is not recommended to change the
+        default value because the left, right and top edge are already used for system
+        functions, while the bottom edge is reserved for app-specific functionality
+        such as a default toolbar.
       */
     property int align: Qt.AlignBottom
 
@@ -68,7 +55,6 @@ Item {
      */
     property bool active: false
     onActiveChanged: {
-        print("active = "+active ) // TODO TIM: remove
         if (active) state = "spread";
         else state = "";
     }
@@ -99,18 +85,14 @@ Item {
             name: "hint"
             PropertyChanges {
                 target: bar
-                v: bar.size - panel.hintSize // good for bottom
-//                v: bar.size + panel.hintSize
+                v: bar.size - panel.hintSize
             }
         },
         State {
             name: "moving"
             PropertyChanges {
                 target: bar
-                v: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size) // good for bottom
-//                  v: MathUtils.clamp(-draggingArea.mouseV - internal.movingDelta, 0, bar.size) // good for left
-
-//                v: draggingArea.mouseV - internal.movingDelta
+                v: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size)
             }
         },
         State {
@@ -141,7 +123,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "v"
-                duration: 500 // TODO TIM: revert to 50
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -150,7 +132,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "v"
-                duration: 50 // TODO TIM: revert to 50
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         },
@@ -159,7 +141,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "v"
-                duration: 500 // TODO TIM: revert to 50
+                duration: 50
                 easing.type: Easing.OutQuad
             }
         }
@@ -175,13 +157,12 @@ Item {
         property bool savedLock: panel.lock
         property bool savedActive: panel.active
 
-        readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom) ? Qt.Horizontal : Qt.Vertical
-
-//        property int deltaSign: panel.align === Qt.AlignLeft || panel.align === Qt.AlignTop ? -1 : 1
-
+        readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom)
+                                           ? Qt.Horizontal : Qt.Vertical
     }
 
     Connections {
+        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
         target: bottomBarVisibilityCommunicator
         onForceHiddenChanged: {
             if (bottomBarVisibilityCommunicator.forceHidden) {
@@ -192,8 +173,8 @@ Item {
             } else { // don't force hidden
                 panel.lock = internal.savedLock;
                 if (internal.savedLock) panel.active = internal.savedActive;
-                // if the toolbar was locked, do not slide it back in
-                // until the user performs a bottom-edge-swipe.
+                // if the panel was locked, do not slide it back in
+                // until the user performs an edge swipe.
             }
         }
     }
@@ -202,15 +183,12 @@ Item {
         if (state == "hint") {
             internal.movingDelta = (panel.hintSize + draggingArea.initialV - bar.size);
         } else if (state == "moving" && internal.previousState == "spread") {
-            internal.movingDelta = draggingArea.initialV; // good for bottom
-//            internal.movingDelta = -draggingArea.initialV;
-
+            internal.movingDelta = draggingArea.initialV;
         } else if (state == "spread") {
             panel.active = true;
         } else if (state == "") {
             panel.active = false;
         }
-//        if (panel.align === Qt.AlignLeft || panel.align === Qt.AlignTop) internal.movingDelta = -internal.movingDelta;
         internal.previousState = state;
     }
 
@@ -229,10 +207,10 @@ Item {
     //    }
 
     DraggingArea {
-        Rectangle {
-            color: "yellow"
-            anchors.fill: parent
-        }
+//        Rectangle {
+//            color: "yellow"
+//            anchors.fill: parent
+//        }
 
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         id: draggingArea
@@ -249,8 +227,6 @@ Item {
         propagateComposedEvents: true
         visible: !panel.lock
 
-        // FIXME: Weird construction below, but it doesn't seem to work
-        //  in onPressed when using mouseV directly.
         property int mouseV: getMouseV()
         function getMouseV() {
             switch (panel.align) {
@@ -263,23 +239,16 @@ Item {
             case Qt.AlignTop:
                 return -mouseY;
             }
-
 //            return internal.orientation === Qt.Horizontal ? mouseY : mouseX
         }
 
         property int initialV
         onPressed: {
             initialV = getMouseV();
-            //            mouse.accepted = false
-            //            if (panel.state == "spread") mouse.accepted = false;
-            //            mouse.accepted = false;
             if (panel.state == "") panel.state = "hint";
-            //            else mouse.accepted = false;
-            //            else panel.state = "moving";
         }
 
         onPositionChanged: {
-            print("changed mouse position to "+mouseV)
             if (panel.state == "hint" || panel.state == "spread") panel.state = "moving";
 //            if (panel.state == "hint" && mouseV < initialV) {
 //                panel.state = "moving";
@@ -325,22 +294,11 @@ Item {
         }
 
         property real size: internal.orientation === Qt.Horizontal ? height : width
-        //        height: internal.orientation === Qt.Horizontal ? size : undefined
-        //        width: internal.orientation === Qt.Vertical ? size : undefined
-        //        y: panel.active ? 0 : height
-        // w will be in the range
+        // v will always be in the range 0..size, where v==0 means spread, v==size means hidden.
         property real v: panel.active ? 0 : size
-        // TODO: deal with top or right-aligned panels here in the computation of x and y.
-//        property real w: -v // good for left
-//        property real w: v // good for bottom
-        property real w: panel.align === Qt.AlignRight || panel.align === Qt.AlignBottom ? v : -v
 
-
-        y: internal.orientation === Qt.Horizontal ? w : 0
-        x: internal.orientation === Qt.Vertical ? w : 0
-//        x:  - size
-        onVChanged: print("v = "+v)
-        Component.onCompleted: print("init v = "+v)
+        y: panel.align === Qt.AlignTop ? -v : panel.align === Qt.AlignBottom ? v : 0
+        x: panel.align === Qt.AlignLeft ? -v : panel.align === Qt.AlignRight ? v : 0
     }
 
 }
