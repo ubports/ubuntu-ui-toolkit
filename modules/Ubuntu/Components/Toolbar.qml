@@ -30,7 +30,7 @@ import Ubuntu.Components 0.1 as Theming
             be automatically added when a Page defines tools.
 */
 Panel {
-    id: panel
+    id: toolbar
     anchors {
         left: parent.left
         right: parent.right
