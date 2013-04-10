@@ -43,14 +43,21 @@ private:
 
     UCStyle *testingStyle;
 
-    QQuickItem *testItem(const QString &document, StyledPropertyMap &watchList)
+    QQuickItem *testItem(const QString &document, StyledPropertyMap &watchList, const QUrl &theme = QUrl())
     {
         // delete previous root
         QObject *root = quickView->rootObject();
         if (root) delete root;
 
         ThemeEngine::initializeEngine(quickEngine);
-        ThemeEngine::instance()->resetError();
+        if (theme.isValid()) {
+            ThemeEngine::instance()->loadTheme(theme);
+            if (!ThemeEngine::instance()->error().isEmpty()) {
+                QWARN("Theme loading failed");
+                return 0;
+            }
+        } else
+            ThemeEngine::instance()->resetError();
         quickView->setSource(QUrl::fromLocalFile(document));
         QCoreApplication::processEvents();
 
@@ -269,6 +276,39 @@ private Q_SLOTS:
         boundItem->setProperty("otherColor", "blue");
         color = QColor(boundItem->property("color").toString());
         QCOMPARE(color, QColor("#cccccc"));
+    }
+
+    void testCase_label()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("LabelTest.qml", watchList, QUrl::fromLocalFile("label.qmltheme"));
+        QVERIFY(boundItem);
+
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(boundItem, false));
+        QVERIFY(itemStyle);
+
+        // verify styled properties
+        QString size = boundItem->property("fontSize").toString();
+        QCOMPARE(size, QString("medium"));
+        QColor color = boundItem->property("color").value<QColor>();
+        QCOMPARE(color, QColor("#757373"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QCOMPARE(font.family(), QString("Ubuntu"));
+        QVERIFY(font.weight() == QFont::Normal);
+        QVERIFY(font.capitalization() == QFont::MixedCase);
+
+        // modify style to bolded
+        itemStyle->setProperty("class", "bold-label");
+        // verify styled properties
+        size = boundItem->property("fontSize").toString();
+        QCOMPARE(size, QString("large"));
+        color = boundItem->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+        font = boundItem->property("font").value<QFont>();
+        QCOMPARE(font.family(), QString("Ubuntu"));
+        QVERIFY(font.weight() == QFont::Bold);
+        QVERIFY(font.capitalization() == QFont::Capitalize);
     }
 
 };

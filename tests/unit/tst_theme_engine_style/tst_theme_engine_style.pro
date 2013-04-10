@@ -4,4 +4,6 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 OTHER_FILES += \
     TestDocument.qml \
-    BindingTest.qml
+    BindingTest.qml \
+    label.qmltheme \
+    LabelTest.qml

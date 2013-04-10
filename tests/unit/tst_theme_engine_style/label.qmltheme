@@ -1,0 +1,10 @@
+.label {
+    fontSize: "medium";
+    color: "#757373";
+}
+
+.bold-label {
+    fontSize: "large";
+    color: "blue";
+    font: Qt.font({family: "Ubuntu", weight: Font.Bold, capitalization: Font.Capitalize});
+}
