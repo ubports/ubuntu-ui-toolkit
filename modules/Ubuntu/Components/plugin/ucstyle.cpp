@@ -233,6 +233,12 @@ void UCStyle::write(const QString &source, const QQmlProperty &destination)
         // the alpha value is lost, meaning the destination will get value of 255
         // therefore we need to convert the variant to color and set the color falue
         destination.write(property(source.toLatin1()).value<QColor>());
+    } else if (target.type() == QMetaType::QFont) {
+        // only set font subproperties that were not set before
+        QFont sourceValue = property(source.toLatin1()).value<QFont>();
+        QFont destinationValue = destination.read().value<QFont>();
+        QFont result = destinationValue.resolve(sourceValue); 
+        destination.write(result);
     } else
         destination.write(property(source.toLatin1()));
     m_propertyUpdated.clear();

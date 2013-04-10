@@ -177,6 +177,11 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
             watchedProperties.mark(i, StyledPropertyMap::Enabled);
         }
 
+        if (QLatin1String(prop.name()) == QLatin1String("font")) {
+            // never ban the font property from being styled
+            continue;
+        }
+
         // connect property's notify signal to watch when it gets changed so we can stop watching it
         QObject::connect(attachee, prop.notifySignal(), q, onAttacheePropertyChanged);
     }
