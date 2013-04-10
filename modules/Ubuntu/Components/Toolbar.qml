@@ -92,6 +92,9 @@ Panel {
         height: units.gu(8)
 
         Theming.ItemStyle.class: "toolbar"
+        // The values of active and animated properties are used in the delegate
+        property bool active: toolbar.active
+        property bool animating: toolbar.animating
     }
 
     Component {

@@ -54,6 +54,7 @@ Rectangle {
         }
 
         Panel {
+            id: bottomLeftPanel
             align: Qt.AlignBottom
             anchors {
                 bottom: parent.bottom
@@ -71,6 +72,8 @@ Rectangle {
                 }
                 height: units.gu(8)
                 ItemStyle.class: "toolbar"
+                property bool active: bottomLeftPanel.active
+                property bool animating: bottomLeftPanel.animating
                 Label {
                     anchors.centerIn: parent
                     text: "This looks like a standard toolbar"
