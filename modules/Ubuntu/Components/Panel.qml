@@ -181,7 +181,7 @@ Item {
 
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = (panel.hintSize + draggingArea.initialV - bar.size);
+            internal.movingDelta = panel.hintSize + draggingArea.initialV - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialV;
         } else if (state == "spread") {
@@ -195,22 +195,21 @@ Item {
     // FIXME: The InverseMouseArea below is not working because of this bug:
     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166127
     // Uncomment when the bug is fixed.
-//    Toolkit.InverseMouseArea {
-//        anchors.fill: draggingArea
-//        onClicked: {
-//            mouse.accepted = false;
-//            // the mouse click may cause an update
-//            //  of lock by the clicked Item behind
-//            if (!panel.lock) panel.active = false;
-//        }
-//        propagateComposedEvents: true
-//        visible: panel.lock == false && panel.state == "spread"
-//    }
+    //    Toolkit.InverseMouseArea {
+    //        anchors.fill: draggingArea
+    //        onClicked: {
+    //            mouse.accepted = false;
+    //            // the mouse click may cause an update
+    //            //  of lock by the clicked Item behind
+    //            if (!panel.lock) panel.active = false;
+    //        }
+    //        propagateComposedEvents: true
+    //        visible: panel.lock == false && panel.state == "spread"
+    //    }
 
     DraggingArea {
-
-        orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         id: draggingArea
+        orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         anchors {
             top: panel.align === Qt.AlignBottom ? undefined : parent.top
             bottom: panel.align === Qt.AlignTop ? undefined : parent.bottom
