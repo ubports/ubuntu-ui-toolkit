@@ -70,13 +70,13 @@ Item {
     }
 
     /*!
-      How much of the toolbar to show when starting interaction.
+      How much of the panel to show when starting interaction.
      */
     property real hintSize: units.gu(2)
 
     /*!
       The height of the mouse area used to detect edge swipes to
-      activate the toolbar.
+      activate the panel.
      */
     property real triggerSize: units.gu(2)
 
