@@ -22,10 +22,12 @@ Rectangle {
 
             anchors {
                 left: parent.left
+//                right: parent.right
                 bottom: parent.bottom
                 top: parent.top
             }
             width: units.gu(20)
+//            height: units.gu(30)
 
             Rectangle {
                 anchors.fill: parent

@@ -99,29 +99,32 @@ Item {
             name: "hint"
             PropertyChanges {
                 target: bar
-                w: bar.size - panel.hintSize
+                v: bar.size - panel.hintSize // good for bottom
+//                v: bar.size + panel.hintSize
             }
         },
         State {
             name: "moving"
             PropertyChanges {
                 target: bar
-//                w: MathUtils.clamp(draggingArea.mouseW - internal.movingDelta, 0, bar.size)
-                w: draggingArea.mouseW - internal.movingDelta
+                v: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size) // good for bottom
+//                  v: MathUtils.clamp(-draggingArea.mouseV - internal.movingDelta, 0, bar.size) // good for left
+
+//                v: draggingArea.mouseV - internal.movingDelta
             }
         },
         State {
             name: "spread"
             PropertyChanges {
                 target: bar
-                w: 0
+                v: 0
             }
         },
         State {
             name: ""
             PropertyChanges {
                 target: bar
-                w: bar.size
+                v: bar.size // good for bottom
                 explicit: true
             }
         }
@@ -130,14 +133,14 @@ Item {
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
-    readonly property bool animating: draggingArea.pressed || (state == "" && bar.w != bar.size) || (state == "spread" && bar.w != 0)
+    readonly property bool animating: draggingArea.pressed || (state == "" && bar.v != bar.size) || (state == "spread" && bar.v != 0)
 
     transitions: [
         Transition {
             to: ""
             PropertyAnimation {
                 target: bar
-                properties: "w"
+                properties: "v"
                 duration: 500 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
@@ -146,7 +149,7 @@ Item {
             to: "hint"
             PropertyAnimation {
                 target: bar
-                properties: "w"
+                properties: "v"
                 duration: 50 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
@@ -155,7 +158,7 @@ Item {
             to: "spread"
             PropertyAnimation {
                 target: bar
-                properties: "w"
+                properties: "v"
                 duration: 500 // TODO TIM: revert to 50
                 easing.type: Easing.OutQuad
             }
@@ -173,6 +176,9 @@ Item {
         property bool savedActive: panel.active
 
         readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom) ? Qt.Horizontal : Qt.Vertical
+
+//        property int deltaSign: panel.align === Qt.AlignLeft || panel.align === Qt.AlignTop ? -1 : 1
+
     }
 
     Connections {
@@ -194,9 +200,11 @@ Item {
 
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = panel.hintSize + draggingArea.initialW - bar.size;
+            internal.movingDelta = (panel.hintSize + draggingArea.initialV - bar.size);
         } else if (state == "moving" && internal.previousState == "spread") {
-            internal.movingDelta = draggingArea.initialW;
+            internal.movingDelta = draggingArea.initialV; // good for bottom
+//            internal.movingDelta = -draggingArea.initialV;
+
         } else if (state == "spread") {
             panel.active = true;
         } else if (state == "") {
@@ -242,15 +250,26 @@ Item {
         visible: !panel.lock
 
         // FIXME: Weird construction below, but it doesn't seem to work
-        //  in onPressed when using mouseW directly.
-        property int mouseW: getMouseW()
-        function getMouseW() {
-            return internal.orientation === Qt.Horizontal ? mouseY : mouseX
+        //  in onPressed when using mouseV directly.
+        property int mouseV: getMouseV()
+        function getMouseV() {
+            switch (panel.align) {
+            case Qt.AlignLeft:
+                return -mouseX;
+            case Qt.AlignRight:
+                return mouseX;
+            case Qt.AlignBottom:
+                return mouseY;
+            case Qt.AlignTop:
+                return -mouseY;
+            }
+
+//            return internal.orientation === Qt.Horizontal ? mouseY : mouseX
         }
 
-        property int initialW
+        property int initialV
         onPressed: {
-            initialW = getMouseW();
+            initialV = getMouseV();
             //            mouse.accepted = false
             //            if (panel.state == "spread") mouse.accepted = false;
             //            mouse.accepted = false;
@@ -260,11 +279,13 @@ Item {
         }
 
         onPositionChanged: {
-            if (panel.state == "hint" && mouseW < initialW) {
-                panel.state = "moving";
-            } else if (panel.state == "spread" && mouseW > initialW) {
-                panel.state = "moving";
-            }
+            print("changed mouse position to "+mouseV)
+            if (panel.state == "hint" || panel.state == "spread") panel.state = "moving";
+//            if (panel.state == "hint" && mouseV < initialV) {
+//                panel.state = "moving";
+//            } else if (panel.state == "spread" && mouseV > initialV) {
+//                panel.state = "moving";
+//            }
         }
 
         onReleased: finishMoving()
@@ -287,7 +308,7 @@ Item {
                     panel.state = "spread";
                 }
             } else {
-                panel.state = (bar.w < bar.size / 2) ? "spread" : "";
+                panel.state = (bar.v < bar.size / 2) ? "spread" : "";
             }
         }
     }
@@ -307,12 +328,19 @@ Item {
         //        height: internal.orientation === Qt.Horizontal ? size : undefined
         //        width: internal.orientation === Qt.Vertical ? size : undefined
         //        y: panel.active ? 0 : height
-        property real w: panel.active ? 0 : size
+        // w will be in the range
+        property real v: panel.active ? 0 : size
         // TODO: deal with top or right-aligned panels here in the computation of x and y.
+//        property real w: -v // good for left
+//        property real w: v // good for bottom
+        property real w: panel.align === Qt.AlignRight || panel.align === Qt.AlignBottom ? v : -v
+
+
         y: internal.orientation === Qt.Horizontal ? w : 0
-//        x: internal.orientation === Qt.Vertical ? w : 0
         x: internal.orientation === Qt.Vertical ? w : 0
-        onWChanged: print("w = "+w)
+//        x:  - size
+        onVChanged: print("v = "+v)
+        Component.onCompleted: print("init v = "+v)
     }
 
 }
