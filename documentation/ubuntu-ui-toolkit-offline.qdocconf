@@ -1,0 +1,28 @@
+include(ubuntu-ui-toolkit-common.qdocconf)
+
+HTML.stylesheets = \
+    documentation/css/reset.css \
+    documentation/css/qtquick.css \
+    documentation/css/base.css \
+    documentation/css/scratch.css
+
+HTML.headerstyles = \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/reset.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/qtquick.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/base.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/scratch.css\" />\n"
+
+HTML.postheader = \
+    "   <div class=\"wrapper\">\n" \
+    "   <div class=\"main-content\">\n" 
+
+HTML.footer = \
+    "</div></div>\n" \
+    "<div class=\"shadow\"></div>\n" \
+    "<footer>\n" \
+    "	<div>\n" \
+    "		<nav role=\"navigation\" class=\"clearfix\">\n" \
+    "		</nav>\n" \
+    "		<p>&copy; 2013 Canonical Ltd. Ubuntu and Canonical are registered trademarks of Canonical Ltd. <a class=\"link-bug\" href=\"https://bugs.launchpad.net/ubuntudeveloperportal/+filebug\">Report a bug on this site</a></p>\n" \
+    "	</div>\n" \
+    "</footer>\n"
