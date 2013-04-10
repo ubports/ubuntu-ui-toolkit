@@ -134,7 +134,7 @@ private Q_SLOTS:
                 "bottom,children,childrenRect,clip,data,focus,"
                 "horizontalCenter,implicitHeight,implicitWidth,layer,left,objectName,parent,"
                 "resources,right,rotation,scale,smooth,state,states,top,transform,transformOrigin,"
-                "transitions,verticalCenter,visibleChildren,x,yz");
+                "transitions,verticalCenter,visibleChildren,x,y,z");
         QString allowedList(
                     "enabled,width,height,opacity,visible,source,item"
                     );
