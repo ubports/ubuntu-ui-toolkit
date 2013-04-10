@@ -316,7 +316,7 @@ private Q_SLOTS:
         StyledPropertyMap watchList;
         QQuickItem *boundItem = testItem("FontThemeWithOtherDefaultValue.qml", watchList, QUrl::fromLocalFile("FontThemeWithOtherDefaultValue.qmltheme"));
         QFont font = boundItem->property("font").value<QFont>();
-        QVERIFY(font.underline() == true);
+        QCOMPARE(font.underline(), true);
         QVERIFY(font.weight() == QFont::Bold);
     }
 };
