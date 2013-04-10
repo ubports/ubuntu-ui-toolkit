@@ -22,6 +22,6 @@ Item {
     height: 100
 
     Label {
-        text: "test"
+        ItemStyle.class: "bold-label"
     }
 }

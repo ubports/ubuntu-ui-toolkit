@@ -284,31 +284,8 @@ private Q_SLOTS:
         QQuickItem *boundItem = testItem("LabelTest.qml", watchList, QUrl::fromLocalFile("label.qmltheme"));
         QVERIFY(boundItem);
 
-        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
-                (qmlAttachedPropertiesObject<ItemStyleAttached>(boundItem, false));
-        QVERIFY(itemStyle);
-
-        // verify styled properties
-        QString size = boundItem->property("fontSize").toString();
-        QCOMPARE(size, QString("medium"));
-        QColor color = boundItem->property("color").value<QColor>();
-        QCOMPARE(color, QColor("#757373"));
         QFont font = boundItem->property("font").value<QFont>();
-        QCOMPARE(font.family(), QString("Ubuntu"));
-        QVERIFY(font.weight() == QFont::Normal);
-        QVERIFY(font.capitalization() == QFont::MixedCase);
-
-        // modify style to bolded
-        itemStyle->setProperty("class", "bold-label");
-        // verify styled properties
-        size = boundItem->property("fontSize").toString();
-        QCOMPARE(size, QString("large"));
-        color = boundItem->property("color").value<QColor>();
-        QCOMPARE(color, QColor("blue"));
-        font = boundItem->property("font").value<QFont>();
-        QCOMPARE(font.family(), QString("Ubuntu"));
         QVERIFY(font.weight() == QFont::Bold);
-        QVERIFY(font.capitalization() == QFont::Capitalize);
     }
 
 };
