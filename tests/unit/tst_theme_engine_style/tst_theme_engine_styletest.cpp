@@ -41,12 +41,9 @@ private:
     QQmlEngine *quickEngine;
     QQmlContext *context;
 
-    QQuickItem *boundItem;
-    StyledPropertyMap watchList;
-
     UCStyle *testingStyle;
 
-    QQuickItem *testItem()
+    QQuickItem *testItem(StyledPropertyMap &watchList)
     {
         ThemeEngine::initializeEngine(quickEngine);
         ThemeEngine::instance()->resetError();
@@ -59,11 +56,27 @@ private:
 
         QList<QQuickItem*> items = root->findChildren<QQuickItem*>();
         Q_FOREACH(QQuickItem *item, items) {
-            // if a style has Item-derived properties (Animations, etc), those will be listed here too
+            // if an item has Item-derived properties (Animations, etc), those will be listed here too
             // therefore skip those
             QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
-            if (obj)
+            if (obj) {
+
+                for (int i = 0; i < item->metaObject()->propertyCount(); i++) {
+                    const QMetaProperty property = item->metaObject()->property(i);
+                    if (UCStyle::omitProperty(property.name()))
+                        continue;
+                    if (!property.hasNotifySignal())
+                        continue;
+                    watchList.mark(i, StyledPropertyMap::Enabled);
+                    const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("watchBoundItemProperty()"));
+                    QObject::connect(item, property.notifySignal(), this, slot);
+                }
+
+                // publish boundItem as context property
+                context->setContextProperty("item", item);
+
                 return item;
+            }
         }
         return 0;
     }
@@ -100,30 +113,12 @@ private Q_SLOTS:
         // check if theme gets loaded
         QCOMPARE(ThemeEngine::instance()->error(), QString(""));
 
-        boundItem = testItem();
-        QVERIFY(boundItem);
-
-        for (int i = 0; i < boundItem->metaObject()->propertyCount(); i++) {
-            const QMetaProperty property = boundItem->metaObject()->property(i);
-            if (UCStyle::omitProperty(property.name()))
-                continue;
-            if (!property.hasNotifySignal())
-                continue;
-            watchList.mark(i, StyledPropertyMap::Enabled);
-            const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("watchBoundItemProperty()"));
-            QObject::connect(boundItem, property.notifySignal(), this, slot);
-        }
-
         // create context for style and delegate
-        context = new QQmlContext(QQmlEngine::contextForObject(boundItem));
-
-        // publish boundItem as context property
-        context->setContextProperty("item", boundItem);
+        context = new QQmlContext(quickEngine->rootContext());
     }
 
     void cleanupTestCase()
     {
-        delete context;
         delete quickView;
     }
 
@@ -148,6 +143,9 @@ private Q_SLOTS:
 
     void testCase_bindItem()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem(watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
@@ -174,6 +172,9 @@ private Q_SLOTS:
 
     void testCase_unbindItem()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem(watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
@@ -203,6 +204,9 @@ private Q_SLOTS:
 
     void testCase_unbindProperty()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem(watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
