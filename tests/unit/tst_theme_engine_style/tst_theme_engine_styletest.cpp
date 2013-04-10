@@ -43,14 +43,18 @@ private:
 
     UCStyle *testingStyle;
 
-    QQuickItem *testItem(StyledPropertyMap &watchList)
+    QQuickItem *testItem(const QString &document, StyledPropertyMap &watchList)
     {
+        // delete previous root
+        QObject *root = quickView->rootObject();
+        if (root) delete root;
+
         ThemeEngine::initializeEngine(quickEngine);
         ThemeEngine::instance()->resetError();
-        quickView->setSource(QUrl::fromLocalFile("TestDocument.qml"));
+        quickView->setSource(QUrl::fromLocalFile(document));
         QCoreApplication::processEvents();
 
-        QObject *root = quickView->rootObject();
+        root = quickView->rootObject();
         if (!root)
             return 0;
 
@@ -144,7 +148,7 @@ private Q_SLOTS:
     void testCase_bindItem()
     {
         StyledPropertyMap watchList;
-        QQuickItem *boundItem = testItem(watchList);
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
 
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
@@ -173,7 +177,7 @@ private Q_SLOTS:
     void testCase_unbindItem()
     {
         StyledPropertyMap watchList;
-        QQuickItem *boundItem = testItem(watchList);
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
 
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
@@ -205,7 +209,7 @@ private Q_SLOTS:
     void testCase_unbindProperty()
     {
         StyledPropertyMap watchList;
-        QQuickItem *boundItem = testItem(watchList);
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
 
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
@@ -237,6 +241,31 @@ private Q_SLOTS:
 
         delete delegate;
         delete style;
+    }
+
+    void testCase_binding()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("BindingTest.qml", watchList);
+        QVERIFY(boundItem);
+
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(boundItem, false));
+        QVERIFY(itemStyle);
+
+        // verify style class, should be button
+        QString sclass = itemStyle->property("class").toString();
+        QCOMPARE(sclass, QString("button"));
+
+        // color property is bound to otherColor property; styling should update this
+        // properties as well, only user bindings (bindings made upon component use)
+        // should not be broken
+        QColor color(boundItem->property("color").toString());
+        QCOMPARE(color, QColor("#cccccc"));
+        // modify binding property value
+        boundItem->setProperty("otherColor", "blue");
+        color = QColor(boundItem->property("color").toString());
+        QCOMPARE(color, QColor("#cccccc"));
     }
 
 };
