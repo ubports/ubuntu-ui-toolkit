@@ -92,9 +92,11 @@ int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool use
 
         QQmlProperty qmlProperty(item, name, qmlContext(item));
 
-        if (usePropertyMap) {
+        if (usePropertyMap && QLatin1String(name) != QLatin1String("font")) {
             // styled item specific: check if it has a QML binding and whether the binding
             // is the original one or a newer one
+            // do not ban the front property from being styled even if it has a binding
+            // which happens in Label: "font.pixelSize: FontUtils.sizeToPixels(fontSize)"
             QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
             if (binding) {
                 // check if this binding is the original one
