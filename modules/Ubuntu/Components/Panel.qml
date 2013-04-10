@@ -106,7 +106,7 @@ Item {
             name: ""
             PropertyChanges {
                 target: bar
-                v: bar.size // good for bottom
+                v: bar.size
                 explicit: true
             }
         }
@@ -192,25 +192,22 @@ Item {
         internal.previousState = state;
     }
 
-    // not working for now.
-    // TODO: link to bug report or uncomment
-    //    Toolkit.InverseMouseArea {
-    //        anchors.fill: draggingArea
-    //        onClicked: {
-    //            mouse.accepted = false;
-    //            // the mouse click may cause an update
-    //            //  of lock by the clicked Item behind
-    //            if (!panel.lock) panel.active = false;
-    //        }
-    //        propagateComposedEvents: true
-    //        visible: panel.lock == false && panel.state == "spread"
-    //    }
+    // FIXME: The InverseMouseArea below is not working because of this bug:
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166127
+    // Uncomment when the bug is fixed.
+//    Toolkit.InverseMouseArea {
+//        anchors.fill: draggingArea
+//        onClicked: {
+//            mouse.accepted = false;
+//            // the mouse click may cause an update
+//            //  of lock by the clicked Item behind
+//            if (!panel.lock) panel.active = false;
+//        }
+//        propagateComposedEvents: true
+//        visible: panel.lock == false && panel.state == "spread"
+//    }
 
     DraggingArea {
-//        Rectangle {
-//            color: "yellow"
-//            anchors.fill: parent
-//        }
 
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         id: draggingArea
@@ -239,7 +236,6 @@ Item {
             case Qt.AlignTop:
                 return -mouseY;
             }
-//            return internal.orientation === Qt.Horizontal ? mouseY : mouseX
         }
 
         property int initialV
@@ -249,12 +245,11 @@ Item {
         }
 
         onPositionChanged: {
-            if (panel.state == "hint" || panel.state == "spread") panel.state = "moving";
-//            if (panel.state == "hint" && mouseV < initialV) {
-//                panel.state = "moving";
-//            } else if (panel.state == "spread" && mouseV > initialV) {
-//                panel.state = "moving";
-//            }
+            if (panel.state == "hint" && mouseV < initialV) {
+                panel.state = "moving";
+            } else if (panel.state == "spread" && mouseV > initialV) {
+                panel.state = "moving";
+            }
         }
 
         onReleased: finishMoving()
