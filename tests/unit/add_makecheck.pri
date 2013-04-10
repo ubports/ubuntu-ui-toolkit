@@ -3,6 +3,6 @@
 # Instead add a 'make check' manually.
 
 check.target = check
-check.commands = UITK_THEME_PATH=../../.. ./$$TARGET -platform minimal
+check.commands = QML_IMPORT_TRACE=1 QML2_IMPORT_PATH=../../.. UITK_THEME_PATH=../../.. ./$$TARGET -platform minimal
 check.commands += -maxwarnings 10 -xunitxml -o ../../test_$(TARGET).xml;
 check.commands += ../testparser/testparser ../../test_$(TARGET).xml 
