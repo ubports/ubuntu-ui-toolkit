@@ -20,16 +20,8 @@ Item {
     anchors.fill: parent
     property alias contentItem: contents
 
-//    z: -1
     Rectangle {
-//        z: -1
         id: background
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: parent.bottom
-//        }
-//        height: parent.height //- dropshadow.height
         anchors.fill: parent
         color: StyleUtils.itemStyleProperty("color")
         opacity: StyleUtils.itemStyleProperty("opacity")
