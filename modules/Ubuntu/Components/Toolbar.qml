@@ -30,9 +30,7 @@ import Ubuntu.Components 0.1 as Theming
             be automatically added when a Page defines tools.
 */
 Panel {
-    id: toolbar
-//        Theming.ItemStyle.class: "toolbar"
-
+    id: panel
     anchors {
         left: parent.left
         right: parent.right
@@ -85,8 +83,6 @@ Panel {
         // All theming items go into the background because only the children
         //  of the GenericToolbar are being shown/hidden while the toolbar
         //  itself may stay in place.
-        // FIXME: I tried to put the toolbar buttons inside the background as
-        //  well, but then the delegate draws the background over the buttons.
         id: background
         anchors {
             left: parent.left
@@ -95,75 +91,69 @@ Panel {
         }
         height: units.gu(8)
 
-        // FIXME: Use theming. Currently when I enable this, the delegate
-        //  background always goes in front of all the items given below!
-        // FIXME: I am using theming.. but it is not in the panel toolbar component
         Theming.ItemStyle.class: "toolbar"
 
-        //        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
-        //        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
+        //                MouseArea {
+        //                    // don't let mouse events go through the toolbar
+        //                    anchors.fill: parent
+        //                    // FIXME: Bug in qml? Without onClicked below, this MouseArea
+        //                    //      seems disabled.
+        //                    onClicked: { }
+        //                }
 
+    }
+    Component {
+        id: toolButtonComponent
+        Button {
+            id: toolButton
+            Theming.ItemStyle.class: "toolbar-button"
+            text: action && action.text ? action.text : ""
+            iconSource: action && action.iconSource ? action.iconSource : ""
+            onClicked: action.triggered(toolButton)
+            enabled: action && action.enabled
+            visible: action && action.visible
+            width: visible ? implicitWidth : 0
+            height: toolbar.height
+        }
+    }
 
-//                MouseArea {
-//                    // don't let mouse events go through the toolbar
-//                    anchors.fill: parent
-//                    // FIXME: Bug in qml? Without onClicked below, this MouseArea
-//                    //      seems disabled.
-//                    onClicked: { }
-//                }
-
-        Component {
-            id: toolButtonComponent
-            Button {
-                id: toolButton
-                Theming.ItemStyle.class: "toolbar-button"
-                text: action && action.text ? action.text : ""
-                iconSource: action && action.iconSource ? action.iconSource : ""
-                onClicked: action.triggered(toolButton)
-                enabled: action && action.enabled
-                visible: action && action.visible
-                width: visible ? implicitWidth : 0
-                height: toolbar.height
+    Loader {
+        id: backButton
+        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            verticalCenter: parent.verticalCenter
+        }
+        onStatusChanged: {
+            if (item && status == Loader.Ready && action && action.itemHint) {
+                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
+                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
+                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
             }
         }
+    }
 
-        Loader {
-            id: backButton
-            property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-            sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
-            anchors {
-                left: parent.left
-                leftMargin: units.gu(2)
-                verticalCenter: parent.verticalCenter
-            }
-            onStatusChanged: {
-                if (item && status == Loader.Ready && action && action.itemHint) {
-                    if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
-                    if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
-                    if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
-                }
-            }
+    Row {
+        id: toolButtonsContainer
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            top: parent.top
+            rightMargin: units.gu(2)
         }
+        width: childrenRect.width
+        spacing: units.gu(1)
 
-        Row {
-            id: toolButtonsContainer
-            anchors {
-                right: parent.right
-                bottom: parent.bottom
-                top: parent.top
-                rightMargin: units.gu(2)
-            }
-            width: childrenRect.width
-            spacing: units.gu(1)
-
-            Repeater {
-                model: internal.visibleTools ? internal.visibleTools.children : 0
-                Loader {
-                    sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                    property Action action: modelData
-                    anchors.verticalCenter: toolButtonsContainer.verticalCenter
-                }
+        Repeater {
+            model: internal.visibleTools ? internal.visibleTools.children : 0
+            Loader {
+                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
+                property Action action: modelData
+                anchors.verticalCenter: toolButtonsContainer.verticalCenter
             }
         }
     }
 }
+//}
