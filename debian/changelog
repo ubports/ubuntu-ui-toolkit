@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (0.1.41) raring; urgency=low
+
+  * Update documentation html styles
+  * Automatic license checking for source files
+  * Fix clamping bug for sheets on narrow screens 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 10 Apr 2013 19:16:52 +0200
+
 ubuntu-ui-toolkit (0.1.40) raring; urgency=low
 
   * Improve header and toolbar documentation for MainView/Page/PageStack/Tabs.
