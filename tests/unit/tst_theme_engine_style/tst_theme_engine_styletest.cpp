@@ -312,6 +312,16 @@ private Q_SLOTS:
         QCOMPARE(font.pixelSize(), pixelSizeSource + 2);
     }
 
+    void testCase_fontThemeNoOverrideUserBinding()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeNoOverrideUserBinding.qml", watchList, QUrl::fromLocalFile("FontThemeNoOverrideUserBinding.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Bold);
+        int pixelSizeSource = boundItem->property("pixelSizeSource").value<int>();
+        QCOMPARE(font.pixelSize(), pixelSizeSource + 2);
+    }
+
     void testCase_fontThemeWithOtherDefaultValue()
     {
         StyledPropertyMap watchList;
