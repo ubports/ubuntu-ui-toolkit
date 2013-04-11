@@ -44,6 +44,7 @@ Item {
             compare(page.tools, toolbarActions, "Page tools are set initially");
             compare(mainView.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
             compare(mainView.toolbar.tools.active, false, "Toolbar is inactive initially");
+            compare(mainView.toolbar.tools.lock, false, "Toolbar is initially not locked");
         }
 
         function test_active() {

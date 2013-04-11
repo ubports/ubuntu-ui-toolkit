@@ -22,14 +22,21 @@ import Ubuntu.Components 0.1 as Toolkit
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
 
-    TODO: document
-    Panel should not be themed, but the contents of the Panel.
-    The reason is that the panel itself should not have visible elements, since it is
+    Panel provides a panel that can be swiped in and out from an edge of the window by the user.
+    For most applications, it is highly recommended to make use of the \l MainView which includes
+    a toolbar at its bottom that can be swiped in or out.
+
+    Unless your application has very specific needs for a Panel, use a \l MainView with the
+    default toolbar.
+
+    When using a Panel, do not theme it directly, but theme its contents, because
+    the Panel itself should not have visible elements, since it is
     in the view (to detect mouse events) even when its contents should be invisible
 */
 Item {
     id: panel
 
+    /*! \internal */
     default property alias contents: bar.data
 
     /*!
@@ -49,20 +56,22 @@ Item {
     property int align: Qt.AlignBottom
 
     /*!
-      When active, the bar is visible, otherwise it is hidden.
-      Use bottom edge swipe up/down to activate/deactivate the bar.
+      When active, the panel is visible, otherwise it is hidden.
+      Use edge swipes to activate/deactivate the panel.
       The active property is not updated until the swipe gesture is completed.
      */
     property bool active: false
+    /*! \internal */
     onActiveChanged: {
         if (active) state = "spread";
         else state = "";
     }
 
     /*!
-      Disable bottom edge swipe to activate/deactivate the toolbar.
+      Disable edge swipe to activate/deactivate the panel.
      */
     property bool lock: false
+    /*! \internal */
     onLockChanged: {
         if (state == "hint" || state == "moving") {
             draggingArea.finishMoving();
@@ -70,13 +79,16 @@ Item {
     }
 
     /*!
-      How much of the panel to show when starting interaction.
+      How much of the panel to show when the user touches the panel's edge.
+      This gives the user a hint that there is a panel hiding at that edge and
+      invites him/her to swipe to show the panel completely.
      */
     property real hintSize: units.gu(2)
 
     /*!
-      The height of the mouse area used to detect edge swipes to
-      activate the panel.
+      The size (height for top or bottom-aligned panels, width for left or right-aligned
+      panels) of the mouse area used to detect edge swipes to activate the panel, when
+      the panel is not active.
      */
     property real triggerSize: units.gu(2)
 
@@ -179,6 +191,7 @@ Item {
         }
     }
 
+    /*! \internal */
     onStateChanged: {
         if (state == "hint") {
             internal.movingDelta = panel.hintSize + draggingArea.initialV - bar.size;

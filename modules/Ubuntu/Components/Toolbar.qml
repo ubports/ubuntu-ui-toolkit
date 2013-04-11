@@ -66,8 +66,10 @@ Panel {
     Connections {
         target: tools
         onActiveChanged: toolbar.active = tools.active;
+        onLockChanged: toolbar.lock = tools.lock;
     }
     onActiveChanged: if (tools) tools.active = toolbar.active
+    onLockChanged: if (tools) tools.lock = toolbar.lock
     QtObject {
         id: internal
         property ToolbarActions visibleTools: tools
