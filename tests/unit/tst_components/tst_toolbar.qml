@@ -32,15 +32,6 @@ Item {
                 Action {
                     text: "action1"
                 }
-                Action {
-                    itemHint: Slider {
-                        id: slider
-                        minimumValue: 0
-                        maximumValue: 100
-                        value: 50
-                        width: 100
-                    }
-                }
             }
         }
     }
@@ -78,17 +69,6 @@ Item {
             compare(mainView.toolbar.lock, true, "Toolbar can be locked by setting page.tools.lock");
             page.tools.lock = false;
             compare(mainView.toolbar.lock, false, "Toolbar can be unlocked by setting page.tools.lock to false");
-        }
-
-        function test_mouseDrag_bug1116578() {
-            toolbarActions.active = true;
-            compare(slider.value, 50, "Slider initial value is 50");
-            mouseDrag(slider, slider.width/2, slider.height/2, 0, slider.height/2, Qt.LeftButton);
-            compare(slider.value < 50, true, "Slider value decreased by dragging");
-            slider.value = 50;
-            compare(slider.value, 50, "Slider value reset to 50");
-            mouseDrag(slider, slider.width/2, slider.height/2, slider.width, slider.height/2, Qt.LeftButton);
-            compare(slider.value > 50, true, "Slider value increased by dragging");
         }
     }
 }
