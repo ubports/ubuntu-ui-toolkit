@@ -28,6 +28,19 @@ API Changes
     ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
     TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle
 
+SDK 0.1.41
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
 SDK 0.1.40
 ##########
 
