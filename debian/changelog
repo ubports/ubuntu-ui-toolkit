@@ -7,6 +7,7 @@ ubuntu-ui-toolkit (0.1.41) UNRELEASED; urgency=low
   [ Timo Jyrinki ]
   * Sync with raring packaging, separate meta also in the PPA again
   * New upstream snapshot
+    - Update documentation html styles
     - Fix the clamping of sheet width on narrow screens.
     - Added "make license" target
     - Added online and offline API documentation configurations, both with
