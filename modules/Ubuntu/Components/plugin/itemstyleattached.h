@@ -63,9 +63,7 @@ private:
     Q_DISABLE_COPY(ItemStyleAttached)
     Q_DECLARE_PRIVATE(ItemStyleAttached)
     QScopedPointer<ItemStyleAttachedPrivate> d_ptr;
-
     friend class ThemeEnginePrivate;
-    friend class UCStyle;
 
     Q_PRIVATE_SLOT(d_func(), void _q_attacheePropertyChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_reapplyStyling(QQuickItem *))
