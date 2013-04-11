@@ -1,10 +1,19 @@
-ubuntu-ui-toolkit (0.1.41) raring; urgency=low
+ubuntu-ui-toolkit (0.1.41) UNRELEASED; urgency=low
 
-  * Update documentation html styles
-  * Automatic license checking for source files
-  * Fix clamping bug for sheets on narrow screens 
+  [ Loïc Minier ]
+  * Drop ubuntu-sdk package; now generated from sdk ubuntu-touch seed in
+    ubuntu-touch-meta package.
 
- -- Tim Peeters <tim.peeters@canonical.com>  Wed, 10 Apr 2013 19:16:52 +0200
+  [ Timo Jyrinki ]
+  * Sync with raring packaging, separate meta also in the PPA again
+  * New upstream snapshot
+    - Update documentation html styles
+    - Fix the clamping of sheet width on narrow screens.
+    - Added "make license" target
+    - Added online and offline API documentation configurations, both with
+      Ubuntu styling.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 10 Apr 2013 10:04:53 +0300
 
 ubuntu-ui-toolkit (0.1.40) raring; urgency=low
 
@@ -17,14 +26,16 @@ ubuntu-ui-toolkit (0.1.39) quantal; urgency=low
 
   * New Icon component that displays icons from the icon theme.
   * Added libqt5svg5 as a dependency thus allowing use of SVGs in icon themes.
+  * Fix bug in list items. 
 
  -- Florian Boucault <florian.boucault@canonical.com>  Mon, 01 Apr 2013 10:03:49 -0300
 
-ubuntu-ui-toolkit (0.1.38) quantal; urgency=low
+ubuntu-ui-toolkit (0.1.38) raring; urgency=low
 
-  * Fix bug in list items. 
+  * Drop ubuntu-sdk package; now generated from sdk ubuntu-touch seed in
+    ubuntu-touch-meta package.
 
- -- Tim Peeters <tim.peeters@canonical.com>  Thu, 21 Mar 2013 19:25:15 +0100
+ -- Loïc Minier <loic.minier@ubuntu.com>  Thu, 21 Mar 2013 03:07:40 +0100
 
 ubuntu-ui-toolkit (0.1.37) raring; urgency=low
 
