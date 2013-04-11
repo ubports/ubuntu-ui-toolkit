@@ -28,7 +28,7 @@ import QtQuick 2.0
     on the size requested.
 
     Icons can also be colorized. Setting the \l color property will make all pixels
-    with the color #808080 (defined by convention) colored.
+    with the \l keyColor (by default #808080) colored.
 
     Example:
     \qml
@@ -62,10 +62,17 @@ Item {
     property string name
 
     /*!
-       The color that all pixels that originally are #808080 should take.
+       The color that all pixels that originally are of color \l keyColor should take.
        \qmlproperty color color
     */
     property alias color: colorizedImage.keyColorOut
+
+    /*!
+       The color of the pixels that should be colorized.
+       By default it is set to #808080.
+       \qmlproperty color keyColor
+    */
+    property alias keyColor: colorizedImage.keyColorIn
 
     Image {
         id: image
