@@ -21,6 +21,7 @@
 #include <QtQml/QQmlInfo>
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlabstractbinding_p.h>
+#include "itemstyleattached_p.h"
 
 #define foreach Q_FOREACH
 #include <private/qqmlbinding_p.h>
@@ -38,7 +39,8 @@
  */
 
 UCStyle::UCStyle(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_styler(0)
 {
 }
 
@@ -92,9 +94,11 @@ int UCStyle::bindItem(QQuickItem *item, StyledPropertyMap &propertyMap, bool use
 
         QQmlProperty qmlProperty(item, name, qmlContext(item));
 
-        if (usePropertyMap) {
+        if (usePropertyMap && QLatin1String(name) != QLatin1String("font")) {
             // styled item specific: check if it has a QML binding and whether the binding
             // is the original one or a newer one
+            // do not ban the front property from being styled even if it has a binding
+            // which happens in Label: "font.pixelSize: FontUtils.sizeToPixels(fontSize)"
             QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProperty);
             if (binding) {
                 // check if this binding is the original one
@@ -162,6 +166,16 @@ bool UCStyle::unbindProperty(const QString &property)
 bool UCStyle::isUpdating(const QString &property) const
 {
     return property == m_propertyUpdated;
+}
+
+/*!
+ * \internal
+ * Synchronizes the font resolve mask of the owner (styled item) to detect which
+ * subproperties of font were set before styling was activated.
+ */
+bool UCStyle::setStylerObject(ItemStyleAttached *styler)
+{
+    m_styler = styler;
 }
 
 
@@ -233,7 +247,40 @@ void UCStyle::write(const QString &source, const QQmlProperty &destination)
         // the alpha value is lost, meaning the destination will get value of 255
         // therefore we need to convert the variant to color and set the color falue
         destination.write(property(source.toLatin1()).value<QColor>());
-    } else
+    } else if (target.type() == QMetaType::QFont) {
+        // only set font subproperties that were not set before
+        QFont sourceValue = property(source.toLatin1()).value<QFont>();
+        QFont destinationValue = destination.read().value<QFont>();
+
+        // keep binding if there were any
+        QQmlAbstractBinding *originalBinding = QQmlPropertyPrivate::setBinding(destination, 0);
+
+        // setting default value to font subproperties like font.weight: Font.Light causes
+        // the property to be marked as resolved, therefore styling can no longer override
+        // these values; we can do this trick until the style is applied first time or a
+        // user value is set
+        if (m_styler &&
+                (m_styler->d_ptr->fontMask & ItemStyleAttachedPrivate::NoFontMonitoring) != ItemStyleAttachedPrivate::NoFontMonitoring) {
+            uint sourceMask = sourceValue.resolve();
+            uint destinationMask = destinationValue.resolve();
+            uint check = sourceMask & destinationMask;
+            if (check) {
+                destinationValue.resolve(destinationMask & ~check);
+            }
+        }
+
+        QFont result = destinationValue.resolve(sourceValue);
+        destination.write(result);
+
+        // restore binding if any
+        if (originalBinding) {
+            QQmlAbstractBinding *previousBinding = QQmlPropertyPrivate::setBinding(destination, originalBinding);
+            if (previousBinding) {
+                previousBinding->destroy();
+            }
+        }
+    } else {
         destination.write(property(source.toLatin1()));
+    }
     m_propertyUpdated.clear();
 }

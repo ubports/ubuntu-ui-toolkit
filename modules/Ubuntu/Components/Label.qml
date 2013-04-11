@@ -41,4 +41,8 @@ Text {
     property string fontSize: "medium"
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
+    /* FIXME: do not set any font subproperties (e.g. font.family, font.italic, etc.)
+       as setting there default value here will prevent them from being overriden
+       by the theme.
+    */
 }

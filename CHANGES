@@ -23,10 +23,24 @@ API Changes
   (affects componentUtils.js: hasStyle(), style(), delegateProperty() functions)
 - StyleUtils module is deprecated
   (affects styleUtils.js: itemStyleProperty(), animateOrSetValue(), animate() functions)
-- itemStype context properties published for delegates deprecated
+- itemStyle context properties published for delegates deprecated
+- use of style type, second parameter of @qml-mapping is deprecated
 - Deprecated theme specific styles and delegates:
     ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
     TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle
+
+SDK 0.1.41
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
 
 SDK 0.1.40
 ##########

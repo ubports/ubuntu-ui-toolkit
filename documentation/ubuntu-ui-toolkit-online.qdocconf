@@ -1,0 +1,17 @@
+include(ubuntu-ui-toolkit-common.qdocconf)
+include(ubuntu-appdev-site-header.qdocconf)
+include(ubuntu-appdev-site-footer.qdocconf)
+
+HTML.stylesheets = \
+    documentation/css/reset.css \
+    documentation/css/qtquick.css \
+    documentation/css/base.css \
+    documentation/css/scratch.css
+
+HTML.headerstyles = \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu+Mono:400\">\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/reset.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/qtquick.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/base.css\" />\n" \
+  "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/scratch.css\" />\n"

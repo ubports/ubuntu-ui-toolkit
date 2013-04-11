@@ -41,29 +41,53 @@ private:
     QQmlEngine *quickEngine;
     QQmlContext *context;
 
-    QQuickItem *boundItem;
-    StyledPropertyMap watchList;
-
     UCStyle *testingStyle;
 
-    QQuickItem *testItem()
+    QQuickItem *testItem(const QString &document, StyledPropertyMap &watchList, const QUrl &theme = QUrl())
     {
+        // delete previous root
+        QObject *root = quickView->rootObject();
+        if (root) delete root;
+
         ThemeEngine::initializeEngine(quickEngine);
-        ThemeEngine::instance()->resetError();
-        quickView->setSource(QUrl::fromLocalFile("TestDocument.qml"));
+        if (theme.isValid()) {
+            ThemeEngine::instance()->loadTheme(theme);
+            if (!ThemeEngine::instance()->error().isEmpty()) {
+                QWARN("Theme loading failed");
+                return 0;
+            }
+        } else
+            ThemeEngine::instance()->resetError();
+        quickView->setSource(QUrl::fromLocalFile(document));
         QCoreApplication::processEvents();
 
-        QObject *root = quickView->rootObject();
+        root = quickView->rootObject();
         if (!root)
             return 0;
 
         QList<QQuickItem*> items = root->findChildren<QQuickItem*>();
         Q_FOREACH(QQuickItem *item, items) {
-            // if a style has Item-derived properties (Animations, etc), those will be listed here too
+            // if an item has Item-derived properties (Animations, etc), those will be listed here too
             // therefore skip those
             QObject *obj = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
-            if (obj)
+            if (obj) {
+
+                for (int i = 0; i < item->metaObject()->propertyCount(); i++) {
+                    const QMetaProperty property = item->metaObject()->property(i);
+                    if (UCStyle::omitProperty(property.name()))
+                        continue;
+                    if (!property.hasNotifySignal())
+                        continue;
+                    watchList.mark(i, StyledPropertyMap::Enabled);
+                    const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("watchBoundItemProperty()"));
+                    QObject::connect(item, property.notifySignal(), this, slot);
+                }
+
+                // publish boundItem as context property
+                context->setContextProperty("item", item);
+
                 return item;
+            }
         }
         return 0;
     }
@@ -100,54 +124,42 @@ private Q_SLOTS:
         // check if theme gets loaded
         QCOMPARE(ThemeEngine::instance()->error(), QString(""));
 
-        boundItem = testItem();
-        QVERIFY(boundItem);
-
-        for (int i = 0; i < boundItem->metaObject()->propertyCount(); i++) {
-            const QMetaProperty property = boundItem->metaObject()->property(i);
-            if (UCStyle::omitProperty(property.name()))
-                continue;
-            if (!property.hasNotifySignal())
-                continue;
-            watchList.mark(i, StyledPropertyMap::Enabled);
-            const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("watchBoundItemProperty()"));
-            QObject::connect(boundItem, property.notifySignal(), this, slot);
-        }
-
         // create context for style and delegate
-        context = new QQmlContext(QQmlEngine::contextForObject(boundItem));
-
-        // publish boundItem as context property
-        context->setContextProperty("item", boundItem);
+        context = new QQmlContext(quickEngine->rootContext());
     }
 
     void cleanupTestCase()
     {
-        delete context;
         delete quickView;
     }
 
     void testCase_omitProperty()
     {
-        // from mid
-        QVERIFY(UCStyle::omitProperty("anchors"));
-        QVERIFY(UCStyle::omitProperty("focus"));
-        // from beginning of omit list
-        QVERIFY(UCStyle::omitProperty("activeFocus"));
-        // from end of omit list
-        QVERIFY(UCStyle::omitProperty("y"));
-        // do not omit
-        QVERIFY(!UCStyle::omitProperty("item"));
-        QVERIFY(!UCStyle::omitProperty("z"));
-        QVERIFY(!UCStyle::omitProperty("width"));
-        QVERIFY(!UCStyle::omitProperty("height"));
-        // properties that may be prersent as subset of an omitted property
-        // source->resources
-        QVERIFY(!UCStyle::omitProperty("source"));
+        // to be omitted
+        QString omitList(
+                "activeFocus,anchors,antialiasing,baseline,baselineOffset,"
+                "bottom,children,childrenRect,clip,data,focus,"
+                "horizontalCenter,implicitHeight,implicitWidth,layer,left,objectName,parent,"
+                "resources,right,rotation,scale,smooth,state,states,top,transform,transformOrigin,"
+                "transitions,verticalCenter,visibleChildren,x,y,z");
+        QString allowedList(
+                    "enabled,width,height,opacity,visible,source,item"
+                    );
+
+        Q_FOREACH(const QString &property, omitList.split(',')) {
+            QVERIFY2(UCStyle::omitProperty(property.toLocal8Bit()), property.toLocal8Bit());
+        }
+
+        Q_FOREACH(const QString &property, allowedList.split(',')) {
+            QVERIFY2(!UCStyle::omitProperty(property.toLocal8Bit()), property.toLocal8Bit());
+        }
     }
 
     void testCase_bindItem()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
@@ -174,6 +186,9 @@ private Q_SLOTS:
 
     void testCase_unbindItem()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
@@ -203,6 +218,9 @@ private Q_SLOTS:
 
     void testCase_unbindProperty()
     {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("TestDocument.qml", watchList);
+
         StyleCache::StyleData *rule = ThemeEnginePrivate::styleRuleForPath(Selector("button"));
         QVERIFY(rule);
         QVERIFY(rule->style);
@@ -235,6 +253,83 @@ private Q_SLOTS:
         delete style;
     }
 
+    void testCase_binding()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("BindingTest.qml", watchList);
+        QVERIFY(boundItem);
+
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(boundItem, false));
+        QVERIFY(itemStyle);
+
+        // verify style class, should be button
+        QString sclass = itemStyle->property("class").toString();
+        QCOMPARE(sclass, QString("button"));
+
+        // color property is bound to otherColor property; styling should update this
+        // properties as well, only user bindings (bindings made upon component use)
+        // should not be broken
+        QColor color(boundItem->property("color").toString());
+        QCOMPARE(color, QColor("#cccccc"));
+        // modify binding property value
+        boundItem->setProperty("otherColor", "blue");
+        color = QColor(boundItem->property("color").toString());
+        QCOMPARE(color, QColor("#cccccc"));
+    }
+
+    void testCase_fontThemeNoOverride()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeNoOverride.qml", watchList, QUrl::fromLocalFile("FontThemeNoOverride.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Bold);
+    }
+
+    void testCase_fontThemeOverrideDefaultValue()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeOverrideDefaultValue.qml", watchList, QUrl::fromLocalFile("FontThemeOverrideDefaultValue.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Bold);
+    }
+
+    void testCase_fontThemeDoNotOverrideUserValue()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeDoNotOverrideUserValue.qml", watchList, QUrl::fromLocalFile("FontThemeDoNotOverrideUserValue.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Light);
+    }
+
+    void testCase_fontThemeNoOverrideWithBinding()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeNoOverrideWithBinding.qml", watchList, QUrl::fromLocalFile("FontThemeNoOverrideWithBinding.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Bold);
+        int pixelSizeSource = boundItem->property("pixelSizeSource").value<int>();
+        QCOMPARE(font.pixelSize(), pixelSizeSource + 2);
+    }
+
+    void testCase_fontThemeNoOverrideUserBinding()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeNoOverrideUserBinding.qml", watchList, QUrl::fromLocalFile("FontThemeNoOverrideUserBinding.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QVERIFY(font.weight() == QFont::Bold);
+        int pixelSizeSource = boundItem->property("pixelSizeSource").value<int>();
+        QCOMPARE(font.pixelSize(), pixelSizeSource + 2);
+    }
+
+    void testCase_fontThemeWithOtherDefaultValue()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *boundItem = testItem("FontThemeWithOtherDefaultValue.qml", watchList, QUrl::fromLocalFile("FontThemeWithOtherDefaultValue.qmltheme"));
+        QFont font = boundItem->property("font").value<QFont>();
+        QCOMPARE(font.underline(), true);
+        QVERIFY(font.weight() == QFont::Bold);
+    }
 };
 
 QTEST_MAIN(tst_ThemeEngineStyle)

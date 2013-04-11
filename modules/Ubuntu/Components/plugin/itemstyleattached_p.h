@@ -34,6 +34,10 @@ public:
         const char *watcherSlot;
     };
 
+    enum {
+        NoFontMonitoring = 0x80000
+    };
+
 public:
     ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObject *attached);
     ~ItemStyleAttachedPrivate();
@@ -51,6 +55,7 @@ public:
     StyleCache::StyleData *styleRule;
     // hash of attachee property indexes as key, containing enabled/disabled value
     StyledPropertyMap watchedProperties;
+    uint fontMask;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
