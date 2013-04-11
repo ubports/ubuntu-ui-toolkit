@@ -253,7 +253,7 @@ void UCStyle::write(const QString &source, const QQmlProperty &destination)
         QFont destinationValue = destination.read().value<QFont>();
 
         // keep binding if there were any
-        QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(destination, 0);
+        QQmlAbstractBinding *originalBinding = QQmlPropertyPrivate::setBinding(destination, 0);
 
         // setting default value to font subproperties like font.weight: Font.Light causes
         // the property to be marked as resolved, therefore styling can no longer override
@@ -264,20 +264,23 @@ void UCStyle::write(const QString &source, const QQmlProperty &destination)
             uint sourceMask = sourceValue.resolve();
             uint destinationMask = destinationValue.resolve();
             uint check = sourceMask & destinationMask;
-            if (check)
+            if (check) {
                 destinationValue.resolve(destinationMask & ~check);
+            }
         }
 
         QFont result = destinationValue.resolve(sourceValue);
         destination.write(result);
 
         // restore binding if any
-        if (prev) {
-            QQmlAbstractBinding *tmp = QQmlPropertyPrivate::setBinding(destination, prev);
-            if (tmp)
-                tmp->destroy();
+        if (originalBinding) {
+            QQmlAbstractBinding *previousBinding = QQmlPropertyPrivate::setBinding(destination, originalBinding);
+            if (previousBinding) {
+                previousBinding->destroy();
+            }
         }
-    } else
+    } else {
         destination.write(property(source.toLatin1()));
+    }
     m_propertyUpdated.clear();
 }

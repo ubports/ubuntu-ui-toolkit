@@ -214,8 +214,9 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
                 // stop watching also when the same value is resolved again;
                 // this happens when a user value is set
                 fontMask |= NoFontMonitoring;
-            } else
+            } else {
                 fontMask = resolved;
+            }
         }
         return;
     }
