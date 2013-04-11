@@ -288,7 +288,6 @@ private Q_SLOTS:
 
     void testCase_fontThemeOverrideDefaultValue()
     {
-        QEXPECT_FAIL("", "Default values for 'font' subproperties cannot be overriden by the theme.", Continue);
         StyledPropertyMap watchList;
         QQuickItem *boundItem = testItem("FontThemeOverrideDefaultValue.qml", watchList, QUrl::fromLocalFile("FontThemeOverrideDefaultValue.qmltheme"));
         QFont font = boundItem->property("font").value<QFont>();

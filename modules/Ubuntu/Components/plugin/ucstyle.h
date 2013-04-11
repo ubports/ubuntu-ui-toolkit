@@ -68,6 +68,7 @@ public:
 
 class QQmlBinding;
 class QQuickItem;
+class ItemStyleAttached;
 class UCStyle : public QObject
 {
     Q_OBJECT
@@ -91,6 +92,7 @@ public:
     bool unbindItem(QQuickItem *item);
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
+    bool setStylerObject(ItemStyleAttached *styler);
 
 private Q_SLOTS:
     void updateStyledItem();
@@ -98,6 +100,7 @@ private Q_SLOTS:
 private:
     QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
+    ItemStyleAttached *m_styler;
 
     void bind(const QQmlProperty &property);
     void unbind(const QString &name);
