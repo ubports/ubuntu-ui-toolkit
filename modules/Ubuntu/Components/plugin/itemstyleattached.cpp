@@ -120,7 +120,6 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     delegate(0),
     componentContext(0),
     styleRule(0),
-    fontMask(0),
     delayApplyingStyle(true),
     customStyle(false),
     customDelegate(false),
@@ -178,6 +177,11 @@ void ItemStyleAttachedPrivate::watchAttacheeProperties()
             watchedProperties.mark(i, StyledPropertyMap::Enabled);
         }
 
+        if (QLatin1String(prop.name()) == QLatin1String("font")) {
+            // never ban the font property from being styled
+            continue;
+        }
+
         // connect property's notify signal to watch when it gets changed so we can stop watching it
         QObject::connect(attachee, prop.notifySignal(), q, onAttacheePropertyChanged);
     }
@@ -194,33 +198,12 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
     const QMetaObject *mo = attachee->metaObject();
     QMetaMethod signal = mo->method(q->senderSignalIndex());
     QString property = QString(signal.name()).remove("Changed");
+
+    // was the property change invoked by the style update, exit
+    if (style && style->isUpdating(property))
+        return;
+
     int index = mo->indexOfProperty(property.toLatin1());
-    const QMetaProperty metaProperty = mo->property(index);
-
-    if (style && style->isUpdating(property)) {
-        if (metaProperty.type() == QMetaType::QFont) {
-            // once we receive the signal that the font got styled, we stop monitoring it
-            fontMask |= NoFontMonitoring;
-        }
-        return;
-    }
-
-    if (metaProperty.type() == QMetaType::QFont) {
-        if ((fontMask & NoFontMonitoring) != NoFontMonitoring) {
-            // log the latest modifications on the font
-            QFont value = metaProperty.read(attachee).value<QFont>();
-            uint resolved = value.resolve();
-            if (fontMask & resolved) {
-                // stop watching also when the same value is resolved again;
-                // this happens when a user value is set
-                fontMask |= NoFontMonitoring;
-            } else {
-                fontMask = resolved;
-            }
-        }
-        return;
-    }
-
     if (watchedProperties.isBanned(index))
         return;
 
@@ -290,7 +273,6 @@ bool ItemStyleAttachedPrivate::updateStyle()
 
     // reparent also custom styles!
     if (result && style) {
-        style->setStylerObject(q_ptr);
         style->bindItem(attachee, watchedProperties, true);
         style->bindItem(delegate, watchedProperties, false);
         componentContext->setContextProperty(styleProperty, style);
@@ -364,7 +346,6 @@ void ItemStyleAttachedPrivate::resetStyle()
         style->unbindItem(delegate);
         style->unbindItem(attachee);
         style->setParent(0);
-        style->setStylerObject(0);
         style->deleteLater();
         style = 0;
     }
