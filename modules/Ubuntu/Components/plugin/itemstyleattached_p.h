@@ -21,17 +21,26 @@
 
 #include "itemstyleattached.h"
 #include "stylecache_p.h"
+#include "ucstyle.h"
 
 class QQmlContext;
 class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
+public:
+    struct Binding {
+        Binding() : destination(0), watcherSlot(0){}
+        Binding(QObject *obj, const char *slot) : destination(qobject_cast<QQuickItem*>(obj)), watcherSlot(slot){}
+        QQuickItem *destination;
+        const char *watcherSlot;
+    };
+
 public:
     ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObject *attached);
     ~ItemStyleAttachedPrivate();
 
     ItemStyleAttached *q_ptr;
     QQuickItem *attachee;
-    QObject *style;
+    UCStyle *style;
     QQuickItem *delegate;
     QString styleClass;
     QString styleId;
@@ -40,20 +49,34 @@ public:
     // internal members
     QQmlContext *componentContext;
     StyleCache::StyleData *styleRule;
+    // hash of attachee property indexes as key, containing enabled/disabled value
+    StyledPropertyMap watchedProperties;
     bool delayApplyingStyle;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
 
+    void watchAttacheeProperties();
+    void applyStyleOnProperty(const QQmlProperty &property);
     bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateCurrentStyle();
+    void resetStyle();
+    void resetDelegate();
+    void applyStyleOnChildren(QQuickItem *item);
     bool registerName(const QString &id);
     void listenThemeEngine();
+    void _q_attacheePropertyChanged();
+    void _q_updateStyledItem();
+    void _q_updateAttacheeProperty();
+    void _q_updateDelegateProperty();
     void _q_refreshStyle();
     void _q_reapplyStyling(QQuickItem *);
 
+#ifdef QT_TESTLIB_LIB
+    friend class tst_ThemeEngineStyle;
+#endif
 };
 
 #endif // ITEMSTYLEATTACHED_P_H

@@ -44,7 +44,7 @@ Item {
             duration: 200
         }
     }
-    height: Theming.ComponentUtils.delegateProperty(header, "height", units.gu(10))
+    height: units.gu(10)
 
     visible: title || contents
 

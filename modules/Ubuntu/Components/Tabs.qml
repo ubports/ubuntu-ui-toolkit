@@ -124,7 +124,7 @@ PageTreeNode {
       and provides scrollable tab buttons.
       FIXME: headerContents may be specified here directly, not taken from the delegate.
      */
-    property Component __headerContents: ComponentUtils.delegateProperty(tabs, "headerContents", null)
+    property Component __headerContents
 
     /*!
       \deprecated

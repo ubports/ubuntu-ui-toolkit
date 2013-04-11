@@ -527,13 +527,9 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
     if (properties.count() > 0) {
         QString propertyPrefix("    ");
 
-        if (!qmlTypes.first.isEmpty()) {
-            // we have the mapping!!
-            style = QString(stylePropertyFormat).arg(qmlTypes.first);
-        } else {
-            style = QString(stylePropertyFormat).arg("QtObject");
-            propertyPrefix += "property var";
-        }
+        // do not consider style types
+        style = QString(stylePropertyFormat).arg("Style");
+        propertyPrefix += "property var";
 
         // add properties
         QHashIterator<QString, QString> i(properties);
@@ -672,9 +668,10 @@ bool QmlThemeLoader::handleQmlImport(QmlThemeLoader *loader, QTextStream &stream
         }
 
     } else {
-        ThemeEnginePrivate::setError(QString("QML import %1 allready added!").
-                                     arg(import[1]));
-        return false;
+        // FIXME show warning instead of error, but continue parsing
+//        ThemeEnginePrivate::setError(QString("QML import %1 allready added!").
+//                                     arg(import[0]));
+        return true;
     }
 
     return true;
@@ -696,6 +693,8 @@ QmlThemeLoader::QmlThemeLoader(QQmlEngine *engine)
 bool QmlThemeLoader::loadTheme(const QUrl &url, QStringList &themeFiles, StyleCache &cache)
 {
     bool ok = true;
+    // add toolkit as default import due to Style type
+    imports = "import Ubuntu.Components 0.1\n";
     // parses the theme
     if (parseTheme(url)) {
 

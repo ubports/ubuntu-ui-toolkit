@@ -10,6 +10,9 @@ TARGET = ../UbuntuComponents
 QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
+#needed by ItemStyleAttached
+QT += qml-private core-private v8-private
+
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
 
@@ -39,7 +42,8 @@ HEADERS += plugin.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h \
-    selector_p.h
+    selector_p.h \
+    ucstyle.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -59,7 +63,8 @@ SOURCES += plugin.cpp \
     bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
-    selector.cpp
+    selector.cpp \
+    ucstyle.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
