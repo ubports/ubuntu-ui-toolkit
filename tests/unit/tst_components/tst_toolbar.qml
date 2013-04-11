@@ -66,9 +66,9 @@ Item {
             mainView.toolbar.lock = false;
             compare(mainView.toolbar.lock, false, "Toolbar can be unlocked");
             page.tools.lock = true;
-            compare(mainView.toolbar.lock = true, "Toolbar can be locked by setting page.tools.lock");
+            compare(mainView.toolbar.lock, true, "Toolbar can be locked by setting page.tools.lock");
             page.tools.lock = false;
-            compare(mainView.toolbar.lock = false, "Toolbar can be unlocked by setting page.tools.lock to false");
+            compare(mainView.toolbar.lock, false, "Toolbar can be unlocked by setting page.tools.lock to false");
         }
     }
 }
