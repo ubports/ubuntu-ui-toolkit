@@ -40,7 +40,8 @@ API Changes
 - use of style type, second parameter of @qml-mapping is deprecated
 - Deprecated theme specific styles and delegates:
     ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
-    TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle
+    TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle. These components were deprecated
+    and their properties are now in the respective delegates.
 
 SDK 0.1.41
 ##########
