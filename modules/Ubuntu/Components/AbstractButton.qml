@@ -37,6 +37,9 @@ Item {
     */
     signal clicked(var mouse)
 
+    Keys.onEnterPressed: clicked()
+    Keys.onReturnPressed: clicked()
+
     /*!
       \preliminary
       This handler is called when there is a long press.
