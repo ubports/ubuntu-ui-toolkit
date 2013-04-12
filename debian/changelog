@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.41) UNRELEASED; urgency=low
+ubuntu-ui-toolkit (0.1.42) raring; urgency=low
 
   [ Loïc Minier ]
   * Drop ubuntu-sdk package; now generated from sdk ubuntu-touch seed in
@@ -13,7 +13,18 @@ ubuntu-ui-toolkit (0.1.41) UNRELEASED; urgency=low
     - Added online and offline API documentation configurations, both with
       Ubuntu styling.
 
- -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 10 Apr 2013 10:04:53 +0300
+  [ Tim Peeters ]
+  * Rewrite of theming engine. See CHANGES for details and deprecated APIs.
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Fri, 12 Apr 2013 13:58:19 +0200
+
+ubuntu-ui-toolkit (0.1.41) raring; urgency=low
+
+  * Update documentation html styles
+  * Automatic license checking for source files
+  * Fix clamping bug for sheets on narrow screens 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 10 Apr 2013 19:16:52 +0200
 
 ubuntu-ui-toolkit (0.1.40) raring; urgency=low
 
