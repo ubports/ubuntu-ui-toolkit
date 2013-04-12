@@ -25,9 +25,7 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype Button
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The Button class is DOCME
-
-    \b{This component is under heavy development.}
+    \brief Standard Ubuntu button.
 
     Examples:
     \qml
