@@ -17,14 +17,19 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property color color
+    property real barOpacity
+
     anchors.fill: parent
     property alias contentItem: background
 
     Rectangle {
         id: background
         anchors.fill: parent
-        color: StyleUtils.itemStyleProperty("color")
-        opacity: StyleUtils.itemStyleProperty("opacity")
+        color: visuals.color
+        opacity: visuals.barOpacity
     }
 
     Image {

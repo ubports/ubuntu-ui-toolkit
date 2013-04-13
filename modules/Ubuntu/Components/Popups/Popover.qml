@@ -33,48 +33,58 @@ import Ubuntu.Components 0.1 as Theming
 
     Example:
     \qml
+        import QtQuick 2.0
         import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1 as ListItem
         import Ubuntu.Components.Popups 0.1
 
-        Item {
-            Popover {
-                id: popover
-                Column {
-                    id: containerLayout
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
-                    ListItem.Header { text: "Standard list items" }
-                    ListItem.Standard { text: "Do something" }
-                    ListItem.Standard { text: "Do something else" }
-                    ListItem.Header { text: "Buttons" }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Do nothing"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
+        Rectangle {
+            color: "grey"
+            width: units.gu(80)
+            height: units.gu(80)
+            Component {
+                id: popoverComponent
+
+                Popover {
+                    id: popover
+                    Column {
+                        id: containerLayout
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            right: parent.right
+                        }
+                        ListItem.Header { text: "Standard list items" }
+                        ListItem.Standard { text: "Do something" }
+                        ListItem.Standard { text: "Do something else" }
+                        ListItem.Header { text: "Buttons" }
+                        ListItem.SingleControl {
+                            highlightWhenPressed: false
+                            control: Button {
+                                text: "Do nothing"
+                                anchors {
+                                    fill: parent
+                                    margins: units.gu(1)
+                                }
                             }
                         }
-                    }
-                    ListItem.SingleControl {
-                        highlightWhenPressed: false
-                        control: Button {
-                            text: "Close"
-                            anchors {
-                                fill: parent
-                                margins: units.gu(1)
+                        ListItem.SingleControl {
+                            highlightWhenPressed: false
+                            control: Button {
+                                text: "Close"
+                                anchors {
+                                    fill: parent
+                                    margins: units.gu(1)
+                                }
+                                onClicked: PopupUtils.close(popover)
                             }
-                            onClicked: PopupUtils.close(popover)
                         }
                     }
                 }
             }
             Button {
                 id: popoverButton
+                anchors.centerIn: parent
                 text: "open"
                 onClicked: PopupUtils.open(popoverComponent, popoverButton)
             }
@@ -116,13 +126,13 @@ PopupBase {
       The property holds the margins from the popover's dismissArea. The property
       is themed.
       */
-    property real edgeMargins: ComponentUtils.style(popover, "edgeMargins", 0)
+    property real edgeMargins
 
     /*!
       The property holds the margin from the popover's caller. The property
       is themed.
       */
-    property real callerMargin: ComponentUtils.style(popover, "callerMargin", 0)
+    property real callerMargin
 
     /*!
       The property drives the automatic closing of the Popover when user taps
@@ -156,10 +166,12 @@ PopupBase {
 
         // FIXME: see above
         Theming.ItemStyle.class: "foreground"
+        //styling properties
+        property real minimumWidth
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
-        width: Math.min(ComponentUtils.style(foreground, "minimumWidth", units.gu(40)), maxWidth)
+        width: Math.min(minimumWidth, maxWidth)
         height: childrenRect.height
 
         Item {

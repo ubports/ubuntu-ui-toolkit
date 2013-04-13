@@ -88,7 +88,15 @@ tst_ThemeEnginePrivate::tst_ThemeEnginePrivate():
 
 void tst_ThemeEnginePrivate::initTestCase()
 {
+    QString modules("../../../modules");
+    QVERIFY(QDir(modules).exists());
+
     quickEngine = new QQmlEngine(this);
+
+    // add import modules manually
+    QStringList imports = quickEngine->importPathList();
+    imports << QDir(modules).absolutePath();
+    quickEngine->setImportPathList(imports);
 
     // must register all the types as done in plugin; if used from plugin
     // declarative does not create the Rule objects but QObjects, and does

@@ -22,6 +22,7 @@
         property is not found.
  */
 function itemStyleProperty(property, defaultValue) {
+    print("StyleUtils.itemStyleProperty is DEPRECATED, called by "+parent);
     if (undefined !== itemStyle[property]) {
         return itemStyle[property];
     }
@@ -41,6 +42,7 @@ function itemStyleProperty(property, defaultValue) {
   */
 function animateOrSetValue(animation, target, property, endValue)
 {
+    print("StyleUtils.animateOrSetValue is DEPRECATED");
     if (!animate(animation, target))
         target[property] = endValue;
 }
@@ -54,6 +56,7 @@ function animateOrSetValue(animation, target, property, endValue)
    }
   */
 function animate(property, target) {
+    print("StyleUtils.animate is DEPRECATED");
     if (itemStyle[property]) {
         var anim = itemStyle[property];
         // stop the previously running animation

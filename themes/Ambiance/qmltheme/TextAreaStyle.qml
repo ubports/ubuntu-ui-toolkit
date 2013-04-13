@@ -63,4 +63,6 @@ QtObject {
       Spacing between the frame and the text editor area
       */
     property var frameSpacing
+
+    Component.onCompleted: print("TextAreaStyle deprecated")
 }

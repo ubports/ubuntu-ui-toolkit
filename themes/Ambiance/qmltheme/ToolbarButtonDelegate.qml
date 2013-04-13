@@ -18,6 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property int iconWidth: 0
+    property int iconHeight: 0
+
     anchors.fill: parent
 
     implicitWidth: units.gu(5)
@@ -34,8 +39,8 @@ Item {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: StyleUtils.itemStyleProperty("iconWidth")
-            height: StyleUtils.itemStyleProperty("iconWidth")
+            width: iconWidth
+            height: iconWidth
             source: item.iconSource
         }
 
@@ -50,4 +55,6 @@ Item {
             text: item.text
         }
     }
+
+    Component.onCompleted: item.implicitWidth = implicitWidth
 }

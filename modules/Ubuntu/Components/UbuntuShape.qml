@@ -84,21 +84,56 @@ Item {
       color that fills the shape. It is optional to set this one as setting
       \l color is enough to set the overall color of the shape.
     */
-    property color gradientColor: Theming.ComponentUtils.style(shape, "gradientColor", Qt.rgba(0, 0, 0, 0))
+    property color gradientColor: Qt.rgba(0, 0, 0, 0)
 
     /*!
       \deprecated
       The image used to mask the \l image.
       We plan to expose that feature through styling properties.
     */
-    property url maskSource: Theming.ComponentUtils.style(shape, "maskSource", "")
+    property url maskSource: ""
 
     /*!
       \deprecated
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
-    property url borderSource: Theming.ComponentUtils.style(shape, "borderIdle", "")
+    /* FIXME: the theming engine sets the value for the borderSource property
+       declared in the theme. It overwrites the default value set below. However
+       the theming engine tries to be smart and not overwrite the value set when
+       instantiating the class. In the following example the value "mySource" is
+       not going to be overwritten by the theming engine:
+
+       UbuntuShape {
+            borderSource: "mySource"
+       }
+
+       with the theme:
+
+       .ubuntushape {
+            borderSource: url("themeSource")
+       }
+
+       However, in order to do so, the theming engine relies on the emission of
+       the 'changed' signal for the property which is emitted when the class
+       is instantiated _if_ the default value is different to the value set when
+       instantiating the class. This leads to a corner case that will have a
+       counter-intuitive result. Consider the following example where the default
+       value is identical to the value set at instantiation:
+
+       UbuntuShape {
+            borderSource: "*"
+       }
+
+       with the theme:
+
+       .ubuntushape {
+            borderSource: url("themeSource")
+       }
+
+       The final value of the 'borderSource' property will be "themeSource" and not "*".
+    */
+    property url borderSource: "*"
 
     /*!
       The image used to fill the shape.

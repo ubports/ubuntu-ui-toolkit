@@ -60,4 +60,6 @@ QtObject {
     property color backgroundColor
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
+
+    Component.onCompleted: print("SwitchStyle deprecated")
 }

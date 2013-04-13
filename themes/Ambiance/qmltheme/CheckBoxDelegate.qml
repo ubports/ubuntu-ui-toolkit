@@ -18,19 +18,31 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property color checkedColor
+    property color uncheckedColor
+    /*!
+      The image to show inside the checkbox when it is checked.
+     */
+    property url checkMarkSource
+    /*!
+      The animation to fade the color from checkedColor to uncheckedColor and vice versa.
+     */
+    property PropertyAnimation backgroundColorAnimation: PropertyAnimation{duration: 0}
+
+    // code
     anchors.fill: parent
-    implicitWidth: units.gu(4)
-    implicitHeight: units.gu(4)
     opacity: enabled ? 1.0 : 0.5
 
     UbuntuShape {
         anchors.fill: parent
-        color: item.checked ? StyleUtils.itemStyleProperty("checkedColor") : StyleUtils.itemStyleProperty("uncheckedColor")
+        color: item.checked ? checkedColor : uncheckedColor
         gradientColor: "transparent"
         Behavior on color {
             ColorAnimation {
-                duration: StyleUtils.itemStyleProperty("backgroundColorAnimation").duration
-                easing: StyleUtils.itemStyleProperty("backgroundColorAnimation").easing
+                duration: backgroundColorAnimation.duration
+                easing: backgroundColorAnimation.easing
             }
         }
     }
@@ -39,7 +51,7 @@ Item {
         id: checkMark
         anchors.centerIn: parent
         smooth: true
-        source: StyleUtils.itemStyleProperty("checkMarkSource", "")
+        source: checkMarkSource
         opacity: item.checked ? 1.0 : 0.0
         Behavior on opacity {
             NumberAnimation { duration: 100; easing.type: Easing.OutQuad }

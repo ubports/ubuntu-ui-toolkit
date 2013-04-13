@@ -697,12 +697,14 @@ FocusScope {
     /*!\internal */
     onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
 
+    /*!\internal */
+    property alias __internal: internal
     QtObject {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
         property real lineSpacing: units.dp(3)
-        property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
+        property real frameSpacing: 0
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
@@ -896,13 +898,6 @@ FocusScope {
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
-
-            // styling
-            Theming.ItemStyle.style: control.Theming.ItemStyle.style
-            color: ComponentUtils.style(editor, "color", "black")
-            selectedTextColor: ComponentUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
-            selectionColor: ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
-            font: ComponentUtils.style(editor, "font", fontHolder.font)
 
             // autosize handling
             onLineCountChanged: internal.frameSize()

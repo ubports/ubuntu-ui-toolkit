@@ -37,8 +37,6 @@ Panel {
         bottom: parent.bottom
     }
     height: background.height
-    hintSize: Theming.ComponentUtils.style(background, "hintSize", units.gu(2))
-    triggerSize: Theming.ComponentUtils.style(background, "triggerSize", units.gu(2))
 
     /*!
       \preliminary

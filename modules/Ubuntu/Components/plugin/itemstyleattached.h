@@ -23,6 +23,7 @@
 #include <QtQml>
 
 class QQuickItem;
+class UCStyle;
 class ItemStyleAttachedPrivate;
 class ItemStyleAttached : public QObject
 {
@@ -30,7 +31,7 @@ class ItemStyleAttached : public QObject
 
     Q_PROPERTY(QString class READ styleClass WRITE setStyleClass NOTIFY styleChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY styleChanged)
-    Q_PROPERTY(QObject *style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PROPERTY(UCStyle *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PROPERTY(QQuickItem *delegate READ delegate WRITE setDelegate NOTIFY styleChanged)
 
     Q_PROPERTY(QString path READ path NOTIFY styleChanged)
@@ -53,8 +54,8 @@ public: //getters
 private:
     void setName(const QString &name);
     void setStyleClass(const QString &styleClass);
-    QObject *style() const;
-    void setStyle(QObject *style);
+    UCStyle *style() const;
+    void setStyle(UCStyle *style);
     QQuickItem *delegate() const;
     void setDelegate(QQuickItem *delegate);
 
@@ -64,6 +65,7 @@ private:
     QScopedPointer<ItemStyleAttachedPrivate> d_ptr;
     friend class ThemeEnginePrivate;
 
+    Q_PRIVATE_SLOT(d_func(), void _q_attacheePropertyChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_reapplyStyling(QQuickItem *))
     Q_PRIVATE_SLOT(d_func(), void _q_refreshStyle())
 };

@@ -37,11 +37,11 @@ EditorCursorDelegate {
 
     Rectangle {
         id: pinBall
-        width: StyleUtils.itemStyleProperty("pinSize", 0)
+        width: cursor.pinSize
         height: width
         radius: width
         smooth: true
-        color: StyleUtils.itemStyleProperty("pinColor", "black")
+        color: cursor.pinColor
         anchors {
             horizontalCenter: cursor.horizontalCenter
             bottom: startPin ? cursor.top : undefined
@@ -51,7 +51,7 @@ EditorCursorDelegate {
         MouseArea {
             id: dragArea
             anchors.fill: parent
-            anchors.margins: -StyleUtils.itemStyleProperty("pinSensingOffset", units.dp(3))
+            anchors.margins: -cursor.pinSensingOffset
 
             drag {
                 target: Item{}
