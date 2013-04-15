@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     width: 200; height: 200
@@ -36,6 +37,19 @@ Item {
 
     TextEdit {
         id: textEdit
+    }
+
+    ListItem.Empty {
+        id: listItem
+        height: 200
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        TextArea {
+            id: input
+            anchors.fill: parent
+            Component.onCompleted: forceActiveFocus()
+        }
     }
 
     TestCase {
@@ -335,9 +349,19 @@ Item {
             textArea.readOnly = false;
             textArea.keyPressData = 0;
             textArea.keyReleaseData = 0;
-            keyClick(Qt.Key_Control, Qt.NoModifier, 100);
-            compare(textArea.keyPressData, Qt.Key_Control, "Key press filtered");
-            compare(textArea.keyReleaseData, Qt.Key_Control, "Key release filtered");
+            keyClick(Qt.Key_T, Qt.NoModifier, 100);
+            compare(textArea.keyPressData, Qt.Key_T, "Key press filtered");
+            compare(textArea.keyReleaseData, Qt.Key_T, "Key release filtered");
+        }
+
+        function test_TextAreaInListItem() {
+            input.forceActiveFocus();
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_E);
+            keyClick(Qt.Key_S);
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_Return);
+            compare(input.text, "test\n", "Keys");
         }
     }
 }
