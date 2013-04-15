@@ -101,7 +101,6 @@ Panel {
         id: toolButtonComponent
         Item {
             id: toolButton
-            property bool isToolButton: true
             Theming.ItemStyle.class: "toolbar-button"
             property string text: action && action.text ? action.text : ""
             property url iconSource: action && action.iconSource ? action.iconSource : ""

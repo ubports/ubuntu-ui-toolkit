@@ -324,7 +324,7 @@ Item {
                 var coords = mapToItem(item, mouse.x, mouse.y);
                 item = item.childAt(coords.x, coords.y);
             }
-            return item; // will be null if no item had clicked() signal.
+            return item; // will be null if no item has clicked() signal.
         }
 
         // forward clicked events to any child Item with a clicked() signal, not
@@ -333,7 +333,7 @@ Item {
         // never disabled, and other signal handlers will return when panel.lock is true.
         onClicked: {
             if (pressedItem && pressedItem === getClickableItem(mouse)) {
-                // Click event on top of the Item where the user first pressed
+                // Click event positioned at the Item where the user first pressed
                 pressedItem.clicked();
             }
         }
