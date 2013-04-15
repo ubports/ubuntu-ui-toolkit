@@ -99,13 +99,15 @@ Panel {
 
     Component {
         id: toolButtonComponent
-        Button {
+        Item {
             id: toolButton
+            property bool isToolButton: true
             Theming.ItemStyle.class: "toolbar-button"
-            text: action && action.text ? action.text : ""
-            iconSource: action && action.iconSource ? action.iconSource : ""
+            property string text: action && action.text ? action.text : ""
+            property url iconSource: action && action.iconSource ? action.iconSource : ""
+            signal clicked()
             onClicked: action.triggered(toolButton)
-            enabled: action && action.enabled
+            property bool enabled: action && action.enabled
             visible: action && action.visible
             width: visible ? implicitWidth : 0
             height: toolbar.height

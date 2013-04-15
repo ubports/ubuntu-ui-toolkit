@@ -293,6 +293,7 @@ Item {
     DraggingArea {
         id: draggingArea
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
+        zeroVelocityCounts: true
         anchors {
             top: panel.align === Qt.AlignBottom ? undefined : parent.top
             bottom: panel.align === Qt.AlignTop ? undefined : parent.bottom
@@ -301,10 +302,6 @@ Item {
         }
         height: internal.orientation === Qt.Horizontal ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
-
-        zeroVelocityCounts: true
-        propagateComposedEvents: true
-        visible: !panel.lock
 
         property int mouseV: getMouseV()
         function getMouseV() {
@@ -320,23 +317,58 @@ Item {
             }
         }
 
+        // set in onPressed, reset when entering "moving" state
+        property Item pressedItem: null
+
+        // find the first child with a clicked property:
+        function getClickableItem(mouse) {
+            var item = bar; // contains the children
+            while (item && !item.hasOwnProperty("clicked")) {
+                var coords = mapToItem(item, mouse.x, mouse.y);
+                item = item.childAt(coords.x, coords.y);
+            }
+            return item; // will be null if no item had clicked() signal.
+        }
+
+        // forward clicked events to any child Item with a clicked() signal, not
+        // just MouseAreas since MouseAreas would block swiping of the panel.
+        // This must also happen when the panel is locked, so the DraggingArea is
+        // never disabled, and other signal handlers will return when panel.lock is true.
+        onClicked: {
+            if (pressedItem && pressedItem === getClickableItem(mouse)) {
+                // Click event on top of the Item where the user first pressed
+                pressedItem.clicked();
+            }
+        }
+
         property int initialV
         onPressed: {
+            pressedItem = getClickableItem(mouse)
+            if (panel.lock) return;
             initialV = getMouseV();
             if (panel.state == "") panel.state = "hint";
         }
 
         onPositionChanged: {
+            if (panel.lock) return;
             if (panel.state == "hint" && mouseV < initialV) {
                 panel.state = "moving";
+                pressedItem = null;
             } else if (panel.state == "spread" && mouseV > initialV) {
                 panel.state = "moving";
+                pressedItem = null;
             }
         }
 
-        onReleased: finishMoving()
+        onReleased: {
+            if (panel.lock) return;
+            finishMoving();
+        }
         // Mouse cursor moving out of the window while pressed on desktop
-        onCanceled: finishMoving()
+        onCanceled: {
+            if (panel.lock) return;
+            finishMoving();
+        }
 
         // FIXME: Make all parameters below themable.
         //  The value of 44 was copied from the Launcher.
@@ -377,5 +409,4 @@ Item {
         y: panel.align === Qt.AlignTop ? -v : panel.align === Qt.AlignBottom ? v : 0
         x: panel.align === Qt.AlignLeft ? -v : panel.align === Qt.AlignRight ? v : 0
     }
-
 }

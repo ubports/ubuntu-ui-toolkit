@@ -65,10 +65,12 @@ Template {
                             Action {
                                 text: "action 1"
                                 iconSource: Qt.resolvedUrl("call_icon.png")
+                                onTriggered: print("one")
                             }
                             Action {
                                 text: "action 2"
                                 iconSource: Qt.resolvedUrl("call_icon.png")
+                                onTriggered: print("two")
                             }
                             back {
                                 visible: true
