@@ -33,6 +33,7 @@
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
 
+
 /*!
   \qmltype ItemStyle
   \inqmlmodule Ubuntu.Components 0.1
