@@ -26,9 +26,22 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype Label
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The Label class is DOCME
+    \brief Text with Ubuntu styling.
 
-    \b{This component is under heavy development.}
+    Example:
+    \qml
+    Rectangle {
+        color: "grey"
+        width: units.gu(30)
+        height: units.gu(30)
+
+        Label {
+            anchors.centerIn: parent
+            text: "Hello, world!"
+            fontSize: "large"
+        }
+    }
+    \endqml
 */
 Text {
     id: label
@@ -36,9 +49,19 @@ Text {
     Theming.ItemStyle.class: "label"
 
     /*!
-      The property is DOCME
+      The size of the text. One of the following strings (from smallest to largest):
+        \list
+          \li "xx-small"
+          \li "x-small"
+          \li "small"
+          \li "medium"
+          \li "large"
+          \li "x-large"
+        \endlist
+        Default value is "medium".
       */
     property string fontSize: "medium"
+
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
     /* FIXME: do not set any font subproperties (e.g. font.family, font.italic, etc.)
