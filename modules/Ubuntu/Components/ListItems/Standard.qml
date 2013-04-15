@@ -249,21 +249,17 @@ Empty {
 
             onClicked: {
                 if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    control.clicked(mouse)
-                    mouse.accepted = true
+                    control.clicked();
                 } else {
-                    listItem.clicked(mouse)
-                    mouse.accepted = true
+                    listItem.clicked();
                 }
             }
 
             onPressAndHold: {
                 if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    control.pressAndHold(mouse)
-                    mouse.accepted = true
+                    control.pressAndHold();
                 } else {
-                    listItem.pressAndHold(mouse)
-                    mouse.accepted = true
+                    listItem.pressAndHold();
                 }
             }
         }
