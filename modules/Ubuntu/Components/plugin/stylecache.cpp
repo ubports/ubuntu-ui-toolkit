@@ -47,7 +47,7 @@ StyleCache::StyleData::~StyleData()
 
 void StyleCache::StyleData::clear()
 {
-    QHashIterator<SelectorNode, StyleData*> i(children);
+    QMutableHashIterator<SelectorNode, StyleData*> i(children);
     while (i.hasNext()) {
         delete i.next().value();
     }
