@@ -78,19 +78,6 @@
 
  */
 
-UCMouseEvent::UCMouseEvent() :
-    QQuickMouseEvent(0, 0, Qt::NoButton, Qt::NoButton, Qt::NoModifier)
-{}
-UCMouseEvent::UCMouseEvent(const UCMouseEvent &event) :
-    QQuickMouseEvent(event.x(), event.y(), (Qt::MouseButton)event.button(), (Qt::MouseButtons)event.buttons(),
-                     (Qt::KeyboardModifiers)event.modifiers(), event.isClick(), event.wasHeld())
-{}
-UCMouseEvent::UCMouseEvent(QMouseEvent *event, bool isClick, bool wasHeld) :
-    QQuickMouseEvent(event->x(), event->y(), (Qt::MouseButton)event->button(), (Qt::MouseButtons)event->buttons(),
-                     (Qt::KeyboardModifiers)event->modifiers(), isClick, wasHeld)
-{}
-
-
 /*!
   \internal
  */
@@ -113,8 +100,6 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
         QObject::connect(&QuickUtils::instance(), SIGNAL(rootObjectChanged()), this, SLOT(update()));
 
     QGuiApplication::instance()->installEventFilter(this);
-    qRegisterMetaType<UCMouseEvent>("UCMouseEvent");
-    qRegisterMetaType<UCMouseEvent*>("UCMouseEvent*");
 }
 
 InverseMouseAreaType::~InverseMouseAreaType()
@@ -315,9 +300,16 @@ void InverseMouseAreaType::asyncEmit(SignalType signal, bool isClick, bool wasHe
     // slight optimization, don't allocate event if the signal is not connected
     QMetaMethod metaSignal = QMetaMethod::fromSignal(signal);
     if (isSignalConnected(metaSignal)) {
-        Qt::ConnectionType callType = (m_propagateEvents) ? Qt::DirectConnection : Qt::QueuedConnection;
-        UCMouseEvent ev(m_event, isClick, wasHeld);
-        metaSignal.invoke(this, callType, Q_ARG(UCMouseEvent, ev));
+        if (m_propagateEvents) {
+            QQuickMouseEvent ev(m_event->x(), m_event->y(), m_event->button(), m_event->buttons(),
+                                m_event->modifiers(), isClick, wasHeld);
+            metaSignal.invoke(this, Qt::AutoConnection, Q_ARG(QQuickMouseEvent*, &ev));
+        } else {
+            QQuickMouseEvent *ev = new QQuickMouseEvent(m_event->x(), m_event->y(),
+                                                        m_event->button(), m_event->buttons(), m_event->modifiers(),
+                                                        isClick, wasHeld);
+            metaSignal.invoke(this, Qt::QueuedConnection, Q_ARG(QQuickMouseEvent*, ev));
+        }
     }
 }
 
