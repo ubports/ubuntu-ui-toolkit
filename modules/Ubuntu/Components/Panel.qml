@@ -102,6 +102,46 @@ import Ubuntu.Components 0.1 as Toolkit
             }
         }
     \endqml
+
+    Any Items can be placed inside the Panel, but MouseAreas can block mouse events from reaching
+    the panel and thus obstruct the swiping behavior for hiding the panel. As a result, the user cannot
+    start swiping on the buttons in the examples above in order to hide the panel. To remedy this, clicked()
+    signals are forwarded from the panel to its children. Example:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        Rectangle {
+            color: "grey"
+            width: units.gu(40)
+            height: units.gu(40)
+
+            Panel {
+                id: panel
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: units.gu(8)
+
+                Rectangle {
+                    color: "white"
+                    anchors.fill: parent
+                    Rectangle {
+                        width: units.gu(8)
+                        height: units.gu(4)
+                        anchors.centerIn: parent
+                        color: "red"
+                        signal clicked()
+                        onClicked: print("The red rectangle was clicked");
+                    }
+                }
+            }
+        }
+    \endqml
+    Like this, the red rectangle accepts clicked() events, but the user can still swipe down on top
+    of the rectangle in order to hide the panel.
 */
 Item {
     id: panel
