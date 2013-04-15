@@ -278,17 +278,17 @@ Item {
     // FIXME: The InverseMouseArea below is not working because of this bug:
     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166127
     // Uncomment when the bug is fixed.
-    //    Toolkit.InverseMouseArea {
-    //        anchors.fill: draggingArea
-    //        onClicked: {
-    //            mouse.accepted = false;
-    //            // the mouse click may cause an update
-    //            //  of lock by the clicked Item behind
-    //            if (!panel.lock) panel.active = false;
-    //        }
-    //        propagateComposedEvents: true
-    //        visible: panel.lock == false && panel.state == "spread"
-    //    }
+        Toolkit.InverseMouseArea {
+            anchors.fill: draggingArea
+            onClicked: {
+                mouse.accepted = false;
+                // the mouse click may cause an update
+                //  of lock by the clicked Item behind
+                if (!panel.lock) panel.active = false;
+            }
+            propagateComposedEvents: true
+            visible: panel.lock == false && panel.state == "spread"
+        }
 
     DraggingArea {
         id: draggingArea
