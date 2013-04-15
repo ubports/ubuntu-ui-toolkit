@@ -275,7 +275,7 @@ Item {
         property int movingDelta
 
         // Used for recovering the state from before
-        //  panelVisibilityCommunicator forced the toolbar to hide.
+        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
         property bool savedLock: panel.lock
         property bool savedActive: panel.active
 
