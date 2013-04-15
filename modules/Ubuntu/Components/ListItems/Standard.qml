@@ -248,7 +248,7 @@ Empty {
             target: listItem.__mouseArea
 
             onClicked: {
-                if (control && __mouseArea.mouseX < progressionHelper.x) {
+                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
                     control.clicked();
                 } else {
                     listItem.clicked();
@@ -256,7 +256,7 @@ Empty {
             }
 
             onPressAndHold: {
-                if (control && __mouseArea.mouseX < progressionHelper.x) {
+                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
                     control.pressAndHold();
                 } else {
                     listItem.pressAndHold();
