@@ -88,7 +88,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     m_propagateEvents(false),
     m_acceptedButtons(Qt::LeftButton),
     m_sensingArea(QuickUtils::instance().rootObject()),
-    m_event(new QMouseEvent(QEvent::None, QPointF(), Qt::NoButton, Qt::NoButton, Qt::NoModifier))
+    m_event(0)
 {
     setAcceptedMouseButtons(m_acceptedButtons);
     setFiltersChildMouseEvents(true);
@@ -174,7 +174,7 @@ void InverseMouseAreaType::setAcceptedButtons(Qt::MouseButtons buttons)
  */
 Qt::MouseButtons InverseMouseAreaType::pressedButtons() const
 {
-    return m_event->buttons();
+    return (m_event) ? (Qt::MouseButtons)m_event->buttons() : Qt::NoButton;
 }
 
 /*!
@@ -279,37 +279,34 @@ void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
 void InverseMouseAreaType::reset()
 {
     m_pressed = m_moved = false;
-    *m_event = QMouseEvent(QEvent::None, QPointF(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    if (m_event)
+        delete m_event;
+    m_event = 0;
 }
 
 /*!
  * \internal
  * Saves the mouse event.
  */
-void InverseMouseAreaType::saveEvent(const QMouseEvent &event)
+void InverseMouseAreaType::saveEvent(const QMouseEvent &event, bool isClicked)
 {
-    *m_event = event;
+    QPointF point(event.localPos());
+    if (m_event)
+        delete m_event;
+    m_event = new QQuickMouseEvent(point.x(), point.y(), event.button(), event.buttons(), event.modifiers(), isClicked);
 }
 
 /*!
  * \internal
  * Emits a signal asynchronously no matter of how it is being connected.
  */
-void InverseMouseAreaType::asyncEmit(SignalType signal, bool isClick, bool wasHeld)
+void InverseMouseAreaType::asyncEmit(SignalType signal)
 {
     // slight optimization, don't allocate event if the signal is not connected
     QMetaMethod metaSignal = QMetaMethod::fromSignal(signal);
     if (isSignalConnected(metaSignal)) {
-        if (m_propagateEvents) {
-            QQuickMouseEvent ev(m_event->x(), m_event->y(), m_event->button(), m_event->buttons(),
-                                m_event->modifiers(), isClick, wasHeld);
-            metaSignal.invoke(this, Qt::AutoConnection, Q_ARG(QQuickMouseEvent*, &ev));
-        } else {
-            QQuickMouseEvent *ev = new QQuickMouseEvent(m_event->x(), m_event->y(),
-                                                        m_event->button(), m_event->buttons(), m_event->modifiers(),
-                                                        isClick, wasHeld);
-            metaSignal.invoke(this, Qt::QueuedConnection, Q_ARG(QQuickMouseEvent*, ev));
-        }
+        Qt::ConnectionType type = (m_propagateEvents) ? Qt::AutoConnection : Qt::QueuedConnection;
+        metaSignal.invoke(this, type, Q_ARG(QQuickMouseEvent*, m_event));
     }
 }
 
@@ -324,7 +321,7 @@ bool InverseMouseAreaType::mousePress(QMouseEvent *event)
     if (m_pressed && !(event->button() & m_acceptedButtons))
         m_pressed = false;
     if (m_pressed) {
-        saveEvent(*event);
+        saveEvent(*event, false);
         Q_EMIT pressedChanged();
         Q_EMIT pressedButtonsChanged();
         asyncEmit(&InverseMouseAreaType::pressed);
@@ -360,12 +357,12 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
     bool consume = true;
     if (m_pressed && contains(mapFromScene(event->windowPos()))) {
         // released outside (inside the sensing area)
-        saveEvent(*event);
+        saveEvent(*event, !m_moved);
         m_pressed = false;
-        asyncEmit(&InverseMouseAreaType::released, !m_moved);
+        asyncEmit(&InverseMouseAreaType::released);
         Q_EMIT pressedChanged();
         if (!m_moved)
-            asyncEmit(&InverseMouseAreaType::clicked, true);
+            asyncEmit(&InverseMouseAreaType::clicked);
         m_moved = false;
     } else {
         // the release happened inside the area, which is outside of the active area
@@ -401,7 +398,7 @@ bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
 bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 {
     // use localPos as we saved the mapped position as
-    if (m_pressed && (event->windowPos() != m_event->localPos())) {
+    if (m_pressed && m_event && (event->windowPos() != QPointF(m_event->x(), m_event->y()))) {
         m_moved = true;
         event->setAccepted(!m_propagateEvents);
     }
