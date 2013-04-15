@@ -882,6 +882,16 @@ FocusScope {
                 contentY = r.y+r.height-height;
         }
 
+        Keys.onPressed: {
+            if ((event.key == Qt.Key_Enter) || (event.key == Qt.Key_Return)) {
+                control.paste('\n');
+                event.accepted = true;
+            } else {
+                event.accepted = false;
+            }
+        }
+        Keys.onReleased: event.accepted = (event.key == Qt.Key_Enter) || (event.key == Qt.Key_Return)
+
         // editor
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
@@ -897,7 +907,7 @@ FocusScope {
             selectByMouse: false
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [control]
+            Keys.forwardTo: [flicker]
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
