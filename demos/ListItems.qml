@@ -319,6 +319,13 @@ Template {
                         control: controlExample.createObject(parent)
                     }
                     ListItem.Standard {
+                        text: i18n.tr("Control disabled")
+                        control: Switch {
+                            anchors.verticalCenter: parent.verticalCenter
+                            enabled: false
+                        }
+                    }
+                    ListItem.Standard {
                         selected: true
                         text: i18n.tr("Selected")
                         control: controlExample.createObject(parent)
