@@ -43,7 +43,13 @@ Item {
         id: listItem
         height: 200
         anchors.left: parent.left
+
         anchors.right: parent.right
+        SignalSpy {
+            id: listItemSpy
+            signalName: "clicked"
+            target: listItem
+        }
 
         TextArea {
             id: input
@@ -354,14 +360,20 @@ Item {
             compare(textArea.keyReleaseData, Qt.Key_T, "Key release filtered");
         }
 
-        function test_TextAreaInListItem() {
+        function test_TextAreaInListItem_EnterCaptured() {
             input.forceActiveFocus();
             keyClick(Qt.Key_T);
             keyClick(Qt.Key_E);
             keyClick(Qt.Key_S);
             keyClick(Qt.Key_T);
-            keyClick(Qt.Key_Return);
+            keyClick(Qt.Key_Enter);
             compare(input.text, "test\n", "Keys");
+        }
+        function test_TextAreaInListItem_EnterDoesNotProduceClick() {
+            input.forceActiveFocus();
+            listItemSpy.clear();
+            keyClick(Qt.Key_Enter);
+            tryCompare(listItemSpy, "count", 0, 100);
         }
     }
 }
