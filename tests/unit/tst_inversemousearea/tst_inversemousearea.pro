@@ -1,5 +1,4 @@
 include(../test-include.pri)
-QT += quick-private
 SOURCES += tst_inversemouseareatest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
