@@ -51,8 +51,8 @@ private: // getter/setter
 
 private:
     void reset();
-    void saveEvent(const QMouseEvent &event);
-    void asyncEmit(SignalType signal, bool isClick = false, bool wasHeld = false);
+    void saveEvent(const QMouseEvent &event, bool isClicked);
+    void asyncEmit(SignalType signal);
     bool mousePress(QMouseEvent *event);
     bool mouseRelease(QMouseEvent *event);
     bool mouseMove(QMouseEvent *event);
@@ -81,7 +81,7 @@ private:
     bool m_propagateEvents;
     Qt::MouseButtons m_acceptedButtons;
     QQuickItem *m_sensingArea;
-    QMouseEvent *m_event;
+    QQuickMouseEvent *m_event;
 };
 
 #endif // INVERSEMOUSEAREATYPE_H
