@@ -35,7 +35,7 @@ Item {
        This handler is called when there is a mouse click on the button
        and the button is not disabled.
     */
-    signal clicked()
+    signal clicked(var mouse)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
@@ -44,7 +44,7 @@ Item {
       \preliminary
       This handler is called when there is a long press.
      */
-    signal pressAndHold()
+    signal pressAndHold(var mouse)
 
     /*!
      \preliminary
@@ -80,12 +80,12 @@ Item {
 
         onClicked: {
             if (button.__acceptEvents) {
-                button.clicked()
+                button.clicked(mouse)
             }
         }
         onPressAndHold: {
             if (button.__acceptEvents) {
-                button.pressAndHold()
+                button.pressAndHold(mouse)
             }
         }
     }

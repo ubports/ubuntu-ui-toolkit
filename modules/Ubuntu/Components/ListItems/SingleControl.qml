@@ -55,7 +55,7 @@ Empty {
     property AbstractButton control
 
     /*! \internal */
-    onClicked: control.clicked()
+    onClicked: control.clicked(mouse)
     pressed: __mouseArea.pressed || control.__mouseArea.pressed
     /*! \internal */
     onPressedChanged: control.pressed = singleControlListItem.pressed
