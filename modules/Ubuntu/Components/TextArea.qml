@@ -799,7 +799,12 @@ FocusScope {
     // due to forwarded keys from TextEdit
     Keys.onPressed: {
         if ((event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)) {
-            control.paste("\n");
+            if (editor.textFormat === TextEdit.RichText) {
+                // FIXME: use control.paste("<br />") instead when paste() gets sich text support
+                editor.insert(editor.cursorPosition, "<br />");
+            } else {
+                control.paste("\n");
+            }
             event.accepted = true;
         } else {
             event.accepted = false;
