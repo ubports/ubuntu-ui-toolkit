@@ -210,28 +210,28 @@ Item {
             name: "hint"
             PropertyChanges {
                 target: bar
-                v: bar.size - panel.hintSize
+                position: bar.size - panel.hintSize
             }
         },
         State {
             name: "moving"
             PropertyChanges {
                 target: bar
-                v: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size)
+                position: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size)
             }
         },
         State {
             name: "spread"
             PropertyChanges {
                 target: bar
-                v: 0
+                position: 0
             }
         },
         State {
             name: ""
             PropertyChanges {
                 target: bar
-                v: bar.size
+                position: bar.size
                 explicit: true
             }
         }
@@ -240,14 +240,14 @@ Item {
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
-    readonly property bool animating: draggingArea.pressed || (state == "" && bar.v != bar.size) || (state == "spread" && bar.v != 0)
+    readonly property bool animating: draggingArea.pressed || (state == "" && bar.position != bar.size) || (state == "spread" && bar.position != 0)
 
     transitions: [
         Transition {
             to: ""
             PropertyAnimation {
                 target: bar
-                properties: "v"
+                properties: "position"
                 duration: 50
                 easing.type: Easing.OutQuad
             }
@@ -256,7 +256,7 @@ Item {
             to: "hint"
             PropertyAnimation {
                 target: bar
-                properties: "v"
+                properties: "position"
                 duration: 50
                 easing.type: Easing.OutQuad
             }
@@ -265,7 +265,7 @@ Item {
             to: "spread"
             PropertyAnimation {
                 target: bar
-                properties: "v"
+                properties: "position"
                 duration: 50
                 easing.type: Easing.OutQuad
             }
@@ -427,7 +427,7 @@ Item {
                     panel.state = "spread";
                 }
             } else {
-                panel.state = (bar.v < bar.size / 2) ? "spread" : "";
+                panel.state = (bar.position < bar.size / 2) ? "spread" : "";
             }
         }
     }
@@ -444,10 +444,10 @@ Item {
         }
 
         property real size: internal.orientation === Qt.Horizontal ? height : width
-        // v will always be in the range 0..size, where v==0 means spread, v==size means hidden.
-        property real v: panel.active ? 0 : size
+        //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
+        property real position: panel.active ? 0 : size
 
-        y: panel.align === Qt.AlignTop ? -v : panel.align === Qt.AlignBottom ? v : 0
-        x: panel.align === Qt.AlignLeft ? -v : panel.align === Qt.AlignRight ? v : 0
+        y: panel.align === Qt.AlignTop ? -position : panel.align === Qt.AlignBottom ? position : 0
+        x: panel.align === Qt.AlignLeft ? -position : panel.align === Qt.AlignRight ? position : 0
     }
 }
