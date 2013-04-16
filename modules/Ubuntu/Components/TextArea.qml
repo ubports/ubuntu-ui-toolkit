@@ -795,6 +795,18 @@ FocusScope {
         }
     }
 
+    // grab Enter/Return keys which may be stolen from parent components of TextArea
+    // due to forwarded keys from TextEdit
+    Keys.onPressed: {
+        if ((event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)) {
+            control.paste("\n");
+            event.accepted = true;
+        } else {
+            event.accepted = false;
+        }
+    }
+    Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
+
     // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
@@ -882,16 +894,6 @@ FocusScope {
                 contentY = r.y+r.height-height;
         }
 
-        Keys.onPressed: {
-            if ((event.key == Qt.Key_Enter) || (event.key == Qt.Key_Return)) {
-                control.paste('\n');
-                event.accepted = true;
-            } else {
-                event.accepted = false;
-            }
-        }
-        Keys.onReleased: event.accepted = (event.key == Qt.Key_Enter) || (event.key == Qt.Key_Return)
-
         // editor
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
@@ -907,7 +909,7 @@ FocusScope {
             selectByMouse: false
             cursorDelegate: cursor
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [flicker]
+            Keys.forwardTo: [control]
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
