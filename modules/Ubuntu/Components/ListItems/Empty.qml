@@ -112,7 +112,6 @@ AbstractButton {
      */
     signal itemRemoved
 
-
     /*!
       \internal
       Defines the height of the ListItem, so correct height of this component, including divider
@@ -179,8 +178,11 @@ AbstractButton {
     property real __contentsMargins: units.gu(0)
 
     width: parent ? parent.width : units.gu(31)
-    height: __height + bottomDividerLine.height
+    implicitHeight: priv.removed ? 0 : __height + bottomDividerLine.height
     __mouseArea.drag.axis: Drag.XAxis
+
+    // Keep compatible with the old version
+    height: implicitHeight
 
     /*! \internal */
     QtObject {
@@ -212,6 +214,11 @@ AbstractButton {
         property bool removeItem: false
 
         /*! \internal
+          Defines if the item was removed or not
+         */
+        property bool removed: false
+
+        /*! \internal
             notify the start of the drag operation
          */
         function startDrag() {
@@ -239,8 +246,9 @@ AbstractButton {
         function commitDrag() {
             if (removeItem) {
                 removeItemAnimation.start()
+            } else {
+                resetDrag()
             }
-            resetDrag()
         }
 
         /*! \internal
@@ -271,13 +279,13 @@ AbstractButton {
         id: highlight
 
         z: -1
-        visible: emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
+        visible: !priv.removed && emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
         }
-        height: __height
+        height: emptyListItem.height - bottomDividerLine.height
         color: "#E6E6E6"
         opacity: 0.7
     }
@@ -286,7 +294,7 @@ AbstractButton {
     ThinDivider {
         id: bottomDividerLine
         anchors.bottom: parent.bottom
-        visible: showDivider && (__height > 0)
+        visible: showDivider && !priv.removed
     }
 
     Item {
@@ -382,12 +390,16 @@ AbstractButton {
         running: false
         NumberAnimation {
             target: emptyListItem
-            property: "__height"
+            property: "implicitHeight"
             to: 0
             duration: 200
         }
         ScriptAction {
-             script: itemRemoved()
+             script: {
+                 priv.removed = true
+                 itemRemoved()
+                 priv.resetDrag()
+             }
         }
     }
 
