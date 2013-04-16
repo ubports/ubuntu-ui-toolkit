@@ -362,6 +362,8 @@ Item {
 
         function test_TextAreaInListItem_EnterCaptured() {
             input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
             keyClick(Qt.Key_T);
             keyClick(Qt.Key_E);
             keyClick(Qt.Key_S);
@@ -371,9 +373,23 @@ Item {
         }
         function test_TextAreaInListItem_EnterDoesNotProduceClick() {
             input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
             listItemSpy.clear();
             keyClick(Qt.Key_Enter);
             tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        // make it to b ethe last test case executed
+        function test_zz_TextareaInListItem_RichTextEnterCaptured() {
+            textArea.text = "a<br />b";
+            textArea.textFormat = TextEdit.RichText;
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.RichText;
+            input.text = "ab";
+            input.cursorPosition = 1;
+            keyClick(Qt.Key_Return);
+            compare(input.text, textArea.text, "Formatted text split");
         }
     }
 }
