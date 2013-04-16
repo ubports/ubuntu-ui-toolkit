@@ -217,7 +217,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                position: MathUtils.clamp(draggingArea.mouseV - internal.movingDelta, 0, bar.size)
+                position: MathUtils.clamp(draggingArea.mousePosition - internal.movingDelta, 0, bar.size)
             }
         },
         State {
@@ -307,9 +307,9 @@ Item {
     /*! \internal */
     onStateChanged: {
         if (state == "hint") {
-            internal.movingDelta = panel.hintSize + draggingArea.initialV - bar.size;
+            internal.movingDelta = panel.hintSize + draggingArea.initialPosition - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
-            internal.movingDelta = draggingArea.initialV;
+            internal.movingDelta = draggingArea.initialPosition;
         } else if (state == "spread") {
             panel.active = true;
         } else if (state == "") {
@@ -344,8 +344,8 @@ Item {
         width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
         visible: !panel.lock || panel.active
 
-        property int mouseV: getMouseV()
-        function getMouseV() {
+        property int mousePosition: getMousePosition()
+        function getMousePosition() {
             switch (panel.align) {
             case Qt.AlignLeft:
                 return -mouseX;
@@ -382,20 +382,20 @@ Item {
             }
         }
 
-        property int initialV
+        property int initialPosition
         onPressed: {
             pressedItem = getClickableItem(mouse)
             if (panel.lock) return;
-            initialV = getMouseV();
+            initialPosition = getMousePosition();
             if (panel.state == "") panel.state = "hint";
         }
 
         onPositionChanged: {
             if (panel.lock) return;
-            if (panel.state == "hint" && mouseV < initialV) {
+            if (panel.state == "hint" && mousePosition < initialPosition) {
                 panel.state = "moving";
                 pressedItem = null;
-            } else if (panel.state == "spread" && mouseV > initialV) {
+            } else if (panel.state == "spread" && mousePosition > initialPosition) {
                 panel.state = "moving";
                 pressedItem = null;
             }
