@@ -80,8 +80,9 @@ Panel {
     }
 
     Item {
+        // FIXME:
         // All theming items go into the background because only the children
-        //  of the GenericToolbar are being shown/hidden while the toolbar
+        //  of the Panel are being shown/hidden while the toolbar
         //  itself may stay in place.
         id: background
         anchors {
