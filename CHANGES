@@ -15,7 +15,8 @@ Compatibility Breaks
 API Changes
 ***********
 
-* None
+* clicked() and pressAndHold() signals of AbstractButton no longer take a mouse
+  parameter as input.
 
 SDK 0.1.42
 ##########
