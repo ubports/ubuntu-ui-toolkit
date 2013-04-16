@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     width: 200; height: 200
@@ -36,6 +37,25 @@ Item {
 
     TextEdit {
         id: textEdit
+    }
+
+    ListItem.Empty {
+        id: listItem
+        height: 200
+        anchors.left: parent.left
+
+        anchors.right: parent.right
+        SignalSpy {
+            id: listItemSpy
+            signalName: "clicked"
+            target: listItem
+        }
+
+        TextArea {
+            id: input
+            anchors.fill: parent
+            Component.onCompleted: forceActiveFocus()
+        }
     }
 
     TestCase {
@@ -335,9 +355,41 @@ Item {
             textArea.readOnly = false;
             textArea.keyPressData = 0;
             textArea.keyReleaseData = 0;
-            keyClick(Qt.Key_Control, Qt.NoModifier, 100);
-            compare(textArea.keyPressData, Qt.Key_Control, "Key press filtered");
-            compare(textArea.keyReleaseData, Qt.Key_Control, "Key release filtered");
+            keyClick(Qt.Key_T, Qt.NoModifier, 100);
+            compare(textArea.keyPressData, Qt.Key_T, "Key press filtered");
+            compare(textArea.keyReleaseData, Qt.Key_T, "Key release filtered");
+        }
+
+        function test_TextAreaInListItem_EnterCaptured() {
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_E);
+            keyClick(Qt.Key_S);
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_Enter);
+            compare(input.text, "test\n", "Keys");
+        }
+        function test_TextAreaInListItem_EnterDoesNotProduceClick() {
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            listItemSpy.clear();
+            keyClick(Qt.Key_Enter);
+            tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        // make it to b ethe last test case executed
+        function test_zz_TextareaInListItem_RichTextEnterCaptured() {
+            textArea.text = "a<br />b";
+            textArea.textFormat = TextEdit.RichText;
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.RichText;
+            input.text = "ab";
+            input.cursorPosition = 1;
+            keyClick(Qt.Key_Return);
+            compare(input.text, textArea.text, "Formatted text split");
         }
     }
 }

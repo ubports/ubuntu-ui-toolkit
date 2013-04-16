@@ -356,6 +356,15 @@ Template {
                             }
                         }
                     }
+                    ListItem.Empty {
+                        TextArea {
+                            text: i18n.tr("text")
+                            anchors {
+                                margins: units.gu(1)
+                                fill: parent
+                            }
+                        }
+                    }
                 }
             }
             FadingRectangle {
