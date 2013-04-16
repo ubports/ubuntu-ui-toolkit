@@ -339,6 +339,7 @@ Item {
         }
         height: internal.orientation === Qt.Horizontal ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
+        visible: !panel.lock || panel.active
 
         property int mouseV: getMouseV()
         function getMouseV() {
