@@ -107,7 +107,7 @@ Panel {
             property url iconSource: action && action.iconSource ? action.iconSource : ""
             signal clicked()
             onClicked: action.triggered(toolButton)
-            property bool enabled: action && action.enabled
+            enabled: action && action.enabled
             visible: action && action.visible
             width: visible && Theming.ItemStyle.delegate ? Theming.ItemStyle.delegate.implicitWidth : 0
             height: toolbar.height
