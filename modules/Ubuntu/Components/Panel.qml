@@ -155,15 +155,19 @@ Item {
       The property defines the alignment of the panel.
       The implementation supports the following values:
         \list
+        \li Qt.AlignBottom to swipe in the panel from the bottom (default)
+        \li Qt.AlignTop to swipe in the panel from the top
         \li Qt.AlignLeft to swipe in the panel from the left
         \li Qt.AlignRight to swipe in the panel from the right
-        \li Qt.AlignTop to swipe in the panel from the top
-        \li Qt.AlignBottom to swipe in the panel from the bottom
+        \li Qt.AlignLeading left when layout mirrorring is disabled, right otherwise
+        \li Qt.AlignTrailing right when layout mirroring is disabled, left otherwise
         \endlist
         The default value is \b Qt.AlignBottom, and it is not recommended to change the
         default value because the left, right and top edge are already used for system
         functions, while the bottom edge is reserved for app-specific functionality
-        such as a default toolbar.
+        such as a default toolbar. The use of Qt.AlignLeading and Qt.AlignTrailing is
+        preferred over Qt.AlignLeft and Qt.AlignRight in order to more easily support
+        right-to-left user interfaces that use LayoutMirroring.
       */
     property int align: Qt.AlignBottom
 
@@ -281,6 +285,25 @@ Item {
         property bool savedLock: panel.lock
         property bool savedActive: panel.active
 
+        // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
+        property int align: {
+            if (panel.align === Qt.AlignLeading) {
+                if (panel.LayoutMirroring.enabled) {
+                    return Qt.AlignRight;
+                } else {
+                    return Qt.AlignLeft;
+                }
+            } else if (panel.align === Qt.AlignTrailing) {
+                if (panel.LayoutMirroring.enabled) {
+                    return Qt.AlignLeft;
+                } else {
+                    return Qt.AlignRight;
+                }
+            } else {
+                return panel.align;
+            }
+        }
+
         readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom)
                                            ? Qt.Horizontal : Qt.Vertical
     }
@@ -331,13 +354,18 @@ Item {
 
     DraggingArea {
         id: draggingArea
+        Rectangle {
+            color: "orange"
+            anchors.fill: parent
+        }
+
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         zeroVelocityCounts: true
         anchors {
             top: panel.align === Qt.AlignBottom ? undefined : parent.top
             bottom: panel.align === Qt.AlignTop ? undefined : parent.bottom
-            left: panel.align === Qt.AlignRight ? undefined : parent.left
-            right: panel.align === Qt.AlignLeft ? undefined : parent.right
+            left: panel.align === Qt.AlignRight || panel.align === Qt.AlignTrailing ? undefined : parent.left
+            right: panel.align === Qt.AlignLeft || panel.align === Qt.AlignLeading ? undefined : parent.right
         }
         height: internal.orientation === Qt.Horizontal ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
@@ -345,7 +373,7 @@ Item {
 
         property int mousePosition: getMousePosition()
         function getMousePosition() {
-            switch (panel.align) {
+            switch (internal.align) {
             case Qt.AlignLeft:
                 return -mouseX;
             case Qt.AlignRight:
@@ -414,13 +442,13 @@ Item {
         //  The value of 44 was copied from the Launcher.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
-                if (panel.align === Qt.AlignBottom || panel.align === Qt.AlignRight) {
+                if (internal.align === Qt.AlignBottom || internal.align === Qt.AlignRight) {
                     panel.state = "spread";
                 } else {
                     panel.state = "";
                 }
             } else if (draggingArea.dragVelocity > 44) {
-                if (panel.align === Qt.AlignBottom || panel.align === Qt.AlignRight) {
+                if (internal.align === Qt.AlignBottom || internal.align === Qt.AlignRight) {
                     panel.state = "";
                 } else {
                     panel.state = "spread";
@@ -446,7 +474,7 @@ Item {
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.active ? 0 : size
 
-        y: panel.align === Qt.AlignTop ? -position : panel.align === Qt.AlignBottom ? position : 0
-        x: panel.align === Qt.AlignLeft ? -position : panel.align === Qt.AlignRight ? position : 0
+        y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
+        x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0
     }
 }
