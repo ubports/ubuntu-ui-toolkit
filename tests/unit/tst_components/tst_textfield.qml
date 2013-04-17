@@ -21,6 +21,12 @@ import Ubuntu.Components 0.1
 Item {
     id: textItem
     width: 200; height: 200
+
+    TextField {
+        id: colorTest
+        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
+    }
+
     TestCase {
         name: "TextFieldAPI"
         when: windowShown
@@ -193,6 +199,14 @@ Item {
             textField.cursorPosition = textField.text.length;
             textField.paste(" text");
             compare(textField.text, "test text", "Data pasted");
+        }
+
+        function test_colorCollisionOnDelegate() {
+            // fixes bug lp:1169601
+            colorTest.text = "abc";
+            compare(colorTest.color, "#0000ff", "Color when text length < 4");
+            colorTest.text = "abcd";
+            compare(colorTest.color, "#00ff00", "Color when text length >= 4");
         }
 
         RegExpValidator {
