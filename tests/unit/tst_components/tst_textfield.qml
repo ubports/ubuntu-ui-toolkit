@@ -213,7 +213,8 @@ Item {
             compare(t2.activeFocus, true, "T1 has activeFocus");
         }
 
-        function test_OSK_ShownWhenNextTextFieldIsFocused() {
+        // need to make the very first test case, otherwise OSK detection fails on phablet
+        function test_00_OSK_ShownWhenNextTextFieldIsFocused() {
             // detect whether we have OSK support
             Qt.inputMethod.show();
             if (!Qt.inputMethod.visible)
