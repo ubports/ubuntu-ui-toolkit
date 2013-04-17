@@ -18,15 +18,17 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 // frame
-UbuntuShape {
-    id: shape
-
+Item {
+    id: visuals
     // style properties
+    // FIXME: needs type checking in themes to define the proper type to be used
+    // if color type is used, alpha value gets lost
+
+    property color color
+    onColorChanged: print("")
     /*!
       Background fill color
       */
-    // FIXME: needs type checking in themes to define the proper type to be used
-    // if color type is used, alpha value gets lost
     property color backgroundColor: Qt.rgba(0, 0, 0, 0.1)
     property color errorColor: "red"
     property real backgroundOpacity
@@ -37,27 +39,31 @@ UbuntuShape {
     property var frameSpacing
     property real overlaySpacing
 
-    // visuals
-    z: -1
-    property bool error: (item.hasOwnProperty("errorHighlight") && item.errorHighlight && !item.acceptableInput)
-    onErrorChanged: color = (error) ? errorColor : backgroundColor;
-    color: backgroundColor
     anchors.fill: parent
-    opacity: backgroundOpacity
-
-    MouseArea {
-        anchors.fill: parent
-        onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
-    }
 
     Binding {
         target: item.__internal
         property: "frameSpacing"
-        value: shape.frameSpacing
+        value: visuals.frameSpacing
     }
     Binding {
         target: item.__internal
         property: "spacing"
-        value: overlaySpacing
+        value: visuals.overlaySpacing
+    }
+
+    z: -1
+    UbuntuShape {
+        id: shape
+        property bool error: (item.hasOwnProperty("errorHighlight") && item.errorHighlight && !item.acceptableInput)
+        onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
+        color: visuals.backgroundColor;
+        anchors.fill: parent
+        opacity: visuals.backgroundOpacity
+
+        MouseArea {
+            anchors.fill: parent
+            onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+        }
     }
 }
