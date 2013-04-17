@@ -204,13 +204,39 @@ Item {
             compare(textField.text, "test text", "Data pasted");
         }
 
-        function test_OSK_ShownWhenNextTextFieldIsFocused() {
-            if (Qt.inputMethod.keyboardRectangle === Qt.rect(0,0,0,0))
-                expectFail("", "OSK can be tested only when present");
+        function test_OneActiveFocus() {
             t1.focus = true;
-            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
             t2.focus = true;
-            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        function test_OSK_ShownWhenNextTextFieldIsFocused() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextField");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextField");
+        }
+
+        function test_RemoveOSKWhenFocusLost() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextField gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
         }
 
         RegExpValidator {
