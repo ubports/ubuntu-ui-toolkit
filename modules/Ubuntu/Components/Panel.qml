@@ -147,8 +147,7 @@ Item {
     id: panel
 
     /*!
-      Default property of Panel is overridden to put the children inside
-      the Item that will be swiped in and out
+      Default property, holds the content which will be swiped in and out.
      */
     default property alias contents: bar.data
 
