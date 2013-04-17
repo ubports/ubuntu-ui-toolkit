@@ -38,6 +38,15 @@ Item {
             Keys.onReleased: keyReleaseData = event.key
         }
 
+        Item {
+            TextField {
+                id: t1
+            }
+            TextField {
+                id: t2
+            }
+        }
+
         function initTestCase() {
             textField.forceActiveFocus();
             compare(textField.focus, true, "TextField is focused");
@@ -193,6 +202,15 @@ Item {
             textField.cursorPosition = textField.text.length;
             textField.paste(" text");
             compare(textField.text, "test text", "Data pasted");
+        }
+
+        function test_OSK_ShownWhenNextTextFieldIsFocused() {
+            if (Qt.inputMethod.keyboardRectangle === Qt.rect(0,0,0,0))
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
         }
 
         RegExpValidator {

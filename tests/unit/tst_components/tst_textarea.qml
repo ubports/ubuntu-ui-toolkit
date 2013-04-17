@@ -58,6 +58,15 @@ Item {
         }
     }
 
+    Item {
+        TextArea {
+            id: t1
+        }
+        TextArea {
+            id: t2
+        }
+    }
+
     TestCase {
         name: "TextAreaAPI"
         when: windowShown
@@ -378,6 +387,15 @@ Item {
             listItemSpy.clear();
             keyClick(Qt.Key_Enter);
             tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        function test_OSK_ShownWhenNextTextAreaIsFocused() {
+            if (Qt.inputMethod.keyboardRectangle === Qt.rect(0,0,0,0))
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
         }
 
         // make it to b ethe last test case executed
