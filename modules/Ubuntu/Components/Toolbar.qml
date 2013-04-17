@@ -125,11 +125,13 @@ Panel {
         }
         onStatusChanged: {
             if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+                if (item.hasOwnProperty("clicked")) item.clicked.connect(backButton.itemTriggered);
+                if (item.hasOwnProperty("accepted")) item.accepted.connect(backButton.itemTriggered);
+                if (item.hasOwnProperty("triggered")) item.accepted.connect(backButton.itemTtriggered);
             }
         }
+        signal itemTriggered()
+        onItemTriggered: action.triggered(item)
     }
 
     Row {
