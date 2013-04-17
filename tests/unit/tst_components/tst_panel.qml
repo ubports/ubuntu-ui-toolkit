@@ -82,7 +82,7 @@ Item {
             panel.triggerSize = units.gu(2);
         }
 
-        function test_swipe() {
+        function test_swipe_alignBottom() {
             compare(panel.active, false, "Panel initially not active")
 
             var x = root.width / 2; var y = root.height - 1;
@@ -98,13 +98,15 @@ Item {
             mouseMove(panel, x - dx, y - dy);
             mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
             compare(panel.active, false, "Panel deactivated by swiping down")
+        }
 
+        function test_swipe_alignLeft() {
             panel.align = Qt.AlignLeft;
             compare(panel.active, false, "Panel does not get activated by changing alignment to left");
-            x = 1;
-            y = 3 * root.height / 4;
-            dx = panel.width / 2;
-            dy = 0;
+            var x = 1;
+            var y = 3 * root.height / 4;
+            var dx = panel.width / 2;
+            var dy = 0;
             mousePress(root, x, y, Qt.LeftButton);
             mouseMove(root, x + dx, y + dy);
             mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
@@ -115,13 +117,15 @@ Item {
             mouseMove(root, x - dx, y - dy);
             mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
             compare(panel.active, false, "Left-aligned panel deactivated by swiping to the left");
+        }
 
+        function test_swipe_alignRight() {
             panel.align = Qt.AlignRight;
             compare(panel.active, false, "Panel does not get activated by changing alignment to right");
-            x = root.width - 1;
-            y = 3 * root.height / 4;
-            dx = -panel.width / 2;
-            dy = 0;
+            var x = root.width - 1;
+            var y = 3 * root.height / 4;
+            var dx = -panel.width / 2;
+            var dy = 0;
             mousePress(root, x, y, Qt.LeftButton);
             mouseMove(root, x + dx, y + dy);
             mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
@@ -132,15 +136,17 @@ Item {
             mouseMove(panel, -dx, -dy);
             mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
             compare(panel.active, false, "Right-aligned panel deactivating by swiping to the right");
+        }
 
+        function test_swipe_alignTop() {
             panel.anchors.top = root.top;
             panel.anchors.bottom = undefined;
             panel.align = Qt.AlignTop;
             compare(panel.active, false, "Panel does not get activated by changing alignment to top");
-            x = root.width / 2;
-            y = 1;
-            dx = 0;
-            dy = panel.height / 2;
+            var x = root.width / 2;
+            var y = 1;
+            var dx = 0;
+            var dy = panel.height / 2;
             mousePress(root, x, y, Qt.LeftButton);
             mouseMove(root, x + dx, y + dy);
             mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
