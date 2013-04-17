@@ -36,6 +36,7 @@ Item {
        and the button is not disabled.
     */
     signal clicked()
+    onClicked: print("click!")
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
@@ -80,6 +81,7 @@ Item {
 
         onClicked: {
             if (button.__acceptEvents) {
+                print(button)
                 button.clicked()
             }
         }
