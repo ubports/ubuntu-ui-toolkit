@@ -629,6 +629,7 @@ FocusScope {
         }
         // watch inputMethod's visible change to be able to open input panel back
         // removed by a previous active focus being deactivated
+        // workaround for bug https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1163371
         Connections {
             target: Qt.inputMethod
             onVisibleChanged: if (editor.activeFocus) internal.showInputPanel()
