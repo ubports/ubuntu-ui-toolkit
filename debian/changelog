@@ -1,12 +1,16 @@
-ubuntu-ui-toolkit (0.1.42-0ubuntu1) UNRELEASED; urgency=low
+ubuntu-ui-toolkit (0.1.42daily13.04.17ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
+  [ Timo Jyrinki ]
   * Automatic snapshot from revision 421 (bootstrap)
     - The Empty list item conflicts with TextArea handling of enter key
       (LP: #1166840)
     - Slide to delete behaviour should use SDK component (LP: #1099455)
     - Memory leaks (LP: #1152151)
 
- -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Tue, 16 Apr 2013 15:39:22 +0300
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 422 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Apr 2013 04:01:52 +0000
 
 ubuntu-ui-toolkit (0.1.42) raring; urgency=low
 
