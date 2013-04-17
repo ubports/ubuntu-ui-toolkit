@@ -23,8 +23,13 @@ Item {
     property int iconWidth: 0
     property int iconHeight: 0
 
-    anchors.fill: parent
+    anchors {
+        top: parent.top
+        bottom: parent.bottom
+        horizontalCenter: parent.horizontalCenter
+    }
 
+    width: implicitWidth
     implicitWidth: units.gu(5)
     implicitHeight: units.gu(5)
 
