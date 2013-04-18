@@ -27,31 +27,31 @@ Item {
         color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
     }
 
+    TextField {
+        id: textField
+        SignalSpy {
+            id: signalSpy
+            target: parent
+        }
+
+        property int keyPressData
+        property int keyReleaseData
+        Keys.onPressed: keyPressData = event.key
+        Keys.onReleased: keyReleaseData = event.key
+    }
+
+    Item {
+        TextField {
+            id: t1
+        }
+        TextField {
+            id: t2
+        }
+    }
+
     TestCase {
         name: "TextFieldAPI"
         when: windowShown
-
-        TextField {
-            id: textField
-            SignalSpy {
-                id: signalSpy
-                target: parent
-            }
-
-            property int keyPressData
-            property int keyReleaseData
-            Keys.onPressed: keyPressData = event.key
-            Keys.onReleased: keyReleaseData = event.key
-        }
-
-        Item {
-            TextField {
-                id: t1
-            }
-            TextField {
-                id: t2
-            }
-        }
 
         function initTestCase() {
             textField.forceActiveFocus();
@@ -252,6 +252,24 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK is shown when TextField gains focus");
             t1.focus = false;
             compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
+        }
+
+        function test_ReEnabledInput() {
+            textField.forceActiveFocus();
+            var hasOSK = Qt.inputMethod.visible;
+            textField.enabled = false;
+            compare(textField.enabled, false, "textField is disabled");
+            compare(textField.focus, true, "textField is focused");
+            compare(textField.activeFocus, false, "textField is not active focus");
+            compare(Qt.inputMethod.visible, false, "OSK removed");
+
+            textField.enabled = true;
+            compare(textField.enabled, true, "textField is enabled");
+            compare(textField.focus, true, "textField is focused");
+            compare(textField.activeFocus, true, "textField is active focus");
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
         RegExpValidator {
