@@ -29,6 +29,7 @@ class QuickUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
+    Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
 public:
     static QuickUtils& instance()
     {
@@ -37,6 +38,7 @@ public:
     }
 
     QQuickItem *rootObject();
+    QString inputMethodProvider() const;
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
     Q_INVOKABLE QString className(QQuickItem *item);

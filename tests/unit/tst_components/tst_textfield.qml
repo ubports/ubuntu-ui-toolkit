@@ -22,6 +22,15 @@ Item {
     id: textItem
     width: 200; height: 200
 
+    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+
+    function reset() {
+        colorTest.focus = false;
+        textField.focus = false;
+        t1.focus = false;
+        t2.focus = false;
+    }
+
     TextField {
         id: colorTest
         color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
@@ -228,35 +237,26 @@ Item {
         }
 
         // need to make the very first test case, otherwise OSK detection fails on phablet
-        function test_00_OSK_ShownWhenNextTextFieldIsFocused() {
-            // detect whether we have OSK support
-            Qt.inputMethod.show();
-            if (!Qt.inputMethod.visible)
+        function test_zz_OSK_ShownWhenNextTextFieldIsFocused() {
+            if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
-            else
-                Qt.inputMethod.hide();
             t1.focus = true;
             compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextField");
             t2.focus = true;
             compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextField");
         }
 
-        function test_RemoveOSKWhenFocusLost() {
-            // detect whether we have OSK support
-            Qt.inputMethod.show();
-            if (!Qt.inputMethod.visible)
+        function test_zz_RemoveOSKWhenFocusLost() {
+            if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
-            else
-                Qt.inputMethod.hide();
             t1.focus = true;
             compare(Qt.inputMethod.visible, true, "OSK is shown when TextField gains focus");
             t1.focus = false;
             compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
         }
 
-        function test_ReEnabledInput() {
+        function test_zz_ReEnabledInput() {
             textField.forceActiveFocus();
-            var hasOSK = Qt.inputMethod.visible;
             textField.enabled = false;
             compare(textField.enabled, false, "textField is disabled");
             compare(textField.focus, true, "textField is focused");

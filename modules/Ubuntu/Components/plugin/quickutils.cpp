@@ -25,6 +25,11 @@
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 
+#include <private/qquicktextinput_p.h>
+#include <private/qquicktextedit_p.h>
+
+#include <QDebug>
+
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
 {
@@ -45,7 +50,6 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
-
 /*!
  * \internal
  * Returns the current root object.
@@ -56,6 +60,12 @@ QQuickItem *QuickUtils::rootObject()
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
 }
+
+QString QuickUtils::inputMethodProvider() const
+{
+    return QString(getenv("QT_IM_MODULE"));
+}
+
 
 /*!
  * \internal
