@@ -25,7 +25,6 @@ Item {
     // if color type is used, alpha value gets lost
 
     property color color
-    onColorChanged: print("")
     /*!
       Background fill color
       */
