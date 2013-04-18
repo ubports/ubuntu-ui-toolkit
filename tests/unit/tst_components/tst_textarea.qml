@@ -22,6 +22,8 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Item {
     width: 200; height: 200
 
+    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+
     TextArea {
         id: textArea
         SignalSpy {
@@ -414,12 +416,8 @@ Item {
         }
 
         function test_OSK_ShownWhenNextTextAreaIsFocused() {
-            // detect whether we have OSK support
-            Qt.inputMethod.show();
-            if (!Qt.inputMethod.visible)
+            if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
-            else
-                Qt.inputMethod.hide();
             t1.focus = true;
             compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
             t2.focus = true;
@@ -427,16 +425,29 @@ Item {
         }
 
         function test_RemoveOSKWhenFocusLost() {
-            // detect whether we have OSK support
-            Qt.inputMethod.show();
-            if (!Qt.inputMethod.visible)
+            if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
-            else
-                Qt.inputMethod.hide();
             t1.focus = true;
             compare(Qt.inputMethod.visible, true, "OSK is shown when TextArea gains focus");
             t1.focus = false;
             compare(Qt.inputMethod.visible, false, "OSK is hidden when TextArea looses focus");
+        }
+
+        function test_ReEnabledInput() {
+            textArea.forceActiveFocus();
+            textArea.enabled = false;
+            compare(textArea.enabled, false, "textArea is disabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, false, "textArea is not active focus");
+            compare(Qt.inputMethod.visible, false, "OSK removed");
+
+            textArea.enabled = true;
+            compare(textArea.enabled, true, "textArea is enabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, true, "textArea is active focus");
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
         // make it to b ethe last test case executed
