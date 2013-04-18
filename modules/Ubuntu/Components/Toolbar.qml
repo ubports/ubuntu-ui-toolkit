@@ -109,7 +109,7 @@ Panel {
             onClicked: action.triggered(toolButton)
             enabled: action && action.enabled
             visible: action && action.visible
-            width: visible && Theming.ItemStyle.delegate ? Theming.ItemStyle.delegate.implicitWidth : 0
+            width: units.gu(5)
             height: toolbar.height
         }
     }
