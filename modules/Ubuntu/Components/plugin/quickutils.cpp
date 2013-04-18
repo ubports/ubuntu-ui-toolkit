@@ -25,11 +25,6 @@
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 
-#include <private/qquicktextinput_p.h>
-#include <private/qquicktextedit_p.h>
-
-#include <QDebug>
-
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent)
 {
