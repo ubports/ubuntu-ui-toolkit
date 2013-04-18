@@ -919,24 +919,6 @@ FocusScope {
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
-            // FIXME: workaround for bug https://bugreports.qt-project.org/browse/QTBUG-30729
-            // input panel does not get removed when no active input is active
-            activeFocusOnPress: false
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    internal.showInputPanel();
-                } else {
-                    internal.hideInputPanel();
-                }
-            }
-            // watch inputMethod's visible change to be able to open input panel back
-            // removed by a previous active focus being deactivated
-            // workaround for bug https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1163371
-            Connections {
-                target: Qt.inputMethod
-                onVisibleChanged: if (editor.activeFocus) internal.showInputPanel();
-            }
-
             // remove selection when typing starts or input method start entering text
             onInputMethodComposingChanged: {
                 if (inputMethodComposing)

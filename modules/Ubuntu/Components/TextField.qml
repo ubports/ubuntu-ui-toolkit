@@ -617,24 +617,6 @@ FocusScope {
         // forward keys to the root element so it can be captured outside of it
         Keys.forwardTo: [control]
 
-        // FIXME: workaround for bug https://bugreports.qt-project.org/browse/QTBUG-30729
-        // input panel does not get removed when no active input is active
-        activeFocusOnPress: false
-        onActiveFocusChanged: {
-            if (activeFocus) {
-                internal.showInputPanel();
-            } else {
-                internal.hideInputPanel();
-            }
-        }
-        // watch inputMethod's visible change to be able to open input panel back
-        // removed by a previous active focus being deactivated
-        // workaround for bug https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1163371
-        Connections {
-            target: Qt.inputMethod
-            onVisibleChanged: if (editor.activeFocus) internal.showInputPanel()
-        }
-
         // handle virtual keyboard and cursor positioning, as the MouseArea overrides
         // those functionalities of the TextInput
         MouseArea {
