@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.42daily13.04.18ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [textarea] TextArea focus is not handled correctly (LP: #1163371)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 426 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Apr 2013 05:25:55 +0000
+
 ubuntu-ui-toolkit (0.1.42daily13.04.17ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Timo Jyrinki ]
