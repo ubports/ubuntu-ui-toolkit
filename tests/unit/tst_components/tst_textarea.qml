@@ -63,6 +63,17 @@ Item {
         }
     }
 
+    Item {
+        TextArea {
+            id: t1
+            objectName: "t1"
+        }
+        TextArea {
+            id: t2
+            objectName: "t2"
+        }
+    }
+
     TestCase {
         name: "TextAreaAPI"
         when: windowShown
@@ -391,6 +402,41 @@ Item {
             compare(colorTest.color, "#0000ff", "Color when text length < 4");
             colorTest.text = "abcd";
             compare(colorTest.color, "#00ff00", "Color when text length >= 4");
+        }
+
+        function test_OneActiveFocus() {
+            t1.focus = true;
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
+            t2.focus = true;
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        function test_OSK_ShownWhenNextTextAreaIsFocused() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
+        }
+
+        function test_RemoveOSKWhenFocusLost() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextArea gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextArea looses focus");
         }
 
         // make it to b ethe last test case executed

@@ -44,6 +44,15 @@ Item {
             Keys.onReleased: keyReleaseData = event.key
         }
 
+        Item {
+            TextField {
+                id: t1
+            }
+            TextField {
+                id: t2
+            }
+        }
+
         function initTestCase() {
             textField.forceActiveFocus();
             compare(textField.focus, true, "TextField is focused");
@@ -207,6 +216,42 @@ Item {
             compare(colorTest.color, "#0000ff", "Color when text length < 4");
             colorTest.text = "abcd";
             compare(colorTest.color, "#00ff00", "Color when text length >= 4");
+        }
+
+        function test_OneActiveFocus() {
+            t1.focus = true;
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
+            t2.focus = true;
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        // need to make the very first test case, otherwise OSK detection fails on phablet
+        function test_00_OSK_ShownWhenNextTextFieldIsFocused() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextField");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextField");
+        }
+
+        function test_RemoveOSKWhenFocusLost() {
+            // detect whether we have OSK support
+            Qt.inputMethod.show();
+            if (!Qt.inputMethod.visible)
+                expectFail("", "OSK can be tested only when present");
+            else
+                Qt.inputMethod.hide();
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextField gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
         }
 
         RegExpValidator {
