@@ -35,6 +35,11 @@ Item {
         Keys.onReleased: keyReleaseData = event.key
     }
 
+    TextArea {
+        id: colorTest
+        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
+    }
+
     TextEdit {
         id: textEdit
     }
@@ -389,6 +394,14 @@ Item {
             listItemSpy.clear();
             keyClick(Qt.Key_Enter);
             tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        function test_colorCollisionOnDelegate() {
+            // fixes bug lp:1169601
+            colorTest.text = "abc";
+            compare(colorTest.color, "#0000ff", "Color when text length < 4");
+            colorTest.text = "abcd";
+            compare(colorTest.color, "#00ff00", "Color when text length >= 4");
         }
 
         function test_OneActiveFocus() {
