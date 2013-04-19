@@ -20,9 +20,9 @@ cd tests/autopilot
 echo running with arg: $1
 
 if [ "$1" == "" ]; then
-	autopilot run ubuntu-ui-toolkit
+	autopilot run UbuntuUiToolkit
 else
-	autopilot run -o ../../$1 -f xml -r -rd ../../ ubuntu-ui-toolkit
+	autopilot run -o ../../$1 -f xml -r -rd ../../ UbuntuUiToolkit
 fi
 
 exit 0
