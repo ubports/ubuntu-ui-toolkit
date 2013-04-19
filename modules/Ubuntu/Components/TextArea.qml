@@ -884,6 +884,7 @@ FocusScope {
         interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
+        pressDelay: 500
 
         function ensureVisible(r)
         {
@@ -940,7 +941,6 @@ FocusScope {
                 enabled: control.enabled && control.activeFocusOnPress
                 anchors.fill: parent
                 propagateComposedEvents: true
-                preventStealing: true
 
                 onPressed: {
                     internal.activateEditor();
