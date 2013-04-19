@@ -62,7 +62,7 @@ API Changes
 * DEPRECATED IN MainView: property ToolbarActions tools
 * DEPRECATED IN Tabs: property ToolbarActions tools
 * DEPRECATED IN PageStack: property ToolbarActions tools
-* CHANGED IN Tab: property url page TO Item page
+* CHANGED IN Tab: property var page TO Item page (where var page could be an Item or url)
 
 Compatibility Breaks
 ********************
