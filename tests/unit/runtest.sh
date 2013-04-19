@@ -29,7 +29,7 @@ function create_test_cmd {
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  UITK_THEME_PATH=../../.. $_CMD $_ARGS
+  QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UITK_THEME_PATH=../../.. $_CMD $_ARGS
   # segfault
   if [ $? -eq 139 ]; then
    return 2

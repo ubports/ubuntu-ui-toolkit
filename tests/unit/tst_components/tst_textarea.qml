@@ -22,6 +22,8 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Item {
     width: 200; height: 200
 
+    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+
     TextArea {
         id: textArea
         SignalSpy {
@@ -33,6 +35,11 @@ Item {
         property int keyReleaseData
         Keys.onPressed: keyPressData = event.key
         Keys.onReleased: keyReleaseData = event.key
+    }
+
+    TextArea {
+        id: colorTest
+        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
     }
 
     TextEdit {
@@ -55,6 +62,17 @@ Item {
             id: input
             anchors.fill: parent
             Component.onCompleted: forceActiveFocus()
+        }
+    }
+
+    Item {
+        TextArea {
+            id: t1
+            objectName: "t1"
+        }
+        TextArea {
+            id: t2
+            objectName: "t2"
         }
     }
 
@@ -378,6 +396,58 @@ Item {
             listItemSpy.clear();
             keyClick(Qt.Key_Enter);
             tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        function test_colorCollisionOnDelegate() {
+            // fixes bug lp:1169601
+            colorTest.text = "abc";
+            compare(colorTest.color, "#0000ff", "Color when text length < 4");
+            colorTest.text = "abcd";
+            compare(colorTest.color, "#00ff00", "Color when text length >= 4");
+        }
+
+        function test_OneActiveFocus() {
+            t1.focus = true;
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
+            t2.focus = true;
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        function test_OSK_ShownWhenNextTextAreaIsFocused() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
+        }
+
+        function test_RemoveOSKWhenFocusLost() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextArea gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextArea looses focus");
+        }
+
+        function test_ReEnabledInput() {
+            textArea.forceActiveFocus();
+            textArea.enabled = false;
+            compare(textArea.enabled, false, "textArea is disabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, false, "textArea is not active focus");
+            compare(Qt.inputMethod.visible, false, "OSK removed");
+
+            textArea.enabled = true;
+            compare(textArea.enabled, true, "textArea is enabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, true, "textArea is active focus");
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
         // make it to b ethe last test case executed

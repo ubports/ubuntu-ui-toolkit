@@ -1,3 +1,24 @@
+ubuntu-ui-toolkit (0.1.43daily13.04.19ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [TextArea] setting color property disables styling (LP: #1169601)
+  * Re-enabling a TextField doesn't work (LP: #1164634)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 430 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Apr 2013 04:09:00 +0000
+
+ubuntu-ui-toolkit (0.1.42daily13.04.18ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [textarea] TextArea focus is not handled correctly (LP: #1163371)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 426 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Apr 2013 05:25:55 +0000
+
 ubuntu-ui-toolkit (0.1.42daily13.04.17ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Timo Jyrinki ]

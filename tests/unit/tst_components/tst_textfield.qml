@@ -21,22 +21,46 @@ import Ubuntu.Components 0.1
 Item {
     id: textItem
     width: 200; height: 200
+
+    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+
+    function reset() {
+        colorTest.focus = false;
+        textField.focus = false;
+        t1.focus = false;
+        t2.focus = false;
+    }
+
+    TextField {
+        id: colorTest
+        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
+    }
+
+    TextField {
+        id: textField
+        SignalSpy {
+            id: signalSpy
+            target: parent
+        }
+
+        property int keyPressData
+        property int keyReleaseData
+        Keys.onPressed: keyPressData = event.key
+        Keys.onReleased: keyReleaseData = event.key
+    }
+
+    Item {
+        TextField {
+            id: t1
+        }
+        TextField {
+            id: t2
+        }
+    }
+
     TestCase {
         name: "TextFieldAPI"
         when: windowShown
-
-        TextField {
-            id: textField
-            SignalSpy {
-                id: signalSpy
-                target: parent
-            }
-
-            property int keyPressData
-            property int keyReleaseData
-            Keys.onPressed: keyPressData = event.key
-            Keys.onReleased: keyReleaseData = event.key
-        }
 
         function initTestCase() {
             textField.forceActiveFocus();
@@ -193,6 +217,59 @@ Item {
             textField.cursorPosition = textField.text.length;
             textField.paste(" text");
             compare(textField.text, "test text", "Data pasted");
+        }
+
+        function test_colorCollisionOnDelegate() {
+            // fixes bug lp:1169601
+            colorTest.text = "abc";
+            compare(colorTest.color, "#0000ff", "Color when text length < 4");
+            colorTest.text = "abcd";
+            compare(colorTest.color, "#00ff00", "Color when text length >= 4");
+        }
+
+        function test_OneActiveFocus() {
+            t1.focus = true;
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
+            t2.focus = true;
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        // need to make the very first test case, otherwise OSK detection fails on phablet
+        function test_zz_OSK_ShownWhenNextTextFieldIsFocused() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextField");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextField");
+        }
+
+        function test_zz_RemoveOSKWhenFocusLost() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextField gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
+        }
+
+        function test_zz_ReEnabledInput() {
+            textField.forceActiveFocus();
+            textField.enabled = false;
+            compare(textField.enabled, false, "textField is disabled");
+            compare(textField.focus, true, "textField is focused");
+            compare(textField.activeFocus, false, "textField is not active focus");
+            compare(Qt.inputMethod.visible, false, "OSK removed");
+
+            textField.enabled = true;
+            compare(textField.enabled, true, "textField is enabled");
+            compare(textField.focus, true, "textField is focused");
+            compare(textField.activeFocus, true, "textField is active focus");
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
         RegExpValidator {

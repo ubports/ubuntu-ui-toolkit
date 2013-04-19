@@ -884,6 +884,7 @@ FocusScope {
         interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
+        pressDelay: 500
 
         function ensureVisible(r)
         {
@@ -919,16 +920,6 @@ FocusScope {
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
-            // virtual keyboard handling
-            activeFocusOnPress: false
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    internal.showInputPanel();
-                } else {
-                    internal.hideInputPanel();
-                }
-            }
-
             // remove selection when typing starts or input method start entering text
             onInputMethodComposingChanged: {
                 if (inputMethodComposing)
@@ -950,7 +941,6 @@ FocusScope {
                 enabled: control.enabled && control.activeFocusOnPress
                 anchors.fill: parent
                 propagateComposedEvents: true
-                preventStealing: true
 
                 onPressed: {
                     internal.activateEditor();
