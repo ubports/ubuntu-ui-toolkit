@@ -12,6 +12,7 @@ Each change must be reported on a new bullet point and respect one of the follow
 Where $TYPE_OF_CHANGE$ is:
 - "DEPRECATED"
 - "CHANGED"
+- "REMOVED"
 
 Where $OBJECT$ is:
 - a QML class
