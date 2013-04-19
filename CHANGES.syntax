@@ -4,9 +4,10 @@ There are 2 types of changes, a section for each exists for each release of the 
 - API Changes
 - Compatibility Breaks
 
-Each change must be reported on a new bullet point and respect the following template:
+Each change must be reported on a new bullet point and respect one of the following templates:
 * $TYPE_OF_CHANGE$ $OBJECT$
 * $TYPE_OF_CHANGE$ IN $OBJECT$: $MEMBER_TYPE$ $OLD_SIGNATURE$ TO $NEW_SIGNATURE$
+* $TYPE_OF_CHANGE$ IN $OBJECT$: description of the compatibility break
 
 Where $TYPE_OF_CHANGE$ is:
 - "DEPRECATED"
