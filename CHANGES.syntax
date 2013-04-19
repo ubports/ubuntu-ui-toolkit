@@ -67,7 +67,6 @@ API Changes
 Compatibility Breaks
 ********************
 
-Formatted:
 * CHANGED IN Page: when it becomes active, MainView's property ToolbarActions toolbar.tools is automatically updated
 * CHANGED IN Tabs: swiping to switch tabs is disabled by default
 * CHANGED IN Header: becomes hidden when there is no title or contents
