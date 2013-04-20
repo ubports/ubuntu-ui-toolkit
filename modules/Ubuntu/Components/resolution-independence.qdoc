@@ -90,14 +90,35 @@
 
     Vector graphics, fonts and programmatically drawn elements will usually scale well
     to the different devices. On the other hand, bitmaps will typically require a bit
-    more care. We require that for each bitmap the developer provides the highest
-    resolution version of it. The system will perform a high quality downscaling of the
-    bitmap when needed on lower density screens.
+    more care.
 
-    For example, if the destination size of the bitmap is 10 gu * 10 gu and the developer
-    targets a smart phone with 4 inch HD (720x1,280px) screen (1 gu = 18 px) and a tablet
-    with 10 inch HD screen (1 gu = 10 px) then he/she only needs to create a bitmap of 
-    180 px * 180 px to support both devices.
+    The size of a bitmap needs to be adequate to render well on a given
+    device. The toolkit allows to design multiple versions of a bitmap and choose
+    the appropriate one dynamically depending on the device the application is
+    being run on.
+    In order to know for what target device a given version of a bitmap was
+    produced, we define a file naming convention based on the number of pixel
+    per grid unit of the device.
+
+    Example:
+
+    If the target device the bitmap is produced for has 10 pixels per
+    grid unit, then the file name of the bitmap should be suffixed with @10:
+    \e my_bitmap.png should be renamed to \e my_bitmap@10.png.
+
+
+    In order to support the highest possible resolution devices on the market, we
+    recommend to always design bitmaps for a device that would have 30 pixels per
+    grid unit (@30 suffix). The system will perform a high quality downscaling of
+    the bitmap when needed on lower resolution screens.
+
+    Example:
+
+    If the destination size of the bitmap is 10 gu * 10 gu and the developer
+    targets a device that has 18 pixels per grid unit (1 gu = 18 px), the bitmap
+    should still be created as if 1 gu = 30 px which results in a 300 px * 300 px
+    bitmap. When testing on the device the bitmap will be downscaled by a factor
+    of 30 / 18 = 1.66667.
 
 
     \part Fonts
