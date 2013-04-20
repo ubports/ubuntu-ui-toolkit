@@ -373,8 +373,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
             bottomCoordinate = 1.0f;
             leftCoordinate = outCoordinateSize * factors[hAlignment];
             rightCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[hAlignment]));
-            radiusCoordinateHeight = (radius - 1.0f) / (height - 1.0f);
-            radiusCoordinateWidth = ((radius - 1.0f) / (width - 1.0f)) * inCoordinateSize;
+            radiusCoordinateHeight = radius / (height - 1.0f);
+            radiusCoordinateWidth = (radius / (width - 1.0f)) * inCoordinateSize;
         } else {
             const float inCoordinateSize = srcRatio / dstRatio;
             const float outCoordinateSize = 1.0f - inCoordinateSize;
@@ -382,8 +382,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
             bottomCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[vAlignment]));
             leftCoordinate = 0.0f;
             rightCoordinate = 1.0f;
-            radiusCoordinateHeight = ((radius - 1.0f) / (height - 1.0f)) * inCoordinateSize;
-            radiusCoordinateWidth = (radius - 1.0f) / (width - 1.0f);
+            radiusCoordinateHeight = (radius / (height - 1.0f)) * inCoordinateSize;
+            radiusCoordinateWidth = radius / (width - 1.0f);
         }
     } else {
         // Don't preserve source image aspect ratio stretching it in destination rectangle.
@@ -391,8 +391,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
         bottomCoordinate = 1.0f;
         leftCoordinate = 0.0f;
         rightCoordinate = 1.0f;
-        radiusCoordinateHeight = (radius - 1.0f) / (height - 1.0f);
-        radiusCoordinateWidth = (radius - 1.0f) / (width - 1.0f);
+        radiusCoordinateHeight = radius / (height - 1.0f);
+        radiusCoordinateWidth = radius / (width - 1.0f);
     }
 
     // Set top row of 4 vertices.
