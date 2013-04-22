@@ -83,6 +83,8 @@ Item {
             panel.triggerSize = units.gu(2);
         }
 
+        // FIXME: Add tests for slow swipes, see
+        // https://code.launchpad.net/~tpeeters/ubuntu-ui-toolkit/panel/+merge/158399/comments/351927
         function test_swipeBottomPanel() {
             // swipe bottom-aligned panel in and out
             swipeTests.swipeUpDown();
