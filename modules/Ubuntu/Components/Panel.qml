@@ -185,7 +185,7 @@ Item {
     }
 
     /*!
-      Disable edge swipe to activate/deactivate the panel.
+      Disable edge swipe to activate/deactivate the panel. False by default.
      */
     property bool lock: false
     /*! \internal */
@@ -198,14 +198,14 @@ Item {
     /*!
       How much of the panel to show when the user touches the panel's edge.
       This gives the user a hint that there is a panel hiding at that edge and
-      invites him/her to swipe to show the panel completely.
+      invites him/her to swipe to show the panel completely. Default value: units.gu(2).
      */
     property real hintSize: units.gu(2)
 
     /*!
       The size (height for top or bottom-aligned panels, width for left or right-aligned
       panels) of the mouse area used to detect edge swipes to activate the panel, when
-      the panel is not active.
+      the panel is not active. Default value: units.gu(2).
      */
     property real triggerSize: units.gu(2)
 
