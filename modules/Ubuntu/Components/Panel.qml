@@ -33,8 +33,42 @@ import Ubuntu.Components 0.1 as Toolkit
     in the view (to detect mouse events) even when its contents should be invisible.
 
     Set the anchors and/or width/height of the Panel to specify the area that the Panel covers when
-    activated. A panel that looks like the standard toolbar, but with custom contents,
-    can be created like this:
+    activated.
+
+    A black panel that can be swiped in from the lower-right of the window, and
+    that covers the right-half of the window when activated can be created like this:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        Rectangle {
+            color: "grey"
+            width: units.gu(80)
+            height: units.gu(80)
+
+            Panel {
+                id: panel
+                anchors {
+                    right: parent.right
+                    bottom: parent.bottom
+                    top: parent.top
+                }
+                width: parent.width / 2
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "black"
+
+                    Button {
+                        anchors.centerIn: parent
+                        text: "Click"
+                    }
+                }
+            }
+        }
+    \endqml
+
+    A panel that looks like the standard (bottom-aligned) toolbar, but with custom contents, can be created like this:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -60,39 +94,6 @@ import Ubuntu.Components 0.1 as Toolkit
                     // two properties used by the toolbar delegate:
                     property bool active: panel.active
                     property bool animating: panel.animating
-
-                    Button {
-                        anchors.centerIn: parent
-                        text: "Click"
-                    }
-                }
-            }
-        }
-    \endqml
-
-    Similarly, a black panel that can be swiped in from the lower-right of the window, and
-    that covers the right-half of the window when activated can be created like this:
-    \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 0.1
-
-        Rectangle {
-            color: "grey"
-            width: units.gu(80)
-            height: units.gu(80)
-
-            Panel {
-                id: panel
-                anchors {
-                    right: parent.right
-                    bottom: parent.bottom
-                    top: parent.top
-                }
-                width: parent.width / 2
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: "black"
 
                     Button {
                         anchors.centerIn: parent
