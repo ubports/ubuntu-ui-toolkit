@@ -148,6 +148,7 @@ Item {
 
     /*!
       Default property, holds the content which will be swiped in and out.
+      \qmlproperty list<Object> contents
      */
     default property alias contents: bar.data
 
