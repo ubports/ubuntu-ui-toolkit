@@ -7,4 +7,10 @@ RESOURCES += \
 
 OTHER_FILES += ReparentingTest.qml \
     SelectorTest.qml \
-    InheritanceTest.qml
+    InheritanceTest.qml \
+    NonStyledParent.qml \
+    NonStyledParent.qmltheme \
+    NonStyledRepeaterParent.qml \
+    NonStyledListViewParent.qml \
+    ReParentNonStyledToNonStyled.qml \
+    ReParentNonStyledToStyled.qml

@@ -63,8 +63,15 @@ private Q_SLOTS:
     void testCase_blockDeclaration();
     void testCase_selectorDelegates();
     void testCase_inheritance();
+    void testCase_NonStyledParent();
+    void testCase_NonStyledRepeaterParent();
+    void testCase_NonStyledListViewParent();
+    void testCase_ReParentNonStyledToStyled();
+    void testCase_ReParentNonStyledToNonStyled();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
+    QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl());
+    QQuickItem *testItem(QQuickItem *that, const QString &identifier);
 private:
     QQuickView *quickView;
     QQmlEngine *quickEngine;
@@ -75,6 +82,43 @@ tst_ThemeEngine::tst_ThemeEngine():
     quickEngine(0)
 {
 }
+
+QQuickItem *tst_ThemeEngine::loadTest(const QString &document, const QUrl &theme)
+{
+    QObject *root = quickView->rootObject();
+
+    ThemeEngine::initializeEngine(quickEngine);
+    if (theme.isValid()) {
+        ThemeEngine::instance()->loadTheme(theme);
+        if (!ThemeEngine::instance()->error().isEmpty()) {
+            QWARN("Theme loading failed");
+            return 0;
+        }
+    } else
+        ThemeEngine::instance()->resetError();
+    quickView->setSource(QUrl::fromLocalFile(document));
+    QTest::waitForEvents();
+    //QCoreApplication::processEvents();
+
+    return quickView->rootObject();
+}
+
+QQuickItem *tst_ThemeEngine::testItem(QQuickItem *that, const QString &identifier)
+{
+    if (that->property(identifier.toLocal8Bit()).isValid())
+        return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
+
+    QList<QQuickItem*> children = that->findChildren<QQuickItem*>();
+    Q_FOREACH(QQuickItem *child, children) {
+        if (child->objectName() == identifier) {
+            return child;
+        } else {
+            return testItem(child, identifier);
+        }
+    }
+    return 0;
+}
+
 
 void tst_ThemeEngine::initTestCase()
 {
@@ -279,6 +323,70 @@ bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties
     return !xfail;
 }
 
+void tst_ThemeEngine::testCase_NonStyledParent()
+{
+    QQuickItem *root = loadTest("NonStyledParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    QObject *object = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(object);
+    QVERIFY(styleItem);
+    // verify item path
+    QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
+
+void tst_ThemeEngine::testCase_NonStyledRepeaterParent()
+{
+    QQuickItem *root = loadTest("NonStyledRepeaterParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    QObject *object = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(object);
+    QVERIFY(styleItem);
+    // verify item path
+    QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
+
+void tst_ThemeEngine::testCase_NonStyledListViewParent()
+{
+    QQuickItem *root = loadTest("NonStyledListViewParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    QObject *object = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(object);
+    QVERIFY(styleItem);
+    // verify item path
+    QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
+
+void tst_ThemeEngine::testCase_ReParentNonStyledToStyled()
+{
+    QQuickItem *root = loadTest("ReParentNonStyledToStyled.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    QObject *object = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(object);
+    QVERIFY(styleItem);
+    // verify item path
+    QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
+
+void tst_ThemeEngine::testCase_ReParentNonStyledToNonStyled()
+{
+    QQuickItem *root = loadTest("ReParentNonStyledToNonStyled.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    QObject *object = qmlAttachedPropertiesObject<ItemStyleAttached>(item, false);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(object);
+    QVERIFY(styleItem);
+    // verify item path
+    QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
 
 QTEST_MAIN(tst_ThemeEngine)
 
