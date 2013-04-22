@@ -50,6 +50,45 @@ private Q_SLOTS:
         QCOMPARE(result, expected);
         QCOMPARE(returnedSize, expected.size());
     }
+
+    void respectRequestedSize_data() {
+        QTest::addColumn<QString>("inputFile");
+        QTest::addColumn<QString>("scalingFactor");
+        QTest::addColumn<QSize>("requestedSize");
+        QTest::addColumn<QSize>("returnedSize");
+        QTest::addColumn<QSize>("resultSize");
+
+        QString inputFile(QDir::currentPath() + QDir::separator() + "input128x256.png");
+        QTest::newRow("no scaling, bigger width and height") << inputFile << "1.0" << QSize(1000, 1000) << QSize(128, 256) << QSize(128, 256);
+        QTest::newRow("no scaling, smaller width")           << inputFile << "1.0" << QSize(50, 1000) << QSize(128, 256) << QSize(50, 100);
+        QTest::newRow("no scaling, smaller height")          << inputFile << "1.0" << QSize(1000, 50) << QSize(128, 256) << QSize(25, 50);
+        QTest::newRow("no scaling, smaller width and height")<< inputFile << "1.0" << QSize(50, 50) << QSize(128, 256) << QSize(25, 50);
+        QTest::newRow("downscaling, bigger width and height")<< inputFile << "0.5" << QSize(1000, 1000) << QSize(64, 128) << QSize(64, 128);
+        QTest::newRow("downscaling, smaller width")          << inputFile << "0.5" << QSize(50, 1000) << QSize(64, 128) << QSize(50, 100);
+        QTest::newRow("downscaling, smaller height")         << inputFile << "0.5" << QSize(1000, 50) << QSize(64, 128) << QSize(25, 50);
+        QTest::newRow("downscaling, smaller width and height")<< inputFile << "0.5" << QSize(50, 50) << QSize(64, 128) << QSize(25, 50);
+        QTest::newRow("upscaling, bigger width and height")  << inputFile << "2.0" << QSize(1000, 1000) << QSize(256, 512) << QSize(256, 512);
+        QTest::newRow("upscaling, smaller width")            << inputFile << "2.0" << QSize(50, 1000) << QSize(256, 512) << QSize(50, 100);
+        QTest::newRow("upscaling, smaller height")           << inputFile << "2.0" << QSize(1000, 50) << QSize(256, 512) << QSize(25, 50);
+        QTest::newRow("upscaling, smaller width and height") << inputFile << "2.0" << QSize(50, 50) << QSize(256, 512) << QSize(25, 50);
+    }
+
+    void respectRequestedSize() {
+        UCScalingImageProvider provider;
+        QImage result;
+        QSize size;
+
+        QFETCH(QString, inputFile);
+        QFETCH(QString, scalingFactor);
+        QFETCH(QSize, requestedSize);
+        QFETCH(QSize, returnedSize);
+        QFETCH(QSize, resultSize);
+
+        result = provider.requestImage(scalingFactor + "/" + inputFile, &size, requestedSize);
+
+        QCOMPARE(size, returnedSize);
+        QCOMPARE(result.size(), resultSize);
+    }
 };
 
 QTEST_MAIN(tst_UCScalingImageProvider)
