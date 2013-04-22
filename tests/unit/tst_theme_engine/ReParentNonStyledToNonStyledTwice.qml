@@ -21,19 +21,37 @@ Item {
     width: 100
     height: 100
 
+    property string path1
+    property string path2
+
     Item {
         id: nonStyled
         Item {
             Label {
+                id: testItem
                 objectName: "testItem"
             }
         }
     }
 
     Item {
-        id: styledParent
         ItemStyle.class: "parent"
+        Item {
+            id: nonStyledParent
+        }
     }
 
-    Component.onCompleted: nonStyled.parent = styledParent
+    Item {
+        ItemStyle.class: "other-parent"
+        Item {
+            id: nonStyledParent2
+        }
+    }
+
+    Component.onCompleted: {
+        nonStyled.parent = nonStyledParent
+        path1 = testItem.ItemStyle.path
+        nonStyled.parent = nonStyledParent2
+        path2 = testItem.ItemStyle.path
+    }
 }

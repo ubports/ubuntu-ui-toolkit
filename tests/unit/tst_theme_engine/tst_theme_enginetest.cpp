@@ -68,6 +68,8 @@ private Q_SLOTS:
     void testCase_NonStyledListViewParent();
     void testCase_ReParentNonStyledToStyled();
     void testCase_ReParentNonStyledToNonStyled();
+    void testCase_ReParentNonStyledToStyledTwice();
+    void testCase_ReParentNonStyledToNonStyledTwice();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
     QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl());
@@ -325,7 +327,7 @@ bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties
 
 void tst_ThemeEngine::testCase_NonStyledParent()
 {
-    QQuickItem *root = loadTest("NonStyledParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QQuickItem *root = loadTest("NonStyledParent.qml", QUrl::fromLocalFile("Reparenting1.qmltheme"));
     QVERIFY(root);
     QQuickItem *item = testItem(root, "testItem");
     QVERIFY(item);
@@ -338,7 +340,7 @@ void tst_ThemeEngine::testCase_NonStyledParent()
 
 void tst_ThemeEngine::testCase_NonStyledRepeaterParent()
 {
-    QQuickItem *root = loadTest("NonStyledRepeaterParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QQuickItem *root = loadTest("NonStyledRepeaterParent.qml", QUrl::fromLocalFile("Reparenting1.qmltheme"));
     QVERIFY(root);
     QQuickItem *item = testItem(root, "testItem");
     QVERIFY(item);
@@ -351,7 +353,7 @@ void tst_ThemeEngine::testCase_NonStyledRepeaterParent()
 
 void tst_ThemeEngine::testCase_NonStyledListViewParent()
 {
-    QQuickItem *root = loadTest("NonStyledListViewParent.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QQuickItem *root = loadTest("NonStyledListViewParent.qml", QUrl::fromLocalFile("Reparenting1.qmltheme"));
     QVERIFY(root);
     QQuickItem *item = testItem(root, "testItem");
     QVERIFY(item);
@@ -364,7 +366,7 @@ void tst_ThemeEngine::testCase_NonStyledListViewParent()
 
 void tst_ThemeEngine::testCase_ReParentNonStyledToStyled()
 {
-    QQuickItem *root = loadTest("ReParentNonStyledToStyled.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QQuickItem *root = loadTest("ReParentNonStyledToStyled.qml", QUrl::fromLocalFile("Reparenting1.qmltheme"));
     QVERIFY(root);
     QQuickItem *item = testItem(root, "testItem");
     QVERIFY(item);
@@ -377,7 +379,7 @@ void tst_ThemeEngine::testCase_ReParentNonStyledToStyled()
 
 void tst_ThemeEngine::testCase_ReParentNonStyledToNonStyled()
 {
-    QQuickItem *root = loadTest("ReParentNonStyledToNonStyled.qml", QUrl::fromLocalFile("NonStyledParent.qmltheme"));
+    QQuickItem *root = loadTest("ReParentNonStyledToNonStyled.qml", QUrl::fromLocalFile("Reparenting1.qmltheme"));
     QVERIFY(root);
     QQuickItem *item = testItem(root, "testItem");
     QVERIFY(item);
@@ -386,6 +388,28 @@ void tst_ThemeEngine::testCase_ReParentNonStyledToNonStyled()
     QVERIFY(styleItem);
     // verify item path
     QCOMPARE(styleItem->path(), QString(".parent .label"));
+}
+
+void tst_ThemeEngine::testCase_ReParentNonStyledToStyledTwice()
+{
+    QQuickItem *root = loadTest("ReParentNonStyledToStyledTwice.qml", QUrl::fromLocalFile("Reparenting2.qmltheme"));
+    QVERIFY(root);
+
+    QString path = root->property("path1").toString();
+    QCOMPARE(path, QString(".parent .label"));
+    path = root->property("path2").toString();
+    QCOMPARE(path, QString(".other-parent .label"));
+}
+
+void tst_ThemeEngine::testCase_ReParentNonStyledToNonStyledTwice()
+{
+    QQuickItem *root = loadTest("ReParentNonStyledToNonStyledTwice.qml", QUrl::fromLocalFile("Reparenting2.qmltheme"));
+    QVERIFY(root);
+
+    QString path = root->property("path1").toString();
+    QCOMPARE(path, QString(".parent .label"));
+    path = root->property("path2").toString();
+    QCOMPARE(path, QString(".other-parent .label"));
 }
 
 QTEST_MAIN(tst_ThemeEngine)
