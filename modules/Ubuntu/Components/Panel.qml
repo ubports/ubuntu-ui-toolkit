@@ -432,7 +432,7 @@ Item {
             finishMoving();
         }
 
-        // FIXME: Make all parameters below themable.
+        // FIXME: Make all parameters below themable and resolution-independent.
         //  The value of 44 was copied from the Launcher.
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
