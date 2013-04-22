@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
-    width: 200
-    height: 200
+    width: 400
+    height: 400
 
     Rectangle {
         id: testItem
@@ -29,6 +29,7 @@ Item {
 
     AbstractButton {
         id: testControl
+        visible: false
     }
 
     ListItem.Standard {
@@ -56,14 +57,33 @@ Item {
         function test_clicked() {
             compare(listItemClickedSpy.valid, true, "clicked signal exists")
             compare(controlClickedSpy.valid, true, "control has clicked signal")
-            listItemStandard.control = testControl;
-            compare(listItemStandard.control, testControl, "control can be set")
             var listItemClickedCount = listItemClickedSpy.count
             var controlClickedCount = controlClickedSpy.count
             mouseMove(listItemStandard, 10, 10)
-            mouseClick(listItemStandard, 10, 10)
-            compare(listItemClickedSpy.count, listItemClickedCount+1, "List item clicked triggered")
-            compare(controlClickedSpy.count, controlClickedCount+1, "Control clicked triggered")
+            mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
+            listItemClickedCount++;
+            compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked triggered")
+            listItemStandard.control = testControl;
+            mouseMove(listItemStandard, 10, 10)
+            mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
+            compare(listItemStandard.control, testControl, "control can be set")
+            controlClickedCount++;
+            compare(controlClickedSpy.count, controlClickedCount, "Control clicked triggered")
+            compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked not triggered when there is a control")
+            listItemStandard.control = null;
+        }
+
+        function test_bug1166982_disabled_control_clicked() {
+            var listItemClickedCount = listItemClickedSpy.count
+            var controlClickedCount = controlClickedSpy.count
+            listItemStandard.control = testControl
+            testControl.enabled = false
+            mouseMove(listItemStandard, 10, 10)
+            mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
+            compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked not triggered with disabled control")
+            compare(controlClickedSpy.count, controlClickedCount, "Control clicked not triggered with disabled control")
+            testControl.enabled = true
+            listItemStandard.control = null
         }
 
         function test_icon() {

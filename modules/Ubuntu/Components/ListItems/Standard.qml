@@ -241,15 +241,15 @@ Empty {
             margins: units.gu(2)
         }
         onControlChanged: {
-            control.parent = controlContainer;
+            if (control) control.parent = controlContainer;
         }
 
         Connections {
             target: listItem.__mouseArea
 
             onClicked: {
-                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
-                    control.clicked();
+                if (control && __mouseArea.mouseX < progressionHelper.x) {
+                    if (control.enabled) control.clicked();
                 } else {
                     listItem.clicked();
                 }
