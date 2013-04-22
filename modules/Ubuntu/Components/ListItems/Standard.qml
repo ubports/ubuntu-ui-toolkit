@@ -230,7 +230,7 @@ Empty {
 
     Item {
         id: controlContainer
-        property AbstractButton control: null
+        property AbstractButton control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined

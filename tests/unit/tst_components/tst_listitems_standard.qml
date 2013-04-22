@@ -47,7 +47,6 @@ Item {
         }
 
         function test_control() {
-            compare(listItemStandard.control,null,"control is null by default")
             listItemStandard.control = testControl
             compare(listItemStandard.control,testControl,"set/get")
             listItemStandard.control = null
@@ -64,7 +63,7 @@ Item {
             mouseMove(listItemStandard, 10, 10)
             mouseClick(listItemStandard, 10, 10)
             compare(listItemClickedSpy.count, listItemClickedCount+1, "List item clicked triggered")
-            compare(listItemClickedSpy.count, controlClickedSpy+1, "Control clicked triggered")
+            compare(listItemClickedSpy.count, controlClickedCount+1, "Control clicked triggered")
         }
 
         function test_icon() {
