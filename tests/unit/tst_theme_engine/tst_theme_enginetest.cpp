@@ -87,8 +87,6 @@ tst_ThemeEngine::tst_ThemeEngine():
 
 QQuickItem *tst_ThemeEngine::loadTest(const QString &document, const QUrl &theme)
 {
-    QObject *root = quickView->rootObject();
-
     ThemeEngine::initializeEngine(quickEngine);
     if (theme.isValid()) {
         ThemeEngine::instance()->loadTheme(theme);
@@ -100,7 +98,6 @@ QQuickItem *tst_ThemeEngine::loadTest(const QString &document, const QUrl &theme
         ThemeEngine::instance()->resetError();
     quickView->setSource(QUrl::fromLocalFile(document));
     QTest::waitForEvents();
-    //QCoreApplication::processEvents();
 
     return quickView->rootObject();
 }

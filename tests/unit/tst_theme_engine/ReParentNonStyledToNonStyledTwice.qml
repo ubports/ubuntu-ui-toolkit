@@ -37,7 +37,9 @@ Item {
     Item {
         ItemStyle.class: "parent"
         Item {
-            id: nonStyledParent
+            Item {
+                id: nonStyledParent
+            }
         }
     }
 
