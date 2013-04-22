@@ -37,7 +37,6 @@ Item {
         anchors.fill: parent
     }
 
-
     TestCase {
         name: "ListItemsStandardAPI"
         when: windowShown
