@@ -63,7 +63,7 @@ Item {
             mouseMove(listItemStandard, 10, 10)
             mouseClick(listItemStandard, 10, 10)
             compare(listItemClickedSpy.count, listItemClickedCount+1, "List item clicked triggered")
-            compare(listItemClickedSpy.count, controlClickedCount+1, "Control clicked triggered")
+            compare(controlClickedSpy.count, controlClickedCount+1, "Control clicked triggered")
         }
 
         function test_icon() {
