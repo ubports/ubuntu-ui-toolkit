@@ -35,14 +35,12 @@ import Ubuntu.Components 0.1 as Toolkit
     Set the anchors and/or width/height of the Panel to specify the area that the Panel covers when
     activated.
 
-    A black panel that can be swiped in from the lower-right of the window, and
-    that covers the right-half of the window when activated can be created like this:
+    A black panel that can be swiped in from the lower-right of the window can be created like this:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
 
-        Rectangle {
-            color: "grey"
+        Item {
             width: units.gu(80)
             height: units.gu(80)
 
@@ -51,9 +49,9 @@ import Ubuntu.Components 0.1 as Toolkit
                 anchors {
                     right: parent.right
                     bottom: parent.bottom
-                    top: parent.top
                 }
                 width: parent.width / 2
+                height: units.gu(8)
 
                 Rectangle {
                     anchors.fill: parent
@@ -73,8 +71,7 @@ import Ubuntu.Components 0.1 as Toolkit
         import QtQuick 2.0
         import Ubuntu.Components 0.1
 
-        Rectangle {
-            color: "grey"
+        Item {
             width: units.gu(80)
             height: units.gu(80)
 
