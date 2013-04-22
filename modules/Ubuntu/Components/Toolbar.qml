@@ -142,7 +142,6 @@ Panel {
             top: parent.top
             rightMargin: units.gu(2)
         }
-        width: childrenRect.width
         spacing: units.gu(1)
 
         Repeater {
