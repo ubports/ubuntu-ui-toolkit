@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.43daily13.04.22ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * Auto expanding TextArea should not eat flick events (LP: #1144077)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 433 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Apr 2013 04:01:54 +0000
+
 ubuntu-ui-toolkit (0.1.43daily13.04.19ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
