@@ -167,10 +167,7 @@ Item {
         functions, while the bottom edge is reserved for app-specific functionality
         such as a default toolbar. The use of Qt.AlignLeading and Qt.AlignTrailing is
         preferred over Qt.AlignLeft and Qt.AlignRight in order to more easily support
-        right-to-left user interfaces that use LayoutMirroring. Note that when using
-        leading or trailing alignment in combination with LayoutMirroring.enabled = true,
-        LayoutMirroring.childrenInherit must also be set in order for the Panel's
-        MouseAreas to be anchored correctly.
+        right-to-left user interfaces that use LayoutMirroring.
       */
     property int align: Qt.AlignBottom
 
