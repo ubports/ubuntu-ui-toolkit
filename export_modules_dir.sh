@@ -16,3 +16,4 @@
 #
 
 export QML_IMPORT_PATH=$PWD/modules
+export QML2_IMPORT_PATH=$PWD/modules

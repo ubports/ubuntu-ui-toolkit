@@ -17,9 +17,12 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     width: 200; height: 200
+
+    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
     TextArea {
         id: textArea
@@ -34,8 +37,43 @@ Item {
         Keys.onReleased: keyReleaseData = event.key
     }
 
+    TextArea {
+        id: colorTest
+        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
+    }
+
     TextEdit {
         id: textEdit
+    }
+
+    ListItem.Empty {
+        id: listItem
+        height: 200
+        anchors.left: parent.left
+
+        anchors.right: parent.right
+        SignalSpy {
+            id: listItemSpy
+            signalName: "clicked"
+            target: listItem
+        }
+
+        TextArea {
+            id: input
+            anchors.fill: parent
+            Component.onCompleted: forceActiveFocus()
+        }
+    }
+
+    Item {
+        TextArea {
+            id: t1
+            objectName: "t1"
+        }
+        TextArea {
+            id: t2
+            objectName: "t2"
+        }
     }
 
     TestCase {
@@ -335,9 +373,93 @@ Item {
             textArea.readOnly = false;
             textArea.keyPressData = 0;
             textArea.keyReleaseData = 0;
-            keyClick(Qt.Key_Control, Qt.NoModifier, 100);
-            compare(textArea.keyPressData, Qt.Key_Control, "Key press filtered");
-            compare(textArea.keyReleaseData, Qt.Key_Control, "Key release filtered");
+            keyClick(Qt.Key_T, Qt.NoModifier, 100);
+            compare(textArea.keyPressData, Qt.Key_T, "Key press filtered");
+            compare(textArea.keyReleaseData, Qt.Key_T, "Key release filtered");
+        }
+
+        function test_TextAreaInListItem_EnterCaptured() {
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_E);
+            keyClick(Qt.Key_S);
+            keyClick(Qt.Key_T);
+            keyClick(Qt.Key_Enter);
+            compare(input.text, "test\n", "Keys");
+        }
+        function test_TextAreaInListItem_EnterDoesNotProduceClick() {
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            listItemSpy.clear();
+            keyClick(Qt.Key_Enter);
+            tryCompare(listItemSpy, "count", 0, 100);
+        }
+
+        function test_colorCollisionOnDelegate() {
+            // fixes bug lp:1169601
+            colorTest.text = "abc";
+            compare(colorTest.color, "#0000ff", "Color when text length < 4");
+            colorTest.text = "abcd";
+            compare(colorTest.color, "#00ff00", "Color when text length >= 4");
+        }
+
+        function test_OneActiveFocus() {
+            t1.focus = true;
+            compare(t1.activeFocus, true, "T1 has activeFocus");
+            compare(t2.activeFocus, false, "T1 has activeFocus");
+            t2.focus = true;
+            compare(t1.activeFocus, false, "T1 has activeFocus");
+            compare(t2.activeFocus, true, "T1 has activeFocus");
+        }
+
+        function test_OSK_ShownWhenNextTextAreaIsFocused() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the first TextArea");
+            t2.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextArea");
+        }
+
+        function test_RemoveOSKWhenFocusLost() {
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            t1.focus = true;
+            compare(Qt.inputMethod.visible, true, "OSK is shown when TextArea gains focus");
+            t1.focus = false;
+            compare(Qt.inputMethod.visible, false, "OSK is hidden when TextArea looses focus");
+        }
+
+        function test_ReEnabledInput() {
+            textArea.forceActiveFocus();
+            textArea.enabled = false;
+            compare(textArea.enabled, false, "textArea is disabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, false, "textArea is not active focus");
+            compare(Qt.inputMethod.visible, false, "OSK removed");
+
+            textArea.enabled = true;
+            compare(textArea.enabled, true, "textArea is enabled");
+            compare(textArea.focus, true, "textArea is focused");
+            compare(textArea.activeFocus, true, "textArea is active focus");
+            if (!hasOSK)
+                expectFail("", "OSK can be tested only when present");
+            compare(Qt.inputMethod.visible, true, "OSK shown");
+        }
+
+        // make it to b ethe last test case executed
+        function test_zz_TextareaInListItem_RichTextEnterCaptured() {
+            textArea.text = "a<br />b";
+            textArea.textFormat = TextEdit.RichText;
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.RichText;
+            input.text = "ab";
+            input.cursorPosition = 1;
+            keyClick(Qt.Key_Return);
+            compare(input.text, textArea.text, "Formatted text split");
         }
     }
 }

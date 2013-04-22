@@ -617,16 +617,6 @@ FocusScope {
         // forward keys to the root element so it can be captured outside of it
         Keys.forwardTo: [control]
 
-        // virtual keyboard/software input panel handling
-        activeFocusOnPress: false
-        onActiveFocusChanged: {
-            if (activeFocus) {
-                internal.showInputPanel();
-            } else {
-                internal.hideInputPanel();
-            }
-        }
-
         // handle virtual keyboard and cursor positioning, as the MouseArea overrides
         // those functionalities of the TextInput
         MouseArea {

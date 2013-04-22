@@ -795,6 +795,23 @@ FocusScope {
         }
     }
 
+    // grab Enter/Return keys which may be stolen from parent components of TextArea
+    // due to forwarded keys from TextEdit
+    Keys.onPressed: {
+        if ((event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)) {
+            if (editor.textFormat === TextEdit.RichText) {
+                // FIXME: use control.paste("<br />") instead when paste() gets sich text support
+                editor.insert(editor.cursorPosition, "<br />");
+            } else {
+                control.paste("\n");
+            }
+            event.accepted = true;
+        } else {
+            event.accepted = false;
+        }
+    }
+    Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
+
     // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
@@ -867,6 +884,7 @@ FocusScope {
         interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
+        pressDelay: 500
 
         function ensureVisible(r)
         {
@@ -902,16 +920,6 @@ FocusScope {
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
-            // virtual keyboard handling
-            activeFocusOnPress: false
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    internal.showInputPanel();
-                } else {
-                    internal.hideInputPanel();
-                }
-            }
-
             // remove selection when typing starts or input method start entering text
             onInputMethodComposingChanged: {
                 if (inputMethodComposing)
@@ -933,7 +941,6 @@ FocusScope {
                 enabled: control.enabled && control.activeFocusOnPress
                 anchors.fill: parent
                 propagateComposedEvents: true
-                preventStealing: true
 
                 onPressed: {
                     internal.activateEditor();

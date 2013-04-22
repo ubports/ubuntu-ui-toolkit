@@ -10,7 +10,7 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
-* None
+* Disable swiping to switch tabs by default.
 
 API Changes
 ***********

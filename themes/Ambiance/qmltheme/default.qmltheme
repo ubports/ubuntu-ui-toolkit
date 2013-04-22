@@ -132,7 +132,7 @@ Examples:
 }
 
 .new-tabs {
-    swipeToSwitchTabs: true;
+    swipeToSwitchTabs: false;
     headerFontSize: "x-large";
     headerFontWeight: Font.Light;
     headerTextSelectedOpacity: 0.9;
