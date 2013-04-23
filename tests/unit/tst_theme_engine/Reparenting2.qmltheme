@@ -1,0 +1,11 @@
+.label {
+    color: "blue";
+}
+
+.parent .label {
+    color: "green";
+}
+
+.other-parent .label {
+    color: "red";
+}

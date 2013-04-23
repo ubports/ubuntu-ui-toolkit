@@ -1,0 +1,7 @@
+.label {
+    color: "blue";
+}
+
+.parent .label {
+    color: "green";
+}
