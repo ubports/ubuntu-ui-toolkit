@@ -95,21 +95,9 @@ Item {
         }
     }
 
-    ListView {
+    Item {
         id: tabView
         anchors.fill: parent
-
-        interactive: itemStyle.swipeToSwitchTabs
-        model: tabsDelegate.tabModel
-        onModelChanged: tabView.updatePages()
-        currentIndex: item.selectedTabIndex
-        onCurrentIndexChanged: if (item.__tabsModel.count > 0) item.selectedTabIndex = tabView.currentIndex
-
-        orientation: ListView.Horizontal
-        snapMode: ListView.SnapOneItem
-        boundsBehavior: Flickable.DragOverBounds
-        highlightFollowsCurrentItem: true
-        highlightRangeMode: ListView.StrictlyEnforceRange
 
         function updatePages() {
             if (!tabsDelegate.tabModel) return; // not initialized yet
@@ -118,24 +106,15 @@ Item {
             var tab;
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
-                tab.anchors.fill = undefined;
-                tab.width = tabView.width;
-                tab.height = tabView.height
+                tab.parent = tabView;
+                }
             }
-            tabView.updateSelectedTabIndex();
         }
-
-        function updateSelectedTabIndex() {
-            if (tabView.currentIndex === item.selectedTabIndex) return;
-            // The view is automatically updated, because highlightFollowsCurrentItem
-            tabView.currentIndex = item.selectedTabIndex;
-        }
-    }
 
     Connections {
         target: item
         onSelectedTabIndexChanged: {
-            tabView.updateSelectedTabIndex();
+            tabView.updatePages();
         }
     }
 

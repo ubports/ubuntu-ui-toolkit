@@ -59,4 +59,6 @@ PageTreeNode {
      */
     active: parentNode && parentNode.active &&
             parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
+
+    visible: active
 }
