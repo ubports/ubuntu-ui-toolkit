@@ -81,7 +81,7 @@ Item {
 
             Repeater {
                 id: repeater
-                model: tabs.__tabsModel.children
+                model: tabs.__tabs
 
                 AbstractButton {
                     id: button
@@ -109,7 +109,7 @@ Item {
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
                         // while sliding in from the right side when a new button was selected
-                        var numTabs = tabs.__tabsModel.count;
+                        var numTabs = tabs.__tabs.length;
                         var minimum = buttonView.selectedButtonIndex;
                         var maximum = buttonView.selectedButtonIndex + numTabs - 1;
                         if (MathUtils.clamp(buttonIndex, minimum, maximum) === buttonIndex) return true;
@@ -222,8 +222,9 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
+            if (tabIndex < 0 || tabIndex >= tabs.__tabs.length) return;
             var b1 = buttons[tabIndex];
-            var b2 = buttons[tabIndex + tabs.__tabsModel.children.length];
+            var b2 = buttons[tabIndex + tabs.__tabs.length];
 
             // find the button with the nearest offset
             var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);

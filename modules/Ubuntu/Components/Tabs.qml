@@ -104,7 +104,7 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
+    property int selectedTabIndex: __tabs.length > 0 ? 0 : -1
 
     /*!
       \preliminary
@@ -151,8 +151,8 @@ PageTreeNode {
       \internal
       required by NewTabsDelegate
      */
-    property alias __tabsModel: tabsModel
-    VisualItemModel {
+    Item {
+        anchors.fill: parent
         id: tabsModel
     }
 

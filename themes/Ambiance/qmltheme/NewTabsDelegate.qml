@@ -65,7 +65,7 @@ Item {
     anchors.fill: parent
     clip: true
 
-    property VisualItemModel tabModel: item.__tabsModel
+//    property VisualItemModel tabModel: item.__tabsModel
 
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item
@@ -100,13 +100,11 @@ Item {
         anchors.fill: parent
 
         function updatePages() {
-            if (!tabsDelegate.tabModel) return; // not initialized yet
-
-            var tabList = tabsDelegate.tabModel.children
+//            if (!tabsDelegate.tabModel) return; // not initialized yet
+            var tabList = item.__tabs
             var tab;
             for (var i=0; i < tabList.length; i++) {
                 tab = tabList[i];
-                tab.parent = tabView;
                 }
             }
         }
@@ -122,6 +120,6 @@ Item {
     onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
         item.__headerContents = headerContents;
-        tabView.updatePages();
+//        tabView.updatePages();
     }
 }
