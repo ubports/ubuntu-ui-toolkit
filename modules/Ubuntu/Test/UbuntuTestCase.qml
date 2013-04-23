@@ -20,7 +20,7 @@ import Ubuntu.Components 0.1
 
 TestCase {
 	
-	function mouseMoveSlow(item,x,y,dx,dy,steps,stepsize) {
+	function mouseMoveSlow(item,x,y,dx,dy,steps,stepdelay) {
 		mouseMove(item,x,y);
 		var step_dx = dx/steps;
 		var step_dy = dy/steps;
@@ -34,7 +34,7 @@ TestCase {
 			if (iy<dx) {
 				iy += step_dy;
 			}
-			mouseMove(item,x + ix,y + iy,stepsize);
+			mouseMove(item,x + ix,y + iy,stepdelay);
 		}
 	}
 } 
