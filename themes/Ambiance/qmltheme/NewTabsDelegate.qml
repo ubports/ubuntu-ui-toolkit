@@ -65,8 +65,6 @@ Item {
     anchors.fill: parent
     clip: true
 
-//    property VisualItemModel tabModel: item.__tabsModel
-
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item
     property Component headerContents: Component {

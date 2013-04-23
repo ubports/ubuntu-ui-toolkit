@@ -27,6 +27,24 @@ Template {
     MainView {
         Tabs {
             id: tabs
+            Item {
+                // does this mess up stuff? nope.
+            }
+
+//            Repeater {
+//                model: 5
+//                // but this does.
+//                Tab {
+//                    title: "Extra "
+//                    page: Page {
+//                        Label {
+//                            anchors.centerIn: parent
+//                            text: "Extra tab number "+index
+//                        }
+//                    }
+//                }
+//            }
+
             Tab {
                 title: i18n.tr("Simple page")
                 page: Page {

@@ -104,7 +104,7 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: __tabs.length > 0 ? 0 : -1
+    property int selectedTabIndex: tabs.__tabs.length > 0 ? 0 : -1
 
     /*!
       \preliminary
@@ -145,7 +145,9 @@ PageTreeNode {
     //  https://bugs.launchpad.net/tavastia/+bug/1080330
     //  The workaround does not break the regular TabsDelegate.
     /*! \internal */
-    default property alias __tabs: tabsModel.children
+    property alias __tabs: tabsModel.tabList
+
+    default property alias tabChildren: tabsModel.children
 
     /*!
       \internal
@@ -154,6 +156,28 @@ PageTreeNode {
     Item {
         anchors.fill: parent
         id: tabsModel
+
+        property var tabList: []
+        onChildrenChanged: updateTabList();
+        Component.onCompleted: updateTabList();
+
+        function updateTabList() {
+            var list = [];
+            for (var i=0; i < children.length; i++) {
+                if (isTab(children[i])) list.push(children[i]);
+            }
+            tabList = list;
+        }
+
+        function isTab(item) {
+            if (item && item.hasOwnProperty("__isPageTreeNode")
+                    && item.__isPageTreeNode && item.hasOwnProperty("title")
+                    && item.hasOwnProperty("page")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /*! \internal */
