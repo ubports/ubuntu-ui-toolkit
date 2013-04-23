@@ -83,24 +83,34 @@ Item {
             panel.triggerSize = units.gu(2);
         }
 
-        // FIXME: Add tests for slow swipes, see
-        // https://code.launchpad.net/~tpeeters/ubuntu-ui-toolkit/panel/+merge/158399/comments/351927
         function test_swipeBottomPanel() {
             // swipe bottom-aligned panel in and out
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeUpDown();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeUpDown();
+            swipeTests.slowMouseMove = false;
         }
 
         function test_swipeLeftPanel() {
             // swipe a left-aligned panel in and out
             panel.align = Qt.AlignLeft;
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeRightLeft();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeRightLeft();
+            swipeTests.slowMouseMove = false;
             panel.align = Qt.AlignBottom;
         }
 
         function test_swipeRightPanel() {
             // swipe right-aligned panel in and out
             panel.align = Qt.AlignRight;
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeLeftRight();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeLeftRight();
+            swipeTests.slowMouseMove = false;
             panel.align = Qt.AlignBottom;
         }
 
@@ -110,7 +120,11 @@ Item {
             swipeTests.swipeRightLeft();
             panel.LayoutMirroring.enabled = true;
             panel.LayoutMirroring.childrenInherit = true;
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeLeftRight();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeLeftRight();
+            swipeTests.slowMouseMove = false;
             panel.LayoutMirroring.enabled = false;
             panel.align = Qt.AlignBottom;
         }
@@ -121,7 +135,11 @@ Item {
             swipeTests.swipeLeftRight();
             panel.LayoutMirroring.enabled = true;
             panel.LayoutMirroring.childrenInherit = true;
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeRightLeft();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeRightLeft();
+            swipeTests.slowMouseMove = false;
             panel.LayoutMirroring.enabled = false;
             panel.align = Qt.AlignBottom;
         }
@@ -131,7 +149,12 @@ Item {
             panel.anchors.top = root.top;
             panel.anchors.bottom = undefined;
             panel.align = Qt.AlignTop;
+
+            swipeTests.slowMouseMove = false;
             swipeTests.swipeDownUp();
+            swipeTests.slowMouseMove = true;
+            swipeTests.swipeDownUp();
+            swipeTests.slowMouseMove = false;
 
             // revert to original state
             panel.anchors.bottom = root.bottom;
@@ -142,21 +165,25 @@ Item {
         QtObject {
             id: swipeTests
 
+            // waiting time in ms after move, to simulate slow drag vs fast swipe
+            property int moveDelay: slowMouseMove ? 400 : 0
+            property bool slowMouseMove: false
+
             function swipeUpDown() {
                 testCase.compare(panel.active, false, "Panel initially not active")
                 var x = root.width / 2; var y = root.height - 1;
                 var dx = 0;
                 var dy = -panel.height / 2;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x + dx, y + dy);
+                testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
-                testCase.compare(panel.active, true, "Panel activated by swiping up")
+                testCase.compare(panel.active, true, "Panel activated by swiping up (delay: "+moveDelay+")")
                 x = panel.width / 2;
                 y = 10;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
-                testCase.mouseMove(panel, x - dx, y - dy);
+                testCase.mouseMove(panel, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Panel deactivated by swiping down")
+                testCase.compare(panel.active, false, "Panel deactivated by swiping down (delay: "+moveDelay+")")
             }
 
             function swipeRightLeft() {
@@ -166,15 +193,15 @@ Item {
                 var dx = panel.width / 2;
                 var dy = 0;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x + dx, y + dy);
+                testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
-                testCase.compare(panel.active, true, "Left-aligned panel activated by swiping to the right");
+                testCase.compare(panel.active, true, "Left-aligned panel activated by swiping to the right (delay: "+moveDelay+")");
                 x = 3 * panel.width / 4;
                 y = panel.height / 2;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x - dx, y - dy);
+                testCase.mouseMove(root, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Left-aligned panel deactivated by swiping to the left");
+                testCase.compare(panel.active, false, "Left-aligned panel deactivated by swiping to the left (delay: "+moveDelay+"");
             }
 
             function swipeLeftRight() {
@@ -184,15 +211,15 @@ Item {
                 var dx = -panel.width / 2;
                 var dy = 0;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x + dx, y + dy);
+                testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
-                testCase.compare(panel.active, true, "Right-aligned panel activated by swiping to the left");
+                testCase.compare(panel.active, true, "Right-aligned panel activated by swiping to the left (delay: "+moveDelay+"");
                 x = 1;
                 y = panel.height / 2;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
-                testCase.mouseMove(panel, -dx, -dy);
+                testCase.mouseMove(panel, -dx, -dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Right-aligned panel deactivating by swiping to the right");
+                testCase.compare(panel.active, false, "Right-aligned panel deactivating by swiping to the right (delay: "+moveDelay+"");
             }
 
             function swipeDownUp() {
@@ -202,15 +229,15 @@ Item {
                 var dx = 0;
                 var dy = panel.height / 2;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x + dx, y + dy);
+                testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
-                testCase.compare(panel.active, true, "Top-aligned panel activated by swiping down");
+                testCase.compare(panel.active, true, "Top-aligned panel activated by swiping down (delay: "+moveDelay+"");
                 x = panel.width / 2;
                 y = panel.height - 1;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
-                testCase.mouseMove(panel, x - dx, y - dy);
+                testCase.mouseMove(panel, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Top-aligned panel deactivated by swiping up");
+                testCase.compare(panel.active, false, "Top-aligned panel deactivated by swiping up (delay: "+moveDelay+"");
             }
 
             function test_clickToDeactivate() {
