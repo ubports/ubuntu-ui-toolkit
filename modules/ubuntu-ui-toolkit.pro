@@ -2,4 +2,4 @@ include( ../common.pri )
 
 TEMPLATE = subdirs
 
-SUBDIRS += Ubuntu/Components Ubuntu/Test
+SUBDIRS += Ubuntu/Components
