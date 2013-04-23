@@ -7,16 +7,34 @@ SDK Release Notes
 UNRELEASED
 ##########
 
+API Changes
+***********
+
+* None
+
 Compatibility Breaks
 ********************
 
-* Disable swiping to switch tabs by default.
+* None
+
+SDK 0.1.44
+##########
 
 API Changes
 ***********
 
-* clicked() and pressAndHold() signals of AbstractButton no longer take a mouse
-  parameter as input.
+* CHANGED IN AbstractButton: signal clicked(mouse) TO signal clicked()
+* CHANGED IN AbstractButton: signal pressAndHold(mouse) TO signal pressAndHold()
+
+Compatibility Breaks
+********************
+
+* CHANGED IN Tabs: Swiping to switch tabs disabled by default
+
+SDK 0.1.43
+##########
+
+(Automatic builds)
 
 SDK 0.1.42
 ##########
