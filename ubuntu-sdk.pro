@@ -2,7 +2,7 @@ include( common.pri )
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += demos themes modules/ubuntu-ui-toolkit.pro tests/unit examples
+SUBDIRS += demos themes modules/ubuntu-ui-toolkit.pro tests examples
 
 tests/unit.depends = modules/ubuntu-ui-toolkit.pro
 

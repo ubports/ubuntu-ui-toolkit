@@ -7,16 +7,9 @@ SDK Release Notes
 UNRELEASED
 ##########
 
-Compatibility Breaks
-********************
-
-* Disable swiping to switch tabs by default.
-
 API Changes
 ***********
 
-* clicked() and pressAndHold() signals of AbstractButton no longer take a mouse
-  parameter as input.
 * CHANGED IN Toolbar: property bool active TO property bool opened
 * CHANGED IN Toolbar: property bool lock TO property bool locked
 * CHANGED IN ToolbarActions: property bool active TO property bool opened
@@ -25,6 +18,30 @@ API Changes
 * DEPRECATED IN Toolbar: property bool lock
 * DEPRECATED IN ToolbarActions: property bool active
 * DEPRECATED IN ToolbarActions: property bool lock
+
+Compatibility Breaks
+********************
+
+* None
+
+SDK 0.1.44
+##########
+
+API Changes
+***********
+
+* CHANGED IN AbstractButton: signal clicked(mouse) TO signal clicked()
+* CHANGED IN AbstractButton: signal pressAndHold(mouse) TO signal pressAndHold()
+
+Compatibility Breaks
+********************
+
+* CHANGED IN Tabs: Swiping to switch tabs disabled by default
+
+SDK 0.1.43
+##########
+
+(Automatic builds)
 
 SDK 0.1.42
 ##########
