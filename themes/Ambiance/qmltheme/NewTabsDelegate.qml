@@ -68,7 +68,7 @@ Item {
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item
     property Component headerContents: Component {
-        NewTabBar {
+        TabBar {
             id: tabBar
             tabs: theTabs
             anchors {
