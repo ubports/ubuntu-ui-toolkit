@@ -148,7 +148,7 @@ Item {
                 var dx = 0;
                 var dy = -panel.height / 2;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
-                testCase.mouseMove(root, x + dx, x + dy);
+                testCase.mouseMove(root, x + dx, y + dy);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
                 testCase.compare(panel.active, true, "Panel activated by swiping up")
                 x = panel.width / 2;
