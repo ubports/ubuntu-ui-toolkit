@@ -352,12 +352,6 @@ Item {
     }
 
     DraggingArea {
-
-        Rectangle {
-            color: "red"
-            anchors.fill: parent
-        }
-
         id: draggingArea
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         zeroVelocityCounts: true
