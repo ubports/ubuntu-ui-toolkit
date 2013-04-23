@@ -39,34 +39,40 @@ Panel {
     height: background.height
 
     /*!
+      \deprecated
+      Use property bool opened instead.
+     */
+    property alias active: toolbar.opened
+
+    /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
     property ToolbarActions tools: null
     onToolsChanged: {
-        if (tools && tools.active && tools.lock) {
+        if (tools && tools.opened && tools.lock) {
             // toolbar is locked in visible state.
             internal.visibleTools = tools;
-            active = true;
-        } else if (!active && !animating) {
+            opened = true;
+        } else if (!opened && !animating) {
             // toolbar is invisible
             internal.visibleTools = tools;
         } else {
-            active = false;
+            opened = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
     }
 
-    // if tools is not specified, lock the toolbar in inactive position
+    // if tools is not specified, lock the toolbar in closed position
     lock: tools ? tools.lock : true
 
     Connections {
         target: tools
-        onActiveChanged: toolbar.active = tools.active;
+        onOpenedChanged: toolbar.opened = tools.opened;
         onLockChanged: toolbar.lock = tools.lock;
     }
-    onActiveChanged: if (tools) tools.active = toolbar.active
+    onOpenedChanged: if (tools) tools.opened = toolbar.opened
     onLockChanged: if (tools) tools.lock = toolbar.lock
     QtObject {
         id: internal
@@ -74,7 +80,7 @@ Panel {
     }
 
     onAnimatingChanged: {
-        if (!animating && !active) {
+        if (!animating && !opened) {
             internal.visibleTools = toolbar.tools;
         }
     }
@@ -93,8 +99,8 @@ Panel {
         height: units.gu(8)
 
         Theming.ItemStyle.class: "toolbar"
-        // The values of active and animated properties are used in the delegate
-        property bool active: toolbar.active
+        // The values of opened and animated properties are used in the delegate
+        property bool opened: toolbar.opened
         property bool animating: toolbar.animating
     }
 

@@ -62,7 +62,7 @@ import QtQuick 2.0
                         }
                     }
                     lock: true
-                    active: true
+                    opened: true
                 }
             }
         }
@@ -98,14 +98,20 @@ ActionList {
     property Item __pageStack: null
 
     /*!
-      The toolbar is active
+      The toolbar is opened
      */
-    property bool active: false
+    property bool opened: false
 
     /*!
-      The toolbar cannot be made active or inactive by bottom-edge swipes.
+      \deprecated
+      Use property opened instead.
+     */
+    property alias active: toolbarActions.opened
+
+    /*!
+      The toolbar cannot be opened/closed by bottom-edge swipes.
       If the ToolbarActions contains no visible actions, it is automatically
-      locked (in inactive state).
+      locked (in closed state).
      */
     property bool lock: !toolbarActions.__hasVisibleActions()
 

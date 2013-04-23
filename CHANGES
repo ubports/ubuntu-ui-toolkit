@@ -17,6 +17,10 @@ API Changes
 
 * clicked() and pressAndHold() signals of AbstractButton no longer take a mouse
   parameter as input.
+* CHANGED in Toolbar: property bool active TO property bool opened
+* DEPRECATED IN Toolbar: property bool active
+* CHANGED IN ToolbarActions: property bool active TO property bool opened
+* DEPRECATED IN ToolbarActions: property bool active
 
 SDK 0.1.42
 ##########

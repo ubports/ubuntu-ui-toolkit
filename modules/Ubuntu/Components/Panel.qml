@@ -33,7 +33,7 @@ import Ubuntu.Components 0.1 as Toolkit
     in the view (to detect mouse events) even when its contents should be invisible.
 
     Set the anchors and/or width/height of the Panel to specify the area that the Panel covers when
-    activated.
+    opened.
 
     A black panel that can be swiped in from the lower-right of the window can be created like this:
     \qml
@@ -89,7 +89,7 @@ import Ubuntu.Components 0.1 as Toolkit
                     ItemStyle.class: "toolbar"
 
                     // two properties used by the toolbar delegate:
-                    property bool active: panel.active
+                    property bool opened: panel.opened
                     property bool animating: panel.animating
 
                     Button {
@@ -171,19 +171,19 @@ Item {
     property int align: Qt.AlignBottom
 
     /*!
-      When active, the panel is visible, otherwise it is hidden.
-      Use edge swipes to activate/deactivate the panel.
-      The active property is not updated until the swipe gesture is completed.
+      When opened, the panel is visible, otherwise it is hidden.
+      Use edge swipes to open/close the panel.
+      The opened property is not updated until the swipe gesture is completed.
      */
-    property bool active: false
+    property bool opened: false
     /*! \internal */
-    onActiveChanged: {
-        if (active) state = "spread";
+    onOpenedChanged: {
+        if (opened) state = "spread";
         else state = "";
     }
 
     /*!
-      Disable edge swipe to activate/deactivate the panel. False by default.
+      Disable edge swipe to open/close the panel. False by default.
      */
     property bool lock: false
     /*! \internal */
@@ -202,8 +202,8 @@ Item {
 
     /*!
       The size (height for top or bottom-aligned panels, width for left or right-aligned
-      panels) of the mouse area used to detect edge swipes to activate the panel, when
-      the panel is not active. Default value: units.gu(2).
+      panels) of the mouse area used to detect edge swipes to open the panel, when
+      the panel is not opened. Default value: units.gu(2).
      */
     property real triggerSize: units.gu(2)
 
@@ -282,7 +282,7 @@ Item {
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
         property bool savedLock: panel.lock
-        property bool savedActive: panel.active
+        property bool savedOpened: panel.opened
 
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
         property int align: {
@@ -313,12 +313,12 @@ Item {
         onForceHiddenChanged: {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLock = panel.lock;
-                internal.savedActive = panel.active;
-                panel.active = false;
+                internal.savedOpened = panel.opened;
+                panel.opened = false;
                 panel.lock = true;
             } else { // don't force hidden
                 panel.lock = internal.savedLock;
-                if (internal.savedLock) panel.active = internal.savedActive;
+                if (internal.savedLock) panel.opened = internal.savedOpened;
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
             }
@@ -332,9 +332,9 @@ Item {
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
         } else if (state == "spread") {
-            panel.active = true;
+            panel.opened = true;
         } else if (state == "") {
-            panel.active = false;
+            panel.opened = false;
         }
         internal.previousState = state;
     }
@@ -345,13 +345,19 @@ Item {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of lock by the clicked Item behind
-            if (!panel.lock) panel.active = false;
+            if (!panel.lock) panel.opened = false;
         }
         propagateComposedEvents: true
         visible: panel.lock == false && panel.state == "spread"
     }
 
     DraggingArea {
+
+        Rectangle {
+            color: "red"
+            anchors.fill: parent
+        }
+
         id: draggingArea
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         zeroVelocityCounts: true
@@ -361,9 +367,9 @@ Item {
             left: panel.align === Qt.AlignRight || panel.align === Qt.AlignTrailing ? undefined : parent.left
             right: panel.align === Qt.AlignLeft || panel.align === Qt.AlignLeading ? undefined : parent.right
         }
-        height: internal.orientation === Qt.Horizontal ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
-        width: internal.orientation === Qt.Vertical ? panel.active ? bar.size + units.gu(1) : panel.triggerSize : undefined
-        visible: !panel.lock || panel.active
+        height: internal.orientation === Qt.Horizontal ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
+        width: internal.orientation === Qt.Vertical ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
+        visible: !panel.lock || panel.opened
 
         property int mousePosition: getMousePosition()
         function getMousePosition() {
@@ -466,7 +472,7 @@ Item {
 
         property real size: internal.orientation === Qt.Horizontal ? height : width
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
-        property real position: panel.active ? 0 : size
+        property real position: panel.opened ? 0 : size
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0

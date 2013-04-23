@@ -77,7 +77,7 @@ Template {
                                 onTriggered: tabs.selectedTabIndex--
                             }
                             lock: true
-                            active: true
+                            opened: true
                         }
                     }
                 }
