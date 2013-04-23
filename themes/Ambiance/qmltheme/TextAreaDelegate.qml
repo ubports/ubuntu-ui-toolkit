@@ -18,18 +18,51 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 // frame
-UbuntuShape {
-    id: shape
-    z: -1
+Item {
+    id: visuals
+    // style properties
+    // FIXME: needs type checking in themes to define the proper type to be used
+    // if color type is used, alpha value gets lost
+
+    property color color
+    /*!
+      Background fill color
+      */
+    property color backgroundColor: Qt.rgba(0, 0, 0, 0.1)
+    property color errorColor: "red"
+    property real backgroundOpacity
+
+    /*!
+      Spacing between the frame and the text editor area
+      */
+    property var frameSpacing
+    property real overlaySpacing
 
     anchors.fill: parent
-    radius:StyleUtils.itemStyleProperty("radius", "small")
-    color: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
-    opacity: item.enabled ? 1.0 : 0.5
 
-    MouseArea {
-        anchors.fill: parent
-        onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+    Binding {
+        target: item.__internal
+        property: "frameSpacing"
+        value: visuals.frameSpacing
+    }
+    Binding {
+        target: item.__internal
+        property: "spacing"
+        value: visuals.overlaySpacing
     }
 
+    z: -1
+    UbuntuShape {
+        id: shape
+        property bool error: (item.hasOwnProperty("errorHighlight") && item.errorHighlight && !item.acceptableInput)
+        onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
+        color: visuals.backgroundColor;
+        anchors.fill: parent
+        opacity: visuals.backgroundOpacity
+
+        MouseArea {
+            anchors.fill: parent
+            onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+        }
+    }
 }

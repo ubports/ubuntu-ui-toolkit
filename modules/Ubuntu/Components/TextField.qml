@@ -260,6 +260,29 @@ FocusScope {
     */
     property alias validator: editor.validator
 
+    /*!
+      \internal
+      FIXME: property added for styling purposes
+      */
+    property alias passwordCharacter: editor.passwordCharacter
+
+    /*!
+      \internal
+      FIXME: property added for styling purposes
+      */
+    property alias color: editor.color
+
+    /*!
+      \internal
+      FIXME: property added for styling purposes
+      */
+    property alias selectionColor: editor.selectionColor
+
+    /*!
+      \internal
+      FIXME: property added for styling purposes
+      */
+    property alias selectedTextColor: editor.selectedTextColor
 
     /*!
       \preliminary
@@ -418,11 +441,13 @@ FocusScope {
     SystemPalette { id: systemColors }
 
     //internals
+    /*! \internal */
+    property alias __internal: internal
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: Theming.ComponentUtils.style(control, "overlaySpacing", units.gu(0.5))
+        property real spacing: 0
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
@@ -534,6 +559,7 @@ FocusScope {
     AbstractButton {
         id: clearButton
         Theming.ItemStyle.class: "clear-button"
+        property url iconSource
         anchors {
             top: parent.top
             right: rightPane.left
@@ -550,7 +576,7 @@ FocusScope {
             width: units.gu(3)
             height: width
             smooth: true
-            source: control.hasClearButton ? Theming.ComponentUtils.style(clearButton, "iconSource", "") : ""
+            source: control.hasClearButton ? clearButton.iconSource : ""
             onSourceChanged: print(source)
         }
 
@@ -585,27 +611,11 @@ FocusScope {
             verticalCenter: parent.verticalCenter
         }
         // get the control's style
-        Theming.ItemStyle.style: control.Theming.ItemStyle.style
-        color: Theming.ComponentUtils.style(editor, "color", "black")
-        selectedTextColor: Theming.ComponentUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
-        selectionColor: Theming.ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
         clip: true
-        passwordCharacter: Theming.ComponentUtils.style(editor, "passwordCharacter", "*")
-        font: Theming.ComponentUtils.style(editor, "font", fontHolder.font)
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
         // forward keys to the root element so it can be captured outside of it
         Keys.forwardTo: [control]
-
-        // virtual keyboard/software input panel handling
-        activeFocusOnPress: false
-        onActiveFocusChanged: {
-            if (activeFocus) {
-                internal.showInputPanel();
-            } else {
-                internal.hideInputPanel();
-            }
-        }
 
         // handle virtual keyboard and cursor positioning, as the MouseArea overrides
         // those functionalities of the TextInput

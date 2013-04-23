@@ -18,16 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Image {
+    // FIXME: We may use one image that we rotate and scale, except if that gives wrong
+    //  results because of the shading (for example, always shadow on the right side).
     id: image
     anchors.fill: parent
 
     visible: (item.direction !== "none")
 
-    // FIXME: We may use one image that we rotate and scale, except if that gives wrong
-    //  results because of the shading (for example, always shadow on the right side).
-    source: StyleUtils.itemStyleProperty("imageSource")
-
     smooth: true
-
-    opacity: StyleUtils.itemStyleProperty("opacity", 1.0)
 }

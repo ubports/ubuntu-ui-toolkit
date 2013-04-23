@@ -26,9 +26,22 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype Label
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief The Label class is DOCME
+    \brief Text with Ubuntu styling.
 
-    \b{This component is under heavy development.}
+    Example:
+    \qml
+    Rectangle {
+        color: "grey"
+        width: units.gu(30)
+        height: units.gu(30)
+
+        Label {
+            anchors.centerIn: parent
+            text: "Hello, world!"
+            fontSize: "large"
+        }
+    }
+    \endqml
 */
 Text {
     id: label
@@ -36,58 +49,23 @@ Text {
     Theming.ItemStyle.class: "label"
 
     /*!
-       \preliminary
-       DOCME
-    */
-    property string fontSize: Theming.ComponentUtils.style(label, "fontSize", "medium")
-
-    color: Theming.ComponentUtils.style(label, "color", "black")
-
-    elide: Theming.ComponentUtils.style(label, "elide", Text.ElideNone)
-
-    font.capitalization: Theming.ComponentUtils.style(label, "capitalization", Font.MixedCase)
-
-    font.family: Theming.ComponentUtils.style(label, "fontFamily", "Ubuntu")
-
-    font.italic: Theming.ComponentUtils.style(label, "italic", false)
-
-    font.letterSpacing: Theming.ComponentUtils.style(label, "letterSpacing", 0.0)
+      The size of the text. One of the following strings (from smallest to largest):
+        \list
+          \li "xx-small"
+          \li "x-small"
+          \li "small"
+          \li "medium"
+          \li "large"
+          \li "x-large"
+        \endlist
+        Default value is "medium".
+      */
+    property string fontSize: "medium"
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
-
-    font.strikeout: Theming.ComponentUtils.style(label, "strikeout", false)
-
-    font.underline: Theming.ComponentUtils.style(label, "underline", false)
-
-    font.wordSpacing: Theming.ComponentUtils.style(label, "wordSpacing", 0.0)
-
-    horizontalAlignment: Theming.ComponentUtils.style(label, "horizontalAlignment", Text.AlignLeft)
-
-    lineHeight: Theming.ComponentUtils.style(label, "lineHeight", 1.0)
-
-    lineHeightMode: Theming.ComponentUtils.style(label, "lineHeightMode", Text.ProportionalHeight)
-
-    maximumLineCount: Theming.ComponentUtils.style(label, "maximumLineCount")
-
-    style: Theming.ComponentUtils.style(label, "style", Text.Normal)
-
-    styleColor: Theming.ComponentUtils.style(label, "styleColor", color)
-
-    wrapMode: Theming.ComponentUtils.style(label, "wrapMode", Text.NoWrap)
-
-    opacity: Theming.ComponentUtils.style(label, "textOpacity", 1.0)
-
-    verticalAlignment: Theming.ComponentUtils.style(label, "verticalAlignment", Text.AlignTop)
-
-    visible: Theming.ComponentUtils.style(label, "visible", true)
-
-    Theming.ItemStyle.onStyleChanged: {
-        // only set font.bold and font.weight if they're defined in the style
-        if (Theming.ComponentUtils.hasStyle(label, "bold")) {
-            font.bold = Theming.ItemStyle.style.bold
-        }
-        if (Theming.ComponentUtils.hasStyle(label, "weight")) {
-            font.weight = Theming.ItemStyle.style.weight
-        }
-    }
+    font.family: "Ubuntu"
+    /* FIXME: do not set any font subproperties (e.g. font.family, font.italic, etc.)
+       as setting there default value here will prevent them from being overriden
+       by the theme.
+    */
 }

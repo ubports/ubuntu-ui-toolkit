@@ -16,26 +16,28 @@
 
 import QtQuick 2.0
 
-Rectangle {
-    id: cursor
+EditorCursorStyle {
+    id: visuals
+    anchors.fill: parent
+    Rectangle {
+        id: cursor
 
-    property bool showCursor: item.visible
-    property bool timerShowCursor: true
+        property bool showCursor: item.visible
+        property bool timerShowCursor: true
 
-    visible: showCursor && timerShowCursor
-    color: itemStyle.color
-    opacity: itemStyle.opacity
-    width: itemStyle.width
-    height: item.height
+        visible: showCursor && timerShowCursor
+        color: visuals.color
+        anchors.fill: parent
 
-    Timer {
-        interval: itemStyle.blinkTimeoutShown
-        running: showCursor && (itemStyle.blinkTimeoutShown > 0) && (itemStyle.blinkTimeoutHidden > 0) && itemStyle.blinking
-        repeat: true
-        onTriggered: {
-            interval = (interval == itemStyle.blinkTimeoutShown) ?
-                        itemStyle.blinkTimeoutHidden : itemStyle.blinkTimeoutShown;
-            timerShowCursor = !timerShowCursor;
+        Timer {
+            interval: visuals.blinkTimeoutShown
+            running: cursor.showCursor && (visuals.blinkTimeoutShown > 0) && (visuals.blinkTimeoutHidden > 0) && visuals.blinking
+            repeat: true
+            onTriggered: {
+                interval = (interval == visuals.blinkTimeoutShown) ?
+                            visuals.blinkTimeoutHidden : visuals.blinkTimeoutShown;
+                cursor.timerShowCursor = !cursor.timerShowCursor;
+            }
         }
     }
 }

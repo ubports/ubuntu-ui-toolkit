@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
     title: i18n.tr("Toolbars")
@@ -32,109 +31,75 @@ Template {
             width: units.gu(50)
             height: units.gu(50)
 
-            Page {
-                title: "Toolbar demo"
-                id: page
-                tools: toolsSwitch.checked ? toolbarActions2 : toolbarActions1
-                ToolbarActions {
-                    id: toolbarActions1
-                    Action {
-                        text: "action 1"
-                        iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
-                    }
-                    Action {
-                        text: "action 2"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                    }
-                    lock: lockSwitch.checked
-
-                    back {
-                        itemHint: Button {
-                            id: cancelButton
-                            text: "cancel"
+            Tabs {
+                id: tabs
+                Tab {
+                    title: "One"
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: "Simple actions"
                         }
-                        onTriggered: {
-                            print("cancel!");
-                            toolbarActions1.active = false;
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
                         }
                     }
                 }
-                ToolbarActions {
-                    id: toolbarActions2
-                    Action {
-                        text: "action 3"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                    }
-                    Action {
-                        text: "disabled"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                        enabled: false
-                    }
-                    Action {
-                        text: "invisible"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                        visible: false
-                    }
-
-                    lock: lockSwitch.checked
-                    back {
-                        visible: true
-                        onTriggered: toolsSwitch.checked = false
+                Tab {
+                    title: "Two"
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: "Back button, toolbar always visible"
+                        }
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
+                            }
+                            back {
+                                visible: true
+                                onTriggered: tabs.selectedTabIndex--
+                            }
+                            lock: true
+                            active: true
+                        }
                     }
                 }
-
-                Column {
-                    anchors.centerIn: parent
-                    spacing: units.gu(1)
-                    width: units.gu(30)
-
-                    Button {
-                        width: parent.width
-                        text: "Show toolbar"
-                        onClicked: page.tools.active = true
-                    }
-                    Button {
-                        width: parent.width
-                        text: "Hide toolbar"
-                        onClicked: page.tools.active = false
-                    }
-                    Row {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: units.gu(2)
-                        Switch {
-                            id: lockSwitch
-                        }
+                Tab {
+                    title: "Three"
+                    page: Page {
                         Label {
-                            anchors {
-                                top: parent.top
-                                bottom: parent.bottom
+                            anchors.centerIn: parent
+                            text: "Custom back button"
+                        }
+                        tools: ToolbarActions {
+                            Action {
+                                text: "action 1"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
                             }
-                            verticalAlignment: Text.AlignVCenter
-                            text: "Lock position"
-                        }
-                    }
-                    Label {
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        text: lockSwitch.checked ?
-                                  "Swiping will not show/hide the toolbar,\nbut the buttons above still work." :
-                                  "Swipe up/down near the bottom of this\nview to show/hide the toolbar."
-                    }
-                    Row {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: units.gu(2)
-                        Switch {
-                            id: toolsSwitch
-                        }
-                        Label {
-                            anchors {
-                                top: parent.top
-                                bottom: parent.bottom
+                            Action {
+                                text: "action 2"
+                                iconSource: Qt.resolvedUrl("call_icon.png")
                             }
-                            verticalAlignment: Text.AlignVCenter
-                            text: toolsSwitch.checked ? "Tools 2" : "Tools 1"
+                            back {
+                                itemHint: Button {
+                                    id: cancelButton
+                                    text: "cancel"
+                                }
+                                onTriggered: tabs.selectedTabIndex--
+                            }
                         }
                     }
                 }

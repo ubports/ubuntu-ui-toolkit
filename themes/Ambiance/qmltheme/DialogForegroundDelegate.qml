@@ -18,13 +18,17 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: visuals
+    // styling properties
+    property color color
+    property string radius
+
     anchors.fill: parent
     z: -1
-    visible:  StyleUtils.itemStyleProperty("visible", true)
 
     Rectangle {
         id: container
-        color: StyleUtils.itemStyleProperty("color", "white")
+        color: visuals.color
         anchors.fill: parent
         radius: 10
     }
@@ -33,7 +37,7 @@ Item {
     Shape {
         anchors.fill: parent
         image: effectSource
-        radius: StyleUtils.itemStyleProperty("radius", "small")
+        radius: visuals.radius
         borderSource: Qt.resolvedUrl("artwork/ubuntushape_"+radius+"_radius_mask.sci")
     }
 

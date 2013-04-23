@@ -160,6 +160,33 @@ private Q_SLOTS:
         QVERIFY(!rule);
     }
 
+    void testCase_styleNodeLeak()
+    {
+        StyleCache cache;
+        QObjectCleanupHandler cleanup;
+
+        QQmlComponent *style = new QQmlComponent();
+        QQmlComponent *delegate = new QQmlComponent();
+        cleanup.add(style);
+        cleanup.add(delegate);
+        cache.addStyleRule(Selector(".nodeb"), style, delegate);
+
+        style = new QQmlComponent();
+        delegate = new QQmlComponent();
+        cleanup.add(style);
+        cleanup.add(delegate);
+        cache.addStyleRule(Selector(".nodea .nodeb"), style, delegate);
+
+        style = new QQmlComponent();
+        delegate = new QQmlComponent();
+        cleanup.add(style);
+        cleanup.add(delegate);
+        cache.addStyleRule(Selector(".nodea .nodeb"), style, delegate);
+
+        cache.clear();
+        QVERIFY(cleanup.isEmpty());
+    }
+
 };
 
 QTEST_MAIN(tst_ThemeEngineStyleCache)

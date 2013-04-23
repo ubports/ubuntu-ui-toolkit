@@ -66,12 +66,11 @@ Item {
                 source: "UbuntuShapes.qml"
                 chapter: "Style"
             }
-            // TODO: To be added when we have a set of Ubuntu icons.
-            //ListElement {
-            //    label: "Icons"
-            //    source: "GIconProvider.qml"
-            //    chapter: "1"
-            //}
+            ListElement {
+                label: "Icons"
+                source: "Icons.qml"
+                chapter: "Building blocks"
+            }
             ListElement {
                 label: "Header"
                 source: "Header.qml"

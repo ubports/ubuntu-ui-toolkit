@@ -68,6 +68,12 @@ ThemeEnginePrivate::ThemeEnginePrivate(ThemeEngine *qq) :
 
 ThemeEnginePrivate::~ThemeEnginePrivate()
 {
+    // FIXME: no need anymore for multiple theme file format loader support
+    QMapIterator<QString, ThemeLoader*> i(themeLoaders);
+    while (i.hasNext()) {
+        i.next();
+        delete i.value();
+    }
 }
 
 void ThemeEnginePrivate::_q_reloadTheme()

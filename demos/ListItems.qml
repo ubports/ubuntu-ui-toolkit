@@ -38,7 +38,7 @@ Template {
 
                 property variant typeList: ["Standard", "Single value", "Multiple values",
                     "Value selector", "Subtitled", "Controls", "Captions and Dividers",
-                    "Grouped List"]
+                    "Grouped List", "Removable"]
                 property string selectedType: "Standard"
 
                 ListItem.Header { text: i18n.tr("Types of list items") }
@@ -356,6 +356,15 @@ Template {
                             }
                         }
                     }
+                    ListItem.Empty {
+                        TextArea {
+                            text: i18n.tr("text")
+                            anchors {
+                                margins: units.gu(1)
+                                fill: parent
+                            }
+                        }
+                    }
                 }
             }
             FadingRectangle {
@@ -404,6 +413,72 @@ Template {
                         icon: Qt.resolvedUrl("avatar_contacts_list.png")
                         values: [i18n.tr("Value") + " 1", i18n.tr("Value") + " 2",
                             i18n.tr("Value") + " 3", i18n.tr("Value") + " 4"]
+                    }
+                }
+            }
+
+            FadingRectangle {
+                selected: listItemTypes.selectedType === "Removable"
+                Column {
+                    width: units.gu(31)
+                    ListItem.Header { text: i18n.tr("Removable") }
+                    ListItem.Standard {
+                        id: _item0
+
+                        removable: true
+                        backgroundIndicator: RemovableBG {
+                            state: _item0.swipingState
+                        }
+
+                        text: i18n.tr("Label")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        id: _item1
+
+                        enabled: false
+                        removable: true
+                        backgroundIndicator: RemovableBG {
+                            state: _item1.swipingState
+                        }
+
+                        text: i18n.tr("Disabled")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        id: _item2
+
+                        selected: true
+                        removable: true
+                        backgroundIndicator: RemovableBG {
+                            state: _item2.swipingState
+                        }
+                        text: i18n.tr("Selected")
+                        control: controlExample.createObject(parent)
+                    }
+                    ListItem.Standard {
+                        id: _item3
+
+                        text: i18n.tr("Split")
+                        removable: true
+                        backgroundIndicator: RemovableBG {
+                            state: _item3.swipingState
+                        }
+                        control: controlExample.createObject(parent)
+                        progression: true
+                        onClicked: print("Progression clicked!")
+                    }
+                    ListItem.Standard {
+                        id: _item4
+
+                        text: i18n.tr("Icon")
+                        removable: true
+                        backgroundIndicator: RemovableBG {
+                            state: _item4.swipingState
+                        }
+                        icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                        control: controlExample.createObject(parent)
+                        showDivider: false
                     }
                 }
             }

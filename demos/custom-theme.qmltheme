@@ -11,7 +11,7 @@
 }
 
 .custom-button {
-    color: item.hovered ? "lightgray" : "#a3e5e8";
+    color: item.hovered ? "#cccccc" : "#a3e5e8";
 }
 
 .button#custom-name {

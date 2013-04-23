@@ -25,4 +25,6 @@ SUBDIRS += tst_template \
     tst_qquick_image_extension \
     tst_theme_engine_selector \
     tst_theme_engine_stylecache \
-    tst_test
+    tst_test \
+    tst_theme_engine_style \
+    tst_inversemousearea

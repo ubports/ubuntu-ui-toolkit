@@ -10,6 +10,103 @@ UNRELEASED
 Compatibility Breaks
 ********************
 
+* Disable swiping to switch tabs by default.
+
+API Changes
+***********
+
+* clicked() and pressAndHold() signals of AbstractButton no longer take a mouse
+  parameter as input.
+
+SDK 0.1.42
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* Style QML type as base type for all custom style objects
+    * provides automatic property styling of styled item and its assotiated delegate
+
+* Deprecated APIs
+- ComponentUtils module is deprecated
+  (affects componentUtils.js: hasStyle(), style(), delegateProperty() functions)
+- StyleUtils module is deprecated
+  (affects styleUtils.js: itemStyleProperty(), animateOrSetValue(), animate() functions)
+- 'itemStyle' context property is no longer exposed to delegates
+- use of style type, second parameter of @qml-mapping is deprecated
+- Deprecated theme specific styles and delegates:
+    ButtonStyle, CheckBoxStyle, NewTabsStyle, SwitchStyle, TabButtonStyle, TextAreaStyle,
+    TextFieldStyle, TextFieldDelegate, UbuntuShapeStyle. These components were deprecated
+    and their properties are now in the respective delegates.
+
+SDK 0.1.41
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.40
+##########
+
+Compatibility Breaks
+********************
+
+* Header is now hidden when it has no title or contents
+
+API Changes
+***********
+
+* None
+
+
+SDK 0.1.39
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* ListItem.Empty:
+   + backgroundIndicator: Defines the item background item to be showed during the item swiping
+   + removable: Defines if the item can be removed or not
+   + swipingState: The current swiping state ("SwipingLeft", "SwipingRight", "")
+   + itemRemoved: This handler is called when the item is removed from the list
+
+SDK 0.1.38
+##########
+
+Compatibility Breaks
+********************
+
+* None
+
+API Changes
+***********
+
+* None
+
+SDK 0.1.37
+##########
+
+Compatibility Breaks
+********************
+
 * Page, PageStack and Tabs automatically determine their anchors and height
   inside a MainView, so there is no need to set them explicitly.
 * It is now recommended to always use Pages inside Tabs or PageStack.

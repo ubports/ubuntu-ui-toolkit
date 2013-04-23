@@ -61,4 +61,6 @@ QtObject {
       Password character
       */
     property string passwordCharacter
+
+    Component.onCompleted: print("TextFieldStyle deprecated")
 }

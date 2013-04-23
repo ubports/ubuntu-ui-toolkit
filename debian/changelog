@@ -1,6 +1,125 @@
-ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) UNRELEASED; urgency=low
+ubuntu-ui-toolkit (0.1.43daily13.04.22ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
-  * New snapshot release
+  [ Zsombor Egri ]
+  * Auto expanding TextArea should not eat flick events (LP: #1144077)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 433 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Apr 2013 04:01:54 +0000
+
+ubuntu-ui-toolkit (0.1.43daily13.04.19ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [TextArea] setting color property disables styling (LP: #1169601)
+  * Re-enabling a TextField doesn't work (LP: #1164634)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 430 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Apr 2013 04:09:00 +0000
+
+ubuntu-ui-toolkit (0.1.42daily13.04.18ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [textarea] TextArea focus is not handled correctly (LP: #1163371)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 426 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Apr 2013 05:25:55 +0000
+
+ubuntu-ui-toolkit (0.1.42daily13.04.17ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Timo Jyrinki ]
+  * Automatic snapshot from revision 421 (bootstrap)
+    - The Empty list item conflicts with TextArea handling of enter key
+      (LP: #1166840)
+    - Slide to delete behaviour should use SDK component (LP: #1099455)
+    - Memory leaks (LP: #1152151)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 422 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Apr 2013 04:01:52 +0000
+
+ubuntu-ui-toolkit (0.1.42) raring; urgency=low
+
+  [ Loïc Minier ]
+  * Drop ubuntu-sdk package; now generated from sdk ubuntu-touch seed in
+    ubuntu-touch-meta package.
+
+  [ Timo Jyrinki ]
+  * Sync with raring packaging, separate meta also in the PPA again
+  * New upstream snapshot
+    - Update documentation html styles
+    - Fix the clamping of sheet width on narrow screens.
+    - Added "make license" target
+    - Added online and offline API documentation configurations, both with
+      Ubuntu styling.
+
+  [ Tim Peeters ]
+  * Rewrite of theming engine. See CHANGES for details and deprecated APIs.
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Fri, 12 Apr 2013 13:58:19 +0200
+
+ubuntu-ui-toolkit (0.1.41) raring; urgency=low
+
+  * Update documentation html styles
+  * Automatic license checking for source files
+  * Fix clamping bug for sheets on narrow screens 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 10 Apr 2013 19:16:52 +0200
+
+ubuntu-ui-toolkit (0.1.40) raring; urgency=low
+
+  * Improve header and toolbar documentation for MainView/Page/PageStack/Tabs.
+  * Fix bug in header (hide it when the header is empty) 
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Fri, 05 Apr 2013 15:12:25 +0200
+
+ubuntu-ui-toolkit (0.1.39) quantal; urgency=low
+
+  * New Icon component that displays icons from the icon theme.
+  * Added libqt5svg5 as a dependency thus allowing use of SVGs in icon themes.
+  * Fix bug in list items. 
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Mon, 01 Apr 2013 10:03:49 -0300
+
+ubuntu-ui-toolkit (0.1.38) raring; urgency=low
+
+  * Drop ubuntu-sdk package; now generated from sdk ubuntu-touch seed in
+    ubuntu-touch-meta package.
+
+ -- Loïc Minier <loic.minier@ubuntu.com>  Thu, 21 Mar 2013 03:07:40 +0100
+
+ubuntu-ui-toolkit (0.1.37) raring; urgency=low
+
+  * Compatibility Breaks
+    - Page, PageStack and Tabs automatically determine their anchors and height
+      inside a MainView, so there is no need to set them explicitly.
+    - It is now recommended to always use Pages inside Tabs or PageStack.
+      Non-Page items can still be used, but their margins will not automatically
+      be set-up to align with the header of the MainView.
+  * API Changes (LP: #1157191)
+    - Property tools was deprecated for MainView, Tabs and PageStack. Pages now automatically
+      update MainView.toolbar.tools when they become active.
+    - Property page of Tab can no longer be a URL, but must be an Item (Page recommended).
+      Use a Loader if you were using a URL first.
+
+ -- Tim Peeters <tim.peeters@canonical.com>  Wed, 20 Mar 2013 19:15:08 +0100
+
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu2) raring; urgency=low
+
+  * debian/control
+    - libqt5v8-5-dev only supports amd64, i386 and armhf so setting
+      Architecture to just those
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 20 Mar 2013 12:44:41 -0400
+
+ubuntu-ui-toolkit (0.1.36.2-0ubuntu1) raring; urgency=low
+
+  * New snapshot release (LP: #1157191)
   * Add more recommended packages
   * Co-exist better with PPAs
 

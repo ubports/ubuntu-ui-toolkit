@@ -697,12 +697,14 @@ FocusScope {
     /*!\internal */
     onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
 
+    /*!\internal */
+    property alias __internal: internal
     QtObject {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
         property real lineSpacing: units.dp(3)
-        property real frameSpacing: ComponentUtils.style(control, "frameSpacing", units.gu(0.35))
+        property real frameSpacing: 0
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
@@ -793,6 +795,23 @@ FocusScope {
         }
     }
 
+    // grab Enter/Return keys which may be stolen from parent components of TextArea
+    // due to forwarded keys from TextEdit
+    Keys.onPressed: {
+        if ((event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)) {
+            if (editor.textFormat === TextEdit.RichText) {
+                // FIXME: use control.paste("<br />") instead when paste() gets sich text support
+                editor.insert(editor.cursorPosition, "<br />");
+            } else {
+                control.paste("\n");
+            }
+            event.accepted = true;
+        } else {
+            event.accepted = false;
+        }
+    }
+    Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
+
     // cursor is FIXME: move in a separate element and align with TextField
     Component {
         id: cursor
@@ -865,6 +884,7 @@ FocusScope {
         interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
+        pressDelay: 500
 
         function ensureVisible(r)
         {
@@ -897,25 +917,8 @@ FocusScope {
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
 
-            // styling
-            Theming.ItemStyle.style: control.Theming.ItemStyle.style
-            color: ComponentUtils.style(editor, "color", "black")
-            selectedTextColor: ComponentUtils.style(editor, "selectedTextColor", systemColors.highlightedText)
-            selectionColor: ComponentUtils.style(editor, "selectionColor", systemColors.highlight)
-            font: ComponentUtils.style(editor, "font", fontHolder.font)
-
             // autosize handling
             onLineCountChanged: internal.frameSize()
-
-            // virtual keyboard handling
-            activeFocusOnPress: false
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    internal.showInputPanel();
-                } else {
-                    internal.hideInputPanel();
-                }
-            }
 
             // remove selection when typing starts or input method start entering text
             onInputMethodComposingChanged: {
@@ -938,7 +941,6 @@ FocusScope {
                 enabled: control.enabled && control.activeFocusOnPress
                 anchors.fill: parent
                 propagateComposedEvents: true
-                preventStealing: true
 
                 onPressed: {
                     internal.activateEditor();

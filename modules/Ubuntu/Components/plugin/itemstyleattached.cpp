@@ -19,6 +19,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <QtQuick/QQuickItem>
 
 #include "itemstyleattached.h"
@@ -27,8 +28,11 @@
 #include "themeengine_p.h"
 #include "quickutils.h"
 
+#include <private/qqmlproperty_p.h>
+
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
+
 
 /*!
   \qmltype ItemStyle
@@ -50,12 +54,12 @@ const char *styleProperty = "itemStyle";
 
   \qml
   Item {
-     ItemStyle.class: "button"
+      ItemStyle.class: "button"
   }
   \endqml
   \qml
   Text {
-     color: (ItemStyle.style) ? ItemStyle.style.color : "black"
+      ItemStyle.class: "text"
   }
   \endqml
 
@@ -72,7 +76,7 @@ const char *styleProperty = "itemStyle";
      id: root
      property bool pressed: false
      property bool hovered: false
-     property color color: (ItemStyle.style) ? ItemStyle.style.color : "lightgray"
+     property color color: "lightgray"
 
      signal clicked
 
@@ -84,7 +88,7 @@ const char *styleProperty = "itemStyle";
   \endqml
   In the example above the Button document refers to the style property of the attached
   styling, therefore the element by default will use the style defined using
-  the ".Button" selector.
+  the ".button" selector.
 
   The following example shows a Button item that uses a private delegate but the
   styles from the themes.
@@ -104,37 +108,9 @@ const char *styleProperty = "itemStyle";
   }
   \endqml
 
-  The style is usually applied immediately when a styling property is changed. This
-  may cause performance problems as there are two properties that can affect the
-  style applied. In case the component handles the "Component.onCompleted" signal,
-  the styling will be applied only when the completion occurs. Therefore items
-  can handle the completion by simply adding an empty handler to delay styling.
-  Modifying the Button.qml example above, the component that applies styling on
-  completion would look as follows:
-
-  \qml
-  Item {
-     id: root
-     property bool pressed: false
-     property bool hovered: false
-     property color color: (ItemStyle.style) ? ItemStyle.style.color : "lightgray"
-
-     signal clicked
-
-     MouseArea {
-        anchors.fill: parent
-        onClicked: control.clicked()
-     }
-
-     Component.onCompleted:{}
-  }
-  \endqml
-
- Attached styling defines two properties in the styling context that can be
- used from delegates to access the item and the style proeprties. item
- properties can be accessed through "item", and styling properties through
- "itemStyle" property.
-
+ Attached styling defines a context property which can be used from delegates and
+ also in style declaration to access the item properties. This property is called
+ \b item.
 */
 
 
@@ -162,6 +138,9 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
         componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
         componentContext->setContextProperty(itemProperty, attachee);
     }
+
+    //enum attachee properties and watch them
+    watchAttacheeProperties();
 }
 
 ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
@@ -169,6 +148,72 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     // remove name from the theming engine
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
+}
+
+/*!
+ * \internal
+ * Enumerates attachee properties and marks them all candidates for styling. Connects
+ * each property's notify signal so we get notified when those are binded in QML, so we
+ * won't alter their value.
+ */
+void ItemStyleAttachedPrivate::watchAttacheeProperties()
+{
+    Q_Q(ItemStyleAttached);
+    // enumerate properties and figure out which one has binding
+    const QMetaObject *mo = attachee->metaObject();
+    QMetaMethod onAttacheePropertyChanged = q->metaObject()->method(q->metaObject()->indexOfSlot("_q_attacheePropertyChanged()"));
+    for (int i = 0; i < mo->propertyCount(); i++) {
+        const QMetaProperty prop = mo->property(i);
+
+        if (!prop.hasNotifySignal() || UCStyle::omitProperty(prop.name())) {
+            continue;
+        }
+
+        QQmlProperty qmlProp(attachee, prop.name(), QQmlEngine::contextForObject(attachee));
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(qmlProp);
+        if (binding) {
+            // mark as first time bound, so further styling can unbind it and do styling
+            watchedProperties.mark(i, StyledPropertyMap::Bound, binding);
+        } else {
+            watchedProperties.mark(i, StyledPropertyMap::Enabled);
+        }
+
+        if (QLatin1String(prop.name()) == QLatin1String("font")) {
+            // never ban the font property from being styled
+            continue;
+        }
+
+        // connect property's notify signal to watch when it gets changed so we can stop watching it
+        QObject::connect(attachee, prop.notifySignal(), q, onAttacheePropertyChanged);
+    }
+}
+
+/*!
+ * \internal
+ * Captures attachee property changes which are to be removed from stylable ones.
+ */
+void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
+{
+    Q_Q(ItemStyleAttached);
+
+    const QMetaObject *mo = attachee->metaObject();
+    QMetaMethod signal = mo->method(q->senderSignalIndex());
+    QString property = QString(signal.name()).remove("Changed");
+
+    // was the property change invoked by the style update, exit
+    if (style && style->isUpdating(property))
+        return;
+
+    int index = mo->indexOfProperty(property.toLatin1());
+    if (watchedProperties.isBanned(index))
+        return;
+
+    // ban property from being styled
+    watchedProperties.mark(index, StyledPropertyMap::Banned);
+
+    // unbind style from attachee
+    if (style)
+        style->unbindProperty(property);
 }
 
 bool ItemStyleAttachedPrivate::updateStyleSelector()
@@ -203,6 +248,7 @@ bool ItemStyleAttachedPrivate::updateStyleSelector()
         styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
         return true;
     }
+
     return false;
 }
 
@@ -213,16 +259,14 @@ bool ItemStyleAttachedPrivate::updateStyle()
     if (delayApplyingStyle)
        return result;
 
+    resetStyle();
     if (!customStyle) {
-        // check if we have a forced update
-        if (style) {
-            style->setParent(0);
-            style->deleteLater();
-            style = 0;
-        }
         // make sure we have a theme
         if (styleRule && styleRule->style) {
-            style = styleRule->style->create(componentContext);
+            QObject *obj = styleRule->style->create(componentContext);
+            style = qobject_cast<UCStyle*>(obj);
+            if (!style)
+                delete obj;
             result = (style != 0);
         }
     } else
@@ -230,7 +274,8 @@ bool ItemStyleAttachedPrivate::updateStyle()
 
     // reparent also custom styles!
     if (result && style) {
-        style->setParent(attachee);
+        style->bindItem(attachee, watchedProperties, true);
+        style->bindItem(delegate, watchedProperties, false);
         componentContext->setContextProperty(styleProperty, style);
     }
     return result;
@@ -243,13 +288,9 @@ bool ItemStyleAttachedPrivate::updateDelegate()
     if (delayApplyingStyle)
        return result;
 
+    // delete delegate as the function can be called from elsewhere than updateCurrentStyle
+    resetDelegate();
     if (!customDelegate) {
-        if (delegate) {
-            delegate->setParent(0);
-            delegate->setParentItem(0);
-            delegate->deleteLater();
-            delegate = 0;
-        }
         // make sure we have a theme
         if (styleRule && styleRule->delegate) {
             delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(componentContext));
@@ -272,6 +313,9 @@ bool ItemStyleAttachedPrivate::updateDelegate()
                     childItem->setParentItem(contentItem);
             }
         }
+        // setup property "bindings" towards delegate properties
+        if (style)
+            style->bindItem(delegate, watchedProperties, false);
     }
     return result;
 }
@@ -283,11 +327,57 @@ bool ItemStyleAttachedPrivate::updateDelegate()
 */
 void ItemStyleAttachedPrivate::updateCurrentStyle()
 {
+    // the order is: clean up delegate then style, then create style and then delegate
+    // so that when delegate is built we already have the styles ready for that
+    resetDelegate();
+    resetStyle();
     bool styleUpdated = updateStyle();
     bool delegateUpdated = updateDelegate();
     if (styleUpdated || delegateUpdated) {
         Q_Q(ItemStyleAttached);
         Q_EMIT q->styleChanged();
+    }
+}
+
+void ItemStyleAttachedPrivate::resetStyle()
+{
+    if (style && !customStyle) {
+        // clear bindings, disconnect as properties may change before the style
+        // is deleted
+        style->unbindItem(delegate);
+        style->unbindItem(attachee);
+        style->setParent(0);
+        style->deleteLater();
+        style = 0;
+    }
+}
+
+void ItemStyleAttachedPrivate::resetDelegate()
+{
+    if (delegate && !customDelegate) {
+        // remove all bindings between style and delegate
+        if (style)
+            style->unbindItem(delegate);
+        delegate->setParent(0);
+        delegate->setParentItem(0);
+        delegate->deleteLater();
+        delegate = 0;
+    }
+}
+
+/*!
+ * \internal
+ * Applies styling on children recoursively.
+ */
+void ItemStyleAttachedPrivate::applyStyleOnChildren(QQuickItem *item)
+{
+    QList<QQuickItem*> children = item->childItems();
+    Q_FOREACH(QQuickItem *child, children) {
+        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
+        if (style)
+            style->d_ptr->_q_reapplyStyling(child->parentItem());
+        else
+            applyStyleOnChildren(child);
     }
 }
 
@@ -368,12 +458,7 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
-    QList<QQuickItem*> children = attachee->findChildren<QQuickItem*>();
-    Q_FOREACH(QQuickItem *child, children) {
-        ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(child);
-        if (style)
-            style->d_ptr->_q_reapplyStyling(child->parentItem());
-    }
+    applyStyleOnChildren(attachee);
 }
 
 /*==============================================================================
@@ -468,7 +553,7 @@ QString ItemStyleAttached::path() const
 }
 
 /*!
-  \qmlproperty QtObject ItemStyle::style
+  \qmlproperty Style ItemStyle::style
   The property holds the object containing the style configuration properties. This can
   either be defined by a theme style rule or the private style. When set, the item will
   no longer use the theme defined style properties but the ones set. The property must be
@@ -483,7 +568,7 @@ QString ItemStyleAttached::path() const
   \internal
   Returns the object created out of the style used.
   */
-QObject *ItemStyleAttached::style() const
+UCStyle *ItemStyleAttached::style() const
 {
     Q_D(const ItemStyleAttached);
     return d->style;
@@ -494,11 +579,15 @@ QObject *ItemStyleAttached::style() const
   \internal
   Sets/resets the style object for the item.
   */
-void ItemStyleAttached::setStyle(QObject *style)
+void ItemStyleAttached::setStyle(UCStyle *style)
 {
     Q_D(ItemStyleAttached);
     if (d->style != style) {
         // clear the previous style
+        if (d->style) {
+            d->style->unbindItem(d->delegate);
+            d->style->unbindItem(d->attachee);
+        }
         if (!d->customStyle && d->style) {
             d->style->deleteLater();
             d->style = 0;
@@ -541,6 +630,8 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
+        if (d->style)
+            d->style->unbindItem(d->delegate);
         // clear the previous theme delegate
         if (!d->customDelegate && d->delegate) {
             d->delegate->setVisible(false);

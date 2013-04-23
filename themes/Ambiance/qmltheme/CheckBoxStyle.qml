@@ -29,4 +29,6 @@ QtObject {
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
     property PropertyAnimation backgroundColorAnimation
+
+    Component.onCompleted: print("CheckBoxStyle deprecated")
 }

@@ -44,11 +44,7 @@ Template {
             Button {
                 id: button
                 text: "Call"
-                Binding {
-                    target: button.ItemStyle.style
-                    property: "color"
-                    value: "green"
-                }
+                color: "green"
             }
 
             Label {
@@ -69,13 +65,8 @@ Template {
                     ItemStyle.class: "row-label"
                     anchors.fill: parent
                     text: "Button {\n"+
-                          "    id: button\n"+
                           "    text: \"Call\"\n"+
-                          "    Binding {\n"+
-                          "        target: button.ItemStyle.style\n"+
-                          "        property: \"color\"\n"+
-                          "        value: \"green\"\n"+
-                          "    }\n"+
+                          "    color: \"green\"\n"+
                           "}"
                 }
             }

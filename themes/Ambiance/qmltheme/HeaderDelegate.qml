@@ -22,36 +22,36 @@ Item {
       The height of the headercontents, which is the full height of
       the header minus the separators shown at the bottom of it.
      */
-    property real contentHeight: StyleUtils.itemStyleProperty("contentHeight", units.gu(7.5))
+    property real contentHeight: units.gu(7.5)
 
     /*!
       The background color of the header.
      */
-    property color backgroundColor: StyleUtils.itemStyleProperty("backgroundColor", "transparent")
+    property color backgroundColor: "transparent"
 
     /*!
       The source of the background image of the header. If the image is has (semi-)transparent
       pixels, \l backgroundColor can be set to specify the color behind those (semi-)transparent
       pixels.
      */
-    property url backgroundSource: itemStyle.backgroundSource
+    property url backgroundSource: ""
 
     /*!
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
      */
-    property url separatorSource: itemStyle.separatorSource
+    property url separatorSource: ""
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
      */
-    property url separatorBottomSource: itemStyle.separatorBottomSource
+    property url separatorBottomSource: ""
 
-    property int fontWeight: StyleUtils.itemStyleProperty("fontWeight")
-    property string fontSize: StyleUtils.itemStyleProperty("fontSize", "x-large")
-    property color textColor: StyleUtils.itemStyleProperty("textColor", "black")
-    property real textLeftMargin: itemStyle.textLeftMargin
+    property int fontWeight
+    property string fontSize: "x-large"
+    property color textColor: "black"
+    property real textLeftMargin
 
     anchors {
         left: parent ? parent.left : undefined
@@ -59,6 +59,11 @@ Item {
         top: parent ? parent.top : undefined
     }
     height: headerDelegate.contentHeight + separator.height + separatorBottom.height
+    Binding {
+        target: item
+        property: "height"
+        value: height
+    }
 
     Rectangle {
         id: backgroundColor

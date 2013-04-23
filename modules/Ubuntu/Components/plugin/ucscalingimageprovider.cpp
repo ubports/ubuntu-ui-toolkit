@@ -38,8 +38,6 @@ UCScalingImageProvider::UCScalingImageProvider() : QQuickImageProvider(QQuickIma
 
 QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    Q_UNUSED(requestedSize);
-
     int separatorPosition = id.indexOf("/");
     float scaleFactor = id.left(separatorPosition).toFloat();
     QString path = id.mid(separatorPosition+1);
@@ -48,12 +46,25 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
     if (file.open(QIODevice::ReadOnly)) {
         QImage image;
         QImageReader imageReader(&file);
+        QSize realSize = imageReader.size();
+        QSize scaledSize = realSize;
+        QSize constrainedSize;
+
         if (!qFuzzyCompare(scaleFactor, (float)1.0)) {
-            QSize realSize = imageReader.size();
-            imageReader.setScaledSize(realSize * scaleFactor);
+            scaledSize = realSize * scaleFactor;
         }
+        if (requestedSize.isValid() && (requestedSize.width() < realSize.width() || requestedSize.height() < realSize.height())) {
+            constrainedSize = scaledSize.scaled(requestedSize, Qt::KeepAspectRatio);
+        }
+
+        if (constrainedSize.isValid()) {
+            imageReader.setScaledSize(constrainedSize);
+        } else if (scaledSize != realSize) {
+            imageReader.setScaledSize(scaledSize);
+        }
+
         imageReader.read(&image);
-        *size = image.size();
+        *size = scaledSize;
         return image;
     } else {
         return QImage();

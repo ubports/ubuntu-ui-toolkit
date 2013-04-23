@@ -47,7 +47,7 @@ StyleCache::StyleData::~StyleData()
 
 void StyleCache::StyleData::clear()
 {
-    QHashIterator<SelectorNode, StyleData*> i(children);
+    QMutableHashIterator<SelectorNode, StyleData*> i(children);
     while (i.hasNext()) {
         delete i.next().value();
     }
@@ -69,6 +69,10 @@ void StyleCache::StyleData::add(const Selector &path, QQmlComponent *style, QQml
         // check if we have the node already, as it could be part of a previous path that
         // had not yet have a style set
         if (childNode) {
+            if (childNode->style)
+                delete childNode->style;
+            if (childNode->delegate)
+                delete childNode->delegate;
             childNode->style = style;
             childNode->delegate = delegate;
         } else {
