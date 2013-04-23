@@ -30,7 +30,7 @@ import QtQuick 2.0
     When a \l Page is used inside a \l Tabs or \l PageStack, the toolbar will automatically show
     the tools of the active \l Page. When the active \l Page inside the \l Tabs or \l PageStack
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
-    the toolbar will automatically hide, except if the new active \l Page has the \l lock property set.
+    the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
     \qml
         import QtQuick 2.0
@@ -61,7 +61,7 @@ import QtQuick 2.0
                             text: "cancel"
                         }
                     }
-                    lock: true
+                    locked: true
                     opened: true
                 }
             }
@@ -113,7 +113,7 @@ ActionList {
       If the ToolbarActions contains no visible actions, it is automatically
       locked (in closed state).
      */
-    property bool lock: !toolbarActions.__hasVisibleActions()
+    property bool locked: !toolbarActions.__hasVisibleActions()
 
     /*!
       \internal

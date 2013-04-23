@@ -185,9 +185,9 @@ Item {
     /*!
       Disable edge swipe to open/close the panel. False by default.
      */
-    property bool lock: false
+    property bool locked: false
     /*! \internal */
-    onLockChanged: {
+    onLockedChanged: {
         if (state == "hint" || state == "moving") {
             draggingArea.finishMoving();
         }
@@ -281,7 +281,7 @@ Item {
 
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedLock: panel.lock
+        property bool savedlocked: panel.locked
         property bool savedOpened: panel.opened
 
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
@@ -312,13 +312,13 @@ Item {
         target: bottomBarVisibilityCommunicator
         onForceHiddenChanged: {
             if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLock = panel.lock;
+                internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
                 panel.opened = false;
-                panel.lock = true;
+                panel.locked = true;
             } else { // don't force hidden
-                panel.lock = internal.savedLock;
-                if (internal.savedLock) panel.opened = internal.savedOpened;
+                panel.locked = internal.savedlocked;
+                if (internal.savedlocked) panel.opened = internal.savedOpened;
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
             }
@@ -344,11 +344,11 @@ Item {
         onClicked: {
             mouse.accepted = false;
             // the mouse click may cause an update
-            //  of lock by the clicked Item behind
-            if (!panel.lock) panel.opened = false;
+            //  of locked by the clicked Item behind
+            if (!panel.locked) panel.opened = false;
         }
         propagateComposedEvents: true
-        visible: panel.lock == false && panel.state == "spread"
+        visible: panel.locked == false && panel.state == "spread"
     }
 
     DraggingArea {
@@ -369,7 +369,7 @@ Item {
         }
         height: internal.orientation === Qt.Horizontal ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
-        visible: !panel.lock || panel.opened
+        visible: !panel.locked || panel.opened
 
         property int mousePosition: getMousePosition()
         function getMousePosition() {
@@ -401,7 +401,7 @@ Item {
         // forward clicked events to any child Item with a clicked() signal, not
         // just MouseAreas since MouseAreas would block swiping of the panel.
         // This must also happen when the panel is locked, so the DraggingArea is
-        // never disabled, and other signal handlers will return when panel.lock is true.
+        // never disabled, and other signal handlers will return when panel.locked is true.
         onClicked: {
             if (pressedItem && pressedItem === getClickableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
@@ -412,13 +412,13 @@ Item {
         property int initialPosition
         onPressed: {
             pressedItem = getClickableItem(mouse)
-            if (panel.lock) return;
+            if (panel.locked) return;
             initialPosition = getMousePosition();
             if (panel.state == "") panel.state = "hint";
         }
 
         onPositionChanged: {
-            if (panel.lock) return;
+            if (panel.locked) return;
             if (panel.state == "hint" && mousePosition < initialPosition) {
                 panel.state = "moving";
                 pressedItem = null;
@@ -429,12 +429,12 @@ Item {
         }
 
         onReleased: {
-            if (panel.lock) return;
+            if (panel.locked) return;
             finishMoving();
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
-            if (panel.lock) return;
+            if (panel.locked) return;
             finishMoving();
         }
 

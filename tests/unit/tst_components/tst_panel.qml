@@ -40,8 +40,8 @@ Item {
 
         function initTestCase() {
             compare(panel.align, Qt.AlignBottom, "Panel initially aligned at bottom");
-            compare(panel.active, false, "Panel initially not active");
-            compare(panel.lock, false, "Panel initially not locked");
+            compare(panel.opened, false, "Panel initially not opened");
+            compare(panel.locked, false, "Panel initially not locked");
             compare(panel.hintSize, units.gu(2), "Default hintSize is 2 grid units");
             compare(panel.triggerSize, units.gu(2), "Default triggerSize is 2 grid units");
         }
@@ -57,18 +57,18 @@ Item {
             compare(panel.align, Qt.AlignBottom, "Can set align to bottom");
         }
 
-        function test_active() {
-            panel.active = true;
-            compare(panel.active, true, "Can set active");
-            panel.active = false;
-            compare(panel.active, false, "Can unset active");
+        function test_opened() {
+            panel.opened = true;
+            compare(panel.opened, true, "Can set opened");
+            panel.opened = false;
+            compare(panel.opened, false, "Can unset opened");
         }
 
-        function test_lock() {
-            panel.lock = true;
-            compare(panel.lock, true, "Can set lock");
-            panel.lock = false;
-            compare(panel.lock, false, "Can unset lock");
+        function test_locked() {
+            panel.locked = true;
+            compare(panel.locked, true, "Can set locked");
+            panel.locked = false;
+            compare(panel.locked, false, "Can unset locked");
         }
 
         function test_hintSize() {
@@ -170,24 +170,24 @@ Item {
             property bool slowMouseMove: false
 
             function swipeUpDown() {
-                testCase.compare(panel.active, false, "Panel initially not active")
+                testCase.compare(panel.opened, false, "Panel initially not opened")
                 var x = root.width / 2; var y = root.height - 1;
                 var dx = 0;
                 var dy = -panel.height / 2;
                 testCase.mousePress(root, x, y, Qt.LeftButton);
                 testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
-                testCase.compare(panel.active, true, "Panel activated by swiping up (delay: "+moveDelay+")")
+                testCase.compare(panel.opened, true, "Panel activated by swiping up (delay: "+moveDelay+")")
                 x = panel.width / 2;
                 y = 10;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
                 testCase.mouseMove(panel, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Panel deactivated by swiping down (delay: "+moveDelay+")")
+                testCase.compare(panel.opened, false, "Panel deactivated by swiping down (delay: "+moveDelay+")")
             }
 
             function swipeRightLeft() {
-                testCase.compare(panel.active, false, "Panel initially not active")
+                testCase.compare(panel.opened, false, "Panel initially not opened")
                 var x = 1;
                 var y = 3 * root.height / 4;
                 var dx = panel.width / 2;
@@ -195,17 +195,17 @@ Item {
                 testCase.mousePress(root, x, y, Qt.LeftButton);
                 testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
-                testCase.compare(panel.active, true, "Left-aligned panel activated by swiping to the right (delay: "+moveDelay+")");
+                testCase.compare(panel.opened, true, "Left-aligned panel activated by swiping to the right (delay: "+moveDelay+")");
                 x = 3 * panel.width / 4;
                 y = panel.height / 2;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
                 testCase.mouseMove(root, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Left-aligned panel deactivated by swiping to the left (delay: "+moveDelay+"");
+                testCase.compare(panel.opened, false, "Left-aligned panel deactivated by swiping to the left (delay: "+moveDelay+"");
             }
 
             function swipeLeftRight() {
-                testCase.compare(panel.active, false, "Panel initially not active")
+                testCase.compare(panel.opened, false, "Panel initially not opened")
                 var x = root.width - 1;
                 var y = 3 * root.height / 4;
                 var dx = -panel.width / 2;
@@ -213,17 +213,17 @@ Item {
                 testCase.mousePress(root, x, y, Qt.LeftButton);
                 testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.Leftbutton);
-                testCase.compare(panel.active, true, "Right-aligned panel activated by swiping to the left (delay: "+moveDelay+"");
+                testCase.compare(panel.opened, true, "Right-aligned panel activated by swiping to the left (delay: "+moveDelay+"");
                 x = 1;
                 y = panel.height / 2;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
                 testCase.mouseMove(panel, -dx, -dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Right-aligned panel deactivating by swiping to the right (delay: "+moveDelay+"");
+                testCase.compare(panel.opened, false, "Right-aligned panel deactivating by swiping to the right (delay: "+moveDelay+"");
             }
 
             function swipeDownUp() {
-                testCase.compare(panel.active, false, "Panel initially not active")
+                testCase.compare(panel.opened, false, "Panel initially not opened")
                 var x = root.width / 2;
                 var y = 1;
                 var dx = 0;
@@ -231,20 +231,20 @@ Item {
                 testCase.mousePress(root, x, y, Qt.LeftButton);
                 testCase.mouseMove(root, x + dx, y + dy, moveDelay);
                 testCase.mouseRelease(root, x + dx, y + dy, Qt.LeftButton);
-                testCase.compare(panel.active, true, "Top-aligned panel activated by swiping down (delay: "+moveDelay+"");
+                testCase.compare(panel.opened, true, "Top-aligned panel activated by swiping down (delay: "+moveDelay+"");
                 x = panel.width / 2;
                 y = panel.height - 1;
                 testCase.mousePress(panel, x, y, Qt.LeftButton);
                 testCase.mouseMove(panel, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
-                testCase.compare(panel.active, false, "Top-aligned panel deactivated by swiping up (delay: "+moveDelay+"");
+                testCase.compare(panel.opened, false, "Top-aligned panel deactivated by swiping up (delay: "+moveDelay+"");
             }
 
             function test_clickToDeactivate() {
-                panel.active = true;
-                compare(panel.active && panel.align === Qt.AlignBottom, true, "Panel is active and bottom-aligned");
+                panel.opened = true;
+                compare(panel.opened && panel.align === Qt.AlignBottom, true, "Panel is opened and bottom-aligned");
                 mouseClick(root, root.width / 2, 5, Qt.LeftButton);
-                compare(panel.active, false, "Panel is deactivated by clicking in the view outside of the panel");
+                compare(panel.opened, false, "Panel is deactivated by clicking in the view outside of the panel");
             }
         }
     }

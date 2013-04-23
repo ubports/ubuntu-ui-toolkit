@@ -76,7 +76,7 @@ Template {
                                 visible: true
                                 onTriggered: tabs.selectedTabIndex--
                             }
-                            lock: true
+                            locked: true
                             opened: true
                         }
                     }
