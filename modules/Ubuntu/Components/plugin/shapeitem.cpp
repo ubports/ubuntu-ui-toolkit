@@ -360,6 +360,9 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
     float radiusCoordinateWidth;
     float radiusCoordinateHeight;
 
+    // FIXME(loicm) With a NxM image, a preserve aspect crop fill mode and a width
+    //     component size of N (or a height component size of M), changing the the
+    //     height (or width) breaks the 1:1 texel/pixel mapping for odd values.
     if (!stretched && texture) {
         // Preserve source image aspect ratio cropping areas exceeding destination rectangle.
         const float factors[3] = { 0.0f, 0.5f, 1.0f };
