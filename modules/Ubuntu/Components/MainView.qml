@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import QtQuick.Window 2.0
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
@@ -154,9 +155,101 @@ PageTreeNode {
      */
     default property alias contentsItem: contents.data
     Item {
-        id: contents
+        id: canvas
         anchors.fill: parent
+
+        // Orientation support
+        property int orientationAngle: Screen.angleBetween(Screen.primaryOrientation, Screen.orientation)
+        state: orientationAngle.toString()
+
+        states: [
+            State {
+                name: "0"
+                PropertyChanges {
+                    target: canvas
+                    rotation: 0
+                }
+            },
+            State {
+                name: "180"
+                PropertyChanges {
+                    target: canvas
+                    rotation: 180
+                }
+            },
+            State {
+                name: "270"
+                PropertyChanges {
+                    target: canvas
+                    rotation: 270
+                    anchors {
+                        topMargin: -(parent.width - parent.height) / 2
+                        bottomMargin: anchors.topMargin
+                        leftMargin: (parent.width - parent.height) / 2
+                        rightMargin: anchors.leftMargin
+                    }
+                }
+            },
+            State {
+                name: "90"
+                PropertyChanges {
+                    target: canvas
+                    rotation: 90
+                    anchors {
+                        topMargin: -(parent.width - parent.height) / 2
+                        bottomMargin: anchors.topMargin
+                        leftMargin: (parent.width - parent.height) / 2
+                        rightMargin: anchors.leftMargin
+                    }
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                id: orientationTransition
+                ParallelAnimation {
+                    SequentialAnimation {
+                        PauseAnimation {
+                            duration: 25
+                        }
+                        PropertyAction {
+                            target: canvas
+                            properties: "anchors.topMargin,anchors.bottomMargin,anchors.rightMargin,anchors.leftMargin"
+                        }
+                    }
+                    RotationAnimation {
+                        target: canvas
+                        properties: "rotation"
+                        duration: 250
+                        easing.type: Easing.OutQuint
+                        direction: RotationAnimation.Shortest
+                    }
+                }
+            }
+        ]
+
+        Item {
+            id: contents
+            anchors.fill: parent
+        }
+
+        /*!
+          The header of the MainView. Can be used to obtain the height of the header
+          in \l Page to determine the area for the \l Page to fill.
+         */
+        Header {
+            id: headerItem
+        }
+
+        Toolbar {
+            id: toolbarItem
+        }
     }
+
+    header: headerItem
+    toolbar: toolbarItem
+
 
     /*!
       \deprecated
@@ -172,20 +265,6 @@ PageTreeNode {
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 
-    /*!
-      The header of the MainView. Can be used to obtain the height of the header
-      in \l Page to determine the area for the \l Page to fill.
-     */
-    header: headerItem
-    Header {
-        id: headerItem
-    }
-
-    toolbar: toolbarItem
-    Toolbar {
-        id: toolbarItem
-    }
-
     /*! \internal */
     property QtObject __hud: null
 
@@ -197,5 +276,34 @@ PageTreeNode {
                 __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});
         } else if (__hud)
             __hud.destroy();
+    }
+
+    // Orientation debugging
+    function modulo(x, n) {
+        return ((x % n) + n) % n;
+    }
+
+    function rotateBy(increment) {
+        canvas.orientationAngle = modulo(canvas.orientationAngle + increment, 360);
+    }
+
+    function rotateClockwise() {
+        rotateBy(90);
+    }
+
+    function rotateCounterClockwise() {
+        rotateBy(-90);
+    }
+
+    focus: true
+
+    Keys.onReleased: {
+        if (!event.isAutoRepeat && event.key == Qt.Key_BracketLeft) {
+            event.accepted = true
+            rotateClockwise()
+        } else if (!event.isAutoRepeat && event.key == Qt.Key_BracketRight) {
+            event.accepted = true
+            rotateCounterClockwise()
+        }
     }
 }
