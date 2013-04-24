@@ -18,18 +18,16 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Progress Bar")
-    objectName: "Progress Bar"
-
-    Column {
-        spacing: units.gu(4)
+    TemplateSection {
+        title: i18n.tr("Progress Bar")
+        className: "ProgressBar"
 
         TemplateRow {
-            title: i18n.tr("Known") + " %"
+            title: i18n.tr("Standard")
 
             ProgressBar {
                 id: progress
-                value: progress.minimumValue
+                width: parent.width
 
                 SequentialAnimation on value {
                     loops: Animation.Infinite
@@ -39,49 +37,26 @@ Template {
                         duration: 2000
                     }
                     PauseAnimation {duration: 1000}
-                    ScriptAction { script: progress.value = progress.minimumValue; }
-                    PauseAnimation {duration: 2000}
                 }
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Mixed") + " %"
+            title: i18n.tr("Infinite")
 
             ProgressBar {
-                id: progress2
-                value: progress2.minimumValue
-
-                SequentialAnimation on value {
-                    loops: Animation.Infinite
-                    NumberAnimation {
-                        from: progress2.minimumValue
-                        to: progress2.maximumValue
-                        duration: 2000
-                    }
-                    PauseAnimation {duration: 1000}
-                    ScriptAction { script: progress2.indeterminate = true; }
-                    PauseAnimation {duration: 2000}
-                    ScriptAction {
-                        script: {
-                            progress2.indeterminate = false
-                            progress2.value = progress2.minimumValue
-                        }
-                    }
-                }
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Unknown") + " %"
-
-            ProgressBar {
+                width: parent.width
                 indeterminate: true
             }
         }
+    }
+
+    TemplateSection {
+        title: i18n.tr("Activity Indicator")
+        className: "ActivityIndicator"
 
         TemplateRow {
-            title: i18n.tr("Indicator")
+            title: i18n.tr("Standard")
 
             ActivityIndicator {
                 anchors.leftMargin: units.gu(10)

@@ -17,35 +17,26 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-    id: template
+TemplateSection {
+    id: section
+    property alias delegate: repeater.delegate
+    documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
 
-    width: units.gu(40)
-    height: units.gu(75)
-
-    default property alias content: layout.children
-    property alias spacing: layout.spacing
-    property ToolbarActions tools: null
-    property Flickable flickable: flickable
-
-    Flickable {
-        id: flickable
-        anchors.fill: parent
-        anchors.topMargin: units.gu(2)
-        anchors.bottomMargin: units.gu(2)
-        contentHeight: layout.height
-        interactive: contentHeight > height
+    Rectangle {
+        color: "#f7f7f7"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: column.height
 
         Column {
-            id: layout
-            spacing: units.gu(6)
+            id: column
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: units.gu(2)
-        }
-    }
 
-    Scrollbar {
-        flickableItem: flickable
+            Repeater {
+                id: repeater
+                model: 4
+            }
+        }
     }
 }
