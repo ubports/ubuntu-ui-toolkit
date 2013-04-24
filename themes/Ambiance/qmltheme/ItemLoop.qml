@@ -18,20 +18,106 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    width: 400
+    id: root
+    width: 1000
     height: 200
-    property var colors: ["red", "green", "blue", "pink"]
+    property var colors: ["lightblue", "blue", "darkblue", "navy"]
 
-    Row {
-        anchors.fill: parent
-        Repeater {
-            model: colors.length*3
+    property int firstIndex: 2
+    Rectangle {
+        id: startPosition
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 10
+        color: "yellow"
+        x: 10
+    }
 
-            Rectangle {
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: 25
-                color: colors[index % colors.length]
+    property int numRects: colors.length*3
+
+
+    Component {
+        id: rectangle
+        Rectangle {
+            id: rect
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            width: 50
+//            color: "pink"
+            color: colors[index % colors.length]
+
+            Label {
+                anchors.centerIn: parent
+                text: colors[index % colors.length]
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: rect.width = 100
+            }
+
+            Behavior on width {
+                NumberAnimation { duration: 500 }
+            }
+
+//            anchors.left: index === 0 ? startPosition.right : repeater.itemAt(index-1).right
+        }
+    }
+
+    Component {
+        id: row
+        Row {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                topMargin: 5
+                bottomMargin: 5
+            }
+
+            Repeater {
+                model: colors.length
+                delegate: rectangle
+            }
+        }
+    }
+
+    Rectangle {
+        color: "black"
+        width: 10
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: grey.left
+        }
+    }
+
+    Rectangle {
+        clip: true
+        color: "grey"
+        id: grey
+        anchors.centerIn: parent
+        width: 700
+        height: parent.height
+
+        PathView {
+
+            highlightRangeMode: PathView.NoHighlightRange
+
+            id: pathView
+            anchors.fill: parent
+            model: 3
+            delegate: row
+
+            offset: 0.4
+            path: Path {
+                startX: 0 //startY: 100
+//                PathQuad { x: 120; y: 25; controlX: 260; controlY: 75 }
+//                PathQuad { x: 120; y: 100; controlX: -20; controlY: 75 }
+                PathLine {
+//                    x: pathView.width
+                    x: 600
+                }
             }
         }
     }
