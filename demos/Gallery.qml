@@ -25,6 +25,7 @@ MainView {
     height: units.gu(75)
 
     property bool wideAspect: width >= units.gu(80)
+    automaticOrientation: true
     state: wideAspect ? "wide" : ""
     states: [
         State {
@@ -41,9 +42,9 @@ MainView {
             PropertyChanges {
                 target: contentPage
                 x: pageStack.width
-                width: gallery.width - x
-                y: gallery.header.height
-                height: gallery.height - y
+                width: pageStack.parent.width - x
+                y: pageStack.parent.height
+                height: pageStack.parent.height - y
                 anchors {
                     left: undefined
                     right: undefined
