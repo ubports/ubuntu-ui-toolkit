@@ -150,6 +150,13 @@ PageTreeNode {
     active: true
 
     /*!
+      \preliminary
+      Whether or not the application will be automatically rotating when the
+      device is.
+      */
+    property bool automaticOrientation: false
+
+    /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
@@ -159,7 +166,7 @@ PageTreeNode {
         anchors.fill: parent
 
         // Orientation support
-        property int orientationAngle: Screen.angleBetween(Screen.primaryOrientation, Screen.orientation)
+        property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
         state: orientationAngle.toString()
 
         states: [
