@@ -43,7 +43,7 @@ MainView {
                 target: contentPage
                 x: pageStack.width
                 width: pageStack.parent.width - x
-                y: pageStack.parent.height
+                y: gallery.header.height
                 height: pageStack.parent.height - y
                 anchors {
                     left: undefined
