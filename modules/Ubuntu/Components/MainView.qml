@@ -293,31 +293,23 @@ PageTreeNode {
     }
 
     // Orientation debugging
-    function modulo(x, n) {
+    function __modulo(x, n) {
         return ((x % n) + n) % n;
     }
 
-    function rotateBy(increment) {
-        canvas.orientationAngle = modulo(canvas.orientationAngle + increment, 360);
-    }
-
-    function rotateClockwise() {
-        rotateBy(90);
-    }
-
-    function rotateCounterClockwise() {
-        rotateBy(-90);
+    function __rotateBy(increment) {
+        canvas.orientationAngle = __modulo(canvas.orientationAngle + increment, 360);
     }
 
     focus: true
 
     Keys.onReleased: {
         if (!event.isAutoRepeat && event.key == Qt.Key_BracketLeft) {
-            event.accepted = true
-            rotateClockwise()
+            event.accepted = true;
+            __rotateBy(90);
         } else if (!event.isAutoRepeat && event.key == Qt.Key_BracketRight) {
-            event.accepted = true
-            rotateCounterClockwise()
+            event.accepted = true;
+            __rotateBy(-90);
         }
     }
 }
