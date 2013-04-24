@@ -13,24 +13,33 @@ from testtools.matchers import Is, Not, Equals
 from testtools import skip
 import os
 from UbuntuUiToolkit.tests import UbuntuUiToolkitTestCase
+from UbuntuUiToolkit.emulators.main_window import MainWindow
 
 
 class GenericTests(UbuntuUiToolkitTestCase):
     """Generic tests for the Component Showcase"""
 
-    test_qml_file = "%s/%s.qml" % (os.path.dirname(os.path.realpath(__file__)),"../../../../../demos/ComponentShowcase")
+    # Support both running from system and in the source directory
+    runPath = os.path.dirname(os.path.realpath(__file__))
+    localSourceFile = runPath + "/../../../../../demos/ComponentShowcase.qml"
+    if (os.path.isfile(localSourceFile)):
+        print "Using local source directory"
+        test_qml_file = localSourceFile
+    else:
+        print "Using system QML file"
+        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/demos/ComponentShowcase.qml"
 
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
 
-        rootItem = self.app.select_single('QQuickRootItem')
+        rootItem = self.main_window.get_qml_view()
         self.assertThat(rootItem, Not(Is(None)))
         self.assertThat(rootItem.visible,Eventually(Equals(True)))
 
     def test_1_can_select_componentShowcase(self):
         """Must be able to select the Component Showcase main qml file"""
 
-        componentShowcase = self.app.select_single(objectName="componentShowcase")
+        componentShowcase = self.main_window.get_object("QQuickItem", "componentShowcase")
         self.assertThat(componentShowcase, Not(Is(None)))
         self.assertThat(componentShowcase.visible, Eventually(Equals(True)))
 
@@ -39,18 +48,15 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         widgetLoader,listView = self.getWidgetLoaderAndListView();
 
+        # Don't have the first, already selected item as the first item to check
         items = [
-                        "Resolution Independence",
                         "Theming",
+                        "Resolution Independence",
                         "Ubuntu Shape", 
                         "Buttons", 
                         "Tabs", 
-                        "List Items", 
                         "Page Stack",
-                        "Switch", 
-                        "Check Box", 
-                        "Activity Indicator",
-                        "Progress Bar", 
+                        "Switches", 
                     ]                  
 
 
@@ -60,16 +66,16 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
 
         # scroll view to expose more items
-        self.drag("Progress Bar","Theming")
+        self.drag("Tabs","Theming")
 
         # now that we have more items, lets continue
         items = [
+                        "Progress", 
+                        "List Items", 
                         "Slider", 
                         "Text Input", 
-                        "Text Area",
                         "Scrollbar", 
-                        "Popups",
-                        "GIcon Provider", 
+                        "Popovers",
                 ]
 
         for item in items:
