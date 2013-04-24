@@ -6,4 +6,4 @@
 # by the Free Software Foundation.
 
 
-"""Tests for the Ubuntu UI Toolkit Phone Component Showcase"""
+"""Tests for the Ubuntu UI Toolkit Gallery"""

@@ -250,14 +250,6 @@ Examples:
     color: "#757373";
 }
 
-/* Component Showcase title */
-.title {
-    fontSize: "x-large";
-    color: "#757373";
-    styleColor: "white";
-    style: Text.Raised;
-}
-
 /* Note: the following could be done using
 .row-label.title {
     fontSize: "medium";

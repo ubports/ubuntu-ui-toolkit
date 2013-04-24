@@ -16,48 +16,40 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
 
 Template {
     TemplateSection {
-        className: "Button"
+        className: "Dialog"
+        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
-            title: i18n.tr("Standard")
+            title: i18n.tr("Sample")
 
             Button {
-                text: i18n.tr("Call")
+                text: i18n.tr("Open")
+                width: units.gu(16)
+                onClicked: PopupUtils.open(dialog, null)
             }
         }
 
-        TemplateRow {
-            title: i18n.tr("Color")
+        Component {
+            id: dialog
+            Dialog {
+                id: dialogue
 
-            Button {
-                text: i18n.tr("Call")
-                color: "#5da357"
-            }
-        }
+                title: "Sample Dialog"
+                text: "Are you sure you want to delete this file?"
 
-        TemplateRow {
-            title: i18n.tr("Icon")
-
-            Button {
-                iconSource: "call_icon.png"
-            }
-
-            Button {
-                width: units.gu(11)
-                text: i18n.tr("Call")
-                iconSource: "call_icon.png"
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Disabled")
-
-            Button {
-                text: i18n.tr("Call")
-                enabled: false
+                Button {
+                    text: "Cancel"
+                    onClicked: PopupUtils.close(dialogue)
+                }
+                Button {
+                    text: "Delete"
+                    color: "red"
+                    onClicked: PopupUtils.close(dialogue)
+                }
             }
         }
     }
