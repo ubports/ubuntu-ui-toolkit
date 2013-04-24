@@ -43,32 +43,32 @@ Item {
         function initTestCase() {
             compare(page.tools, toolbarActions, "Page tools are set initially");
             compare(mainView.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
-            compare(mainView.toolbar.tools.active, false, "Toolbar is inactive initially");
-            compare(mainView.toolbar.tools.lock, false, "Toolbar is initially not locked");
+            compare(mainView.toolbar.tools.opened, false, "Toolbar is closed initially");
+            compare(mainView.toolbar.tools.locked, false, "Toolbar is initially not locked");
         }
 
-        function test_active() {
-            compare(mainView.toolbar.tools.active, false, "Toolbar initially inactive");
-            mainView.toolbar.active = true;
-            compare(mainView.toolbar.active, true, "Toolbar can be made active");
-            mainView.toolbar.active = false;
-            compare(mainView.toolbar.active, false, "Toolbar can be made inactive");
-            page.tools.active = true;
-            compare(mainView.toolbar.active, true, "Toolbar can be made active by setting page.tools.active");
-            page.tools.active = false;
-            compare(mainView.toolbar.active, false, "Toolbar can be made inactive by setting page.tools.active to false");
+        function test_opened() {
+            compare(mainView.toolbar.tools.opened, false, "Toolbar initially closed");
+            mainView.toolbar.opened = true;
+            compare(mainView.toolbar.opened, true, "Toolbar can be made opened");
+            mainView.toolbar.opened = false;
+            compare(mainView.toolbar.opened, false, "Toolbar can be made closed");
+            page.tools.opened = true;
+            compare(mainView.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
+            page.tools.opened = false;
+            compare(mainView.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
         }
 
-        function test_lock() {
-            compare(mainView.toolbar.tools.lock, false, "Toolbar initially not locked");
-            mainView.toolbar.lock = true;
-            compare(mainView.toolbar.lock, true, "Toolbar can be locked");
-            mainView.toolbar.lock = false;
-            compare(mainView.toolbar.lock, false, "Toolbar can be unlocked");
-            page.tools.lock = true;
-            compare(mainView.toolbar.lock, true, "Toolbar can be locked by setting page.tools.lock");
-            page.tools.lock = false;
-            compare(mainView.toolbar.lock, false, "Toolbar can be unlocked by setting page.tools.lock to false");
+        function test_locked() {
+            compare(mainView.toolbar.tools.locked, false, "Toolbar initially not locked");
+            mainView.toolbar.locked = true;
+            compare(mainView.toolbar.locked, true, "Toolbar can be locked");
+            mainView.toolbar.locked = false;
+            compare(mainView.toolbar.locked, false, "Toolbar can be unlocked");
+            page.tools.locked = true;
+            compare(mainView.toolbar.locked, true, "Toolbar can be locked by setting page.tools.locked");
+            page.tools.locked = false;
+            compare(mainView.toolbar.locked, false, "Toolbar can be unlocked by setting page.tools.locked to false");
         }
     }
 }
