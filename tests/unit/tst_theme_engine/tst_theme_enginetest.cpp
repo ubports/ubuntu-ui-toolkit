@@ -70,6 +70,7 @@ private Q_SLOTS:
     void testCase_ReParentNonStyledToNonStyled();
     void testCase_ReParentNonStyledToStyledTwice();
     void testCase_ReParentNonStyledToNonStyledTwice();
+    void testCase_MemoryCleanup();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
     QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl());
@@ -94,8 +95,10 @@ QQuickItem *tst_ThemeEngine::loadTest(const QString &document, const QUrl &theme
             QWARN("Theme loading failed");
             return 0;
         }
-    } else
+    } else {
+        ThemeEngine::instance()->loadTheme(theme);
         ThemeEngine::instance()->resetError();
+    }
     quickView->setSource(QUrl::fromLocalFile(document));
     QTest::waitForEvents();
 
@@ -407,6 +410,26 @@ void tst_ThemeEngine::testCase_ReParentNonStyledToNonStyledTwice()
     QCOMPARE(path, QString(".parent .label"));
     path = root->property("path2").toString();
     QCOMPARE(path, QString(".other-parent .label"));
+}
+
+void tst_ThemeEngine::testCase_MemoryCleanup()
+{
+    QObjectCleanupHandler cleanup;
+    QQuickItem *root = loadTest("MemoryCleanup.qml");
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+    QVERIFY(styleItem);
+    QObject *object = styleItem->property("style").value<QObject*>();
+    QVERIFY(object);
+    cleanup.add(object);
+    object = styleItem->property("delegate").value<QObject*>();
+    QVERIFY(object);
+    cleanup.add(object);
+    cleanup.add(qmlContext(object));
+    delete item;
+    QTest::waitForEvents();
+    QVERIFY(cleanup.isEmpty());
 }
 
 QTEST_MAIN(tst_ThemeEngine)

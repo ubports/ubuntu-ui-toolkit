@@ -16,4 +16,5 @@ OTHER_FILES += ReparentingTest.qml \
     ReParentNonStyledToStyledTwice.qml \
     Reparenting1.qmltheme \
     Reparenting2.qmltheme \
-    ReParentNonStyledToNonStyledTwice.qml
+    ReParentNonStyledToNonStyledTwice.qml \
+    MemoryCleanup.qml
