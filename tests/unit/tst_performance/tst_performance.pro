@@ -13,4 +13,6 @@ OTHER_FILES += \
     SwitchGrid.qml \
     LabelGrid.qml \
     SliderDelegateGrid.qml \
-    SliderGrid.qml
+    SliderGrid.qml \
+    TextGrid.qml \
+    RectangleGrid.qml

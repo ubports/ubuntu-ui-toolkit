@@ -90,6 +90,8 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
+        QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
+        QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
         QTest::newRow("grid with UbuntuShape") << "UbuntuShapeGrid.qml" << QUrl();
         QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
