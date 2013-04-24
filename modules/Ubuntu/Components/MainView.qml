@@ -27,7 +27,8 @@ import Ubuntu.Components 0.1 as Theming
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief MainView is the root Item that should be used for all applications.
-        It automatically adds a header and toolbar for its contents.
+        It automatically adds a header and toolbar for its contents and can
+        rotate its content based on the device orientation.
 
     The simplest way to use a MainView is to include a \l Page object inside the MainView:
     \qml
@@ -51,6 +52,10 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
     It is not required to set the anchors of the \l Page as it will automatically fill its parent.
     The MainView has a header that automatically shows the title of the \l Page.
+
+    For the MainView to automatically rotate its content following the orientation
+    of the device, set the \l automaticOrientation property to true.
+
     If the \l Page inside the MainView includes a Flickable with enough contents for scrolling, the header
     will automatically hide and show when the user scrolls up or down:
     \qml
@@ -151,8 +156,10 @@ PageTreeNode {
 
     /*!
       \preliminary
-      Whether or not the application will be automatically rotating when the
+      Sets whether the application will be automatically rotating when the
       device is.
+
+      The default value is false.
       */
     property bool automaticOrientation: false
 
