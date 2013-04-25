@@ -38,19 +38,23 @@ private:
     QQuickView *quickView;
     QQmlEngine *quickEngine;
 
+    QQuickItem *loadDocument(const QString &document)
+    {
+        quickView->setSource(QUrl::fromLocalFile(document));
+        QTest::waitForEvents();
+
+        return quickView->rootObject();
+    }
+
     QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl())
     {
-        if (quickView->rootObject()) delete quickView->rootObject();
         ThemeEngine::initializeEngine(quickEngine);
         ThemeEngine::instance()->loadTheme(theme);
         if (!ThemeEngine::instance()->error().isEmpty()) {
             QWARN("Theme loading failed");
             return 0;
         }
-        quickView->setSource(QUrl::fromLocalFile(document));
-        QTest::waitForEvents();
-
-        return quickView->rootObject();
+        return loadDocument(document);
     }
 
 
@@ -111,12 +115,15 @@ private Q_SLOTS:
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
 
+        ThemeEngine::initializeEngine(quickEngine);
+        ThemeEngine::instance()->loadTheme(theme);
+
         QQuickItem *root = 0;
         QBENCHMARK {
-            root = loadTest(document, theme);
+            root = loadDocument(document);
         }
         if (root)
-            root->deleteLater();
+            delete root;
     }
 
 };
