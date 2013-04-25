@@ -104,7 +104,8 @@ import Ubuntu.Components 0.1 as Toolkit
     Any Items can be placed inside the Panel, but MouseAreas can block mouse events from reaching
     the panel and thus obstruct the swiping behavior for hiding the panel. As a result, the user cannot
     start swiping on the buttons in the examples above in order to hide the panel. To remedy this, clicked()
-    signals are forwarded from the panel to its children. Example:
+    signals are forwarded from the panel to its children. The children's clicked() signal does not have
+    a mouse parameter. Example:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
