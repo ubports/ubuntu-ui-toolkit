@@ -50,11 +50,11 @@ Item {
       \preliminary
       Sets whether it will be automatically rotating when the device is.
 
-      The default value is false.
+      The default value is true.
 
       \qmlproperty bool automaticOrientation
      */
-    property bool automaticOrientation: false
+    property bool automaticOrientation: true
 
     /*! \internal */
     property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
