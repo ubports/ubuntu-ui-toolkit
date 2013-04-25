@@ -58,10 +58,6 @@ Item {
     property bool automaticOrientation: true
 
     /*! \internal */
-    // FIXME: to be removed
-    property bool __orientationDebugging: false
-
-    /*! \internal */
     property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
     anchors.fill: parent
@@ -137,28 +133,5 @@ Item {
                 }
             }
         ]
-    }
-
-    // FIXME: Orientation debugging to be removed
-    /*! \internal */
-    function __modulo(x, n) {
-        return ((x % n) + n) % n;
-    }
-
-    /*! \internal */
-    function __rotateBy(increment) {
-        __orientationAngle = __modulo(__orientationAngle + increment, 360);
-    }
-
-    focus: true
-
-    Keys.onReleased: {
-        if (__orientationDebugging && !event.isAutoRepeat) {
-            if (event.key == Qt.Key_Left) {
-                __rotateBy(-90);
-            } else if (event.key == Qt.Key_Right) {
-                __rotateBy(90);
-            }
-        }
     }
 }

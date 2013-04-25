@@ -166,30 +166,13 @@ PageTreeNode {
 
     /*!
       \internal
-
-      Sets whether the application will rotate when pressing the left/right
-      arrow keys.
-
-      \qmlproperty bool __orientationDebugging
-      FIXME: to be removed
-     */
-    property alias __orientationDebugging: canvas.__orientationDebugging
-
-    // FIXME: remove next line
-    property alias __orientationAngle: canvas.__orientationAngle
-
-    /*!
-      \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
     default property alias contentsItem: contents.data
     OrientationHelper {
         id: canvas
 
-        // FIXME: uncomment next line
-        //automaticOrientation: false
-        // FIXME: remove next line
-        __orientationDebugging: true
+        automaticOrientation: false
 
         Item {
             id: contents

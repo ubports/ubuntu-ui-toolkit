@@ -33,9 +33,6 @@ import Ubuntu.Components 0.1
 OrientationHelper {
     id: popupBase
 
-    // FIXME: remove next line
-    __orientationAngle: gallery.__orientationAngle
-
     /*!
       The property holds the area used to dismiss the popups, the area from where
       mouse and touch events will be grabbed. By default this area is the application's
