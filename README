@@ -30,8 +30,8 @@ You need Qt5 installed to proceed. To build this repository, run
 $ qmake
 $ make
 
-View the components demo by running
-$ ./launch_demos.sh
+View the components gallery by running
+$ ./gallery.sh
 
 To install these components, run
 $ make install

@@ -241,7 +241,7 @@ Empty {
             margins: units.gu(2)
         }
         onControlChanged: {
-            control.parent = controlContainer;
+            if (control) control.parent = controlContainer;
         }
 
         Connections {
@@ -249,14 +249,14 @@ Empty {
 
             onClicked: {
                 if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    control.clicked();
+                    if (control.enabled) control.clicked();
                 } else {
                     listItem.clicked();
                 }
             }
 
             onPressAndHold: {
-                if (control && __mouseArea.mouseX < progressionHelper.x) {
+                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
                     control.pressAndHold();
                 } else {
                     listItem.pressAndHold();
@@ -269,7 +269,7 @@ Empty {
       \internal
      */
     onPressedChanged: {
-        if (listItem.pressed && control && (__mouseArea.mouseX < progressionHelper.x)) {
+        if (listItem.pressed && control && control.enabled && (__mouseArea.mouseX < progressionHelper.x)) {
             listItem.__controlAreaPressed = true
         } else {
             listItem.__controlAreaPressed = false

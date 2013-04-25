@@ -6,7 +6,7 @@ PO_DIR=$PWD
 PROGNAME=$(basename $0)
 
 # Create a list of files to scan
-GETTEXT_FILES=$(mktemp --tmpdir uitk-componentshowcase.lst.XXXXX)
+GETTEXT_FILES=$(mktemp --tmpdir uitk-gallery.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
 find \( -name '*.cpp' -o -name '*.qml' \) \
@@ -20,7 +20,7 @@ xgettext \
     --qt --c++ \
     --add-comments=TRANSLATORS \
     --keyword=tr \
-    --package-name componentshowcase \
+    --package-name gallery \
     --copyright-holder "Canonical Ltd"
 
 echo "$PROGNAME: $PO_DIR/auto-generated.pot updated"
