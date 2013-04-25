@@ -30,7 +30,7 @@ Template {
     }
 
     TemplateSection {
-        title: "Default Sheet"
+        title: "Default sheet"
         className: "DefaultSheet"
         documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
 
@@ -63,7 +63,7 @@ Template {
     }
 
     TemplateSection {
-        title: "Composer Sheet"
+        title: "Composer sheet"
         className: "ComposerSheet"
         documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
 
