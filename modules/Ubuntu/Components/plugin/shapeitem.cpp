@@ -509,6 +509,7 @@ void ShapeNode::setMaterialType(ShapeNode::MaterialType material)
             setMaterial(&coloredMaterial_);
         else
             setMaterial(&texturedMaterial_);
+        currentMaterial_ = material;
         markDirty(DirtyMaterial);
     }
 }
