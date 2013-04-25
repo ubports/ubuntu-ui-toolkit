@@ -32,7 +32,7 @@
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
-const char *previousParentProperty = "__q_previousParent";
+
 
 /*!
   \qmltype ItemStyle
@@ -216,38 +216,6 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
     // unbind style from attachee
     if (style)
         style->unbindProperty(property);
-}
-
-/*!
- * \internal
- * The method connects or disconnects all non-themed parents starting from item
- * till the first themed parent is found. When connecting, the given item's actual
- * parent will be considered as starting point when traversing object hierarchy. Upon
- * disconnect, the given item's previous parent will be considered as starting point.
- */
-void ItemStyleAttachedPrivate::observeNonThemedParentChanges(QQuickItem *item, bool connect)
-{
-    Q_Q(ItemStyleAttached);
-
-    QQuickItem *parent = (connect) ? item->parentItem() : item->property(previousParentProperty).value<QQuickItem*>();
-    ItemStyleAttached *parentStyle = ThemeEnginePrivate::attachedStyle(parent);
-    while (parent && !parentStyle) {
-        if (connect) {
-            // connect parent's parentChanged signal
-            QObject::connect(parent, SIGNAL(parentChanged(QQuickItem*)), q, SLOT(_q_reapplyStyling(QQuickItem*)));
-            //... and remember its previous parent to know from which to disconnect
-            item->setProperty(previousParentProperty, QVariant::fromValue(parent));
-        } else {
-            // disconnect parent's parentChanged signal
-            QObject::disconnect(parent, SIGNAL(parentChanged(QQuickItem*)), q, SLOT(_q_reapplyStyling(QQuickItem*)));
-            // reset previous parent
-            item->setProperty(previousParentProperty, QVariant());
-        }
-        // move to next parent
-        item = parent;
-        parent = item->parentItem();
-        parentStyle = ThemeEnginePrivate::attachedStyle(parent);
-    }
 }
 
 bool ItemStyleAttachedPrivate::updateStyleSelector()
@@ -481,23 +449,10 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
  */
 void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 {
-    Q_Q(ItemStyleAttached);
-    // sender is the item whos parent was changed
-    QQuickItem *item = qobject_cast<QQuickItem*>(q->sender());
-    if (!item)
-        return;
-
-    // disconnect from previous parent
-    observeNonThemedParentChanges(item, false);
-
     if (!parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
 
-    // connect the new parent
-    observeNonThemedParentChanges(item, true);
-
-    // apply styling
     if (updateStyleSelector() || delayApplyingStyle) {
         delayApplyingStyle = false;
         updateCurrentStyle();
