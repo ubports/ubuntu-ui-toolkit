@@ -197,10 +197,10 @@ PageTreeNode {
                     target: canvas
                     rotation: 270
                     anchors {
-                        topMargin: -(parent.width - parent.height) / 2
-                        bottomMargin: anchors.topMargin
                         leftMargin: (parent.width - parent.height) / 2
                         rightMargin: anchors.leftMargin
+                        topMargin: -anchors.leftMargin
+                        bottomMargin: anchors.topMargin
                     }
                 }
             },
@@ -210,10 +210,10 @@ PageTreeNode {
                     target: canvas
                     rotation: 90
                     anchors {
-                        topMargin: -(parent.width - parent.height) / 2
-                        bottomMargin: anchors.topMargin
                         leftMargin: (parent.width - parent.height) / 2
                         rightMargin: anchors.leftMargin
+                        topMargin: -anchors.leftMargin
+                        bottomMargin: anchors.topMargin
                     }
                 }
             }
