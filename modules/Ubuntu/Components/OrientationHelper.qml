@@ -48,8 +48,7 @@ Item {
 
     /*!
       \preliminary
-      Sets whether the application will be automatically rotating when the
-      device is.
+      Sets whether it will be automatically rotating when the device is.
 
       The default value is false.
 
