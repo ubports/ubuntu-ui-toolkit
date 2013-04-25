@@ -15,7 +15,6 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-private-dev,
                qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-test-plugin,
-               qtdeclarative5-window-plugin,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
@@ -30,6 +29,7 @@ Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: libqt5graphicaleffects5,
          libqt5svg5,
          qtdeclarative5-qtquick2-plugin,
+         qtdeclarative5-window-plugin,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
