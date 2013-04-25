@@ -16,25 +16,25 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef QQUICKAPPLICATIONEXTENSION_H
-#define QQUICKAPPLICATIONEXTENSION_H
+#ifndef UCAPPLICATION_H
+#define UCAPPLICATION_H
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 
-class UCQQuickApplicationExtension : public QObject
+class UCApplication : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList arguments READ arguments NOTIFY argumentsChanged)
 
 public:
-    static UCQQuickApplicationExtension& instance()
+    static UCApplication& instance()
     {
-        static UCQQuickApplicationExtension instance;
+        static UCApplication instance;
         return instance;
     }
 
-    explicit UCQQuickApplicationExtension(QObject *parent = 0);
+    explicit UCApplication(QObject *parent = 0);
 
     QStringList arguments() const;
 
@@ -42,4 +42,4 @@ Q_SIGNALS:
     void argumentsChanged(const QStringList &);
 };
 
-#endif // QQUICKAPPLICATIONEXTENSION_H
+#endif // UCAPPLICATION_H

@@ -16,22 +16,22 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucqquickapplicationextension.h"
+#include "ucapplication.h"
 
 #include <QtCore/QCoreApplication>
 
 /*!
     \internal
 
-    The UCQQuickApplicationExtension class extends the Qt.application object
+    The UCApplication class extends the Qt.application object
     exposed to QML.
 */
-UCQQuickApplicationExtension::UCQQuickApplicationExtension(QObject *parent) :
+UCApplication::UCApplication(QObject *parent) :
     QObject(parent)
 {
 }
 
-QStringList UCQQuickApplicationExtension::arguments() const
+QStringList UCApplication::arguments() const
 {
     static QStringList arguments = QCoreApplication::arguments();
     return arguments;
