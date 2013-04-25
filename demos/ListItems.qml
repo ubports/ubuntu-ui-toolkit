@@ -65,7 +65,7 @@ Template {
     }
 
     ListItemsSection {
-        title: i18n.tr("Single value")
+        title: i18n.tr("Multi value")
         className: "MultiValue"
         delegate: ListItem.MultiValue {
             text: i18n.tr("Label")
