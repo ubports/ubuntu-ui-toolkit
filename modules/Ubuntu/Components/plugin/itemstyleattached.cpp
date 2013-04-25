@@ -119,7 +119,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     attachee(qobject_cast<QQuickItem*>(attached)),
     style(0),
     delegate(0),
-    componentContext(0),
+    componentContext(new QQmlContext(QQmlEngine::contextForObject(attachee))),
     styleRule(0),
     delayApplyingStyle(true),
     customStyle(false),
@@ -127,17 +127,13 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     connectedToEngine(false)
 {
     styleClass = QuickUtils::instance().className(attachee).toLower();
+    componentContext->setContextProperty(itemProperty, attachee);
     // refresh style upon reparenting!
     // there is no reason to do styling till the parent is not set and this applies
     // to the root objects too as even those have an internal parent
     QObject::connect(attachee, SIGNAL(parentChanged(QQuickItem*)), q_ptr, SLOT(_q_reapplyStyling(QQuickItem*)));
 
     listenThemeEngine();
-
-    if (!componentContext) {
-        componentContext = new QQmlContext(QQmlEngine::contextForObject(attachee));
-        componentContext->setContextProperty(itemProperty, attachee);
-    }
 
     //enum attachee properties and watch them
     watchAttacheeProperties();
@@ -148,6 +144,12 @@ ItemStyleAttachedPrivate::~ItemStyleAttachedPrivate()
     // remove name from the theming engine
     if (!styleId.isEmpty())
         ThemeEnginePrivate::registerName(attachee, QString());
+    resetDelegate();
+    resetStyle();
+    // FIXME: delete context when style and delegate are also deleted
+    if (componentContext)
+        delete componentContext;
+    componentContext = 0;
 }
 
 /*!
@@ -379,7 +381,7 @@ void ItemStyleAttachedPrivate::resetStyle()
         style->unbindItem(delegate);
         style->unbindItem(attachee);
         style->setParent(0);
-        style->deleteLater();
+        delete style;
         style = 0;
     }
 }
@@ -392,7 +394,7 @@ void ItemStyleAttachedPrivate::resetDelegate()
             style->unbindItem(delegate);
         delegate->setParent(0);
         delegate->setParentItem(0);
-        delegate->deleteLater();
+        delete delegate;
         delegate = 0;
     }
 }
