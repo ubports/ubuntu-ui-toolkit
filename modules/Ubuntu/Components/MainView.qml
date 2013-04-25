@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import QtQuick.Window 2.0
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.
@@ -160,88 +159,20 @@ PageTreeNode {
       device is.
 
       The default value is false.
-      */
-    property bool automaticOrientation: false
+
+      \qmlproperty bool automaticOrientation
+     */
+    property alias automaticOrientation: canvas.automaticOrientation
 
     /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
     default property alias contentsItem: contents.data
-    Item {
+    OrientationHelper {
         id: canvas
-        anchors.fill: parent
 
-        // Orientation support
-        property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
-        state: orientationAngle.toString()
-
-        states: [
-            State {
-                name: "0"
-                PropertyChanges {
-                    target: canvas
-                    rotation: 0
-                }
-            },
-            State {
-                name: "180"
-                PropertyChanges {
-                    target: canvas
-                    rotation: 180
-                }
-            },
-            State {
-                name: "270"
-                PropertyChanges {
-                    target: canvas
-                    rotation: 270
-                    anchors {
-                        leftMargin: (parent.width - parent.height) / 2
-                        rightMargin: anchors.leftMargin
-                        topMargin: -anchors.leftMargin
-                        bottomMargin: anchors.topMargin
-                    }
-                }
-            },
-            State {
-                name: "90"
-                PropertyChanges {
-                    target: canvas
-                    rotation: 90
-                    anchors {
-                        leftMargin: (parent.width - parent.height) / 2
-                        rightMargin: anchors.leftMargin
-                        topMargin: -anchors.leftMargin
-                        bottomMargin: anchors.topMargin
-                    }
-                }
-            }
-        ]
-
-        transitions: [
-            Transition {
-                id: orientationTransition
-                ParallelAnimation {
-                    SequentialAnimation {
-                        PauseAnimation {
-                            duration: 25
-                        }
-                        PropertyAction {
-                            target: canvas
-                            properties: "anchors.topMargin,anchors.bottomMargin,anchors.rightMargin,anchors.leftMargin"
-                        }
-                    }
-                    RotationAnimation {
-                        target: canvas
-                        properties: "rotation"
-                        duration: 250
-                        easing.type: Easing.OutQuint
-                        direction: RotationAnimation.Shortest
-                    }
-                }
-            }
-        ]
+        automaticOrientation: false
 
         Item {
             id: contents
