@@ -245,13 +245,19 @@ Item {
      */
     readonly property bool animating: draggingArea.pressed || (state == "" && bar.position != bar.size) || (state == "spread" && bar.position != 0)
 
+    /*!
+      The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
+      Default value: 50
+     */
+    property real transitionDuration: 200
+
     transitions: [
         Transition {
             to: ""
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 500
+                duration: panel.transitionDuration
                 easing.type: Easing.OutQuad
             }
         },
@@ -260,7 +266,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 500
+                duration: panel.transitionDuration
                 easing.type: Easing.OutQuad
             }
         },
@@ -269,7 +275,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 500
+                duration: panel.transitionDuration
                 easing.type: Easing.OutQuad
             }
         }
