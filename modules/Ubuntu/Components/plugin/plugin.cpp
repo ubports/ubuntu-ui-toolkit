@@ -101,10 +101,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register gicon provider
      engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
 
-     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
-     QGuiApplication::primaryScreen()->setOrientationUpdateMask(
-                 Qt::PortraitOrientation |
-                 Qt::LandscapeOrientation |
-                 Qt::InvertedPortraitOrientation |
-                 Qt::InvertedLandscapeOrientation);
+    // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
+    QGuiApplication::primaryScreen()->setOrientationUpdateMask(
+            Qt::PortraitOrientation |
+            Qt::LandscapeOrientation |
+            Qt::InvertedPortraitOrientation |
+            Qt::InvertedLandscapeOrientation);
 }
