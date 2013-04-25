@@ -40,15 +40,13 @@ private:
 
     QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl())
     {
+        if (quickView->rootObject()) delete quickView->rootObject();
         ThemeEngine::initializeEngine(quickEngine);
-        if (theme.isValid()) {
-            ThemeEngine::instance()->loadTheme(theme);
-            if (!ThemeEngine::instance()->error().isEmpty()) {
-                QWARN("Theme loading failed");
-                return 0;
-            }
-        } else
-            ThemeEngine::instance()->resetError();
+        ThemeEngine::instance()->loadTheme(theme);
+        if (!ThemeEngine::instance()->error().isEmpty()) {
+            QWARN("Theme loading failed");
+            return 0;
+        }
         quickView->setSource(QUrl::fromLocalFile(document));
         QTest::waitForEvents();
 
@@ -105,6 +103,7 @@ private Q_SLOTS:
 //        QTest::newRow("grid with Switch") << "SwitchGrid.qml" << QUrl();
         QTest::newRow("grid with SliderDelegate") << "SliderDelegateGrid.qml" << QUrl();
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
+        QTest::newRow("styled grid with Buttons") << "ButtonsWithStyledGrid.qml" << QUrl::fromLocalFile("CustomTheme.qmltheme");
     }
 
     void benchmark_GridOfComponents()

@@ -15,4 +15,6 @@ OTHER_FILES += \
     SliderDelegateGrid.qml \
     SliderGrid.qml \
     TextGrid.qml \
-    RectangleGrid.qml
+    RectangleGrid.qml \
+    CustomTheme.qmltheme \
+    ButtonsWithStyledGrid.qml
