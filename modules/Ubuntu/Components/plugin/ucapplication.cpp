@@ -23,8 +23,7 @@
 /*!
     \internal
 
-    The UCApplication class extends the Qt.application object
-    exposed to QML.
+    The UCApplication class is exposed to QML as the 'application' context property.
 */
 UCApplication::UCApplication(QObject *parent) :
     QObject(parent)
