@@ -38,6 +38,7 @@
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
 #include "ucstyle.h"
+#include "ucqquickapplicationextension.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -78,6 +79,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
+    context->setContextProperty("application", &UCQQuickApplicationExtension::instance());
 
     context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
     context->setContextProperty("i18n", &UbuntuI18n::instance());
