@@ -73,6 +73,6 @@ ListModel {
     }
     ListElement {
         label: "Sheet"
-        source: ""
+        source: "Sheet.qml"
     }
 }
