@@ -30,8 +30,11 @@ import Ubuntu.Components 0.1
 
     Examples: See subclasses.
 */
-Item {
+OrientationHelper {
     id: popupBase
+
+    // FIXME: sync with MainView's OrientationHelper
+    __orientationAngle: gallery.__orientationAngle
 
     /*!
       The property holds the area used to dismiss the popups, the area from where

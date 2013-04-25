@@ -32,6 +32,7 @@ Item {
     property bool automaticOrientation: true
 
     /*! \internal */
+    // FIXME: to be removed
     property bool __orientationDebugging: false
 
     /*! \internal */
@@ -112,7 +113,7 @@ Item {
         ]
     }
 
-    // Orientation debugging
+    // FIXME: Orientation debugging to be removed
     /*! \internal */
     function __modulo(x, n) {
         return ((x % n) + n) % n;

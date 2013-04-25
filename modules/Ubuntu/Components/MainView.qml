@@ -171,8 +171,12 @@ PageTreeNode {
       arrow keys.
 
       \qmlproperty bool __orientationDebugging
+      FIXME: to be removed
      */
     property alias __orientationDebugging: canvas.__orientationDebugging
+
+    // FIXME: remove next line
+    property alias __orientationAngle: canvas.__orientationAngle
 
     /*!
       \internal

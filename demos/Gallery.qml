@@ -26,6 +26,7 @@ MainView {
 
     property bool wideAspect: width >= units.gu(80)
     automaticOrientation: true
+    // FIXME: next line to be removed
     __orientationDebugging: true
     state: wideAspect ? "wide" : ""
     states: [
