@@ -24,7 +24,7 @@ Template {
         documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
-            title: i18n.tr("Sample")
+            title: i18n.tr("Standard")
 
             Button {
                 text: i18n.tr("Open")
