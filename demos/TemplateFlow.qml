@@ -18,10 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    id: templateRow
+    id: templateFlow
 
     property string title
     property real titleWidth: units.gu(10)
+    property real titleOffset: units.gu(1.5)
     property alias spacing: contentRow.spacing
     default property alias content: contentRow.children
 
@@ -30,14 +31,14 @@ Item {
 
     Label {
         id: label
-        text: templateRow.title
-        width: templateRow.titleWidth
-        anchors.verticalCenter: contentRow.verticalCenter
+        text: templateFlow.title
+        width: templateFlow.titleWidth
+        y: templateFlow.titleOffset
         elide: Text.ElideRight
         font.weight: Font.Light
     }
 
-    Row {
+    Flow {
         id: contentRow
 
         anchors.left: label.right

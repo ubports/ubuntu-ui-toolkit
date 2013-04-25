@@ -19,45 +19,34 @@ import Ubuntu.Components 0.1
 
 Template {
     TemplateSection {
-        className: "Button"
+        className: "Label"
 
-        TemplateRow {
-            title: i18n.tr("Standard")
+        Column {
+            spacing: units.gu(2)
 
-            Button {
-                text: i18n.tr("Call")
+            Label {
+                fontSize: "xx-small"
+                text: "xx-small"
             }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Color")
-
-            Button {
-                text: i18n.tr("Call")
-                color: "#5da357"
+            Label {
+                fontSize: "x-small"
+                text: "x-small"
             }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Icon")
-
-            Button {
-                iconSource: "call_icon.png"
+            Label {
+                fontSize: "small"
+                text: "small"
             }
-
-            Button {
-                width: units.gu(11)
-                text: i18n.tr("Call")
-                iconSource: "call_icon.png"
+            Label {
+                fontSize: "medium"
+                text: "medium"
             }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Disabled")
-
-            Button {
-                text: i18n.tr("Call")
-                enabled: false
+            Label {
+                fontSize: "large"
+                text: "large"
+            }
+            Label {
+                fontSize: "x-large"
+                text: "x-large"
             }
         }
     }

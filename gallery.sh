@@ -15,19 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-export UITK_THEME_PATH=.
+source export_modules_dir.sh
 
-if [ "$1" == "--phone" ]
+if [ "$1" == "--autopilot" ]
 then
-	GRID_UNIT_PX=18 qmlscene --fullscreen -I modules demos/PhoneComponentShowcase.qml
-elif [ "$1" == "--autopilot" ]
-then
-	/usr/lib/*/qt5/bin/qmlscene -I modules demos/ComponentShowcase.qml -testability &
-	autopilot vis
-elif [ "$1" == "--autopilot-phone" ]
-then
-	GRID_UNIT_PX=18 qmlscene -I modules demos/PhoneComponentShowcase.qml -testability &
-	autopilot vis
+    demos/gallery -testability &
+    autopilot vis
 else
-	/usr/lib/*/qt5/bin/qmlscene -I modules demos/ComponentShowcase.qml
+	demos/gallery
 fi
