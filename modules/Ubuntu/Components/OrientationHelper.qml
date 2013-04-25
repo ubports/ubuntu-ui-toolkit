@@ -17,6 +17,32 @@
 import QtQuick 2.0
 import QtQuick.Window 2.0
 
+/*!
+    \qmltype OrientationHelper
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief The OrientationHelper automatically rotates its children following the
+           orientation of the device.
+
+    Any Item placed inside an Orientation Helper will be automatically rotated
+    following the orientation of the device.
+
+    Note that OrientationHelper is always filling its parent (anchors.parent: fill).
+
+    Example:
+    \qml
+    Item {
+        OrientationHelper {
+            Label {
+                text: "Automatically rotated"
+            }
+            Button {
+                text: "Automatically rotated"
+            }
+        }
+    }
+    \endqml
+*/
 Item {
     id: orientationHelper
 
