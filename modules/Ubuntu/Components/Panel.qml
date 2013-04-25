@@ -245,19 +245,13 @@ Item {
      */
     readonly property bool animating: draggingArea.pressed || (state == "" && bar.position != bar.size) || (state == "spread" && bar.position != 0)
 
-    /*!
-      The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
-      Default value: 250
-     */
-    property real transitionDuration: 250
-
     transitions: [
         Transition {
             to: ""
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.transitionDuration
+                duration: internal.transitionDuration
                 easing.type: Easing.OutQuad
             }
         },
@@ -266,7 +260,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.transitionDuration
+                duration: internal.transitionDuration
                 easing.type: Easing.OutQuad
             }
         },
@@ -275,7 +269,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.transitionDuration
+                duration: internal.transitionDuration
                 easing.type: Easing.OutQuad
             }
         }
@@ -283,6 +277,15 @@ Item {
 
     QtObject {
         id: internal
+
+        /*!
+          The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
+          Default value: 250
+          // FIXME: Update to use ubuntuFastBeat when animation speeds are added to the SDK.
+         */
+        property real transitionDuration: 250
+
+
         property string previousState: ""
         property int movingDelta
 
