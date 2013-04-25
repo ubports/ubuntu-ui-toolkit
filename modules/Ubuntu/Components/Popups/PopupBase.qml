@@ -35,8 +35,8 @@ OrientationHelper {
 
     /*!
       The property holds the area used to dismiss the popups, the area from where
-      mouse and touch events will be grabbed. By default this area is the application's
-      main view.
+      mouse and touch events will be grabbed. By default this area is the Popup
+      itself.
     */
     property Item dismissArea: popupBase
 
