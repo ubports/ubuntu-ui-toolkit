@@ -172,8 +172,6 @@ PageTreeNode {
     OrientationHelper {
         id: canvas
 
-        automaticOrientation: false
-
         Item {
             id: contents
             anchors.fill: parent

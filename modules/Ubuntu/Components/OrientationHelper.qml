@@ -55,7 +55,7 @@ Item {
 
       \qmlproperty bool automaticOrientation
      */
-    property bool automaticOrientation: true
+    property bool automaticOrientation: false
 
     /*! \internal */
     property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0

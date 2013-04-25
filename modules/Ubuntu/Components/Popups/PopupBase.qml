@@ -59,6 +59,10 @@ OrientationHelper {
     width: parent ? parent.width : undefined
     height: parent ? parent.height : undefined
 
+    // copy value of automaticOrientation from root object (typically a MainView)
+    automaticOrientation: QuickUtils.rootObject && QuickUtils.rootObject.automaticOrientation ?
+                          QuickUtils.rootObject.automaticOrientation : false
+
     /*!
       \preliminary
       Make the popup visible. Reparent to the background area object first if needed.
