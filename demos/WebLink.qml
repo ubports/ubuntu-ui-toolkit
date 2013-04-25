@@ -17,32 +17,13 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-    id: templateRow
+Label {
+    id: webLink
 
-    property string title
-    property real titleWidth: units.gu(10)
-    property alias spacing: contentRow.spacing
-    default property alias content: contentRow.children
+    property string label: url
+    property url url
 
-    height: Math.max(contentRow.height, label.height)
-    width: parent.width
-
-    Label {
-        id: label
-        text: templateRow.title
-        width: templateRow.titleWidth
-        anchors.verticalCenter: contentRow.verticalCenter
-        elide: Text.ElideRight
-        font.weight: Font.Light
-    }
-
-    Row {
-        id: contentRow
-
-        anchors.left: label.right
-        anchors.leftMargin: units.gu(2)
-        anchors.right: parent.right
-        spacing: units.gu(2)
-    }
+    textFormat: Text.RichText
+    text: "<a href=\"%1\">%2</a>".arg(webLink.url).arg(webLink.label)
+    onLinkActivated: Qt.openUrlExternally(link)
 }
