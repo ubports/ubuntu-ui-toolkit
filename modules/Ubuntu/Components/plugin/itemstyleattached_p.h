@@ -57,7 +57,6 @@ public:
     bool connectedToEngine;
 
     void watchAttacheeProperties();
-    void observeNonThemedParentChanges(QQuickItem *item, bool connect);
     void applyStyleOnProperty(const QQmlProperty &property);
     bool updateStyleSelector();
     bool updateStyle();
