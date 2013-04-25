@@ -166,13 +166,26 @@ PageTreeNode {
 
     /*!
       \internal
+
+      Sets whether the application will rotate when pressing the left/right
+      arrow keys.
+
+      \qmlproperty bool __orientationDebugging
+     */
+    property alias __orientationDebugging: canvas.__orientationDebugging
+
+    /*!
+      \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
     default property alias contentsItem: contents.data
     OrientationHelper {
         id: canvas
 
-        automaticOrientation: false
+        // FIXME: uncomment next line
+        //automaticOrientation: false
+        // FIXME: remove next line
+        __orientationDebugging: true
 
         Item {
             id: contents
@@ -221,31 +234,5 @@ PageTreeNode {
                 __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});
         } else if (__hud)
             __hud.destroy();
-    }
-
-    // Orientation debugging
-    /*! \internal */
-    property bool __orientationDebugging: false
-
-    /*! \internal */
-    function __modulo(x, n) {
-        return ((x % n) + n) % n;
-    }
-
-    /*! \internal */
-    function __rotateBy(increment) {
-        canvas.orientationAngle = __modulo(canvas.orientationAngle + increment, 360);
-    }
-
-    focus: true
-
-    Keys.onReleased: {
-        if (__orientationDebugging && !event.isAutoRepeat) {
-            if (event.key == Qt.Key_Left) {
-                __rotateBy(-90);
-            } else if (event.key == Qt.Key_Right) {
-                __rotateBy(90);
-            }
-        }
     }
 }
