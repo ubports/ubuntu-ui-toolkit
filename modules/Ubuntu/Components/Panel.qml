@@ -247,9 +247,9 @@ Item {
 
     /*!
       The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
-      Default value: 50
+      Default value: 250
      */
-    property real transitionDuration: 200
+    property real transitionDuration: 250
 
     transitions: [
         Transition {
