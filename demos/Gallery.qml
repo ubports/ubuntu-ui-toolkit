@@ -26,6 +26,7 @@ MainView {
 
     property bool wideAspect: width >= units.gu(80)
     automaticOrientation: true
+    __orientationDebugging: true
     state: wideAspect ? "wide" : ""
     states: [
         State {

@@ -293,10 +293,15 @@ PageTreeNode {
     }
 
     // Orientation debugging
+    /*! \internal */
+    property bool __orientationDebugging: false
+
+    /*! \internal */
     function __modulo(x, n) {
         return ((x % n) + n) % n;
     }
 
+    /*! \internal */
     function __rotateBy(increment) {
         canvas.orientationAngle = __modulo(canvas.orientationAngle + increment, 360);
     }
@@ -304,12 +309,12 @@ PageTreeNode {
     focus: true
 
     Keys.onReleased: {
-        if (!event.isAutoRepeat && event.key == Qt.Key_BracketLeft) {
-            event.accepted = true;
-            __rotateBy(90);
-        } else if (!event.isAutoRepeat && event.key == Qt.Key_BracketRight) {
-            event.accepted = true;
-            __rotateBy(-90);
+        if (__orientationDebugging && !event.isAutoRepeat) {
+            if (event.key == Qt.Key_Left) {
+                __rotateBy(-90);
+            } else if (event.key == Qt.Key_Right) {
+                __rotateBy(90);
+            }
         }
     }
 }
