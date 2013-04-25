@@ -251,7 +251,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 50
+                duration: 500
                 easing.type: Easing.OutQuad
             }
         },
@@ -260,7 +260,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 50
+                duration: 500
                 easing.type: Easing.OutQuad
             }
         },
@@ -269,7 +269,7 @@ Item {
             PropertyAnimation {
                 target: bar
                 properties: "position"
-                duration: 50
+                duration: 500
                 easing.type: Easing.OutQuad
             }
         }
