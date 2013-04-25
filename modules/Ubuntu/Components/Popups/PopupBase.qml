@@ -33,7 +33,7 @@ import Ubuntu.Components 0.1
 OrientationHelper {
     id: popupBase
 
-    // FIXME: sync with MainView's OrientationHelper
+    // FIXME: remove next line
     __orientationAngle: gallery.__orientationAngle
 
     /*!
