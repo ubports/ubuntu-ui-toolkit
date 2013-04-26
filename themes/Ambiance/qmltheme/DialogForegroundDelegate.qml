@@ -33,7 +33,6 @@ Item {
         radius: 10
     }
 
-    clip: true // hide the ShaderEffectSource
     Shape {
         anchors.fill: parent
         image: effectSource

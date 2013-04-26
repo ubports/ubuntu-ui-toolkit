@@ -57,7 +57,6 @@ Item {
             }
         }
 
-        clip: true // hide the ShaderEffectSource
         Shape {
             anchors.fill: parent
             image: effectSource
