@@ -35,7 +35,7 @@ TestCase {
 
     //PopupBase properties
     function test_dismissArea() {
-        compare(popOver.dismissArea, QuickUtils.rootObject, "Default sensing area is root");
+        compare(popOver.dismissArea, popOver, "Default sensing area is the popover");
     }
 
     function test_grabDismissAreaEvents() {

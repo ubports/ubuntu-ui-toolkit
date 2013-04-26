@@ -198,4 +198,6 @@ PopupBase {
     onWidthChanged: internal.updatePosition()
     /*! \internal */
     onHeightChanged: internal.updatePosition()
+    /*! \internal */
+    onRotationChanged: internal.updatePosition()
 }
