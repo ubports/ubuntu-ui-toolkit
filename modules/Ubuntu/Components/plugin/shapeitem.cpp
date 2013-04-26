@@ -374,6 +374,9 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
     float radiusCoordinateWidth;
     float radiusCoordinateHeight;
 
+    // FIXME(loicm) With a NxM image, a preserve aspect crop fill mode and a width
+    //     component size of N (or a height component size of M), changing the the
+    //     height (or width) breaks the 1:1 texel/pixel mapping for odd values.
     if (!stretched && texture) {
         // Preserve source image aspect ratio cropping areas exceeding destination rectangle.
         const float factors[3] = { 0.0f, 0.5f, 1.0f };
@@ -387,8 +390,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
             bottomCoordinate = 1.0f;
             leftCoordinate = outCoordinateSize * factors[hAlignment];
             rightCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[hAlignment]));
-            radiusCoordinateHeight = (radius - 1.0f) / (height - 1.0f);
-            radiusCoordinateWidth = ((radius - 1.0f) / (width - 1.0f)) * inCoordinateSize;
+            radiusCoordinateHeight = radius / height;
+            radiusCoordinateWidth = (radius / width) * inCoordinateSize;
         } else {
             const float inCoordinateSize = srcRatio / dstRatio;
             const float outCoordinateSize = 1.0f - inCoordinateSize;
@@ -396,8 +399,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
             bottomCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[vAlignment]));
             leftCoordinate = 0.0f;
             rightCoordinate = 1.0f;
-            radiusCoordinateHeight = ((radius - 1.0f) / (height - 1.0f)) * inCoordinateSize;
-            radiusCoordinateWidth = (radius - 1.0f) / (width - 1.0f);
+            radiusCoordinateHeight = (radius / height) * inCoordinateSize;
+            radiusCoordinateWidth = radius / width;
         }
     } else {
         // Don't preserve source image aspect ratio stretching it in destination rectangle.
@@ -405,8 +408,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
         bottomCoordinate = 1.0f;
         leftCoordinate = 0.0f;
         rightCoordinate = 1.0f;
-        radiusCoordinateHeight = (radius - 1.0f) / (height - 1.0f);
-        radiusCoordinateWidth = (radius - 1.0f) / (width - 1.0f);
+        radiusCoordinateHeight = radius / height;
+        radiusCoordinateWidth = radius / width;
     }
 
     // Set top row of 4 vertices.
