@@ -280,6 +280,20 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         once = true;
     }
 
+    // The image item sets its texture in its updatePaintNode() method when QtQuick iterates through
+    // the list of dirty items. When we're notified the image item has been changed through
+    // setImage(), we mark the shape item as dirty by requesting an update. But sometimes it leads
+    // to have the shape item being queued in the dirty list before the image item. That case can be
+    // detected when the texture provider exists but not the texture itself. When that's the case we
+    // push the shape item in the dirty list to be handled next frame and we tell QtQuick not to
+    // render the item for the current frame.
+    const QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
+    const QSGTexture* texture = provider ? provider->texture() : NULL;
+    if (provider && !texture) {
+        update();
+        return NULL;
+    }
+
     ShapeNode* node = static_cast<ShapeNode*>(old_node);
     if (!node) {
         node = new ShapeNode(this);
