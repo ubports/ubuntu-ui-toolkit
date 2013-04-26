@@ -370,6 +370,20 @@ private Q_SLOTS:
         QCOMPARE(selector.toString(), QString(".level1#named .leaf"));
         delete root;
     }
+
+    void testCase_UpdateSelector()
+    {
+        QQuickItem *root = loadTest("SimpleSelector.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(qmlAttachedPropertiesObject<ItemStyleAttached>(item));
+        QVERIFY(styleItem);
+        styleItem->setProperty("name", "named");
+        selector.update();
+        QCOMPARE(selector.toString(), QString(".leaf#named"));
+        delete root;
+    }
 };
 
 QTEST_MAIN(tst_ThemeEngineSelector)
