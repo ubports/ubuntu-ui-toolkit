@@ -186,7 +186,7 @@ Examples:
 .popover {
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
+    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
 }
 
 .popover .foreground {
@@ -200,7 +200,7 @@ Examples:
 }
 
 .sheet {
-    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
+    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -212,7 +212,7 @@ Examples:
 .dialog {
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingAnimation: PropertyAnimation{duration: 50; easing.type: Easing.OutQuad};
+    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
 }
 .dialog .background {
     dim: true;
