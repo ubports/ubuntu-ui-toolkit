@@ -23,13 +23,17 @@ Item {
     property real barOpacity
 
     anchors.fill: parent
-    property alias contentItem: background
 
     Rectangle {
         id: background
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: parent.height //- dropshadow.height
         color: visuals.color
-        opacity: visuals.barOpacity
+        opacity: barOpacity
     }
 
     Image {
@@ -40,7 +44,7 @@ Item {
             bottom: background.top
         }
         source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: item.active || item.animating ? 0.5 : 0.0
+        opacity: item.state == "" ? 0.0 : 0.5
         Behavior on opacity {
             NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
         }
