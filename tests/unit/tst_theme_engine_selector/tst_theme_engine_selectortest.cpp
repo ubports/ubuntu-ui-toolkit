@@ -87,7 +87,7 @@ private Q_SLOTS:
         quickView->setGeometry(0,0, 240, 320);
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
-        imports << QDir(modules).absolutePath();
+        imports.prepend(QDir(modules).absolutePath());
         quickEngine->setImportPathList(imports);
     }
 
