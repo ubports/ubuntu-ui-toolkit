@@ -220,29 +220,7 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
 
 bool ItemStyleAttachedPrivate::updateStyleSelector()
 {
-    Selector path;
-    SelectorNode::Relationship relation = SelectorNode::Child;
-    QQuickItem *parent = attachee->parentItem();
-    ItemStyleAttached *parentStyle = 0;
-
-    path << SelectorNode(QuickUtils::instance().className(attachee).toLower(), styleClass, styleId, SelectorNode::Descendant);
-
-    while (parent) {
-        parentStyle = ThemeEnginePrivate::attachedStyle(parent);
-        if (!parentStyle)
-            relation = SelectorNode::Descendant;
-        else {
-            path[0] = SelectorNode(path[0].type(), path[0].getClass(), path[0].id(), relation);
-            path.prepend(
-                        SelectorNode(QuickUtils::instance().className(parentStyle->d_ptr->attachee),
-                                     parentStyle->d_ptr->styleClass,
-                                     parentStyle->d_ptr->styleId,
-                                     SelectorNode::Descendant)
-                        );
-            relation = SelectorNode::Child;
-        }
-        parent = parent->parentItem();
-    }
+    Selector path(attachee);
 
     if (path != styleSelector) {
         styleSelector = path;
@@ -415,7 +393,6 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
     if (!customStyle || !customDelegate) {
         if (!connectedToEngine) {
             connectedToEngine = (bool)QObject::connect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
-            updateStyleSelector();
         }
     } else {
         if (connectedToEngine)
