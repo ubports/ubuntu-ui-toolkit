@@ -29,12 +29,12 @@ TestCase {
 
      function test_1_bindtextdomain() {
          var testValue = "../../../demos/po/";
-         i18n.bindtextdomain("componentshowcase",testValue);
+         i18n.bindtextdomain("gallery",testValue);
      }
 
      function test_0_domain() {
          compare(i18n.domain,"","domain is empty by default");
-         var testValue = "componentshowcase";
+         var testValue = "gallery";
          i18n.domain = testValue;
          compare(i18n.domain,testValue,"can set/get domain");
      }
@@ -50,7 +50,7 @@ TestCase {
 //TODO: add call to bindtextdomain
          var testENValue = "Call";
          i18n.language = "nl";
-         var readValue = i18n.dtr("componentshowcase",testENValue);
+         var readValue = i18n.dtr("gallery",testENValue);
          var testFIValue = "Bellen";
          compare(readValue,testFIValue,"can use dtr");
      }

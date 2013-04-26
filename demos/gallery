@@ -1,0 +1,3 @@
+#!/bin/bash
+SCRIPT_DIRECTORY=`dirname $0`
+/usr/lib/*/qt5/bin/qmlscene $@ $SCRIPT_DIRECTORY/Gallery.qml

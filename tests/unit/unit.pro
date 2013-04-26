@@ -27,4 +27,5 @@ SUBDIRS += tst_template \
     tst_theme_engine_stylecache \
     tst_theme_engine_style \
     tst_inversemousearea \
+    tst_performance \
     tst_ubuntu_shape

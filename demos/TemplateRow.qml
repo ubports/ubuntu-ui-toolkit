@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,25 +17,32 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Row {
+Item {
     id: templateRow
-    objectName: "TemplateRow"
 
     property string title
+    property real titleWidth: units.gu(10)
+    property alias spacing: contentRow.spacing
+    default property alias content: contentRow.children
 
-    spacing: units.gu(1)
-    height: units.gu(6)
+    height: Math.max(contentRow.height, label.height)
+    width: parent.width
 
     Label {
+        id: label
         text: templateRow.title
-        ItemStyle.class: "row-label"
-        width: units.gu(10)
+        width: templateRow.titleWidth
+        anchors.verticalCenter: contentRow.verticalCenter
+        elide: Text.ElideRight
+        font.weight: Font.Light
     }
 
-    // ensure that all the children are vertically centered
-    onChildrenChanged: {
-        for (var i=0; i<children.length; i++) {
-            children[i].anchors.verticalCenter = templateRow.verticalCenter;
-        }
+    Row {
+        id: contentRow
+
+        anchors.left: label.right
+        anchors.leftMargin: units.gu(2)
+        anchors.right: parent.right
+        spacing: units.gu(2)
     }
 }

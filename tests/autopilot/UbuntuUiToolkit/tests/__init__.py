@@ -73,16 +73,16 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
         return self.main_window.get_object_by_text("Standard", itemText)
 
     def getWidgetLoaderAndListView(self):
-        widgetLoader = self.main_window.get_object("QQuickLoader", "widgetLoader")
+        contentLoader = self.main_window.get_object("QQuickLoader", "contentLoader")
         listView = self.main_window.get_object("QQuickListView", "widgetList")
         self.assertThat(listView, Not(Is(None)));
         self.assertThat(listView.visible, Eventually(Equals(True)));
-        return (widgetLoader, listView)
+        return (contentLoader, listView)
 
     def loadItem(self, item):
-        widgetLoader = self.main_window.get_object("QQuickLoader", "widgetLoader")
+        contentLoader = self.main_window.get_object("QQuickLoader", "contentLoader")
         self.selectItem(item)
-        self.assertThat(widgetLoader.progress,Eventually(Equals(1.0)))
+        self.assertThat(contentLoader.progress,Eventually(Equals(1.0)))
         loadedPage = self.main_window.get_object_by_text("Standard", item)
         self.assertThat(loadedPage, Not(Is(None)));
         self.assertThat(loadedPage.visible, Eventually(Equals(True)));  
