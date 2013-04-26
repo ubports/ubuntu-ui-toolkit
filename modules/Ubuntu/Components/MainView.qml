@@ -145,9 +145,6 @@ PageTreeNode {
         anchors.fill: parent
     }
 
-    // clip if the MainView is not fullscreen
-    clip: true
-
     /*!
       MainView is active by default.
      */
