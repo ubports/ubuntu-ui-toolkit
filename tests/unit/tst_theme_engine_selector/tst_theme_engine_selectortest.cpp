@@ -384,6 +384,14 @@ private Q_SLOTS:
         QCOMPARE(selector.toString(), QString(".leaf#named"));
         delete root;
     }
+
+    void testCase_SelectorOnNonStyledItem()
+    {
+        QQuickItem *item = new QQuickItem;
+        Selector selector(item);
+        QVERIFY(selector.toString().isEmpty());
+        delete item;
+    }
 };
 
 QTEST_MAIN(tst_ThemeEngineSelector)
