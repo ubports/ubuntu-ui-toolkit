@@ -17,8 +17,13 @@
  */
 
 #include "selector_p.h"
+#include "itemstyleattached.h"
+#include "itemstyleattached_p.h"
+#include "themeengine_p.h"
+#include "quickutils.h"
 #include <QtCore/QStringList>
 #include <QtCore/QRegularExpression>
+#include <QtQuick/QQuickItem>
 
 SelectorNode::SelectorNode() :
     relationship(Descendant), ranking(RankNull)
@@ -76,6 +81,20 @@ SelectorNode::SelectorNode(const QString &selectorString) :
 SelectorNode::SelectorNode(const QString &stype, const QString &sclass, const QString &sid, SelectorNode::Relationship srelation) :
     className(stype), styleClass(sclass), styleId(sid), relationship(srelation), ranking(RankNull)
 {
+    updateRanking();
+}
+
+/*!
+ * \internal
+ * Creates a selector node filling information gathered from the given item.
+ */
+SelectorNode::SelectorNode(QQuickItem *item) :
+    relationship(Descendant), ranking(RankNull)
+{
+    ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(item);
+    className = QuickUtils::instance().className(item);
+    styleClass = style->d_ptr->styleClass;
+    styleId = style->d_ptr->styleId;
     updateRanking();
 }
 
@@ -218,6 +237,30 @@ Selector::Selector(const QString &string)
         if (node.isEmpty())
             continue;
         prepend(SelectorNode(node));
+    }
+}
+
+/*!
+ * \internal
+ * Builds the selector for the given item.
+ */
+Selector::Selector(QQuickItem *item)
+{
+    SelectorNode::Relationship relation = SelectorNode::Child;
+    QQuickItem *parent = item->parentItem();
+
+    prepend(SelectorNode(item));
+
+    while (parent) {
+        if (!ThemeEnginePrivate::attachedStyle(parent))
+            relation = SelectorNode::Descendant;
+        else {
+            // update relationship
+            first().relationship = relation;
+            prepend(SelectorNode(parent));
+            relation = SelectorNode::Child;
+        }
+        parent = parent->parentItem();
     }
 }
 

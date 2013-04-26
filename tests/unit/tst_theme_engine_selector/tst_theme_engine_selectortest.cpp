@@ -35,8 +35,67 @@ class tst_ThemeEngineSelector : public QObject
     
 public:
     tst_ThemeEngineSelector() {}
-    
+
+private:
+    QQuickView *quickView;
+    QQmlEngine *quickEngine;
+
+    QQuickItem *loadTest(const QString &document, const QUrl &theme)
+    {
+        ThemeEngine::initializeEngine(quickEngine);
+        ThemeEngine::instance()->loadTheme(theme);
+        if (!ThemeEngine::instance()->error().isEmpty()) {
+            QWARN("Theme loading failed");
+            return 0;
+        }
+        quickView->setSource(QUrl::fromLocalFile(document));
+        QTest::waitForEvents();
+
+        return quickView->rootObject();
+    }
+
+    QQuickItem *testItem(QQuickItem *that, const QString &identifier)
+    {
+        if (!that)
+            return 0;
+        if (that->property(identifier.toLocal8Bit()).isValid())
+            return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
+        if (that->objectName() == identifier)
+            return that;
+
+        QList<QQuickItem*> children = that->findChildren<QQuickItem*>();
+        Q_FOREACH(QQuickItem *child, children) {
+            if (child->objectName() == identifier) {
+                return child;
+            } else {
+                return testItem(child, identifier);
+            }
+        }
+        return 0;
+    }
+
 private Q_SLOTS:
+
+    void initTestCase()
+    {
+        QString modules("../../../modules");
+        QVERIFY(QDir(modules).exists());
+
+        quickView = new QQuickView(0);
+        quickEngine = quickView->engine();
+
+        quickView->setGeometry(0,0, 240, 320);
+        //add modules folder so we have access to the plugin from QML
+        QStringList imports = quickEngine->importPathList();
+        imports << QDir(modules).absolutePath();
+        quickEngine->setImportPathList(imports);
+    }
+
+    void cleanupTestCase()
+    {
+        delete quickView;
+    }
+
     void testCase_SelectorNodeConstructEmpty()
     {
         SelectorNode node;
@@ -218,7 +277,6 @@ private Q_SLOTS:
         selector = Selector(".classA#nameA>.classB#nameB");
         QVERIFY(selector.size() == 2);
         QCOMPARE(selector.toString(), QString(".classa#namea>.classb#nameb"));
-        qDebug() << selector.rank();
         QVERIFY(selector.rank() == 0xD);
     }
 
@@ -231,6 +289,86 @@ private Q_SLOTS:
 
         Selector copy(selector);
         QCOMPARE(copy, selector);
+    }
+
+    void testCase_SimpleSelector()
+    {
+        QQuickItem *root = loadTest("SimpleSelector.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".leaf"));
+        delete root;
+    }
+
+    void testCase_SimpleSelectorWithName()
+    {
+        QQuickItem *root = loadTest("SimpleSelectorWithName.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".leaf#named"));
+        delete root;
+    }
+
+    void testCase_DirectChildSelector()
+    {
+        QQuickItem *root = loadTest("DirectChildSelector.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1>.leaf"));
+        delete root;
+    }
+
+    void testCase_DirectChildSelectorWithName()
+    {
+        QQuickItem *root = loadTest("DirectChildSelectorWithName.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1>.leaf#named"));
+        delete root;
+    }
+
+    void testCase_DirectChildSelectorWithNamedParent()
+    {
+        QQuickItem *root = loadTest("DirectChildSelectorWithNamedParent.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1#named>.leaf"));
+        delete root;
+    }
+
+    void testCase_DescendantSelector()
+    {
+        QQuickItem *root = loadTest("DescendantSelector.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1 .leaf"));
+        delete root;
+    }
+
+    void testCase_DescendantSelectorWithName()
+    {
+        QQuickItem *root = loadTest("DescendantSelectorWithName.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1 .leaf#named"));
+        delete root;
+    }
+
+    void testCase_DescendantSelectorWithNamedParent()
+    {
+        QQuickItem *root = loadTest("DescendantSelectorWithNamedParent.qml", QUrl::fromLocalFile("TestTheme.qmltheme"));
+        QQuickItem *item = testItem(root, "testItem");
+        QVERIFY(item);
+        Selector selector(item);
+        QCOMPARE(selector.toString(), QString(".level1#named .leaf"));
+        delete root;
     }
 };
 

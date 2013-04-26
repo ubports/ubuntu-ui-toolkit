@@ -23,6 +23,8 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
+class QQuickItem;
+class Selector;
 // node of a selector
 class SelectorNode {
     public:
@@ -48,6 +50,7 @@ class SelectorNode {
     SelectorNode(const SelectorNode &other, int ignore);
     SelectorNode(const QString &selectorString);
     SelectorNode(const QString &stype, const QString &sclass, const QString &sid, SelectorNode::Relationship srelation);
+    SelectorNode(QQuickItem *item);
     inline bool isStrictRelationed() {
         return (relationship == Child);
     }
@@ -71,6 +74,8 @@ private:
     QString styleId;
     Relationship relationship;
     unsigned ranking;
+
+    friend class Selector;
     inline void updateRanking()
     {
         if (!styleId.isEmpty())
@@ -87,6 +92,7 @@ public:
     inline Selector() {}
     inline Selector(const Selector& s) : QList<SelectorNode>(s){}
     Selector(const QString &string);
+    Selector(QQuickItem *item);
     virtual ~Selector() {}
     QString toString() const;
     int64_t rank() const;
