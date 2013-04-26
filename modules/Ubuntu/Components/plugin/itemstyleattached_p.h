@@ -61,7 +61,7 @@ public:
     bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
-    void updateCurrentStyle();
+    void updateTheme();
     void resetStyle();
     void resetDelegate();
     void applyStyleOnChildren(QQuickItem *item);

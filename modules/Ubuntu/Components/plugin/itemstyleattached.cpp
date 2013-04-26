@@ -220,12 +220,15 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
 
 bool ItemStyleAttachedPrivate::updateStyleSelector()
 {
-    Selector path(attachee);
+    if (delayApplyingStyle) {
+        return false;
+    }
 
-    if (path != styleSelector) {
-        styleSelector = path;
+    Selector newSelector(attachee);
+
+    if (newSelector != styleSelector) {
+        styleSelector = newSelector;
         // need to refresh the style rule(s)
-        styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
         return true;
     }
 
@@ -239,7 +242,6 @@ bool ItemStyleAttachedPrivate::updateStyle()
     if (delayApplyingStyle)
        return result;
 
-    resetStyle();
     if (!customStyle) {
         // make sure we have a theme
         if (styleRule && styleRule->style) {
@@ -268,8 +270,6 @@ bool ItemStyleAttachedPrivate::updateDelegate()
     if (delayApplyingStyle)
        return result;
 
-    // delete delegate as the function can be called from elsewhere than updateCurrentStyle
-    resetDelegate();
     if (!customDelegate) {
         // make sure we have a theme
         if (styleRule && styleRule->delegate) {
@@ -305,17 +305,34 @@ bool ItemStyleAttachedPrivate::updateDelegate()
   Updates the style and delegate variables. The style update is forced
   when the item changes the style lookup from private to theme.
 */
-void ItemStyleAttachedPrivate::updateCurrentStyle()
+void ItemStyleAttachedPrivate::updateTheme()
 {
-    // the order is: clean up delegate then style, then create style and then delegate
-    // so that when delegate is built we already have the styles ready for that
-    resetDelegate();
-    resetStyle();
-    bool styleUpdated = updateStyle();
-    bool delegateUpdated = updateDelegate();
-    if (styleUpdated || delegateUpdated) {
-        Q_Q(ItemStyleAttached);
-        Q_EMIT q->styleChanged();
+    // check if the new rule differs from the previous one
+    StyleCache::StyleData *newRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
+    if (newRule && (styleRule != newRule)) {
+        // check what has been changed
+        bool styleChanged = (!styleRule || (styleRule && (styleRule->style != newRule->style)));
+        bool delegateChanged = (!styleRule || (styleRule && (styleRule->delegate != newRule->delegate)));
+        styleRule = newRule;
+
+        // the order is: clean up delegate then style, then create style and then delegate
+        // so that when delegate is built we already have the styles ready for that
+        if (delegateChanged) {
+            resetDelegate();
+        }
+        if (styleChanged) {
+            resetStyle();
+            styleChanged = updateStyle();
+        }
+        if (delegateChanged) {
+            delegateChanged = updateDelegate();
+        } else if (style) {
+            style->bindItem(delegate, watchedProperties, false);
+        }
+        if (styleChanged || delegateChanged) {
+            Q_Q(ItemStyleAttached);
+            Q_EMIT q->styleChanged();
+        }
     }
 }
 
@@ -397,8 +414,10 @@ void ItemStyleAttachedPrivate::listenThemeEngine()
     } else {
         if (connectedToEngine)
             connectedToEngine = !QObject::disconnect(ThemeEngine::instance(), SIGNAL(themeChanged()), q, SLOT(_q_refreshStyle()));
-        if (!connectedToEngine)
+        if (!connectedToEngine) {
             styleRule = 0;
+            styleSelector.clear();
+        }
     }
 }
 
@@ -417,7 +436,7 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
     // ... but style refresh is needed as the old styles are dead
     styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
 
-    updateCurrentStyle();
+    updateTheme();
 }
 
 /*!
@@ -430,9 +449,10 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
 
-    if (updateStyleSelector() || delayApplyingStyle) {
-        delayApplyingStyle = false;
-        updateCurrentStyle();
+    delayApplyingStyle = false;
+
+    if (updateStyleSelector()) {
+        updateTheme();
     }
 
     // need to reapply styling on each child of the attachee!
@@ -482,8 +502,11 @@ void ItemStyleAttached::setName(const QString &name)
     if (d->styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
             d->listenThemeEngine();
-            if (d->updateStyleSelector())
-                d->updateCurrentStyle();
+            if (d->updateStyleSelector()) {
+                d->updateTheme();
+                // refresh children theme
+                d->applyStyleOnChildren(d->attachee);
+            }
         }
     }
 }
@@ -513,9 +536,11 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
     if (d->styleClass.compare(styleClass.trimmed(), Qt::CaseInsensitive)) {
         // replace spaces with dots
         d->styleClass = styleClass.toLower().trimmed().replace(' ', '.');
-        d->listenThemeEngine();
-        if (d->updateStyleSelector())
-            d->updateCurrentStyle();
+        if (d->updateStyleSelector()) {
+            d->updateTheme();
+            // refresh children theme
+            d->applyStyleOnChildren(d->attachee);
+        }
     }
 }
 
@@ -562,6 +587,8 @@ void ItemStyleAttached::setStyle(UCStyle *style)
 {
     Q_D(ItemStyleAttached);
     if (d->style != style) {
+        // FIXME: replace the cleanup code below with d->resetDelegate() when bug
+        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1168006 is fixed
         // clear the previous style
         if (d->style) {
             d->style->unbindItem(d->delegate);
@@ -572,8 +599,6 @@ void ItemStyleAttached::setStyle(UCStyle *style)
             d->style = 0;
         }
         d->customStyle = (style != 0);
-        if (d->customStyle && d->customDelegate)
-            d->styleRule = 0;
         d->style = style;
         d->listenThemeEngine();
         if (d->updateStyle())
@@ -609,6 +634,8 @@ void ItemStyleAttached::setDelegate(QQuickItem *delegate)
 {
     Q_D(ItemStyleAttached);
     if (d->delegate != delegate) {
+        // FIXME: replace the cleanup code below with d->resetDelegate() when bug
+        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1168006 is fixed
         if (d->style)
             d->style->unbindItem(d->delegate);
         // clear the previous theme delegate
