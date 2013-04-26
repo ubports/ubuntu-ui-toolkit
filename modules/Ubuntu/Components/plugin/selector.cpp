@@ -126,6 +126,8 @@ QString SelectorNode::toString(int ignore) const
 void SelectorNode::update(QQuickItem *item)
 {
     ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(item);
+    if (!style)
+        return;
     className = QuickUtils::instance().className(item);
     styleClass = style->d_ptr->styleClass;
     styleId = style->d_ptr->styleId;
