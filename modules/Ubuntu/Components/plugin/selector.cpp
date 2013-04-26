@@ -91,11 +91,7 @@ SelectorNode::SelectorNode(const QString &stype, const QString &sclass, const QS
 SelectorNode::SelectorNode(QQuickItem *item) :
     relationship(Descendant), ranking(RankNull)
 {
-    ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(item);
-    className = QuickUtils::instance().className(item);
-    styleClass = style->d_ptr->styleClass;
-    styleId = style->d_ptr->styleId;
-    updateRanking();
+    update(item);
 }
 
 /*!
@@ -121,6 +117,19 @@ QString SelectorNode::toString(int ignore) const
     if (((ignore & NoStyleId) !=  NoStyleId) && !styleId.isEmpty())
         result += "#" + styleId;
     return result;
+}
+
+/*!
+ * \internal
+ * The method updates the selector node by fetching information from the item.
+ */
+void SelectorNode::update(QQuickItem *item)
+{
+    ItemStyleAttached *style = ThemeEnginePrivate::attachedStyle(item);
+    className = QuickUtils::instance().className(item);
+    styleClass = style->d_ptr->styleClass;
+    styleId = style->d_ptr->styleId;
+    updateRanking();
 }
 
 /*!
@@ -220,7 +229,8 @@ uint qHash(const SelectorNode &key)
  *  - Child selectors, e.g: "Dialog>Button"
  *  - ID selectors, e.g: "Button#mySpecialButton"
  */
-Selector::Selector(const QString &string)
+Selector::Selector(const QString &string) :
+    m_owner(0)
 {
     QString tmp(string.trimmed());
     // prepare for split
@@ -244,12 +254,13 @@ Selector::Selector(const QString &string)
  * \internal
  * Builds the selector for the given item.
  */
-Selector::Selector(QQuickItem *item)
+Selector::Selector(QQuickItem *item) :
+    m_owner(item)
 {
     SelectorNode::Relationship relation = SelectorNode::Child;
-    QQuickItem *parent = item->parentItem();
+    QQuickItem *parent = m_owner->parentItem();
 
-    prepend(SelectorNode(item));
+    prepend(SelectorNode(m_owner));
 
     while (parent) {
         if (!ThemeEnginePrivate::attachedStyle(parent))
@@ -300,6 +311,19 @@ int64_t Selector::rank() const
     }
     return result;
 }
+
+/*!
+ * \internal
+ * The method updates the selector by fetching information from the owner. This
+ * method has meaning only if the selector was created using an item.
+ */
+void Selector::update()
+{
+    if (!m_owner)
+        return;
+    last().update(m_owner);
+}
+
 
 
 /*!

@@ -59,6 +59,7 @@ class SelectorNode {
     }
 
     QString toString(int ignore = IgnoreNone) const;
+    void update(QQuickItem *item);
     unsigned rank();
     bool operator==(const SelectorNode &other) const;
     // getters
@@ -89,13 +90,16 @@ uint qHash(const SelectorNode &key);
 // selector type
 class Selector : public QList<SelectorNode> {
 public:
-    inline Selector() {}
-    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    inline Selector() : m_owner(0) {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s), m_owner(0) {}
     Selector(const QString &string);
     Selector(QQuickItem *item);
     virtual ~Selector() {}
     QString toString() const;
     int64_t rank() const;
+    void update();
+private:
+    QQuickItem *m_owner;
 };
 Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);
