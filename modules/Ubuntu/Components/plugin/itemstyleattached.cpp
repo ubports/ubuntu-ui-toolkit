@@ -218,23 +218,6 @@ void ItemStyleAttachedPrivate::_q_attacheePropertyChanged()
         style->unbindProperty(property);
 }
 
-bool ItemStyleAttachedPrivate::updateStyleSelector()
-{
-    if (delayApplyingStyle) {
-        return false;
-    }
-
-    Selector newSelector(attachee);
-
-    if (newSelector != styleSelector) {
-        styleSelector = newSelector;
-        // need to refresh the style rule(s)
-        return true;
-    }
-
-    return false;
-}
-
 bool ItemStyleAttachedPrivate::updateStyle()
 {
     bool result = false;
@@ -434,7 +417,7 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
     delayApplyingStyle = false;
 
     // ... but style refresh is needed as the old styles are dead
-    styleRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
+    styleRule = 0;
 
     updateTheme();
 }
@@ -449,12 +432,17 @@ void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
         // the component is most likely used in a delegate or is being deleted
         return;
 
-    delayApplyingStyle = false;
-
-    if (updateStyleSelector()) {
+    if (delayApplyingStyle) {
+        delayApplyingStyle = false;
+        styleSelector = Selector(attachee);
         updateTheme();
+    } else {
+        Selector newSelector(attachee);
+        if (newSelector != styleSelector) {
+            styleSelector = newSelector;
+            updateTheme();
+        }
     }
-
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
     applyStyleOnChildren(attachee);
@@ -467,6 +455,7 @@ ItemStyleAttached::ItemStyleAttached(QObject *parent) :
     QObject(parent),
     d_ptr(new ItemStyleAttachedPrivate(this, parent))
 {
+    d_ptr->styleSelector = Selector(d_ptr->attachee);
 }
 
 ItemStyleAttached::~ItemStyleAttached()
@@ -501,12 +490,12 @@ void ItemStyleAttached::setName(const QString &name)
     Q_D(ItemStyleAttached);
     if (d->styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
-            d->listenThemeEngine();
-            if (d->updateStyleSelector()) {
-                d->updateTheme();
-                // refresh children theme
-                d->applyStyleOnChildren(d->attachee);
-            }
+            d->styleSelector.update();
+            if (d->delayApplyingStyle)
+                return;
+            d->updateTheme();
+            // refresh children theme
+            d->applyStyleOnChildren(d->attachee);
         }
     }
 }
@@ -536,11 +525,12 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
     if (d->styleClass.compare(styleClass.trimmed(), Qt::CaseInsensitive)) {
         // replace spaces with dots
         d->styleClass = styleClass.toLower().trimmed().replace(' ', '.');
-        if (d->updateStyleSelector()) {
-            d->updateTheme();
-            // refresh children theme
-            d->applyStyleOnChildren(d->attachee);
-        }
+        d->styleSelector.update();
+        if (d->delayApplyingStyle)
+            return;
+        d->updateTheme();
+        // refresh children theme
+        d->applyStyleOnChildren(d->attachee);
     }
 }
 

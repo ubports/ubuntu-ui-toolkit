@@ -58,7 +58,6 @@ public:
 
     void watchAttacheeProperties();
     void applyStyleOnProperty(const QQmlProperty &property);
-    bool updateStyleSelector();
     bool updateStyle();
     bool updateDelegate();
     void updateTheme();
