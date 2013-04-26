@@ -64,6 +64,7 @@ private:
     Q_DECLARE_PRIVATE(ItemStyleAttached)
     QScopedPointer<ItemStyleAttachedPrivate> d_ptr;
     friend class ThemeEnginePrivate;
+    friend class SelectorNode;
 
     Q_PRIVATE_SLOT(d_func(), void _q_attacheePropertyChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_reapplyStyling(QQuickItem *))
