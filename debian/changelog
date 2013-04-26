@@ -4,6 +4,19 @@ ubuntu-ui-toolkit (0.1.44) raring; urgency=low
 
  -- Tim Peeters <tim.peeters@canonical.com>  Tue, 23 Apr 2013 16:33:20 +0200
 
+ubuntu-ui-toolkit (0.1.43daily13.04.23ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Kaleo ]
+  * [ubuntu-ui-toolkit] Image.sourceSize does not work for images using
+    the @px notation (LP: #1130120)
+  * Resolution independence docs don't mention the @size suffix (LP:
+    #1092051)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 436 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 23 Apr 2013 04:03:26 +0000
+
 ubuntu-ui-toolkit (0.1.43daily13.04.22ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
