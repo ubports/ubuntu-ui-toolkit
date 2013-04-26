@@ -109,6 +109,12 @@ ActionList {
     property alias active: toolbarActions.opened
 
     /*!
+      \deprecated
+      Use property locked instead.
+     */
+    property alias lock: toolbarActions.locked
+
+    /*!
       The toolbar cannot be opened/closed by bottom-edge swipes.
       If the ToolbarActions contains no visible actions, it is automatically
       locked (in closed state).
