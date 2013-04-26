@@ -26,8 +26,8 @@ Template {
             iconSource: "call_icon.png"
             onTriggered: PopupUtils.open(actionSelectionPopover, caller)
         }
-        lock: true
-        active: true
+        locked: true
+        opened: true
     }
 
     TemplateSection {
