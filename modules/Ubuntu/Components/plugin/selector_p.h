@@ -23,6 +23,8 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
+class QQuickItem;
+class Selector;
 // node of a selector
 class SelectorNode {
     public:
@@ -48,6 +50,7 @@ class SelectorNode {
     SelectorNode(const SelectorNode &other, int ignore);
     SelectorNode(const QString &selectorString);
     SelectorNode(const QString &stype, const QString &sclass, const QString &sid, SelectorNode::Relationship srelation);
+    SelectorNode(QQuickItem *item);
     inline bool isStrictRelationed() {
         return (relationship == Child);
     }
@@ -56,6 +59,7 @@ class SelectorNode {
     }
 
     QString toString(int ignore = IgnoreNone) const;
+    void update(QQuickItem *item);
     unsigned rank();
     bool operator==(const SelectorNode &other) const;
     // getters
@@ -71,6 +75,8 @@ private:
     QString styleId;
     Relationship relationship;
     unsigned ranking;
+
+    friend class Selector;
     inline void updateRanking()
     {
         if (!styleId.isEmpty())
@@ -84,12 +90,16 @@ uint qHash(const SelectorNode &key);
 // selector type
 class Selector : public QList<SelectorNode> {
 public:
-    inline Selector() {}
-    inline Selector(const Selector& s) : QList<SelectorNode>(s){}
+    inline Selector() : m_owner(0) {}
+    inline Selector(const Selector& s) : QList<SelectorNode>(s), m_owner(0) {}
     Selector(const QString &string);
+    Selector(QQuickItem *item);
     virtual ~Selector() {}
     QString toString() const;
     int64_t rank() const;
+    void update();
+private:
+    QQuickItem *m_owner;
 };
 Q_DECLARE_TYPEINFO(Selector, Q_MOVABLE_TYPE);
 uint qHash(const Selector &key);

@@ -30,15 +30,15 @@ import Ubuntu.Components 0.1
 
     Examples: See subclasses.
 */
-Item {
+OrientationHelper {
     id: popupBase
 
     /*!
       The property holds the area used to dismiss the popups, the area from where
-      mouse and touch events will be grabbed. By default this area is the application's
-      main view.
+      mouse and touch events will be grabbed. By default this area is the Popup
+      itself.
     */
-    property Item dismissArea: QuickUtils.rootObject
+    property Item dismissArea: popupBase
 
     /*!
       The property specifies whether to forward or not the mouse and touch events
@@ -59,6 +59,10 @@ Item {
     width: parent ? parent.width : undefined
     height: parent ? parent.height : undefined
 
+    // copy value of automaticOrientation from root object (typically a MainView)
+    automaticOrientation: QuickUtils.rootObject && QuickUtils.rootObject.automaticOrientation ?
+                          QuickUtils.rootObject.automaticOrientation : false
+
     /*!
       \preliminary
       Make the popup visible. Reparent to the background area object first if needed.
@@ -70,7 +74,7 @@ Item {
             dismissArea = QuickUtils.rootObject
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
-        parent = dismissArea;
+        parent = QuickUtils.rootObject;
         stateWrapper.state = 'opened';
     }
 
