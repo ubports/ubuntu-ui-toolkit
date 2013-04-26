@@ -44,6 +44,7 @@ private Q_SLOTS:
     }
 
     void noDistortion() {
+        QSKIP("This test passes on local machines but not in CI as it requires working OpenGL");
         m_quickView->setSource(QUrl::fromLocalFile("no_distortion.qml"));
         QCoreApplication::processEvents();
 
