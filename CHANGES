@@ -10,6 +10,19 @@ UNRELEASED
 API Changes
 ***********
 
+* None
+
+Compatibility Breaks
+********************
+
+* None
+
+SDK 0.1.45
+##########
+
+API Changes
+***********
+
 * CHANGED IN Toolbar: property bool active TO property bool opened
 * CHANGED IN Toolbar: property bool lock TO property bool locked
 * CHANGED IN ToolbarActions: property bool active TO property bool opened
