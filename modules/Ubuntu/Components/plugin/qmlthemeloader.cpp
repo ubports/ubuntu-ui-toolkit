@@ -26,6 +26,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlInfo>
+#include <QtCore/QRegularExpression>
 #include <QDebug>
 
 /*
@@ -54,6 +55,29 @@ const char *stylePropertyFormat = \
         "%1 {\n"
         "%2"
         "    }";
+
+/*!
+ * \internal
+ * The function lists the folders the listed import modules can be found.
+ */
+QStringList importFolders(QQmlEngine *engine, QString imports)
+{
+    QStringList importPaths = engine->importPathList();
+    imports.remove("import ");
+    imports.remove(QRegularExpression(" \\d.\\d"));
+    imports.replace(QChar('.'), QDir::separator());
+    QStringList importList = imports.split('\n');
+
+    QStringList result;
+    Q_FOREACH(const QString &import, importList) {
+        Q_FOREACH(const QString &path, importPaths) {
+            QDir dir(path + QDir::separator() + import);
+            if (dir.exists())
+                result << dir.path();
+        }
+    }
+    return result;
+}
 
 /*!
   \internal
@@ -90,6 +114,35 @@ QQmlComponent *createComponent(QQmlEngine *engine, const QString &qmlCode)
         ret = 0;
     }
     return ret;
+}
+
+/*!
+ * \internal
+ * Create a QQmlComponent delegate from a given file. The file is searched in the folders
+ * specified in folderList parameter.
+ */
+QQmlComponent *createDelegate(QQmlEngine *engine, const QString &qmlType, const QStringList &folderList)
+{
+    if (qmlType.isEmpty() || folderList.isEmpty())
+        return 0;
+
+    QFile f;
+    Q_FOREACH(const QString &folder, folderList) {
+        f.setFileName(folder + QDir::separator() + qmlType + ".qml");
+        if (f.exists()) {
+            QQmlComponent *ret = new QQmlComponent(engine, f.fileName());
+            if (ret->isError() || !ret->isReady()) {
+                QString errorString = ret->isError() ? ret->errorString() : "Component not ready";
+                ThemeEnginePrivate::setError(QString("Error on creating delegate: \n%2\n%3")
+                                             .arg(qmlType)
+                                             .arg(errorString));
+                delete ret;
+                ret = 0;
+            }
+            return ret;
+        }
+    }
+    return 0;
 }
 
 /*!
@@ -479,6 +532,16 @@ bool QmlThemeLoader::generateStyleQml(StyleCache &cache)
     QString styleQml;
     QString delegateQml;
 
+    // add delegates to cache
+    QHashIterator<QString, QPair<QString, QString> > t(qmlMap);
+    QStringList folders = importFolders(m_engine, imports);
+    while (t.hasNext()) {
+        t.next();
+        QQmlComponent *delegate = createDelegate(m_engine, t.value().second, folders);
+        if (delegate)
+            cache.addDelegate(t.value().second, delegate);
+    }
+
     // go through the selector map and build the styles to each
     QHashIterator<Selector, PropertyMap > i(selectorTable);
     while (i.hasNext()) {
@@ -489,11 +552,10 @@ bool QmlThemeLoader::generateStyleQml(StyleCache &cache)
         buildStyleAndDelegate(selector, propertyMap.properties, styleQml, delegateQml);
 
         QQmlComponent *style = createComponent(m_engine, styleQml);
-        QQmlComponent *delegate = createComponent(m_engine, delegateQml);
-        if (!style && !delegate) {
+        if (!style && delegateQml.isEmpty()) {
             return false;
         }
-        cache.addStyleRule(selector, style, delegate);
+        cache.addStyleRule(selector, style, delegateQml);
     }
 
     return true;
@@ -547,10 +609,7 @@ void QmlThemeLoader::buildStyleAndDelegate(Selector &selector, PropertyHash &pro
     }
 
     // delegate
-    if (!qmlTypes.second.isEmpty()) {
-        delegate = QString("%1{}").arg(qmlTypes.second);
-        delegate = QString(styleRuleComponent).arg(imports).arg(delegate);
-    }
+    delegate = qmlTypes.second;
 }
 
 /*============================================================================*/

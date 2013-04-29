@@ -64,7 +64,7 @@ public:
     ~StyleCache();
     void clear();
     bool addDelegate(const QString &type, QQmlComponent *component);
-    void addStyleRule(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
+    void addStyleRule(const Selector &selector, QQmlComponent *style, const QString &delegateType);
     StyleCache::StyleData *match(const Selector &selector);
 
     // the following property is just for benchmarking

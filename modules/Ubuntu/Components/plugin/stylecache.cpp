@@ -38,8 +38,6 @@ StyleCache::StyleData::~StyleData()
     if (style)
         delete style;
     style = 0;
-    if (delegate)
-        delete delegate;
     delegate = 0;
 
     clear();
@@ -71,8 +69,6 @@ void StyleCache::StyleData::add(const Selector &path, QQmlComponent *style, QQml
         if (childNode) {
             if (childNode->style)
                 delete childNode->style;
-            if (childNode->delegate)
-                delete childNode->delegate;
             childNode->style = style;
             childNode->delegate = delegate;
         } else {
@@ -276,10 +272,11 @@ bool StyleCache::addDelegate(const QString &type, QQmlComponent *component)
   \internal
   Adds a style rule to the style tree based on the selector path specified.
   */
-void StyleCache::addStyleRule(const Selector &path, QQmlComponent *style, QQmlComponent *delegate)
+void StyleCache::addStyleRule(const Selector &path, QQmlComponent *style, const QString &delegateType)
 {
     if (!styles)
         styles = new StyleData(0);
+    QQmlComponent *delegate = delegateCache.value(delegateType);
     styles->add(path, style, delegate);
 }
 
