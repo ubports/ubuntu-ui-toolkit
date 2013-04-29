@@ -50,6 +50,25 @@ private Q_SLOTS:
         QVERIFY(cleanup.isEmpty());
     }
 
+    void testCase_addDelegate_emptyType()
+    {
+        QVERIFY(!cache.addDelegate(QString(), new QQmlComponent));
+        cache.clear();
+    }
+
+    void testCase_addDelegate_nullComponent()
+    {
+        QVERIFY(!cache.addDelegate("test", 0));
+        cache.clear();
+    }
+
+    void testCase_addDelegate_newComponentForType()
+    {
+        QVERIFY(cache.addDelegate("test", new QQmlComponent));
+        QVERIFY(cache.addDelegate("test", new QQmlComponent));
+        cache.clear();
+    }
+
     void testCase_addStyleRule()
     {
         Selector selector;

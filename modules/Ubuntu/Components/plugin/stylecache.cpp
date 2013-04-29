@@ -255,11 +255,20 @@ void StyleCache::clear()
     if (styles)
         delete styles;
     styles = 0;
+    QHashIterator<QString, QQmlComponent*> i(delegateCache);
+    while (i.hasNext())
+        delete i.next().value();
+    delegateCache.clear();
 }
 
 bool StyleCache::addDelegate(const QString &type, QQmlComponent *component)
 {
-    return false;
+    if (type.isEmpty() || !component)
+        return false;
+    if (delegateCache.value(type) != component)
+        delete delegateCache.value(type);
+    delegateCache.insert(type, component);
+    return true;
 }
 
 

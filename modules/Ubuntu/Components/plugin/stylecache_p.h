@@ -73,6 +73,7 @@ public:
 private:
     StyleData *styles;
     QHash<Selector, StyleData*> cache;
+    QHash<QString, QQmlComponent*> delegateCache;
 };
 
 
