@@ -25,6 +25,9 @@ Item {
 
     anchors.fill: parent
 
+    implicitWidth: units.gu(5)
+    implicitHeight: units.gu(5)
+
     Item {
         anchors.centerIn: parent
         height: icon.height + label.height + label.anchors.topMargin

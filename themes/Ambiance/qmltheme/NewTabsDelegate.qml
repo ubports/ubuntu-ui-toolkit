@@ -63,7 +63,6 @@ Item {
     // visuals
     id: tabsDelegate
     anchors.fill: parent
-    clip: true
 
     property VisualItemModel tabModel: item.__tabsModel
 
