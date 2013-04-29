@@ -22,6 +22,32 @@ Item {
     width: 1000
     height: 200
     property var colors: ["lightblue", "blue", "darkblue", "navy"]
+    property var widths: [50, 90, 50, 50]
+
+    Item {
+        id: listModel
+
+        Repeater {
+            model: colors.length
+            delegate: Tab {
+                title: colors[index]
+            }
+        }
+
+//        Tab {
+//            title: "lightblue"
+//        }
+//        Tab {
+//            title: "green"
+//        }
+//        Tab {
+//            title: "darkblue"
+//        }
+//        Tab {
+//            title: "navy"
+//        }
+        Component.onCompleted: print(children.data)
+    }
 
     property int firstIndex: 2
     Rectangle {
@@ -43,30 +69,50 @@ Item {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
 
-            width: 50
-//            color: "pink"
-            color: colors[index % colors.length]
+            //            width: widths[index % colors.length]
+            //            color: "pink"
+            color: modelData.title
+            width: label.width + 20
 
             Label {
+                id: label
                 anchors.centerIn: parent
-                text: colors[index % colors.length]
+                text: modelData.title
             }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: rect.width = 100
+                onClicked: {
+//                    print("updating color")
+//                    colors[0] = "yellow"
+                    listModel.insert(1,{"col": "yellow", "name": "eeEe"})
+                    print(listModel)
+                }
             }
 
             Behavior on width {
                 NumberAnimation { duration: 500 }
             }
 
-//            anchors.left: index === 0 ? startPosition.right : repeater.itemAt(index-1).right
+            //            anchors.left: index === 0 ? startPosition.right : repeater.itemAt(index-1).right
         }
     }
 
-    Component {
-        id: row
+
+//    Loader {
+//        // needed to determine the width of the row.
+//        // It won't be visible because "grey" is drawn over it.
+//        id: loader
+//        sourceComponent: row
+//        anchors {
+//            top: parent.top
+//            bottom: parent.bottom
+//            left: parent.left
+//        }
+//    }
+
+//    Component {
+//        id: row
         Row {
             anchors {
                 top: parent.top
@@ -76,49 +122,61 @@ Item {
             }
 
             Repeater {
-                model: colors.length
+//                model: colors
+                model: listModel.children
                 delegate: rectangle
             }
         }
-    }
+//    }
 
-    Rectangle {
-        color: "black"
-        width: 10
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            right: grey.left
-        }
-    }
 
-    Rectangle {
-        clip: true
-        color: "grey"
-        id: grey
-        anchors.centerIn: parent
-        width: 700
-        height: parent.height
+//    Rectangle {
 
-        PathView {
+//        Rectangle {
+//            color: "black"
+//            width: 10
+//            anchors {
+//                top: parent.top
+//                bottom: parent.bottom
+//                right: pathView.left
+//            }
+//        }
 
-            highlightRangeMode: PathView.NoHighlightRange
+//        Rectangle {
+//            color: "black"
+//            width: 10
+//            anchors {
+//                top: parent.top
+//                bottom: parent.bottom
+//                left: pathView.right
+//            }
+//        }
 
-            id: pathView
-            anchors.fill: parent
-            model: 3
-            delegate: row
+//        clip: true
+//        color: "grey"
+//        id: grey
+//        anchors.centerIn: parent
+//        width: 700
+//        height: parent.height
 
-            offset: 0.4
-            path: Path {
-                startX: 0 //startY: 100
-//                PathQuad { x: 120; y: 25; controlX: 260; controlY: 75 }
-//                PathQuad { x: 120; y: 100; controlX: -20; controlY: 75 }
-                PathLine {
-//                    x: pathView.width
-                    x: 600
-                }
-            }
-        }
-    }
+//        PathView {
+
+//            highlightRangeMode: PathView.NoHighlightRange
+
+//            id: pathView
+//            anchors.fill: parent
+//            model: 2
+//            delegate: row
+
+//            //            offset: 0.5
+//            path: Path {
+//                startX: 0 //startY: 100
+//                //                PathQuad { x: 120; y: 25; controlX: 260; controlY: 75 }
+//                //                PathQuad { x: 120; y: 100; controlX: -20; controlY: 75 }
+//                PathLine {
+//                    x: loader.width*2
+//                }
+//            }
+//        }
+//    }
 }
