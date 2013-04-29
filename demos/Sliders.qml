@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,40 +18,46 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    title: i18n.tr("Slider")
-    objectName: "Slider"
+    TemplateSection {
+        className: "Slider"
 
-    Column {
-        spacing: units.gu(4)
+        TemplateFlow {
+            title: i18n.tr("Standard")
 
-        TemplateRow {
-            title: i18n.tr("Default")
             Slider {
                 id: defaultSlider
+                width: parent.width
             }
             Label {
-                color: "#757373"
-                style: Text.Raised
-                styleColor: "white"
-                text: i18n.tr("\'value\' is %1").arg(defaultSlider.formatValue(defaultSlider.value))
+                text: i18n.tr("slider.value = %1").arg(defaultSlider.value)
             }
         }
 
-        TemplateRow {
-            title: i18n.tr("Live")
+        TemplateFlow {
+            title: i18n.tr("Live Update")
+
             Slider {
                 id: liveSlider
+                width: parent.width
                 live: true
+            }
+            Label {
+                text: i18n.tr("slider.value = %1").arg(liveSlider.value)
+            }
+        }
+
+        TemplateFlow {
+            title: i18n.tr("Range")
+
+            Slider {
+                id: rangeSlider
+                width: parent.width
                 minimumValue: -1.0
                 maximumValue: 1.0
-                value: 0.0
                 function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
             }
             Label {
-                color: "#757373"
-                style: Text.Raised
-                styleColor: "white"
-                text: i18n.tr("\'value\' is %1").arg(liveSlider.formatValue(liveSlider.value))
+                text: i18n.tr("slider.value = %1").arg(rangeSlider.value)
             }
         }
     }

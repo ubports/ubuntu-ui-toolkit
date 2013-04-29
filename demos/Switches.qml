@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,58 +18,66 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    objectName: "Switch"
-    title: i18n.tr("Switches")
+    TemplateSection {
+        title: "Checkbox"
+        className: "CheckBox"
 
-    Column {
-        spacing: units.gu(4)
-        width: units.gu(20)
+        TemplateRow {
+            title: i18n.tr("Unchecked")
 
-        Row {
-            height: units.gu(6)
-            width: parent.width
-            spacing: units.gu(2)
-            Label {
-                text: i18n.tr("Unchecked")
-                width: units.gu(10)
-            }
             CheckBox {
             }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Checked")
+
+            CheckBox {
+                checked: true
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Disabled")
+
+            CheckBox {
+                enabled: false
+            }
+
+            CheckBox {
+                enabled: false
+                checked: true
+            }
+        }
+    }
+
+
+    TemplateSection {
+        title: "Switch"
+        className: "Switch"
+
+        TemplateRow {
+            title: i18n.tr("Unchecked")
 
             Switch {
             }
         }
 
-        Row {
-            spacing: units.gu(2)
-            Label {
-                text: i18n.tr("Checked")
-                width: units.gu(10)
-            }
-            CheckBox {
-                checked: true
-            }
+        TemplateRow {
+            title: i18n.tr("Checked")
+
             Switch {
                 checked: true
             }
         }
 
-        Row {
-            spacing: units.gu(2)
-            Label {
-                text: i18n.tr("Disabled")
-                width: units.gu(10)
-            }
-            CheckBox {
-                enabled: false
-            }
+        TemplateRow {
+            title: i18n.tr("Disabled")
+
             Switch {
                 enabled: false
             }
-            CheckBox {
-                enabled: false
-                checked: true
-            }
+
             Switch {
                 enabled: false
                 checked: true

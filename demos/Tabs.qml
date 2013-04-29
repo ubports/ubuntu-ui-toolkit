@@ -27,24 +27,6 @@ Template {
     MainView {
         Tabs {
             id: tabs
-            Item {
-                // does this mess up stuff? nope.
-            }
-
-//            Repeater {
-//                model: 2
-//                // but this does.
-//                Tab {
-//                    title: "Extra "
-//                    page: Page {
-//                        Label {
-//                            anchors.centerIn: parent
-//                            text: "Extra tab number "+index
-//                        }
-//                    }
-//                }
-//            }
-
             Tab {
                 title: i18n.tr("Simple page")
                 page: Page {
@@ -71,20 +53,20 @@ Template {
                     source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
                 }
             }
-//            Tab {
-//                title: i18n.tr("List view")
-//                page: Page {
-//                    ListView {
-//                        clip: true
-//                        anchors.fill: parent
-//                        model: 20
-//                        delegate: ListItem.Standard {
-//                            icon: Qt.resolvedUrl("avatar_contacts_list.png")
-//                            text: "Item "+modelData
-//                        }
-//                    }
-//                }
-//            }
+            Tab {
+                title: i18n.tr("List view")
+                page: Page {
+                    ListView {
+                        clip: true
+                        anchors.fill: parent
+                        model: 20
+                        delegate: ListItem.Standard {
+                            icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                            text: "Item "+modelData
+                        }
+                    }
+                }
+            }
         }
     }
 }

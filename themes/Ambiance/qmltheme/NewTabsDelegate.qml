@@ -63,7 +63,6 @@ Item {
     // visuals
     id: tabsDelegate
     anchors.fill: parent
-    clip: true
 
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item

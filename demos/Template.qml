@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,70 +17,35 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
+Item {
     id: template
 
-    width: units.gu(100)
+    width: units.gu(40)
     height: units.gu(75)
 
-    property string title
-    default property Item content
+    default property alias content: layout.children
+    property alias spacing: layout.spacing
+    property ToolbarActions tools: null
+    property Flickable flickable: flickable
 
-    property bool showHeader: true
+    Flickable {
+        id: flickable
+        anchors.fill: parent
+        anchors.topMargin: units.gu(2)
+        anchors.bottomMargin: units.gu(2)
+        contentHeight: layout.height
+        interactive: contentHeight > height
 
-    onContentChanged: {
-        content.parent = page
-        content.anchors.top = header.bottom
-        content.anchors.bottom = page.bottom
-        content.anchors.left = page.left
-        content.anchors.right = page.right
+        Column {
+            id: layout
+            spacing: units.gu(6)
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: units.gu(2)
+        }
     }
 
-    color: "#e6e6e6"
-
-    Item {
-        id: page
-
-        parent: template
-        anchors {
-            fill: parent
-            margins: template.showHeader ? units.gu(4) : units.gu(2)
-        }
-
-        Binding {
-            target: content.anchors
-            property: "topMargin"
-            value: page.anchors.margins
-        }
-
-        Item {
-            id: header
-
-            height: visible ? childrenRect.height : 0
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-            visible: template.showHeader
-
-            Label {
-                id: title
-                ItemStyle.class: "title"
-                text: template.title
-            }
-
-            Rectangle {
-                id: underline
-
-                anchors {
-                    top: title.bottom
-                    topMargin: units.gu(0.5)
-                    left: parent.left
-                    right: parent.right
-                }
-                height: units.dp(1)
-                color: "#757373"
-            }
-        }
+    Scrollbar {
+        flickableItem: flickable
     }
 }

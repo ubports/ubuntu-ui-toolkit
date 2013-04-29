@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,11 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
-    objectName: "Buttons"
-    title: i18n.tr("Buttons")
-
-    Column {
-        spacing: units.gu(4)
+    TemplateSection {
+        className: "Button"
 
         TemplateRow {
             title: i18n.tr("Standard")
@@ -33,47 +30,16 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Disabled")
-
-            Button {
-                text: i18n.tr("Call")
-                enabled: false
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Colors")
+            title: i18n.tr("Color")
 
             Button {
                 text: i18n.tr("Call")
                 color: "#5da357"
             }
-
-            Button {
-                text: i18n.tr("Call")
-            }
-
-            Rectangle {
-                id: darkBackground
-                width: darkButton.width + units.gu(3)
-                height: darkButton.height + units.gu(3)
-                color: "#3a3c41"
-
-                Button {
-                    id: darkButton
-                    text: i18n.tr("Call")
-                    ItemStyle.class: "dark-button"
-                    anchors.centerIn: parent
-                }
-            }
         }
 
         TemplateRow {
-            title: i18n.tr("Content")
-
-            Button {
-                text: i18n.tr("Call")
-            }
+            title: i18n.tr("Icon")
 
             Button {
                 iconSource: "call_icon.png"
@@ -84,26 +50,14 @@ Template {
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
             }
-
-            Button {
-                width: units.gu(11)
-                text: i18n.tr("Call")
-                iconSource: "call_icon.png"
-                iconPosition: "right"
-            }
         }
 
         TemplateRow {
-            title: i18n.tr("Scalability")
+            title: i18n.tr("Disabled")
 
             Button {
                 text: i18n.tr("Call")
-            }
-
-            Button {
-                text: i18n.tr("Call")
-                width: units.gu(18)
-                height: units.gu(11)
+                enabled: false
             }
         }
     }

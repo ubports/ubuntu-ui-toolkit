@@ -52,6 +52,8 @@ class tst_ThemeEngine : public QObject
 
 public:
     tst_ThemeEngine();
+    QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl());
+    QQuickItem *testItem(QQuickItem *that, const QString &identifier);
 
 private Q_SLOTS:
     void initTestCase();
@@ -63,6 +65,7 @@ private Q_SLOTS:
     void testCase_blockDeclaration();
     void testCase_selectorDelegates();
     void testCase_inheritance();
+    void testCase_MemoryCleanup();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
@@ -74,6 +77,36 @@ tst_ThemeEngine::tst_ThemeEngine():
     quickView(0),
     quickEngine(0)
 {
+}
+
+QQuickItem *tst_ThemeEngine::loadTest(const QString &document, const QUrl &theme)
+{
+    ThemeEngine::initializeEngine(quickEngine);
+    ThemeEngine::instance()->loadTheme(theme);
+    if (!ThemeEngine::instance()->error().isEmpty()) {
+        QWARN("Theme loading failed");
+        return 0;
+    }
+    quickView->setSource(QUrl::fromLocalFile(document));
+    QTest::waitForEvents();
+
+    return quickView->rootObject();
+}
+
+QQuickItem *tst_ThemeEngine::testItem(QQuickItem *that, const QString &identifier)
+{
+    if (that->property(identifier.toLocal8Bit()).isValid())
+        return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
+
+    QList<QQuickItem*> children = that->findChildren<QQuickItem*>();
+    Q_FOREACH(QQuickItem *child, children) {
+        if (child->objectName() == identifier) {
+            return child;
+        } else {
+            return testItem(child, identifier);
+        }
+    }
+    return 0;
 }
 
 void tst_ThemeEngine::initTestCase()
@@ -279,6 +312,26 @@ bool tst_ThemeEngine::check_properties(QObject *style, const QString &properties
     return !xfail;
 }
 
+
+void tst_ThemeEngine::testCase_MemoryCleanup()
+{
+    QObjectCleanupHandler cleanup;
+    QQuickItem *root = loadTest("MemoryCleanup.qml");
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+    ItemStyleAttached *styleItem = qobject_cast<ItemStyleAttached*>(qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+    QVERIFY(styleItem);
+    QObject *object = styleItem->property("style").value<QObject*>();
+    QVERIFY(object);
+    cleanup.add(object);
+    object = styleItem->property("delegate").value<QObject*>();
+    QVERIFY(object);
+    cleanup.add(object);
+    cleanup.add(qmlContext(object));
+    delete item;
+    QTest::waitForEvents();
+    QVERIFY(cleanup.isEmpty());
+}
 
 QTEST_MAIN(tst_ThemeEngine)
 
