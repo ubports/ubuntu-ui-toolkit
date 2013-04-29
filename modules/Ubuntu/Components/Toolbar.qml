@@ -44,6 +44,13 @@ Panel {
      */
     property alias active: toolbar.opened
 
+    /*
+      \deprecated
+      Use property locked instead.
+     */
+    property alias lock: toolbar.locked
+
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
