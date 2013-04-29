@@ -106,13 +106,21 @@ ActionList {
       \deprecated
       Use property opened instead.
      */
-    property alias active: toolbarActions.opened
+    property bool active
+    onActiveChanged: {
+        print("ToolbarActions.active property is DEPRECATED. Use opened instead.");
+        toolbarActions.opened = active;
+    }
 
     /*!
       \deprecated
       Use property locked instead.
      */
-    property alias lock: toolbarActions.locked
+    property bool lock: toolbarActions.locked
+    onLockChanged: {
+        print("ToolbarActions.lock property is DEPRECATED. Use locked instead.");
+        toolbarActions.locked = lock;
+    }
 
     /*!
       The toolbar cannot be opened/closed by bottom-edge swipes.

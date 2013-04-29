@@ -42,14 +42,21 @@ Panel {
       \deprecated
       Use property bool opened instead.
      */
-    property alias active: toolbar.opened
+    property bool active
+    onActiveChanged: {
+        print("Toolbar.active property is DEPRECATED. Use opened instead.");
+        toolbar.opened = active;
+    }
 
     /*
       \deprecated
       Use property locked instead.
      */
-    property alias lock: toolbar.locked
-
+    property bool lock
+    onLockChanged: {
+        print("Toolbar.lock property is DEPRECATED. Use locked instead.");
+        toolbar.locked = lock;
+    }
 
     /*!
       \preliminary
