@@ -257,6 +257,12 @@ void StyleCache::clear()
     styles = 0;
 }
 
+bool StyleCache::addDelegate(const QString &type, QQmlComponent *component)
+{
+    return false;
+}
+
+
 /*!
   \internal
   Adds a style rule to the style tree based on the selector path specified.

@@ -40,6 +40,16 @@ private:
 
 private Q_SLOTS:
 
+    void testCase_addDelegate()
+    {
+        QObjectCleanupHandler cleanup;
+        QQmlComponent *delegate = new QQmlComponent;
+        cleanup.add(delegate);
+        QVERIFY(cache.addDelegate("test", delegate));
+        cache.clear();
+        QVERIFY(cleanup.isEmpty());
+    }
+
     void testCase_addStyleRule()
     {
         Selector selector;
