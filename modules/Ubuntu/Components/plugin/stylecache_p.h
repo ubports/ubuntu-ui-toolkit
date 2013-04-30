@@ -63,7 +63,8 @@ public:
     StyleCache();
     ~StyleCache();
     void clear();
-    void addStyleRule(const Selector &selector, QQmlComponent *style, QQmlComponent *delegate);
+    bool addDelegate(const QString &type, QQmlComponent *component);
+    void addStyleRule(const Selector &selector, QQmlComponent *style, const QString &delegateType);
     StyleCache::StyleData *match(const Selector &selector);
 
     // the following property is just for benchmarking
@@ -72,6 +73,7 @@ public:
 private:
     StyleData *styles;
     QHash<Selector, StyleData*> cache;
+    QHash<QString, QQmlComponent*> delegateCache;
 };
 
 
