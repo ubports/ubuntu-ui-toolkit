@@ -38,7 +38,7 @@ Page {
     tools: ToolbarActions {
         Action {
             text: "action 1"
-            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+            iconSource: Qt.resolvedUrl("call_icon.png")
         }
         Action {
             text: "action 2"

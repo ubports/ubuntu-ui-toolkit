@@ -53,6 +53,7 @@ MainView {
                 tools: ToolbarActions {
                     Action {
                         text: "action"
+                        iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
                     }
                 }
@@ -61,26 +62,25 @@ MainView {
         Tab {
             id: externalTab
             title: i18n.tr("External")
-            iconSource: "call_icon.png"
             page: Loader {
                 parent: externalTab
                 anchors.fill: parent
                 source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
             }
         }
-        //            Tab {
-        //                title: i18n.tr("List view")
-        //                page: Page {
-        //                    ListView {
-        //                        clip: true
-        //                        anchors.fill: parent
-        //                        model: 20
-        //                        delegate: ListItem.Standard {
-        //                            icon: Qt.resolvedUrl("avatar_contacts_list.png")
-        //                            text: "Item "+modelData
-        //                        }
-        //                    }
-        //                }
-        //            }
+        Tab {
+            title: i18n.tr("List view")
+            page: Page {
+                ListView {
+                    clip: true
+                    anchors.fill: parent
+                    model: 20
+                    delegate: ListItem.Standard {
+                        icon: Qt.resolvedUrl("call_icon.png")
+                        text: "Item "+modelData
+                    }
+                }
+            }
+        }
     }
 }

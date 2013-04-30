@@ -83,6 +83,8 @@ Item {
                 id: repeater
                 model: tabs.__tabs
 
+//                onModelChanged: buttonView.buttons = []
+
                 AbstractButton {
                     id: button
                     anchors {
