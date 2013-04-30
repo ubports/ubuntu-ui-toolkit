@@ -28,20 +28,6 @@ MainView {
             // does this mess up stuff? nope.
         }
 
-        //            Repeater {
-        //                model: 2
-        //                // but this does.
-        //                Tab {
-        //                    title: "Extra "
-        //                    page: Page {
-        //                        Label {
-        //                            anchors.centerIn: parent
-        //                            text: "Extra tab number "+index
-        //                        }
-        //                    }
-        //                }
-        //            }
-
         Tab {
             title: i18n.tr("Simple page")
             page: Page {
@@ -59,6 +45,21 @@ MainView {
                 }
             }
         }
+        Repeater {
+            model: 4
+            // but this does.
+            Tab {
+                title: "Extra " + index
+                page: Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "Extra tab number "+index
+                    }
+                }
+            }
+        }
+
+
         Tab {
             id: externalTab
             title: i18n.tr("External")
