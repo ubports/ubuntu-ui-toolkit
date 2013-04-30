@@ -397,6 +397,8 @@ Item {
             var item = bar; // contains the children
             while (item && !item.hasOwnProperty("clicked")) {
                 var coords = mapToItem(item, mouse.x, mouse.y);
+                // FIXME: When using a ListView the highlight may be
+                //  returned instead of the Item that you are looking for
                 item = item.childAt(coords.x, coords.y);
             }
             return item; // will be null if no item has clicked() signal.
