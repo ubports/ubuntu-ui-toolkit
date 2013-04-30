@@ -44,7 +44,7 @@ public:
     StyleCache::StyleData *styleRule;
     // hash of attachee property indexes as key, containing enabled/disabled value
     StyledPropertyMap watchedProperties;
-    bool delayApplyingStyle;
+    bool completed;
     bool customStyle;
     bool customDelegate;
     bool connectedToEngine;
