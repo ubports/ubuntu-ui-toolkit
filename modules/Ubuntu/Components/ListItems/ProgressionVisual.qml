@@ -20,17 +20,18 @@ import QtQuick 2.0
 // the progression symbol.
 Item {
     id: progressionVisual
-    width: visible ? units.gu(4) : 0
+
+    width: progressIcon.width + (showSplit ? splitMargin + progressionDivider.width : 0)
 
     property bool showSplit: false
+    property real splitMargin
 
     Image {
         id: progressIcon
         source: "artwork/ListItemProgressionArrow.png"
         anchors {
             verticalCenter: parent.verticalCenter
-            left: parent.left
-            leftMargin: units.gu(2)
+            right: parent.right
         }
 
         opacity: enabled ? 1.0 : 0.5
@@ -42,6 +43,8 @@ Item {
         anchors {
             top: parent.top
             bottom: parent.bottom
+            right: progressIcon.left
+            rightMargin: splitMargin
         }
         source: "artwork/ListItemDividerVertical.png"
         opacity: enabled ? 1.0 : 0.5

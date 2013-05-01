@@ -6,4 +6,8 @@ OTHER_FILES += \
     TestDocument.qml \
     BindingTest.qml \
     label.qmltheme \
-    LabelTest.qml
+    LabelTest.qml \
+    StyledItem.qml \
+    CustomStyleObject.qml \
+    CustomDelegateObject.qml \
+    CustomDelegateComponent.qml

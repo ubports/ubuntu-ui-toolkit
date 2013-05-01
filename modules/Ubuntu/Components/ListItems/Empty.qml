@@ -175,7 +175,7 @@ AbstractButton {
     /*! \internal
       The spacing inside the list item.
      */
-    property real __contentsMargins: units.gu(0)
+    property real __contentsMargins: units.gu(2)
 
     width: parent ? parent.width : units.gu(31)
     implicitHeight: priv.removed ? 0 : __height + bottomDividerLine.height
@@ -307,8 +307,6 @@ AbstractButton {
             right: parent.right
             top: parent.top
             bottom: bottomDividerLine.top
-            leftMargin: __contentsMargins
-            rightMargin: __contentsMargins
         }
 
         Item {
