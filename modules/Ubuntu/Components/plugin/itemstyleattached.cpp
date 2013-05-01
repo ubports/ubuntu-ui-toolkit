@@ -29,6 +29,7 @@
 #include "quickutils.h"
 
 #include <private/qqmlproperty_p.h>
+#include <private/qqmlcontext_p.h>
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
@@ -230,13 +231,10 @@ bool ItemStyleAttachedPrivate::updateStyle()
                 delete obj;
                 delete context;
             } else {
-                // store the context as dynamic property so in case the style is transfered
-                // to an other item as custom property, we can delete it together with the
-                // style
-                style->setProperty("__context", QVariant::fromValue(context));
-                // store owner in teh same way so we can detect whether the custom style was
-                // belonging to an other styled item
-                style->setProperty("__owner", QVariant::fromValue(attachee));
+                // set style as parent for the context so it gets deleted together with the style
+                context->setParent(style);
+                // set owner so we know that the style object has been created by theming
+                style->setOwner(attachee);
             }
             result = (style != 0);
         }
@@ -265,13 +263,10 @@ bool ItemStyleAttachedPrivate::updateDelegate()
             context->setContextProperty(itemProperty, attachee);
             delegate = qobject_cast<QQuickItem*>(styleRule->delegate->create(context));
             if (delegate) {
-                // store the context as dynamic property so in case the style is transfered
-                // to an other item as custom property, we can delete it together with the
-                // style
-                delegate->setProperty("__context", QVariant::fromValue(context));
-                // store owner in teh same way so we can detect whether the custom style was
-                // belonging to an other styled item
-                delegate->setProperty("__owner", QVariant::fromValue(attachee));
+                // set delegate as parent for the context so it gets deleted together with the style
+                context->setParent(delegate);
+                // set delegate's parent to attachee
+                delegate->setParent(attachee);
             } else {
                 delete context;
             }
@@ -281,7 +276,6 @@ bool ItemStyleAttachedPrivate::updateDelegate()
         result = true;
 
     if (delegate && ((delegate->parent() != attachee) || (delegate->parentItem() != attachee))) {
-        delegate->setParent(attachee);
         delegate->setParentItem(attachee);
         // If style item contains a property "contentItem" that points
         // to an item, reparent all children into it:
@@ -347,11 +341,8 @@ void ItemStyleAttachedPrivate::resetStyle()
     style->unbindItem(attachee);
 
     // delete style also if there is an owner set to it
-    if (!customStyle || style->property("__owner").value<QObject*>()) {
-        QQmlContext *context = style->property("__context").value<QQmlContext*>();
+    if (!customStyle || style->owner()) {
         delete style;
-        if (context)
-            delete context;
         style = 0;
     }
 }
@@ -365,13 +356,10 @@ void ItemStyleAttachedPrivate::resetDelegate()
         style->unbindItem(delegate);
 
     // delete delegate also if there is an owner set to it
-    if (!customDelegate || delegate->property("__owner").value<QObject*>()) {
+    if (!customDelegate || (delegate->parent() == attachee)) {
         delegate->setParent(0);
         delegate->setParentItem(0);
-        QQmlContext *context = delegate->property("__context").value<QQmlContext*>();
         delete delegate;
-        if (context)
-            delete context;
         delegate = 0;
     }
 }
@@ -444,18 +432,30 @@ void ItemStyleAttachedPrivate::gainOwnershipOverStyleObject(QObject *styleObject
     if (!styleObject)
         return;
 
-    QQuickItem *owner = styleObject->property("__owner").value<QQuickItem*>();
-    if (owner) {
-        ItemStyleAttached *attached = ThemeEnginePrivate::attachedStyle(owner);
+    if (style) {
+        UCStyle *style = qobject_cast<UCStyle*>(styleObject);
+        if (!style)
+            return;
+        ItemStyleAttached *attached = ThemeEnginePrivate::attachedStyle(style->owner());
         if (attached) {
-            if (style) {
-                attached->d_ptr->style = 0;
-            } else {
-                attached->d_ptr->delegate = 0;
-            }
+            attached->d_ptr->style = 0;
+            style->setOwner(attachee);
         }
-        // set the new owner
-        styleObject->setProperty("__owner", QVariant::fromValue(attachee));
+    } else {
+        QQuickItem *delegate = qobject_cast<QQuickItem*>(styleObject);
+        if (!delegate)
+            return;
+        // return if the delegate has no parent item set - case ItemStyle.delegate: Item{}
+        if (!delegate->parentItem())
+            return;
+        ItemStyleAttached *attached = ThemeEnginePrivate::attachedStyle(delegate->parentItem());
+        // check if the object is set as parent's delegate
+        if (attached && (attached->d_ptr->delegate == delegate)) {
+            // need to take ownership
+            attached->d_ptr->delegate = 0;
+            // set the new parent of the delegate
+            delegate->setParent(attachee);
+        }
     }
 }
 
