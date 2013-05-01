@@ -46,6 +46,9 @@ Item {
     }
     height: units.gu(10)
 
+    /*! \internal */
+    onHeightChanged: internal.movementEnded()
+
     visible: title || contents
 
     /*!
@@ -134,7 +137,7 @@ Item {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
-            if (flickable.contentY < 0) header.show();
+            if (flickable && flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();
         }
