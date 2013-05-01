@@ -30,7 +30,7 @@ import QtQuick 2.0
     When a \l Page is used inside a \l Tabs or \l PageStack, the toolbar will automatically show
     the tools of the active \l Page. When the active \l Page inside the \l Tabs or \l PageStack
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
-    the toolbar will automatically hide, except if the new active \l Page has the \l lock property set.
+    the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
     \qml
         import QtQuick 2.0
@@ -61,8 +61,8 @@ import QtQuick 2.0
                             text: "cancel"
                         }
                     }
-                    lock: true
-                    active: true
+                    locked: true
+                    opened: true
                 }
             }
         }
@@ -98,16 +98,36 @@ ActionList {
     property Item __pageStack: null
 
     /*!
-      The toolbar is active
+      The toolbar is opened
      */
-    property bool active: false
+    property bool opened: false
 
     /*!
-      The toolbar cannot be made active or inactive by bottom-edge swipes.
-      If the ToolbarActions contains no visible actions, it is automatically
-      locked (in inactive state).
+      \deprecated
+      Use property opened instead.
      */
-    property bool lock: !toolbarActions.__hasVisibleActions()
+    property bool active
+    onActiveChanged: {
+        print("ToolbarActions.active property is DEPRECATED. Use opened instead.");
+        toolbarActions.opened = active;
+    }
+
+    /*!
+      \deprecated
+      Use property locked instead.
+     */
+    property bool lock: toolbarActions.locked
+    onLockChanged: {
+        print("ToolbarActions.lock property is DEPRECATED. Use locked instead.");
+        toolbarActions.locked = lock;
+    }
+
+    /*!
+      The toolbar cannot be opened/closed by bottom-edge swipes.
+      If the ToolbarActions contains no visible actions, it is automatically
+      locked (in closed state).
+     */
+    property bool locked: !toolbarActions.__hasVisibleActions()
 
     /*!
       \internal
