@@ -53,6 +53,7 @@ Panel {
       Use property locked instead.
      */
     property bool lock
+    /*! \internal */
     onLockChanged: {
         print("Toolbar.lock property is DEPRECATED. Use locked instead.");
         toolbar.locked = lock;
@@ -63,6 +64,7 @@ Panel {
       The list of \l Actions to be shown on the toolbar
      */
     property ToolbarActions tools: null
+    /*! \internal */
     onToolsChanged: {
         if (tools && tools.opened && tools.locked) {
             // toolbar is locked in visible state.

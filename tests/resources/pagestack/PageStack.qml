@@ -20,10 +20,6 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
     id: mainView
-//    anchors {
-//        top: parent.top
-//        horizontalCenter: parent.horizontalCenter
-//    }
     width: units.gu(38)
     height: units.gu(50)
 
