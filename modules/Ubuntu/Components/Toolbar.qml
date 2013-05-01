@@ -66,6 +66,7 @@ Panel {
     property ToolbarActions tools: null
     /*! \internal */
     onToolsChanged: {
+        locked = tools.locked;
         if (tools && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
             internal.visibleTools = tools;
