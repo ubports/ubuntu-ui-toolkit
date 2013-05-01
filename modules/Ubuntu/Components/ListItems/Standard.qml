@@ -104,17 +104,17 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       The margins on the left side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftIconMargin: iconHelper.leftIconMargin
+    property real __leftIconMargin
 
     /*!
       \internal
+      \deprecated
       The margins on the right side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: iconHelper.rightIconMargin
+    property real __rightIconMargin
 
     /*!
       \preliminary
@@ -164,7 +164,7 @@ Empty {
     Rectangle {
         id: progressionHighlight
 
-        visible: listItem.swipingState === "" ? listItem.progression && listItem.pressed && !__controlAreaPressed : false
+        visible: listItem.swipingState === "" ? listItem.progression && progressionHelper.showSplit && listItem.pressed && !__controlAreaPressed : false
         anchors {
             left: progressionHelper.left
             top: parent.top
@@ -177,7 +177,7 @@ Empty {
 
     IconVisual {
         id: iconHelper
-        anchors.leftMargin: units.gu(2)
+        anchors.leftMargin: listItem.__contentsMargins
     }
 
     /*!
@@ -202,8 +202,7 @@ Empty {
 
             icon.parent = listItem;
             icon.anchors.left = listItem.left;
-            // FIXME: __contentsMargins value is not set yet
-            icon.anchors.leftMargin = units.gu(2) //listItem.__contentsMargins;
+            icon.anchors.margins = Qt.binding(function() { return listItem.__contentsMargins });
             if (!icon.height) {
                 icon.anchors.top = listItem.top;
                 icon.anchors.bottom = listItem.bottom;
@@ -219,12 +218,14 @@ Empty {
 
     LabelVisual {
         id: label
+        property bool anchorToIconHelper: !__iconIsItem && iconHelper.source != ""
         selected: listItem.selected
         anchors {
             verticalCenter: parent.verticalCenter
-            left: __iconIsItem ? parent.left : iconHelper.right
-            leftMargin: (__iconIsItem) ? icon.width + units.gu(2) + icon.anchors.rightMargin : 0
-            right: controlContainer.left
+            left: anchorToIconHelper ? iconHelper.right : parent.left
+            leftMargin: __iconIsItem ? icon.width + 2 * listItem.__contentsMargins : listItem.__contentsMargins
+            right: control ? controlContainer.left : (progression ? progressionHelper.left : parent.right)
+            rightMargin: listItem.__contentsMargins
         }
     }
 
@@ -236,9 +237,9 @@ Empty {
         width: control ? control.width : undefined
         anchors {
             right: listItem.progression ? progressionHelper.left : parent.right
+            rightMargin: listItem.__contentsMargins
             top: parent.top
             bottom: parent.bottom
-            margins: units.gu(2)
         }
         onControlChanged: {
             if (control) control.parent = controlContainer;
@@ -281,10 +282,11 @@ Empty {
         visible: listItem.progression
         anchors {
             right: parent.right
+            rightMargin: listItem.__contentsMargins
             top: parent.top
             bottom: parent.bottom
-            rightMargin: units.gu(2)
         }
         showSplit: control ? true : false
+        splitMargin: listItem.__contentsMargins
     }
 }

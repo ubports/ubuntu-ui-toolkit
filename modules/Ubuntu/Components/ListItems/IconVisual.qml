@@ -29,9 +29,7 @@ Item {
 
     property alias iconHeight: shape.height
     property alias iconWidth: shape.width
-    property real leftIconMargin: units.gu(0.5)
-    property real rightIconMargin: units.gu(0.5)
-    width: visible ? iconWidth + leftIconMargin + rightIconMargin : 0
+    width: visible ? iconWidth : 0
 
     anchors {
         top: parent ? parent.top : undefined
@@ -47,7 +45,6 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: iconVisual.leftIconMargin
         }
         height: sourceSize.height
         width: sourceSize.width
@@ -61,7 +58,6 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: iconVisual.leftIconMargin
         }
         height: icon.sourceSize.height
         width: icon.sourceSize.width

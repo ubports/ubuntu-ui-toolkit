@@ -95,17 +95,17 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       The margins on the left side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftIconMargin: selectorMain.__leftIconMargin
+    property real __leftIconMargin
 
     /*!
       \internal
+      \deprecated
       The margins on the right side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: selectorMain.__rightIconMargin
+    property real __rightIconMargin
 
     /*!
       \preliminary
@@ -154,18 +154,17 @@ Empty {
                 id: label
                 anchors {
                     verticalCenter: parent.verticalCenter
-                    leftMargin: units.gu(0.5)
                     left: parent.left
                 }
-                width: Math.min(implicitWidth, parent.width - units.gu(1))
+                width: Math.min(implicitWidth, parent.width * 0.8)
             }
             LabelVisual {
                 id: valueLabel
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: accordion.left
-                    rightMargin: units.gu(0.5)
-                    leftMargin: units.gu(0.5)
+                    rightMargin: selector.__contentsMargins
+                    leftMargin: selector.__contentsMargins
                     left: label.right
                 }
                 fontSize: "small"
@@ -175,7 +174,7 @@ Empty {
             }
             Item {
                 id: accordion
-                width: units.gu(4)
+                width: accordionIcon.width
                 anchors {
                     right: parent.right
                     top: parent.top
@@ -183,7 +182,8 @@ Empty {
                 }
                 Image {
                     id: accordionIcon
-                    anchors.centerIn: parent
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
                     // TODO: Replace this placeholder graphic with the official one.
                     source: "artwork/ListItemProgressionArrow.png"
                     opacity: enabled ? 1.0 : 0.5
