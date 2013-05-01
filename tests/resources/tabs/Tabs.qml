@@ -58,8 +58,6 @@ MainView {
                 }
             }
         }
-
-
         Tab {
             id: externalTab
             title: i18n.tr("External")

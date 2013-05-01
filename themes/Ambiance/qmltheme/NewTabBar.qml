@@ -99,7 +99,8 @@ Item {
                     // When the tab bar is active, show both buttons corresponing to the tab index as selected,
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
-                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+//                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property bool selected: tabs.selectedTabIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
@@ -107,12 +108,14 @@ Item {
                     // make fading work well, and not to mess up width/offset computations
                     opacity: isVisible() ? (selected ? headerTextSelectedOpacity : headerTextOpacity) : 0
                     function isVisible() {
+                        return true; // TODO TIM: remove
                         if (selected) return true;
                         if (!tabBar.active) return false;
                         if (buttonView.needsScrolling) return true;
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
                         // while sliding in from the right side when a new button was selected
+                        return true;
                         var numTabs = tabs.__tabs.length;
                         var minimum = buttonView.selectedButtonIndex;
                         var maximum = buttonView.selectedButtonIndex + numTabs - 1;
@@ -231,19 +234,25 @@ Item {
             if (tabIndex < 0 || tabIndex >= tabs.__tabs.length) return;
             var b1 = buttonView.buttonRow1.children[tabIndex];
             var b2 = buttonView.buttonRow2.children[tabIndex];
+            print("b1.offset = "+b1.offset);
+            print("b2.offset = "+b2.offset);
 
             // find the button with the nearest offset
             var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);
             var d2 = cyclicDistance(b2.offset, buttonView.offset, 2);
             if (d1 < d2) {
+                print("select b1");
                 b1.select();
             } else {
+                print("select b2");
                 b2.select();
             }
         }
 
         function updateOffset(newOffset) {
+            print("updateOffset("+newOffset+")");
             if (offset - newOffset < -1) newOffset = newOffset - 2;
+            print("offset = "+newOffset);
             offset = newOffset;
         }
 
