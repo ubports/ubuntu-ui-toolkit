@@ -18,7 +18,6 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
-
 MainView {
     width: 800
     height: 600
@@ -51,9 +50,32 @@ MainView {
             Tab {
                 title: "Extra " + index
                 page: Page {
-                    Label {
+                    Column {
                         anchors.centerIn: parent
-                        text: "Extra tab number "+index
+                        width: units.gu(40)
+                        Label {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Extra tab number "+index
+                        }
+                        Button {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Previous"
+                            onClicked: tabs.selectedTabIndex--
+                        }
+                        Button {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Next"
+                            onClicked: tabs.selectedTabIndex++
+                        }
                     }
                 }
             }

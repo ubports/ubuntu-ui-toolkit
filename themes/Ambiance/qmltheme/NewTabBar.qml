@@ -80,8 +80,11 @@ Item {
             property int rowNumber: modelData
 
             Component.onCompleted: {
-                if (rowNumber === 0) buttonView.buttonRow1 = theRow;
-                else buttonView.buttonRow2 = theRow;
+                if (rowNumber === 0) {
+                    buttonView.buttonRow1 = theRow;
+                } else {
+                    buttonView.buttonRow2 = theRow;
+                }
             }
 
             Repeater {
@@ -100,7 +103,8 @@ Item {
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
 //                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
-                    property bool selected: tabs.selectedTabIndex === button.buttonIndex
+//                    property bool selected: tabs.selectedTabIndex === button.buttonIndex
+                    property bool selected: buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
