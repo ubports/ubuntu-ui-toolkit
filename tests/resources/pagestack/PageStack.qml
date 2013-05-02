@@ -51,12 +51,6 @@ MainView {
                     progression: true
                 }
             }
-
-            tools: ToolbarActions {
-                Action {
-                    text: "yeah"
-                }
-            }
         }
 
         Page {
@@ -75,6 +69,12 @@ MainView {
                     text: i18n.tr("Red rectangle")
                     onClicked: pageStack.push(page2, {color: "red"})
                     progression: true
+                }
+            }
+
+            tools: ToolbarActions {
+                Action {
+                    text: "oh"
                 }
             }
         }
