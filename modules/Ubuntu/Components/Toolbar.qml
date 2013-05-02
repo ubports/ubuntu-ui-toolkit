@@ -89,8 +89,8 @@ Panel {
         onOpenedChanged: toolbar.opened = tools.opened;
         onLockedChanged: toolbar.locked = tools.locked;
     }
-    onOpenedChanged: if (tools) tools.opened = toolbar.opened
-    onLockedChanged: if (tools) tools.locked = toolbar.locked
+//    onOpenedChanged: if (tools) tools.opened = toolbar.opened
+//    onLockedChanged: if (tools) tools.locked = toolbar.locked
     QtObject {
         id: internal
         property ToolbarActions visibleTools: tools
