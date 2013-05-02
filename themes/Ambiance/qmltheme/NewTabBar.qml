@@ -40,12 +40,6 @@ Item {
      */
     property Tabs tabs
 
-    Component.onCompleted: print("tab done")
-    Rectangle {
-        anchors.fill: parent
-        color: "blue"
-    }
-
     /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
