@@ -116,7 +116,7 @@ ActionList {
       \deprecated
       Use property locked instead.
      */
-    property bool lock: toolbarActions.locked
+    property bool lock
     onLockChanged: {
         print("ToolbarActions.lock property is DEPRECATED. Use locked instead.");
         toolbarActions.locked = lock;
