@@ -28,15 +28,16 @@ Item {
     property Item separator
 
     /*!
+      \deprecated
       Enable left/right swiping in the contents area to go to
       the next/previous tab.
      */
     property bool swipeToSwitchTabs
     /*!
-        \deprecated
-        \internal
+      \deprecated
+      \internal
      */
-    onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED. Please do not rely on swiping the Page's contents to switch tabs, this functionality will be removed.")
+    onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
 
     property color headerTextColor
     property color headerTextSelectedColor
