@@ -49,7 +49,7 @@ Item {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool active: true
+    property bool active: false
 
     onActiveChanged: {
         if (active) {
