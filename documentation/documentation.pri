@@ -4,4 +4,7 @@ system($$QDOC $$PWD/ubuntu-ui-toolkit-online.qdocconf)
 install_docs.files = $$PWD/html
 install_docs.path = /usr/share/ubuntu-ui-toolkit/doc
 
-INSTALLS += install_docs
+install_qch.files = $$PWD/ubuntuuserinterfacetoolkit.qch
+install_qch.path = /usr/share/qt5/doc/qch
+
+INSTALLS += install_docs install_qch
