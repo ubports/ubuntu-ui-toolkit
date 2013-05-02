@@ -142,7 +142,9 @@ QQmlComponent *createDelegate(QQmlEngine *engine, const QString &qmlType, const 
             return ret;
         }
     }
-    return 0;
+    // the QML type wasn't found in the folders, try to create a component
+    // using inline QML document
+    return createComponent(engine, QString("import QtQuick 2.0; %1{}").arg(qmlType));
 }
 
 /*!

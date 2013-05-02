@@ -137,4 +137,6 @@ Item {
             anchors.fill: parent
         }
     }
+
+    Component.onCompleted: print("header done")
 }
