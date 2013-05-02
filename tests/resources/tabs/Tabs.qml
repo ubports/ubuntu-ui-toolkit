@@ -23,6 +23,7 @@ MainView {
     height: 600
     Tabs {
         id: tabs
+        selectedTabIndex: 0
         Item {
             // does this mess up stuff? nope.
         }
@@ -45,7 +46,7 @@ MainView {
             }
         }
         Repeater {
-            model: 4
+            model: 1
             // but this does.
             Tab {
                 title: "Extra " + index

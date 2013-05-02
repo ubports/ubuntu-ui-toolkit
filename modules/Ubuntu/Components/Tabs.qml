@@ -139,15 +139,15 @@ PageTreeNode {
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 
-
-    // FIXME: Using the VisualItemModel as a workaround for this bug:
-    //  "theming: contentItem does work when it is a VisualItemModel"
-    //  https://bugs.launchpad.net/tavastia/+bug/1080330
-    //  The workaround does not break the regular TabsDelegate.
-    /*! \internal */
+    /*!
+      \internal
+      Used by the delegate to create the tabs header.
+    */
     property alias __tabs: tabsModel.tabList
 
     default property alias tabChildren: tabsModel.children
+
+    Component.onCompleted: tabsModel.updateTabList()
 
     /*!
       \internal
@@ -158,8 +158,15 @@ PageTreeNode {
         id: tabsModel
 
         property var tabList: []
-        onChildrenChanged: updateTabList();
-        Component.onCompleted: updateTabList();
+        onChildrenChanged: {
+            print("children changed "+children.length )
+            updateTabList();
+        }
+        onTabListChanged: {
+            print("new tablist!!");
+        }
+
+        //        Component.onCompleted: updateTabList();
 
         function updateTabList() {
             var list = [];
@@ -167,6 +174,7 @@ PageTreeNode {
                 if (isTab(children[i])) list.push(children[i]);
             }
             tabList = list;
+            print("updated tab list to "+list)
         }
 
         function isTab(item) {
