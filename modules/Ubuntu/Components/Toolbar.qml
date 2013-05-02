@@ -53,6 +53,7 @@ Panel {
       Use property locked instead.
      */
     property bool lock
+    /*! \internal */
     onLockChanged: {
         print("Toolbar.lock property is DEPRECATED. Use locked instead.");
         toolbar.locked = lock;
@@ -63,7 +64,9 @@ Panel {
       The list of \l Actions to be shown on the toolbar
      */
     property ToolbarActions tools: null
+    /*! \internal */
     onToolsChanged: {
+        locked = tools.locked;
         if (tools && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
             internal.visibleTools = tools;
@@ -86,8 +89,7 @@ Panel {
         onOpenedChanged: toolbar.opened = tools.opened;
         onLockedChanged: toolbar.locked = tools.locked;
     }
-    onOpenedChanged: if (tools) tools.opened = toolbar.opened
-    onLockedChanged: if (tools) tools.locked = toolbar.locked
+
     QtObject {
         id: internal
         property ToolbarActions visibleTools: tools

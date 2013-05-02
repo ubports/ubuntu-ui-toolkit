@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Locale
+Comment=My project description
+Exec=/usr/bin/qmlscene $@ /usr/share/locale/locale.qml
+Icon=qmlscene
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
