@@ -42,7 +42,6 @@ Item {
 
     property int numTabs: tabs && tabs.__tabs ? tabs.__tabs.length : 0
     onNumTabsChanged: {
-        print("numTabs = "+numTabs);
         buttonView.selectButton(tabs.selectedTabIndex);
     }
 
@@ -50,13 +49,25 @@ Item {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool active: false
+    property bool active: true
 
     onActiveChanged: {
         if (active) {
             activatingTimer.restart();
         } else {
             buttonView.selectButton(tabs.selectedTabIndex);
+        }
+    }
+
+    Connections {
+        target: tabs.tabsContainer
+        onDirtyChanged: {
+            print("dirty changed")
+            if (tabs.tabsContainer.dirty) {
+                print("dirty!")
+                buttonView.selectButton(tabs.selectedTabIndex);
+                tabs.tabsContainer = false;
+            }
         }
     }
 
@@ -72,8 +83,11 @@ Item {
     Connections {
         target: tabs
         onSelectedTabIndexChanged: {
-            print("selected tab changed to "+tabs.selectedTabIndex);
             buttonView.selectButton(tabs.selectedTabIndex);
+        }
+        onModelChanged: {
+            print("model changed!");
+            buttonView.selectButton(tabs.selectedTabIndex)
         }
         Component.onCompleted: buttonView.selectButton(tabs.selectedTabIndex)
     }
@@ -117,7 +131,6 @@ Item {
                     //                    property bool selected: buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
-                    onButtonIndexChanged: print("new button index = "+buttonIndex)
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
@@ -197,7 +210,6 @@ Item {
 
                     // Select this button
                     function select() {
-                        print("button "+buttonIndex+" select()");
                         buttonView.selectedButtonIndex = button.buttonIndex;
                         buttonView.updateOffset(button.offset);
                     }
@@ -223,7 +235,6 @@ Item {
 
         // Track which button was last clicked
         property int selectedButtonIndex: -1
-        onSelectedButtonIndexChanged: print("selected button index = "+selectedButtonIndex)
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
@@ -248,7 +259,6 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
-            print("selecting button "+tabIndex)
             if (tabIndex < 0 || tabIndex >= tabs.__tabs.length) return;
             if (buttonView.buttonRow1 && buttonView.buttonRow2) {
                 var b1 = buttonView.buttonRow1.children[tabIndex];
@@ -278,7 +288,9 @@ Item {
         }
 
         Component.onCompleted: {
-            //            selectButton(tabs.selectedTabIndex);
+            //                        selectButton(tabs.selectedTabIndex);
+            //            selectButton(0)
+            //            active = false;
         }
 
         onDragEnded: activatingTimer.stop()

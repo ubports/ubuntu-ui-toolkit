@@ -147,7 +147,12 @@ PageTreeNode {
 
     default property alias tabChildren: tabsModel.children
 
+    property alias tabsContainer: tabsModel
+
     Component.onCompleted: tabsModel.updateTabList()
+
+
+    signal modelChanged()
 
     /*!
       \internal
@@ -159,14 +164,10 @@ PageTreeNode {
 
         property var tabList: []
         onChildrenChanged: {
-            print("children changed "+children.length )
             updateTabList();
         }
-        onTabListChanged: {
-            print("new tablist!!");
-        }
 
-        //        Component.onCompleted: updateTabList();
+//        Component.onCompleted: updateTabList();
 
         function updateTabList() {
             var list = [];
@@ -175,7 +176,13 @@ PageTreeNode {
             }
             tabList = list;
             print("updated tab list to "+list)
+            tabsModel.dirty = true;
+            tabs.modelChanged();
         }
+
+        property bool dirty: false
+
+        onDirtyChanged: print("dirty = "+dirty)
 
         function isTab(item) {
             if (item && item.hasOwnProperty("__isPageTreeNode")

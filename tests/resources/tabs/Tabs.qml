@@ -46,7 +46,7 @@ MainView {
             }
         }
         Repeater {
-            model: 1
+            model: 3
             // but this does.
             Tab {
                 title: "Extra " + index

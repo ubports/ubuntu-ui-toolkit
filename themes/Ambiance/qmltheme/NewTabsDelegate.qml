@@ -32,6 +32,10 @@ Item {
       the next/previous tab.
      */
     property bool swipeToSwitchTabs
+    /*!
+        \deprecated
+        \internal
+     */
     onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED. Please do not rely on swiping the Page's contents to switch tabs, this functionality will be removed.")
 
     property color headerTextColor
