@@ -59,12 +59,11 @@ Item {
         top: parent ? parent.top : undefined
     }
     height: headerDelegate.contentHeight + separator.height + separatorBottom.height
-    onHeightChanged: item.height = headerDelegate.height
-//    Binding {
-//        target: item
-//        property: "height"
-//        value: height
-//    }
+    Binding {
+        target: item
+        property: "height"
+        value: height
+    }
 
     Rectangle {
         id: backgroundColor
