@@ -83,15 +83,17 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       Width of the icon to be displayed
     */
-    property alias __iconWidth: selectorMain.__iconWidth
+    property real __iconWidth
 
     /*!
       \internal
+      \deprecated
       Height of the icon to be displayed
     */
-    property alias __iconHeight: selectorMain.__iconHeight
+    property real __iconHeight
 
     /*!
       \internal
