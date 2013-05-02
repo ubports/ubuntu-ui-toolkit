@@ -28,7 +28,6 @@ Item {
     property Item separator
 
     /*!
-      \deprecated
       Enable left/right swiping in the contents area to go to
       the next/previous tab.
      */
@@ -43,16 +42,13 @@ Item {
     property color headerTextSelectedColor
     property real headerTextOpacity
     property real headerTextSelectedOpacity
-
     property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight
     property real headerTextLeftMargin
     property real headerTextRightMargin
     property real headerTextBottomMargin
-
     property url indicatorImageSource
-
     property real tabBarHeight
 
     /*!
@@ -97,31 +93,7 @@ Item {
         }
     }
 
-    Item {
-        id: tabView
-        anchors.fill: parent
-
-        function updatePages() {
-//            if (!tabsDelegate.tabModel) return; // not initialized yet
-            var tabList = item.__tabs
-            var tab;
-            for (var i=0; i < tabList.length; i++) {
-                tab = tabList[i];
-                }
-            }
-        }
-
-    Connections {
-        target: item
-        onSelectedTabIndexChanged: {
-            tabView.updatePages();
-        }
-    }
-
-    onWidthChanged: tabView.updatePages();
-    onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
         item.__headerContents = headerContents;
-//        tabView.updatePages();
     }
 }

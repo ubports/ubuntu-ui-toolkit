@@ -47,7 +47,6 @@ MainView {
         }
         Repeater {
             model: 3
-            // but this does.
             Tab {
                 title: "Extra " + index
                 page: Page {
@@ -67,15 +66,7 @@ MainView {
                                 right: parent.right
                             }
                             text: "Previous"
-                            onClicked: tabs.selectedTabIndex--
-                        }
-                        Button {
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                            }
-                            text: "Next"
-                            onClicked: tabs.selectedTabIndex++
+                            onClicked: if (tabs.selectedTabIndex > 0) tabs.selectedTabIndex--
                         }
                     }
                 }

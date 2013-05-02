@@ -40,11 +40,6 @@ Item {
      */
     property Tabs tabs
 
-    property int numTabs: tabs && tabs.__tabs ? tabs.__tabs.length : 0
-    onNumTabsChanged: {
-        buttonView.selectButton(tabs.selectedTabIndex);
-    }
-
     /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
@@ -59,18 +54,6 @@ Item {
         }
     }
 
-    Connections {
-        target: tabs.tabsContainer
-        onDirtyChanged: {
-            print("dirty changed")
-            if (tabs.tabsContainer.dirty) {
-                print("dirty!")
-                buttonView.selectButton(tabs.selectedTabIndex);
-                tabs.tabsContainer = false;
-            }
-        }
-    }
-
     /*!
       \internal
       Avoid interpreting a click to activate the tab bar as a button click.
@@ -82,14 +65,8 @@ Item {
 
     Connections {
         target: tabs
-        onSelectedTabIndexChanged: {
-            buttonView.selectButton(tabs.selectedTabIndex);
-        }
-        onModelChanged: {
-            print("model changed!");
-            buttonView.selectButton(tabs.selectedTabIndex)
-        }
-        Component.onCompleted: buttonView.selectButton(tabs.selectedTabIndex)
+        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
+        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
     }
 
     Component {
@@ -127,8 +104,6 @@ Item {
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
                     property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
-                    //                    property bool selected: tabs.selectedTabIndex === button.buttonIndex
-                    //                    property bool selected: buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
@@ -136,14 +111,12 @@ Item {
                     // make fading work well, and not to mess up width/offset computations
                     opacity: isVisible() ? (selected ? headerTextSelectedOpacity : headerTextOpacity) : 0
                     function isVisible() {
-                        //                        return true; // TODO TIM: remove
                         if (selected) return true;
                         if (!tabBar.active) return false;
                         if (buttonView.needsScrolling) return true;
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
                         // while sliding in from the right side when a new button was selected
-                        //                        return true;
                         var numTabs = tabs.__tabs.length;
                         var minimum = buttonView.selectedButtonIndex;
                         var maximum = buttonView.selectedButtonIndex + numTabs - 1;
@@ -288,9 +261,7 @@ Item {
         }
 
         Component.onCompleted: {
-            //                        selectButton(tabs.selectedTabIndex);
-            //            selectButton(0)
-            //            active = false;
+            selectButton(tabs.selectedTabIndex);
         }
 
         onDragEnded: activatingTimer.stop()

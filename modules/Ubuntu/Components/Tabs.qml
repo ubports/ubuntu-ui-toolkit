@@ -110,7 +110,7 @@ PageTreeNode {
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (__tabs.length <= selectedTabIndex) ?
                                            null : __tabs[selectedTabIndex]
 
     /*!
@@ -145,13 +145,16 @@ PageTreeNode {
     */
     property alias __tabs: tabsModel.tabList
 
+    /*
+      Children are placed in a separate item that has functionality to extract the Tab items.
+     */
     default property alias tabChildren: tabsModel.children
 
-    property alias tabsContainer: tabsModel
-
-    Component.onCompleted: tabsModel.updateTabList()
-
-
+    /*!
+      Used by the tabs delegate to update the tabs header with the titles of all the tabs.
+      This signal is used in an intermediate step in transitioning the tabs to a new
+      implementation and may be removed in the future.
+     */
     signal modelChanged()
 
     /*!
@@ -167,22 +170,14 @@ PageTreeNode {
             updateTabList();
         }
 
-//        Component.onCompleted: updateTabList();
-
         function updateTabList() {
             var list = [];
             for (var i=0; i < children.length; i++) {
-                if (isTab(children[i])) list.push(children[i]);
+                if (isTab(tabsModel.children[i])) list.push(tabsModel.children[i]);
             }
             tabList = list;
-            print("updated tab list to "+list)
-            tabsModel.dirty = true;
             tabs.modelChanged();
         }
-
-        property bool dirty: false
-
-        onDirtyChanged: print("dirty = "+dirty)
 
         function isTab(item) {
             if (item && item.hasOwnProperty("__isPageTreeNode")
