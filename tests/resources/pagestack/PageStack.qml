@@ -18,10 +18,16 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
+Rectangle {
+    color: "white"
+    width: units.gu(50)
+    height: units.gu(70)
+
 MainView {
     id: mainView
     width: units.gu(38)
     height: units.gu(50)
+    anchors.centerIn: parent
 
     PageStack {
         id: pageStack
@@ -43,6 +49,12 @@ MainView {
                     text: i18n.tr("External page")
                     onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
                     progression: true
+                }
+            }
+
+            tools: ToolbarActions {
+                Action {
+                    text: "yeah"
                 }
             }
         }
@@ -81,4 +93,5 @@ MainView {
             }
         }
     }
+}
 }

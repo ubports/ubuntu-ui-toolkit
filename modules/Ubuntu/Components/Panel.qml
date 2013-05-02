@@ -363,6 +363,12 @@ Item {
 
     DraggingArea {
         id: draggingArea
+
+        Rectangle {
+            anchors.fill: parent
+            color: "red"
+        }
+
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
         zeroVelocityCounts: true
         anchors {
