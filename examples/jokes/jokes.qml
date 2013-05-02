@@ -36,10 +36,24 @@ import QtMultimedia 5.0
      - QML State
  */
 
-Rectangle {
+MainView {
+    // objectName for functional testing purposes (autopilot-qt5)
+    objectName: "mainView"
+
+    // Note! applicationName needs to match the .desktop filename
+    applicationName: "jokes"
+
+    /*
+     This property enables the application to change orientation
+     when the device is rotated. The default is false.
+    */
+    automaticOrientation: true
+
+    width: units.gu(100)
+    height: units.gu(75)
+
     id: page
-    width: units.gu(48)
-    height: units.gu(60)
+
 
     property string url : "http://api.icndb.com/jokes/random?limitTo=[nerdy,explicit]";
     readonly property string _stateLoading : "Loading"
@@ -91,7 +105,7 @@ Rectangle {
             id: jokeHolder
             anchors.fill: parent
             text: "Tap here!"
-            fontSize: "normal"
+            fontSize: "large"
             color: "#f1f1f1"
             textFormat: Text.RichText
             horizontalAlignment: Text.AlignHCenter
@@ -121,4 +135,3 @@ Rectangle {
          }
      ]
 }
-

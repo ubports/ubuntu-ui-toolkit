@@ -239,7 +239,6 @@ void tst_ThemeEngine::testCase_selectorDelegates()
 
         ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
         QVERIFY(attached);
-
         QQuickItem *delegate = qvariant_cast<QQuickItem*>(attached->property("delegate"));
 
         if (attached->path() == ".basea") {
@@ -248,7 +247,7 @@ void tst_ThemeEngine::testCase_selectorDelegates()
             QCOMPARE(delegateClass, QString("QQuickItem"));
         } else if (attached->path() == ".testa") {
             QVERIFY(!delegate);
-        } else if (attached->path() == ".testa .base") {
+        } else if (attached->path() == ".testa .basea") {
             QVERIFY(delegate);
             QString delegateClass = delegate->metaObject()->className();
             QCOMPARE(delegateClass, QString("QQuickText"));

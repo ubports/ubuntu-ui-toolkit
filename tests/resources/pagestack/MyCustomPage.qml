@@ -13,36 +13,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-    id: visuals
-    // styling properties
-    property color color
-    property real barOpacity
+Page {
+    title: i18n.tr("My custom page")
 
-    anchors.fill: parent
-    property alias contentItem: background
-
-    Rectangle {
-        id: background
+    Flickable {
         anchors.fill: parent
-        color: visuals.color
-        opacity: visuals.barOpacity
+        contentHeight: parent.height + units.gu(10)
+        Label {
+            anchors {
+                top: parent.top
+                topMargin: units.gu(16)
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            text: i18n.tr("This is an external page\nwith a locked toolbar.")
+            color: "#757373"
+        }
     }
 
-    Image {
-        id: dropshadow
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: background.top
+    tools: ToolbarActions {
+        Action {
+            text: "action 1"
+            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
         }
-        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: item.opened || item.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
+        Action {
+            text: "action 2"
+            iconSource: Qt.resolvedUrl("call_icon.png")
         }
+        opened: true
+        locked: true
     }
 }
