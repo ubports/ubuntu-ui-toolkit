@@ -213,6 +213,7 @@ PageTreeNode {
     /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
+            i18n.setDomain(applicationName);
             var component = Qt.createComponent(Qt.resolvedUrl("HudIntegration.qml"));
             if (component)
                 __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});
