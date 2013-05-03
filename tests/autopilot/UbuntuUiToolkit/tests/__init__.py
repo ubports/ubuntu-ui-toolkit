@@ -91,17 +91,17 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
         item = self.getListItem(itemText)
         itemTo = self.getListItem(itemTextTo)
 
-        self.mouse.move_to_object(item)
-        self.mouse.press()
-        self.mouse.move_to_object(itemTo)
-        self.mouse.release()
+        self.pointing_device.move_to_object(item)
+        self.pointing_device.press()
+        self.pointing_device.move_to_object(itemTo)
+        self.pointing_device.release()
 
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         self.assertThat(item.selected, Eventually(Equals(False)))
 
-        self.mouse.move_to_object(item)
-        self.mouse.click()
+        self.pointing_device.move_to_object(item)
+        self.pointing_device.click()
 
         self.assertThat(item.selected, Eventually(Equals(True)))
 

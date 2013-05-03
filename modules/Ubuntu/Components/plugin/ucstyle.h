@@ -92,12 +92,16 @@ public:
     bool unbindProperty(const QString &property);
     bool isUpdating(const QString &property) const;
 
+    QQuickItem *owner() const;
+    void setOwner(QQuickItem *owner);
+
 private Q_SLOTS:
     void updateStyledItem();
     
 private:
     QHash<QString, QQmlProperty> m_bindings;
     QString m_propertyUpdated;
+    QQuickItem *m_owner;
 
     void bind(const QQmlProperty &property);
     void unbind(const QString &name);
