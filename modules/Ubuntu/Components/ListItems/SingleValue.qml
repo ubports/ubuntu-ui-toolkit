@@ -67,7 +67,7 @@ Base {
             verticalCenter: parent.verticalCenter
             left: parent.left
         }
-        width: Math.min(implicitWidth, parent.width)
+        width: Math.min(implicitWidth, parent.width * 0.8)
     }
     LabelVisual {
         id: valueLabel
@@ -76,6 +76,7 @@ Base {
             verticalCenter: parent.verticalCenter
             right: parent.right
             left: label.right
+            leftMargin: listItem.__contentsMargins
         }
         horizontalAlignment: Text.AlignRight
         fontSize: "medium"

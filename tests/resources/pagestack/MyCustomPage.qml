@@ -17,41 +17,34 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-    id: visuals
-    // styling properties
-    property int iconWidth: 0
-    property int iconHeight: 0
+Page {
+    title: i18n.tr("My custom page")
 
-    anchors.fill: parent
-
-    Item {
-        anchors.centerIn: parent
-        height: icon.height + label.height + label.anchors.topMargin
-        opacity: item.enabled ? 1.0 : 0.3
-
-        Image {
-            id: icon
+    Flickable {
+        anchors.fill: parent
+        contentHeight: parent.height + units.gu(10)
+        Label {
             anchors {
                 top: parent.top
+                topMargin: units.gu(16)
                 horizontalCenter: parent.horizontalCenter
             }
-            width: iconWidth
-            height: iconWidth
-            source: item.iconSource
-        }
 
-        Label {
-            id: label
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                top: icon.bottom
-                topMargin: units.gu(1)
-            }
-            width: paintedWidth
-            text: item.text
+            text: i18n.tr("This is an external page\nwith a locked toolbar.")
+            color: "#757373"
         }
     }
 
-    Component.onCompleted: item.implicitWidth = implicitWidth
+    tools: ToolbarActions {
+        Action {
+            text: "action 1"
+            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+        }
+        Action {
+            text: "action 2"
+            iconSource: Qt.resolvedUrl("call_icon.png")
+        }
+        opened: true
+        locked: true
+    }
 }

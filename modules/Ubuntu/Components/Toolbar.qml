@@ -29,56 +29,82 @@ import Ubuntu.Components 0.1 as Theming
     \brief Application toolbar. This class is not exposed because it will
             be automatically added when a Page defines tools.
 */
-GenericToolbar {
+Panel {
     id: toolbar
-    Theming.ItemStyle.class: "toolbar"
-
+    anchors {
+        left: parent.left
+        right: parent.right
+        bottom: parent.bottom
+    }
     height: background.height
-    hintSize: units.gu(2)
-    triggerSize: units.gu(2)
+
+    /*!
+      \deprecated
+      Use property bool opened instead.
+     */
+    property bool active
+    onActiveChanged: {
+        print("Toolbar.active property is DEPRECATED. Use opened instead.");
+        toolbar.opened = active;
+    }
+
+    /*
+      \deprecated
+      Use property locked instead.
+     */
+    property bool lock
+    /*! \internal */
+    onLockChanged: {
+        print("Toolbar.lock property is DEPRECATED. Use locked instead.");
+        toolbar.locked = lock;
+    }
 
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
     property ToolbarActions tools: null
+    /*! \internal */
     onToolsChanged: {
-        if (tools && tools.active && tools.lock) {
+        locked = tools.locked;
+        if (tools && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
             internal.visibleTools = tools;
-            active = true;
-        } else if (!active && !animating) {
+            opened = true;
+        } else if (!opened && !animating) {
             // toolbar is invisible
             internal.visibleTools = tools;
         } else {
-            active = false;
+            opened = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
     }
 
-    // if tools is not specified, lock the toolbar in inactive position
-    lock: tools ? tools.lock : true
+    // if tools is not specified, lock the toolbar in closed position
+    locked: tools ? tools.locked : true
 
     Connections {
         target: tools
-        onActiveChanged: toolbar.active = tools.active;
+        onOpenedChanged: toolbar.opened = tools.opened;
+        onLockedChanged: toolbar.locked = tools.locked;
     }
-    onActiveChanged: if (tools) tools.active = toolbar.active
+
     QtObject {
         id: internal
         property ToolbarActions visibleTools: tools
     }
 
     onAnimatingChanged: {
-        if (!animating && !active) {
+        if (!animating && !opened) {
             internal.visibleTools = toolbar.tools;
         }
     }
 
     Item {
-        // All visual items go into the background because only the children
-        //  of the GenericToolbar are being shown/hidden while the toolbar
+        // FIXME:
+        // All theming items go into the background because only the children
+        //  of the Panel are being shown/hidden while the toolbar
         //  itself may stay in place.
         id: background
         anchors {
@@ -88,29 +114,24 @@ GenericToolbar {
         }
         height: units.gu(8)
 
-        Theming.ItemStyle.style: toolbar.Theming.ItemStyle.style
-        Theming.ItemStyle.delegate: toolbar.Theming.ItemStyle.delegate
-
-        MouseArea {
-            // don't let mouse events go through the toolbar
-            anchors.fill: parent
-            // FIXME: Bug in qml? Without onClicked below, this MouseArea
-            //      seems disabled.
-            onClicked: { }
-        }
+        Theming.ItemStyle.class: "toolbar"
+        // The values of opened and animated properties are used in the delegate
+        property bool opened: toolbar.opened
+        property bool animating: toolbar.animating
     }
 
     Component {
         id: toolButtonComponent
-        Button {
+        Item {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            text: action && action.text ? action.text : ""
-            iconSource: action && action.iconSource ? action.iconSource : ""
+            property string text: action && action.text ? action.text : ""
+            property url iconSource: action && action.iconSource ? action.iconSource : ""
+            signal clicked()
             onClicked: action.triggered(toolButton)
             enabled: action && action.enabled
             visible: action && action.visible
-            width: visible ? implicitWidth : 0
+            width: units.gu(5)
             height: toolbar.height
         }
     }
@@ -126,11 +147,13 @@ GenericToolbar {
         }
         onStatusChanged: {
             if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(action.triggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(action.triggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(action.triggered);
+                if (item.hasOwnProperty("clicked")) item.clicked.connect(backButton.itemTriggered);
+                if (item.hasOwnProperty("accepted")) item.accepted.connect(backButton.itemTriggered);
+                if (item.hasOwnProperty("triggered")) item.accepted.connect(backButton.itemTtriggered);
             }
         }
+        signal itemTriggered()
+        onItemTriggered: action.triggered(item)
     }
 
     Row {
@@ -141,7 +164,6 @@ GenericToolbar {
             top: parent.top
             rightMargin: units.gu(2)
         }
-        width: childrenRect.width
         spacing: units.gu(1)
 
         Repeater {

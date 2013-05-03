@@ -1,8 +1,45 @@
-ubuntu-ui-toolkit (0.1.46) raring; urgency=low
+ubuntu-ui-toolkit (0.1.46daily13.05.01ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
+  [ Florian Boucault ]
   * New release
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 26 Apr 2013 17:32:04 -0300
+  [ Zsombor Egri ]
+  * ItemStyle.path is (null) on start, gets reevaluated on theme change
+    (LP: #1081038)
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Image's fillMode works only first time (LP: #1171437)
+  * [UbuntuShape] after first unloading of Image, UbuntuShape is black
+    (LP: #1132771)
+
+  [ tpeeters <tim.peeters@canonical.com>, Juhapekka Piiroinen ]
+  * [toolbar] GenericToolbar does not support dragable components (LP:
+    #1116578)
+  * [toolbar] Provide abstract component for edge swipe (LP: #1163395)
+  * [toolbar] Need a more generic toolbar component (LP: #1131209)
+
+  [ Kaleo ]
+  * remove phone component showcase demo (LP: #1130603)
+  * Missing list item examples in new gallery (LP: #1172663)
+  * [UbuntuShape] image content is slightly distorted by the shape (LP:
+    #1170878)
+
+  [ Timo Jyrinki ]
+  * autopilot package needed for CI (LP: #1170659)
+  * 5 autopilot tests fail (LP: #1169556)
+
+  [ tpeeters ]
+  * Disabling the control in a ListItem should also disable clicks on
+    the ListItem itself (LP: #1166982)
+  * [toolbar] GenericToolbar does not support dragable components (LP:
+    #1116578)
+  * [toolbar] Provide abstract component for edge swipe (LP: #1163395)
+  * [toolbar] Need a more generic toolbar component (LP: #1131209)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 459 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 01 May 2013 07:51:21 +0000
 
 ubuntu-ui-toolkit (0.1.45) raring; urgency=low
 
