@@ -40,7 +40,6 @@ public:
     Selector styleSelector;
 
     // internal members
-    QQmlContext *componentContext;
     StyleCache::StyleData *styleRule;
     // hash of attachee property indexes as key, containing enabled/disabled value
     StyledPropertyMap watchedProperties;
@@ -58,6 +57,7 @@ public:
     void applyStyleOnChildren(QQuickItem *item);
     bool registerName(const QString &id);
     void listenThemeEngine();
+    void gainOwnershipOverStyleObject(QObject *styleObject, bool style);
     void _q_attacheePropertyChanged();
     void _q_refreshStyle();
     void _q_reapplyStyling(QQuickItem *);

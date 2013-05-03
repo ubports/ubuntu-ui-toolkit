@@ -38,7 +38,8 @@
  */
 
 UCStyle::UCStyle(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_owner(0)
 {
 }
 
@@ -166,6 +167,14 @@ bool UCStyle::isUpdating(const QString &property) const
     return property == m_propertyUpdated;
 }
 
+QQuickItem *UCStyle::owner() const
+{
+    return m_owner;
+}
+void UCStyle::setOwner(QQuickItem *owner)
+{
+    m_owner = owner;
+}
 
 /*!
  * \internal
