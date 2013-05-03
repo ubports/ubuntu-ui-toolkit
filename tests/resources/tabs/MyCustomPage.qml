@@ -44,7 +44,7 @@ Page {
             text: "action 2"
             iconSource: Qt.resolvedUrl("call_icon.png")
         }
-        active: true
-        lock: true
+        opened: true
+        locked: true
     }
 }
