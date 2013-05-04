@@ -107,6 +107,10 @@ ActionList {
       Use property opened instead.
      */
     property bool active
+    /*!
+      \deprecated
+      \internal
+     */
     onActiveChanged: {
         print("ToolbarActions.active property is DEPRECATED. Use opened instead.");
         toolbarActions.opened = active;
@@ -117,6 +121,10 @@ ActionList {
       Use property locked instead.
      */
     property bool lock
+    /*!
+      \deprecated
+      \internal
+     */
     onLockChanged: {
         print("ToolbarActions.lock property is DEPRECATED. Use locked instead.");
         toolbarActions.locked = lock;
