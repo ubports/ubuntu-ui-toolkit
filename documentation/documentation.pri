@@ -1,7 +1,7 @@
 QDOC = /usr/lib/*/qt5/bin/qdoc
 system($$QDOC $$PWD/ubuntu-ui-toolkit-online.qdocconf)
 system($$QDOC $$PWD/ubuntu-ui-toolkit-qtcreator.qdocconf)
-system(qhelpgenerator "$$PWD/html/ubuntuuserinterfacetoolkit.qhp")
+system(qhelpgenerator -o "$$PWD/html/ubuntuuserinterfacetoolkit.qch" "$$PWD/html/ubuntuuserinterfacetoolkit.qhp")
 
 install_docs.files = $$PWD/html
 install_docs.path = /usr/share/ubuntu-ui-toolkit/doc
