@@ -40,61 +40,90 @@ private:
 
 private Q_SLOTS:
 
+    void testCase_addDelegate()
+    {
+        QObjectCleanupHandler cleanup;
+        QQmlComponent *delegate = new QQmlComponent;
+        cleanup.add(delegate);
+        QVERIFY(cache.addDelegate("test", delegate));
+        cache.clear();
+        QVERIFY(cleanup.isEmpty());
+    }
+
+    void testCase_addDelegate_emptyType()
+    {
+        QVERIFY(!cache.addDelegate(QString(), new QQmlComponent));
+        cache.clear();
+    }
+
+    void testCase_addDelegate_nullComponent()
+    {
+        QVERIFY(!cache.addDelegate("test", 0));
+        cache.clear();
+    }
+
+    void testCase_addDelegate_newComponentForType()
+    {
+        QVERIFY(cache.addDelegate("test", new QQmlComponent));
+        QVERIFY(cache.addDelegate("test", new QQmlComponent));
+        cache.clear();
+    }
+
     void testCase_addStyleRule()
     {
         Selector selector;
         StyleCache::StyleData *rule;
 
         selector = Selector(".baseA");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseB");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA>.baseB");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB .baseC");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB>.baseC");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA>.baseB .baseC");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB .baseC .baseD");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
 
         selector = Selector(".baseA .baseB>.baseC .baseD");
-        cache.addStyleRule(selector, new QQmlComponent, new QQmlComponent);
+        cache.addStyleRule(selector, new QQmlComponent, "");
         rule = cache.match(selector);
         QVERIFY(rule);
         QCOMPARE(rule->selector(), selector);
@@ -167,21 +196,18 @@ private Q_SLOTS:
 
         QQmlComponent *style = new QQmlComponent();
         QQmlComponent *delegate = new QQmlComponent();
-        cleanup.add(style);
+        cache.addDelegate("test", delegate);
         cleanup.add(delegate);
-        cache.addStyleRule(Selector(".nodeb"), style, delegate);
+        cleanup.add(style);
+        cache.addStyleRule(Selector(".nodeb"), style, "test");
 
         style = new QQmlComponent();
-        delegate = new QQmlComponent();
         cleanup.add(style);
-        cleanup.add(delegate);
-        cache.addStyleRule(Selector(".nodea .nodeb"), style, delegate);
+        cache.addStyleRule(Selector(".nodea .nodeb"), style, "test");
 
         style = new QQmlComponent();
-        delegate = new QQmlComponent();
         cleanup.add(style);
-        cleanup.add(delegate);
-        cache.addStyleRule(Selector(".nodea .nodeb"), style, delegate);
+        cache.addStyleRule(Selector(".nodea .nodeb"), style, "test");
 
         cache.clear();
         QVERIFY(cleanup.isEmpty());
