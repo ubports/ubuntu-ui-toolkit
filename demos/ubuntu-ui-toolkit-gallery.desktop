@@ -1,8 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Type=Application
-Exec=/usr/lib/ubuntu-ui-toolkit/demos/gallery
-Path=/usr/lib/ubuntu-ui-toolkit/
-Name=Ubuntu UI Toolkit Gallery
-Terminal=false
-

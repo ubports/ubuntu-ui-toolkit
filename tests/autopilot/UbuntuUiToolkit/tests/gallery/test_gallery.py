@@ -21,13 +21,13 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
     # Support both running from system and in the source directory
     runPath = os.path.dirname(os.path.realpath(__file__))
-    localSourceFile = runPath + "/../../../../../demos/Gallery.qml"
+    localSourceFile = runPath + "/../../../../../examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
     if (os.path.isfile(localSourceFile)):
         print "Using local source directory"
         test_qml_file = localSourceFile
     else:
         print "Using system QML file"
-        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/demos/Gallery.qml"
+        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
 
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Gallery
+Comment=My project description
+Exec=/usr/bin/qmlscene $@ /usr/share/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
+Icon=qmlscene
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
