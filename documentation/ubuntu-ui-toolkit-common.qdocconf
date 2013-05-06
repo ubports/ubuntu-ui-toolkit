@@ -1,4 +1,4 @@
-project = Ubuntu User Interface Toolkit
+project = UbuntuUserInterfaceToolkit
 url = http://developer.ubuntu.com/api/ubuntu-12.10/qml/mobile/
 description = Ubuntu User Interface Toolkit Documentation
 sourcedirs = ../modules/Ubuntu/Components

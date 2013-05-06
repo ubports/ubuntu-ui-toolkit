@@ -27,27 +27,12 @@ Item {
     visible: source != ""
     property bool hasFrame: true
 
-    property alias iconHeight: shape.height
-    property alias iconWidth: shape.width
-    width: visible ? iconWidth : 0
-
-    anchors {
-        top: parent ? parent.top : undefined
-        left: parent ? parent.left : undefined
-        bottom: parent ? parent.bottom : undefined
-    }
-
     ImageWithFallback {
         id: icon
         visible: !iconVisual.hasFrame
         opacity: iconVisual.enabled ? 1.0 : 0.5
         fillMode: Image.PreserveAspectCrop
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: parent.left
-        }
-        height: sourceSize.height
-        width: sourceSize.width
+        anchors.fill: parent
         smooth: true
         asynchronous: true
     }
@@ -55,13 +40,7 @@ Item {
     UbuntuShape {
         id: shape
         visible: iconVisual.hasFrame
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: parent.left
-        }
-        height: icon.sourceSize.height
-        width: icon.sourceSize.width
-
+        anchors.fill: parent
         image: icon
     }
 }

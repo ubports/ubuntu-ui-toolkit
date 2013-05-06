@@ -23,6 +23,6 @@ HTML.footer = \
     "	<div>\n" \
     "		<nav role=\"navigation\" class=\"clearfix\">\n" \
     "		</nav>\n" \
-    "		<p>&copy; 2013 Canonical Ltd. Ubuntu and Canonical are registered trademarks of Canonical Ltd. <a class=\"link-bug\" href=\"https://bugs.launchpad.net/ubuntudeveloperportal/+filebug\">Report a bug on this site</a></p>\n" \
+    "		<p>&copy; 2013 Canonical Ltd. Ubuntu and Canonical are registered trademarks of Canonical Ltd.</p>\n" \
     "	</div>\n" \
     "</footer>\n"
