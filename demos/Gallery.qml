@@ -21,7 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 MainView {
     id: gallery
 
-    width: units.gu(100)
+    width: units.gu(120)
     height: units.gu(75)
 
     property bool wideAspect: width >= units.gu(80)
@@ -33,7 +33,7 @@ MainView {
             name: "wide"
             PropertyChanges {
                 target: pageStack
-                width: units.gu(30)
+                width: units.gu(40)
                 anchors {
                     fill: null
                     top: parent.top
