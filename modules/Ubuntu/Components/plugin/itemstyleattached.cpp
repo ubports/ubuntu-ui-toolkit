@@ -29,7 +29,6 @@
 #include "quickutils.h"
 
 #include <private/qqmlproperty_p.h>
-#include <private/qqmlcontext_p.h>
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";

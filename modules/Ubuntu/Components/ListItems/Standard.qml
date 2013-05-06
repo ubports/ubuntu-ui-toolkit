@@ -92,15 +92,17 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       Width of the icon to be displayed
     */
-    property alias __iconWidth: iconHelper.iconWidth
+    property real __iconWidth
 
     /*!
       \internal
+      \deprecated
       Height of the icon to be displayed
     */
-    property alias __iconHeight: iconHelper.iconHeight
+    property real __iconHeight
 
     /*!
       \internal
@@ -125,7 +127,7 @@ Empty {
       The mouseArea of the control will be set to the full Standard list item if
       there is no \l progression, or only the part left of the split, if there is a
       \l progression.
-      \qmlproperty Item control
+      \qmlproperty AbstractButton control
     */
     property alias control: controlContainer.control
 
@@ -177,7 +179,16 @@ Empty {
 
     IconVisual {
         id: iconHelper
-        anchors.leftMargin: listItem.__contentsMargins
+
+        width: height
+        anchors {
+            left: parent.left
+            leftMargin: listItem.__contentsMargins
+            top: parent.top
+            topMargin: units.gu(0.5)
+            bottom: parent.bottom
+            bottomMargin: anchors.topMargin
+        }
     }
 
     /*!

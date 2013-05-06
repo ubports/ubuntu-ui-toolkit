@@ -62,15 +62,17 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       Width of the icon to be displayed
     */
-    property alias __iconWidth: iconHelper.iconWidth
+    property real __iconWidth
 
     /*!
       \internal
+      \deprecated
       Height of the icon to be displayed
     */
-    property alias __iconHeight: iconHelper.iconHeight
+    property real __iconHeight
 
     /*!
       \internal
@@ -89,7 +91,16 @@ Empty {
 
     IconVisual {
         id: iconHelper
-        anchors.leftMargin: baseListItem.__contentsMargins
+
+        width: height
+        anchors {
+            left: parent.left
+            leftMargin: baseListItem.__contentsMargins
+            top: parent.top
+            topMargin: units.gu(0.5)
+            bottom: parent.bottom
+            bottomMargin: anchors.topMargin
+        }
     }
 
     /*!
