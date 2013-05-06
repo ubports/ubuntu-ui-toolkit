@@ -163,6 +163,8 @@ PageTreeNode {
     /*! \internal */
     onParentNodeChanged: internal.updateHeader();
 
+    Component.onCompleted: internal.updateHeader();
+
     QtObject {
         id: internal
         function updateHeader() {
