@@ -8,8 +8,6 @@ for(filetype, filetypes) {
   OTHER_FILES += *.$$filetype
 }
 
-OTHER_FILES += gallery
-
 desktop_files.path = /usr/share/applications
 desktop_files.files = jokes.desktop
 

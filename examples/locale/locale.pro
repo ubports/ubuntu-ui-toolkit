@@ -10,9 +10,9 @@ for(filetype, filetypes) {
 
 
 desktop_files.path = /usr/share/applications
-desktop_files.files = unit-converter.desktop
+desktop_files.files = locale.desktop
 
-other_files.path = /usr/lib/ubuntu-ui-toolkit/examples/unit-converter
+other_files.path = /usr/lib/ubuntu-ui-toolkit/examples/locale
 other_files.files = $$OTHER_FILES
 
 INSTALLS += other_files desktop_files

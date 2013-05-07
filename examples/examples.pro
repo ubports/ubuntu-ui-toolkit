@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \ 
     ubuntu-ui-toolkit-gallery\
     jokes \
+    locale \
     unit-converter
 
 
