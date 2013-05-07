@@ -2,7 +2,7 @@ include( common.pri )
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += demos themes modules/ubuntu-ui-toolkit.pro tests examples
+SUBDIRS += demos themes modules/ubuntu-ui-toolkit.pro tests examples qmlrunner
 
 tests/unit.depends = modules/ubuntu-ui-toolkit.pro
 
