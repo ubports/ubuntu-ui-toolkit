@@ -149,8 +149,9 @@ PageTreeNode {
     */
     property alias __tabs: tabsModel.tabList
 
-    /*
+    /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
+      \qmlproperty list<Item> tabChildren
      */
     default property alias tabChildren: tabsModel.children
 
