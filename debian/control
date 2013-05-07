@@ -5,7 +5,7 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
                libgles2-mesa-dev,
                libglib2.0-dev,
-               libqt5graphicaleffects5,
+               libqt5qml-graphicaleffects | libqt5graphicaleffects5,
                qt5-default,
                qtbase5-dev,
                qtbase5-private-dev,
@@ -29,7 +29,7 @@ Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: amd64 i386 armhf
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: libqt5graphicaleffects5,
+Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
          libqt5svg5,
          qtdeclarative5-qtquick2-plugin,
          qtdeclarative5-window-plugin,
@@ -81,10 +81,11 @@ Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
          ubuntu-ui-toolkit-doc,
-         qtdeclarative5-qtmultimedia-plugin | libqt5declarative5-qtmultimedia-plugin,
+         qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
+Recommends: libqt5multimedia5-plugins
 Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
