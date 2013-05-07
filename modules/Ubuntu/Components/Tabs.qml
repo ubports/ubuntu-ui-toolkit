@@ -90,6 +90,10 @@ import Ubuntu.Components 0.1 as Theming
 
     \endqml
     As the example above shows, an external \l Page inside a \l Tab can be loaded using a Loader.
+
+    It is possible to use a Repeater to generate tabs, but when doing so, ensure that the Repeater
+    is declared inside the Tabs at the end, because otherwise the shuffling of
+    the order of children by the Repeater can cause incorrect ordering of the tabs.
 */
 
 PageTreeNode {
@@ -104,13 +108,13 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
+    property int selectedTabIndex: tabs.__tabs.length > 0 ? 0 : -1
 
     /*!
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (__tabs.length <= selectedTabIndex) ?
                                            null : __tabs[selectedTabIndex]
 
     /*!
@@ -139,21 +143,56 @@ PageTreeNode {
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 
+    /*!
+      \internal
+      Used by the delegate to create the tabs header.
+    */
+    property alias __tabs: tabsModel.tabList
 
-    // FIXME: Using the VisualItemModel as a workaround for this bug:
-    //  "theming: contentItem does work when it is a VisualItemModel"
-    //  https://bugs.launchpad.net/tavastia/+bug/1080330
-    //  The workaround does not break the regular TabsDelegate.
-    /*! \internal */
-    default property alias __tabs: tabsModel.children
+    /*!
+      Children are placed in a separate item that has functionality to extract the Tab items.
+      \qmlproperty list<Item> tabChildren
+     */
+    default property alias tabChildren: tabsModel.children
+
+    /*!
+      Used by the tabs delegate to update the tabs header with the titles of all the tabs.
+      This signal is used in an intermediate step in transitioning the tabs to a new
+      implementation and may be removed in the future.
+     */
+    signal modelChanged()
 
     /*!
       \internal
       required by NewTabsDelegate
      */
-    property alias __tabsModel: tabsModel
-    VisualItemModel {
+    Item {
+        anchors.fill: parent
         id: tabsModel
+
+        property var tabList: []
+        onChildrenChanged: {
+            updateTabList();
+        }
+
+        function updateTabList() {
+            var list = [];
+            for (var i=0; i < children.length; i++) {
+                if (isTab(tabsModel.children[i])) list.push(tabsModel.children[i]);
+            }
+            tabList = list;
+            tabs.modelChanged();
+        }
+
+        function isTab(item) {
+            if (item && item.hasOwnProperty("__isPageTreeNode")
+                    && item.__isPageTreeNode && item.hasOwnProperty("title")
+                    && item.hasOwnProperty("page")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /*! \internal */

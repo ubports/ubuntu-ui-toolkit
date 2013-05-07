@@ -32,22 +32,23 @@ Item {
       the next/previous tab.
      */
     property bool swipeToSwitchTabs
-    onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED. Please do not rely on swiping the Page's contents to switch tabs, this functionality will be removed.")
+    /*!
+      \deprecated
+      \internal
+     */
+    onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
 
     property color headerTextColor
     property color headerTextSelectedColor
     property real headerTextOpacity
     property real headerTextSelectedOpacity
-
     property int headerTextFadeDuration
     property string headerFontSize
     property int headerFontWeight
     property real headerTextLeftMargin
     property real headerTextRightMargin
     property real headerTextBottomMargin
-
     property url indicatorImageSource
-
     property real tabBarHeight
 
     /*!
@@ -63,8 +64,6 @@ Item {
     // visuals
     id: tabsDelegate
     anchors.fill: parent
-
-    property VisualItemModel tabModel: item.__tabsModel
 
     // use theTabs property because item gives problems in the loader
     property Tabs theTabs: item
@@ -94,54 +93,7 @@ Item {
         }
     }
 
-    ListView {
-        id: tabView
-        anchors.fill: parent
-
-        interactive: tabsDelegate.swipeToSwitchTabs
-        model: tabsDelegate.tabModel
-        onModelChanged: tabView.updatePages()
-        currentIndex: item.selectedTabIndex
-        onCurrentIndexChanged: if (item.__tabsModel.count > 0) item.selectedTabIndex = tabView.currentIndex
-
-        orientation: ListView.Horizontal
-        snapMode: ListView.SnapOneItem
-        boundsBehavior: Flickable.DragOverBounds
-        highlightFollowsCurrentItem: true
-        highlightRangeMode: ListView.StrictlyEnforceRange
-
-        function updatePages() {
-            if (!tabsDelegate.tabModel) return; // not initialized yet
-
-            var tabList = tabsDelegate.tabModel.children
-            var tab;
-            for (var i=0; i < tabList.length; i++) {
-                tab = tabList[i];
-                tab.anchors.fill = undefined;
-                tab.width = tabView.width;
-                tab.height = tabView.height
-            }
-            tabView.updateSelectedTabIndex();
-        }
-
-        function updateSelectedTabIndex() {
-            if (tabView.currentIndex === item.selectedTabIndex) return;
-            // The view is automatically updated, because highlightFollowsCurrentItem
-            tabView.currentIndex = item.selectedTabIndex;
-        }
-    }
-
-    Connections {
-        target: item
-        onSelectedTabIndexChanged: {
-            tabView.updateSelectedTabIndex();
-        }
-    }
-
-    onWidthChanged: tabView.updatePages();
-    onHeightChanged: tabView.updatePages();
     Component.onCompleted: {
         item.__headerContents = headerContents;
-        tabView.updatePages();
     }
 }

@@ -1,4 +1,4 @@
-source: borderInName.png
+source: "borderInName.png"
 border.left: 9
 border.right: 2
 border.top: 9 

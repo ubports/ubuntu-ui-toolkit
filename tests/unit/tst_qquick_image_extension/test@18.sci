@@ -1,4 +1,4 @@
-source: test@18.png
+source: "test@18.png"
 border.left: 9
 border.right: 2
 border.top: 9 
