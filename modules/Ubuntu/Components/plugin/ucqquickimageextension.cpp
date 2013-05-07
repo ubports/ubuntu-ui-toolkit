@@ -149,7 +149,7 @@ QString UCQQuickImageExtension::scaledSource(QString source, QString sciFilePath
     QString baseUrl = "image://scaling/" + scaleFactor + "/" + sciDirectory;
 
     // If the source url is between quotes "", remove them
-    const QChar quote = '\"';
+    const QChar quote = '"';
     const int quoteFirstIndex = source.indexOf(quote);
     if (quoteFirstIndex != -1) {
         source.remove(quoteFirstIndex, 1);
