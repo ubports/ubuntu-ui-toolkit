@@ -29,6 +29,7 @@
 #include "quickutils.h"
 
 #include <private/qqmlproperty_p.h>
+#include <private/qqmlcomponentattached_p.h>
 
 const char *itemProperty = "item";
 const char *styleProperty = "itemStyle";
@@ -120,7 +121,7 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     style(0),
     delegate(0),
     styleRule(0),
-    delayApplyingStyle(true),
+    completed(false),
     customStyle(false),
     customDelegate(false),
     connectedToEngine(false)
@@ -130,6 +131,14 @@ ItemStyleAttachedPrivate::ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObjec
     // there is no reason to do styling till the parent is not set and this applies
     // to the root objects too as even those have an internal parent
     QObject::connect(attachee, SIGNAL(parentChanged(QQuickItem*)), q_ptr, SLOT(_q_reapplyStyling(QQuickItem*)));
+
+    // connect to one of the attached components to receive completion
+    QQmlComponentAttached *component = QQmlComponent::qmlAttachedProperties(attachee);
+    if (component) {
+        QObject::connect(component, SIGNAL(completed()), q_ptr, SLOT(_q_refreshStyle()));
+    } else {
+        qmlInfo(q_ptr) << "WARNING: no attached component found for " << styleClass;
+    }
 
     listenThemeEngine();
 
@@ -216,7 +225,7 @@ bool ItemStyleAttachedPrivate::updateStyle()
 {
     bool result = false;
     // do not do anything till the component gets complete?
-    if (delayApplyingStyle)
+    if (!completed)
        return result;
 
     if (!customStyle) {
@@ -252,7 +261,7 @@ bool ItemStyleAttachedPrivate::updateDelegate()
 {
     bool result = false;
     // do not do anything till the component gets complete?
-    if (delayApplyingStyle)
+    if (!completed)
        return result;
 
     if (!customDelegate) {
@@ -299,8 +308,9 @@ bool ItemStyleAttachedPrivate::updateDelegate()
   Updates the style and delegate variables. The style update is forced
   when the item changes the style lookup from private to theme.
 */
-void ItemStyleAttachedPrivate::updateTheme()
+int ItemStyleAttachedPrivate::updateTheme()
 {
+    int result = NoUpdate;
     // check if the new rule differs from the previous one
     StyleCache::StyleData *newRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
     if (newRule && (styleRule != newRule)) {
@@ -324,10 +334,17 @@ void ItemStyleAttachedPrivate::updateTheme()
             style->bindItem(delegate, watchedProperties, false);
         }
         if (styleChanged || delegateChanged) {
+            if (styleChanged) {
+                result |= StyleUpdated;
+            }
+            if (delegateChanged) {
+                result |= DelegateUpdated;
+            }
             Q_Q(ItemStyleAttached);
             Q_EMIT q->styleChanged();
         }
     }
+    return result;
 }
 
 void ItemStyleAttachedPrivate::resetStyle()
@@ -468,12 +485,27 @@ void ItemStyleAttachedPrivate::gainOwnershipOverStyleObject(QObject *styleObject
 void ItemStyleAttachedPrivate::_q_refreshStyle()
 {
     // no need to delay style applying any longer
-    delayApplyingStyle = false;
+    bool applyOnChildren = !completed;
+    if (!completed) {
+        styleSelector = Selector(attachee);
+    }
+    completed = true;
 
     // ... but style refresh is needed as the old styles are dead
     styleRule = 0;
 
-    updateTheme();
+    int update = updateTheme();
+    if (applyOnChildren) {
+        // theme applied first time, style on custom style objects
+        if (((update & StyleUpdated) != StyleUpdated) && customStyle) {
+            updateStyle();
+        }
+        if (((update & DelegateUpdated) != DelegateUpdated) && customDelegate) {
+            updateDelegate();
+        }
+        // this will happen only upon the styled item gets completed
+        applyStyleOnChildren(attachee);
+    }
 }
 
 /*!
@@ -482,20 +514,15 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
  */
 void ItemStyleAttachedPrivate::_q_reapplyStyling(QQuickItem *parentItem)
 {
-    if (!parentItem)
-        // the component is most likely used in a delegate or is being deleted
+    if (!parentItem || !completed)
+        // the component is most likely used in a delegate, is being deleted
+        // or not yet complete
         return;
 
-    if (delayApplyingStyle) {
-        delayApplyingStyle = false;
-        styleSelector = Selector(attachee);
+    Selector newSelector(attachee);
+    if (newSelector != styleSelector) {
+        styleSelector = newSelector;
         updateTheme();
-    } else {
-        Selector newSelector(attachee);
-        if (newSelector != styleSelector) {
-            styleSelector = newSelector;
-            updateTheme();
-        }
     }
     // need to reapply styling on each child of the attachee!
     // this will cause performance issues!
@@ -545,7 +572,7 @@ void ItemStyleAttached::setName(const QString &name)
     if (d->styleId.compare(name, Qt::CaseInsensitive)) {
         if (d->registerName(name.toLower())) {
             d->styleSelector.update();
-            if (d->delayApplyingStyle)
+            if (!d->completed)
                 return;
             d->updateTheme();
             // refresh children theme
@@ -580,7 +607,7 @@ void ItemStyleAttached::setStyleClass(const QString &styleClass)
         // replace spaces with dots
         d->styleClass = styleClass.toLower().trimmed().replace(' ', '.');
         d->styleSelector.update();
-        if (d->delayApplyingStyle)
+        if (!d->completed)
             return;
         d->updateTheme();
         // refresh children theme
