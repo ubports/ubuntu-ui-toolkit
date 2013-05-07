@@ -111,5 +111,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qtchooser
 Description: Simple QML Runner
- A simple QML file runner similar to qmlscene.
+ A simple QML file runner similar to qmlscene. This will be eventually 
+ replaced by upstream 'qml' tool, so it is encouraged to use the 
+ '/usr/bin/qml' already which is provided by this package.
 
