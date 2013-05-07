@@ -70,7 +70,7 @@ private Q_SLOTS:
 
         QString expected;
         QTextStream expectedStream(&expected);
-        expectedStream << "source: image://scaling/1/./borderInName.png" << endl;
+        expectedStream << "source: \"image://scaling/1/./borderInName.png\"" << endl;
         expectedStream << "border.left: 9" << endl;
         expectedStream << "border.right: 2" << endl;
         expectedStream << "border.top: 9" << endl;
