@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Gallery
 Comment=My project description
-Exec=/usr/bin/qmlscene $@ /usr/share/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
+Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
 Icon=qmlscene
 Terminal=false
 Type=Application
