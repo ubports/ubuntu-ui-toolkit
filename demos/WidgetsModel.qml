@@ -24,8 +24,8 @@ ListModel {
     }
 
     ListElement {
-        label: "Switches"
-        source: "Switches.qml"
+        label: "Toggles"
+        source: "Toggles.qml"
     }
     ListElement {
         label: "Buttons"
@@ -42,7 +42,7 @@ ListModel {
 
     // Not in design guidelines yet
     ListElement {
-        label: "Progress Bars"
+        label: "Progress and activity"
         source: "ProgressBars.qml"
     }
     ListElement {

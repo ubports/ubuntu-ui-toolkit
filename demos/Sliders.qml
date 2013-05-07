@@ -29,7 +29,7 @@ Template {
                 width: parent.width
             }
             Label {
-                text: i18n.tr("slider.value = %1").arg(defaultSlider.value)
+                text: i18n.tr("value = %1").arg(defaultSlider.value)
             }
         }
 
@@ -42,7 +42,7 @@ Template {
                 live: true
             }
             Label {
-                text: i18n.tr("slider.value = %1").arg(liveSlider.value)
+                text: i18n.tr("value = %1").arg(liveSlider.value)
             }
         }
 
@@ -57,7 +57,7 @@ Template {
                 function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
             }
             Label {
-                text: i18n.tr("slider.value = %1").arg(rangeSlider.value)
+                text: i18n.tr("value = %1").arg(rangeSlider.value)
             }
         }
     }
