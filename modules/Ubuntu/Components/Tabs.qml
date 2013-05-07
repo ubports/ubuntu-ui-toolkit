@@ -90,6 +90,10 @@ import Ubuntu.Components 0.1 as Theming
 
     \endqml
     As the example above shows, an external \l Page inside a \l Tab can be loaded using a Loader.
+
+    It is possible to use a Repeater to generate tabs, but when doing so, ensure that the Repeater
+    is declared inside the Tabs at the end, because otherwise the shuffling of
+    the order of children by the Repeater can cause incorrect ordering of the tabs.
 */
 
 PageTreeNode {
