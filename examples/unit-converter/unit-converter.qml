@@ -47,7 +47,7 @@ MainView {
     objectName: "mainView"
     
     // Note! applicationName needs to match the .desktop filename
-    applicationName: "converter"
+    applicationName: "unit-converter"
     
     /*
      This property enables the application to change orientation

@@ -1,5 +1,9 @@
 ubuntu-ui-toolkit (0.1.46daily13.05.01ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
+  [Zoltan Balogh]
+  * Component gallery app is moved to examples
+  * All examples made QtC compliant
+
   [ Florian Boucault ]
   * New release
 

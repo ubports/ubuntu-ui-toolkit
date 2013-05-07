@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Locale
+Name=converter
 Comment=My project description
-Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/locale/locale.qml
+Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/unit-converter/unit-converter.qml
 Icon=qmlscene
 Terminal=false
 Type=Application

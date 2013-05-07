@@ -3,7 +3,7 @@
 import QmlProject 1.1
 
 Project {
-    mainFile: "converter.qml"
+    mainFile: "ubuntu-ui-toolkit-gallery.qmlproject"
     
     /* Include .qml, .js, and image files from current directory and subdirectories */
     QmlFiles {
@@ -27,5 +27,5 @@ Project {
         filter: "*"
     }
     /* List of plugin directories passed to QML runtime */
-    importPaths: [ "." ,"/usr/bin","/usr/lib/x86_64-linux-gnu/qt5/qml" ]
+    importPaths: [ "." ,"/usr/bin","/usr/lib/i386-linux-gnu/qt5/qml" ]
 }

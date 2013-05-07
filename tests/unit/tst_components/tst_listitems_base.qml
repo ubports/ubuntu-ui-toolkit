@@ -34,7 +34,7 @@ TestCase {
          compare(listItemBase.icon,testItem,"set/get from Item")
 
          // test with url
-         var newIcon = "../../../demos/small_avatar.png"
+         var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
          listItemBase.icon = newIcon
          compare(listItemBase.icon,newIcon,"set/get from url")
      }
