@@ -28,6 +28,11 @@ class ItemStyleAttachedPrivate {
     Q_DECLARE_PUBLIC(ItemStyleAttached)
 
 public:
+    enum UpdateThemeResult {
+        NoUpdate = 0,
+        StyleUpdated = 0x01,
+        DelegateUpdated = 0x02
+    };
     ItemStyleAttachedPrivate(ItemStyleAttached *qq, QObject *attached);
     ~ItemStyleAttachedPrivate();
 
@@ -51,7 +56,7 @@ public:
     void watchAttacheeProperties();
     bool updateStyle();
     bool updateDelegate();
-    void updateTheme();
+    int updateTheme();
     void resetStyle();
     void resetDelegate();
     void applyStyleOnChildren(QQuickItem *item);

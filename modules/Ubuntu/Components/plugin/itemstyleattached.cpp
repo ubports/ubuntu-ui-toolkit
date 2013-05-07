@@ -308,8 +308,9 @@ bool ItemStyleAttachedPrivate::updateDelegate()
   Updates the style and delegate variables. The style update is forced
   when the item changes the style lookup from private to theme.
 */
-void ItemStyleAttachedPrivate::updateTheme()
+int ItemStyleAttachedPrivate::updateTheme()
 {
+    int result = NoUpdate;
     // check if the new rule differs from the previous one
     StyleCache::StyleData *newRule = ThemeEnginePrivate::styleRuleForPath(styleSelector);
     if (newRule && (styleRule != newRule)) {
@@ -333,10 +334,17 @@ void ItemStyleAttachedPrivate::updateTheme()
             style->bindItem(delegate, watchedProperties, false);
         }
         if (styleChanged || delegateChanged) {
+            if (styleChanged) {
+                result |= StyleUpdated;
+            }
+            if (delegateChanged) {
+                result |= DelegateUpdated;
+            }
             Q_Q(ItemStyleAttached);
             Q_EMIT q->styleChanged();
         }
     }
+    return result;
 }
 
 void ItemStyleAttachedPrivate::resetStyle()
@@ -486,8 +494,15 @@ void ItemStyleAttachedPrivate::_q_refreshStyle()
     // ... but style refresh is needed as the old styles are dead
     styleRule = 0;
 
-    updateTheme();
+    int update = updateTheme();
     if (applyOnChildren) {
+        // theme applied first time, style on custom style objects
+        if (((update & StyleUpdated) != StyleUpdated) && customStyle) {
+            updateStyle();
+        }
+        if (((update & DelegateUpdated) != DelegateUpdated) && customDelegate) {
+            updateDelegate();
+        }
         // this will happen only upon the styled item gets completed
         applyStyleOnChildren(attachee);
     }

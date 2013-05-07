@@ -360,6 +360,13 @@ void tst_ThemeEngine::testCase_CustomTheme()
     delegate = styleItem2->property("delegate").value<QQuickItem*>();
     QVERIFY(delegate);
 
+    // verify whether cleanup of the objects is happening properly
+    QObjectCleanupHandler cleanup;
+    cleanup.add(style);
+    cleanup.add(delegate);
+    delete item;
+    QVERIFY(cleanup.isEmpty());
+
     delete root;
 }
 
