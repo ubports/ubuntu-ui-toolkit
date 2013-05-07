@@ -7,6 +7,14 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 %:
 	dh $@ --fail-missing
 
+override_dh_auto_install:
+	dh_auto_install
+	# Temporary hacks until proper upstream binary installed
+	# Provide both legacy qmlscene and future qml links
+	# -> users may update to use the 'qml' name
+	ln -s /usr/bin/qmlrunner $(CURDIR)/debian/tmp/usr/bin/qml
+	ln -s /usr/bin/qmlrunner $(CURDIR)/debian/tmp/usr/bin/qmlscene
+
 override_dh_install:
 	dh_auto_build -- docs
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 

@@ -104,3 +104,12 @@ Depends: ${misc:Depends},
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
+
+Package: qmlrunner
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Conflicts: qtchooser
+Description: Simple QML Runner
+ A simple QML file runner similar to qmlscene.
+
