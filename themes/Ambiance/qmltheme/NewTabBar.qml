@@ -66,6 +66,7 @@ Item {
     Connections {
         target: tabs
         onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
+        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
     }
 
     Component {
@@ -79,9 +80,17 @@ Item {
             width: childrenRect.width
             property int rowNumber: modelData
 
+            Component.onCompleted: {
+                if (rowNumber === 0) {
+                    buttonView.buttonRow1 = theRow;
+                } else {
+                    buttonView.buttonRow2 = theRow;
+                }
+            }
+
             Repeater {
                 id: repeater
-                model: tabs.__tabsModel.children
+                model: tabs.__tabs
 
                 AbstractButton {
                     id: button
@@ -97,7 +106,6 @@ Item {
                     property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
-                    Component.onCompleted: buttonView.buttons.push(button)
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
@@ -109,7 +117,7 @@ Item {
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
                         // while sliding in from the right side when a new button was selected
-                        var numTabs = tabs.__tabsModel.count;
+                        var numTabs = tabs.__tabs.length;
                         var minimum = buttonView.selectedButtonIndex;
                         var maximum = buttonView.selectedButtonIndex + numTabs - 1;
                         if (MathUtils.clamp(buttonIndex, minimum, maximum) === buttonIndex) return true;
@@ -176,7 +184,7 @@ Item {
                     // Select this button
                     function select() {
                         buttonView.selectedButtonIndex = button.buttonIndex;
-                        buttonView.updateOffset();
+                        buttonView.updateOffset(button.offset);
                     }
                 }
             }
@@ -192,12 +200,14 @@ Item {
         }
 
         // set to the width of one tabButtonRow in Component.onCompleted.
-        property real buttonRowWidth
+        property real buttonRowWidth: buttonRow1 ? buttonRow1.width : 0
 
-        property var buttons: []
+        // set by the delegate when the components are completed.
+        property Row buttonRow1
+        property Row buttonRow2
 
         // Track which button was last clicked
-        property int selectedButtonIndex: 0
+        property int selectedButtonIndex: -1
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
@@ -222,21 +232,23 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
-            var b1 = buttons[tabIndex];
-            var b2 = buttons[tabIndex + tabs.__tabsModel.children.length];
+            if (tabIndex < 0 || tabIndex >= tabs.__tabs.length) return;
+            if (buttonView.buttonRow1 && buttonView.buttonRow2) {
+                var b1 = buttonView.buttonRow1.children[tabIndex];
+                var b2 = buttonView.buttonRow2.children[tabIndex];
 
-            // find the button with the nearest offset
-            var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);
-            var d2 = cyclicDistance(b2.offset, buttonView.offset, 2);
-            if (d1 < d2) {
-                b1.select();
-            } else {
-                b2.select();
+                // find the button with the nearest offset
+                var d1 = cyclicDistance(b1.offset, buttonView.offset, 2);
+                var d2 = cyclicDistance(b2.offset, buttonView.offset, 2);
+                if (d1 < d2) {
+                    b1.select();
+                } else {
+                    b2.select();
+                }
             }
         }
 
-        function updateOffset() {
-            var newOffset = buttonView.buttons[buttonView.selectedButtonIndex].offset;
+        function updateOffset(newOffset) {
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
@@ -250,7 +262,6 @@ Item {
 
         Component.onCompleted: {
             selectButton(tabs.selectedTabIndex);
-            buttonRowWidth = currentItem.width;
         }
 
         onDragEnded: activatingTimer.stop()
