@@ -112,7 +112,11 @@ Conflicts: qtchooser
 Description: Simple QML Scene symlink provider
  A simple qmlscene symlink provider. Depend on this package instead of 
  qtchooser/qt5-default/qmlscene in the following way:
+ .
  Depends: qmlrunner | qtchooser
+ .
+ The conditional dependency allows either having just qmlrunner installed, 
+ or having for example full ubuntu-sdk (and qt5-default/qtchooser).
  .
  This package will be eventually replaced by  upstream 'qml' tool, so 
  it is encouraged to use the '/usr/bin/qml' symlink already which is also 
