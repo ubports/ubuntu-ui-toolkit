@@ -38,6 +38,7 @@ MathUtils 0.1 mathUtils.js
 ComponentUtils 0.1 componentUtils.js
 SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
+UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
