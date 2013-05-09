@@ -26,29 +26,14 @@ Item {
 
     property alias contentItem: body
 
-    anchors {
-        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        top: parent ? parent.top : undefined
-    }
-    height: childrenRect.height
+    anchors.fill: parent ? parent : undefined
 
     Item {
         id: content
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: childrenRect.height
+        anchors.fill: parent
         Item {
             id: body
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-            }
-            height: childrenRect.height
+            anchors.fill: parent
 
             Rectangle {
                 id: background
