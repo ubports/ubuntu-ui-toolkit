@@ -132,7 +132,7 @@ Popover {
         }
 
         property bool isActionsObject: (popover.actions !== undefined) &&
-                                         popover.actions.hasOwnProperty("__actionList")
+                                         popover.actions.hasOwnProperty("actions")
 
         Repeater {
             id: repeater
