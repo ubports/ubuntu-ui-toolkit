@@ -43,16 +43,15 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         # Don't have the first, already selected item as the first item to check
         items = [
-                        "Switches", 
+                        "Toggles", 
                         "Buttons", 
                         "Slider", 
                         "Text Field", 
-                        "Progress Bars", 
+                        "Progress and activity", 
                         "Ubuntu Shape", 
                         "Icons", 
                         "Label",
                         "List Items", 
-                        "Navigation", 
                     ]                  
 
 
@@ -62,7 +61,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
 
         # scroll view to expose more items
-        self.drag("Label","Ubuntu Shape")
+        self.drag("Icons","Text Field")
 
         # now that we have more items, lets continue
         items = [
