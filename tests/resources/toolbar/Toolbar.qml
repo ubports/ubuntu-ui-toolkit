@@ -26,7 +26,7 @@ MainView {
         }
 
         tools: ToolbarActions {
-            __actionList: [action1, action2]
+            actions: [action1, action2]
 
 //            Action {
 //                id: action3

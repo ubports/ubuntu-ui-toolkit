@@ -33,13 +33,13 @@ QtObject {
       \internal
       Default property to allow adding of children.
       */
-    default property alias children: list.__actionList
+    default property alias children: list.actions
 
     /*!
       \internal
       Property list to allow adding of children.
       */
-    property list<Action> __actionList
+    property list<Action> actions
 
 //    property list<Action> actions
 }
