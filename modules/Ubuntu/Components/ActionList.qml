@@ -62,7 +62,7 @@ QtObject {
     default property alias children: list.actions
 
     /*!
-      Property list to allow adding of children.
+      List of already defined actions when not defining them as children of the ActionList.
       Note that when you set this property, the children of the ActionList will be ignored,
       so do not set the list and define children.
       \qml
@@ -83,7 +83,6 @@ QtObject {
                 text: "action 2"
                 onTriggered: print("two!")
             }
-
 
             Page {
                 title: "test page"

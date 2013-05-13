@@ -143,8 +143,8 @@ ActionList {
      */
     function __hasVisibleActions() {
         if (back && back.visible) return true;
-        for (var i=0; i < actions.length; i++) {
-            if (actions[i].visible) return true;
+        for (var i=0; i < toolbarActions.actions.length; i++) {
+            if (toolbarActions.actions[i].visible) return true;
         }
         return false;
     }
