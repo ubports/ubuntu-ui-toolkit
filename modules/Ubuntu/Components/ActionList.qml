@@ -40,4 +40,6 @@ QtObject {
       Property list to allow adding of children.
       */
     property list<Action> __actionList
+
+//    property list<Action> actions
 }
