@@ -26,13 +26,13 @@ MainView {
         }
 
         tools: ToolbarActions {
-            actions: [action1, action2]
+//            actions: [action1, action2]
 
-//            Action {
-//                id: action3
-//                text: "action 3"
-//                onTriggered: print("three!")
-//            }
+            Action {
+                id: action3
+                text: "action 3"
+                onTriggered: print("three!")
+            }
         }
     }
 

@@ -21,8 +21,6 @@ import QtQuick 2.0
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief List of \l Action items
-
-    Examples: See \l Page.
 */
 
 QtObject {
@@ -30,16 +28,79 @@ QtObject {
     // internal objects using nested elements,
     // which isn't allowed by QtObject; this fix makes this possible
     /*!
-      \internal
-      Default property to allow adding of children.
+      Default property to allow adding of children. For example, the tools of a \l Page
+      can be defined as follows:
+      \qml
+          import QtQuick 2.0
+          import Ubuntu.Components 0.1
+
+          MainView {
+              width: units.gu(50)
+              height: units.gu(80)
+
+              Page {
+                  title: "test page"
+
+                  Label {
+                      anchors.centerIn: parent
+                      text: "Hello, world"
+                  }
+
+                  tools: ToolbarActions {
+                      Action {
+                          text: "action 1"
+                      }
+                      Action {
+                          text: "action 2"
+                      }
+                  }
+              }
+          }
+      \endqml
+      where \l ToolbarActions is derived from ActionList.
       */
     default property alias children: list.actions
 
     /*!
-      \internal
       Property list to allow adding of children.
+      Note that when you set this property, the children of the ActionList will be ignored,
+      so do not set the list and define children.
+      \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(50)
+            height: units.gu(80)
+
+            Action {
+                id: action1
+                text: "action 1"
+                onTriggered: print("one!")
+            }
+            Action {
+                id: action2
+                text: "action 2"
+                onTriggered: print("two!")
+            }
+
+
+            Page {
+                title: "test page"
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Hello, world"
+                }
+
+                tools: ToolbarActions {
+                    actions: [action1, action2]
+                }
+            }
+        }
+        the advantage of setting actions over using the children is that the same
+        \l Action items can be used in several sets of actions.
+      \endqml
       */
     property list<Action> actions
-
-//    property list<Action> actions
 }
