@@ -261,6 +261,12 @@ FocusScope {
     property alias validator: editor.validator
 
     /*!
+      \preliminary
+      The horizontal alignment of the text in the TextField.
+    */
+    property alias horizontalAlignment: editor.horizontalAlignment
+
+    /*!
       \internal
       FIXME: property added for styling purposes
       */
@@ -587,6 +593,7 @@ FocusScope {
     Label {
         id: hint
         verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: editor.horizontalAlignment
         anchors {
             left: leftPane.right
             right: clearButton.left
@@ -596,6 +603,7 @@ FocusScope {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
+        color: editor.color
     }
 
 
