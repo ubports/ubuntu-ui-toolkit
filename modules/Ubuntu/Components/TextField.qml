@@ -262,7 +262,17 @@ FocusScope {
 
     /*!
       \preliminary
-      The horizontal alignment of the text in the TextField.
+      Sets the horizontal alignment of the text within the item's width and height.
+      By default, the text alignment follows the natural alignment of the text, for
+      example text that is read from left to right will be aligned to the left.
+
+      TextInput does not have vertical alignment, as the natural height is exactly
+      the height of the single line of text. If you set the height manually to something
+      larger, TextInput will always be top aligned vertically. You can use anchors to
+      align it however you want within another item.
+
+      The valid values for horizontalAlignment are TextInput.AlignLeft,
+      TextInput.AlignRight and TextInput.AlignHCenter.
     */
     property alias horizontalAlignment: editor.horizontalAlignment
 
@@ -603,7 +613,6 @@ FocusScope {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: editor.color
     }
 
 
