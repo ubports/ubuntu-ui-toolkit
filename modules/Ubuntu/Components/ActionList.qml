@@ -97,9 +97,9 @@ QtObject {
                 }
             }
         }
-        the advantage of setting actions over using the children is that the same
-        \l Action items can be used in several sets of actions.
       \endqml
+      the advantage of setting actions over using the children is that the same
+      \l Action items can be used in several sets of actions.
       */
     property list<Action> actions
 }
