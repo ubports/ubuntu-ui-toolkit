@@ -66,6 +66,7 @@ private Q_SLOTS:
     void testCase_selectorDelegates();
     void testCase_inheritance();
     void testCase_MemoryCleanup();
+    void testCase_CustomTheme();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
@@ -238,7 +239,6 @@ void tst_ThemeEngine::testCase_selectorDelegates()
 
         ItemStyleAttached *attached = qobject_cast<ItemStyleAttached*>(obj);
         QVERIFY(attached);
-
         QQuickItem *delegate = qvariant_cast<QQuickItem*>(attached->property("delegate"));
 
         if (attached->path() == ".basea") {
@@ -247,7 +247,7 @@ void tst_ThemeEngine::testCase_selectorDelegates()
             QCOMPARE(delegateClass, QString("QQuickItem"));
         } else if (attached->path() == ".testa") {
             QVERIFY(!delegate);
-        } else if (attached->path() == ".testa .base") {
+        } else if (attached->path() == ".testa .basea") {
             QVERIFY(delegate);
             QString delegateClass = delegate->metaObject()->className();
             QCOMPARE(delegateClass, QString("QQuickText"));
@@ -331,6 +331,43 @@ void tst_ThemeEngine::testCase_MemoryCleanup()
     delete item;
     QTest::waitForEvents();
     QVERIFY(cleanup.isEmpty());
+}
+
+void tst_ThemeEngine::testCase_CustomTheme()
+{
+
+    QQuickItem *root = quickView->rootObject();
+    if (root) delete root;
+    root = loadTest("CustomStyles.qml");
+    QVERIFY(root);
+    QQuickItem *item = testItem(root, "testItem");
+    QVERIFY(item);
+
+    QQuickItem *parentItem = item->parentItem();
+
+    // create attached properties to both items
+    ItemStyleAttached *styleItem1 = qobject_cast<ItemStyleAttached*>(qmlAttachedPropertiesObject<ItemStyleAttached>(parentItem, false));
+    ItemStyleAttached *styleItem2 = qobject_cast<ItemStyleAttached*>(qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+    QVERIFY(styleItem1 && styleItem2);
+
+    // the style and delegate in styleItem2 should be owned by styleItem2
+    QObject *style = styleItem1->property("style").value<QObject*>();
+    QVERIFY(!style);
+    QQuickItem *delegate = styleItem1->property("delegate").value<QQuickItem*>();
+    QVERIFY(!delegate);
+    style = styleItem2->property("style").value<QObject*>();
+    QVERIFY(style);
+    delegate = styleItem2->property("delegate").value<QQuickItem*>();
+    QVERIFY(delegate);
+
+    // verify whether cleanup of the objects is happening properly
+    QObjectCleanupHandler cleanup;
+    cleanup.add(style);
+    cleanup.add(delegate);
+    delete item;
+    QVERIFY(cleanup.isEmpty());
+
+    delete root;
 }
 
 QTEST_MAIN(tst_ThemeEngine)

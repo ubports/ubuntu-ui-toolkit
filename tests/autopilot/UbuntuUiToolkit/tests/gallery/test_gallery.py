@@ -21,13 +21,13 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
     # Support both running from system and in the source directory
     runPath = os.path.dirname(os.path.realpath(__file__))
-    localSourceFile = runPath + "/../../../../../demos/Gallery.qml"
+    localSourceFile = runPath + "/../../../../../examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
     if (os.path.isfile(localSourceFile)):
         print "Using local source directory"
         test_qml_file = localSourceFile
     else:
         print "Using system QML file"
-        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/demos/Gallery.qml"
+        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
 
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
@@ -43,16 +43,15 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         # Don't have the first, already selected item as the first item to check
         items = [
-                        "Switches", 
+                        "Toggles", 
                         "Buttons", 
                         "Slider", 
                         "Text Field", 
-                        "Progress Bars", 
+                        "Progress and activity", 
                         "Ubuntu Shape", 
                         "Icons", 
                         "Label",
                         "List Items", 
-                        "Navigation", 
                     ]                  
 
 
@@ -62,7 +61,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
 
         # scroll view to expose more items
-        self.drag("Label","Ubuntu Shape")
+        self.drag("Icons","Text Field")
 
         # now that we have more items, lets continue
         items = [

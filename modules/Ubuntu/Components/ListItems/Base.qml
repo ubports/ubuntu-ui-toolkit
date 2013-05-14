@@ -30,7 +30,6 @@ import Ubuntu.Components 0.1
 Empty {
     id: baseListItem
 
-    __contentsMargins: units.gu(2)
     /*!
       \preliminary
       The location of the icon to show in the list item (optional), or an Item that is
@@ -63,32 +62,45 @@ Empty {
 
     /*!
       \internal
+      \deprecated
       Width of the icon to be displayed
     */
-    property alias __iconWidth: iconHelper.iconWidth
+    property real __iconWidth
 
     /*!
       \internal
+      \deprecated
       Height of the icon to be displayed
     */
-    property alias __iconHeight: iconHelper.iconHeight
+    property real __iconHeight
 
     /*!
       \internal
+      \deprecated
       The margin on the left side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __leftIconMargin: iconHelper.leftIconMargin
+    property real __leftIconMargin
 
     /*!
       \internal
+      \deprecated
       The margin on the right side of the icon.
      */
-    // FIXME: Remove this when the setting becomes part of the theming engine
-    property alias __rightIconMargin: iconHelper.rightIconMargin
+    property real __rightIconMargin
+
 
     IconVisual {
         id: iconHelper
+
+        width: height
+        anchors {
+            left: parent.left
+            leftMargin: baseListItem.__contentsMargins
+            top: parent.top
+            topMargin: units.gu(0.5)
+            bottom: parent.bottom
+            bottomMargin: anchors.topMargin
+        }
     }
 
     /*!
@@ -113,8 +125,7 @@ Empty {
 
             icon.parent = baseListItem;
             icon.anchors.left = baseListItem.left;
-            // FIXME: __contentsMargins value is not set yet
-            icon.anchors.leftMargin = units.gu(2) //baseListItem.__contentsMargins
+            icon.anchors.margins = Qt.binding(function() { return baseListItem.__contentsMargins });
             if (!icon.height) {
                 icon.anchors.top = baseListItem.top;
                 icon.anchors.bottom = baseListItem.bottom;
@@ -128,12 +139,14 @@ Empty {
     property alias children: middle.children
     Item {
         id: middle
+        property bool anchorToIconHelper: !__iconIsItem && iconHelper.source != ""
         anchors {
             top: parent.top
             bottom: parent.bottom
-            left: __iconIsItem ? parent.left : iconHelper.right
-            right: progressionHelper.left
-            leftMargin: (__iconIsItem) ? icon.width + icon.anchors.rightMargin : 0
+            left: anchorToIconHelper ? iconHelper.right : parent.left
+            right: baseListItem.progression ? progressionHelper.left : parent.right
+            rightMargin: baseListItem.__contentsMargins
+            leftMargin: __iconIsItem ? icon.width + 2 * baseListItem.__contentsMargins : baseListItem.__contentsMargins
         }
     }
 
@@ -142,6 +155,7 @@ Empty {
         visible: baseListItem.progression
         anchors {
             right: parent.right
+            rightMargin: baseListItem.__contentsMargins
             top: parent.top
             bottom: parent.bottom
         }

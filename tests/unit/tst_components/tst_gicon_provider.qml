@@ -25,13 +25,13 @@ TestCase {
          return [
                      {
                          tag: "local file with ok data",
-                         icon: Qt.resolvedUrl("../../../demos/demo_image.jpg"),
+                         icon: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg"),
                          status: Image.Ready,
                          statusDesc: "Ready"
                      },
                      {
                          tag: "local file does not exist",
-                         icon: Qt.resolvedUrl("../../../demos/NOT_EXISTING_demo_image.jpg"),
+                         icon: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/NOT_EXISTING_demo_image.jpg"),
                          status: Image.Error,
                          statusDesc: "Error"
                      },

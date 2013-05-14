@@ -5,7 +5,7 @@ ActionList 0.1 ActionList.qml
 ToolbarActions 0.1 ToolbarActions.qml
 MainView 0.1 MainView.qml
 Button 0.1 Button.qml
-internal GenericToolbar GenericToolbar.qml
+Panel 0.1 Panel.qml
 internal DraggingArea DraggingArea.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
@@ -32,6 +32,7 @@ internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 Icon 0.1 Icon.qml
+OrientationHelper 0.1 OrientationHelper.qml
 FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
 ComponentUtils 0.1 componentUtils.js

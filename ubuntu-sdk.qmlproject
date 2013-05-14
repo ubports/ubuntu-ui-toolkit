@@ -3,7 +3,7 @@
 import QmlProject 1.1
 
 Project {
-    mainFile: "demos/Gallery.qml"
+    mainFile: "examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
 
     /* Include .qml, .js, and image files from current directory and subdirectories */
     QmlFiles {

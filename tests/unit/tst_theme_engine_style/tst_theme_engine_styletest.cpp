@@ -59,7 +59,8 @@ private:
         } else
             ThemeEngine::instance()->resetError();
         quickView->setSource(QUrl::fromLocalFile(document));
-        QCoreApplication::processEvents();
+        //QCoreApplication::processEvents();
+        QTest::waitForEvents();
 
         root = quickView->rootObject();
         if (!root)
@@ -253,6 +254,60 @@ private Q_SLOTS:
         delete style;
     }
 
+    void testCase_owner()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *item = testItem("StyledItem.qml", watchList);
+        QVERIFY(item);
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+        QVERIFY(itemStyle);
+        UCStyle *style = itemStyle->property("style").value<UCStyle*>();
+        QVERIFY(style);
+        QVERIFY(style->owner());
+    }
+
+    void testCase_CustomStyleObject()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *item = testItem("CustomStyleObject.qml", watchList);
+        QVERIFY(item);
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+        QVERIFY(itemStyle);
+        UCStyle *style = itemStyle->property("style").value<UCStyle*>();
+        QVERIFY(style);
+        QVERIFY(!style->owner());
+    }
+
+    void testCase_CustomDelegateObject()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *item = testItem("CustomDelegateObject.qml", watchList);
+        QVERIFY(item);
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+        QVERIFY(itemStyle);
+
+        QQuickItem *delegate = itemStyle->property("delegate").value<QQuickItem*>();
+        QVERIFY(delegate);
+        QVERIFY(delegate->parentItem());
+    }
+
+    void testCase_CustomDelegateComponent()
+    {
+        StyledPropertyMap watchList;
+        QQuickItem *item = testItem("CustomDelegateComponent.qml", watchList);
+        QVERIFY(item);
+        ItemStyleAttached *itemStyle = qobject_cast<ItemStyleAttached*>
+                (qmlAttachedPropertiesObject<ItemStyleAttached>(item, false));
+        QVERIFY(itemStyle);
+
+        QQuickItem *delegate = itemStyle->property("delegate").value<QQuickItem*>();
+        QVERIFY(delegate);
+        QCOMPARE(delegate->parentItem(), item);
+    }
+
     void testCase_binding()
     {
         StyledPropertyMap watchList;
@@ -271,10 +326,12 @@ private Q_SLOTS:
         // properties as well, only user bindings (bindings made upon component use)
         // should not be broken
         QColor color(boundItem->property("color").toString());
+        QEXPECT_FAIL("", "local bindings should be broken only if the style has properties defined to theme the item", Continue);
         QCOMPARE(color, QColor("#cccccc"));
         // modify binding property value
         boundItem->setProperty("otherColor", "blue");
         color = QColor(boundItem->property("color").toString());
+        QEXPECT_FAIL("", "local bindings should be broken only if the style has properties defined to theme the item", Continue);
         QCOMPARE(color, QColor("#cccccc"));
     }
 

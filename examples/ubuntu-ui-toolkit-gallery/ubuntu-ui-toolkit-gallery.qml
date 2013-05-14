@@ -20,18 +20,30 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
     id: gallery
+    // objectName for functional testing purposes (autopilot-qt5)
+    objectName: "mainView"
 
-    width: units.gu(100)
+    // Note! applicationName needs to match the .desktop filename
+    applicationName: "Gallery"
+
+
+    width: units.gu(120)
     height: units.gu(75)
 
     property bool wideAspect: width >= units.gu(80)
+    /*
+     This property enables the application to change orientation
+     when the device is rotated. The default is false.
+    */
+    automaticOrientation: true
+
     state: wideAspect ? "wide" : ""
     states: [
         State {
             name: "wide"
             PropertyChanges {
                 target: pageStack
-                width: units.gu(30)
+                width: units.gu(40)
                 anchors {
                     fill: null
                     top: parent.top
@@ -41,9 +53,9 @@ MainView {
             PropertyChanges {
                 target: contentPage
                 x: pageStack.width
-                width: gallery.width - x
-                y: gallery.header.height
-                height: gallery.height - y
+                width: pageStack.parent.width - x
+                y: gallery.propagated.header.height
+                height: pageStack.parent.height - y
                 anchors {
                     left: undefined
                     right: undefined

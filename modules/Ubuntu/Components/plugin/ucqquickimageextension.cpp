@@ -147,5 +147,17 @@ QString UCQQuickImageExtension::scaledSource(QString source, QString sciFilePath
     // Rewrite the source line by prepending "image://scaling" to the source value
     QString sciDirectory = QFileInfo(sciFilePath).dir().path() + QDir::separator();
     QString baseUrl = "image://scaling/" + scaleFactor + "/" + sciDirectory;
-    return source.replace("source: ", "source: " + baseUrl);
+
+    // If the source url is between quotes "", remove them
+    const QChar quote = '"';
+    const int quoteFirstIndex = source.indexOf(quote);
+    if (quoteFirstIndex != -1) {
+        source.remove(quoteFirstIndex, 1);
+    }
+    const int quoteLastIndex = source.lastIndexOf(quote);
+    if (quoteLastIndex != -1) {
+        source.remove(quoteLastIndex, 1);
+    }
+
+    return source.replace("source: ", "source: " + QString(quote) + baseUrl).append(quote);
 }

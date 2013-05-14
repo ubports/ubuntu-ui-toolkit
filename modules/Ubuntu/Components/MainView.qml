@@ -26,7 +26,8 @@ import Ubuntu.Components 0.1 as Theming
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief MainView is the root Item that should be used for all applications.
-        It automatically adds a header and toolbar for its contents.
+        It automatically adds a header and toolbar for its contents and can
+        rotate its content based on the device orientation.
 
     The simplest way to use a MainView is to include a \l Page object inside the MainView:
     \qml
@@ -50,6 +51,10 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
     It is not required to set the anchors of the \l Page as it will automatically fill its parent.
     The MainView has a header that automatically shows the title of the \l Page.
+
+    For the MainView to automatically rotate its content following the orientation
+    of the device, set the \l automaticOrientation property to true.
+
     If the \l Page inside the MainView includes a Flickable with enough contents for scrolling, the header
     will automatically hide and show when the user scrolls up or down:
     \qml
@@ -140,22 +145,53 @@ PageTreeNode {
         anchors.fill: parent
     }
 
-    // clip if the MainView is not fullscreen
-    clip: true
-
     /*!
       MainView is active by default.
      */
     active: true
 
     /*!
+      \preliminary
+      Sets whether the application will be automatically rotating when the
+      device is.
+
+      The default value is false.
+
+      \qmlproperty bool automaticOrientation
+     */
+    property alias automaticOrientation: canvas.automaticOrientation
+
+    /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
     default property alias contentsItem: contents.data
-    Item {
-        id: contents
-        anchors.fill: parent
+    OrientationHelper {
+        id: canvas
+
+        automaticOrientation: false
+
+        Item {
+            id: contents
+            anchors.fill: parent
+        }
+
+        /*!
+          The header of the MainView. Can be used to obtain the height of the header
+          in \l Page to determine the area for the \l Page to fill.
+         */
+        Header {
+            id: headerItem
+        }
+
+        Toolbar {
+            id: toolbarItem
+        }
+    }
+
+    propagated: QtObject {
+        property Header header: headerItem
+        property Toolbar toolbar: toolbarItem
     }
 
     /*!
@@ -172,26 +208,13 @@ PageTreeNode {
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 
-    /*!
-      The header of the MainView. Can be used to obtain the height of the header
-      in \l Page to determine the area for the \l Page to fill.
-     */
-    header: headerItem
-    Header {
-        id: headerItem
-    }
-
-    toolbar: toolbarItem
-    Toolbar {
-        id: toolbarItem
-    }
-
     /*! \internal */
     property QtObject __hud: null
 
     /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
+            i18n.domain = applicationName;
             var component = Qt.createComponent(Qt.resolvedUrl("HudIntegration.qml"));
             if (component)
                 __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});

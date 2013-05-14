@@ -19,8 +19,8 @@ source export_modules_dir.sh
 
 if [ "$1" == "--autopilot" ]
 then
-    demos/gallery -testability &
-    autopilot vis
+	examples/ubuntu-ui-toolkit-gallery/gallery -testability &
+	autopilot vis
 else
-	demos/gallery
+	examples/ubuntu-ui-toolkit-gallery/gallery
 fi

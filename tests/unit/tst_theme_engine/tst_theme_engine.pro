@@ -8,4 +8,5 @@ RESOURCES += \
 OTHER_FILES += ReparentingTest.qml \
     SelectorTest.qml \
     InheritanceTest.qml \
-    MemoryCleanup.qml
+    MemoryCleanup.qml \
+    CustomStyles.qml

@@ -41,14 +41,26 @@ Item {
     Component.onCompleted: internal.updatePageTree()
 
     /*!
+      \deprecated
       The header of the node. Propagates down from the root node.
+      This property is deprecated. Use propagated.header instead.
      */
-    property Header header: node.parentNode ? node.parentNode.header : null
+    property Header header: node.propagated ? node.propagated.header : null
 
     /*!
+      \deprecated
       The toolbar of the node. Propagates down from the root node.
+      This property is deprecated. Use propagated.toolbar instead.
      */
-    property Toolbar toolbar: node.parentNode ? node.parentNode.toolbar : null
+    property Toolbar toolbar: node.propagated ? node.propagated.toolbar : null
+
+    /*!
+      QtObject containing all the properties that are propagated from the
+      root (MainView) of a page tree to its leafs (Pages).
+      This object contains properties such as the header and toolbar that are
+      instantiated by the MainView.
+     */
+    property QtObject propagated: node.parentNode ? node.parentNode.propagated : null
 
     /*!
       At any time, there is exactly one path from the root node to a Page leaf node
@@ -63,6 +75,8 @@ Item {
       part of a PageStack. This value is automatically set for pages that are pushed
       on a PageStack, and propagates to its child nodes.
      */
+    // Note: pageStack is not included in the propagated property because there may
+    //  be multiple PageStacks in a single page tree.
     property Item pageStack: node.parentNode ? node.parentNode.pageStack : null
 
     /*!

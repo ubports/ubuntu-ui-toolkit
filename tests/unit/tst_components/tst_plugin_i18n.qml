@@ -28,7 +28,7 @@ TestCase {
      }
 
      function test_1_bindtextdomain() {
-         var testValue = "../../../demos/po/";
+         var testValue = "../../../examples/ubuntu-ui-toolkit-gallery/po/";
          i18n.bindtextdomain("gallery",testValue);
      }
 

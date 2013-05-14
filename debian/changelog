@@ -1,8 +1,117 @@
+ubuntu-ui-toolkit (0.1.46daily13.05.14ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [Theming] custom styling objects which are owned by other styled
+    items should be detached from their previous owners (LP: #1168006)
+
+  [ Juhapekka Piiroinen ]
+  * [i18n] Set up the translation domain automatically (LP: #1176132)
+
+  [ Kaleo ]
+  * Visual glitch in the popover when contentHeight changes (LP:
+    #1178227)
+  * [ResIndep] BorderImage source error using double-quotes and various
+    grid unit sizes (LP: #1080719)
+
+  [ Timo Jyrinki ]
+  * autopilot tests should use pointing_device instead of mouse (LP:
+    #1175363)
+
+  [ tpeeters ]
+  * ListItem.Standard requires a Button control (LP: #1174985)
+  * [actions] Actions in Page's tools property cannot be re-used in
+    other Pages (LP: #1122864)
+  * [toolbar] Provide abstract component for edge swipe (LP: #1163395)
+  * [tabs] Slider does not work in tab with swipeToSwitchTabs enabled
+    (LP: #1096969)
+  * [toolbar] Need a more generic toolbar component (LP: #1131209)
+  * [tabs] Can't create Tabs from a ListModel (LP: #1167568)
+  * [tabs] WebView as a Tab child does not work reliably and sometimes
+    crashes (LP: #1124065)
+  * [toolbar] GenericToolbar does not support dragable components (LP:
+    #1116578)
+  * [tabs] Tabs should only be navigated by swiping or tapping on the
+    header area (LP: #1166709)
+
+  [ Christian Dywan ]
+  * Docs need a base URL in qdocconf file (LP: #1175389)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 487 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 14 May 2013 04:02:02 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.05.01ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [Zoltan Balogh]
+  * Component gallery app is moved to examples
+  * All examples made QtC compliant
+
+  [ Florian Boucault ]
+  * New release
+
+  [ Zsombor Egri ]
+  * ItemStyle.path is (null) on start, gets reevaluated on theme change
+    (LP: #1081038)
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Image's fillMode works only first time (LP: #1171437)
+  * [UbuntuShape] after first unloading of Image, UbuntuShape is black
+    (LP: #1132771)
+
+  [ tpeeters <tim.peeters@canonical.com>, Juhapekka Piiroinen ]
+  * [toolbar] GenericToolbar does not support dragable components (LP:
+    #1116578)
+  * [toolbar] Provide abstract component for edge swipe (LP: #1163395)
+  * [toolbar] Need a more generic toolbar component (LP: #1131209)
+
+  [ Kaleo ]
+  * remove phone component showcase demo (LP: #1130603)
+  * Missing list item examples in new gallery (LP: #1172663)
+  * [UbuntuShape] image content is slightly distorted by the shape (LP:
+    #1170878)
+
+  [ Timo Jyrinki ]
+  * autopilot package needed for CI (LP: #1170659)
+  * 5 autopilot tests fail (LP: #1169556)
+
+  [ tpeeters ]
+  * Disabling the control in a ListItem should also disable clicks on
+    the ListItem itself (LP: #1166982)
+  * [toolbar] GenericToolbar does not support dragable components (LP:
+    #1116578)
+  * [toolbar] Provide abstract component for edge swipe (LP: #1163395)
+  * [toolbar] Need a more generic toolbar component (LP: #1131209)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 459 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 01 May 2013 07:51:21 +0000
+
+ubuntu-ui-toolkit (0.1.45) raring; urgency=low
+
+  * New release
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Fri, 26 Apr 2013 10:05:09 -0300
+
 ubuntu-ui-toolkit (0.1.44) raring; urgency=low
 
   * New release
 
  -- Tim Peeters <tim.peeters@canonical.com>  Tue, 23 Apr 2013 16:33:20 +0200
+
+ubuntu-ui-toolkit (0.1.43daily13.04.23ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Kaleo ]
+  * [ubuntu-ui-toolkit] Image.sourceSize does not work for images using
+    the @px notation (LP: #1130120)
+  * Resolution independence docs don't mention the @size suffix (LP:
+    #1092051)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 436 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 23 Apr 2013 04:03:26 +0000
 
 ubuntu-ui-toolkit (0.1.43daily13.04.22ubuntu.unity.next-0ubuntu1) raring; urgency=low
 

@@ -12,9 +12,10 @@ import os.path
 from tempfile import mktemp
 import subprocess
 
+from autopilot.input import Mouse, Touch, Pointer
 from autopilot.matchers import Eventually
+from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
-from autopilot.introspection.qt import QtIntrospectionTestMixin
 from autopilot.testcase import AutopilotTestCase
 
 from UbuntuUiToolkit.emulators.main_window import MainWindow
@@ -31,11 +32,21 @@ def get_module_include_path():
         )
 
 
-class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
+class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
     """A common test case class that provides several useful methods for SDK tests."""
 
+    if model() == 'Desktop':
+        scenarios = [
+        ('with mouse', dict(input_device_class=Mouse))
+        ]
+    else:
+        scenarios = [
+        ('with touch', dict(input_device_class=Touch))
+        ]
+ 
     def setUp(self):
+        self.pointing_device = Pointer(self.input_device_class.create())
         super(UbuntuUiToolkitTestCase, self).setUp()
         self.launch_test_qml()
 
@@ -91,17 +102,17 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase, QtIntrospectionTestMixin):
         item = self.getListItem(itemText)
         itemTo = self.getListItem(itemTextTo)
 
-        self.mouse.move_to_object(item)
-        self.mouse.press()
-        self.mouse.move_to_object(itemTo)
-        self.mouse.release()
+        self.pointing_device.move_to_object(item)
+        self.pointing_device.press()
+        self.pointing_device.move_to_object(itemTo)
+        self.pointing_device.release()
 
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         self.assertThat(item.selected, Eventually(Equals(False)))
 
-        self.mouse.move_to_object(item)
-        self.mouse.click()
+        self.pointing_device.move_to_object(item)
+        self.pointing_device.click()
 
         self.assertThat(item.selected, Eventually(Equals(True)))
 

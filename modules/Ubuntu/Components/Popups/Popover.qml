@@ -172,7 +172,7 @@ PopupBase {
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
         width: Math.min(minimumWidth, maxWidth)
-        height: childrenRect.height
+        height: containerItem.height
 
         Item {
             id: containerItem
@@ -198,4 +198,6 @@ PopupBase {
     onWidthChanged: internal.updatePosition()
     /*! \internal */
     onHeightChanged: internal.updatePosition()
+    /*! \internal */
+    onRotationChanged: internal.updatePosition()
 }
