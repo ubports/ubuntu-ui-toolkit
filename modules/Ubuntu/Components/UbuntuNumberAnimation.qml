@@ -23,7 +23,7 @@ import Ubuntu.Components 0.1 as Ubuntu
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief UbuntuNumberAnimation is a NumberAnimation that has predefined
-           settings to ensure Ubuntu applications are consistent in their animations.
+           settings to ensure that Ubuntu applications are consistent in their animations.
 
     Example of use:
 
@@ -45,10 +45,10 @@ import Ubuntu.Components 0.1 as Ubuntu
     \li \e easing: \l{UbuntuAnimation::StandardEasing}{UbuntuAnimation.StandardEasing}
     \endlist
 
-    If the standard duration and easing used by UbuntuNumberAnimation does not
+    If the standard duration and easing used by UbuntuNumberAnimation do not
     satisfy a use case or you need to use a different type of Animation
     (e.g. ColorAnimation), use standard durations and easing defined in
-    \l UbuntuAnimation manually in order to respect the Ubuntu design guidelines.
+    \l UbuntuAnimation manually in order to ensure consistency.
 */
 NumberAnimation {
     duration: Ubuntu.UbuntuAnimation.FastDuration

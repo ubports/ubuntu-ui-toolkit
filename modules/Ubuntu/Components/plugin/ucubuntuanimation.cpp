@@ -22,17 +22,32 @@
  * \instantiates UCUbuntuAnimation
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
- * \brief This is a singleton type defining standard Ubuntu durations and
- *        easing for animations.
+ * \brief Singleton defining standard Ubuntu durations and easing for animations
+ *        that should be used to ensure that Ubuntu applications are consistent
+ *        in their animations.
  *
  * Example of use:
  *
  * \qml
- * NumberAnimation {
+ * RotationAnimation {
  *    duration: UbuntuAnimation.SlowDuration
  *    easing: UbuntuAnimation.StandardEasing
  * }
  * \endqml
+ *
+ * Animation durations should be selected depending on the frequency and
+ * disruptiveness of the animation. The more frequent an animation is, the
+ * faster it should be. The more disruptive an animation is, the slower it should
+ * be. Rule of thumb to select durations:
+ *  \list
+ *   \li SnapDuration: very frequent, non-disruptive.
+ *   \li FastDuration: frequent, non-disruptive.
+ *   \li SlowDuration: less frequent, non-disruptive.
+ *   \li SleepyDuration: disruptive.
+ *  \endlist
+ *
+ * Note that \l UbuntuNumberAnimation provides a standard NumberAnimation for
+ * Ubuntu applications.
  *
  */
 
@@ -58,8 +73,8 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 
 /*!
  * \qmlproperty real UbuntuAnimation::SlowDuration
- * Used for delay after key press and for custom (less frequent) and non-disruptive
- * transitions (also used for undo animations like on mouse exit).
+ * Used for delay after key press and for less frequent and non-disruptive
+ * transitions.
  *
  * The value is 500ms.
  */
