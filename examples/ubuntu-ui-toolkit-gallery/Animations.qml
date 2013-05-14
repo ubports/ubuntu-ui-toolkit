@@ -19,23 +19,33 @@ import Ubuntu.Components 0.1
 
 Template {
     TemplateSection {
-        title: i18n.tr("Ubuntu NumberAnimation")
+        title: i18n.tr("NumberAnimation")
         className: "UbuntuNumberAnimation"
 
         TemplateRow {
             title: i18n.tr("Standard")
 
-            AnimationCircle {
-                radius: 100
+            Item {
+                width: units.gu(14)
+                height: units.gu(14)
 
-                SequentialAnimation on x {
-                    loops: Animation.Infinite
-                    PauseAnimation {
-                        duration: 1000
-                    }
-                    UbuntuNumberAnimation {
-                        from: 0
-                        to: 50
+                AnimationCircle {
+                    radius: units.gu(6)
+                    anchors.centerIn: parent
+
+                    SequentialAnimation on radius {
+                        loops: Animation.Infinite
+                        PauseAnimation {
+                            duration: 1000
+                        }
+                        UbuntuNumberAnimation {
+                            from: units.gu(6)
+                            to: units.gu(12)
+                        }
+                        UbuntuNumberAnimation {
+                            from: units.gu(12)
+                            to: units.gu(6)
+                        }
                     }
                 }
             }
@@ -43,7 +53,7 @@ Template {
     }
 
     TemplateSection {
-        title: i18n.tr("UbuntuAnimation Durations")
+        title: i18n.tr("Standard Durations")
         className: "UbuntuAnimation"
 
         TemplateRow {
@@ -51,9 +61,9 @@ Template {
 
             Repeater {
                 id: repeaterSnap
-                model: 10
+                model: 6
                 AnimationCircle {
-                    radius: 15
+                    radius: units.gu(2)
 
                     SequentialAnimation on color {
                         PauseAnimation {
@@ -87,9 +97,9 @@ Template {
 
             Repeater {
                 id: repeaterFast
-                model: 4
+                model: 2
                 AnimationCircle {
-                    radius: 100
+                    radius: units.gu(11)
 
                     SequentialAnimation on color {
                         PauseAnimation {
@@ -122,7 +132,7 @@ Template {
             title: i18n.tr("Slow")
 
             AnimationCircle {
-                radius: 100
+                radius: units.gu(12)
 
                 SequentialAnimation on x {
                     loops: Animation.Infinite
@@ -131,8 +141,14 @@ Template {
                     }
                     UbuntuNumberAnimation {
                         from: 0
-                        to: 250
+                        to: units.gu(12)
                         duration: UbuntuAnimation.SlowDuration
+                    }
+                    PauseAnimation {
+                        duration: 300
+                    }
+                    PropertyAction {
+                        value: 0
                     }
                 }
             }
@@ -140,21 +156,32 @@ Template {
         TemplateRow {
             title: i18n.tr("Sleepy")
 
-            AnimationCircle {
-                radius: 250
+            Item {
+                width: units.gu(10)
+                height: units.gu(42)
 
-                SequentialAnimation on x {
-                    loops: Animation.Infinite
-                    PauseAnimation {
-                        duration: 1000
-                    }
-                    UbuntuNumberAnimation {
-                        from: 0
-                        to: 250
-                        duration: UbuntuAnimation.SleepyDuration
+                AnimationCircle {
+                    radius: units.gu(22)
+
+                    SequentialAnimation on y {
+                        loops: Animation.Infinite
+                        PauseAnimation {
+                            duration: 1000
+                        }
+                        UbuntuNumberAnimation {
+                            from: 0
+                            to: units.gu(20)
+                            duration: UbuntuAnimation.SleepyDuration
+                        }
+                        PauseAnimation {
+                            duration: 300
+                        }
+                        PropertyAction {
+                            value: 0
+                        }
                     }
                 }
-            }
+             }
         }
     }
 }

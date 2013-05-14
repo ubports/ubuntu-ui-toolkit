@@ -22,7 +22,7 @@ Rectangle {
     color: "#dd4814"
     width: radius
     height: radius
-    radius: 100
+    radius: units.gu(12)
     antialiasing: true
     gradient: Gradient {
         GradientStop { position: 0.0; color: Qt.lighter(circle.color, 1.3) }
