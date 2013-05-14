@@ -25,15 +25,18 @@ Template {
         TemplateRow {
             title: i18n.tr("Standard")
 
-            Rectangle {
-                width: 100
-                height: 100
-                color: "red"
+            AnimationCircle {
+                radius: 100
 
-                UbuntuNumberAnimation on x {
-                    from: 0
-                    to: 200
+                SequentialAnimation on x {
                     loops: Animation.Infinite
+                    PauseAnimation {
+                        duration: 1000
+                    }
+                    UbuntuNumberAnimation {
+                        from: 0
+                        to: 50
+                    }
                 }
             }
         }
@@ -46,68 +49,79 @@ Template {
         TemplateRow {
             title: i18n.tr("Snap")
 
-            Rectangle {
-                width: 100
-                height: 100
-                color: "red"
+            Repeater {
+                model: 15
+                AnimationCircle {
+                    radius: 10
 
-                NumberAnimation on x {
-                    from: 0
-                    to: 200
-                    loops: Animation.Infinite
-                    duration: UbuntuAnimation.SnapDuration
-                    easing: UbuntuAnimation.StandardEasing
+                    SequentialAnimation on opacity {
+                        loops: Animation.Infinite
+                        PauseAnimation {
+                            duration: Math.random() * 500
+                        }
+                        UbuntuNumberAnimation {
+                            from: 0.0
+                            to: 1.0
+                            duration: UbuntuAnimation.SnapDuration
+                        }
+                    }
                 }
             }
         }
         TemplateRow {
             title: i18n.tr("Fast")
 
-            Rectangle {
-                width: 100
-                height: 100
-                color: "red"
+            AnimationCircle {
+                radius: 100
 
-                NumberAnimation on x {
-                    from: 0
-                    to: 200
+                SequentialAnimation on opacity {
                     loops: Animation.Infinite
-                    duration: UbuntuAnimation.FastDuration
-                    easing: UbuntuAnimation.StandardEasing
+                    PauseAnimation {
+                        duration: 500
+                    }
+                    UbuntuNumberAnimation {
+                        from: 0.0
+                        to: 1.0
+                        duration: UbuntuAnimation.FastDuration
+                    }
                 }
             }
         }
         TemplateRow {
             title: i18n.tr("Slow")
 
-            Rectangle {
-                width: 100
-                height: 100
-                color: "red"
+            AnimationCircle {
+                radius: 100
 
-                NumberAnimation on x {
-                    from: 0
-                    to: 200
+                SequentialAnimation on x {
                     loops: Animation.Infinite
-                    duration: UbuntuAnimation.SlowDuration
-                    easing: UbuntuAnimation.StandardEasing
+                    PauseAnimation {
+                        duration: 1000
+                    }
+                    UbuntuNumberAnimation {
+                        from: 0
+                        to: 50
+                        duration: UbuntuAnimation.SlowDuration
+                    }
                 }
             }
         }
         TemplateRow {
             title: i18n.tr("Sleepy")
 
-            Rectangle {
-                width: 100
-                height: 100
-                color: "red"
+            AnimationCircle {
+                radius: 250
 
-                NumberAnimation on x {
-                    from: 0
-                    to: 200
+                SequentialAnimation on x {
                     loops: Animation.Infinite
-                    duration: UbuntuAnimation.SleepyDuration
-                    easing: UbuntuAnimation.StandardEasing
+                    PauseAnimation {
+                        duration: 1000
+                    }
+                    UbuntuNumberAnimation {
+                        from: rotation
+                        to: rotation + 250
+                        duration: UbuntuAnimation.SleepyDuration
+                    }
                 }
             }
         }
