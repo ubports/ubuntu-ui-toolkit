@@ -203,7 +203,7 @@ PageTreeNode {
 
     QtObject {
         id: internal
-        property Header header: tabs.propagated && tabs.propagated.header ? tabs.propagated.header : null
+        property Header header: tabs.propagated ? tabs.propagated.header : null
         onHeaderChanged: internal.updateHeader()
 
         function updateHeader() {
