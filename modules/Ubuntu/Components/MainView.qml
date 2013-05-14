@@ -189,9 +189,10 @@ PageTreeNode {
         }
     }
 
-    header: headerItem
-    toolbar: toolbarItem
-
+    propagated: QtObject {
+        property Header header: headerItem
+        property Toolbar toolbar: toolbarItem
+    }
 
     /*!
       \deprecated

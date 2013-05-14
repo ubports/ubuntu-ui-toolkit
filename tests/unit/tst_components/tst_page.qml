@@ -36,14 +36,15 @@ Item {
 
         function initTestCase() {
             compare(page.title, "", "is not set by default")
-            compare(page.header, mainView.header, "page header equals mainView header")
-            compare(page.header.title, page.title, "header title is same as page title")
-            compare(page.header.visible, false, "header is not visible initially because there is no title")
+            compare(page.propagated, mainView.propagated, "page propagated equals mainView propagated")
+            compare(page.propagated.header, mainView.propagated.header, "page header equals mainView header")
+            compare(page.propagated.header.title, page.title, "header title is same as page title")
+            compare(page.propagated.header.visible, false, "header is not visible initially because there is no title")
         }
 
         function test_0_noHeader_bug1162028_bug1161910() {
-            compare(mainView.header.title, "", "no header title by default")
-            compare(mainView.header.visible, false, "header is hidden when title is not set")
+            compare(mainView.propagated.header.title, "", "no header title by default")
+            compare(mainView.propagated.header.visible, false, "header is hidden when title is not set")
             compare(page.height, mainView.height, "page uses full height when there is no header")
         }
 
@@ -58,15 +59,15 @@ Item {
         function test_header() {
             var newTitle = "Hello header!"
             page.title = newTitle
-            compare(mainView.header.title, newTitle, "header title updated by changing page title")
-            compare(mainView.header.visible, true, "header is visible when title is set")
+            compare(mainView.propagated.header.title, newTitle, "header title updated by changing page title")
+            compare(mainView.propagated.header.visible, true, "header is visible when title is set")
             page.title = ""
-            compare(mainView.header.title, "", "header title unset by unsetting page title")
-            compare(mainView.header.visible, false, "header is hidden when title is unset")
+            compare(mainView.propagated.header.title, "", "header title unset by unsetting page title")
+            compare(mainView.propagated.header.visible, false, "header is hidden when title is unset")
         }
 
         function test_tools() {
-            compare(mainView.toolbar.tools, page.tools, "Page updates toolbar tools");
+            compare(mainView.propagated.toolbar.tools, page.tools, "Page updates toolbar tools");
         }
 
         function test_active() {

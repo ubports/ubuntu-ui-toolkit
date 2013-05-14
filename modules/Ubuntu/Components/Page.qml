@@ -90,27 +90,29 @@ PageTreeNode {
     /*! \internal */
     onTitleChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
-    onHeaderChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onToolbarChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
     onToolsChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
 
     Item {
         id: internal
+        property Header header: page.propagated && page.propagated.header ? page.propagated.header : null
+        property Toolbar toolbar: page.propagated && page.propagated.toolbar ? page.propagated.toolbar : null
+
+        onHeaderChanged: internal.updateHeaderAndToolbar()
+        onToolbarChanged: internal.updateHeaderAndToolbar()
+
         function updateHeaderAndToolbar() {
             if (page.active) {
-                if (page.header) {
-                    page.header.title = page.title;
-                    page.header.flickable = page.flickable;
+                if (internal.header) {
+                    internal.header.title = page.title;
+                    internal.header.flickable = page.flickable;
                 }
                 if (tools) {
                     tools.__pageStack = page.pageStack;
                 }
-                if (page.toolbar) {
-                    page.toolbar.tools = page.tools;
+                if (internal.toolbar) {
+                    internal.toolbar.tools = page.tools;
                 }
             }
         }
@@ -122,7 +124,7 @@ PageTreeNode {
         onHeaderHeightChanged: internal.updateFlickableMargins()
         Component.onCompleted: internal.updateFlickableMargins()
 
-        property real headerHeight: page.header && page.header.visible ? page.header.height : 0
+        property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
         function isFlickable(object) {
             return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");

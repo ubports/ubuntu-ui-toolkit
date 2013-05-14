@@ -196,20 +196,20 @@ PageTreeNode {
     }
 
     /*! \internal */
-    onActiveChanged: internal.updateHeader();
+    onActiveChanged: internal.updateHeader()
     /*! \internal */
-    onHeaderChanged: internal.updateHeader();
-    /*! \internal */
-    onParentNodeChanged: internal.updateHeader();
-
-    Component.onCompleted: internal.updateHeader();
+    onParentNodeChanged: internal.updateHeader()
+    Component.onCompleted: internal.updateHeader()
 
     QtObject {
         id: internal
+        property Header header: tabs.propagated ? tabs.propagated.header : null
+        onHeaderChanged: internal.updateHeader()
+
         function updateHeader() {
-            if (tabs.header) {
-                if (tabs.active) tabs.header.contents = __headerContents;
-                else tabs.header.contents = null;
+            if (internal.header) {
+                if (tabs.active) internal.header.contents = __headerContents;
+                else internal.header.contents = null;
             }
         }
     }
