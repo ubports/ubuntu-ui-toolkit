@@ -50,19 +50,33 @@ Template {
             title: i18n.tr("Snap")
 
             Repeater {
-                model: 15
+                id: repeaterSnap
+                model: 10
                 AnimationCircle {
-                    radius: 10
+                    radius: 15
 
-                    SequentialAnimation on opacity {
-                        loops: Animation.Infinite
+                    SequentialAnimation on color {
                         PauseAnimation {
-                            duration: Math.random() * 500
+                            duration: index * UbuntuAnimation.SnapDuration
                         }
-                        UbuntuNumberAnimation {
-                            from: 0.0
-                            to: 1.0
-                            duration: UbuntuAnimation.SnapDuration
+                        SequentialAnimation {
+                            loops: Animation.Infinite
+                            ColorAnimation {
+                                from: "#dd4814"
+                                to: "#ddcc14"
+                                duration: UbuntuAnimation.SnapDuration
+                            }
+                            PauseAnimation {
+                                duration: repeaterSnap.count * UbuntuAnimation.SnapDuration
+                            }
+                            ColorAnimation {
+                                from: "#ddcc14"
+                                to: "#dd4814"
+                                duration: UbuntuAnimation.SnapDuration
+                            }
+                            PauseAnimation {
+                                duration: repeaterSnap.count * UbuntuAnimation.SnapDuration
+                            }
                         }
                     }
                 }
@@ -71,18 +85,35 @@ Template {
         TemplateRow {
             title: i18n.tr("Fast")
 
-            AnimationCircle {
-                radius: 100
+            Repeater {
+                id: repeaterFast
+                model: 4
+                AnimationCircle {
+                    radius: 100
 
-                SequentialAnimation on opacity {
-                    loops: Animation.Infinite
-                    PauseAnimation {
-                        duration: 500
-                    }
-                    UbuntuNumberAnimation {
-                        from: 0.0
-                        to: 1.0
-                        duration: UbuntuAnimation.FastDuration
+                    SequentialAnimation on color {
+                        PauseAnimation {
+                            duration: index * UbuntuAnimation.FastDuration
+                        }
+                        SequentialAnimation {
+                            loops: Animation.Infinite
+                            ColorAnimation {
+                                from: "#dd4814"
+                                to: "#ddcc14"
+                                duration: UbuntuAnimation.SnapDuration
+                            }
+                            PauseAnimation {
+                                duration: repeaterFast.count * UbuntuAnimation.FastDuration
+                            }
+                            ColorAnimation {
+                                from: "#ddcc14"
+                                to: "#dd4814"
+                                duration: UbuntuAnimation.SnapDuration
+                            }
+                            PauseAnimation {
+                                duration: repeaterFast.count * UbuntuAnimation.FastDuration
+                            }
+                        }
                     }
                 }
             }
@@ -100,7 +131,7 @@ Template {
                     }
                     UbuntuNumberAnimation {
                         from: 0
-                        to: 50
+                        to: 250
                         duration: UbuntuAnimation.SlowDuration
                     }
                 }
@@ -118,8 +149,8 @@ Template {
                         duration: 1000
                     }
                     UbuntuNumberAnimation {
-                        from: rotation
-                        to: rotation + 250
+                        from: 0
+                        to: 250
                         duration: UbuntuAnimation.SleepyDuration
                     }
                 }
