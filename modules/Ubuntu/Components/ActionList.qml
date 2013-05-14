@@ -58,6 +58,7 @@ QtObject {
           }
       \endqml
       where \l ToolbarActions is derived from ActionList.
+      \qmlproperty list<Action> children
       */
     default property alias children: list.actions
 
