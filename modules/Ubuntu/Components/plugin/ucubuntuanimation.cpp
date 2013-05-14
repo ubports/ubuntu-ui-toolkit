@@ -57,7 +57,7 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 }
 
 /*!
- * \qmlproperty real UbuntuAnimation::SnapDuration
+ * \qmlproperty int UbuntuAnimation::SnapDuration
  * Used for very frequent and non-disruptive transitions on small objects.
  * The user would perceive the change as instant but smooth.
  *
@@ -65,14 +65,14 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  */
 
 /*!
- * \qmlproperty real UbuntuAnimation::FastDuration
+ * \qmlproperty int UbuntuAnimation::FastDuration
  * Used for frequent and non-disruptive transitions.
  *
  * The value is 250ms.
  */
 
 /*!
- * \qmlproperty real UbuntuAnimation::SlowDuration
+ * \qmlproperty int UbuntuAnimation::SlowDuration
  * Used for delay after key press and for less frequent and non-disruptive
  * transitions.
  *
@@ -80,7 +80,7 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  */
 
 /*!
- * \qmlproperty real UbuntuAnimation::SleepyDuration
+ * \qmlproperty int UbuntuAnimation::SleepyDuration
  * Used for disruptive transitions.
  *
  * The value is 1000ms.
