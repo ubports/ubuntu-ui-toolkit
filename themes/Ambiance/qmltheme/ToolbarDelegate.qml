@@ -42,7 +42,7 @@ Item {
         source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
         opacity: item.opened || item.animating ? 0.5 : 0.0
         Behavior on opacity {
-            NumberAnimation { duration: 50; easing.type: Easing.OutQuad }
+            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
         }
     }
 }

@@ -54,7 +54,7 @@ Item {
         source: checkMarkSource
         opacity: item.checked ? 1.0 : 0.0
         Behavior on opacity {
-            NumberAnimation { duration: 100; easing.type: Easing.OutQuad }
+            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
         }
     }
 }

@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype ValueSelector
@@ -206,10 +207,10 @@ Empty {
                     ]
 
                     transitions: Transition {
-                        PropertyAnimation {
+                        UbuntuNumberAnimation {
                             target: accordionIcon
                             properties: "rotation"
-                            duration: 100
+                            duration: UbuntuAnimation.SnapDuration
                         }
                     }
                 }
@@ -238,10 +239,10 @@ Empty {
             ]
 
             transitions: Transition {
-                PropertyAnimation {
+                UbuntuNumberAnimation {
                     target: valueRepeater
                     properties: "valueHeight"
-                    duration: 100
+                    duration: UbuntuAnimation.SnapDuration
                 }
             }
 
