@@ -24,11 +24,11 @@
 class UCUbuntuAnimation : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(float SnapDuration READ SnapDuration NOTIFY SnapDurationChanged)
-    Q_PROPERTY(float FastDuration READ FastDuration NOTIFY FastDurationChanged)
-    Q_PROPERTY(float SlowDuration READ SlowDuration NOTIFY SlowDurationChanged)
-    Q_PROPERTY(float SleepyDuration READ SleepyDuration NOTIFY SleepyDurationChanged)
-    Q_PROPERTY(QEasingCurve StandardEasing READ StandardEasing NOTIFY StandardEasingChanged)
+    Q_PROPERTY(float SnapDuration READ SnapDuration CONSTANT)
+    Q_PROPERTY(float FastDuration READ FastDuration CONSTANT)
+    Q_PROPERTY(float SlowDuration READ SlowDuration CONSTANT)
+    Q_PROPERTY(float SleepyDuration READ SleepyDuration CONSTANT)
+    Q_PROPERTY(QEasingCurve StandardEasing READ StandardEasing CONSTANT)
 
 public:
     explicit UCUbuntuAnimation(QObject *parent = 0);
@@ -41,13 +41,6 @@ public:
         static QEasingCurve standardEasing(QEasingCurve::OutQuint);
         return standardEasing;
     }
-
-Q_SIGNALS:
-    void SnapDurationChanged();
-    void FastDurationChanged();
-    void SlowDurationChanged();
-    void SleepyDurationChanged();
-    void StandardEasingChanged();
 };
 
 /*
