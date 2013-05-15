@@ -20,5 +20,7 @@ import Ubuntu.Components.Popups 0.1
 Item {
     Popover {
     }
-    Component.onCompleted: Theme.loadTheme(Qt.resolvedUrl("theme.qmltheme"))
+    Slider{
+    }
+    Component.onCompleted: Theme.loadTheme(Qt.resolvedUrl("StyleLookupCrash.qmltheme"))
 }

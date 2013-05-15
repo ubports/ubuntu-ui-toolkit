@@ -373,7 +373,7 @@ void tst_ThemeEngine::testCase_CustomTheme()
 
 void tst_ThemeEngine::testCase_styleLookupCrash()
 {
-    QQuickItem *root = loadTest("StyleLookupCrash.qml", QUrl::fromLocalFile("StyleLookupCrash.qmltheme"));
+    QQuickItem *root = loadTest("StyleLookupCrash.qml");
 
     delete root;
 }
