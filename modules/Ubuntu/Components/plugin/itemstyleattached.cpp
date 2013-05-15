@@ -358,8 +358,12 @@ void ItemStyleAttachedPrivate::resetStyle()
 
     // delete style also if there is an owner set to it
     if (!customStyle || style->owner()) {
-        delete style;
+        // reset style object before we delete it, themed animations may get changed
+        // during the style deletion which will cause invalid pointer operations
+        // in style bindings cleanup
+        QObject *object = style;
         style = 0;
+        delete object;
     }
 }
 

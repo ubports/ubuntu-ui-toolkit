@@ -46,7 +46,7 @@ UCStyle::UCStyle(QObject *parent) :
 UCStyle::~UCStyle()
 {
     // we shouldn't have bindings by this time, but just in case...
-    QHashIterator<QString, QQmlProperty> i(m_bindings);
+    QMutableHashIterator<QString, QQmlProperty> i(m_bindings);
     while (i.hasNext()) {
         i.next();
         unbind(i.key());
