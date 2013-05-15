@@ -190,7 +190,20 @@ PageTreeNode {
     }
 
     propagated: QtObject {
+        /*!
+          \internal
+          The header that will be propagated to the children in the page tree node.
+          It will be used by the active \l Page to set the title.
+          \qmlproperty Header propagated.header
+         */
         property Header header: headerItem
+
+        /*!
+          \internal
+          The toolbar that will be propagated to the children in the page tree node.
+          It will be used by the active \l Page to set the toolbar actions.
+          \qmlproperty Toolbar propagated.toolbar
+         */
         property Toolbar toolbar: toolbarItem
     }
 
