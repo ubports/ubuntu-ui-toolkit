@@ -67,6 +67,7 @@ private Q_SLOTS:
     void testCase_inheritance();
     void testCase_MemoryCleanup();
     void testCase_CustomTheme();
+    void testCase_styleLookupCrash();
 private:
     bool check_properties(QObject *style, const QString &properties, bool xfail);
 private:
@@ -366,6 +367,13 @@ void tst_ThemeEngine::testCase_CustomTheme()
     cleanup.add(delegate);
     delete item;
     QVERIFY(cleanup.isEmpty());
+
+    delete root;
+}
+
+void tst_ThemeEngine::testCase_styleLookupCrash()
+{
+    QQuickItem *root = loadTest("StyleLookupCrash.qml");
 
     delete root;
 }
