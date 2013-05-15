@@ -361,6 +361,7 @@ void ItemStyleAttachedPrivate::resetStyle()
         // reset style object before we delete it, themed animations may get changed
         // during the style deletion which will cause invalid pointer operations
         // in style bindings cleanup
+        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1175394
         QObject *object = style;
         style = 0;
         delete object;
