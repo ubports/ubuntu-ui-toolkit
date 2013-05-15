@@ -261,6 +261,22 @@ FocusScope {
     property alias validator: editor.validator
 
     /*!
+      \preliminary
+      Sets the horizontal alignment of the text within the item's width and height.
+      By default, the text alignment follows the natural alignment of the text, for
+      example text that is read from left to right will be aligned to the left.
+
+      TextInput does not have vertical alignment, as the natural height is exactly
+      the height of the single line of text. If you set the height manually to something
+      larger, TextInput will always be top aligned vertically. You can use anchors to
+      align it however you want within another item.
+
+      The valid values for horizontalAlignment are TextInput.AlignLeft,
+      TextInput.AlignRight and TextInput.AlignHCenter.
+    */
+    property alias horizontalAlignment: editor.horizontalAlignment
+
+    /*!
       \internal
       FIXME: property added for styling purposes
       */
@@ -587,6 +603,7 @@ FocusScope {
     Label {
         id: hint
         verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: editor.horizontalAlignment
         anchors {
             left: leftPane.right
             right: clearButton.left
