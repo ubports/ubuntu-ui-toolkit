@@ -36,7 +36,7 @@ public:
 
     UCArgument* defaultArgument() const;
     void setDefaultArgument(UCArgument* argument);
-    QQmlListProperty<UCArgument> arguments() const;
+    QQmlListProperty<UCArgument> arguments();
     Q_SLOT void quitAndPrintUsage(QString errorMessage);
 
 Q_SIGNALS:
@@ -44,7 +44,7 @@ Q_SIGNALS:
 
 private:
     UCArgument* m_defaultArgument;
-    QQmlListProperty<UCArgument> m_arguments;
+    QList<UCArgument*> m_arguments;
 };
 
 #endif // UCARGUMENTS_H

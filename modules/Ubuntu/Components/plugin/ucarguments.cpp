@@ -36,10 +36,17 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
     Q_EMIT(defaultArgumentChanged());
 }
 
-QQmlListProperty<UCArgument> UCArguments::arguments() const
+QQmlListProperty<UCArgument> UCArguments::arguments()
 {
-    // FIXME
-    return m_arguments;
+    /* FIXME: should be const
+     *
+     * From: http://qt-project.org/doc/qt-5.0/qtqml/qqmllistproperty.html
+     *
+     * Generally this constructor should not be used in production code,
+     * as a writable QList violates QML's memory management rules. However,
+     * this constructor can very useful while prototyping.
+     */
+    return QQmlListProperty<UCArgument>(this, m_arguments);
 }
 
 void UCArguments::quitAndPrintUsage(QString errorMessage)
