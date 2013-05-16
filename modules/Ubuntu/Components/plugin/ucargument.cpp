@@ -19,7 +19,8 @@
 #include "ucargument.h"
 
 UCArgument::UCArgument(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_required(true)
 {
 }
 
