@@ -194,7 +194,7 @@ void UCArguments::parseAndExposeArguments()
             if (!argumentsValues.contains(argument->name())) {
                 // FIXME: i18n
                 error.append(" is expecting an additional argument: ");
-            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size())
+            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size()) {
                 // FIXME: i18n
                 error.append(" is expecting a value for argument: ");
             }
