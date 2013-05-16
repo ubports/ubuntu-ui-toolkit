@@ -26,10 +26,12 @@
 #include <QtCore/QHash>
 #include <QtCore/QPair>
 #include <QtQml/QQmlListProperty>
+#include <QtQml/QQmlParserStatus>
 
-class UCArguments : public QObject
+class UCArguments : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(UCArgument* defaultArgument READ defaultArgument WRITE setDefaultArgument NOTIFY defaultArgumentChanged)
     Q_PROPERTY(QQmlListProperty<UCArgument> arguments READ arguments)
@@ -49,6 +51,10 @@ public:
     int countArguments();
     void clearArguments();
 
+    // inherited from QQmlParserStatus
+    void classBegin();
+    void componentComplete();
+
 Q_SIGNALS:
     void defaultArgumentChanged();
 
@@ -58,6 +64,7 @@ protected:
     void exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues);
 
 private:
+    bool m_completed;
     UCArgument* m_defaultArgument;
     QList<UCArgument*> m_arguments;
     QStringList m_rawArguments;

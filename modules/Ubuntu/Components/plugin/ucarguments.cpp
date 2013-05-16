@@ -25,7 +25,8 @@
 
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
-    m_defaultArgument(NULL)
+    m_defaultArgument(NULL),
+    m_completed(false)
 {
     m_rawArguments = QCoreApplication::arguments();
     //qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
@@ -47,17 +48,18 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
 void UCArguments::appendArguments(UCArgument* argument)
 {
     m_arguments.append(argument);
-    // FIXME: only do the following after the UCArguments is Completed
-    // FIXME: duplicated code from UCArguments::clearArguments()
-    m_expectedArguments = buildExpectedArguments(m_arguments);
-    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
-    if (m_argumentsValues.contains("help") ||
-        m_argumentsValues.contains("h") ||
-        m_argumentsValues.contains("usage")) {
-        printUsageAndQuit();
+    if (m_completed) {
+        // FIXME: duplicated code from UCArguments::clearArguments()
+        m_expectedArguments = buildExpectedArguments(m_arguments);
+        m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
+        if (m_argumentsValues.contains("help") ||
+            m_argumentsValues.contains("h") ||
+            m_argumentsValues.contains("usage")) {
+            printUsageAndQuit();
+        }
+        // FIXME: remove previously exposed properties
+        exposeArgumentsAsProperties(m_argumentsValues);
     }
-    // FIXME: remove previously exposed properties
-    exposeArgumentsAsProperties(m_argumentsValues);
 }
 
 UCArgument* UCArguments::atArguments(int index)
@@ -177,6 +179,24 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
        Ref.: http://qt-project.org/doc/qt-5.0/qtcore/qcoreapplication.html#exit
     */
     QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+}
+
+void UCArguments::classBegin()
+{
+}
+
+void UCArguments::componentComplete()
+{
+    m_completed = true;
+    m_expectedArguments = buildExpectedArguments(m_arguments);
+    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
+    if (m_argumentsValues.contains("help") ||
+        m_argumentsValues.contains("h") ||
+        m_argumentsValues.contains("usage")) {
+        printUsageAndQuit();
+    }
+    // FIXME: remove previously exposed properties
+    exposeArgumentsAsProperties(m_argumentsValues);
 }
 
 QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
