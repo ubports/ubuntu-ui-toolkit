@@ -189,9 +189,15 @@ void UCArguments::parseAndExposeArguments()
 
     // check if all required named arguments were passed
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        if (argument->required() && !argumentsValues.contains(argument->name())) {
-            // FIXME: i18n
-            QString error(" is expecting an additional argument: ");
+        if (argument->required()) {
+            QString error;
+            if (!argumentsValues.contains(argument->name())) {
+                // FIXME: i18n
+                error.append(" is expecting an additional argument: ");
+            } else {
+                // FIXME: i18n
+                error.append(" is expecting a value for argument: ");
+            }
             error.prepend(m_applicationBinary);
             error.append(argument->syntax());
             printUsageAndQuit(error);
