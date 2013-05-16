@@ -44,6 +44,7 @@ HEADERS += plugin.h \
     qquickclipboard_p.h \
     selector_p.h \
     ucstyle.h \
+    ucubuntuanimation.h \
     ucapplication.h
 
 SOURCES += plugin.cpp \
@@ -66,6 +67,7 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp \
     selector.cpp \
     ucstyle.cpp \
+    ucubuntuanimation.cpp \
     ucapplication.cpp
 
 # deployment rules for the plugin

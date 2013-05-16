@@ -75,4 +75,10 @@ ListModel {
         label: "Sheet"
         source: "Sheet.qml"
     }
+
+    // Not in design guidelines yet
+    ListElement {
+        label: "Animations"
+        source: "Animations.qml"
+    }
 }
