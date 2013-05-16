@@ -42,18 +42,18 @@ public:
 
     UCArgument* defaultArgument() const;
     void setDefaultArgument(UCArgument* argument);
-    QQmlListProperty<UCArgument> arguments();
     Q_INVOKABLE void printUsageAndQuit(QString errorMessage = QString());
+
+    // inherited from QQmlParserStatus
+    void classBegin();
+    void componentComplete();
 
     // methods necessary for implementing property QQmlListProperty arguments
     void appendArguments(UCArgument* argument);
     UCArgument* atArguments(int index);
     int countArguments();
     void clearArguments();
-
-    // inherited from QQmlParserStatus
-    void classBegin();
-    void componentComplete();
+    QQmlListProperty<UCArgument> arguments();
 
 Q_SIGNALS:
     void defaultArgumentChanged();

@@ -45,6 +45,81 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
 }
 
 
+// FIXME: could be broken down in smaller functions
+void UCArguments::printUsageAndQuit(QString errorMessage)
+{
+    /* This function can be called multiple times before the application actually
+       quit. See comment at the end about QCoreApplication::quit().
+    */
+    static bool alreadyCalled = false;
+    if (alreadyCalled) {
+        return;
+    }
+    alreadyCalled = true;
+
+    QLatin1String indentation("  ");
+    QString usage;
+    QTextStream usageStream(&usage);
+
+    // FIXME: use i18n
+    usageStream << QString("Usage: ");
+
+    // display overall syntax, for example: program --argument=value DEFAULT_ARGUMENT
+    usageStream << m_applicationBinary;
+
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        usageStream << ' ';
+        QString syntax = argument->syntax();
+        if (!argument->required()) {
+            syntax.prepend('[').append(']');
+        }
+        usageStream << syntax;
+    }
+
+    if (m_defaultArgument != NULL) {
+        usageStream << ' ';
+        usageStream << m_defaultArgument->syntax();
+    }
+
+    // display what each argument is used for
+    usageStream << endl;
+    // FIXME: use i18n
+    usageStream << QString("Options:") << endl;
+
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        usageStream << indentation << argument->usage() << endl;
+    }
+
+    if (m_defaultArgument != NULL) {
+        usageStream << endl << m_defaultArgument->help();
+    }
+
+    // output to the console, first the errorMessage if any then the usage
+    if (!errorMessage.isEmpty()) {
+        // convert to char* to avoid qWarning printing out quotes ""
+        qWarning() << errorMessage.toStdString().c_str();
+    }
+    // convert to char* to avoid qWarning printing out quotes ""
+    qWarning() << usage.toStdString().c_str();
+
+    /* Call QCoreApplication::quit() when the event loop starts running.
+       "If the event loop is not running, [QCoreApplication::quit()] does nothing."
+       Ref.: http://qt-project.org/doc/qt-5.0/qtcore/qcoreapplication.html#exit
+    */
+    QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+}
+
+void UCArguments::classBegin()
+{
+}
+
+void UCArguments::componentComplete()
+{
+    m_completed = true;
+    parseAndExposeArguments();
+}
+
+
 void UCArguments::appendArguments(UCArgument* argument)
 {
     m_arguments.append(argument);
@@ -69,6 +144,7 @@ void UCArguments::clearArguments()
     parseAndExposeArguments();
 }
 
+// static callbacks calling the methods above
 void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
 {
     UCArguments* arguments = static_cast<UCArguments*>(property->data);
@@ -92,6 +168,8 @@ void staticClearArguments(QQmlListProperty<UCArgument>* property)
     UCArguments* arguments = static_cast<UCArguments*>(property->data);
     arguments->clearArguments();
 }
+// end of static callbacks
+
 
 QQmlListProperty<UCArgument> UCArguments::arguments()
 {
@@ -100,73 +178,6 @@ QQmlListProperty<UCArgument> UCArguments::arguments()
                                         &staticClearArguments);
 }
 
-void UCArguments::printUsageAndQuit(QString errorMessage)
-{
-    /* This function can be called multiple times before the application actually
-       quit. See comment at the end about QCoreApplication::quit().
-    */
-    static bool alreadyCalled = false;
-    if (alreadyCalled) {
-        return;
-    }
-    alreadyCalled = true;
-
-    // FIXME: use i18n
-    QLatin1String indentation("  ");
-    QString usage;
-    QTextStream usageStream(&usage);
-
-    usageStream << QString("Usage: ");
-    usageStream << m_applicationBinary;
-
-    Q_FOREACH (UCArgument* argument, m_arguments) {
-        usageStream << ' ';
-        QString syntax = argument->syntax();
-        if (!argument->required()) {
-            syntax.prepend('[').append(']');
-        }
-        usageStream << syntax;
-    }
-
-    if (m_defaultArgument != NULL) {
-        usageStream << ' ';
-        usageStream << m_defaultArgument->syntax();
-    }
-
-    usageStream << endl;
-    usageStream << QString("Options:") << endl;
-
-    Q_FOREACH (UCArgument* argument, m_arguments) {
-        usageStream << indentation << argument->usage() << endl;
-    }
-
-    if (m_defaultArgument != NULL) {
-        usageStream << endl << m_defaultArgument->help();
-    }
-
-    if (!errorMessage.isEmpty()) {
-        // convert to char* to avoid qWarning printing out quotes ""
-        qWarning() << errorMessage.toStdString().c_str();
-    }
-    // convert to char* to avoid qWarning printing out quotes ""
-    qWarning() << usage.toStdString().c_str();
-
-    /* Call QCoreApplication::quit() when the event loop starts running.
-       "If the event loop is not running, [QCoreApplication::quit()] does nothing."
-       Ref.: http://qt-project.org/doc/qt-5.0/qtcore/qcoreapplication.html#exit
-    */
-    QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
-}
-
-void UCArguments::classBegin()
-{
-}
-
-void UCArguments::componentComplete()
-{
-    m_completed = true;
-    parseAndExposeArguments();
-}
 
 void UCArguments::parseAndExposeArguments()
 {
