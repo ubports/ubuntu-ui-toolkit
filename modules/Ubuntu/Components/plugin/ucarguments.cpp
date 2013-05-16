@@ -198,9 +198,11 @@ void UCArguments::parseAndExposeArguments()
                 // FIXME: i18n
                 error.append(" is expecting a value for argument: ");
             }
-            error.prepend(m_applicationBinary);
-            error.append(argument->syntax());
-            printUsageAndQuit(error);
+            if (!error.isEmpty()) {
+                error.prepend(m_applicationBinary);
+                error.append(argument->syntax());
+                printUsageAndQuit(error);
+            }
         }
     }
 
