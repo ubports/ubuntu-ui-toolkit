@@ -119,6 +119,9 @@ void UCArguments::componentComplete()
 {
     m_completed = true;
     parseAndExposeArguments();
+    // FIXME: connect to changed signals for properties: name, required and valueNames
+    // for all arguments including defaultArgument and call parseAndExposeArguments
+    // when emitted
 }
 
 
