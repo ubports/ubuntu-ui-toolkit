@@ -123,7 +123,7 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
 
     Q_FOREACH (UCArgument* argument, m_arguments) {
         usageStream << " ";
-        if (argument->required()) {
+        if (!argument->required()) {
             usageStream << QString("[");
         }
 
@@ -133,8 +133,8 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
             usageStream << "=" << argument->valueNames()[0];
         }
 
-        if (argument->required()) {
-            usageStream << QString("[");
+        if (!argument->required()) {
+            usageStream << QString("]");
         }
     }
 
