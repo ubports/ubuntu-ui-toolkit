@@ -41,7 +41,7 @@ public:
     UCArgument* defaultArgument() const;
     void setDefaultArgument(UCArgument* argument);
     QQmlListProperty<UCArgument> arguments();
-    Q_INVOKABLE void quitAndPrintUsage(QString errorMessage);
+    Q_INVOKABLE void printUsageAndQuit(QString errorMessage = QString());
 
     // methods necessary for implementing property QQmlListProperty arguments
     void appendArguments(UCArgument* argument);

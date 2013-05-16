@@ -28,7 +28,7 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
-    qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
+    //qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
 }
 
 UCArgument* UCArguments::defaultArgument() const
@@ -47,8 +47,15 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
 void UCArguments::appendArguments(UCArgument* argument)
 {
     m_arguments.append(argument);
+    // FIXME: only do the following after the UCArguments is Completed
+    // FIXME: duplicated code from UCArguments::clearArguments()
     m_expectedArguments = buildExpectedArguments(m_arguments);
     m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
+    if (m_argumentsValues.contains("help") ||
+        m_argumentsValues.contains("h") ||
+        m_argumentsValues.contains("usage")) {
+        printUsageAndQuit();
+    }
     // FIXME: remove previously exposed properties
     exposeArgumentsAsProperties(m_argumentsValues);
 }
@@ -66,9 +73,14 @@ int UCArguments::countArguments()
 void UCArguments::clearArguments()
 {
     m_arguments.clear();
+    // FIXME: duplicated code from UCArguments::appendArguments()
     m_expectedArguments.clear();
     m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
-    // FIXME: remove previously exposed properties
+    if (m_argumentsValues.contains("help") ||
+        m_argumentsValues.contains("h") ||
+        m_argumentsValues.contains("usage")) {
+        printUsageAndQuit();
+    }
 }
 
 void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
@@ -102,22 +114,69 @@ QQmlListProperty<UCArgument> UCArguments::arguments()
                                         &staticClearArguments);
 }
 
-void UCArguments::quitAndPrintUsage(QString errorMessage)
+void UCArguments::printUsageAndQuit(QString errorMessage)
 {
+    /* This function can be called multiple times before the application actually
+       quit. See comment at the end about QCoreApplication::quit().
+    */
+    static bool alreadyCalled = false;
+    if (alreadyCalled) {
+        return;
+    }
+    alreadyCalled = true;
+
     // FIXME: use i18n
+    QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
     // FIXME: guess application binary better
     QString applicationBinary = m_rawArguments[0];
 
     usageStream << QString("Usage: ");
-    usageStream << applicationBinary << endl;
+    usageStream << applicationBinary;
+
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        usageStream << " ";
+        if (argument->required()) {
+            usageStream << QString("[");
+        }
+
+        // FIXME: support more than one value per argument
+        usageStream << QString("--") << argument->name();
+        if (!argument->valueNames().empty()) {
+            usageStream << "=" << argument->valueNames()[0];
+        }
+
+        if (argument->required()) {
+            usageStream << QString("[");
+        }
+    }
+
+    usageStream << endl;
     usageStream << QString("Options:") << endl;
 
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        // ensure that the help string for the arguments are aligned vertically
+        QString spacing = QString(" ").repeated(20 - argument->name().size());
+        usageStream << indentation << QString("--") << argument->name() << spacing << argument->help() << endl;
+    }
+
+    if (m_defaultArgument != NULL) {
+        usageStream << endl << indentation << m_defaultArgument->help();
+    }
+
+    if (!errorMessage.isEmpty()) {
+        // convert to char* to avoid qWarning printing out quotes ""
+        qWarning() << errorMessage.toStdString().c_str();
+    }
     // convert to char* to avoid qWarning printing out quotes ""
-    qWarning() << errorMessage.toStdString().c_str();
     qWarning() << usage.toStdString().c_str();
-    QCoreApplication::exit(-1);
+
+    /* Call QCoreApplication::quit() when the event loop starts running.
+       "If the event loop is not running, [QCoreApplication::quit()] does nothing."
+       Ref.: http://qt-project.org/doc/qt-5.0/qtcore/qcoreapplication.html#exit
+    */
+    QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
 }
 
 QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
@@ -172,7 +231,13 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
         }
     }
 
-    qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
+    // FIXME: code duplicated 3 times
+    if (!name.isEmpty()) {
+        // insert values of previously parsed named argument
+        argumentsValues.insert(name, values);
+    }
+
+    //qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
     return argumentsValues;
 }
 
@@ -199,7 +264,7 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
             value.setValue(values);
         }
 
-        qDebug() << "EXPOSING"  << name << value; // FIXME: remove
+        //qDebug() << "EXPOSING"  << name << value; // FIXME: remove
         // necessary for the value to be set to the QML property
         // FIXME: could spit out warnings if the QML property was not defined,
         // ie. if the write() returns false
