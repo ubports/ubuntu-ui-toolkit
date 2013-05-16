@@ -67,7 +67,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
         # Wait for the scrolling to finish, the next click fails on the 
         # slower Intel machine but succeeds on AMD and NVIDIA.
         # (LP: #1180226)
-        time.sleep(2)
+        time.sleep(0)
 
         # now that we have more items, lets continue
         items = [
