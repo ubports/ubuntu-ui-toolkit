@@ -31,7 +31,7 @@ QString UCArgument::name() const
 
 void UCArgument::setName(QString name)
 {
-    // FIXME
+    // FIXME: reparse everything
     m_name = name;
     Q_EMIT(nameChanged());
 }
@@ -43,7 +43,6 @@ QString UCArgument::help() const
 
 void UCArgument::setHelp(QString help)
 {
-    // FIXME
     m_help = help;
     Q_EMIT(helpChanged());
 }
@@ -55,7 +54,7 @@ bool UCArgument::required() const
 
 void UCArgument::setRequired(bool required)
 {
-    // FIXME
+    // FIXME: reparse everything
     m_required = required;
     Q_EMIT(requiredChanged());
 }
@@ -67,7 +66,7 @@ QStringList UCArgument::valueNames() const
 
 void UCArgument::setValueNames(QStringList valueNames)
 {
-    // FIXME
+    // FIXME: reparse everything
     m_valueNames = valueNames;
     Q_EMIT(valueNamesChanged());
 }
