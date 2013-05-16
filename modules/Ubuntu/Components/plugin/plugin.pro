@@ -69,7 +69,6 @@ SOURCES += plugin.cpp \
     selector.cpp \
     ucstyle.cpp \
     ucubuntuanimation.cpp \
-    ucapplication.cpp \
     ucarguments.cpp \
     ucargument.cpp
 
