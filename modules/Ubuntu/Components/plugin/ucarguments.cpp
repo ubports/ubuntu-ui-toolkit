@@ -39,9 +39,9 @@ UCArgument* UCArguments::defaultArgument() const
 
 void UCArguments::setDefaultArgument(UCArgument* argument)
 {
-    // FIXME: finish implementation
     m_defaultArgument = argument;
     Q_EMIT(defaultArgumentChanged());
+    parseAndExposeArguments();
 }
 
 
