@@ -43,7 +43,6 @@
 #include "ucubuntuanimation.h"
 #include "ucarguments.h"
 #include "ucargument.h"
-#include "ucapplication.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -87,7 +86,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
-    context->setContextProperty("application", &UCApplication::instance());
 
     context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
     context->setContextProperty("i18n", &UbuntuI18n::instance());

@@ -45,7 +45,6 @@ HEADERS += plugin.h \
     selector_p.h \
     ucstyle.h \
     ucubuntuanimation.h \
-    ucapplication.h \
     ucarguments.h \
     ucargument.h
 
