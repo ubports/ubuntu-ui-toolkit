@@ -41,7 +41,9 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
 {
     m_defaultArgument = argument;
     Q_EMIT(defaultArgumentChanged());
-    parseAndExposeArguments();
+    if (m_completed) {
+        parseAndExposeArguments();
+    }
 }
 
 
