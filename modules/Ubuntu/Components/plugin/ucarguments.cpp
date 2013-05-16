@@ -142,7 +142,7 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     }
 
     if (m_defaultArgument != NULL) {
-        usageStream << endl << indentation << m_defaultArgument->help();
+        usageStream << endl << m_defaultArgument->help();
     }
 
     if (!errorMessage.isEmpty()) {
