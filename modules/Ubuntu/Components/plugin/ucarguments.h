@@ -21,6 +21,10 @@
 
 #include "ucargument.h"
 #include <QtCore/QObject>
+#include <QtCore/QList>
+#include <QtCore/QStringList>
+#include <QtCore/QHash>
+#include <QtCore/QPair>
 #include <QtQml/QQmlListProperty>
 
 class UCArguments : public QObject
@@ -39,13 +43,25 @@ public:
     QQmlListProperty<UCArgument> arguments();
     Q_INVOKABLE void quitAndPrintUsage(QString errorMessage);
 
+    // methods necessary for implementing property QQmlListProperty arguments
+    void appendArguments(UCArgument* argument);
+    UCArgument* atArguments(int index);
+    int countArguments();
+    void clearArguments();
+
 Q_SIGNALS:
     void defaultArgumentChanged();
+
+protected:
+    QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
+    QHash<QString, QStringList> parseRawArguments(QStringList rawArguments);
 
 private:
     UCArgument* m_defaultArgument;
     QList<UCArgument*> m_arguments;
     QStringList m_rawArguments;
+    QHash<QString, QStringList> m_argumentsValues;
+    QHash<QString, QStringList> m_expectedArguments;
 };
 
 #endif // UCARGUMENTS_H

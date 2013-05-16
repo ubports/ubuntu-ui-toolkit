@@ -26,6 +26,7 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
+    qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
 }
 
 UCArgument* UCArguments::defaultArgument() const
@@ -40,17 +41,60 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
     Q_EMIT(defaultArgumentChanged());
 }
 
+
+void UCArguments::appendArguments(UCArgument* argument)
+{
+    m_arguments.append(argument);
+    m_expectedArguments = buildExpectedArguments(m_arguments);
+    m_argumentsValues = parseRawArguments(m_rawArguments);
+}
+
+UCArgument* UCArguments::atArguments(int index)
+{
+    return m_arguments.at(index);
+}
+
+int UCArguments::countArguments()
+{
+    return m_arguments.size();
+}
+
+void UCArguments::clearArguments()
+{
+    m_arguments.clear();
+    m_expectedArguments.clear();
+    m_argumentsValues.clear(); // FIXME: is that the right thing to do?
+}
+
+void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
+{
+    UCArguments* arguments = static_cast<UCArguments*>(property->data);
+    arguments->appendArguments(argument);
+}
+
+UCArgument* staticAtArguments(QQmlListProperty<UCArgument>* property, int index)
+{
+    UCArguments* arguments = static_cast<UCArguments*>(property->data);
+    return arguments->atArguments(index);
+}
+
+int staticCountArguments(QQmlListProperty<UCArgument>* property)
+{
+    UCArguments* arguments = static_cast<UCArguments*>(property->data);
+    return arguments->countArguments();
+}
+
+void staticClearArguments(QQmlListProperty<UCArgument>* property)
+{
+    UCArguments* arguments = static_cast<UCArguments*>(property->data);
+    arguments->clearArguments();
+}
+
 QQmlListProperty<UCArgument> UCArguments::arguments()
 {
-    /* FIXME: should be const
-     *
-     * From: http://qt-project.org/doc/qt-5.0/qtqml/qqmllistproperty.html
-     *
-     * Generally this constructor should not be used in production code,
-     * as a writable QList violates QML's memory management rules. However,
-     * this constructor can very useful while prototyping.
-     */
-    return QQmlListProperty<UCArgument>(this, m_arguments);
+    return QQmlListProperty<UCArgument>(this, this, &staticAppendArguments,
+                                        &staticCountArguments, &staticAtArguments,
+                                        &staticClearArguments);
 }
 
 void UCArguments::quitAndPrintUsage(QString errorMessage)
@@ -69,4 +113,47 @@ void UCArguments::quitAndPrintUsage(QString errorMessage)
     qWarning() << errorMessage.toStdString().c_str();
     qWarning() << usage.toStdString().c_str();
     QCoreApplication::exit(-1);
+}
+
+QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
+{
+    QHash<QString, QStringList> expectedArguments;
+    UCArgument* argument;
+
+    Q_FOREACH (argument, declaredArguments) {
+        expectedArguments.insert(argument->name(), argument->valueNames());
+    }
+
+    return expectedArguments;
+}
+
+QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments)
+{
+    QHash<QString, QStringList> argumentsValues;
+    QString name;
+    QStringList values;
+
+    // ignore the first item in the rawArguments which is the name of the binary
+    QStringList::const_iterator i;
+    for (i = rawArguments.begin(), ++i; i != rawArguments.end(); ++i) {
+        QString rawArgument = (*i);
+        if (rawArgument.startsWith('-')) {
+            // it starts with a '-' therefore it is a named argument
+            // remove all prepended '-'
+            rawArgument = rawArgument.split('-', QString::SkipEmptyParts).join('-');
+            values = rawArgument.split("=");
+            name = values.takeAt(0);
+        } else {
+            // FIXME: should check expected arguments to make sure we should
+            // consider it as a value of the previous named argument or instead
+            // as a default/unnamed argument
+            // additional value for a named argument
+            values.append(rawArgument);
+        }
+
+        argumentsValues.insert(name, values);
+    }
+
+    qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
+    return argumentsValues;
 }
