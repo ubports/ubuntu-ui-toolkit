@@ -40,6 +40,7 @@
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
 #include "ucstyle.h"
+#include "ucubuntuanimation.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -69,6 +70,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
     qmlRegisterType<UCStyle>(uri, 0, 1, "Style");
+    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

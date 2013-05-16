@@ -51,7 +51,7 @@ Item {
         color: item.color
         borderSource: visuals.borderPressed
         opacity: item.pressed ? 1.0 : 0.0
-        Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuint } }
+        Behavior on opacity { UbuntuNumberAnimation {} }
     }
 
     TransparentButtonDelegate {

@@ -322,8 +322,7 @@ AbstractButton {
             Behavior on x {
                 enabled: !priv.held
                 SequentialAnimation {
-                    NumberAnimation {
-                        duration: 200
+                    UbuntuNumberAnimation {
                     }
                     ScriptAction {
                          script: {
@@ -386,11 +385,10 @@ AbstractButton {
         id: removeItemAnimation
 
         running: false
-        NumberAnimation {
+        UbuntuNumberAnimation {
             target: emptyListItem
             property: "implicitHeight"
             to: 0
-            duration: 200
         }
         ScriptAction {
              script: {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,23 +15,17 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 
-Image {
-    id: container
+Rectangle {
+    id: circle
 
-    anchors.fill: parent
-    smooth: true
-    visible: item.running
-    fillMode: Image.PreserveAspectFit
-    horizontalAlignment: Image.AlignHCenter
-    verticalAlignment: Image.AlignVCenter
-
-    NumberAnimation on rotation {
-        running: item.running
-        from: 0
-        to: 360
-        loops: Animation.Infinite
-        duration: UbuntuAnimation.SleepyDuration
+    color: "#dd4814"
+    width: radius
+    height: radius
+    radius: units.gu(12)
+    antialiasing: true
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: Qt.lighter(circle.color, 1.3) }
+        GradientStop { position: 1.0; color: circle.color }
     }
 }

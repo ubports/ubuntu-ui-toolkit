@@ -248,29 +248,26 @@ Item {
     transitions: [
         Transition {
             to: ""
-            PropertyAnimation {
+            UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
                 duration: internal.transitionDuration
-                easing.type: Easing.OutQuad
             }
         },
         Transition {
             to: "hint"
-            PropertyAnimation {
+            UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
                 duration: internal.transitionDuration
-                easing.type: Easing.OutQuad
             }
         },
         Transition {
             to: "spread"
-            PropertyAnimation {
+            UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
                 duration: internal.transitionDuration
-                easing.type: Easing.OutQuad
             }
         }
     ]
@@ -281,9 +278,8 @@ Item {
         /*!
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
-          // FIXME: Update to use ubuntuFastBeat when animation speeds are added to the SDK.
          */
-        property real transitionDuration: 250
+        property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
 
 
         property string previousState: ""

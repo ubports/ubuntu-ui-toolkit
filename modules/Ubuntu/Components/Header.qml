@@ -41,7 +41,7 @@ Item {
     Behavior on y {
         enabled: !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: 200
+            duration: Theming.UbuntuAnimation.FastDuration
         }
     }
     height: units.gu(10)

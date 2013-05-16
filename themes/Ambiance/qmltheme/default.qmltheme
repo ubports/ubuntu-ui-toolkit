@@ -99,7 +99,7 @@ Examples:
     checkedColor: "#DD4814";
     uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1);
     checkMarkSource: url("artwork/CheckMark.png");
-    backgroundColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
+    backgroundColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing };
 }
 
 .switch {
@@ -110,8 +110,8 @@ Examples:
     thumbSpacing: units.dp(2);
     checkedThumbColor: "#DD4814";
     uncheckedThumbColor: "#bbbbbb";
-    thumbColorAnimation: ColorAnimation { duration: 100; easing.type: Easing.OutQuad };
-    moveThumbAnimation: NumberAnimation { duration: 100; easing.type: Easing.OutQuad };
+    thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing };
+    moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
     backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1);
 }
 
@@ -186,7 +186,7 @@ Examples:
 .popover {
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
 }
 
 .popover .foreground {
@@ -200,7 +200,7 @@ Examples:
 }
 
 .sheet {
-    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
 }
 .sheet .foreground {
     headerColor: "darkgray";
@@ -212,7 +212,7 @@ Examples:
 .dialog {
     edgeMargins: units.gu(2);
     callerMargin: units.gu(1);
-    fadingAnimation: PropertyAnimation{duration: 125; easing.type: Easing.OutQuint};
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
 }
 .dialog .background {
     dim: true;
@@ -269,19 +269,13 @@ Examples:
     overlayOpacityWhenShown: 0.6;
     overlayOpacityWhenHidden: 0.0;
 
-    scrollbarFadeInAnimation: NumberAnimation {
-        duration: 100;
-        easing.type: Easing.InOutQuad;
-    };
+    scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
     scrollbarFadeOutPause: 300;
-    scrollbarFadeOutAnimation: NumberAnimation {
-        duration: 500;
-        easing.type: Easing.InOutQuad;
-    };
+    scrollbarFadeOutAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SlowDuration };
 
-    sliderAnimation: NumberAnimation {duration: 200; easing.type: Easing.InOutQuad};
-    thumbConnectorFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
-    thumbFading: NumberAnimation {duration: 100; easing.type: Easing.InOutQuad};
+    sliderAnimation: UbuntuNumberAnimation {};
+    thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
+    thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
     backwardThumbReleased : (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
     backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
     forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
