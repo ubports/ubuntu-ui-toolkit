@@ -187,14 +187,14 @@ void UCArguments::parseAndExposeArguments()
     expectedArguments = buildExpectedArguments(m_arguments);
     argumentsValues = parseRawArguments(m_rawArguments, expectedArguments);
 
-    // check if all required named arguments were passed
+    // check if all required named arguments were passed along with their values
     Q_FOREACH (UCArgument* argument, m_arguments) {
         if (argument->required()) {
             QString error;
             if (!argumentsValues.contains(argument->name())) {
                 // FIXME: i18n
                 error.append(" is expecting an additional argument: ");
-            } else {
+            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size())
                 // FIXME: i18n
                 error.append(" is expecting a value for argument: ");
             }
