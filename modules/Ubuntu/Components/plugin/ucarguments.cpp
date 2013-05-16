@@ -29,6 +29,7 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
+    m_applicationBinary = m_rawArguments[0];
 }
 
 UCArgument* UCArguments::defaultArgument() const
@@ -114,10 +115,9 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
-    QString applicationBinary = m_rawArguments[0];
 
     usageStream << QString("Usage: ");
-    usageStream << applicationBinary;
+    usageStream << m_applicationBinary;
 
     Q_FOREACH (UCArgument* argument, m_arguments) {
         usageStream << ' ';
@@ -176,6 +176,25 @@ void UCArguments::parseAndExposeArguments()
     expectedArguments = buildExpectedArguments(m_arguments);
     argumentsValues = parseRawArguments(m_rawArguments, expectedArguments);
 
+    // check if all required named arguments were passed
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        if (argument->required() && !argumentsValues.contains(argument->name())) {
+            // FIXME: i18n
+            QString error(" is expecting an additional argument: ");
+            error.prepend(m_applicationBinary);
+            error.append(argument->syntax());
+            printUsageAndQuit(error);
+        }
+    }
+
+    // check if the required default argument was passed
+    if (m_defaultArgument->required() && !argumentsValues.contains("")) {
+        // FIXME: i18n
+        QString error(" is expecting additional arguments: ");
+        error.prepend(m_applicationBinary);
+        error.append(m_defaultArgument->syntax());
+    }
+
     if (argumentsValues.contains("help") ||
         argumentsValues.contains("h") ||
         argumentsValues.contains("usage")) {
@@ -188,9 +207,8 @@ void UCArguments::parseAndExposeArguments()
 QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
 {
     QHash<QString, QStringList> expectedArguments;
-    UCArgument* argument;
 
-    Q_FOREACH (argument, declaredArguments) {
+    Q_FOREACH (UCArgument* argument, declaredArguments) {
         expectedArguments.insert(argument->name(), argument->valueNames());
     }
 

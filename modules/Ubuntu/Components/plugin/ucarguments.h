@@ -69,6 +69,7 @@ private:
     UCArgument* m_defaultArgument;
     QList<UCArgument*> m_arguments;
     QStringList m_rawArguments;
+    QString m_applicationBinary;
 };
 
 #endif // UCARGUMENTS_H
