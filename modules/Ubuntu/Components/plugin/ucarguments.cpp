@@ -178,7 +178,7 @@ QQmlListProperty<UCArgument> UCArguments::arguments()
                                         &staticClearArguments);
 }
 
-
+// FIXME: break down in smaller functions
 void UCArguments::parseAndExposeArguments()
 {
     QHash<QString, QStringList> expectedArguments;
@@ -226,9 +226,9 @@ QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument
     return expectedArguments;
 }
 
+// FIXME: break down in smaller functions
 QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments)
 {
-    // FIXME: break down in smaller functions
     QHash<QString, QStringList> argumentsValues;
     QString name;
     QStringList values;
