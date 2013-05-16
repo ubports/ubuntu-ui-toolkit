@@ -74,11 +74,26 @@ void UCArgument::setValueNames(QStringList valueNames)
 
 QString UCArgument::syntax() const
 {
-    QString syntax("--");
-    syntax.append(m_name);
-    if (!m_valueNames.empty()) {
-        // FIXME: support more than one value per argument
-        syntax.append("=").append(m_valueNames[0]);
+    QString syntax;
+
+    if (!m_name.isEmpty()) {
+        syntax.append("--");
+        syntax.append(m_name);
+
+        if (!m_valueNames.empty()) {
+            // FIXME: support more than one value per argument
+            syntax.append('=').append(m_valueNames[0]);
+        }
+    } else {
+        if (!m_valueNames.empty()) {
+            Q_FOREACH (QString valueName, m_valueNames) {
+                if (!m_required) {
+                    valueName.prepend('[').append(']');
+                }
+                syntax.append(valueName);
+                syntax.append(' '); // FIXME: should be only if not last
+            }
+        }
     }
     return syntax;
 }

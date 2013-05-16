@@ -122,14 +122,17 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     usageStream << applicationBinary;
 
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        usageStream << " ";
+        usageStream << ' ';
+        QString syntax = argument->syntax();
         if (!argument->required()) {
-            usageStream << QString("[");
+            syntax.prepend('[').append(']');
         }
-        usageStream << argument->syntax();
-        if (!argument->required()) {
-            usageStream << QString("]");
-        }
+        usageStream << syntax;
+    }
+
+    if (m_defaultArgument != NULL) {
+        usageStream << ' ';
+        usageStream << m_defaultArgument->syntax();
     }
 
     usageStream << endl;
