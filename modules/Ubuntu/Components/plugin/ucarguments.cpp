@@ -29,7 +29,6 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
-    //qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
 }
 
 UCArgument* UCArguments::defaultArgument() const
@@ -244,7 +243,6 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
         argumentsValues.insert(name, values);
     }
 
-    //qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
     return argumentsValues;
 }
 
@@ -271,7 +269,6 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
             value.setValue(values);
         }
 
-        //qDebug() << "EXPOSING"  << name << value; // FIXME: remove
         // necessary for the value to be set to the QML property
         // FIXME: could spit out warnings if the QML property was not defined,
         // ie. if the write() returns false
