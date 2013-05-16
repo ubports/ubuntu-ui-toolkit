@@ -76,6 +76,7 @@ QString UCArgument::syntax() const
     QString syntax;
 
     if (!m_name.isEmpty()) {
+        // for named argument: --name=value1 value2
         syntax.append("--");
         syntax.append(m_name);
 
@@ -89,6 +90,8 @@ QString UCArgument::syntax() const
             }
         }
     } else {
+        // for unnamed required argument: value1 value2
+        // for unnamed optional argument: [value1] [value2]
         if (!m_valueNames.empty()) {
             Q_FOREACH (QString valueName, m_valueNames) {
                 if (!m_required) {
