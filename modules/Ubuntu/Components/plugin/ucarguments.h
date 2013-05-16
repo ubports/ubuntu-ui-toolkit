@@ -54,7 +54,7 @@ Q_SIGNALS:
 
 protected:
     QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
-    QHash<QString, QStringList> parseRawArguments(QStringList rawArguments);
+    QHash<QString, QStringList> parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments);
 
 private:
     UCArgument* m_defaultArgument;

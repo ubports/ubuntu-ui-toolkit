@@ -46,7 +46,7 @@ void UCArguments::appendArguments(UCArgument* argument)
 {
     m_arguments.append(argument);
     m_expectedArguments = buildExpectedArguments(m_arguments);
-    m_argumentsValues = parseRawArguments(m_rawArguments);
+    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
 }
 
 UCArgument* UCArguments::atArguments(int index)
@@ -63,7 +63,7 @@ void UCArguments::clearArguments()
 {
     m_arguments.clear();
     m_expectedArguments.clear();
-    m_argumentsValues.clear(); // FIXME: is that the right thing to do?
+    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
 }
 
 void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
@@ -127,8 +127,9 @@ QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument
     return expectedArguments;
 }
 
-QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments)
+QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments)
 {
+    // FIXME: break down in smaller functions
     QHash<QString, QStringList> argumentsValues;
     QString name;
     QStringList values;
@@ -138,20 +139,32 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
     for (i = rawArguments.begin(), ++i; i != rawArguments.end(); ++i) {
         QString rawArgument = (*i);
         if (rawArgument.startsWith('-')) {
+            if (!name.isEmpty()) {
+                // insert values of previously parsed named argument
+                argumentsValues.insert(name, values);
+            }
             // it starts with a '-' therefore it is a named argument
             // remove all prepended '-'
             rawArgument = rawArgument.split('-', QString::SkipEmptyParts).join('-');
+            // string after the '=' sign is a value for the argument
             values = rawArgument.split("=");
             name = values.takeAt(0);
         } else {
-            // FIXME: should check expected arguments to make sure we should
-            // consider it as a value of the previous named argument or instead
-            // as a default/unnamed argument
-            // additional value for a named argument
-            values.append(rawArgument);
+            if (!expectedArguments.contains(name) && values.empty()) {
+                // unexpected named arguments are given at most one value
+                values.append(rawArgument);
+            } else if (values.size() < expectedArguments[name].size()) {
+                // additional value for a named argument
+                values.append(rawArgument);
+            } else {
+                if (!name.isEmpty()) {
+                    // insert values of previously parsed named argument
+                    argumentsValues.insert(name, values);
+                }
+                // default/unnamed argument
+                argumentsValues[""].append(rawArgument);
+            }
         }
-
-        argumentsValues.insert(name, values);
     }
 
     qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
