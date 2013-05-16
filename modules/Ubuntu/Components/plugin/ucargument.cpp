@@ -70,3 +70,23 @@ void UCArgument::setValueNames(QStringList valueNames)
     m_valueNames = valueNames;
     Q_EMIT(valueNamesChanged());
 }
+
+QString UCArgument::syntax() const
+{
+    QString syntax("--");
+    syntax.append(m_name);
+    if (!m_valueNames.empty()) {
+        // FIXME: support more than one value per argument
+        syntax.append("=").append(m_valueNames[0]);
+    }
+    return syntax;
+}
+
+QString UCArgument::usage() const
+{
+    // ensure that the help string for the arguments are aligned vertically
+    QString usage;
+    usage.append(syntax().leftJustified(20, ' ', true));
+    usage.append(' ').append(m_help);
+    return usage;
+}

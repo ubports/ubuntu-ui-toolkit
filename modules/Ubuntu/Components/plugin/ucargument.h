@@ -43,6 +43,9 @@ public:
     QStringList valueNames() const;
     void setValueNames(QStringList valueNames);
 
+    QString syntax() const;
+    QString usage() const;
+
 Q_SIGNALS:
     void nameChanged();
     void helpChanged();

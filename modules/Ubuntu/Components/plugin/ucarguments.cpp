@@ -126,13 +126,7 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
         if (!argument->required()) {
             usageStream << QString("[");
         }
-
-        // FIXME: support more than one value per argument
-        usageStream << QString("--") << argument->name();
-        if (!argument->valueNames().empty()) {
-            usageStream << "=" << argument->valueNames()[0];
-        }
-
+        usageStream << argument->syntax();
         if (!argument->required()) {
             usageStream << QString("]");
         }
@@ -142,9 +136,7 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     usageStream << QString("Options:") << endl;
 
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        // ensure that the help string for the arguments are aligned vertically
-        QString spacing = QString(" ").repeated(20 - argument->name().size());
-        usageStream << indentation << QString("--") << argument->name() << spacing << argument->help() << endl;
+        usageStream << indentation << argument->usage() << endl;
     }
 
     if (m_defaultArgument != NULL) {
