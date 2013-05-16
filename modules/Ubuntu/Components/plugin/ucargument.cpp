@@ -81,8 +81,13 @@ QString UCArgument::syntax() const
         syntax.append(m_name);
 
         if (!m_valueNames.empty()) {
-            // FIXME: support more than one value per argument
-            syntax.append('=').append(m_valueNames[0]);
+            syntax.append('=');
+            Q_FOREACH (QString valueName, m_valueNames) {
+                syntax.append(valueName);
+                if (valueName != m_valueNames.last()) {
+                    syntax.append(' ');
+                }
+            }
         }
     } else {
         if (!m_valueNames.empty()) {
@@ -91,7 +96,9 @@ QString UCArgument::syntax() const
                     valueName.prepend('[').append(']');
                 }
                 syntax.append(valueName);
-                syntax.append(' '); // FIXME: should be only if not last
+                if (valueName != m_valueNames.last()) {
+                    syntax.append(' ');
+                }
             }
         }
     }
