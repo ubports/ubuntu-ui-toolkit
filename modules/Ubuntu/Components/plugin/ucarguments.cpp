@@ -29,7 +29,7 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
-    m_applicationBinary = m_rawArguments[0];
+    m_applicationBinary = m_rawArguments[0].split('/').last();
 }
 
 UCArgument* UCArguments::defaultArgument() const
