@@ -115,7 +115,6 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
-    // FIXME: guess application binary better
     QString applicationBinary = m_rawArguments[0];
 
     usageStream << QString("Usage: ");
