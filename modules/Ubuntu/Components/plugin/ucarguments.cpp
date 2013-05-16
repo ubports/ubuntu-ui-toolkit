@@ -20,6 +20,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QTextStream>
+#include <QtQml/QQmlProperty>
+#include <QtQml/qqml.h>
 
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
@@ -36,7 +38,7 @@ UCArgument* UCArguments::defaultArgument() const
 
 void UCArguments::setDefaultArgument(UCArgument* argument)
 {
-    // FIXME
+    // FIXME: finish implementation
     m_defaultArgument = argument;
     Q_EMIT(defaultArgumentChanged());
 }
@@ -47,6 +49,8 @@ void UCArguments::appendArguments(UCArgument* argument)
     m_arguments.append(argument);
     m_expectedArguments = buildExpectedArguments(m_arguments);
     m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
+    // FIXME: remove previously exposed properties
+    exposeArgumentsAsProperties(m_argumentsValues);
 }
 
 UCArgument* UCArguments::atArguments(int index)
@@ -64,6 +68,7 @@ void UCArguments::clearArguments()
     m_arguments.clear();
     m_expectedArguments.clear();
     m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
+    // FIXME: remove previously exposed properties
 }
 
 void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
@@ -136,7 +141,7 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
 
     // ignore the first item in the rawArguments which is the name of the binary
     QStringList::const_iterator i;
-    for (i = rawArguments.begin(), ++i; i != rawArguments.end(); ++i) {
+    for (i = rawArguments.constBegin(), ++i; i != rawArguments.constEnd(); ++i) {
         QString rawArgument = (*i);
         if (rawArgument.startsWith('-')) {
             if (!name.isEmpty()) {
@@ -169,4 +174,33 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
 
     qDebug() << "PARSING... "  << argumentsValues; // FIXME: remove
     return argumentsValues;
+}
+
+void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues)
+{
+    QHash<QString, QStringList>::const_iterator i;
+
+    for (i = argumentsValues.constBegin(); i != argumentsValues.constEnd(); ++i) {
+        QString name = i.key();
+        if (name.isEmpty()) {
+            continue;
+        }
+
+        QStringList values = i.value();
+        QQmlProperty qmlProperty(this, name, qmlContext(this));
+        const char* propertyName = name.toStdString().c_str();
+        QVariant value;
+
+        if (values.size() == 0) {
+            value.setValue(true);
+        } else if (values.size() == 1) {
+            value.setValue(values.at(0));
+        } else {
+            value.setValue(values);
+        }
+
+        qDebug() << "EXPOSING"  << name << value; // FIXME: remove
+        qDebug() << qmlProperty.write(value);
+        setProperty(propertyName, value); // FIXME: is it necessary?
+    }
 }
