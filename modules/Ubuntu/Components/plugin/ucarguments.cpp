@@ -25,8 +25,8 @@
 
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
+    m_completed(false),
     m_defaultArgument(NULL),
-    m_completed(false)
 {
     m_rawArguments = QCoreApplication::arguments();
     //qDebug() << "RAW ARGUMENTS" << m_rawArguments; // FIXME: remove
