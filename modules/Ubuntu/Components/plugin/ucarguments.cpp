@@ -17,11 +17,15 @@
  */
 
 #include "ucarguments.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QTextStream>
 
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
     m_defaultArgument(NULL)
 {
+    m_rawArguments = QCoreApplication::arguments();
 }
 
 UCArgument* UCArguments::defaultArgument() const
@@ -51,5 +55,18 @@ QQmlListProperty<UCArgument> UCArguments::arguments()
 
 void UCArguments::quitAndPrintUsage(QString errorMessage)
 {
-    // FIXME
+    // FIXME: use i18n
+    QString usage;
+    QTextStream usageStream(&usage);
+    // FIXME: guess application binary better
+    QString applicationBinary = m_rawArguments[0];
+
+    usageStream << QString("Usage: ");
+    usageStream << applicationBinary << endl;
+    usageStream << QString("Options:") << endl;
+
+    // convert to char* to avoid qWarning printing out quotes ""
+    qWarning() << errorMessage.toStdString().c_str();
+    qWarning() << usage.toStdString().c_str();
+    QCoreApplication::exit(-1);
 }
