@@ -49,16 +49,7 @@ void UCArguments::appendArguments(UCArgument* argument)
 {
     m_arguments.append(argument);
     if (m_completed) {
-        // FIXME: duplicated code from UCArguments::clearArguments()
-        m_expectedArguments = buildExpectedArguments(m_arguments);
-        m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
-        if (m_argumentsValues.contains("help") ||
-            m_argumentsValues.contains("h") ||
-            m_argumentsValues.contains("usage")) {
-            printUsageAndQuit();
-        }
-        // FIXME: remove previously exposed properties
-        exposeArgumentsAsProperties(m_argumentsValues);
+        parseAndExposeArguments();
     }
 }
 
@@ -75,14 +66,7 @@ int UCArguments::countArguments()
 void UCArguments::clearArguments()
 {
     m_arguments.clear();
-    // FIXME: duplicated code from UCArguments::appendArguments()
-    m_expectedArguments.clear();
-    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
-    if (m_argumentsValues.contains("help") ||
-        m_argumentsValues.contains("h") ||
-        m_argumentsValues.contains("usage")) {
-        printUsageAndQuit();
-    }
+    parseAndExposeArguments();
 }
 
 void staticAppendArguments(QQmlListProperty<UCArgument>* property, UCArgument* argument)
@@ -188,15 +172,24 @@ void UCArguments::classBegin()
 void UCArguments::componentComplete()
 {
     m_completed = true;
-    m_expectedArguments = buildExpectedArguments(m_arguments);
-    m_argumentsValues = parseRawArguments(m_rawArguments, m_expectedArguments);
-    if (m_argumentsValues.contains("help") ||
-        m_argumentsValues.contains("h") ||
-        m_argumentsValues.contains("usage")) {
+    parseAndExposeArguments();
+}
+
+void UCArguments::parseAndExposeArguments()
+{
+    QHash<QString, QStringList> expectedArguments;
+    QHash<QString, QStringList> argumentsValues;
+
+    expectedArguments = buildExpectedArguments(m_arguments);
+    argumentsValues = parseRawArguments(m_rawArguments, expectedArguments);
+
+    if (argumentsValues.contains("help") ||
+        argumentsValues.contains("h") ||
+        argumentsValues.contains("usage")) {
         printUsageAndQuit();
     }
-    // FIXME: remove previously exposed properties
-    exposeArgumentsAsProperties(m_argumentsValues);
+
+    exposeArgumentsAsProperties(argumentsValues);
 }
 
 QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)

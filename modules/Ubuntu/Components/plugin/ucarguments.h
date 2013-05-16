@@ -59,6 +59,7 @@ Q_SIGNALS:
     void defaultArgumentChanged();
 
 protected:
+    void parseAndExposeArguments();
     QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
     QHash<QString, QStringList> parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments);
     void exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues);
@@ -68,8 +69,6 @@ private:
     UCArgument* m_defaultArgument;
     QList<UCArgument*> m_arguments;
     QStringList m_rawArguments;
-    QHash<QString, QStringList> m_argumentsValues; // FIXME: remove
-    QHash<QString, QStringList> m_expectedArguments; // FIXME: remove
 };
 
 #endif // UCARGUMENTS_H
