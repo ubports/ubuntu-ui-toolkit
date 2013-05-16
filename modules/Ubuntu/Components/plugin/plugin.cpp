@@ -41,6 +41,8 @@
 #include "bottombarvisibilitycommunicator.h"
 #include "ucstyle.h"
 #include "ucubuntuanimation.h"
+#include "ucarguments.h"
+#include "ucargument.h"
 #include "ucapplication.h"
 
 #include <sys/types.h>
@@ -72,6 +74,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
     qmlRegisterType<UCStyle>(uri, 0, 1, "Style");
     qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
+    qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
+    qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
