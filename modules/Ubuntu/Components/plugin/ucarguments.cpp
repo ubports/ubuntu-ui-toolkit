@@ -352,11 +352,11 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
         QQmlProperty qmlProperty(this, name, qmlContext(this));
         if (!qmlProperty.isValid()) {
             qWarning() << "Arguments: property" << value.typeName() << name << "needs to be defined";
-            return;
+            continue;
         } else if (qmlProperty.propertyType() != QMetaType::QVariant
                    && !value.canConvert(qmlProperty.propertyType())) {
             qWarning() << "Arguments: property" << name << "is of incompatible type" << qmlProperty.propertyTypeName() << "but should be" << value.typeName();
-            return;
+            continue;
         }
 
         // necessary for the value to be set to the QML property
