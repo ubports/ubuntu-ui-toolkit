@@ -62,6 +62,7 @@ protected:
     void parseAndExposeArguments();
     QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
     QHash<QString, QStringList> parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments);
+    QStringList collectArgumentValues(QStringList::const_iterator& i, QStringList::const_iterator end, int nValues);
     bool usageRequested(QStringList argumentNames);
     bool requiredArgumentsProvided(QHash<QString, QStringList> argumentsValues, QString& error);
     bool requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error);

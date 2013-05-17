@@ -228,53 +228,56 @@ QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument
     return expectedArguments;
 }
 
-// FIXME: break down in smaller functions
 QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments)
 {
     QHash<QString, QStringList> argumentsValues;
     QString name;
     QStringList values;
 
+    QStringList::const_iterator i = rawArguments.constBegin();
     // ignore the first item in the rawArguments which is the name of the binary
-    QStringList::const_iterator i;
-    for (i = rawArguments.constBegin(), ++i; i != rawArguments.constEnd(); ++i) {
+    i++;
+    for (; i != rawArguments.constEnd(); ++i) {
         QString rawArgument = (*i);
         if (rawArgument.startsWith('-')) {
-            if (!name.isEmpty()) {
-                // insert values of previously parsed named argument
-                argumentsValues.insert(name, values);
-            }
             // it starts with a '-' therefore it is a named argument
             // remove all prepended '-'
             rawArgument = rawArgument.split('-', QString::SkipEmptyParts).join('-');
             // string after the '=' sign is a value for the argument
             values = rawArgument.split("=");
             name = values.takeAt(0);
-        } else {
-            if (!expectedArguments.contains(name) && values.empty()) {
-                // unexpected named arguments are given at most one value
-                values.append(rawArgument);
-            } else if (values.size() < expectedArguments[name].size()) {
-                // additional value for a named argument
-                values.append(rawArgument);
+
+            if (expectedArguments.contains(name)) {
+                values.append(collectArgumentValues(i, rawArguments.constEnd(), expectedArguments[name].size()));
             } else {
-                if (!name.isEmpty()) {
-                    // insert values of previously parsed named argument
-                    argumentsValues.insert(name, values);
-                }
-                // default/unnamed argument
-                argumentsValues[""].append(rawArgument);
+                // unexpected named arguments are given at most one value
+                values.append(collectArgumentValues(i, rawArguments.constEnd(), 1));
             }
+            argumentsValues.insert(name, values);
+        } else {
+            // default/unnamed argument
+            argumentsValues[""].append(rawArgument);
         }
     }
 
-    // FIXME: code duplicated 3 times
-    if (!name.isEmpty()) {
-        // insert values of previously parsed named argument
-        argumentsValues.insert(name, values);
+    return argumentsValues;
+}
+
+QStringList UCArguments::collectArgumentValues(QStringList::const_iterator& i, QStringList::const_iterator end, int nValues)
+{
+    QStringList values;
+    for (; (i+1) != end; ++i) {
+        QString rawArgument = *(i+1);
+        if (rawArgument.startsWith('-')) {
+            break;
+        } else if (values.size() >= nValues) {
+            break;
+        } else {
+            values.append(rawArgument);
+        }
     }
 
-    return argumentsValues;
+    return values;
 }
 
 bool UCArguments::usageRequested(QStringList argumentNames) {
