@@ -1,0 +1,374 @@
+modules/Ubuntu/Components/AbstractButton.qml
+signal clicked()
+signal pressAndHold()
+property bool pressed
+property bool hovered
+property bool __acceptEvents
+property alias __mouseArea
+modules/Ubuntu/Components/Action.qml
+property string text
+property url iconSource
+signal triggered(var caller)
+property bool visible
+property bool enabled
+property Component itemHint
+modules/Ubuntu/Components/ActionList.qml
+default property alias children
+property list<Action> actions
+modules/Ubuntu/Components/ActivityIndicator.qml
+property bool running
+modules/Ubuntu/Components/AnimatedItem.qml
+property bool onScreen
+function updateFlickableParent()
+modules/Ubuntu/Components/Button.qml
+property color color
+property url iconSource
+property string text
+property string iconPosition
+modules/Ubuntu/Components/CheckBox.qml
+property bool checked
+modules/Ubuntu/Components/DraggingArea.qml
+property int orientation
+property bool dragging
+property real dragVelocity
+property real dragValue
+property real lateralPosition
+property point __pressedPosition
+property var __dragEvents
+property bool clickValidated
+property bool zeroVelocityCounts
+signal dragStart
+signal dragEnd
+function updateSpeed()
+function cullOldDragEvents(currentTime)
+function getEventSpeed(currentTime, event)
+function pushDragEvent(event)
+modules/Ubuntu/Components/Header.qml
+function show()
+function hide()
+property string title
+property Component contents
+property Flickable flickable
+property real previousContentY
+property Flickable previousFlickable
+function connectFlickable()
+function scrollContents()
+function movementEnded()
+function interactiveChanged()
+modules/Ubuntu/Components/HudIntegration.qml
+modules/Ubuntu/Components/Icon.qml
+property string name
+property alias color
+property alias keyColor
+property bool active
+property Image source
+property color keyColorOut
+property color keyColorIn
+property real threshold
+modules/Ubuntu/Components/Label.qml
+property string fontSize
+modules/Ubuntu/Components/MainView.qml
+property string applicationName
+property alias automaticOrientation
+default property alias contentsItem
+property Header header
+property Toolbar toolbar
+property ToolbarActions tools
+onToolsChanged
+property QtObject __hud
+modules/Ubuntu/Components/ModelSectionCounter.qml
+property var view
+property int count
+readonly property alias sectionHeight
+property bool cacheSections
+property var cache
+function initSectionCounter()
+function checkSections()
+modules/Ubuntu/Components/Object.qml
+default property alias children
+modules/Ubuntu/Components/OrientationHelper.qml
+property bool automaticOrientation
+property int __orientationAngle
+modules/Ubuntu/Components/Page.qml
+property string title
+property Flickable flickable
+property Header header
+property Toolbar toolbar
+function updateHeaderAndToolbar()
+property real headerHeight
+function isFlickable(object)
+function getFlickableChild(item)
+function updateFlickableMargins()
+modules/Ubuntu/Components/PageStack.qml
+property bool __showHeader
+property ToolbarActions tools
+onToolsChanged
+property int depth
+property Item currentPage
+function push(page, properties)
+function pop()
+function clear()
+property var stack
+function createWrapper(page, properties)
+function stackUpdated()
+modules/Ubuntu/Components/PageTreeNode.qml
+property bool __isPageTreeNode
+property Header header
+property Toolbar toolbar
+property QtObject propagated
+property bool active
+property Item pageStack
+property Item parentNode
+function getParentPageTreeNode(item)
+function updatePageTree()
+modules/Ubuntu/Components/PageWrapper.qml
+property var reference
+property Item object
+property bool canDestroy
+property var properties
+function destroyObject()
+modules/Ubuntu/Components/Panel.qml
+default property alias contents
+property int align
+property bool opened
+property bool locked
+property real hintSize
+property real triggerSize
+readonly property bool animating
+property real transitionDuration
+property string previousState
+property int movingDelta
+property bool savedlocked
+property bool savedOpened
+property int align
+readonly property int orientation
+property int mousePosition
+function getMousePosition()
+property Item pressedItem
+function getClickableItem(mouse)
+property int initialPosition
+function finishMoving()
+property real size
+property real position
+modules/Ubuntu/Components/ProgressBar.qml
+property bool indeterminate
+property real minimumValue
+property real maximumValue
+property real value
+property url barSource
+property url knownTrackerSource
+property url unknownTrackerSource
+property int trackerOffset
+function progress()
+modules/Ubuntu/Components/Scrollbar.qml
+property Flickable flickableItem
+property int align
+property bool __interactive
+property alias __private
+function leftAnchor(object)
+function rightAnchor(object)
+function topAnchor(object)
+function bottomAnchor(object)
+modules/Ubuntu/Components/Slider.qml
+property real minimumValue
+property real maximumValue
+property real value
+property bool live
+signal touched(bool onThumb)
+function formatValue(v)
+property alias __internals
+function mouseAreaPressed()
+function mouseAreaPositionchanged()
+modules/Ubuntu/Components/Switch.qml
+modules/Ubuntu/Components/Tab.qml
+property string title
+property url iconSource
+property Item page
+modules/Ubuntu/Components/TabButton.qml
+property bool selected
+property bool __isFirst
+property bool __isLast
+modules/Ubuntu/Components/Tabs.qml
+property int selectedTabIndex
+readonly property Tab selectedTab
+readonly property Item currentPage
+property Component __headerContents
+property ToolbarActions tools
+onToolsChanged
+property alias __tabs
+default property alias tabChildren
+signal modelChanged()
+function updateTabList()
+function isTab(item)
+property Header header
+function updateHeader()
+modules/Ubuntu/Components/TextArea.qml
+property bool highlighted
+property alias placeholderText
+readonly property alias displayText
+property bool selectByMouse
+property bool autoExpand
+property bool autoSize
+property int maximumLineCount
+property real contentWidth
+property real contentHeight
+property var popover
+property bool activeFocusOnPress
+property alias baseUrl
+property alias canPaste
+property alias canRedo
+property alias canUndo
+property alias color
+property alias cursorDelegate
+property alias cursorPosition
+property alias cursorRectangle
+property alias cursorVisible
+property alias effectiveHorizontalAlignment
+property alias font
+property alias horizontalAlignment
+property alias inputMethodComposing
+property alias inputMethodHints
+property alias length
+property alias lineCount
+property alias mouseSelectionMode
+property alias persistentSelection
+property alias readOnly
+property alias renderType
+property alias selectedText
+property alias selectedTextColor
+property alias selectionColor
+property alias selectionEnd
+property alias selectionStart
+property alias text
+property alias textFormat
+property alias verticalAlignment
+property alias wrapMode
+signal linkActivated(string link)
+function copy()
+function cut()
+function deselect()
+function insert(position, text)
+function positionAt(x, y)
+function isRightToLeft(start, end)
+function moveCursorSelection(position, mode)
+function paste(data)
+function positionToRectangle(position)
+function redo()
+function select(start, end)
+function selectAll()
+function selectWord()
+function getFormattedText(start, end)
+function getText(start, end)
+function remove(start, end)
+function undo()
+function forceActiveFocus()
+property alias __internal
+property string displayText
+property real lineSpacing
+property real frameSpacing
+property real lineSize
+property real minimumSize
+property real inputAreaWidth
+property real inputAreaHeight
+property bool draggingMode
+property bool selectionMode
+property bool prevShowCursor
+signal popupTriggered(int pos)
+function toggleSelectionCursors(show)
+function activateEditor()
+function showInputPanel()
+function hideInputPanel()
+function linesHeight(lines)
+function frameSize()
+function enterSelectionMode(x, y)
+function positionCursor(x, y)
+function ensureVisible(r)
+modules/Ubuntu/Components/TextCursor.qml
+property var editorItem
+property string positionProperty
+property var popover
+function openPopover()
+modules/Ubuntu/Components/TextCustom.qml
+modules/Ubuntu/Components/TextField.qml
+property bool highlighted
+property alias placeholderText
+property bool hasClearButton
+property Component customSoftwareInputPanel
+property var popover
+property alias primaryItem
+property alias secondaryItem
+property bool errorHighlight
+property alias acceptableInput
+property alias cursorPosition
+property alias echoMode
+property alias font
+property alias inputMask
+property alias inputMethodComposing
+property alias maximumLength
+property alias readOnly
+property alias selectedText
+property alias selectionStart
+property alias selectionEnd
+property alias text
+property alias validator
+property alias horizontalAlignment
+property alias passwordCharacter
+property alias color
+property alias selectionColor
+property alias selectedTextColor
+signal accepted()
+function copy()
+function cut()
+function paste(data)
+function deselect()
+function positionAt(x, position)
+function positionToRectangle(pos)
+function select(start, end)
+function selectAll()
+function selectWord()
+function forceActiveFocus()
+property alias __internal
+property bool textChanged
+property real spacing
+property real lineSpacing
+property real lineSize
+property bool selectionMode
+property int selectionStart
+property int selectionEnd
+signal popupTriggered()
+function activateEditor()
+function showInputPanel()
+function hideInputPanel()
+function resetEditorSelection(mouseX)
+function positionCursor(x)
+property url iconSource
+modules/Ubuntu/Components/TextInputPopover.qml
+modules/Ubuntu/Components/Toolbar.qml
+property bool active
+property bool lock
+property ToolbarActions tools
+property ToolbarActions visibleTools
+property bool opened
+property bool animating
+property string text
+property url iconSource
+signal clicked()
+property Action action
+signal itemTriggered()
+property Action action
+modules/Ubuntu/Components/ToolbarActions.qml
+property Action back
+property Item __pageStack
+property bool opened
+property bool active
+property bool lock
+property bool locked
+function __hasVisibleActions()
+modules/Ubuntu/Components/UbuntuNumberAnimation.qml
+modules/Ubuntu/Components/UbuntuShape.qml
+property string radius
+property color color
+property color gradientColor
+property url maskSource
+property url borderSource
+property Image image

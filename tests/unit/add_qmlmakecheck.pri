@@ -7,3 +7,5 @@ check.commands = "set -e;"
 for(TEST, TESTS) {
   check.commands += ../runtest.sh $${TARGET} $${TEST};
 }
+check.commands += cd ../../..; tests/qmlapicheck.py modules/Ubuntu/Components/*.qml > components.api.new;
+check.commands += diff -Fqml -u components.api components.api.new || exit 1; cd tests/unit
