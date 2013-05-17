@@ -219,6 +219,14 @@ void UCArguments::parseAndExposeArguments()
         error.append(m_defaultArgument->syntax());
     }
 
+    // pass the values to the arguments objects
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        m_defaultArgument->setValues(argumentsValues[argument->name()]);
+    }
+    m_defaultArgument->setValues(argumentsValues[""]);
+    // FIXME: not very elegant way to inform that values have changed
+    Q_EMIT(defaultArgumentChanged());
+
     if (argumentsValues.contains("help") ||
         argumentsValues.contains("h") ||
         argumentsValues.contains("usage")) {

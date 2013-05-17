@@ -112,3 +112,17 @@ QString UCArgument::usage() const
     usage.append(' ').append(m_help);
     return usage;
 }
+
+void UCArgument::setValues(QStringList values)
+{
+    m_values = values;
+}
+
+QString UCArgument::at(int i) const
+{
+    if (i < m_values.size()) {
+        return m_values.at(i);
+    } else {
+        return QString();
+    }
+}

@@ -45,6 +45,10 @@ public:
 
     QString syntax() const;
     QString usage() const;
+    void setValues(QStringList values);
+    // FIXME: maybe define UCArgument as a QQmlListProperty instead so that
+    // operator[] is available from QML
+    Q_INVOKABLE QString at(int i) const;
 
 Q_SIGNALS:
     void nameChanged();
@@ -57,6 +61,7 @@ private:
     QString m_help;
     bool m_required;
     QStringList m_valueNames;
+    QStringList m_values;
 };
 
 #endif // UCARGUMENT_H
