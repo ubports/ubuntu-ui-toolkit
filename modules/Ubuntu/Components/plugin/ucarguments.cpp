@@ -183,7 +183,6 @@ QQmlListProperty<UCArgument> UCArguments::arguments()
                                         &staticClearArguments);
 }
 
-// FIXME: break down in smaller functions
 void UCArguments::parseAndExposeArguments()
 {
     QHash<QString, QStringList> expectedArguments;
@@ -192,29 +191,16 @@ void UCArguments::parseAndExposeArguments()
     expectedArguments = buildExpectedArguments(m_arguments);
     argumentsValues = parseRawArguments(m_rawArguments, expectedArguments);
 
-    // check if all required named arguments were passed along with their values
-    Q_FOREACH (UCArgument* argument, m_arguments) {
-        if (argument->required()) {
-            QString error;
-            if (!argumentsValues.contains(argument->name())) {
-                UbuntuI18n* i18n = &UbuntuI18n::instance();
-                error = i18n->tr("%1 is expecting an additional argument: %2");
-            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size()) {
-                UbuntuI18n* i18n = &UbuntuI18n::instance();
-                error = i18n->tr("%1 is expecting a value for argument: %2");
-            }
-            if (!error.isEmpty()) {
-                error = error.arg(m_applicationBinary).arg(argument->syntax());
-                printUsageAndQuit(error);
-            }
-        }
+    if (usageRequested(argumentsValues.keys())) {
+        printUsageAndQuit();
     }
 
-    // check if the required default argument was passed
-    if (m_defaultArgument != NULL && m_defaultArgument->required() && !argumentsValues.contains("")) {
-        UbuntuI18n* i18n = &UbuntuI18n::instance();
-        QString error;
-        error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
+    QString error;
+    if (!requiredArgumentsProvided(argumentsValues, error)) {
+        printUsageAndQuit(error);
+    }
+
+    if (!requiredDefaultArgumentProvided(argumentsValues, error)) {
         printUsageAndQuit(error);
     }
 
@@ -226,12 +212,6 @@ void UCArguments::parseAndExposeArguments()
         m_defaultArgument->setValues(argumentsValues[""]);
         // FIXME: not very elegant way to inform that values have changed
         Q_EMIT(defaultArgumentChanged());
-    }
-
-    if (argumentsValues.contains("help") ||
-        argumentsValues.contains("h") ||
-        argumentsValues.contains("usage")) {
-        printUsageAndQuit();
     }
 
     exposeArgumentsAsProperties(argumentsValues);
@@ -295,6 +275,46 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
     }
 
     return argumentsValues;
+}
+
+bool UCArguments::usageRequested(QStringList argumentNames) {
+    return argumentNames.contains("help") ||
+           argumentNames.contains("h") ||
+           argumentNames.contains("usage");
+}
+
+bool UCArguments::requiredArgumentsProvided(QHash<QString, QStringList> argumentsValues, QString& error)
+{
+    // check if all required named arguments were passed along with their values
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        if (argument->required()) {
+            if (!argumentsValues.contains(argument->name())) {
+                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                error = i18n->tr("%1 is expecting an additional argument: %2");
+                error = error.arg(m_applicationBinary).arg(argument->syntax());
+                return false;
+            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size()) {
+                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                error = i18n->tr("%1 is expecting a value for argument: %2");
+                error = error.arg(m_applicationBinary).arg(argument->syntax());
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool UCArguments::requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error)
+{
+    // check if the required default argument was passed
+    if (m_defaultArgument != NULL && m_defaultArgument->required() && !argumentsValues.contains("")) {
+        UbuntuI18n* i18n = &UbuntuI18n::instance();
+        error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
+        return false;
+    } else {
+        return true;
+    }
 }
 
 void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues)
