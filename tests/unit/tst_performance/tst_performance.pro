@@ -19,4 +19,6 @@ OTHER_FILES += \
     CustomTheme.qmltheme \
     ButtonsWithStyledGrid.qml \
     TextWithImport.qml \
-    TextWithImportGrid.qml
+    TextWithImportGrid.qml \
+    TextWithImportPopupsGrid.qml \
+    TextWithImportPopups.qml

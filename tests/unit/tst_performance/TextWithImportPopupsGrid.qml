@@ -15,7 +15,14 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 
-Text {
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 160
+    Repeater {
+        model: 16*160
+        TextWithImportPopups {}
+    }
 }

@@ -110,10 +110,19 @@ private Q_SLOTS:
             delete root;
     }
 
+    void benchmark_import_data()
+    {
+        QTest::addColumn<QString>("document");
+
+        QTest::newRow("importing Ubuntu.Components") << "TextWithImportGrid.qml";
+        QTest::newRow("importing Ubuntu.Components.Popups") << "TextWithImportGrid.qml";
+    }
+
     void benchmark_import()
     {
+        QFETCH(QString, document);
         QBENCHMARK {
-            loadDocument("TextWithImportGrid.qml");
+            loadDocument(document);
         }
     }
 
