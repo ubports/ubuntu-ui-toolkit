@@ -212,7 +212,7 @@ void UCArguments::parseAndExposeArguments()
     }
 
     // check if the required default argument was passed
-    if (m_defaultArgument->required() && !argumentsValues.contains("")) {
+    if (m_defaultArgument != NULL && m_defaultArgument->required() && !argumentsValues.contains("")) {
         // FIXME: i18n
         QString error(" is expecting additional arguments: ");
         error.prepend(m_applicationBinary);
@@ -221,11 +221,13 @@ void UCArguments::parseAndExposeArguments()
 
     // pass the values to the arguments objects
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        m_defaultArgument->setValues(argumentsValues[argument->name()]);
+        argument->setValues(argumentsValues[argument->name()]);
     }
-    m_defaultArgument->setValues(argumentsValues[""]);
-    // FIXME: not very elegant way to inform that values have changed
-    Q_EMIT(defaultArgumentChanged());
+    if (m_defaultArgument != NULL) {
+        m_defaultArgument->setValues(argumentsValues[""]);
+        // FIXME: not very elegant way to inform that values have changed
+        Q_EMIT(defaultArgumentChanged());
+    }
 
     if (argumentsValues.contains("help") ||
         argumentsValues.contains("h") ||
