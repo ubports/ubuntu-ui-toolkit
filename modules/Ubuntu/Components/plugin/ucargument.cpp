@@ -118,11 +118,11 @@ void UCArgument::setValues(QStringList values)
     m_values = values;
 }
 
-QString UCArgument::at(int i) const
+QVariant UCArgument::at(int i) const
 {
     if (i < m_values.size()) {
-        return m_values.at(i);
+        return QVariant(m_values.at(i));
     } else {
-        return QString();
+        return QVariant();
     }
 }

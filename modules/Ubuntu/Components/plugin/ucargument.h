@@ -21,6 +21,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#include <QtCore/QVariant>
 
 class UCArgument : public QObject
 {
@@ -48,7 +49,7 @@ public:
     void setValues(QStringList values);
     // FIXME: maybe define UCArgument as a QQmlListProperty instead so that
     // operator[] is available from QML
-    Q_INVOKABLE QString at(int i) const;
+    Q_INVOKABLE QVariant at(int i) const;
 
 Q_SIGNALS:
     void nameChanged();
