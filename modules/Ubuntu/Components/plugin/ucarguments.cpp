@@ -211,8 +211,16 @@ void UCArguments::parseAndExposeArguments()
 
     // pass the values to the arguments objects
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        if (argumentsValues.contains(argument->name())) {
-            argument->setValues(argumentsValues.value(argument->name()));
+        QString name = argument->name();
+        if (argumentsValues.contains(name)) {
+            argument->setValues(argumentsValues.value(name));
+        } else {
+            // FIXME: completely wrong place in the code to do this
+            if (argument->valueNames().size() == 0) {
+                // case of a boolean argument that was not passed on the command line
+                m_values->insert(name, false);
+                Q_EMIT m_values->valueChanged(name, false);
+            }
         }
     }
     if (m_defaultArgument != NULL) {
