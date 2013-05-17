@@ -323,7 +323,7 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
 
         // necessary for the value to be set to the QML property
         // FIXME: could spit out warnings if the QML property was not defined,
-        // ie. if the write() returns false
+        // or if the type is incompatible, ie. if the write() returns false
         qmlProperty.write(value);
         // necessary for the value to be set to the C++ dynamic property
         setProperty(propertyName, value); // FIXME: is it necessary?
