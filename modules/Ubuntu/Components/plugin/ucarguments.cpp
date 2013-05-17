@@ -332,6 +332,6 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
         // necessary for the value to be set to the QML property
         qmlProperty.write(value);
         // necessary for the value to be set to the C++ dynamic property
-        setProperty(propertyName, value); // FIXME: is it necessary?
+        setProperty(propertyName, value);
     }
 }
