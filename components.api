@@ -1,4 +1,5 @@
 modules/Ubuntu/Components/AbstractButton.qml
+Item
     signal clicked()
     signal pressAndHold()
     property bool pressed
@@ -6,6 +7,7 @@ modules/Ubuntu/Components/AbstractButton.qml
     property bool __acceptEvents
     property alias __mouseArea
 modules/Ubuntu/Components/Action.qml
+QtObject
     property string text
     property url iconSource
     signal triggered(var caller)
@@ -13,21 +15,26 @@ modules/Ubuntu/Components/Action.qml
     property bool enabled
     property Component itemHint
 modules/Ubuntu/Components/ActionList.qml
+QtObject
     default property alias children
     property list<Action> actions
 modules/Ubuntu/Components/ActivityIndicator.qml
+AnimatedItem
     property bool running
 modules/Ubuntu/Components/AnimatedItem.qml
+Item
     property bool onScreen
-    function updateFlickableParent()
 modules/Ubuntu/Components/Button.qml
+AbstractButton
     property color color
     property url iconSource
     property string text
     property string iconPosition
 modules/Ubuntu/Components/CheckBox.qml
+AbstractButton
     property bool checked
 modules/Ubuntu/Components/DraggingArea.qml
+MouseArea
     property int orientation
     property bool dragging
     property real dragVelocity
@@ -44,62 +51,50 @@ modules/Ubuntu/Components/DraggingArea.qml
     function getEventSpeed(currentTime, event)
     function pushDragEvent(event)
 modules/Ubuntu/Components/Header.qml
+Item
     function show()
     function hide()
     property string title
     property Component contents
     property Flickable flickable
-    property real previousContentY
-    property Flickable previousFlickable
-    function connectFlickable()
-    function scrollContents()
-    function movementEnded()
-    function interactiveChanged()
 modules/Ubuntu/Components/HudIntegration.qml
+HUD
 modules/Ubuntu/Components/Icon.qml
+Item
     property string name
     property alias color
     property alias keyColor
-    property bool active
-    property Image source
-    property color keyColorOut
-    property color keyColorIn
-    property real threshold
 modules/Ubuntu/Components/Label.qml
+Text
     property string fontSize
 modules/Ubuntu/Components/MainView.qml
+PageTreeNode
     property string applicationName
     property alias automaticOrientation
     default property alias contentsItem
-    property Header header
-    property Toolbar toolbar
     property ToolbarActions tools
     onToolsChanged
     property QtObject __hud
 modules/Ubuntu/Components/ModelSectionCounter.qml
+Object
     property var view
     property int count
     readonly property alias sectionHeight
     property bool cacheSections
     property var cache
-    function initSectionCounter()
-    function checkSections()
 modules/Ubuntu/Components/Object.qml
+QtObject
     default property alias children
 modules/Ubuntu/Components/OrientationHelper.qml
+Item
     property bool automaticOrientation
     property int __orientationAngle
 modules/Ubuntu/Components/Page.qml
+PageTreeNode
     property string title
     property Flickable flickable
-    property Header header
-    property Toolbar toolbar
-    function updateHeaderAndToolbar()
-    property real headerHeight
-    function isFlickable(object)
-    function getFlickableChild(item)
-    function updateFlickableMargins()
 modules/Ubuntu/Components/PageStack.qml
+PageTreeNode
     property bool __showHeader
     property ToolbarActions tools
     onToolsChanged
@@ -108,10 +103,8 @@ modules/Ubuntu/Components/PageStack.qml
     function push(page, properties)
     function pop()
     function clear()
-    property var stack
-    function createWrapper(page, properties)
-    function stackUpdated()
 modules/Ubuntu/Components/PageTreeNode.qml
+Item
     property bool __isPageTreeNode
     property Header header
     property Toolbar toolbar
@@ -119,15 +112,15 @@ modules/Ubuntu/Components/PageTreeNode.qml
     property bool active
     property Item pageStack
     property Item parentNode
-    function getParentPageTreeNode(item)
-    function updatePageTree()
 modules/Ubuntu/Components/PageWrapper.qml
+PageTreeNode
     property var reference
     property Item object
     property bool canDestroy
     property var properties
     function destroyObject()
 modules/Ubuntu/Components/Panel.qml
+Item
     default property alias contents
     property int align
     property bool opened
@@ -135,41 +128,20 @@ modules/Ubuntu/Components/Panel.qml
     property real hintSize
     property real triggerSize
     readonly property bool animating
-    property real transitionDuration
-    property string previousState
-    property int movingDelta
-    property bool savedlocked
-    property bool savedOpened
-    property int align
-    readonly property int orientation
-    property int mousePosition
-    function getMousePosition()
-    property Item pressedItem
-    function getClickableItem(mouse)
-    property int initialPosition
-    function finishMoving()
-    property real size
-    property real position
 modules/Ubuntu/Components/ProgressBar.qml
+AnimatedItem
     property bool indeterminate
     property real minimumValue
     property real maximumValue
     property real value
-    property url barSource
-    property url knownTrackerSource
-    property url unknownTrackerSource
-    property int trackerOffset
-    function progress()
 modules/Ubuntu/Components/Scrollbar.qml
+Item
     property Flickable flickableItem
     property int align
     property bool __interactive
     property alias __private
-    function leftAnchor(object)
-    function rightAnchor(object)
-    function topAnchor(object)
-    function bottomAnchor(object)
 modules/Ubuntu/Components/Slider.qml
+AbstractButton
     property real minimumValue
     property real maximumValue
     property real value
@@ -177,18 +149,20 @@ modules/Ubuntu/Components/Slider.qml
     signal touched(bool onThumb)
     function formatValue(v)
     property alias __internals
-    function mouseAreaPressed()
-    function mouseAreaPositionchanged()
 modules/Ubuntu/Components/Switch.qml
+CheckBox
 modules/Ubuntu/Components/Tab.qml
+PageTreeNode
     property string title
     property url iconSource
     property Item page
 modules/Ubuntu/Components/TabButton.qml
+Button
     property bool selected
     property bool __isFirst
     property bool __isLast
 modules/Ubuntu/Components/Tabs.qml
+PageTreeNode
     property int selectedTabIndex
     readonly property Tab selectedTab
     readonly property Item currentPage
@@ -198,11 +172,8 @@ modules/Ubuntu/Components/Tabs.qml
     property alias __tabs
     default property alias tabChildren
     signal modelChanged()
-    function updateTabList()
-    function isTab(item)
-    property Header header
-    function updateHeader()
 modules/Ubuntu/Components/TextArea.qml
+FocusScope
     property bool highlighted
     property alias placeholderText
     readonly property alias displayText
@@ -263,33 +234,16 @@ modules/Ubuntu/Components/TextArea.qml
     function undo()
     function forceActiveFocus()
     property alias __internal
-    property string displayText
-    property real lineSpacing
-    property real frameSpacing
-    property real lineSize
-    property real minimumSize
-    property real inputAreaWidth
-    property real inputAreaHeight
-    property bool draggingMode
-    property bool selectionMode
-    property bool prevShowCursor
-    signal popupTriggered(int pos)
-    function toggleSelectionCursors(show)
-    function activateEditor()
-    function showInputPanel()
-    function hideInputPanel()
-    function linesHeight(lines)
-    function frameSize()
-    function enterSelectionMode(x, y)
-    function positionCursor(x, y)
-    function ensureVisible(r)
 modules/Ubuntu/Components/TextCursor.qml
+Item
     property var editorItem
     property string positionProperty
     property var popover
     function openPopover()
 modules/Ubuntu/Components/TextCustom.qml
+Label
 modules/Ubuntu/Components/TextField.qml
+FocusScope
     property bool highlighted
     property alias placeholderText
     property bool hasClearButton
@@ -328,35 +282,15 @@ modules/Ubuntu/Components/TextField.qml
     function selectWord()
     function forceActiveFocus()
     property alias __internal
-    property bool textChanged
-    property real spacing
-    property real lineSpacing
-    property real lineSize
-    property bool selectionMode
-    property int selectionStart
-    property int selectionEnd
-    signal popupTriggered()
-    function activateEditor()
-    function showInputPanel()
-    function hideInputPanel()
-    function resetEditorSelection(mouseX)
-    function positionCursor(x)
-    property url iconSource
 modules/Ubuntu/Components/TextInputPopover.qml
+ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
+Panel
     property bool active
     property bool lock
     property ToolbarActions tools
-    property ToolbarActions visibleTools
-    property bool opened
-    property bool animating
-    property string text
-    property url iconSource
-    signal clicked()
-    property Action action
-    signal itemTriggered()
-    property Action action
 modules/Ubuntu/Components/ToolbarActions.qml
+ActionList
     property Action back
     property Item __pageStack
     property bool opened
@@ -365,7 +299,9 @@ modules/Ubuntu/Components/ToolbarActions.qml
     property bool locked
     function __hasVisibleActions()
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
+NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
+Item
     property string radius
     property color color
     property color gradientColor

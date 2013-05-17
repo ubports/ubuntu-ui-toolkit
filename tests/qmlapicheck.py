@@ -52,21 +52,25 @@ for line in fileinput.input():
     if in_comment:
         continue
 
+    if '{' in line and '}' in line:
+        continue
+
     # End of function/ signal/ Item block
     if '}' in line:
         in_block -= 1
         continue
 
     # Only root item "Item {" is inspected for API
-    if in_block > 1:
-        continue
-
-    for word in line.split(' '):
-        if word in keywords:
-            signature = line.split(':')[0].split('{')[0].strip()
-            print('    %s' % (signature))
+    if in_block == 1:
+        for word in line.split(' '):
+            if word in keywords:
+                signature = line.split(':')[0].split('{')[0].strip()
+                print('    %s' % (signature))
 
     # Start of function/ signal/ Item block
     if '{' in line:
         in_block += 1
+        # The parent type can affect API
+        if in_block == 1:
+            print(line.split('{')[0].strip())
 
