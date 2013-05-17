@@ -64,7 +64,7 @@ for line in fileinput.input():
     for word in line.split(' '):
         if word in keywords:
             signature = line.split(':')[0].split('{')[0].strip()
-            print('%s' % (signature))
+            print('    %s' % (signature))
 
     # Start of function/ signal/ Item block
     if '{' in line:
