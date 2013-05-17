@@ -99,11 +99,9 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
 
     // output to the console, first the errorMessage if any then the usage
     if (!errorMessage.isEmpty()) {
-        // convert to char* to avoid qWarning printing out quotes ""
-        qWarning() << errorMessage.toStdString().c_str();
+        qWarning() << qPrintable(errorMessage);
     }
-    // convert to char* to avoid qWarning printing out quotes ""
-    qWarning() << usage.toStdString().c_str();
+    qWarning() << qPrintable(usage);
 
     /* Call QCoreApplication::quit() when the event loop starts running.
        "If the event loop is not running, [QCoreApplication::quit()] does nothing."
