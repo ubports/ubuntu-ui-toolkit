@@ -12,6 +12,7 @@ from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
 import os
+import time
 from UbuntuUiToolkit.tests import UbuntuUiToolkitTestCase
 from UbuntuUiToolkit.emulators.main_window import MainWindow
 
@@ -62,6 +63,11 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         # scroll view to expose more items
         self.drag("Icons","Text Field")
+
+        # Wait for the scrolling to finish, the next click fails on the 
+        # slower Intel machine but succeeds on AMD and NVIDIA.
+        # (LP: #1180226)
+        time.sleep(1)
 
         # now that we have more items, lets continue
         items = [
