@@ -17,6 +17,7 @@
  */
 
 #include "ucarguments.h"
+#include "i18n.h"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QTextStream>
@@ -62,9 +63,9 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
+    UbuntuI18n* i18n = &UbuntuI18n::instance();
 
-    // FIXME: use i18n
-    usageStream << QString("Usage: ");
+    usageStream << i18n->tr("Usage: ");
 
     // display overall syntax, for example: program --argument=value DEFAULT_ARGUMENT
     usageStream << m_applicationBinary;
@@ -85,8 +86,7 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
 
     // display what each argument is used for
     usageStream << endl;
-    // FIXME: use i18n
-    usageStream << QString("Options:") << endl;
+    usageStream << i18n->tr("Options:") << endl;
 
     Q_FOREACH (UCArgument* argument, m_arguments) {
         usageStream << indentation << argument->usage() << endl;
@@ -197,15 +197,14 @@ void UCArguments::parseAndExposeArguments()
         if (argument->required()) {
             QString error;
             if (!argumentsValues.contains(argument->name())) {
-                // FIXME: i18n
-                error.append(" is expecting an additional argument: ");
+                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                error = i18n->tr("%1 is expecting an additional argument: %2");
             } else if (argumentsValues[argument->name()].size() < argument->valueNames().size()) {
-                // FIXME: i18n
-                error.append(" is expecting a value for argument: ");
+                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                error = i18n->tr("%1 is expecting a value for argument: %2");
             }
             if (!error.isEmpty()) {
-                error.prepend(m_applicationBinary);
-                error.append(argument->syntax());
+                error = error.arg(m_applicationBinary).arg(argument->syntax());
                 printUsageAndQuit(error);
             }
         }
@@ -213,10 +212,10 @@ void UCArguments::parseAndExposeArguments()
 
     // check if the required default argument was passed
     if (m_defaultArgument != NULL && m_defaultArgument->required() && !argumentsValues.contains("")) {
-        // FIXME: i18n
-        QString error(" is expecting additional arguments: ");
-        error.prepend(m_applicationBinary);
-        error.append(m_defaultArgument->syntax());
+        UbuntuI18n* i18n = &UbuntuI18n::instance();
+        QString error;
+        error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
+        printUsageAndQuit(error);
     }
 
     // pass the values to the arguments objects
