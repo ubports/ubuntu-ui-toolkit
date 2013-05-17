@@ -21,6 +21,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QTextStream>
+#include <QtCore/QFileInfo>
 #include <QtQml/QQmlProperty>
 #include <QtQml/qqml.h>
 
@@ -30,7 +31,7 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument(NULL)
 {
     m_rawArguments = QCoreApplication::arguments();
-    m_applicationBinary = m_rawArguments[0].split('/').last();
+    m_applicationBinary = QFileInfo(m_rawArguments[0]).fileName();
 }
 
 UCArgument* UCArguments::defaultArgument() const
