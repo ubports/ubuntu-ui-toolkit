@@ -320,9 +320,16 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
             value.setValue(values);
         }
 
+        if (!qmlProperty.isValid()) {
+            qWarning() << "Arguments: property " << value.typeName() << name << "needs to be defined";
+            return;
+        } else if (qmlProperty.propertyType() != QMetaType::QVariant
+                   && !value.canConvert(qmlProperty.propertyType())) {
+            qWarning() << "Arguments: property" << name << "is of incompatible type" << qmlProperty.propertyTypeName() << "but should be" << value.typeName();
+            return;
+        }
+
         // necessary for the value to be set to the QML property
-        // FIXME: could spit out warnings if the QML property was not defined,
-        // or if the type is incompatible, ie. if the write() returns false
         qmlProperty.write(value);
         // necessary for the value to be set to the C++ dynamic property
         setProperty(propertyName, value); // FIXME: is it necessary?
