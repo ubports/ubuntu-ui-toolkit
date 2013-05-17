@@ -211,12 +211,16 @@ void UCArguments::parseAndExposeArguments()
 
     // pass the values to the arguments objects
     Q_FOREACH (UCArgument* argument, m_arguments) {
-        argument->setValues(argumentsValues[argument->name()]);
+        if (argumentsValues.contains(argument->name())) {
+            argument->setValues(argumentsValues.value(argument->name()));
+        }
     }
     if (m_defaultArgument != NULL) {
-        m_defaultArgument->setValues(argumentsValues[""]);
-        // FIXME: not very elegant way to inform that values have changed
-        Q_EMIT(defaultArgumentChanged());
+        if (argumentsValues.contains("")) {
+            m_defaultArgument->setValues(argumentsValues.value(""));
+            // FIXME: not very elegant way to inform that values have changed
+            Q_EMIT(defaultArgumentChanged());
+        }
     }
 
     exposeArgumentsAsProperties(argumentsValues);
@@ -253,7 +257,7 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
             name = values.takeAt(0);
 
             if (expectedArguments.contains(name)) {
-                values.append(collectArgumentValues(i, rawArguments.constEnd(), expectedArguments[name].size()));
+                values.append(collectArgumentValues(i, rawArguments.constEnd(), expectedArguments.value(name).size()));
             } else {
                 // unexpected named arguments are given at most one value
                 values.append(collectArgumentValues(i, rawArguments.constEnd(), 1));
@@ -301,7 +305,7 @@ bool UCArguments::requiredArgumentsProvided(QHash<QString, QStringList> argument
                 error = i18n->tr("%1 is expecting an additional argument: %2");
                 error = error.arg(m_applicationBinary).arg(argument->syntax());
                 return false;
-            } else if (argumentsValues[argument->name()].size() < argument->valueNames().size()) {
+            } else if (argumentsValues.value(argument->name()).size() < argument->valueNames().size()) {
                 UbuntuI18n* i18n = &UbuntuI18n::instance();
                 error = i18n->tr("%1 is expecting a value for argument: %2");
                 error = error.arg(m_applicationBinary).arg(argument->syntax());
