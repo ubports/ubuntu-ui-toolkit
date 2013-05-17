@@ -42,4 +42,3 @@ UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
-internal HudIntegration HudIntegration.qml
