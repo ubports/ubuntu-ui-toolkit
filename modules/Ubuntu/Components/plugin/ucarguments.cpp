@@ -354,6 +354,5 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
         }
         m_values->insert(name, value);
         Q_EMIT m_values->valueChanged(name, value);
-        continue;
     }
 }
