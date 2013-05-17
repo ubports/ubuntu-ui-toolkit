@@ -328,7 +328,8 @@ bool UCArguments::requiredArgumentsProvided(QHash<QString, QStringList> argument
 bool UCArguments::requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error)
 {
     // check if the required default argument was passed
-    if (m_defaultArgument != NULL && m_defaultArgument->required() && !argumentsValues.contains("")) {
+    if (m_defaultArgument != NULL && m_defaultArgument->required() &&
+        (!argumentsValues.contains("") || argumentsValues.value("").size() < m_defaultArgument->valueNames().size())) {
         UbuntuI18n* i18n = &UbuntuI18n::instance();
         error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
         return false;
