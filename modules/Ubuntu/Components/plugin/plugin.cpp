@@ -75,6 +75,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
     qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
+    qmlRegisterType<QQmlPropertyMap>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

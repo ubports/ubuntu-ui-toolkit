@@ -28,7 +28,8 @@
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
     m_completed(false),
-    m_defaultArgument(NULL)
+    m_defaultArgument(NULL),
+    m_values(new QQmlPropertyMap(this))
 {
     m_rawArguments = QCoreApplication::arguments();
     m_applicationBinary = QFileInfo(m_rawArguments[0]).fileName();
@@ -46,6 +47,11 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
     if (m_completed) {
         parseAndExposeArguments();
     }
+}
+
+QQmlPropertyMap* UCArguments::values() const
+{
+    return m_values;
 }
 
 
@@ -346,23 +352,8 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
                 value.setValue(values);
                 break;
         }
-
-        // verify that the property corresponding to the argument is defined in QML
-        // and has a compatible type
-        QQmlProperty qmlProperty(this, name, qmlContext(this));
-        if (!qmlProperty.isValid()) {
-            qWarning() << "Arguments: property" << value.typeName() << name << "needs to be defined";
-            continue;
-        } else if (qmlProperty.propertyType() != QMetaType::QVariant
-                   && !value.canConvert(qmlProperty.propertyType())) {
-            qWarning() << "Arguments: property" << name << "is of incompatible type" << qmlProperty.propertyTypeName() << "but should be" << value.typeName();
-            continue;
-        }
-
-        // necessary for the value to be set to the QML property
-        qmlProperty.write(value);
-        // necessary for the value to be set to the C++ dynamic property
-        const char* propertyName = name.toStdString().c_str();
-        setProperty(propertyName, value);
+        m_values->insert(name, value);
+        Q_EMIT m_values->valueChanged(name, value);
+        continue;
     }
 }

@@ -24,7 +24,7 @@
 #include <QtCore/QList>
 #include <QtCore/QStringList>
 #include <QtCore/QHash>
-#include <QtCore/QPair>
+#include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
 
@@ -36,12 +36,14 @@ class UCArguments : public QObject, public QQmlParserStatus
     Q_PROPERTY(UCArgument* defaultArgument READ defaultArgument WRITE setDefaultArgument NOTIFY defaultArgumentChanged)
     Q_PROPERTY(QQmlListProperty<UCArgument> arguments READ arguments)
     Q_CLASSINFO("DefaultProperty", "arguments")
+    Q_PROPERTY(QQmlPropertyMap* values READ values CONSTANT)
 
 public:
     explicit UCArguments(QObject *parent = 0);
 
     UCArgument* defaultArgument() const;
     void setDefaultArgument(UCArgument* argument);
+    QQmlPropertyMap* values() const;
     Q_INVOKABLE void printUsageAndQuit(QString errorMessage = QString());
 
     // inherited from QQmlParserStatus
@@ -74,6 +76,7 @@ private:
     QList<UCArgument*> m_arguments;
     QStringList m_rawArguments;
     QString m_applicationBinary;
+    QQmlPropertyMap* m_values;
 };
 
 #endif // UCARGUMENTS_H
