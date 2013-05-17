@@ -324,22 +324,30 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
     for (i = argumentsValues.constBegin(); i != argumentsValues.constEnd(); ++i) {
         QString name = i.key();
         if (name.isEmpty()) {
+            // ignore default argument
             continue;
         }
 
+        // if the argument has no value, convert to bool
+        // if the argument has a single value, convert to string
+        // if the argument has multiple values, convert to a list of strings
         QStringList values = i.value();
-        QQmlProperty qmlProperty(this, name, qmlContext(this));
-        const char* propertyName = name.toStdString().c_str();
         QVariant value;
-
-        if (values.size() == 0) {
-            value.setValue(true);
-        } else if (values.size() == 1) {
-            value.setValue(values.at(0));
-        } else {
-            value.setValue(values);
+        switch (values.size()) {
+            case 0:
+                value.setValue(true);
+                break;
+            case 1:
+                value.setValue(values.at(0));
+                break;
+            default:
+                value.setValue(values);
+                break;
         }
 
+        // verify that the property corresponding to the argument is defined in QML
+        // and has a compatible type
+        QQmlProperty qmlProperty(this, name, qmlContext(this));
         if (!qmlProperty.isValid()) {
             qWarning() << "Arguments: property " << value.typeName() << name << "needs to be defined";
             return;
@@ -352,6 +360,7 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
         // necessary for the value to be set to the QML property
         qmlProperty.write(value);
         // necessary for the value to be set to the C++ dynamic property
+        const char* propertyName = name.toStdString().c_str();
         setProperty(propertyName, value);
     }
 }
