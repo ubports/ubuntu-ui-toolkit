@@ -37,14 +37,12 @@ private:
     QCoreApplication* m_application;
 
     void clearCommandLine() {
-        return;
-        Q_FOREACH (char* data, m_arguments) {
-            delete data;
-        }
         m_arguments.clear();
         m_argumentsSize = 0;
+
         if (m_application != NULL) {
             delete m_application;
+            m_application = NULL;
         }
     }
 
