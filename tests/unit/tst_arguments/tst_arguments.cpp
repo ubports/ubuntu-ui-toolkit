@@ -106,6 +106,30 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
     }
 
+    void testUsage() {
+        QFETCH(QString, commandLine);
+        QFETCH(bool, error);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.error(), error);
+    }
+
+    void testUsage_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<bool>("error");
+        testCommandLine("", false, "NO ARGUMENTS");
+        testCommandLine("--usage", true);
+        testCommandLine("--help", true);
+        testCommandLine("-h", true);
+        testCommandLine("--boolArgument --usage", true);
+        testCommandLine("--boolArgument --otherArgument --usage", true);
+        testCommandLine("--usage --boolArgument --otherArgument", true);
+    }
+
     void testOneRequiredNamedBoolArgument() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
