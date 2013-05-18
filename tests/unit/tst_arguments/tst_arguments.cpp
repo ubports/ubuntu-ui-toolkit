@@ -153,6 +153,47 @@ private Q_SLOTS:
         testCommandLine("--argument1 value1 value2 --argument2 value1 value2 defaultValue", false);
         testCommandLine("--argument1=value1 value2 --argument2=value1", true);
     }
+
+    void testRequiredDefaultArgument() {
+        QFETCH(QString, commandLine);
+        QFETCH(bool, error);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        QStringList valueNames;
+        valueNames << "DEFAULTVALUE1" << "DEFAULTVALUE2";
+
+        UCArgument defaultArgument;
+        defaultArgument.setValueNames(valueNames);
+        arguments.setDefaultArgument(&defaultArgument);
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.error(), error);
+        if (!error) {
+            QCOMPARE(arguments.defaultArgument(), &defaultArgument);
+            QCOMPARE(arguments.defaultArgument()->at(0).type(), QVariant::String);
+            QCOMPARE(arguments.defaultArgument()->at(0).toString().isEmpty(), false);
+            QCOMPARE(arguments.defaultArgument()->at(0).toString(), QString("defaultValue1"));
+            QCOMPARE(arguments.defaultArgument()->at(1).type(), QVariant::String);
+            QCOMPARE(arguments.defaultArgument()->at(1).toString().isEmpty(), false);
+            QCOMPARE(arguments.defaultArgument()->at(1).toString(), QString("defaultValue2"));
+            QCOMPARE(arguments.defaultArgument()->at(2).type(), QVariant::Invalid);
+        }
+    }
+
+    void testRequiredDefaultArgument_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<bool>("error");
+        testCommandLine("", true, "NO ARGUMENTS");
+        testCommandLine("--boolArgument", true);
+        testCommandLine("--boolArgument --otherArg1=value --otherArg2 value", true);
+        testCommandLine("--boolArgument --otherArg=value defaultValue1 defaultValue2", false);
+        testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
+        testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
+        testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
+        testCommandLine("--otherArg value defaultValue1 defaultValue2", false);
+    }
 };
 
 QTEST_MAIN(tst_UCArguments)
