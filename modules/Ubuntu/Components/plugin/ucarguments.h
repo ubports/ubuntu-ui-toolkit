@@ -37,6 +37,8 @@ class UCArguments : public QObject, public QQmlParserStatus
     Q_PROPERTY(QQmlListProperty<UCArgument> arguments READ arguments)
     Q_CLASSINFO("DefaultProperty", "arguments")
     Q_PROPERTY(QQmlPropertyMap* values READ values CONSTANT)
+    Q_PROPERTY(bool error READ error NOTIFY errorChanged)
+    Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorMessageChanged)
 
 public:
     explicit UCArguments(QObject *parent = 0);
@@ -44,6 +46,8 @@ public:
     UCArgument* defaultArgument() const;
     void setDefaultArgument(UCArgument* argument);
     QQmlPropertyMap* values() const;
+    bool error() const;
+    QString errorMessage() const;
     Q_INVOKABLE void printUsageAndQuit(QString errorMessage = QString());
 
     // inherited from QQmlParserStatus
@@ -59,6 +63,8 @@ public:
 
 Q_SIGNALS:
     void defaultArgumentChanged();
+    void errorChanged();
+    void errorMessageChanged();
 
 protected:
     void parseAndExposeArguments();
@@ -77,6 +83,8 @@ private:
     QStringList m_rawArguments;
     QString m_applicationBinary;
     QQmlPropertyMap* m_values;
+    bool m_error;
+    QString m_errorMessage;
 };
 
 #endif // UCARGUMENTS_H

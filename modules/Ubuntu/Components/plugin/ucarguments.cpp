@@ -29,7 +29,8 @@ UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
     m_completed(false),
     m_defaultArgument(NULL),
-    m_values(new QQmlPropertyMap(this))
+    m_values(new QQmlPropertyMap(this)),
+    m_error(false)
 {
     m_rawArguments = QCoreApplication::arguments();
     m_applicationBinary = QFileInfo(m_rawArguments[0]).fileName();
@@ -54,6 +55,16 @@ QQmlPropertyMap* UCArguments::values() const
     return m_values;
 }
 
+bool UCArguments::error() const
+{
+    return m_error;
+}
+
+QString UCArguments::errorMessage() const
+{
+    return m_errorMessage;
+}
+
 
 // FIXME: could be broken down in smaller functions
 void UCArguments::printUsageAndQuit(QString errorMessage)
@@ -61,11 +72,13 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
     /* This function can be called multiple times before the application actually
        quit. See comment at the end about QCoreApplication::quit().
     */
-    static bool alreadyCalled = false;
-    if (alreadyCalled) {
+    if (m_error) {
         return;
     }
-    alreadyCalled = true;
+    m_error = true;
+    m_errorMessage = errorMessage;
+    Q_EMIT errorChanged();
+    Q_EMIT errorMessageChanged();
 
     QLatin1String indentation("  ");
     QString usage;
