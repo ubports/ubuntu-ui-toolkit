@@ -192,7 +192,6 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
         testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
-        testCommandLine("--otherArg value defaultValue1 defaultValue2", false);
     }
 };
 
