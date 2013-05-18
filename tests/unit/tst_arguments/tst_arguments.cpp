@@ -92,6 +92,7 @@ private Q_SLOTS:
         arguments.appendArguments(&boolArgument);
         arguments.componentComplete();
 
+        QCOMPARE(arguments.values()->property("boolArgument").type(), QVariant::Bool);
         QCOMPARE(arguments.values()->property("boolArgument"), QVariant(!error));
         QCOMPARE(arguments.error(), error);
     }
