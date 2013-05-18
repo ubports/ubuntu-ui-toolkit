@@ -111,6 +111,45 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", true);
     }
 
+    void testOneRequiredNamedArgument() {
+        QFETCH(QString, commandLine);
+        QFETCH(bool, error);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        QStringList valueNames;
+        valueNames << "VALUE1";
+
+        UCArgument argument1;
+        argument1.setName("argument1");
+        argument1.setValueNames(valueNames);
+        arguments.appendArguments(&argument1);
+
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.error(), error);
+        if (!error) {
+            QCOMPARE(arguments.values()->property("argument1").type(), QVariant::String);
+            QCOMPARE(arguments.values()->property("argument1").toString(), QString("value1"));
+        } else {
+            QCOMPARE(arguments.values()->property("argument1").type(), QVariant::Invalid);
+        }
+    }
+
+    void testOneRequiredNamedArgument_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<bool>("error");
+        testCommandLine("", true, "NO ARGUMENTS");
+        testCommandLine("--argument1=value1", false);
+        testCommandLine("--argument1 value1", false);
+        testCommandLine("--otherArgument --argument1 value1", false);
+        testCommandLine("--argument1 value1 --otherArgument", false);
+        testCommandLine("--argument1 value1 defaultValue --otherArgument", false);
+        testCommandLine("--argument1=value1 defaultValue --otherArgument=value", false);
+        testCommandLine("--argument1 value1 defaultValue", false);
+    }
+
     void testTwoRequiredNamedArguments() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
