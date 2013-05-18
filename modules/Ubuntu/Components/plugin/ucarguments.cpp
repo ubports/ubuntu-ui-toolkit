@@ -278,7 +278,7 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
             name = values.takeAt(0);
 
             if (expectedArguments.contains(name)) {
-                values.append(collectArgumentValues(i, rawArguments.constEnd(), expectedArguments.value(name).size()));
+                values.append(collectArgumentValues(i, rawArguments.constEnd(), expectedArguments.value(name).size() - values.size()));
             }
             argumentsValues.insert(name, values);
         } else {
