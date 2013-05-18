@@ -80,6 +80,32 @@ private Q_SLOTS:
         clearCommandLine();
     }
 
+    void testNoArguments() {
+        QFETCH(QString, commandLine);
+        QFETCH(bool, error);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.error(), error);
+    }
+
+    void testNoArguments_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<bool>("error");
+        testCommandLine("", false, "NO ARGUMENTS");
+        testCommandLine("--boolArgument", false);
+        testCommandLine("--boolArgument --boolArgument", false);
+        testCommandLine("--boolArgument --otherBool", false);
+        testCommandLine("--boolArgument --otherArg1=value --otherArg2 value", false);
+        testCommandLine("--boolArgument --otherArg=value defaultValue1 defaultValue2", false);
+        testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
+        testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
+        testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
+    }
+
     void testOneRequiredNamedBoolArgument() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
