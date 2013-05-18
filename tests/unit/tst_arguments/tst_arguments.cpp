@@ -99,7 +99,7 @@ private Q_SLOTS:
     void testOneRequiredNamedBoolArgument_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<bool>("error");
-        testCommandLine("", true, "no arguments");
+        testCommandLine("", true, "NO ARGUMENTS");
         testCommandLine("--boolArgument", false);
         testCommandLine("--boolArgument --boolArgument", false);
         testCommandLine("--boolArgument --otherBool", false);
@@ -108,6 +108,50 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
         testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", true);
+    }
+
+    void testTwoRequiredNamedArguments() {
+        QFETCH(QString, commandLine);
+        QFETCH(bool, error);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        QStringList valueNames;
+        valueNames << "VALUE1" << "VALUE2";
+
+        UCArgument argument1;
+        argument1.setName("argument1");
+        argument1.setValueNames(valueNames);
+        arguments.appendArguments(&argument1);
+
+        UCArgument argument2;
+        argument2.setName("argument2");
+        argument2.setValueNames(valueNames);
+        arguments.appendArguments(&argument2);
+
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.error(), error);
+        if (!error) {
+            QCOMPARE(arguments.values()->property("argument1").type(), QVariant::StringList);
+            QCOMPARE(arguments.values()->property("argument1").toStringList().size(), 2);
+            QCOMPARE(arguments.values()->property("argument2").type(), QVariant::StringList);
+            QCOMPARE(arguments.values()->property("argument2").toStringList().size(), 2);
+        }
+    }
+
+    void testTwoRequiredNamedArguments_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<bool>("error");
+        testCommandLine("", true, "NO ARGUMENTS");
+        testCommandLine("--argument1=value1 value2 --argument2=value1 value2", false);
+        testCommandLine("--argument1 value1 value2 --argument2 value1 value2", false);
+        testCommandLine("--otherArgument --argument1 value1 value2 --argument2 value1 value2", false);
+        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 --otherArgument", false);
+        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 defaultValue --otherArgument", false);
+        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 defaultValue", false);
+        testCommandLine("--argument1=value1 value2 --argument2=value1", true);
     }
 };
 
