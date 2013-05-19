@@ -298,6 +298,14 @@ private Q_SLOTS:
         arguments.setDefaultArgument(NULL);
         QCOMPARE(arguments.defaultArgument(), (UCArgument*)NULL);
     }
+
+    void testAPIPrintUsageAndQuit() {
+        UCArguments arguments;
+
+        QCOMPARE(arguments.error(), false);
+        arguments.printUsageAndQuit();
+        QCOMPARE(arguments.error(), true);
+    }
 };
 
 QTEST_MAIN(tst_UCArguments)
