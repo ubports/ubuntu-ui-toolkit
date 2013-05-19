@@ -28,7 +28,25 @@ class tst_UCArgument : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-    void testNoArguments() {
+    void testAt() {
+        UCArgument argument;
+
+        QCOMPARE(argument.at(-2).type(), QVariant::Invalid);
+        QCOMPARE(argument.at(0).type(), QVariant::Invalid);
+        QCOMPARE(argument.at(1).type(), QVariant::Invalid);
+        QCOMPARE(argument.at(2).type(), QVariant::Invalid);
+
+        QStringList values;
+        values << "value1" << "value2";
+        argument.setValues(values);
+
+        QCOMPARE(argument.at(-2).type(), QVariant::Invalid);
+        QCOMPARE(argument.at(0).type(), QVariant::String);
+        QCOMPARE(argument.at(1).type(), QVariant::String);
+        QCOMPARE(argument.at(2).type(), QVariant::Invalid);
+
+        QCOMPARE(argument.at(0).toString(), QString("value1"));
+        QCOMPARE(argument.at(1).toString(), QString("value2"));
     }
 };
 
