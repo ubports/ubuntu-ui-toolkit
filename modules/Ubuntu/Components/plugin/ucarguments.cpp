@@ -112,7 +112,16 @@ UCArguments::UCArguments(QObject *parent) :
 /*!
  * \qmlproperty Argument Arguments::defaultArgument
  *
- * TODO
+ * The default argument corresponds to the values passed on the command line
+ * without any name.
+ *
+ * For example in:
+ *
+ * \code
+ * ./application --volume=42 http://myaddress
+ * \endcode
+ *
+ * \e{http://myaddress} is the first value of the default argument.
  *
  */
 UCArgument* UCArguments::defaultArgument() const
@@ -133,7 +142,7 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
  * \qmlproperty Object Arguments::values
  * \readonly
  *
- * TODO
+ * Object of which properties have the values of the command line arguments.
  *
  */
 QQmlPropertyMap* UCArguments::values() const
@@ -334,7 +343,9 @@ void staticClearArguments(QQmlListProperty<UCArgument>* property)
  * \default
  * \readonly
  *
- * TODO
+ * List of command line \l{Argument}{arguments} that are expected by the application.
+ *
+ * See detailed description above for an example on how to use it.
  *
  */
 QQmlListProperty<UCArgument> UCArguments::arguments()
