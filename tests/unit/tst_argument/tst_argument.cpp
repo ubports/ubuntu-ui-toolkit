@@ -48,6 +48,39 @@ private Q_SLOTS:
         QCOMPARE(argument.at(0).toString(), QString("value1"));
         QCOMPARE(argument.at(1).toString(), QString("value2"));
     }
+
+    void testSyntax() {
+        QFETCH(QString, name);
+        QFETCH(QStringList, valueNames);
+        QFETCH(bool, required);
+        QFETCH(QString, expectedSyntax);
+
+        UCArgument argument;
+        argument.setName(name);
+        argument.setRequired(required);
+        argument.setValueNames(valueNames);
+
+        QCOMPARE(argument.syntax(), expectedSyntax);
+    }
+
+    void testSyntax_data() {
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<QStringList>("valueNames");
+        QTest::addColumn<bool>("required");
+        QTest::addColumn<QString>("expectedSyntax");
+
+        QStringList valueNames;
+        valueNames << "VALUE1" << "VALUE2";
+
+        QTest::newRow("no name, no valueNames, not required") << "" << QStringList() << false << "";
+        QTest::newRow("name, no valueNames, not required") << "argument" << QStringList() << false << "--argument";
+        QTest::newRow("no name, 2 valueNames, not required") << "" << valueNames << false << "[VALUE1] [VALUE2]";
+        QTest::newRow("name, 2 valueNames, not required") << "argument" << valueNames << false << "--argument=VALUE1 VALUE2";
+        QTest::newRow("no name, no valueNames, required") << "" << QStringList() << true << "";
+        QTest::newRow("name, no valueNames, required") << "argument" << QStringList() << true << "--argument";
+        QTest::newRow("no name, 2 valueNames, required") << "" << valueNames << true << "VALUE1 VALUE2";
+        QTest::newRow("name, 2 valueNames, required") << "argument" << valueNames << true << "--argument=VALUE1 VALUE2";
+    }
 };
 
 QTEST_MAIN(tst_UCArgument)
