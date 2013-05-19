@@ -183,7 +183,7 @@ void UCArgument::setValues(QStringList values)
  */
 QVariant UCArgument::at(int i) const
 {
-    if (i < m_values.size()) {
+    if (i >= 0 && i < m_values.size()) {
         return QVariant(m_values.at(i));
     } else {
         return QVariant();
