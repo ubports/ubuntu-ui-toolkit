@@ -27,11 +27,11 @@
  *
  * \b Important: Argument is not used on its own but must be a child of \l Arguments.
  *
- * An Argument is defined by its name and its valueNames which correspond
+ * An Argument is defined by its \l name and \l valueNames properties which correspond
  * to a command line parameter (e.g. \e{--target}) and the values passed to it
  * (e.g. \e{--target=http://myaddress}).
  *
- * For example the following QML would allow to retrieve parameters on the
+ * For example, the following code allows to retrieve parameters on the
  * command line of the form \e{--target=URL}:
  *
  * \qml
