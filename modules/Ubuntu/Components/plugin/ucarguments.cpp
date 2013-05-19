@@ -25,6 +25,78 @@
 #include <QtQml/QQmlProperty>
 #include <QtQml/qqml.h>
 
+/*!
+ * \qmltype Arguments
+ * \instantiates UCArguments
+ * \inqmlmodule Ubuntu.Components 0.1
+ * \ingroup ubuntu
+ * \brief The Arguments class provides a way to declare what command line
+ *        parameters are expected by the application.
+ *
+ * Example of use:
+ *
+ * \qml
+ * Arguments {
+ *     id: args
+ *
+ *     defaultArgument.help: "Expects URL of the media to play."
+ *     defaultArgument.valueNames: ["URL"]
+ *
+ *     Argument {
+ *         name: "fullscreen"
+ *         help: "whether or not the media will be played fullscreen"
+ *         required: false
+ *     }
+ *
+ *     Argument {
+ *         name: "volume"
+ *         help: "level to which to set the volume"
+ *         required: false
+ *         valueNames: ["VOLUME_LEVEL"]
+ *     }
+ * }
+ * \endqml
+ *
+ * The code above ensures that at least one argument is passed on the command
+ * line which will then be available in QML via the defaultArgument property.
+ * Optionally two other arguments can be passed:
+ *
+ * \e --fullscreen that will be exposed as a boolean property: \l{values}.fullscreen
+ *
+ * \e --volume that will be exposed as a string property: \l{values}.volume
+ *
+ * \qml
+ * Item {
+ *     Label {
+ *         text: "volume = " + args.values.volume
+ *     }
+ *
+ *     Label {
+ *         text: "fullscreen = " + args.values.fullscreen
+ *     }
+ *
+ *     Label {
+ *         text: "URL = " + args.defaultArgument.at(0)
+ *     }
+ * }
+ * \endqml
+ *
+ * If the application is launched with the incorrect arguments or with the
+ * \e --usage argument an help will be outputted on the command line and the
+ * application will exit:
+ *
+ * \code
+ * Usage: application [--fullscreen] [--volume=VOLUME_LEVEL] URL
+ * Options:
+ * --fullscreen         whether or not the media will be played fullscreen
+ * --volume=VOLUME_LEVE level to which to set the volume
+ *
+ * Expects URL of the media to play.
+ * \endcode
+ *
+ * \sa Argument
+ */
+
 UCArguments::UCArguments(QObject *parent) :
     QObject(parent),
     m_completed(false),
@@ -37,6 +109,12 @@ UCArguments::UCArguments(QObject *parent) :
     m_defaultArgument = new UCArgument(this);
 }
 
+/*!
+ * \qmlproperty Argument Arguments::defaultArgument
+ *
+ * TODO
+ *
+ */
 UCArgument* UCArguments::defaultArgument() const
 {
     return m_defaultArgument;
@@ -51,16 +129,34 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
     }
 }
 
+/*!
+ * \qmlproperty Object Arguments::values
+ *
+ * TODO
+ *
+ */
 QQmlPropertyMap* UCArguments::values() const
 {
     return m_values;
 }
 
+/*!
+ * \qmlproperty bool Arguments::error
+ *
+ * TODO
+ *
+ */
 bool UCArguments::error() const
 {
     return m_error;
 }
 
+/*!
+ * \qmlproperty string Arguments::errorMessage
+ *
+ * TODO
+ *
+ */
 QString UCArguments::errorMessage() const
 {
     return m_errorMessage;
@@ -195,6 +291,13 @@ void staticClearArguments(QQmlListProperty<UCArgument>* property)
 // end of static callbacks
 
 
+/*!
+ * \qmlproperty list<Argument> Arguments::arguments
+ * \default
+ *
+ * TODO
+ *
+ */
 QQmlListProperty<UCArgument> UCArguments::arguments()
 {
     return QQmlListProperty<UCArgument>(this, this, &staticAppendArguments,

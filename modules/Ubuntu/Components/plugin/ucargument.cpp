@@ -18,12 +18,50 @@
 
 #include "ucargument.h"
 
+/*!
+ * \qmltype Argument
+ * \instantiates UCArgument
+ * \inqmlmodule Ubuntu.Components 0.1
+ * \ingroup ubuntu
+ * \brief The Argument class specifies what type a given command line parameter should be.
+ *
+ * \b Important: Argument is not used on its own but must be a child of \l Arguments.
+ *
+ * An Argument is defined by its name and its valueNames which correspond
+ * to a command line parameter (e.g. \e{--target}) and the values passed to it
+ * (e.g. \e{--target=http://myaddress}).
+ *
+ * For example the following QML would allow to retrieve parameters on the
+ * command line of the form \e{--target=URL}:
+ *
+ * \qml
+ * Argument {
+ *     name: "target"
+ *     help: "address of the resource to retrieve"
+ *     required: true
+ *     valueNames: ["URL"]
+ * }
+ * \endqml
+ *
+ * To retrieve a value passed to the parameter knowing its position, use the \l at
+ * method.
+ *
+ * \sa Arguments
+ *
+ */
+
 UCArgument::UCArgument(QObject *parent) :
     QObject(parent),
     m_required(true)
 {
 }
 
+/*!
+ * \qmlproperty string Argument::name
+ *
+ * TODO
+ *
+ */
 QString UCArgument::name() const
 {
     return m_name;
@@ -35,6 +73,12 @@ void UCArgument::setName(QString name)
     Q_EMIT(nameChanged());
 }
 
+/*!
+ * \qmlproperty string Argument::help
+ *
+ * TODO
+ *
+ */
 QString UCArgument::help() const
 {
     return m_help;
@@ -46,6 +90,12 @@ void UCArgument::setHelp(QString help)
     Q_EMIT(helpChanged());
 }
 
+/*!
+ * \qmlproperty bool Argument::required
+ *
+ * TODO
+ *
+ */
 bool UCArgument::required() const
 {
     return m_required;
@@ -57,6 +107,12 @@ void UCArgument::setRequired(bool required)
     Q_EMIT(requiredChanged());
 }
 
+/*!
+ * \qmlproperty list<string> Argument::valueNames
+ *
+ * TODO
+ *
+ */
 QStringList UCArgument::valueNames() const
 {
     return m_valueNames;
@@ -118,6 +174,13 @@ void UCArgument::setValues(QStringList values)
     m_values = values;
 }
 
+/*!
+ * \qmlmethod string Argument::at(int i)
+ *
+ * Returns the \e{i}th value of the argument.
+ * Values are counted from 0.
+ *
+ */
 QVariant UCArgument::at(int i) const
 {
     if (i < m_values.size()) {
