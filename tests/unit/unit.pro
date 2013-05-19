@@ -29,4 +29,5 @@ SUBDIRS += tst_template \
     tst_inversemousearea \
     tst_performance \
     tst_ubuntu_shape \
-    tst_arguments
+    tst_arguments \
+    tst_argument
