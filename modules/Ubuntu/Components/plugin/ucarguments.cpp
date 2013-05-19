@@ -370,13 +370,6 @@ void UCArguments::setValuesOnArguments(QHash<QString, QStringList> argumentsValu
         QString name = argument->name();
         if (argumentsValues.contains(name)) {
             argument->setValues(argumentsValues.value(name));
-        } else {
-            // FIXME: completely wrong place in the code to do this
-            if (argument->valueNames().size() == 0) {
-                // case of a boolean argument that was not passed on the command line
-                m_values->insert(name, false);
-                Q_EMIT m_values->valueChanged(name, false);
-            }
         }
     }
 
@@ -506,26 +499,26 @@ bool UCArguments::requiredDefaultArgumentProvided(QHash<QString, QStringList> ar
 
 void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues)
 {
-    QHash<QString, QStringList>::const_iterator i;
-
-    for (i = argumentsValues.constBegin(); i != argumentsValues.constEnd(); ++i) {
-        QString name = i.key();
-        if (name.isEmpty()) {
-            // ignore default argument
-            continue;
-        }
-
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        QString name = argument->name();
         // if the argument has no value, convert to bool
         // if the argument has a single value, convert to string
         // if the argument has multiple values, convert to a list of strings
-        QStringList values = i.value();
+        QStringList values = argument->values();
         QVariant value;
-        switch (values.size()) {
+        switch (argument->valueNames().size()) {
             case 0:
-                value.setValue(true);
+                if (argumentsValues.contains(name)) {
+                    value.setValue(true);
+                } else {
+                    // case of a boolean argument that was not passed on the command line
+                    value.setValue(false);
+                }
                 break;
             case 1:
-                value.setValue(values.at(0));
+                if (values.size() > 0) {
+                    value.setValue(values.at(0));
+                }
                 break;
             default:
                 value.setValue(values);

@@ -51,6 +51,7 @@ public:
 protected:
     QString syntax() const;
     QString usage() const;
+    QStringList values() const;
     void setValues(QStringList values);
 
 Q_SIGNALS:

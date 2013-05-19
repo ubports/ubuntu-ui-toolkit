@@ -170,6 +170,11 @@ QString UCArgument::usage() const
     return usage;
 }
 
+QStringList UCArgument::values() const
+{
+    return m_values;
+}
+
 void UCArgument::setValues(QStringList values)
 {
     m_values = values;
