@@ -93,6 +93,8 @@ FocusScope {
     /*!
       \preliminary
       Text that appears when there is no focus and no content in the component.
+
+      \qmlproperty string placeholderText
     */
     property alias placeholderText: hint.text
 
@@ -119,6 +121,8 @@ FocusScope {
       \preliminary
       Overlaid component that can be set for the fore side of the TextField,
       e.g.showing a magnifier to implement search functionality.
+
+      \qmlproperty list<Object> primaryItem
     */
     property alias primaryItem: leftPane.data
 
@@ -127,6 +131,8 @@ FocusScope {
       Overlaid component that can be set for the rear side of the TextField,
       e.g.showing a CAPS LOCK or NUM LOCK indication. The overlaid components
       will be placed right after the clear button.
+
+      \qmlproperty list<Object> secondaryItem
     */
     property alias secondaryItem: rightPane.data
 
@@ -143,12 +149,16 @@ FocusScope {
       If a validator or input mask has been set, this property will only be true
       if the current text is acceptable to the validator or input mask as a final
       string (not as an intermediate string).
+
+      \qmlproperty bool acceptableInput
     */
     property alias acceptableInput: editor.acceptableInput
 
     /*!
       \preliminary
       The position of the cursor in the TextField.
+
+      \qmlproperty int cursorPosition
     */
     property alias cursorPosition: editor.cursorPosition
 
@@ -161,12 +171,16 @@ FocusScope {
       - TextInput.NoEcho - Displays nothing.
       - TextInput.PasswordEchoOnEdit - Displays characters as they are entered while
         editing, otherwise displays asterisks.
+
+        \qmlproperty enumeration echoMode
     */
     property alias echoMode: editor.echoMode
 
     /*!
       \preliminary
       Font used in the TextField.
+
+      \qmlproperty font font
     */
     property alias font: editor.font
 
@@ -175,6 +189,8 @@ FocusScope {
       Allows you to set an input mask on the TextField, restricting the  text
       inputs. See QLineEdit::inputMask for further details, as the exact same mask strings
       are used by TextField.
+
+      \qmlproperty string inputMask
     */
     property alias inputMask: editor.inputMask
 
@@ -186,6 +202,8 @@ FocusScope {
       TextField to edit or commit the partial text. This property can be used to determine
       when to disable events handlers that may interfere with the correct operation
       of an input method.
+
+      \qmlproperty bool inputMethodComposing
     */
     property alias inputMethodComposing: editor.inputMethodComposing
 
@@ -196,6 +214,8 @@ FocusScope {
       If the text is too long, it is truncated at the limit.
 
       By default, this property contains a value of 32767.
+
+      \qmlproperty int maximumLength
     */
     property alias maximumLength: editor.maximumLength
 
@@ -206,12 +226,16 @@ FocusScope {
       If readOnly is set to true, then user input will not affect the
       text property. Any bindings or attempts to set the text property
       will still work.
+
+      \qmlproperty bool readOnly
     */
     property alias readOnly: editor.readOnly
 
     /*!
       \preliminary
       This read-only property provides the text currently selected in the text input.
+
+      \qmlproperty string selectedText
     */
     property alias selectedText: editor.selectedText
 
@@ -221,6 +245,8 @@ FocusScope {
 
       This property is read-only. To change the selection, use select(start,end),
       selectAll(), or selectWord().
+
+      \qmlproperty int selectionStart
     */
     property alias selectionStart: editor.selectionStart
 
@@ -230,12 +256,16 @@ FocusScope {
 
       This property is read-only. To change the selection, use select(start,end),
       selectAll(), or selectWord().
+
+      \qmlproperty int selectionEnd
     */
     property alias selectionEnd: editor.selectionEnd
 
     /*!
       \preliminary
       The text in the TextField.
+
+      \qmlproperty string text
     */
     property alias text: editor.text
 
@@ -257,6 +287,8 @@ FocusScope {
           focus: true
       }
       \endqml
+
+      \qmlproperty Validator validator
     */
     property alias validator: editor.validator
 
@@ -273,6 +305,8 @@ FocusScope {
 
       The valid values for horizontalAlignment are TextInput.AlignLeft,
       TextInput.AlignRight and TextInput.AlignHCenter.
+
+      \qmlproperty enumeration horizontalAlignment
     */
     property alias horizontalAlignment: editor.horizontalAlignment
 
