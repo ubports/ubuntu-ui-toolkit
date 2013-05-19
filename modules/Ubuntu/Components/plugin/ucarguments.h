@@ -69,6 +69,7 @@ Q_SIGNALS:
 
 protected:
     void parseAndExposeArguments();
+    void setValuesOnArguments(QHash<QString, QStringList> argumentsValues);
     QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
     QHash<QString, QStringList> parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments);
     QStringList collectArgumentValues(QStringList::const_iterator& i, QStringList::const_iterator end, int nValues);

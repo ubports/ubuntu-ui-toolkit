@@ -359,7 +359,13 @@ void UCArguments::parseAndExposeArguments()
         printUsage();
     }
 
-    // pass the values to the arguments objects
+    setValuesOnArguments(argumentsValues);
+    exposeArgumentsAsProperties(argumentsValues);
+}
+
+void UCArguments::setValuesOnArguments(QHash<QString, QStringList> argumentsValues)
+{
+    // pass the values to the arguments
     Q_FOREACH (UCArgument* argument, m_arguments) {
         QString name = argument->name();
         if (argumentsValues.contains(name)) {
@@ -373,6 +379,8 @@ void UCArguments::parseAndExposeArguments()
             }
         }
     }
+
+    // pass the values to the defaultArgument
     if (m_defaultArgument != NULL) {
         if (argumentsValues.contains("")) {
             int numberArguments = m_defaultArgument->valueNames().size();
@@ -383,8 +391,6 @@ void UCArguments::parseAndExposeArguments()
             }
         }
     }
-
-    exposeArgumentsAsProperties(argumentsValues);
 }
 
 QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
