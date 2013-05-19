@@ -241,8 +241,10 @@ void UCArguments::parseAndExposeArguments()
         if (argumentsValues.contains("")) {
             int numberArguments = m_defaultArgument->valueNames().size();
             m_defaultArgument->setValues(argumentsValues.value("").mid(0, numberArguments));
-            // FIXME: not very elegant way to inform that values have changed
-            Q_EMIT(defaultArgumentChanged());
+            if (numberArguments > 0) {
+                // FIXME: not very elegant way to inform that values have changed
+                Q_EMIT(defaultArgumentChanged());
+            }
         }
     }
 

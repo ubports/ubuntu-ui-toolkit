@@ -23,6 +23,7 @@
 #include <QtCore/QString>
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
 
 class tst_UCArguments : public QObject
 {
@@ -291,7 +292,9 @@ private Q_SLOTS:
 
         // setter: custom UCArgument
         UCArgument customDefaultArgument;
+        QSignalSpy spy(&arguments, SIGNAL(defaultArgumentChanged()));
         arguments.setDefaultArgument(&customDefaultArgument);
+        QCOMPARE(spy.count(), 1);
         QCOMPARE(arguments.defaultArgument(), &customDefaultArgument);
 
         // setter: NULL
