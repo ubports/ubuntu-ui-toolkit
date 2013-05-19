@@ -59,7 +59,9 @@ UCArgument::UCArgument(QObject *parent) :
 /*!
  * \qmlproperty string Argument::name
  *
- * TODO
+ * Name identifying the command line argument.
+ *
+ * For example 'target' corrsesponds to the \e{'--target'} command line argument.
  *
  */
 QString UCArgument::name() const
@@ -76,7 +78,7 @@ void UCArgument::setName(QString name)
 /*!
  * \qmlproperty string Argument::help
  *
- * TODO
+ * Help displayed when launching the application with --usage.
  *
  */
 QString UCArgument::help() const
@@ -93,7 +95,8 @@ void UCArgument::setHelp(QString help)
 /*!
  * \qmlproperty bool Argument::required
  *
- * TODO
+ * Whether or not this argument needs to be passed on the command line when
+ * launching the application.
  *
  */
 bool UCArgument::required() const
@@ -110,7 +113,10 @@ void UCArgument::setRequired(bool required)
 /*!
  * \qmlproperty list<string> Argument::valueNames
  *
- * TODO
+ * Names given to the values of this argument. They are used when displaying the
+ * expected command line arguments of the application.
+ *
+ * Typically all capital letters (e.g. URL).
  *
  */
 QStringList UCArgument::valueNames() const
