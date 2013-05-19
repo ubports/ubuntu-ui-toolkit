@@ -48,7 +48,8 @@ public:
     QQmlPropertyMap* values() const;
     bool error() const;
     QString errorMessage() const;
-    Q_INVOKABLE void printUsageAndQuit(QString errorMessage = QString());
+    Q_INVOKABLE void printUsage();
+    Q_INVOKABLE void quitWithError(QString errorMessage = QString());
 
     // inherited from QQmlParserStatus
     void classBegin();
@@ -75,6 +76,9 @@ protected:
     bool requiredArgumentsProvided(QHash<QString, QStringList> argumentsValues, QString& error);
     bool requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error);
     void exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues);
+    QString usage();
+    void setErrorMessage(QString errorMessage);
+    void quitApplication();
 
 private:
     bool m_completed;

@@ -162,21 +162,7 @@ QString UCArguments::errorMessage() const
     return m_errorMessage;
 }
 
-
-// FIXME: could be broken down in smaller functions
-void UCArguments::printUsageAndQuit(QString errorMessage)
-{
-    /* This function can be called multiple times before the application actually
-       quit. See comment at the end about QCoreApplication::quit().
-    */
-    if (m_error) {
-        return;
-    }
-    m_error = true;
-    m_errorMessage = errorMessage;
-    Q_EMIT errorChanged();
-    Q_EMIT errorMessageChanged();
-
+QString UCArguments::usage() {
     QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
@@ -213,17 +199,61 @@ void UCArguments::printUsageAndQuit(QString errorMessage)
         usageStream << endl << m_defaultArgument->help();
     }
 
-    // output to the console, first the errorMessage if any then the usage
-    if (!errorMessage.isEmpty()) {
-        qWarning() << qPrintable(errorMessage);
+    return usage;
+}
+
+void UCArguments::setErrorMessage(QString errorMessage)
+{
+    m_error = true;
+    m_errorMessage = errorMessage;
+    Q_EMIT errorChanged();
+    Q_EMIT errorMessageChanged();
+}
+
+void UCArguments::quitApplication()
+{
+    /* This function can be called multiple times before the application actually
+       quit. See comment at the end about QCoreApplication::quit().
+    */
+    static bool quitting = false;
+    if (quitting) {
+        return;
     }
-    qWarning() << qPrintable(usage);
 
     /* Call QCoreApplication::quit() when the event loop starts running.
        "If the event loop is not running, [QCoreApplication::quit()] does nothing."
        Ref.: http://qt-project.org/doc/qt-5.0/qtcore/qcoreapplication.html#exit
     */
+    quitting = true;
     QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+}
+
+/*!
+ * \qmlmethod void Arguments::printUsage()
+ *
+ * Outputs help to the console on how to pass arguments to the application.
+ *
+ */
+void UCArguments::printUsage()
+{
+    qWarning() << qPrintable(usage());
+}
+
+/*!
+ * \qmlmethod void Arguments::quitWithError(string errorMessage)
+ *
+ * Exits the application outputting \a errorMessage to the console.
+ *
+ */
+void UCArguments::quitWithError(QString errorMessage)
+{
+    setErrorMessage(errorMessage);
+
+    // output to the console, first the errorMessage if any then the usage
+    if (!errorMessage.isEmpty()) {
+        qWarning() << qPrintable(errorMessage);
+    }
+    quitApplication();
 }
 
 void UCArguments::classBegin()
@@ -314,16 +344,19 @@ void UCArguments::parseAndExposeArguments()
     argumentsValues = parseRawArguments(m_rawArguments, expectedArguments);
 
     if (usageRequested(argumentsValues.keys())) {
-        printUsageAndQuit();
+        quitWithError();
+        printUsage();
     }
 
     QString error;
     if (!requiredArgumentsProvided(argumentsValues, error)) {
-        printUsageAndQuit(error);
+        quitWithError(error);
+        printUsage();
     }
 
     if (!requiredDefaultArgumentProvided(argumentsValues, error)) {
-        printUsageAndQuit(error);
+        quitWithError(error);
+        printUsage();
     }
 
     // pass the values to the arguments objects

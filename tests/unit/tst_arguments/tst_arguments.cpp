@@ -302,12 +302,22 @@ private Q_SLOTS:
         QCOMPARE(arguments.defaultArgument(), (UCArgument*)NULL);
     }
 
-    void testAPIprintUsageAndQuit() {
+    void testAPIprintUsage() {
         UCArguments arguments;
+        arguments.printUsage();
+    }
+
+    void testAPIquitWithError() {
+        UCArguments arguments;
+        QString errorMessage("error message");
 
         QCOMPARE(arguments.error(), false);
-        arguments.printUsageAndQuit();
+        QCOMPARE(arguments.errorMessage(), QString());
+
+        arguments.quitWithError(errorMessage);
+
         QCOMPARE(arguments.error(), true);
+        QCOMPARE(arguments.errorMessage(), errorMessage);
     }
 
     // unit tests for private API: only done to simplify error tracking
