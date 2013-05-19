@@ -377,7 +377,7 @@ private Q_SLOTS:
 
         QStringList::const_iterator i;
         QStringList::const_iterator end;
-        int nValues;
+        int nValues = 0;
         QStringList result;
         QStringList expectedResult;
 
