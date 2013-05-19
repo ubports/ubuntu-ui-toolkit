@@ -147,10 +147,11 @@ QString UCArgument::syntax() const
         // for unnamed optional argument: [value1] [value2]
         if (!m_valueNames.empty()) {
             Q_FOREACH (QString valueName, m_valueNames) {
+                QString outputName = valueName;
                 if (!m_required) {
-                    valueName.prepend('[').append(']');
+                    outputName.prepend('[').append(']');
                 }
-                syntax.append(valueName);
+                syntax.append(outputName);
                 if (valueName != m_valueNames.last()) {
                     syntax.append(' ');
                 }
