@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@
  * \qmltype Arguments
  * \instantiates UCArguments
  * \inqmlmodule Ubuntu.Components 0.1
- * \ingroup ubuntu
+ * \ingroup ubuntu-commandline
  * \brief The Arguments class provides a way to declare what command line
  *        parameters are expected by the application.
  *
@@ -131,6 +131,7 @@ void UCArguments::setDefaultArgument(UCArgument* argument)
 
 /*!
  * \qmlproperty Object Arguments::values
+ * \readonly
  *
  * TODO
  *
@@ -142,9 +143,12 @@ QQmlPropertyMap* UCArguments::values() const
 
 /*!
  * \qmlproperty bool Arguments::error
+ * \readonly
  *
- * TODO
+ * Whether or not the command line arguments passed to the application correspond
+ * to the expected arguments.
  *
+ * Also set when calling \l quitWithError
  */
 bool UCArguments::error() const
 {
@@ -153,8 +157,12 @@ bool UCArguments::error() const
 
 /*!
  * \qmlproperty string Arguments::errorMessage
+ * \readonly
  *
- * TODO
+ * Error message describing how the command line arguments passed to the application
+ * failed to correspond to the expected arguments.
+ *
+ * Also set when calling \l quitWithError
  *
  */
 QString UCArguments::errorMessage() const
@@ -324,6 +332,7 @@ void staticClearArguments(QQmlListProperty<UCArgument>* property)
 /*!
  * \qmlproperty list<Argument> Arguments::arguments
  * \default
+ * \readonly
  *
  * TODO
  *

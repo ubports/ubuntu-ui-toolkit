@@ -22,7 +22,7 @@
  * \qmltype Argument
  * \instantiates UCArgument
  * \inqmlmodule Ubuntu.Components 0.1
- * \ingroup ubuntu
+ * \ingroup ubuntu-commandline
  * \brief The Argument class specifies what type a given command line parameter should be.
  *
  * \b Important: Argument is not used on its own but must be a child of \l Arguments.
