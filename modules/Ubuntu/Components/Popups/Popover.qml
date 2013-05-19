@@ -95,6 +95,7 @@ PopupBase {
     id: popover
 
     /*!
+      \qmlproperty list<Object> container
       Content will be put inside the foreround of the Popover.
     */
     default property alias container: containerItem.data

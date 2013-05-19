@@ -56,6 +56,7 @@ Base {
 
     /*!
       \preliminary
+      \qmlproperty string value
       The values that will be shown next to the label text
      */
     property alias value: valueLabel.text
