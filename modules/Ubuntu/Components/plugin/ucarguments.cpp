@@ -268,6 +268,10 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
     QString name;
     QStringList values;
 
+    if (rawArguments.size() == 0) {
+        return argumentsValues;
+    }
+
     QStringList::const_iterator i = rawArguments.constBegin();
     // ignore the first item in the rawArguments which is the name of the binary
     i++;
@@ -297,6 +301,11 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArgume
 QStringList UCArguments::collectArgumentValues(QStringList::const_iterator& i, QStringList::const_iterator end, int nValues)
 {
     QStringList values;
+
+    if (i == end) {
+        return values;
+    }
+
     for (; (i+1) != end; ++i) {
         QString rawArgument = *(i+1);
         if (rawArgument.startsWith('-')) {

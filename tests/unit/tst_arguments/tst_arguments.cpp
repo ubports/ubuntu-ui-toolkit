@@ -278,7 +278,7 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
     }
 
-    void testAPIDefaultArgument() {
+    void testAPIdefaultArgument() {
         UCArguments arguments;
         arguments.componentComplete();
 
@@ -302,12 +302,131 @@ private Q_SLOTS:
         QCOMPARE(arguments.defaultArgument(), (UCArgument*)NULL);
     }
 
-    void testAPIPrintUsageAndQuit() {
+    void testAPIprintUsageAndQuit() {
         UCArguments arguments;
 
         QCOMPARE(arguments.error(), false);
         arguments.printUsageAndQuit();
         QCOMPARE(arguments.error(), true);
+    }
+
+    // unit tests for private API: only done to simplify error tracking
+    // do not hesitate to rip off when refactoring UCArgument's implementation
+    void testAPIbuildExpectedArguments() {
+        UCArguments arguments;
+
+        QStringList valueNames;
+        valueNames << "VALUE1" << "VALUE2";
+
+        UCArgument argument1;
+        argument1.setName("argument1");
+        argument1.setValueNames(valueNames);
+        arguments.appendArguments(&argument1);
+
+        UCArgument argument2;
+        argument2.setName("argument2");
+        argument2.setValueNames(valueNames);
+        arguments.appendArguments(&argument2);
+
+        QList<UCArgument*> declaredArguments;
+        QHash<QString, QStringList> result;
+        QHash<QString, QStringList> expectedResult;
+
+        result = arguments.buildExpectedArguments(declaredArguments);
+        QCOMPARE(result, expectedResult);
+
+        declaredArguments.append(&argument1);
+        declaredArguments.append(&argument2);
+        result = arguments.buildExpectedArguments(declaredArguments);
+        expectedResult.insert("argument1", valueNames);
+        expectedResult.insert("argument2", valueNames);
+        QCOMPARE(result, expectedResult);
+    }
+
+    void testAPIparseRawArguments() {
+        UCArguments arguments;
+
+        QStringList values;
+        values << "value1" << "value2";
+
+        QStringList rawArguments;
+        QHash<QString, QStringList> expectedArguments;
+        QHash<QString, QStringList> result;
+        QHash<QString, QStringList> expectedResult;
+
+        result = arguments.parseRawArguments(rawArguments, expectedArguments);
+        QCOMPARE(result, expectedResult);
+
+        expectedArguments.insert("argument1", values);
+        expectedArguments.insert("argument2", values);
+        expectedResult.insert("argument1", values);
+        expectedResult.insert("argument2", values);
+
+        rawArguments << "binary" << "--argument1" << "value1" << "value2" << "--argument2" << "value1" << "value2";
+        result = arguments.parseRawArguments(rawArguments, expectedArguments);
+        QCOMPARE(result, expectedResult);
+
+        rawArguments.clear();
+        rawArguments << "binary" << "--argument1=value1" << "value2" << "--argument2" << "value1" << "value2";
+        result = arguments.parseRawArguments(rawArguments, expectedArguments);
+        QCOMPARE(result, expectedResult);
+    }
+
+    void testAPIcollectArgumentValues() {
+        UCArguments arguments;
+
+        QStringList::const_iterator i;
+        QStringList::const_iterator end;
+        int nValues;
+        QStringList result;
+        QStringList expectedResult;
+
+        result = arguments.collectArgumentValues(i, end, nValues);
+        QCOMPARE(result, expectedResult);
+
+        QStringList rawArguments;
+        rawArguments << "binary" << "--argument1" << "value1" << "value2" << "--argument2" << "value1" << "value2";
+        i = rawArguments.constBegin();
+        i++; // i points to "--argument1"
+        end = rawArguments.constEnd();
+        nValues = 2;
+        expectedResult << "value1" << "value2";
+
+        result = arguments.collectArgumentValues(i, end, nValues);
+        QCOMPARE(result, expectedResult);
+
+        QStringList::const_iterator iExpected = rawArguments.constBegin();
+        iExpected++; iExpected++; iExpected++; // iExpected points to "value2"
+
+        QCOMPARE(i, iExpected);
+    }
+
+    void testAPIusageRequested() {
+        UCArguments arguments;
+        QStringList argumentNames;
+
+        QCOMPARE(arguments.usageRequested(argumentNames), false);
+
+        argumentNames.clear();
+        argumentNames.append("usage");
+        QCOMPARE(arguments.usageRequested(argumentNames), true);
+
+        argumentNames.clear();
+        argumentNames.append("h");
+        QCOMPARE(arguments.usageRequested(argumentNames), true);
+
+        argumentNames.clear();
+        argumentNames.append("help");
+        QCOMPARE(arguments.usageRequested(argumentNames), true);
+
+        argumentNames.clear();
+        argumentNames.append("anything");
+        argumentNames.append("usage");
+        QCOMPARE(arguments.usageRequested(argumentNames), true);
+
+        argumentNames.clear();
+        argumentNames.append("anything");
+        QCOMPARE(arguments.usageRequested(argumentNames), false);
     }
 };
 
