@@ -276,6 +276,28 @@ private Q_SLOTS:
         testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
         testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
     }
+
+    void testAPIDefaultArgument() {
+        UCArguments arguments;
+        arguments.componentComplete();
+
+        // getter
+        UCArgument* defaultArgument = arguments.defaultArgument();
+        QCOMPARE(defaultArgument->name(), QString());
+        QCOMPARE(defaultArgument->help(), QString());
+        QCOMPARE(defaultArgument->required(), true);
+        QCOMPARE(defaultArgument->valueNames().size(), 0);
+        QCOMPARE(defaultArgument->at(0).type(), QVariant::Invalid);
+
+        // setter: custom UCArgument
+        UCArgument customDefaultArgument;
+        arguments.setDefaultArgument(&customDefaultArgument);
+        QCOMPARE(arguments.defaultArgument(), &customDefaultArgument);
+
+        // setter: NULL
+        arguments.setDefaultArgument(NULL);
+        QCOMPARE(arguments.defaultArgument(), (UCArgument*)NULL);
+    }
 };
 
 QTEST_MAIN(tst_UCArguments)
