@@ -73,13 +73,6 @@ private:
     }
 
 private Q_SLOTS:
-    void init() {
-    }
-
-    void cleanup() {
-        clearCommandLine();
-    }
-
     void testNoArguments() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
