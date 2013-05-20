@@ -36,7 +36,6 @@ TestCase {
 
     function test_hasStyle()
     {
-        expectFail("", "ComponentUtils is deprecated and no longer maintained");
         var result = ComponentUtils.hasStyle(testItem, "prop_baseA_A");
         compare(result, true, "Style property check");
 
@@ -46,7 +45,6 @@ TestCase {
 
     function test_style()
     {
-        expectFail("", "ComponentUtils is deprecated and no longer maintained");
         var result = ComponentUtils.style(testItem, "prop_baseA_A")
         compare(result, "prop_baseA_A", "Existing style property getter")
 

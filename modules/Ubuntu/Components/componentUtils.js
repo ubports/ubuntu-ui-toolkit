@@ -14,7 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library
 /*
   This cannot be made as standalone library as from those we cannot access the
   attached properties.
