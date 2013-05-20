@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,8 +17,6 @@
 
 #include "ucfontutils.h"
 #include "ucunits.h"
-#include <QtCore/QMetaEnum>
-#include <QtQml/QQmlInfo>
 
 /*!
  * \qmltype FontUtils
@@ -26,9 +24,38 @@
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
  * \brief The FontUtils component provides utility functions for font manipulations.
+ *
+ * Yet only contains helper functions to provide unified font sizing and scaling.
+ *
+ * Example of a Label implementation which uses the default base scale for the font
+ * size:
+ * \qml
+ * import QtQuick 2.0
+ * import Ubuntu.Components 0.1
+ *
+ * Text {
+ *     property string fontSize: "medium"
+ *     font.pixelSize: FontUtils.sizeToPixels(fontSize)
+ * }
+ * \endqml
+ *
+ * Another example of a custom text input component exposing a fontSize property and a base
+ * font unit size to scale its font:
+ * \qml
+ * import QtQuick 2.0
+ * import Ubuntu.Components 0.1
+ *
+ * TextInput {
+ *     property string fontSize: "small"
+ *     property int baseFontUnits: units.dp(20)
+ *     font.pixelSize: FontUtils.modularScale(fontSize) * units.dp(baseFontUnits)
+ * }
+ * \endqml
+ *
  */
 
 /*!
+ * \qmlmethod real FontUtils::sizeToPixels(string size)
  * The function calculates the pixel size of a given scale. The size scale can be
  * one of the strings specified at modularScale function. On failure returns 0.
  */
@@ -38,6 +65,7 @@ qreal UCFontUtils::sizeToPixels(const QString &size)
 }
 
 /*!
+ * \qmlmethod real FontUtils::modularScale(string size)
  * The function returns the number interpretation of a given font scale. The scale
  * can have one of the following values:
  * \list
