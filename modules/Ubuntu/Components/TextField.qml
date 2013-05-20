@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import "fontUtils.js" as FontUtils
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Theming named import.

@@ -44,7 +44,8 @@ HEADERS += plugin.h \
     qquickclipboard_p.h \
     selector_p.h \
     ucstyle.h \
-    ucubuntuanimation.h
+    ucubuntuanimation.h \
+    ucfontutils.h
 
 SOURCES += plugin.cpp \
     themeengine.cpp \
@@ -66,7 +67,8 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp \
     selector.cpp \
     ucstyle.cpp \
-    ucubuntuanimation.cpp
+    ucubuntuanimation.cpp \
+    ucfontutils.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

@@ -12,20 +12,31 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-function sizeToPixels(size) {
-    var baseSize = units.dp(14)
-    return Math.round(modularScale(size) * baseSize)
-}
+#ifndef UCFONTUTILS_H
+#define UCFONTUTILS_H
 
-function modularScale(size) {
-    switch (size) {
-        case "xx-small": return 0.606
-        case "x-small": return 0.707
-        case "small": return 0.857
-        case "medium": return 1.0
-        case "large": return 1.414
-        case "x-large": return 2.423
+#include <QtCore/QObject>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QJSEngine>
+
+class UCFontUtils : public QObject
+{
+    Q_OBJECT
+public:
+
+    static UCFontUtils& instance()
+    {
+        static UCFontUtils instance;
+        return instance;
     }
-}
+
+    explicit UCFontUtils(QObject *parent = 0) : QObject(parent) {}
+
+    Q_INVOKABLE qreal sizeToPixels(const QString &size);
+    Q_INVOKABLE qreal modularScale(const QString &size);
+};
+
+#endif // UCFONTUTILS_H
