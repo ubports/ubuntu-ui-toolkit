@@ -16,8 +16,28 @@
 
 import QtQuick 2.0
 
-EditorCursorStyle {
+Item {
     id: visuals
+    /*!
+      Cursor color
+      */
+    property color color
+
+    /*!
+      Properties driving cursor blinking. If either of these values are 0, no
+      blinking is provided.
+      */
+    property bool blinking
+    property int blinkTimeoutShown
+    property int blinkTimeoutHidden
+
+    /*!
+      Selection mode pin styles
+      */
+    property var pinSize
+    property var pinSensingOffset
+    property color pinColor
+
     anchors.fill: parent
     Rectangle {
         id: cursor

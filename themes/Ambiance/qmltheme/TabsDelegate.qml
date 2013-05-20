@@ -17,8 +17,33 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-TabsStyle {
+Item {
     id: visuals
+    /*!
+      Setting this property to true will cause the tab buttons to expand
+      their widths equally to fill the Tabs bar.
+      If the value is false, instead each button will use the width that
+      is required by the largest tab button.
+     */
+    property bool buttonsExpanded
+
+    /*!
+      If this optional property is specified, it will be positioned
+      between the bar with tab buttons, and the tab pages to act
+      as a separator.
+     */
+    property Item separator
+
+    /*!
+      The padding on the left and right side of the row of buttons.
+    */
+    property real horizontalPadding
+
+    /*!
+      The minimum width of the tab buttons
+     */
+    property real minimumButtonWidth
+
     anchors.fill: parent
 
     property alias contentItem: tabsContainer

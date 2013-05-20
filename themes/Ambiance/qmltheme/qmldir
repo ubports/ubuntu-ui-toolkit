@@ -34,5 +34,3 @@ TextAreaStyle 0.1 TextAreaStyle.qml
 TextAreaDelegate 0.1 TextAreaDelegate.qml
 SliderDelegate 0.1 SliderDelegate.qml
 ActivityIndicatorDelegate 0.1 ActivityIndicatorDelegate.qml
-
-StyleUtils 0.1 styleUtils.js
