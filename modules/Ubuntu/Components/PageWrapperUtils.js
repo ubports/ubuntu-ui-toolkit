@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//.pragma library // FIXME: cannot refer to Component.Error if I use this.
+.pragma library // FIXME: cannot refer to Component.Error if I use this.
 
 /*!
   \internal
@@ -34,7 +34,8 @@ function __initPage(pageWrapper) {
 
     var pageObject;
     if (pageComponent) {
-        if (pageComponent.status === Component.Error) {
+        // FIXME: Component.Error is the last in the enum, number 3
+        if (pageComponent.status === 3) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object

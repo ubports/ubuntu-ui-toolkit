@@ -14,6 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+.pragma library
+
 .import "../mathUtils.js" as MathUtils
 
 // Simple positioning on the screen, not relative to a caller Item.
@@ -69,7 +71,7 @@ function SimplePositioning(foreground, area, edgeMargins) {
     }
 
     // automatically position foreground on the screen
-    this.auto = function() {
+    this.auto = function(margin) {
         if (foreground.width >= area.width - 2*edgeMargins) {
             // the popover uses (almost) the full width of the screen
             this.autoSmallScreenPortrait();
@@ -86,7 +88,7 @@ function SimplePositioning(foreground, area, edgeMargins) {
 
 // caller is optional.
 // if caller is given, pointer and callerMargins must be specified, otherwise they are ignored.
-function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edgeMargins, callerMargins) {
+function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edgeMargins, callerMargins, pointerMargin) {
     var simplePos = new SimplePositioning(foreground, area, edgeMargins);
     // -1 values are not relevant.
 
@@ -187,7 +189,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
             foreground.y = coord;
             foreground.x = this.horizontalAlign(foreground, caller);
             pointer.direction = "down";
-            pointer.y = this.above(pointer, callerMargins - pointer.height, caller) - units.dp(2);
+            pointer.y = this.above(pointer, callerMargins - pointer.height, caller) - pointerMargin;
             pointer.x = this.horizontalAlign(pointer, pointerTarget);
             return true;
         }

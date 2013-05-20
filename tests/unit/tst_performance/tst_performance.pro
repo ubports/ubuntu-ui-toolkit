@@ -17,4 +17,8 @@ OTHER_FILES += \
     TextGrid.qml \
     RectangleGrid.qml \
     CustomTheme.qmltheme \
-    ButtonsWithStyledGrid.qml
+    ButtonsWithStyledGrid.qml \
+    TextWithImport.qml \
+    TextWithImportGrid.qml \
+    TextWithImportPopupsGrid.qml \
+    TextWithImportPopups.qml

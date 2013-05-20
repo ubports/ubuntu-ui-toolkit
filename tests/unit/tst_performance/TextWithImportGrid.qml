@@ -14,31 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library
-// By defining Stack as a function, we can make its variables private,
-// and force calls to Stack to make use of the functions we define.
-function Stack() {
-    var elements;
-    this.clear = function() {
-        elements = [];
-    }
+import QtQuick 2.0
 
-    this.clear();
-
-    this.push = function(element) {
-        elements.push(element);
-    };
-
-    this.pop = function() {
-        elements.pop();
-    };
-
-    this.size = function() {
-        return elements.length;
-    }
-
-    this.top = function() {
-        if (this.size() < 1) return undefined;
-        return elements[elements.length-1];
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 160
+    Repeater {
+        model: 16*160
+        TextWithImport {}
     }
 }
