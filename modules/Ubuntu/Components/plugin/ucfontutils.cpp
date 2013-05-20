@@ -23,9 +23,12 @@
  * \instantiates UCFontUtils
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
- * \brief The FontUtils component provides utility functions for font manipulations.
+ * \brief FontUtils is a \l {http://qt-project.org/doc/qt-5.0/qtqml/qqmlcontext.html#details} {context property},
+ * which provides utility functions for font manipulations.
  *
- * Yet only contains helper functions to provide unified font sizing and scaling.
+ * FontUtils cannot be instantiated and it is already available as a context
+ * property, i.e. 'FontUtils'  is an instance  that can be used from anywhere in
+ * the code.
  *
  * Example of a Label implementation which uses the default base scale for the font
  * size:
