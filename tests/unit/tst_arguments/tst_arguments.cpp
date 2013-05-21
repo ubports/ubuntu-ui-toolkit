@@ -72,6 +72,10 @@ private:
         QTest::newRow(dataTag.toLocal8Bit().constData()) << commandLine << expectedError;
     }
 
+    void testCommandLineForUnicode(QString argumentValue) {
+        QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString("--unicodeArgument ") + argumentValue << argumentValue;
+    }
+
 private Q_SLOTS:
     void testNoArguments() {
         QFETCH(QString, commandLine);
@@ -121,6 +125,36 @@ private Q_SLOTS:
         testCommandLine("--boolArgument --usage", true);
         testCommandLine("--boolArgument --otherArgument --usage", true);
         testCommandLine("--usage --boolArgument --otherArgument", true);
+    }
+
+    void testUnicodeArgument() {
+        QFETCH(QString, commandLine);
+        QFETCH(QString, expectedValue);
+
+        setCommandLine(commandLine);
+
+        UCArguments arguments;
+        QStringList valueNames;
+        valueNames << "VALUE1";
+
+        UCArgument unicodeArgument;
+        unicodeArgument.setName("unicodeArgument");
+        unicodeArgument.setValueNames(valueNames);
+        arguments.appendArguments(&unicodeArgument);
+        arguments.componentComplete();
+
+        QCOMPARE(arguments.values()->property("unicodeArgument").type(), QVariant::String);
+        QCOMPARE(arguments.values()->property("unicodeArgument").toString(), expectedValue);
+    }
+
+    void testUnicodeArgument_data() {
+        QTest::addColumn<QString>("commandLine");
+        QTest::addColumn<QString>("expectedValue");
+
+        testCommandLineForUnicode(QString::fromUtf8("DIRECCIÓN"));
+        testCommandLineForUnicode(QString("ファイル名を"));
+        testCommandLineForUnicode(QString("☭☢€→☎❄♫✂▷✇♎⇧☮♻⌘⌛☘"));
+        testCommandLineForUnicode(QString("file://Vidéos/Le.goût.des.autres.-.DIVX[www.makingoff.org]"));
     }
 
     void testOneRequiredNamedBoolArgument() {
