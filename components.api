@@ -308,3 +308,98 @@ Item
     property url maskSource
     property url borderSource
     property Image image
+plugins.qmltypes
+    prototype: "QQuickItem"
+    exports: ["InverseMouseArea 0.1"]
+    Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "acceptedButtons"; type: "Qt::MouseButtons" }
+    Property { name: "pressedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
+    Property { name: "propagateComposedEvents"; type: "bool" }
+    Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Signal {
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Method {
+    Parameter { name: "point"; type: "QPointF" }
+    prototype: "QObject"
+    exports: ["ItemStyle 0.1"]
+    Property { name: "class"; type: "string" }
+    Property { name: "name"; type: "string" }
+    Property { name: "style"; type: "UCStyle"; isPointer: true }
+    Property { name: "delegate"; type: "QQuickItem"; isPointer: true }
+    Property { name: "path"; type: "string"; isReadonly: true }
+    prototype: "QObject"
+    exports: ["Clipboard 0.1"]
+    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
+    Method {
+    Parameter { name: "data"; type: "QVariant" }
+    Method { name: "clear" }
+    Method { name: "newData"; type: "QQuickMimeData*" }
+    prototype: "QObject"
+    exports: ["MimeData 0.1"]
+    Property { name: "formats"; type: "QStringList"; isReadonly: true }
+    Property { name: "text"; type: "string" }
+    Property { name: "html"; type: "string" }
+    Property { name: "urls"; type: "QList<QUrl>" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "data"; type: "QVariant" }
+    Signal { name: "typeChanged" }
+    prototype: "QQuickItem"
+    exports: ["Shape 0.1"]
+    Property { name: "baseColor"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "radius"; type: "string" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Property { name: "borderSource"; type: "string" }
+    Signal { name: "borderChanged" }
+    Method { name: "gridUnitChanged" }
+    prototype: "QQuickImageBase"
+    exports: ["QQuickImageBase 0.1"]
+    Property { name: "source"; type: "QUrl" }
+    Signal {
+    Parameter { type: "QUrl" }
+    Signal {
+    Parameter { type: "QUrl" }
+    prototype: "QObject"
+    exports: ["Style 0.1"]
+    prototype: "QObject"
+    exports: ["UbuntuAnimation 0.1"]
+    Property { name: "SnapDuration"; type: "int"; isReadonly: true }
+    Property { name: "FastDuration"; type: "int"; isReadonly: true }
+    Property { name: "SlowDuration"; type: "int"; isReadonly: true }
+    Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
+    Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
+    prototype: "QObject"
+    exports: ["UCUnits 0.1"]
+    Property { name: "gridUnit"; type: "float" }
+    Method {
+    Parameter { name: "value"; type: "float" }
+    Method {
+    Parameter { name: "value"; type: "float" }
+    prototype: "QObject"
+    exports: ["i18n 0.1"]
+    Property { name: "domain"; type: "string" }
+    Property { name: "language"; type: "string" }
+    Method {
+    Parameter { name: "domain_name"; type: "string" }
+    Parameter { name: "dir_name"; type: "string" }
+    Method {
+    Parameter { name: "text"; type: "string" }
+    Method {
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }
+    Method {
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }

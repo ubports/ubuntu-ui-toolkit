@@ -26,20 +26,25 @@ if len (sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
     print ('Usage:\n  %s FILENAME [FILENAME2..N]\n\n'
            '    Generate a QML API file\n'
            'Example:\n'
-           '    %s modules/Ubuntu/Components/*.qml > components.api.new\n'
+           '    %s modules/Ubuntu/Components/*.qml plugins.qmltypes > components.api.new\n'
            '    diff -Fqml -u components.api{,.new}\n'
            % (basename, basename))
     sys.exit(1)
-
-keywords = ['signal', 'property', 'function']
-in_block = 0
-in_comment = False
 
 for line in fileinput.input():
     # New file
     if fileinput.isfirstline():
         in_block = 0
         in_comment = False
+        if fileinput.filename()[-3:] == 'qml':
+            filetype = 'qml'
+            keywords = ['signal', 'property', 'function']
+        elif fileinput.filename()[-8:] == 'qmltypes':
+            filetype = 'qmltypes'
+            keywords = ['Signal', 'Property', 'Method', 'prototype:', 'exports:']
+        else:
+            print('Unknown filetype %s' % fileinput.filename())
+            sys.exit(1)
         print('%s' % fileinput.filename())
 
     line = line.split('//')[0]
@@ -53,6 +58,8 @@ for line in fileinput.input():
         continue
 
     if '{' in line and '}' in line:
+        if filetype == 'qmltypes':
+            print('    ' + line.strip())
         continue
 
     # End of function/ signal/ Item block
@@ -60,17 +67,25 @@ for line in fileinput.input():
         in_block -= 1
         continue
 
-    # Only root item "Item {" is inspected for API
-    if in_block == 1:
-        for word in line.split(' '):
+    # Only root "Item {" is inspected for QML, otherwise all children
+    if in_block == 1 or filetype == 'qmltypes':
+        words = line.strip().split(' ')
+        if filetype == 'qmltypes' and in_block > 1:
+            words.append('name:')
+            words.append('Parameter')
+        for word in words:
             if word in keywords:
-                signature = line.split(':')[0].split('{')[0].strip()
+                if filetype == 'qml':
+                    signature = line.split(':')[0].split('{')[0].strip()
+                elif filetype == 'qmltypes':
+                    signature = line.strip()
                 print('    %s' % (signature))
+                break
 
     # Start of function/ signal/ Item block
     if '{' in line:
         in_block += 1
         # The parent type can affect API
-        if in_block == 1:
+        if in_block == 1 and filetype == 'qml':
             print(line.split('{')[0].strip())
 
