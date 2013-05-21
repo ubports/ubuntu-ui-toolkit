@@ -41,42 +41,10 @@ public:
         return instance;
     }
 
-    /**
-     * Specify that the domain_name message catalog can be found
-     * in dir_name rather than in the system locale data base.
-     */
     Q_INVOKABLE void bindtextdomain(const QString& domain_name, const QString& dir_name);
-
-    /**
-     * @brief Translate the given string using gettext.
-     * @param text The text to translate.
-     */
     Q_INVOKABLE QString tr(const QString& text);
-
-    /**
-     * @brief Translate the given string using gettext. Should be called like this:
-     *          tr("%n file", "%n files", count)
-     * @param singular The singular version of the text to translate.
-     * @param plural The plural version of the text to translate.
-     * @param n Number of items.
-     */
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
-
-    /**
-     * @brief Translate the given string using gettext.
-     * @param domain The domain to use for the translation.
-     * @param text The text to translate.
-     */
     Q_INVOKABLE QString dtr(const QString& domain, const QString& text);
-
-    /**
-     * @brief Translate the given string using gettext. Should be called like this:
-     *          tr(domain, "%n file", "%n files", count)
-     * @param domain The domain to use for the translation.
-     * @param singular The singular version of the text to translate.
-     * @param plural The plural version of the text to translate.
-     * @param n Number of items.
-     */
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
 
     // getter
