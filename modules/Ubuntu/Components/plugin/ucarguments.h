@@ -81,6 +81,9 @@ protected:
     void setErrorMessage(QString errorMessage);
     void quitApplication();
 
+protected Q_SLOTS:
+    void warningArgumentPropertyChanged();
+
 private:
     bool m_completed;
     UCArgument* m_defaultArgument;

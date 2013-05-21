@@ -281,9 +281,16 @@ void UCArguments::componentComplete()
 {
     m_completed = true;
     parseAndExposeArguments();
-    // FIXME: connect to changed signals for properties: name, required and valueNames
-    // for all arguments including defaultArgument and call parseAndExposeArguments
-    // when emitted
+
+    // changing attributes' name, required and valueNames dynamically is not supported
+    Q_FOREACH (UCArgument* argument, m_arguments) {
+        QObject::connect(argument, &UCArgument::nameChanged, this, &UCArguments::warningArgumentPropertyChanged);
+        QObject::connect(argument, &UCArgument::requiredChanged, this, &UCArguments::warningArgumentPropertyChanged);
+        QObject::connect(argument, &UCArgument::valueNamesChanged, this, &UCArguments::warningArgumentPropertyChanged);
+    }
+    QObject::connect(m_defaultArgument, &UCArgument::nameChanged, this, &UCArguments::warningArgumentPropertyChanged);
+    QObject::connect(m_defaultArgument, &UCArgument::requiredChanged, this, &UCArguments::warningArgumentPropertyChanged);
+    QObject::connect(m_defaultArgument, &UCArgument::valueNamesChanged, this, &UCArguments::warningArgumentPropertyChanged);
 }
 
 
@@ -547,4 +554,9 @@ void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argume
         m_values->insert(name, value);
         Q_EMIT m_values->valueChanged(name, value);
     }
+}
+
+void UCArguments::warningArgumentPropertyChanged()
+{
+    qWarning() << "Changing properties of arguments dynamically is not supported.";
 }
