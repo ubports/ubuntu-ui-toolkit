@@ -18,10 +18,10 @@ API Changes
 * DEPRECATED IN Toolbar: property bool lock
 * DEPRECATED IN ToolbarActions: property bool active
 * DEPRECATED IN ToolbarActions: property bool lock
-* CHANGED IN Page: property Header header to property Header propagated.header
-* CHANGED IN Page: property Toolbar toolbar to property Toolbar propagated.toolbar
-* CHANGED IN MainView: property Header header to property Header propagated.header
-* CHANGED IN MainView: property Toolbar toolbar to property Toolbar propagated.toolbar
+* CHANGED IN Page: property Header header to property Header __propagated.header
+* CHANGED IN Page: property Toolbar toolbar to property Toolbar __propagated.toolbar
+* CHANGED IN MainView: property Header header to property Header __propagated.header
+* CHANGED IN MainView: property Toolbar toolbar to property Toolbar __propagated.toolbar
 * DEPRECATED IN Page: property Header header
 * DEPRECATED IN Page: property Toolbar toolbar
 * DEPRECATED IN MainView: property Header header
