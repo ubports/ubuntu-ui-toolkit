@@ -96,8 +96,8 @@ PageTreeNode {
 
     Item {
         id: internal
-        property Header header: page.propagated && page.propagated.header ? page.propagated.header : null
-        property Toolbar toolbar: page.propagated && page.propagated.toolbar ? page.propagated.toolbar : null
+        property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
+        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
 
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()

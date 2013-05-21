@@ -189,7 +189,7 @@ PageTreeNode {
         }
     }
 
-    propagated: QtObject {
+    __propagated: QtObject {
         /*!
           \internal
           The header that will be propagated to the children in the page tree node.
