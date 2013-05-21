@@ -8,6 +8,6 @@ for(TEST, TESTS) {
   check.commands += ../runtest.sh $${TARGET} $${TEST};
 }
 check.commands += cd ../../..;
-check.commands += qmlplugindump Ubuntu.Components 0.1 modules/Ubuntu/ > plugins.qmltypes;
+check.commands += qmlplugindump Ubuntu.Components 0.1 modules > plugins.qmltypes;
 check.commands += tests/qmlapicheck.py modules/Ubuntu/Components/*.qml plugins.qmltypes > components.api.new;
 check.commands += diff -Fqml -u components.api components.api.new || exit 1; cd tests/unit
