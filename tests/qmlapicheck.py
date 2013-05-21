@@ -71,8 +71,8 @@ for line in fileinput.input():
     if in_block == 1 or filetype == 'qmltypes':
         words = line.strip().split(' ')
         if filetype == 'qmltypes' and in_block > 1:
-            words.append('name:')
-            words.append('Parameter')
+            keywords.append('name:')
+            keywords.append('Parameter')
         for word in words:
             if word in keywords:
                 if filetype == 'qml':
