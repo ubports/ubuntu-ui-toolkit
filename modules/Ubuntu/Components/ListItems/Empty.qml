@@ -101,6 +101,7 @@ AbstractButton {
 
     /*!
       \preliminary
+      \qmlproperty string swipingState
       The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
     readonly property alias swipingState: backgroundIndicator.state
@@ -168,6 +169,7 @@ AbstractButton {
 
     /*!
       \preliminary
+      \qmlproperty list<Item> backgroundIndicator
       Defines the item background item to be showed during the item swiping
      */
     property alias backgroundIndicator: backgroundIndicator.children

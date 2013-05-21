@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+.pragma library
 // By defining Stack as a function, we can make its variables private,
 // and force calls to Stack to make use of the functions we define.
 function Stack() {

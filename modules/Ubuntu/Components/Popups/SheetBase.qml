@@ -36,6 +36,7 @@ PopupBase {
 
     /*!
       \preliminary
+      \qmlproperty list<Object> container
       Content will be put inside the foreround of the sheet.
     */
     default property alias container: containerItem.data

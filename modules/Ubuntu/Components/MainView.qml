@@ -222,16 +222,9 @@ PageTreeNode {
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 
     /*! \internal */
-    property QtObject __hud: null
-
-    /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
-            var component = Qt.createComponent(Qt.resolvedUrl("HudIntegration.qml"));
-            if (component)
-                __hud = component.createObject(mainView, {"applicationIdentifier": applicationName});
-        } else if (__hud)
-            __hud.destroy();
+        }
     }
 }

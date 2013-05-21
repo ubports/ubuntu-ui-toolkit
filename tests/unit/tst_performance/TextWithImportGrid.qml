@@ -16,9 +16,13 @@
 
 import QtQuick 2.0
 
-QtObject {
-    property color gradientColor
-    property url maskSource
-    property url borderIdle
-    property url borderPressed
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 160
+    Repeater {
+        model: 16*160
+        TextWithImport {}
+    }
 }

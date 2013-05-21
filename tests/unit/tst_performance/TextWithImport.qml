@@ -15,11 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-QtObject {
-    property url backgroundLeft: ""
-    property url backgroundRight: ""
-    property url backgroundMiddle: ""
-
-    Component.onCompleted: print("TabButtonStyle deprecated")
+Text {
 }

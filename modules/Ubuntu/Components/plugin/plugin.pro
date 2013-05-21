@@ -45,6 +45,7 @@ HEADERS += plugin.h \
     selector_p.h \
     ucstyle.h \
     ucubuntuanimation.h \
+    ucfontutils.h \
     ucarguments.h \
     ucargument.h
 
@@ -69,6 +70,7 @@ SOURCES += plugin.cpp \
     selector.cpp \
     ucstyle.cpp \
     ucubuntuanimation.cpp \
+    ucfontutils.cpp \
     ucarguments.cpp \
     ucargument.cpp
 

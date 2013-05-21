@@ -46,18 +46,6 @@ private:
         return quickView->rootObject();
     }
 
-    QQuickItem *loadTest(const QString &document, const QUrl &theme = QUrl())
-    {
-        ThemeEngine::initializeEngine(quickEngine);
-        ThemeEngine::instance()->loadTheme(theme);
-        if (!ThemeEngine::instance()->error().isEmpty()) {
-            QWARN("Theme loading failed");
-            return 0;
-        }
-        return loadDocument(document);
-    }
-
-
 private Q_SLOTS:
 
     void initTestCase()
@@ -74,13 +62,9 @@ private Q_SLOTS:
         quickView->setGeometry(0,0, 240, 320);
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
-        imports << QDir(modules).absolutePath() << QDir(themes).absolutePath();
+        imports.prepend(QDir(modules).absolutePath());
+        imports.prepend(QDir(themes).absolutePath());
         quickEngine->setImportPathList(imports);
-
-        bool result = (ThemeEngine::initializeEngine(quickEngine) != 0);
-        QVERIFY(result);
-        // check if theme gets loaded
-        QCOMPARE(ThemeEngine::instance()->error(), QString(""));
     }
 
     void cleanupTestCase()
@@ -124,6 +108,22 @@ private Q_SLOTS:
         }
         if (root)
             delete root;
+    }
+
+    void benchmark_import_data()
+    {
+        QTest::addColumn<QString>("document");
+
+        QTest::newRow("importing Ubuntu.Components") << "TextWithImportGrid.qml";
+        QTest::newRow("importing Ubuntu.Components.Popups") << "TextWithImportGrid.qml";
+    }
+
+    void benchmark_import()
+    {
+        QFETCH(QString, document);
+        QBENCHMARK {
+            loadDocument(document);
+        }
     }
 
 };

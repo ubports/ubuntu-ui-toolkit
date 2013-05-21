@@ -109,12 +109,16 @@ FocusScope {
            wrapMode: Text.WordWrap;
       }
       \endcode
+
+      \qmlproperty string placeholderText
       */
     property alias placeholderText: hint.text
 
     /*!
       This property contains the text that is displayed on the screen. May differ
       from the text property value when TextEdit.RichText format is selected.
+
+      \qmlproperty string displayText
       */
     readonly property alias displayText: internal.displayText
 
@@ -184,29 +188,39 @@ FocusScope {
       This property specifies a base URL which is used to resolve relative URLs within
       the text. The default value is the url of the QML file instantiating the TextArea
       item.
+
+      \qmlproperty url baseUrl
       */
     property alias baseUrl: editor.baseUrl
 
     /*!
       Returns true if the TextArea is writable and the content of the clipboard is
       suitable for pasting into the TextArea.
+
+      \qmlproperty bool canPaste
       */
     property alias canPaste: editor.canPaste
 
     /*!
       Returns true if the TextArea is writable and there are undone operations that
       can be redone.
+
+      \qmlproperty bool canRedo
       */
     property alias canRedo: editor.canRedo
 
     /*!
       Returns true if the TextArea is writable and there are previous operations
       that can be undone.
+
+      \qmlproperty bool canUndo
       */
     property alias canUndo: editor.canUndo
 
     /*!
       The text color.
+
+      \qmlproperty color color
       */
     property alias color: editor.color
 
@@ -221,11 +235,15 @@ FocusScope {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
+
+      \qmlproperty Component cursorDelegate
       */
     property alias cursorDelegate: editor.cursorDelegate
 
     /*!
       The position of the cursor in the TextArea.
+
+      \qmlproperty int cursorPosition
       */
     property alias cursorPosition: editor.cursorPosition
 
@@ -236,6 +254,8 @@ FocusScope {
       The position and height of a custom cursorDelegate are updated to follow
       the cursorRectangle automatically when it changes. The width of the delegate
       is unaffected by changes in the cursor rectangle.
+
+      \qmlproperty rectangle cursorRectangle
       */
     property alias cursorRectangle: editor.cursorRectangle
 
@@ -245,17 +265,23 @@ FocusScope {
       This property is set and unset when the text edit gets active focus, but it
       can also be set directly (useful, for example, if a KeyProxy might forward
       keys to it).
+
+      \qmlproperty bool cursorVisible
       */
     property alias cursorVisible: editor.cursorVisible
 
     /*!
       Presents the effective horizontal alignment that can be different from the one
       specified at horizontalAlignment due to layout mirroring.
+
+      \qmlproperty enumeration effectiveHorizontalAlignment
       */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
 
     /*!
       The property holds the font used by the editing.
+
+      \qmlproperty font font
       */
     property alias font: editor.font
 
@@ -272,6 +298,8 @@ FocusScope {
         \li TextEdit.AlignHCenter
         \li TextEdit.AlignJustify
         \endlist
+
+      \qmlproperty enumeration horizontalAlignment
       */
     property alias horizontalAlignment: editor.horizontalAlignment
 
@@ -283,6 +311,8 @@ FocusScope {
       from the TextArea to edit or commit the partial text. This property can
       be used to determine when to disable events handlers that may interfere
       with the correct operation of an input method.
+
+      \qmlproperty bool inputMethodComposing
       */
     property alias inputMethodComposing: editor.inputMethodComposing
 
@@ -320,6 +350,8 @@ FocusScope {
     \list
     \li Qt.ImhExclusiveInputMask - This mask yields nonzero if any of the exclusive flags are used.
     \endlist
+
+      \qmlproperty enumeration inputMethodHints
       */
     property alias inputMethodHints: editor.inputMethodHints
 
@@ -332,11 +364,15 @@ FocusScope {
       This property can be faster than querying the length the text property
       as it doesn't require any copying or conversion of the TextArea's internal
       string data.
+
+      \qmlproperty int length
       */
     property alias length: editor.length
 
     /*!
       Returns the total number of lines in the TextArea item.
+
+      \qmlproperty int lineCount
       */
     property alias lineCount: editor.lineCount
 
@@ -347,12 +383,16 @@ FocusScope {
         \li TextEdit.SelectWords - The selection is updated with whole words.
         \endlist
       This property only applies when selectByMouse is true.
+
+      \qmlproperty enumeration mouseSelectionMode
       */
     property alias mouseSelectionMode: editor.mouseSelectionMode
 
     /*!
       Whether the TextArea should keep the selection visible when it loses active
       focus to another item in the scene. By default this is set to true;
+
+      \qmlproperty enumeration persistentSelection
       */
     property alias persistentSelection: editor.persistentSelection
 
@@ -361,6 +401,8 @@ FocusScope {
       to true the text cannot be edited by user interaction.
 
       By default this property is false.
+
+      \qmlproperty bool readOnly
       */
     property alias readOnly: editor.readOnly
 
@@ -376,21 +418,29 @@ FocusScope {
       platform and do not require advanced features such as transformation of the
       text. Using such features in combination with the NativeRendering render type
       will lend poor and sometimes pixelated results.
+
+      \qmlproperty enumeration renderType
       */
     property alias renderType: editor.renderType
 
     /*!
       This read-only property provides the text currently selected in the text edit.
+
+      \qmlproperty string selectedText
       */
     property alias selectedText: editor.selectedText
 
     /*!
       The selected text color, used in selections.
+
+      \qmlproperty color selectedTextColor
       */
     property alias selectedTextColor: editor.selectedTextColor
 
     /*!
       The text highlight color, used behind selections.
+
+      \qmlproperty color selectionColor
       */
     property alias selectionColor: editor.selectionColor
 
@@ -401,6 +451,8 @@ FocusScope {
       selectAll(), or selectWord().
 
       See also selectionStart, cursorPosition, and selectedText.
+
+      \qmlproperty int selectionEnd
       */
     property alias selectionEnd: editor.selectionEnd
 
@@ -411,6 +463,8 @@ FocusScope {
       selectAll(), or selectWord().
 
       See also selectionEnd, cursorPosition, and selectedText.
+
+      \qmlproperty int selectionStart
       */
     property alias selectionStart: editor.selectionStart
 
@@ -418,6 +472,8 @@ FocusScope {
       The text to display. If the text format is AutoText the text edit will
       automatically determine whether the text should be treated as rich text.
       This determination is made using Qt::mightBeRichText().
+
+      \qmlproperty string text
       */
     property alias text: editor.text
 
@@ -431,6 +487,8 @@ FocusScope {
       The default is TextEdit.PlainText. If the text format is TextEdit.AutoText
       the text edit will automatically determine whether the text should be treated
       as rich text. This determination is made using Qt::mightBeRichText().
+
+      \qmlproperty enumeration textFormat
       */
     property alias textFormat: editor.textFormat
 
@@ -446,6 +504,8 @@ FocusScope {
         \li TextEdit.AlignBottom
         \li TextEdit.AlignVCenter
         \endlist
+
+        \qmlproperty enumeration verticalAlignment
       */
     property alias verticalAlignment: editor.verticalAlignment
 
@@ -463,6 +523,8 @@ FocusScope {
             it will occur at the appropriate point on the line, even in the middle of a word.
         \endlist
        The default is TextEdit.Wrap
+
+       \qmlproperty enumeration wrapMode
       */
     property alias wrapMode:editor.wrapMode
 
