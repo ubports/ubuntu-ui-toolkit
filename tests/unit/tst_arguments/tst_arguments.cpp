@@ -58,7 +58,6 @@ private:
             m_arguments.append(data);
         }
 
-        // FIXME: real binary name
         char* binaryName = (char*)"binary";
         m_arguments.prepend(binaryName);
 
