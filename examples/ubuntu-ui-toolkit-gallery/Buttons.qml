@@ -25,6 +25,7 @@ Template {
             title: i18n.tr("Standard")
 
             Button {
+                objectName: "button_text"
                 text: i18n.tr("Call")
             }
         }
@@ -33,6 +34,7 @@ Template {
             title: i18n.tr("Color")
 
             Button {
+                objectName: "button_color"
                 text: i18n.tr("Call")
                 color: "#5da357"
             }
@@ -42,10 +44,12 @@ Template {
             title: i18n.tr("Icon")
 
             Button {
+                objectName: "button_iconsource"
                 iconSource: "call_icon.png"
             }
 
             Button {
+                objectName: "button_iconsource_text"
                 width: units.gu(11)
                 text: i18n.tr("Call")
                 iconSource: "call_icon.png"
@@ -56,6 +60,7 @@ Template {
             title: i18n.tr("Disabled")
 
             Button {
+                objectName: "button_text_disabled"
                 text: i18n.tr("Call")
                 enabled: false
             }

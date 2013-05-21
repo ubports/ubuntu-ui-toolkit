@@ -28,14 +28,17 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
+                objectName: "ubuntushape_color_hex"
                 color: "#5da357"
             }
 
             UbuntuShape {
+                objectName: "ubuntushape_color_lightblue"
                 color: "lightblue"
             }
 
             UbuntuShape {
+                objectName: "ubuntushape_color_darkgray"
                 color: "darkgray"
             }
         }
@@ -46,6 +49,8 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
+                objectName: "ubuntushape_image"
+
                 image: Image {
                     source: "map_icon.png"
                     fillMode: Image.PreserveAspectCrop
@@ -59,6 +64,8 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
+                objectName: "ubuntushape_radius_small"
+
                 color: "#dd4814"
                 radius: "small"
 
@@ -71,6 +78,7 @@ Template {
             }
 
             UbuntuShape {
+                objectName: "ubuntushape_radius_medium"
                 color: "#dd4814"
                 radius: "medium"
 
@@ -89,6 +97,7 @@ Template {
             height: units.gu(20)
 
             UbuntuShape {
+                objectName: "ubuntushape_sizes_15_6"
                 color: "#dd4814"
                 width: units.gu(15)
                 height: units.gu(6)
@@ -96,6 +105,7 @@ Template {
             }
 
             UbuntuShape {
+                objectName: "ubuntushape_sizes_10_14"
                 color: "#dd4814"
                 width: units.gu(10)
                 height: units.gu(14)
