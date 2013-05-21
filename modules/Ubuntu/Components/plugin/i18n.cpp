@@ -33,7 +33,7 @@ namespace C {
  * \brief i18n is a context property that provides internationalization support.
  *
  * i18n cannot be instantiated, and is already available as a context property.
- * It is based on gettext, and thus the standard gettext tools can be used for translating
+ * It is based on \l {https://www.gnu.org/software/gettext/} {gettext}, and thus the standard gettext tools can be used for translating
  * a project. Example:
  * \qml
  * import QtQuick 2.0
