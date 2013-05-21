@@ -72,6 +72,7 @@ QString UbuntuI18n::domain() {
  * \qmlproperty string i18n::language
  * The language that is used for the translation. The default value is the value of
  * environment variable LANGUAGE at the time when the QML application is started.
+ * The value can be a list, for example "de_DE eo en".
  */
 QString UbuntuI18n::language() {
     return m_language;
