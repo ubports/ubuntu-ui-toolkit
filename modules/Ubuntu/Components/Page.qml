@@ -126,8 +126,16 @@ PageTreeNode {
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        function isFlickable(object) {
-            return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
+        function isVerticalFlickable(object) {
+            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
+                var direction = object.flickableDirection;
+                if ( (direction === Flickable.AutoFlickDirection && (object.contentHeight !== object.height))
+                        || direction === Flickable.VerticalDirection
+                        || direction === Flickable.HorizontalAndVerticalFlick) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /*!
@@ -136,7 +144,7 @@ PageTreeNode {
         function getFlickableChild(item) {
             if (item && item.hasOwnProperty("children")) {
                 for (var i=0; i < item.children.length; i++) {
-                    if (internal.isFlickable(item.children[i])) return item.children[i];
+                    if (internal.isVerticalFlickable(item.children[i])) return item.children[i];
                 }
             }
             return null;
