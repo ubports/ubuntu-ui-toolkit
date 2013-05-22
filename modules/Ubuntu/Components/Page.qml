@@ -130,7 +130,7 @@ PageTreeNode {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
                 var direction = object.flickableDirection;
                 if ( (direction === Flickable.AutoFlickDirection && (object.contentHeight !== object.height))
-                        || direction === Flickable.VerticalDirection
+                        || direction === Flickable.VerticalFlick
                         || direction === Flickable.HorizontalAndVerticalFlick) {
                     return true;
                 }
