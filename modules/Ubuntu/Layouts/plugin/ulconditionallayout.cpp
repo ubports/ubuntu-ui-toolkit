@@ -22,14 +22,18 @@
 
 #include "ulconditionallayout.h"
 #include "ulconditionallayout_p.h"
+#include "ullayouts.h"
+#include "ullayouts_p.h"
 
 ULConditionalLayoutPrivate::ULConditionalLayoutPrivate(ULConditionalLayout *qq) :
-    q_ptr(qq)
+    q_ptr(qq),
+    when(0),
+    component(0)
 {
 }
 
 ULConditionalLayout::ULConditionalLayout(QObject *parent) :
-    QQmlComponent(parent),
+    QObject(parent),
     d_ptr(new ULConditionalLayoutPrivate(this))
 {
 }
@@ -46,18 +50,45 @@ ULConditionalLayoutAttached * ULConditionalLayout::qmlAttachedProperties(QObject
 
 QString ULConditionalLayout::name() const
 {
-    return QString();
+    Q_D(const ULConditionalLayout);
+    return d->name;
 }
 void ULConditionalLayout::setName(const QString &name)
 {
-
+    Q_D(ULConditionalLayout);
+    if (name.isEmpty() || (name == d->name)) {
+        return;
+    }
+    d->name = name;
 }
 
 QQmlBinding *ULConditionalLayout::when() const
 {
-    return 0;
+    Q_D(const ULConditionalLayout);
+    return d->when;
 }
 void ULConditionalLayout::setWhen(QQmlBinding *when)
 {
+    Q_D(ULConditionalLayout);
+    if (!when || (when == d->when)) {
+        return;
+    }
+    d->when = when;
 
+    // re-layout
+    ULLayouts *layouts = qobject_cast<ULLayouts*>(parent());
+    if (layouts) {
+        layouts->d_ptr->reLayout();
+    }
+}
+
+QQmlComponent *ULConditionalLayout::layout() const
+{
+    Q_D(const ULConditionalLayout);
+    return d->component;
+}
+void ULConditionalLayout::setLayout(QQmlComponent *component)
+{
+    Q_D(ULConditionalLayout);
+    d->component = component;
 }

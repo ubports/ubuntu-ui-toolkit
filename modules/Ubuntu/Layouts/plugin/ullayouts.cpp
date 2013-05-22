@@ -20,9 +20,46 @@
 #include "ullayouts_p.h"
 
 ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq) :
-    q_ptr(qq)
+    q_ptr(qq),
+    currentLayout(0),
+    currentLayoutIndex(-1)
 {
 }
+
+void ULLayoutsPrivate::append_layout(QQmlListProperty<ULConditionalLayout> *list, ULConditionalLayout *layout)
+{
+    ULLayouts *_this = static_cast<ULLayouts*>(list->object);
+    if (layout) {
+        layout->setParent(_this);
+//        layout->setLayoutManager(_this);
+        _this->d_ptr->layouts.append(layout);
+    }
+}
+
+int ULLayoutsPrivate::count_layouts(QQmlListProperty<ULConditionalLayout> *list)
+{
+    ULLayouts *_this = static_cast<ULLayouts*>(list->object);
+    return _this->d_ptr->layouts.count();
+}
+
+ULConditionalLayout *ULLayoutsPrivate::at_layout(QQmlListProperty<ULConditionalLayout> *list, int index)
+{
+    ULLayouts *_this = static_cast<ULLayouts*>(list->object);
+    return _this->d_ptr->layouts.at(index);
+}
+
+void ULLayoutsPrivate::clear_layouts(QQmlListProperty<ULConditionalLayout> *list)
+{
+    ULLayouts *_this = static_cast<ULLayouts*>(list->object);
+    //FIXME: reset LayoutManager property when removing
+    _this->d_ptr->layouts.clear();
+}
+
+void ULLayoutsPrivate::reLayout()
+{
+
+}
+
 
 ULLayouts::ULLayouts(QQuickItem *parent):
     QQuickItem(parent),
@@ -41,10 +78,22 @@ ULLayouts::~ULLayouts()
 
 QString ULLayouts::currentLayout() const
 {
-    return QString();
+    Q_D(const ULLayouts);
+    return d->currentLayoutIndex >= 0 ? d->layouts[d->currentLayoutIndex]->name() : QString();
+}
+
+QList<ULConditionalLayout*> ULLayouts::layoutList()
+{
+    Q_D(ULLayouts);
+    return d->layouts;
 }
 
 QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
 {
-    return QQmlListProperty<ULConditionalLayout>();
+    Q_D(ULLayouts);
+    return QQmlListProperty<ULConditionalLayout>(this, &(d->layouts),
+                                                 &ULLayoutsPrivate::append_layout,
+                                                 &ULLayoutsPrivate::count_layouts,
+                                                 &ULLayoutsPrivate::at_layout,
+                                                 &ULLayoutsPrivate::clear_layouts);
 }

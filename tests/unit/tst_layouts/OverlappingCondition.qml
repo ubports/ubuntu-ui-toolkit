@@ -38,42 +38,12 @@ Item {
             },
             ConditionalLayout {
                 name: "medium"
-                when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
+                when: layouts.width >= units.gu(40) && layouts.width <= units.gu(60)
                 Flow {
-                    anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
-                }
-            },
-            ConditionalLayout {
-                name: "large"
-                when: layouts.width > units.gu(60)
-                Row {
                     anchors.fill: parent
                     ConditionalLayout.itemNames: ["item1", "item2", "item3"]
                 }
             }
         ]
-
-        // default layout
-        Label {
-            objectName: "item1"
-            id: label1
-            ConditionalLayout.name: "item1"
-            text: "item1"
-        }
-        Label {
-            objectName: "item2"
-            id: label2
-            anchors.bottom: label1.bottom
-            ConditionalLayout.name: "item1"
-            text: "item2"
-        }
-        Label {
-            objectName: "item3"
-            id: label3
-            anchors.bottom: label2.bottom
-            ConditionalLayout.name: "item1"
-            text: "item3"
-        }
     }
 }

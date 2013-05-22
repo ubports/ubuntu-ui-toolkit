@@ -38,11 +38,15 @@ public:
 Q_SIGNALS:
     void currentLayoutChanged();
 
-private:
+public:
     QString currentLayout() const;
+    QList<ULConditionalLayout*> layoutList();
+
+private:
     QQmlListProperty<ULConditionalLayout> layouts();
 
 private:
+    friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)
     QScopedPointer<ULLayoutsPrivate> d_ptr;
 };

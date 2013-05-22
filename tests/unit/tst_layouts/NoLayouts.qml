@@ -12,23 +12,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
-#ifndef ULCONDITIONALLAYOUT_P_H
-#define ULCONDITIONALLAYOUT_P_H
 
-#include "ulconditionallayout.h"
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Layouts 0.1
 
-class ULConditionalLayoutPrivate {
-    Q_DECLARE_PUBLIC(ULConditionalLayout)
-public:
-    ULConditionalLayoutPrivate(ULConditionalLayout *qq);
+Item {
+    id: root
+    width: units.gu(40)
+    height: units.gu(30)
 
-    ULConditionalLayout *q_ptr;
-    QQmlBinding *when;
-    QQmlComponent *component;
-    QString name;
-};
-
-#endif // ULCONDITIONALLAYOUT_P_H
+    Layouts {
+        objectName: "layouts"
+        id: layouts
+        anchors.fill: parent
+    }
+}

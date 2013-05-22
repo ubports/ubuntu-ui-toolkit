@@ -18,28 +18,34 @@
 
 #include "ulconditionallayout.h"
 #include "ulconditionallayout_p.h"
+#include <QDebug>
 
 ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
     QObject(parent)
 {
-
 }
 
 QStringList ULConditionalLayoutAttached::itemNames() const
 {
-    return QStringList();
+    return m_itemNames;
 }
 void ULConditionalLayoutAttached::setItemNames(const QStringList &names)
 {
-
+    if (names == m_itemNames)
+        return;
+    m_itemNames = names;
+    Q_EMIT itemNamesChanged();
 }
 
 QString ULConditionalLayoutAttached::name() const
 {
-    return QString();
+    return m_name;
 }
 void ULConditionalLayoutAttached::setName(const QString &name)
 {
-
+    if (name == m_name)
+        return;
+    m_name = name;
+    Q_EMIT nameChanged();
 }
 

@@ -27,6 +27,17 @@ public:
     ULLayoutsPrivate(ULLayouts *qq);
 
     ULLayouts *q_ptr;
+    QList<ULConditionalLayout*> layouts;
+    QQuickItem *currentLayout;
+    int currentLayoutIndex;
+
+    // callbacks for the "layouts" QQmlListProperty of LayoutManager
+    static void append_layout(QQmlListProperty<ULConditionalLayout>*, ULConditionalLayout*);
+    static int count_layouts(QQmlListProperty<ULConditionalLayout>*);
+    static ULConditionalLayout *at_layout(QQmlListProperty<ULConditionalLayout>*, int);
+    static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
+
+    void reLayout();
 };
 
 #endif // ULLAYOUTS_P_H

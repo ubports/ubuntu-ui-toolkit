@@ -28,30 +28,9 @@ Item {
         id: layouts
         anchors.fill: parent
         layouts: [
-            ConditionalLayout {
-                name: "small"
-                when: layouts.width <= units.gu(40)
-                Column {
-                    anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
-                }
-            },
-            ConditionalLayout {
-                name: "medium"
-                when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
-                Flow {
-                    anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
-                }
-            },
-            ConditionalLayout {
-                name: "large"
-                when: layouts.width > units.gu(60)
-                Row {
-                    anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
-                }
-            }
+            SmallLayout{},
+            MediumLayout {},
+            LargeLayout {}
         ]
 
         // default layout

@@ -40,29 +40,35 @@ public: // getter/setter
     void setItemNames(const QStringList &names);
     QString name() const;
     void setName(const QString &name);
+private:
+    QString m_name;
+    QStringList m_itemNames;
 };
 
 class QQmlBinding;
 class ULConditionalLayoutPrivate;
-class ULConditionalLayout : public QQmlComponent
+class ULConditionalLayout : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(ULConditionalLayout)
 
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QQmlBinding* when READ when WRITE setWhen)
-
+    Q_PROPERTY(QQmlComponent *layout READ layout WRITE setLayout)
+    Q_CLASSINFO("DefaultProperty", "layout")
 public:
     explicit ULConditionalLayout(QObject *parent = 0);
     ~ULConditionalLayout();
 
     static ULConditionalLayoutAttached * qmlAttachedProperties(QObject *owner);
 
-private:
+// getter/setter
     QString name() const;
     void setName(const QString &name);
     QQmlBinding *when() const;
     void setWhen(QQmlBinding *when);
+    QQmlComponent *layout() const;
+    void setLayout(QQmlComponent *component);
 
 private:
     Q_DECLARE_PRIVATE(ULConditionalLayout)
