@@ -40,9 +40,9 @@ function execute_test_cmd {
   if [ $RESULT -eq 134 ]; then
    return 2
   fi
-  if [ $RESULT -eq 0 ]; then
-    ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
-  fi
+#  if [ $RESULT -eq 0 ]; then
+#    ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
+#  fi
   return $RESULT
 }
 
