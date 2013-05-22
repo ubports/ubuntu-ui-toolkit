@@ -57,8 +57,6 @@ Item
     property string title
     property Component contents
     property Flickable flickable
-modules/Ubuntu/Components/HudIntegration.qml
-HUD
 modules/Ubuntu/Components/Icon.qml
 Item
     property string name
@@ -74,7 +72,6 @@ PageTreeNode
     default property alias contentsItem
     property ToolbarActions tools
     onToolsChanged
-    property QtObject __hud
 modules/Ubuntu/Components/ModelSectionCounter.qml
 Object
     property var view
