@@ -27,7 +27,7 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu
     \brief CheckBox is a component with two states, checked or unchecked. It can
     be used to set boolean options. The behavior is the same as \l Switch, the
-    only difference is the graphical style.
+    only difference is the graphical style. See http://design.ubuntu.com/apps/building-blocks/toggles.
 
     \b{This component is under heavy development.}
 
