@@ -32,8 +32,6 @@
 #include <private/qqmlcomponentattached_p.h>
 
 const char *itemProperty = "item";
-const char *styleProperty = "itemStyle";
-
 
 /*!
   \qmltype ItemStyle

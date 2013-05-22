@@ -1,5 +1,4 @@
 /*
-
  * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,24 +16,13 @@
 
 import QtQuick 2.0
 
-Item {
-    /*!
-      Cursor color
-      */
-    property color color
-
-    /*!
-      Properties driving cursor blinking. If either of these values are 0, no
-      blinking is provided.
-      */
-    property bool blinking
-    property int blinkTimeoutShown
-    property int blinkTimeoutHidden
-
-    /*!
-      Selection mode pin styles
-      */
-    property var pinSize
-    property var pinSensingOffset
-    property color pinColor
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 160
+    Repeater {
+        model: 16*160
+        TextWithImportPopups {}
+    }
 }

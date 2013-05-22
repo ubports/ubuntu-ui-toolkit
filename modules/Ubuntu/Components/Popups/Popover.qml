@@ -95,6 +95,7 @@ PopupBase {
     id: popover
 
     /*!
+      \qmlproperty list<Object> container
       Content will be put inside the foreround of the Popover.
     */
     default property alias container: containerItem.data
@@ -152,7 +153,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin, units.dp(2));
             pos.auto();
         }
     }

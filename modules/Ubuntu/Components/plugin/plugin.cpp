@@ -41,6 +41,7 @@
 #include "bottombarvisibilitycommunicator.h"
 #include "ucstyle.h"
 #include "ucubuntuanimation.h"
+#include "ucfontutils.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -96,12 +97,18 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      &unitsChangeListener, SLOT(updateContextProperty()));
 
+    // register FontUtils
+    context->setContextProperty("FontUtils", &UCFontUtils::instance());
+    static ContextPropertyChangeListener fontUtilsListener(context, "FontUtils");
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
+                     &fontUtilsListener, SLOT(updateContextProperty()));
+
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
     // register gicon provider
-     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
+    engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(

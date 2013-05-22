@@ -33,13 +33,10 @@ internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 Icon 0.1 Icon.qml
 OrientationHelper 0.1 OrientationHelper.qml
-FontUtils 0.1 fontUtils.js
 MathUtils 0.1 mathUtils.js
-ComponentUtils 0.1 componentUtils.js
 SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
-internal HudIntegration HudIntegration.qml
