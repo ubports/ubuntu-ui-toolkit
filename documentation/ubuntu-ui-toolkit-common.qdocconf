@@ -1,5 +1,6 @@
 project = UbuntuUserInterfaceToolkit
 url = http://developer.ubuntu.com/api/ubuntu-12.10/qml/mobile/
+macro.design = "\\l {http://design.ubuntu.com/apps/building-blocks/"
 description = Ubuntu User Interface Toolkit Documentation
 sourcedirs = ../modules/Ubuntu/Components
 headerdirs = ../modules/Ubuntu/Components/plugin
