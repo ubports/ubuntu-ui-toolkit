@@ -64,7 +64,13 @@ PageTreeNode {
 
     /*!
       \internal
-      If this Tab is active, the parentNode must be Tabs.
     */
-    onTitleChanged: if (active) parentNode.modelChanged()
+    onTitleChanged: {
+        if (active) {
+            // ensure the parent node is an instance of Tabs
+            if (parentNode.hasOwnProperty("selectedTab")) {
+                parentNode.modelChanged();
+            }
+        }
+    }
 }
