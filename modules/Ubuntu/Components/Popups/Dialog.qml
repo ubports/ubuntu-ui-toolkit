@@ -31,7 +31,7 @@ import "internalPopupUtils.js" as InternalPopupUtils
     \brief The Dialog caters for cases in which the application requires the user to determine
         between optional actions. The Dialog will interrupt the user flow and lock the view
         for further interaction before the user has selected a desired action.
-        It can only be closed by selecting an optional action confirming or cancelling the operation.
+        It can only be closed by selecting an optional action confirming or cancelling the operation. \design dialog}{See also the Design Guidelines on Dialogs}.
 
     Example:
     \qml

@@ -20,7 +20,7 @@ import QtQuick 2.0
     \qmltype ToolbarActions
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief List of \l Action items with additional properties to control a toolbar.
+    \brief List of \l Action items with additional properties to control a toolbar. \design toolbar}{See also the Design Guidelines on Toolbars}.
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarActions consists of a set of

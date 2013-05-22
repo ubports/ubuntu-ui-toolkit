@@ -27,7 +27,7 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu
     \brief The Tabs class provides an environment where multible \l Tab
     children can be added, and the user is presented with a tab
-    bar with tab buttons to select different tab pages.
+    bar with tab buttons to select different tab pages. \design tabs}{See also the Design Guidelines on Tabs}.
 
     Tabs must be placed inside a \l MainView so that it will automatically
     have a header that shows the tabs that can be selected, and the toolbar

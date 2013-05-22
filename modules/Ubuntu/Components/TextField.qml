@@ -27,7 +27,7 @@ import "." 0.1 as Theming
     \ingroup ubuntu
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode
-    to an appropriate value enables TextField to be used as password input field.
+    to an appropriate value enables TextField to be used as password input field. \design text-field}{See also the Design Guidelines on the Text Field}.
 
     \b{This component is under heavy development.}
 

@@ -29,7 +29,7 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu-popups
     \brief A popover allows an application to present additional content without changing the view.
         A popover has a fixed width and automatic height, depending on is contents.
-        It can be closed by clicking anywhere outside of the popover area.
+        It can be closed by clicking anywhere outside of the popover area. \design popover}{See also the Design Guidelines on Popovers}.
 
     Example:
     \qml
