@@ -170,7 +170,6 @@ Panel {
             Loader {
                 sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
                 anchors.verticalCenter: toolButtonsContainer.verticalCenter
-                property Action action: modelData
                 onStatusChanged: {
                     if (item && status == Loader.Ready) {
                         if (item.hasOwnProperty("action")) item.action = modelData
