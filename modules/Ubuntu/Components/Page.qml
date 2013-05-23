@@ -96,8 +96,8 @@ PageTreeNode {
 
     Item {
         id: internal
-        property Header header: page.propagated && page.propagated.header ? page.propagated.header : null
-        property Toolbar toolbar: page.propagated && page.propagated.toolbar ? page.propagated.toolbar : null
+        property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
+        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
 
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()
@@ -126,8 +126,16 @@ PageTreeNode {
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        function isFlickable(object) {
-            return object && object.hasOwnProperty("flicking") && object.hasOwnProperty("flickableDirection");
+        function isVerticalFlickable(object) {
+            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
+                var direction = object.flickableDirection;
+                if ( (direction === Flickable.AutoFlickDirection && (object.contentHeight !== object.height))
+                        || direction === Flickable.VerticalFlick
+                        || direction === Flickable.HorizontalAndVerticalFlick) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /*!
@@ -136,7 +144,7 @@ PageTreeNode {
         function getFlickableChild(item) {
             if (item && item.hasOwnProperty("children")) {
                 for (var i=0; i < item.children.length; i++) {
-                    if (internal.isFlickable(item.children[i])) return item.children[i];
+                    if (internal.isVerticalFlickable(item.children[i])) return item.children[i];
                 }
             }
             return null;

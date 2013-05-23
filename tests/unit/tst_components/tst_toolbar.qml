@@ -42,34 +42,34 @@ Item {
 
         function initTestCase() {
             compare(page.tools, toolbarActions, "Page tools are set initially");
-            compare(page.propagated, mainView.propagated, "propagated property is propagated from mainView to page")
-            compare(mainView.propagated.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
-            compare(mainView.propagated.toolbar.tools.opened, false, "Toolbar is closed initially");
-            compare(mainView.propagated.toolbar.tools.locked, false, "Toolbar is initially not locked");
+            compare(page.__propagated, mainView.__propagated, "propagated property is propagated from mainView to page")
+            compare(mainView.__propagated.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
+            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar is closed initially");
+            compare(mainView.__propagated.toolbar.tools.locked, false, "Toolbar is initially not locked");
         }
 
         function test_opened() {
-            compare(mainView.propagated.toolbar.tools.opened, false, "Toolbar initially closed");
-            mainView.propagated.toolbar.opened = true;
-            compare(mainView.propagated.toolbar.opened, true, "Toolbar can be made opened");
-            mainView.propagated.toolbar.opened = false;
-            compare(mainView.propagated.toolbar.opened, false, "Toolbar can be made closed");
+            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar initially closed");
+            mainView.__propagated.toolbar.opened = true;
+            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
+            mainView.__propagated.toolbar.opened = false;
+            compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed");
             page.tools.opened = true;
-            compare(mainView.propagated.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
+            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
             page.tools.opened = false;
-            compare(mainView.propagated.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
+            compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
         }
 
         function test_locked() {
-            compare(mainView.propagated.toolbar.tools.locked, false, "Toolbar initially not locked");
-            mainView.propagated.toolbar.locked = true;
-            compare(mainView.propagated.toolbar.locked, true, "Toolbar can be locked");
-            mainView.propagated.toolbar.locked = false;
-            compare(mainView.propagated.toolbar.locked, false, "Toolbar can be unlocked");
+            compare(mainView.__propagated.toolbar.tools.locked, false, "Toolbar initially not locked");
+            mainView.__propagated.toolbar.locked = true;
+            compare(mainView.__propagated.toolbar.locked, true, "Toolbar can be locked");
+            mainView.__propagated.toolbar.locked = false;
+            compare(mainView.__propagated.toolbar.locked, false, "Toolbar can be unlocked");
             page.tools.locked = true;
-            compare(mainView.propagated.toolbar.locked, true, "Toolbar can be locked by setting page.tools.locked");
+            compare(mainView.__propagated.toolbar.locked, true, "Toolbar can be locked by setting page.tools.locked");
             page.tools.locked = false;
-            compare(mainView.propagated.toolbar.locked, false, "Toolbar can be unlocked by setting page.tools.locked to false");
+            compare(mainView.__propagated.toolbar.locked, false, "Toolbar can be unlocked by setting page.tools.locked to false");
         }
     }
 }

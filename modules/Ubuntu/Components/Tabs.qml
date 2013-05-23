@@ -201,9 +201,12 @@ PageTreeNode {
     onParentNodeChanged: internal.updateHeader()
     Component.onCompleted: internal.updateHeader()
 
+    /*! \internal */
+    onModelChanged: if (tabs.active && internal.header) internal.header.show()
+
     QtObject {
         id: internal
-        property Header header: tabs.propagated ? tabs.propagated.header : null
+        property Header header: tabs.__propagated ? tabs.__propagated.header : null
         onHeaderChanged: internal.updateHeader()
 
         function updateHeader() {
