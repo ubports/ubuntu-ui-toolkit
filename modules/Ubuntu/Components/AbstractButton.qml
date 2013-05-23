@@ -31,11 +31,21 @@ Item {
     id: button
 
     /*!
+      If an action is specified, the button's clicked signal will trigger the action.
+      Subclasses of AbstractButton can use other properties of action (for example
+      the text and iconSource).
+     */
+    property Action action
+
+    /*!
        \preliminary
        This handler is called when there is a mouse click on the button
-       and the button is not disabled.
+       and the button is not disabled. If \l action is defined,
+       the action will be triggered.
     */
     signal clicked()
+
+    onClicked: if (action) action.triggered(button)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
@@ -57,7 +67,6 @@ Item {
       True if the mouse cursor hovers over the button's mouse area.
      */
     property bool hovered: __acceptEvents && mouseArea.containsMouse
-
 
     /*! \internal
       Disable or enable signal emition by default.
