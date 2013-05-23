@@ -20,4 +20,6 @@ QDOC_BIN=/usr/lib/*/qt5/bin/qdoc
 
 sed "s|documentation/||" < $QDOCCONF_FILE > $QDOCCONF_FILE.tmp
 $QDOC_BIN $QDOCCONF_FILE.tmp
+sed -r -i 's@("main-content">)@\1<ul>@g' html/*.html
+sed -r -i 's@(<div class="toc">)@</ul>\1@g' html/*.html
 rm $QDOCCONF_FILE.tmp
