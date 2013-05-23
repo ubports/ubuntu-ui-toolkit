@@ -45,6 +45,10 @@ Item {
     */
     signal clicked()
 
+    /*!
+      If \l action was set, action.triggered() is automatically called with
+      the AbstractButton as parameter.
+     */
     onClicked: if (action) action.triggered(button)
 
     Keys.onEnterPressed: clicked()

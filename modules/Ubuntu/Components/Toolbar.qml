@@ -125,6 +125,7 @@ Panel {
         Item {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
+            property Action action
             property string text: action && action.text ? action.text : ""
             property url iconSource: action && action.iconSource ? action.iconSource : ""
             signal clicked()
@@ -147,9 +148,7 @@ Panel {
         }
         onStatusChanged: {
             if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(backButton.itemTriggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(backButton.itemTriggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(backButton.itemTtriggered);
+                if (item.hasOwnProperty("action")) item.action = backButton.action;
             }
         }
         signal itemTriggered()
@@ -170,8 +169,13 @@ Panel {
             model: internal.visibleTools ? internal.visibleTools.children : 0
             Loader {
                 sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                property Action action: modelData
                 anchors.verticalCenter: toolButtonsContainer.verticalCenter
+                property Action action: modelData
+                onStatusChanged: {
+                    if (item && status == Loader.Ready) {
+                        if (item.hasOwnProperty("action")) item.action = modelData
+                    }
+                }
             }
         }
     }
