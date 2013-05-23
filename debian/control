@@ -5,6 +5,7 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
                libgles2-mesa-dev,
                libglib2.0-dev,
+               python,
                libqt5qml-graphicaleffects | libqt5graphicaleffects5,
                qt5-default,
                qtbase5-dev,
@@ -108,7 +109,7 @@ Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
 
 Package: qmlrunner
-Architecture: any
+Architecture: amd64 i386 armhf
 Depends: qmlscene
 Conflicts: qtchooser
 Description: Simple QML Scene symlink provider
