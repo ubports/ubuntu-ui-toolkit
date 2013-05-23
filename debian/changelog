@@ -1,3 +1,59 @@
+ubuntu-ui-toolkit (0.1.46daily13.05.23.2ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zoltán Balogh ]
+  * Offer symlinks for qmlscene via 'qmlrunner' package. See package
+    description for usage instructions. (LP: #1155634). (LP: #1155634)
+
+  [ Zsombor Egri ]
+  * Fix for crash in theme engine when loading application specific
+    theme file in an app having a Popover instantiated. (LP: #1175394)
+  * [theming] Removing deprecated functionality.
+  * [theming] Changing stateful libraries to stateless to decrease time
+    spent each time Ubuntu.Components module is imported. (LP: #1170638)
+  * [theming] FontUtils converted from stateful JS library to native
+    module due to its dependency to "units" context property.
+
+  [ Michael Zanetti ]
+  * enable horizontalAlignment for TextField and make the hint text
+    follow its properties .
+
+  [ Kaleo ]
+  * New UbuntuAnimation durations and easing constants. New
+    UbuntuNumberAnimation.
+  * Document type for alias properties of the following classes: -
+    TextArea - TextField - ListItems.Empty - ListItems.SingleValue -
+    Popups.Dialog - Popups.Popover - Popups.SheetBase. (LP: #1169919)
+
+  [ Timo Jyrinki ]
+  * Depend on dpkg-dev from ubuntu-ui-toolkit-autopilot, as long as
+    dpkg-architecture is used.
+  * Offer symlinks for qmlscene via 'qmlrunner' package. See package
+    description for usage instructions. (LP: #1155634). (LP: #1155634)
+  * qmlrunner for archs amd64 i386 armhf instead of any.
+  * Add python dependency and use the python command explicitly to fix
+    FTBFS. (LP: #1183198). (LP: #1183198)
+
+  [ tpeeters ]
+  * fix error in documentation of Action.
+  * Combine the propagated properties of PageTreeNode in a single
+    property propagated that contains all the other properties.
+  * documentation fix.
+  * Remove preliminary and deprecated HUD integration. Internal __hud
+    property removed from MainView. (LP: #1129966)
+  * Generate documentation for i18n. (LP: #1078631)
+  * Add a test program that shows panels on different edges of the
+    application view to tests/resources/toolbar. Like the other test
+    programs in resources, this will come in handy for testing changes
+    to the components.
+
+  [ Christian Dywan ]
+  * Introduce QML API check; if API changes, check components.api.new.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 508 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 23 May 2013 10:56:50 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.05.14ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
