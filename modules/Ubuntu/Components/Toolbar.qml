@@ -125,7 +125,8 @@ Panel {
         Item {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            property Action action
+            property Action action: null
+            onActionChanged: print("action = "+action+ " text = "+action.text)
             property string text: action && action.text ? action.text : ""
             property url iconSource: action && action.iconSource ? action.iconSource : ""
             signal clicked()
@@ -134,21 +135,22 @@ Panel {
             visible: action && action.visible
             width: units.gu(5)
             height: toolbar.height
+            Component.onCompleted: print("completed toolbutton for "+action)
         }
     }
 
     Loader {
         id: backButton
-        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
+        property Action backAction: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
+        sourceComponent: backAction ? backAction.itemHint ? backAction.itemHint : toolButtonComponent : null
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
         onStatusChanged: {
-            if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("action")) item.action = backButton.action;
+            if (item && status == Loader.Ready) {
+                if (item.hasOwnProperty("action")) item.action = backAction;
             }
         }
         signal itemTriggered()
