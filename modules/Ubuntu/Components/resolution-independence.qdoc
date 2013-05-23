@@ -17,7 +17,6 @@
 /*!
     \page resolution-independence.html resolution-independence
     \title Resolution Independence
-    \contentspage {Ubuntu User Interface Toolkit}
 
     The objective of resolution independence is to make it easy for graphical
     user interfaces in Ubuntu to scale to all the form factors that Ubuntu
