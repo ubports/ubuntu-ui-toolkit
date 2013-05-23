@@ -73,13 +73,11 @@ AbstractButton {
     implicitHeight: units.gu(4)
 
     /*!
-       \preliminary
        The foreground color of the button in idle state.
     */
     property color color: "transparent"
 
     /*!
-       \preliminary
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
        If \l action is set, the default iconSource is that of the action.
@@ -87,7 +85,6 @@ AbstractButton {
     property url iconSource: action ? action.iconSource : ""
 
     /*!
-       \preliminary
        The text to display in the button. If an icon was defined,
        the text will be shown next to the icon, otherwise it will
        be centered. Leave blank for an icon-only button.
@@ -96,8 +93,6 @@ AbstractButton {
     property string text: action ? action.text : undefined
 
     /*!
-       \preliminary
-
        The position of the icon relative to the text. Options
        are "left" and "right". The default value is "left".
 

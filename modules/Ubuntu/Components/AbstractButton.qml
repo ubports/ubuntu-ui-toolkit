@@ -38,7 +38,6 @@ Item {
     property Action action
 
     /*!
-       \preliminary
        This handler is called when there is a mouse click on the button
        and the button is not disabled. If \l action is defined,
        the action will be triggered.
@@ -55,24 +54,22 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
-      \preliminary
       This handler is called when there is a long press.
      */
     signal pressAndHold()
 
     /*!
-     \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
     property bool pressed: mouseArea.pressed
 
     /*!
-      \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
     property bool hovered: __acceptEvents && mouseArea.containsMouse
 
-    /*! \internal
+    /*!
+      \internal
       Disable or enable signal emition by default.
       Some classes want to emit the signal by themselves (ListItem.Standard)
      */
