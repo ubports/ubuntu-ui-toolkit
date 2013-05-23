@@ -37,6 +37,9 @@ Item {
      */
     property Action action
 
+    visible: action ? action.visible : true
+    enabled: action ? action.enabled : true
+
     /*!
        This handler is called when there is a mouse click on the button
        and the button is not disabled. If \l action is defined,
