@@ -125,8 +125,7 @@ Panel {
         Item {
             id: toolButton
             Theming.ItemStyle.class: "toolbar-button"
-            property Action action: null
-            onActionChanged: print("action = "+action+ " text = "+action.text)
+            property Action action
             property string text: action && action.text ? action.text : ""
             property url iconSource: action && action.iconSource ? action.iconSource : ""
             signal clicked()
@@ -135,7 +134,6 @@ Panel {
             visible: action && action.visible
             width: units.gu(5)
             height: toolbar.height
-            Component.onCompleted: print("completed toolbutton for "+action)
         }
     }
 
