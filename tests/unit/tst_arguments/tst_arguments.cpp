@@ -73,7 +73,7 @@ private:
     }
 
     void testCommandLineForUnicode(QString argumentValue) {
-        QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString("--unicodeArgument ") + argumentValue << argumentValue;
+        QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString::fromUtf8("--unicodeArgument ").append(argumentValue) << argumentValue;
     }
 
 private Q_SLOTS:
