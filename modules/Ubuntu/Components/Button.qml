@@ -47,6 +47,22 @@ import Ubuntu.Components 0.1 as Theming
             }
         }
     \endqml
+    An \l Action can be used to specify \l clicked(), \l iconSource and \l text. Example:
+    \qml
+        Item {
+            Action {
+                id: action1
+                text: "Click me"
+                onTriggered: print("action!")
+                iconSource: "icon.png"
+            }
+            Button {
+                anchors.centerIn: parent
+                action: action1
+                color: "green"
+            }
+       }
+    \endqml
 */
 AbstractButton {
     id: button
