@@ -1,5 +1,6 @@
 modules/Ubuntu/Components/AbstractButton.qml
 Item
+    property Action action
     signal clicked()
     signal pressAndHold()
     property bool pressed
