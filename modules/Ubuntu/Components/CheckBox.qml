@@ -29,6 +29,8 @@ import Ubuntu.Components 0.1 as Theming
     be used to set boolean options. The behavior is the same as \l Switch, the
     only difference is the graphical style.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
+
     \b{This component is under heavy development.}
 
     Example:

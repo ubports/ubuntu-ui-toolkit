@@ -32,6 +32,8 @@ import QtQuick 2.0
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
     the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/toolbar}{See also the Design Guidelines on Toolbars}.
+
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
