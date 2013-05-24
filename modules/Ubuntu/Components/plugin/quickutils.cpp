@@ -29,7 +29,8 @@
 #include <private/qquicktextedit_p.h>
 
 QuickUtils::QuickUtils(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
     // connect to focusObjectChanged() to get the latest active focus object
@@ -44,7 +45,7 @@ QuickUtils::QuickUtils(QObject *parent) :
  */
 bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
-    if (!m_rootView && (event->type() == QEvent::ChildAdded))
+    if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
         lookupQuickView();
 
     return QObject::eventFilter(obj, event);

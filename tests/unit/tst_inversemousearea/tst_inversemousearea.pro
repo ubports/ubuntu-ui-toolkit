@@ -4,4 +4,5 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 OTHER_FILES += \
     InverseMouseAreaPropagateEvents.qml \
-    InverseMouseAreaDoNotPropagateEvents.qml
+    InverseMouseAreaDoNotPropagateEvents.qml \
+    SensingAreaError.qml
