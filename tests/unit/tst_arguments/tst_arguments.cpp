@@ -21,6 +21,7 @@
 #undef protected
 
 #include <QtCore/QString>
+#include <QtCore/QTextCodec>
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -73,7 +74,7 @@ private:
     }
 
     void testCommandLineForUnicode(QString argumentValue) {
-        QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString::fromUtf8("--unicodeArgument ").append(argumentValue) << argumentValue;
+        QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString("--unicodeArgument ").append(argumentValue) << argumentValue;
     }
 
 private Q_SLOTS:
@@ -128,6 +129,12 @@ private Q_SLOTS:
     }
 
     void testUnicodeArgument() {
+        /* Pretend that the system is UTF-8 so that the inputted command line
+         * that is itself UTF-8 is correctly decoded by Qt.
+         */
+        QTextCodec* previousCodec = QTextCodec::codecForLocale();
+        QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
         QFETCH(QString, commandLine);
         QFETCH(QString, expectedValue);
 
@@ -145,13 +152,15 @@ private Q_SLOTS:
 
         QCOMPARE(arguments.values()->property("unicodeArgument").type(), QVariant::String);
         QCOMPARE(arguments.values()->property("unicodeArgument").toString(), expectedValue);
+
+        QTextCodec::setCodecForLocale(previousCodec);
     }
 
     void testUnicodeArgument_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<QString>("expectedValue");
 
-        testCommandLineForUnicode(QString::fromUtf8("DIRECCIÓN"));
+        testCommandLineForUnicode(QString("DIRECCIÓN"));
         testCommandLineForUnicode(QString("ファイル名を"));
         testCommandLineForUnicode(QString("☭☢€→☎❄♫✂▷✇♎⇧☮♻⌘⌛☘"));
         testCommandLineForUnicode(QString("file://Vidéos/Le.goût.des.autres.-.DIVX[www.makingoff.org]"));
