@@ -31,9 +31,11 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu
     \brief Switch is a component with two states, checked or unchecked. It can
     be used to set boolean options. The behavior is the same as \l CheckBox, the
-    only difference is the graphical style. \design toggles}{See also the Design Guidelines on Toggles}.
+    only difference is the graphical style.
 
     \b{This component is under heavy development.}
+
+    \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
 
     Example:
     \qml

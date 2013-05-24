@@ -24,7 +24,9 @@ import Ubuntu.Components 0.1
     \brief The standard list item class. It shows a basic list item
         with a label (text), and optionally an icon, a progression arrow,
         and it can have an embedded Item (\l control) that can be used
-        for including Buttons, Switches etc. inside the list item. \design list-items}{See also the Design Guidelines on List Items}.
+        for including Buttons, Switches etc. inside the list item.
+
+    \l {http://design.ubuntu.com/apps/building-blocks/list-items}{See also the Design Guidelines on List Items}.
 
     Examples:
     \qml

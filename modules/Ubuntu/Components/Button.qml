@@ -25,7 +25,9 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype Button
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief Standard Ubuntu button. \design buttons}{See also the Design Guidelines on Buttons}.
+    \brief Standard Ubuntu button.
+
+    \l {http://design.ubuntu.com/apps/building-blocks/buttons}{See also the Design Guidelines on Buttons}.
 
     Examples:
     \qml

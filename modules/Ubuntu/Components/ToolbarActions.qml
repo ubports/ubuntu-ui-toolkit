@@ -20,7 +20,7 @@ import QtQuick 2.0
     \qmltype ToolbarActions
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief List of \l Action items with additional properties to control a toolbar. \design toolbar}{See also the Design Guidelines on Toolbars}.
+    \brief List of \l Action items with additional properties to control a toolbar.
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarActions consists of a set of
@@ -31,6 +31,8 @@ import QtQuick 2.0
     the tools of the active \l Page. When the active \l Page inside the \l Tabs or \l PageStack
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
     the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
+
+    \l {http://design.ubuntu.com/apps/building-blocks/toolbar}{See also the Design Guidelines on Toolbars}.
 
     \qml
         import QtQuick 2.0

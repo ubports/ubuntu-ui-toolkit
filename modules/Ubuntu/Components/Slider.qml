@@ -44,11 +44,13 @@ import "." 0.1 as Theming
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Slider is a component to select a value from a continuous range of
-     values. \design slider}{See also the Design Guidelines on Sliders}.
+     values.
 
     The slider's sensing area is defined by the width and height, therefore
     delegates should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
+
+    \l {http://design.ubuntu.com/apps/building-blocks/slider}{See also the Design Guidelines on Sliders}.
 
     Example:
     \qml
