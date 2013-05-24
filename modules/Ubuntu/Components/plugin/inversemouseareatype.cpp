@@ -97,7 +97,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     QObject::connect(this, SIGNAL(enabledChanged()), this, SLOT(update()));
 
     if (!m_sensingArea) {
-        // get sening area upon parent change
+        // get sensing area upon parent change
         QObject::connect(this, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(update()));
     }
 
