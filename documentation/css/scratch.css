@@ -59,3 +59,38 @@ table, pre {
     top: 100px;
     width: 250px;
 }
+.breadcrumb {
+	position: relative;
+	left: -270px;
+	top: 30px;
+	width: 940px;
+	border-bottom: 1px dotted #AEA79F;
+	padding-bottom: 30px;
+	margin-bottom: 30px;
+}
+
+.breadcrumb li {
+	float: left;
+	margin-right: 8px;
+}
+
+.breadcrumb li a:link,
+.breadcrumb li a:visited {
+	color: #AEA79F;
+}
+
+.breadcrumb li a:after {
+	content: '\0000a0\0000a0 >';
+}
+
+.title {
+	margin-top: 50px;
+}
+.breadcrumb + .toc {
+	top: 170px;
+}
+
+table.annotated {
+    width:940px;
+    margin-left:-270px;
+}
