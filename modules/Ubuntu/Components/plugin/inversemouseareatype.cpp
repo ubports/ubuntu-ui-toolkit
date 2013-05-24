@@ -87,7 +87,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     m_moved(false),
     m_propagateEvents(false),
     m_acceptedButtons(Qt::LeftButton),
-    m_sensingArea(QuickUtils::instance().rootObject()),
+    m_sensingArea(QuickUtils::instance().rootItem(this)),
     m_event(0)
 {
     setAcceptedMouseButtons(m_acceptedButtons);
@@ -96,8 +96,10 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
 
     QObject::connect(this, SIGNAL(enabledChanged()), this, SLOT(update()));
 
-    if (!m_sensingArea)
-        QObject::connect(&QuickUtils::instance(), SIGNAL(rootObjectChanged()), this, SLOT(update()));
+    if (!m_sensingArea) {
+        // get sening area upon parent change
+        QObject::connect(this, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(update()));
+    }
 
     QGuiApplication::instance()->installEventFilter(this);
 }
@@ -118,7 +120,7 @@ void InverseMouseAreaType::update()
 {
     // update sensing area
     if (!m_sensingArea)
-        m_sensingArea = QuickUtils::instance().rootObject();
+        m_sensingArea = QuickUtils::instance().rootItem(this);
     if (!isEnabled() || !isVisible())
         reset();
 }
@@ -263,7 +265,7 @@ QQuickItem *InverseMouseAreaType::sensingArea() const
 void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
 {
     if (!sensing)
-        sensing = QuickUtils::instance().rootObject();
+        sensing = QuickUtils::instance().rootItem(this);
     if (sensing != m_sensingArea) {
         m_sensingArea = sensing;
         reset();

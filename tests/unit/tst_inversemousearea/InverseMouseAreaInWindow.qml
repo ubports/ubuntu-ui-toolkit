@@ -23,6 +23,7 @@ Item{
     property string log: ""
 
     Window {
+        objectName: "isawindow"
         width: units.gu(50)
         height: units.gu(50)
 
@@ -52,6 +53,7 @@ Item{
         }
 
         InverseMouseArea {
+            objectName: "ima"
             id: ima
             anchors.fill: rect
             onClicked: {

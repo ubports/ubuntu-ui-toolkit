@@ -39,9 +39,9 @@ function open(popup, caller, params) {
 
     var popupObject;
     if (params !== undefined) {
-        popupObject = popupComponent.createObject(QuickUtils.rootObject, params);
+        popupObject = popupComponent.createObject(QuickUtils.rootItem(popup), params);
     } else {
-        popupObject = popupComponent.createObject(QuickUtils.rootObject);
+        popupObject = popupComponent.createObject(QuickUtils.rootItem(popup));
     }
     if (!popupObject) {
         print("PopupUtils.open(): Failed to create the popup object.");

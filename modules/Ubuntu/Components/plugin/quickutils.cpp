@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
+#include <QtQml/QQmlInfo>
 
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
@@ -75,10 +76,37 @@ void QuickUtils::activeFocus(QObject *active)
  */
 QQuickItem *QuickUtils::rootObject()
 {
+    qmlInfo(this) << "WARNING: QuickUtils.rootObject property is deprecated: Use QuickUtils::rootItem() function instead.";
     if (!m_rootView)
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
 }
+
+/*!
+ * \internal
+ * Returns the root item of a given item. In case there is a QQuickWindow (Window)
+ * found in the hierarchy, the function will return the contentItem of the window.
+ */
+QQuickItem *QuickUtils::rootItem(QObject *object)
+{
+    if (!object) {
+        return 0;
+    }
+    QObject *parent = object->parent();
+    while (parent) {
+        // if we reach a QQuickWindow, we return the window's contentItem
+        QQuickWindow *window = qobject_cast<QQuickWindow*>(parent);
+        if (window) {
+            return window->contentItem();
+        }
+        if (!parent->parent()) {
+            break;
+        }
+        parent = parent->parent();
+    }
+    return qobject_cast<QQuickItem*>(parent);
+}
+
 
 QString QuickUtils::inputMethodProvider() const
 {

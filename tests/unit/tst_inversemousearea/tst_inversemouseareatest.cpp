@@ -146,8 +146,9 @@ private Q_SLOTS:
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaInWindow.qml");
         QVERIFY(area);
+        quickView->show();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 100));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 10));
         QTest::waitForEvents();
         QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
     }
