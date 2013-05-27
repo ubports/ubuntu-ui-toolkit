@@ -23,9 +23,9 @@ TestCase {
 
     function initTestCase() {
         compare(pageStack.currentPage, null, "is not set by default");
-        compare(pageStack.propagated, mainView.propagated, "propagated property of pageStack equals mainView.propagated")
-        compare(mainView.propagated.toolbar.tools, null, "no tools by default");
-        compare(mainView.propagated.header.title, "", "empty title by default");
+        compare(pageStack.__propagated, mainView.__propagated, "propagated property of pageStack equals mainView.__propagated")
+        compare(mainView.__propagated.toolbar.tools, null, "no tools by default");
+        compare(mainView.__propagated.header.title, "", "empty title by default");
     }
 
     function test_depth() {
@@ -62,22 +62,22 @@ TestCase {
 
     function test_title_bug1143345() {
         pageStack.push(page1);
-        compare(mainView.propagated.header.title, "Title 1", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 1", "Header is correctly set by page");
         page1.title = "New title";
-        compare(mainView.propagated.header.title, "New title", "Header title correctly updated by page");
+        compare(mainView.__propagated.header.title, "New title", "Header title correctly updated by page");
         pageStack.push(page2);
-        compare(mainView.propagated.header.title, "Title 2", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 2", "Header is correctly set by page");
         pageStack.clear();
         page1.title = "Title 1";
     }
 
     function test_tools_bug1126197() {
         pageStack.push(page1);
-        compare(mainView.propagated.toolbar.tools, page1.tools, "Page successfully updated toolbar tools");
+        compare(mainView.__propagated.toolbar.tools, page1.tools, "Page successfully updated toolbar tools");
         pageStack.push(page2);
-        compare(mainView.propagated.toolbar.tools, page2.tools, "Page successfully updated toolbar tools again");
+        compare(mainView.__propagated.toolbar.tools, page2.tools, "Page successfully updated toolbar tools again");
         pageStack.pop();
-        compare(mainView.propagated.toolbar.tools, page1.tools, "Tools updated after popping a page");
+        compare(mainView.__propagated.toolbar.tools, page1.tools, "Tools updated after popping a page");
         pageStack.clear();
     }
 

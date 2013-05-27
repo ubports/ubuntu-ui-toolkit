@@ -61,4 +61,16 @@ PageTreeNode {
             parentNode.hasOwnProperty("selectedTab") && parentNode.selectedTab === tab
 
     visible: active
+
+    /*!
+      \internal
+    */
+    onTitleChanged: {
+        if (active) {
+            // ensure the parent node is an instance of Tabs
+            if (parentNode.hasOwnProperty("selectedTab")) {
+                parentNode.modelChanged();
+            }
+        }
+    }
 }

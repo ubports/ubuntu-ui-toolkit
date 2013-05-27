@@ -19,6 +19,8 @@ QMAKE_EXTRA_TARGETS += license
 DOC_PATH=${PWD}/documentation
 docs.target = docs
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf;
-docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp"
+docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
+docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf;
+docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 

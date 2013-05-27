@@ -33,6 +33,8 @@ import "internalPopupUtils.js" as InternalPopupUtils
         for further interaction before the user has selected a desired action.
         It can only be closed by selecting an optional action confirming or cancelling the operation.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/dialog}{See also the Design Guidelines on Dialogs}.
+
     Example:
     \qml
         import Ubuntu.Components 0.1

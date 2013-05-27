@@ -27,6 +27,8 @@ import Ubuntu.Components 0.1 as Theming
     \ingroup ubuntu
     \brief Standard Ubuntu button.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/buttons}{See also the Design Guidelines on Buttons}.
+
     Examples:
     \qml
         Column {

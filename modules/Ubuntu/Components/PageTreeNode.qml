@@ -43,24 +43,29 @@ Item {
     /*!
       \deprecated
       The header of the node. Propagates down from the root node.
-      This property is deprecated. Use propagated.header instead.
+      This property is deprecated.
      */
-    property Header header: node.propagated ? node.propagated.header : null
+    property Header header: node.__propagated ? node.__propagated.header : null
 
     /*!
       \deprecated
       The toolbar of the node. Propagates down from the root node.
-      This property is deprecated. Use propagated.toolbar instead.
+      This property is deprecated.
      */
-    property Toolbar toolbar: node.propagated ? node.propagated.toolbar : null
+    property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
 
     /*!
+      \internal
       QtObject containing all the properties that are propagated from the
       root (MainView) of a page tree to its leafs (Pages).
       This object contains properties such as the header and toolbar that are
       instantiated by the MainView.
+
+      This property is internal because the derived classes (MainView and Page)
+      need to access it, but other components using those classes should not have
+      access to it.
      */
-    property QtObject propagated: node.parentNode ? node.parentNode.propagated : null
+    property QtObject __propagated: node.parentNode ? node.parentNode.__propagated : null
 
     /*!
       At any time, there is exactly one path from the root node to a Page leaf node

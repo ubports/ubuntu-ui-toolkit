@@ -1,12 +1,8 @@
-include(ubuntu-ui-toolkit-common.qdocconf)
+include(ubuntu-ui-toolkit-offline.qdocconf)
 include(ubuntu-appdev-site-header.qdocconf)
 include(ubuntu-appdev-site-footer.qdocconf)
 
-HTML.stylesheets = \
-    documentation/css/reset.css \
-    documentation/css/qtquick.css \
-    documentation/css/base.css \
-    documentation/css/scratch.css
+HTML.nobreadcrumbs = "false"
 
 HTML.headerstyles = \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n" \
