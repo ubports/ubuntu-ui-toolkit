@@ -72,6 +72,7 @@ void QuickUtils::activeFocus(QObject *active)
 
 /*!
  * \internal
+ * \deprecated
  * Returns the current root object.
  */
 QQuickItem *QuickUtils::rootObject()
