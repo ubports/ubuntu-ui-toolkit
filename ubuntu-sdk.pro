@@ -27,6 +27,11 @@ test_components.commands = cd tests/autopilot; autopilot run UbuntuUiToolkit
 test_components.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_components
 
+qmluitests.target = qmluitests
+qmluitests.commands = cd tests/unit_x11; make check
+qmluitests.depends = modules/ubuntu-ui-toolkit.pro
+QMAKE_EXTRA_TARGETS += qmluitests
+
 license.target = license
 license.commands = ./tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
