@@ -15,5 +15,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-sed -r -i 's@("main-content">)@\1<ul class="breadcrumb">@g' $1/html/*[a-z].html
+sed -r -i 's@("main-content">)@\1<ul class="breadcrumb">@g' $1/html/*.html
 sed -r -i 's@(<div class="toc">|<h1 class="title">)@</ul>\1@g' $1/html/*.html

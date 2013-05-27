@@ -18,6 +18,7 @@
   \page theming-components.html
   \ingroup theming-description
   \title Theming Ubuntu Components
+  \nextpage {Ubuntu User Interface Toolkit}{Overview}
 
   \b{The theming is under heavy development, therefore changes may occur leaving
   the documentation out of date.}
