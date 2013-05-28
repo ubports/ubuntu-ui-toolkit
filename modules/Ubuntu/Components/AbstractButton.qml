@@ -35,7 +35,7 @@ Item {
       Subclasses of AbstractButton can use other properties of action (for example
       the text and iconSource).
      */
-    property Action action
+    property Action action: null
 
     visible: action ? action.visible : true
     enabled: action ? action.enabled : true

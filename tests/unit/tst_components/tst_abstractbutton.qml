@@ -22,10 +22,13 @@ TestCase {
      name: "AbstractButtonAPI"
 
      function test_action() {
-         compare(absButton.action, null,"Action is null by default");
-         absButton.action = action1;
-         compare(absButton.action, action1, "Action can be set");
-         absButton.action = null;
+         compare(absButton.action, null,"Action is null by default")
+         absButton.action = action1
+         compare(absButton.action, action1, "Action can be set")
+         var numTriggers = action1.triggerCount
+         absButton.clicked()
+         compare(action1.triggerCount, numTriggers+1, "Button clicked triggers action")
+         absButton.action = null
      }
 
      function test_hovered() {
@@ -56,5 +59,7 @@ TestCase {
 
      Action {
          id: action1
+         property int triggerCount: 0
+         onTriggered: triggerCount++
      }
 }
