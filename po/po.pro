@@ -3,7 +3,7 @@ TEMPLATE = subdirs
 PROJECTNAME = $$system(basename ../*.qmlproject)
 PROJECTNAME = $$replace(PROJECTNAME,.qmlproject,)
 
-SOURCECODE = ../*.qml
+SOURCECODE = `find .. -name *.qml`
 
 message("")
 message(" Project Name: $$PROJECTNAME ")
@@ -17,17 +17,19 @@ message("")
 
 ## generate pot file 'make pot'
 potfile.target = pot
-potfile.commands = xgettext -o $${PROJECTNAME}.pot --package-name $${PROJECTNAME} --qt --c++ --add-comments=TRANSLATORS --keyword=tr $${SOURCECODE}
+#potfile.commands = xgettext -o $${PROJECTNAME}.pot --package-name $${PROJECTNAME} --qt --c++ --add-comments=TRANSLATORS --keyword=tr $${SOURCECODE}
+potfile.commands = ./update-pot.sh
 QMAKE_EXTRA_TARGETS += potfile
 
 ## poedit target for new translations 'make translate'
 poedit.target = translate
-poedit.commands = cp messages.pot new_language.po; poedit new_language.po
+poedit.commands = cp $${PROJECTNAME}.pot new_language.po; poedit new_language.po
 QMAKE_EXTRA_TARGETS += poedit
 
 ## generate mo files 'make mo'
 mofiles.target = mo
-mofiles.commands = msgfmt *.po
+#mofiles.commands = msgfmt *.po
+mofiles.commands = ./generate_mo.sh
 QMAKE_EXTRA_TARGETS += mofiles
 
 ## Installation steps for mo files. 'make install'
