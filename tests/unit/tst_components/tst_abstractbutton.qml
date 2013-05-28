@@ -21,6 +21,13 @@ import Ubuntu.Components 0.1
 TestCase {
      name: "AbstractButtonAPI"
 
+     function test_action() {
+         compare(absButton.action, null,"Action is null by default");
+         absButton.action = action1;
+         compare(absButton.action, action1, "Action can be set");
+         absButton.action = null;
+     }
+
      function test_hovered() {
         compare(absButton.hovered,false,"Hovered is boolean and false by default")
      }
@@ -45,5 +52,9 @@ TestCase {
              id: signalSpy
              target: parent
          }
+     }
+
+     Action {
+         id: action1
      }
 }
