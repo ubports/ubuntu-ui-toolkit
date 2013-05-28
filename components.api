@@ -335,6 +335,13 @@ plugins.qmltypes
     Property { name: "style"; type: "UCStyle"; isPointer: true }
     Property { name: "delegate"; type: "QQuickItem"; isPointer: true }
     Property { name: "path"; type: "string"; isReadonly: true }
+    name: "QQmlPropertyMap"
+    prototype: "QObject"
+    Signal {
+    name: "valueChanged"
+    Parameter { name: "key"; type: "string" }
+    Parameter { name: "value"; type: "QVariant" }
+    Method { name: "keys"; type: "QStringList" }
     name: "QQuickClipboard"
     prototype: "QObject"
     exports: ["Clipboard 0.1"]
@@ -369,6 +376,29 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "UCArgument"
+    prototype: "QObject"
+    exports: ["Argument 0.1"]
+    Property { name: "name"; type: "string" }
+    Property { name: "help"; type: "string" }
+    Property { name: "required"; type: "bool" }
+    Property { name: "valueNames"; type: "QStringList" }
+    Method {
+    name: "at"
+    Parameter { name: "i"; type: "int" }
+    name: "UCArguments"
+    prototype: "QObject"
+    exports: ["Arguments 0.1"]
+    Property { name: "defaultArgument"; type: "UCArgument"; isPointer: true }
+    Property { name: "arguments"; type: "UCArgument"; isList: true; isReadonly: true }
+    Property { name: "values"; type: "QQmlPropertyMap"; isReadonly: true; isPointer: true }
+    Property { name: "error"; type: "bool"; isReadonly: true }
+    Property { name: "errorMessage"; type: "string"; isReadonly: true }
+    Method { name: "printUsage" }
+    Method {
+    name: "quitWithError"
+    Parameter { name: "errorMessage"; type: "string" }
+    Method { name: "quitWithError" }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1"]
