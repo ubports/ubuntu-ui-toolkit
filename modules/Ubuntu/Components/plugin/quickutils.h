@@ -38,6 +38,7 @@ public:
     }
 
     QQuickItem *rootObject();
+    Q_INVOKABLE QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
