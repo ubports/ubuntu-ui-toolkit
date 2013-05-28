@@ -122,15 +122,12 @@ Panel {
 
     Component {
         id: toolButtonComponent
-        Item {
+        Button {
             id: toolButton
+            // Disable the mouse area so swipes on the button will not be blocked
+            // from going to the toolbar. The panel will take care calling the button's clicked().
+            __mouseArea.visible: false
             Theming.ItemStyle.class: "toolbar-button"
-            property string text: action && action.text ? action.text : ""
-            property url iconSource: action && action.iconSource ? action.iconSource : ""
-            signal clicked()
-            onClicked: action.triggered(toolButton)
-            enabled: action && action.enabled
-            visible: action && action.visible
             width: units.gu(5)
             height: toolbar.height
         }
@@ -138,22 +135,20 @@ Panel {
 
     Loader {
         id: backButton
-        property Action action: toolbar.tools && toolbar.tools.back ? toolbar.tools.back : null
-        sourceComponent: action ? action.itemHint ? action.itemHint : toolButtonComponent : null
+        property Action backAction: toolbar.tools ? toolbar.tools.back : null
+        sourceComponent: backAction ? backAction.itemHint ? backAction.itemHint : toolButtonComponent : null
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
         onStatusChanged: {
-            if (item && status == Loader.Ready && action && action.itemHint) {
-                if (item.hasOwnProperty("clicked")) item.clicked.connect(backButton.itemTriggered);
-                if (item.hasOwnProperty("accepted")) item.accepted.connect(backButton.itemTriggered);
-                if (item.hasOwnProperty("triggered")) item.accepted.connect(backButton.itemTtriggered);
+            if (item && status == Loader.Ready) {
+                if (item.hasOwnProperty("action")) item.action = backAction;
             }
         }
-        signal itemTriggered()
-        onItemTriggered: action.triggered(item)
+        // ensure the item's action is up-to-date (which is not the case without this line):
+        onBackActionChanged: if (item && item.hasOwnProperty("action")) item.action = backAction;
     }
 
     Row {
@@ -170,8 +165,12 @@ Panel {
             model: internal.visibleTools ? internal.visibleTools.children : 0
             Loader {
                 sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                property Action action: modelData
                 anchors.verticalCenter: toolButtonsContainer.verticalCenter
+                onStatusChanged: {
+                    if (item && status == Loader.Ready) {
+                        if (item.hasOwnProperty("action")) item.action = modelData
+                    }
+                }
             }
         }
     }
