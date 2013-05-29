@@ -20,24 +20,35 @@ import Ubuntu.Layouts 0.1
 
 Item {
     id: root
-    width: units.gu(40)
+    width: units.gu(30)
     height: units.gu(30)
 
     Layouts {
         objectName: "layouts"
         id: layouts
         anchors.fill: parent
+        onCurrentLayoutChanged: {
+//            if (currentLayout === "column") {
+//                label1.anchors.top = undefined;
+//                label2.anchors.top = undefined;
+//                label3.anchors.top = undefined;
+//                label1.anchors.bottom = undefined;
+//                label2.anchors.bottom = undefined;
+//                label3.anchors.bottom = undefined;
+//            }
+        }
+
         layouts: [
             ConditionalLayout {
-                name: "small"
-                when: layouts.width <= units.gu(40)
+                name: "column"
+                when: layouts.width > units.gu(30) && layouts.width <= units.gu(40)
                 Column {
-                    anchors.fill: parent
+                    //anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
                 }
             },
             ConditionalLayout {
-                name: "medium"
+                name: "flow"
                 when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
                 Flow {
                     anchors.fill: parent
@@ -45,7 +56,7 @@ Item {
                 }
             },
             ConditionalLayout {
-                name: "large"
+                name: "row"
                 when: layouts.width > units.gu(60)
                 Row {
                     anchors.fill: parent
@@ -58,25 +69,38 @@ Item {
         Item {
             objectName: "defaultLayout"
             anchors.fill: parent
-            Label {
+            Rectangle {
                 objectName: "item1"
                 id: label1
+                anchors.left: parent.left
+                anchors.onTopChanged: if (anchors.top == undefined) print("label1.top is "+anchors.top)
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: units.gu(15)
                 ConditionalLayout.name: "item1"
-                text: "item1"
+                color: "red"
             }
-            Label {
+            Rectangle {
                 objectName: "item2"
                 id: label2
-                anchors.bottom: label1.bottom
+                anchors.top: parent.top
+                anchors.left: label1.right
+                anchors.onTopChanged: if (anchors.top == undefined) print("label2.top is "+anchors.top)
+                anchors.right: parent.right
+                height: units.gu(15)
                 ConditionalLayout.name: "item2"
-                text: "item2"
+                color: "green"
             }
-            Label {
+            Rectangle {
                 objectName: "item3"
                 id: label3
-                anchors.bottom: label2.bottom
+                anchors.left: label1.right
+                anchors.onTopChanged: if (anchors.top == undefined) print("label3.top is "+anchors.top)
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: units.gu(15)
                 ConditionalLayout.name: "item3"
-                text: "item3"
+                color: "blue"
             }
         }
     }

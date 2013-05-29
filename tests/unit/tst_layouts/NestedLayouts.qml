@@ -34,12 +34,12 @@ Item {
                 Item {
                     Item {
                         id: header
-                        ConditionalLayout.itemNames: ["item3"]
+                        ConditionalLayout.items: ["item3"]
                     }
                     Row {
                         anchors.fill: parent
                         anchors.topMargin: header.height
-                        ConditionalLayout.itemNames: ["item1", "item2"]
+                        ConditionalLayout.items: ["item1", "item2"]
                     }
                 }
             },

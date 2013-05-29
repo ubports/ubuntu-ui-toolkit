@@ -20,16 +20,24 @@
 #define ULLAYOUTS_P_H
 
 #include "ullayouts.h"
+#include <QtQml/QQmlIncubator>
+#include "layoutaction_p.h"
 
-class ULLayoutsPrivate {
+typedef QHash<QString, QQuickItem*> LaidOutItemsMap;
+
+class ULLayoutsPrivate : QQmlIncubator {
     Q_DECLARE_PUBLIC(ULLayouts)
 public:
+
     ULLayoutsPrivate(ULLayouts *qq);
 
     ULLayouts *q_ptr;
     QList<ULConditionalLayout*> layouts;
-    QQuickItem *currentLayout;
+    ActionList actions;
+    LaidOutItemsMap itemsToLayout;
+    QQuickItem* currentLayoutItem;
     int currentLayoutIndex;
+    bool completed:1;
 
     // callbacks for the "layouts" QQmlListProperty of LayoutManager
     static void append_layout(QQmlListProperty<ULConditionalLayout>*, ULConditionalLayout*);
@@ -37,7 +45,16 @@ public:
     static ULConditionalLayout *at_layout(QQmlListProperty<ULConditionalLayout>*, int);
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
+    void listLaidOutItems();
+    void updateLayout();
+
+protected: // QQmlIncubator stuff
+    void setInitialState(QObject *object);
+    void statusChanged(Status status);
+
+private:
     void reLayout();
+    void reparentItems();
 };
 
 #endif // ULLAYOUTS_P_H

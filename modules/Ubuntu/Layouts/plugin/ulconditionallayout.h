@@ -22,28 +22,31 @@
 #include <QtQml/QQmlComponent>
 #include <QtCore/QStringList>
 
+class QQuickItem;
 class ULConditionalLayoutAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList itemNames READ itemNames WRITE setItemNames NOTIFY itemNamesChanged)
+    Q_PROPERTY(QStringList items READ items WRITE setItems NOTIFY itemsChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     explicit ULConditionalLayoutAttached(QObject *parent = 0);
 
 Q_SIGNALS:
-    void itemNamesChanged();
+    void itemsChanged();
     void nameChanged();
 
 public: // getter/setter
-    QStringList itemNames() const;
-    void setItemNames(const QStringList &names);
+    QStringList items() const;
+    void setItems(const QStringList &names);
     QString name() const;
     void setName(const QString &name);
+
 private:
     QString m_name;
     QStringList m_itemNames;
 };
+
 
 class QQmlBinding;
 class ULConditionalLayoutPrivate;
@@ -52,7 +55,7 @@ class ULConditionalLayout : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(ULConditionalLayout)
 
-    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString name READ layoutName WRITE setLayoutName)
     Q_PROPERTY(QQmlBinding* when READ when WRITE setWhen)
     Q_PROPERTY(QQmlComponent *layout READ layout WRITE setLayout)
     Q_CLASSINFO("DefaultProperty", "layout")
@@ -63,8 +66,8 @@ public:
     static ULConditionalLayoutAttached * qmlAttachedProperties(QObject *owner);
 
 // getter/setter
-    QString name() const;
-    void setName(const QString &name);
+    QString layoutName() const;
+    void setLayoutName(const QString &name);
     QQmlBinding *when() const;
     void setWhen(QQmlBinding *when);
     QQmlComponent *layout() const;

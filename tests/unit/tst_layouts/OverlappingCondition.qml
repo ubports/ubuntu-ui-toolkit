@@ -33,7 +33,7 @@ Item {
                 when: layouts.width <= units.gu(40)
                 Column {
                     anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
+                    ConditionalLayout.items: ["item1", "item2", "item3"]
                 }
             },
             ConditionalLayout {
@@ -41,7 +41,7 @@ Item {
                 when: layouts.width >= units.gu(40) && layouts.width <= units.gu(60)
                 Flow {
                     anchors.fill: parent
-                    ConditionalLayout.itemNames: ["item1", "item2", "item3"]
+                    ConditionalLayout.items: ["item1", "item2", "item3"]
                 }
             }
         ]

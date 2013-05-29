@@ -18,34 +18,56 @@
 
 #include "ulconditionallayout.h"
 #include "ulconditionallayout_p.h"
+#include "ullayouts.h"
+#include "ullayouts_p.h"
+#include <QtQml/QQmlInfo>
+
 #include <QDebug>
 
+/*!
+ * \qmltype ConditionalLayout
+ * \instantiates ULConditionalLayoutAttached
+ * \inqmlmodule Ubuntu.Layouts 0.1
+ * \ingroup ubuntu-layouts
+ * \brief ConditionalLayout attached properties DOCME.
+ */
 ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
     QObject(parent)
 {
 }
 
-QStringList ULConditionalLayoutAttached::itemNames() const
+/*!
+ * \qmlattachedproperty list<string> ULConditionalLayoutAttached::items
+ * List of item names to be included in the layout section. This property can be
+ * attached only to layout section declarations.
+ */
+QStringList ULConditionalLayoutAttached::items() const
 {
     return m_itemNames;
 }
-void ULConditionalLayoutAttached::setItemNames(const QStringList &names)
+void ULConditionalLayoutAttached::setItems(const QStringList &names)
 {
-    if (names == m_itemNames)
+    if (names.isEmpty() || (names == m_itemNames)) {
         return;
+    }
     m_itemNames = names;
-    Q_EMIT itemNamesChanged();
+    Q_EMIT itemsChanged();
 }
 
+/*!
+ * \qmlattachedproperty string ULConditionalLayoutAttached::name
+ * The property can be attached to components to be laid out and represents the
+ * layout section to be attached to.
+ */
 QString ULConditionalLayoutAttached::name() const
 {
     return m_name;
 }
 void ULConditionalLayoutAttached::setName(const QString &name)
 {
-    if (name == m_name)
+    if (name.isEmpty() || name == m_name) {
         return;
+    }
     m_name = name;
     Q_EMIT nameChanged();
 }
-

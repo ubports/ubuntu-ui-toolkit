@@ -20,6 +20,7 @@
 
 #include "ulconditionallayout.h"
 
+class ULLayouts;
 class ULConditionalLayoutPrivate {
     Q_DECLARE_PUBLIC(ULConditionalLayout)
 public:
@@ -29,6 +30,8 @@ public:
     QQmlBinding *when;
     QQmlComponent *component;
     QString name;
+
+    ULLayouts *layouts();
 };
 
 #endif // ULCONDITIONALLAYOUT_P_H

@@ -12,17 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Layouts 0.1
+#include "ulplugin.h"
+#include "ullayouts.h"
+#include "ulconditionallayout.h"
 
-ConditionalLayout {
-    name: "medium"
-    when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
-    Flow {
-        anchors.fill: parent
-        ConditionalLayout.items: ["item1", "item2", "item3"]
-    }
+#include <qqml.h>
+
+void PluginPlugin::registerTypes(const char *uri)
+{
+    // @uri Ubuntu.Layouts
+    qmlRegisterType<ULLayouts>(uri, 0, 1, "Layouts");
+    qmlRegisterType<ULConditionalLayout>(uri, 0, 1, "ConditionalLayout");
 }

@@ -18,20 +18,70 @@
 
 #include "ullayouts.h"
 #include "ullayouts_p.h"
+#include "ulconditionallayout.h"
+#include "layoutaction_p.h"
 
-ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq) :
-    q_ptr(qq),
-    currentLayout(0),
-    currentLayoutIndex(-1)
+ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
+    : QQmlIncubator(AsynchronousIfNested)
+    , q_ptr(qq)
+    , currentLayoutItem(0)
+    , currentLayoutIndex(-1)
+    , completed(false)
 {
 }
 
+/******************************************************************************
+ * ULLayoutsPrivate also acts as QQmlIncubator for the dynamically created layouts.
+ * QQmlIncubator stuff
+ */
+void ULLayoutsPrivate::setInitialState(QObject *object)
+{
+    Q_Q(ULLayouts);
+    // set parent
+    object->setParent(q);
+    QQuickItem *item = static_cast<QQuickItem*>(object);
+    item->setParentItem(q);
+    item->setVisible(false);
+    item->setEnabled(false);
+}
+
+void ULLayoutsPrivate::statusChanged(Status status)
+{
+    Q_Q(ULLayouts);
+    if (status == Ready) {
+        // complete layouting
+        QQuickItem *previousLayout = currentLayoutItem;
+
+        // reset the layout
+        currentLayoutItem = qobject_cast<QQuickItem*>(object());
+        Q_ASSERT(currentLayoutItem);
+
+        // set actions for layout
+//        actions << new ParentAction(currentLayout.layoutItem, "parent", q);
+//        applyActions(actions, false);
+
+        //reparent components to be laid out
+        reparentItems();
+        // enable and show layout
+        actions << new PropertyAction(currentLayoutItem, "enabled", true);
+        actions << new PropertyAction(currentLayoutItem, "visible", true);
+        // apply actions
+        actions.apply();
+        // clear previous layout
+        delete previousLayout;
+
+        Q_EMIT q->currentLayoutChanged();
+    }
+}
+
+/*
+ * QQmlListProperty functions
+ */
 void ULLayoutsPrivate::append_layout(QQmlListProperty<ULConditionalLayout> *list, ULConditionalLayout *layout)
 {
     ULLayouts *_this = static_cast<ULLayouts*>(list->object);
     if (layout) {
         layout->setParent(_this);
-//        layout->setLayoutManager(_this);
         _this->d_ptr->layouts.append(layout);
     }
 }
@@ -55,11 +105,138 @@ void ULLayoutsPrivate::clear_layouts(QQmlListProperty<ULConditionalLayout> *list
     _this->d_ptr->layouts.clear();
 }
 
-void ULLayoutsPrivate::reLayout()
-{
 
+void ULLayoutsPrivate::listLaidOutItems()
+{
+    Q_Q(ULLayouts);
+    QList<QQuickItem*> items = q->findChildren<QQuickItem*>();
+    for (int i = 0; i < items.count(); i++) {
+        QQuickItem *item = items[i];
+        ULConditionalLayoutAttached *marker = qobject_cast<ULConditionalLayoutAttached*>(
+                    qmlAttachedPropertiesObject<ULConditionalLayout>(item, false));
+        if (marker && !marker->name().isEmpty()) {
+            itemsToLayout.insert(marker->name(), item);
+        }
+    }
 }
 
+void ULLayoutsPrivate::reLayout()
+{
+    if (!completed || (currentLayoutIndex < 0)) {
+        return;
+    }
+    if (!layouts[currentLayoutIndex]->layout()) {
+        return;
+    }
+
+    qDebug() << "activate layout:" << q_ptr->currentLayout();
+    // redo actions
+    actions.revert();
+
+    actions.clear();
+
+    // clear the incubator prior being used
+    clear();
+    QQmlComponent *component = layouts[currentLayoutIndex]->layout();
+    // create using incubation as it may be created asynchronously,
+    // case when the attached properties are not yet enumerated
+    component->create(*this);
+}
+
+void ULLayoutsPrivate::reparentItems()
+{
+    // create copy of items list, to keep track of which ones we change
+    LaidOutItemsMap unusedItems = itemsToLayout;
+
+    // iterate through the Layout definition to find containers - those Items with
+    // ConditionalLayout.items set
+    QList<QQuickItem*> items = currentLayoutItem->findChildren<QQuickItem*>();
+    // check also root element, as it may also be marked as layout section
+    items.prepend(currentLayoutItem);
+
+    Q_FOREACH(QQuickItem *container, items) {
+        ULConditionalLayoutAttached *marker = qobject_cast<ULConditionalLayoutAttached*>(
+                    qmlAttachedPropertiesObject<ULConditionalLayout>(container, false));
+        if (!marker || marker->items().isEmpty()) {
+            continue;
+        }
+        Q_FOREACH(const QString &itemName, marker->items()) {
+            // check if we have this item listed to be laid out
+            QQuickItem *laidOutItem = unusedItems.value(itemName);
+            if (laidOutItem != 0) {
+                // reparent and break anchors
+                actions << new PropertyAction(laidOutItem, "parent", qVariantFromValue(container));
+//                actions << new AnchorResetAction(laidOutItem);
+                actions << new AnchorAction(laidOutItem, "left");
+                actions << new AnchorAction(laidOutItem, "top");
+                actions << new AnchorAction(laidOutItem, "right");
+                actions << new AnchorAction(laidOutItem, "bottom");
+                actions << new AnchorAction(laidOutItem, "horizontalCenter");
+                actions << new AnchorAction(laidOutItem, "verticalCenter");
+                actions << new AnchorAction(laidOutItem, "fill");
+                actions << new AnchorAction(laidOutItem, "centerIn");
+                // remove from unused ones
+                unusedItems.remove(itemName);
+            }
+        }
+    }
+
+    // hide the rest of the unused ones
+    QHashIterator<QString, QQuickItem*> i(unusedItems);
+    while (i.hasNext()) {
+        i.next();
+        actions << new PropertyAction(i.value(), "visible", false);
+        actions << new PropertyAction(i.value(), "enabled", false);
+    }
+}
+
+
+void ULLayoutsPrivate::updateLayout()
+{
+    if (!completed) {
+        return;
+    }
+
+    // go through conditions and re-parent for the first valid one
+    for (int i = 0; i < layouts.count(); i++) {
+        ULConditionalLayout *layout = layouts[i];
+        if (!layout->layoutName().isEmpty() && layout->when() && layout->when()->evaluate().toBool()) {
+            if (currentLayoutIndex == i) {
+                return;
+            }
+            if (currentLayoutIndex < 0) {
+                // TODO: break the anchors first
+            }
+            currentLayoutIndex = i;
+            // update layout
+            reLayout();
+            return;
+        }
+    }
+    // check if we need to switch back to default layout
+    if (currentLayoutIndex >= 0) {
+        qDebug() << "back to default layout";
+        actions.revert();
+        delete currentLayoutItem;
+        currentLayoutItem = 0;
+        currentLayoutIndex = -1;
+    }
+}
+
+/*!
+ * \qmltype Layouts
+ * \instantiates ULLayouts
+ * \inqmlmodule Ubuntu.Layouts 0.1
+ * \ingroup ubuntu-layouts
+ * \brief Layouts component defines the layouts for different form factors and
+ * embeds the components to be laid out.
+ *
+ * Ideas:
+ * - items to be laid out must be direct children of Layouts
+ * - ConditionalLayout.name is unique
+ * - the order items are laid out in a layout container depends on the order the
+ *   names are specified in ConditionalLayout.items list
+ */
 
 ULLayouts::ULLayouts(QQuickItem *parent):
     QQuickItem(parent),
@@ -76,18 +253,41 @@ ULLayouts::~ULLayouts()
 {
 }
 
+void ULLayouts::componentComplete()
+{
+    QQuickItem::componentComplete();
+    Q_D(ULLayouts);
+    d->completed = true;
+    d->listLaidOutItems();
+    d->updateLayout();
+}
+
+/*!
+ * \qmlproperty string Layouts::currentLayout
+ * The property holds the active layout name. The default layout is identified
+ * by an empty string.
+ */
+
 QString ULLayouts::currentLayout() const
 {
     Q_D(const ULLayouts);
-    return d->currentLayoutIndex >= 0 ? d->layouts[d->currentLayoutIndex]->name() : QString();
+    return d->currentLayoutIndex >= 0 ? d->layouts[d->currentLayoutIndex]->layoutName() : QString();
 }
 
+/*!
+ * \internal
+ * Provides a list of layouts for internal use.
+ */
 QList<ULConditionalLayout*> ULLayouts::layoutList()
 {
     Q_D(ULLayouts);
     return d->layouts;
 }
 
+/*!
+ * \qmlproperty list<ConditionalLayout> Layouts::layouts
+ * List of different layouts.
+ */
 QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
 {
     Q_D(ULLayouts);

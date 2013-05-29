@@ -32,6 +32,23 @@ ULConditionalLayoutPrivate::ULConditionalLayoutPrivate(ULConditionalLayout *qq) 
 {
 }
 
+ULLayouts *ULConditionalLayoutPrivate::layouts()
+{
+    Q_Q(ULConditionalLayout);
+    return qobject_cast<ULLayouts*>(q->parent());
+}
+
+/*!
+ * \qmltype ConditionalLayout
+ * \instantiates ULConditionalLayout
+ * \inqmlmodule Ubuntu.Layouts 0.1
+ * \ingroup ubuntu-layouts
+ * \brief ConditionalLayout defines the layout of a given form factor.
+ *
+ * Notes:
+ *  - layout component fills the entire Layouts component area
+ */
+
 ULConditionalLayout::ULConditionalLayout(QObject *parent) :
     QObject(parent),
     d_ptr(new ULConditionalLayoutPrivate(this))
@@ -47,13 +64,17 @@ ULConditionalLayoutAttached * ULConditionalLayout::qmlAttachedProperties(QObject
     return new ULConditionalLayoutAttached(owner);
 }
 
-
-QString ULConditionalLayout::name() const
+/*!
+ * \qmlproperty string ConditionalLayout::name
+ * The property defines the name of the layout. It is mandatory to specify a name
+ * for a layout in order to be usable.
+ */
+QString ULConditionalLayout::layoutName() const
 {
     Q_D(const ULConditionalLayout);
     return d->name;
 }
-void ULConditionalLayout::setName(const QString &name)
+void ULConditionalLayout::setLayoutName(const QString &name)
 {
     Q_D(ULConditionalLayout);
     if (name.isEmpty() || (name == d->name)) {
@@ -62,6 +83,10 @@ void ULConditionalLayout::setName(const QString &name)
     d->name = name;
 }
 
+/*!
+ * \qmlproperty bool ConditionalLayout::when
+ * The property defines the condition when the layout should be activated.
+ */
 QQmlBinding *ULConditionalLayout::when() const
 {
     Q_D(const ULConditionalLayout);
@@ -70,18 +95,21 @@ QQmlBinding *ULConditionalLayout::when() const
 void ULConditionalLayout::setWhen(QQmlBinding *when)
 {
     Q_D(ULConditionalLayout);
-    if (!when || (when == d->when)) {
-        return;
-    }
     d->when = when;
 
     // re-layout
     ULLayouts *layouts = qobject_cast<ULLayouts*>(parent());
     if (layouts) {
-        layouts->d_ptr->reLayout();
+        layouts->d_ptr->updateLayout();
     }
 }
 
+/*!
+ * \qmlproperty Component ConditionalLayout::layout
+ * \default
+ * Default property holding the definition component of the layout. The component
+ * will be instantiated once the condition evaluates to true.
+ */
 QQmlComponent *ULConditionalLayout::layout() const
 {
     Q_D(const ULConditionalLayout);

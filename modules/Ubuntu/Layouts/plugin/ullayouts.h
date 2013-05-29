@@ -42,6 +42,9 @@ public:
     QString currentLayout() const;
     QList<ULConditionalLayout*> layoutList();
 
+protected:
+    void componentComplete();
+
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
 

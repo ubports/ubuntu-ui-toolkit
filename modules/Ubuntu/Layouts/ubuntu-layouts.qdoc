@@ -12,19 +12,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "layoutsplugin.h"
-#include "ullayouts.h"
-#include "ulconditionallayout.h"
+/*!
+  \page ubuntu-layouts.html
+  \title Layouting
 
-#include <qqml.h>
+  \b{Under development}
 
-void PluginPlugin::registerTypes(const char *uri)
-{
-    // @uri Ubuntu.Layouts
-    qmlRegisterType<ULLayouts>(uri, 0, 1, "Layouts");
-    qmlRegisterType<ULConditionalLayout>(uri, 0, 1, "ConditionalLayout");
-}
+  \section1 Introduction
+  \section1 Layouts and Mutiple Form Factors
+  \section1 Advanced Layout Support
+  \section1 Examples
+*/
