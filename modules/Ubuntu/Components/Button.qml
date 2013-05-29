@@ -49,7 +49,7 @@ import Ubuntu.Components 0.1 as Theming
             }
         }
     \endqml
-    An \l Action can be used to specify \l clicked(), \l iconSource and \l text. Example:
+    An \l Action can be used to specify \b clicked, \l iconSource and \l text. Example:
     \qml
         Item {
             Action {
