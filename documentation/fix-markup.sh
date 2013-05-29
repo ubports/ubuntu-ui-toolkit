@@ -18,3 +18,4 @@
 sed -r -i 's@("main-content">)@\1<ul class="breadcrumb">@g' $1/html/*.html
 sed -r -i 's@(<div class="toc">|<h1 class="title">)@</ul>\1@g' $1/html/*.html
 sed -r -i 's@(</p>)<p/>@\1@g' $1/html/*.html
+sed -r -i 's@(<a class="(next|prev)Page" href=".+">)(.+)(</a>)@<li>\1\3\4</li>@g' $1/html/*.html
