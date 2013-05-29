@@ -52,16 +52,14 @@ OrientationHelper {
       */
     property PropertyAnimation fadingAnimation: PropertyAnimation{duration: 0}
 
-    anchors.fill: parent ? parent : undefined
-
     // without specifying width and height below, some width calculations go wrong in Sheet.
     // I guess popupBase.width is not correctly set initially
     width: parent ? parent.width : undefined
     height: parent ? parent.height : undefined
 
     // copy value of automaticOrientation from root object (typically a MainView)
-    automaticOrientation: QuickUtils.rootObject && QuickUtils.rootObject.automaticOrientation ?
-                          QuickUtils.rootObject.automaticOrientation : false
+    automaticOrientation: stateWrapper.rootItem && stateWrapper.rootItem.automaticOrientation ?
+                          stateWrapper.rootItem.automaticOrientation : false
 
     /*!
       \preliminary
@@ -71,10 +69,10 @@ OrientationHelper {
     */
     function show() {
         if (!dismissArea)
-            dismissArea = QuickUtils.rootObject
+            dismissArea = stateWrapper.rootItem
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
-        parent = QuickUtils.rootObject;
+        parent = stateWrapper.rootItem;
         stateWrapper.state = 'opened';
     }
 
@@ -161,9 +159,13 @@ OrientationHelper {
     opacity: 0.0
     /*! \internal */
     onVisibleChanged: stateWrapper.state = (visible) ? 'opened' : 'closed'
+    /*! \internal */
+    onParentChanged: stateWrapper.rootItem = QuickUtils.rootItem(popupBase)
+    Component.onCompleted: stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
 
     Item {
         id: stateWrapper
+        property Item rootItem: QuickUtils.rootItem(popupBase)
 
         states: [
             State {

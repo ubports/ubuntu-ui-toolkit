@@ -28,6 +28,18 @@ TestCase {
         compare(button.text,newText,"Can set/get text")
     }
 
+    function test_action() {
+        compare(actionButton.action, null, "Action is null by default")
+        actionButton.action = action1
+        compare(actionButton.action, action1, "action can be set")
+        var newText = "Hello action!"
+        action1.text = newText
+        compare(actionButton.text, newText, "action can be used to define text")
+        var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+        action1.iconSource = newIcon
+        compare(actionButton.iconSource, Qt.resolvedUrl(newIcon), "action can be used to define iconSource")
+    }
+
     function test_iconPosition() {
         compare(button.iconPosition,"left","The default value for iconPosition is 'left'")
         var newIconPosition = "right"
@@ -72,5 +84,15 @@ TestCase {
             id: signalSpy
             target: parent
         }
+    }
+
+    // Use a new button for action tests, because other tests override
+    //  the button's default text and iconSource so they are no longer
+    //  automatically taken from the action.
+    Button {
+        id: actionButton
+    }
+    Action {
+        id: action1
     }
 }

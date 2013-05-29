@@ -21,32 +21,35 @@
   the popup to be opened. This can be any property defined by the popups and additional
   custom ones defined in derived popups.
 
-  Sheets do not need callers to be specified, however when using non-modal Sheets or
-  Dialogs, it is worth to set the caller when opening Sheets to avoid leaving orphan
-  sheets on the screen.
+  caller parameter must be given when the Sheet or Dialog is specified using url
+  and opened inside a Window component. If not, the Sheet or Dialog will use the
+  application's root item as dismiss area.
   */
 function open(popup, caller, params) {
     var popupComponent = null;
+    var rootObject = null;
     if (popup.createObject) {
         // popup is a component and can create an object
         popupComponent = popup;
+        rootObject = QuickUtils.rootItem(popup);
     } else if (typeof popup === "string") {
         popupComponent = Qt.createComponent(popup);
+        rootObject = (caller !== undefined) ? QuickUtils.rootItem(caller) : QuickUtils.rootItem(null);
     } else {
         print("PopupUtils.open(): "+popup+" is not a component or a link");
-        return;
+        return null;
     }
 
     var popupObject;
     if (params !== undefined) {
-        popupObject = popupComponent.createObject(QuickUtils.rootObject, params);
+        popupObject = popupComponent.createObject(rootObject, params);
     } else {
-        popupObject = popupComponent.createObject(QuickUtils.rootObject);
+        popupObject = popupComponent.createObject(rootObject);
     }
     if (!popupObject) {
         print("PopupUtils.open(): Failed to create the popup object.");
         return;
-    } else if (popupObject.hasOwnProperty("caller"))
+    } else if (popupObject.hasOwnProperty("caller") && caller)
         popupObject.caller = caller;
 
     // if caller is specified, connect its cleanup to the popup's close

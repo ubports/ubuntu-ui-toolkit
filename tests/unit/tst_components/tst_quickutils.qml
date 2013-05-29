@@ -19,117 +19,135 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
+Item {
+    id: root
+    width: units.gu(40)
+    height: units.gu(40)
 
-TestCase {
-    name: "QuickUtilsAPI"
+    TestCase {
+        id: test
+        name: "QuickUtilsAPI"
+        when: windowShown
 
-    function test_modelDelegateHeightForEmptyObjectModelElements()
-    {
-        list.model = emptyModel;
-        list.section.property = "";
+        function test_rootItem()
+        {
+            compare(QuickUtils.rootItem(test) != 0, true, "Root item is not null");
+        }
 
-        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
-        compare(itemHeight, 0, "itemHeight failure");
+        function test_className()
+        {
+            compare(QuickUtils.className(test), "TestCase", "className for TestCase");
+            compare(QuickUtils.className(root), "QQuickItem", "className for Item");
+        }
+
+        function test_modelDelegateHeightForEmptyObjectModelElements()
+        {
+            list.model = emptyModel;
+            list.section.property = "";
+
+            var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+            compare(itemHeight, 0, "itemHeight failure");
 
 
-        for (var i = 0; i < 10; i++) {
-            emptyModel.append({});
+            for (var i = 0; i < 10; i++) {
+                emptyModel.append({});
+                var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+                compare(itemHeight, 50, "itemHeight failure");
+            }
+        }
+
+        function test_modelDelegateHeightForObjectModel()
+        {
+            list.model = objectList;
+            list.section.property = "label";
+
+            var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
+            compare(sectionHeight, 25, "sectionHeight failure");
+
             var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
             compare(itemHeight, 50, "itemHeight failure");
         }
-    }
 
-    function test_modelDelegateHeightForObjectModel()
-    {
-        list.model = objectList;
-        list.section.property = "label";
+        function test_modelDelegateHeightForVariantListModel()
+        {
+            list.model = variantList;
+            list.section.property = "label";
 
-        var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
-        compare(sectionHeight, 25, "sectionHeight failure");
+            var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
+            compare(sectionHeight, 25, "sectionHeight failure");
 
-        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
-        compare(itemHeight, 50, "itemHeight failure");
-    }
-
-    function test_modelDelegateHeightForVariantListModel()
-    {
-        list.model = variantList;
-        list.section.property = "label";
-
-        var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
-        compare(sectionHeight, 25, "sectionHeight failure");
-
-        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
-        compare(itemHeight, 50, "itemHeight failure");
-    }
-
-    function test_modelDelegateHeightForStringListModel()
-    {
-        list.model = stringList;
-        list.section.property = "modelData";
-
-        var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
-        compare(sectionHeight, 25, "sectionHeight failure");
-
-        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
-        compare(itemHeight, 50, "itemHeight failure");
-    }
-
-    function test_modelDelegateHeightForNumericModel()
-    {
-        list.model = 100;
-        list.section.property = "modelData";
-
-        var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
-        compare(sectionHeight, 25, "sectionHeight failure");
-
-        var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
-        compare(itemHeight, 50, "itemHeight failure");
-    }
-
-    property var emptyModel: ListModel {}
-
-    property var objectList: ListModel {
-        ListElement {label: "1"}
-        ListElement {label: "10"}
-        ListElement {label: "100"}
-        ListElement {label: "2"}
-        ListElement {label: "3"}
-        ListElement {label: "4"}
-        ListElement {label: "5"}
-        ListElement {label: "6"}
-        ListElement {label: "7"}
-        ListElement {label: "8"}
-    }
-
-    property var variantList: [
-        {"label": "1"},
-        {"label": "10"},
-        {"label": "100"},
-        {"label": "2"},
-        {"label": "3"},
-        {"label": "4"},
-        {"label": "5"},
-        {"label": "6"},
-        {"label": "7"},
-        {"label": "8"}
-    ]
-
-    property var stringList: ["1", "10", "100", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-    ListView {
-        id: list
-
-        section.criteria: ViewSection.FirstCharacter
-        section.delegate: Header{
-            text: section
-            height: 25
+            var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+            compare(itemHeight, 50, "itemHeight failure");
         }
 
-        delegate: Standard {
-            text: label
-            height: 50
-        }
-    }
+        function test_modelDelegateHeightForStringListModel()
+        {
+            list.model = stringList;
+            list.section.property = "modelData";
 
+            var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
+            compare(sectionHeight, 25, "sectionHeight failure");
+
+            var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+            compare(itemHeight, 50, "itemHeight failure");
+        }
+
+        function test_modelDelegateHeightForNumericModel()
+        {
+            list.model = 100;
+            list.section.property = "modelData";
+
+            var sectionHeight = QuickUtils.modelDelegateHeight(list.section.delegate, list.model);
+            compare(sectionHeight, 25, "sectionHeight failure");
+
+            var itemHeight = QuickUtils.modelDelegateHeight(list.delegate, list.model);
+            compare(itemHeight, 50, "itemHeight failure");
+        }
+
+        property var emptyModel: ListModel {}
+
+        property var objectList: ListModel {
+            ListElement {label: "1"}
+            ListElement {label: "10"}
+            ListElement {label: "100"}
+            ListElement {label: "2"}
+            ListElement {label: "3"}
+            ListElement {label: "4"}
+            ListElement {label: "5"}
+            ListElement {label: "6"}
+            ListElement {label: "7"}
+            ListElement {label: "8"}
+        }
+
+        property var variantList: [
+            {"label": "1"},
+            {"label": "10"},
+            {"label": "100"},
+            {"label": "2"},
+            {"label": "3"},
+            {"label": "4"},
+            {"label": "5"},
+            {"label": "6"},
+            {"label": "7"},
+            {"label": "8"}
+        ]
+
+        property var stringList: ["1", "10", "100", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+        ListView {
+            id: list
+
+            section.criteria: ViewSection.FirstCharacter
+            section.delegate: Header{
+                text: section
+                height: 25
+            }
+
+            delegate: Standard {
+                text: label
+                height: 50
+            }
+        }
+
+    }
 }

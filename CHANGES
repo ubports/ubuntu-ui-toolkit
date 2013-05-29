@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 
+* DEPRECATED IN QuickUtils: property Item rootObject
 * CHANGED IN Toolbar: property bool active TO property bool opened
 * CHANGED IN Toolbar: property bool lock TO property bool locked
 * CHANGED IN ToolbarActions: property bool active TO property bool opened
