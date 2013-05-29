@@ -83,6 +83,7 @@
  */
 InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     QQuickItem(parent),
+    m_ready(false),
     m_pressed(false),
     m_moved(false),
     m_propagateEvents(false),
@@ -118,11 +119,23 @@ InverseMouseAreaType::~InverseMouseAreaType()
  */
 void InverseMouseAreaType::update()
 {
+    if (!m_ready) {
+        return;
+    }
     // update sensing area
     if (!m_sensingArea)
         m_sensingArea = QuickUtils::instance().rootItem(this);
     if (!isEnabled() || !isVisible())
         reset();
+}
+
+void InverseMouseAreaType::componentComplete()
+{
+    QQuickItem::componentComplete();
+    // by now the parents shoudl have been resolved so we can look after the
+    // topmost component for the sensingArea in case it has not been set yet
+    m_ready = true;
+    update();
 }
 
 /*!
