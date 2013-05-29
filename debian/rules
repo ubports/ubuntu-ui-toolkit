@@ -3,6 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
+DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 
 %:
 	dh $@ --fail-missing
@@ -13,8 +14,8 @@ override_dh_auto_install:
 	# Provide both legacy qmlscene and future qml links
 	# -> users may update to use the 'qml' name
 	mkdir -p $(CURDIR)/debian/tmp/usr/bin
-	ln -s /usr/lib/*/qt5/bin/qmlscene $(CURDIR)/debian/tmp/usr/bin/qml
-	ln -s /usr/lib/*/qt5/bin/qmlscene $(CURDIR)/debian/tmp/usr/bin/qmlscene
+	ln -s /usr/lib/$(DEB_HOST_MULTI_ARCH)/qt5/bin/qmlscene $(CURDIR)/debian/tmp/usr/bin/qml
+	ln -s /usr/lib/$(DEB_HOST_MULTI_ARCH)/qt5/bin/qmlscene $(CURDIR)/debian/tmp/usr/bin/qmlscene
 
 override_dh_install:
 	dh_auto_build -- docs
