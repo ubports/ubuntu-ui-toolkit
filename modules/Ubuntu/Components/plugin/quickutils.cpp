@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
+#include <QtQml/QQmlInfo>
 
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
@@ -71,14 +72,48 @@ void QuickUtils::activeFocus(QObject *active)
 
 /*!
  * \internal
+ * \deprecated
  * Returns the current root object.
  */
 QQuickItem *QuickUtils::rootObject()
 {
+    qmlInfo(this) << "WARNING: QuickUtils.rootObject property is deprecated: Use QuickUtils::rootItem() function instead.";
     if (!m_rootView)
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
 }
+
+/*!
+ * \internal
+ * Returns the root item of a given item. In case there is a QQuickWindow (Window)
+ * found in the hierarchy, the function will return the contentItem of the window.
+ */
+QQuickItem *QuickUtils::rootItem(QObject *object)
+{
+    // make sure we have the m_rootView updated
+    lookupQuickView();
+    if (!object) {
+        return (m_rootView) ? m_rootView->rootObject() : 0;
+    }
+
+    QQuickItem *item = qobject_cast<QQuickItem*>(object);
+    // the given object may be a non-visual element (QtObject or QQmlComponent)
+    // therefore those objects' parent object should be considered
+    QQuickItem *parentItem = item ? item->parentItem() : qobject_cast<QQuickItem*>(object->parent());
+    while (parentItem && parentItem->parentItem()) {
+        parentItem = parentItem->parentItem();
+    }
+
+    if (m_rootView && (m_rootView->contentItem() == parentItem)) {
+        // when traversing visual parents of an element from the application,
+        // we reach QQuickView's contentItem, whose size is invalid. Therefore
+        // we need to return the QQuickView's rootObject() instead of the topmost
+        // item found
+        return m_rootView->rootObject();
+    }
+    return parentItem;
+}
+
 
 QString QuickUtils::inputMethodProvider() const
 {

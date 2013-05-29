@@ -216,7 +216,7 @@ Examples:
 }
 .dialog .background {
     dim: true;
-    color: QuickUtils.rootObject.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    color: item.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
     opacity: 1.0;
 }
 .dialog .foreground {
@@ -225,7 +225,7 @@ Examples:
     margins: units.gu(4);
     itemSpacing: units.gu(2);
     radius: "medium";
-    visible: QuickUtils.rootObject.width > units.gu(60);
+    visible: item.dismissArea.width > units.gu(60);
     color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent";
 }
 .dialog .foreground .title {

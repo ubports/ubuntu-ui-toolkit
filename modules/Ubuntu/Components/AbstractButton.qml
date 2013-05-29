@@ -31,35 +31,48 @@ Item {
     id: button
 
     /*!
-       \preliminary
+      If an action is specified, the button's clicked signal will trigger the action.
+      Subclasses of AbstractButton can use other properties of action (for example
+      the text and iconSource).
+     */
+    property Action action: null
+
+    visible: action ? action.visible : true
+    enabled: action ? action.enabled : true
+
+    /*!
        This handler is called when there is a mouse click on the button
-       and the button is not disabled.
+       and the button is not disabled. If \l action is defined,
+       the action will be triggered.
     */
     signal clicked()
+
+    /*!
+      If \l action was set, action.triggered() is automatically called with
+      the AbstractButton as parameter.
+     */
+    onClicked: if (action) action.triggered(button)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
 
     /*!
-      \preliminary
       This handler is called when there is a long press.
      */
     signal pressAndHold()
 
     /*!
-     \preliminary
       True if the user presses a mouse button in the button's mouse area.
      */
     property bool pressed: mouseArea.pressed
 
     /*!
-      \preliminary
       True if the mouse cursor hovers over the button's mouse area.
      */
     property bool hovered: __acceptEvents && mouseArea.containsMouse
 
-
-    /*! \internal
+    /*!
+      \internal
       Disable or enable signal emition by default.
       Some classes want to emit the signal by themselves (ListItem.Standard)
      */

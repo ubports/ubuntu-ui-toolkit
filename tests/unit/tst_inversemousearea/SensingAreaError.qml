@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 
 Item {
     id: root
+    objectName: "root"
     width: units.gu(40)
     height: units.gu(40)
 
