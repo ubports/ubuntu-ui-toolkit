@@ -25,18 +25,19 @@ PROGNAME=$(basename $0)
 GETTEXT_FILES=$(mktemp --tmpdir uitk-gallery.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
-find \( -name '*.cpp' -o -name '*.qml' \) \
+find \( -name '*.cpp' -o -name '*.qml' -name '*.js' \) \
     -a ! \( -path './debian/*' -o -path './build/*' -o -path './.bzr/*' \) | sort \
 > $GETTEXT_FILES
 
 # Generate pot from our list
 xgettext \
-    --output $PO_DIR/auto-generated.pot \
+    --output $PO_DIR/ubuntu-ui-toolkit.pot \
     --files-from $GETTEXT_FILES \
     --qt --c++ \
     --add-comments=TRANSLATORS \
     --keyword=tr \
-    --package-name gallery \
+    --keyword=tr:1,2 \
+    --package-name ubuntu-ui-toolkit \
     --copyright-holder "Canonical Ltd"
 
-echo "$PROGNAME: $PO_DIR/auto-generated.pot updated"
+echo "$PROGNAME: $PO_DIR/ubuntu-ui-toolkit.pot updated"
