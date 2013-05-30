@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-30 13:25+0200\n"
+"POT-Creation-Date: 2013-05-30 14:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,6 +335,10 @@ msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
+msgstr ""
+
+#: modules/Ubuntu/Components/ToolbarActions.qml:86
+msgid "Back"
 msgstr ""
 
 #: tests/resources/pagestack/MyCustomPage.qml:21

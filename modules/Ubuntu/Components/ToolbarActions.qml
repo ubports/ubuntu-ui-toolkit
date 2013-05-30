@@ -83,7 +83,7 @@ ActionList {
      */
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: "Back"
+        text: i18n.tr("Back")
         visible: toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
         /*!
           \internal
