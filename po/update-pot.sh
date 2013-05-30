@@ -25,7 +25,7 @@ PROGNAME=$(basename $0)
 GETTEXT_FILES=$(mktemp --tmpdir uitk-gallery.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
-find \( -name '*.cpp' -o -name '*.qml' -name '*.js' \) \
+find \( -name '*.cpp' -o -name '*.qml' -o -name '*.js' \) \
     -a ! \( -path './debian/*' -o -path './build/*' -o -path './.bzr/*' \) | sort \
 > $GETTEXT_FILES
 
