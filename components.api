@@ -256,6 +256,7 @@ FocusScope
     property alias font
     property alias inputMask
     property alias inputMethodComposing
+    property alias inputMethodHints
     property alias maximumLength
     property alias readOnly
     property alias selectedText
