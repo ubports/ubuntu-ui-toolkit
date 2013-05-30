@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Canonical Ltd
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-30 09:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
+msgid "Usage: "
+msgstr ""
+
+#: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
+msgid "Options:"
+msgstr ""
+
+#: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
+#, qt-format
+msgid "%1 is expecting an additional argument: %2"
+msgstr ""
+
+#: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
+#, qt-format
+msgid "%1 is expecting a value for argument: %2"
+msgstr ""
+
+#: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
+#, qt-format
+msgid "%1 is expecting additional arguments: %2"
+msgstr ""
