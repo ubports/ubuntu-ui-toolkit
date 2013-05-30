@@ -15,9 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+BUILDDIR=.
+DOMAIN=ubuntu-ui-toolkit
+
 for f in `find $TARGET -type f -name "*.po"`
     do
-        FILENAME=${f%.*}
+        LANG=${f%.*}
         EXTENSION=${f#*.}
-        msgfmt $f -o $FILENAME'.mo'
+        mkdir -p $BUILDDIR/locale/$LANG/LC_MESSAGES
+        msgfmt $f -o $BUILDDIR/locale/$LANG/LC_MESSAGES/$DOMAIN.mo
     done
