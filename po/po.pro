@@ -10,7 +10,6 @@ message(" Project Name: $$PROJECTNAME ")
 message(" Source Code: $$SOURCECODE ")
 message("")
 message(" run 'make pot' to generate the pot file from source code. ")
-message(" run 'make translate' to create a new translation (po) based on pot. ")
 message(" run 'make mo' to generate the mo files from po files. ")
 message(" run 'qmake; make install' to install the mo files. ")
 message("")
@@ -20,11 +19,6 @@ potfile.target = pot
 #potfile.commands = xgettext -o $${PROJECTNAME}.pot --package-name $${PROJECTNAME} --qt --c++ --add-comments=TRANSLATORS --keyword=tr $${SOURCECODE}
 potfile.commands = ./update-pot.sh
 QMAKE_EXTRA_TARGETS += potfile
-
-## poedit target for new translations 'make translate'
-poedit.target = translate
-poedit.commands = cp $${PROJECTNAME}.pot new_language.po; poedit new_language.po
-QMAKE_EXTRA_TARGETS += poedit
 
 ## generate mo files 'make mo'
 mofiles.target = mo
