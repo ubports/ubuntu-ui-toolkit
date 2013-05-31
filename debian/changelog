@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46daily13.05.31ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Olivier Tilloy ]
+  * Added property TextField.inputMethodHints. (LP: #1185392)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 525 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 31 May 2013 04:02:58 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.05.29.1ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
