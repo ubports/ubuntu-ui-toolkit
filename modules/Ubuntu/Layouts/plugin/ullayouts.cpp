@@ -56,15 +56,11 @@ void ULLayoutsPrivate::statusChanged(Status status)
         currentLayoutItem = qobject_cast<QQuickItem*>(object());
         Q_ASSERT(currentLayoutItem);
 
-        // set actions for layout
-//        actions << new ParentAction(currentLayout.layoutItem, "parent", q);
-//        applyActions(actions, false);
-
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-        actions << new PropertyAction(currentLayoutItem, "enabled", true);
-        actions << new PropertyAction(currentLayoutItem, "visible", true);
+        actions << new PropertyAction(currentLayoutItem, "enabled", true)
+                << new PropertyAction(currentLayoutItem, "visible", true);
         // apply actions
         actions.apply();
         // clear previous layout
@@ -165,16 +161,8 @@ void ULLayoutsPrivate::reparentItems()
             QQuickItem *laidOutItem = unusedItems.value(itemName);
             if (laidOutItem != 0) {
                 // reparent and break anchors
-                actions << new PropertyAction(laidOutItem, "parent", qVariantFromValue(container));
-//                actions << new AnchorResetAction(laidOutItem);
-                actions << new AnchorAction(laidOutItem, "left");
-                actions << new AnchorAction(laidOutItem, "top");
-                actions << new AnchorAction(laidOutItem, "right");
-                actions << new AnchorAction(laidOutItem, "bottom");
-                actions << new AnchorAction(laidOutItem, "horizontalCenter");
-                actions << new AnchorAction(laidOutItem, "verticalCenter");
-                actions << new AnchorAction(laidOutItem, "fill");
-                actions << new AnchorAction(laidOutItem, "centerIn");
+                actions << new ReparentAction(laidOutItem, container)
+                        << new AnchorBackupAction(laidOutItem);
                 // remove from unused ones
                 unusedItems.remove(itemName);
             }
@@ -203,9 +191,6 @@ void ULLayoutsPrivate::updateLayout()
         if (!layout->layoutName().isEmpty() && layout->when() && layout->when()->evaluate().toBool()) {
             if (currentLayoutIndex == i) {
                 return;
-            }
-            if (currentLayoutIndex < 0) {
-                // TODO: break the anchors first
             }
             currentLayoutIndex = i;
             // update layout

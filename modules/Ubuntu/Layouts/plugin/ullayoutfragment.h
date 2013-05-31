@@ -16,17 +16,32 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ulplugin.h"
-#include "ullayouts.h"
-#include "ulconditionallayout.h"
-#include "ullayoutfragment.h"
+#ifndef ULFRAGMENT_H
+#define ULFRAGMENT_H
 
-#include <qqml.h>
+#include <QtQuick/QQuickItem>
 
-void PluginPlugin::registerTypes(const char *uri)
+class ULLayoutFragment : public QQuickItem
 {
-    // @uri Ubuntu.Layouts
-    qmlRegisterType<ULLayouts>(uri, 0, 1, "Layouts");
-    qmlRegisterType<ULConditionalLayout>(uri, 0, 1, "ConditionalLayout");
-    qmlRegisterType<ULLayoutFragment>(uri, 0, 1, "LayoutFragment");
-}
+    Q_OBJECT
+
+    Q_PROPERTY(QString itemName READ itemName WRITE setItemName)
+
+public:
+    explicit ULLayoutFragment(QQuickItem *parent = 0);
+    ~ULLayoutFragment();
+
+    QString itemName() const;
+    void setItemName(const QString &value);
+
+    QStringList changedProperties() const;
+
+private Q_SLOTS:
+    void markPropertyChange();
+
+private:
+    QString m_itemName;
+    QSet<QString> m_changedProperties;
+};
+
+#endif // ULFRAGMENT_H

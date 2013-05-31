@@ -25,32 +25,160 @@
 #define foreach Q_FOREACH //workaround to fix private includes
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
-#include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
-class QQuickItem;
-
-class LayoutAction
+class QmlProperty
 {
 public:
-    enum ActionType {
-        Invalid,
-        Breaker,
-        Updater
+    QmlProperty() : binding(0) {}
+    QmlProperty(QQuickItem *item, const QString &name);
+    QmlProperty(const QmlProperty &other);
+
+    void reset();
+    bool revert();
+
+    QQmlProperty property;
+    QQmlAbstractBinding *binding;
+};
+
+class QQuickItem;
+class PropertyAction
+{
+public:
+    enum Priority {
+        High,
+        Normal,
+        Low,
+        MaxPriority
     };
 
-    LayoutAction(ActionType type = Invalid);
-    virtual ~LayoutAction() {}
+    PropertyAction(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
+    virtual ~PropertyAction() {}
+    virtual void saveState();
     virtual void execute();
     virtual void revert();
-    inline ActionType type() { return actionType; }
-protected:
-    void initialize();
+    inline Priority priority() { return actionPriority; }
 
-    ActionType actionType;
+protected:
+
+    static void saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value);
+    static void restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value);
+    static bool restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding);
+
+    Priority actionPriority;
     QQmlAbstractBinding *originalBinding, *targetBinding;
     QQmlProperty targetProperty;
     QVariant originalValue, targetValue;
+};
+
+
+class ParentAction : public PropertyAction
+{
+public:
+    ParentAction(QQuickItem *target, QQuickItem *source);
+
+    virtual void execute();
+
+protected:
+    virtual void saveState();
+
+    QQmlProperty sourceProperty;
+};
+
+
+class ReparentAction : public PropertyAction
+{
+public:
+    ReparentAction(QQuickItem *target, QQuickItem *targetParent);
+
+    void execute();
+    void revert();
+protected:
+    virtual void saveState();
+
+    QQmlProperty xProperty;
+    QQmlProperty yProperty;
+    QQmlProperty widthProperty;
+    QQmlProperty heightProperty;
+    QQmlProperty scaleProperty;
+    QQmlProperty rotationProperty;
+
+    QQuickItem *originalStackBefore;
+
+    QQmlAbstractBinding *xBinding;
+    QQmlAbstractBinding *yBinding;
+    QQmlAbstractBinding *widthBinding;
+    QQmlAbstractBinding *heightBinding;
+    QQmlAbstractBinding *scaleBinding;
+    QQmlAbstractBinding *rotationBinding;
+
+    QVariant originalX;
+    QVariant originalY;
+    QVariant originalWidth;
+    QVariant originalHeight;
+    QVariant originalScale;
+    QVariant originalRotation;
+};
+
+
+class AnchorPropertyAction : public PropertyAction
+{
+public:
+    AnchorPropertyAction(QQuickItem *target, const QString &property, const QVariant &value);
+
+    void execute();
+    void revert();
+protected:
+    virtual void saveState();
+
+    QQuickAnchorLine line;
+    qreal margin;
+};
+
+class QQuickAnchors;
+class AnchorBackupAction : public PropertyAction
+{
+public:
+    AnchorBackupAction(QQuickItem *target);
+
+    void execute();
+    void revert();
+protected:
+    virtual void saveState();
+
+    enum Anchor{
+        Left = 0,
+        Right,
+        Top,
+        Bottom,
+        HCenter,
+        VCenter,
+        Baseline,
+        MaxAnchor
+    };
+    enum Margins{
+        Margins = 0,
+        LeftMargin,
+        RightMargin,
+        TopMargin,
+        BottomMargin,
+        HCenterOffset,
+        VCenterOffset,
+        BaselineOffset,
+        MaxMargins
+    };
+
+    inline QQuickAnchors::Anchor anchor(Anchor id) {
+        return (QQuickAnchors::Anchor)(1 << (int)id);
+    }
+
+    QQuickAnchors *anchorsObject;
+    QQuickAnchors::Anchors used;
+
+    QmlProperty fill;
+    QmlProperty centerIn;
+    QmlProperty anchors[MaxAnchor];
+    QmlProperty margins[MaxMargins];
 };
 
 
@@ -64,56 +192,10 @@ public:
     void revert();
     void clear();
 
-    ActionList &operator<<(LayoutAction *action);
+    ActionList &operator<<(PropertyAction *action);
 
 private:
-    QList<LayoutAction*> breakerChanges;
-    QList<LayoutAction*> updaterChanges;
-};
-
-
-class PropertyAction : public LayoutAction
-{
-public:
-    PropertyAction(QQuickItem *target, const QString &property, const QVariant &value);
-};
-
-
-class ParentAction : public LayoutAction
-{
-public:
-    ParentAction(QQuickItem *target, const QString &property, QQuickItem *source);
-
-    virtual void execute();
-
-protected:
-    QQmlProperty sourceProperty;
-};
-
-
-class AnchorAction : public LayoutAction
-{
-public:
-    AnchorAction(QQuickItem *target, const QString &property);
-
-    void execute();
-};
-
-class QQuickAnchors;
-class AnchorResetAction : public LayoutAction
-{
-public:
-    AnchorResetAction(QQuickItem *target);
-
-    void execute();
-    void revert();
-protected:
-    QQuickAnchors *anchors;
-    QHash<QQuickAnchors::Anchor, QVariant> anchorLines;
-//    qreal margins[ElementsSize];
-//    QQuickItem *originalFill;
-//    QQuickItem *originalCenterIn;
-//    bool alignWhenCentered;
+    QList<PropertyAction*> changes[PropertyAction::MaxPriority];
 };
 
 #endif // LAYOUTACTION_P_H
