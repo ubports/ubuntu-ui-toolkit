@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.02ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ tpeeters ]
+  * Enable UI Toolkit translations in Launchpad. (LP: #1175724)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 528 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Jun 2013 04:02:42 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.05.31ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Olivier Tilloy ]
