@@ -26,19 +26,30 @@
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
 #include <QtQuick/private/qquickanchors_p_p.h>
+#include <QtQuick/private/qquickstate_p.h>
 
 class LayoutAction
 {
 public:
-    LayoutAction() : binding(0) {}
-    LayoutAction(QQuickItem *item, const QString &name);
     LayoutAction(const LayoutAction &other);
+    LayoutAction();
+    LayoutAction(QObject *item, const QString &name);
+    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value);
 
+    void setValue(const QVariant &value);
+    void apply();
     void reset();
     bool revert();
-
+public: // members
     QQmlProperty property;
-    QQmlAbstractBinding *binding;
+    QQmlAbstractBinding *fromBinding;
+    QWeakPointer<QQmlAbstractBinding> toBinding;
+    QVariant fromValue;
+    QVariant toValue;
+
+    bool toValueSet:1;
+    bool deleteFromBinding:1;
+    bool deleteToBinding:1;
 };
 
 class QQuickItem;

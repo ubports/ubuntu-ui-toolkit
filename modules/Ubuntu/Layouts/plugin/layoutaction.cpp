@@ -30,37 +30,88 @@
 
 
 /******************************************************************************
- * ChangeList
+ * LayoutAction
  */
-LayoutAction::LayoutAction(QQuickItem *item, const QString &name)
-    : property(item, name, qmlContext(item))
-    , binding(QQmlPropertyPrivate::binding(property))
-{
-}
+LayoutAction::LayoutAction()
+    : fromBinding(0)
+    , toValueSet(false)
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{}
 
 LayoutAction::LayoutAction(const LayoutAction &other)
     : property(other.property)
-    , binding(other.binding)
+    , fromBinding(other.fromBinding)
+    , toBinding(other.toBinding)
+    , fromValue(other.fromValue)
+    , toValue(other.toValue)
+    , toValueSet(other.toValueSet)
+    , deleteFromBinding(other.deleteFromBinding)
+    , deleteToBinding(other.deleteToBinding)
 {
+}
+
+LayoutAction::LayoutAction(QObject *item, const QString &name)
+    : property(item, name, qmlContext(item))
+    , fromBinding(QQmlPropertyPrivate::binding(property))
+    , fromValue(property.read())
+    , toValueSet(false)
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{
+}
+
+LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value)
+    : property(item, name, context)
+    , fromBinding(QQmlPropertyPrivate::binding(property))
+    , fromValue(property.read())
+    , toValue(value)
+    , toValueSet(value.isValid())
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{
+}
+
+void LayoutAction::setValue(const QVariant &value)
+{
+    toValue = value;
+    toValueSet = true;
+}
+
+void LayoutAction::apply()
+{
+
 }
 
 void LayoutAction::reset()
 {
     property.reset();
-    if (binding) {
+    if (fromBinding) {
         QQmlPropertyPrivate::setBinding(property, 0);
+        if (deleteFromBinding) {
+            fromBinding->destroy();
+            fromBinding = 0;
+            deleteFromBinding = false;
+        }
     }
 }
 
 bool LayoutAction::revert()
 {
-    if (binding) {
-        QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, binding);
-        if (revertedBinding && (revertedBinding != binding)) {
+    if (fromBinding) {
+        QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
+        if (revertedBinding && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
             revertedBinding->destroy();
         }
+    } else if (!toBinding.isNull() && QQmlPropertyPrivate::binding(property) == toBinding.data()) {
+        QQmlPropertyPrivate::setBinding(property, 0);
+        if (deleteToBinding) {
+            toBinding.data()->destroy();
+            toBinding.clear();
+            deleteToBinding = false;
+        }
     }
-    return (binding != 0);
+    return (fromBinding != 0);
 }
 
 /******************************************************************************
