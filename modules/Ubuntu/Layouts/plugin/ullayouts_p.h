@@ -33,7 +33,7 @@ public:
 
     ULLayouts *q_ptr;
     QList<ULConditionalLayout*> layouts;
-    ActionList actions;
+    ChangeList changes;
     LaidOutItemsMap itemsToLayout;
     QQuickItem* currentLayoutItem;
     int currentLayoutIndex;

@@ -27,12 +27,12 @@
 #undef foreach
 #include <QtQuick/private/qquickanchors_p_p.h>
 
-class QmlProperty
+class LayoutAction
 {
 public:
-    QmlProperty() : binding(0) {}
-    QmlProperty(QQuickItem *item, const QString &name);
-    QmlProperty(const QmlProperty &other);
+    LayoutAction() : binding(0) {}
+    LayoutAction(QQuickItem *item, const QString &name);
+    LayoutAction(const LayoutAction &other);
 
     void reset();
     bool revert();
@@ -42,7 +42,7 @@ public:
 };
 
 class QQuickItem;
-class PropertyAction
+class PropertyChange
 {
 public:
     enum Priority {
@@ -52,8 +52,8 @@ public:
         MaxPriority
     };
 
-    PropertyAction(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
-    virtual ~PropertyAction() {}
+    PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
+    virtual ~PropertyChange() {}
     virtual void saveState();
     virtual void execute();
     virtual void revert();
@@ -72,10 +72,10 @@ protected:
 };
 
 
-class ParentAction : public PropertyAction
+class ReparentChange : public PropertyChange
 {
 public:
-    ParentAction(QQuickItem *target, QQuickItem *source);
+    ReparentChange(QQuickItem *target, QQuickItem *source);
 
     virtual void execute();
 
@@ -86,10 +86,10 @@ protected:
 };
 
 
-class ReparentAction : public PropertyAction
+class ParentChange : public PropertyChange
 {
 public:
-    ReparentAction(QQuickItem *target, QQuickItem *targetParent);
+    ParentChange(QQuickItem *target, QQuickItem *targetParent);
 
     void execute();
     void revert();
@@ -121,25 +121,11 @@ protected:
 };
 
 
-class AnchorPropertyAction : public PropertyAction
-{
-public:
-    AnchorPropertyAction(QQuickItem *target, const QString &property, const QVariant &value);
-
-    void execute();
-    void revert();
-protected:
-    virtual void saveState();
-
-    QQuickAnchorLine line;
-    qreal margin;
-};
-
 class QQuickAnchors;
-class AnchorBackupAction : public PropertyAction
+class AnchorChange : public PropertyChange
 {
 public:
-    AnchorBackupAction(QQuickItem *target);
+    AnchorChange(QQuickItem *target);
 
     void execute();
     void revert();
@@ -175,27 +161,27 @@ protected:
     QQuickAnchors *anchorsObject;
     QQuickAnchors::Anchors used;
 
-    QmlProperty fill;
-    QmlProperty centerIn;
-    QmlProperty anchors[MaxAnchor];
-    QmlProperty margins[MaxMargins];
+    LayoutAction fill;
+    LayoutAction centerIn;
+    LayoutAction anchors[MaxAnchor];
+    LayoutAction margins[MaxMargins];
 };
 
 
-class ActionList
+class ChangeList
 {
 public:
-    ActionList(){}
-    ~ActionList();
+    ChangeList(){}
+    ~ChangeList();
 
     void apply();
     void revert();
     void clear();
 
-    ActionList &operator<<(PropertyAction *action);
+    ChangeList &operator<<(PropertyChange *action);
 
 private:
-    QList<PropertyAction*> changes[PropertyAction::MaxPriority];
+    QList<PropertyChange*> changes[PropertyChange::MaxPriority];
 };
 
 #endif // LAYOUTACTION_P_H

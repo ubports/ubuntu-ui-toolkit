@@ -30,21 +30,21 @@
 
 
 /******************************************************************************
- * ActionList
+ * ChangeList
  */
-QmlProperty::QmlProperty(QQuickItem *item, const QString &name)
+LayoutAction::LayoutAction(QQuickItem *item, const QString &name)
     : property(item, name, qmlContext(item))
     , binding(QQmlPropertyPrivate::binding(property))
 {
 }
 
-QmlProperty::QmlProperty(const QmlProperty &other)
+LayoutAction::LayoutAction(const LayoutAction &other)
     : property(other.property)
     , binding(other.binding)
 {
 }
 
-void QmlProperty::reset()
+void LayoutAction::reset()
 {
     property.reset();
     if (binding) {
@@ -52,7 +52,7 @@ void QmlProperty::reset()
     }
 }
 
-bool QmlProperty::revert()
+bool LayoutAction::revert()
 {
     if (binding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, binding);
@@ -64,36 +64,36 @@ bool QmlProperty::revert()
 }
 
 /******************************************************************************
- * ActionList
+ * ChangeList
  */
 
-ActionList::~ActionList()
+ChangeList::~ChangeList()
 {
     clear();
 }
 
-void ActionList::apply()
+void ChangeList::apply()
 {
-    for (int priority = PropertyAction::High; priority < PropertyAction::MaxPriority; priority++) {
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
         for (int change = 0; change < changes[priority].count(); change++) {
             changes[priority][change]->execute();
         }
     }
 }
 
-void ActionList::revert()
+void ChangeList::revert()
 {
     // reverse order of apply()
-    for (int priority = PropertyAction::Low; priority >= PropertyAction::High; priority--) {
+    for (int priority = PropertyChange::Low; priority >= PropertyChange::High; priority--) {
         for (int change = changes[priority].count() - 1; change >= 0; --change) {
             changes[priority][change]->revert();
         }
     }
 }
 
-void ActionList::clear()
+void ChangeList::clear()
 {
-    for (int priority = PropertyAction::High; priority < PropertyAction::MaxPriority; priority++) {
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
         for (int change = 0; change < changes[priority].count(); change++) {
             delete changes[priority][change];
         }
@@ -101,9 +101,9 @@ void ActionList::clear()
     }
 }
 
-ActionList &ActionList::operator<<(PropertyAction *action)
+ChangeList &ChangeList::operator<<(PropertyChange *action)
 {
-    if (action && (action->priority() < PropertyAction::MaxPriority)) {
+    if (action && (action->priority() < PropertyChange::MaxPriority)) {
         action->saveState();
         changes[action->priority()] << action;
     }
@@ -113,9 +113,9 @@ ActionList &ActionList::operator<<(PropertyAction *action)
 
 
 /******************************************************************************
- * PropertyAction
+ * PropertyChange
  */
-PropertyAction::PropertyAction(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
+PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
     : actionPriority(priority)
     , originalBinding(0)
     , targetBinding(0)
@@ -125,14 +125,14 @@ PropertyAction::PropertyAction(QQuickItem *target, const QString &property, cons
 {
 }
 
-void PropertyAction::saveState()
+void PropertyChange::saveState()
 {
     if (targetProperty.isValid()) {
         originalBinding = QQmlPropertyPrivate::binding(targetProperty);
     }
 }
 
-void PropertyAction::execute()
+void PropertyChange::execute()
 {
     if (!targetProperty.write(targetValue)) {
         qmlInfo(targetProperty.object()) << "Updating property \"" << targetProperty.name()
@@ -140,25 +140,25 @@ void PropertyAction::execute()
     }
 }
 
-void PropertyAction::revert()
+void PropertyChange::revert()
 {
     restoreProperty(targetProperty, originalBinding, originalValue);
 }
 
-void PropertyAction::saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value)
+void PropertyChange::saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value)
 {
     (*binding) = QQmlPropertyPrivate::binding(property);
     if (!(*binding)) {
         value = property.read();
     }
 }
-void PropertyAction::restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value)
+void PropertyChange::restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value)
 {
     if (!restoreBinding(property, binding)) {
         property.write(value);
     }
 }
-bool PropertyAction::restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding)
+bool PropertyChange::restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding)
 {
     if (binding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, binding);
@@ -172,40 +172,40 @@ bool PropertyAction::restoreBinding(const QQmlProperty &property, QQmlAbstractBi
 
 
 /******************************************************************************
- * ParentAction
+ * ReparentChange
  * TODO: Save parent, x, y, width, height, scale and rotation
  */
-ParentAction::ParentAction(QQuickItem *target, QQuickItem *source)
-    : PropertyAction(target, "parent", QVariant(), Normal)
+ReparentChange::ReparentChange(QQuickItem *target, QQuickItem *source)
+    : PropertyChange(target, "parent", QVariant(), Normal)
     , sourceProperty(source, "parent", qmlContext(source))
 {
 }
 
-void ParentAction::saveState()
+void ReparentChange::saveState()
 {
     targetValue = sourceProperty.read();
-    PropertyAction::saveState();
+    PropertyChange::saveState();
     if (sourceProperty.isValid()) {
         targetBinding = QQmlPropertyPrivate::binding(sourceProperty);
     }
 }
 
-void ParentAction::execute()
+void ReparentChange::execute()
 {
     if (targetBinding) {
         QQmlPropertyPrivate::setBinding(targetProperty, targetBinding, QQmlPropertyPrivate::DontRemoveBinding);
         return;
     }
     // this is most likely not reached
-    PropertyAction::execute();
+    PropertyChange::execute();
 }
 
 
 /******************************************************************************
- * ReparentAction
+ * ParentChange
  */
-ReparentAction::ReparentAction(QQuickItem *target, QQuickItem *targetParent)
-    : PropertyAction(target, "parent", qVariantFromValue(targetParent), Normal)
+ParentChange::ParentChange(QQuickItem *target, QQuickItem *targetParent)
+    : PropertyChange(target, "parent", qVariantFromValue(targetParent), Normal)
     , xProperty(target, "x", qmlContext(target))
     , yProperty(target, "y", qmlContext(target))
     , widthProperty(target, "width", qmlContext(target))
@@ -218,9 +218,9 @@ ReparentAction::ReparentAction(QQuickItem *target, QQuickItem *targetParent)
 {
 }
 
-void ReparentAction::saveState()
+void ParentChange::saveState()
 {
-    PropertyAction::saveState();
+    PropertyChange::saveState();
 
     QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
     QQuickItem *rewindParent = target->parentItem();
@@ -242,16 +242,16 @@ void ReparentAction::saveState()
     saveProperty(rotationProperty, &rotationBinding, originalRotation);
 }
 
-void ReparentAction::execute()
+void ParentChange::execute()
 {
-    PropertyAction::execute();
+    PropertyChange::execute();
     // need to reset x, y coordinates
     QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
     target->setX(0.0);
     target->setY(0.0);
 }
 
-void ReparentAction::revert()
+void ParentChange::revert()
 {
     // need to reset x, y coordinates
     QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
@@ -261,75 +261,47 @@ void ReparentAction::revert()
     restoreProperty(heightProperty, heightBinding, originalHeight);
     restoreProperty(scaleProperty, scaleBinding, originalScale);
     restoreProperty(rotationProperty, rotationBinding, originalRotation);
-    PropertyAction::revert();
+    PropertyChange::revert();
     if (originalStackBefore) {
         target->stackBefore(originalStackBefore);
     }
 }
 
 /******************************************************************************
- * AnchorAction
+ * AnchorChange
  */
-AnchorPropertyAction::AnchorPropertyAction(QQuickItem *target, const QString &property, const QVariant &value)
-    : PropertyAction(target, property, value, Low)
-{
-}
-
-void AnchorPropertyAction::saveState()
-{
-    PropertyAction::saveState();
-    QQuickAnchors *anchors = originalValue.value<QQuickAnchors*>();
-    QQuickAnchors::Anchors used = anchors->usedAnchors();
-
-}
-
-void AnchorPropertyAction::execute()
-{
-    qDebug() << "resetting" << targetProperty.name() << targetProperty.reset();
-    // remove the binding
-    QQmlPropertyPrivate::setBinding(targetProperty, 0);
-}
-
-void AnchorPropertyAction::revert()
-{
-    PropertyAction::revert();
-}
-
-/******************************************************************************
- * AnchorResetAction
- */
-AnchorBackupAction::AnchorBackupAction(QQuickItem *target)
-    : PropertyAction(target, "anchors", QVariant(), High)
+AnchorChange::AnchorChange(QQuickItem *target)
+    : PropertyChange(target, "anchors", QVariant(), High)
     , anchorsObject(originalValue.value<QQuickAnchors*>())
     , used(anchorsObject->usedAnchors())
     , fill(target, "anchors.fill")
     , centerIn(target, "anchors.centerIn")
 {
-    anchors[Left] = QmlProperty(target, "anchors.left");
-    anchors[Right] = QmlProperty(target, "anchors.right");
-    anchors[Top] = QmlProperty(target, "anchors.top");
-    anchors[Bottom] = QmlProperty(target, "anchors.bottom");
-    anchors[HCenter] = QmlProperty(target, "anchors.horizontalCenter");
-    anchors[VCenter] = QmlProperty(target, "anchors.verticalCenter");
-    anchors[Baseline] = QmlProperty(target, "anchors.baseline");
+    anchors[Left] = LayoutAction(target, "anchors.left");
+    anchors[Right] = LayoutAction(target, "anchors.right");
+    anchors[Top] = LayoutAction(target, "anchors.top");
+    anchors[Bottom] = LayoutAction(target, "anchors.bottom");
+    anchors[HCenter] = LayoutAction(target, "anchors.horizontalCenter");
+    anchors[VCenter] = LayoutAction(target, "anchors.verticalCenter");
+    anchors[Baseline] = LayoutAction(target, "anchors.baseline");
 
-    margins[Margins] = QmlProperty(target, "anchors.margins");
-    margins[Left] = QmlProperty(target, "anchors.leftMargin");
-    margins[Right] = QmlProperty(target, "anchors.rightMargin");
-    margins[Top] = QmlProperty(target, "anchors.topMargin");
-    margins[Bottom] = QmlProperty(target, "anchors.bottomMargin");
-    margins[HCenterOffset] = QmlProperty(target, "anchors.horizontalCenterOffset");
-    margins[VCenterOffset] = QmlProperty(target, "anchors.verticalCenterOffset");
-    margins[BaselineOffset] = QmlProperty(target, "anchors.baselineOffset");
+    margins[Margins] = LayoutAction(target, "anchors.margins");
+    margins[Left] = LayoutAction(target, "anchors.leftMargin");
+    margins[Right] = LayoutAction(target, "anchors.rightMargin");
+    margins[Top] = LayoutAction(target, "anchors.topMargin");
+    margins[Bottom] = LayoutAction(target, "anchors.bottomMargin");
+    margins[HCenterOffset] = LayoutAction(target, "anchors.horizontalCenterOffset");
+    margins[VCenterOffset] = LayoutAction(target, "anchors.verticalCenterOffset");
+    margins[BaselineOffset] = LayoutAction(target, "anchors.baselineOffset");
 }
 
-void AnchorBackupAction::saveState()
+void AnchorChange::saveState()
 {
     // no need to call superclass' saveState() as we don't touch the anchor property
     // only its properties
 }
 
-void AnchorBackupAction::execute()
+void AnchorChange::execute()
 {
     // reset all anchors
     if (!used) {
@@ -346,7 +318,7 @@ void AnchorBackupAction::execute()
     }
 }
 
-void AnchorBackupAction::revert()
+void AnchorChange::revert()
 {
     // revert all anchors
     if (!used) {

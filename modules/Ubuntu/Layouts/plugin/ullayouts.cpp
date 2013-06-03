@@ -59,10 +59,10 @@ void ULLayoutsPrivate::statusChanged(Status status)
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-        actions << new PropertyAction(currentLayoutItem, "enabled", true)
-                << new PropertyAction(currentLayoutItem, "visible", true);
-        // apply actions
-        actions.apply();
+        changes << new PropertyChange(currentLayoutItem, "enabled", true)
+                << new PropertyChange(currentLayoutItem, "visible", true);
+        // apply changes
+        changes.apply();
         // clear previous layout
         delete previousLayout;
 
@@ -126,10 +126,10 @@ void ULLayoutsPrivate::reLayout()
     }
 
     qDebug() << "activate layout:" << q_ptr->currentLayout();
-    // redo actions
-    actions.revert();
+    // redo changes
+    changes.revert();
 
-    actions.clear();
+    changes.clear();
 
     // clear the incubator prior being used
     clear();
@@ -161,8 +161,8 @@ void ULLayoutsPrivate::reparentItems()
             QQuickItem *laidOutItem = unusedItems.value(itemName);
             if (laidOutItem != 0) {
                 // reparent and break anchors
-                actions << new ReparentAction(laidOutItem, container)
-                        << new AnchorBackupAction(laidOutItem);
+                changes << new ParentChange(laidOutItem, container)
+                        << new AnchorChange(laidOutItem);
                 // remove from unused ones
                 unusedItems.remove(itemName);
             }
@@ -173,8 +173,8 @@ void ULLayoutsPrivate::reparentItems()
     QHashIterator<QString, QQuickItem*> i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        actions << new PropertyAction(i.value(), "visible", false);
-        actions << new PropertyAction(i.value(), "enabled", false);
+        changes << new PropertyChange(i.value(), "visible", false);
+        changes << new PropertyChange(i.value(), "enabled", false);
     }
 }
 
@@ -201,7 +201,7 @@ void ULLayoutsPrivate::updateLayout()
     // check if we need to switch back to default layout
     if (currentLayoutIndex >= 0) {
         qDebug() << "back to default layout";
-        actions.revert();
+        changes.revert();
         delete currentLayoutItem;
         currentLayoutItem = 0;
         currentLayoutIndex = -1;
