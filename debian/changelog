@@ -1,3 +1,42 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.02ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ tpeeters ]
+  * Enable UI Toolkit translations in Launchpad. (LP: #1175724)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 528 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Jun 2013 04:02:42 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.05.31ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Olivier Tilloy ]
+  * Added property TextField.inputMethodHints. (LP: #1185392)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 525 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 31 May 2013 04:02:58 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.05.29.1ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Zsombor Egri ]
+  * [inversemousearea] Default sensing area not set on the proper time.
+    (LP: #1185397)
+
+  [ Timo Jyrinki ]
+  * Use dpkg-architecture instead of '*' for qmlrunner's symlinks.
+    Something has broken the latter recently and dpkg-architecture is
+    more trustworthy anyway.
+
+  [ Christian Dywan ]
+  * Save qdoc error log and fail if it's not empty. (LP: #1185402)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 523 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 29 May 2013 19:55:27 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.05.29ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
