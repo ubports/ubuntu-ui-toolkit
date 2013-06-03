@@ -202,6 +202,7 @@ void ULLayoutsPrivate::updateLayout()
     if (currentLayoutIndex >= 0) {
         qDebug() << "back to default layout";
         changes.revert();
+        changes.clear();
         delete currentLayoutItem;
         currentLayoutItem = 0;
         currentLayoutIndex = -1;

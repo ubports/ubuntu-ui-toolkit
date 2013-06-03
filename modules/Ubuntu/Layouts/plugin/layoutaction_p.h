@@ -35,7 +35,7 @@ public:
     LayoutAction(const LayoutAction &other);
     LayoutAction();
     LayoutAction(QObject *item, const QString &name, Type type = Binding);
-    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Binding);
+    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Value);
 
     void setValue(const QVariant &value);
     void apply();
