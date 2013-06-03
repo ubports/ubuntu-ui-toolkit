@@ -38,6 +38,7 @@ public:
     LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Value);
 
     void setValue(const QVariant &value);
+    void setTargetBinding(QQmlAbstractBinding *binding);
     void apply();
     void reset();
     void revert(bool reset = false);
@@ -67,6 +68,7 @@ public:
 
     PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
     virtual ~PropertyChange() {}
+
     virtual void saveState();
     virtual void execute();
     virtual void revert();
@@ -74,14 +76,12 @@ public:
 
 protected:
 
-    static void saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value);
-    static void restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value);
-    static bool restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding);
+//    static void saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value);
+//    static void restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value);
+//    static bool restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding);
 
     Priority actionPriority;
-    QQmlAbstractBinding *originalBinding, *targetBinding;
-    QQmlProperty targetProperty;
-    QVariant originalValue, targetValue;
+    LayoutAction action;
 };
 
 
