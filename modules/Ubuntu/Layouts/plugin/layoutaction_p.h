@@ -31,16 +31,18 @@
 class LayoutAction
 {
 public:
+    enum Type {Binding, Value};
     LayoutAction(const LayoutAction &other);
     LayoutAction();
-    LayoutAction(QObject *item, const QString &name);
-    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value);
+    LayoutAction(QObject *item, const QString &name, Type type = Binding);
+    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Binding);
 
     void setValue(const QVariant &value);
     void apply();
     void reset();
-    bool revert();
+    void revert();
 public: // members
+    Type type;
     QQmlProperty property;
     QQmlAbstractBinding *fromBinding;
     QWeakPointer<QQmlAbstractBinding> toBinding;
@@ -171,11 +173,7 @@ protected:
 
     QQuickAnchors *anchorsObject;
     QQuickAnchors::Anchors used;
-
-    LayoutAction fill;
-    LayoutAction centerIn;
-    LayoutAction anchors[MaxAnchor];
-    LayoutAction margins[MaxMargins];
+    QList<LayoutAction> actions;
 };
 
 

@@ -33,14 +33,16 @@
  * LayoutAction
  */
 LayoutAction::LayoutAction()
-    : fromBinding(0)
+    : type(Value)
+    , fromBinding(0)
     , toValueSet(false)
     , deleteFromBinding(false)
     , deleteToBinding(false)
 {}
 
 LayoutAction::LayoutAction(const LayoutAction &other)
-    : property(other.property)
+    : type(other.type)
+    , property(other.property)
     , fromBinding(other.fromBinding)
     , toBinding(other.toBinding)
     , fromValue(other.fromValue)
@@ -51,8 +53,9 @@ LayoutAction::LayoutAction(const LayoutAction &other)
 {
 }
 
-LayoutAction::LayoutAction(QObject *item, const QString &name)
-    : property(item, name, qmlContext(item))
+LayoutAction::LayoutAction(QObject *item, const QString &name, Type type)
+    : type(type)
+    , property(item, name, qmlContext(item))
     , fromBinding(QQmlPropertyPrivate::binding(property))
     , fromValue(property.read())
     , toValueSet(false)
@@ -61,8 +64,9 @@ LayoutAction::LayoutAction(QObject *item, const QString &name)
 {
 }
 
-LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value)
-    : property(item, name, context)
+LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type)
+    : type(type)
+    , property(item, name, context)
     , fromBinding(QQmlPropertyPrivate::binding(property))
     , fromValue(property.read())
     , toValue(value)
@@ -80,7 +84,19 @@ void LayoutAction::setValue(const QVariant &value)
 
 void LayoutAction::apply()
 {
-
+    if (toBinding) {
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::setBinding(property, toBinding.data());
+        if (binding != fromBinding || (binding == fromBinding && deleteFromBinding)) {
+            binding->destroy();
+            if (binding == fromBinding) {
+                fromBinding = 0;
+            }
+        }
+    } else if (toValueSet && !property.write(toValue)){
+        qmlInfo(property.object()) << "Layouts: updating property \""
+                                      << property.name()
+                                      << "\" failed.";
+    }
 }
 
 void LayoutAction::reset()
@@ -96,7 +112,7 @@ void LayoutAction::reset()
     }
 }
 
-bool LayoutAction::revert()
+void LayoutAction::revert()
 {
     if (fromBinding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
@@ -110,58 +126,10 @@ bool LayoutAction::revert()
             toBinding.clear();
             deleteToBinding = false;
         }
-    }
-    return (fromBinding != 0);
-}
-
-/******************************************************************************
- * ChangeList
- */
-
-ChangeList::~ChangeList()
-{
-    clear();
-}
-
-void ChangeList::apply()
-{
-    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
-        for (int change = 0; change < changes[priority].count(); change++) {
-            changes[priority][change]->execute();
-        }
+    } else if (property.isValid() && fromValue.isValid() && (type == Value)) {
+        property.write(fromValue);
     }
 }
-
-void ChangeList::revert()
-{
-    // reverse order of apply()
-    for (int priority = PropertyChange::Low; priority >= PropertyChange::High; priority--) {
-        for (int change = changes[priority].count() - 1; change >= 0; --change) {
-            changes[priority][change]->revert();
-        }
-    }
-}
-
-void ChangeList::clear()
-{
-    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
-        for (int change = 0; change < changes[priority].count(); change++) {
-            delete changes[priority][change];
-        }
-        changes[priority].clear();
-    }
-}
-
-ChangeList &ChangeList::operator<<(PropertyChange *action)
-{
-    if (action && (action->priority() < PropertyChange::MaxPriority)) {
-        action->saveState();
-        changes[action->priority()] << action;
-    }
-
-    return *this;
-}
-
 
 /******************************************************************************
  * PropertyChange
@@ -325,25 +293,23 @@ AnchorChange::AnchorChange(QQuickItem *target)
     : PropertyChange(target, "anchors", QVariant(), High)
     , anchorsObject(originalValue.value<QQuickAnchors*>())
     , used(anchorsObject->usedAnchors())
-    , fill(target, "anchors.fill")
-    , centerIn(target, "anchors.centerIn")
 {
-    anchors[Left] = LayoutAction(target, "anchors.left");
-    anchors[Right] = LayoutAction(target, "anchors.right");
-    anchors[Top] = LayoutAction(target, "anchors.top");
-    anchors[Bottom] = LayoutAction(target, "anchors.bottom");
-    anchors[HCenter] = LayoutAction(target, "anchors.horizontalCenter");
-    anchors[VCenter] = LayoutAction(target, "anchors.verticalCenter");
-    anchors[Baseline] = LayoutAction(target, "anchors.baseline");
+    actions << LayoutAction(target, "anchors.left")
+    << LayoutAction(target, "anchors.right")
+    << LayoutAction(target, "anchors.top")
+    << LayoutAction(target, "anchors.bottom")
+    << LayoutAction(target, "anchors.horizontalCenter")
+    << LayoutAction(target, "anchors.verticalCenter")
+    << LayoutAction(target, "anchors.baseline")
 
-    margins[Margins] = LayoutAction(target, "anchors.margins");
-    margins[Left] = LayoutAction(target, "anchors.leftMargin");
-    margins[Right] = LayoutAction(target, "anchors.rightMargin");
-    margins[Top] = LayoutAction(target, "anchors.topMargin");
-    margins[Bottom] = LayoutAction(target, "anchors.bottomMargin");
-    margins[HCenterOffset] = LayoutAction(target, "anchors.horizontalCenterOffset");
-    margins[VCenterOffset] = LayoutAction(target, "anchors.verticalCenterOffset");
-    margins[BaselineOffset] = LayoutAction(target, "anchors.baselineOffset");
+    << LayoutAction(target, "anchors.margins", LayoutAction::Value)
+    << LayoutAction(target, "anchors.leftMargin", LayoutAction::Value)
+    << LayoutAction(target, "anchors.rightMargin", LayoutAction::Value)
+    << LayoutAction(target, "anchors.topMargin", LayoutAction::Value)
+    << LayoutAction(target, "anchors.bottomMargin", LayoutAction::Value)
+    << LayoutAction(target, "anchors.horizontalCenterOffset", LayoutAction::Value)
+    << LayoutAction(target, "anchors.verticalCenterOffset", LayoutAction::Value)
+    << LayoutAction(target, "anchors.baselineOffset", LayoutAction::Value);
 }
 
 void AnchorChange::saveState()
@@ -359,13 +325,8 @@ void AnchorChange::execute()
         return;
     }
 
-    fill.reset();
-    centerIn.reset();
-    margins[Margins].reset();
-
-    for (int i = Left; i < MaxAnchor; i++) {
-        anchors[i].reset();
-        margins[i + 1].reset();
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].reset();
     }
 }
 
@@ -376,12 +337,55 @@ void AnchorChange::revert()
         return;
     }
 
-    fill.revert();
-    centerIn.revert();
-    margins[Margins].revert();
-
-    for (int i = Left; i < MaxAnchor; i++) {
-        anchors[i].revert();
-        margins[i + 1].revert();
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].revert();
     }
+}
+
+/******************************************************************************
+ * ChangeList
+ */
+
+ChangeList::~ChangeList()
+{
+    clear();
+}
+
+void ChangeList::apply()
+{
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
+        for (int change = 0; change < changes[priority].count(); change++) {
+            changes[priority][change]->execute();
+        }
+    }
+}
+
+void ChangeList::revert()
+{
+    // reverse order of apply()
+    for (int priority = PropertyChange::Low; priority >= PropertyChange::High; priority--) {
+        for (int change = changes[priority].count() - 1; change >= 0; --change) {
+            changes[priority][change]->revert();
+        }
+    }
+}
+
+void ChangeList::clear()
+{
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
+        for (int change = 0; change < changes[priority].count(); change++) {
+            delete changes[priority][change];
+        }
+        changes[priority].clear();
+    }
+}
+
+ChangeList &ChangeList::operator<<(PropertyChange *action)
+{
+    if (action && (action->priority() < PropertyChange::MaxPriority)) {
+        action->saveState();
+        changes[action->priority()] << action;
+    }
+
+    return *this;
 }
