@@ -664,7 +664,7 @@ FocusScope {
             bottom: parent.bottom
             margins: internal.spacing
         }
-        width: control.hasClearButton ? height : 0
+        width: visible ? height : 0
         visible: control.hasClearButton &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
