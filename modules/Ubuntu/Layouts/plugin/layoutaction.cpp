@@ -55,7 +55,7 @@ LayoutAction::LayoutAction(const LayoutAction &other)
 
 LayoutAction::LayoutAction(QObject *item, const QString &name, Type type)
     : type(type)
-    , property(item, name, qmlContext(item))
+    , property(item, name, qmlEngine(item))
     , fromBinding(QQmlPropertyPrivate::binding(property))
     , fromValue(property.read())
     , toValueSet(false)
@@ -92,10 +92,15 @@ void LayoutAction::apply()
                 fromBinding = 0;
             }
         }
-    } else if (toValueSet && !property.write(toValue)){
-        qmlInfo(property.object()) << "Layouts: updating property \""
+    } else if (toValueSet) {
+        qDebug() << "set" << property.name() << toValue;
+        if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
+            // FIXME: why does the QQmlProperty::write() give binding loop?
+//        if (!property.write(toValue)) {
+            qmlInfo(property.object()) << "Layouts: updating property \""
                                       << property.name()
                                       << "\" failed.";
+        }
     }
 }
 
@@ -112,8 +117,11 @@ void LayoutAction::reset()
     }
 }
 
-void LayoutAction::revert()
+void LayoutAction::revert(bool reset)
 {
+    if (reset) {
+        property.reset();
+    }
     if (fromBinding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
         if (revertedBinding && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
@@ -225,16 +233,15 @@ void ReparentChange::execute()
  */
 ParentChange::ParentChange(QQuickItem *target, QQuickItem *targetParent)
     : PropertyChange(target, "parent", qVariantFromValue(targetParent), Normal)
-    , xProperty(target, "x", qmlContext(target))
-    , yProperty(target, "y", qmlContext(target))
-    , widthProperty(target, "width", qmlContext(target))
-    , heightProperty(target, "height", qmlContext(target))
-    , scaleProperty(target, "scale", qmlContext(target))
-    , rotationProperty(target, "rotation", qmlContext(target))
     , originalStackBefore(0)
-    , xBinding(0), yBinding(0), widthBinding(0), heightBinding(0), scaleBinding(0), rotationBinding(0)
-    , originalX(0), originalY(0), originalWidth(0), originalHeight(0), originalScale(0), originalRotation(0)
+    , container(targetParent)
 {
+    actions << LayoutAction(target, "x", LayoutAction::Value)
+            << LayoutAction(target, "y", LayoutAction::Value)
+            << LayoutAction(target, "width", LayoutAction::Value)
+            << LayoutAction(target, "height", LayoutAction::Value)
+            << LayoutAction(target, "scale", LayoutAction::Value)
+            << LayoutAction(target, "rotation", LayoutAction::Value);
 }
 
 void ParentChange::saveState()
@@ -252,35 +259,36 @@ void ParentChange::saveState()
         }
     }
 
-    // save bindings for x, y, width, height, scale and rotation
-    saveProperty(xProperty, &xBinding, originalX);
-    saveProperty(yProperty, &yBinding, originalY);
-    saveProperty(widthProperty, &widthBinding, originalWidth);
-    saveProperty(heightProperty, &heightBinding, originalHeight);
-    saveProperty(scaleProperty, &scaleBinding, originalScale);
-    saveProperty(rotationProperty, &rotationBinding, originalRotation);
+    if (container->inherits("QQuickColumn")) {
+        actions[0].setValue(0.0);
+    } else if (container->inherits("QQuickRow")) {
+        actions[1].setValue(0.0);
+    } else if (container->inherits("QQuickFlow") || container->inherits("QQuickGrid")) {
+        qDebug() << "other positioner";
+        actions[0].setValue(0.0);
+        actions[1].setValue(0.0);
+    }
 }
 
 void ParentChange::execute()
 {
     PropertyChange::execute();
     // need to reset x, y coordinates
-    QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
-    target->setX(0.0);
-    target->setY(0.0);
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].apply();
+    }
 }
 
 void ParentChange::revert()
 {
     // need to reset x, y coordinates
-    QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
-    restoreProperty(xProperty, xBinding, originalX);
-    restoreProperty(yProperty, yBinding, originalY);
-    restoreProperty(widthProperty, widthBinding, originalWidth);
-    restoreProperty(heightProperty, heightBinding, originalHeight);
-    restoreProperty(scaleProperty, scaleBinding, originalScale);
-    restoreProperty(rotationProperty, rotationBinding, originalRotation);
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].revert(true);
+    }
+
     PropertyChange::revert();
+
+    QQuickItem *target = static_cast<QQuickItem*>(targetProperty.object());
     if (originalStackBefore) {
         target->stackBefore(originalStackBefore);
     }
@@ -295,21 +303,21 @@ AnchorChange::AnchorChange(QQuickItem *target)
     , used(anchorsObject->usedAnchors())
 {
     actions << LayoutAction(target, "anchors.left")
-    << LayoutAction(target, "anchors.right")
-    << LayoutAction(target, "anchors.top")
-    << LayoutAction(target, "anchors.bottom")
-    << LayoutAction(target, "anchors.horizontalCenter")
-    << LayoutAction(target, "anchors.verticalCenter")
-    << LayoutAction(target, "anchors.baseline")
+            << LayoutAction(target, "anchors.right")
+            << LayoutAction(target, "anchors.top")
+            << LayoutAction(target, "anchors.bottom")
+            << LayoutAction(target, "anchors.horizontalCenter")
+            << LayoutAction(target, "anchors.verticalCenter")
+            << LayoutAction(target, "anchors.baseline")
 
-    << LayoutAction(target, "anchors.margins", LayoutAction::Value)
-    << LayoutAction(target, "anchors.leftMargin", LayoutAction::Value)
-    << LayoutAction(target, "anchors.rightMargin", LayoutAction::Value)
-    << LayoutAction(target, "anchors.topMargin", LayoutAction::Value)
-    << LayoutAction(target, "anchors.bottomMargin", LayoutAction::Value)
-    << LayoutAction(target, "anchors.horizontalCenterOffset", LayoutAction::Value)
-    << LayoutAction(target, "anchors.verticalCenterOffset", LayoutAction::Value)
-    << LayoutAction(target, "anchors.baselineOffset", LayoutAction::Value);
+            << LayoutAction(target, "anchors.margins", LayoutAction::Value)
+            << LayoutAction(target, "anchors.leftMargin", LayoutAction::Value)
+            << LayoutAction(target, "anchors.rightMargin", LayoutAction::Value)
+            << LayoutAction(target, "anchors.topMargin", LayoutAction::Value)
+            << LayoutAction(target, "anchors.bottomMargin", LayoutAction::Value)
+            << LayoutAction(target, "anchors.horizontalCenterOffset", LayoutAction::Value)
+            << LayoutAction(target, "anchors.verticalCenterOffset", LayoutAction::Value)
+            << LayoutAction(target, "anchors.baselineOffset", LayoutAction::Value);
 }
 
 void AnchorChange::saveState()
@@ -338,7 +346,7 @@ void AnchorChange::revert()
     }
 
     for (int i = 0; i < actions.count(); i++) {
-        actions[i].revert();
+        actions[i].revert(true);
     }
 }
 

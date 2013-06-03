@@ -40,7 +40,7 @@ public:
     void setValue(const QVariant &value);
     void apply();
     void reset();
-    void revert();
+    void revert(bool reset = false);
 public: // members
     Type type;
     QQmlProperty property;
@@ -109,28 +109,10 @@ public:
 protected:
     virtual void saveState();
 
-    QQmlProperty xProperty;
-    QQmlProperty yProperty;
-    QQmlProperty widthProperty;
-    QQmlProperty heightProperty;
-    QQmlProperty scaleProperty;
-    QQmlProperty rotationProperty;
-
     QQuickItem *originalStackBefore;
+    QQuickItem *container;
 
-    QQmlAbstractBinding *xBinding;
-    QQmlAbstractBinding *yBinding;
-    QQmlAbstractBinding *widthBinding;
-    QQmlAbstractBinding *heightBinding;
-    QQmlAbstractBinding *scaleBinding;
-    QQmlAbstractBinding *rotationBinding;
-
-    QVariant originalX;
-    QVariant originalY;
-    QVariant originalWidth;
-    QVariant originalHeight;
-    QVariant originalScale;
-    QVariant originalRotation;
+    QList<LayoutAction> actions;
 };
 
 
