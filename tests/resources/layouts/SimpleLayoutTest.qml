@@ -33,8 +33,10 @@ Item {
                 name: "column"
                 when: layouts.width > units.gu(30) && layouts.width <= units.gu(40)
                 Column {
+                    id: column
                     anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ConditionalLayout.width: column.width
                 }
             },
             ConditionalLayout {
@@ -43,16 +45,21 @@ Item {
                 Flow {
                     anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ConditionalLayout.width: units.gu(30)
+                    ConditionalLayout.height: units.gu(20)
+                    ConditionalLayout.rotation: 75
+                    ConditionalLayout.scale: 0.5
                 }
             },
             ConditionalLayout {
                 name: "row"
-                when: layouts.width > units.gu(60)
+                when: layouts.width > units.gu(60) && layouts.width < units.gu(80)
                 Row {
                     anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
                 }
             }
+
         ]
 
         // default layout

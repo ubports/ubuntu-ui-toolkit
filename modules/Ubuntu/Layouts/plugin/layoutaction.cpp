@@ -17,6 +17,7 @@
  */
 
 #include "layoutaction_p.h"
+#include "ulconditionallayout.h"
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlInfo>
 
@@ -55,7 +56,7 @@ LayoutAction::LayoutAction(const LayoutAction &other)
 
 LayoutAction::LayoutAction(QObject *item, const QString &name, Type type)
     : type(type)
-    , property(item, name, qmlEngine(item))
+    , property(item, name, qmlContext(item))
     , fromBinding(QQmlPropertyPrivate::binding(property))
     , fromValue(property.read())
     , toValueSet(false)
@@ -82,15 +83,16 @@ void LayoutAction::setValue(const QVariant &value)
     toValueSet = true;
 }
 
-void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding)
+void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
 {
     toBinding = QQmlAbstractBinding::getPointer(binding);
+    deleteToBinding = deletable;
 }
 
 
 void LayoutAction::apply()
 {
-    if (toBinding) {
+    if (!toBinding.isNull()) {
         QQmlAbstractBinding *binding = QQmlPropertyPrivate::setBinding(property, toBinding.data());
         if (binding != fromBinding || (binding == fromBinding && deleteFromBinding)) {
             binding->destroy();
@@ -99,9 +101,8 @@ void LayoutAction::apply()
             }
         }
     } else if (toValueSet) {
-        qDebug() << "set" << property.name() << toValue;
         if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
-            // FIXME: why does the QQmlProperty::write() give binding loop?
+            // why does the QQmlProperty::write() give binding loop?
 //        if (!property.write(toValue)) {
             qmlInfo(property.object()) << "Layouts: updating property \""
                                       << property.name()
@@ -151,9 +152,27 @@ void LayoutAction::revert(bool reset)
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
     : actionPriority(priority)
     , action(target, property, LayoutAction::Value)
+    , _resetOnRevert(true)
 {
     if (value.isValid()) {
         action.setValue(value);
+    }
+}
+
+PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority)
+    : PropertyChange(target, property, QVariant(), priority)
+{
+    if (!script.isEmpty()) {
+        bool ok = false;
+        qreal value = script.numberLiteral(&ok);
+        if (ok) {
+            action.setValue(value);
+        } else {
+            QQmlBinding *binding = new QQmlBinding(script, target, scriptContext);
+            binding->setTarget(action.property);
+            action.toBinding = QQmlAbstractBinding::getPointer(binding);
+            action.deleteToBinding = true;
+        }
     }
 }
 
@@ -168,38 +187,12 @@ void PropertyChange::execute()
 
 void PropertyChange::revert()
 {
-    action.revert(true);
+    action.revert(_resetOnRevert);
 }
-
-//void PropertyChange::saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value)
-//{
-//    (*binding) = QQmlPropertyPrivate::binding(property);
-//    if (!(*binding)) {
-//        value = property.read();
-//    }
-//}
-//void PropertyChange::restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value)
-//{
-//    if (!restoreBinding(property, binding)) {
-//        property.write(value);
-//    }
-//}
-//bool PropertyChange::restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding)
-//{
-//    if (binding) {
-//        QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, binding);
-//        if (revertedBinding && (revertedBinding != binding)) {
-//            revertedBinding->destroy();
-//        }
-//    }
-//    return (binding != 0);
-//}
-
 
 
 /******************************************************************************
  * ReparentChange
- * TODO: Save parent, x, y, width, height, scale and rotation
  */
 ReparentChange::ReparentChange(QQuickItem *target, QQuickItem *source)
     : PropertyChange(target, "parent", QVariant(), Normal)
@@ -213,16 +206,9 @@ void ReparentChange::saveState()
     action.toValue = sourceProperty.read();
     PropertyChange::saveState();
     if (sourceProperty.isValid()) {
-        action.setTargetBinding(QQmlPropertyPrivate::binding(sourceProperty));
+        action.setTargetBinding(QQmlPropertyPrivate::binding(sourceProperty), false);
     }
 }
-
-void ReparentChange::execute()
-{
-    // TODO: remove
-    PropertyChange::execute();
-}
-
 
 /******************************************************************************
  * ParentChange
@@ -232,12 +218,6 @@ ParentChange::ParentChange(QQuickItem *target, QQuickItem *targetParent)
     , originalStackBefore(0)
     , container(targetParent)
 {
-    actions << LayoutAction(target, "x", LayoutAction::Value)
-            << LayoutAction(target, "y", LayoutAction::Value)
-            << LayoutAction(target, "width", LayoutAction::Value)
-            << LayoutAction(target, "height", LayoutAction::Value)
-            << LayoutAction(target, "scale", LayoutAction::Value)
-            << LayoutAction(target, "rotation", LayoutAction::Value);
 }
 
 void ParentChange::saveState()
@@ -254,34 +234,10 @@ void ParentChange::saveState()
             break;
         }
     }
-
-    if (container->inherits("QQuickColumn")) {
-        actions[0].setValue(0.0);
-    } else if (container->inherits("QQuickRow")) {
-        actions[1].setValue(0.0);
-    } else if (container->inherits("QQuickFlow") || container->inherits("QQuickGrid")) {
-        qDebug() << "other positioner";
-        actions[0].setValue(0.0);
-        actions[1].setValue(0.0);
-    }
-}
-
-void ParentChange::execute()
-{
-    PropertyChange::execute();
-    // need to reset x, y coordinates
-    for (int i = 0; i < actions.count(); i++) {
-        actions[i].apply();
-    }
 }
 
 void ParentChange::revert()
 {
-    // need to reset x, y coordinates
-    for (int i = 0; i < actions.count(); i++) {
-        actions[i].revert(true);
-    }
-
     PropertyChange::revert();
 
     QQuickItem *target = static_cast<QQuickItem*>(action.property.object());
@@ -384,12 +340,33 @@ void ChangeList::clear()
     }
 }
 
-ChangeList &ChangeList::operator<<(PropertyChange *action)
+void ChangeList::addChange(PropertyChange *change)
 {
-    if (action && (action->priority() < PropertyChange::MaxPriority)) {
-        action->saveState();
-        changes[action->priority()] << action;
+    if (change && (change->priority() < PropertyChange::MaxPriority)) {
+        change->saveState();
+        changes[change->priority()] << change;
     }
+}
 
+ChangeList &ChangeList::operator<<(PropertyChange *change)
+{
+    addChange(change);
     return *this;
+}
+
+void ChangeList::addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment)
+{
+    QQmlContext *context = qmlContext(fragment->parent());
+    if (!fragment->width().isEmpty()) {
+        addChange(new PropertyChange(item, "width", fragment->width(), context));
+    }
+    if (!fragment->height().isEmpty()) {
+        addChange(new PropertyChange(item, "height", fragment->height(), context));
+    }
+    if (!fragment->scale().isEmpty()) {
+        addChange(new PropertyChange(item, "scale", fragment->scale(), context));
+    }
+    if (!fragment->rotation().isEmpty()) {
+        addChange(new PropertyChange(item, "rotation", fragment->rotation(), context));
+    }
 }

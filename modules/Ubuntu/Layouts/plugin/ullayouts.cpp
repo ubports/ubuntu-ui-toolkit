@@ -151,18 +151,27 @@ void ULLayoutsPrivate::reparentItems()
     items.prepend(currentLayoutItem);
 
     Q_FOREACH(QQuickItem *container, items) {
-        ULConditionalLayoutAttached *marker = qobject_cast<ULConditionalLayoutAttached*>(
+        ULConditionalLayoutAttached *fragment = qobject_cast<ULConditionalLayoutAttached*>(
                     qmlAttachedPropertiesObject<ULConditionalLayout>(container, false));
-        if (!marker || marker->items().isEmpty()) {
+        if (!fragment || fragment->items().isEmpty()) {
             continue;
         }
-        Q_FOREACH(const QString &itemName, marker->items()) {
+        Q_FOREACH(const QString &itemName, fragment->items()) {
             // check if we have this item listed to be laid out
             QQuickItem *laidOutItem = unusedItems.value(itemName);
             if (laidOutItem != 0) {
                 // reparent and break anchors
-                changes << new ParentChange(laidOutItem, container)
-                        << new AnchorChange(laidOutItem);
+                changes << new ParentChange(laidOutItem, container);
+                if (container->inherits("QQuickColumn")) {
+                    changes << new PropertyChange(laidOutItem, "x", 0.0);
+                } else if (container->inherits("QQuickRow")) {
+                    changes << new PropertyChange(laidOutItem, "y", 0.0);
+                } else if (container->inherits("QQuickFlow") || container->inherits("QQuickGrid")) {
+                    changes << new PropertyChange(laidOutItem, "x", 0.0);
+                    changes << new PropertyChange(laidOutItem, "y", 0.0);
+                }
+                changes.addConditionalProperties(laidOutItem, fragment);
+                changes << new AnchorChange(laidOutItem);
                 // remove from unused ones
                 unusedItems.remove(itemName);
             }

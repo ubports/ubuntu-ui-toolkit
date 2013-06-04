@@ -29,7 +29,8 @@
  * \instantiates ULConditionalLayoutAttached
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief ConditionalLayout attached properties DOCME.
+ * \brief ConditionalLayout attached properties are attached either to layout
+ * containers (fragments) or components to be laid out.
  */
 ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
     QObject(parent)
@@ -55,7 +56,7 @@ void ULConditionalLayoutAttached::setItems(const QStringList &names)
 }
 
 /*!
- * \qmlattachedproperty string ULConditionalLayoutAttached::name
+ * \qmlattachedproperty string ULConditionalLayoutAttached::itemName
  * The property can be attached to components to be laid out and represents the
  * layout section to be attached to.
  */
@@ -70,4 +71,52 @@ void ULConditionalLayoutAttached::setName(const QString &name)
     }
     m_name = name;
     Q_EMIT nameChanged();
+}
+
+/*!
+ * \qmlattachedproperty real ConditionalLayout::width
+ */
+QQmlScriptString ULConditionalLayoutAttached::width() const
+{
+    return m_width;
+}
+void ULConditionalLayoutAttached::setWidth(const QQmlScriptString &width)
+{
+    m_width = width;
+}
+
+/*!
+ * \qmlattachedproperty real ConditionalLayout::height
+ */
+QQmlScriptString ULConditionalLayoutAttached::height() const
+{
+    return m_height;
+}
+void ULConditionalLayoutAttached::setHeight(const QQmlScriptString &height)
+{
+    m_height = height;
+}
+
+/*!
+ * \qmlattachedproperty real ConditionalLayout::scale
+ */
+QQmlScriptString ULConditionalLayoutAttached::scale() const
+{
+    return m_scale;
+}
+void ULConditionalLayoutAttached::setScale(const QQmlScriptString &scale)
+{
+    m_scale = scale;
+}
+
+/*!
+ * \qmlattachedproperty real ConditionalLayout::rotation
+ */
+QQmlScriptString ULConditionalLayoutAttached::rotation() const
+{
+    return m_rotation;
+}
+void ULConditionalLayoutAttached::setRotation(const QQmlScriptString &rotation)
+{
+    m_rotation = rotation;
 }

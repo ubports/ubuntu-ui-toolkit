@@ -38,10 +38,11 @@ public:
     LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Value);
 
     void setValue(const QVariant &value);
-    void setTargetBinding(QQmlAbstractBinding *binding);
+    void setTargetBinding(QQmlAbstractBinding *binding, bool deletable);
     void apply();
     void reset();
     void revert(bool reset = false);
+
 public: // members
     Type type;
     QQmlProperty property;
@@ -67,21 +68,27 @@ public:
     };
 
     PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
+    PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority = Low);
     virtual ~PropertyChange() {}
 
     virtual void saveState();
     virtual void execute();
     virtual void revert();
     inline Priority priority() { return actionPriority; }
+    inline QQmlProperty property() const {
+        return action.property;
+    }
+    inline LayoutAction &actionObject() {
+        return action;
+    }
+    inline void resetOnRevert(bool doReset) {
+        _resetOnRevert = doReset;
+    }
 
 protected:
-
-//    static void saveProperty(const QQmlProperty &property, QQmlAbstractBinding **binding, QVariant &value);
-//    static void restoreProperty(const QQmlProperty &property, QQmlAbstractBinding *binding, const QVariant &value);
-//    static bool restoreBinding(const QQmlProperty &property, QQmlAbstractBinding *binding);
-
     Priority actionPriority;
     LayoutAction action;
+    bool _resetOnRevert;
 };
 
 
@@ -89,8 +96,6 @@ class ReparentChange : public PropertyChange
 {
 public:
     ReparentChange(QQuickItem *target, QQuickItem *source);
-
-    virtual void execute();
 
 protected:
     virtual void saveState();
@@ -104,15 +109,12 @@ class ParentChange : public PropertyChange
 public:
     ParentChange(QQuickItem *target, QQuickItem *targetParent);
 
-    void execute();
     void revert();
 protected:
     virtual void saveState();
 
     QQuickItem *originalStackBefore;
     QQuickItem *container;
-
-    QList<LayoutAction> actions;
 };
 
 
@@ -159,6 +161,7 @@ protected:
 };
 
 
+class ULConditionalLayoutAttached;
 class ChangeList
 {
 public:
@@ -170,9 +173,11 @@ public:
     void clear();
 
     ChangeList &operator<<(PropertyChange *action);
+    void addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment);
 
 private:
     QList<PropertyChange*> changes[PropertyChange::MaxPriority];
+    void addChange(PropertyChange *change);
 };
 
 #endif // LAYOUTACTION_P_H

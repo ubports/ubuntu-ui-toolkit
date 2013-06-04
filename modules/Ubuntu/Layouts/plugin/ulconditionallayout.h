@@ -21,6 +21,7 @@
 
 #include <QtQml/QQmlComponent>
 #include <QtCore/QStringList>
+#include <QtQml/QQmlScriptString>
 
 class QQuickItem;
 class ULConditionalLayoutAttached : public QObject
@@ -28,6 +29,11 @@ class ULConditionalLayoutAttached : public QObject
     Q_OBJECT
     Q_PROPERTY(QStringList items READ items WRITE setItems NOTIFY itemsChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
+    Q_PROPERTY(QQmlScriptString width READ width WRITE setWidth)
+    Q_PROPERTY(QQmlScriptString height READ height WRITE setHeight)
+    Q_PROPERTY(QQmlScriptString scale READ scale WRITE setScale)
+    Q_PROPERTY(QQmlScriptString rotation READ rotation WRITE setRotation)
 
 public:
     explicit ULConditionalLayoutAttached(QObject *parent = 0);
@@ -42,9 +48,22 @@ public: // getter/setter
     QString name() const;
     void setName(const QString &name);
 
+    QQmlScriptString width() const;
+    void setWidth(const QQmlScriptString &width);
+    QQmlScriptString height() const;
+    void setHeight(const QQmlScriptString &height);
+    QQmlScriptString scale() const;
+    void setScale(const QQmlScriptString &scale);
+    QQmlScriptString rotation() const;
+    void setRotation(const QQmlScriptString &rotation);
+
 private:
     QString m_name;
     QStringList m_itemNames;
+    QQmlScriptString m_width;
+    QQmlScriptString m_height;
+    QQmlScriptString m_scale;
+    QQmlScriptString m_rotation;
 };
 
 
