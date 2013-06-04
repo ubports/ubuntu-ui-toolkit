@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "textinputs"
     property string longText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." +
                               "Suspendisse sed nulla in arcu dapibus vehicula ac eu tellus. "+
                               "Mauris malesuada nisl vitae neque auctor placerat. Ut vitae "+
@@ -44,6 +45,7 @@ Template {
             title: i18n.tr("Standard")
 
             TextField {
+                objectName: "textfield_standard"
                 placeholderText: i18n.tr("Type me in...")
                 width: parent.width
             }
@@ -53,6 +55,7 @@ Template {
             title: i18n.tr("Password")
 
             TextField {
+                objectName: "textfield_password"
                 echoMode: TextInput.Password
                 text: "password"
                 width: parent.width
@@ -63,6 +66,7 @@ Template {
             title: i18n.tr("Numbers")
 
             TextField {
+                objectName: "textfield_numbers"
                 text: "123"
                 validator: IntValidator {}
                 width: parent.width
@@ -73,6 +77,7 @@ Template {
             title: i18n.tr("Disabled")
 
             TextField {
+                objectName: "textfield_disabled"
                 enabled: false
                 width: parent.width
             }
@@ -87,6 +92,7 @@ Template {
             title: i18n.tr("Default")
 
             TextArea {
+                objectName: "textarea_default"
                 text: longText
                 width: parent.width
             }
@@ -96,6 +102,7 @@ Template {
             title: i18n.tr("Expanding")
 
             TextArea {
+                objectName: "textarea_expanding"
                 placeholderText: "Expands up to 5 lines"
                 autoSize: true
                 maximumLineCount: 5
@@ -107,6 +114,7 @@ Template {
             title: i18n.tr("Rich Text")
 
             TextArea {
+                objectName: "textarea_richtext"
                 textFormat: TextEdit.RichText
                 text: richText
                 width: parent.width

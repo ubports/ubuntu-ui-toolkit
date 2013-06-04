@@ -27,6 +27,7 @@ Template {
 
             ProgressBar {
                 id: progress
+                objectName: "progressbar_standard"
                 width: parent.width
 
                 SequentialAnimation on value {
@@ -45,6 +46,7 @@ Template {
             title: i18n.tr("Infinite")
 
             ProgressBar {
+                objectName: "progressbar_indeterminate"
                 width: parent.width
                 indeterminate: true
             }
@@ -59,6 +61,7 @@ Template {
             title: i18n.tr("Standard")
 
             ActivityIndicator {
+                objectName: "activityindicator_standard"
                 anchors.leftMargin: units.gu(10)
                 running: true
             }

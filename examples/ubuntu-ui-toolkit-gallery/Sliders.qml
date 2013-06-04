@@ -26,6 +26,7 @@ Template {
 
             Slider {
                 id: defaultSlider
+                objectName: "slider_standard"
                 width: parent.width
             }
             Label {
@@ -38,6 +39,7 @@ Template {
 
             Slider {
                 id: liveSlider
+                objectName: "slider_live"
                 width: parent.width
                 live: true
             }
@@ -51,6 +53,7 @@ Template {
 
             Slider {
                 id: rangeSlider
+                objectName: "slider_range"
                 width: parent.width
                 minimumValue: -1.0
                 maximumValue: 1.0
