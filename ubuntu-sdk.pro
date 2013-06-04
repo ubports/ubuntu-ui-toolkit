@@ -16,7 +16,7 @@ license.target = license
 license.commands = ./tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
 
-DOC_PATH=${PWD}/documentation
+DOC_PATH=$$system(pwd)/documentation
 docs.target = docs
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $$DOC_PATH/qdoc.err;
 docs.commands += cat $$DOC_PATH/qdoc.err;
