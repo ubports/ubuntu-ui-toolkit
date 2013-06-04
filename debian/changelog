@@ -1,3 +1,17 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.04ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Kaleo ]
+  * Reduced size of the x-large font size per design.
+
+  [ Olivier Tilloy ]
+  * When the clear button is not visible, ensure the text can use its
+    space. (LP: #1186247)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 531 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Jun 2013 04:02:44 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.02ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ tpeeters ]
