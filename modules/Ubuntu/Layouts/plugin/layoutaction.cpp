@@ -24,14 +24,17 @@
 #include <QtQml/private/qqmlcontext_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
 
-#include <QtQuick/private/qquickstateoperations_p.h>
-#include <QtQuick/private/qquickstatechangescript_p.h>
-#include <QtQuick/private/qquickpropertychanges_p.h>
-#include <QtQuick/private/qquickstate_p.h>
+//#include <QtQuick/private/qquickstateoperations_p.h>
+//#include <QtQuick/private/qquickstatechangescript_p.h>
+//#include <QtQuick/private/qquickpropertychanges_p.h>
+//#include <QtQuick/private/qquickstate_p.h>
 
 
 /******************************************************************************
  * LayoutAction
+ * Saves property state, applies target values or bindings and restores property
+ * saved values. Distinguishes Binding and Value types, which is relevant when
+ * the property is restored to its defaults.
  */
 LayoutAction::LayoutAction()
     : type(Value)
@@ -77,12 +80,18 @@ LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *cont
 {
 }
 
+/*
+ * Set target value.
+ */
 void LayoutAction::setValue(const QVariant &value)
 {
     toValue = value;
     toValueSet = true;
 }
 
+/*
+ * Set target binding and whether it can be deleted upon reset.
+ */
 void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
 {
     toBinding = QQmlAbstractBinding::getPointer(binding);
@@ -90,6 +99,10 @@ void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable
 }
 
 
+/*
+ * Apply property action by setting the target binding (toBinding) or by setting the
+ * target value if the value is set.
+ */
 void LayoutAction::apply()
 {
     if (!toBinding.isNull()) {
@@ -102,8 +115,6 @@ void LayoutAction::apply()
         }
     } else if (toValueSet) {
         if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
-            // why does the QQmlProperty::write() give binding loop?
-//        if (!property.write(toValue)) {
             qmlInfo(property.object()) << "Layouts: updating property \""
                                       << property.name()
                                       << "\" failed.";
@@ -111,6 +122,9 @@ void LayoutAction::apply()
     }
 }
 
+/*
+ * Resets the hosted property and removes its bindings.
+ */
 void LayoutAction::reset()
 {
     property.reset();
@@ -124,6 +138,10 @@ void LayoutAction::reset()
     }
 }
 
+/*
+ * Reverts the property to its defaults. Restores original bindings and in case
+ * of Value types restores their original values.
+ */
 void LayoutAction::revert(bool reset)
 {
     if (reset) {
@@ -148,11 +166,17 @@ void LayoutAction::revert(bool reset)
 
 /******************************************************************************
  * PropertyChange
+ * Default low priority change.
  */
+PropertyChange::PropertyChange(Priority priority)
+    : actionPriority(priority)
+    , resetOnRevert(true)
+{}
+
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
     : actionPriority(priority)
+    , resetOnRevert(true)
     , action(target, property, LayoutAction::Value)
-    , _resetOnRevert(true)
 {
     if (value.isValid()) {
         action.setValue(value);
@@ -161,8 +185,8 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
 
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority)
     : actionPriority(priority)
+    , resetOnRevert(true)
     , action(target, property, LayoutAction::Value)
-    , _resetOnRevert(true)
 {
     if (!script.isEmpty()) {
         bool ok = false;
@@ -189,7 +213,7 @@ void PropertyChange::execute()
 
 void PropertyChange::revert()
 {
-    action.revert(_resetOnRevert);
+    action.revert(resetOnRevert);
 }
 
 
@@ -214,19 +238,26 @@ void ReparentChange::saveState()
 
 /******************************************************************************
  * ParentChange
+ * Normal priority change, a PropertyChange reparenting an item to the target.
  */
-ParentChange::ParentChange(QQuickItem *target, QQuickItem *targetParent)
-    : PropertyChange(target, "parent", qVariantFromValue(targetParent), Normal)
-    , originalStackBefore(0)
-    , container(targetParent)
+ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent)
+    : PropertyChange(item, "parent", qVariantFromValue(targetParent), Normal)
 {
 }
 
-void ParentChange::saveState()
+/******************************************************************************
+ * ItemStackBackup
+ * High priority change backing up the item's stack position.
+ */
+ItemStackBackup::ItemStackBackup(QQuickItem *item)
+    : PropertyChange(High)
+    , target(item)
+    , originalStackBefore(0)
 {
-    PropertyChange::saveState();
+}
 
-    QQuickItem *target = static_cast<QQuickItem*>(action.property.object());
+void ItemStackBackup::saveState()
+{
     QQuickItem *rewindParent = target->parentItem();
     // save original stack position
     QList<QQuickItem*> children = rewindParent->childItems();
@@ -238,49 +269,47 @@ void ParentChange::saveState()
     }
 }
 
-void ParentChange::revert()
+void ItemStackBackup::revert()
 {
-    PropertyChange::revert();
-
-    QQuickItem *target = static_cast<QQuickItem*>(action.property.object());
     if (originalStackBefore) {
         target->stackBefore(originalStackBefore);
     }
 }
 
 /******************************************************************************
- * AnchorChange
+ * AnchorBackup
+ * High priority change backing up item anchors and margins.
  */
-AnchorChange::AnchorChange(QQuickItem *target)
-    : PropertyChange(target, "anchors", QVariant(), High)
+AnchorBackup::AnchorBackup(QQuickItem *item)
+    : PropertyChange(item, "anchors", QVariant(), High)
     , anchorsObject(action.fromValue.value<QQuickAnchors*>())
     , used(anchorsObject->usedAnchors())
 {
-    actions << LayoutAction(target, "anchors.left")
-            << LayoutAction(target, "anchors.right")
-            << LayoutAction(target, "anchors.top")
-            << LayoutAction(target, "anchors.bottom")
-            << LayoutAction(target, "anchors.horizontalCenter")
-            << LayoutAction(target, "anchors.verticalCenter")
-            << LayoutAction(target, "anchors.baseline")
+    actions << LayoutAction(item, "anchors.left")
+            << LayoutAction(item, "anchors.right")
+            << LayoutAction(item, "anchors.top")
+            << LayoutAction(item, "anchors.bottom")
+            << LayoutAction(item, "anchors.horizontalCenter")
+            << LayoutAction(item, "anchors.verticalCenter")
+            << LayoutAction(item, "anchors.baseline")
 
-            << LayoutAction(target, "anchors.margins", LayoutAction::Value)
-            << LayoutAction(target, "anchors.leftMargin", LayoutAction::Value)
-            << LayoutAction(target, "anchors.rightMargin", LayoutAction::Value)
-            << LayoutAction(target, "anchors.topMargin", LayoutAction::Value)
-            << LayoutAction(target, "anchors.bottomMargin", LayoutAction::Value)
-            << LayoutAction(target, "anchors.horizontalCenterOffset", LayoutAction::Value)
-            << LayoutAction(target, "anchors.verticalCenterOffset", LayoutAction::Value)
-            << LayoutAction(target, "anchors.baselineOffset", LayoutAction::Value);
+            << LayoutAction(item, "anchors.margins", LayoutAction::Value)
+            << LayoutAction(item, "anchors.leftMargin", LayoutAction::Value)
+            << LayoutAction(item, "anchors.rightMargin", LayoutAction::Value)
+            << LayoutAction(item, "anchors.topMargin", LayoutAction::Value)
+            << LayoutAction(item, "anchors.bottomMargin", LayoutAction::Value)
+            << LayoutAction(item, "anchors.horizontalCenterOffset", LayoutAction::Value)
+            << LayoutAction(item, "anchors.verticalCenterOffset", LayoutAction::Value)
+            << LayoutAction(item, "anchors.baselineOffset", LayoutAction::Value);
 }
 
-void AnchorChange::saveState()
+void AnchorBackup::saveState()
 {
     // no need to call superclass' saveState() as we don't touch the anchor property
     // only its properties
 }
 
-void AnchorChange::execute()
+void AnchorBackup::execute()
 {
     // reset all anchors
     if (!used) {
@@ -292,7 +321,7 @@ void AnchorChange::execute()
     }
 }
 
-void AnchorChange::revert()
+void AnchorBackup::revert()
 {
     // revert all anchors
     if (!used) {
@@ -315,20 +344,18 @@ ChangeList::~ChangeList()
 
 void ChangeList::apply()
 {
-    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
-        for (int change = 0; change < changes[priority].count(); change++) {
-            changes[priority][change]->execute();
-        }
+    QList<PropertyChange*> list = unifiedChanges();
+    for (int i = 0; i < list.count(); i++) {
+        list[i]->execute();
     }
 }
 
 void ChangeList::revert()
 {
     // reverse order of apply()
-    for (int priority = PropertyChange::Low; priority >= PropertyChange::High; priority--) {
-        for (int change = changes[priority].count() - 1; change >= 0; --change) {
-            changes[priority][change]->revert();
-        }
+    QList<PropertyChange*> list = unifiedChanges();
+    for (int i = list.count() - 1; i >= 0; i--) {
+        list[i]->revert();
     }
 }
 
@@ -342,21 +369,25 @@ void ChangeList::clear()
     }
 }
 
-void ChangeList::addChange(PropertyChange *change)
+ChangeList &ChangeList::addChange(PropertyChange *change)
 {
     if (change && (change->priority() < PropertyChange::MaxPriority)) {
         change->saveState();
         changes[change->priority()] << change;
     }
-}
-
-ChangeList &ChangeList::operator<<(PropertyChange *change)
-{
-    addChange(change);
     return *this;
 }
 
-void ChangeList::addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment)
+QList<PropertyChange*> ChangeList::unifiedChanges()
+{
+    QList<PropertyChange*> list;
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
+        list << changes[priority];
+    }
+    return list;
+}
+
+ChangeList &ChangeList::addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment)
 {
     QQmlContext *context = qmlContext(fragment->parent());
     if (!fragment->width().isEmpty()) {
@@ -371,4 +402,6 @@ void ChangeList::addConditionalProperties(QQuickItem *item, ULConditionalLayoutA
     if (!fragment->rotation().isEmpty()) {
         addChange(new PropertyChange(item, "rotation", fragment->rotation(), context));
     }
+
+    return *this;
 }

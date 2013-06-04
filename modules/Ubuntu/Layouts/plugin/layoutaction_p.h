@@ -67,6 +67,7 @@ public:
         MaxPriority
     };
 
+    PropertyChange(Priority priority);
     PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority = Low);
     PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority = Low);
     virtual ~PropertyChange() {}
@@ -74,28 +75,32 @@ public:
     virtual void saveState();
     virtual void execute();
     virtual void revert();
+
     inline Priority priority() { return actionPriority; }
-    inline QQmlProperty property() const {
+    inline QQmlProperty property() const
+    {
         return action.property;
     }
-    inline LayoutAction &actionObject() {
+    inline LayoutAction &actionObject()
+    {
         return action;
     }
-    inline void resetOnRevert(bool doReset) {
-        _resetOnRevert = doReset;
+    inline void resetWhenReverted(bool doReset)
+    {
+        resetOnRevert = doReset;
     }
 
 protected:
     Priority actionPriority;
+    bool resetOnRevert;
     LayoutAction action;
-    bool _resetOnRevert;
 };
 
 
 class ReparentChange : public PropertyChange
 {
 public:
-    ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source);
+    ReparentChange(QQuickItem *item, const QString &property, QQuickItem *source);
 
 protected:
     virtual void saveState();
@@ -107,22 +112,29 @@ protected:
 class ParentChange : public PropertyChange
 {
 public:
-    ParentChange(QQuickItem *target, QQuickItem *targetParent);
+    ParentChange(QQuickItem *item, QQuickItem *targetParent);
+};
 
+
+class ItemStackBackup : public PropertyChange
+{
+public:
+    ItemStackBackup(QQuickItem *item);
+    void execute() {}
     void revert();
+
 protected:
     virtual void saveState();
-
+    QQuickItem *target;
     QQuickItem *originalStackBefore;
-    QQuickItem *container;
 };
 
 
 class QQuickAnchors;
-class AnchorChange : public PropertyChange
+class AnchorBackup : public PropertyChange
 {
 public:
-    AnchorChange(QQuickItem *target);
+    AnchorBackup(QQuickItem *item);
 
     void execute();
     void revert();
@@ -151,7 +163,8 @@ protected:
         MaxMargins
     };
 
-    inline QQuickAnchors::Anchor anchor(Anchor id) {
+    inline QQuickAnchors::Anchor anchor(Anchor id)
+    {
         return (QQuickAnchors::Anchor)(1 << (int)id);
     }
 
@@ -172,12 +185,12 @@ public:
     void revert();
     void clear();
 
-    ChangeList &operator<<(PropertyChange *action);
-    void addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment);
+    ChangeList &addChange(PropertyChange *change);
+    ChangeList &addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment);
 
 private:
     QList<PropertyChange*> changes[PropertyChange::MaxPriority];
-    void addChange(PropertyChange *change);
+    QList<PropertyChange*> unifiedChanges();
 };
 
 #endif // LAYOUTACTION_P_H

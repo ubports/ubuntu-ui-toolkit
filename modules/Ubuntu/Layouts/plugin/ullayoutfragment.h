@@ -35,14 +35,8 @@ public:
     QString item() const;
     void setItem(const QString &value);
 
-    QStringList changedProperties() const;
-
-private Q_SLOTS:
-    void markPropertyChange();
-
 private:
     QString m_itemName;
-    QSet<QString> m_changedProperties;
 };
 
 #endif // ULFRAGMENT_H

@@ -21,7 +21,13 @@
   \b{Under development}
 
   \section1 Introduction
-  \section1 Layouts and Mutiple Form Factors
-  \section1 Advanced Layout Support
+
+  \section1 Terminology
+  \section2 Layout block
+  \section3 Layout
+  \section4 Layout container
+
+  \section1 Layouting using Ubuntu.Layouts
+
   \section1 Examples
 */

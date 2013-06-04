@@ -17,20 +17,19 @@
  */
 
 #include "ullayoutfragment.h"
-#include <QDebug>
 
 /*!
  * \qmltype LayoutFragment
  * \instantiates ULLayoutFragment
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief LayoutFragment is a pseudo-Item providing re-positioning of a single item within a layout.
+ * \brief LayoutFragment is a pseudo-Item providing re-positioning of a single
+ * item within a layout.
  *
- * The item name to be positioned should be specified in itemName property, which
- * should correspond to the “ConditionalLayout.name” of an Item in the document.
- * The LayoutFragment itself isn’t visible, but the properties defined on it (anchors,
- * positioning, etc.) are applied to the Item with ConditionalLayout.name - so
- * effectively is a placeholder for the actual Item.
+ * The item name to be positioned should be specified in item property, which
+ * should correspond to the “ConditionalLayout.item” of an Item in the document.
+ * The Item with ConditionalLayout.item is reparented into LayoutFragment and it
+ * is anchor filled to it.
  *
  * Example:
  * \qml
@@ -63,7 +62,7 @@
  *     TextInput {
  *         anchors.fill: parent
  *         text: "input"
- *         ConditionalLayout.name: "input"
+ *         ConditionalLayout.item: "input"
  *     }
  * }
  * \endqml
@@ -72,16 +71,6 @@
 ULLayoutFragment::ULLayoutFragment(QQuickItem *parent)
     : QQuickItem(parent)
 {
-    connect(this, SIGNAL(xChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(yChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(zChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(widthChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(heightChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(opacityChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(clipChanged(bool)), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(rotationChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(scaleChanged()), SLOT(markPropertyChange()));
-    connect(this, SIGNAL(transformOriginChanged(TransformOrigin)), SLOT(markPropertyChange()));
 }
 
 ULLayoutFragment::~ULLayoutFragment()
@@ -101,26 +90,4 @@ void ULLayoutFragment::setItem(const QString &value)
         return;
     }
     m_itemName = value;
-}
-
-/*!
- * \internal
- * \brief ULLayoutFragment::changedProperties
- */
-QStringList ULLayoutFragment::changedProperties() const
-{
-    return m_changedProperties.toList();
-}
-/*!
- * \internal
- */
-void ULLayoutFragment::markPropertyChange()
-{
-    int signalIndex = senderSignalIndex();
-    const QMetaMethod signalMoc = sender()->metaObject()->method(signalIndex);
-    QString property = QString(signalMoc.name()).remove("Changed");
-    if (!m_changedProperties.contains(property)) {
-        qDebug() << "fragment sets " << property;
-        m_changedProperties << property;
-    }
 }

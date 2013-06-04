@@ -68,12 +68,12 @@ Item {
                     anchors.fill: parent
                     spacing: units.gu(2)
                     LayoutFragment {
-                        item: "item3"
+                        item: "item2"
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        width: units.gu(5)
+                        width: units.gu(25)
                     }
-                    ConditionalLayout.items: ["item1", "item2"]
+                    ConditionalLayout.items: ["item1", "item3"]
                     ConditionalLayout.width: units.gu(10)
                     ConditionalLayout.height: units.gu(10)
                 }
@@ -126,9 +126,6 @@ Item {
                 width: units.gu(15);
                 ConditionalLayout.item: "item3"
                 color: "blue"
-
-//                onWidthChanged: print("width on \"" + layouts.currentLayout + "\"is " + width);
-//                onVisibleChanged: print("item3 visible on \"" + layouts.currentLayout + "\"is " + visible)
             }
         }
     }

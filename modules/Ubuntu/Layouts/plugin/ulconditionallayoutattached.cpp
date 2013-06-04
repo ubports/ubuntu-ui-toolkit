@@ -22,8 +22,6 @@
 #include "ullayouts_p.h"
 #include <QtQml/QQmlInfo>
 
-#include <QDebug>
-
 ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
     QObject(parent)
 {
@@ -31,8 +29,10 @@ ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
 
 /*!
  * \qmlattachedproperty list<string> ULConditionalLayoutAttached::items
- * List of item names to be included in the layout section. This property can be
- * attached only to layout section declarations.
+ *
+ * This attached property holds the list of conditional layout item identifiers
+ * to be laid out by the container. Therefore it has meaning only if attached to
+ * layout containers.
  */
 QStringList ULConditionalLayoutAttached::items() const
 {
@@ -49,8 +49,10 @@ void ULConditionalLayoutAttached::setItems(const QStringList &names)
 
 /*!
  * \qmlattachedproperty string ULConditionalLayoutAttached::item
- * The property can be attached to components to be laid out and represents the
- * layout section to be attached to.
+ *
+ * This attached property identifies a component to be laid out. It is the unique
+ * identifier of the component within a layout block. The property can be attached
+ * to components to be laid out and has no effect when applied on layout containers.
  */
 QString ULConditionalLayoutAttached::item() const
 {
@@ -67,6 +69,7 @@ void ULConditionalLayoutAttached::setItem(const QString &name)
 
 /*!
  * \qmlattachedproperty real ConditionalLayout::width
+ * The property
  */
 QQmlScriptString ULConditionalLayoutAttached::width() const
 {

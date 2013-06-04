@@ -93,8 +93,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-        changes << new PropertyChange(currentLayoutItem, "enabled", true)
-                << new PropertyChange(currentLayoutItem, "visible", true);
+        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
+               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
         // apply changes
         changes.apply();
         // clear previous layout
@@ -134,8 +134,8 @@ void ULLayoutsPrivate::reparentItems()
     QHashIterator<QString, QQuickItem*> i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        changes << new PropertyChange(i.value(), "visible", false)
-                << new PropertyChange(i.value(), "enabled", false);
+        changes.addChange(new PropertyChange(i.value(), "visible", false))
+               .addChange(new PropertyChange(i.value(), "enabled", false));
     }
 }
 
@@ -155,20 +155,11 @@ void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFr
     }
 
     // the component fills the parent
-    changes << new ParentChange(item, fragment)
-            << new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment))
+    changes.addChange(new ParentChange(item, fragment))
+           .addChange(new ItemStackBackup(item))
+           .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
                // break and backup anchors
-            << new AnchorChange(item);
-
-//    changes << new ReparentChange(item, "parent", fragment)
-//            << new ReparentChange(item, "x", fragment)
-//            << new ReparentChange(item, "y", fragment)
-//               // break and backup anchors
-//            << new AnchorChange(item);
-
-//    Q_FOREACH(const QString &property, fragment->changedProperties()) {
-//        changes << new ReparentChange(item, property, fragment);
-//    }
+           .addChange(new AnchorBackup(item));
 
     // remove from unused ones
     map.remove(itemName);
@@ -181,21 +172,22 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
         QQuickItem *item = map.value(itemName);
         if (item != 0) {
             // reparent and break anchors
-            changes << new ParentChange(item, container);
+            changes.addChange(new ParentChange(item, container))
+                   .addChange(new ItemStackBackup(item))
+                    // break and backup anchors
+                   .addChange(new AnchorBackup(item));
+
 
             // special cases
             if (container->inherits("QQuickColumn")) {
-                changes << new PropertyChange(item, "x", 0.0);
+                changes.addChange(new PropertyChange(item, "x", 0.0));
             } else if (container->inherits("QQuickRow")) {
-                changes << new PropertyChange(item, "y", 0.0);
+                changes.addChange(new PropertyChange(item, "y", 0.0));
             } else if (container->inherits("QQuickFlow") || container->inherits("QQuickGrid")) {
-                changes << new PropertyChange(item, "x", 0.0);
-                changes << new PropertyChange(item, "y", 0.0);
+                changes.addChange(new PropertyChange(item, "x", 0.0))
+                       .addChange(new PropertyChange(item, "y", 0.0));
             }
             changes.addConditionalProperties(item, fragment);
-
-            // break and backup anchors
-            changes << new AnchorChange(item);
 
             // remove from unused ones
             map.remove(itemName);
@@ -231,8 +223,6 @@ void ULLayoutsPrivate::reLayout()
         return;
     }
 
-    qDebug() << "activate layout:" << q_ptr->currentLayout();
-
     // redo changes
     changes.revert();
     changes.clear();
@@ -266,7 +256,6 @@ void ULLayoutsPrivate::updateLayout()
     }
     // check if we need to switch back to default layout
     if (currentLayoutIndex >= 0) {
-        qDebug() << "back to default layout";
         changes.revert();
         changes.clear();
         delete currentLayoutItem;
