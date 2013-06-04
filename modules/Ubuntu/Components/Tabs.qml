@@ -33,6 +33,8 @@ import Ubuntu.Components 0.1 as Theming
     have a header that shows the tabs that can be selected, and the toolbar
     which contains the tools of the \l Page in the currently selected \l Tab.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/tabs}{See also the Design Guidelines on Tabs}.
+
     Example:
     \qml
         import QtQuick 2.0
@@ -201,9 +203,12 @@ PageTreeNode {
     onParentNodeChanged: internal.updateHeader()
     Component.onCompleted: internal.updateHeader()
 
+    /*! \internal */
+    onModelChanged: if (tabs.active && internal.header) internal.header.show()
+
     QtObject {
         id: internal
-        property Header header: tabs.propagated ? tabs.propagated.header : null
+        property Header header: tabs.__propagated ? tabs.__propagated.header : null
         onHeaderChanged: internal.updateHeader()
 
         function updateHeader() {

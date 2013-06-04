@@ -33,6 +33,8 @@ import "internalPopupUtils.js" as InternalPopupUtils
         for further interaction before the user has selected a desired action.
         It can only be closed by selecting an optional action confirming or cancelling the operation.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/dialog}{See also the Design Guidelines on Dialogs}.
+
     Example:
     \qml
         import Ubuntu.Components 0.1
@@ -171,8 +173,9 @@ PopupBase {
         property real maxHeight: 3*dialog.height/4
         property real margins
         property real itemSpacing
+        property Item dismissArea: dialog.dismissArea
 
-        height: childrenRect.height
+        height: Math.min(childrenRect.height, dialog.height)
 
         Column {
             id: contentsColumn

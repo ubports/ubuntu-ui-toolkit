@@ -31,6 +31,8 @@ import "." 0.1 as Theming
 
     \b{This component is under heavy development.}
 
+    \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
+
     Example:
     \qml
     Item {
@@ -205,6 +207,53 @@ FocusScope {
       \qmlproperty bool inputMethodComposing
     */
     property alias inputMethodComposing: editor.inputMethodComposing
+
+    /*!
+      \preliminary
+      Provides hints to the input method about the expected content of the text input and how it
+      should operate.
+
+      The value is a bit-wise combination of flags, or Qt.ImhNone if no hints are set.
+
+      Flags that alter behaviour are:
+
+      \list
+      \li Qt.ImhHiddenText - Characters should be hidden, as is typically used when entering passwords.
+              This is automatically set when setting echoMode to \c TextInput.Password.
+      \li Qt.ImhSensitiveData - Typed text should not be stored by the active input method
+              in any persistent storage like predictive user dictionary.
+      \li Qt.ImhNoAutoUppercase - The input method should not try to automatically switch to upper case
+              when a sentence ends.
+      \li Qt.ImhPreferNumbers - Numbers are preferred (but not required).
+      \li Qt.ImhPreferUppercase - Upper case letters are preferred (but not required).
+      \li Qt.ImhPreferLowercase - Lower case letters are preferred (but not required).
+      \li Qt.ImhNoPredictiveText - Do not use predictive text (i.e. dictionary lookup) while typing.
+
+      \li Qt.ImhDate - The text editor functions as a date field.
+      \li Qt.ImhTime - The text editor functions as a time field.
+      \endlist
+
+      Flags that restrict input (exclusive flags) are:
+
+      \list
+      \li Qt.ImhDigitsOnly - Only digits are allowed.
+      \li Qt.ImhFormattedNumbersOnly - Only number input is allowed. This includes decimal point and minus sign.
+      \li Qt.ImhUppercaseOnly - Only upper case letter input is allowed.
+      \li Qt.ImhLowercaseOnly - Only lower case letter input is allowed.
+      \li Qt.ImhDialableCharactersOnly - Only characters suitable for phone dialing are allowed.
+      \li Qt.ImhEmailCharactersOnly - Only characters suitable for email addresses are allowed.
+      \li Qt.ImhUrlCharactersOnly - Only characters suitable for URLs are allowed.
+      \endlist
+
+      Masks:
+
+      \list
+      \li Qt.ImhExclusiveInputMask - This mask yields nonzero if any of the exclusive flags are used.
+      \endlist
+
+      \qmlproperty enumeration inputMethodHints
+    */
+    property alias inputMethodHints: editor.inputMethodHints
 
     /*!
       \preliminary
@@ -615,7 +664,7 @@ FocusScope {
             bottom: parent.bottom
             margins: internal.spacing
         }
-        width: control.hasClearButton ? height : 0
+        width: visible ? height : 0
         visible: control.hasClearButton &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 

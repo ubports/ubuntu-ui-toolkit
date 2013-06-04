@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += unit
+SUBDIRS += unit unit_x11

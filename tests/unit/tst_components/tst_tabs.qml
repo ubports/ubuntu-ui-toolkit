@@ -31,8 +31,8 @@ TestCase {
         compare(tabs.selectedTabIndex, 0, "The default selectedTabIndex is 0 when Tabs has contents");
         compare(tabs.selectedTab, tab1, "The default selectedTab is the first tab");
         compare(tabs.currentPage, page1, "The default currentPage is the page of the first tab");
-        compare(mainView.propagated.toolbar.tools, page1.tools, "The default tools are the tools of the first tab");
-        compare(mainView.propagated.header.contents, tabs.__headerContents, "Tabs updates the Header contents");
+        compare(mainView.__propagated.toolbar.tools, page1.tools, "The default tools are the tools of the first tab");
+        compare(mainView.__propagated.header.contents, tabs.__headerContents, "Tabs updates the Header contents");
     }
 
     function test_tabsSetSelectedTab() {
@@ -43,7 +43,7 @@ TestCase {
             compare(tabs.selectedTabIndex, i, "Can set selectedTabIndex");
             compare(tabs.selectedTab, tabArray[i], "Can update selectedTab by setting selectedTabIndex");
             compare(tabs.currentPage, pageArray[i], "Can update currentPage by setting selectedTabIndex");
-            compare(mainView.propagated.toolbar.tools, pageArray[i].tools, "Activating a Tab updates the tools of the Toolbar");
+            compare(mainView.__propagated.toolbar.tools, pageArray[i].tools, "Activating a Tab updates the tools of the Toolbar");
             for (var j=0; j < 3; j++) {
                 compare(pageArray[j].active, j===i, "Only the page of the selected tab is active");
             }
@@ -53,9 +53,9 @@ TestCase {
     function test_flickable() {
         // ensure that the flickable of the header is set to the flickable of the selected tab.
         tabsFlick.selectedTabIndex = 0;
-        compare(mainViewFlick.propagated.header.flickable, flickable1, "Header flickable correctly initialized");
+        compare(mainViewFlick.__propagated.header.flickable, flickable1, "Header flickable correctly initialized");
         tabsFlick.selectedTabIndex = 1;
-        compare(mainViewFlick.propagated.header.flickable, flickable2, "Header flickable correctly updated");
+        compare(mainViewFlick.__propagated.header.flickable, flickable2, "Header flickable correctly updated");
         tabsFlick.selectedTabIndex = 0;
     }
 
@@ -71,7 +71,7 @@ TestCase {
 
     function test_bug1088740() {
         tabsFlick.selectedTabIndex = 2;
-        compare(mainViewFlick.propagated.header.flickable, loader.item.flick, "Header flickable correctly updated with Loader");
+        compare(mainViewFlick.__propagated.header.flickable, loader.item.flick, "Header flickable correctly updated with Loader");
         compare(loader.item.flick.contentHeight, 1000, "Header flickable is correct flickable");
         tabsFlick.selectedTabIndex = 0;
     }

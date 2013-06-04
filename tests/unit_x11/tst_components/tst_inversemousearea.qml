@@ -96,7 +96,7 @@ Item {
         }
 
         function test_0_sensingArea() {
-            compare(ima.sensingArea, QuickUtils.rootObject, "InverseMouseArea senses the root item area");
+            compare(ima.sensingArea, QuickUtils.rootItem(ima), "InverseMouseArea senses the root item area");
             ima.sensingArea = testSensingArea
             compare(ima.sensingArea, testSensingArea, "InverseMouseArea sensing area set to testSensingArea");
         }

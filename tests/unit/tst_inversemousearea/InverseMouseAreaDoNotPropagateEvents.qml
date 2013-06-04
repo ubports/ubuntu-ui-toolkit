@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    objectName: "root"
     width: 100
     height: 100
 

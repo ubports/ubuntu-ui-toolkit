@@ -26,6 +26,8 @@ import Ubuntu.Components 0.1
         and it can have an embedded Item (\l control) that can be used
         for including Buttons, Switches etc. inside the list item.
 
+    \l {http://design.ubuntu.com/apps/building-blocks/list-items}{See also the Design Guidelines on List Items}.
+
     Examples:
     \qml
         import UbuntuComponents 0.1

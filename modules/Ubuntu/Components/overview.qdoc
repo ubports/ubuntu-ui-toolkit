@@ -71,4 +71,11 @@
          import Ubuntu.Components 0.1
      \endcode
      \annotatedlist resolution-independence
+
+     \part Parsing Command-Line Arguments
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+     \annotatedlist ubuntu-commandline
  */

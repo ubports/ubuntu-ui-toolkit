@@ -26,6 +26,7 @@ Template {
             title: i18n.tr("Unchecked")
 
             CheckBox {
+                objectName: "checkbox_unchecked"
             }
         }
 
@@ -33,6 +34,7 @@ Template {
             title: i18n.tr("Checked")
 
             CheckBox {
+                objectName: "checkbox_checked"
                 checked: true
             }
         }
@@ -41,10 +43,12 @@ Template {
             title: i18n.tr("Disabled")
 
             CheckBox {
+                objectName: "checkbox_disabled_unchecked"
                 enabled: false
             }
 
             CheckBox {
+                objectName: "checkbox_disabled_checked"
                 enabled: false
                 checked: true
             }
@@ -60,6 +64,7 @@ Template {
             title: i18n.tr("Unchecked")
 
             Switch {
+                objectName: "switch_unchecked"
             }
         }
 
@@ -67,6 +72,7 @@ Template {
             title: i18n.tr("Checked")
 
             Switch {
+                objectName: "switch_checked"
                 checked: true
             }
         }
@@ -75,10 +81,12 @@ Template {
             title: i18n.tr("Disabled")
 
             Switch {
+                objectName: "switch_disabled_unchecked"
                 enabled: false
             }
 
             Switch {
+                objectName: "switch_disabled_checked"
                 enabled: false
                 checked: true
             }

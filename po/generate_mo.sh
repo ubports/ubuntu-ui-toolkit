@@ -15,9 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-QDOCCONF_FILE=ubuntu-ui-toolkit-online.qdocconf
-QDOC_BIN=/usr/lib/*/qt5/bin/qdoc
+BUILDDIR=.
+DOMAIN=ubuntu-ui-toolkit
 
-sed "s|documentation/||" < $QDOCCONF_FILE > $QDOCCONF_FILE.tmp
-$QDOC_BIN $QDOCCONF_FILE.tmp
-rm $QDOCCONF_FILE.tmp
+for f in `find $TARGET -type f -name "*.po"`
+    do
+        LANG=${f%.*}
+        EXTENSION=${f#*.}
+        mkdir -p $BUILDDIR/locale/$LANG/LC_MESSAGES
+        msgfmt $f -o $BUILDDIR/locale/$LANG/LC_MESSAGES/$DOMAIN.mo
+    done

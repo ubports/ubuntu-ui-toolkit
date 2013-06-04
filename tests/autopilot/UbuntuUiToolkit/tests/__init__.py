@@ -116,6 +116,53 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
         self.assertThat(item.selected, Eventually(Equals(True)))
 
+    def getMainView(self):
+        mainView = self.app.select_many("MainView")[0]
+        self.assertThat(mainView, Not(Is(None)));
+        return mainView
+
+    def getOrientationHelper(self):
+        orientationHelper = self.getMainView().select_many("OrientationHelper")[0]
+        self.assertThat(orientationHelper, Not(Is(None)));
+        return orientationHelper
+
+    def checkPageHeader(self,pageTitle):
+        orientationHelper = self.getOrientationHelper();
+        header = orientationHelper.select_many("Header",title=pageTitle)[0]
+        self.assertThat(header, Not(Is(None)));
+        return header
+
+    def getObject(self,objectName):
+        obj = self.app.select_single(objectName=objectName)
+        self.assertThat(obj, Not(Is(None)));
+        return obj
+
+    def tap(self,objectName):
+        obj = self.getObject(objectName)
+        self.pointing_device.move_to_object(obj)
+        self.pointing_device.click()
+
+    def mousePress(self,objectName):
+        obj = self.getObject(objectName)
+        self.pointing_device.move_to_object(obj)
+        self.pointing_device.press()
+
+    def mouseRelease(self):
+        self.pointing_device.release()     
+
+    def type_string(self, string):
+        self.keyboard.type(string)
+
+    def type_key(self, key):
+        self.keyboard.key(key)
+
+    def tap_clearButton(self,objectName):
+        textField = self.getObject(objectName)
+        self.assertThat(textField.hasClearButton, Equals(True));
+        btn = textField.select_single("AbstractButton")
+        self.pointing_device.move_to_object(btn)
+        self.pointing_device.click()
+
     @property
     def main_window(self):
         return MainWindow(self.app)

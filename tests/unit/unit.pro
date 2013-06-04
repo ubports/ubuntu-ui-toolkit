@@ -18,9 +18,7 @@ SUBDIRS += testparser
         tst_components_benchmark
 #}
 
-SUBDIRS += tst_template \
-    tst_qmltemplate \
-    tst_units \
+SUBDIRS += tst_units \
     tst_scaling_image_provider \
     tst_qquick_image_extension \
     tst_theme_engine_selector \
@@ -29,4 +27,6 @@ SUBDIRS += tst_template \
     tst_inversemousearea \
     tst_performance \
     tst_ubuntu_shape \
+    tst_arguments \
+    tst_argument \
     tst_layouts

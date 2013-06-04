@@ -115,6 +115,10 @@ Item {
             compare(textField.inputMethodComposing, false, "inputMethodComposing is false by default")
         }
 
+        function test_0_inputMethodHints() {
+            compare(textField.inputMethodHints, Qt.ImhNone, "inputMethodHints is Qt.ImhNone by default")
+        }
+
         function test_0_maximumLength() {
             compare(textField.maximumLength, 32767, "maximumLength is 32767 by default")
         }

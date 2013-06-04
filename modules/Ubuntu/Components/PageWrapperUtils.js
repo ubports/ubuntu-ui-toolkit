@@ -14,7 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.pragma library // FIXME: cannot refer to Component.Error if I use this.
+//.pragma library // FIXME: cannot refer to Component.Error if I use this.
+// FIXME: ideally we would make this a stateless library, but that breaks applications
+//  that rely on accessing context variables in pages that were pushed on a PageStack
+//  by url (PageStack.push("FileName.qml")) because of a Qt bug:
+//  https://bugreports.qt-project.org/browse/QTBUG-31347
 
 /*!
   \internal
@@ -34,8 +38,7 @@ function __initPage(pageWrapper) {
 
     var pageObject;
     if (pageComponent) {
-        // FIXME: Component.Error is the last in the enum, number 3
-        if (pageComponent.status === 3) {
+        if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object

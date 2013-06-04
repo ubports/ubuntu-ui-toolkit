@@ -38,6 +38,7 @@ public:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *ev);
+    void componentComplete();
 
 private: // getter/setter
     bool pressed() const;
@@ -76,6 +77,7 @@ private Q_SLOTS:
     void update();
     
 private:
+    bool m_ready;
     bool m_pressed;
     bool m_moved;
     bool m_propagateEvents;

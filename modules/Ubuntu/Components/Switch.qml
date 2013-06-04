@@ -35,6 +35,8 @@ import Ubuntu.Components 0.1 as Theming
 
     \b{This component is under heavy development.}
 
+    \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
+
     Example:
     \qml
     Item {

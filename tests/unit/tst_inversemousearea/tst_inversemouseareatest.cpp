@@ -132,6 +132,27 @@ private Q_SLOTS:
         QVERIFY(eventCleanup.isEmpty());
     }
 
+    void testCase_sensingAreaError()
+    {
+        InverseMouseAreaType *area = testArea("SensingAreaError.qml");
+        QVERIFY(area);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 20));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+    }
+
+    void testCase_InverseMouseAreInWindow()
+    {
+        InverseMouseAreaType *area = testArea("InverseMouseAreaInWindow.qml");
+        QVERIFY(area);
+        quickView->show();
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 10));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+    }
+
 };
 
 QTEST_MAIN(tst_InverseMouseAreaTest)

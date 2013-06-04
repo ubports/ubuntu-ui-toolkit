@@ -5,6 +5,7 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
                libgles2-mesa-dev,
                libglib2.0-dev,
+               python,
                libqt5qml-graphicaleffects | libqt5graphicaleffects5,
                qt5-default,
                qtbase5-dev,
@@ -106,3 +107,21 @@ Depends: ${misc:Depends},
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
+
+Package: qmlrunner
+Architecture: amd64 i386 armhf
+Depends: qmlscene
+Conflicts: qtchooser
+Description: Simple QML Scene symlink provider
+ A simple qmlscene symlink provider. Depend on this package instead of 
+ qtchooser/qt5-default/qmlscene in the following way:
+ .
+ Depends: qmlrunner | qtchooser
+ .
+ The conditional dependency allows either having just qmlrunner installed, 
+ or having for example full ubuntu-sdk (and qt5-default/qtchooser).
+ .
+ This package will be eventually replaced by  upstream 'qml' tool, so 
+ it is encouraged to use the '/usr/bin/qml' symlink already which is also 
+ provided by this package.
+
