@@ -95,7 +95,7 @@ protected:
 class ReparentChange : public PropertyChange
 {
 public:
-    ReparentChange(QQuickItem *target, QQuickItem *source);
+    ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source);
 
 protected:
     virtual void saveState();

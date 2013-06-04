@@ -160,7 +160,9 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
 }
 
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority)
-    : PropertyChange(target, property, QVariant(), priority)
+    : actionPriority(priority)
+    , action(target, property, LayoutAction::Value)
+    , _resetOnRevert(true)
 {
     if (!script.isEmpty()) {
         bool ok = false;
@@ -194,9 +196,9 @@ void PropertyChange::revert()
 /******************************************************************************
  * ReparentChange
  */
-ReparentChange::ReparentChange(QQuickItem *target, QQuickItem *source)
-    : PropertyChange(target, "parent", QVariant(), Normal)
-    , sourceProperty(source, "parent", qmlContext(source))
+ReparentChange::ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source)
+    : PropertyChange(target, property, QVariant(), Normal)
+    , sourceProperty(source, property, qmlContext(source))
 {
     action.type = LayoutAction::Binding;
 }

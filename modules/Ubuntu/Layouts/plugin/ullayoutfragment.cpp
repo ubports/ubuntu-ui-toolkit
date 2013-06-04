@@ -48,7 +48,7 @@
  *                 Row {
  *                     width: parent.width
  *                     LayoutFragment {
- *                         itemName: "input"
+ *                         item: "input"
  *                         width: units.gu(30)
  *                         height: units.gu(20)
  *                     }
@@ -88,14 +88,14 @@ ULLayoutFragment::~ULLayoutFragment()
 {}
 
 /*!
- * \qmlproperty string Fragment::itemName
+ * \qmlproperty string Fragment::item
  * The property holds the item name to be positioned in the fragment.
  */
-QString ULLayoutFragment::itemName() const
+QString ULLayoutFragment::item() const
 {
     return m_itemName;
 }
-void ULLayoutFragment::setItemName(const QString &value)
+void ULLayoutFragment::setItem(const QString &value)
 {
     if (value.isEmpty() || (value == m_itemName)) {
         return;

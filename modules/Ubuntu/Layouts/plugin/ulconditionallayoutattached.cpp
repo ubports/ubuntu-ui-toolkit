@@ -24,14 +24,6 @@
 
 #include <QDebug>
 
-/*!
- * \qmltype ConditionalLayout
- * \instantiates ULConditionalLayoutAttached
- * \inqmlmodule Ubuntu.Layouts 0.1
- * \ingroup ubuntu-layouts
- * \brief ConditionalLayout attached properties are attached either to layout
- * containers (fragments) or components to be laid out.
- */
 ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
     QObject(parent)
 {
@@ -56,21 +48,21 @@ void ULConditionalLayoutAttached::setItems(const QStringList &names)
 }
 
 /*!
- * \qmlattachedproperty string ULConditionalLayoutAttached::itemName
+ * \qmlattachedproperty string ULConditionalLayoutAttached::item
  * The property can be attached to components to be laid out and represents the
  * layout section to be attached to.
  */
-QString ULConditionalLayoutAttached::name() const
+QString ULConditionalLayoutAttached::item() const
 {
     return m_name;
 }
-void ULConditionalLayoutAttached::setName(const QString &name)
+void ULConditionalLayoutAttached::setItem(const QString &name)
 {
     if (name.isEmpty() || name == m_name) {
         return;
     }
     m_name = name;
-    Q_EMIT nameChanged();
+    Q_EMIT itemChanged();
 }
 
 /*!

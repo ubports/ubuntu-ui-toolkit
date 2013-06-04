@@ -57,6 +57,25 @@ Item {
                 Row {
                     anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ConditionalLayout.width: units.gu(20)
+                    ConditionalLayout.height: units.gu(20)
+                }
+            },
+            ConditionalLayout {
+                name: "composit"
+                when: layouts.width >= units.gu(80)
+                Row {
+                    anchors.fill: parent
+                    spacing: units.gu(2)
+                    LayoutFragment {
+                        item: "item3"
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        width: units.gu(5)
+                    }
+                    ConditionalLayout.items: ["item1", "item2"]
+                    ConditionalLayout.width: units.gu(10)
+                    ConditionalLayout.height: units.gu(10)
                 }
             }
 
@@ -76,7 +95,7 @@ Item {
                 }
                 width: units.gu(15)
                 height: units.gu(30)
-                ConditionalLayout.name: "item1"
+                ConditionalLayout.item: "item1"
                 color: "red"
             }
             Rectangle {
@@ -90,7 +109,7 @@ Item {
                 x: units.gu(15)
                 height: units.gu(15)
                 width: units.gu(15);
-                ConditionalLayout.name: "item2"
+                ConditionalLayout.item: "item2"
                 color: "green"
             }
             Rectangle {
@@ -105,8 +124,11 @@ Item {
                 y: units.gu(15)
                 height: units.gu(15)
                 width: units.gu(15);
-                ConditionalLayout.name: "item3"
+                ConditionalLayout.item: "item3"
                 color: "blue"
+
+//                onWidthChanged: print("width on \"" + layouts.currentLayout + "\"is " + width);
+//                onVisibleChanged: print("item3 visible on \"" + layouts.currentLayout + "\"is " + visible)
             }
         }
     }

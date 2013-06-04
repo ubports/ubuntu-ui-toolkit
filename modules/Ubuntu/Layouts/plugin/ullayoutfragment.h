@@ -24,15 +24,16 @@
 class ULLayoutFragment : public QQuickItem
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ULLayoutFragment)
 
-    Q_PROPERTY(QString itemName READ itemName WRITE setItemName)
+    Q_PROPERTY(QString item READ item WRITE setItem)
 
 public:
     explicit ULLayoutFragment(QQuickItem *parent = 0);
     ~ULLayoutFragment();
 
-    QString itemName() const;
-    void setItemName(const QString &value);
+    QString item() const;
+    void setItem(const QString &value);
 
     QStringList changedProperties() const;
 

@@ -25,6 +25,7 @@
 
 typedef QHash<QString, QQuickItem*> LaidOutItemsMap;
 
+class ULLayoutFragment;
 class ULLayoutsPrivate : QQmlIncubator {
     Q_DECLARE_PUBLIC(ULLayouts)
 public:
@@ -37,7 +38,7 @@ public:
     LaidOutItemsMap itemsToLayout;
     QQuickItem* currentLayoutItem;
     int currentLayoutIndex;
-    bool completed:1;
+    bool ready:1;
 
     // callbacks for the "layouts" QQmlListProperty of LayoutManager
     static void append_layout(QQmlListProperty<ULConditionalLayout>*, ULConditionalLayout*);
@@ -45,7 +46,7 @@ public:
     static ULConditionalLayout *at_layout(QQmlListProperty<ULConditionalLayout>*, int);
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
-    void listLaidOutItems();
+    void getLaidOutItems();
     void updateLayout();
 
 protected: // QQmlIncubator stuff
@@ -55,6 +56,8 @@ protected: // QQmlIncubator stuff
 private:
     void reLayout();
     void reparentItems();
+    void reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFragment *fragment);
+    void reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment);
 };
 
 #endif // ULLAYOUTS_P_H
