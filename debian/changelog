@@ -1,3 +1,270 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.05.1-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * update the example app for the latest UI Toolkit.
+  * A simple app to check few locales.
+  * Add qttools5-dev-tools to build dependencies to provide
+    qhelpgenerator for creating QtC help files from documentation.
+  * Build documentation and publish the qch file.
+  * Offer symlinks for qmlscene via 'qmlrunner' package. See package
+    description for usage instructions. (LP: #1155634). (LP: #1155634)
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Correctly stored the current material. (LP: #1132771)
+  * [UbuntuShape] Ensured the texture is available in updatePaintNode().
+    (LP: #1171437)
+
+  [ Kaleo ]
+  * QML_IMPORT_PATH is deprecated for QtQuick 2.0. Switch to
+    QML2_IMPORT_PATH.
+  * Added syntax description for CHANGES file in CHANGES.syntax.
+  * UCScalingImageProvider: respect 'requestedSize' parameter. That
+    ensures that the 'sourceSize' property of Image is respected even
+    when the toolkit automatically scales the asset for the device. (LP:
+    #1130120)
+  * Added documentation for bitmap suffixes in the resolution
+    independence page. (LP: #1092051)
+  * Revamped component showcase now called 'Ubuntu UI Toolkit Gallery'.
+    Works on Ubuntu Touch. (LP: #1130603)
+  * Benchmarks for time critical components.
+  * Added ListItem.ValueSelector example. Fixed incorrect 'Multi value'
+    label. (LP: #1172663)
+  * Toolkit Gallery: added examples for Sheets.
+  * Automatic rotation of applications depending on the device
+    orientation. For applications that are using MainView, they opt-in
+    by setting 'automaticOrientation' to true. New component
+    OrientationHelper for applications that do not use MainView but
+    still need an easy way to automatically rotate.
+  * UbuntuShape: fix slight distortion of image when set. This
+    distortion was quite disturbing when the content has text in it, as
+    it is often the case in Popups and Popovers. (LP: #1170878)
+  * Use standard animation ubuntu snap beat for popups fade in.
+  * Removed unnecessary clipping from Tabs, Popover, Dialog and
+    MainView.
+  * All ListItems: set default contents right and left margins to 2 gu.
+    ListItems Base, Standard and ValueSelector: deprecated private
+    properties __leftIconMargin and __rightIconMargin IconVisual
+    (private): removed properties leftIconMargin and rightIconMargin
+    Standard: removed ugly progression highlight background when there
+    is no split.
+  * ListItems: constrain size of the icon by default. Deprecated private
+    properties __iconWidth and __iconHeight.
+  * Ubuntu UI Toolkit Gallery tweaks: - Made window wider and left
+    column the width of the phone: 40gu. - Removed 'slider.' from Slider
+    example's labels. - Renamed 'Switches' into 'Toggles'. Renamed
+    'Progress Bars' into 'Progress and activity'. - Use resolution
+    independence for navigation example screenshots.
+  * Support source with quotes in .sci files. (LP: #1080719)
+  * Reverted unjustified changes to ubuntu-ui-toolkit-gallery.desktop.
+  * Popover: simplified computation of height: - contentHeight to be the
+    height of the content not of the delegate - delegate to always be
+    the height of the Popover. (LP: #1178227)
+  * New UbuntuAnimation durations and easing constants. New
+    UbuntuNumberAnimation.
+  * Document type for alias properties of the following classes: -
+    TextArea - TextField - ListItems.Empty - ListItems.SingleValue -
+    Popups.Dialog - Popups.Popover - Popups.SheetBase. (LP: #1169919)
+  * Added new API to retrieve command line arguments: Arguments.
+  * Reduced size of the x-large font size per design.
+
+  [ Timo Jyrinki ]
+  * Fix autopilot tests and add autopilot package. (LP: #1169556) (LP:
+    #1170659) This branch makes the five autopilot tests to run again
+    with newest autopilot packages, and adds a ubuntu-ui-toolkit-
+    autopilot package to install for CI or other purposes. The tests are
+    runnable both from an installed package or source directory. (LP:
+    #1170659, #1169556)
+  * autopilot: Switch mouse -> pointing_device for phablet-test-run (LP:
+    #1175363). (LP: #1175363)
+  * Remove one old rename transition, add a new one, add the split
+    plugins dependency. The split multimedia plugins only as recommends
+    to be on the safe side during the transition period to 5.0.2.
+  * Port to autopilot 1.3 and update test content to match UI.
+  * Depend on dpkg-dev from ubuntu-ui-toolkit-autopilot, as long as
+    dpkg-architecture is used.
+  * Offer symlinks for qmlscene via 'qmlrunner' package. See package
+    description for usage instructions. (LP: #1155634). (LP: #1155634)
+  * qmlrunner for archs amd64 i386 armhf instead of any.
+  * Add python dependency and use the python command explicitly to fix
+    FTBFS. (LP: #1183198). (LP: #1183198)
+  * Use dpkg-architecture instead of '*' for qmlrunner's symlinks.
+    Something has broken the latter recently and dpkg-architecture is
+    more trustworthy anyway.
+
+  [ Christian Dywan ]
+  * Add a base URL to qdocconf file. (LP: #1175389)
+  * Introduce QML API check; if API changes, check components.api.new.
+  * Refer checkbox docs to design guide. (LP: #1174958)
+  * Use offline documentation as a basis for online docs. (LP: #1183013)
+  * Save qdoc error log and fail if it's not empty. (LP: #1185402)
+
+  [ Zsombor Egri ]
+  * Workaround for TextArea and TextField removing OSK when active focus
+    is transferred from one instance to another using focus property. .
+    (LP: #1163371)
+  * Fixing disabled text input delegate background color theming when
+    userValue is set to TextField or TextArea color property. (LP:
+    #1169601)
+  * Fix for text inputs staying disabled after being re-enabled. The
+    previous workaround for removing input panel was blocking re-
+    enabling a previously enabled input. (LP: #1164634)
+  * Fix for auto expanding TextArea eating flick events from Flickables.
+    (LP: #1144077)
+  * Benchmarks for time critical components.
+  * Memory leak fixes lost from a previous MR.
+  * [theming] Building selector for a styled item moved into Selector
+    class. Previous functionality present in
+    ItemStyleAttachedPrivate::updateStyleSelector() was moved into
+    Selector class, class being responsible of building up the selectors
+    from different sources. A selector can now be built up from a
+    QQuickItem, in which case the item becomes the owner of the
+    selector. Any additional update on the selector made by calling
+    update() method will fetch the latest information from the owner and
+    update the last node of the selector.
+  * [theming] Style update optimization. - updateCurrentStyle() renamed
+    to updateTheme() - resetStyle() ad resetDelegate() removed from
+    updateStyle() and updateDelegate() respectively to avoid unnecessary
+    calls on reset - updateTheme() checks whether the style rule has
+    been changed, and compares whether style objects are different in
+    the new style rule (this second part is more like prerequisite for
+    an upcomming delegate detection MR) - setName() and setStyleClass()
+    doe snot update the entire styleSelector - setName() and
+    setStyleClass() apply styling changes on children -
+    updateStyleSelector() became redundant, removed.
+  * Fixing crash on custom style objects previously owned by other
+    styled items. (LP: #1168006)
+  * Unit converter example updated to use the latest UITK components.
+  * [theming] Cache delegates separately from style objects and store
+    the style object and the delegate type string in the style rule. In
+    this way the theme engine can sort out unnecessary re-creation of
+    delegates on a styled item when the style rule on the styled item
+    gets changed and the previous and the new style rules share the same
+    delegate component.
+  * [theming] ItemStyle attached object detects now the time when the
+    first styled item's attached component gets completed. In this way
+    first time style object and delegate creation can be moved from re-
+    parenting to completion.
+  * Fix for crash in theme engine when loading application specific
+    theme file in an app having a Popover instantiated. (LP: #1175394)
+  * [theming] Removing deprecated functionality.
+  * [theming] Changing stateful libraries to stateless to decrease time
+    spent each time Ubuntu.Components module is imported. (LP: #1170638)
+  * [theming] FontUtils converted from stateful JS library to native
+    module due to its dependency to "units" context property.
+  * [inversemaousearea] Fixing sensingArea not updated on phablet. (LP:
+    #1166127)
+  * InverseMouseArea sensingArea and Popovers' dismissArea works now
+    when included in Window. (LP: #1182673)
+  * [inversemousearea] Default sensing area not set on the proper time.
+    (LP: #1185397)
+
+  [ Juhapekka Piiroinen ]
+  * Added missing QML2_IMPORT_PATH to unit test runner script.
+  * Add a new Panel component that can be swiped in and out from an edge
+    of the window by the user. As opposed to the default toolbar (which
+    inherits from the Panel), a Panel can be attached to any edge of the
+    screen, and the developer is free to define its contents. For
+    standard cases, the automatic toolbar from the MainView and Page can
+    still be used. API changes: * CHANGED IN Toolbar: property bool
+    active TO property bool opened * CHANGED IN Toolbar: property bool
+    lock TO property bool locked * CHANGED IN ToolbarActions: property
+    bool active TO property bool opened * CHANGED IN ToolbarActions:
+    property bool lock TO property bool locked. (LP: #1131209, #1116578,
+    #1163395)
+  * Adds Help file for Qt Creator usage. After this you can access
+    documentation using F1.
+  * Fix rules for qch files.
+  * Build qch on qmake execution.
+  * Fixes bug #1176132 [i18n] Set up the translation domain
+    automatically Sets i18n.domain = applicationName on
+    MainView::onApplicationNameChanged. (LP: #1176132)
+  * Added depends for the docs install target. (LP: #1187006)
+  * Improving autopilot tests.
+  * Fix runtest.sh, it was missing xml argument on fallback execution.
+    Removed testparser execution Added README file for unit tests. Added
+    new targets: make test-performance <= runs performance tests make
+    test-components <= runs functional tests for components make test-
+    api <= runs api tests for components.
+  * Fix failing textarea autopilot test by commenting out textarea tests
+    for now.
+
+  [ Olivier Tilloy ]
+  * Added property TextField.inputMethodHints. (LP: #1185392)
+  * When the clear button is not visible, ensure the text can use its
+    space. (LP: #1186247)
+
+  [ Michael Zanetti ]
+  * enable horizontalAlignment for TextField and make the hint text
+    follow its properties .
+
+  [ tpeeters ]
+  * Disable swiping to switch tabs by default. This is a preparation for
+    the complete removal of the swipe-to-switch-tabs functionality cf.
+    https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1166709.
+  * Disable events on disabled controls inside list items. (LP:
+    #1166982)
+  * Add a new Panel component that can be swiped in and out from an edge
+    of the window by the user. As opposed to the default toolbar (which
+    inherits from the Panel), a Panel can be attached to any edge of the
+    screen, and the developer is free to define its contents. For
+    standard cases, the automatic toolbar from the MainView and Page can
+    still be used. API changes: * CHANGED IN Toolbar: property bool
+    active TO property bool opened * CHANGED IN Toolbar: property bool
+    lock TO property bool locked * CHANGED IN ToolbarActions: property
+    bool active TO property bool opened * CHANGED IN ToolbarActions:
+    property bool lock TO property bool locked. (LP: #1131209, #1116578,
+    #1163395)
+  * Remove Toolbars.qml.THIS which was added by unintentionally.
+  * Add a new Panel component that can be swiped in and out from an edge
+    of the window by the user. As opposed to the default toolbar (which
+    inherits from the Panel), a Panel can be attached to any edge of the
+    screen, and the developer is free to define its contents. For
+    standard cases, the automatic toolbar from the MainView and Page can
+    still be used. API changes: * CHANGED IN Toolbar: property bool
+    active TO property bool opened * CHANGED IN Toolbar: property bool
+    lock TO property bool locked * CHANGED IN ToolbarActions: property
+    bool active TO property bool opened * CHANGED IN ToolbarActions:
+    property bool lock TO property bool locked. (LP: #1131209, #1116578,
+    #1163395)
+  * Update remaining components to use new component properties instead
+    of deprecated properties.
+  * Fix small documentation errors. (LP: #1174985)
+  * Remove VisualItemModel from Tabs internals, and make it work with a
+    Repeater to define the tabs. (LP: #1167568, #1096969, #1166709,
+    #1124065)
+  * Extend ActionList API so that Actions can be re-used by toolbars on
+    multiple Pages. (LP: #1122864)
+  * fix error in documentation of Action.
+  * Combine the propagated properties of PageTreeNode in a single
+    property propagated that contains all the other properties.
+  * documentation fix.
+  * Remove preliminary and deprecated HUD integration. Internal __hud
+    property removed from MainView. (LP: #1129966)
+  * Generate documentation for i18n. (LP: #1078631)
+  * Add a test program that shows panels on different edges of the
+    application view to tests/resources/toolbar. Like the other test
+    programs in resources, this will come in handy for testing changes
+    to the components.
+  * revert changes to PageWrapperUtils.jp from revision 501 because it
+    breaks phone-app. (LP: #1183456)
+  * Properly internalize PageTreeNode's propagated property and tweak
+    header behavior so that propagated.header does not need to be used
+    by any of the apps: - CHANGED IN PageTreeNode: propagated TO
+    __propagated - CHANGED IN Tabs: Automatically show the header when
+    the title of the active tab changes - CHANGED IN Page/MainView: Only
+    enable auto-hide behavior of header when the Page's flickable can be
+    flicked vertically, so that manual setting of anchors is no longer
+    needed for flickables that only flick horizontally (calendar-app).
+  * comment on pragma library in PageWrapperUtils.js.
+  * Add action property to AbstractButton, and use it in the toolbar.
+    (LP: #1167232)
+  * Enable UI Toolkit translations in Launchpad. (LP: #1175724)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 537
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 05 Jun 2013 09:06:50 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.04ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Kaleo ]
