@@ -71,6 +71,9 @@ void ULLayoutsPrivate::clear_layouts(QQmlListProperty<ULConditionalLayout> *list
 void ULLayoutsPrivate::setInitialState(QObject *object)
 {
     Q_Q(ULLayouts);
+    // object context's parent is the creation context; link it to the object so we
+    // delete them together
+    qmlContext(object)->parentContext()->setParent(object);
     // set parent
     object->setParent(q);
     QQuickItem *item = static_cast<QQuickItem*>(object);
@@ -79,6 +82,10 @@ void ULLayoutsPrivate::setInitialState(QObject *object)
     item->setEnabled(false);
 }
 
+/*
+ * Called upon QQmlComponent::create() to notify the status of the component
+ * creation.
+ */
 void ULLayoutsPrivate::statusChanged(Status status)
 {
     Q_Q(ULLayouts);
@@ -89,6 +96,11 @@ void ULLayoutsPrivate::statusChanged(Status status)
         // reset the layout
         currentLayoutItem = qobject_cast<QQuickItem*>(object());
         Q_ASSERT(currentLayoutItem);
+
+        changes.addChange(new PropertyChange(currentLayoutItem, "anchors.fill", qVariantFromValue(q), PropertyChange::High));
+
+        // hide all non-laid out items first
+        hideExcludedItems();
 
         //reparent components to be laid out
         reparentItems();
@@ -101,9 +113,23 @@ void ULLayoutsPrivate::statusChanged(Status status)
         delete previousLayout;
 
         Q_EMIT q->currentLayoutChanged();
+    } else if (status == Error) {
+        Q_Q(ULLayouts);
+        qmlInfo(q, errors());
     }
 }
 
+void ULLayoutsPrivate::hideExcludedItems()
+{
+    for (int i = 0; i < excludedFromLayout.count(); i++) {
+        changes.addChange(new PropertyChange(excludedFromLayout[i], "visible", false))
+               .addChange(new PropertyChange(excludedFromLayout[i], "enabled", false));
+    }
+}
+
+/*
+ * Re-parent items to the new layout.
+ */
 void ULLayoutsPrivate::reparentItems()
 {
     // create copy of items list, to keep track of which ones we change
@@ -139,6 +165,9 @@ void ULLayoutsPrivate::reparentItems()
     }
 }
 
+/*
+ * Re-parent to LayoutFragment.
+ */
 void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFragment *fragment)
 {
     QString itemName = fragment->item();
@@ -156,7 +185,7 @@ void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFr
 
     // the component fills the parent
     changes.addChange(new ParentChange(item, fragment))
-           .addChange(new ItemStackBackup(item))
+           .addChange(new ItemStackBackup(item, currentLayoutItem))
            .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
                // break and backup anchors
            .addChange(new AnchorBackup(item));
@@ -165,6 +194,9 @@ void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFr
     map.remove(itemName);
 }
 
+/*
+ * Re-parent using ConditionalLayout properties
+ */
 void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment)
 {
     Q_FOREACH(const QString &itemName, fragment->items()) {
@@ -173,7 +205,7 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
         if (item != 0) {
             // reparent and break anchors
             changes.addChange(new ParentChange(item, container))
-                   .addChange(new ItemStackBackup(item))
+                   .addChange(new ItemStackBackup(item, currentLayoutItem))
                     // break and backup anchors
                    .addChange(new AnchorBackup(item));
 
@@ -198,7 +230,9 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
     }
 }
 
-
+/*
+ * Collect items to be laid out.
+ */
 void ULLayoutsPrivate::getLaidOutItems()
 {
     Q_Q(ULLayouts);
@@ -210,10 +244,16 @@ void ULLayoutsPrivate::getLaidOutItems()
                     qmlAttachedPropertiesObject<ULConditionalLayout>(item, false));
         if (marker && !marker->item().isEmpty()) {
             itemsToLayout.insert(marker->item(), item);
+        } else {
+            // remember these so we hide them once we switch away from default layout
+            excludedFromLayout << item;
         }
     }
 }
 
+/*
+ * Apply layout change. The new layout creation will be completed in statusChange().
+ */
 void ULLayoutsPrivate::reLayout()
 {
     if (!ready || (currentLayoutIndex < 0)) {
@@ -232,9 +272,14 @@ void ULLayoutsPrivate::reLayout()
     QQmlComponent *component = layouts[currentLayoutIndex]->layout();
     // create using incubation as it may be created asynchronously,
     // case when the attached properties are not yet enumerated
-    component->create(*this);
+    Q_Q(ULLayouts);
+    QQmlContext *context = new QQmlContext(qmlContext(q), q);
+    component->create(*this, context);
 }
 
+/*
+ * Updates the current layout.
+ */
 void ULLayoutsPrivate::updateLayout()
 {
     if (!ready) {
@@ -256,6 +301,7 @@ void ULLayoutsPrivate::updateLayout()
     }
     // check if we need to switch back to default layout
     if (currentLayoutIndex >= 0) {
+        // revert and clear changes
         changes.revert();
         changes.clear();
         delete currentLayoutItem;
@@ -263,6 +309,7 @@ void ULLayoutsPrivate::updateLayout()
         currentLayoutIndex = -1;
     }
 }
+
 
 /*!
  * \qmltype Layouts
@@ -272,11 +319,127 @@ void ULLayoutsPrivate::updateLayout()
  * \brief Layouts component defines the layouts for different form factors and
  * embeds the components to be laid out.
  *
- * Ideas:
- * - items to be laid out must be direct children of Layouts
- * - ConditionalLayout.name is unique
- * - the order items are laid out in a layout container depends on the order the
- *   names are specified in ConditionalLayout.items list
+ * Layouts is a layout block component incorporating layout definitions and
+ * components to lay out. The layouts are defined in layouts property, which
+ * is a list of ConditionalLayout components, each declaring a form of arrangement
+ * for the components specified to be laid out.
+ *
+ * \qml
+ * Layouts {
+ *     id: layouts
+ *     layouts: [
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
+ *             Flow {
+ *                 //[...]
+ *             }
+ *         },
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(100)
+ *             Flickable {
+ *                 contentHeight: column.childrenRect.height
+ *                 Column {
+ *                     id: column
+ *                     //[...]
+ *                 }
+ *             }
+ *         }
+ *     ]
+ * }
+ * \endqml
+ *
+ * Components wanted to be laid out must be declared as children of Layouts compponent,
+ * each having ConditionalLayout.item attached property set to a uniquie string.
+ * \b TODO: see also ConditionalItem.item
+ *
+ * \qml
+ * Layouts {
+ *     id: layouts
+ *     layouts: [
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
+ *             Flow {
+ *                 //[...]
+ *             }
+ *         },
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(100)
+ *             Flickable {
+ *                 contentHeight: column.childrenRect.height
+ *                 Column {
+ *                     id: column
+ *                     //[...]
+ *                 }
+ *             }
+ *         }
+ *     ]
+ *
+ *     Row {
+ *         anchors.fill: parent
+ *         Button {
+ *             text: "Press me"
+ *             ConditionalLayout.item: "item1"
+ *         }
+ *         Button {
+ *             text: "Cancel"
+ *             ConditionalLayout.item: "item2"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * Components listed as children of Layouts are considered to form the \a default
+ * layout.
+ *
+ * Layouts defined by ConditionalLayout are created and activated when at least
+ * one of the layout's condition is evaluated to true. In which case components
+ * marked for layout are re-parented to the components defined to lay out those
+ * defined in the ConditionalLayout. In case multiple conditions are evaluated
+ * to true, the first one in the list will be activated. The deactivated layout
+ * is destroyed, exception being the default layout, which is kept in memory for
+ * the entire lifetime of the Layouts component.
+ *
+ * Upon activation, the created component fills in the entire layout block.
+ *
+ * \qml
+ * Layouts {
+ *     id: layouts
+ *     layouts: [
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
+ *             Flow {
+ *                 ConditionalLayout.items: ["item1", "item2"]
+ *             }
+ *         },
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(100)
+ *             Flickable {
+ *                 contentHeight: column.childrenRect.height
+ *                 Column {
+ *                     id: column
+ *                     ConditionalLayout.items: ["item2", "item1"]
+ *                 }
+ *             }
+ *         }
+ *     ]
+ *
+ *     Row {
+ *         anchors.fill: parent
+ *         Button {
+ *             text: "Press me"
+ *             ConditionalLayout.item: "item1"
+ *         }
+ *         Button {
+ *             text: "Cancel"
+ *             ConditionalLayout.item: "item2"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * \b Note: the order items are laid out in a layout container depends on the order
+ * the items are specified in ConditionalLayout.items attached property.
+ *
  */
 
 ULLayouts::ULLayouts(QQuickItem *parent):
@@ -301,7 +464,8 @@ void ULLayouts::componentComplete()
 /*!
  * \qmlproperty string Layouts::currentLayout
  * The property holds the active layout name. The default layout is identified
- * by an empty string.
+ * by an empty string. This property can be used for additional customization
+ * of the components which are not supported by the layouting.
  */
 
 QString ULLayouts::currentLayout() const
@@ -322,7 +486,7 @@ QList<ULConditionalLayout*> ULLayouts::layoutList()
 
 /*!
  * \qmlproperty list<ConditionalLayout> Layouts::layouts
- * List of different layouts.
+ * The property holds the list of different ConditionalLayout elements.
  */
 QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
 {

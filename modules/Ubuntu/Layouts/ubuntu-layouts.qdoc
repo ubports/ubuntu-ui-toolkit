@@ -16,18 +16,41 @@
 
 /*!
   \page ubuntu-layouts.html
-  \title Layouting
+  \title Layouts - Introduction
 
   \b{Under development}
 
-  \section1 Introduction
+    QML has the following basic layout primitives:
+    \list
+        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-column.html}{Column} - arrange children in a column
+        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row} - arrange children in a row
+        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-grid.html}{Grid} - arrange children in a grid of x columns and y rows
+        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flow.html}{Flow} - arrange children side-by-side with wrapping
+    \endlist
 
-  \section1 Terminology
-  \section2 Layout block
-  \section3 Layout
-  \section4 Layout container
+    <br>Unfortunately these components are not well suited to general user-interface
+    design as:
+    \list A
+        \li not designed to alter size of children - so no form of stretching
+            supported by default.
+        \li as a result no way to have contents fill the container (without
+            calculating the width/height of the children manually).
+    \endlist
 
-  \section1 Layouting using Ubuntu.Layouts
 
-  \section1 Examples
+    As a result, most applications need to do calculations to size the children
+    correctly in these primitives to fill the whole container.
+
+    \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qmlmodule-qtquick-layouts1-qtquick-layouts-1-0.html}
+    {QtQuick Controls} introduces the \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-columnlayout.html}
+    {ColumnLayout}, \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-rowlayout.html}{RowLayout}
+    and \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-gridlayout.html}{GridLayout}
+    components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layouts}
+    attached properties, which brings additional layouting possibilities to Qt Quick.
+
+    In addition to these, UI toolkit had introduced the Ubuntu.Layouts module to help developers
+    define different layouts for different orientations and form factors, all being possible
+    to be done within the same code base.
+
+    Next: \l {ubuntu-layouts-p2.html}{Terminology}
 */

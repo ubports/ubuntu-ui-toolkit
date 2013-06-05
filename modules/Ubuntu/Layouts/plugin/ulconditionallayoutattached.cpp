@@ -28,11 +28,13 @@ ULConditionalLayoutAttached::ULConditionalLayoutAttached(QObject *parent) :
 }
 
 /*!
- * \qmlattachedproperty list<string> ULConditionalLayoutAttached::items
+ * \qmlattachedproperty list<string> ConditionalLayout::items
  *
  * This attached property holds the list of conditional layout item identifiers
  * to be laid out by the container. Therefore it has meaning only if attached to
  * layout containers.
+ *
+ * The items are laid out in the order specified by the list.
  */
 QStringList ULConditionalLayoutAttached::items() const
 {
@@ -48,8 +50,7 @@ void ULConditionalLayoutAttached::setItems(const QStringList &names)
 }
 
 /*!
- * \qmlattachedproperty string ULConditionalLayoutAttached::item
- *
+ * \qmlattachedproperty string ConditionalLayout::item
  * This attached property identifies a component to be laid out. It is the unique
  * identifier of the component within a layout block. The property can be attached
  * to components to be laid out and has no effect when applied on layout containers.
@@ -69,7 +70,8 @@ void ULConditionalLayoutAttached::setItem(const QString &name)
 
 /*!
  * \qmlattachedproperty real ConditionalLayout::width
- * The property
+ * The property holds the width to be applied for the items laid out within the
+ * container.
  */
 QQmlScriptString ULConditionalLayoutAttached::width() const
 {
@@ -82,6 +84,8 @@ void ULConditionalLayoutAttached::setWidth(const QQmlScriptString &width)
 
 /*!
  * \qmlattachedproperty real ConditionalLayout::height
+ * The property holds the height to be applied for the items laid out within the
+ * container.
  */
 QQmlScriptString ULConditionalLayoutAttached::height() const
 {
@@ -94,6 +98,8 @@ void ULConditionalLayoutAttached::setHeight(const QQmlScriptString &height)
 
 /*!
  * \qmlattachedproperty real ConditionalLayout::scale
+ * The property holds the scale to be applied for the items laid out within the
+ * container.
  */
 QQmlScriptString ULConditionalLayoutAttached::scale() const
 {
@@ -106,6 +112,8 @@ void ULConditionalLayoutAttached::setScale(const QQmlScriptString &scale)
 
 /*!
  * \qmlattachedproperty real ConditionalLayout::rotation
+ * The property holds the rotation to be applied for the items laid out within the
+ * container.
  */
 QQmlScriptString ULConditionalLayoutAttached::rotation() const
 {

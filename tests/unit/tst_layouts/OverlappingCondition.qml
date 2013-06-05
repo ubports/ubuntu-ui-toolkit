@@ -45,5 +45,8 @@ Item {
                 }
             }
         ]
+
+        DefaultLayout{
+        }
     }
 }

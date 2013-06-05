@@ -36,6 +36,7 @@ public:
     QList<ULConditionalLayout*> layouts;
     ChangeList changes;
     LaidOutItemsMap itemsToLayout;
+    QList<QQuickItem*> excludedFromLayout;
     QQuickItem* currentLayoutItem;
     int currentLayoutIndex;
     bool ready:1;
@@ -55,6 +56,7 @@ protected: // QQmlIncubator stuff
 
 private:
     void reLayout();
+    void hideExcludedItems();
     void reparentItems();
     void reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFragment *fragment);
     void reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment);

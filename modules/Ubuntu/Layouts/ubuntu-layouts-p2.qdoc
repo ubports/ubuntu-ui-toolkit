@@ -14,27 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Layouts 0.1
+/*!
+  \page ubuntu-layouts-p2.html
+  \title Layouts - Terminology
+  \section1 Layout block
+  \section1 Layout Container
+  \section1 Layout Fragment
 
-Item {
-    id: root
-    width: units.gu(40)
-    height: units.gu(30)
-
-    Layouts {
-        objectName: "layouts"
-        id: layouts
-        anchors.fill: parent
-        layouts: [
-            SmallLayout{},
-            MediumLayout {},
-            LargeLayout {}
-        ]
-
-        // default layout
-        DefaultLayout{
-        }
-    }
-}
+  Previous: \l {ubuntu-layouts.html}{Introduction}  Next: \l {ubuntu-layouts-p3.html}{Defining Layouts}
+*/

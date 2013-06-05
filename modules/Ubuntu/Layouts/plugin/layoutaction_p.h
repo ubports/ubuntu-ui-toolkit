@@ -119,14 +119,17 @@ public:
 class ItemStackBackup : public PropertyChange
 {
 public:
-    ItemStackBackup(QQuickItem *item);
+    ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem);
     void execute() {}
     void revert();
 
 protected:
     virtual void saveState();
     QQuickItem *target;
+    QQuickItem *currentLayout;
     QQuickItem *originalStackBefore;
+private:
+    friend class ULLayouts;
 };
 
 

@@ -23,6 +23,8 @@ Item {
     width: units.gu(40)
     height: units.gu(30)
 
+    property string nestedLayout: ""
+
     Layouts {
         objectName: "layouts"
         id: layouts
@@ -44,32 +46,24 @@ Item {
                 }
             },
             ConditionalLayout {
+                id: simple
                 name: "simple"
-                when: layouts.width <= units.gu(200)
-                SimpleLayouts{}
+                when: layouts.width <= units.gu(100)
+                property string uhh: nested.currentLayout
+                SimpleLayouts{
+                    id: nested
+                    onCurrentLayoutChanged: simple.uhh = currentLayout
+//                    Binding {
+//                        target: root
+//                        property: "nestedLayout"
+//                        value: nested.currentLayout
+//                    }
+                }
             }
         ]
 
         // default layout
-        Label {
-            objectName: "item1"
-            id: label1
-            ConditionalLayout.name: "item1"
-            text: "item1"
-        }
-        Label {
-            objectName: "item2"
-            id: label2
-            anchors.bottom: label1.bottom
-            ConditionalLayout.name: "item1"
-            text: "item2"
-        }
-        Label {
-            objectName: "item3"
-            id: label3
-            anchors.bottom: label2.bottom
-            ConditionalLayout.name: "item1"
-            text: "item3"
+        DefaultLayout{
         }
     }
 }

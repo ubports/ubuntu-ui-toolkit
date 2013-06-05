@@ -23,6 +23,8 @@ Item {
     width: units.gu(40)
     height: units.gu(30)
 
+    property alias currentLayout: layouts.currentLayout
+
     Layouts {
         objectName: "layouts"
         id: layouts
@@ -55,29 +57,7 @@ Item {
         ]
 
         // default layout
-        Item {
-            objectName: "defaultLayout"
-            anchors.fill: parent
-            Label {
-                objectName: "item1"
-                id: label1
-                ConditionalLayout.name: "item1"
-                text: "item1"
-            }
-            Label {
-                objectName: "item2"
-                id: label2
-                anchors.bottom: label1.bottom
-                ConditionalLayout.name: "item2"
-                text: "item2"
-            }
-            Label {
-                objectName: "item3"
-                id: label3
-                anchors.bottom: label2.bottom
-                ConditionalLayout.name: "item3"
-                text: "item3"
-            }
+        DefaultLayout{
         }
     }
 }

@@ -19,22 +19,26 @@ import Ubuntu.Components 0.1
 import Ubuntu.Layouts 0.1
 
 Item {
-    id: root
-    width: units.gu(40)
-    height: units.gu(30)
-
-    Layouts {
-        objectName: "layouts"
-        id: layouts
-        anchors.fill: parent
-        layouts: [
-            SmallLayout{},
-            MediumLayout {},
-            LargeLayout {}
-        ]
-
-        // default layout
-        DefaultLayout{
-        }
+    objectName: "defaultLayout"
+    anchors.fill: parent
+    Label {
+        objectName: "item1"
+        id: label1
+        ConditionalLayout.item: "item1"
+        text: "item1"
+    }
+    Label {
+        objectName: "item2"
+        id: label2
+        anchors.bottom: label1.bottom
+        ConditionalLayout.item: "item2"
+        text: "item2"
+    }
+    Label {
+        objectName: "item3"
+        id: label3
+        anchors.bottom: label2.bottom
+        ConditionalLayout.item: "item3"
+        text: "item3"
     }
 }

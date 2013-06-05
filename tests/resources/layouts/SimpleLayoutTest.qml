@@ -32,30 +32,41 @@ Item {
             ConditionalLayout {
                 name: "column"
                 when: layouts.width > units.gu(30) && layouts.width <= units.gu(40)
-                Column {
-                    id: column
-                    anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
-                    ConditionalLayout.width: column.width
+                Flickable {
+//                    anchors.fill: parent
+                    contentHeight: column.height
+                    Column {
+                        id: column
+                        width: parent.width
+                        height: childrenRect.height
+                        ConditionalLayout.items: ["item1", "item2", "item3"]
+                        ConditionalLayout.width: column.width
+                    }
                 }
             },
             ConditionalLayout {
                 name: "flow"
                 when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
-                Flow {
-                    anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
-                    ConditionalLayout.width: units.gu(30)
-                    ConditionalLayout.height: units.gu(20)
-                    ConditionalLayout.rotation: 75
-                    ConditionalLayout.scale: 0.5
+                Flickable {
+//                    anchors.fill: parent
+                    contentHeight: flow.height
+                    Flow {
+                        id: flow
+                        width: parent.width
+                        height: childrenRect.height
+                        ConditionalLayout.items: ["item1", "item2", "item3"]
+                        ConditionalLayout.width: units.gu(30)
+                        ConditionalLayout.height: units.gu(20)
+                        ConditionalLayout.rotation: 75
+                        ConditionalLayout.scale: 0.5
+                    }
                 }
             },
             ConditionalLayout {
                 name: "row"
                 when: layouts.width > units.gu(60) && layouts.width < units.gu(80)
                 Row {
-                    anchors.fill: parent
+//                    anchors.fill: parent
                     ConditionalLayout.items: ["item1", "item2", "item3"]
                     ConditionalLayout.width: units.gu(20)
                     ConditionalLayout.height: units.gu(20)
@@ -65,7 +76,7 @@ Item {
                 name: "composit"
                 when: layouts.width >= units.gu(80)
                 Row {
-                    anchors.fill: parent
+//                    anchors.fill: parent
                     spacing: units.gu(2)
                     LayoutFragment {
                         item: "item2"
@@ -82,51 +93,58 @@ Item {
         ]
 
         // default layout
-        Item {
-            objectName: "defaultLayout"
-            anchors.fill: parent
-            Rectangle {
-                objectName: "item1"
-                id: label1
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: units.gu(15)
-                height: units.gu(30)
-                ConditionalLayout.item: "item1"
-                color: "red"
+        Rectangle {
+            objectName: "item1"
+            id: label1
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
             }
-            Rectangle {
-                objectName: "item2"
-                id: label2
-                anchors {
-                    top: parent.top
-                    left: label1.right
-                    right: parent.right
-                }
-                x: units.gu(15)
-                height: units.gu(15)
-                width: units.gu(15);
-                ConditionalLayout.item: "item2"
-                color: "green"
+            width: units.gu(15)
+            height: units.gu(30)
+            ConditionalLayout.item: "item1"
+            color: "red"
+        }
+        Rectangle {
+            objectName: "item2"
+            id: label2
+            anchors {
+                top: parent.top
+                left: label1.right
+                right: parent.right
             }
-            Rectangle {
-                objectName: "item3"
-                id: label3
-                anchors{
-                    left: label1.right
-                    right: parent.right
-                    bottom: parent.bottom
-                }
-                x: units.gu(15)
-                y: units.gu(15)
-                height: units.gu(15)
-                width: units.gu(15);
-                ConditionalLayout.item: "item3"
-                color: "blue"
+            x: units.gu(15)
+            height: units.gu(10)
+            width: units.gu(15);
+            ConditionalLayout.item: "item2"
+            color: "green"
+        }
+        Rectangle {
+            objectName: "nolayout"
+            id: nolayout
+            anchors {
+                top: label2.bottom
+                left: label1.right
+                right: parent.right
+                bottom: label3.top
             }
+            color: "brown"
+        }
+        Rectangle {
+            objectName: "item3"
+            id: label3
+            anchors{
+                left: label1.right
+                right: parent.right
+                bottom: parent.bottom
+            }
+            x: units.gu(15)
+            y: units.gu(15)
+            height: units.gu(10)
+            width: units.gu(15);
+            ConditionalLayout.item: "item3"
+            color: "blue"
         }
     }
 }

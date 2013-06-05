@@ -18,17 +18,13 @@
 
 #include "layoutaction_p.h"
 #include "ulconditionallayout.h"
+#include "ullayouts_p.h"
+#include "ullayouts.h"
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlInfo>
 
 #include <QtQml/private/qqmlcontext_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
-
-//#include <QtQuick/private/qquickstateoperations_p.h>
-//#include <QtQuick/private/qquickstatechangescript_p.h>
-//#include <QtQuick/private/qquickpropertychanges_p.h>
-//#include <QtQuick/private/qquickstate_p.h>
-
 
 /******************************************************************************
  * LayoutAction
@@ -249,9 +245,10 @@ ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent)
  * ItemStackBackup
  * High priority change backing up the item's stack position.
  */
-ItemStackBackup::ItemStackBackup(QQuickItem *item)
+ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem)
     : PropertyChange(High)
     , target(item)
+    , currentLayout(currentLayoutItem)
     , originalStackBefore(0)
 {
 }
@@ -259,10 +256,10 @@ ItemStackBackup::ItemStackBackup(QQuickItem *item)
 void ItemStackBackup::saveState()
 {
     QQuickItem *rewindParent = target->parentItem();
-    // save original stack position
+    // save original stack position, but detect layout objects!
     QList<QQuickItem*> children = rewindParent->childItems();
     for (int ii = 0; ii < children.count() - 1; ++ii) {
-        if (children.at(ii) == target) {
+        if (children.at(ii) == target && children.at(ii + 1) != currentLayout) {
             originalStackBefore = children.at(ii + 1);
             break;
         }

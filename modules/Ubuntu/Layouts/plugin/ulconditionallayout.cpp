@@ -45,8 +45,58 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * \ingroup ubuntu-layouts
  * \brief ConditionalLayout defines the layout of a given form factor.
  *
- * Notes:
- *  - layout component fills the entire Layouts component area
+ * ConditionalLayout is a non-visual element defining the actual layout to be applied
+ * upon the given condition evaluates to true. The condition can be any valid boolean
+ * JavaScript expression.
+ *
+ * As Layouts can be nested, use the closest embedding Layouts object's size when defining
+ * the condition. Other elements like Screen orientation can also be used to define
+ * the layout activation condition.
+ *
+ * There can be a single component defined in the ConditionalLayout which will be
+ * instantiated upon activation. This component then will be filling the entire
+ * Layouts area, so no additional anchoring is required in those components.
+ *
+ * \qml
+ * Layouts {
+ *     id: layouts
+ *     width: units.gu(40)
+ *     height: units.gu(40)
+ *     layouts: [
+ *         ConditionalLayout {
+ *             when: layouts.width > units.gu(60)
+ *             Flow {
+ *                 ConditionalLayout.items: ["item1", "item2", "item3"]
+ *                 spacing: units.dp(3)
+ *                 flow: Flow.LeftToRight
+ *             }
+ *         }
+ *     ]
+ *
+ *     Column {
+ *         spacing: units.dp(2)
+ *         Button {
+ *             text: "Button #1"
+ *             ConditionalLayout.item: "item1"
+ *         }
+ *         Button {
+ *             text: "Button #2"
+ *             ConditionalLayout.item: "item2"
+ *         }
+ *         Button {
+ *             text: "Button #3"
+ *             ConditionalLayout.item: "item3"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * The items subject of layout must be having the \l item attached property. The
+ * components hosting multiple items to be laid out are called containers, and
+ * these items are listed in the \l items attached property. The items are laid
+ * out in the container in the order specified in the \l items property.
+ *
+ * \sa {LayoutFragment}
  */
 
 ULConditionalLayout::ULConditionalLayout(QObject *parent) :
