@@ -212,7 +212,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.assertThat(obj.enabled, Equals(objEnabled))
             self.assertThat(obj.focus, Equals(obj.enabled)) 
             self.assertThat(obj.highlighted, Equals(obj.focus))
-            self.assertThat(obj.hasClearButton, Equals(True))
+            #self.assertThat(obj.hasClearButton, Equals(True))
             self.assertThat(obj.text, Equals(objText))
 
             #TODO: There is no clear button or method to clear a textarea?
