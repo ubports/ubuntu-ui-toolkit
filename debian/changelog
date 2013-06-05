@@ -287,6 +287,20 @@ ubuntu-ui-toolkit (0.1.43daily13.04.19ubuntu.unity.next-0ubuntu1) raring; urgenc
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Apr 2013 04:09:00 +0000
 
+ubuntu-ui-toolkit (0.1.43) raring; urgency=low
+
+  * Fix for text inputs staying disabled after being re-enabled. The previous 
+    workaround for removing input panel was blocking re-enabling a 
+    previously enabled input. (LP: #1164634)
+  * Fixing disabled text input delegate background color theming when userValue
+    is set to TextField or TextArea color property. (LP: #1169601)
+  * Workaround for TextArea and TextField removing OSK when active focus is 
+    transferred from one instance to another using focus property (LP: #1163371)
+  * Fix for TextArea Enter/Return keys being stolen when embedded in 
+    ListItems.Empty. (LP: #1166840)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 18 Apr 2013 10:18:52 -0400
+
 ubuntu-ui-toolkit (0.1.42daily13.04.18ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Zsombor Egri ]
