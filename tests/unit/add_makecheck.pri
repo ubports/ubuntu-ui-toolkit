@@ -4,5 +4,5 @@
 
 check.target = check
 check.commands = QML2_IMPORT_PATH=../../.. UITK_THEME_PATH=../../.. ./$$TARGET -platform minimal
-check.commands += -maxwarnings 10 -xunitxml -o ../../test_$(TARGET).xml;
-check.commands += ../testparser/testparser ../../test_$(TARGET).xml 
+check.commands += -maxwarnings 10 -o ../../test_$(TARGET).xml,xunitxml -o -,txt
+#check.commands += ../testparser/testparser ../../test_$(TARGET).xml 

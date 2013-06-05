@@ -20,7 +20,8 @@
 _CMD=""
 _TARGET=$1
 _TESTFILE=$2
-_ARGS="-platform minimal -xunitxml -o ../../test_$_TARGET_$_TESTFILE.xml"
+_ARG_XML="-o ../../test_$_TARGET_$_TESTFILE.xml,xunitxml -o -,txt"
+_ARGS="-platform minimal $_ARG_XML"
 set +e
 
 function create_test_cmd {
@@ -30,29 +31,33 @@ function create_test_cmd {
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
   QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UITK_THEME_PATH=../../.. $_CMD $_ARGS
+  RESULT=$?
   # segfault
-  if [ $? -eq 139 ]; then
+  if [ $RESULT -eq 139 ]; then
    return 2
   fi
   # abort
-  if [ $? -eq 134 ]; then
+  if [ $RESULT -eq 134 ]; then
    return 2
   fi
-  ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
-  return 0
+#  if [ $RESULT -eq 0 ]; then
+#    ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
+#  fi
+  return $RESULT
 }
 
 create_test_cmd
 execute_test_cmd
-if [ $? -eq 2 ]; then
+RESULT=$?
+if [ $RESULT -eq 2 ]; then
   echo "FAILURE: Failed to execute test with -platform minimal, lets try without"
-  _ARGS=""
+  _ARGS="$_ARG_XML"
   execute_test_cmd
-  if [ $? -eq 2 ]; then
+  RESULT=$?
+  if [ $RESULT -eq 2 ]; then
    echo "FAILURE: Failed to execute test."
    set -e
    exit -2
   fi
 fi
-
-set -e
+exit $RESULT

@@ -219,7 +219,7 @@ Item {
         }
 
         function test_1_contentWidth() {
-            compare(textArea.contentWidth,units.gu(28),"contentWidth is 30 units on default")
+            compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
