@@ -40,8 +40,18 @@ MainView {
             text: "Hello, world"
         }
 
-        tools: ToolbarActions {
-            actions: [action1, action2]
+//        tools: ToolbarActions {
+//            actions: [action1, action2]
+//        }
+
+        tools: Item  {
+            anchors.fill: parent
+            Rectangle {
+                color: "yellow"
+                anchors.centerIn: parent
+                width: 20
+                height: 20
+            }
         }
     }
 }

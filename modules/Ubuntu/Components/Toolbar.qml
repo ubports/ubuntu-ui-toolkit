@@ -63,16 +63,20 @@ Panel {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools: null
+//    property ToolbarActions tools: null
+    property Item tools: null
+
     /*! \internal */
     onToolsChanged: {
-        locked = tools.locked;
+//        locked = tools.locked;
         if (tools && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
+            if (internal.visibleTools) internal.visibleTools.parent = null;
             internal.visibleTools = tools;
             opened = true;
         } else if (!opened && !animating) {
             // toolbar is invisible
+            if (internal.visibleTools) internal.visibleTools.parent = null;
             internal.visibleTools = tools;
         } else {
             opened = false;
@@ -82,21 +86,28 @@ Panel {
     }
 
     // if tools is not specified, lock the toolbar in closed position
-    locked: tools ? tools.locked : true
+    locked: false //tools ? tools.locked : true
 
-    Connections {
-        target: tools
-        onOpenedChanged: toolbar.opened = tools.opened;
-        onLockedChanged: toolbar.locked = tools.locked;
-    }
+//    Connections {
+//        target: tools
+//        onOpenedChanged: toolbar.opened = tools.opened;
+//        onLockedChanged: toolbar.locked = tools.locked;
+//    }
 
     QtObject {
         id: internal
-        property ToolbarActions visibleTools: tools
+//        property ToolbarActions visibleTools: tools
+        property Item visibleTools: tools
+        onVisibleToolsChanged: {
+            if (internal.visibleTools) {
+                internal.visibleTools.parent = visibleToolsContainer;
+            }
+        }
     }
 
     onAnimatingChanged: {
         if (!animating && !opened) {
+            if (internal.visibleTools) internal.visibleTools.parent = null;
             internal.visibleTools = toolbar.tools;
         }
     }
@@ -120,58 +131,66 @@ Panel {
         property bool animating: toolbar.animating
     }
 
-    Component {
-        id: toolButtonComponent
-        Button {
-            id: toolButton
-            // Disable the mouse area so swipes on the button will not be blocked
-            // from going to the toolbar. The panel will take care calling the button's clicked().
-            __mouseArea.visible: false
-            Theming.ItemStyle.class: "toolbar-button"
-            width: units.gu(5)
-            height: toolbar.height
-        }
-    }
-
-    Loader {
-        id: backButton
-        property Action backAction: toolbar.tools ? toolbar.tools.back : null
-        sourceComponent: backAction ? backAction.itemHint ? backAction.itemHint : toolButtonComponent : null
+    Item {
+        id: visibleToolsContainer
         anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
-        }
-        onStatusChanged: {
-            if (item && status == Loader.Ready) {
-                if (item.hasOwnProperty("action")) item.action = backAction;
-            }
-        }
-        // ensure the item's action is up-to-date (which is not the case without this line):
-        onBackActionChanged: if (item && item.hasOwnProperty("action")) item.action = backAction;
-    }
-
-    Row {
-        id: toolButtonsContainer
-        anchors {
-            right: parent.right
-            bottom: parent.bottom
-            top: parent.top
-            rightMargin: units.gu(2)
-        }
-        spacing: units.gu(1)
-
-        Repeater {
-            model: internal.visibleTools ? internal.visibleTools.children : 0
-            Loader {
-                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
-                anchors.verticalCenter: toolButtonsContainer.verticalCenter
-                onStatusChanged: {
-                    if (item && status == Loader.Ready) {
-                        if (item.hasOwnProperty("action")) item.action = modelData
-                    }
-                }
-            }
+            fill: background
         }
     }
+
+
+//    Component {
+//        id: toolButtonComponent
+//        Button {
+//            id: toolButton
+//            // Disable the mouse area so swipes on the button will not be blocked
+//            // from going to the toolbar. The panel will take care calling the button's clicked().
+//            __mouseArea.visible: false
+//            Theming.ItemStyle.class: "toolbar-button"
+//            width: units.gu(5)
+//            height: toolbar.height
+//        }
+//    }
+
+//    Loader {
+//        id: backButton
+//        property Action backAction: toolbar.tools ? toolbar.tools.back : null
+//        sourceComponent: backAction ? backAction.itemHint ? backAction.itemHint : toolButtonComponent : null
+//        anchors {
+//            left: parent.left
+//            leftMargin: units.gu(2)
+//            verticalCenter: parent.verticalCenter
+//        }
+//        onStatusChanged: {
+//            if (item && status == Loader.Ready) {
+//                if (item.hasOwnProperty("action")) item.action = backAction;
+//            }
+//        }
+//        // ensure the item's action is up-to-date (which is not the case without this line):
+//        onBackActionChanged: if (item && item.hasOwnProperty("action")) item.action = backAction;
+//    }
+
+//    Row {
+//        id: toolButtonsContainer
+//        anchors {
+//            right: parent.right
+//            bottom: parent.bottom
+//            top: parent.top
+//            rightMargin: units.gu(2)
+//        }
+//        spacing: units.gu(1)
+
+//        Repeater {
+//            model: internal.visibleTools ? internal.visibleTools.children : 0
+//            Loader {
+//                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
+//                anchors.verticalCenter: toolButtonsContainer.verticalCenter
+//                onStatusChanged: {
+//                    if (item && status == Loader.Ready) {
+//                        if (item.hasOwnProperty("action")) item.action = modelData
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

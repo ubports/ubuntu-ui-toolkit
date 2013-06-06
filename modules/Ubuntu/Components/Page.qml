@@ -76,7 +76,8 @@ PageTreeNode {
     /*!
       The list of actions associated with this Page.
      */
-    property ToolbarActions tools: ToolbarActions { }
+//    property ToolbarActions tools: ToolbarActions { }
+    property Item tools: null
 
     /*!
       Optional flickable that controls the header. This property
@@ -109,7 +110,8 @@ PageTreeNode {
                     internal.header.flickable = page.flickable;
                 }
                 if (tools) {
-                    tools.__pageStack = page.pageStack;
+                    // TODO TIM: solution for pagestack
+//                    tools.__pageStack = page.pageStack;
                 }
                 if (internal.toolbar) {
                     internal.toolbar.tools = page.tools;
