@@ -16,19 +16,19 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ullayoutfragment.h"
+#include "ulitemlayout.h"
 
 /*!
- * \qmltype LayoutFragment
- * \instantiates ULLayoutFragment
+ * \qmltype ItemLayout
+ * \instantiates ULItemLayout
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief LayoutFragment is a pseudo-Item providing re-positioning of a single
+ * \brief ItemLayout is a pseudo-Item providing re-positioning of a single
  * item within a layout.
  *
  * The item name to be positioned should be specified in item property, which
  * should correspond to the “ConditionalLayout.item” of an Item in the document.
- * The Item with ConditionalLayout.item is reparented into LayoutFragment and it
+ * The Item with ConditionalLayout.item is reparented into ItemLayout and it
  * is anchor filled to it.
  *
  * Example:
@@ -46,7 +46,7 @@
  *             Item {
  *                 Row {
  *                     width: parent.width
- *                     LayoutFragment {
+ *                     ItemLayout {
  *                         item: "input"
  *                         width: units.gu(30)
  *                         height: units.gu(20)
@@ -68,23 +68,23 @@
  * \endqml
  */
 
-ULLayoutFragment::ULLayoutFragment(QQuickItem *parent)
+ULItemLayout::ULItemLayout(QQuickItem *parent)
     : QQuickItem(parent)
 {
 }
 
-ULLayoutFragment::~ULLayoutFragment()
+ULItemLayout::~ULItemLayout()
 {}
 
 /*!
- * \qmlproperty string Fragment::item
+ * \qmlproperty string ItemLayout::item
  * The property holds the item name to be positioned in the fragment.
  */
-QString ULLayoutFragment::item() const
+QString ULItemLayout::item() const
 {
     return m_itemName;
 }
-void ULLayoutFragment::setItem(const QString &value)
+void ULItemLayout::setItem(const QString &value)
 {
     if (value.isEmpty() || (value == m_itemName)) {
         return;

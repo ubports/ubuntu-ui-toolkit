@@ -96,7 +96,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * these items are listed in the \l items attached property. The items are laid
  * out in the container in the order specified in the \l items property.
  *
- * \sa {LayoutFragment}
+ * \sa {ItemLayout}
  */
 
 ULConditionalLayout::ULConditionalLayout(QObject *parent) :

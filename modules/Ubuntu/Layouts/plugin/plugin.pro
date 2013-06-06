@@ -18,7 +18,7 @@ SOURCES += \
     ulconditionallayoutattached.cpp \
     ulplugin.cpp \
     layoutaction.cpp \
-    ullayoutfragment.cpp
+    ulitemlayout.cpp
 
 HEADERS += \
     ullayouts.h \
@@ -27,7 +27,7 @@ HEADERS += \
     ulconditionallayout_p.h \
     ulplugin.h \
     layoutaction_p.h \
-    ullayoutfragment.h
+    ulitemlayout.h
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

@@ -16,21 +16,21 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ULFRAGMENT_H
-#define ULFRAGMENT_H
+#ifndef ULITEMLAYOUT_H
+#define ULITEMLAYOUT_H
 
 #include <QtQuick/QQuickItem>
 
-class ULLayoutFragment : public QQuickItem
+class ULItemLayout : public QQuickItem
 {
     Q_OBJECT
-    Q_DISABLE_COPY(ULLayoutFragment)
+    Q_DISABLE_COPY(ULItemLayout)
 
     Q_PROPERTY(QString item READ item WRITE setItem)
 
 public:
-    explicit ULLayoutFragment(QQuickItem *parent = 0);
-    ~ULLayoutFragment();
+    explicit ULItemLayout(QQuickItem *parent = 0);
+    ~ULItemLayout();
 
     QString item() const;
     void setItem(const QString &value);
@@ -39,4 +39,4 @@ private:
     QString m_itemName;
 };
 
-#endif // ULFRAGMENT_H
+#endif // ULITEMLAYOUT_H

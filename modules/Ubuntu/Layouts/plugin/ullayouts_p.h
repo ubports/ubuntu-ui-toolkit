@@ -25,7 +25,7 @@
 
 typedef QHash<QString, QQuickItem*> LaidOutItemsMap;
 
-class ULLayoutFragment;
+class ULItemLayout;
 class ULLayoutsPrivate : QQmlIncubator {
     Q_DECLARE_PUBLIC(ULLayouts)
 public:
@@ -58,7 +58,7 @@ private:
     void reLayout();
     void hideExcludedItems();
     void reparentItems();
-    void reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFragment *fragment);
+    void reparentToLayoutFragment(LaidOutItemsMap &map, ULItemLayout *fragment);
     void reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment);
 };
 

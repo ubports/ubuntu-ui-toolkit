@@ -39,7 +39,7 @@ Item {
                         width: parent.width
                         height: childrenRect.height
                         ConditionalLayout.items: ["item1", "item2", "item3"]
-                        ConditionalLayout.width: column.width
+//                        ConditionalLayout.width: column.width
                     }
                 }
             },
@@ -75,7 +75,7 @@ Item {
                 when: layouts.width >= units.gu(80)
                 Row {
                     spacing: units.dp(4)
-                    LayoutFragment {
+                    ItemLayout {
                         item: "item2"
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom

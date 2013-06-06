@@ -18,7 +18,7 @@
 
 #include "ullayouts.h"
 #include "ullayouts_p.h"
-#include "ullayoutfragment.h"
+#include "ulitemlayout.h"
 #include "ulconditionallayout.h"
 #include "layoutaction_p.h"
 #include <QtQml/QQmlInfo>
@@ -142,8 +142,8 @@ void ULLayoutsPrivate::reparentItems()
     items.prepend(currentLayoutItem);
 
     Q_FOREACH(QQuickItem *container, items) {
-        // check whether we have LayoutFragment declared
-        ULLayoutFragment *layoutFragment = qobject_cast<ULLayoutFragment*>(container);
+        // check whether we have ItemLayout declared
+        ULItemLayout *layoutFragment = qobject_cast<ULItemLayout*>(container);
         if (layoutFragment) {
             reparentToLayoutFragment(unusedItems, layoutFragment);
         } else {
@@ -166,13 +166,13 @@ void ULLayoutsPrivate::reparentItems()
 }
 
 /*
- * Re-parent to LayoutFragment.
+ * Re-parent to ItemLayout.
  */
-void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULLayoutFragment *fragment)
+void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULItemLayout *fragment)
 {
     QString itemName = fragment->item();
     if (itemName.isEmpty()) {
-        qmlInfo(fragment) << "Warning: item not specified for LayoutFragment";
+        qmlInfo(fragment) << "Warning: item not specified for ItemLayout";
         return;
     }
 

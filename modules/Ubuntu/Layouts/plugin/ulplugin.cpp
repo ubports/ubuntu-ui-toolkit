@@ -19,7 +19,7 @@
 #include "ulplugin.h"
 #include "ullayouts.h"
 #include "ulconditionallayout.h"
-#include "ullayoutfragment.h"
+#include "ulitemlayout.h"
 
 #include <qqml.h>
 
@@ -28,5 +28,5 @@ void PluginPlugin::registerTypes(const char *uri)
     // @uri Ubuntu.Layouts
     qmlRegisterType<ULLayouts>(uri, 0, 1, "Layouts");
     qmlRegisterType<ULConditionalLayout>(uri, 0, 1, "ConditionalLayout");
-    qmlRegisterType<ULLayoutFragment>(uri, 0, 1, "LayoutFragment");
+    qmlRegisterType<ULItemLayout>(uri, 0, 1, "ItemLayout");
 }

@@ -30,7 +30,7 @@
   \endlist
 
   Unfortunately these components are not well suited to general user-interface design as:
-  \list A
+  \list 1
     \li not designed to alter size of children - so no form of stretching
         supported by default.
     \li as a result no way to have contents fill the container (without
@@ -69,16 +69,16 @@
 
   First let's introduce the terminology we are going to use across this tutorial.
 
-  \section3 Layout Block, Container and Fragment
+  \section3 Layout Block, Container and Item holder
   A layout block is a component embedding several layout definitions and items to be
   laid out. It is typically defined by the \l Layouts component.
 
   Each layout defined in the block is compound of containers, which can host laid out
-  items and fragments.
+  items and item holders.
 
-  A fragment is a pseudo-item which can host only one item, where the item is anchored
-  to the fragment's edges, therefore the fragment has control over the componet's size,
-  scale and rotation.
+  An item holder is a pseudo-item which can host only one item, where the item
+  is anchored to the item holder's edges, therefore the item holder has control
+  over the componet's size, scale and rotation.
 
   To understand this let's take the following layout structure:
   \image sample-layout.png
@@ -86,13 +86,49 @@
   In this layout all three buttons are laid out in the same container, but green
   button was required to take the height of the window, whereas the red and blue
   buttons were required to have the same width and height. Therefore the green
-  button was laid out using a \l {LayoutFragment}{fragment} and the other two buttons
+  button was laid out using a \l {ItemLayout}{item holder} and the other two buttons
   with the same criteria, using \l {ConditionalLayout}{ConditionalLayout} attached
   properties.
 
+  Illustrating the layout on the image with code:
+
+  \qml
+  Layouts { // <-- \b{layout block}
+      id: layouts
+      layouts: [
+          ConditionalLayout { // <-- \b layout
+              name: "composit"
+              Row { // <-- \b{layout container}
+                  // [...]
+                  ItemLayout { // <-- \b{item holder}
+                      item: "item2"
+                      // [...]
+                  }
+                  ConditionalLayout.items: ["item1", "item3"]
+                  // [...]
+              }
+          }
+      ]
+
+      // the items to lay out
+      Button {
+          ConditionalLayout.item: "item1"
+          // [...]
+      }
+      Button {
+          ConditionalLayout.item: "item2"
+          // [...]
+      }
+      Button {
+          ConditionalLayout.item: "item3"
+          // [...]
+      }
+  }
+  \endqml
+
   A container can be any item, however it is preferable to use positioners or QtQuick
   layout elements whenever possible. If this is not possible, individual items can be
-  laid out using the fragments.
+  laid out using the item holders.
 
   As next step let's create some layouts.
 */
