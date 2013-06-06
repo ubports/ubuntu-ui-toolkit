@@ -68,8 +68,9 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
-//        locked = tools.locked;
-        if (tools && tools.opened && tools.locked) {
+        if (tools.hasOwnProperty("locked")) locked = tools.locked;
+        if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
+                && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
             if (internal.visibleTools) internal.visibleTools.parent = null;
             internal.visibleTools = tools;
@@ -86,13 +87,13 @@ Panel {
     }
 
     // if tools is not specified, lock the toolbar in closed position
-    locked: false //tools ? tools.locked : true
+    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : true
 
-//    Connections {
-//        target: tools
-//        onOpenedChanged: toolbar.opened = tools.opened;
-//        onLockedChanged: toolbar.locked = tools.locked;
-//    }
+    Connections {
+        target: tools
+        onOpenedChanged: toolbar.opened = tools.opened;
+        onLockedChanged: toolbar.locked = tools.locked;
+    }
 
     QtObject {
         id: internal
