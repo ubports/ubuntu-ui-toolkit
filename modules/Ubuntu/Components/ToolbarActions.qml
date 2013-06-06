@@ -70,8 +70,107 @@ import QtQuick 2.0
         }
     \endqml
 */
-ActionList {
+//QtObject {
+Item {
     id: toolbarActions
+    // internal objects using nested elements,
+    // which isn't allowed by QtObject; this fix makes this possible
+    /*!
+      Default property to allow adding of children. For example, the tools of a \l Page
+      can be defined as follows:
+      \qml
+          import QtQuick 2.0
+          import Ubuntu.Components 0.1
+
+          MainView {
+              width: units.gu(50)
+              height: units.gu(80)
+
+              Page {
+                  title: "test page"
+
+                  Label {
+                      anchors.centerIn: parent
+                      text: "Hello, world"
+                  }
+
+                  tools: ToolbarActions {
+                      Action {
+                          text: "action 1"
+                      }
+                      Action {
+                          text: "action 2"
+                      }
+                  }
+              }
+          }
+      \endqml
+      where \l ToolbarActions is derived from ActionList.
+      \qmlproperty list<Action> children
+      */
+//    default property alias children: toolbarActions.actions
+    default property alias children: buttonRow.data
+
+    anchors {
+        fill: parent ? parent : undefined
+    }
+
+    /*!
+      List of already defined actions when not defining them as children of the ActionList.
+      Note that when you set this property, the children of the ActionList will be ignored,
+      so do not set the list and define children.
+      \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(50)
+            height: units.gu(80)
+
+            Action {
+                id: action1
+                text: "action 1"
+                onTriggered: print("one!")
+            }
+            Action {
+                id: action2
+                text: "action 2"
+                onTriggered: print("two!")
+            }
+
+            Page {
+                title: "test page"
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Hello, world"
+                }
+
+                tools: ToolbarActions {
+                    actions: [action1, action2]
+                }
+            }
+        }
+      \endqml
+      the advantage of setting actions over using the children is that the same
+      \l Action items can be used in several sets of actions.
+      */
+//    property list<ToolbarItem> actions
+
+
+    Rectangle {
+        color: "red"
+        anchors.fill: parent
+    }
+
+    Row {
+        id: buttonRow
+        anchors {
+            right: parent ? parent.right : undefined
+            top: parent ? parent.top : undefined
+            bottom: parent ? parent.bottom : undefined
+        }
+    }
 
     /*!
       The back \l Action. If the action is visible, the back button will be shown
@@ -81,7 +180,7 @@ ActionList {
       \l PageStack with depth greater than 1, the back action is hidden by default
       (but the default setting can be changed by setting its visible property).
      */
-    property Action back: Action {
+    property ToolbarItem back: ToolbarItem {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
         visible: toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
@@ -109,6 +208,7 @@ ActionList {
       Use property opened instead.
      */
     property bool active
+
     /*!
       \deprecated
       \internal
@@ -144,10 +244,13 @@ ActionList {
       Determine whether this ToolbarActions has any visible actions
      */
     function __hasVisibleActions() {
-        if (back && back.visible) return true;
-        for (var i=0; i < toolbarActions.actions.length; i++) {
-            if (toolbarActions.actions[i].visible) return true;
-        }
-        return false;
+        return true;
+
+        // TODO: fix
+//        if (back && back.visible) return true;
+//        for (var i=0; i < toolbarActions.actions.length; i++) {
+//            if (toolbarActions.actions[i].visible) return true;
+//        }
+//        return false;
     }
 }
