@@ -110,8 +110,7 @@ PageTreeNode {
                     internal.header.flickable = page.flickable;
                 }
                 if (tools) {
-                    // TODO TIM: solution for pagestack
-//                    tools.__pageStack = page.pageStack;
+                    if (tools.hasOwnProperty("__pageStack")) tools.__pageStack = page.pageStack;
                 }
                 if (internal.toolbar) {
                     internal.toolbar.tools = page.tools;

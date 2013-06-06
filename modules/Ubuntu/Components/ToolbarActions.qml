@@ -15,6 +15,11 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Theming named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype ToolbarActions
@@ -72,7 +77,16 @@ import QtQuick 2.0
 */
 Item {
     id: toolbarActions
-//    id: list
+    anchors.fill: parent
+
+    Rectangle {
+        color: "purple"
+        anchors.centerIn: parent
+        width: 20
+        height: 20
+    }
+
+    //    id: list
     // internal objects using nested elements,
     // which isn't allowed by QtObject; this fix makes this possible
     /*!
@@ -163,7 +177,7 @@ Item {
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
-        visible: toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
+        visible: true // toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
         /*!
           \internal
           FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
@@ -229,4 +243,62 @@ Item {
         }
         return false;
     }
+
+    Component {
+        id: toolButtonComponent
+        Button {
+            id: toolButton
+            // Disable the mouse area so swipes on the button will not be blocked
+            // from going to the toolbar. The panel will take care calling the button's clicked().
+            __mouseArea.visible: false
+            Theming.ItemStyle.class: "toolbar-button"
+            width: units.gu(5)
+//            height: toolbar.height
+            height: toolbarActions.height
+        }
+    }
+
+    Loader {
+        id: backButton
+        property Action backAction: toolbarActions.back
+        sourceComponent: backAction ? backAction.itemHint ? backAction.itemHint : toolButtonComponent : null
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            verticalCenter: parent.verticalCenter
+        }
+        onStatusChanged: {
+            if (item && status == Loader.Ready) {
+                if (item.hasOwnProperty("action")) item.action = backAction;
+            }
+        }
+        // ensure the item's action is up-to-date (which is not the case without this line):
+        onBackActionChanged: if (item && item.hasOwnProperty("action")) item.action = backAction;
+    }
+
+    Row {
+        id: toolButtonsContainer
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            top: parent.top
+            rightMargin: units.gu(2)
+        }
+        spacing: units.gu(1)
+
+        Repeater {
+//            model: internal.visibleTools ? internal.visibleTools.children : 0
+            model: toolbarActions.actions
+            Loader {
+                sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
+                anchors.verticalCenter: toolButtonsContainer.verticalCenter
+                onStatusChanged: {
+                    if (item && status == Loader.Ready) {
+                        if (item.hasOwnProperty("action")) item.action = modelData
+                    }
+                }
+            }
+        }
+    }
+
 }
