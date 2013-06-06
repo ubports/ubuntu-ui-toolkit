@@ -78,8 +78,8 @@ void ULLayoutsPrivate::setInitialState(QObject *object)
     object->setParent(q);
     QQuickItem *item = static_cast<QQuickItem*>(object);
     item->setParentItem(q);
-    item->setVisible(false);
-    item->setEnabled(false);
+//    item->setVisible(false);
+    item->setEnabled(true);
 }
 
 /*
@@ -105,8 +105,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
-               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
+//        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
+//               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
         // apply changes
         changes.apply();
         // clear previous layout
@@ -206,6 +206,7 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
             // reparent and break anchors
             changes.addChange(new ParentChange(item, container))
                    .addChange(new ItemStackBackup(item, currentLayoutItem))
+                    .addChange(new PropertyChange(item, "enabled", true))
                     // break and backup anchors
                    .addChange(new AnchorBackup(item));
 
@@ -245,8 +246,21 @@ void ULLayoutsPrivate::getLaidOutItems()
         if (marker && !marker->item().isEmpty()) {
             itemsToLayout.insert(marker->item(), item);
         } else {
-            // remember these so we hide them once we switch away from default layout
-            excludedFromLayout << item;
+            QQuickItem *pl = item->parentItem();
+            marker = 0;
+            // check if its parent is included in the layout
+            while (pl) {
+                marker = qobject_cast<ULConditionalLayoutAttached*>(
+                            qmlAttachedPropertiesObject<ULConditionalLayout>(pl, false));
+                if (marker && !marker->item().isEmpty()) {
+                    break;
+                }
+                pl = pl->parentItem();
+            }
+            if (!marker || (marker && marker->item().isEmpty())) {
+                // remember theese so we hide them once we switch away from default layout
+                excludedFromLayout << item;
+            }
         }
     }
 }

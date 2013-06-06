@@ -17,40 +17,90 @@
 /*!
   \page ubuntu-layouts.html
   \title Layouts - Introduction
+  \nextpage Layouts - Terminology
 
   \b{Under development}
 
-    QML has the following basic layout primitives:
-    \list
-        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-column.html}{Column} - arrange children in a column
-        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row} - arrange children in a row
-        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-grid.html}{Grid} - arrange children in a grid of x columns and y rows
-        \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flow.html}{Flow} - arrange children side-by-side with wrapping
-    \endlist
+  QML has the following basic layout primitives:
+  \list
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-column.html}{Column} - arrange children in a column
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row} - arrange children in a row
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-grid.html}{Grid} - arrange children in a grid of x columns and y rows
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flow.html}{Flow} - arrange children side-by-side with wrapping
+  \endlist
 
-    <br>Unfortunately these components are not well suited to general user-interface
-    design as:
-    \list A
-        \li not designed to alter size of children - so no form of stretching
-            supported by default.
-        \li as a result no way to have contents fill the container (without
-            calculating the width/height of the children manually).
-    \endlist
+  Unfortunately these components are not well suited to general user-interface design as:
+  \list A
+    \li not designed to alter size of children - so no form of stretching
+        supported by default.
+    \li as a result no way to have contents fill the container (without
+        calculating the width/height of the children manually).
+  \endlist
 
+  As a result, most applications need to do calculations to size the children
+  correctly in these primitives to fill the whole container.
 
-    As a result, most applications need to do calculations to size the children
-    correctly in these primitives to fill the whole container.
+  \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qmlmodule-qtquick-layouts1-qtquick-layouts-1-0.html}
+  {QtQuick Controls} introduces the \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-columnlayout.html}
+  {ColumnLayout}, \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-rowlayout.html}{RowLayout}
+  and \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-gridlayout.html}{GridLayout}
+  components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layouts}
+  attached properties, which brings additional layouting possibilities to Qt Quick.
 
-    \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qmlmodule-qtquick-layouts1-qtquick-layouts-1-0.html}
-    {QtQuick Controls} introduces the \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-columnlayout.html}
-    {ColumnLayout}, \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-rowlayout.html}{RowLayout}
-    and \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-gridlayout.html}{GridLayout}
-    components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layouts}
-    attached properties, which brings additional layouting possibilities to Qt Quick.
+  In addition to these, UI toolkit had introduced the Ubuntu.Layouts module to help developers
+  define different layouts for different orientations and form factors, all being possible
+  to be done within the same code base.
 
-    In addition to these, UI toolkit had introduced the Ubuntu.Layouts module to help developers
-    define different layouts for different orientations and form factors, all being possible
-    to be done within the same code base.
+  This tutorial gives an introduction to layout factoring abilities offered by
+  Ubuntu UI toolkit. It tries to cover few possible layout scenarios, however will
+  not cover advanced scenarios application developers may need.
 
-    Next: \l {ubuntu-layouts-p2.html}{Terminology}
+  Tutorial chapters:
+  \list 1
+  \li \l {Layouts - Terminology}{Terminology}
+  \li \l {Layouts - A simple layout}{A simple layout}
+  \endlist
+*/
+
+/*!
+  \page ubuntu-layouts1.html
+  \title Layouts - Terminology
+  \nextpage Layouts - A simple layout
+
+  First let's introduce the terminology we are going to use across this tutorial.
+
+  \section3 Layout Block, Container and Fragment
+  A layout block is a component embedding several layout definitions and items to be
+  laid out. It is typically defined by the \l Layouts component.
+
+  Each layout defined in the block is compound of containers, which can host laid out
+  items and fragments.
+
+  A fragment is a pseudo-item which can host only one item, where the item is anchored
+  to the fragment's edges, therefore the fragment has control over the componet's size,
+  scale and rotation.
+
+  To understand this let's take the following layout structure:
+  \image sample-layout.png
+
+  In this layout all three buttons are laid out in the same container, but green
+  button was required to take the height of the window, whereas the red and blue
+  buttons were required to have the same width and height. Therefore the green
+  button was laid out using a \l {LayoutFragment}{fragment} and the other two buttons
+  with the same criteria, using \l {ConditionalLayout}{ConditionalLayout} attached
+  properties.
+
+  A container can be any item, however it is preferable to use positioners or QtQuick
+  layout elements whenever possible. If this is not possible, individual items can be
+  laid out using the fragments.
+
+  As next step let's create some layouts.
+*/
+
+/*!
+  \page ubuntu-layouts2.html
+  \title Layouts - A simple layout
+
+  As first let's create the following default layout, with anchored buttons to each other.
+  \image default-layout.png
 */

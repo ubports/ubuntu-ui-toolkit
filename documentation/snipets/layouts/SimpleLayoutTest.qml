@@ -33,7 +33,6 @@ Item {
                 name: "column"
                 when: layouts.width > units.gu(30) && layouts.width <= units.gu(40)
                 Flickable {
-//                    anchors.fill: parent
                     contentHeight: column.height
                     Column {
                         id: column
@@ -48,7 +47,6 @@ Item {
                 name: "flow"
                 when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
                 Flickable {
-//                    anchors.fill: parent
                     contentHeight: flow.height
                     Flow {
                         id: flow
@@ -66,7 +64,7 @@ Item {
                 name: "row"
                 when: layouts.width > units.gu(60) && layouts.width < units.gu(80)
                 Row {
-//                    anchors.fill: parent
+                    spacing: units.dp(2)
                     ConditionalLayout.items: ["item1", "item2", "item3"]
                     ConditionalLayout.width: units.gu(20)
                     ConditionalLayout.height: units.gu(20)
@@ -76,8 +74,7 @@ Item {
                 name: "composit"
                 when: layouts.width >= units.gu(80)
                 Row {
-//                    anchors.fill: parent
-                    spacing: units.gu(2)
+                    spacing: units.dp(4)
                     LayoutFragment {
                         item: "item2"
                         anchors.top: parent.top
@@ -85,7 +82,7 @@ Item {
                         width: units.gu(25)
                     }
                     ConditionalLayout.items: ["item1", "item3"]
-                    ConditionalLayout.width: units.gu(10)
+                    ConditionalLayout.width: units.gu(30)
                     ConditionalLayout.height: units.gu(10)
                 }
             }
@@ -93,58 +90,54 @@ Item {
         ]
 
         // default layout
-        Rectangle {
-            objectName: "item1"
-            id: label1
+        //![default-layout]
+        Button {
+            id: button1
+            text: "Item #1"
+            color: "red"
+            ConditionalLayout.item: "item1"
             anchors {
                 left: parent.left
                 top: parent.top
                 bottom: parent.bottom
             }
             width: units.gu(15)
-            height: units.gu(30)
-            ConditionalLayout.item: "item1"
-            color: "red"
         }
-        Rectangle {
-            objectName: "item2"
-            id: label2
+        Button {
+            id: button2
+            text: "Item #2"
+            color: "green"
+            ConditionalLayout.item: "item2"
             anchors {
                 top: parent.top
-                left: label1.right
+                left: button1.right
                 right: parent.right
             }
-            x: units.gu(15)
             height: units.gu(10)
-            width: units.gu(15);
-            ConditionalLayout.item: "item2"
-            color: "green"
         }
-        Rectangle {
-            objectName: "nolayout"
-            id: nolayout
-            anchors {
-                top: label2.bottom
-                left: label1.right
-                right: parent.right
-                bottom: label3.top
-            }
-            color: "brown"
-        }
-        Rectangle {
-            objectName: "item3"
-            id: label3
+//        Button {
+//            id: nolayout
+//            text: "Non-laid out"
+//            color: "brown"
+//            anchors {
+//                top: button2.bottom
+//                left: button1.right
+//                right: parent.right
+//                bottom: button3.top
+//            }
+//        }
+        Button {
+            id: button3
+            text: "Item #3"
+            color: "blue"
+            ConditionalLayout.item: "item3"
             anchors{
-                left: label1.right
+                left: button1.right
                 right: parent.right
                 bottom: parent.bottom
             }
-            x: units.gu(15)
-            y: units.gu(15)
             height: units.gu(10)
-            width: units.gu(15);
-            ConditionalLayout.item: "item3"
-            color: "blue"
         }
+        //![default-layout]
     }
 }
