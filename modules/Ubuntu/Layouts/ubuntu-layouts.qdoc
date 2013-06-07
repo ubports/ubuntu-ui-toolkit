@@ -195,7 +195,7 @@
   \image layout1.png
   \snippet layouts/layout1.qml 0
 
-  As you can see the blue button is not visible whan the row layout is activated. In fact
+  As you can see the blue button is not visible when the row layout is activated. In fact
   the blue button will never be shown when the row layout gets activated, as both green and
   blue buttons being anchored right to their parent and left to the red button, they will
   get the width of the last time they have neen still in the default layout. This may be
@@ -228,10 +228,10 @@
   \title Layouts - Changing the order
   \nextpage Layouts - Lay out a single item differently from others
 
-  So far we have seen how to define the defaul tlayout, a conditional layout and how to resize
+  So far we have seen how to define the default layout, a conditional layout and how to resize
   each of them.
 
-  As mentioned in ConditionalLayout documentation, items hosted by the container are laid
+  As mentioned in the ConditionalLayout documentation, items hosted by the container are laid
   out based on the order they are specified in the ConditionalLayout.items attached property.
 
   To illustrate this, let's change the order of the buttons so that we have blue, red and green
@@ -268,7 +268,7 @@
   \page ubuntu-layouts6.html
   \title Layouts - Lay out individual items separately
   \nextpage Layouts - Hiding elements, showing more
-  As next step, let's create a layout which re'anchors the items differently resulting in the
+  As next step, let's create a layout which re-anchors the items differently resulting in the
   following layout:
   \image layout5.png
   This layout can be achieved using ItemLayout components for each item laid out. The layout
@@ -282,15 +282,15 @@
   \title Layouts - Hiding elements, showing more
   \nextpage Layouts - Defining more layouts for different form factors
   Till this point we know how to define a layout block, what is the default layout, how to
-  create layout, how to define the container and hos to define the hosted elements and how
+  create layout, how to define the container and how to define the hosted elements and how
   to define item hosts to lay out individual items.
 
   There can be situations when for certain layouts we don't want to transfer all the components
   of a default layout. More, there can be situations when we want to show more components
-  when we have more space on our disposal. Perhaps we want to provide more functionality when
+  when we have more space to our disposal. Perhaps we want to provide more functionality when
   the phone is turned from portrait to landscape (typical use case is a Calculator application
   which on portrait is a simple calculator but on landscape provides scientific calculator
-  functions). In the fillowing we will define two layouts where we cover both use cases.
+  functions). In the following we will define two layouts where we cover both use cases.
 
   \section1 Hiding components
   Let's create a layout where we only show the red and green buttons. This can be achieved by
@@ -307,8 +307,8 @@
   be used.
   Let's create a layout which will be activated when the layout block width reaches 70 GU.
   \snippet layouts/layout6.qml flow layout
-  The layout will have a grey button placed propr to the laid out items. This is because the
-  componets of the layout are created prior the items subject of layout are being hosted.
+  The layout will have a grey button placed in front of the laid out items. This is because the
+  componets of the layout are created prior the items which are subject to layouting.
   \image layout6-2.png
   In case the items to be laid out are needed to be positioned differently, ItemLaytout item
   host should be used.
@@ -320,5 +320,32 @@
   As mentioned, with Layouts we can achieve to have a single code base supporting different form
   factors. The following example illustrates how to support different layouts with the same code
   base.
+
+  \section1 Default layout
+  \image simple-layout1.png
+  \snippet layouts/SimpleLayout.qml default layout
+
+  \section1 Conditional layouts
+  \section2 Flickable row layout
+  \image simple-layout2.png
+  \snippet layouts/SimpleLayout.qml flickable-row layout
+
+  \section2 Flickable flow layout
+  \image simple-layout3.png
+  \snippet layouts/SimpleLayout.qml flow layout
+
+  \section2 Row layout
+  \image simple-layout4.png
+  \snippet layouts/SimpleLayout.qml row layout
+
+  \section2 Composit layout
+  \image simple-layout3.png
+  \snippet layouts/SimpleLayout.qml composit layout
+
+  \section1 The entire code
   \snippet layouts/SimpleLayout.qml 0
+
+  \section1 That's it
+  You're ready to go. You can find the layouting components under \l Layouting.
+  For further questions please visit \b #ubuntu-app-devel irc channel on freenode.
  */

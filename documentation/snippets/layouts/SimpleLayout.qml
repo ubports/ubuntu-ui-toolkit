@@ -30,9 +30,9 @@ Item {
         anchors.fill: parent
 
         layouts: [
-            //![column layout]
+            //![flickable-row layout]
             ConditionalLayout {
-                name: "column"
+                name: "flickable-row"
                 when: layouts.width > units.gu(50) && layouts.width <= units.gu(70)
                 Flickable {
                     contentWidth: column.width
@@ -45,7 +45,8 @@ Item {
                     }
                 }
             },
-            //![column layout]
+            //![flickable-row layout]
+            //![flow layout]
             ConditionalLayout {
                 name: "flow"
                 when: layouts.width > units.gu(70) && layouts.width <= units.gu(90)
@@ -63,6 +64,8 @@ Item {
                     }
                 }
             },
+            //![flow layout]
+            //![row layout]
             ConditionalLayout {
                 name: "row"
                 when: layouts.width > units.gu(90) && layouts.width < units.gu(100)
@@ -73,6 +76,8 @@ Item {
                     ConditionalLayout.height: units.gu(20)
                 }
             },
+            //![row layout]
+            //![composit layout]
             ConditionalLayout {
                 name: "composit"
                 when: layouts.width >= units.gu(100)
@@ -89,7 +94,7 @@ Item {
                     ConditionalLayout.height: units.gu(10)
                 }
             }
-
+            //![composit layout]
         ]
 
         //![default layout]
