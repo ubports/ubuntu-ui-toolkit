@@ -13,4 +13,6 @@ OTHER_FILES += \
     LargeLayout.qml \
     ExternalLayouts.qml \
     NestedLayouts.qml \
-    DefaultLayout.qml
+    DefaultLayout.qml \
+    ResizingContainers.qml \
+    SizedDefaultLayout.qml

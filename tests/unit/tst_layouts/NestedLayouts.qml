@@ -46,18 +46,11 @@ Item {
                 }
             },
             ConditionalLayout {
-                id: simple
                 name: "simple"
                 when: layouts.width <= units.gu(100)
-                property string uhh: nested.currentLayout
                 SimpleLayouts{
                     id: nested
-                    onCurrentLayoutChanged: simple.uhh = currentLayout
-//                    Binding {
-//                        target: root
-//                        property: "nestedLayout"
-//                        value: nested.currentLayout
-//                    }
+                    onCurrentLayoutChanged: root.nestedLayout = nested.currentLayout
                 }
             }
         ]

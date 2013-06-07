@@ -24,7 +24,7 @@
 #include <QtQml/QQmlInfo>
 
 ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
-    : QQmlIncubator(AsynchronousIfNested)
+    : QQmlIncubator(Asynchronous)
     , q_ptr(qq)
     , currentLayoutItem(0)
     , currentLayoutIndex(-1)
@@ -78,8 +78,8 @@ void ULLayoutsPrivate::setInitialState(QObject *object)
     object->setParent(q);
     QQuickItem *item = static_cast<QQuickItem*>(object);
     item->setParentItem(q);
-//    item->setVisible(false);
-    item->setEnabled(true);
+    item->setVisible(false);
+    item->setEnabled(false);
 }
 
 /*
@@ -105,8 +105,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-//        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
-//               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
+        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
+               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
         // apply changes
         changes.apply();
         // clear previous layout
@@ -326,6 +326,8 @@ void ULLayoutsPrivate::updateLayout()
         delete currentLayoutItem;
         currentLayoutItem = 0;
         currentLayoutIndex = -1;
+        Q_Q(ULLayouts);
+        Q_EMIT q->currentLayoutChanged();
     }
 }
 

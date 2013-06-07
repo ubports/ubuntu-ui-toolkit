@@ -140,6 +140,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         root->setWidth(UCUnits::instance().gu(55));
         QCOMPARE(root->width(), UCUnits::instance().gu(55));
+        QTest::waitForEvents();
 
         QCOMPARE(layouts->currentLayout(), QString("medium"));
 
@@ -166,6 +167,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         root->setWidth(UCUnits::instance().gu(65));
         QCOMPARE(root->width(), UCUnits::instance().gu(65));
+        QTest::waitForEvents();
 
         QCOMPARE(layouts->currentLayout(), QString("large"));
 
@@ -253,8 +255,59 @@ private Q_SLOTS:
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
         root->setWidth(UCUnits::instance().gu(90));
+        QTest::waitForEvents();
 
         QCOMPARE(layouts->currentLayout(), QString("extra-large"));
+
+        root->setWidth(UCUnits::instance().gu(50));
+        QTest::waitForEvents();
+
+        QCOMPARE(root->property("nestedLayout").toString(), QString("medium"));
+    }
+
+    void testCase_ResizingContainers()
+    {
+        QQuickItem *root = loadTest("ResizingContainers.qml");
+        QVERIFY(root);
+
+        // fetch the current size of one item
+        QQuickItem *item = testItem(root, "item1");
+        qreal width = item->width();
+        qreal height = item->height();
+        QQuickItem *item2 = testItem(root, "item2");
+        qreal width2 = item2->width();
+        qreal height2 = item2->height();
+
+        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
+        QVERIFY(layouts);
+        QVERIFY(!layouts->layoutList().isEmpty());
+
+        root->setWidth(UCUnits::instance().gu(50));
+        QTest::waitForEvents();
+        QCOMPARE(layouts->currentLayout(), QString("small"));
+        QCOMPARE(item->width(), UCUnits::instance().gu(10));
+        QCOMPARE(item->height(), UCUnits::instance().gu(10));
+
+        root->setWidth(UCUnits::instance().gu(60));
+        QTest::waitForEvents();
+        QCOMPARE(layouts->currentLayout(), QString("large"));
+        QCOMPARE(item->width(), UCUnits::instance().gu(22));
+        QCOMPARE(item->height(), UCUnits::instance().gu(22));
+
+        root->setWidth(UCUnits::instance().gu(80));
+        QTest::waitForEvents();
+        QCOMPARE(layouts->currentLayout(), QString("xlarge"));
+        QCOMPARE(item->width(), UCUnits::instance().gu(30));
+        QCOMPARE(item->height(), UCUnits::instance().gu(30));
+        QCOMPARE(item2->width(), UCUnits::instance().gu(40));
+        QCOMPARE(item2->height(), UCUnits::instance().gu(50));
+
+        root->setWidth(UCUnits::instance().gu(40));
+        QTest::waitForEvents();
+        QCOMPARE(item->width(), width);
+        QCOMPARE(item->height(), height);
+        QCOMPARE(item2->width(), width2);
+        QCOMPARE(item2->height(), height2);
     }
 
 };

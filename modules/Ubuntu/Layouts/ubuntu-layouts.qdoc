@@ -185,7 +185,10 @@
   \snippet layouts/layout1.qml row layout
 
   Note the way the container is defined. ConditionalLayout.items attached property lists
-  the items to be hosted (laid out) and the order of the items of those.
+  the items to be hosted (laid out) and the order of the items of those. The conditional
+  layout is given a name so it can be identified when the layout is set through
+  Layouts.curentLayout property. This, beside debugging abilities, gives additional
+  possibilities to cbfigure properties that are not directly updated by the layouting.
 
   Combining this with the default layout we will see the following layout when width exceeds
   50 GU:
