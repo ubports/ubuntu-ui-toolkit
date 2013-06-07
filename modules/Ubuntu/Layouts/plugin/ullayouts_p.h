@@ -58,7 +58,7 @@ private:
     void reLayout();
     void hideExcludedItems();
     void reparentItems();
-    void reparentToLayoutFragment(LaidOutItemsMap &map, ULItemLayout *fragment);
+    void reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment);
     void reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment);
 };
 

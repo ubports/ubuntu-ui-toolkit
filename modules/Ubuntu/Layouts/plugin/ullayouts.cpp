@@ -143,9 +143,9 @@ void ULLayoutsPrivate::reparentItems()
 
     Q_FOREACH(QQuickItem *container, items) {
         // check whether we have ItemLayout declared
-        ULItemLayout *layoutFragment = qobject_cast<ULItemLayout*>(container);
-        if (layoutFragment) {
-            reparentToLayoutFragment(unusedItems, layoutFragment);
+        ULItemLayout *itemLayout = qobject_cast<ULItemLayout*>(container);
+        if (itemLayout) {
+            reparentToItemLayout(unusedItems, itemLayout);
         } else {
             ULConditionalLayoutAttached *fragment = qobject_cast<ULConditionalLayoutAttached*>(
                         qmlAttachedPropertiesObject<ULConditionalLayout>(container, false));
@@ -168,7 +168,7 @@ void ULLayoutsPrivate::reparentItems()
 /*
  * Re-parent to ItemLayout.
  */
-void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULItemLayout *fragment)
+void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment)
 {
     QString itemName = fragment->item();
     if (itemName.isEmpty()) {
@@ -187,7 +187,10 @@ void ULLayoutsPrivate::reparentToLayoutFragment(LaidOutItemsMap &map, ULItemLayo
     changes.addChange(new ParentChange(item, fragment))
            .addChange(new ItemStackBackup(item, currentLayoutItem))
            .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
-               // break and backup anchors
+           // backup size
+           .addChange(new PropertyBackup(item, "width", QVariant()))
+           .addChange(new PropertyBackup(item, "height", QVariant()))
+           // break and backup anchors
            .addChange(new AnchorBackup(item));
 
     // remove from unused ones
@@ -206,7 +209,9 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
             // reparent and break anchors
             changes.addChange(new ParentChange(item, container))
                    .addChange(new ItemStackBackup(item, currentLayoutItem))
-                    .addChange(new PropertyChange(item, "enabled", true))
+                   // backup size
+                   .addChange(new PropertyBackup(item, "width", QVariant()))
+                   .addChange(new PropertyBackup(item, "height", QVariant()))
                     // break and backup anchors
                    .addChange(new AnchorBackup(item));
 

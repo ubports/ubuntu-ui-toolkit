@@ -214,6 +214,14 @@ void PropertyChange::revert()
 
 
 /******************************************************************************
+ * PropertyBackup
+ */
+PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property, const QVariant &value)
+    : PropertyChange(target, property, value, High)
+{
+}
+
+/******************************************************************************
  * ReparentChange
  */
 ReparentChange::ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source)

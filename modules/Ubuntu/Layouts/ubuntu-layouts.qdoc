@@ -58,14 +58,21 @@
   Tutorial chapters:
   \list 1
   \li \l {Layouts - Terminology}{Terminology}
-  \li \l {Layouts - A simple layout}{A simple layout}
+  \li \l {Layouts - The first conditional layout}{The first conditional layout}
+  \li \l {Layouts - Resizing items laid out}{Resizing items laid out}
+  \li \l {Layouts - Changing the order}{Changing the order}
+  \li \l {Layouts - Lay out a single item differently from others}{Lay out a single item differently from others}
+  \li \l {Layouts - Lay out individual items separately}{Lay out individual items separately}
+  \li \l {Layouts - Defining more layouts for different form factors}{Defining more layouts for different form factors}
   \endlist
+
+  So, let's take them step-by-step...
 */
 
 /*!
   \page ubuntu-layouts1.html
   \title Layouts - Terminology
-  \nextpage Layouts - A simple layout
+  \nextpage Layouts - The first conditional layout
 
   First let's introduce the terminology we are going to use across this tutorial.
 
@@ -93,14 +100,15 @@
   Illustrating the layout on the image with code:
 
   \qml
-  Layouts { // <-- \b{layout block}
+  Layouts { // <-- layout block
       id: layouts
       layouts: [
-          ConditionalLayout { // <-- \b layout
+          // [...]
+          ConditionalLayout { // <-- layout
               name: "composit"
-              Row { // <-- \b{layout container}
+              Row { // <-- layout container
                   // [...]
-                  ItemLayout { // <-- \b{item holder}
+                  ItemLayout { // <-- item holder
                       item: "item2"
                       // [...]
                   }
@@ -135,8 +143,121 @@
 
 /*!
   \page ubuntu-layouts2.html
-  \title Layouts - A simple layout
+  \title Layouts - The first conditional layout
+  \nextpage Layouts - Resizing items laid out
 
   As first let's create the following default layout, with anchored buttons to each other.
   \image default-layout.png
+
+  Defined by the following code:
+  \snippet layouts/layout1.qml default layout
+
+  \section1 Walkthrough
+  \section2 Import
+  First of all, in order to use the layouting abilities, you need to import Ubuntu.Layouts.
+  \code
+  import Ubuntu.Layouts 0.1
+  \endcode
+
+  This layout will have the red button anchored to the parent's left, top and bottom, having
+  a width of 15 grid units. The green and blue buttons are anchored left to the red button,
+  righ to their parent, top and bottom to the parent top rrespectively to the parent bottom
+  and both having a height of 10 grid units.
+
+  This layout looks good in small form factors, however as the width, height and grid unit
+  changes, this layout will start to look cumbersome.
+
+  \section2 Define the conditional layout
+  Let's define a column layout for the case when the layout block width passes 50 GU, and
+  move the items into a \l{http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row}
+  container in the following order: "red", "green" and "blue". We embedd the positioner
+  into a \l{http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flickable.html}{Flickable}
+  so we can still access the components positioned in case the content is not fit with the
+  current width.
+  \snippet layouts/layout1.qml row layout
+
+  Note the way the container is defined. ConditionalLayout.items attached property lists
+  the items to be hosted (laid out) and the order of the items of those.
+
+  Combining this with the default layout we will see the following layout when width exceeds
+  50 GU:
+  \image layout1.png
+  \snippet layouts/layout1.qml 0
+
+  As you can see the blue button is not visible whan the row layout is activated. In fact
+  the blue button will never be shown when the row layout gets activated, as both green and
+  blue buttons being anchored right to their parent and left to the red button, they will
+  get the width of the last time they have neen still in the default layout. This may be
+  the desired behavior, however it may also look clumsy. Let's see how can we circumvent that.
 */
+
+/*!
+  \page ubuntu-layouts3.html
+  \title Layouts - Resizing items laid out
+  \nextpage Layouts - Changing the order
+
+  So, let's take the layout we did so far in \l{Layouts - The first conditional layout}{The first conditional layout}
+  and define the width of each item to be one third of the layout's width. We can do this by
+  defining the ConditionalLayout.width attached property, which will be applied to each item
+  listed in the ConditionalLayout.items attached property.
+  \snippet layouts/layout2.qml row layout
+  \image layout2-1.png
+  \image layout2-2.png
+  Similar thing can be done with the height by defining the value or expression in
+  ConditionalLayout.height attached property. Note that this property will also be applied
+  to each item hosted by the container.
+
+  The entire code will look as follows:
+  \snippet layouts/layout2.qml 0
+
+*/
+
+/*!
+  \page ubuntu-layouts4.html
+  \title Layouts - Changing the order
+  \nextpage Layouts - Lay out a single item differently from others
+
+  So far we have seen how to define the defaul tlayout, a conditional layout and how to resize
+  each of them.
+
+  As mentioned in ConditionalLayout documentation, items hosted by the container are laid
+  out based on the order they are specified in the ConditionalLayout.items attached property.
+
+  To illustrate this, let's change the order of the buttons so that we have blue, red and green
+  order.
+
+  \snippet layouts/layout3.qml row layout
+  The layout after resizing the window width to exceed 50 GU will look as follows:
+  \image layout3.png
+
+  Note that when resizing the window width to < 50 GU, you will get all your components back to
+  their original (default) positions.
+
+  The layout has the red button with a different height than the other two. This is because the
+  height is "inherited" from the time they were transferred from the default layout. But what if
+  I want to have one of the butons to be of a different size than the others? Or what if I want
+  to have each of them to hav edifferent sizes? The following chapters will show how to do this.
+*/
+
+/*!
+  \page ubuntu-layouts5.html
+  \title Layouts - Lay out a single item differently from others
+  \nextpage Layouts - Lay out individual items separately
+  Let's create a layout where the blue button has a different size than the other two. We can
+  achieve this by using ItemLayout component to host the blue button. Let's also resize the other
+  biuttons to hav ethe same width and height.
+  The code will look as follows:
+  \snippet layouts/layout4.qml row layout
+  \image layout4.png
+*/
+
+/*!
+  \page ubuntu-layouts6.html
+  \title Layouts - Lay out individual items separately
+  \nextpage Layouts - Defining more layouts for different form factors
+ */
+
+/*!
+  \page ubuntu-layouts7.html
+  \title Layouts - Defining more layouts for different form factors
+ */

@@ -23,36 +23,39 @@ Item {
     width: units.gu(30)
     height: units.gu(30)
 
+    //! [0]
     Layouts {
         objectName: "layouts"
         id: layouts
         anchors.fill: parent
 
         layouts: [
+            //![column layout]
             ConditionalLayout {
                 name: "column"
-                when: layouts.width > units.gu(30) && layouts.width <= units.gu(40)
+                when: layouts.width > units.gu(50) && layouts.width <= units.gu(70)
                 Flickable {
-                    contentHeight: column.height
-                    Column {
+                    contentWidth: column.width
+                    Row {
                         id: column
-                        width: parent.width
-                        height: childrenRect.height
-                        ConditionalLayout.items: ["item1", "item2", "item3"]
-//                        ConditionalLayout.width: column.width
+                        width: childrenRect.width
+                        height: parent.height
+                        ConditionalLayout.items: ["red", "green", "blue"]
+//                        ConditionalLayout.height: column.height
                     }
                 }
             },
+            //![column layout]
             ConditionalLayout {
                 name: "flow"
-                when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
+                when: layouts.width > units.gu(70) && layouts.width <= units.gu(90)
                 Flickable {
                     contentHeight: flow.height
                     Flow {
                         id: flow
                         width: parent.width
                         height: childrenRect.height
-                        ConditionalLayout.items: ["item1", "item2", "item3"]
+                        ConditionalLayout.items: ["red", "green", "blue"]
                         ConditionalLayout.width: units.gu(30)
                         ConditionalLayout.height: units.gu(20)
                         ConditionalLayout.rotation: 75
@@ -62,26 +65,26 @@ Item {
             },
             ConditionalLayout {
                 name: "row"
-                when: layouts.width > units.gu(60) && layouts.width < units.gu(80)
+                when: layouts.width > units.gu(90) && layouts.width < units.gu(100)
                 Row {
                     spacing: units.dp(2)
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ConditionalLayout.items: ["blue", "green", "red"]
                     ConditionalLayout.width: units.gu(20)
                     ConditionalLayout.height: units.gu(20)
                 }
             },
             ConditionalLayout {
                 name: "composit"
-                when: layouts.width >= units.gu(80)
+                when: layouts.width >= units.gu(100)
                 Row {
                     spacing: units.dp(4)
                     ItemLayout {
-                        item: "item2"
+                        item: "green"
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
                         width: units.gu(25)
                     }
-                    ConditionalLayout.items: ["item1", "item3"]
+                    ConditionalLayout.items: ["red", "blue"]
                     ConditionalLayout.width: units.gu(30)
                     ConditionalLayout.height: units.gu(10)
                 }
@@ -89,13 +92,12 @@ Item {
 
         ]
 
-        // default layout
-        //![default-layout]
+        //![default layout]
         Button {
             id: button1
             text: "Item #1"
             color: "red"
-            ConditionalLayout.item: "item1"
+            ConditionalLayout.item: "red"
             anchors {
                 left: parent.left
                 top: parent.top
@@ -107,7 +109,7 @@ Item {
             id: button2
             text: "Item #2"
             color: "green"
-            ConditionalLayout.item: "item2"
+            ConditionalLayout.item: "green"
             anchors {
                 top: parent.top
                 left: button1.right
@@ -115,22 +117,11 @@ Item {
             }
             height: units.gu(10)
         }
-//        Button {
-//            id: nolayout
-//            text: "Non-laid out"
-//            color: "brown"
-//            anchors {
-//                top: button2.bottom
-//                left: button1.right
-//                right: parent.right
-//                bottom: button3.top
-//            }
-//        }
         Button {
             id: button3
             text: "Item #3"
             color: "blue"
-            ConditionalLayout.item: "item3"
+            ConditionalLayout.item: "blue"
             anchors{
                 left: button1.right
                 right: parent.right
@@ -138,6 +129,7 @@ Item {
             }
             height: units.gu(10)
         }
-        //![default-layout]
+        //![default layout]
     }
+    //! [0]
 }
