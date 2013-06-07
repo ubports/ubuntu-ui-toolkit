@@ -29,7 +29,11 @@
     \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flow.html}{Flow} - arrange children side-by-side with wrapping
   \endlist
 
-  Unfortunately these components are not well suited to general user-interface design as:
+  \raw HTML
+    <br>
+  \endraw
+  Unfortunately in a design that needs to work in many different form factors these
+  aren't very flexible on their own as:
   \list 1
     \li not designed to alter size of children - so no form of stretching
         supported by default.
@@ -37,6 +41,9 @@
         calculating the width/height of the children manually).
   \endlist
 
+  \raw HTML
+    <br>
+  \endraw
   As a result, most applications need to do calculations to size the children
   correctly in these primitives to fill the whole container.
 
@@ -63,6 +70,7 @@
   \li \l {Layouts - Changing the order}{Changing the order}
   \li \l {Layouts - Lay out a single item differently from others}{Lay out a single item differently from others}
   \li \l {Layouts - Lay out individual items separately}{Lay out individual items separately}
+  \li \l {Layouts - Hiding elements, showing more}{Hiding elements, showing more}
   \li \l {Layouts - Defining more layouts for different form factors}{Defining more layouts for different form factors}
   \endlist
 
@@ -118,7 +126,7 @@
           }
       ]
 
-      // the items to lay out
+      // the items to lay outitem3
       Button {
           ConditionalLayout.item: "item1"
           // [...]
@@ -248,16 +256,66 @@
   biuttons to hav ethe same width and height.
   The code will look as follows:
   \snippet layouts/layout4.qml row layout
+  When ItemLayout is used, the hosted component anchors will fill the item host, having control
+  on the position, size, rotation and scale of the item hosted.
   \image layout4.png
 */
 
 /*!
   \page ubuntu-layouts6.html
   \title Layouts - Lay out individual items separately
-  \nextpage Layouts - Defining more layouts for different form factors
+  \nextpage Layouts - Hiding elements, showing more
+  As next step, let's create a layout which re'anchors the items differently resulting in the
+  following layout:
+  \image layout5.png
+  This layout can be achieved using ItemLayout components for each item laid out. The layout
+  in the image is realized by the following code:
+  \snippet layouts/layout5.qml row layout
+
  */
 
 /*!
   \page ubuntu-layouts7.html
+  \title Layouts - Hiding elements, showing more
+  \nextpage Layouts - Defining more layouts for different form factors
+  Till this point we know how to define a layout block, what is the default layout, how to
+  create layout, how to define the container and hos to define the hosted elements and how
+  to define item hosts to lay out individual items.
+
+  There can be situations when for certain layouts we don't want to transfer all the components
+  of a default layout. More, there can be situations when we want to show more components
+  when we have more space on our disposal. Perhaps we want to provide more functionality when
+  the phone is turned from portrait to landscape (typical use case is a Calculator application
+  which on portrait is a simple calculator but on landscape provides scientific calculator
+  functions). In the fillowing we will define two layouts where we cover both use cases.
+
+  \section1 Hiding components
+  Let's create a layout where we only show the red and green buttons. This can be achieved by
+  specifying only those components to be hosted by the container.
+  \snippet layouts/layout6.qml row layout
+  The layout will look like this:
+  \image layout6.png
+
+  \section1 Showing more stuff
+  Another use case is to show extra components in a different layout/different form factor.
+  These components can simply be declared inside the layout itself, assuming that those are
+  not going to be used in any other layout. If yes, those must also be declared in the default
+  layout in order to presetrve state, or other modalities to transfer the component state must
+  be used.
+  Let's create a layout which will be activated when the layout block width reaches 70 GU.
+  \snippet layouts/layout6.qml flow layout
+  The layout will have a grey button placed propr to the laid out items. This is because the
+  componets of the layout are created prior the items subject of layout are being hosted.
+  \image layout6-2.png
+  In case the items to be laid out are needed to be positioned differently, ItemLaytout item
+  host should be used.
+ */
+
+/*!
+  \page ubuntu-layouts8.html
   \title Layouts - Defining more layouts for different form factors
+  As mentioned, with Layouts we can achieve to have a single code base supporting different form
+  factors. The following example illustrates how to support different layouts with the same code
+  base.
+  \snippet layouts/SimpleLayout.qml 0
  */

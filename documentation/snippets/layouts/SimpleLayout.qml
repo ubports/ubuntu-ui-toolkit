@@ -41,7 +41,7 @@ Item {
                         width: childrenRect.width
                         height: parent.height
                         ConditionalLayout.items: ["red", "green", "blue"]
-//                        ConditionalLayout.height: column.height
+                        ConditionalLayout.height: column.height
                     }
                 }
             },
@@ -116,6 +116,17 @@ Item {
                 right: parent.right
             }
             height: units.gu(10)
+        }
+        Button {
+            id: nolayout
+            text: "Non-laid out"
+            color: "brown"
+            anchors {
+                top: button2.bottom
+                left: button1.right
+                right: parent.right
+                bottom: button3.top
+            }
         }
         Button {
             id: button3
