@@ -79,14 +79,6 @@ Item {
     id: toolbarActions
     anchors.fill: parent
 
-    Rectangle {
-        color: "purple"
-        anchors.centerIn: parent
-        width: 20
-        height: 20
-    }
-
-    //    id: list
     // internal objects using nested elements,
     // which isn't allowed by QtObject; this fix makes this possible
     /*!
@@ -253,7 +245,6 @@ Item {
             __mouseArea.visible: false
             Theming.ItemStyle.class: "toolbar-button"
             width: units.gu(5)
-//            height: toolbar.height
             height: toolbarActions.height
         }
     }
@@ -287,7 +278,6 @@ Item {
         spacing: units.gu(1)
 
         Repeater {
-//            model: internal.visibleTools ? internal.visibleTools.children : 0
             model: toolbarActions.actions
             Loader {
                 sourceComponent: modelData.itemHint ? modelData.itemHint : toolButtonComponent
@@ -300,5 +290,4 @@ Item {
             }
         }
     }
-
 }
