@@ -63,8 +63,8 @@ Panel {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-//    property ToolbarActions tools: null
-    property Item tools: null
+    property ToolbarActions tools: null
+//    property Item tools: null
 
     /*! \internal */
     onToolsChanged: {
