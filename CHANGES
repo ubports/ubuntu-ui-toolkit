@@ -9,7 +9,7 @@ UNRELEASED
 
 API Changes
 ***********
-
+* ADDED IN OrientationHelper: property alias rotating
 * DEPRECATED IN QuickUtils: property Item rootObject
 * CHANGED IN Toolbar: property bool active TO property bool opened
 * CHANGED IN Toolbar: property bool lock TO property bool locked

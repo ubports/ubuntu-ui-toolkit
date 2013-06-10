@@ -55,6 +55,12 @@ Item {
       \qmlproperty bool automaticOrientation
      */
     property bool automaticOrientation: true
+    /*!
+      \preliminary
+      Exposes whether the orientationTransition is running.
+
+      \qmlproperty alias rotating
+     */
     property alias rotating: orientationTransition.running
 
     /*! \internal */
