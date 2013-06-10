@@ -177,7 +177,7 @@ Item {
     property Action back: Action {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
-        visible: true // toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
+        visible: toolbarActions.__pageStack && toolbarActions.__pageStack.depth > 1
         /*!
           \internal
           FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
