@@ -55,6 +55,7 @@ Item {
       \qmlproperty bool automaticOrientation
      */
     property bool automaticOrientation: true
+    property alias rotating: orientationTransition.running
 
     /*! \internal */
     property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
