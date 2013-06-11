@@ -95,7 +95,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * }
  * \endqml
  *
- * The items subject of layout must be having the \l item attached property. The
+ * The items subject of layout must be having the Layouts.item attached property. The
  * components hosting multiple items to be laid out are called containers, and
  * these items are listed in the \l items attached property. The items are laid
  * out in the container in the order specified in the \l items property.

@@ -51,7 +51,7 @@
   {QtQuick Controls} introduces the \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-columnlayout.html}
   {ColumnLayout}, \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-rowlayout.html}{RowLayout}
   and \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-gridlayout.html}{GridLayout}
-  components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layouts}
+  components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layout}
   attached properties, which brings additional layouting possibilities to Qt Quick.
 
   In addition to these, UI toolkit had introduced the Ubuntu.Layouts module to help developers
