@@ -81,15 +81,15 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  *         spacing: units.dp(2)
  *         Button {
  *             text: "Button #1"
- *             ConditionalLayout.item: "item1"
+ *             Layouts.item: "item1"
  *         }
  *         Button {
  *             text: "Button #2"
- *             ConditionalLayout.item: "item2"
+ *             Layouts.item: "item2"
  *         }
  *         Button {
  *             text: "Button #3"
- *             ConditionalLayout.item: "item3"
+ *             Layouts.item: "item3"
  *         }
  *     }
  * }

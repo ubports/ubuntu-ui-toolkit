@@ -26,10 +26,11 @@
  * \brief ItemLayout is a pseudo-Item providing re-positioning of a single
  * item within a layout.
  *
- * The item name to be positioned should be specified in item property, which
- * should correspond to the “ConditionalLayout.item” of an Item in the document.
- * The Item with ConditionalLayout.item is reparented into ItemLayout and it
- * is anchor filled to it.
+ * ItemLayout is a pseudo-Item providing re-positioning of a single item within
+ * a layout. The item name to be positioned should be specified in item property,
+ * which should correspond to the string specified in \b Layouts.item attached to
+ * an Item in the default layout. The Item with Layouts.item attached is reparented
+ * into ItemLayout and it is anchor filled to it.
  *
  * Example:
  * \qml

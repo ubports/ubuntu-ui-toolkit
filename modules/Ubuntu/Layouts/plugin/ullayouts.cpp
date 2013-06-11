@@ -408,12 +408,14 @@ void ULLayoutsPrivate::updateLayout()
  *     id: layouts
  *     layouts: [
  *         ConditionalLayout {
+ *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
  *                 //[...]
  *             }
  *         },
  *         ConditionalLayout {
+ *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
  *                 contentHeight: column.childrenRect.height
