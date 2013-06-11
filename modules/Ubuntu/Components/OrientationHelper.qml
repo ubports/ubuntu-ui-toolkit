@@ -69,7 +69,7 @@ Item {
 
       Use orientationAngle instead.
      */
-    property alias __orientationAngle: orientationAngle
+    property alias __orientationAngle: orientationHelper.orientationAngle
 
     /*!
       \qmlproperty int orientationAngle

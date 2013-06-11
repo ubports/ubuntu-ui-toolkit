@@ -87,6 +87,7 @@ modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
     property alias rotating
+    property alias __orientationAngle
     property int orientationAngle
 modules/Ubuntu/Components/Page.qml
 PageTreeNode

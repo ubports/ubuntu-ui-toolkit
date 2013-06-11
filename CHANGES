@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 * ADDED IN OrientationHelper: property alias rotating
+* ADDED IN OrientationHelper: property alias __orientationHelper
 * DEPRECATED IN QuickUtils: property Item rootObject
 * CHANGED IN OrientationHelper: property int __orientationHelper TO property int orientationHelper
 * CHANGED IN Toolbar: property bool active TO property bool opened
