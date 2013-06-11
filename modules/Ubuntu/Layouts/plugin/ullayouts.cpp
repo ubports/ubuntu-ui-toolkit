@@ -237,6 +237,34 @@ void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickI
 }
 
 /*
+ * Validatesthe declared conditional layouts by checking whether they have name
+ * property set and whether the value set is unique
+ */
+void ULLayoutsPrivate::validateConditionalLayouts()
+{
+    Q_Q(ULLayouts);
+
+    QStringList names;
+    for (int i = 0; i < layouts.count(); i++) {
+        ULConditionalLayout *layout = layouts[i];
+        if (!layout) {
+            qmlInfo(q) << "Error in layout definitions!";
+            continue;
+        }
+
+        if (layout->layoutName().isEmpty()) {
+            qmlInfo(layout) << "Warning: no name specified for layout. "
+                               "ConditionalLayout cannot be activated without name.";
+            continue;
+        }
+        if (names.contains(layout->layoutName())) {
+            qmlInfo(layout) << "Warning: layout name \"" << layout->layoutName()
+                            << "\" not unique. Layout may not be activable.";
+        }
+    }
+}
+
+/*
  * Collect items to be laid out.
  */
 void ULLayoutsPrivate::getLaidOutItems()
@@ -530,6 +558,7 @@ void ULLayouts::componentComplete()
     QQuickItem::componentComplete();
     Q_D(ULLayouts);
     d->ready = true;
+    d->validateConditionalLayouts();
     d->getLaidOutItems();
     d->updateLayout();
 }

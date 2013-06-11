@@ -47,6 +47,7 @@ public:
     static ULConditionalLayout *at_layout(QQmlListProperty<ULConditionalLayout>*, int);
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
+    void validateConditionalLayouts();
     void getLaidOutItems();
     void updateLayout();
 
