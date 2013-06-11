@@ -72,7 +72,7 @@ Item {
     property alias __orientationAngle: orientationAngle
 
     /*!
-      \qmlproperty __int orientationAngle
+      \qmlproperty int orientationAngle
 
       Calculates the current orientation angle.
      */
