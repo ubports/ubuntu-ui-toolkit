@@ -64,10 +64,17 @@ Item {
     property alias rotating: orientationTransition.running
 
     /*!
-      \preliminary
-      Calculates the current orientation angle.
+      \qmlproperty int __orientationAngle
+      \deprecated
 
-      \qmlproperty int orientationAngle
+      Use orientationAngle instead.
+     */
+    property alias __orientationAngle: orientationAngle
+
+    /*!
+      \qmlproperty __int orientationAngle
+
+      Calculates the current orientation angle.
      */
     property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
