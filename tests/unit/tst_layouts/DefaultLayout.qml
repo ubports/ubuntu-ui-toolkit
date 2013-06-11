@@ -24,21 +24,21 @@ Item {
     Label {
         objectName: "item1"
         id: label1
-        ConditionalLayout.item: "item1"
+        Layouts.item: "item1"
         text: "item1"
     }
     Label {
         objectName: "item2"
         id: label2
         anchors.bottom: label1.bottom
-        ConditionalLayout.item: "item2"
+        Layouts.item: "item2"
         text: "item2"
     }
     Label {
         objectName: "item3"
         id: label3
         anchors.bottom: label2.bottom
-        ConditionalLayout.item: "item3"
+        Layouts.item: "item3"
         text: "item3"
     }
 }

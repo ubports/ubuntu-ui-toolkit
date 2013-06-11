@@ -28,7 +28,6 @@ class ULConditionalLayoutAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList items READ items WRITE setItems NOTIFY itemsChanged)
-    Q_PROPERTY(QString item READ item WRITE setItem NOTIFY itemChanged)
 
     Q_PROPERTY(QQmlScriptString width READ width WRITE setWidth)
     Q_PROPERTY(QQmlScriptString height READ height WRITE setHeight)
@@ -40,13 +39,10 @@ public:
 
 Q_SIGNALS:
     void itemsChanged();
-    void itemChanged();
 
 public: // getter/setter
     QStringList items() const;
     void setItems(const QStringList &names);
-    QString item() const;
-    void setItem(const QString &name);
 
     QQmlScriptString width() const;
     void setWidth(const QQmlScriptString &width);
@@ -58,7 +54,6 @@ public: // getter/setter
     void setRotation(const QQmlScriptString &rotation);
 
 private:
-    QString m_name;
     QStringList m_itemNames;
     QQmlScriptString m_width;
     QQmlScriptString m_height;

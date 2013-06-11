@@ -50,25 +50,6 @@ void ULConditionalLayoutAttached::setItems(const QStringList &names)
 }
 
 /*!
- * \qmlattachedproperty string ConditionalLayout::item
- * This attached property identifies a component to be laid out. It is the unique
- * identifier of the component within a layout block. The property can be attached
- * to components to be laid out and has no effect when applied on layout containers.
- */
-QString ULConditionalLayoutAttached::item() const
-{
-    return m_name;
-}
-void ULConditionalLayoutAttached::setItem(const QString &name)
-{
-    if (name.isEmpty() || name == m_name) {
-        return;
-    }
-    m_name = name;
-    Q_EMIT itemChanged();
-}
-
-/*!
  * \qmlattachedproperty real ConditionalLayout::width
  * The property holds the width to be applied for the items laid out within the
  * container.

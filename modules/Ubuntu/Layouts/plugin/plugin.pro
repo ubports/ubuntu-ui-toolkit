@@ -18,7 +18,8 @@ SOURCES += \
     ulconditionallayoutattached.cpp \
     ulplugin.cpp \
     layoutaction.cpp \
-    ulitemlayout.cpp
+    ulitemlayout.cpp \
+    ullayoutsattached.cpp
 
 HEADERS += \
     ullayouts.h \

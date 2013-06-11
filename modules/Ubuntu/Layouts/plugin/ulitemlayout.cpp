@@ -62,7 +62,7 @@
  *     TextInput {
  *         anchors.fill: parent
  *         text: "input"
- *         ConditionalLayout.item: "input"
+ *         Layouts.item: "input"
  *     }
  * }
  * \endqml

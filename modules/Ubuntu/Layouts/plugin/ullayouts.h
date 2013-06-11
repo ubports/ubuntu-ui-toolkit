@@ -22,6 +22,25 @@
 #include <QtQuick/QQuickItem>
 #include "ulconditionallayout.h"
 
+class ULLayoutsAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString item READ item WRITE setItem NOTIFY itemChanged)
+
+public:
+    explicit ULLayoutsAttached(QObject *parent = 0);
+
+public: //getter/setter
+    QString item() const;
+    void setItem(const QString &name);
+
+Q_SIGNALS:
+    void itemChanged();
+
+private:
+    QString m_name;
+};
+
 class ULLayoutsPrivate;
 class ULLayouts : public QQuickItem
 {
@@ -34,6 +53,8 @@ class ULLayouts : public QQuickItem
 public:
     explicit ULLayouts(QQuickItem *parent = 0);
     ~ULLayouts();
+
+    static ULLayoutsAttached * qmlAttachedProperties(QObject *owner);
 
 Q_SIGNALS:
     void currentLayoutChanged();
@@ -55,6 +76,8 @@ private:
 };
 
 QML_DECLARE_TYPE(ULLayouts)
+QML_DECLARE_TYPEINFO(ULLayouts, QML_HAS_ATTACHED_PROPERTIES)
+
 
 #endif // ULLAYOUTS_H
 

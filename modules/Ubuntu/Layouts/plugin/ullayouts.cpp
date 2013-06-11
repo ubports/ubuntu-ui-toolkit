@@ -274,8 +274,8 @@ void ULLayoutsPrivate::getLaidOutItems()
     QList<QQuickItem*> items = q->findChildren<QQuickItem*>();
     for (int i = 0; i < items.count(); i++) {
         QQuickItem *item = items[i];
-        ULConditionalLayoutAttached *marker = qobject_cast<ULConditionalLayoutAttached*>(
-                    qmlAttachedPropertiesObject<ULConditionalLayout>(item, false));
+        ULLayoutsAttached *marker = qobject_cast<ULLayoutsAttached*>(
+                    qmlAttachedPropertiesObject<ULLayouts>(item, false));
         if (marker && !marker->item().isEmpty()) {
             itemsToLayout.insert(marker->item(), item);
         } else {
@@ -283,8 +283,8 @@ void ULLayoutsPrivate::getLaidOutItems()
             marker = 0;
             // check if its parent is included in the layout
             while (pl) {
-                marker = qobject_cast<ULConditionalLayoutAttached*>(
-                            qmlAttachedPropertiesObject<ULConditionalLayout>(pl, false));
+                marker = qobject_cast<ULLayoutsAttached*>(
+                            qmlAttachedPropertiesObject<ULLayouts>(pl, false));
                 if (marker && !marker->item().isEmpty()) {
                     break;
                 }
@@ -400,7 +400,7 @@ void ULLayoutsPrivate::updateLayout()
  * \endqml
  *
  * Components wanted to be laid out must be declared as children of Layouts compponent,
- * each having ConditionalLayout.item attached property set to a uniquie string.
+ * each having Layouts.item attached property set to a uniquie string.
  * \b TODO: see also ConditionalItem.item
  *
  * \qml
@@ -429,11 +429,11 @@ void ULLayoutsPrivate::updateLayout()
  *         anchors.fill: parent
  *         Button {
  *             text: "Press me"
- *             ConditionalLayout.item: "item1"
+ *             Layouts.item: "item1"
  *         }
  *         Button {
  *             text: "Cancel"
- *             ConditionalLayout.item: "item2"
+ *             Layouts.item: "item2"
  *         }
  *     }
  * }
@@ -480,11 +480,11 @@ void ULLayoutsPrivate::updateLayout()
  *         anchors.fill: parent
  *         Button {
  *             text: "Press me"
- *             ConditionalLayout.item: "item1"
+ *             Layouts.item: "item1"
  *         }
  *         Button {
  *             text: "Cancel"
- *             ConditionalLayout.item: "item2"
+ *             Layouts.item: "item2"
  *         }
  *     }
  * }
@@ -526,12 +526,12 @@ void ULLayoutsPrivate::updateLayout()
  *         anchors.fill: parent
  *         Button {
  *             text: "Press me"
- *             ConditionalLayout.item: "item1"
+ *             Layouts.item: "item1"
  *             color: (layouts.currentLayout === "column") ? "green" : "gray"
  *         }
  *         Button {
  *             text: "Cancel"
- *             ConditionalLayout.item: "item2"
+ *             Layouts.item: "item2"
  *             color: (layouts.currentLayout === "column") ? "green" : "gray"
  *         }
  *     }
@@ -551,6 +551,11 @@ ULLayouts::ULLayouts(QQuickItem *parent):
 
 ULLayouts::~ULLayouts()
 {
+}
+
+ULLayoutsAttached * ULLayouts::qmlAttachedProperties(QObject *owner)
+{
+    return new ULLayoutsAttached(owner);
 }
 
 void ULLayouts::componentComplete()

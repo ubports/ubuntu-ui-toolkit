@@ -102,7 +102,7 @@ Item {
             id: button1
             text: "Item #1"
             color: "red"
-            ConditionalLayout.item: "red"
+            Layouts.item: "red"
             anchors {
                 left: parent.left
                 top: parent.top
@@ -114,7 +114,7 @@ Item {
             id: button2
             text: "Item #2"
             color: "green"
-            ConditionalLayout.item: "green"
+            Layouts.item: "green"
             anchors {
                 top: parent.top
                 left: button1.right
@@ -137,7 +137,7 @@ Item {
             id: button3
             text: "Item #3"
             color: "blue"
-            ConditionalLayout.item: "blue"
+            Layouts.item: "blue"
             anchors{
                 left: button1.right
                 right: parent.right

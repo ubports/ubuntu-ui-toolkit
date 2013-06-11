@@ -128,15 +128,15 @@
 
       // the items to lay outitem3
       Button {
-          ConditionalLayout.item: "item1"
+          Layouts.item: "item1"
           // [...]
       }
       Button {
-          ConditionalLayout.item: "item2"
+          Layouts.item: "item2"
           // [...]
       }
       Button {
-          ConditionalLayout.item: "item3"
+          Layouts.item: "item3"
           // [...]
       }
   }
@@ -176,7 +176,7 @@
   changes, this layout will start to look cumbersome.
 
   Every component we wan to lay out must be marked. This "marking" is done by attaching the
-  ConditionalLayout.item property to erach item participating in the layouting. Therefore we
+  Layouts.item property to erach item participating in the layouting. Therefore we
   mark each button with a unique name, "red", "green" and "blue".
 
   \section2 Define the conditional layout
