@@ -169,11 +169,15 @@
 
   This layout will have the red button anchored to the parent's left, top and bottom, having
   a width of 15 grid units. The green and blue buttons are anchored left to the red button,
-  righ to their parent, top and bottom to the parent top rrespectively to the parent bottom
+  righ to their parent, top and bottom to the parent top respectively to the parent bottom
   and both having a height of 10 grid units.
 
   This layout looks good in small form factors, however as the width, height and grid unit
   changes, this layout will start to look cumbersome.
+
+  Every component we wan to lay out must be marked. This "marking" is done by attaching the
+  ConditionalLayout.item property to erach item participating in the layouting. Therefore we
+  mark each button with a unique name, "red", "green" and "blue".
 
   \section2 Define the conditional layout
   Let's define a column layout for the case when the layout block width passes 50 GU, and

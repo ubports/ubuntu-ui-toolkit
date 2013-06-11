@@ -350,12 +350,14 @@ void ULLayoutsPrivate::updateLayout()
  *     id: layouts
  *     layouts: [
  *         ConditionalLayout {
+ *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
  *                 //[...]
  *             }
  *         },
  *         ConditionalLayout {
+ *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
  *                 contentHeight: column.childrenRect.height
@@ -427,12 +429,14 @@ void ULLayoutsPrivate::updateLayout()
  *     id: layouts
  *     layouts: [
  *         ConditionalLayout {
+ *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
  *                 ConditionalLayout.items: ["item1", "item2"]
  *             }
  *         },
  *         ConditionalLayout {
+ *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
  *                 contentHeight: column.childrenRect.height
@@ -453,6 +457,54 @@ void ULLayoutsPrivate::updateLayout()
  *         Button {
  *             text: "Cancel"
  *             ConditionalLayout.item: "item2"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * Conditional layouts must be named in order to be activable. These names (strings)
+ * should be uniquie within a Layouts item and can be used to identify changes in
+ * between layouts in scripts, so additional layout specific customization on laid
+ * out items can be done. The current layout is presented by the currentLayout
+ * property.
+ *
+ * Extending the previous example by changing the button color to green when the
+ * current layout is "column", the code would look as follows:
+ * \qml
+ * Layouts {
+ *     id: layouts
+ *     layouts: [
+ *         ConditionalLayout {
+ *             name: "flow"
+ *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
+ *             Flow {
+ *                 ConditionalLayout.items: ["item1", "item2"]
+ *             }
+ *         },
+ *         ConditionalLayout {
+ *             name: "column"
+ *             when: layouts.width > units.gu(100)
+ *             Flickable {
+ *                 contentHeight: column.childrenRect.height
+ *                 Column {
+ *                     id: column
+ *                     ConditionalLayout.items: ["item2", "item1"]
+ *                 }
+ *             }
+ *         }
+ *     ]
+ *
+ *     Row {
+ *         anchors.fill: parent
+ *         Button {
+ *             text: "Press me"
+ *             ConditionalLayout.item: "item1"
+ *             color: (layouts.currentLayout === "column") ? "green" : "gray"
+ *         }
+ *         Button {
+ *             text: "Cancel"
+ *             ConditionalLayout.item: "item2"
+ *             color: (layouts.currentLayout === "column") ? "green" : "gray"
  *         }
  *     }
  * }

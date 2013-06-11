@@ -57,6 +57,9 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * instantiated upon activation. This component then will be filling the entire
  * Layouts area, so no additional anchoring is required in those components.
  *
+ * Each conditional layout must be named with a string, which identifies the layout
+ * when activated.
+ *
  * \qml
  * Layouts {
  *     id: layouts
@@ -64,6 +67,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  *     height: units.gu(40)
  *     layouts: [
  *         ConditionalLayout {
+ *             name: "flow"
  *             when: layouts.width > units.gu(60)
  *             Flow {
  *                 ConditionalLayout.items: ["item1", "item2", "item3"]
@@ -116,8 +120,9 @@ ULConditionalLayoutAttached * ULConditionalLayout::qmlAttachedProperties(QObject
 
 /*!
  * \qmlproperty string ConditionalLayout::name
- * The property defines the name of the layout. It is mandatory to specify a name
- * for a layout in order to be usable.
+ * The property defines the name of the layout. Each layout should have a unique
+ * name within its Layouts item, and identifies the conditional layout itself.
+ * \sa Layouts
  */
 QString ULConditionalLayout::layoutName() const
 {
