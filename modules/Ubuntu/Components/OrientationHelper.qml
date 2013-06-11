@@ -63,8 +63,13 @@ Item {
      */
     property alias rotating: orientationTransition.running
 
-    /*! \internal */
-    property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
+    /*!
+      \preliminary
+      Calculates the current orientation angle.
+
+      \qmlproperty int orientationAngle
+     */
+    property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
     anchors.fill: parent
 
