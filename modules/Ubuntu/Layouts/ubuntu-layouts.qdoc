@@ -343,7 +343,7 @@
   \snippet layouts/SimpleLayout.qml row layout
 
   \section2 Composit layout
-  \image simple-layout3.png
+  \image simple-layout5.png
   \snippet layouts/SimpleLayout.qml composit layout
 
   \section1 The entire code
