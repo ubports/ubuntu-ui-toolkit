@@ -52,7 +52,6 @@ Base {
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
-    property alias text: label.text
 
     /*!
       \preliminary
@@ -68,6 +67,7 @@ Base {
             verticalCenter: parent.verticalCenter
             left: parent.left
         }
+        text: listItem.text
         width: Math.min(implicitWidth, parent.width * 0.8)
     }
     LabelVisual {
