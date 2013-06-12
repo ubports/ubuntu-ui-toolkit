@@ -27,18 +27,16 @@ import QtQuick 2.0
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
 */
-Item {
+ActionItem {
     id: button
 
     /*!
       If an action is specified, the button's clicked signal will trigger the action.
       Subclasses of AbstractButton can use other properties of action (for example
       the text and iconSource).
+      \qmlproperty Action action
      */
     property Action action: null
-
-    visible: action ? action.visible : true
-    enabled: action ? action.enabled : true
 
     /*!
        This handler is called when there is a mouse click on the button
@@ -48,10 +46,9 @@ Item {
     signal clicked()
 
     /*!
-      If \l action was set, action.triggered() is automatically called with
-      the AbstractButton as parameter.
+      If a button is clicked, its triggered() signal will automatically be called.
      */
-    onClicked: if (action) action.triggered(button)
+    onClicked: button.triggered(button)
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()
