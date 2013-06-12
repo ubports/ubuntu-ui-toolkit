@@ -71,13 +71,11 @@ Panel {
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
-            if (internal.visibleTools) internal.visibleTools.parent = null;
-            internal.visibleTools = tools;
+            internal.updateVisibleTools();
             opened = true;
         } else if (!opened && !animating) {
             // toolbar is invisible
-            if (internal.visibleTools) internal.visibleTools.parent = null;
-            internal.visibleTools = tools;
+            internal.updateVisibleTools();
         } else {
             opened = false;
             // internal.visibleTools will be updated
@@ -97,8 +95,10 @@ Panel {
     QtObject {
         id: internal
         property ToolbarActions visibleTools: tools
-        onVisibleToolsChanged: {
-            if (internal.visibleTools) {
+        function updateVisibleTools() {
+            if (internal.visibleTools !== toolbar.tools) {
+                if (internal.visibleTools) internal.visibleTools.parent = null;
+                internal.visibleTools = toolbar.tools;
                 internal.visibleTools.parent = visibleToolsContainer;
             }
         }
@@ -106,8 +106,7 @@ Panel {
 
     onAnimatingChanged: {
         if (!animating && !opened) {
-            if (internal.visibleTools) internal.visibleTools.parent = null;
-            internal.visibleTools = toolbar.tools;
+            internal.updateVisibleTools();
         }
     }
 
