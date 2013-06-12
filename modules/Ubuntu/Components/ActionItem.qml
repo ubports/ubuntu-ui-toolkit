@@ -55,8 +55,11 @@ Item {
 
     /*!
       Called when the actionItem is triggered.
-      If \l action is set, this will call action.trigger(caller).
      */
     signal triggered(var caller)
+
+    /*!
+      If \l action is set, this will call action.trigger(caller).
+    */
     onTriggered: if (action) action.triggered(caller)
 }

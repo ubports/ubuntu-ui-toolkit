@@ -118,6 +118,7 @@ Popover {
             }
             wrapMode: Text.Wrap
         }
+        /*! \internal */
         onTriggered: popover.hide()
     }
 
