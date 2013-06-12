@@ -35,9 +35,16 @@ Item {
                 when: layouts.width >= units.gu(80)
                 Column {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item3"]
-                    ConditionalLayout.width: units.gu(30)
-                    ConditionalLayout.height: units.gu(30)
+                    ItemLayout {
+                        item: "item1"
+                        width: units.gu(30)
+                        height: units.gu(30)
+                    }
+                    ItemLayout {
+                        item: "item3"
+                        width: units.gu(30)
+                        height: units.gu(30)
+                    }
                     ItemLayout {
                         item: "item2"
                         width: units.gu(40)
@@ -50,9 +57,21 @@ Item {
                 when: layouts.width >= units.gu(60)
                 Column {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
-                    ConditionalLayout.width: units.gu(22)
-                    ConditionalLayout.height: units.gu(22)
+                    ItemLayout {
+                        item: "item1"
+                        width: units.gu(22)
+                        height: units.gu(22)
+                    }
+                    ItemLayout {
+                        item: "item2"
+                        width: units.gu(22)
+                        height: units.gu(22)
+                    }
+                    ItemLayout {
+                        item: "item3"
+                        width: units.gu(22)
+                        height: units.gu(22)
+                    }
                 }
             },
             ConditionalLayout {
@@ -60,9 +79,21 @@ Item {
                 when: layouts.width > units.gu(40)
                 Row {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
-                    ConditionalLayout.width: units.gu(10)
-                    ConditionalLayout.height: units.gu(10)
+                    ItemLayout {
+                        item: "item1"
+                        width: units.gu(10)
+                        height: units.gu(10)
+                    }
+                    ItemLayout {
+                        item: "item2"
+                        width: units.gu(10)
+                        height: units.gu(10)
+                    }
+                    ItemLayout {
+                        item: "item3"
+                        width: units.gu(10)
+                        height: units.gu(10)
+                    }
                 }
             }
         ]

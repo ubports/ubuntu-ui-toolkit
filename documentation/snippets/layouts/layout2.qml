@@ -34,15 +34,30 @@ Item {
             ConditionalLayout {
                 name: "row"
                 when: layouts.width > units.gu(50)
-                Flickable {
-                    id: rowLayout
-                    contentWidth: column.width
-                    Row {
-                        id: column
-                        width: childrenRect.width
-                        height: parent.height
-                        ConditionalLayout.items: ["red", "green", "blue"]
-                        ConditionalLayout.width: rowLayout.width / 3
+                Row {
+                    ItemLayout {
+                        item: "blue"
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                    }
+                    ItemLayout {
+                        item: "red"
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                    }
+                    ItemLayout {
+                        item: "green"
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
                     }
                 }
             }

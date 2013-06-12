@@ -15,7 +15,6 @@ uri = Ubuntu.Layouts
 SOURCES += \
     ullayouts.cpp \
     ulconditionallayout.cpp \
-    ulconditionallayoutattached.cpp \
     ulplugin.cpp \
     layoutaction.cpp \
     ulitemlayout.cpp \

@@ -70,9 +70,23 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  *             name: "flow"
  *             when: layouts.width > units.gu(60)
  *             Flow {
- *                 ConditionalLayout.items: ["item1", "item2", "item3"]
  *                 spacing: units.dp(3)
  *                 flow: Flow.LeftToRight
+ *                 ItemLayout {
+ *                     item: "item1"
+ *                     width: units.gu(30)
+ *                     height: units.gu(20)
+ *                 }
+ *                 ItemLayout {
+ *                     item: "item2"
+ *                     width: units.gu(30)
+ *                     height: units.gu(20)
+ *                 }
+ *                 ItemLayout {
+ *                     item: "item3"
+ *                     width: units.gu(30)
+ *                     height: units.gu(20)
+ *                 }
  *             }
  *         }
  *     ]
@@ -95,10 +109,8 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * }
  * \endqml
  *
- * The items subject of layout must be having the Layouts.item attached property. The
- * components hosting multiple items to be laid out are called containers, and
- * these items are listed in the \l items attached property. The items are laid
- * out in the container in the order specified in the \l items property.
+ * The items subject of layout must be having the Layouts.item attached property,
+ * which will be laid out by the ItemLayout components.
  *
  * \sa {ItemLayout}
  */
@@ -111,11 +123,6 @@ ULConditionalLayout::ULConditionalLayout(QObject *parent) :
 
 ULConditionalLayout::~ULConditionalLayout()
 {
-}
-
-ULConditionalLayoutAttached * ULConditionalLayout::qmlAttachedProperties(QObject *owner)
-{
-    return new ULConditionalLayoutAttached(owner);
 }
 
 /*!

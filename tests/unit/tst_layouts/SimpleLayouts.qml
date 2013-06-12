@@ -35,7 +35,15 @@ Item {
                 when: layouts.width <= units.gu(40)
                 Column {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ItemLayout {
+                        item: "item1"
+                    }
+                    ItemLayout {
+                        item: "item2"
+                    }
+                    ItemLayout {
+                        item: "item3"
+                    }
                 }
             },
             ConditionalLayout {
@@ -43,7 +51,15 @@ Item {
                 when: layouts.width > units.gu(40) && layouts.width <= units.gu(60)
                 Flow {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ItemLayout {
+                        item: "item1"
+                    }
+                    ItemLayout {
+                        item: "item2"
+                    }
+                    ItemLayout {
+                        item: "item3"
+                    }
                 }
             },
             ConditionalLayout {
@@ -51,7 +67,15 @@ Item {
                 when: layouts.width > units.gu(60)
                 Row {
                     anchors.fill: parent
-                    ConditionalLayout.items: ["item1", "item2", "item3"]
+                    ItemLayout {
+                        item: "item1"
+                    }
+                    ItemLayout {
+                        item: "item2"
+                    }
+                    ItemLayout {
+                        item: "item3"
+                    }
                 }
             }
         ]

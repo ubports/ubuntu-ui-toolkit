@@ -36,12 +36,19 @@ Item {
                 Item {
                     Item {
                         id: header
-                        ConditionalLayout.items: ["item3"]
+                        ItemLayout {
+                            item: "item3"
+                        }
                     }
                     Row {
                         anchors.fill: parent
                         anchors.topMargin: header.height
-                        ConditionalLayout.items: ["item1", "item2"]
+                        ItemLayout {
+                            item: "item1"
+                        }
+                        ItemLayout {
+                            item: "item2"
+                        }
                     }
                 }
             },

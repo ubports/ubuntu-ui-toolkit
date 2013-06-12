@@ -36,9 +36,21 @@ Item {
                 when: layouts.width > units.gu(70)
                 Flow {
                     id: flow
-                    ConditionalLayout.items: ["red", "green", "blue"]
-                    ConditionalLayout.width: units.gu(20)
-                    ConditionalLayout.height: units.gu(20)
+                    ItemLayout {
+                        item: "red"
+                        width: units.gu(20)
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "green"
+                        width: units.gu(20)
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "blue"
+                        width: units.gu(20)
+                        height: units.gu(20)
+                    }
                     Button {
                         text: "Flow item"
                         width: units.gu(20)
@@ -52,16 +64,16 @@ Item {
             ConditionalLayout {
                 name: "row"
                 when: layouts.width > units.gu(50)
-                Flickable {
-                    id: rowLayout
-                    contentWidth: column.width
-                    Row {
-                        id: column
-                        width: childrenRect.width
-                        height: parent.height
-                        ConditionalLayout.items: ["red", "green"]
-                        ConditionalLayout.width: rowLayout.width / 3
-                        ConditionalLayout.height: units.gu(20)
+                Row {
+                    ItemLayout {
+                        item: "red"
+                        width: parent.width / 2
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "green"
+                        width: parent.width / 2
+                        height: units.gu(20)
                     }
                 }
             }

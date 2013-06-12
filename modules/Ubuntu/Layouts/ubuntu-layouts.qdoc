@@ -66,10 +66,8 @@
   \list 1
   \li \l {Layouts - Terminology}{Terminology}
   \li \l {Layouts - The first conditional layout}{The first conditional layout}
-  \li \l {Layouts - Resizing items laid out}{Resizing items laid out}
   \li \l {Layouts - Changing the order}{Changing the order}
   \li \l {Layouts - Lay out a single item differently from others}{Lay out a single item differently from others}
-  \li \l {Layouts - Lay out individual items separately}{Lay out individual items separately}
   \li \l {Layouts - Hiding elements, showing more}{Hiding elements, showing more}
   \li \l {Layouts - Defining more layouts for different form factors}{Defining more layouts for different form factors}
   \endlist
@@ -89,7 +87,7 @@
   laid out. It is typically defined by the \l Layouts component.
 
   Each layout defined in the block is compound of containers, which can host laid out
-  items and item holders.
+  items hosted by item holders.
 
   An item holder is a pseudo-item which can host only one item, where the item
   is anchored to the item holder's edges, therefore the item holder has control
@@ -100,10 +98,7 @@
 
   In this layout all three buttons are laid out in the same container, but green
   button was required to take the height of the window, whereas the red and blue
-  buttons were required to have the same width and height. Therefore the green
-  button was laid out using a \l {ItemLayout}{item holder} and the other two buttons
-  with the same criteria, using \l {ConditionalLayout}{ConditionalLayout} attached
-  properties.
+  buttons were required to have the same width and height.
 
   Illustrating the layout on the image with code:
 
@@ -120,8 +115,14 @@
                       item: "item2"
                       // [...]
                   }
-                  ConditionalLayout.items: ["item1", "item3"]
-                  // [...]
+                  ItemLayout { // <-- item holder
+                      item: "item1"
+                      // [...]
+                  }
+                  ItemLayout { // <-- item holder
+                      item: "item3"
+                      // [...]
+                  }
               }
           }
       ]
@@ -143,8 +144,7 @@
   \endqml
 
   A container can be any item, however it is preferable to use positioners or QtQuick
-  layout elements whenever possible. If this is not possible, individual items can be
-  laid out using the item holders.
+  layout elements whenever possible.
 
   As next step let's create some layouts.
 */
@@ -152,7 +152,7 @@
 /*!
   \page ubuntu-layouts2.html
   \title Layouts - The first conditional layout
-  \nextpage Layouts - Resizing items laid out
+  \nextpage Layouts - Changing the order
 
   As first let's create the following default layout, with anchored buttons to each other.
   \image default-layout.png
@@ -182,107 +182,63 @@
   \section2 Define the conditional layout
   Let's define a column layout for the case when the layout block width passes 50 GU, and
   move the items into a \l{http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row}
-  container in the following order: "red", "green" and "blue". We embedd the positioner
-  into a \l{http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flickable.html}{Flickable}
-  so we can still access the components positioned in case the content is not fit with the
-  current width.
+  container in the following order: "red", "green" and "blue". We also need to specify the
+  size these components will have, so let's set the width to one third of the container's width
+  and top and bottom anchored to the row's top and bottom.
   \snippet layouts/layout1.qml row layout
 
-  Note the way the container is defined. ConditionalLayout.items attached property lists
-  the items to be hosted (laid out) and the order of the items of those. The conditional
-  layout is given a name so it can be identified when the layout is set through
-  Layouts.curentLayout property. This, beside debugging abilities, gives additional
-  possibilities to cbfigure properties that are not directly updated by the layouting.
+  Note the way the container is defined. Items are laid out using ItemLayout host items.
+  The items will be laid out in the order the ItemLayout hosts are declared. Beside this
+  ItemLayout also drives the size, scale, rotation, availability (enabled) visibility and
+  opacity of the hosted item.
+
+  The conditional layout is given a name so it can be identified when the layout is set
+  through Layouts.curentLayout property. This, beside debugging abilities, gives additional
+  possibilities to configure properties that are not directly updated by the layouting.
 
   Combining this with the default layout we will see the following layout when width exceeds
   50 GU:
   \image layout1.png
   \snippet layouts/layout1.qml 0
-
-  As you can see the blue button is not visible when the row layout is activated. In fact
-  the blue button will never be shown when the row layout gets activated, as both green and
-  blue buttons being anchored right to their parent and left to the red button, they will
-  get the width of the last time they have neen still in the default layout. This may be
-  the desired behavior, however it may also look clumsy. Let's see how can we circumvent that.
 */
 
 /*!
   \page ubuntu-layouts3.html
-  \title Layouts - Resizing items laid out
-  \nextpage Layouts - Changing the order
+  \title Layouts - Changing the order
+  \nextpage Layouts - Lay out a single item differently from others
 
-  So, let's take the layout we did so far in \l{Layouts - The first conditional layout}{The first conditional layout}
-  and define the width of each item to be one third of the layout's width. We can do this by
-  defining the ConditionalLayout.width attached property, which will be applied to each item
-  listed in the ConditionalLayout.items attached property.
+  So far we have seen how to define the default layout, a conditional layout and how to place
+  items into those.
+
+  As mentioned in the ConditionalLayout documentation, items hosted by the container are laid
+  out based on the order they are hosted by the ItemLayout.
+
+  So let's change the order the buttons are laid out so that we have blue, red and green
+  order.
+
   \snippet layouts/layout2.qml row layout
-  \image layout2-1.png
-  \image layout2-2.png
-  Similar thing can be done with the height by defining the value or expression in
-  ConditionalLayout.height attached property. Note that this property will also be applied
-  to each item hosted by the container.
+  The layout after resizing the window width to exceed 50 GU will look as follows:
+  \image layout2.png
 
-  The entire code will look as follows:
-  \snippet layouts/layout2.qml 0
-
+  Note that when resizing the window width to < 50 GU, you will get all your components back to
+  their original (default) positions and anchors.
 */
 
 /*!
   \page ubuntu-layouts4.html
-  \title Layouts - Changing the order
-  \nextpage Layouts - Lay out a single item differently from others
+  \title Layouts - Lay out a single item differently from others
+  \nextpage Layouts - Hiding elements, showing more
+  As mentioned, ItemLayout has control over the size, anchors and visibility of the hosted element.
+  Therefore we can have the blue button with a different size than the other two. Let's have the
+  blue button's width set to 10 GUs and its height to 10 GUs less than the positioner's height.
 
-  So far we have seen how to define the default layout, a conditional layout and how to resize
-  each of them.
-
-  As mentioned in the ConditionalLayout documentation, items hosted by the container are laid
-  out based on the order they are specified in the ConditionalLayout.items attached property.
-
-  To illustrate this, let's change the order of the buttons so that we have blue, red and green
-  order.
-
+  The code will look as follows:
   \snippet layouts/layout3.qml row layout
-  The layout after resizing the window width to exceed 50 GU will look as follows:
   \image layout3.png
-
-  Note that when resizing the window width to < 50 GU, you will get all your components back to
-  their original (default) positions.
-
-  The layout has the red button with a different height than the other two. This is because the
-  height is "inherited" from the time they were transferred from the default layout. But what if
-  I want to have one of the butons to be of a different size than the others? Or what if I want
-  to have each of them to hav edifferent sizes? The following chapters will show how to do this.
 */
 
 /*!
   \page ubuntu-layouts5.html
-  \title Layouts - Lay out a single item differently from others
-  \nextpage Layouts - Lay out individual items separately
-  Let's create a layout where the blue button has a different size than the other two. We can
-  achieve this by using ItemLayout component to host the blue button. Let's also resize the other
-  biuttons to hav ethe same width and height.
-  The code will look as follows:
-  \snippet layouts/layout4.qml row layout
-  When ItemLayout is used, the hosted component anchors will fill the item host, having control
-  on the position, size, rotation and scale of the item hosted.
-  \image layout4.png
-*/
-
-/*!
-  \page ubuntu-layouts6.html
-  \title Layouts - Lay out individual items separately
-  \nextpage Layouts - Hiding elements, showing more
-  As next step, let's create a layout which re-anchors the items differently resulting in the
-  following layout:
-  \image layout5.png
-  This layout can be achieved using ItemLayout components for each item laid out. The layout
-  in the image is realized by the following code:
-  \snippet layouts/layout5.qml row layout
-
- */
-
-/*!
-  \page ubuntu-layouts7.html
   \title Layouts - Hiding elements, showing more
   \nextpage Layouts - Defining more layouts for different form factors
   Till this point we know how to define a layout block, what is the default layout, how to
@@ -300,22 +256,18 @@
   Let's create a layout where we only show the red and green buttons. This can be achieved by
   specifying only those components to be hosted by the container.
   \snippet layouts/layout6.qml row layout
-  The layout will look like this:
+  The layout when the block width exceeds 50 GU will look like this:
   \image layout6.png
 
-  \section1 Showing more stuff
-  Another use case is to show extra components in a different layout/different form factor.
+  \section1 Showing more content
+  Another use case is to show extra content in a different layout/form factor.
   These components can simply be declared inside the layout itself, assuming that those are
   not going to be used in any other layout. If yes, those must also be declared in the default
-  layout in order to presetrve state, or other modalities to transfer the component state must
-  be used.
-  Let's create a layout which will be activated when the layout block width reaches 70 GU.
+  layout in order to preserve their state, or other modalities to transfer the component state
+  must be used.
+  Let's create a layout which will be activated when the layout block width exceeds 70 GU.
   \snippet layouts/layout6.qml flow layout
-  The layout will have a grey button placed in front of the laid out items. This is because the
-  componets of the layout are created prior the items which are subject to layouting.
   \image layout6-2.png
-  In case the items to be laid out are needed to be positioned differently, ItemLaytout item
-  host should be used.
  */
 
 /*!
@@ -330,21 +282,21 @@
   \snippet layouts/SimpleLayout.qml default layout
 
   \section1 Conditional layouts
-  \section2 Flickable row layout
+  \section2 Column layout
   \image simple-layout2.png
-  \snippet layouts/SimpleLayout.qml flickable-row layout
-
-  \section2 Flickable flow layout
-  \image simple-layout3.png
-  \snippet layouts/SimpleLayout.qml flow layout
+  \snippet layouts/SimpleLayout.qml column
 
   \section2 Row layout
-  \image simple-layout4.png
-  \snippet layouts/SimpleLayout.qml row layout
+  \image simple-layout3.png
+  \snippet layouts/SimpleLayout.qml row
 
-  \section2 Composit layout
+  \section2 Layout hiding element
+  \image simple-layout4.png
+  \snippet layouts/SimpleLayout.qml hiding-element
+
+  \section2 Layout showing more
   \image simple-layout5.png
-  \snippet layouts/SimpleLayout.qml composit layout
+  \snippet layouts/SimpleLayout.qml showing-more
 
   \section1 The entire code
   \snippet layouts/SimpleLayout.qml 0

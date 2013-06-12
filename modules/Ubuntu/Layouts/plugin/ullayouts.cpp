@@ -91,7 +91,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
     Q_Q(ULLayouts);
     if (status == Ready) {
         // complete layouting
-        QQuickItem *previousLayout = currentLayoutItem;
+        previousLayoutItem = currentLayoutItem;
 
         // reset the layout
         currentLayoutItem = qobject_cast<QQuickItem*>(object());
@@ -110,7 +110,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
         // apply changes
         changes.apply();
         // clear previous layout
-        delete previousLayout;
+        delete previousLayoutItem;
+        previousLayoutItem = 0;
 
         Q_EMIT q->currentLayoutChanged();
     } else if (status == Error) {
@@ -138,21 +139,12 @@ void ULLayoutsPrivate::reparentItems()
     // iterate through the Layout definition to find containers - those Items with
     // ConditionalLayout.items set
     QList<QQuickItem*> items = currentLayoutItem->findChildren<QQuickItem*>();
-    // check also root element, as it may also be marked as layout section
-    items.prepend(currentLayoutItem);
 
     Q_FOREACH(QQuickItem *container, items) {
         // check whether we have ItemLayout declared
         ULItemLayout *itemLayout = qobject_cast<ULItemLayout*>(container);
         if (itemLayout) {
             reparentToItemLayout(unusedItems, itemLayout);
-        } else {
-            ULConditionalLayoutAttached *fragment = qobject_cast<ULConditionalLayoutAttached*>(
-                        qmlAttachedPropertiesObject<ULConditionalLayout>(container, false));
-            if (!fragment || fragment->items().isEmpty()) {
-                continue;
-            }
-            reparentToConditionalLayout(unusedItems, container, fragment);
         }
     }
 
@@ -185,7 +177,7 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 
     // the component fills the parent
     changes.addChange(new ParentChange(item, fragment))
-           .addChange(new ItemStackBackup(item, currentLayoutItem))
+           .addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem))
            .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
            // backup size
            .addChange(new PropertyBackup(item, "width", QVariant()))
@@ -195,45 +187,6 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 
     // remove from unused ones
     map.remove(itemName);
-}
-
-/*
- * Re-parent using ConditionalLayout properties
- */
-void ULLayoutsPrivate::reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment)
-{
-    Q_FOREACH(const QString &itemName, fragment->items()) {
-        // check if we have this item listed to be laid out
-        QQuickItem *item = map.value(itemName);
-        if (item != 0) {
-            // reparent and break anchors
-            changes.addChange(new ParentChange(item, container))
-                   .addChange(new ItemStackBackup(item, currentLayoutItem))
-                   // backup size
-                   .addChange(new PropertyBackup(item, "width", QVariant()))
-                   .addChange(new PropertyBackup(item, "height", QVariant()))
-                    // break and backup anchors
-                   .addChange(new AnchorBackup(item));
-
-
-            // special cases
-            if (container->inherits("QQuickColumn")) {
-                changes.addChange(new PropertyChange(item, "x", 0.0));
-            } else if (container->inherits("QQuickRow")) {
-                changes.addChange(new PropertyChange(item, "y", 0.0));
-            } else if (container->inherits("QQuickFlow") || container->inherits("QQuickGrid")) {
-                changes.addChange(new PropertyChange(item, "x", 0.0))
-                       .addChange(new PropertyChange(item, "y", 0.0));
-            }
-            changes.addConditionalProperties(item, fragment);
-
-            // remove from unused ones
-            map.remove(itemName);
-        } else {
-            qmlInfo(fragment->parent()) << "Warning: item \"" << itemName
-                              << "\" not specified or already laid out";
-        }
-    }
 }
 
 /*
@@ -401,7 +354,6 @@ void ULLayoutsPrivate::updateLayout()
  *
  * Components wanted to be laid out must be declared as children of Layouts compponent,
  * each having Layouts.item attached property set to a uniquie string.
- * \b TODO: see also ConditionalItem.item
  *
  * \qml
  * Layouts {
@@ -462,7 +414,12 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
- *                 ConditionalLayout.items: ["item1", "item2"]
+ *                 ItemLayout {
+ *                     item: "item1"
+ *                 }
+ *                 ItemLayout {
+ *                     item: "item2"
+ *                 }
  *             }
  *         },
  *         ConditionalLayout {
@@ -472,7 +429,12 @@ void ULLayoutsPrivate::updateLayout()
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column
- *                     ConditionalLayout.items: ["item2", "item1"]
+ *                     ItemLayout {
+ *                         item: "item1"
+ *                     }
+ *                     ItemLayout {
+ *                         item: "item2"
+ *                     }
  *                 }
  *             }
  *         }
@@ -508,7 +470,12 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
- *                 ConditionalLayout.items: ["item1", "item2"]
+ *                 ItemLayout {
+ *                     item: "item1"
+ *                 }
+ *                 ItemLayout {
+ *                     item: "item2"
+ *                 }
  *             }
  *         },
  *         ConditionalLayout {
@@ -518,7 +485,12 @@ void ULLayoutsPrivate::updateLayout()
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column
- *                     ConditionalLayout.items: ["item2", "item1"]
+ *                     ItemLayout {
+ *                         item: "item1"
+ *                     }
+ *                     ItemLayout {
+ *                         item: "item2"
+ *                     }
  *                 }
  *             }
  *         }
@@ -539,10 +511,6 @@ void ULLayoutsPrivate::updateLayout()
  *     }
  * }
  * \endqml
- *
- * \b Note: the order items are laid out in a layout container depends on the order
- * the items are specified in ConditionalLayout.items attached property.
- *
  */
 
 ULLayouts::ULLayouts(QQuickItem *parent):

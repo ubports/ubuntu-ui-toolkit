@@ -30,6 +30,7 @@ ULLayoutsAttached::ULLayoutsAttached(QObject *parent)
  * This attached property identifies a component to be laid out. It is the unique
  * identifier of the component within a layout block. The property can be attached
  * to components to be laid out and has no effect when applied on layout containers.
+ * \sa ItemLayout
  */
 QString ULLayoutsAttached::item() const
 {

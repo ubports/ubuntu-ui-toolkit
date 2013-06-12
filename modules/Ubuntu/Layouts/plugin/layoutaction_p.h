@@ -126,7 +126,7 @@ public:
 class ItemStackBackup : public PropertyChange
 {
 public:
-    ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem);
+    ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem);
     void execute() {}
     void revert();
 
@@ -134,6 +134,7 @@ protected:
     virtual void saveState();
     QQuickItem *target;
     QQuickItem *currentLayout;
+    QQuickItem *previousLayout;
     QQuickItem *originalStackBefore;
 private:
     friend class ULLayouts;
@@ -196,7 +197,6 @@ public:
     void clear();
 
     ChangeList &addChange(PropertyChange *change);
-    ChangeList &addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment);
 
 private:
     QList<PropertyChange*> changes[PropertyChange::MaxPriority];

@@ -17,7 +17,6 @@
  */
 
 #include "layoutaction_p.h"
-#include "ulconditionallayout.h"
 #include "ullayouts_p.h"
 #include "ullayouts.h"
 #include <QtQuick/QQuickItem>
@@ -253,10 +252,11 @@ ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent)
  * ItemStackBackup
  * High priority change backing up the item's stack position.
  */
-ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem)
+ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem)
     : PropertyChange(High)
     , target(item)
     , currentLayout(currentLayoutItem)
+    , previousLayout(previousLayoutItem)
     , originalStackBefore(0)
 {
 }
@@ -267,8 +267,11 @@ void ItemStackBackup::saveState()
     // save original stack position, but detect layout objects!
     QList<QQuickItem*> children = rewindParent->childItems();
     for (int ii = 0; ii < children.count() - 1; ++ii) {
-        if (children.at(ii) == target && children.at(ii + 1) != currentLayout) {
+        if (children.at(ii) == target) {
             originalStackBefore = children.at(ii + 1);
+            if (originalStackBefore == currentLayout || originalStackBefore == previousLayout) {
+                originalStackBefore = 0;
+            }
             break;
         }
     }
@@ -390,23 +393,4 @@ QList<PropertyChange*> ChangeList::unifiedChanges()
         list << changes[priority];
     }
     return list;
-}
-
-ChangeList &ChangeList::addConditionalProperties(QQuickItem *item, ULConditionalLayoutAttached *fragment)
-{
-    QQmlContext *context = qmlContext(fragment->parent());
-    if (!fragment->width().isEmpty()) {
-        addChange(new PropertyChange(item, "width", fragment->width(), context));
-    }
-    if (!fragment->height().isEmpty()) {
-        addChange(new PropertyChange(item, "height", fragment->height(), context));
-    }
-    if (!fragment->scale().isEmpty()) {
-        addChange(new PropertyChange(item, "scale", fragment->scale(), context));
-    }
-    if (!fragment->rotation().isEmpty()) {
-        addChange(new PropertyChange(item, "rotation", fragment->rotation(), context));
-    }
-
-    return *this;
 }

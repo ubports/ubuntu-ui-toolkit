@@ -25,76 +25,121 @@ Item {
 
     //! [0]
     Layouts {
-        objectName: "layouts"
         id: layouts
         anchors.fill: parent
 
         layouts: [
-            //![flickable-row layout]
+            //![column]
             ConditionalLayout {
-                name: "flickable-row"
+                name: "column"
                 when: layouts.width > units.gu(50) && layouts.width <= units.gu(70)
-                Flickable {
-                    contentWidth: column.width
-                    Row {
-                        id: column
-                        width: childrenRect.width
-                        height: parent.height
-                        ConditionalLayout.items: ["red", "green", "blue"]
-                        ConditionalLayout.height: column.height
+                Column {
+                    ItemLayout {
+                        item: "red"
+                        height: parent.height / 3
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                    }
+                    ItemLayout {
+                        item: "green"
+                        height: parent.height / 3
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                    }
+                    ItemLayout {
+                        item: "blue"
+                        height: parent.height / 3
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
                     }
                 }
             },
-            //![flickable-row layout]
-            //![flow layout]
+            //![column]
+            //![row]
             ConditionalLayout {
                 name: "flow"
                 when: layouts.width > units.gu(70) && layouts.width <= units.gu(90)
-                Flickable {
-                    contentHeight: flow.height
-                    Flow {
-                        id: flow
-                        width: parent.width
-                        height: childrenRect.height
-                        ConditionalLayout.items: ["red", "green", "blue"]
-                        ConditionalLayout.width: units.gu(30)
-                        ConditionalLayout.height: units.gu(20)
-                        ConditionalLayout.rotation: 75
-                        ConditionalLayout.scale: 0.5
+                Row {
+                    ItemLayout {
+                        item: "blue"
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
                     }
-                }
-            },
-            //![flow layout]
-            //![row layout]
-            ConditionalLayout {
-                name: "row"
-                when: layouts.width > units.gu(90) && layouts.width < units.gu(100)
-                Row {
-                    spacing: units.dp(2)
-                    ConditionalLayout.items: ["blue", "green", "red"]
-                    ConditionalLayout.width: units.gu(20)
-                    ConditionalLayout.height: units.gu(20)
-                }
-            },
-            //![row layout]
-            //![composit layout]
-            ConditionalLayout {
-                name: "composit"
-                when: layouts.width >= units.gu(100)
-                Row {
-                    spacing: units.dp(4)
+                    ItemLayout {
+                        item: "red"
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                    }
                     ItemLayout {
                         item: "green"
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        width: units.gu(25)
+                        width: parent.width / 3
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
                     }
-                    ConditionalLayout.items: ["red", "blue"]
-                    ConditionalLayout.width: units.gu(30)
-                    ConditionalLayout.height: units.gu(10)
+                }
+            },
+            //![row]
+            //![hiding-element]
+            ConditionalLayout {
+                name: "hiding-element"
+                when: layouts.width > units.gu(90) && layouts.width < units.gu(100)
+                Row {
+                    ItemLayout {
+                        item: "red"
+                        width: parent.width / 2
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "green"
+                        width: parent.width / 2
+                        height: units.gu(20)
+                    }
+                }
+            },
+            //![hiding-element]
+            //![showing-more]
+            ConditionalLayout {
+                name: "showing-more"
+                when: layouts.width >= units.gu(100)
+                Flow {
+                    id: flow
+                    ItemLayout {
+                        item: "red"
+                        width: units.gu(50)
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "green"
+                        width: units.gu(50)
+                        height: units.gu(20)
+                    }
+                    ItemLayout {
+                        item: "blue"
+                        width: units.gu(50)
+                        height: units.gu(20)
+                    }
+                    Button {
+                        text: "Flow item"
+                        width: units.gu(50)
+                        height: units.gu(20)
+                    }
                 }
             }
-            //![composit layout]
+            //![showing-more]
         ]
 
         //![default layout]

@@ -23,6 +23,14 @@ ConditionalLayout {
     when: layouts.width <= units.gu(40)
     Column {
         anchors.fill: parent
-        ConditionalLayout.items: ["item1", "item2", "item3"]
+        ItemLayout {
+            item: "item1"
+        }
+        ItemLayout {
+            item: "item2"
+        }
+        ItemLayout {
+            item: "item3"
+        }
     }
 }

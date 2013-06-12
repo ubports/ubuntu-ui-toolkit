@@ -38,6 +38,7 @@ public:
     LaidOutItemsMap itemsToLayout;
     QList<QQuickItem*> excludedFromLayout;
     QQuickItem* currentLayoutItem;
+    QQuickItem* previousLayoutItem;
     int currentLayoutIndex;
     bool ready:1;
 
@@ -60,7 +61,6 @@ private:
     void hideExcludedItems();
     void reparentItems();
     void reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment);
-    void reparentToConditionalLayout(LaidOutItemsMap &map, QQuickItem *container, ULConditionalLayoutAttached *fragment);
 };
 
 #endif // ULLAYOUTS_P_H

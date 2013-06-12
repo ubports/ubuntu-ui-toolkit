@@ -119,15 +119,15 @@ private Q_SLOTS:
 
         QQuickItem *item = testItem(root, "item1");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickColumn"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickColumn"));
 
         item = testItem(root, "item2");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickColumn"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickColumn"));
 
         item = testItem(root, "item3");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickColumn"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickColumn"));
     }
 
     void testCase_SimpleLayout_Medium()
@@ -146,15 +146,15 @@ private Q_SLOTS:
 
         QQuickItem *item = testItem(root, "item1");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickFlow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickFlow"));
 
         item = testItem(root, "item2");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickFlow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickFlow"));
 
         item = testItem(root, "item3");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickFlow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickFlow"));
     }
 
     void testCase_SimpleLayout_Large()
@@ -173,15 +173,15 @@ private Q_SLOTS:
 
         QQuickItem *item = testItem(root, "item1");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickRow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickRow"));
 
         item = testItem(root, "item2");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickRow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickRow"));
 
         item = testItem(root, "item3");
         QVERIFY(item);
-        QVERIFY(item->parentItem()->inherits("QQuickRow"));
+        QVERIFY(item->parentItem()->parentItem()->inherits("QQuickRow"));
     }
 
     void testCase_OverlappingCondition()
