@@ -36,7 +36,6 @@ ActionItem {
       the text and iconSource).
       \qmlproperty Action action
      */
-    property Action action: null
 
     /*!
        This handler is called when there is a mouse click on the button

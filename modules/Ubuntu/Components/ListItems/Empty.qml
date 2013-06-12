@@ -89,11 +89,6 @@ AbstractButton {
     property bool highlightWhenPressed: true
 
     /*!
-      The property holds the attached action to the list item.
-      */
-    property Action action
-
-    /*!
       \preliminary
       Defines if this item can be removed or not.
      */
