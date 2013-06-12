@@ -289,7 +289,9 @@ Panel
     property bool lock
     property ToolbarActions tools
 modules/Ubuntu/Components/ToolbarActions.qml
-ActionList
+Item
+    default property alias children
+    property list<Action> actions
     property Action back
     property Item __pageStack
     property bool opened
