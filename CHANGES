@@ -28,6 +28,7 @@ API Changes
 * DEPRECATED IN MainView: property Header header
 * DEPRECATED IN Page: property Toolbar toolbar
 * REMOVED in MainView: property QtObject __hud 
+* CHANGED in ToolbarActions: INHERIT Item INSTEAD OF ActionList
 
 Compatibility Breaks
 ********************
