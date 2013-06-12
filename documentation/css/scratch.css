@@ -1,16 +1,12 @@
 body {
 	margin: 0;
 }
-
-
 div.toc ul {
 	padding: 0;
 }
-
 div.toc li {
 	margin-bottom: 3px;
 }
-
 h1.title {
 	font-size: 36px;
 	line-height: 1.1;
@@ -31,7 +27,6 @@ a:hover {
 table, pre {
 	border-radius: 0;
 }
-
 .annotated td {
 	padding: 0.8em 1em 0.3em;
 }
@@ -63,28 +58,28 @@ table, pre {
 	position: relative;
 	left: -270px;
 	top: 30px;
-	width: 940px;
-	border-bottom: 1px dotted #AEA79F;
+	width: auto;
 	padding-bottom: 30px;
 	margin-bottom: 30px;
+	float:left;
 }
-
 .breadcrumb li {
 	float: left;
 	margin-right: 8px;
 }
-
+.breadcrumb li:first-child {
+	float:right;
+}
 .breadcrumb a:link,
 .breadcrumb a:visited {
 	color: #AEA79F;
 }
-
 .breadcrumb a:after {
 	content: '\0000a0\0000a0 >';
 }
-
 .title {
 	margin-top: 50px;
+	clear:both;
 }
 .breadcrumb + .toc {
 	top: 170px;
