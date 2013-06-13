@@ -84,10 +84,11 @@ Panel {
     }
 
     // if tools is not specified, lock the toolbar in closed position
-    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : true
+    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
     Connections {
         target: tools
+        ignoreUnknownSignals: true
         onOpenedChanged: toolbar.opened = tools.opened;
         onLockedChanged: toolbar.locked = tools.locked;
     }
