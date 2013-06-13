@@ -111,14 +111,14 @@ Item {
               }
           }
       \endqml
-      where \l ToolbarActions is derived from ActionList.
+      ToolbarActions will automatically create a visual representation of the actions.
       \qmlproperty list<Action> children
       */
     default property alias children: toolbarActions.actions
 
     /*!
-      List of already defined actions when not defining them as children of the ActionList.
-      Note that when you set this property, the children of the ActionList will be ignored,
+      List of already defined actions when not defining them as children of the ToolbarActions.
+      Note that when you set this property, the children of ToolbarActions will be ignored,
       so do not set the list and define children.
       \qml
         import QtQuick 2.0

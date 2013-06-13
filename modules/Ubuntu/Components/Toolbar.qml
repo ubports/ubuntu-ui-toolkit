@@ -63,7 +63,7 @@ Panel {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools: null
+    property Item tools: null
 
     /*! \internal */
     onToolsChanged: {
@@ -84,17 +84,18 @@ Panel {
     }
 
     // if tools is not specified, lock the toolbar in closed position
-    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : true
+    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
     Connections {
         target: tools
+        ignoreUnknownSignals: true
         onOpenedChanged: toolbar.opened = tools.opened;
         onLockedChanged: toolbar.locked = tools.locked;
     }
 
     QtObject {
         id: internal
-        property ToolbarActions visibleTools: tools
+        property Item visibleTools: tools
         function updateVisibleTools() {
             if (internal.visibleTools !== toolbar.tools) {
                 if (internal.visibleTools) internal.visibleTools.parent = null;
