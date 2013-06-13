@@ -57,6 +57,15 @@ Item {
     property bool automaticOrientation: true
     /*!
       \preliminary
+      Sets whether the rotation transition is performed.
+
+      The default value is true.
+
+      \qmlproperty bool transitionEnabled
+     */
+    property bool transitionEnabled: true
+    /*!
+      \preliminary
       Exposes whether the orientationTransition is running.
 
       \qmlproperty alias rotating
@@ -80,10 +89,12 @@ Item {
 
     anchors.fill: parent
 
+    Component.onCompleted: orientationTransition.enabled = transitionEnabled
+
     Item {
         id: stateWrapper
 
-        state: __orientationAngle.toString()
+        state: orientationAngle.toString()
 
         states: [
             State {
