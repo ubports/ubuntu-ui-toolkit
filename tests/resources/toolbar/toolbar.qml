@@ -30,6 +30,7 @@ MainView {
         id: action2
         text: "action 2"
         onTriggered: print("two!")
+        iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/call_icon.png")
     }
 
     Page {
@@ -42,12 +43,30 @@ MainView {
 
         tools: ToolbarItems {
             Button {
+                anchors.verticalCenter: parent.verticalCenter
+                width: units.gu(10)
                 text: "yeah"
+                onClicked: print("upa")
+            }
+            ActionItem {
+                ItemStyle.class: "toolbar-button"
+                iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+                height: parent.height
+                width: units.gu(5)
+                text: "oh"
+                onTriggered: print("lala")
+            }
+            ActionItem {
+                ItemStyle.class: "toolbar-button"
+                action: action2
+                width: units.gu(5)
+                height: parent.height
             }
             Rectangle {
                 width: 50
                 height: 50
                 color: "navy"
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
