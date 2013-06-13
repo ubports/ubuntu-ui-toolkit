@@ -86,7 +86,25 @@ Item {
      */
     default property alias contents: toolsContainer.data
 
-    // TODO: Add backItem
+    /*!
+      The back button. If it is visible, it button will be shown
+      on the left-side of the toolbar.
+      If there is a \l PageStack with depth greater than 1, the back button will be
+      visible and triggering it will pop the page on top of the stack. If there is no
+      \l PageStack with depth greater than 1, the back action is hidden by default
+      (but the default setting can be changed by setting its visible property).
+     */
+    property Item back: ToolbarButton {
+//        parent: backContainer
+        iconSource: Qt.resolvedUrl("artwork/back.png")
+        text: i18n.tr("Back")
+        visible: true //toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1
+        /*!
+          \internal
+          FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
+         */
+        onTriggered: if (toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1) toolbarItems.__pageStack.pop()
+    }
 
     /*!
       \internal
@@ -114,6 +132,34 @@ Item {
     function __hasVisibleItems() {
         // TODO
         return true;
+    }
+
+    Rectangle {
+        color: "pink"
+        id: backContainer
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: childrenRect.width
+
+        // internal link to the previous back Item to unset its parent
+        // when toolbarItems.back is updated.
+        property Item previousBackItem: null
+
+        function updateBackItem() {
+            print("back changed from "+backContainer.previousBackItem+" to "+toolbarItems.back);
+            if (backContainer.previousBackItem) backContainer.previousBackItem.parent = null;
+            backContainer.previousBackItem = toolbarItems.back;
+            if (toolbarItems.back) toolbarItems.back.parent = backContainer;
+        }
+
+        Connections {
+            target: toolbarItems
+            onBackChanged: backContainer.updateBackItem()
+            Component.onCompleted: backContainer.updateBackItem()
+        }
     }
 
     Row {

@@ -30,6 +30,6 @@ import Ubuntu.Components 0.1 as Theming
 ActionItem {
     id: toolbarButton
     Theming.ItemStyle.class: "toolbar-button"
-    height: parent.height
+    height: parent ? parent.height : undefined
     width: units.gu(5)
 }

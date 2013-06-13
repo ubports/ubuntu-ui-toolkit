@@ -59,6 +59,12 @@ MainView {
                 }
                 text: "action 2"
             }
+
+            back: Button {
+                text: "cancel"
+                onClicked: print("cancelled!")
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
     }
 }
