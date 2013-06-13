@@ -63,7 +63,7 @@ Panel {
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */
-    property ToolbarActions tools: null
+    property Item tools: null
 
     /*! \internal */
     onToolsChanged: {
@@ -94,7 +94,7 @@ Panel {
 
     QtObject {
         id: internal
-        property ToolbarActions visibleTools: tools
+        property Item visibleTools: tools
         function updateVisibleTools() {
             if (internal.visibleTools !== toolbar.tools) {
                 if (internal.visibleTools) internal.visibleTools.parent = null;
