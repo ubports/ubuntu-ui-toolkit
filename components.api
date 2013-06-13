@@ -290,7 +290,7 @@ modules/Ubuntu/Components/Toolbar.qml
 Panel
     property bool active
     property bool lock
-    property ToolbarActions tools
+    property Item tools
 modules/Ubuntu/Components/ToolbarActions.qml
 Item
     default property alias children
