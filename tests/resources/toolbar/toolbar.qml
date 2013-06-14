@@ -60,9 +60,8 @@ MainView {
                 text: "action 2"
             }
 
-            back: Button {
+            back: ToolbarButton {
                 text: "cancel"
-                onClicked: print("cancelled!")
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
