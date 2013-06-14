@@ -76,8 +76,7 @@ PageTreeNode {
     /*!
       The list of actions associated with this Page.
      */
-//    property Item tools: ToolbarActions { }
-    property Item tools: ToolbarItems { }
+    property Item tools: ToolbarActions { }
 
     /*!
       Optional flickable that controls the header. This property
