@@ -38,8 +38,6 @@ Item {
      */
     property Action action: null
 
-    // TODO: remove visible from action when we start using ActionItems
-    //  to define the toolbar contents.
     visible: action ? action.visible : true
     enabled: action ? action.enabled : true
 
