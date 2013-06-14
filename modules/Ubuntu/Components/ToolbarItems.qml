@@ -95,23 +95,21 @@ Item {
       (but the default setting can be changed by setting its visible property).
      */
     property Item back: ToolbarButton {
-//        parent: backContainer
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
-        visible: true //toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1
+        visible: toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1
         /*!
-          \internal
-          FIXME: If this is not marked as internal, qdoc thinks it needs to be documented.
+          If there is a \l PageStack of sufficient depth, triggering the back button
+          will pop the \l Page on top of the \l PageStack.
          */
         onTriggered: if (toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1) toolbarItems.__pageStack.pop()
     }
 
     /*!
-      \internal
-      PageStack for the back button
+      PageStack for the back button. \l Page will automatically set the pageStack property
+      of its tools.
      */
-    // Cannot use PageStack here that will cause a loop in parsing the qml files
-    property Item __pageStack: null
+    property Item pageStack: null
 
     /*!
       The toolbar is opened
