@@ -1,3 +1,16 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.14-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Tools are now Items: - Make ToolbarActions a subclass of Item - Move
+    the visualization of Actions in Toolbar from Toolbar to
+    ToolbarActions - Allow the tools properties of Toolbar and Page to
+    be any Item.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 540
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Jun 2013 04:02:15 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.05.1-0ubuntu1) saucy; urgency=low
 
   [ Zoltán Balogh ]
