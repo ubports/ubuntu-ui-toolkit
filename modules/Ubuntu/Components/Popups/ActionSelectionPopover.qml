@@ -100,7 +100,6 @@ Popover {
     /*!
       The property holds the list of actions to be presented. Each action
       triggered will use the actionHost as caller.
-
       */
     property var actions
 
@@ -110,15 +109,17 @@ Popover {
       to access action data.
       */
     property Component delegate: Empty {
-        visible: action.visible && action.text !== ""
+        id: listItem
         Label {
-            text: action.text
+            text: listItem.text
             anchors {
                 verticalCenter: parent.verticalCenter
                 horizontalCenter: parent.horizontalCenter
             }
             wrapMode: Text.Wrap
         }
+        /*! \internal */
+        onTriggered: popover.hide()
     }
 
     grabDismissAreaEvents: false
@@ -151,21 +152,10 @@ Popover {
                         if (item.hasOwnProperty("modelData"))
                             item.modelData = modelData;
                         // auto-connect trigger
-                        // FIXME: define all these signals to the action to be in sync with HUD
-                        if (item.hasOwnProperty("clicked"))
-                            item.clicked.connect(triggerAction);
-                        else if (item.hasOwnProperty("accepted"))
-                            item.accepted.connect(triggerAction);
-                        else if (item.hasOwnProperty("triggered"))
-                            item.triggered.connect(triggerAction);
                         // if the delegate is a list item, hide divider of the last one
                         if (item.hasOwnProperty("showDivider"))
                             item.showDivider = index < (repeater.count - 1);
                     }
-                }
-                function triggerAction() {
-                    modelData.triggered(target);
-                    popover.hide();
                 }
             }
         }

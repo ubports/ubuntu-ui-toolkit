@@ -1,6 +1,5 @@
 modules/Ubuntu/Components/AbstractButton.qml
-Item
-    property Action action
+ActionItem
     signal clicked()
     signal pressAndHold()
     property bool pressed
@@ -15,6 +14,12 @@ QtObject
     property bool visible
     property bool enabled
     property Component itemHint
+modules/Ubuntu/Components/ActionItem.qml
+Item
+    property Action action
+    property string text
+    property url iconSource
+    signal triggered(var caller)
 modules/Ubuntu/Components/ActionList.qml
 QtObject
     default property alias children
@@ -28,8 +33,6 @@ Item
 modules/Ubuntu/Components/Button.qml
 AbstractButton
     property color color
-    property url iconSource
-    property string text
     property string iconPosition
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton

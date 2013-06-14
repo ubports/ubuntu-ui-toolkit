@@ -84,7 +84,6 @@ Empty {
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
-    property alias text: label.text
 
     /*!
       \preliminary
@@ -240,6 +239,7 @@ Empty {
             right: control ? controlContainer.left : (progression ? progressionHelper.left : parent.right)
             rightMargin: listItem.__contentsMargins
         }
+        text: listItem.text
     }
 
     Item {

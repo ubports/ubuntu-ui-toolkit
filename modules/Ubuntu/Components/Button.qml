@@ -49,7 +49,7 @@ import Ubuntu.Components 0.1 as Theming
             }
         }
     \endqml
-    An \l Action can be used to specify \b clicked, \l iconSource and \l text. Example:
+    An \l Action can be used to specify \b clicked, iconSource and text. Example:
     \qml
         Item {
             Action {
@@ -83,16 +83,16 @@ AbstractButton {
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
        If \l action is set, the default iconSource is that of the action.
+       \qmlproperty url iconSource
     */
-    property url iconSource: action ? action.iconSource : ""
 
     /*!
        The text to display in the button. If an icon was defined,
        the text will be shown next to the icon, otherwise it will
        be centered. Leave blank for an icon-only button.
        If \l action is set, the default text is that of the action.
+       \qmlproperty string text
     */
-    property string text: action ? action.text : undefined
 
     /*!
        The position of the icon relative to the text. Options
