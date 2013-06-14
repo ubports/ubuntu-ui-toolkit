@@ -60,8 +60,9 @@ MainView {
                 text: "action 2"
             }
 
-            back: Button {
+            back: ToolbarButton {
                 text: "cancel"
+                iconSource: Qt.resolvedUrl("../../../modules/Ubuntu/Components/artwork/back.png")
                 anchors.verticalCenter: parent.verticalCenter
             }
         }

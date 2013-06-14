@@ -32,13 +32,15 @@ import Ubuntu.Components 0.1 as Theming
     Items and several properties that specify the behavior of the toolbar when the \l Page
     is active.
 
-    When a \l Page is used inside a \l Tabs or \l PageStack, the toolbar will automatically show
+    When a \l Page is used inside a \l MainView, \l Tabs or \l PageStack, the toolbar will automatically show
     the tools of the active \l Page. When the active \l Page inside the \l Tabs or \l PageStack
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
     the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
     \l {http://design.ubuntu.com/apps/building-blocks/toolbar}{See also the Design Guidelines on Toolbars}.
 
+    It is recommended to use \l ToolbarButton inside the ToolbarItems to define the buttons that will
+    be visible to the user:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -63,6 +65,40 @@ import Ubuntu.Components 0.1 as Theming
                     }
                     locked: true
                     opened: true
+                }
+            }
+        }
+    \endqml
+
+    However, it is possible to include non-\l ToolbarButton Items inside ToolbarItems, and to mix
+    ToolbarButtons and other Items (for example standard Buttons). ToolbarButtons automatically span
+    the full height of the toolbar, and other Items you will probably want to center vertically:
+    \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(50)
+            height: units.gu(50)
+
+            Page {
+                title: "Tools example"
+                Label {
+                    anchors.centerIn: parent
+                    text: "buttons!"
+                }
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        action: Action {
+                            text: "toolbar"
+                            icon: Qt.resolvedUrl("icon.png")
+                            onTriggered: print("success!")
+                        }
+                    }
+                    Button {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "standard"
+                    }
                 }
             }
         }

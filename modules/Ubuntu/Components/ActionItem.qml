@@ -25,7 +25,8 @@ import QtQuick 2.0
         visual aspects of the ActionItem.
 
         If \l action is set, the values of the other properties will by default
-        be identical to the \l Action's property values.
+        be identical to the \l Action's property values. Setting the other properties
+        will override the properties copied from the \l Action.
 */
 Item {
     id: actionItem

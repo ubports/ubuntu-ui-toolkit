@@ -45,12 +45,16 @@ import QtQuick 2.0
                     text: "Hello world!"
                 }
 
-                tools: ToolbarActions {
-                    Action {
-                        text: "one"
-                    }
-                    Action {
-                        text: "two"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        action: Action {
+                            text: "one"
+                        }
+                     }
+                    ToolbarButton {
+                        action: Action {
+                            text: "two"
+                        }
                     }
                 }
             }
@@ -75,6 +79,7 @@ PageTreeNode {
 
     /*!
       The toolbar items associated with this Page.
+      It is recommended to use \l ToolbarItems to specify the tools, but any Item is allowed here.
      */
     property Item tools: ToolbarItems { }
 
