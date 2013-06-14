@@ -74,9 +74,9 @@ PageTreeNode {
     property string title
 
     /*!
-      The list of actions associated with this Page.
+      The toolbar items associated with this Page.
      */
-    property Item tools: ToolbarActions { }
+    property Item tools: ToolbarItems { }
 
     /*!
       Optional flickable that controls the header. This property

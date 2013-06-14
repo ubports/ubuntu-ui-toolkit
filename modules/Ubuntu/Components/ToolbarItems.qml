@@ -25,7 +25,7 @@ import Ubuntu.Components 0.1 as Theming
     \qmltype ToolbarItems
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
-    \brief List of Items to be placed in a toolbar.childAt(
+    \brief Row of Items to be placed in a toolbar.
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarItems consists of a set of
@@ -53,20 +53,12 @@ import Ubuntu.Components 0.1 as Theming
                     anchors.centerIn: parent
                     text: "Custom back button\nToolbar locked"
                 }
-                // TODO TIM: update docs
-                tools: ToolbarActions {
-                    Action {
-                        text: "action 1"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                    }
-                    Action {
-                        text: "action 2"
-                        iconSource: Qt.resolvedUrl("call_icon.png")
-                    }
-                    back {
-                        itemHint: Button {
-                            id: cancelButton
-                            text: "cancel"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        action: Action {
+                            text: "button"
+                            icon: Qt.resolvedUrl("icon.png")
+                            onTriggered: print("success!")
                         }
                     }
                     locked: true
@@ -87,22 +79,41 @@ Item {
     default property alias contents: toolsContainer.data
 
     /*!
-      The back button. If it is visible, it button will be shown
-      on the left-side of the toolbar.
+      The back button. If it is visible, it will be shown on the left-side of the toolbar.
       If there is a \l PageStack with depth greater than 1, the back button will be
       visible and triggering it will pop the page on top of the stack. If there is no
-      \l PageStack with depth greater than 1, the back action is hidden by default
-      (but the default setting can be changed by setting its visible property).
+      \l PageStack with depth greater than 1, the back button is hidden by default
+
+      The following example shows how to have a classic cancel button that is always
+      visible in the toolbar, instead of the default toolbar-styled back button:
+        \qml
+            import QtQuick 2.0
+            import Ubuntu.Components 0.1
+
+            MainView {
+                width: units.gu(50)
+                height: units.gu(50)
+
+                Page {
+                    title: "Custom back button"
+                    tools: ToolbarItems {
+                        back: Button {
+                            text: "cancel"
+                        }
+                    }
+                }
+            }
+        \endqml
      */
     property Item back: ToolbarButton {
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
-        visible: toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1
+        visible: toolbarItems.pageStack && toolbarItems.pageStack.depth > 1
         /*!
           If there is a \l PageStack of sufficient depth, triggering the back button
           will pop the \l Page on top of the \l PageStack.
          */
-        onTriggered: if (toolbarItems.__pageStack && toolbarItems.__pageStack.depth > 1) toolbarItems.__pageStack.pop()
+        onTriggered: if (toolbarItems.pageStack && toolbarItems.pageStack.depth > 1) toolbarItems.pageStack.pop()
     }
 
     /*!
@@ -118,22 +129,26 @@ Item {
 
     /*!
       The toolbar cannot be opened/closed by bottom-edge swipes.
-      If the ToolbarActions contains no visible actions, it is automatically
+      If the ToolbarItems contains no visible Items, it is automatically
       locked (in closed state).
      */
-    property bool locked: !toolbarItems.__hasVisibleItems()
+    property bool locked: !internal.hasVisibleItems()
 
-    /*!
-      \internal
-      Determine whether this ToolbarActions has any visible actions
-     */
-    function __hasVisibleItems() {
-        // TODO
-        return true;
+    QtObject {
+        id: internal
+        /*
+          Determine whether this ToolbarItems has any visible Items
+        */
+        function hasVisibleItems() {
+            if (back && back.visible) return true;
+            for (var i=0; i < toolsContainer.length; i++) {
+                if (toolsContainer.children[i].visible) return true;
+            }
+            return false;
+        }
     }
 
-    Rectangle {
-        color: "pink"
+    Item {
         id: backContainer
         anchors {
             left: parent.left
@@ -147,7 +162,6 @@ Item {
         property Item previousBackItem: null
 
         function updateBackItem() {
-            print("back changed from "+backContainer.previousBackItem+" to "+toolbarItems.back);
             if (backContainer.previousBackItem) backContainer.previousBackItem.parent = null;
             backContainer.previousBackItem = toolbarItems.back;
             if (toolbarItems.back) toolbarItems.back.parent = backContainer;
