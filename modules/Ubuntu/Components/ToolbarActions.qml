@@ -247,7 +247,7 @@ Item {
             // from going to the toolbar. The panel will take care calling the button's clicked().
             __mouseArea.visible: false
             Theming.ItemStyle.class: "toolbar-button"
-            width: units.gu(5)
+            width: visible ? units.gu(5) : 0
             height: toolbarActions.height
         }
     }
