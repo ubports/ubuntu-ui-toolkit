@@ -47,9 +47,13 @@ QtObject {
     signal triggered(var caller)
 
     /*!
+      \deprecated
+      \b {visible is DEPRRECATED. Use \l ActionItem to specify the representation of an \l Action.}
       The action is visible to the user
      */
     property bool visible: true
+    /*! \internal */
+    onVisibleChanged: print("Action.visible is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 
     /*!
       Enable the action. It may be visible, but disabled.
@@ -57,9 +61,15 @@ QtObject {
     property bool enabled: true
 
     /*!
+      \deprecated
+      \b {itemHint is DEPRECATED. Use \l ActionItem to specify
+      the representation of an \l Action.}
       Proposed Component to use as a representation for this action.
       Depending on the component that displays the action, the Component
       given here can replace the default representation of the action.
      */
     property Component itemHint
+
+    /*! \internal */
+    onItemHintChanged: print("Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 }
