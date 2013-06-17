@@ -177,7 +177,7 @@ Item {
         */
         function hasVisibleItems() {
             if (back && back.visible) return true;
-            for (var i=0; i < toolsContainer.length; i++) {
+            for (var i=0; i < toolsContainer.children.length; i++) {
                 if (toolsContainer.children[i].visible) return true;
             }
             return false;
