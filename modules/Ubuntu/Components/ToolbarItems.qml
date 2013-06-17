@@ -190,6 +190,7 @@ Item {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
+            leftMargin: units.gu(2)
         }
         width: childrenRect.width
 
