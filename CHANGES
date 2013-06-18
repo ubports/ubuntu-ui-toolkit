@@ -33,7 +33,7 @@ API Changes
 * CHANGED IN Toolbar: property ToolbarActions tools TO property Item tools
 * DEPRECATED IN Action: property bool visible
 * DEPRECATED IN Action: property Item itemHint
-* DEPRICATED: ToolbarActions component (use ToolbarItems instead)
+* DEPRECATED: ToolbarActions component (use ToolbarItems instead)
 
 Compatibility Breaks
 ********************

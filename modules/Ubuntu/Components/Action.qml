@@ -48,7 +48,7 @@ QtObject {
 
     /*!
       \deprecated
-      \b {visible is DEPRRECATED. Use \l ActionItem to specify the representation of an \l Action.}
+      \b {visible is DEPRECATED. Use \l ActionItem to specify the representation of an \l Action.}
       The action is visible to the user
      */
     property bool visible: true
