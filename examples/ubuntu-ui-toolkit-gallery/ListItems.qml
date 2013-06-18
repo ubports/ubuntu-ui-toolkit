@@ -85,6 +85,8 @@ Template {
                      i18n.tr("Value 2"),
                      i18n.tr("Value 3"),
                      i18n.tr("Value 4")]
+
+            Component.onCompleted: values.push("xxx")//= ["a", "b"]
         }
     }
 
