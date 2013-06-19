@@ -34,6 +34,7 @@ Item {
                 name: "extra-large"
                 when: layouts.width > units.gu(80)
                 Item {
+                    anchors.fill: parent
                     Item {
                         id: header
                         ItemLayout {
@@ -57,6 +58,7 @@ Item {
                 when: layouts.width <= units.gu(100)
                 SimpleLayouts{
                     id: nested
+                    anchors.fill: parent
                     onCurrentLayoutChanged: root.nestedLayout = nested.currentLayout
                 }
             }

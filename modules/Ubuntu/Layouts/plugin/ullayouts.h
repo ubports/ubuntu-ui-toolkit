@@ -34,11 +34,17 @@ public: //getter/setter
     QString item() const;
     void setItem(const QString &name);
 
+    bool isValid();
+
 Q_SIGNALS:
     void itemChanged();
 
+private Q_SLOTS:
+    void validateAttachedProperties();
+
 private:
     QString m_name;
+    bool m_valid;
 };
 
 class ULLayoutsPrivate;

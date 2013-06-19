@@ -19,10 +19,37 @@
 #include "ullayouts.h"
 #include "ullayouts_p.h"
 #include <QtQml/QQmlInfo>
+#include <private/qqmlcomponentattached_p.h>
 
 ULLayoutsAttached::ULLayoutsAttached(QObject *parent)
     : QObject(parent)
+    , m_valid(false)
 {
+    // workaround to get notified about attachee completion to check
+    // whether the attachee belongs to a Layouts component or not
+    // connect to one of the attached components to receive completion
+    QQmlComponentAttached *component = QQmlComponent::qmlAttachedProperties(parent);
+    if (component) {
+        QObject::connect(component, SIGNAL(completed()), this, SLOT(validateAttachedProperties()));
+    }
+}
+
+/*!
+ * \internal
+ * Validates the attachee by checking whether its ascendant is a Layouts component or not.
+ */
+void ULLayoutsAttached::validateAttachedProperties()
+{
+    QQuickItem *pl = qobject_cast<QQuickItem*>(parent());
+    while (pl) {
+        if (qobject_cast<ULLayouts*>(pl)) {
+            m_valid = !m_name.isEmpty();
+            return;
+        }
+        pl = pl->parentItem();
+    }
+    qmlInfo(parent()) << "Item is not a child of a Layouts component";
+    m_valid = false;
 }
 
 /*!
@@ -45,3 +72,7 @@ void ULLayoutsAttached::setItem(const QString &name)
     Q_EMIT itemChanged();
 }
 
+bool ULLayoutsAttached::isValid()
+{
+    return m_valid;
+}

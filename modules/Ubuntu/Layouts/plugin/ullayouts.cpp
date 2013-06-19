@@ -98,7 +98,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
         currentLayoutItem = qobject_cast<QQuickItem*>(object());
         Q_ASSERT(currentLayoutItem);
 
-        changes.addChange(new PropertyChange(currentLayoutItem, "anchors.fill", qVariantFromValue(q), PropertyChange::High));
+//        changes.addChange(new PropertyChange(currentLayoutItem, "anchors.fill", qVariantFromValue(q), PropertyChange::High));
 
         // hide all non-laid out items first
         hideExcludedItems();

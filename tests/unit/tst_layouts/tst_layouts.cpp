@@ -342,6 +342,20 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 1);
     }
 
+    void testCase_LaidOutItemsOutsideOfLayout()
+    {
+        QQuickItem *root = loadTest("LaidOutItemsOutsideOfLayout.qml");
+        QVERIFY(root);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "itemLaidOut"));
+        QVERIFY(item);
+
+        ULLayoutsAttached *marker = qobject_cast<ULLayoutsAttached*>(
+                    qmlAttachedPropertiesObject<ULLayouts>(item, false));
+        QVERIFY(marker);
+        QVERIFY(!marker->isValid());
+    }
+
 };
 
 QTEST_MAIN(tst_Layouts)

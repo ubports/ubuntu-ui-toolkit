@@ -17,4 +17,5 @@ OTHER_FILES += \
     ResizingContainers.qml \
     SizedDefaultLayout.qml \
     CurrentLayoutChange.qml \
-    PositioningOnLayoutChange.qml
+    PositioningOnLayoutChange.qml \
+    LaidOutItemsOutsideOfLayout.qml
