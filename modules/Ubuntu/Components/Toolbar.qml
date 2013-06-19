@@ -67,7 +67,7 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
-        if (tools.hasOwnProperty("locked")) locked = tools.locked;
+        if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
@@ -100,7 +100,7 @@ Panel {
             if (internal.visibleTools !== toolbar.tools) {
                 if (internal.visibleTools) internal.visibleTools.parent = null;
                 internal.visibleTools = toolbar.tools;
-                internal.visibleTools.parent = visibleToolsContainer;
+                if (internal.visibleTools) internal.visibleTools.parent = visibleToolsContainer;
             }
         }
     }
