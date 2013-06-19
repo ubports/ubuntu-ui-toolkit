@@ -315,6 +315,15 @@ Item
     property bool lock
     property bool locked
     function __hasVisibleActions()
+modules/Ubuntu/Components/ToolbarButton.qml
+ActionItem
+modules/Ubuntu/Components/ToolbarItems.qml
+Item
+    default property alias contents
+    property Item back
+    property Item pageStack
+    property bool opened
+    property bool locked
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
