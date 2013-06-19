@@ -19,12 +19,13 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 Template {
-    tools: ToolbarActions {
-        Action {
-            id: toolbarAction
+    tools: ToolbarItems {
+        ToolbarButton {
+            id: actionsButton
             text: "Actions"
             iconSource: "call_icon.png"
-            onTriggered: PopupUtils.open(actionSelectionPopover, caller)
+            onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
+            visible: true
         }
         locked: true
         opened: true

@@ -23,9 +23,12 @@ import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype ToolbarActions
+    \deprecated
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief List of \l Action items with additional properties to control a toolbar.
+
+    \b {ToolbarActions is DEPRECATED. Please use \l ToolbarItems instead.}
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarActions consists of a set of
@@ -244,7 +247,7 @@ Item {
             // from going to the toolbar. The panel will take care calling the button's clicked().
             __mouseArea.visible: false
             Theming.ItemStyle.class: "toolbar-button"
-            width: units.gu(5)
+            width: visible ? units.gu(5) : 0
             height: toolbarActions.height
         }
     }
@@ -290,4 +293,6 @@ Item {
             }
         }
     }
+
+    Component.onCompleted: print("ToolbarActions is DEPRECATED. Use ToolbarItems instead.")
 }

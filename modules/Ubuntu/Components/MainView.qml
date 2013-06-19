@@ -108,13 +108,17 @@ import Ubuntu.Components 0.1 as Theming
                 }
 
                 tools: ToolbarActions {
-                    Action {
-                        text: "red"
-                        onTriggered: rectangle.color = "red"
+                    ToolbarButton {
+                        action: Action {
+                            text: "red"
+                            onTriggered: rectangle.color = "red"
+                        }
                     }
-                    Action {
-                        text: "green"
-                        onTriggered: rectangle.color = "green"
+                    ToolbarButton {
+                        action: Action {
+                            text: "green"
+                            onTriggered: rectangle.color = "green"
+                        }
                     }
                 }
             }
@@ -207,15 +211,15 @@ PageTreeNode {
 
     /*!
       \deprecated
-      The tools of the main view's toolbar.
-      This property is deprecated. Pages will now automatically update the toolbar when activated.
+      This property is DEPRECATED. Pages will now automatically update the toolbar when activated.
+      See \l ToolbarItems for more information on how to set the tools of a \l Page.
      */
     property ToolbarActions tools: null
     /*!
       \internal
       \deprecated
      */
-    onToolsChanged: print("MainView.tools property was deprecated. "+
+    onToolsChanged: print("MainView.tools property was DEPRECATED. "+
                           "Pages will automatically update the toolbar when activated. "+
                           "See CHANGES file, and use toolbar.tools instead when needed.");
 

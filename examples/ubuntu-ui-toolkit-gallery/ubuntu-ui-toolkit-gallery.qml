@@ -107,10 +107,7 @@ MainView {
             property alias source: contentLoader.source
             onActiveChanged: if (!active) source = ""
 
-            ToolbarActions {
-                id: noActions
-            }
-            tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : noActions
+            tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : null
             flickable: contentLoader.item && !wideAspect ? contentLoader.item.flickable : null
 
             Loader {

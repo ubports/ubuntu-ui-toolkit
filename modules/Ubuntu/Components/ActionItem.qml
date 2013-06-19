@@ -25,7 +25,11 @@ import QtQuick 2.0
         visual aspects of the ActionItem.
 
         If \l action is set, the values of the other properties will by default
-        be identical to the \l Action's property values.
+        be identical to the \l Action's property values. Setting the other properties
+        will override the properties copied from the \l Action.
+
+        See \l ToolbarItems for examples of how to use \l ToolbarButton or other ActionItems
+        in a toolbar.
 */
 Item {
     id: actionItem
@@ -37,8 +41,6 @@ Item {
      */
     property Action action: null
 
-    // TODO: remove visible from action when we start using ActionItems
-    //  to define the toolbar contents.
     visible: action ? action.visible : true
     enabled: action ? action.enabled : true
 

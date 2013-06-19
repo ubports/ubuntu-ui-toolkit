@@ -34,6 +34,9 @@ API Changes
 * CHANGED in ToolbarActions: INHERIT Item INSTEAD OF ActionList
 * CHANGED in Page: property ToolbarActions tools TO property Item tools
 * CHANGED IN Toolbar: property ToolbarActions tools TO property Item tools
+* DEPRECATED IN Action: property bool visible
+* DEPRECATED IN Action: property Item itemHint
+* DEPRECATED: ToolbarActions component (use ToolbarItems instead)
 
 Compatibility Breaks
 ********************
