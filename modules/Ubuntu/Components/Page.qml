@@ -115,7 +115,8 @@ PageTreeNode {
       hide the header.
 
       This property be set to null to avoid automatic flickable detection, which disables hiding
-      of the header by scrolling in the Flickable.
+      of the header by scrolling in the Flickable. In cases where a flickable should control the header,
+      but it is not automatically detected, the flickable property can be set.
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
