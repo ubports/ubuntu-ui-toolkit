@@ -85,8 +85,37 @@ PageTreeNode {
 
     /*!
       Optional flickable that controls the header. This property
-      is automatically set if the Flickable is one of the Page's direct children.
-      May be set to null to avoid the header from hiding.
+      is automatically set to the first child of the page that is Flickable
+      and anchors to the top of the page or fills the page. For example:
+      \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+
+        MainView {
+            width: units.gu(30)
+            height: units.gu(50)
+            Page {
+                id: page
+                title: "example"
+                //flickable: null // uncomment to disable hiding of the header
+                Flickable {
+                    id: content
+                    anchors.fill: parent
+                    contentHeight: units.gu(70)
+                    Label {
+                        text: "hello"
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+        }
+      \endqml
+      In this example, page.flickable will automatically be set to content because it is
+      a Flickable and it fills its parent. Thus, scrolling down in the Flickable will automatically
+      hide the header.
+
+      This property be set to null to avoid automatic flickable detection, which disables hiding
+      of the header by scrolling in the Flickable.
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
@@ -151,7 +180,14 @@ PageTreeNode {
         function getFlickableChild(item) {
             if (item && item.hasOwnProperty("children")) {
                 for (var i=0; i < item.children.length; i++) {
-                    if (internal.isVerticalFlickable(item.children[i])) return item.children[i];
+                    var child = item.children[i];
+                    if (internal.isVerticalFlickable(child)) {
+                        if (child.anchors.top === page.top || child.anchors.fill === page) {
+                            print("YEAH")
+                            return item.children[i];
+                        }
+                        print("NOOO")
+                    }
                 }
             }
             return null;
