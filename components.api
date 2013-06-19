@@ -89,7 +89,10 @@ QtObject
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
-    property int __orientationAngle
+    property bool transitionEnabled
+    property alias rotating
+    property alias __orientationAngle
+    property int orientationAngle
 modules/Ubuntu/Components/Page.qml
 PageTreeNode
     property string title

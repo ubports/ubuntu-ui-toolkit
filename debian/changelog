@@ -1,3 +1,35 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.19-0ubuntu1) saucy; urgency=low
+
+  [ Sebastien Bacher ]
+  * ListItem.Standard: use the correct import in the example.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 548
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Jun 2013 04:01:25 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.06.18-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Added alias to expose animation running and exposed orientationAngle
+    in OrientationHelper.qml.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 545
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 18 Jun 2013 04:01:14 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.06.17-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Add ActionItem component that copies the Action API, but adds a
+    visual representation of the Action.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 542
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Jun 2013 04:02:19 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.14-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]

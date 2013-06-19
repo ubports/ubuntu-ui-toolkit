@@ -55,16 +55,46 @@ Item {
       \qmlproperty bool automaticOrientation
      */
     property bool automaticOrientation: true
+    /*!
+      \preliminary
+      Sets whether the rotation transition is performed.
 
-    /*! \internal */
-    property int __orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
+      The default value is true.
+
+      \qmlproperty bool transitionEnabled
+     */
+    property bool transitionEnabled: true
+    /*!
+      \preliminary
+      Exposes whether the orientationTransition is running.
+
+      \qmlproperty alias rotating
+     */
+    property alias rotating: orientationTransition.running
+
+    /*!
+      \qmlproperty int __orientationAngle
+      \deprecated
+
+      Use orientationAngle instead.
+     */
+    property alias __orientationAngle: orientationHelper.orientationAngle
+
+    /*!
+      \qmlproperty int orientationAngle
+
+      Calculates the current orientation angle.
+     */
+    property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
     anchors.fill: parent
+
+    Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
     Item {
         id: stateWrapper
 
-        state: __orientationAngle.toString()
+        state: orientationAngle.toString()
 
         states: [
             State {
