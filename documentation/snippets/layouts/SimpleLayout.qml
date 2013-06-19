@@ -34,6 +34,7 @@ Item {
                 name: "column"
                 when: layouts.width > units.gu(50) && layouts.width <= units.gu(70)
                 Column {
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         height: parent.height / 3
@@ -66,6 +67,7 @@ Item {
                 name: "flow"
                 when: layouts.width > units.gu(70) && layouts.width <= units.gu(90)
                 Row {
+                    anchors.fill: parent
                     ItemLayout {
                         item: "blue"
                         width: parent.width / 3
@@ -98,6 +100,7 @@ Item {
                 name: "hiding-element"
                 when: layouts.width > units.gu(90) && layouts.width < units.gu(100)
                 Row {
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         width: parent.width / 2
@@ -117,6 +120,7 @@ Item {
                 when: layouts.width >= units.gu(100)
                 Flow {
                     id: flow
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         width: units.gu(50)

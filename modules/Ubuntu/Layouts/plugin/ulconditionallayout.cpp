@@ -54,8 +54,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * the layout activation condition.
  *
  * There can be a single component defined in the ConditionalLayout which will be
- * instantiated upon activation. This component then will be filling the entire
- * Layouts area, so no additional anchoring is required in those components.
+ * instantiated upon activation.
  *
  * Each conditional layout must be named with a string, which identifies the layout
  * when activated.
@@ -70,6 +69,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  *             name: "flow"
  *             when: layouts.width > units.gu(60)
  *             Flow {
+ *                 anchors.fill: parent
  *                 spacing: units.dp(3)
  *                 flow: Flow.LeftToRight
  *                 ItemLayout {

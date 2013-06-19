@@ -35,6 +35,7 @@ Item {
                 name: "row"
                 when: layouts.width > units.gu(50)
                 Row {
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         width: parent.width / 3

@@ -352,6 +352,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
+ *                 anchors.fill: parent
  *                 //[...]
  *             }
  *         },
@@ -359,6 +360,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
+ *                 anchors.fill: parent
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column
@@ -381,6 +383,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
+ *                 anchors.fill: parent
  *                 //[...]
  *             }
  *         },
@@ -388,6 +391,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
+ *                 anchors.fill: parent
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column
@@ -432,6 +436,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
+ *                 anchors.fill: parent
  *                 ItemLayout {
  *                     item: "item1"
  *                 }
@@ -444,6 +449,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
+ *                 anchors.fill: parent
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column
@@ -488,6 +494,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "flow"
  *             when: layouts.width > units.gu(60) && layouts.width <= units.gu(100)
  *             Flow {
+ *                 anchors.fill: parent
  *                 ItemLayout {
  *                     item: "item1"
  *                 }
@@ -500,6 +507,7 @@ void ULLayoutsPrivate::updateLayout()
  *             name: "column"
  *             when: layouts.width > units.gu(100)
  *             Flickable {
+ *                 anchors.fill: parent
  *                 contentHeight: column.childrenRect.height
  *                 Column {
  *                     id: column

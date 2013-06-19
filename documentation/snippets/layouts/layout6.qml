@@ -36,6 +36,7 @@ Item {
                 when: layouts.width > units.gu(70)
                 Flow {
                     id: flow
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         width: units.gu(20)
@@ -65,6 +66,7 @@ Item {
                 name: "row"
                 when: layouts.width > units.gu(50)
                 Row {
+                    anchors.fill: parent
                     ItemLayout {
                         item: "red"
                         width: parent.width / 2
