@@ -27,6 +27,7 @@ ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     : QQmlIncubator(Asynchronous)
     , q_ptr(qq)
     , currentLayoutItem(0)
+    , previousLayoutItem(0)
     , currentLayoutIndex(-1)
     , ready(false)
 {
@@ -139,6 +140,8 @@ void ULLayoutsPrivate::reparentItems()
     // iterate through the Layout definition to find containers - those Items with
     // ConditionalLayout.items set
     QList<QQuickItem*> items = currentLayoutItem->findChildren<QQuickItem*>();
+    // add the root item as that also can be the container
+    items.prepend(currentLayoutItem);
 
     Q_FOREACH(QQuickItem *container, items) {
         // check whether we have ItemLayout declared
@@ -190,8 +193,9 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 }
 
 /*
- * Validatesthe declared conditional layouts by checking whether they have name
- * property set and whether the value set is unique
+ * Validates the declared conditional layouts by checking whether they have name
+ * property set and whether the value set is unique, and whether the conditional
+ * layout has container defined.
  */
 void ULLayoutsPrivate::validateConditionalLayouts()
 {
@@ -214,6 +218,14 @@ void ULLayoutsPrivate::validateConditionalLayouts()
             qmlInfo(layout) << "Warning: layout name \"" << layout->layoutName()
                             << "\" not unique. Layout may not be activable.";
         }
+
+        if (!layout->layout()) {
+            qmlInfo(layout) << "Error: no container specified for layout"
+                            << " \"" << layout->layoutName() << "\". "
+                            << "ConditionalLayout cannot be activated without a container.";
+            continue;
+        }
+
     }
 }
 
@@ -289,6 +301,12 @@ void ULLayoutsPrivate::updateLayout()
     // go through conditions and re-parent for the first valid one
     for (int i = 0; i < layouts.count(); i++) {
         ULConditionalLayout *layout = layouts[i];
+        if (!layout->layout()) {
+            qmlInfo(layout) << "Cannot activate containerless layout "
+                            << "\"" << layout->layoutName() << "\". "
+                            << "Falling back to default.";
+            break;
+        }
         if (!layout->layoutName().isEmpty() && layout->when() && layout->when()->evaluate().toBool()) {
             if (currentLayoutIndex == i) {
                 return;

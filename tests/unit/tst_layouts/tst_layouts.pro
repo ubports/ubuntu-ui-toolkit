@@ -15,4 +15,6 @@ OTHER_FILES += \
     NestedLayouts.qml \
     DefaultLayout.qml \
     ResizingContainers.qml \
-    SizedDefaultLayout.qml
+    SizedDefaultLayout.qml \
+    CurrentLayoutChange.qml \
+    PositioningOnLayoutChange.qml

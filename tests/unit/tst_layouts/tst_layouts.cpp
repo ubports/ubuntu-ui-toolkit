@@ -310,6 +310,38 @@ private Q_SLOTS:
         QCOMPARE(item2->height(), height2);
     }
 
+    void testCase_CurrentLayoutChange()
+    {
+        QQuickItem *root = loadTest("CurrentLayoutChange.qml");
+        QVERIFY(root);
+
+        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layoutManager"));
+        QVERIFY(layouts);
+
+        QSignalSpy spy(layouts, SIGNAL(currentLayoutChanged()));
+        root->setWidth(root->height() - 10);
+        QEXPECT_FAIL(0, "Layout change should not happen when component is not defined", Continue);
+        QCOMPARE(spy.count(), 1);
+    }
+
+    void testCase_PositioningOnLayoutChange()
+    {
+        QQuickItem *root = loadTest("PositioningOnLayoutChange.qml");
+        QVERIFY(root);
+
+        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layoutManager"));
+        QVERIFY(layouts);
+
+        QSignalSpy spy(layouts, SIGNAL(currentLayoutChanged()));
+        root->setWidth(root->height() - 10);
+        QEXPECT_FAIL(0, "Layout change should not happen when component is not defined", Continue);
+        QCOMPARE(spy.count(), 1);
+
+        spy.clear();
+        root->setWidth(root->height() + 10);
+        QCOMPARE(spy.count(), 1);
+    }
+
 };
 
 QTEST_MAIN(tst_Layouts)
