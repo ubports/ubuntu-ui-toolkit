@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (0.1.46daily13.06.20-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Replace ToolbarActions by ToolbarItems and use ActionItem as a
+    visual representation of Actions. (LP: #1177123)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 550
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 20 Jun 2013 04:01:27 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.19-0ubuntu1) saucy; urgency=low
 
   [ Sebastien Bacher ]
