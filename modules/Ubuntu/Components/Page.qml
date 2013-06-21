@@ -166,7 +166,7 @@ PageTreeNode {
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
                 var direction = object.flickableDirection;
-                if ( (direction === Flickable.AutoFlickDirection && (object.contentHeight !== object.height))
+                if ( (direction === Flickable.AutoFlickDirection) // && (object.contentHeight !== object.height))
                         || direction === Flickable.VerticalFlick
                         || direction === Flickable.HorizontalAndVerticalFlick) {
                     return true;
