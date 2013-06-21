@@ -38,7 +38,6 @@ Item {
     }
     y: 0
 
-    opacity: 0.5
     Behavior on y {
         enabled: !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
