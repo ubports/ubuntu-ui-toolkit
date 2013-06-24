@@ -81,6 +81,7 @@
   \li \l {Layouts - Changing the order}{Changing the order}
   \li \l {Layouts - Lay out a single item differently from others}{Lay out a single item differently from others}
   \li \l {Layouts - Hiding elements, showing more}{Hiding elements, showing more}
+  \li \l {Layouts - Overlay items in an item host}{Overlay items in an item host}
   \li \l {Layouts - Defining more layouts for different form factors}{Defining more layouts for different form factors}
   \endlist
 
@@ -252,7 +253,7 @@
 /*!
   \page ubuntu-layouts5.html
   \title Layouts - Hiding elements, showing more
-  \nextpage Layouts - Defining more layouts for different form factors
+  \nextpage Layouts - Overlay items in an item host
   Till this point we know how to define a layout block, what is the default layout, how to
   create layout, how to define the container and how to define the hosted elements and how
   to define item hosts to lay out individual items.
@@ -283,7 +284,18 @@
  */
 
 /*!
-  \page ubuntu-layouts8.html
+  \page ubuntu-layouts6.html
+  \title Layouts - Overlay items in an item host
+  \nextpage Layouts - Defining more layouts for different form factors
+  There is one more thing you can do with ItemLayout container, which is to define overlay items
+  for certain hosted items on certain layouts. If an ItemLayout has child elements defined, the
+  hosted item will be stacked as topmost element, so all the child elements declared in ItemLayout
+  will be rendered as overlay on top of the hosted item.
+  \image layout7.png
+  \snippet layouts/layout7.qml overlay layout
+ */
+/*!
+  \page ubuntu-layouts7.html
   \title Layouts - Defining more layouts for different form factors
   As mentioned, with Layouts we can achieve to have a single code base supporting different form
   factors. The following example illustrates how to support different layouts with the same code
