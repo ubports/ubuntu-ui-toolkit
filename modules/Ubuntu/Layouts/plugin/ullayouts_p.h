@@ -32,6 +32,15 @@ public:
 
     ULLayoutsPrivate(ULLayouts *qq);
 
+    void validateConditionalLayouts();
+    void getLaidOutItems();
+    void updateLayout();
+
+protected: // QQmlIncubator stuff
+    void setInitialState(QObject *object);
+    void statusChanged(Status status);
+
+private:
     ULLayouts *q_ptr;
     QList<ULConditionalLayout*> layouts;
     ChangeList changes;
@@ -42,21 +51,12 @@ public:
     int currentLayoutIndex;
     bool ready:1;
 
-    // callbacks for the "layouts" QQmlListProperty of LayoutManager
+    // callbacks for the "layouts" QQmlListProperty of ULLayouts
     static void append_layout(QQmlListProperty<ULConditionalLayout>*, ULConditionalLayout*);
     static int count_layouts(QQmlListProperty<ULConditionalLayout>*);
     static ULConditionalLayout *at_layout(QQmlListProperty<ULConditionalLayout>*, int);
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
-    void validateConditionalLayouts();
-    void getLaidOutItems();
-    void updateLayout();
-
-protected: // QQmlIncubator stuff
-    void setInitialState(QObject *object);
-    void statusChanged(Status status);
-
-private:
     void reLayout();
     void hideExcludedItems();
     void reparentItems();

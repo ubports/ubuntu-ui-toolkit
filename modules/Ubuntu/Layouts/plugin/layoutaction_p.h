@@ -43,7 +43,7 @@ public:
     void reset();
     void revert(bool reset = false);
 
-public: // members
+    // members
     Type type;
     QQmlProperty property;
     QQmlAbstractBinding *fromBinding;

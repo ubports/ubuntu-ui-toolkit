@@ -30,7 +30,7 @@ class ULLayoutsAttached : public QObject
 public:
     explicit ULLayoutsAttached(QObject *parent = 0);
 
-public: //getter/setter
+    //getter/setter
     QString item() const;
     void setItem(const QString &name);
 
@@ -62,12 +62,11 @@ public:
 
     static ULLayoutsAttached * qmlAttachedProperties(QObject *owner);
 
-Q_SIGNALS:
-    void currentLayoutChanged();
-
-public:
     QString currentLayout() const;
     QList<ULConditionalLayout*> layoutList();
+
+Q_SIGNALS:
+    void currentLayoutChanged();
 
 protected:
     void componentComplete();
@@ -75,7 +74,6 @@ protected:
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
 
-private:
     friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)
     QScopedPointer<ULLayoutsPrivate> d_ptr;
