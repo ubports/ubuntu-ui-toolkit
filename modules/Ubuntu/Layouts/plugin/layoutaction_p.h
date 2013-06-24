@@ -119,7 +119,12 @@ protected:
 class ParentChange : public PropertyChange
 {
 public:
-    ParentChange(QQuickItem *item, QQuickItem *targetParent);
+    ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild);
+
+    void execute();
+private:
+    QQuickItem *newParent;
+    bool topmostChild;
 };
 
 

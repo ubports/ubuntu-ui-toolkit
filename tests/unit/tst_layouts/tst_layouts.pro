@@ -18,4 +18,5 @@ OTHER_FILES += \
     SizedDefaultLayout.qml \
     CurrentLayoutChange.qml \
     PositioningOnLayoutChange.qml \
-    LaidOutItemsOutsideOfLayout.qml
+    LaidOutItemsOutsideOfLayout.qml \
+    OverlaidInItemLayout.qml

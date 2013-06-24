@@ -356,6 +356,20 @@ private Q_SLOTS:
         QVERIFY(!marker->isValid());
     }
 
+    void testCase_OverlaidInItemLayout()
+    {
+        QQuickItem *root = loadTest("OverlaidInItemLayout.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layout"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "hostedItem"));
+        QVERIFY(item);
+
+        QCOMPARE(layout->childItems()[0], item);
+    }
+
 };
 
 QTEST_MAIN(tst_Layouts)

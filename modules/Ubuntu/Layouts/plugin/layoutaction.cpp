@@ -243,9 +243,25 @@ void ReparentChange::saveState()
  * ParentChange
  * Normal priority change, a PropertyChange reparenting an item to the target.
  */
-ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent)
+ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild)
     : PropertyChange(item, "parent", qVariantFromValue(targetParent), Normal)
+    , newParent(targetParent)
+    , topmostChild(topmostChild)
 {
+}
+
+void ParentChange::execute()
+{
+    // get child items before reparenting
+    QList<QQuickItem*> items = newParent->childItems();
+
+    PropertyChange::execute();
+
+    if (topmostChild && (items.count() > 0)) {
+        // move the hosted item as topmost child
+        QQuickItem *item = static_cast<QQuickItem*>(action.property.object());
+        item->stackBefore(items[0]);
+    }
 }
 
 /******************************************************************************
