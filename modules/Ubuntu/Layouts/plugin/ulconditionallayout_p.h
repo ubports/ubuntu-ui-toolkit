@@ -15,6 +15,7 @@
  *
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
+
 #ifndef ULCONDITIONALLAYOUT_P_H
 #define ULCONDITIONALLAYOUT_P_H
 
