@@ -9,8 +9,11 @@ UNRELEASED
 
 API Changes
 ***********
-
+* ADDED IN OrientationHelper: property alias rotating
+* ADDED IN OrientationHelper: property alias __orientationHelper
+* ADDED IN OrientationHelper: property bool transitionEnabled
 * DEPRECATED IN QuickUtils: property Item rootObject
+* CHANGED IN OrientationHelper: property int __orientationHelper TO property int orientationHelper
 * CHANGED IN Toolbar: property bool active TO property bool opened
 * CHANGED IN Toolbar: property bool lock TO property bool locked
 * CHANGED IN ToolbarActions: property bool active TO property bool opened
@@ -19,15 +22,21 @@ API Changes
 * DEPRECATED IN Toolbar: property bool lock
 * DEPRECATED IN ToolbarActions: property bool active
 * DEPRECATED IN ToolbarActions: property bool lock
-* CHANGED IN Page: property Header header to property Header __propagated.header
-* CHANGED IN Page: property Toolbar toolbar to property Toolbar __propagated.toolbar
-* CHANGED IN MainView: property Header header to property Header __propagated.header
-* CHANGED IN MainView: property Toolbar toolbar to property Toolbar __propagated.toolbar
+* CHANGED IN Page: property Header header TO property Header __propagated.header
+* CHANGED IN Page: property Toolbar toolbar TO property Toolbar __propagated.toolbar
+* CHANGED IN MainView: property Header header TO property Header __propagated.header
+* CHANGED IN MainView: property Toolbar toolbar TO property Toolbar __propagated.toolbar
 * DEPRECATED IN Page: property Header header
 * DEPRECATED IN Page: property Toolbar toolbar
 * DEPRECATED IN MainView: property Header header
 * DEPRECATED IN Page: property Toolbar toolbar
 * REMOVED in MainView: property QtObject __hud 
+* CHANGED in ToolbarActions: INHERIT Item INSTEAD OF ActionList
+* CHANGED in Page: property ToolbarActions tools TO property Item tools
+* CHANGED IN Toolbar: property ToolbarActions tools TO property Item tools
+* DEPRECATED IN Action: property bool visible
+* DEPRECATED IN Action: property Item itemHint
+* DEPRECATED: ToolbarActions component (use ToolbarItems instead)
 
 Compatibility Breaks
 ********************

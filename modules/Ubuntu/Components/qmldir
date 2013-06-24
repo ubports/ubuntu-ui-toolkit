@@ -1,8 +1,11 @@
 module Ubuntu.Components
 plugin UbuntuComponents
 Action 0.1 Action.qml
+ActionItem 0.1 ActionItem.qml
 ActionList 0.1 ActionList.qml
 ToolbarActions 0.1 ToolbarActions.qml
+ToolbarItems 0.1 ToolbarItems.qml
+ToolbarButton 0.1 ToolbarButton.qml
 MainView 0.1 MainView.qml
 Button 0.1 Button.qml
 Panel 0.1 Panel.qml

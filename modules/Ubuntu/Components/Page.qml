@@ -45,12 +45,16 @@ import QtQuick 2.0
                     text: "Hello world!"
                 }
 
-                tools: ToolbarActions {
-                    Action {
-                        text: "one"
-                    }
-                    Action {
-                        text: "two"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        action: Action {
+                            text: "one"
+                        }
+                     }
+                    ToolbarButton {
+                        action: Action {
+                            text: "two"
+                        }
                     }
                 }
             }
@@ -74,9 +78,10 @@ PageTreeNode {
     property string title
 
     /*!
-      The list of actions associated with this Page.
+      The toolbar items associated with this Page.
+      It is recommended to use \l ToolbarItems to specify the tools, but any Item is allowed here.
      */
-    property ToolbarActions tools: ToolbarActions { }
+    property Item tools: ToolbarItems { }
 
     /*!
       Optional flickable that controls the header. This property
@@ -109,7 +114,9 @@ PageTreeNode {
                     internal.header.flickable = page.flickable;
                 }
                 if (tools) {
-                    tools.__pageStack = page.pageStack;
+                    // TODO: remove __pageStack when ToolbarActions becomes deprecated
+                    if (tools.hasOwnProperty("__pageStack")) tools.__pageStack = page.pageStack;
+                    if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
                 }
                 if (internal.toolbar) {
                     internal.toolbar.tools = page.tools;

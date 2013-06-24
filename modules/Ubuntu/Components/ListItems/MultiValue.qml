@@ -50,7 +50,6 @@ Base {
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
-    property alias text: label.text
 
     /*!
       \preliminary
@@ -73,6 +72,7 @@ Base {
                 left: parent.left
                 right: parent.right
             }
+            text: multiValueListItem.text
         }
         LabelVisual {
             id: valueLabel
