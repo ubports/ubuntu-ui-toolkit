@@ -183,8 +183,8 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
            .addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem))
            .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
            // backup size
-           .addChange(new PropertyBackup(item, "width", QVariant()))
-           .addChange(new PropertyBackup(item, "height", QVariant()))
+           .addChange(new PropertyBackup(item, "width"))
+           .addChange(new PropertyBackup(item, "height"))
            // break and backup anchors
            .addChange(new AnchorBackup(item));
 

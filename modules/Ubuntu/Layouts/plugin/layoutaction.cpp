@@ -215,8 +215,8 @@ void PropertyChange::revert()
 /******************************************************************************
  * PropertyBackup
  */
-PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property, const QVariant &value)
-    : PropertyChange(target, property, value, High)
+PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property)
+    : PropertyChange(target, property, QVariant(), High)
 {
 }
 

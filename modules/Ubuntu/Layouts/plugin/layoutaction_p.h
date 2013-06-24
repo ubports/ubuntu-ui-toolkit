@@ -100,7 +100,7 @@ protected:
 class PropertyBackup: public PropertyChange
 {
 public:
-    PropertyBackup(QQuickItem *target, const QString &property, const QVariant &value);
+    PropertyBackup(QQuickItem *target, const QString &property);
 };
 
 
