@@ -1,8 +1,10 @@
 project = UbuntuUserInterfaceToolkit
 url = http://developer.ubuntu.com/api/ubuntu-12.10/qml/mobile/
 description = Ubuntu User Interface Toolkit Documentation
-sourcedirs = ../modules/Ubuntu/Components ../modules/Ubuntu/Layouts
-headerdirs = ../modules/Ubuntu/Components/plugin ../modules/Ubuntu/Layouts/plugin
+sourcedirs = ../modules/Ubuntu/Components
+headerdirs = ../modules/Ubuntu/Components/plugin
+sourcedirs += ../modules/Ubuntu/Layouts
+headerdirs += ../modules/Ubuntu/Layouts/plugin
 exampledirs += snippets
 imagedirs = images
 sources.fileextensions = "*.qml *.qdoc *.cpp"
