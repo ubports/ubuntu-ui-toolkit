@@ -26,12 +26,12 @@
 #include <QtQuick/private/qquickanchors_p.h>
 
 /******************************************************************************
- * LayoutAction
+ * PropertyAction
  * Saves property state, applies target values or bindings and restores property
  * saved values. Distinguishes Binding and Value types, which is relevant when
  * the property is restored to its defaults.
  */
-LayoutAction::LayoutAction()
+PropertyAction::PropertyAction()
     : type(Value)
     , fromBinding(0)
     , toValueSet(false)
@@ -39,7 +39,7 @@ LayoutAction::LayoutAction()
     , deleteToBinding(false)
 {}
 
-LayoutAction::LayoutAction(const LayoutAction &other)
+PropertyAction::PropertyAction(const PropertyAction &other)
     : type(other.type)
     , property(other.property)
     , fromBinding(other.fromBinding)
@@ -52,7 +52,7 @@ LayoutAction::LayoutAction(const LayoutAction &other)
 {
 }
 
-LayoutAction::LayoutAction(QObject *item, const QString &name, Type type)
+PropertyAction::PropertyAction(QObject *item, const QString &name, Type type)
     : type(type)
     , property(item, name, qmlContext(item))
     , fromBinding(QQmlPropertyPrivate::binding(property))
@@ -63,7 +63,7 @@ LayoutAction::LayoutAction(QObject *item, const QString &name, Type type)
 {
 }
 
-LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type)
+PropertyAction::PropertyAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type)
     : type(type)
     , property(item, name, context)
     , fromBinding(QQmlPropertyPrivate::binding(property))
@@ -78,7 +78,7 @@ LayoutAction::LayoutAction(QObject *item, const QString &name, QQmlContext *cont
 /*
  * Set target value.
  */
-void LayoutAction::setValue(const QVariant &value)
+void PropertyAction::setValue(const QVariant &value)
 {
     toValue = value;
     toValueSet = true;
@@ -87,7 +87,7 @@ void LayoutAction::setValue(const QVariant &value)
 /*
  * Set target binding and whether it can be deleted upon reset.
  */
-void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
+void PropertyAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
 {
     toBinding = QQmlAbstractBinding::getPointer(binding);
     deleteToBinding = deletable;
@@ -98,7 +98,7 @@ void LayoutAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable
  * Apply property action by setting the target binding (toBinding) or by setting the
  * target value if the value is set.
  */
-void LayoutAction::apply()
+void PropertyAction::apply()
 {
     if (!toBinding.isNull()) {
         QQmlAbstractBinding *binding = QQmlPropertyPrivate::setBinding(property, toBinding.data());
@@ -120,7 +120,7 @@ void LayoutAction::apply()
 /*
  * Resets the hosted property and removes its bindings.
  */
-void LayoutAction::reset()
+void PropertyAction::reset()
 {
     property.reset();
     if (fromBinding) {
@@ -137,7 +137,7 @@ void LayoutAction::reset()
  * Reverts the property to its defaults. Restores original bindings and in case
  * of Value types restores their original values.
  */
-void LayoutAction::revert(bool reset)
+void PropertyAction::revert(bool reset)
 {
     if (reset) {
         property.reset();
@@ -171,7 +171,7 @@ PropertyChange::PropertyChange(Priority priority)
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
     : actionPriority(priority)
     , resetOnRevert(true)
-    , action(target, property, LayoutAction::Value)
+    , action(target, property, PropertyAction::Value)
 {
     if (value.isValid()) {
         action.setValue(value);
@@ -181,7 +181,7 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority)
     : actionPriority(priority)
     , resetOnRevert(true)
-    , action(target, property, LayoutAction::Value)
+    , action(target, property, PropertyAction::Value)
 {
     if (!script.isEmpty()) {
         bool ok = false;
@@ -201,7 +201,7 @@ void PropertyChange::saveState()
 {
 }
 
-void PropertyChange::execute()
+void PropertyChange::apply()
 {
     action.apply();
 }
@@ -227,7 +227,7 @@ ReparentChange::ReparentChange(QQuickItem *target, const QString &property, QQui
     : PropertyChange(target, property, QVariant(), Normal)
     , sourceProperty(source, property, qmlContext(source))
 {
-    action.type = LayoutAction::Binding;
+    action.type = PropertyAction::Binding;
 }
 
 void ReparentChange::saveState()
@@ -250,12 +250,12 @@ ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topm
 {
 }
 
-void ParentChange::execute()
+void ParentChange::apply()
 {
     // get child items before reparenting
     QList<QQuickItem*> items = newParent->childItems();
 
-    PropertyChange::execute();
+    PropertyChange::apply();
 
     if (topmostChild && (items.count() > 0)) {
         // move the hosted item as topmost child
@@ -309,22 +309,22 @@ AnchorBackup::AnchorBackup(QQuickItem *item)
     , anchorsObject(action.fromValue.value<QQuickAnchors*>())
     , used(anchorsObject->usedAnchors())
 {
-    actions << LayoutAction(item, "anchors.left")
-            << LayoutAction(item, "anchors.right")
-            << LayoutAction(item, "anchors.top")
-            << LayoutAction(item, "anchors.bottom")
-            << LayoutAction(item, "anchors.horizontalCenter")
-            << LayoutAction(item, "anchors.verticalCenter")
-            << LayoutAction(item, "anchors.baseline")
+    actions << PropertyAction(item, "anchors.left")
+            << PropertyAction(item, "anchors.right")
+            << PropertyAction(item, "anchors.top")
+            << PropertyAction(item, "anchors.bottom")
+            << PropertyAction(item, "anchors.horizontalCenter")
+            << PropertyAction(item, "anchors.verticalCenter")
+            << PropertyAction(item, "anchors.baseline")
 
-            << LayoutAction(item, "anchors.margins", LayoutAction::Value)
-            << LayoutAction(item, "anchors.leftMargin", LayoutAction::Value)
-            << LayoutAction(item, "anchors.rightMargin", LayoutAction::Value)
-            << LayoutAction(item, "anchors.topMargin", LayoutAction::Value)
-            << LayoutAction(item, "anchors.bottomMargin", LayoutAction::Value)
-            << LayoutAction(item, "anchors.horizontalCenterOffset", LayoutAction::Value)
-            << LayoutAction(item, "anchors.verticalCenterOffset", LayoutAction::Value)
-            << LayoutAction(item, "anchors.baselineOffset", LayoutAction::Value);
+            << PropertyAction(item, "anchors.margins", PropertyAction::Value)
+            << PropertyAction(item, "anchors.leftMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.rightMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.topMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.bottomMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.horizontalCenterOffset", PropertyAction::Value)
+            << PropertyAction(item, "anchors.verticalCenterOffset", PropertyAction::Value)
+            << PropertyAction(item, "anchors.baselineOffset", PropertyAction::Value);
 }
 
 void AnchorBackup::saveState()
@@ -333,7 +333,7 @@ void AnchorBackup::saveState()
     // only its properties
 }
 
-void AnchorBackup::execute()
+void AnchorBackup::apply()
 {
     // reset all anchors
     if (!used) {
@@ -370,7 +370,7 @@ void ChangeList::apply()
 {
     QList<PropertyChange*> list = unifiedChanges();
     for (int i = 0; i < list.count(); i++) {
-        list[i]->execute();
+        list[i]->apply();
     }
 }
 

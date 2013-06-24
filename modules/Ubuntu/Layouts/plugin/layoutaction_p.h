@@ -28,14 +28,14 @@
 #include <QtQuick/private/qquickanchors_p_p.h>
 #include <QtQuick/private/qquickstate_p.h>
 
-class LayoutAction
+class PropertyAction
 {
 public:
     enum Type {Binding, Value};
-    LayoutAction(const LayoutAction &other);
-    LayoutAction();
-    LayoutAction(QObject *item, const QString &name, Type type = Binding);
-    LayoutAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Value);
+    PropertyAction(const PropertyAction &other);
+    PropertyAction();
+    PropertyAction(QObject *item, const QString &name, Type type = Binding);
+    PropertyAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type = Value);
 
     void setValue(const QVariant &value);
     void setTargetBinding(QQmlAbstractBinding *binding, bool deletable);
@@ -73,7 +73,7 @@ public:
     virtual ~PropertyChange() {}
 
     virtual void saveState();
-    virtual void execute();
+    virtual void apply();
     virtual void revert();
 
     inline Priority priority() { return actionPriority; }
@@ -81,7 +81,7 @@ public:
     {
         return action.property;
     }
-    inline LayoutAction &actionObject()
+    inline PropertyAction &actionObject()
     {
         return action;
     }
@@ -93,7 +93,7 @@ public:
 protected:
     Priority actionPriority;
     bool resetOnRevert;
-    LayoutAction action;
+    PropertyAction action;
 };
 
 
@@ -121,7 +121,7 @@ class ParentChange : public PropertyChange
 public:
     ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild);
 
-    void execute();
+    void apply();
 private:
     QQuickItem *newParent;
     bool topmostChild;
@@ -132,7 +132,7 @@ class ItemStackBackup : public PropertyChange
 {
 public:
     ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem);
-    void execute() {}
+    void apply() {}
     void revert();
 
 protected:
@@ -152,7 +152,7 @@ class AnchorBackup : public PropertyChange
 public:
     AnchorBackup(QQuickItem *item);
 
-    void execute();
+    void apply();
     void revert();
 protected:
     virtual void saveState();
@@ -186,7 +186,7 @@ protected:
 
     QQuickAnchors *anchorsObject;
     QQuickAnchors::Anchors used;
-    QList<LayoutAction> actions;
+    QList<PropertyAction> actions;
 };
 
 
