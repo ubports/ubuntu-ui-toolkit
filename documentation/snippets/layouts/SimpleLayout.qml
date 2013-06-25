@@ -147,7 +147,7 @@ Item {
 
         //![default layout]
         Button {
-            id: red
+            id: redButton
             text: "Item #1"
             color: "red"
             Layouts.item: "red"
@@ -159,13 +159,13 @@ Item {
             width: units.gu(15)
         }
         Button {
-            id: green
+            id: greenButton
             text: "Item #2"
             color: "green"
             Layouts.item: "green"
             anchors {
                 top: parent.top
-                left: red.right
+                left: redButton.right
                 right: parent.right
             }
             height: units.gu(10)
@@ -175,19 +175,19 @@ Item {
             text: "Non-laid out"
             color: "brown"
             anchors {
-                top: green.bottom
-                left: red.right
+                top: greenButton.bottom
+                left: redButton.right
                 right: parent.right
                 bottom: button3.top
             }
         }
         Button {
-            id: blue
+            id: blueButton
             text: "Item #3"
             color: "blue"
             Layouts.item: "blue"
             anchors{
-                left: red.right
+                left: redButton.right
                 right: parent.right
                 bottom: parent.bottom
             }

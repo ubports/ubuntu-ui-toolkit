@@ -82,7 +82,7 @@ Item {
         ]
         //![default layout]
         Button {
-            id: button1
+            id: redButton
             text: "Item #1"
             color: "red"
             Layouts.item: "red"
@@ -94,24 +94,24 @@ Item {
             width: units.gu(15)
         }
         Button {
-            id: button2
+            id: greenButton
             text: "Item #2"
             color: "green"
             Layouts.item: "green"
             anchors {
                 top: parent.top
-                left: button1.right
+                left: redButton.right
                 right: parent.right
             }
             height: units.gu(10)
         }
         Button {
-            id: button3
+            id: blueButton
             text: "Item #3"
             color: "blue"
             Layouts.item: "blue"
             anchors{
-                left: button1.right
+                left: redButton.right
                 right: parent.right
                 bottom: parent.bottom
             }
