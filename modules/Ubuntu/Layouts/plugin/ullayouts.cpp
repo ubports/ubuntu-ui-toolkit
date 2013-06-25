@@ -78,7 +78,7 @@ void ULLayoutsPrivate::setInitialState(QObject *object)
     // set parent
     object->setParent(q);
     QQuickItem *item = static_cast<QQuickItem*>(object);
-    item->setParentItem(q);
+    // set disabled and invisible, and set its parent as last action
     item->setVisible(false);
     item->setEnabled(false);
 }
@@ -103,7 +103,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
 
         //reparent components to be laid out
         reparentItems();
-        // enable and show layout
+        // set parent item, then enable and show layout
+        changes.addChange(new ParentChange(currentLayoutItem, q, false));
         changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true));
         changes.addChange(new PropertyChange(currentLayoutItem, "visible", true));
         // apply changes
