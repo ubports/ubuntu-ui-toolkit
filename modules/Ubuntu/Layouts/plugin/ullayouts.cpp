@@ -115,7 +115,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
         Q_EMIT q->currentLayoutChanged();
     } else if (status == Error) {
         Q_Q(ULLayouts);
-        qmlInfo(q, errors());
+        error(q, errors());
     }
 }
 
@@ -165,15 +165,15 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 {
     QString itemName = fragment->item();
     if (itemName.isEmpty()) {
-        qmlInfo(fragment) << "Warning: item not specified for ItemLayout";
+        warning(fragment, "item not specified for ItemLayout");
         return;
     }
 
     QQuickItem *item = map.value(itemName);
     if (!item) {
-        qmlInfo(fragment) << "Warning: item \"" << itemName
-                          << "\" not specified or has been specified for layout by "
-                             " more than one active ItemLayout";
+        warning(fragment, "Warning: item \"" + itemName
+                          + "\" not specified or has been specified for layout by "
+                             " more than one active ItemLayout");
         return;
     }
 
@@ -204,24 +204,22 @@ void ULLayoutsPrivate::validateConditionalLayouts()
     for (int i = 0; i < layouts.count(); i++) {
         ULConditionalLayout *layout = layouts[i];
         if (!layout) {
-            qmlInfo(q) << "Error in layout definitions!";
+            error(q, "Error in layout definitions!");
             continue;
         }
 
         if (layout->layoutName().isEmpty()) {
-            qmlInfo(layout) << "Warning: no name specified for layout. "
-                               "ConditionalLayout cannot be activated without name.";
+            warning(layout, "No name specified for layout. ConditionalLayout cannot be activated without name.");
             continue;
         }
         if (names.contains(layout->layoutName())) {
-            qmlInfo(layout) << "Warning: layout name \"" << layout->layoutName()
-                            << "\" not unique. Layout may not be activable.";
+            warning(layout, "layout name \"" + layout->layoutName()
+                            + "\" not unique. Layout may not behave as expected.");
         }
 
         if (!layout->layout()) {
-            qmlInfo(layout) << "Error: no container specified for layout"
-                            << " \"" << layout->layoutName() << "\". "
-                            << "ConditionalLayout cannot be activated without a container.";
+            error(layout, "no container specified for layout \"" + layout->layoutName() +
+                           "\". ConditionalLayout cannot be activated without a container.");
             continue;
         }
 
@@ -243,9 +241,11 @@ void ULLayoutsPrivate::getLaidOutItems()
         if (marker && !marker->item().isEmpty()) {
             itemsToLayout.insert(marker->item(), item);
         } else {
+            // the item is not marked to be laid out but one of its parents
+            // can be, therefore check
+            // check if the item's  parent is included in the layout
             QQuickItem *pl = item->parentItem();
             marker = 0;
-            // check if its parent is included in the layout
             while (pl) {
                 marker = qobject_cast<ULLayoutsAttached*>(
                             qmlAttachedPropertiesObject<ULLayouts>(pl, false));
@@ -301,9 +301,8 @@ void ULLayoutsPrivate::updateLayout()
     for (int i = 0; i < layouts.count(); i++) {
         ULConditionalLayout *layout = layouts[i];
         if (!layout->layout()) {
-            qmlInfo(layout) << "Cannot activate containerless layout "
-                            << "\"" << layout->layoutName() << "\". "
-                            << "Falling back to default.";
+            warning(layout, "Cannot activate layout \"" + layout->layoutName() +
+                    "\" with no container specified. Falling back to default layout.");
             break;
         }
         if (!layout->layoutName().isEmpty() && layout->when() && layout->when()->evaluate().toBool()) {
@@ -329,14 +328,37 @@ void ULLayoutsPrivate::updateLayout()
     }
 }
 
+void ULLayoutsPrivate::error(QObject *item, const QString &message)
+{
+    qmlInfo(item) << "ERROR: " << message;
+    QQmlEngine *engine = qmlEngine(item);
+    if (engine) {
+        engine->quit();
+    }
+}
+
+void ULLayoutsPrivate::error(QObject *item, const QList<QQmlError> &errors)
+{
+    qmlInfo(item, errors);
+    QQmlEngine *engine = qmlEngine(item);
+    if (engine) {
+        engine->quit();
+    }
+}
+
+void ULLayoutsPrivate::warning(QObject *item, const QString &message)
+{
+    qmlInfo(item) << "WARNING: " << message;
+}
+
 
 /*!
  * \qmltype Layouts
  * \instantiates ULLayouts
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief Layouts defines the layouts for different form factors and embeds the
- * components to be laid out.
+ * \brief The Layouts component allows one to specify multiple different layouts for a
+ * fixed set of Items, and applies the desired layout to those Items.
  *
  * Layouts is a layout block component incorporating layout definitions and
  * components to lay out. The layouts are defined in the \l layouts property, which
@@ -371,7 +393,7 @@ void ULLayoutsPrivate::updateLayout()
  * }
  * \endqml
  *
- * Components that require layouting must be declared as children of a Layouts compponent,
+ * The components to be laid out must be declared as children of a Layouts compponent,
  * each having Layouts.item set to a unique string.
  *
  * \qml
@@ -414,8 +436,8 @@ void ULLayoutsPrivate::updateLayout()
  * }
  * \endqml
  *
- * Components listed as children of Layouts are considered to form the \a default
- * layout.
+ * The layout of the children of Layouts is considered the default layout. So in
+ * the above example, the buttons arranged in a row is the default layout.
  *
  * Layouts defined by ConditionalLayout are created and activated when at least
  * one of the layout's condition is evaluated to true. In which case components

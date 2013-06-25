@@ -48,7 +48,7 @@ void ULLayoutsAttached::validateAttachedProperties()
         }
         pl = pl->parentItem();
     }
-    qmlInfo(parent()) << "Item is not a child of a Layouts component";
+    ULLayoutsPrivate::warning(parent(), "Item is not a child of a Layouts component");
     m_valid = false;
 }
 

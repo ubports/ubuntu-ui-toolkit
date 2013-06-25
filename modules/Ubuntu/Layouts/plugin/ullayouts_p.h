@@ -37,6 +37,10 @@ public:
     void getLaidOutItems();
     void updateLayout();
 
+    static void error(QObject *item, const QString &message);
+    static void error(QObject *item, const QList<QQmlError> &errors);
+    static void warning(QObject *item, const QString &message);
+
 protected: // QQmlIncubator stuff
     void setInitialState(QObject *object);
     void statusChanged(Status status);
