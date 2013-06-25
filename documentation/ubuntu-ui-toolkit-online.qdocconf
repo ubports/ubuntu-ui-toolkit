@@ -5,6 +5,8 @@ include(ubuntu-appdev-site-footer.qdocconf)
 HTML.nobreadcrumbs = "false"
 
 HTML.headerstyles = \
+  "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js\"></script>\n" \
+  "<script type=\"text/javascript\" src=\"style/breadcrumbs.js\"></script>\n" \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu:400,400italic\">\n" \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=Ubuntu+Mono:400\">\n" \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/reset.css\" />\n" \

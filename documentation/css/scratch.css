@@ -67,9 +67,6 @@ table, pre {
 	float: left;
 	margin-right: 8px;
 }
-.breadcrumb li:first-child {
-	float:right;
-}
 .breadcrumb a:link,
 .breadcrumb a:visited {
 	color: #AEA79F;
