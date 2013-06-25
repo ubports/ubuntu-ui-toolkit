@@ -154,7 +154,6 @@ Item {
 
         // Don't fade in initial picture, only fade changes
         if (priv.currentImage.source == "") {
-            priv.currentImage.fillMode = fillMode;
             priv.currentImage.source = source;
         } else {
             nextImageFadeIn.stop();
@@ -167,6 +166,10 @@ Item {
                 priv.swapImages();
             }
         }
+    }
+
+    onFillModeChanged: {
+        priv.currentImage.fillMode = fillMode
     }
 
     Connections {
