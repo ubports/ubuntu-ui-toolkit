@@ -178,7 +178,7 @@ Item {
                 top: greenButton.bottom
                 left: redButton.right
                 right: parent.right
-                bottom: button3.top
+                bottom: blueButton.top
             }
         }
         Button {
