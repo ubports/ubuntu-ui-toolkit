@@ -104,8 +104,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
         //reparent components to be laid out
         reparentItems();
         // enable and show layout
-        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true))
-               .addChange(new PropertyChange(currentLayoutItem, "visible", true));
+        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true));
+        changes.addChange(new PropertyChange(currentLayoutItem, "visible", true));
         // apply changes
         changes.apply();
         // clear previous layout
@@ -122,8 +122,8 @@ void ULLayoutsPrivate::statusChanged(Status status)
 void ULLayoutsPrivate::hideExcludedItems()
 {
     for (int i = 0; i < excludedFromLayout.count(); i++) {
-        changes.addChange(new PropertyChange(excludedFromLayout[i], "visible", false))
-               .addChange(new PropertyChange(excludedFromLayout[i], "enabled", false));
+        changes.addChange(new PropertyChange(excludedFromLayout[i], "visible", false));
+        changes.addChange(new PropertyChange(excludedFromLayout[i], "enabled", false));
     }
 }
 
@@ -153,8 +153,8 @@ void ULLayoutsPrivate::reparentItems()
     LaidOutItemsMapIterator i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        changes.addChange(new PropertyChange(i.value(), "visible", false))
-               .addChange(new PropertyChange(i.value(), "enabled", false));
+        changes.addChange(new PropertyChange(i.value(), "visible", false));
+        changes.addChange(new PropertyChange(i.value(), "enabled", false));
     }
 }
 
@@ -177,14 +177,14 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
     }
 
     // the component fills the parent
-    changes.addChange(new ParentChange(item, fragment, true))
-           .addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem))
-           .addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)))
+    changes.addChange(new ParentChange(item, fragment, true));
+    changes.addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem));
+    changes.addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)));
            // backup size
-           .addChange(new PropertyBackup(item, "width"))
-           .addChange(new PropertyBackup(item, "height"))
+    changes.addChange(new PropertyBackup(item, "width"));
+    changes.addChange(new PropertyBackup(item, "height"));
            // break and backup anchors
-           .addChange(new AnchorBackup(item));
+    changes.addChange(new AnchorBackup(item));
 
     // remove from unused ones
     map.remove(itemName);
