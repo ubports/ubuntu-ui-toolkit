@@ -335,11 +335,11 @@ void ULLayoutsPrivate::updateLayout()
  * \instantiates ULLayouts
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief Layouts component defines the layouts for different form factors and
- * embeds the components to be laid out.
+ * \brief Layouts defines the layouts for different form factors and embeds the
+ * components to be laid out.
  *
  * Layouts is a layout block component incorporating layout definitions and
- * components to lay out. The layouts are defined in layouts property, which
+ * components to lay out. The layouts are defined in the \l layouts property, which
  * is a list of ConditionalLayout components, each declaring a form of arrangement
  * for the components specified to be laid out.
  *
@@ -371,8 +371,8 @@ void ULLayoutsPrivate::updateLayout()
  * }
  * \endqml
  *
- * Components wanted to be laid out must be declared as children of Layouts compponent,
- * each having Layouts.item attached property set to a uniquie string.
+ * Components that require layouting must be declared as children of a Layouts compponent,
+ * each having Layouts.item set to a unique string.
  *
  * \qml
  * Layouts {
@@ -477,8 +477,8 @@ void ULLayoutsPrivate::updateLayout()
  * }
  * \endqml
  *
- * Conditional layouts must be named in order to be activable. These names (strings)
- * should be uniquie within a Layouts item and can be used to identify changes in
+ * Conditional layouts must be named in order to be activatable. These names (strings)
+ * should be unique within a Layouts item and can be used to identify changes in
  * between layouts in scripts, so additional layout specific customization on laid
  * out items can be done. The current layout is presented by the currentLayout
  * property.
