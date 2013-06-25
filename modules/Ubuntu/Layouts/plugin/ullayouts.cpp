@@ -172,7 +172,8 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
     QQuickItem *item = map.value(itemName);
     if (!item) {
         qmlInfo(fragment) << "Warning: item \"" << itemName
-                          << "\" not specified or already laid out";
+                          << "\" not specified or has been specified for layout by "
+                             " more than one active ItemLayout";
         return;
     }
 
