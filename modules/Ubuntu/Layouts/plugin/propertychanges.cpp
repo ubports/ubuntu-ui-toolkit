@@ -1,0 +1,414 @@
+/*
+ * Copyright 2013 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ */
+
+#include "propertychanges_p.h"
+#include "ullayouts_p.h"
+#include "ullayouts.h"
+#include <QtQuick/QQuickItem>
+#include <QtQml/QQmlInfo>
+
+#include <QtQml/private/qqmlcontext_p.h>
+#include <QtQuick/private/qquickanchors_p.h>
+
+/******************************************************************************
+ * PropertyAction
+ * Saves property state, applies target values or bindings and restores property
+ * saved values. Distinguishes Binding and Value types, which is relevant when
+ * the property is restored to its defaults.
+ */
+PropertyAction::PropertyAction()
+    : type(Value)
+    , fromBinding(0)
+    , toValueSet(false)
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{
+}
+
+PropertyAction::PropertyAction(const PropertyAction &other)
+    : type(other.type)
+    , property(other.property)
+    , fromBinding(other.fromBinding)
+    , toBinding(other.toBinding)
+    , fromValue(other.fromValue)
+    , toValue(other.toValue)
+    , toValueSet(other.toValueSet)
+    , deleteFromBinding(other.deleteFromBinding)
+    , deleteToBinding(other.deleteToBinding)
+{
+}
+
+PropertyAction::PropertyAction(QObject *item, const QString &name, Type type)
+    : type(type)
+    , property(item, name, qmlContext(item))
+    , fromBinding(QQmlPropertyPrivate::binding(property))
+    , fromValue(property.read())
+    , toValueSet(false)
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{
+}
+
+PropertyAction::PropertyAction(QObject *item, const QString &name, QQmlContext *context, const QVariant &value, Type type)
+    : type(type)
+    , property(item, name, context)
+    , fromBinding(QQmlPropertyPrivate::binding(property))
+    , fromValue(property.read())
+    , toValue(value)
+    , toValueSet(value.isValid())
+    , deleteFromBinding(false)
+    , deleteToBinding(false)
+{
+}
+
+/*
+ * Set target value.
+ */
+void PropertyAction::setValue(const QVariant &value)
+{
+    toValue = value;
+    toValueSet = true;
+}
+
+/*
+ * Set target binding and whether it can be deleted upon reset.
+ */
+void PropertyAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
+{
+    toBinding = QQmlAbstractBinding::getPointer(binding);
+    deleteToBinding = deletable;
+}
+
+
+/*
+ * Apply property action by setting the target binding (toBinding) or by setting the
+ * target value if the value is set.
+ */
+void PropertyAction::apply()
+{
+    if (!toBinding.isNull()) {
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::setBinding(property, toBinding.data());
+        if (binding != fromBinding || (binding == fromBinding && deleteFromBinding)) {
+            binding->destroy();
+            if (binding == fromBinding) {
+                fromBinding = 0;
+            }
+        }
+    } else if (toValueSet) {
+        if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
+            qmlInfo(property.object()) << "Layouts: updating property \""
+                                      << property.name()
+                                      << "\" failed.";
+        }
+    }
+}
+
+/*
+ * Resets the hosted property and removes its bindings.
+ */
+void PropertyAction::reset()
+{
+    property.reset();
+    if (fromBinding) {
+        QQmlPropertyPrivate::setBinding(property, 0);
+        if (deleteFromBinding) {
+            fromBinding->destroy();
+            fromBinding = 0;
+            deleteFromBinding = false;
+        }
+    }
+}
+
+/*
+ * Reverts the property to its defaults. Restores original bindings and in case
+ * of Value types restores their original values.
+ */
+void PropertyAction::revert(bool reset)
+{
+    if (reset) {
+        property.reset();
+    }
+    if (fromBinding) {
+        QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
+        if (revertedBinding && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
+            revertedBinding->destroy();
+        }
+    } else if (!toBinding.isNull() && QQmlPropertyPrivate::binding(property) == toBinding.data()) {
+        QQmlPropertyPrivate::setBinding(property, 0);
+        if (deleteToBinding) {
+            toBinding.data()->destroy();
+            toBinding.clear();
+            deleteToBinding = false;
+        }
+    } else if (property.isValid() && fromValue.isValid() && (type == Value)) {
+        property.write(fromValue);
+    }
+}
+
+/******************************************************************************
+ * PropertyChange
+ * Default low priority change.
+ */
+PropertyChange::PropertyChange(Priority priority)
+    : actionPriority(priority)
+    , resetOnRevert(true)
+{
+}
+
+PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
+    : actionPriority(priority)
+    , resetOnRevert(true)
+    , action(target, property, PropertyAction::Value)
+{
+    if (value.isValid()) {
+        action.setValue(value);
+    }
+}
+
+PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QQmlScriptString &script, QQmlContext *scriptContext, Priority priority)
+    : actionPriority(priority)
+    , resetOnRevert(true)
+    , action(target, property, PropertyAction::Value)
+{
+    if (!script.isEmpty()) {
+        bool ok = false;
+        qreal value = script.numberLiteral(&ok);
+        if (ok) {
+            action.setValue(value);
+        } else {
+            QQmlBinding *binding = new QQmlBinding(script, target, scriptContext);
+            binding->setTarget(action.property);
+            action.toBinding = QQmlAbstractBinding::getPointer(binding);
+            action.deleteToBinding = true;
+        }
+    }
+}
+
+void PropertyChange::saveState()
+{
+}
+
+void PropertyChange::apply()
+{
+    action.apply();
+}
+
+void PropertyChange::revert()
+{
+    action.revert(resetOnRevert);
+}
+
+
+/******************************************************************************
+ * PropertyBackup
+ */
+PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property)
+    : PropertyChange(target, property, QVariant(), High)
+{
+}
+
+/******************************************************************************
+ * ReparentChange
+ */
+ReparentChange::ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source)
+    : PropertyChange(target, property, QVariant(), Normal)
+    , sourceProperty(source, property, qmlContext(source))
+{
+    action.type = PropertyAction::Binding;
+}
+
+void ReparentChange::saveState()
+{
+    action.toValue = sourceProperty.read();
+    PropertyChange::saveState();
+    if (sourceProperty.isValid()) {
+        action.setTargetBinding(QQmlPropertyPrivate::binding(sourceProperty), false);
+    }
+}
+
+/******************************************************************************
+ * ParentChange
+ * Normal priority change, a PropertyChange reparenting an item to the target.
+ */
+ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild)
+    : PropertyChange(item, "parent", qVariantFromValue(targetParent), Normal)
+    , newParent(targetParent)
+    , topmostChild(topmostChild)
+{
+}
+
+void ParentChange::apply()
+{
+    // get child items before reparenting
+    QList<QQuickItem*> items = newParent->childItems();
+
+    PropertyChange::apply();
+
+    if (topmostChild && (items.count() > 0)) {
+        // move the hosted item as topmost child
+        QQuickItem *item = static_cast<QQuickItem*>(action.property.object());
+        item->stackBefore(items[0]);
+    }
+}
+
+/******************************************************************************
+ * ItemStackBackup
+ * High priority change backing up the item's stack position.
+ */
+ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem)
+    : PropertyChange(High)
+    , target(item)
+    , currentLayout(currentLayoutItem)
+    , previousLayout(previousLayoutItem)
+    , originalStackBefore(0)
+{
+}
+
+void ItemStackBackup::saveState()
+{
+    QQuickItem *rewindParent = target->parentItem();
+    // save original stack position, but detect layout objects!
+    QList<QQuickItem*> children = rewindParent->childItems();
+    for (int ii = 0; ii < children.count() - 1; ++ii) {
+        if (children.at(ii) == target) {
+            originalStackBefore = children.at(ii + 1);
+            if (originalStackBefore == currentLayout || originalStackBefore == previousLayout) {
+                originalStackBefore = 0;
+            }
+            break;
+        }
+    }
+}
+
+void ItemStackBackup::revert()
+{
+    if (originalStackBefore) {
+        target->stackBefore(originalStackBefore);
+    }
+}
+
+/******************************************************************************
+ * AnchorBackup
+ * High priority change backing up item anchors and margins.
+ */
+AnchorBackup::AnchorBackup(QQuickItem *item)
+    : PropertyChange(item, "anchors", QVariant(), High)
+    , anchorsObject(action.fromValue.value<QQuickAnchors*>())
+    , used(anchorsObject->usedAnchors())
+{
+    actions << PropertyAction(item, "anchors.left")
+            << PropertyAction(item, "anchors.right")
+            << PropertyAction(item, "anchors.top")
+            << PropertyAction(item, "anchors.bottom")
+            << PropertyAction(item, "anchors.horizontalCenter")
+            << PropertyAction(item, "anchors.verticalCenter")
+            << PropertyAction(item, "anchors.baseline")
+
+            << PropertyAction(item, "anchors.margins", PropertyAction::Value)
+            << PropertyAction(item, "anchors.leftMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.rightMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.topMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.bottomMargin", PropertyAction::Value)
+            << PropertyAction(item, "anchors.horizontalCenterOffset", PropertyAction::Value)
+            << PropertyAction(item, "anchors.verticalCenterOffset", PropertyAction::Value)
+            << PropertyAction(item, "anchors.baselineOffset", PropertyAction::Value);
+}
+
+void AnchorBackup::saveState()
+{
+    // no need to call superclass' saveState() as we don't touch the anchor property
+    // only its properties
+}
+
+void AnchorBackup::apply()
+{
+    // reset all anchors
+    if (!used) {
+        return;
+    }
+
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].reset();
+    }
+}
+
+void AnchorBackup::revert()
+{
+    // revert all anchors
+    if (!used) {
+        return;
+    }
+
+    for (int i = 0; i < actions.count(); i++) {
+        actions[i].revert(true);
+    }
+}
+
+/******************************************************************************
+ * ChangeList
+ */
+
+ChangeList::~ChangeList()
+{
+    clear();
+}
+
+void ChangeList::apply()
+{
+    QList<PropertyChange*> list = unifiedChanges();
+    for (int i = 0; i < list.count(); i++) {
+        list[i]->apply();
+    }
+}
+
+void ChangeList::revert()
+{
+    // reverse order of apply()
+    QList<PropertyChange*> list = unifiedChanges();
+    for (int i = list.count() - 1; i >= 0; i--) {
+        list[i]->revert();
+    }
+}
+
+void ChangeList::clear()
+{
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
+        for (int change = 0; change < changes[priority].count(); change++) {
+            delete changes[priority][change];
+        }
+        changes[priority].clear();
+    }
+}
+
+ChangeList &ChangeList::addChange(PropertyChange *change)
+{
+    if (change && (change->priority() < PropertyChange::MaxPriority)) {
+        change->saveState();
+        changes[change->priority()] << change;
+    }
+    return *this;
+}
+
+QList<PropertyChange*> ChangeList::unifiedChanges()
+{
+    QList<PropertyChange*> list;
+    for (int priority = PropertyChange::High; priority < PropertyChange::MaxPriority; priority++) {
+        list << changes[priority];
+    }
+    return list;
+}
