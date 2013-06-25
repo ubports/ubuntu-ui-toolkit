@@ -105,8 +105,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
         reparentItems();
         // set parent item, then enable and show layout
         changes.addChange(new ParentChange(currentLayoutItem, q, false));
-        changes.addChange(new PropertyChange(currentLayoutItem, "enabled", true));
-        changes.addChange(new PropertyChange(currentLayoutItem, "visible", true));
+        itemActivate(currentLayoutItem, true);
         // apply changes
         changes.apply();
         // clear previous layout
@@ -123,8 +122,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
 void ULLayoutsPrivate::hideExcludedItems()
 {
     for (int i = 0; i < excludedFromLayout.count(); i++) {
-        changes.addChange(new PropertyChange(excludedFromLayout[i], "visible", false));
-        changes.addChange(new PropertyChange(excludedFromLayout[i], "enabled", false));
+        itemActivate(excludedFromLayout[i], false);
     }
 }
 
@@ -154,8 +152,7 @@ void ULLayoutsPrivate::reparentItems()
     LaidOutItemsMapIterator i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        changes.addChange(new PropertyChange(i.value(), "visible", false));
-        changes.addChange(new PropertyChange(i.value(), "enabled", false));
+        itemActivate(i.value(), false);
     }
 }
 
@@ -172,7 +169,7 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 
     QQuickItem *item = map.value(itemName);
     if (!item) {
-        warning(fragment, "Warning: item \"" + itemName
+        warning(fragment, "item \"" + itemName
                           + "\" not specified or has been specified for layout by "
                              " more than one active ItemLayout");
         return;
@@ -191,6 +188,13 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
     // remove from unused ones
     map.remove(itemName);
 }
+
+void ULLayoutsPrivate::itemActivate(QQuickItem *item, bool activate)
+{
+    changes.addChange(new PropertyChange(item, "visible", activate))
+           .addChange(new PropertyChange(item, "enabled", activate));
+}
+
 
 /*
  * Validates the declared conditional layouts by checking whether they have name
