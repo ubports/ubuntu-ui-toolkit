@@ -86,7 +86,7 @@ QString ULItemLayout::item() const
 }
 void ULItemLayout::setItem(const QString &value)
 {
-    if (value.isEmpty() || (value == m_itemName)) {
+    if (value == m_itemName) {
         return;
     }
     m_itemName = value;

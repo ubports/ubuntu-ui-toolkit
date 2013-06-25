@@ -65,7 +65,7 @@ QString ULLayoutsAttached::item() const
 }
 void ULLayoutsAttached::setItem(const QString &name)
 {
-    if (name.isEmpty() || name == m_name) {
+    if (name == m_name) {
         return;
     }
     m_name = name;

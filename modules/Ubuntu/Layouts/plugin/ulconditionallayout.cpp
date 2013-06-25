@@ -139,7 +139,7 @@ QString ULConditionalLayout::layoutName() const
 void ULConditionalLayout::setLayoutName(const QString &name)
 {
     Q_D(ULConditionalLayout);
-    if (name.isEmpty() || (name == d->name)) {
+    if (name == d->name) {
         return;
     }
     d->name = name;
