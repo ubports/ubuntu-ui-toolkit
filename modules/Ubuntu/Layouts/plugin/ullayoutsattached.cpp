@@ -48,7 +48,8 @@ void ULLayoutsAttached::validateAttachedProperties()
         }
         pl = pl->parentItem();
     }
-    ULLayoutsPrivate::warning(parent(), "Item is not a child of a Layouts component");
+    ULLayoutsPrivate::error(parent(),
+               "Item that is not a child of a Layouts component will not be laid out.");
     m_valid = false;
 }
 
