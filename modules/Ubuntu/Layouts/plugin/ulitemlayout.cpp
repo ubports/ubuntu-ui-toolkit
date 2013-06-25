@@ -73,7 +73,8 @@ ULItemLayout::ULItemLayout(QQuickItem *parent)
 }
 
 ULItemLayout::~ULItemLayout()
-{}
+{
+}
 
 /*!
  * \qmlproperty string ItemLayout::item

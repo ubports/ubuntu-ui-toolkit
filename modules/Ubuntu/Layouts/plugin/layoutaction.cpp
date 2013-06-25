@@ -37,7 +37,8 @@ PropertyAction::PropertyAction()
     , toValueSet(false)
     , deleteFromBinding(false)
     , deleteToBinding(false)
-{}
+{
+}
 
 PropertyAction::PropertyAction(const PropertyAction &other)
     : type(other.type)
@@ -166,7 +167,8 @@ void PropertyAction::revert(bool reset)
 PropertyChange::PropertyChange(Priority priority)
     : actionPriority(priority)
     , resetOnRevert(true)
-{}
+{
+}
 
 PropertyChange::PropertyChange(QQuickItem *target, const QString &property, const QVariant &value, Priority priority)
     : actionPriority(priority)
