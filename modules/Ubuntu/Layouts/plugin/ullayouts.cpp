@@ -445,12 +445,12 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
  * currentLayout is an empty string. So in the above example, the buttons arranged
  * in a row is the default layout.
  *
- * Layouts defined by ConditionalLayout are created and activated when at least
- * one of the layout's condition is evaluated to true. In which case components
- * marked for layout are re-parented to the components defined to lay out those
- * defined in the ConditionalLayout. In case multiple conditions are evaluated
- * to true, the first one in the list will be activated. The deactivated layout
- * is destroyed, exception being the default layout, which is kept in memory for
+ * The layouts defined by ConditionalLayout components are created and activated
+ * when at least one of the layout's condition is evaluated to true. In which
+ * case components marked for layout are re-parented to the components defined
+ * to lay out those defined in the ConditionalLayout. In case multiple conditions
+ * are evaluated to true, the first one in the list will be activated. The deactivated
+ * layout is destroyed, exception being the default layout, which is kept in memory for
  * the entire lifetime of the Layouts component.
  *
  * Upon activation, the created component fills in the entire layout block.
