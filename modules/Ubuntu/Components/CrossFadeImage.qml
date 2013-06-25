@@ -168,6 +168,10 @@ Item {
         }
     }
 
+    /*!
+      \internal
+      Set the fill on the currently displaying image when it's updated.
+    */
     onFillModeChanged: {
         priv.currentImage.fillMode = fillMode
     }
