@@ -24,6 +24,7 @@
 #include "layoutaction_p.h"
 
 typedef QHash<QString, QQuickItem*> LaidOutItemsMap;
+typedef QHashIterator<QString, QQuickItem*> LaidOutItemsMapIterator;
 
 class ULItemLayout;
 class ULLayoutsPrivate : QQmlIncubator {

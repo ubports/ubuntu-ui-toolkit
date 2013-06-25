@@ -150,7 +150,7 @@ void ULLayoutsPrivate::reparentItems()
     }
 
     // hide the rest of the unused ones
-    QHashIterator<QString, QQuickItem*> i(unusedItems);
+    LaidOutItemsMapIterator i(unusedItems);
     while (i.hasNext()) {
         i.next();
         changes.addChange(new PropertyChange(i.value(), "visible", false))
