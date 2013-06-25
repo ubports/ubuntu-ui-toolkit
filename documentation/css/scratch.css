@@ -30,6 +30,7 @@ a:hover {
 }
 table, pre {
 	border-radius: 0;
+        white-space: pre-wrap;
 }
 
 .annotated td {
