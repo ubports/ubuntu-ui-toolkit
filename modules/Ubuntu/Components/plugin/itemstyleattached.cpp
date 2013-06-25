@@ -31,7 +31,7 @@
 #include <private/qqmlproperty_p.h>
 #include <private/qqmlcomponentattached_p.h>
 
-const char *itemProperty = "item";
+const char *itemProperty = "styledItem";
 
 /*!
   \qmltype ItemStyle

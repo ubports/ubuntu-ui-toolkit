@@ -60,11 +60,11 @@ Item {
     anchors.fill: parent
     implicitWidth: 2*thumb.width + 3*thumb.spacing
     implicitHeight: thumb.height + 2*thumb.spacing
-    opacity: item.enabled ? 1.0 : 0.5
+    opacity: styledItem.enabled ? 1.0 : 0.5
 
     Component.onCompleted: {
-        item.implicitWidth = implicitWidth;
-        item.implicitHeight = implicitHeight;
+        styledItem.implicitWidth = implicitWidth;
+        styledItem.implicitHeight = implicitHeight;
     }
 
     UbuntuShape {
@@ -81,10 +81,10 @@ Item {
 
             width: visuals.thumbHeight
             height: visuals.thumbWidth
-            x: item.checked ? rightThumbPosition.x : leftThumbPosition.x
+            x: styledItem.checked ? rightThumbPosition.x : leftThumbPosition.x
             y: leftThumbPosition.y
 
-            color: item.checked ? visuals.checkedThumbColor
+            color: styledItem.checked ? visuals.checkedThumbColor
                                 : visuals.uncheckedThumbColor
             gradientColor: "transparent"
 
@@ -115,7 +115,7 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? visuals.unselectedImageOpacity
+                opacity: styledItem.checked ? visuals.unselectedImageOpacity
                                       : visuals.selectedImageOpacity
                 source: visuals.crossSource
             }
@@ -134,7 +134,7 @@ Item {
 
             Image {
                 anchors.centerIn: parent
-                opacity: item.checked ? visuals.selectedImageOpacity
+                opacity: styledItem.checked ? visuals.selectedImageOpacity
                                       : visuals.unselectedImageOpacity
                 source: visuals.checkMarkSource
             }

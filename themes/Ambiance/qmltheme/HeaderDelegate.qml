@@ -60,7 +60,7 @@ Item {
     }
     height: headerDelegate.contentHeight + separator.height + separatorBottom.height
     Binding {
-        target: item
+        target: styledItem
         property: "height"
         value: height
     }
@@ -122,15 +122,14 @@ Item {
                 verticalCenter: parent.verticalCenter
                 leftMargin: headerDelegate.textLeftMargin
             }
-            text: item.title
+            text: styledItem.title
             font.weight: headerDelegate.fontWeight
             visible: contentsLoader.status != Loader.Ready
             fontSize: headerDelegate.fontSize
             color: headerDelegate.textColor
         }
 
-        // Link to item here, because Loader has its own item property
-        property Header header: item
+        property Header header: styledItem
         Loader {
             id: contentsLoader
             sourceComponent: foreground.header.contents

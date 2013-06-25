@@ -65,8 +65,7 @@ Item {
     id: tabsDelegate
     anchors.fill: parent
 
-    // use theTabs property because item gives problems in the loader
-    property Tabs theTabs: item
+    property Tabs theTabs: styledItem
     property Component headerContents: Component {
         NewTabBar {
             id: tabBar
@@ -94,6 +93,6 @@ Item {
     }
 
     Component.onCompleted: {
-        item.__headerContents = headerContents;
+        styledItem.__headerContents = headerContents;
     }
 }

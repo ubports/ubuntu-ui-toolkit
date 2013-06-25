@@ -28,31 +28,31 @@ Item {
       The padding on the left and right side of the button foreground.
     */
     property real horizontalPadding: units.gu(2)
-    property real maximumWidth: item.width - 2*foreground.horizontalPadding
-    property real spacing: (item.text == "" || item.iconSource == "") ? 0 : units.gu(1)
+    property real maximumWidth: styledItem.width - 2*foreground.horizontalPadding
+    property real spacing: (styledItem.text == "" || styledItem.iconSource == "") ? 0 : units.gu(1)
     property real verticalPadding: units.gu(0.5)
 
     width: icon.width + label.width + foreground.spacing
-    height: item.height - 2*foreground.verticalPadding
+    height: styledItem.height - 2*foreground.verticalPadding
     implicitWidth: icon.width + label.implicitWidth + foreground.spacing
 
     Image {
         id: icon
-        source: item.iconSource
+        source: styledItem.iconSource
         fillMode: Image.PreserveAspectFit
         anchors.verticalCenter: foreground.verticalCenter
-        opacity: item.enabled ? 1.0 : 0.5
+        opacity: styledItem.enabled ? 1.0 : 0.5
     }
 
     Label {
         id: label
-        text: item.text
+        text: styledItem.text
         anchors {
             verticalCenter: foreground.verticalCenter
             verticalCenterOffset: units.dp(-1)
         }
         fontSize: "medium"
-        opacity: item.enabled ? 1.0 : 0.5
+        opacity: styledItem.enabled ? 1.0 : 0.5
         elide: Text.ElideRight
 
         property real availableWidth: foreground.maximumWidth - icon.width - foreground.spacing
@@ -97,6 +97,6 @@ Item {
                 }
             }
         ]
-        state: (item.iconSource == "" || item.text == "") ? "center" : item.iconPosition
+        state: (styledItem.iconSource == "" || styledItem.text == "") ? "center" : styledItem.iconPosition
     }
 }

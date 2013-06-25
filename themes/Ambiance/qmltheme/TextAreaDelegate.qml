@@ -41,12 +41,12 @@ Item {
     anchors.fill: parent
 
     Binding {
-        target: item.__internal
+        target: styledItem.__internal
         property: "frameSpacing"
         value: visuals.frameSpacing
     }
     Binding {
-        target: item.__internal
+        target: styledItem.__internal
         property: "spacing"
         value: visuals.overlaySpacing
     }
@@ -54,7 +54,7 @@ Item {
     z: -1
     UbuntuShape {
         id: shape
-        property bool error: (item.hasOwnProperty("errorHighlight") && item.errorHighlight && !item.acceptableInput)
+        property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
@@ -62,7 +62,7 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onPressed: if (!item.activeFocus && item.activeFocusOnPress) item.forceActiveFocus()
+            onPressed: if (!styledItem.activeFocus && styledItem.activeFocusOnPress) styledItem.forceActiveFocus()
         }
     }
 }

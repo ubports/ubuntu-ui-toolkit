@@ -23,7 +23,7 @@ Image {
     id: image
     anchors.fill: parent
 
-    visible: (item.direction !== "none")
+    visible: (styledItem.direction !== "none")
 
     smooth: true
 }

@@ -39,7 +39,7 @@ Item {
         id: border
 
         anchors.fill: parent
-        color: item.color
+        color: styledItem.color
         borderSource: visuals.borderSource
         opacity: 1.0 - borderPressed.opacity
     }
@@ -48,13 +48,13 @@ Item {
         id: borderPressed
 
         anchors.fill: parent
-        color: item.color
+        color: styledItem.color
         borderSource: visuals.borderPressed
-        opacity: item.pressed ? 1.0 : 0.0
+        opacity: styledItem.pressed ? 1.0 : 0.0
         Behavior on opacity { UbuntuNumberAnimation {} }
     }
 
     TransparentButtonDelegate {
-        textColor: __luminance(item.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
+        textColor: __luminance(styledItem.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
     }
 }

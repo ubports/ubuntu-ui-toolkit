@@ -37,7 +37,7 @@ Item {
 
     UbuntuShape {
         anchors.fill: parent
-        color: item.checked ? checkedColor : uncheckedColor
+        color: styledItem.checked ? checkedColor : uncheckedColor
         gradientColor: "transparent"
         Behavior on color {
             ColorAnimation {
@@ -52,7 +52,7 @@ Item {
         anchors.centerIn: parent
         smooth: true
         source: checkMarkSource
-        opacity: item.checked ? 1.0 : 0.0
+        opacity: styledItem.checked ? 1.0 : 0.0
         Behavior on opacity {
             UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
         }

@@ -40,7 +40,7 @@ Item {
             bottom: background.top
         }
         source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: item.opened || item.animating ? 0.5 : 0.0
+        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
         Behavior on opacity {
             UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
         }

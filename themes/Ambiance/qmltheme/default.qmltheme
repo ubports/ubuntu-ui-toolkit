@@ -126,9 +126,9 @@ Examples:
 }
 
 .tab-button {
-    backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
-    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
-    backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
+    backgroundLeft: styledItem.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
+    backgroundRight: styledItem.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
+    backgroundMiddle: styledItem.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
 }
 
 .new-tabs {
@@ -176,9 +176,9 @@ Examples:
     Popups (Popover, Dialog, Sheet)
 */
 .pointer {
-    source: (item.direction === "left") ? url(artwork/LeftArrow.png) :
-                (item.direction === "right") ? url(artwork/RightArrow.png) :
-                (item.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
+    source: (styledItem.direction === "left") ? url(artwork/LeftArrow.png) :
+                (styledItem.direction === "right") ? url(artwork/RightArrow.png) :
+                (styledItem.direction === "up") ? url(artwork/UpArrow.png) : url(artwork/DownArrow.png);
     longAxis: units.gu(2);
     shortAxis: units.gu(1);
 }
@@ -216,7 +216,7 @@ Examples:
 }
 .dialog .background {
     dim: true;
-    color: item.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
+    color: styledItem.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9);
     opacity: 1.0;
 }
 .dialog .foreground {
@@ -225,7 +225,7 @@ Examples:
     margins: units.gu(4);
     itemSpacing: units.gu(2);
     radius: "medium";
-    visible: item.dismissArea.width > units.gu(60);
+    visible: styledItem.dismissArea.width > units.gu(60);
     color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent";
 }
 .dialog .foreground .title {
@@ -276,10 +276,10 @@ Examples:
     sliderAnimation: UbuntuNumberAnimation {};
     thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
     thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
-    backwardThumbReleased : (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
-    backwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
-    forwardThumbReleased: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
-    forwardThumbPressed: (item.align === Qt.AlignLeading || item.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
+    backwardThumbReleased : (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopIdle.png") : url("artwork/ScrollbarLeftIdle.png");
+    backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? url("artwork/ScrollbarTopPressed.png") : url("artwork/ScrollbarLeftPressed.png");
+    forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomIdle.png") : url("artwork/ScrollbarRightIdle.png");
+    forwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? url("artwork/ScrollbarBottomPressed.png") : url("artwork/ScrollbarRightPressed.png");
     scrollAreaThickness: units.gu(0.5);
     sliderRadius: units.gu(0.5);
     thumbConnectorMargin: units.dp(3);
@@ -320,10 +320,10 @@ Examples:
 */
 .textfield, .textarea{
     radius: "small";
-    backgroundColor: (item.focus || item.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
+    backgroundColor: (styledItem.focus || styledItem.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1);
     errorColor: "red";
-    backgroundOpacity: item.enabled ? 1.0 : 0.1;
-    color: (item.enabled) ? "#757373"  : "darkgray";
+    backgroundOpacity: styledItem.enabled ? 1.0 : 0.1;
+    color: (styledItem.enabled) ? "#757373"  : "darkgray";
     selectedTextColor: "#F3F3E7";
     selectionColor: "#19B6EE";
     font: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")});

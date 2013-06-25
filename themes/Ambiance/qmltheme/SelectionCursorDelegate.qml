@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 EditorCursorDelegate {
     id: cursor
 
-    property bool startPin: (item.positionProperty === "selectionStart")
-    property int cursorPosition: item.editorItem[item.positionProperty]
+    property bool startPin: (styledItem.positionProperty === "selectionStart")
+    property int cursorPosition: styledItem.editorItem[styledItem.positionProperty]
 
     visible: true
 
@@ -29,7 +29,7 @@ EditorCursorDelegate {
     {
         if (undefined === pos)
             return;
-        var rect = item.editorItem.positionToRectangle(pos);
+        var rect = styledItem.editorItem.positionToRectangle(pos);
         x = rect.x;
         y = rect.y;
     }
@@ -78,13 +78,13 @@ EditorCursorDelegate {
 
             function updateEditorCursorPosition()
             {
-                var pos = item.editorItem.mapFromItem(item, cursor.x, cursor.y + cursor.height / 2);
+                var pos = styledItem.editorItem.mapFromItem(styledItem, cursor.x, cursor.y + cursor.height / 2);
                 var dx = dragArea.cursorStartX + dragDX;
                 var dy = dragArea.cursorStartY + dragDY;
                 if (startPin)
-                    item.editorItem.select(item.editorItem.positionAt(dx, dy), item.editorItem.selectionEnd);
+                    styledItem.editorItem.select(styledItem.editorItem.positionAt(dx, dy), styledItem.editorItem.selectionEnd);
                 else
-                    item.editorItem.select(item.editorItem.selectionStart, item.editorItem.positionAt(dx, dy));
+                    styledItem.editorItem.select(styledItem.editorItem.selectionStart, styledItem.editorItem.positionAt(dx, dy));
             }
         }
     }

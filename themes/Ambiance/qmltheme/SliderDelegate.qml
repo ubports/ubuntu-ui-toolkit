@@ -49,10 +49,10 @@ Item {
 
     // private properties
 
-    property real liveValue: SliderUtils.liveValue(item)
-    property real normalizedValue: SliderUtils.normalizedValue(item)
+    property real liveValue: SliderUtils.liveValue(styledItem)
+    property real normalizedValue: SliderUtils.normalizedValue(styledItem)
     property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
-    property real thumbWidth: item.height - thumbSpacing
+    property real thumbWidth: styledItem.height - thumbSpacing
 
     UbuntuShape {
         id: backgroundShape
@@ -81,6 +81,6 @@ Item {
             right: thumbShape.right
         }
         horizontalAlignment: Text.AlignHCenter
-        text: item.formatValue(MathUtils.clamp(liveValue, item.minimumValue, item.maximumValue))
+        text: styledItem.formatValue(MathUtils.clamp(liveValue, styledItem.minimumValue, styledItem.maximumValue))
     }
 }

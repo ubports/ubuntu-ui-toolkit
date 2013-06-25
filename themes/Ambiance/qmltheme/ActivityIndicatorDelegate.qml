@@ -22,13 +22,13 @@ Image {
 
     anchors.fill: parent
     smooth: true
-    visible: item.running
+    visible: styledItem.running
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
 
     NumberAnimation on rotation {
-        running: item.running
+        running: styledItem.running
         from: 0
         to: 360
         loops: Animation.Infinite

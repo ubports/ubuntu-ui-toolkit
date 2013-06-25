@@ -29,12 +29,12 @@ Item {
         //  but I did not manage to get a 3x3 matrix from QML into the shader.
 
         // rotate pointer 90 degrees
-        property bool rotate: (item.direction === "left" || item.direction === "right")
+        property bool rotate: (styledItem.direction === "left" || styledItem.direction === "right")
 
         // flip the direction of the pointer
-        property bool flip: (item.direction === "left" || item.direction === "up")
+        property bool flip: (styledItem.direction === "left" || styledItem.direction === "up")
 
-        visible: (item.direction !== "none")
+        visible: (styledItem.direction !== "none")
 
         vertexShader: "
             uniform highp mat4 qt_Matrix;

@@ -122,13 +122,13 @@ Item {
                 __isLast: index === (repeater.count - 1)
                 iconSource: modelData.iconSource
                 width: buttonRow.buttonWidth
-                selected: (index === item.selectedTabIndex)
-                onClicked: item.selectedTabIndex = index
+                selected: (index === styledItem.selectedTabIndex)
+                onClicked: styledItem.selectedTabIndex = index
             }
         }
     }
 
-    // This is the item that will be the parent of the currently displayed page.
+    // This is the styledItem that will be the parent of the currently displayed page.
     Item {
         id: tabsContainer
         anchors {
@@ -145,7 +145,7 @@ Item {
         var tab;
         for (var i = 0; i < tabsContainer.children.length; i++) {
             tab = tabsContainer.children[i];
-            if (i === item.selectedTabIndex) {
+            if (i === styledItem.selectedTabIndex) {
                 tab.__active = true;
             } else {
                 tab.__active = false;
@@ -167,7 +167,7 @@ Item {
     }
 
     Connections {
-        target: item
+        target: styledItem
         onSelectedTabIndexChanged: visuals.selectedTabChanged()
     }
 

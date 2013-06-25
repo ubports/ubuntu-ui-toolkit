@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by
-  the item's __inactive property, however should be detected upon runtime based on
+  the styledItem's __inactive property, however should be detected upon runtime based on
   the device type.
   On active scrollbars, positioning is handled so that the logic updates the flickable's
   X/Y content positions, which is then synched with the contentPosition by the main
@@ -82,17 +82,17 @@ Item {
     property real thumbConnectorMargin
 
     // helper properties to ease code readability
-    property Flickable flickableItem: item.flickableItem
-    property bool isScrollable: item.__private.scrollable && pageSize > 0.0
+    property Flickable flickableItem: styledItem.flickableItem
+    property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
-    property bool isVertical: ScrollbarUtils.isVertical(item)
-    property bool frontAligned: (item.align === Qt.AlignLeading)
-    property bool rearAligned: (item.align === Qt.AlignTrailing)
-    property bool topAligned: (item.align === Qt.AlignTop)
-    property bool bottomAligned: (item.align === Qt.AlignBottom)
+    property bool isVertical: ScrollbarUtils.isVertical(styledItem)
+    property bool frontAligned: (styledItem.align === Qt.AlignLeading)
+    property bool rearAligned: (styledItem.align === Qt.AlignTrailing)
+    property bool topAligned: (styledItem.align === Qt.AlignTop)
+    property bool bottomAligned: (styledItem.align === Qt.AlignBottom)
 
-    property real pageSize: (isVertical) ? item.height : item.width
-    property real contentSize: (isVertical) ? item.flickableItem.contentHeight : item.flickableItem.contentWidth
+    property real pageSize: (isVertical) ? styledItem.height : styledItem.width
+    property real contentSize: (isVertical) ? styledItem.flickableItem.contentHeight : styledItem.flickableItem.contentWidth
 
     /*****************************************
       Visuals
@@ -184,7 +184,7 @@ Item {
 
         duration: 200
         easing.type: Easing.InOutQuad
-        target: item.flickableItem
+        target: styledItem.flickableItem
         property: (isVertical) ? "contentY" : "contentX"
     }
 
@@ -193,7 +193,7 @@ Item {
         id: scrollbarArea
 
         property real thickness: scrollAreaThickness
-        property real proximityThickness: (isVertical) ? item.width - thickness : item.height - thickness
+        property real proximityThickness: (isVertical) ? styledItem.width - thickness : styledItem.height - thickness
         anchors {
             fill: parent
             leftMargin: (!isVertical || frontAligned) ? 0 : proximityThickness
@@ -230,13 +230,13 @@ Item {
     // total size of the flickable.
     Item {
         id: scrollCursor
-        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.width - scrollCursor.width)
-        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - scrollCursor.height)
-        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, 0.0, flickableItem.width)
-        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, 0.0, flickableItem.height)
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, 0.0, styledItem.width - scrollCursor.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, 0.0, styledItem.height - scrollCursor.height)
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(styledItem, 0.0, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(styledItem, 0.0, flickableItem.height)
 
         function drag() {
-            ScrollbarUtils.dragAndClamp(item, scrollCursor, contentSize, pageSize);
+            ScrollbarUtils.dragAndClamp(styledItem, scrollCursor, contentSize, pageSize);
         }
     }
 
@@ -252,10 +252,10 @@ Item {
             bottom: (!isVertical) ? scrollbarArea.bottom : undefined
         }
 
-        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.width - slider.width)
-        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(item, 0.0, item.height - slider.height)
-        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.width)
-        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(item, minimumSliderSize, flickableItem.height)
+        x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, 0.0, styledItem.width - slider.width)
+        y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, 0.0, styledItem.height - slider.height)
+        width: (isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(styledItem, minimumSliderSize, flickableItem.width)
+        height: (!isVertical) ? scrollbarArea.thickness : ScrollbarUtils.sliderSize(styledItem, minimumSliderSize, flickableItem.height)
         radius: visuals.sliderRadius
 
         Behavior on width {
@@ -274,7 +274,7 @@ Item {
         }
 
         function scroll(amount) {
-            scrollAnimation.to = ScrollbarUtils.scrollAndClamp(item, amount, 0.0, contentSize - pageSize);
+            scrollAnimation.to = ScrollbarUtils.scrollAndClamp(styledItem, amount, 0.0, contentSize - pageSize);
             scrollAnimation.restart();
         }
     }
@@ -417,7 +417,7 @@ Item {
         height: childrenRect.height
 
         property bool shown
-        property int maximumPos: (isVertical) ? item.height - thumb.height : item.width - thumb.width
+        property int maximumPos: (isVertical) ? styledItem.height - thumb.height : styledItem.width - thumb.width
 
         /* Show the thumb as close as possible to the mouse pointer */
         onShownChanged: {

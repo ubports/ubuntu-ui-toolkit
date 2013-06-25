@@ -42,7 +42,7 @@ Item {
     Rectangle {
         id: cursor
 
-        property bool showCursor: item.visible
+        property bool showCursor: styledItem.visible
         property bool timerShowCursor: true
 
         visible: showCursor && timerShowCursor

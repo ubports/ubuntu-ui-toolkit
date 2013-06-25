@@ -42,7 +42,7 @@ Item {
         id: foreground
         // update control's implicitWidth
         Binding {
-            target: item
+            target: styledItem
             property: "implicitWidth"
             value: foreground.implicitWidth + 2*foreground.horizontalPadding
         }

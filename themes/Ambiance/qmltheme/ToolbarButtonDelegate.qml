@@ -28,7 +28,7 @@ Item {
     Item {
         anchors.centerIn: parent
         height: icon.height + label.height + label.anchors.topMargin
-        opacity: item.enabled ? 1.0 : 0.3
+        opacity: styledItem.enabled ? 1.0 : 0.3
 
         Image {
             id: icon
@@ -38,7 +38,7 @@ Item {
             }
             width: iconWidth
             height: iconWidth
-            source: item.iconSource
+            source: styledItem.iconSource
         }
 
         Label {
@@ -49,9 +49,9 @@ Item {
                 topMargin: units.gu(1)
             }
             width: paintedWidth
-            text: item.text
+            text: styledItem.text
         }
     }
 
-    Component.onCompleted: item.implicitWidth = implicitWidth
+    Component.onCompleted: styledItem.implicitWidth = implicitWidth
 }

@@ -25,7 +25,7 @@ Item {
     property real headerHeight
     property real buttonContainerWidth
 
-    width: MathUtils.clamp(item.contentsWidth, item.minWidth, item.maxWidth)
+    width: MathUtils.clamp(styledItem.contentsWidth, styledItem.minWidth, styledItem.maxWidth)
     height: header.height + containerItem.height
 
     property alias contentItem: containerItem
@@ -50,7 +50,7 @@ Item {
             width: headerText.implicitWidth + units.gu(4)
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            text: item.title
+            text: styledItem.title
         }
 
         Item {
@@ -61,7 +61,7 @@ Item {
                 bottom: parent.bottom
             }
             width: visuals.buttonContainerWidth
-            Component.onCompleted: header.updateButton(item.leftButton, leftButtonContainer)
+            Component.onCompleted: header.updateButton(styledItem.leftButton, leftButtonContainer)
         }
 
         Item {
@@ -72,7 +72,7 @@ Item {
                 bottom: parent.bottom
             }
             width: visuals.buttonContainerWidth
-            Component.onCompleted: header.updateButton(item.rightButton, rightButtonContainer)
+            Component.onCompleted: header.updateButton(styledItem.rightButton, rightButtonContainer)
         }
 
         function updateButton(button, container) {
@@ -85,16 +85,16 @@ Item {
         }
 
         Connections {
-            target: item
-            onLeftButtonChanged: header.updateButton(item.leftButton, leftButtonContainer)
-            onRightButtonChanged: header.updateButton(item.rightButton, rightButtonContainer)
+            target: styledItem
+            onLeftButtonChanged: header.updateButton(styledItem.leftButton, leftButtonContainer)
+            onRightButtonChanged: header.updateButton(styledItem.rightButton, rightButtonContainer)
         }
     }
 
     Rectangle {
         id: containerItem
         color: visuals.backgroundColor
-        height: MathUtils.clamp(item.contentsHeight, item.minHeight - header.height, item.maxHeight - header.height)
+        height: MathUtils.clamp(styledItem.contentsHeight, styledItem.minHeight - header.height, styledItem.maxHeight - header.height)
         anchors {
             top: header.bottom
             left: parent.left
