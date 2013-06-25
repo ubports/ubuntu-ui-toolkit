@@ -46,14 +46,14 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * \brief ConditionalLayout defines the layout of a given form factor.
  *
  * ConditionalLayout is a non-visual element defining the actual layout to be applied
- * upon the given condition evaluates to true. The condition can be any valid boolean
+ * when a given condition evaluates to true. The condition can be any valid boolean
  * JavaScript expression.
  *
- * As Layouts can be nested, use the closest embedding Layouts object's size when defining
- * the condition. Other elements like Screen orientation can also be used to define
- * the layout activation condition.
+ * As Layouts can be nested, it is recommended to choose properties of the Layouts item,
+ * often width and height, when defining the condition. Other elements like Screen
+ * orientation can also be used to define the layout activation condition.
  *
- * There can be a single component defined in the ConditionalLayout which will be
+ * There must be only a single component defined in the ConditionalLayout which will be
  * instantiated upon activation.
  *
  * Each conditional layout must be named with a string, which identifies the layout
@@ -109,8 +109,10 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
  * }
  * \endqml
  *
- * The items subject of layout must be having the Layouts.item attached property,
- * which will be laid out by the ItemLayout components.
+ * All Items to be managed by the Layouts engine must identify themselves by setting
+ * the Layouts.item attached property to a unique name (string). These unique names
+ * are then used by the ItemLayout component, so can apply the new layout to the
+ * correct Item.
  *
  * \sa {ItemLayout}
  */
@@ -127,8 +129,8 @@ ULConditionalLayout::~ULConditionalLayout()
 
 /*!
  * \qmlproperty string ConditionalLayout::name
- * The property defines the name of the layout. Each layout should have a unique
- * name within its Layouts item, and identifies the conditional layout itself.
+ * This property defines the name of the layout. Within the definition of Layouts,
+ * these names should be unique for each layout.
  * \sa Layouts
  */
 QString ULConditionalLayout::layoutName() const
@@ -147,7 +149,10 @@ void ULConditionalLayout::setLayoutName(const QString &name)
 
 /*!
  * \qmlproperty bool ConditionalLayout::when
- * The property defines the condition when the layout should be activated.
+ * This property defines the condition that when evaluating to true, chooses this
+ * ConditionalLayout to become the active layout.
+ * When two ConditionalLayouts \b when condition is evaluated to true, the first
+ * one declared in the layouts list is chosen.
  */
 QQmlBinding *ULConditionalLayout::when() const
 {

@@ -64,7 +64,7 @@ Item {
             //![column]
             //![row]
             ConditionalLayout {
-                name: "flow"
+                name: "row"
                 when: layouts.width > units.gu(70) && layouts.width <= units.gu(90)
                 Row {
                     anchors.fill: parent
@@ -119,7 +119,6 @@ Item {
                 name: "showing-more"
                 when: layouts.width >= units.gu(100)
                 Flow {
-                    id: flow
                     anchors.fill: parent
                     ItemLayout {
                         item: "red"
@@ -148,7 +147,7 @@ Item {
 
         //![default layout]
         Button {
-            id: button1
+            id: red
             text: "Item #1"
             color: "red"
             Layouts.item: "red"
@@ -160,13 +159,13 @@ Item {
             width: units.gu(15)
         }
         Button {
-            id: button2
+            id: green
             text: "Item #2"
             color: "green"
             Layouts.item: "green"
             anchors {
                 top: parent.top
-                left: button1.right
+                left: red.right
                 right: parent.right
             }
             height: units.gu(10)
@@ -176,19 +175,19 @@ Item {
             text: "Non-laid out"
             color: "brown"
             anchors {
-                top: button2.bottom
-                left: button1.right
+                top: green.bottom
+                left: red.right
                 right: parent.right
                 bottom: button3.top
             }
         }
         Button {
-            id: button3
+            id: blue
             text: "Item #3"
             color: "blue"
             Layouts.item: "blue"
             anchors{
-                left: button1.right
+                left: red.right
                 right: parent.right
                 bottom: parent.bottom
             }

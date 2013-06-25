@@ -16,7 +16,7 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "layoutaction_p.h"
+#include "propertychanges_p.h"
 #include "ullayouts_p.h"
 #include "ullayouts.h"
 #include <QtQuick/QQuickItem>

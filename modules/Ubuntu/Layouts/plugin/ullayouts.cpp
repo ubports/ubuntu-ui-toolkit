@@ -20,7 +20,7 @@
 #include "ullayouts_p.h"
 #include "ulitemlayout.h"
 #include "ulconditionallayout.h"
-#include "layoutaction_p.h"
+#include "propertychanges_p.h"
 #include <QtQml/QQmlInfo>
 
 ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
@@ -367,8 +367,8 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
  *
  * Layouts is a layout block component incorporating layout definitions and
  * components to lay out. The layouts are defined in the \l layouts property, which
- * is a list of ConditionalLayout components, each declaring a form of arrangement
- * for the components specified to be laid out.
+ * is a list of ConditionalLayout components, each declaring the sizes and positions
+ * of the components specified to be laid out.
  *
  * \qml
  * Layouts {
@@ -398,8 +398,8 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
  * }
  * \endqml
  *
- * The components to be laid out must be declared as children of a Layouts compponent,
- * each having Layouts.item set to a unique string.
+ * The components to be laid out must be declared as children of the Layouts component,
+ * each set an attached property "Layouts.item" to be a unique string.
  *
  * \qml
  * Layouts {
@@ -441,8 +441,9 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
  * }
  * \endqml
  *
- * The layout of the children of Layouts is considered the default layout. So in
- * the above example, the buttons arranged in a row is the default layout.
+ * The layout of the children of Layouts is considered the default layout, i.e.
+ * currentLayout is an empty string. So in the above example, the buttons arranged
+ * in a row is the default layout.
  *
  * Layouts defined by ConditionalLayout are created and activated when at least
  * one of the layout's condition is evaluated to true. In which case components

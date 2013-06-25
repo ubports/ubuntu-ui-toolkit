@@ -35,7 +35,6 @@ Item {
                 name: "flow"
                 when: layouts.width > units.gu(70)
                 Flow {
-                    id: flow
                     anchors.fill: parent
                     ItemLayout {
                         item: "red"

@@ -23,8 +23,8 @@
  * \instantiates ULItemLayout
  * \inqmlmodule Ubuntu.Layouts 0.1
  * \ingroup ubuntu-layouts
- * \brief ItemLayout is a pseudo-Item providing re-positioning of a single
- * item within a layout.
+ * \brief ItemLayout defines a new size & position of a single Item, for the purposes
+ * of specifying layouts. This is to be used within a ConditionalLayout definition.
  *
  * Use ItemLayout to define the size and position of a single item within a layout.
  * The item name to be positioned should be specified in item property,

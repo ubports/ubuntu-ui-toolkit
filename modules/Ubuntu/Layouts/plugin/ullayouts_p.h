@@ -21,7 +21,7 @@
 
 #include "ullayouts.h"
 #include <QtQml/QQmlIncubator>
-#include "layoutaction_p.h"
+#include "propertychanges_p.h"
 
 typedef QHash<QString, QQuickItem*> LaidOutItemsMap;
 typedef QHashIterator<QString, QQuickItem*> LaidOutItemsMapIterator;
