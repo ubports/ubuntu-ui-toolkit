@@ -26,8 +26,8 @@
  * \brief ItemLayout is a pseudo-Item providing re-positioning of a single
  * item within a layout.
  *
- * ItemLayout is a pseudo-Item providing re-positioning of a single item within
- * a layout. The item name to be positioned should be specified in item property,
+ * Use ItemLayout to define the size and position of a single item within a layout.
+ * The item name to be positioned should be specified in item property,
  * which should correspond to the string specified in \b Layouts.item attached to
  * an Item in the default layout. The Item with Layouts.item attached is reparented
  * into ItemLayout and it is anchor filled to it.
@@ -44,17 +44,15 @@
  *     layouts: [
  *         ConditionalLayout {
  *             when: layouts.width > units.gu(40)
- *             Item {
- *                 Row {
- *                     width: parent.width
- *                     ItemLayout {
- *                         item: "input"
- *                         width: units.gu(30)
- *                         height: units.gu(20)
- *                     }
- *                     TextArea {
- *                         text: "extra component"
- *                     }
+ *             Row {
+ *                 width: parent.width
+ *                 ItemLayout {
+ *                     item: "input"
+ *                     width: units.gu(30)
+ *                     height: units.gu(20)
+ *                 }
+ *                 TextArea {
+ *                     text: "extra component"
  *                 }
  *             }
  *         }
