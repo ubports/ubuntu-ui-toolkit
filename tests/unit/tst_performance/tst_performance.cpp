@@ -23,9 +23,6 @@
 #include <QtQuick/QQuickItem>
 
 #include "themeengine.h"
-#include "themeengine_p.h"
-#include "itemstyleattached.h"
-#include "ucstyle.h"
 
 class tst_Performance : public QObject
 {
@@ -99,8 +96,7 @@ private Q_SLOTS:
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
 
-        ThemeEngine::initializeEngine(quickEngine);
-        ThemeEngine::instance()->loadTheme(theme);
+        //ThemeEngine::instance().setPath(theme);
 
         QQuickItem *root = 0;
         QBENCHMARK {

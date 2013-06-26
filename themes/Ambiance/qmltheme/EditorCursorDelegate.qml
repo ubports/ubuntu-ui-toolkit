@@ -21,22 +21,22 @@ Item {
     /*!
       Cursor color
       */
-    property color color
+    property color color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
 
     /*!
       Properties driving cursor blinking. If either of these values are 0, no
       blinking is provided.
       */
-    property bool blinking
-    property int blinkTimeoutShown
-    property int blinkTimeoutHidden
+    property bool blinking: true
+    property int blinkTimeoutShown: 800
+    property int blinkTimeoutHidden: 400
 
     /*!
       Selection mode pin styles
       */
-    property var pinSize
-    property var pinSensingOffset
-    property color pinColor
+    property var pinSize: units.gu(1.2)
+    property var pinSensingOffset: units.dp(4)
+    property color pinColor: "blue"
 
     anchors.fill: parent
     Rectangle {

@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property int iconWidth: 0
-    property int iconHeight: 0
+    property int iconWidth: units.gu(2)
+    property int iconHeight: units.gu(2)
 
     anchors.fill: parent
 
@@ -50,6 +50,8 @@ Item {
             }
             width: paintedWidth
             text: styledItem.text
+            fontSize: "x-small"
+            color: "#888888"
         }
     }
 

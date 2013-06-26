@@ -20,13 +20,13 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color backgroundColor
-    property color headerColor
-    property real headerHeight
-    property real buttonContainerWidth
+    property color backgroundColor: "lightgray"
+    property color headerColor: "darkgray"
+    property real headerHeight: units.gu(8)
+    property real buttonContainerWidth: units.gu(14)
 
-    width: MathUtils.clamp(styledItem.contentsWidth, styledItem.minWidth, styledItem.maxWidth)
-    height: header.height + containerItem.height
+    implicitWidth: MathUtils.clamp(styledItem.contentsWidth, styledItem.minWidth, styledItem.maxWidth)
+    implicitHeight: header.height + containerItem.height
 
     property alias contentItem: containerItem
 

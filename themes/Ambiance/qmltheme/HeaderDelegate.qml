@@ -27,43 +27,33 @@ Item {
     /*!
       The background color of the header.
      */
-    property color backgroundColor: "transparent"
+    property color backgroundColor: "#ededf0"
 
     /*!
       The source of the background image of the header. If the image is has (semi-)transparent
       pixels, \l backgroundColor can be set to specify the color behind those (semi-)transparent
       pixels.
      */
-    property url backgroundSource: ""
+    property url backgroundSource: "artwork/background_paper.png"
 
     /*!
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
      */
-    property url separatorSource: ""
+    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
      */
-    property url separatorBottomSource: ""
+    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
 
-    property int fontWeight
+    property int fontWeight: Font.Light
     property string fontSize: "x-large"
-    property color textColor: "black"
-    property real textLeftMargin
+    property color textColor: Qt.rgba(0.51, 0.51, 0.51, 0.9)
+    property real textLeftMargin: units.gu(2)
 
-    anchors {
-        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        top: parent ? parent.top : undefined
-    }
-    height: headerDelegate.contentHeight + separator.height + separatorBottom.height
-    Binding {
-        target: styledItem
-        property: "height"
-        value: height
-    }
+    implicitHeight: headerDelegate.contentHeight + separator.height + separatorBottom.height
 
     Rectangle {
         id: backgroundColor

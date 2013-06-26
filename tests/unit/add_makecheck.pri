@@ -3,6 +3,6 @@
 # Instead add a 'make check' manually.
 
 check.target = check
-check.commands = QML2_IMPORT_PATH=../../.. UITK_THEME_PATH=../../.. ./$$TARGET -platform minimal
+check.commands = QML2_IMPORT_PATH=../../.. UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../themes ./$$TARGET -platform minimal
 check.commands += -maxwarnings 10 -o ../../test_$(TARGET).xml,xunitxml -o -,txt
 #check.commands += ../testparser/testparser ../../test_$(TARGET).xml 

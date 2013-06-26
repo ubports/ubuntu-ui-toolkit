@@ -21,8 +21,8 @@ import QtGraphicalEffects 1.0
 Item {
     id: frame
     // styling properties
-    property string radius: "small"
-    property color color
+    property string radius: "medium"
+    property color color: "white"
 
     property alias contentItem: body
 

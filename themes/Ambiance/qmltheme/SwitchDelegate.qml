@@ -19,8 +19,8 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // style properties
-    property url crossSource
-    property url checkMarkSource
+    property url crossSource: "artwork/Cross.png"
+    property url checkMarkSource: "artwork/CheckMark.png"
     /*!
       The opacity of the "cross" image when the switch is not checked,
       and opacity of the "checkMark" image when the switch is checked.
@@ -30,29 +30,29 @@ Item {
       The opacity of the "cross" image when the switch is checked,
       and the opacity of the "checkMark" image when the switch is not checked.
      */
-    property real unselectedImageOpacity: 1.0
+    property real unselectedImageOpacity: 0.4
     /*!
       Spacing around the thumb.
      */
-    property real thumbSpacing: units.dp(1)
+    property real thumbSpacing: units.dp(2)
     /*!
       Color of the thumb when the switch is checked.
      */
-    property color checkedThumbColor
+    property color checkedThumbColor: "#DD4814"
     /*!
       Color of the thumb when the switch is not checked.
      */
-    property color uncheckedThumbColor
+    property color uncheckedThumbColor: "#bbbbbb"
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
-    property ColorAnimation thumbColorAnimation: ColorAnimation{duration: 0}
+    property ColorAnimation thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing }
     /*!
       The animation on x to move the thumb.
      */
-    property NumberAnimation moveThumbAnimation: NumberAnimation{duration: 0}
+    property NumberAnimation moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color backgroundColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+    property color backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1)
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
 
@@ -62,9 +62,16 @@ Item {
     implicitHeight: thumb.height + 2*thumb.spacing
     opacity: styledItem.enabled ? 1.0 : 0.5
 
-    Component.onCompleted: {
-        styledItem.implicitWidth = implicitWidth;
-        styledItem.implicitHeight = implicitHeight;
+    Binding {
+        target: styledItem
+        property: "implicitWidth"
+        value: implicitWidth
+    }
+
+    Binding {
+        target: styledItem
+        property: "implicitHeight"
+        value: implicitHeight
     }
 
     UbuntuShape {

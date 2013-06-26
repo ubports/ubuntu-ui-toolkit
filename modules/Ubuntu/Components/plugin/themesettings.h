@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,35 +13,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ * Authors: Zsombor Egri <zsombor.egri@canonical.com>
+ *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef THEMESETTINGS_P_H
-#define THEMESETTINGS_P_H
+#ifndef THEMESETTINGS_H
+#define THEMESETTINGS_H
 
 #include <QtCore/QFileSystemWatcher>
 #include <QtCore/QSettings>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
 #include <QtCore/QObject>
-
 
 class ThemeSettings : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString themeName READ themeName WRITE setThemeName NOTIFY themeNameChanged)
 public:
-    ThemeSettings(QObject *parent = 0);
-    QUrl themeFile() const;
-    QStringList imports() const;
+    explicit ThemeSettings(QObject *parent = 0);
+
+    // getter/setters
+    QString themeName() const;
+    void setThemeName(QString themeName);
 
 Q_SIGNALS:
-    void themeSettingsChanged();
+    void themeNameChanged();
 
 private Q_SLOTS:
-    void refreshSettings();
+    void reloadSettings();
 private:
-    QFileSystemWatcher configWatcher;
-    QSettings globalSettings;
+    QFileSystemWatcher m_settingsFileWatcher;
+    QSettings m_settings;
+    QString m_themeName;
 };
 
-#endif // THEMESETTINGS_P_H
+#endif // THEMESETTINGS_H

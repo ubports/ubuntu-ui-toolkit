@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import "." 0.1 as Theming
 
 /*!
     \qmltype ActivityIndicator
@@ -63,6 +58,5 @@ AnimatedItem {
     implicitWidth: units.gu(3)
     implicitHeight: units.gu(3)
 
-    Theming.ItemStyle.class: "activityindicator"
-
+    style: Theme.createStyleComponent("ActivityIndicatorDelegate.qml", indicator)
 }

@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Button
@@ -69,15 +64,13 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: button
 
-    // FIXME: see FIXME above
-    Theming.ItemStyle.class: "button"
     implicitWidth: units.gu(9)
     implicitHeight: units.gu(4)
 
     /*!
        The foreground color of the button in idle state.
     */
-    property color color: "transparent"
+    property color color: "#cccccc"
 
     /*!
        The source URL of the icon to display inside the button.
@@ -107,4 +100,6 @@ AbstractButton {
        https://bugreports.qt-project.org/browse/QTBUG-14861
     */
     property string iconPosition: "left"
+
+    style: Theme.createStyleComponent("ButtonDelegate.qml", button)
 }

@@ -21,35 +21,25 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // style properties
+    property url iconSource: "artwork/icon_clear.png"
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color
+    property color color: (control.enabled) ? "#757373"  : "darkgray"
     /*!
       Background fill color
       */
-    property color backgroundColor: Qt.rgba(0, 0, 0, 0.1)
+    property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1)
     property color errorColor: "red"
-    property real backgroundOpacity
+    property real backgroundOpacity: styledItem.enabled ? 1.0 : 0.1
 
     /*!
       Spacing between the frame and the text editor area
       */
-    property var frameSpacing
-    property real overlaySpacing
+    property real frameSpacing: units.gu(1)
+    property real overlaySpacing: units.gu(0.5)
 
     anchors.fill: parent
-
-    Binding {
-        target: styledItem.__internal
-        property: "frameSpacing"
-        value: visuals.frameSpacing
-    }
-    Binding {
-        target: styledItem.__internal
-        property: "spacing"
-        value: visuals.overlaySpacing
-    }
 
     z: -1
     UbuntuShape {

@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 EditorCursorDelegate {
     id: cursor
 
+    blinking: false
     property bool startPin: (styledItem.positionProperty === "selectionStart")
     property int cursorPosition: styledItem.editorItem[styledItem.positionProperty]
 

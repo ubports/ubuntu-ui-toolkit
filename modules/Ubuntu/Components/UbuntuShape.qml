@@ -15,7 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Theming
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Ubuntu named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype UbuntuShape
@@ -66,8 +70,6 @@ import Ubuntu.Components 0.1 as Theming
 Item {
     id: shape
 
-    Theming.ItemStyle.class: "UbuntuShape-radius-" + radius
-
     /*!
       The size of the corners among: "small" (default) and "medium".
     */
@@ -84,56 +86,21 @@ Item {
       color that fills the shape. It is optional to set this one as setting
       \l color is enough to set the overall color of the shape.
     */
-    property color gradientColor: Qt.rgba(0, 0, 0, 0)
+    property color gradientColor: Qt.rgba(0.95, 0.95, 0.91, 0.4)
 
     /*!
       \deprecated
       The image used to mask the \l image.
       We plan to expose that feature through styling properties.
     */
-    property url maskSource: ""
+    property url maskSource: "artwork/ubuntushape_%1_radius_shape.sci".arg(radius)
 
     /*!
       \deprecated
       The image used as a border.
       We plan to expose that feature through styling properties.
     */
-    /* FIXME: the theming engine sets the value for the borderSource property
-       declared in the theme. It overwrites the default value set below. However
-       the theming engine tries to be smart and not overwrite the value set when
-       instantiating the class. In the following example the value "mySource" is
-       not going to be overwritten by the theming engine:
-
-       UbuntuShape {
-            borderSource: "mySource"
-       }
-
-       with the theme:
-
-       .ubuntushape {
-            borderSource: url("themeSource")
-       }
-
-       However, in order to do so, the theming engine relies on the emission of
-       the 'changed' signal for the property which is emitted when the class
-       is instantiated _if_ the default value is different to the value set when
-       instantiating the class. This leads to a corner case that will have a
-       counter-intuitive result. Consider the following example where the default
-       value is identical to the value set at instantiation:
-
-       UbuntuShape {
-            borderSource: "*"
-       }
-
-       with the theme:
-
-       .ubuntushape {
-            borderSource: url("themeSource")
-       }
-
-       The final value of the 'borderSource' property will be "themeSource" and not "*".
-    */
-    property url borderSource: "*"
+    property url borderSource: "artwork/ubuntushape_%1_radius_idle.sci".arg(radius)
 
     /*!
       The image used to fill the shape.
@@ -143,7 +110,7 @@ Item {
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(8)
 
-    Theming.Shape {
+    Ubuntu.Shape {
         anchors.fill: parent
         visible: shape.visible
         image: shape.image && (shape.image.status == Image.Ready) ? shape.image : null
@@ -152,7 +119,7 @@ Item {
         borderSource: shape.borderSource
         radius: shape.radius
         stretched: shape.image && (shape.image.fillMode == Image.PreserveAspectCrop) ? false : true
-        horizontalAlignment: shape.image && (shape.image.horizontalAlignment == Image.AlignLeft) ? Theming.Shape.AlignLeft : shape.image && (shape.image.horizontalAlignment == Image.AlignRight) ? Theming.Shape.AlignRight : Theming.Shape.AlignHCenter
-        verticalAlignment: shape.image && (shape.image.verticalAlignment == Image.AlignTop) ? Theming.Shape.AlignTop : shape.image && (shape.image.verticalAlignment == Image.AlignBottom) ? Theming.Shape.AlignBottom : Theming.Shape.AlignVCenter
+        horizontalAlignment: shape.image && (shape.image.horizontalAlignment == Image.AlignLeft) ? Ubuntu.Shape.AlignLeft : shape.image && (shape.image.horizontalAlignment == Image.AlignRight) ? Ubuntu.Shape.AlignRight : Ubuntu.Shape.AlignHCenter
+        verticalAlignment: shape.image && (shape.image.verticalAlignment == Image.AlignTop) ? Ubuntu.Shape.AlignTop : shape.image && (shape.image.verticalAlignment == Image.AlignBottom) ? Ubuntu.Shape.AlignBottom : Ubuntu.Shape.AlignVCenter
     }
 }

@@ -20,20 +20,24 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color checkedColor
-    property color uncheckedColor
+    property color checkedColor: "#DD4814"
+    property color uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1)
+
     /*!
       The image to show inside the checkbox when it is checked.
      */
-    property url checkMarkSource
+    property url checkMarkSource: "artwork/CheckMark.png"
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
-    property PropertyAnimation backgroundColorAnimation: PropertyAnimation{duration: 0}
+    property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing }
 
     // code
     anchors.fill: parent
     opacity: enabled ? 1.0 : 0.5
+
+    implicitWidth: units.gu(4)
+    implicitHeight: units.gu(4)
 
     UbuntuShape {
         anchors.fill: parent

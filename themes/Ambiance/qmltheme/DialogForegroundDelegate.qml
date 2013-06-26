@@ -20,8 +20,9 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color color
-    property string radius
+    visible: styledItem.dismissArea.width > units.gu(60)
+    property color color: visible ? Qt.rgba(0, 0, 0, 0.7) : "transparent"
+    property string radius: "medium"
 
     anchors.fill: parent
     z: -1

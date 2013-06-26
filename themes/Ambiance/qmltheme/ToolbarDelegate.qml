@@ -19,11 +19,10 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color color
-    property real barOpacity
+    property color color: "white"
+    property real barOpacity: 0.9
 
     anchors.fill: parent
-    property alias contentItem: background
 
     Rectangle {
         id: background

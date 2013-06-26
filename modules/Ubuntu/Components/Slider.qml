@@ -33,11 +33,6 @@
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
 import "sliderUtils.js" as SliderFuncs
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import "." 0.1 as Theming
 
 /*!
     \qmltype Slider
@@ -87,8 +82,6 @@ AbstractButton {
 
     width: units.gu(38)
     height: units.gu(5)
-
-    Theming.ItemStyle.class: "slider"
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
     //     debate on whether we should use that property (like every other
@@ -179,9 +172,9 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property real thumbSpacing: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumbSpacing : 0
-        property Item bar: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.bar : null
-        property Item thumb: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumb :  null
+        property real thumbSpacing: slider.delegate ? slider.delegate.thumbSpacing : 0
+        property Item bar: slider.delegate ? slider.delegate.bar : null
+        property Item thumb: slider.delegate ? slider.delegate.thumb :  null
 
         property real liveValue: 0.0
         property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
@@ -244,4 +237,6 @@ AbstractButton {
             }
         }
     }
+
+    style: Theme.createStyleComponent("SliderDelegate.qml", slider)
 }

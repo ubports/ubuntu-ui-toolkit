@@ -15,12 +15,12 @@
  */
 
 import QtQuick 2.0
-import "." 0.1 as Theming
 import "Popups" 0.1
 
-Item {
+StyledItem {
     id: cursorItem
-    Theming.ItemStyle.class: "cursor"
+
+    width: units.dp(1)
 
     /*
       Property holding the text input item instance.
@@ -57,4 +57,6 @@ Item {
                             })
         }
     }
+
+    style: Theme.createStyleComponent("EditorCursorDelegate.qml", cursorItem)
 }

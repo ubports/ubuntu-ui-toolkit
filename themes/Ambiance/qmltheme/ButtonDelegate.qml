@@ -22,8 +22,8 @@ Item {
     anchors.fill: parent
 
     // styling properties
-    property url borderSource
-    property url borderPressed
+    property url borderSource: "artwork/ubuntushape_small_radius_idle.sci"
+    property url borderPressed: "artwork/ubuntushape_small_radius_pressed.sci"
 
     // pick either a clear or dark text color depending on the luminance of the
     // background color to maintain good contrast (works in most cases)
@@ -42,6 +42,7 @@ Item {
         color: styledItem.color
         borderSource: visuals.borderSource
         opacity: 1.0 - borderPressed.opacity
+        visible: color.a != 0.0
     }
 
     UbuntuShape {
@@ -52,6 +53,7 @@ Item {
         borderSource: visuals.borderPressed
         opacity: styledItem.pressed ? 1.0 : 0.0
         Behavior on opacity { UbuntuNumberAnimation {} }
+        visible: color.a != 0.0
     }
 
     TransparentButtonDelegate {

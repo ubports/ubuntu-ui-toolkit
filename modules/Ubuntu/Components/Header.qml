@@ -17,9 +17,9 @@
 import QtQuick 2.0
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
+// by the QML engine. As workaround, we use Ubuntu named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \internal
@@ -27,10 +27,8 @@ import Ubuntu.Components 0.1 as Theming
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
 */
-Item {
+StyledItem {
     id: header
-    // FIXME: see above
-    Theming.ItemStyle.class: "header"
 
     anchors {
         left: parent.left
@@ -41,7 +39,7 @@ Item {
     Behavior on y {
         enabled: !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: Theming.UbuntuAnimation.FastDuration
+            duration: Ubuntu.UbuntuAnimation.FastDuration
         }
     }
     height: units.gu(10)
@@ -149,4 +147,6 @@ Item {
             if (flickable && !flickable.interactive) header.show();
         }
     }
+
+    style: Theme.createStyleComponent("HeaderDelegate.qml", header)
 }

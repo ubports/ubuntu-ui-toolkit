@@ -63,23 +63,23 @@ Item {
     property real overlayOpacityWhenShown: 0.6
     property real overlayOpacityWhenHidden: 0.0
 
-    property PropertyAnimation scrollbarFadeInAnimation: PropertyAnimation{duration: 100}
-    property PropertyAnimation scrollbarFadeOutAnimation: PropertyAnimation{duration: 100}
-    property int scrollbarFadeOutPause: 100
-    property PropertyAnimation sliderAnimation: PropertyAnimation{duration: 100}
-    property PropertyAnimation thumbConnectorFading: PropertyAnimation{duration: 100}
-    property PropertyAnimation thumbFading: PropertyAnimation{duration: 100}
+    property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    property PropertyAnimation scrollbarFadeOutAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SlowDuration }
+    property int scrollbarFadeOutPause: 300
+    property PropertyAnimation sliderAnimation: UbuntuNumberAnimation {}
+    property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color sliderColor
-    property real sliderRadius
-    property color thumbConnectorColor
-    property url forwardThumbReleased
-    property url forwardThumbPressed
-    property url backwardThumbReleased
-    property url backwardThumbPressed
+    property color sliderColor: Qt.rgba(0.5, 0.5, 0.5, 0.7)
+    property real sliderRadius: units.gu(0.5)
+    property color thumbConnectorColor: "white"
+    property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomIdle.png" : "artwork/ScrollbarRightIdle.png"
+    property url forwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomPressed.png" : "artwork/ScrollbarRightPressed.png"
+    property url backwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarTopIdle.png" : "artwork/ScrollbarLeftIdle.png"
+    property url backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarTopPressed.png" : "artwork/ScrollbarLeftPressed.png"
 
-    property real scrollAreaThickness
-    property real thumbConnectorMargin
+    property real scrollAreaThickness: units.gu(0.5)
+    property real thumbConnectorMargin: units.dp(3)
 
     // helper properties to ease code readability
     property Flickable flickableItem: styledItem.flickableItem

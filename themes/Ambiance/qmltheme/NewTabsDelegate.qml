@@ -38,28 +38,28 @@ Item {
      */
     onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
 
-    property color headerTextColor
-    property color headerTextSelectedColor
-    property real headerTextOpacity
-    property real headerTextSelectedOpacity
-    property int headerTextFadeDuration
-    property string headerFontSize
-    property int headerFontWeight
-    property real headerTextLeftMargin
-    property real headerTextRightMargin
-    property real headerTextBottomMargin
-    property url indicatorImageSource
-    property real tabBarHeight
+    property color headerTextColor: "#333333"
+    property color headerTextSelectedColor: "#333333"
+    property real headerTextOpacity: 0.4
+    property real headerTextSelectedOpacity: 0.9
+    property int headerTextFadeDuration: 350
+    property string headerFontSize: "x-large"
+    property int headerFontWeight: Font.Light
+    property real headerTextLeftMargin: units.gu(2)
+    property real headerTextRightMargin: units.gu(2)
+    property real headerTextBottomMargin: units.gu(2)
+    property url indicatorImageSource: "artwork/chevron.png"
+    property real tabBarHeight: units.gu(7.5)
 
     /*!
       The time of inactivity in ms before the tab bar is automatically deactivated
      */
-    property int deactivateTime: 1000
+    property int deactivateTime: 3000
 
     /*!
       The velocity at which buttons are repositioned when a new tab gets selected.
      */
-    property real buttonPositioningVelocity
+    property real buttonPositioningVelocity: 1.0
 
     // visuals
     id: tabsDelegate

@@ -128,7 +128,7 @@ Item {
         }
     }
 
-    // This is the styledItem that will be the parent of the currently displayed page.
+    // This is the item that will be the parent of the currently displayed page.
     Item {
         id: tabsContainer
         anchors {

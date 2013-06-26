@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,21 +15,20 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 
-Item {
-    id: root
+FocusScope {
+    id: styledItem
 
-    property string themeError: Theme.error
-    property string themeFile: Theme.currentTheme
+    property Component style
+    readonly property Item delegate: delegateLoader.status == Loader.Ready ? delegateLoader.item : null
 
-    Item {
-        // fake style to enable styling of the item
-        ItemStyle.class: "fake"
-        // test item reflecting button properties styled
-        property color color
-        property url iconSource
-        property string text
-        property string iconPosition
+    implicitWidth: delegate ? delegate.implicitWidth : 0
+    implicitHeight: delegate ? delegate.implicitHeight : 0
+
+    Loader {
+        id: delegateLoader
+        anchors.fill: parent
+        sourceComponent: style
+        property Item styledItem: styledItem
     }
 }

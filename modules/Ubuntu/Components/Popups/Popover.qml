@@ -16,11 +16,7 @@
 
 import QtQuick 2.0
 import "internalPopupUtils.js" as InternalPopupUtils
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype Popover
@@ -129,13 +125,13 @@ PopupBase {
       The property holds the margins from the popover's dismissArea. The property
       is themed.
       */
-    property real edgeMargins
+    property real edgeMargins: units.gu(2)
 
     /*!
       The property holds the margin from the popover's caller. The property
       is themed.
       */
-    property real callerMargin
+    property real callerMargin: units.gu(1)
 
     /*!
       The property drives the automatic closing of the Popover when user taps
@@ -147,7 +143,7 @@ PopupBase {
       */
     property bool autoClose: true
 
-    Theming.ItemStyle.class: "popover"
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
     QtObject {
         id: internal
@@ -164,13 +160,11 @@ PopupBase {
     __eventGrabber.enabled: autoClose
     __closeOnDismissAreaPress: true
 
-    Item {
+    StyledItem {
         id: foreground
 
-        // FIXME: see above
-        Theming.ItemStyle.class: "foreground"
         //styling properties
-        property real minimumWidth
+        property real minimumWidth: units.gu(40)
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
@@ -179,6 +173,7 @@ PopupBase {
 
         Item {
             id: containerItem
+            parent: foreground.delegate.contentItem
             anchors {
                 left: parent.left
                 top: parent.top
@@ -189,6 +184,8 @@ PopupBase {
 
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
+
+        style: Theme.createStyleComponent("PopoverForegroundDelegate.qml", foreground)
     }
 
     Pointer { id: pointer }

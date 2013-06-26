@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ * Authors: Zsombor Egri <zsombor.egri@canonical.com>
+ *          Florian Boucault <florian.boucault@canonical.com>
  */
 
 #ifndef THEMEENGINE_H
@@ -21,50 +22,39 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
-#include "stylecache_p.h"
+#include <QtCore/QString>
+#include <QtQml/QQmlComponent>
 
-class QQmlEngine;
-class QJSEngine;
-class QQuickItem;
-class ItemStyleAttached;
+#include "themesettings.h"
 
-class ThemeEnginePrivate;
 class ThemeEngine : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString error READ error RESET resetError NOTIFY errorChanged)
-    Q_PROPERTY(QString currentTheme READ theme NOTIFY themeChanged)
-protected:
-    ThemeEngine(QObject *parent = 0);
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
+    static ThemeEngine& instance() {
+        static ThemeEngine instance;
+        return instance;
+    }
 
-    static QObject *initializeEngine(QQmlEngine *engine);
-    static ThemeEngine *instance();
+    explicit ThemeEngine(QObject *parent = 0);
 
     // getter/setters
-    QString error() const;
-    void resetError();
-    QString theme() const;
+    QString name() const;
+    void setName(QString name);
+
+    Q_INVOKABLE QQmlComponent* createStyleComponent(QString styleName, QObject* parent);
 
 Q_SIGNALS:
-    void errorChanged();
-    void themeChanged();
+    void nameChanged();
 
-public Q_SLOTS:
-    bool loadTheme(const QUrl &themeFile);
-
+private Q_SLOTS:
+    void onThemeNameChanged();
+    QUrl pathFromThemeName(QString themeName);
 private:
-    Q_DISABLE_COPY(ThemeEngine)
-    Q_DECLARE_PRIVATE(ThemeEngine)
-    QScopedPointer<ThemeEnginePrivate> d_ptr;
-
-#ifdef QT_TESTLIB_LIB
-    friend class tst_ThemeEnginePrivate;
-#endif
-
-    Q_PRIVATE_SLOT(d_func(), void _q_updateTheme())
-    Q_PRIVATE_SLOT(d_func(), void _q_reloadTheme())
+    QUrl m_path;
+    ThemeSettings m_themeSettings;
 };
 
 #endif // THEMEENGINE_H

@@ -24,7 +24,6 @@
 
 #include "plugin.h"
 #include "themeengine.h"
-#include "itemstyleattached.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -39,7 +38,6 @@
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
-#include "ucstyle.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
 #include "ucarguments.h"
@@ -64,7 +62,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
@@ -72,7 +69,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
-    qmlRegisterType<UCStyle>(uri, 0, 1, "Style");
     qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
     qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
@@ -89,7 +85,11 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
+    context->setContextProperty("Theme", &ThemeEngine::instance());
+    static ContextPropertyChangeListener themeChangeListener(context, "Theme");
+    QObject::connect(&ThemeEngine::instance(), SIGNAL(nameChanged()),
+                     &themeChangeListener, SLOT(updateContextProperty()));
+
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),

@@ -24,6 +24,10 @@ Image {
     anchors.fill: parent
 
     visible: (styledItem.direction !== "none")
+    source: (styledItem.direction === "left") ? "artwork/LeftArrow.png" :
+            (styledItem.direction === "right") ? "artwork/RightArrow.png" :
+            (styledItem.direction === "up") ? "artwork/UpArrow.png" :
+                                              "artwork/DownArrow.png"
 
     smooth: true
 }

@@ -19,9 +19,9 @@ import QtQuick 2.0
 Item {
     id: visuals
     // styling properties
-    property url backgroundLeft: ""
-    property url backgroundRight: ""
-    property url backgroundMiddle: ""
+    property url backgroundLeft: styledItem.selected ? "artwork/TabLeftSelected.sci" : "artwork/TabLeftUnselected.sci"
+    property url backgroundRight: styledItem.selected ? "artwork/TabRightSelected.sci" : "artwork/TabRightUnselected.sci"
+    property url backgroundMiddle: styledItem.selected ? "artwork/TabMiddleSelected.sci" : "artwork/TabMiddleUnselected.sci"
 
     anchors.fill: parent
 

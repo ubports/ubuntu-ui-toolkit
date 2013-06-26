@@ -26,6 +26,7 @@ Image {
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
+    source: "artwork/spinner.png"
 
     NumberAnimation on rotation {
         running: styledItem.running

@@ -34,10 +34,10 @@ Item {
     id: main
     // styling properties
 
-    property color backgroundColor: "white"
-    property color thumbColor: "darkgray"
-    property real thumbSpacing: 0
-    property real backgroundOpacity: 1.0
+    property color backgroundColor: "#c0c0c0"
+    property color thumbColor: "#bbbbbb"
+    property real thumbSpacing: units.dp(2)
+    property real backgroundOpacity: 0.1
     property real thumbOpacity: 1.0
 
     // visuals
@@ -82,5 +82,8 @@ Item {
         }
         horizontalAlignment: Text.AlignHCenter
         text: styledItem.formatValue(MathUtils.clamp(liveValue, styledItem.minimumValue, styledItem.maximumValue))
+        fontSize: "medium"
+        color: "white"
+        font.weight: Font.Bold
     }
 }

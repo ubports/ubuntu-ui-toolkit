@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import "." 0.1 as Theming
 
 /*!
     \qmltype TextField
@@ -59,14 +54,12 @@ import "." 0.1 as Theming
             }
             secondaryItem: Row {
                 Button {
-                    ItemStyle.class: "transparent-button"
                     height: parent.height
                     width: height
                     iconSource: "caps-lock.png"
                     onClicked: doSomething()
                 }
                 Button {
-                    ItemStyle.class: "transparent-button"
                     height: parent.height
                     width: height
                     iconSource: "num-lock.png"
@@ -78,7 +71,7 @@ import "." 0.1 as Theming
     \endqml
 */
 
-FocusScope {
+StyledItem {
     id: control
 
     implicitWidth: units.gu(25)
@@ -519,7 +512,6 @@ FocusScope {
     }
 
     // internals
-    Theming.ItemStyle.class: "textfield"
 
     /*! internal */
     onVisibleChanged: {
@@ -545,7 +537,7 @@ FocusScope {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: 0
+        property real spacing: control.delegate.overlaySpacing
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
@@ -656,8 +648,7 @@ FocusScope {
 
     AbstractButton {
         id: clearButton
-        Theming.ItemStyle.class: "clear-button"
-        property url iconSource
+        property url iconSource: control.delegate.iconSource
         anchors {
             top: parent.top
             right: rightPane.left
@@ -695,6 +686,9 @@ FocusScope {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
+        color: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+        fontSize: "medium"
+        elide: Text.ElideRight
     }
 
 
@@ -713,6 +707,11 @@ FocusScope {
         clip: true
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
+        color: control.delegate.color
+        selectedTextColor: "#F3F3E7"
+        selectionColor: "#19B6EE"
+        font.pixelSize: FontUtils.sizeToPixels("medium")
+        passwordCharacter: "\u2022"
         // forward keys to the root element so it can be captured outside of it
         Keys.forwardTo: [control]
 
@@ -778,4 +777,6 @@ FocusScope {
         editor.accepted.connect(control.accepted);
         cursorPosition = 0;
     }
+
+    style: Theme.createStyleComponent("TextAreaDelegate.qml", control)
 }
