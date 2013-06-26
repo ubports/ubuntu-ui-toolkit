@@ -23,7 +23,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
-#include <QDebug>
 
 /*!
   \qmltype Theme
