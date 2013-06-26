@@ -154,6 +154,7 @@ Item {
 
         // Don't fade in initial picture, only fade changes
         if (priv.currentImage.source == "") {
+            priv.currentImage.fillMode = fillMode
             priv.currentImage.source = source;
         } else {
             nextImageFadeIn.stop();
