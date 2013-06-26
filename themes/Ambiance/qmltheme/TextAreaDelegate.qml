@@ -25,7 +25,7 @@ Item {
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color: (control.enabled) ? "#757373"  : "darkgray"
+    property color color: (styledItem.enabled) ? "#757373"  : "darkgray"
     /*!
       Background fill color
       */
@@ -42,8 +42,8 @@ Item {
     anchors.fill: parent
 
     z: -1
-    UbuntuShape {
-        id: shape
+
+    property Component background: UbuntuShape {
         property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
@@ -54,5 +54,11 @@ Item {
             anchors.fill: parent
             onPressed: if (!styledItem.activeFocus && styledItem.activeFocusOnPress) styledItem.forceActiveFocus()
         }
+    }
+
+    Loader {
+        id: backgroundLoader
+        sourceComponent: background
+        anchors.fill: parent
     }
 }
