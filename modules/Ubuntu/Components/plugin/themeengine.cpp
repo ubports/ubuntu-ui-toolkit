@@ -68,11 +68,17 @@ void ThemeEngine::setName(QString name)
     m_themeSettings.setThemeName(name);
 }
 
+QUrl ThemeEngine::styleUrlForTheme(QString themeName, QString styleName)
+{
+    QUrl themePath = pathFromThemeName(themeName);
+    QUrl styleUrl = themePath.resolved(styleName);
+    return styleUrl;
+}
 
 QQmlComponent* ThemeEngine::createStyleComponent(QString styleName, QObject* parent)
 {
     QQmlEngine* engine = qmlEngine(parent);
-    QUrl styleUrl = m_path.resolved(styleName);
+    QUrl styleUrl = styleUrlForTheme(m_themeSettings.themeName(), styleName);
     QQmlComponent *component = new QQmlComponent(engine, styleUrl, QQmlComponent::PreferSynchronous, parent);
     return component;
 }

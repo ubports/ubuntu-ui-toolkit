@@ -52,6 +52,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
+    QUrl styleUrlForTheme(QString themeName, QString styleName);
 private:
     QUrl m_path;
     ThemeSettings m_themeSettings;
