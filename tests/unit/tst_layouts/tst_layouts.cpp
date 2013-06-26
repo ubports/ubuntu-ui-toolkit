@@ -28,6 +28,7 @@
 
 #include "ullayouts.h"
 #include "ucunits.h"
+#include <QtQuick/private/qquickanchors_p.h>
 
 #define QCOMPARE_RET(actual, expected) \
 do {\
@@ -368,6 +369,27 @@ private Q_SLOTS:
         QVERIFY(item);
 
         QCOMPARE(layout->childItems()[0], item);
+    }
+
+    void testCase_AnchorFilledReparenting()
+    {
+        QQuickItem *root = loadTest("AnchorFilledReparenting.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->fill(), layout);
     }
 
 };

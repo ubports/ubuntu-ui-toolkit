@@ -128,6 +128,18 @@ private:
 };
 
 
+class AnchorChange : public PropertyChange
+{
+public:
+    AnchorChange(QQuickItem *item, const QString &anchor, QQuickItem *target, const QString &targetAnchor = QString());
+
+    void apply();
+    void revert();
+private:
+    bool active;
+};
+
+
 class ItemStackBackup : public PropertyChange
 {
 public:

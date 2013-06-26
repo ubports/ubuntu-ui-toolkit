@@ -1,4 +1,5 @@
 include(../test-include.pri)
+include(../qtprivate_dependency.pri)
 
 QT += gui
 SOURCES += \
@@ -19,4 +20,5 @@ OTHER_FILES += \
     CurrentLayoutChange.qml \
     PositioningOnLayoutChange.qml \
     LaidOutItemsOutsideOfLayout.qml \
-    OverlaidInItemLayout.qml
+    OverlaidInItemLayout.qml \
+    AnchorFilledReparenting.qml
