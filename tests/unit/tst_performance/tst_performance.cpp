@@ -88,15 +88,12 @@ private Q_SLOTS:
 //        QTest::newRow("grid with Switch") << "SwitchGrid.qml" << QUrl();
         QTest::newRow("grid with SliderDelegate") << "SliderDelegateGrid.qml" << QUrl();
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
-        QTest::newRow("styled grid with Buttons") << "ButtonsWithStyledGrid.qml" << QUrl::fromLocalFile("CustomTheme.qmltheme");
     }
 
     void benchmark_GridOfComponents()
     {
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
-
-        //ThemeEngine::instance().setPath(theme);
 
         QQuickItem *root = 0;
         QBENCHMARK {

@@ -1,3 +1,0 @@
-.block {
-    textData: Text{font.family: "Ubuntu"; font.pixelSize: 12; text: "test"};
-}
