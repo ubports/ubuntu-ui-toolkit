@@ -43,6 +43,7 @@ Rectangle {
             objectName: "testItem"
             Layouts.item: "test"
             anchors.fill: parent
+            anchors.margins: 10
         }
     }
 }

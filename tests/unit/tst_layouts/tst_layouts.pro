@@ -21,4 +21,17 @@ OTHER_FILES += \
     PositioningOnLayoutChange.qml \
     LaidOutItemsOutsideOfLayout.qml \
     OverlaidInItemLayout.qml \
-    AnchorFilledReparenting.qml
+    AnchorFilledReparenting.qml \
+    AnchorCenteredInDefault.qml \
+    AnchorFilledMargins.qml \
+    AnchorFilledSeparateMargins.qml \
+    AnchorVerticalCenter.qml \
+    AnchorVerticalCenterOffset.qml \
+    AnchorCenterWithOffset.qml \
+    AnchorHorizontalCenter.qml \
+    AnchorHorizontalCenterOffset.qml \
+    AnchorLeft.qml \
+    AnchorRight.qml \
+    AnchorTop.qml \
+    AnchorBottom.qml \
+    AnchorAll.qml

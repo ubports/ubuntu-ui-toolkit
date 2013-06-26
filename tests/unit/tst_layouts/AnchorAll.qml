@@ -39,10 +39,16 @@ Rectangle {
         ]
 
         Rectangle {
+            width: 100
+            height: 100
             color: "red"
             objectName: "testItem"
             Layouts.item: "test"
-            anchors.fill: parent
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: 20
         }
     }
 }
