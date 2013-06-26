@@ -52,10 +52,11 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
-    QUrl styleUrlForTheme(QString themeName, QString styleName);
+    void updateThemePaths();
+    QUrl styleUrlForTheme(QString styleName);
     QString parentThemeName(QString themeName);
 private:
-    QUrl m_path;
+    QList<QUrl> m_themePaths;
     ThemeSettings m_themeSettings;
 };
 

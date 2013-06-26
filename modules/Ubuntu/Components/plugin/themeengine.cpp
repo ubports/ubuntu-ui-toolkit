@@ -39,12 +39,12 @@ ThemeEngine::ThemeEngine(QObject *parent) :
 {
     QObject::connect(&m_themeSettings, &ThemeSettings::themeNameChanged,
                      this, &ThemeEngine::onThemeNameChanged);
-    m_path = pathFromThemeName(m_themeSettings.themeName());
+    updateThemePaths();
 }
 
 void ThemeEngine::onThemeNameChanged()
 {
-    m_path = pathFromThemeName(m_themeSettings.themeName());
+    updateThemePaths();
     Q_EMIT nameChanged();
 }
 
@@ -59,6 +59,18 @@ QUrl ThemeEngine::pathFromThemeName(QString themeName)
     return QUrl::fromLocalFile(themeFolder);
 }
 
+void ThemeEngine::updateThemePaths()
+{
+    m_themePaths.clear();
+
+    QString themeName = m_themeSettings.themeName();
+    while (!themeName.isEmpty()) {
+        QUrl themePath = pathFromThemeName(themeName);
+        m_themePaths.append(themePath);
+        themeName = parentThemeName(themeName);
+    }
+}
+
 
 QString ThemeEngine::name() const
 {
@@ -70,15 +82,14 @@ void ThemeEngine::setName(QString name)
     m_themeSettings.setThemeName(name);
 }
 
-QUrl ThemeEngine::styleUrlForTheme(QString themeName, QString styleName)
+QUrl ThemeEngine::styleUrlForTheme(QString styleName)
 {
-    QUrl themePath = pathFromThemeName(themeName);
-    QUrl styleUrl = themePath.resolved(styleName);
+    QUrl styleUrl;
 
-    if (!QFile::exists(styleUrl.toLocalFile())) {
-        QString parent = parentThemeName(themeName);
-        if (!parent.isEmpty()) {
-            styleUrl = styleUrlForTheme(parent, styleName);
+    Q_FOREACH (QUrl themePath, m_themePaths) {
+        styleUrl = themePath.resolved(styleName);
+        if (QFile::exists(styleUrl.toLocalFile())) {
+            break;
         }
     }
 
@@ -100,7 +111,7 @@ QString ThemeEngine::parentThemeName(QString themeName)
 QQmlComponent* ThemeEngine::createStyleComponent(QString styleName, QObject* parent)
 {
     QQmlEngine* engine = qmlEngine(parent);
-    QUrl styleUrl = styleUrlForTheme(m_themeSettings.themeName(), styleName);
+    QUrl styleUrl = styleUrlForTheme(styleName);
     QQmlComponent *component = new QQmlComponent(engine, styleUrl, QQmlComponent::PreferSynchronous, parent);
     return component;
 }
