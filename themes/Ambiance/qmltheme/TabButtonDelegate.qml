@@ -40,7 +40,7 @@ Item {
 
     TransparentButtonDelegate {
         id: foreground
-        // update control's implicitWidth
+        // update styledItem's implicitWidth
         Binding {
             target: styledItem
             property: "implicitWidth"
