@@ -58,5 +58,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("EditorCursorDelegate.qml", cursorItem)
+    style: Theme.createStyleComponent("TextCursorDelegate.qml", cursorItem)
 }

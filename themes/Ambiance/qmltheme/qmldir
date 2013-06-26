@@ -3,11 +3,8 @@ ActivityIndicatorDelegate 0.1 ActivityIndicatorDelegate.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
 CheckBoxDelegate 0.1 CheckBoxDelegate.qml
 DialogForegroundDelegate 0.1 DialogForegroundDelegate.qml
-EditorCursorDelegate 0.1 EditorCursorDelegate.qml
 HeaderDelegate 0.1 HeaderDelegate.qml
 MainViewDelegate 0.1 MainViewDelegate.qml
-NewTabBar 0.1 NewTabBar.qml
-NewTabsDelegate 0.1 NewTabsDelegate.qml
 PointerDelegate 0.1 PointerDelegate.qml
 PointerDelegateShader 0.1 PointerDelegateShader.qml
 PopoverForegroundDelegate 0.1 PopoverForegroundDelegate.qml
@@ -19,6 +16,8 @@ SwitchDelegate 0.1 SwitchDelegate.qml
 TabButtonDelegate 0.1 TabButtonDelegate.qml
 TabsDelegate 0.1 TabsDelegate.qml
 TextAreaDelegate 0.1 TextAreaDelegate.qml
+TextCursorDelegate 0.1 TextCursorDelegate.qml
+TextFieldDelegate 0.1 TextFieldDelegate.qml
 ToolbarButtonDelegate 0.1 ToolbarButtonDelegate.qml
 ToolbarDelegate 0.1 ToolbarDelegate.qml
 TransparentButtonDelegate 0.1 TransparentButtonDelegate.qml

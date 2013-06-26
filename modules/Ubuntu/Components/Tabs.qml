@@ -212,5 +212,5 @@ PageTreeNode {
         }
     }
 
-    style: Theme.createStyleComponent("NewTabsDelegate.qml", tabs)
+    style: Theme.createStyleComponent("TabsDelegate.qml", tabs)
 }

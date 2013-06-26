@@ -778,5 +778,5 @@ StyledItem {
         cursorPosition = 0;
     }
 
-    style: Theme.createStyleComponent("TextAreaDelegate.qml", control)
+    style: Theme.createStyleComponent("TextFieldDelegate.qml", control)
 }
