@@ -21,6 +21,7 @@
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
 #include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 /*!
   \qmltype Theme
@@ -31,6 +32,7 @@
 
 const QString DEFAULT_THEMES_PATH("/usr/share/themes");
 const QString THEME_FOLDER_FORMAT("%1/%2/qmltheme/");
+const QString PARENT_THEME_FILE("parent_theme");
 
 ThemeEngine::ThemeEngine(QObject *parent) :
     QObject(parent)
@@ -72,7 +74,27 @@ QUrl ThemeEngine::styleUrlForTheme(QString themeName, QString styleName)
 {
     QUrl themePath = pathFromThemeName(themeName);
     QUrl styleUrl = themePath.resolved(styleName);
+
+    if (!QFile::exists(styleUrl.toLocalFile())) {
+        QString parent = parentThemeName(themeName);
+        if (!parent.isEmpty()) {
+            styleUrl = styleUrlForTheme(parent, styleName);
+        }
+    }
+
     return styleUrl;
+}
+
+QString ThemeEngine::parentThemeName(QString themeName)
+{
+    QString parentTheme;
+    QUrl themePath = pathFromThemeName(themeName);
+    QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        parentTheme = in.readLine();
+    }
+    return parentTheme;
 }
 
 QQmlComponent* ThemeEngine::createStyleComponent(QString styleName, QObject* parent)
