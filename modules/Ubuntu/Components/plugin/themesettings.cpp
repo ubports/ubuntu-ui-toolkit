@@ -23,19 +23,13 @@
 #include <QtCore/QFile>
 
 /*
-  ThemeSettings class handles the selection of the application style based on
-  global and application settings.
-
   User theme settings are stored in $HOME/.config/ubuntu-ui-toolkit/theme.ini file, which contains
-  the current global theme name and the QML import paths. These settings are
-  stored in "theme" and "imports" keywords.
-
-  System themes are stored under the /usr/share/themes/<theme-name>/qmltheme folder.
+  the current global theme name.
 */
 
 const QString SETTINGS_FILE_FORMAT("%1/.config/ubuntu-ui-toolkit/theme.ini");
 const QString THEME_KEY("theme");
-const QString DEFAULT_THEME("Ambiance");
+const QString DEFAULT_THEME("Ubuntu.Components.Themes.Ambiance");
 
 ThemeSettings::ThemeSettings(QObject *parent) :
     QObject(parent),

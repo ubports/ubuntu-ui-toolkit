@@ -50,9 +50,6 @@ private Q_SLOTS:
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
-        QString themes("../../../themes/Ambiance");
-        QVERIFY(QDir(themes).exists());
-
         quickView = new QQuickView(0);
         quickEngine = quickView->engine();
 
@@ -60,7 +57,6 @@ private Q_SLOTS:
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
         imports.prepend(QDir(modules).absolutePath());
-        imports.prepend(QDir(themes).absolutePath());
         quickEngine->setImportPathList(imports);
     }
 

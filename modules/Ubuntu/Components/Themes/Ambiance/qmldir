@@ -1,4 +1,4 @@
-module Ubuntu.Components.Styles
+module Ubuntu.Components.Themes.Ambiance
 ActivityIndicatorDelegate 0.1 ActivityIndicatorDelegate.qml
 ButtonDelegate 0.1 ButtonDelegate.qml
 CheckBoxDelegate 0.1 CheckBoxDelegate.qml

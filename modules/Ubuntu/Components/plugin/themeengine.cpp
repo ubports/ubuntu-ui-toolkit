@@ -22,6 +22,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QLibraryInfo>
+#include <QDebug>
 
 /*!
   \qmltype Theme
@@ -30,8 +32,7 @@
   \brief The Theme element provides functionality to change the current theme.
 */
 
-const QString DEFAULT_THEMES_PATH("/usr/share/themes");
-const QString THEME_FOLDER_FORMAT("%1/%2/qmltheme/");
+const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
 ThemeEngine::ThemeEngine(QObject *parent) :
@@ -52,10 +53,10 @@ QUrl ThemeEngine::pathFromThemeName(QString themeName)
 {
     QString themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
     if (themesPath.isEmpty()) {
-        themesPath = DEFAULT_THEMES_PATH;
+        themesPath = QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
     }
 
-    QString themeFolder = THEME_FOLDER_FORMAT.arg(themesPath, themeName);
+    QString themeFolder = THEME_FOLDER_FORMAT.arg(themesPath, themeName.replace('.', '/'));
     return QUrl::fromLocalFile(themeFolder);
 }
 
