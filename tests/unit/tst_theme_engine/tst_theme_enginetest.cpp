@@ -64,17 +64,6 @@ void tst_ThemeEngine::cleanupTestCase()
 
 void tst_ThemeEngine::testCase_loadTheme()
 {
-    /*
-    ThemeEngine::instance()->resetError();
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/test.qmltheme"));
-    QCOMPARE(ThemeEngine::instance()->error(), QString());
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/base.qmltheme"));
-    QCOMPARE(ThemeEngine::instance()->error(), QString());
-    ThemeEngine::instance()->loadTheme(QUrl::fromLocalFile("../../resources/null.qmltheme"));
-    QCOMPARE(ThemeEngine::instance()->error().isEmpty(), false);
-    ThemeEngine::instance()->loadTheme(QUrl("qrc:/test.qmltheme"));
-    QCOMPARE(ThemeEngine::instance()->error(), QString());
-    */
 }
 
 
