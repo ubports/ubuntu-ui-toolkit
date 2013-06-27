@@ -68,6 +68,20 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
+    def close_toolbar(self):
+        """Close the toolbar if it's opened."""
+        if self.get_toolbar().opened:
+            self._drag_to_close_toolbar()
+
+    def _drag_to_close_toolbar(self):
+        x = self.globalRect[0]
+        y = self.globalRect[1]
+        line_x = x + self.width * 0.50
+        start_y = y + self.height * 0.95
+        stop_y = y + self.height - 1
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""

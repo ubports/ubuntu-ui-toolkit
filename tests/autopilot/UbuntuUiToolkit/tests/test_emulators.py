@@ -17,6 +17,9 @@
 
 import mock
 
+from autopilot.matchers import Eventually
+from testtools.matchers import Equals
+
 from UbuntuUiToolkit import tests
 from UbuntuUiToolkit import emulators
 
@@ -95,7 +98,7 @@ MainView {
 
     def test_open_toolbar(self):
         toolbar = self.main_view.open_toolbar()
-        self.assertTrue(toolbar.opened)
+        self.assertThat(toolbar.opened, Eventually(Equals(True)))
 
     def test_opened_toolbar_is_not_opened_again(self):
         toolbar = self.main_view.open_toolbar()
@@ -105,3 +108,16 @@ MainView {
 
         self.assertFalse(mock_drag.called)
         self.assertTrue(toolbar.opened)
+
+    def test_close_toolbar(self):
+        toolbar = self.main_view.open_toolbar()
+        self.main_view.close_toolbar()
+        self.assertThat(toolbar.opened, Eventually(Equals(False)))
+
+    def test_closed_toolbar_is_not_closed_again(self):
+        with mock.patch.object(
+                self.main_view.pointing_device, 'drag') as mock_drag:
+            self.main_view.close_toolbar()
+
+        self.assertFalse(mock_drag.called)
+        self.assertFalse(self.main_view.get_toolbar().opened)
