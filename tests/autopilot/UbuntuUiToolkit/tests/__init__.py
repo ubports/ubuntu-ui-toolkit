@@ -18,7 +18,9 @@ from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
 from autopilot.testcase import AutopilotTestCase
 
+from UbuntuUiToolkit import emulators
 from UbuntuUiToolkit.emulators.main_window import MainWindow
+
 
 def get_module_include_path():
     return os.path.abspath(
@@ -64,7 +66,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path)
+                qml_path,
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
         if hasattr(self, 'test_qml_file') and isinstance(self.test_qml_file, basestring):
             qml_path = self.test_qml_file
@@ -164,6 +167,10 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         self.pointing_device.click()
 
     @property
+    def main_view(self):
+        """Return the MainView of the application."""
+        return self.app.select_single(emulators.MainView)
+        
+    @property
     def main_window(self):
         return MainWindow(self.app)
-
