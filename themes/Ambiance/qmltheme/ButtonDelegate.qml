@@ -42,6 +42,7 @@ Item {
         color: item.color
         borderSource: visuals.borderSource
         opacity: 1.0 - borderPressed.opacity
+        visible: color.a != 0.0
     }
 
     UbuntuShape {
@@ -52,6 +53,7 @@ Item {
         borderSource: visuals.borderPressed
         opacity: item.pressed ? 1.0 : 0.0
         Behavior on opacity { UbuntuNumberAnimation {} }
+        visible: color.a != 0.0
     }
 
     TransparentButtonDelegate {

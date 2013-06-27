@@ -77,7 +77,7 @@ AbstractButton {
     /*!
        The foreground color of the button in idle state.
     */
-    property color color: "transparent"
+    property color color: "#cccccc"
 
     /*!
        The source URL of the icon to display inside the button.
