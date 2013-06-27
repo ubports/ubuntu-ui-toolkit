@@ -53,13 +53,13 @@ FocusScope {
     /*!
        Instance of the \l style.
     */
-    readonly property Item delegate: delegateLoader.status == Loader.Ready ? delegateLoader.item : null
+    readonly property Item delegate: styleLoader.status == Loader.Ready ? styleLoader.item : null
 
     implicitWidth: delegate ? delegate.implicitWidth : 0
     implicitHeight: delegate ? delegate.implicitHeight : 0
 
     Loader {
-        id: delegateLoader
+        id: styleLoader
         anchors.fill: parent
         sourceComponent: style
         property Item styledItem: styledItem
