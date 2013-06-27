@@ -52,10 +52,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         return self.select_single(Toolbar)
 
     def open_toolbar(self):
-        """Open the toolbar if it's not already opened."""
+        """Open the toolbar if it's not already opened.
+
+        :return: the toolbar.
+
+        """
         toolbar = self.get_toolbar()
         if not toolbar.opened:
             self._drag_to_open_toolbar()
+            toolbar.opened.wait_for(True)
 
         return toolbar
 
@@ -70,8 +75,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        if self.get_toolbar().opened:
+        toolbar = self.get_toolbar()
+        if toolbar.opened:
             self._drag_to_close_toolbar()
+            toolbar.opened.wait_for(False)
 
     def _drag_to_close_toolbar(self):
         x = self.globalRect[0]
@@ -85,3 +92,22 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(Toolbar, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+    
+    def click_button(self, object_name):
+        """Click a button of the toolbar.
+
+        :param object_name: The QML objectName property of the button.
+
+        """
+        button = self._get_button(object_name)
+        not_found_error = 'Button with objectName "{0}" not found.'.format(
+            object_name)
+        assert button is not None, not_found_error
+        self.pointing_device.click_object(button)
+
+    def _get_button(self, object_name):
+        return self.select_single('ActionItem', objectName=object_name)

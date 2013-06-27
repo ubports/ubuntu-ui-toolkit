@@ -14,11 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import mock
-
-from autopilot.matchers import Eventually
-from testtools.matchers import Equals
 
 from UbuntuUiToolkit import tests
 from UbuntuUiToolkit import emulators
@@ -82,11 +78,20 @@ MainView {
     height: units.gu(50)
 
     Page {
+
+        Label {
+            id: "label"
+            objectName: "clicked_label"
+            anchors.centerIn: parent
+            text: "Button not clicked."
+        }
+
         tools: ToolbarItems {
             ToolbarButton {
                 action: Action {
-                    text: "button"
-                    onTriggered: print("success!")
+                    objectName: "buttonName"
+                    text: "buttonText"
+                    onTriggered: label.text = "Button clicked."
                 }
             }
         locked: false
@@ -98,7 +103,7 @@ MainView {
 
     def test_open_toolbar(self):
         toolbar = self.main_view.open_toolbar()
-        self.assertThat(toolbar.opened, Eventually(Equals(True)))
+        self.assertTrue(toolbar.opened)
 
     def test_opened_toolbar_is_not_opened_again(self):
         toolbar = self.main_view.open_toolbar()
@@ -112,7 +117,7 @@ MainView {
     def test_close_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.main_view.close_toolbar()
-        self.assertThat(toolbar.opened, Eventually(Equals(False)))
+        self.assertFalse(toolbar.opened)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
@@ -121,3 +126,18 @@ MainView {
 
         self.assertFalse(mock_drag.called)
         self.assertFalse(self.main_view.get_toolbar().opened)
+
+    def test_click_toolbar_button(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        toolbar = self.main_view.open_toolbar()
+        toolbar.click_button('buttonName')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_unexisting_button(self):
+        toolbar = self.main_view.open_toolbar()
+        error = self.assertRaises(
+            AssertionError, toolbar.click_button, 'unexisting')
+        self.assertEqual(
+            error.message, 'Button with objectName "unexisting" not found.')
+
