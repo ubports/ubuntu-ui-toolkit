@@ -94,8 +94,8 @@ MainView {
                     onTriggered: label.text = "Button clicked."
                 }
             }
-        locked: false
-        opened: false
+            locked: false
+            opened: false
         }
     }
 }
@@ -140,4 +140,3 @@ MainView {
             AssertionError, toolbar.click_button, 'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
-
