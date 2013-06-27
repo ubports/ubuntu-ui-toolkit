@@ -30,5 +30,5 @@ MainView {
         self.assertIsInstance(self.main_view, emulators.MainView)
 
     def test_get_header(self):
-        header = self.main_view.header
+        header = self.main_view.get_header()
         self.assertEqual(header.title, "Test title")

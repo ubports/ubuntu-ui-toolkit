@@ -16,8 +16,7 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
 class MainView(UbuntuUIToolkitEmulatorBase):
     """MainView Autopilot emulator."""
 
-    @property
-    def header(self):
+    def get_header(self):
         """Get the Header emulator of the MainView."""
         return self.select_single('Header')
 
