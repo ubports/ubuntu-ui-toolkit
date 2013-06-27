@@ -27,3 +27,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def get_header(self):
         """Get the Header emulator of the MainView."""
         return self.select_single('Header')
+
+    def get_toolbar(self):
+        """Get the Toolbar emulator of the MainView."""
+        return self.select_single(Toolbar)
+
+
+class Toolbar(UbuntuUIToolkitEmulatorBase):
+    """Toolbar Autopilot emulator."""

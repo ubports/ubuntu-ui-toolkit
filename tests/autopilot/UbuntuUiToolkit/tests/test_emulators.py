@@ -69,4 +69,4 @@ MainView {
 """)
 
     def test_toolbar_custom_emulator(self):
-        self.assertIsInstance(self.main_view.get_toolbar, emulators.Toolbar)
+        self.assertIsInstance(self.main_view.get_toolbar(), emulators.Toolbar)
