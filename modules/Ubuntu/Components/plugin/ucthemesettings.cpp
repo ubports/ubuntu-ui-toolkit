@@ -17,7 +17,7 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "themesettings.h"
+#include "ucthemesettings.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -31,7 +31,7 @@ const QString SETTINGS_FILE_FORMAT("%1/.config/ubuntu-ui-toolkit/theme.ini");
 const QString THEME_KEY("theme");
 const QString DEFAULT_THEME("Ubuntu.Components.Themes.Ambiance");
 
-ThemeSettings::ThemeSettings(QObject *parent) :
+UCThemeSettings::UCThemeSettings(QObject *parent) :
     QObject(parent),
     m_settings(SETTINGS_FILE_FORMAT.arg(QDir::homePath()), QSettings::IniFormat),
     m_themeName("")
@@ -44,11 +44,11 @@ ThemeSettings::ThemeSettings(QObject *parent) :
     }
 
     QObject::connect(&m_settingsFileWatcher, &QFileSystemWatcher::fileChanged,
-                     this, &ThemeSettings::reloadSettings);
+                     this, &UCThemeSettings::reloadSettings);
     reloadSettings();
 }
 
-void ThemeSettings::reloadSettings()
+void UCThemeSettings::reloadSettings()
 {
     m_settings.sync();
     m_settingsFileWatcher.addPath(m_settings.fileName());
@@ -60,12 +60,12 @@ void ThemeSettings::reloadSettings()
     }
 }
 
-QString ThemeSettings::themeName() const
+QString UCThemeSettings::themeName() const
 {
     return m_themeName;
 }
 
-void ThemeSettings::setThemeName(QString themeName)
+void UCThemeSettings::setThemeName(QString themeName)
 {
     if (themeName != m_themeName) {
         m_themeName = themeName;

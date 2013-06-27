@@ -19,15 +19,15 @@
 #include <QtTest/QtTest>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
-#include "themeengine.h"
+#include "uctheme.h"
 
 
-class tst_ThemeEngine : public QObject
+class tst_UCTheme : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_ThemeEngine();
+    tst_UCTheme();
 
 private Q_SLOTS:
     void initTestCase();
@@ -39,12 +39,12 @@ private:
     QQuickView *m_quickView;
 };
 
-tst_ThemeEngine::tst_ThemeEngine():
+tst_UCTheme::tst_UCTheme():
     m_quickView(0)
 {
 }
 
-void tst_ThemeEngine::initTestCase()
+void tst_UCTheme::initTestCase()
 {
     m_quickView = new QQuickView(0);
     m_quickView->setGeometry(0,0, 240, 320);
@@ -57,17 +57,17 @@ void tst_ThemeEngine::initTestCase()
     engine->setImportPathList(imports);
 }
 
-void tst_ThemeEngine::cleanupTestCase()
+void tst_UCTheme::cleanupTestCase()
 {
     delete m_quickView;
 }
 
-void tst_ThemeEngine::testCase_loadTheme()
+void tst_UCTheme::testCase_loadTheme()
 {
 }
 
 
 
-QTEST_MAIN(tst_ThemeEngine)
+QTEST_MAIN(tst_UCTheme)
 
 #include "tst_theme_enginetest.moc"

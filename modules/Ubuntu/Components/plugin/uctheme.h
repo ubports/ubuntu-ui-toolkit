@@ -17,34 +17,48 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef THEMESETTINGS_H
-#define THEMESETTINGS_H
+#ifndef UCTHEME_H
+#define UCTHEME_H
 
-#include <QtCore/QFileSystemWatcher>
-#include <QtCore/QSettings>
 #include <QtCore/QObject>
+#include <QtCore/QUrl>
+#include <QtCore/QString>
+#include <QtQml/QQmlComponent>
 
-class ThemeSettings : public QObject
+#include "ucthemesettings.h"
+
+class UCTheme : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString themeName READ themeName WRITE setThemeName NOTIFY themeNameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit ThemeSettings(QObject *parent = 0);
+    static UCTheme& instance() {
+        static UCTheme instance;
+        return instance;
+    }
+
+    explicit UCTheme(QObject *parent = 0);
 
     // getter/setters
-    QString themeName() const;
-    void setThemeName(QString themeName);
+    QString name() const;
+    void setName(QString name);
+
+    Q_INVOKABLE QQmlComponent* createStyleComponent(QString styleName, QObject* parent);
 
 Q_SIGNALS:
-    void themeNameChanged();
+    void nameChanged();
 
 private Q_SLOTS:
-    void reloadSettings();
+    void onThemeNameChanged();
+    QUrl pathFromThemeName(QString themeName);
+    void updateThemePaths();
+    QUrl styleUrlForTheme(QString styleName);
+    QString parentThemeName(QString themeName);
 private:
-    QFileSystemWatcher m_settingsFileWatcher;
-    QSettings m_settings;
-    QString m_themeName;
+    QString m_name;
+    QList<QUrl> m_themePaths;
+    UCThemeSettings m_themeSettings;
 };
 
-#endif // THEMESETTINGS_H
+#endif // UCTHEME_H

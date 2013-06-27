@@ -20,7 +20,8 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-    themeengine.h \
+    uctheme.h \
+    ucthemesettings.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
@@ -38,12 +39,11 @@ HEADERS += plugin.h \
     ucubuntuanimation.h \
     ucfontutils.h \
     ucarguments.h \
-    ucargument.h \
-    themesettings.h
+    ucargument.h
 
 SOURCES += plugin.cpp \
-    themeengine.cpp \
-    themesettings.cpp \
+    uctheme.cpp \
+    ucthemesettings.cpp \
     i18n.cpp \
     listener.cpp \
     ucscalingimageprovider.cpp \

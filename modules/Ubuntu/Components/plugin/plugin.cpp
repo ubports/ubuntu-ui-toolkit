@@ -23,7 +23,7 @@
 #include <QtGui/QScreen>
 
 #include "plugin.h"
-#include "themeengine.h"
+#include "uctheme.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -85,9 +85,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    context->setContextProperty("Theme", &ThemeEngine::instance());
+    context->setContextProperty("Theme", &UCTheme::instance());
     static ContextPropertyChangeListener themeChangeListener(context, "Theme");
-    QObject::connect(&ThemeEngine::instance(), SIGNAL(nameChanged()),
+    QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()),
                      &themeChangeListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());

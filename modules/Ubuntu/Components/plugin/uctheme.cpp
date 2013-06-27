@@ -17,7 +17,7 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "themeengine.h"
+#include "uctheme.h"
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
 #include <QtCore/QFile>
@@ -26,7 +26,7 @@
 
 /*!
     \qmltype Theme
-    \instantiates ThemeEngine
+    \instantiates UCTheme
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
@@ -66,17 +66,17 @@
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
-ThemeEngine::ThemeEngine(QObject *parent) :
+UCTheme::UCTheme(QObject *parent) :
     QObject(parent),
     m_name("")
 {
     m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &ThemeSettings::themeNameChanged,
-                     this, &ThemeEngine::onThemeNameChanged);
+    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                     this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
 }
 
-void ThemeEngine::onThemeNameChanged()
+void UCTheme::onThemeNameChanged()
 {
     if (m_themeSettings.themeName() != m_name) {
         m_name = m_themeSettings.themeName();
@@ -85,7 +85,7 @@ void ThemeEngine::onThemeNameChanged()
     }
 }
 
-QUrl ThemeEngine::pathFromThemeName(QString themeName)
+QUrl UCTheme::pathFromThemeName(QString themeName)
 {
     QString themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
     if (themesPath.isEmpty()) {
@@ -96,7 +96,7 @@ QUrl ThemeEngine::pathFromThemeName(QString themeName)
     return QUrl::fromLocalFile(themeFolder);
 }
 
-void ThemeEngine::updateThemePaths()
+void UCTheme::updateThemePaths()
 {
     m_themePaths.clear();
 
@@ -113,23 +113,23 @@ void ThemeEngine::updateThemePaths()
 
     The name of the current theme.
 */
-QString ThemeEngine::name() const
+QString UCTheme::name() const
 {
     return m_name;
 }
 
-void ThemeEngine::setName(QString name)
+void UCTheme::setName(QString name)
 {
     if (name != m_name) {
-        QObject::disconnect(&m_themeSettings, &ThemeSettings::themeNameChanged,
-                            this, &ThemeEngine::onThemeNameChanged);
+        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                            this, &UCTheme::onThemeNameChanged);
         m_name = name;
         updateThemePaths();
         Q_EMIT nameChanged();
     }
 }
 
-QUrl ThemeEngine::styleUrlForTheme(QString styleName)
+QUrl UCTheme::styleUrlForTheme(QString styleName)
 {
     QUrl styleUrl;
 
@@ -143,7 +143,7 @@ QUrl ThemeEngine::styleUrlForTheme(QString styleName)
     return styleUrl;
 }
 
-QString ThemeEngine::parentThemeName(QString themeName)
+QString UCTheme::parentThemeName(QString themeName)
 {
     QString parentTheme;
     QUrl themePath = pathFromThemeName(themeName);
@@ -160,7 +160,7 @@ QString ThemeEngine::parentThemeName(QString themeName)
 
     Returns an instance of the style component named \a styleName.
 */
-QQmlComponent* ThemeEngine::createStyleComponent(QString styleName, QObject* parent)
+QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
 {
     QQmlEngine* engine = qmlEngine(parent);
     QUrl styleUrl = styleUrlForTheme(styleName);

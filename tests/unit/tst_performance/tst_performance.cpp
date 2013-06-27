@@ -22,7 +22,7 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "themeengine.h"
+#include "uctheme.h"
 
 class tst_Performance : public QObject
 {
