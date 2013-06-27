@@ -21,6 +21,12 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         """Get the Header emulator of the MainView."""
         return self.select_single(Header)
 
+    def get_object(self, typeName, name):
+        return self.app.select_single(typeName, objectName=name)
+
+    def get_object_by_text(self, typeName, itemText):
+        return self.app.select_single(typeName, text=itemText)
+
 
 class Header(UbuntuUIToolkitEmulatorBase):
     """Header Autopilot emulator."""
