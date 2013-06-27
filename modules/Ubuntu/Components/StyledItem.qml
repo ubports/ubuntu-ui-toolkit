@@ -41,6 +41,8 @@ import QtQuick 2.0
 
     A reference to the Item being styled is accessible from the style and named
     'styledItem'.
+
+    \sa {Theme}
 */
 FocusScope {
     id: styledItem

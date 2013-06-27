@@ -25,10 +25,42 @@
 #include <QtCore/QLibraryInfo>
 
 /*!
-  \qmltype Theme
-  \inqmlmodule Ubuntu.Components 0.1
-  \ingroup theming
-  \brief The Theme element provides functionality to change the current theme.
+    \qmltype Theme
+    \instantiates ThemeEngine
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup theming
+    \brief The Theme class provides facilities to interact with the current theme.
+
+    A global instance is exposed as the \b Theme context property.
+
+    The theme defines the visual aspect of the Ubuntu components.
+
+    Example changing the current theme:
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    Item {
+        Button {
+            onClicked: Theme.name = "Ubuntu.Components.Themes.Ambiance"
+        }
+    }
+    \endqml
+
+    Example creating a style component:
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    StyledItem {
+        id: myItem
+        style: Theme.createStyleComponent("MyItemStyle.qml", myItem)
+    }
+    \endqml
+
+    \sa {StyledItem}
 */
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
@@ -71,7 +103,11 @@ void ThemeEngine::updateThemePaths()
     }
 }
 
+/*!
+    \qmlproperty string Theme::name
 
+    The name of the current theme.
+*/
 QString ThemeEngine::name() const
 {
     return m_themeSettings.themeName();
@@ -108,6 +144,11 @@ QString ThemeEngine::parentThemeName(QString themeName)
     return parentTheme;
 }
 
+/*!
+    \qmlmethod Component Theme::createStyleComponent(string styleName, object parent)
+
+    Returns an instance of the style component named \a styleName.
+*/
 QQmlComponent* ThemeEngine::createStyleComponent(QString styleName, QObject* parent)
 {
     QQmlEngine* engine = qmlEngine(parent);
