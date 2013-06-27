@@ -82,7 +82,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path)
+                qml_path,
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
