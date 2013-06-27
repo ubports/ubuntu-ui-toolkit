@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*!
-    \qmlmodule Ubuntu.Components 0.1
-    \title Basic QML Types
-    \nextpage {Ubuntu User Interface Toolkit}
-*/
+$(document).ready(function(){
+    var ul = $("ul.breadcrumb");
+    var li = ul.children("li:has(a)").remove();
+    ul.prepend(li);
+});
