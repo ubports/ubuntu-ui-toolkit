@@ -27,4 +27,3 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def get_header(self):
         """Get the Header emulator of the MainView."""
         return self.select_single('Header')
-
