@@ -14,7 +14,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from autopilot import input, platform
 from autopilot.introspection import dbus
+
+
+def get_pointing_device():
+    """Get the pointing device depending on the platform.
+
+    If the platform is `Desktop`, the pointing device will be a `Mouse`.
+    If it is `Touch`, the pointing device will be `Touch`.
+
+    """
+    if platform.model == 'Desktop':
+        input_device_class = input.Mouse
+    else:
+        input_device_class = input.Touch
+    return input.Pointer(input_device_class.create())
 
 
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
@@ -24,6 +39,10 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
 class MainView(UbuntuUIToolkitEmulatorBase):
     """MainView Autopilot emulator."""
 
+    def __init__(self, *args):
+        super(MainView, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+
     def get_header(self):
         """Get the Header emulator of the MainView."""
         return self.select_single('Header')
@@ -31,6 +50,23 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def get_toolbar(self):
         """Get the Toolbar emulator of the MainView."""
         return self.select_single(Toolbar)
+
+    def open_toolbar(self):
+        """Open the toolbar if it's not already opened."""
+        toolbar = self.get_toolbar()
+        if not toolbar.opened:
+            self._drag_to_open_toolbar()
+
+        return toolbar
+
+    def _drag_to_open_toolbar(self):
+        x = self.globalRect[0]
+        y = self.globalRect[1]
+        line_x = x + self.width * 0.50
+        start_y = y + self.height - 1
+        stop_y = y + self.height * 0.95
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):

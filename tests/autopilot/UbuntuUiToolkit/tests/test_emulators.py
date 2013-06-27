@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import mock
+
 from UbuntuUiToolkit import tests
 from UbuntuUiToolkit import emulators
 
@@ -66,7 +68,7 @@ MainView {
         self.assertEqual(header.title, "Test title")
 
 
-class _ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -92,4 +94,14 @@ MainView {
 """)
 
     def test_open_toolbar(self):
-        self.assertIsInstance(self.main_view.get_toolbar(), emulators.Toolbar)
+        toolbar = self.main_view.open_toolbar()
+        self.assertTrue(toolbar.opened)
+
+    def test_opened_toolbar_is_not_opened_again(self):
+        toolbar = self.main_view.open_toolbar()
+        with mock.patch.object(
+                self.main_view.pointing_device, 'drag') as mock_drag:
+            self.main_view.open_toolbar()
+
+        self.assertFalse(mock_drag.called)
+        self.assertTrue(toolbar.opened)
