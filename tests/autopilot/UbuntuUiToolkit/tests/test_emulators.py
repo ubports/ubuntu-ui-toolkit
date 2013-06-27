@@ -41,3 +41,32 @@ MainView {
     def test_get_header(self):
         header = self.main_view.get_header()
         self.assertEqual(header.title, "Test title")
+
+
+class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(50)
+    height: units.gu(50)
+
+    Page {
+        tools: ToolbarItems {
+            ToolbarButton {
+                action: Action {
+                    text: "button"
+                    onTriggered: print("success!")
+                }
+            }
+        locked: false
+        opened: false
+        }
+    }
+}
+""")
+
+    def test_toolbar_custom_emulator(self):
+        self.assertIsInstance(self.main_view.get_toolbar, emulators.Toolbar)
