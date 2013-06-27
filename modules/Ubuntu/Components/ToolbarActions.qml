@@ -246,7 +246,7 @@ Item {
             // Disable the mouse area so swipes on the button will not be blocked
             // from going to the toolbar. The panel will take care calling the button's clicked().
             __mouseArea.visible: false
-            style: Theme.createStyleComponent("ToolbarButtonDelegate.qml", toolButton)
+            style: Theme.createStyleComponent("ToolbarButtonStyle.qml", toolButton)
             width: visible ? units.gu(5) : 0
             height: toolbarActions.height
         }

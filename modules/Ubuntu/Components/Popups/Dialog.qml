@@ -157,7 +157,7 @@ PopupBase {
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
 
-        // used in the delegate
+        // used in the style
         property string title
         property string text
         property real minimumWidth: units.gu(38)
@@ -205,6 +205,6 @@ PopupBase {
             }
         }
 
-        style: Theme.createStyleComponent("DialogForegroundDelegate.qml", foreground)
+        style: Theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
     }
 }

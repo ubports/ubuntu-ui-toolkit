@@ -62,7 +62,7 @@ Item {
     property real buttonPositioningVelocity: 1.0
 
     // visuals
-    id: tabsDelegate
+    id: tabsStyle
     anchors.fill: parent
 
     property Tabs theTabs: styledItem
@@ -76,19 +76,19 @@ Item {
                 right: parent ? parent.right : undefined
             }
             //height: tabBarHeight
-            headerTextColor: tabsDelegate.headerTextColor
-            headerTextSelectedColor: tabsDelegate.headerTextSelectedColor
-            headerTextOpacity: tabsDelegate.headerTextOpacity
-            headerTextSelectedOpacity: tabsDelegate.headerTextSelectedOpacity
-            headerTextFadeDuration: tabsDelegate.headerTextFadeDuration
-            indicatorImageSource: tabsDelegate.indicatorImageSource
-            headerFontSize: tabsDelegate.headerFontSize
-            headerFontWeight: tabsDelegate.headerFontWeight
-            headerTextLeftMargin: tabsDelegate.headerTextLeftMargin
-            headerTextRightMargin: tabsDelegate.headerTextRightMargin
-            headerTextBottomMargin: tabsDelegate.headerTextBottomMargin
-            buttonPositioningVelocity: tabsDelegate.buttonPositioningVelocity
-            deactivateTime: tabsDelegate.deactivateTime
+            headerTextColor: tabsStyle.headerTextColor
+            headerTextSelectedColor: tabsStyle.headerTextSelectedColor
+            headerTextOpacity: tabsStyle.headerTextOpacity
+            headerTextSelectedOpacity: tabsStyle.headerTextSelectedOpacity
+            headerTextFadeDuration: tabsStyle.headerTextFadeDuration
+            indicatorImageSource: tabsStyle.indicatorImageSource
+            headerFontSize: tabsStyle.headerFontSize
+            headerFontWeight: tabsStyle.headerFontWeight
+            headerTextLeftMargin: tabsStyle.headerTextLeftMargin
+            headerTextRightMargin: tabsStyle.headerTextRightMargin
+            headerTextBottomMargin: tabsStyle.headerTextBottomMargin
+            buttonPositioningVelocity: tabsStyle.buttonPositioningVelocity
+            deactivateTime: tabsStyle.deactivateTime
         }
     }
 

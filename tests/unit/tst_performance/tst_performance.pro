@@ -4,15 +4,15 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 OTHER_FILES += \
     UbuntuShapeGrid.qml \
-    ButtonDelegateGrid.qml \
+    ButtonStyleGrid.qml \
     PairOfUbuntuShapeGrid.qml \
     ButtonGrid.qml \
-    CheckBoxDelegateGrid.qml \
+    CheckBoxStyleGrid.qml \
     CheckBoxGrid.qml \
-    SwitchDelegateGrid.qml \
+    SwitchStyleGrid.qml \
     SwitchGrid.qml \
     LabelGrid.qml \
-    SliderDelegateGrid.qml \
+    SliderStyleGrid.qml \
     SliderGrid.qml \
     TextGrid.qml \
     RectangleGrid.qml \

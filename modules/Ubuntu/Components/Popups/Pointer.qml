@@ -35,5 +35,5 @@ StyledItem {
     width: rotate ? shortAxis : longAxis
     height: rotate ? longAxis : shortAxis
 
-    style: Theme.createStyleComponent("PointerDelegate.qml", pointer)
+    style: Theme.createStyleComponent("PointerStyle.qml", pointer)
 }

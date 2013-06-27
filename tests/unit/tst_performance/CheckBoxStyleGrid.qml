@@ -32,7 +32,7 @@ Grid {
             property color color
             property bool checked
 
-            SwitchDelegate {
+            CheckBoxStyle {
                 property Item styledItem: thisItem
             }
         }

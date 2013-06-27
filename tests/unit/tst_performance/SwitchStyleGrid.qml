@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,26 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.Themes.Ambiance 0.1
 
-TextAreaDelegate {
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 16
+    Repeater {
+        model: 16*16
+        Item {
+            id: thisItem
+            property Item item: thisItem
+            property string text
+            property color color
+            property bool checked
+
+            SwitchStyle {
+                property Item styledItem: thisItem
+            }
+        }
+    }
 }

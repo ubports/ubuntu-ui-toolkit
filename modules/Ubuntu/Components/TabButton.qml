@@ -47,5 +47,5 @@ Button {
      */
     property bool __isLast: false
 
-    style: Theme.createStyleComponent("TabButtonDelegate.qml", tabButton)
+    style: Theme.createStyleComponent("TabButtonStyle.qml", tabButton)
 }

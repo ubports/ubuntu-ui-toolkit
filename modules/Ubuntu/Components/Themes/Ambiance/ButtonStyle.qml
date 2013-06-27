@@ -56,7 +56,7 @@ Item {
         visible: color.a != 0.0
     }
 
-    TransparentButtonDelegate {
+    TransparentButtonStyle {
         textColor: __luminance(styledItem.color) <= 0.72 ? Qt.rgba(0.95, 0.95, 0.91, 1.0) : Qt.rgba(0.2, 0.2, 0.2, 0.8)//"#333333"
     }
 }

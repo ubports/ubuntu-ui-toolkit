@@ -38,7 +38,7 @@ Item {
         }
     }
 
-    TransparentButtonDelegate {
+    TransparentButtonStyle {
         id: foreground
         // update styledItem's implicitWidth
         Binding {

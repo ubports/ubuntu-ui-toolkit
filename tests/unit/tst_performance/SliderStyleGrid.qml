@@ -26,14 +26,14 @@ Grid {
     Repeater {
         model: 16*16
         Item {
-            id: delegate
-            property Item item: delegate
+            id: thisItem
+            property Item item: thisItem
             property real minimumValue: 0.0
             property real maximumValue: 1.0
             property bool live
             function formatValue(v){return v}
-            SliderDelegate {
-                property Item styledItem: delegate
+            SliderStyle {
+                property Item styledItem: thisItem
             }
         }
     }

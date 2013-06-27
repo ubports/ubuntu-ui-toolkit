@@ -33,7 +33,7 @@ Grid {
             property string iconPosition: "left"
             property color color
 
-            ButtonDelegate {
+            ButtonStyle {
                 property Item styledItem: thisItem
             }
         }

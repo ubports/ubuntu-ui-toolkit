@@ -119,11 +119,11 @@ Panel {
         }
         height: units.gu(8)
 
-        // The values of opened and animated properties are used in the delegate
+        // The values of opened and animated properties are used in the style
         property bool opened: toolbar.opened
         property bool animating: toolbar.animating
 
-        style: Theme.createStyleComponent("ToolbarDelegate.qml", background)
+        style: Theme.createStyleComponent("ToolbarStyle.qml", background)
     }
 
     Item {

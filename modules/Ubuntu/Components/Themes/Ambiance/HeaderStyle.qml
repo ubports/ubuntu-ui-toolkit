@@ -17,7 +17,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    id: headerDelegate
+    id: headerStyle
     /*!
       The height of the headercontents, which is the full height of
       the header minus the separators shown at the bottom of it.
@@ -53,7 +53,7 @@ Item {
     property color textColor: Qt.rgba(0.51, 0.51, 0.51, 0.9)
     property real textLeftMargin: units.gu(2)
 
-    implicitHeight: headerDelegate.contentHeight + separator.height + separatorBottom.height
+    implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
     Rectangle {
         id: backgroundColor
@@ -62,9 +62,9 @@ Item {
             right: parent.right
             top: parent.top
         }
-        color: headerDelegate.backgroundColor
+        color: headerStyle.backgroundColor
         visible: color != "transparent"
-        height: headerDelegate.contentHeight + separator.height
+        height: headerStyle.contentHeight + separator.height
     }
     Image {
         id: background
@@ -73,10 +73,10 @@ Item {
             right: parent.right
             top: parent.top
         }
-        source: headerDelegate.backgroundSource
+        source: headerStyle.backgroundSource
         visible: source != ""
         fillMode: Image.Tile
-        height: headerDelegate.contentHeight + separator.height
+        height: headerStyle.contentHeight + separator.height
     }
     BorderImage {
         id: separator
@@ -85,7 +85,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        source: headerDelegate.separatorSource
+        source: headerStyle.separatorSource
     }
     Image {
         id: separatorBottom
@@ -94,7 +94,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        source: headerDelegate.separatorBottomSource
+        source: headerStyle.separatorBottomSource
     }
 
     Item {
@@ -104,19 +104,19 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: headerDelegate.contentHeight
+        height: headerStyle.contentHeight
 
         Label {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: headerDelegate.textLeftMargin
+                leftMargin: headerStyle.textLeftMargin
             }
             text: styledItem.title
-            font.weight: headerDelegate.fontWeight
+            font.weight: headerStyle.fontWeight
             visible: contentsLoader.status != Loader.Ready
-            fontSize: headerDelegate.fontSize
-            color: headerDelegate.textColor
+            fontSize: headerStyle.fontSize
+            color: headerStyle.textColor
         }
 
         property Header header: styledItem

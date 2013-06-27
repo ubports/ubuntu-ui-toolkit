@@ -1034,5 +1034,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("TextAreaDelegate.qml", control)
+    style: Theme.createStyleComponent("TextAreaStyle.qml", control)
 }

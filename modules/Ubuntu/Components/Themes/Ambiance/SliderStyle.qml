@@ -22,7 +22,7 @@ import Ubuntu.Components 0.1
   is having a label showing the actual value. This label can be styled using
   \b{.slider .label} selector.
 
-  This delegate is styled using the following properties:
+  This style is styled using the following properties:
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
   - thumbSpacing: spacing between the thumb and the bar

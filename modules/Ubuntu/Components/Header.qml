@@ -148,5 +148,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("HeaderDelegate.qml", header)
+    style: Theme.createStyleComponent("HeaderStyle.qml", header)
 }

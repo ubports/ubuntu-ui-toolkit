@@ -30,7 +30,7 @@ import QtQuick 2.0
     direction (RTL or LTR).
 
     The content position is driven through the attached Flickable. Therefore every
-    delegate implementation should drive the position through contentX/contentY
+    style implementation should drive the position through contentX/contentY
     properties, depending on whether the orientation is vertical or horizontal.
 
     Example:
@@ -147,5 +147,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("ScrollbarDelegate.qml", scrollbar)
+    style: Theme.createStyleComponent("ScrollbarStyle.qml", scrollbar)
 }

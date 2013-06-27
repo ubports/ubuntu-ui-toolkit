@@ -42,5 +42,5 @@ import QtQuick 2.0
 */
 CheckBox {
     id: switchItem
-    style: Theme.createStyleComponent("SwitchDelegate.qml", switchItem)
+    style: Theme.createStyleComponent("SwitchStyle.qml", switchItem)
 }

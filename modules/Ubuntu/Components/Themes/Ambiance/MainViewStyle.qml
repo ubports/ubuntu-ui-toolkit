@@ -20,7 +20,7 @@ Item {
     // styling properties
     anchors.fill: parent
     z: -1
-    id: mainViewDelegate
+    id: mainViewStyle
 
     /*!
       The background color of the main view.
@@ -36,13 +36,13 @@ Item {
     Rectangle {
         id: backgroundColor
         anchors.fill: parent
-        color: mainViewDelegate.backgroundColor
+        color: mainViewStyle.backgroundColor
     }
 
     Image {
         id: backgroundTexture
         anchors.fill: parent
-        source: mainViewDelegate.backgroundSource
+        source: mainViewStyle.backgroundSource
         fillMode: Image.Tile
     }
 }

@@ -42,7 +42,7 @@ import "sliderUtils.js" as SliderFuncs
      values.
 
     The slider's sensing area is defined by the width and height, therefore
-    delegates should take this into account when defining the visuals, and
+    styles should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
 
     \l {http://design.ubuntu.com/apps/building-blocks/slider}{See also the Design Guidelines on Sliders}.
@@ -63,16 +63,16 @@ import "sliderUtils.js" as SliderFuncs
     \section2 Theming
 
     The slider's default style class is \b slider and style properties depend on
-    the actual delegate defined by the theme, except of one property which defines
+    the actual style defined by the theme, except of one property which defines
     the spacing units between the slider's bar and thumb, called \b thumbSpacing.
     The slider uses one single touch sensing area to position the thumb within the
-    bar. Therefore However delegates must define the following properties:
+    bar. Therefore However styles must define the following properties:
     \list
     \li * \b bar - the slider's bar object
     \li * \b thumb - the slider's thumb object
     \endlist
 
-    Beside these, the library provies functions for delegates to update liveValue and
+    Beside these, the library provies functions for styles to update liveValue and
     normalizedValue in SliderUtils module.
 
     \b{This component is under heavy development.}
@@ -150,7 +150,7 @@ AbstractButton {
       default, the value v is rounded to the nearest interger value.
 
       \b Note: this function will be deprecated, and will be solved with particular
-      delegates for the thumb.
+      styles for the thumb.
      */
     function formatValue(v) {
         return v.toFixed(0)
@@ -238,5 +238,5 @@ AbstractButton {
         }
     }
 
-    style: Theme.createStyleComponent("SliderDelegate.qml", slider)
+    style: Theme.createStyleComponent("SliderStyle.qml", slider)
 }

@@ -121,7 +121,7 @@ PageTreeNode {
       \internal
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
-      FIXME: headerContents may be specified here directly, not taken from the delegate.
+      FIXME: headerContents may be specified here directly, not taken from the style.
      */
     property Component __headerContents
 
@@ -140,7 +140,7 @@ PageTreeNode {
 
     /*!
       \internal
-      Used by the delegate to create the tabs header.
+      Used by the style to create the tabs header.
     */
     property alias __tabs: tabsModel.tabList
 
@@ -151,7 +151,7 @@ PageTreeNode {
     default property alias tabChildren: tabsModel.children
 
     /*!
-      Used by the tabs delegate to update the tabs header with the titles of all the tabs.
+      Used by the tabs style to update the tabs header with the titles of all the tabs.
       This signal is used in an intermediate step in transitioning the tabs to a new
       implementation and may be removed in the future.
      */
@@ -159,7 +159,7 @@ PageTreeNode {
 
     /*!
       \internal
-      required by NewTabsDelegate
+      required by TabsStyle
      */
     Item {
         anchors.fill: parent
@@ -212,5 +212,5 @@ PageTreeNode {
         }
     }
 
-    style: Theme.createStyleComponent("TabsDelegate.qml", tabs)
+    style: Theme.createStyleComponent("TabsStyle.qml", tabs)
 }

@@ -104,6 +104,6 @@ PopupBase {
             }
         }
 
-        style: Theme.createStyleComponent("SheetForegroundDelegate.qml", sheet)
+        style: Theme.createStyleComponent("SheetForegroundStyle.qml", sheet)
     }
 }

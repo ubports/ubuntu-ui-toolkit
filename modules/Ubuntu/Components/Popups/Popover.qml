@@ -185,7 +185,7 @@ PopupBase {
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
 
-        style: Theme.createStyleComponent("PopoverForegroundDelegate.qml", foreground)
+        style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
     Pointer { id: pointer }
