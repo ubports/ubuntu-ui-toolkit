@@ -42,7 +42,6 @@ StyledItem {
             duration: Ubuntu.UbuntuAnimation.FastDuration
         }
     }
-    height: units.gu(10)
 
     /*! \internal */
     onHeightChanged: internal.movementEnded()
