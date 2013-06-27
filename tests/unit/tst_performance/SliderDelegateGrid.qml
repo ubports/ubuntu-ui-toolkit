@@ -32,7 +32,9 @@ Grid {
             property real maximumValue: 1.0
             property bool live
             function formatValue(v){return v}
-            SliderDelegate {}
+            SliderDelegate {
+                property Item styledItem: delegate
+            }
         }
     }
 }

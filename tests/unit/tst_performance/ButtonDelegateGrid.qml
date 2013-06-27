@@ -33,7 +33,9 @@ Grid {
             property string iconPosition: "left"
             property color color
 
-            ButtonDelegate {}
+            ButtonDelegate {
+                property Item styledItem: thisItem
+            }
         }
     }
 }

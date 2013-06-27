@@ -32,7 +32,9 @@ Grid {
             property color color
             property bool checked
 
-            SwitchDelegate {}
+            SwitchDelegate {
+                property Item styledItem: thisItem
+            }
         }
     }
 }

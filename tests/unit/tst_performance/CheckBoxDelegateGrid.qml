@@ -32,7 +32,9 @@ Grid {
             property color color
             property bool checked
 
-            CheckBoxDelegate {}
+            CheckBoxDelegate {
+                property Item styledItem: thisItem
+            }
         }
     }
 }
