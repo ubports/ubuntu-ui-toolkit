@@ -32,7 +32,7 @@ import QtQuick 2.0
     \qml
         StyledItem {
             id: myItem
-            style: Theme.createStyleComponent("MyItemDelegate.qml", myItem)
+            style: Theme.createStyleComponent("MyItemStyle.qml", myItem)
         }
     \endqml
 
