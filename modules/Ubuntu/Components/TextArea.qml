@@ -759,7 +759,7 @@ StyledItem {
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
         property real lineSpacing: units.dp(3)
-        property real frameSpacing: control.delegate.frameSpacing
+        property real frameSpacing: control.__styleInstance.frameSpacing
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
@@ -971,7 +971,7 @@ StyledItem {
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             cursorDelegate: cursor
-            color: control.delegate.color
+            color: control.__styleInstance.color
             selectedTextColor: "#F3F3E7"
             selectionColor: "#19B6EE"
             font.pixelSize: FontUtils.sizeToPixels("medium")

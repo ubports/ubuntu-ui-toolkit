@@ -37,7 +37,7 @@ import QtQuick 2.0
     \endqml
 
     The Component set on \l style is instantiated and placed below everything else
-    that the Item contains. That instance is accessible via the \l delegate property.
+    that the Item contains.
 
     A reference to the Item being styled is accessible from the style and named
     'styledItem'.
@@ -53,12 +53,13 @@ FocusScope {
     property Component style
 
     /*!
+       \internal
        Instance of the \l style.
     */
-    readonly property Item delegate: styleLoader.status == Loader.Ready ? styleLoader.item : null
+    readonly property Item __styleInstance: styleLoader.status == Loader.Ready ? styleLoader.item : null
 
-    implicitWidth: delegate ? delegate.implicitWidth : 0
-    implicitHeight: delegate ? delegate.implicitHeight : 0
+    implicitWidth: __styleInstance ? __styleInstance.implicitWidth : 0
+    implicitHeight: __styleInstance ? __styleInstance.implicitHeight : 0
 
     Loader {
         id: styleLoader

@@ -97,7 +97,7 @@ PopupBase {
 
         Item {
             id: containerItem
-            parent: foreground.delegate.contentItem
+            parent: foreground.__styleInstance.contentItem
             anchors {
                 fill: parent
                 margins: units.gu(1)

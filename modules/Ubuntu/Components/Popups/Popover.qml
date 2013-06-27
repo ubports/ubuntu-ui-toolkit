@@ -173,7 +173,7 @@ PopupBase {
 
         Item {
             id: containerItem
-            parent: foreground.delegate.contentItem
+            parent: foreground.__styleInstance.contentItem
             anchors {
                 left: parent.left
                 top: parent.top

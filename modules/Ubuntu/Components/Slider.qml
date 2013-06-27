@@ -172,9 +172,9 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property real thumbSpacing: slider.delegate ? slider.delegate.thumbSpacing : 0
-        property Item bar: slider.delegate ? slider.delegate.bar : null
-        property Item thumb: slider.delegate ? slider.delegate.thumb :  null
+        property real thumbSpacing: slider.__styleInstance ? slider.__styleInstance.thumbSpacing : 0
+        property Item bar: slider.__styleInstance ? slider.__styleInstance.bar : null
+        property Item thumb: slider.__styleInstance ? slider.__styleInstance.thumb :  null
 
         property real liveValue: 0.0
         property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /

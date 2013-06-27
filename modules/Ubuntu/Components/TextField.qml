@@ -537,7 +537,7 @@ StyledItem {
         id: internal
         // array of borders in left, top, right, bottom order
         property bool textChanged: false
-        property real spacing: control.delegate.overlaySpacing
+        property real spacing: control.__styleInstance.overlaySpacing
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
@@ -648,7 +648,7 @@ StyledItem {
 
     AbstractButton {
         id: clearButton
-        property url iconSource: control.delegate.iconSource
+        property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top
             right: rightPane.left
@@ -707,7 +707,7 @@ StyledItem {
         clip: true
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
-        color: control.delegate.color
+        color: control.__styleInstance.color
         selectedTextColor: "#F3F3E7"
         selectionColor: "#19B6EE"
         font.pixelSize: FontUtils.sizeToPixels("medium")
