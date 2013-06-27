@@ -156,7 +156,7 @@ AbstractButton
 modules/Ubuntu/Components/StyledItem.qml
 FocusScope
     property Component style
-    readonly property Item delegate
+    readonly property Item __styleInstance
 modules/Ubuntu/Components/Switch.qml
 CheckBox
 modules/Ubuntu/Components/Tab.qml
