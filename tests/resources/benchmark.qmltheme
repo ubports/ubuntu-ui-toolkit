@@ -246,7 +246,7 @@
 }
 
 .textfield .clear-button {
-    iconSource: url("artwork/icon_clear.png");
+    iconSource: url("artwork/clear.svg");
 }
 
 .textfield .label {

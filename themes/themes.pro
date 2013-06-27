@@ -14,6 +14,7 @@ theme_files.files = $$THEME_FILES
 
 ARTWORK_FILES += \
     Ambiance/qmltheme/artwork/*.png \
+    Ambiance/qmltheme/artwork/*.svg \
     Ambiance/qmltheme/artwork/*.sci
 theme_artworks.path = /usr/share/themes/Ambiance/qmltheme/artwork
 theme_artworks.files = $$ARTWORK_FILES
