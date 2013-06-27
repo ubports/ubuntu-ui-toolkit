@@ -17,7 +17,6 @@
 /*!
      \page overview-ubuntu-sdk.html overview
      \title Ubuntu User Interface Toolkit
-     \contentspage {Ubuntu User Interface Toolkit} {Contents}
 
      \part General Topics
      \list
@@ -28,7 +27,7 @@
      for them to behave well on a variety of devices.
      \endlist
 
-     \part Base Items
+     \part Basic QML Types
      Available through:
      \code
          import Ubuntu.Components 0.1

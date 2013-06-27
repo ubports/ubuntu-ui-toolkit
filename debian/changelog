@@ -1,3 +1,24 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130627-0ubuntu1) saucy; urgency=low
+
+  [ Sebastien Bacher ]
+  * List.Item.Standard: set the height and verticalCenter of the
+    control. (LP: #1190196)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 555
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 27 Jun 2013 04:01:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130626-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * [layouts] Layout factoring.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 552
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Jun 2013 04:01:25 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.20-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]
