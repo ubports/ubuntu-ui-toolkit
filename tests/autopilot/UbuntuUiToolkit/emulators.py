@@ -22,7 +22,7 @@ def get_pointing_device():
     """Get the pointing device depending on the platform.
 
     If the platform is `Desktop`, the pointing device will be a `Mouse`.
-    If it is `Touch`, the pointing device will be `Touch`.
+    If not, the pointing device will be `Touch`.
 
     """
     if platform.model == 'Desktop':
