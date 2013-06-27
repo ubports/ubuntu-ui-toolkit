@@ -19,7 +19,7 @@ import QtQuick 2.0
 /*!
     \qmlabstract StyledItem
     \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
+    \ingroup theming
     \brief The StyledItem class allows items to be styled by the theme.
 
     StyledItem provides facilities for making an Item stylable by the theme.
