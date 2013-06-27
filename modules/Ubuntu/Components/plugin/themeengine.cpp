@@ -67,8 +67,10 @@ const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
 ThemeEngine::ThemeEngine(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_name("")
 {
+    m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &ThemeSettings::themeNameChanged,
                      this, &ThemeEngine::onThemeNameChanged);
     updateThemePaths();
@@ -76,8 +78,11 @@ ThemeEngine::ThemeEngine(QObject *parent) :
 
 void ThemeEngine::onThemeNameChanged()
 {
-    updateThemePaths();
-    Q_EMIT nameChanged();
+    if (m_themeSettings.themeName() != m_name) {
+        m_name = m_themeSettings.themeName();
+        updateThemePaths();
+        Q_EMIT nameChanged();
+    }
 }
 
 QUrl ThemeEngine::pathFromThemeName(QString themeName)
@@ -95,7 +100,7 @@ void ThemeEngine::updateThemePaths()
 {
     m_themePaths.clear();
 
-    QString themeName = m_themeSettings.themeName();
+    QString themeName = m_name;
     while (!themeName.isEmpty()) {
         QUrl themePath = pathFromThemeName(themeName);
         m_themePaths.append(themePath);
@@ -110,12 +115,18 @@ void ThemeEngine::updateThemePaths()
 */
 QString ThemeEngine::name() const
 {
-    return m_themeSettings.themeName();
+    return m_name;
 }
 
 void ThemeEngine::setName(QString name)
 {
-    m_themeSettings.setThemeName(name);
+    if (name != m_name) {
+        QObject::disconnect(&m_themeSettings, &ThemeSettings::themeNameChanged,
+                            this, &ThemeEngine::onThemeNameChanged);
+        m_name = name;
+        updateThemePaths();
+        Q_EMIT nameChanged();
+    }
 }
 
 QUrl ThemeEngine::styleUrlForTheme(QString styleName)

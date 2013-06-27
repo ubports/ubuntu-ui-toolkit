@@ -56,6 +56,7 @@ private Q_SLOTS:
     QUrl styleUrlForTheme(QString styleName);
     QString parentThemeName(QString themeName);
 private:
+    QString m_name;
     QList<QUrl> m_themePaths;
     ThemeSettings m_themeSettings;
 };
