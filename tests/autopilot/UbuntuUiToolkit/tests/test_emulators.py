@@ -28,6 +28,31 @@ import Ubuntu.Components 0.1
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+}
+""")
+
+    def test_main_view_custom_emulator(self):
+        self.assertIsInstance(self.main_view, emulators.MainView)
+
+    def test_get_header_without_header(self):
+        header = self.main_view.get_header()
+        self.assertFalse(header.visible)
+
+    def test_toolbar_custom_emulator(self):
+        toolbar = self.main_view.get_toolbar()
+        self.assertIsInstance(toolbar, emulators.Toolbar)
+        self.assertFalse(toolbar.opened)
+
+
+class PageTestCase(tests.UbuntuUiToolkitTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
 
     Page {
         title: "Test title"
@@ -35,15 +60,13 @@ MainView {
 }
 """)
 
-    def test_main_view_custom_emulator(self):
-        self.assertIsInstance(self.main_view, emulators.MainView)
-
     def test_get_header(self):
         header = self.main_view.get_header()
+        self.assertTrue(header.visible)
         self.assertEqual(header.title, "Test title")
 
 
-class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+class _ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -68,5 +91,5 @@ MainView {
 }
 """)
 
-    def test_toolbar_custom_emulator(self):
+    def test_open_toolbar(self):
         self.assertIsInstance(self.main_view.get_toolbar(), emulators.Toolbar)
