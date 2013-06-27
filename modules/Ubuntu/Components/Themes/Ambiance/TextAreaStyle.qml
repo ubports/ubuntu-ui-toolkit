@@ -21,7 +21,7 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // style properties
-    property url iconSource: "artwork/icon_clear.png"
+    property url iconSource: "artwork/clear.svg"
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 

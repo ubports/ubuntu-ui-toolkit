@@ -6,6 +6,7 @@ installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 QMLDIR_FILE = qmldir
 QML_FILES = *.qml
 ARTWORK_FILES += artwork/*.png \
+                 artwork/*.svg
                  artwork/*.sci
 
 qmldir_file.path = $$installPath
