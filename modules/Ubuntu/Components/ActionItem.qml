@@ -45,12 +45,6 @@ Item {
     enabled: action ? action.enabled : true
 
     /*!
-      The objectName of the actionItem.
-      Default value: action.objectName
-     */
-    property string objectName: action ? action.objectName : ""
-
-    /*!
       The title of the actionItem.
       Default value: action.text
      */
