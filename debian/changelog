@@ -1,3 +1,19 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130628-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Button: do not display a background when the color set is fully
+    transparent.
+  * TextField: new clear icon imported from the icon theme (lp:ubuntu-
+    themes).
+
+  [ Christian Dywan ]
+  * Implement bread crumbs in API docs. (LP: #1168026)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 560
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 28 Jun 2013 04:01:36 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130627-0ubuntu1) saucy; urgency=low
 
   [ Sebastien Bacher ]
