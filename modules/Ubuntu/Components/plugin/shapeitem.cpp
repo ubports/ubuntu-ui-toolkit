@@ -21,6 +21,80 @@
 #include "ucunits.h"
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
+#include <QtQuick/private/qquickimage_p.h>
+
+/*!
+    \qmltype UbuntuShape
+    \instantiates ShapeItem
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
+
+    The UbuntuShape is used where a rounded rectangle is needed either filled
+    with a color or an image that it crops.
+
+    When given with a \l color it is applied with an overlay blending as a
+    vertical gradient going from \l color to \l gradientColor.
+    Two corner \l radius are available, "small" (default) and "medium", that
+    determine the size of the corners.
+    Optionally, an Image can be passed that will be displayed inside the
+    UbuntuShape and cropped to fit it.
+
+    Examples:
+    \qml
+        import Ubuntu.Components 0.1
+
+        UbuntuShape {
+            color: "lightblue"
+            radius: "medium"
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 0.1
+
+        UbuntuShape {
+            image: Image {
+                source: "icon.png"
+            }
+        }
+    \endqml
+*/
+
+/*!
+    \qmlproperty string UbuntuShape::radius
+
+    The size of the corners among: "small" (default) and "medium".
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::color
+
+    The top color of the gradient used to fill the shape. Setting only this
+    one is enough to set the overall color the shape.
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::gradientColor
+
+    The bottom color of the gradient used for the overlay blending of the
+    color that fills the shape. It is optional to set this one as setting
+    \l color is enough to set the overall color of the shape.
+*/
+
+/*!
+    \deprecated
+    \qmlproperty url UbuntuShape::borderSource
+
+    The image used as a border.
+    We plan to expose that feature through styling properties.
+*/
+
+/*!
+    \qmlproperty Image UbuntuShape::image
+
+    The image used to fill the shape.
+*/
 
 // Retrieves the size of an array at compile time.
 #define ARRAY_SIZE(a) \
@@ -136,11 +210,11 @@ static int sizeOfType(GLenum type)
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
     , color_(0.0, 0.0, 0.0, 0.0)
-    , gradientColor_(0.0, 0.0, 0.0, 0.0)
+    , gradientColor_(242, 242, 232, 102)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
     , borderSource_("")
-    , border_(ShapeItem::RawBorder)
+    , border_(ShapeItem::IdleBorder)
     , image_(NULL)
     , stretched_(true)
     , hAlignment_(ShapeItem::AlignHCenter)
@@ -149,6 +223,8 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , geometry_()
     , dirtyFlags_(ShapeItem::DirtyAll)
 {
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(gridUnitChanged()));
     setFlag(ItemHasContents);
@@ -207,6 +283,14 @@ void ShapeItem::setImage(QVariant image)
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
         image_ = newImage;
+
+        // update values of properties that depend on properties of the image
+        QObject::disconnect(image_);
+        if (newImage != NULL) {
+            updateFromImageProperties(newImage);
+            connectToImageProperties(newImage);
+        }
+
         if (image_ && !image_->parentItem()) {
             // Inlined images need a parent and must not be visible.
             image_->setParentItem(this);
@@ -217,6 +301,52 @@ void ShapeItem::setImage(QVariant image)
         Q_EMIT imageChanged();
     }
 }
+
+void ShapeItem::updateFromImageProperties(QQuickItem* image)
+{
+    // ShapeItem::stretched depends on image::fillMode
+    QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
+    if (fillMode == QQuickImage::PreserveAspectCrop) {
+        setStretched(false);
+    } else {
+        setStretched(true);
+    }
+
+    // ShapeItem::horizontalAlignment depends on image::horizontalAlignment
+    QQuickImage::HAlignment horizontalAlignment = (QQuickImage::HAlignment)image->property("horizontalAlignment").toInt();
+    setHorizontalAlignment((ShapeItem::HAlignment)horizontalAlignment);
+
+    // ShapeItem::verticalAlignment depends on image::verticalAlignment
+    QQuickImage::VAlignment verticalAlignment = (QQuickImage::VAlignment)image->property("verticalAlignment").toInt();
+    setVerticalAlignment((ShapeItem::VAlignment)verticalAlignment);
+}
+
+void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
+                                        QObject* receiver, const char* slot)
+{
+    int propertyIndex = sender->metaObject()->indexOfProperty(property);
+    QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
+
+    int slotIndex = receiver->metaObject()->indexOfSlot(slot);
+    QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
+
+    QObject::connect(sender, changeSignal, receiver, updateSlot);
+
+}
+
+void ShapeItem::connectToImageProperties(QQuickItem* image)
+{
+    connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
+}
+
+void ShapeItem::onImagePropertiesChanged()
+{
+    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
+    updateFromImageProperties(image);
+}
+
 
 void ShapeItem::setStretched(bool stretched)
 {
@@ -251,6 +381,8 @@ void ShapeItem::setVerticalAlignment(VAlignment vAlignment)
 void ShapeItem::gridUnitChanged()
 {
     gridUnit_ = UCUnits::instance().gridUnit();
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
     dirtyFlags_ |= ShapeItem::DirtyGridUnit;
     update();
 }

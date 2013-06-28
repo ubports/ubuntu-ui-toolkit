@@ -47,8 +47,8 @@ public:
 
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
-    enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
-    enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
+    enum HAlignment { AlignLeft = Qt::AlignLeft, AlignHCenter = Qt::AlignHCenter, AlignRight = Qt::AlignRight };
+    enum VAlignment { AlignTop = Qt::AlignTop, AlignVCenter = Qt::AlignVCenter, AlignBottom = Qt::AlignBottom };
 
     QColor color() const { return color_; }
     void setColor(const QColor& color);
@@ -82,6 +82,15 @@ Q_SIGNALS:
 protected:
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
     virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
+
+private:
+    void updateFromImageProperties(QQuickItem* image);
+    void connectToPropertyChange(QObject* sender, const char* property,
+                                 QObject* receiver, const char* slot);
+    void connectToImageProperties(QQuickItem* image);
+
+private Q_SLOTS:
+    void onImagePropertiesChanged();
 
 private:
     enum DirtyFlags {
