@@ -147,7 +147,7 @@ Item {
         anchors.fill: parent
         visible: shape.visible
         image: shape.image && (shape.image.status == Image.Ready) ? shape.image : null
-        baseColor: shape.color
+        color: shape.color
         gradientColor: shape.gradientColor
         borderSource: shape.borderSource
         radius: shape.radius

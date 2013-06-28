@@ -60,7 +60,7 @@ static const char* const shapeTexturedFragmentShader =
 static const char* const shapeColoredFragmentShader =
     "uniform lowp float opacity;                                                                \n"
     "uniform sampler2D shapeTexture;                                                            \n"
-    "uniform lowp vec4 baseColor;                                                               \n"
+    "uniform lowp vec4 color;                                                               \n"
     "uniform lowp vec4 gradientColor;                                                           \n"
     "varying lowp vec2 shapeCoord;                                                              \n"
     "varying lowp vec2 imageCoord;                                                              \n"
@@ -73,10 +73,10 @@ static const char* const shapeColoredFragmentShader =
     "{                                                                                          \n"
     "    lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);                             \n"
     "    lowp vec4 gradient = gradientColor * imageCoord.t;                                     \n"
-    "    lowp vec4 result = vec4(blendOverlay(baseColor.rgb / max(1.0/256.0, baseColor.a),      \n"
+    "    lowp vec4 result = vec4(blendOverlay(color.rgb / max(1.0/256.0, color.a),      \n"
     "                                         gradient.rgb / max(1.0/256.0, gradient.a)), 1.0); \n"
-    "    result *= baseColor.a;                                                                 \n"
-    "    lowp vec4 color = mix(baseColor, result, gradient.a) * vec4(shapeData.b);              \n"
+    "    result *= color.a;                                                                 \n"
+    "    lowp vec4 color = mix(color, result, gradient.a) * vec4(shapeData.b);              \n"
     "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * color;                    \n"
     "    gl_FragColor = blend * vec4(opacity);                                                  \n"
     "}";
@@ -135,7 +135,7 @@ static int sizeOfType(GLenum type)
 
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
-    , baseColor_(0.0, 0.0, 0.0, 0.0)
+    , color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
@@ -155,13 +155,13 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     update();
 }
 
-void ShapeItem::setBaseColor(const QColor& baseColor)
+void ShapeItem::setColor(const QColor& color)
 {
-    if (baseColor_ != baseColor) {
-        baseColor_ = baseColor;
-        dirtyFlags_ |= ShapeItem::DirtyBaseColor;
+    if (color_ != color) {
+        color_ = color;
+        dirtyFlags_ |= ShapeItem::DirtyColor;
         update();
-        Q_EMIT baseColorChanged();
+        Q_EMIT colorChanged();
     }
 }
 
@@ -324,7 +324,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
 
     // Update the other material properties.
-    coloredMaterial->setBaseColor(baseColor_);
+    coloredMaterial->setColor(color_);
     coloredMaterial->setGradientColor(gradientColor_);
     texturedMaterial->setImage(image_);
 
@@ -634,7 +634,7 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
 // --- Scene graph colored material ---
 
 ShapeColoredMaterial::ShapeColoredMaterial()
-    : baseColor_(0.0, 0.0, 0.0, 0.0)
+    : color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , shapeTexture_(NULL)
     , filtering_(QSGTexture::Nearest)
@@ -653,12 +653,12 @@ QSGMaterialShader* ShapeColoredMaterial::createShader() const
     return new ShapeColoredShader;
 }
 
-void ShapeColoredMaterial::setBaseColor(const QColor& baseColor)
+void ShapeColoredMaterial::setColor(const QColor& color)
 {
     // Premultiply color components by alpha.
-    const float alpha = baseColor.alphaF();
-    baseColor_ = QVector4D(baseColor.redF() * alpha, baseColor.greenF() * alpha,
-                           baseColor.blueF() * alpha, alpha);
+    const float alpha = color.alphaF();
+    color_ = QVector4D(color.redF() * alpha, color.greenF() * alpha,
+                           color.blueF() * alpha, alpha);
 }
 
 void ShapeColoredMaterial::setGradientColor(const QColor& gradientColor)
@@ -702,7 +702,7 @@ void ShapeColoredShader::initialize()
     program()->setUniformValue("shapeTexture", 0);
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
-    baseColorId_ = program()->uniformLocation("baseColor");
+    colorId_ = program()->uniformLocation("color");
     gradientColorId_ = program()->uniformLocation("gradientColor");
 }
 
@@ -728,6 +728,6 @@ void ShapeColoredShader::updateState(const RenderState& state, QSGMaterial* newE
         program()->setUniformValue(matrixId_, state.combinedMatrix());
     if (state.isOpacityDirty())
         program()->setUniformValue(opacityId_, state.opacity());
-    program()->setUniformValue(baseColorId_, material->baseColor());
+    program()->setUniformValue(colorId_, material->color());
     program()->setUniformValue(gradientColorId_, material->gradientColor());
 }
