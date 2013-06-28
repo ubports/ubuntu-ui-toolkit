@@ -32,6 +32,7 @@ Rectangle {
                 name: "landscape"
                 when: root.width > root.height
                 ItemLayout {
+                    objectName: "testLayout"
                     anchors.fill: parent
                     item: "test"
                 }

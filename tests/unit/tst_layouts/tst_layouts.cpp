@@ -388,6 +388,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->fill(), layout);
@@ -410,6 +414,9 @@ private Q_SLOTS:
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
 
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
 
         root->setWidth(root->width() - 100);
@@ -435,6 +442,9 @@ private Q_SLOTS:
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
 
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
         QCOMPARE(anchors->leftMargin(), 0.0);
         QCOMPARE(anchors->rightMargin(), 0.0);
@@ -466,6 +476,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->centerIn(), layout);
@@ -489,6 +503,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->verticalCenter().item, layout);
@@ -513,6 +531,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offset as it does not affect the fill
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->verticalCenter().item, layout);
@@ -537,6 +560,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->horizontalCenter().item, layout);
@@ -561,6 +588,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offset as it does not affect the fill
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->horizontalCenter().item, layout);
@@ -587,6 +619,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offsets as it does not affect the fill
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->centerIn(), layout);
@@ -613,6 +650,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->leftMargin(), 0.0);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->left().item, layout);
@@ -638,6 +680,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->topMargin(), 0.0);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->top().item, layout);
@@ -663,6 +710,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->rightMargin(), 0.0);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->right().item, layout);
@@ -688,6 +740,11 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->bottomMargin(), 0.0);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->bottom().item, layout);
@@ -717,6 +774,15 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QVERIFY(!anchors->left().item);
+        QVERIFY(!anchors->top().item);
+        QVERIFY(!anchors->right().item);
+        QVERIFY(!anchors->bottom().item);
+        QCOMPARE(anchors->margins(), 0.0);
+
         root->setWidth(root->width() - 100);
         QTest::waitForEvents();
         QCOMPARE(anchors->left().item, layout);
