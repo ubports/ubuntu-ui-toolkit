@@ -1,4 +1,5 @@
 include(../test-include.pri)
+include(../qtprivate_dependency.pri)
 
 QT += gui
 SOURCES += \
@@ -19,4 +20,18 @@ OTHER_FILES += \
     CurrentLayoutChange.qml \
     PositioningOnLayoutChange.qml \
     LaidOutItemsOutsideOfLayout.qml \
-    OverlaidInItemLayout.qml
+    OverlaidInItemLayout.qml \
+    AnchorFilledReparenting.qml \
+    AnchorCenteredInDefault.qml \
+    AnchorFilledMargins.qml \
+    AnchorFilledSeparateMargins.qml \
+    AnchorVerticalCenter.qml \
+    AnchorVerticalCenterOffset.qml \
+    AnchorCenterWithOffset.qml \
+    AnchorHorizontalCenter.qml \
+    AnchorHorizontalCenterOffset.qml \
+    AnchorLeft.qml \
+    AnchorRight.qml \
+    AnchorTop.qml \
+    AnchorBottom.qml \
+    AnchorAll.qml
