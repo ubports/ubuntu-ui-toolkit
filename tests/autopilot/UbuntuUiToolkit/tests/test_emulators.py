@@ -131,7 +131,6 @@ MainView {
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         toolbar = self.main_view.open_toolbar()
-        import pdb; pdb.set_trace()
         toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
