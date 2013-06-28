@@ -14,4 +14,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Ubuntu UI Toolkit autopilot tests and emulators - top level package."""
+from autopilot.introspection import dbus
+
+
+class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
+    """A base class for all the Ubuntu UI Toolkit emulators."""
+
+
+class MainView(UbuntuUIToolkitEmulatorBase):
+    """MainView Autopilot emulator."""
+
+    def get_header(self):
+        """Get the Header emulator of the MainView."""
+        return self.select_single('Header')
