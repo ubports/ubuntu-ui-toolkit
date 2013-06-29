@@ -75,7 +75,7 @@ AbstractButton {
     implicitHeight: Theming.ItemStyle.delegate.implicitHeight
 
     /*!
-       The foreground color of the button in idle state.
+       The background color of the button in idle state.
     */
     property color color: "#DD4814"
 
