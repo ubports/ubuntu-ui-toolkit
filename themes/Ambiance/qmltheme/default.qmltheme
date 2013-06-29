@@ -19,9 +19,7 @@ properties typed as variant.
 @qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.checkbox, , CheckBoxDelegate);
 @qml-mapping(.switch, , SwitchDelegate);
-@qml-mapping(.tabs, , TabsDelegate);
 @qml-mapping(.new-tabs, , NewTabsDelegate);
-@qml-mapping(.tab-button, , TabButtonDelegate);
 @qml-mapping(.custom-button, , ButtonDelegate);
 @qml-mapping(.scrollbar, , ScrollbarDelegate);
 @qml-mapping (.popover .foreground, , PopoverForegroundDelegate);
@@ -113,22 +111,6 @@ Examples:
     thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing };
     moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration };
     backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1);
-}
-
-.tabs {
-    buttonsExpanded: false;
-    separator: Rectangle {
-        color: "white";
-        height: units.dp(1);
-    };
-    horizontalPadding: units.gu(1);
-    minimumButtonWidth: units.gu(8);
-}
-
-.tab-button {
-    backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
-    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
-    backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
 }
 
 .new-tabs {

@@ -160,11 +160,6 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
-modules/Ubuntu/Components/TabButton.qml
-Button
-    property bool selected
-    property bool __isFirst
-    property bool __isLast
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex

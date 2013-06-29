@@ -70,22 +70,6 @@
     backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1);
 }
 
-.tabs {
-    buttonsExpanded: false;
-    separator: Rectangle {
-        color: "white";
-        height: units.dp(1);
-    };
-    horizontalPadding: units.gu(1);
-    minimumButtonWidth: units.gu(8);
-}
-
-.tab-button {
-    backgroundLeft: item.selected ? url("artwork/TabLeftSelected.sci") : url("artwork/TabLeftUnselected.sci");
-    backgroundRight: item.selected ? url("artwork/TabRightSelected.sci") : url("artwork/TabRightUnselected.sci");
-    backgroundMiddle: item.selected ? url("artwork/TabMiddleSelected.sci") : url("artwork/TabMiddleUnselected.sci");
-}
-
 .new-tabs {
     swipeToSwitchTabs: true;
     headerFontSize: "x-large";
