@@ -16,7 +16,6 @@ properties typed as variant.
 @qml-mapping(.toolbar, , ToolbarDelegate);
 @qml-mapping(.toolbar-button, , ToolbarButtonDelegate);
 @qml-mapping(.dark-button, , ButtonDelegate);
-@qml-mapping(.transparent-button, , TransparentButtonDelegate);
 @qml-mapping(.checkbox, , CheckBoxDelegate);
 @qml-mapping(.switch, , SwitchDelegate);
 @qml-mapping(.new-tabs, , NewTabsDelegate);
@@ -68,9 +67,6 @@ Examples:
 }
 
 .button, .custom-button {
-    color: "#cccccc";
-    borderSource: url("artwork/ubuntushape_small_radius_idle.sci");
-    borderPressed: url("artwork/ubuntushape_small_radius_pressed.sci");
 }
 
 .toolbar {
@@ -88,9 +84,6 @@ Examples:
 .toolbar-button .label {
     fontSize: "x-small";
     color: "#888888";
-}
-
-.transparent-button {
 }
 
 .checkbox {

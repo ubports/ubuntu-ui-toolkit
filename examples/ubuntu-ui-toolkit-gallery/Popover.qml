@@ -23,7 +23,7 @@ Template {
         ToolbarButton {
             id: actionsButton
             text: "Actions"
-            iconSource: "call_icon.png"
+            iconSource: "call.png"
             onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
             visible: true
         }

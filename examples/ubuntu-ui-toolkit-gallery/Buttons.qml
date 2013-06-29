@@ -45,14 +45,14 @@ Template {
 
             Button {
                 objectName: "button_iconsource"
-                iconSource: "call_icon.png"
+                iconSource: "call.png"
             }
 
             Button {
                 objectName: "button_iconsource_text"
                 width: units.gu(11)
                 text: i18n.tr("Call")
-                iconSource: "call_icon.png"
+                iconSource: "call.png"
             }
         }
 

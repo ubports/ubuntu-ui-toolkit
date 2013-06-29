@@ -71,13 +71,13 @@ AbstractButton {
 
     // FIXME: see FIXME above
     Theming.ItemStyle.class: "button"
-    implicitWidth: units.gu(9)
-    implicitHeight: units.gu(4)
+    implicitWidth: Theming.ItemStyle.delegate.implicitWidth
+    implicitHeight: Theming.ItemStyle.delegate.implicitHeight
 
     /*!
        The foreground color of the button in idle state.
     */
-    property color color: "#cccccc"
+    property color color: "#DD4814"
 
     /*!
        The source URL of the icon to display inside the button.
