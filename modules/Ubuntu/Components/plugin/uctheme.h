@@ -45,6 +45,7 @@ public:
     void setName(QString name);
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(QString styleName, QObject* parent);
+    QUrl styleUrl(QString styleName);
 
 Q_SIGNALS:
     void nameChanged();
@@ -53,7 +54,6 @@ private Q_SLOTS:
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
     void updateThemePaths();
-    QUrl styleUrlForTheme(QString styleName);
     QString parentThemeName(QString themeName);
 private:
     QString m_name;

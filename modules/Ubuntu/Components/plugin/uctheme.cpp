@@ -129,7 +129,7 @@ void UCTheme::setName(QString name)
     }
 }
 
-QUrl UCTheme::styleUrlForTheme(QString styleName)
+QUrl UCTheme::styleUrl(QString styleName)
 {
     QUrl styleUrl;
 
@@ -163,7 +163,7 @@ QString UCTheme::parentThemeName(QString themeName)
 QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
 {
     QQmlEngine* engine = qmlEngine(parent);
-    QUrl styleUrl = styleUrlForTheme(styleName);
-    QQmlComponent *component = new QQmlComponent(engine, styleUrl, QQmlComponent::PreferSynchronous, parent);
+    QUrl url = styleUrl(styleName);
+    QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
     return component;
 }
