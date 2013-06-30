@@ -1,5 +1,3 @@
-include( ../../../../common.pri )
-
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0

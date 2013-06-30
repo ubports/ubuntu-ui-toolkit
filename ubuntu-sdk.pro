@@ -1,4 +1,3 @@
-include( common.pri )
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs

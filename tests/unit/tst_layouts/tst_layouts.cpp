@@ -28,6 +28,8 @@
 
 #include "ullayouts.h"
 #include "ucunits.h"
+#include <QtQuick/private/qquickanchors_p.h>
+#include <QtQuick/private/qquickanchors_p_p.h>
 
 #define QCOMPARE_RET(actual, expected) \
 do {\
@@ -368,6 +370,427 @@ private Q_SLOTS:
         QVERIFY(item);
 
         QCOMPARE(layout->childItems()[0], item);
+    }
+
+    void testCase_AnchorFilledReparenting()
+    {
+        QQuickItem *root = loadTest("AnchorFilledReparenting.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->fill(), layout);
+    }
+
+    void testCase_AnchorFilledMargins()
+    {
+        QQuickItem *root = loadTest("AnchorFilledMargins.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->margins(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->fill(), layout);
+        QCOMPARE(anchors->margins(), 10.0);
+    }
+
+    void testCase_AnchorFilledSeparateMargins()
+    {
+        QQuickItem *root = loadTest("AnchorFilledSeparateMargins.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->margins(), 0.0);
+        QCOMPARE(anchors->leftMargin(), 0.0);
+        QCOMPARE(anchors->rightMargin(), 0.0);
+        QCOMPARE(anchors->topMargin(), 0.0);
+        QCOMPARE(anchors->bottomMargin(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->fill(), layout);
+        QCOMPARE(anchors->leftMargin(), 10.0);
+        QCOMPARE(anchors->topMargin(), 20.0);
+        QCOMPARE(anchors->rightMargin(), 30.0);
+        QCOMPARE(anchors->bottomMargin(), 40.0);
+    }
+
+    void testCase_AnchorCenteredInDefault()
+    {
+        QQuickItem *root = loadTest("AnchorCenteredInDefault.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->centerIn(), layout);
+    }
+
+    void testCase_AnchorVerticalCenter()
+    {
+        QQuickItem *root = loadTest("AnchorVerticalCenter.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->verticalCenter().item, layout);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->verticalCenter().item, layout);
+    }
+
+    void testCase_AnchorVerticalCenterOffset()
+    {
+        QQuickItem *root = loadTest("AnchorVerticalCenterOffset.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenterOffset(), 50.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offset as it does not affect the fill
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenterOffset(), 50.0);
+    }
+
+    void testCase_AnchorHorizontalCenter()
+    {
+        QQuickItem *root = loadTest("AnchorHorizontalCenter.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->horizontalCenter().item, layout);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->horizontalCenter().item, layout);
+    }
+
+    void testCase_AnchorHorizontalCenterOffset()
+    {
+        QQuickItem *root = loadTest("AnchorHorizontalCenterOffset.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offset as it does not affect the fill
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
+    }
+
+    void testCase_AnchorCenterWithOffset()
+    {
+        QQuickItem *root = loadTest("AnchorCenterWithOffset.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->centerIn(), layout);
+        QCOMPARE(anchors->verticalCenterOffset(), 50.0);
+        QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        // no need to check offsets as it does not affect the fill
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->centerIn(), layout);
+        QCOMPARE(anchors->verticalCenterOffset(), 50.0);
+        QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
+    }
+
+    void testCase_AnchorLeft()
+    {
+        QQuickItem *root = loadTest("AnchorLeft.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->leftMargin(), 10.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->leftMargin(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->leftMargin(), 10.0);
+    }
+
+    void testCase_AnchorTop()
+    {
+        QQuickItem *root = loadTest("AnchorTop.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->topMargin(), 10.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->topMargin(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->topMargin(), 10.0);
+    }
+
+    void testCase_AnchorRight()
+    {
+        QQuickItem *root = loadTest("AnchorRight.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->rightMargin(), 10.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->rightMargin(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->rightMargin(), 10.0);
+    }
+
+    void testCase_AnchorBottom()
+    {
+        QQuickItem *root = loadTest("AnchorBottom.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->bottomMargin(), 10.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QCOMPARE(anchors->bottomMargin(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->bottomMargin(), 10.0);
+    }
+
+    void testCase_AnchorAll()
+    {
+        QQuickItem *root = loadTest("AnchorAll.qml");
+        QVERIFY(root);
+
+        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QVERIFY(layout);
+
+        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QVERIFY(item);
+
+        QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+        QVERIFY(anchors);
+
+        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->bottom().item, layout);
+        QVERIFY(!anchors->fill());
+        QCOMPARE(anchors->margins(), 20.0);
+
+        root->setWidth(root->width() + 100);
+        QTest::waitForEvents();
+        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QVERIFY(testLayout);
+        QCOMPARE(anchors->fill(), testLayout);
+        QVERIFY(!anchors->left().item);
+        QVERIFY(!anchors->top().item);
+        QVERIFY(!anchors->right().item);
+        QVERIFY(!anchors->bottom().item);
+        QCOMPARE(anchors->margins(), 0.0);
+
+        root->setWidth(root->width() - 100);
+        QTest::waitForEvents();
+        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->bottom().item, layout);
+        QVERIFY(!anchors->fill());
+        QCOMPARE(anchors->margins(), 20.0);
     }
 
 };
