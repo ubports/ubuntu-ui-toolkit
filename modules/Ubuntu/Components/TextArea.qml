@@ -71,8 +71,6 @@ import QtQuick 2.0
     character or word. The editor leaves the selection mode by pressing/tapping again on it
     or by losing focus.
 
-    The default styling uses \b textarea selector.
-
     \b{This component is under heavy development.}
   */
 
@@ -91,19 +89,7 @@ StyledItem {
     property bool highlighted: focus
     /*!
       Text that appears when there is no focus and no content in the component
-      (hint text). The hint style can be customized by defining a style selector which
-      styles a label. For example the default styling defines the hint styling using
-      \b{.textarea .label} selector.
-
-      \code
-      .textarea .label {
-           italic: true;
-           color: "#B6B6B6";
-           fontSize: "small";
-           elide: Text.ElideRight;
-           wrapMode: Text.WordWrap;
-      }
-      \endcode
+      (hint text).
 
       \qmlproperty string placeholderText
       */

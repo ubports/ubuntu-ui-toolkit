@@ -19,8 +19,7 @@ import Ubuntu.Components 0.1
 
 /*
   The default slider style consists of a bar and a thumb shape, where the thumb
-  is having a label showing the actual value. This label can be styled using
-  \b{.slider .label} selector.
+  is having a label showing the actual value.
 
   This style is styled using the following properties:
   - backgroundColor: color for the slider bar
