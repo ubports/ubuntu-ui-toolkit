@@ -42,7 +42,7 @@ Item {
     UbuntuShape {
         id: backgroundPressed
         anchors.fill: parent
-        color: button.color
+        color: background.color
         borderSource: "radius_pressed.sci"
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {
