@@ -27,8 +27,8 @@ Palette {
         foregroundText: "#F3F3E7"
         tooltip: "#FDFDFD"
         tooltipText: "#888888"
-        field: "#19000000" // FIXME: not from design
-        fieldText: "#7F7F7F7F"
+        field: "#1A000000" // FIXME: same as background
+        fieldText: "#7F888888"
     }
     selected: PaletteValues {
         window: "#B2E6E6E6" // FIXME: not from design
