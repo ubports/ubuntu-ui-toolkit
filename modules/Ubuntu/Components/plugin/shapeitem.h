@@ -112,6 +112,7 @@ private:
 
     QColor color_;
     QColor gradientColor_;
+    bool gradientColorSet_;
     QString radiusString_;
     Radius radius_;
     QString borderSource_;
