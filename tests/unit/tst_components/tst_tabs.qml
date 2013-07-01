@@ -115,6 +115,7 @@ TestCase {
                 page: Page {
                     Flickable {
                         id: flickable1
+                        anchors.fill: parent
                     }
                 }
             }
@@ -123,6 +124,7 @@ TestCase {
                 page: Page {
                     Flickable {
                         id: flickable2
+                        anchors.fill: parent
                     }
                 }
             }
@@ -142,6 +144,7 @@ TestCase {
                 property Flickable flick: loadedFlickable
                 Flickable {
                     id: loadedFlickable
+                    anchors.fill: parent
                     contentHeight: 1000
                 }
             }

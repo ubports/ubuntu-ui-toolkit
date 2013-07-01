@@ -42,7 +42,6 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         color: styledItem.checked ? checkedColor : uncheckedColor
-        gradientColor: "transparent"
         Behavior on color {
             ColorAnimation {
                 duration: backgroundColorAnimation.duration

@@ -164,11 +164,6 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
-modules/Ubuntu/Components/TabButton.qml
-Button
-    property bool selected
-    property bool __isFirst
-    property bool __isLast
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
@@ -248,8 +243,6 @@ StyledItem
     property string positionProperty
     property var popover
     function openPopover()
-modules/Ubuntu/Components/TextCustom.qml
-Label
 modules/Ubuntu/Components/TextField.qml
 StyledItem
     property bool highlighted
@@ -320,14 +313,6 @@ Item
     property bool locked
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
-modules/Ubuntu/Components/UbuntuShape.qml
-Item
-    property string radius
-    property color color
-    property color gradientColor
-    property url maskSource
-    property url borderSource
-    property Image image
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickItem"
@@ -377,10 +362,10 @@ plugins.qmltypes
     Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1"]
+    exports: ["Shape 0.1", "UbuntuShape 0.1"]
     name: "HAlignment"
     name: "VAlignment"
-    Property { name: "baseColor"; type: "QColor" }
+    Property { name: "color"; type: "QColor" }
     Property { name: "gradientColor"; type: "QColor" }
     Property { name: "radius"; type: "string" }
     Property { name: "image"; type: "QVariant" }
