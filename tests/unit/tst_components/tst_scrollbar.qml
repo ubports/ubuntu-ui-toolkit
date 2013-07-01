@@ -94,7 +94,6 @@ TestCase {
         id: scrollbar
         SignalSpy {
             id: signals
-            target: scrollbar.ItemStyle
             signalName: "styleChanged"
         }
     }
