@@ -33,7 +33,7 @@ import QtQuick 2.0
             }
             Button {
                 iconSource: "icon.png"
-                color: "green"
+                color: UbuntuColors.warmGrey
                 onClicked: print("clicked icon-only Button")
             }
             Button {
@@ -56,7 +56,7 @@ import QtQuick 2.0
             Button {
                 anchors.centerIn: parent
                 action: action1
-                color: "green"
+                color: UbuntuColors.warmGrey
             }
        }
     \endqml
@@ -67,7 +67,7 @@ AbstractButton {
     /*!
        The background color of the button.
     */
-    property color color: "#DD4814"
+    property color color: UbuntuColors.orange
 
     /*!
        The source URL of the icon to display inside the button.
