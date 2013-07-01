@@ -25,11 +25,11 @@ Item {
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color: Theme.palette.selected.fieldText
+    property color color: Theme.palette.normal.fieldText
     /*!
       Background fill color
       */
-    property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.field : Theme.palette.normal.field
+    property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? Theme.palette.normal.field : Theme.palette.normal.background
     property color errorColor: UbuntuColors.orange
 
     /*!

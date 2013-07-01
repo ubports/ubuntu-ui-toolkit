@@ -687,7 +687,7 @@ StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: Theme.palette.normal.fieldText
+        color: Theme.palette.normal.windowText
         fontSize: "medium"
         elide: Text.ElideRight
     }

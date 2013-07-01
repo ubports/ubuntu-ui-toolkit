@@ -27,16 +27,14 @@ Palette {
         foregroundText: "#F3F3E7"
         tooltip: "#FDFDFD"
         tooltipText: "#888888"
-        field: "#1A000000" // FIXME: same as background
-        fieldText: "#7F888888"
+        field: "#FFFFFF"
+        fieldText: "#888888"
     }
     selected: PaletteValues {
         window: "#B2E6E6E6" // FIXME: not from design
         windowText: "#888888"
         foreground: "#DD4814"
         foregroundText: "#F3F3E7"
-        field: "#FFFFFF"
-        fieldText: "#888888"
     }
     disabled: PaletteValues {
     }
