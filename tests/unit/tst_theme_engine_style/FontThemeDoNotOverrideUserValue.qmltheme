@@ -1,3 +1,0 @@
-.test-text {
-    font: Qt.font({weight: Font.Bold});
-}

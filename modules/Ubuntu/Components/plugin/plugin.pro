@@ -18,14 +18,8 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-    themeengine.h \
-    themeengine_p.h \
-    themeloader_p.h \
-    themesettings_p.h \
-    stylecache_p.h \
-    itemstyleattached.h \
-    itemstyleattached_p.h \
-    qmlthemeloader_p.h \
+    uctheme.h \
+    ucthemesettings.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
@@ -40,19 +34,14 @@ HEADERS += plugin.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h \
-    selector_p.h \
-    ucstyle.h \
     ucubuntuanimation.h \
     ucfontutils.h \
     ucarguments.h \
     ucargument.h
 
 SOURCES += plugin.cpp \
-    themeengine.cpp \
-    stylecache.cpp \
-    themesettings.cpp \
-    itemstyleattached.cpp \
-    qmlthemeloader.cpp \
+    uctheme.cpp \
+    ucthemesettings.cpp \
     i18n.cpp \
     listener.cpp \
     ucscalingimageprovider.cpp \
@@ -65,8 +54,6 @@ SOURCES += plugin.cpp \
     bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
-    selector.cpp \
-    ucstyle.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
     ucarguments.cpp \

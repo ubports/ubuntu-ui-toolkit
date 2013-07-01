@@ -9,6 +9,8 @@ UNRELEASED
 
 API Changes
 ***********
+
+* REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
 * ADDED IN OrientationHelper: property bool transitionEnabled

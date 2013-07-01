@@ -1,7 +1,0 @@
-.leaf {
-    visible: true;
-}
-
-.level1 {
-    visible: true;
-}

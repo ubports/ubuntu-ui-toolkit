@@ -16,11 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
@@ -120,13 +115,13 @@ PopupBase {
       The property holds the margins from the dialog's dismissArea. The property
       is themed.
       */
-    property real edgeMargins
+    property real edgeMargins: units.gu(2)
 
     /*!
       The property holds the margin from the dialog's caller. The property
       is themed.
       */
-    property real callerMargin
+    property real callerMargin: units.gu(1)
 
     /*!
       The property controls whether the dialog is modal or not. Modal dialogs block
@@ -137,8 +132,6 @@ PopupBase {
       The default value is true.
       */
     property bool modal: true
-
-    Theming.ItemStyle.class: "dialog"
 
     /*
     QtObject {
@@ -157,22 +150,21 @@ PopupBase {
     __foreground: foreground
     __eventGrabber.enabled: modal
     __dimBackground: modal
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    Item {
+    StyledItem {
         id: foreground
-        // FIXME: see above
-        Theming.ItemStyle.class: "foreground"
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
 
-        // used in the delegate
+        // used in the style
         property string title
         property string text
-        property real minimumWidth
-        property real minimumHeight
+        property real minimumWidth: units.gu(38)
+        property real minimumHeight: units.gu(32)
         property real maxHeight: 3*dialog.height/4
-        property real margins
-        property real itemSpacing
+        property real margins: units.gu(4)
+        property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
 
         height: Math.min(childrenRect.height, dialog.height)
@@ -190,14 +182,18 @@ PopupBase {
             onWidthChanged: updateChildrenWidths();
 
             Label {
-                ItemStyle.class: "title"
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.title
+                fontSize: "large"
+                color: Qt.rgba(1, 1, 1, 0.9)
             }
 
             Label {
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.text
+                fontSize: "medium"
+                color: Qt.rgba(1, 1, 1, 0.6)
+                wrapMode: Text.Wrap
             }
 
             onChildrenChanged: updateChildrenWidths()
@@ -208,5 +204,7 @@ PopupBase {
                 }
             }
         }
+
+        style: Theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
     }
 }

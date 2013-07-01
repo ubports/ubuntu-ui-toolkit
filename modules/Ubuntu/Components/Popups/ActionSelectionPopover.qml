@@ -17,7 +17,6 @@
 import QtQuick 2.0
 import "../" 0.1
 import "../ListItems" 0.1
-import "../" 0.1 as Theming
 
 /*!
     \qmltype ActionSelectionPopover

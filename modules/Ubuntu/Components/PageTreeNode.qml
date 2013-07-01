@@ -26,7 +26,7 @@ import QtQuick 2.0
     It is used to propagate properties such as \l header and \l toolbar from a
     \l MainView (the root node) to each \l Page (leaf node) in the tree.
 */
-Item {
+StyledItem {
     id: node
 
     /*!

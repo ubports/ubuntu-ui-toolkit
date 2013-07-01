@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 import Ubuntu.Components 0.1
 
 /*!
@@ -134,14 +129,14 @@ OrientationHelper {
     // dimmer
     Rectangle {
         id: background
-        Theming.ItemStyle.class: "background"
         // styling properties
         property bool dim: false
         anchors.fill: parent
         visible: dim
+        color: popupBase.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9)
     }
 
-    Theming.InverseMouseArea {
+    InverseMouseArea {
         id: eventGrabber
         enabled: true
         anchors.fill: __foreground
