@@ -18,7 +18,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
+#include <QtQml/QQmlComponent>
 #include "uctheme.h"
 
 
@@ -26,44 +26,57 @@ class tst_UCTheme : public QObject
 {
     Q_OBJECT
 
-public:
-    tst_UCTheme();
-
 private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void testCase_loadTheme();
-
-private:
-    QQuickView *m_quickView;
+    void testInstance();
+    void testNameDefault();
+    void testNameSet();
+    void testCreateStyleComponent();
+    void testCreateStyleComponent_data();
 };
 
-tst_UCTheme::tst_UCTheme():
-    m_quickView(0)
+void tst_UCTheme::testInstance()
 {
+    UCTheme& theme = UCTheme::instance();
 }
 
-void tst_UCTheme::initTestCase()
+void tst_UCTheme::testNameDefault()
 {
-    m_quickView = new QQuickView(0);
-    m_quickView->setGeometry(0,0, 240, 320);
-
-    // add modules folder so we have access to the plugin from QML
-    QQmlEngine *engine = m_quickView->engine();
-    QString modules("../../../modules");
-    QStringList imports = engine->importPathList();
-    imports.prepend(QDir(modules).absolutePath());
-    engine->setImportPathList(imports);
+    UCTheme theme;
+    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::cleanupTestCase()
+void tst_UCTheme::testNameSet()
 {
-    delete m_quickView;
+    UCTheme theme;
+    theme.setName("MyBeautifulTheme");
+    QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
 }
 
-void tst_UCTheme::testCase_loadTheme()
+void tst_UCTheme::testCreateStyleComponent()
 {
+    QFETCH(QString, styleName);
+    QFETCH(QString, parentName);
+    QFETCH(bool, success);
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+
+    UCTheme theme;
+    theme.setName("TestModule.TestTheme");
+    QQmlEngine engine;
+    QQmlComponent parentComponent(&engine, parentName);
+    QObject* parent = parentComponent.create();
+    QQmlComponent* component = theme.createStyleComponent(styleName, parent);
+
+    QCOMPARE(component != NULL, success);
+}
+
+void tst_UCTheme::testCreateStyleComponent_data() {
+    QTest::addColumn<QString>("styleName");
+    QTest::addColumn<QString>("parentName");
+    QTest::addColumn<bool>("success");
+    QTest::newRow("Existing style") << "TestStyle.qml" << "Parent.qml" << true;
+    QTest::newRow("Non existing style") << "NotExistingTestStyle.qml" << "Parent.qml" << false;
+    QTest::newRow("No parent") << "TestStyle.qml" << "" << false;
 }
 
 
