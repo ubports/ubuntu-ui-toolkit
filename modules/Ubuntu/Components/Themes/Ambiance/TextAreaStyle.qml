@@ -25,13 +25,12 @@ Item {
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color: (styledItem.enabled) ? Theme.palette.selected.fieldText : Theme.palette.disabled.fieldText
+    property color color: Theme.palette.selected.fieldText
     /*!
       Background fill color
       */
     property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.field : Theme.palette.normal.field
     property color errorColor: UbuntuColors.orange
-    property real backgroundOpacity: styledItem.enabled ? 1.0 : 0.1
 
     /*!
       Spacing between the frame and the text editor area
@@ -48,7 +47,6 @@ Item {
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
-        opacity: visuals.backgroundOpacity
 
         MouseArea {
             anchors.fill: parent
