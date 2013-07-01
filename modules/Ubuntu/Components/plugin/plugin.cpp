@@ -78,17 +78,13 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    // call engine registration method to load the theme
     QQmlContext* context = engine->rootContext();
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    context->setContextProperty("Theme", &UCTheme::instance());
-    static ContextPropertyChangeListener themeChangeListener(context, "Theme");
-    QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()),
-                     &themeChangeListener, SLOT(updateContextProperty()));
+    UCTheme::instance().registerToContext(context);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");

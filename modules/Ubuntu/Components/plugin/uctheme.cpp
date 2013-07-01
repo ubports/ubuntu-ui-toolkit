@@ -18,8 +18,11 @@
  */
 
 #include "uctheme.h"
+#include "listener.h"
+
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
@@ -166,4 +169,14 @@ QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
     QUrl url = styleUrl(styleName);
     QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
     return component;
+}
+
+void UCTheme::registerToContext(QQmlContext* context)
+{
+    // register Theme
+    context->setContextProperty("Theme", this);
+
+    static ContextPropertyChangeListener themeChangeListener(context, "Theme");
+    QObject::connect(this, SIGNAL(nameChanged()),
+                     &themeChangeListener, SLOT(updateContextProperty()));
 }
