@@ -244,8 +244,6 @@ Item
     property string positionProperty
     property var popover
     function openPopover()
-modules/Ubuntu/Components/TextCustom.qml
-Label
 modules/Ubuntu/Components/TextField.qml
 FocusScope
     property bool highlighted
