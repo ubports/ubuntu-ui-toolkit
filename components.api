@@ -164,11 +164,6 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
-modules/Ubuntu/Components/TabButton.qml
-Button
-    property bool selected
-    property bool __isFirst
-    property bool __isLast
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
@@ -248,8 +243,6 @@ StyledItem
     property string positionProperty
     property var popover
     function openPopover()
-modules/Ubuntu/Components/TextCustom.qml
-Label
 modules/Ubuntu/Components/TextField.qml
 StyledItem
     property bool highlighted
