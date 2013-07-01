@@ -75,4 +75,5 @@ Item {
                 easing.type: Easing.Linear
             }
         }
+    }
 }
