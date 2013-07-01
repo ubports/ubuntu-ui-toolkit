@@ -138,20 +138,11 @@ static const char* const shapeColoredFragmentShader =
     "uniform lowp vec4 gradientColor;                                                           \n"
     "varying lowp vec2 shapeCoord;                                                              \n"
     "varying lowp vec2 imageCoord;                                                              \n"
-    "lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)                                    \n"
-    "{                                                                                          \n"
-    "    lowp vec3 comparison = clamp(sign(base.rgb - vec3(0.5)), vec3(0.0), vec3(1.0));        \n"
-    "    return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), comparison);  \n"
-    "}                                                                                          \n"
     "void main(void)                                                                            \n"
     "{                                                                                          \n"
     "    lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);                             \n"
-    "    lowp vec4 gradient = gradientColor * imageCoord.t;                                     \n"
-    "    lowp vec4 result = vec4(blendOverlay(color.rgb / max(1.0/256.0, color.a),      \n"
-    "                                         gradient.rgb / max(1.0/256.0, gradient.a)), 1.0); \n"
-    "    result *= color.a;                                                                 \n"
-    "    lowp vec4 color = mix(color, result, gradient.a) * vec4(shapeData.b);              \n"
-    "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * color;                    \n"
+    "    lowp vec4 result = mix(color, gradientColor, imageCoord.t) * vec4(shapeData.b);        \n"
+    "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * result;                   \n"
     "    gl_FragColor = blend * vec4(opacity);                                                  \n"
     "}";
 
@@ -210,7 +201,8 @@ static int sizeOfType(GLenum type)
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
     , color_(0.0, 0.0, 0.0, 0.0)
-    , gradientColor_(242, 242, 232, 102)
+    , gradientColor_(0.0, 0.0, 0.0, 0.0)
+    , gradientColorSet_(false)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
     , borderSource_("")
@@ -236,6 +228,12 @@ void ShapeItem::setColor(const QColor& color)
     if (color_ != color) {
         color_ = color;
         dirtyFlags_ |= ShapeItem::DirtyColor;
+        // gradientColor has the same value as color unless it was manually set
+        if (!gradientColorSet_) {
+            gradientColor_ = color;
+            dirtyFlags_ |= ShapeItem::DirtyGradientColor;
+            Q_EMIT gradientColorChanged();
+        }
         update();
         Q_EMIT colorChanged();
     }
@@ -243,6 +241,7 @@ void ShapeItem::setColor(const QColor& color)
 
 void ShapeItem::setGradientColor(const QColor& gradientColor)
 {
+    gradientColorSet_ = true;
     if (gradientColor_ != gradientColor) {
         gradientColor_ = gradientColor;
         dirtyFlags_ |= ShapeItem::DirtyGradientColor;
