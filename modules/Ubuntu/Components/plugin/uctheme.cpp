@@ -181,9 +181,20 @@ QString UCTheme::parentThemeName(QString themeName)
 */
 QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
 {
-    QQmlEngine* engine = qmlEngine(parent);
-    QUrl url = styleUrl(styleName);
-    QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
+    QQmlComponent *component = NULL;
+
+    if (parent != NULL) {
+        QQmlEngine* engine = qmlEngine(parent);
+        if (engine != NULL) {
+            QUrl url = styleUrl(styleName);
+            component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
+            if (component->isError()) {
+                delete component;
+                component = NULL;
+            }
+        }
+    }
+
     return component;
 }
 

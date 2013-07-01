@@ -1,4 +1,5 @@
 include(../test-include.pri)
-QT += gui
-SOURCES += \
-    tst_theme_enginetest.cpp
+SOURCES += tst_theme_enginetest.cpp
+
+OTHER_FILES += \
+    TestStyle.qml
