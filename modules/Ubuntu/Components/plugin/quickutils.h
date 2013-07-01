@@ -43,6 +43,7 @@ public:
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
     Q_INVOKABLE QString className(QQuickItem *item);
+    QObject* createQmlObject(const QUrl &url);
 
 Q_SIGNALS:
     void rootObjectChanged();
