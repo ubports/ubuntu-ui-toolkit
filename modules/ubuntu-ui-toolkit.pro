@@ -1,5 +1,4 @@
-include( ../common.pri )
-
 TEMPLATE = subdirs
 
-SUBDIRS += Ubuntu/Components
+SUBDIRS += Ubuntu/Components \
+    Ubuntu/Layouts

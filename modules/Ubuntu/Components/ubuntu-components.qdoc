@@ -16,5 +16,6 @@
 
 /*!
     \qmlmodule Ubuntu.Components 0.1
-    \title Base Items
+    \title Basic QML Types
+    \nextpage {Ubuntu User Interface Toolkit}
 */

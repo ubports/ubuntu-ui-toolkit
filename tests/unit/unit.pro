@@ -1,5 +1,3 @@
-include( ../../common.pri )
-
 TEMPLATE = subdirs
 
 SUBDIRS += testparser
@@ -28,4 +26,5 @@ SUBDIRS += tst_units \
     tst_performance \
     tst_ubuntu_shape \
     tst_arguments \
-    tst_argument
+    tst_argument \
+    tst_layouts

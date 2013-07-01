@@ -1,3 +1,51 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130628-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Button: do not display a background when the color set is fully
+    transparent.
+  * TextField: new clear icon imported from the icon theme (lp:ubuntu-
+    themes).
+
+  [ Christian Dywan ]
+  * Implement bread crumbs in API docs. (LP: #1168026)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 560
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 28 Jun 2013 04:01:36 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130627-0ubuntu1) saucy; urgency=low
+
+  [ Sebastien Bacher ]
+  * List.Item.Standard: set the height and verticalCenter of the
+    control. (LP: #1190196)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 555
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 27 Jun 2013 04:01:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130626-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * [layouts] Layout factoring.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 552
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Jun 2013 04:01:25 +0000
+
+ubuntu-ui-toolkit (0.1.46daily13.06.20-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Replace ToolbarActions by ToolbarItems and use ActionItem as a
+    visual representation of Actions. (LP: #1177123)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 550
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 20 Jun 2013 04:01:27 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.19-0ubuntu1) saucy; urgency=low
 
   [ Sebastien Bacher ]

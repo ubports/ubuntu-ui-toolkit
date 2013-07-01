@@ -1,0 +1,331 @@
+/*
+ * Copyright 2013 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*!
+  \page ubuntu-layouts.html
+  \title Layouts - Introduction
+  \nextpage Layouts - Terminology
+
+  QML has the following basic layout primitives:
+  \list
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-column.html}{Column} - arrange children in a column
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row} - arrange children in a row
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-grid.html}{Grid} - arrange children in a grid of x columns and y rows
+    \li \l {https://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-flow.html}{Flow} - arrange children side-by-side with wrapping
+  \endlist
+
+  \raw HTML
+    <br>
+  \endraw
+  Unfortunately in a design that needs to work in many different form factors these
+  aren't very flexible on their own as:
+  \list 1
+    \li not designed to alter size of children - so no form of stretching
+        supported by default.
+    \li as a result no way to have contents fill the container (without
+        calculating the width/height of the children manually).
+  \endlist
+
+  \raw HTML
+    <br>
+  \endraw
+  As a result, most applications need to do calculations to size the children
+  correctly in these primitives to fill the whole container.
+
+  Qt offers advice to developers on multi-layouts in QML. In summary they recommend:
+  \e {Application top level page definitions, and reusable component definitions, should use
+  one QML layout definition for the layout structure. This single definition should include the
+  layout design for separate Device Orientations and container Aspect Ratios.}
+
+  UIs layouts should be constructed to share as many components as possible. Then on display
+  mode change these shared components can be reparented, reducing number of components to
+  unload/reload and also helping to save state.
+
+  Using a Loader to switch the QML for different display modes is slower, and will involve
+  loss of state. Instead the above advice is to use AnchorChanges & PropertyChanges to specify
+  all layouts in one QML document, so switching display mode is dynamic - but admittedly is
+  a painful for all display modes and states that an application may want to support.
+
+  \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qmlmodule-qtquick-layouts1-qtquick-layouts-1-0.html}
+  {QtQuick Controls} introduces the \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-columnlayout.html}
+  {ColumnLayout}, \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-rowlayout.html}{RowLayout}
+  and \l {http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-gridlayout.html}{GridLayout}
+  components as well as the \l{http://doc-snapshot.qt-project.org/qt5-stable/qtquicklayouts/qml-qtquick-layouts1-layout.html}{Layout}
+  attached properties, which brings additional layouting possibilities to Qt Quick.
+
+  In addition to these, UI toolkit had introduced the Ubuntu.Layouts module to help developers
+  define different layouts for different orientations and form factors, all being possible
+  to be done within the same code base.
+
+  This tutorial gives an introduction to layout factoring abilities offered by
+  Ubuntu UI toolkit. It tries to cover few possible layout scenarios, however will
+  not cover advanced scenarios application developers may need.
+
+  Tutorial chapters:
+  \list 1
+  \li \l {Layouts - Terminology}{Terminology}
+  \li \l {Layouts - The first conditional layout}{The first conditional layout}
+  \li \l {Layouts - Changing the order}{Changing the order}
+  \li \l {Layouts - Lay out a single item differently from others}{Lay out a single item differently from others}
+  \li \l {Layouts - Hiding elements, showing more}{Hiding elements, showing more}
+  \li \l {Layouts - Overlay items in an item host}{Overlay items in an item host}
+  \li \l {Layouts - Defining more layouts for different form factors}{Defining more layouts for different form factors}
+  \endlist
+
+  So, let's take them step-by-step...
+*/
+
+/*!
+  \page ubuntu-layouts1.html
+  \title Layouts - Terminology
+  \nextpage Layouts - The first conditional layout
+
+  First let's introduce the terminology we are going to use across this tutorial.
+
+  \section3 Layout Block, Container and Item holder
+  A layout block is a component embedding several layout definitions and items to be
+  laid out. It is typically defined by the \l Layouts component.
+
+  Each layout defined in the block is compound of containers, which can host laid out
+  items hosted by item holders.
+
+  An item holder is a pseudo-item which can host only one item, where the item
+  is anchored to the item holder's edges, therefore the item holder has control
+  over the componet's size, scale and rotation.
+
+  To understand this let's take the following layout structure:
+  \image sample-layout.png
+
+  In this layout all three buttons are laid out in the same container, but green
+  button was required to take the height of the window, whereas the red and blue
+  buttons were required to have the same width and height.
+
+  Illustrating the layout on the image with code:
+
+  \qml
+  Layouts { // <-- layout block
+      id: layouts
+      layouts: [
+          // [...]
+          ConditionalLayout { // <-- layout
+              name: "composit"
+              Row { // <-- layout container
+                  // [...]
+                  ItemLayout { // <-- item holder
+                      item: "item2"
+                      // [...]
+                  }
+                  ItemLayout { // <-- item holder
+                      item: "item1"
+                      // [...]
+                  }
+                  ItemLayout { // <-- item holder
+                      item: "item3"
+                      // [...]
+                  }
+              }
+          }
+      ]
+
+      // the items to lay outitem3
+      Button {
+          Layouts.item: "item1"
+          // [...]
+      }
+      Button {
+          Layouts.item: "item2"
+          // [...]
+      }
+      Button {
+          Layouts.item: "item3"
+          // [...]
+      }
+  }
+  \endqml
+
+  A container can be any item, however it is preferable to use positioners or QtQuick
+  layout elements whenever possible.
+
+  As next step let's create some layouts.
+*/
+
+/*!
+  \page ubuntu-layouts2.html
+  \title Layouts - The first conditional layout
+  \nextpage Layouts - Changing the order
+
+  As first let's create the following default layout, with anchored buttons to each other.
+  \image default-layout.png
+
+  Defined by the following code:
+  \snippet layouts/layout1.qml default layout
+
+  \section1 Walkthrough
+  \section2 Import
+  First of all, in order to use the layouting abilities, you need to import Ubuntu.Layouts.
+  \code
+  import Ubuntu.Layouts 0.1
+  \endcode
+
+  This layout will have the red button anchored to the parent's left, top and bottom, having
+  a width of 15 grid units. The green and blue buttons are anchored left to the red button,
+  righ to their parent, top and bottom to the parent top respectively to the parent bottom
+  and both having a height of 10 grid units.
+
+  This layout looks good in small form factors, however as the width, height and grid unit
+  changes, this layout will start to look cumbersome.
+
+  Every component we wan to lay out must be marked. This "marking" is done by attaching the
+  Layouts.item property to erach item participating in the layouting. Therefore we
+  mark each button with a unique name, "red", "green" and "blue".
+
+  \section2 Define the conditional layout
+  Let's define a column layout for the case when the layout block width passes 50 GU, and
+  move the items into a \l{http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick2-row.html}{Row}
+  container in the following order: "red", "green" and "blue". We also need to specify the
+  size these components will have, so let's set the width to one third of the container's width
+  and top and bottom anchored to the row's top and bottom.
+  \snippet layouts/layout1.qml row layout
+
+  Note the way the container is defined. Items are laid out using ItemLayout host items.
+  The items will be laid out in the order the ItemLayout hosts are declared. Beside this
+  ItemLayout also drives the size, scale, rotation, availability (enabled) visibility and
+  opacity of the hosted item.
+
+  The conditional layout is given a name so it can be identified when the layout is set
+  through Layouts.curentLayout property. This, beside debugging abilities, gives additional
+  possibilities to configure properties that are not directly updated by the layouting.
+
+  Combining this with the default layout we will see the following layout when width exceeds
+  50 GU:
+  \image layout1.png
+  \snippet layouts/layout1.qml 0
+*/
+
+/*!
+  \page ubuntu-layouts3.html
+  \title Layouts - Changing the order
+  \nextpage Layouts - Lay out a single item differently from others
+
+  So far we have seen how to define the default layout, a conditional layout and how to place
+  items into those.
+
+  As mentioned in the ConditionalLayout documentation, items hosted by the container are laid
+  out based on the order they are hosted by the ItemLayout.
+
+  So let's change the order the buttons are laid out so that we have blue, red and green
+  order.
+
+  \snippet layouts/layout2.qml row layout
+  The layout after resizing the window width to exceed 50 GU will look as follows:
+  \image layout2.png
+
+  Note that when resizing the window width to < 50 GU, you will get all your components back to
+  their original (default) positions and anchors.
+*/
+
+/*!
+  \page ubuntu-layouts4.html
+  \title Layouts - Lay out a single item differently from others
+  \nextpage Layouts - Hiding elements, showing more
+  As mentioned, ItemLayout has control over the size, anchors and visibility of the hosted element.
+  Therefore we can have the blue button with a different size than the other two. Let's have the
+  blue button's width set to 10 GUs and its height to 10 GUs less than the positioner's height.
+
+  The code will look as follows:
+  \snippet layouts/layout3.qml row layout
+  \image layout3.png
+*/
+
+/*!
+  \page ubuntu-layouts5.html
+  \title Layouts - Hiding elements, showing more
+  \nextpage Layouts - Overlay items in an item host
+  Till this point we know how to define a layout block, what is the default layout, how to
+  create layout, how to define the container and how to define the hosted elements and how
+  to define item hosts to lay out individual items.
+
+  There can be situations when for certain layouts we don't want to transfer all the components
+  of a default layout. More, there can be situations when we want to show more components
+  when we have more space to our disposal. Perhaps we want to provide more functionality when
+  the phone is turned from portrait to landscape (typical use case is a Calculator application
+  which on portrait is a simple calculator but on landscape provides scientific calculator
+  functions). In the following we will define two layouts where we cover both use cases.
+
+  \section1 Hiding components
+  Let's create a layout where we only show the red and green buttons. This can be achieved by
+  specifying only those components to be hosted by the container.
+  \snippet layouts/layout6.qml row layout
+  The layout when the block width exceeds 50 GU will look like this:
+  \image layout6.png
+
+  \section1 Showing more content
+  Another use case is to show extra content in a different layout/form factor.
+  These components can simply be declared inside the layout itself, assuming that those are
+  not going to be used in any other layout. If yes, those must also be declared in the default
+  layout in order to preserve their state, or other modalities to transfer the component state
+  must be used.
+  Let's create a layout which will be activated when the layout block width exceeds 70 GU.
+  \snippet layouts/layout6.qml flow layout
+  \image layout6-2.png
+ */
+
+/*!
+  \page ubuntu-layouts6.html
+  \title Layouts - Overlay items in an item host
+  \nextpage Layouts - Defining more layouts for different form factors
+  There is one more thing you can do with ItemLayout container, which is to define overlay items
+  for certain hosted items on certain layouts. If an ItemLayout has child elements defined, the
+  hosted item will be stacked as topmost element, so all the child elements declared in ItemLayout
+  will be rendered as overlay on top of the hosted item.
+  \image layout7.png
+  \snippet layouts/layout7.qml overlay layout
+ */
+/*!
+  \page ubuntu-layouts7.html
+  \title Layouts - Defining more layouts for different form factors
+  As mentioned, with Layouts we can achieve to have a single code base supporting different form
+  factors. The following example illustrates how to support different layouts with the same code
+  base.
+
+  \section1 Default layout
+  \image simple-layout1.png
+  \snippet layouts/SimpleLayout.qml default layout
+
+  \section1 Conditional layouts
+  \section2 Column layout
+  \image simple-layout2.png
+  \snippet layouts/SimpleLayout.qml column
+
+  \section2 Row layout
+  \image simple-layout3.png
+  \snippet layouts/SimpleLayout.qml row
+
+  \section2 Layout hiding element
+  \image simple-layout4.png
+  \snippet layouts/SimpleLayout.qml hiding-element
+
+  \section2 Layout showing more
+  \image simple-layout5.png
+  \snippet layouts/SimpleLayout.qml showing-more
+
+  \section1 The entire code
+  \snippet layouts/SimpleLayout.qml 0
+
+  \section1 That's it
+  You're ready to go. You can find the layouting components under \l Layouting.
+  For further questions please visit \b #ubuntu-app-devel irc channel on freenode.
+ */
