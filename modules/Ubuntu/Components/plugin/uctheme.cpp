@@ -19,6 +19,7 @@
 
 #include "uctheme.h"
 #include "listener.h"
+#include "quickutils.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
@@ -71,12 +72,17 @@ const QString PARENT_THEME_FILE("parent_theme");
 
 UCTheme::UCTheme(QObject *parent) :
     QObject(parent),
-    m_name("")
+    m_name(""),
+    m_palette(NULL)
 {
     m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
+
+    loadPalette();
+    QObject::connect(this, &UCTheme::nameChanged,
+                     this, &UCTheme::loadPalette, Qt::UniqueConnection);
 }
 
 void UCTheme::onThemeNameChanged()
@@ -132,6 +138,16 @@ void UCTheme::setName(QString name)
     }
 }
 
+/*!
+    \qmlproperty Palette Theme::palette
+
+    The palette of the current theme.
+*/
+QObject* UCTheme::palette() const
+{
+    return m_palette;
+}
+
 QUrl UCTheme::styleUrl(QString styleName)
 {
     QUrl styleUrl;
@@ -179,4 +195,13 @@ void UCTheme::registerToContext(QQmlContext* context)
     static ContextPropertyChangeListener themeChangeListener(context, "Theme");
     QObject::connect(this, SIGNAL(nameChanged()),
                      &themeChangeListener, SLOT(updateContextProperty()));
+}
+
+void UCTheme::loadPalette()
+{
+    if (m_palette != NULL) {
+        delete m_palette;
+    }
+    m_palette = QuickUtils::instance().createQmlObject((styleUrl("Palette.qml")));
+    Q_EMIT paletteChanged();
 }
