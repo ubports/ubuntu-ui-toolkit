@@ -24,7 +24,6 @@ Slider 0.1 Slider.qml
 Scrollbar 0.1 Scrollbar.qml
 internal ModelSectionCounter ModelSectionCounter.qml
 Object 0.1 Object.qml
-TabButton 0.1 TabButton.qml
 Page 0.1 Page.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
