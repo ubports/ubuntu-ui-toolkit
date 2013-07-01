@@ -1,5 +1,3 @@
-include( ../common.pri )
-
 TEMPLATE = subdirs
 
 THEME_FILES = Ambiance/qmltheme/*.qmltheme
