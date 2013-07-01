@@ -25,6 +25,7 @@
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlInfo>
+#include <QtQml/QQmlEngine>
 
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
@@ -230,4 +231,17 @@ void QuickUtils::lookupQuickView()
             break;
         }
     }
+}
+
+QObject* QuickUtils::createQmlObject(const QUrl &url)
+{
+    /* FIXME: if the directory pointed to by url contains a qmldir file that
+       declares a JavaScript module then QQmlComponent::create() fails with
+       the error "QQmlComponent: Component is not ready".
+    */
+    static QQmlEngine engine;
+    QQmlComponent *component = new QQmlComponent(&engine, url, QQmlComponent::PreferSynchronous);
+    QObject* result = component->create();
+    delete component;
+    return result;
 }

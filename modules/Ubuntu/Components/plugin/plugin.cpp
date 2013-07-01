@@ -58,6 +58,33 @@ static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
     return clipboard;
 }
 
+
+QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
+{
+    /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
+       http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
+    */
+    QString pluginRelativePath = QString::fromUtf8(uri).replace(".", "/").prepend("/").append("/");
+    QString pluginPath;
+    Q_FOREACH (QString importPath, importPathList) {
+        pluginPath = importPath.append(pluginRelativePath);
+        if (QDir(pluginPath).exists()) {
+            return QUrl::fromLocalFile(pluginPath);
+        }
+    }
+
+    return QUrl();
+}
+
+void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile)
+{
+    QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
+    QObject* object = QuickUtils::instance().createQmlObject(url);
+    if (object != NULL) {
+        engine->rootContext()->setContextProperty(typeName, object);
+    }
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
@@ -105,6 +132,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &fontUtilsListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
+
+    // register UbuntuColors
+    registerQmlSingletonType(engine, uri, "UbuntuColors", "Colors/UbuntuColors.qml");
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
