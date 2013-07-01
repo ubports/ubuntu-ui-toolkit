@@ -113,6 +113,7 @@ StyledItem {
                 flickable.contentYChanged.connect(internal.scrollContents);
                 flickable.movementEnded.connect(internal.movementEnded);
                 flickable.interactiveChanged.connect(internal.interactiveChanged);
+                flickable.contentHeightChanged.connect(internal.contentHeightChanged);
             }
             previousFlickable = flickable;
         }
@@ -137,6 +138,13 @@ StyledItem {
             if (flickable && flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();
+        }
+
+        /*
+          Content height of flickable changed
+         */
+        function contentHeightChanged() {
+            if (flickable && flickable.height >= flickable.contentHeight) header.show();
         }
 
         /*
