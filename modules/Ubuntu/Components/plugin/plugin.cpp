@@ -65,7 +65,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
+    // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
     qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
+    qmlRegisterType<ShapeItem>(uri, 0, 1, "UbuntuShape");
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
