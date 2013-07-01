@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "black"
+                    color: Theme.palette.normal.tooltip
 
                     Button {
                         anchors.centerIn: parent
@@ -110,7 +110,7 @@ import Ubuntu.Components 0.1 as Toolkit
         import Ubuntu.Components 0.1
 
         Rectangle {
-            color: "grey"
+            color: Theme.palette.normal.window
             width: units.gu(40)
             height: units.gu(40)
 
@@ -124,13 +124,13 @@ import Ubuntu.Components 0.1 as Toolkit
                 height: units.gu(8)
 
                 Rectangle {
-                    color: "white"
+                    color: Theme.palette.normal.tooltip
                     anchors.fill: parent
                     Rectangle {
                         width: units.gu(8)
                         height: units.gu(4)
                         anchors.centerIn: parent
-                        color: "red"
+                        color: Theme.palette.normal.foreground
                         signal clicked()
                         onClicked: print("The red rectangle was clicked");
                     }

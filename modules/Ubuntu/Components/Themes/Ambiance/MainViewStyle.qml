@@ -25,7 +25,7 @@ Item {
     /*!
       The background color of the main view.
      */
-    property color backgroundColor: "#ededf0"
+    property color backgroundColor: Theme.palette.normal.window
 
     /*!
       The background texture of the main view. The image will be drawn over the background color,

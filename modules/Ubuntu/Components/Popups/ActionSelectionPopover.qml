@@ -116,6 +116,7 @@ Popover {
                 horizontalCenter: parent.horizontalCenter
             }
             wrapMode: Text.Wrap
+            color: Theme.palette.normal.tooltipText
         }
         /*! \internal */
         onTriggered: popover.hide()

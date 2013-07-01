@@ -23,7 +23,7 @@ Item {
         id: effect
         anchors.fill: parent
 
-        property color color: "white"
+        property color color: Theme.palette.normal.tooltip
 
         // FIXME: It would be nicer to have a single transformation matrix that flips and rotates,
         //  but I did not manage to get a 3x3 matrix from QML into the shader.

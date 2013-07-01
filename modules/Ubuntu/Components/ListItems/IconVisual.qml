@@ -42,5 +42,6 @@ Item {
         visible: iconVisual.hasFrame
         anchors.fill: parent
         image: icon
+        color: Theme.palette.normal.field
     }
 }

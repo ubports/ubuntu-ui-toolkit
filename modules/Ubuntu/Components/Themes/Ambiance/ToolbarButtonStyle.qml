@@ -51,7 +51,7 @@ Item {
             width: paintedWidth
             text: styledItem.text
             fontSize: "x-small"
-            color: "#888888"
+            color: Theme.palette.normal.tooltipText
         }
     }
 

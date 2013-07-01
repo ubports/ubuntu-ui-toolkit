@@ -888,7 +888,6 @@ StyledItem {
 
     // holding default values
     Label { id: fontHolder }
-    SystemPalette { id: systemColors }
 
     //hint
     Label {
@@ -899,7 +898,7 @@ StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
-        color: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+        color: Theme.palette.normal.fieldText
         fontSize: "medium"
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -958,8 +957,8 @@ StyledItem {
             selectByMouse: false
             cursorDelegate: cursor
             color: control.__styleInstance.color
-            selectedTextColor: "#F3F3E7"
-            selectionColor: "#19B6EE"
+            selectedTextColor: Theme.palette.selected.foregroundText
+            selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]

@@ -27,7 +27,7 @@ Item {
     /*!
       The background color of the header.
      */
-    property color backgroundColor: "#ededf0"
+    property color backgroundColor: Theme.palette.normal.window
 
     /*!
       The source of the background image of the header. If the image is has (semi-)transparent
@@ -50,7 +50,7 @@ Item {
 
     property int fontWeight: Font.Light
     property string fontSize: "x-large"
-    property color textColor: Qt.rgba(0.51, 0.51, 0.51, 0.9)
+    property color textColor: Theme.palette.selected.windowText
     property real textLeftMargin: units.gu(2)
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height

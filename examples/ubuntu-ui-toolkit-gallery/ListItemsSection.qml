@@ -23,7 +23,7 @@ TemplateSection {
     documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
 
     Rectangle {
-        color: "#f7f7f7"
+        color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
         anchors.left: parent.left
         anchors.right: parent.right
         height: column.height

@@ -50,7 +50,7 @@ Item {
 
     Rectangle {
         id: framing
-        color: "#e0e0e0"
+        color: Theme.palette.normal.background
         anchors {
             left: parent.left
             right: parent.right
@@ -62,7 +62,7 @@ Item {
             anchors.centerIn: parent
             width: parent.width - units.gu(1)
             wrapMode: Text.Wrap
-            color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+            color: Theme.palette.normal.backgroundText
             horizontalAlignment: Text.AlignLeft
             fontSize: "small"
         }
