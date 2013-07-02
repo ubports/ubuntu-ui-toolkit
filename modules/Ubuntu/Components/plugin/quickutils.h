@@ -57,6 +57,7 @@ private Q_SLOTS:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QQuickView *m_rootView;
+    QQmlEngine *m_engine;
 
     void lookupQuickView();
 };
