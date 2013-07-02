@@ -16,6 +16,7 @@
  */
 
 #include "ucubuntuanimation.h"
+#include <QtCore/QPointF>
 
 /*!
  * \qmltype UbuntuAnimation
@@ -31,7 +32,7 @@
  * \qml
  * RotationAnimation {
  *    duration: UbuntuAnimation.SlowDuration
- *    easing: UbuntuAnimation.StandardEasing
+ *    easing: UbuntuAnimation.StandardEasingOut
  * }
  * \endqml
  *
@@ -54,6 +55,12 @@
 UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
     QObject(parent)
 {
+    m_standardEasingIn.setType(QEasingCurve::BezierSpline);
+    m_standardEasingIn.addCubicBezierSegment(QPointF(0.6, 0.0), QPointF(0.8, 1.0),
+                                             QPointF(1.0, 1.0));
+    m_standardEasingOut.setType(QEasingCurve::BezierSpline);
+    m_standardEasingOut.addCubicBezierSegment(QPointF(0.2, 0.0), QPointF(0.4, 1.0),
+                                              QPointF(1.0, 1.0));
 }
 
 /*!
@@ -88,7 +95,18 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 
 /*!
  * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasing
+ * \deprecated
  * Used for animations trigerred by user actions.
  *
- * The type is Easing.OutQuint.
+ * Use UbuntuAnimation::StandardEasingOut instead.
+ */
+
+/*!
+ * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingIn
+ *
+ */
+
+/*!
+ * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingOut
+ *
  */

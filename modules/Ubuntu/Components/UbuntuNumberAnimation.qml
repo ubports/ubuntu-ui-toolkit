@@ -42,7 +42,7 @@ import Ubuntu.Components 0.1 as Ubuntu
     UbuntuNumberAnimation is predefined with the following settings:
     \list
     \li \e duration: \l{UbuntuAnimation::FastDuration}{UbuntuAnimation.FastDuration}
-    \li \e easing: \l{UbuntuAnimation::StandardEasing}{UbuntuAnimation.StandardEasing}
+    \li \e easing: \l{UbuntuAnimation::StandardEasing}{UbuntuAnimation.StandardEasingOut}
     \endlist
 
     If the standard duration and easing used by UbuntuNumberAnimation do not
@@ -52,5 +52,5 @@ import Ubuntu.Components 0.1 as Ubuntu
 */
 NumberAnimation {
     duration: Ubuntu.UbuntuAnimation.FastDuration
-    easing: Ubuntu.UbuntuAnimation.StandardEasing
+    easing: Ubuntu.UbuntuAnimation.StandardEasingOut
 }
