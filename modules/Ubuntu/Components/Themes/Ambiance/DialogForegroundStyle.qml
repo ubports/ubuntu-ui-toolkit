@@ -35,7 +35,7 @@ Item {
     }
 
     clip: true // hide the ShaderEffectSource
-    Shape {
+    UbuntuShape {
         anchors.fill: parent
         image: effectSource
         radius: visuals.radius

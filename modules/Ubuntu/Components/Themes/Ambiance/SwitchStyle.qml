@@ -78,7 +78,6 @@ Item {
         id: background
         anchors.fill: parent
         color: backgroundColor
-        gradientColor: "transparent"
 
         UbuntuShape {
             id: thumb
@@ -93,7 +92,6 @@ Item {
 
             color: styledItem.checked ? visuals.checkedThumbColor
                                 : visuals.uncheckedThumbColor
-            gradientColor: "transparent"
 
             Behavior on x {
                 NumberAnimation {
