@@ -47,7 +47,7 @@ Description: Qt Components for Ubuntu - QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 Package: ubuntu-ui-toolkit-theme
-Architecture: all
+Architecture: amd64 i386 armhf
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
