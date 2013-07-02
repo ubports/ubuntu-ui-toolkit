@@ -32,7 +32,8 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0)
+    m_rootView(0),
+    m_engine(new QQmlEngine)
 {
     QGuiApplication::instance()->installEventFilter(this);
     // connect to focusObjectChanged() to get the latest active focus object
@@ -239,8 +240,7 @@ QObject* QuickUtils::createQmlObject(const QUrl &url)
        declares a JavaScript module then QQmlComponent::create() fails with
        the error "QQmlComponent: Component is not ready".
     */
-    static QQmlEngine engine;
-    QQmlComponent *component = new QQmlComponent(&engine, url, QQmlComponent::PreferSynchronous);
+    QQmlComponent *component = new QQmlComponent(m_engine, url, QQmlComponent::PreferSynchronous);
     QObject* result = component->create();
     delete component;
     return result;
