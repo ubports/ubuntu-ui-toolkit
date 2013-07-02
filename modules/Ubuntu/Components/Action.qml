@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype Action
@@ -26,25 +27,27 @@ import QtQuick 2.0
 
     Examples: See \l Page
 */
-QtObject {
+//QtObject {
+UnityActions.Action {
     id: action
 
     /*!
-      \preliminary
       The title of the action.
+      \qmlproperty string text
      */
-    property string text
+//    property string text // now in unity action
 
     /*!
-      \preliminary
       The image associated with the action.
+      \qmlproperty url iconSource
      */
+    // TODO: Move iconSource to unity action if possible
     property url iconSource
 
     /*!
       Called when the action is triggered.
      */
-    signal triggered(var caller)
+//    signal triggered(var caller) // now in unity action. still needs some testing.
 
     /*!
       \deprecated
@@ -57,8 +60,9 @@ QtObject {
 
     /*!
       Enable the action. It may be visible, but disabled.
+      \qmlproperty bool enabled
      */
-    property bool enabled: true
+//    property bool enabled: true // moved to unity action
 
     /*!
       \deprecated
@@ -69,7 +73,6 @@ QtObject {
       given here can replace the default representation of the action.
      */
     property Component itemHint
-
     /*! \internal */
     onItemHintChanged: print("Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 }

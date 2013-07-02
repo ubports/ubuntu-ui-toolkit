@@ -7,12 +7,9 @@ ActionItem
     property bool __acceptEvents
     property alias __mouseArea
 modules/Ubuntu/Components/Action.qml
-QtObject
-    property string text
+UnityActions.Action
     property url iconSource
-    signal triggered(var caller)
     property bool visible
-    property bool enabled
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
 Item
