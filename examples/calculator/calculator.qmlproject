@@ -19,14 +19,7 @@ Project {
         filter: "*.desktop"
     }
     Files {
-        filter: "Makefile"
-    }
-    Files {
         directory: "html"
-        filter: "*"
-    }
-    Files {
-        directory: "tests/"
         filter: "*"
     }
     Files {
@@ -34,5 +27,5 @@ Project {
         filter: "*"
     }
     /* List of plugin directories passed to QML runtime */
-    importPaths: [ "." ,"/usr/bin","/usr/lib/x86_64-linux-gnu/qt5/qml" ]
+    importPaths: [ "." ,"/usr/bin","/usr/lib/*/qt5/qml" ]
 }
