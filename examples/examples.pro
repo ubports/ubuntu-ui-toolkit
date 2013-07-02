@@ -8,7 +8,7 @@ SUBDIRS += \
 
 
 #examples = jokes unit-converter
-#filetypes = qml png svg js qmltheme jpg wav
+#filetypes = qml png svg js jpg wav
  
 #OTHER_FILES = ""
 

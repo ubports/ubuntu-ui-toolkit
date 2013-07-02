@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Tabs
@@ -100,8 +95,6 @@ import Ubuntu.Components 0.1 as Theming
 
 PageTreeNode {
     id: tabs
-    // FIXME: see above
-    Theming.ItemStyle.class: "new-tabs"
     anchors.fill: parent
 
     /*!
@@ -128,7 +121,7 @@ PageTreeNode {
       \internal
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
-      FIXME: headerContents may be specified here directly, not taken from the delegate.
+      FIXME: headerContents may be specified here directly, not taken from the style.
      */
     property Component __headerContents
 
@@ -147,7 +140,7 @@ PageTreeNode {
 
     /*!
       \internal
-      Used by the delegate to create the tabs header.
+      Used by the style to create the tabs header.
     */
     property alias __tabs: tabsModel.tabList
 
@@ -158,7 +151,7 @@ PageTreeNode {
     default property alias tabChildren: tabsModel.children
 
     /*!
-      Used by the tabs delegate to update the tabs header with the titles of all the tabs.
+      Used by the tabs style to update the tabs header with the titles of all the tabs.
       This signal is used in an intermediate step in transitioning the tabs to a new
       implementation and may be removed in the future.
      */
@@ -166,7 +159,7 @@ PageTreeNode {
 
     /*!
       \internal
-      required by NewTabsDelegate
+      required by TabsStyle
      */
     Item {
         anchors.fill: parent
@@ -218,4 +211,6 @@ PageTreeNode {
             }
         }
     }
+
+    style: Theme.createStyleComponent("TabsStyle.qml", tabs)
 }

@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += po
 
-filetypes = qml png svg js qmltheme jpg qmlproject desktop
+filetypes = qml png svg js jpg qmlproject desktop
 
 OTHER_FILES = ""
 
