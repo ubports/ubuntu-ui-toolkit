@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Unity.Actions 1.0
 
 MainView {
     width: units.gu(50)
