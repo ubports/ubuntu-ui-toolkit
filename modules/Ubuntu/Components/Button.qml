@@ -33,7 +33,7 @@ import QtQuick 2.0
             }
             Button {
                 iconSource: "icon.png"
-                color: UbuntuColors.warmGrey
+                gradient: UbuntuColors.greyGradient
                 onClicked: print("clicked icon-only Button")
             }
             Button {
@@ -66,8 +66,21 @@ AbstractButton {
 
     /*!
        The background color of the button.
+
+       \sa gradient
     */
-    property color color: UbuntuColors.orange
+    property color color: __styleInstance.defaultColor
+
+    /*!
+       The gradient used to fill the background of the button.
+
+       Standard Ubuntu gradients are defined in \l UbuntuColors.
+
+       If both a gradient and a color are specified, the gradient will be used.
+
+       \sa color
+    */
+    property Gradient gradient: __styleInstance.defaultGradient
 
     /*!
        The source URL of the icon to display inside the button.

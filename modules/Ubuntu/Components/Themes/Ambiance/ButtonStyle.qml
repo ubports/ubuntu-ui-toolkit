@@ -25,16 +25,46 @@ Item {
     property Button button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
+    property color defaultColor
+    property Gradient defaultGradient: UbuntuColors.orangeGradient
 
     width: button.width
     height: button.height
     implicitWidth: Math.max(minimumWidth, foreground.implicitWidth + 2*horizontalPadding)
     implicitHeight: units.gu(5)
 
+    /* The proxy is necessary because Gradient.stops and GradientStop.color are
+       non-NOTIFYable properties. They cannot be written to so it is fine but
+       the proxy avoids the warnings.
+    */
+    QtObject {
+        id: gradientProxy
+        property color topColor
+        property color bottomColor
+
+        function updateGradient() {
+            if (button.gradient) {
+                topColor = button.gradient.stops[0].color;
+                bottomColor = button.gradient.stops[1].color;
+            }
+        }
+
+        Component.onCompleted: {
+            updateGradient();
+            button.gradientChanged.connect(updateGradient);
+        }
+    }
+
+    // Use the gradient if it is defined and the color has not been set manually
+    // or the gradient has been set manually
+    property bool isGradient: button.gradient && (button.color == defaultColor ||
+                              button.gradient != defaultGradient)
+
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: button.color
+        color: isGradient ? gradientProxy.topColor : button.color
+        gradientColor: isGradient ? gradientProxy.bottomColor : button.color
         borderSource: "radius_idle.sci"
         visible: color.a != 0.0
     }
@@ -43,6 +73,7 @@ Item {
         id: backgroundPressed
         anchors.fill: parent
         color: background.color
+        gradientColor: background.gradientColor
         borderSource: "radius_pressed.sci"
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {

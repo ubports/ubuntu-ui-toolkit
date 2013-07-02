@@ -36,7 +36,7 @@ Template {
             Button {
                 objectName: "button_color"
                 text: i18n.tr("Call")
-                color: "#5da357"
+                gradient: UbuntuColors.greyGradient
             }
         }
 
