@@ -59,7 +59,7 @@ import "stack.js" as Stack
                         anchors.fill: parent
                         ListItem.Standard {
                             text: i18n.tr("Page one")
-                            onClicked: pageStack.push(page1, {color: "red"})
+                            onClicked: pageStack.push(page1, {color: UbuntuColors.orange})
                             progression: true
                         }
                         ListItem.Standard {

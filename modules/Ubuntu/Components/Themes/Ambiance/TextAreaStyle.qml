@@ -30,7 +30,7 @@ Item {
       Background fill color
       */
     property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? "white" : Qt.rgba(0, 0, 0, 0.1)
-    property color errorColor: "red"
+    property color errorColor: UbuntuColors.orange
     property real backgroundOpacity: styledItem.enabled ? 1.0 : 0.1
 
     /*!

@@ -99,20 +99,20 @@ import QtQuick 2.0
                     anchors.centerIn: parent
                     width: units.gu(20)
                     height: units.gu(20)
-                    color: "blue"
+                    color: UbuntuColors.coolGrey
                 }
 
                 tools: ToolbarActions {
                     ToolbarButton {
                         action: Action {
                             text: "red"
-                            onTriggered: rectangle.color = "red"
+                            onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
                             text: "green"
-                            onTriggered: rectangle.color = "green"
+                            onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
                 }

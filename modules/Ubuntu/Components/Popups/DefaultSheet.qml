@@ -93,7 +93,7 @@ SheetBase {
 
     __rightButton: Button {
         text: i18n.dtr("ubuntu-sdk", "done")
-        color: "#5da357"
+        color: UbuntuColors.orange
         visible: doneButton
         /*! \internal */
         onClicked: {

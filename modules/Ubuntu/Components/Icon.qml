@@ -45,7 +45,7 @@ import QtQuick 2.0
         width: 64
         height: 64
         name: "search"
-        color: "red"
+        color: UbuntuColors.warmGrey
     }
     \endqml
 
