@@ -18,16 +18,16 @@
 
 .pragma library
 
-function Calculator(textInput) {
+function Calculator(textInput, memoryIndicator) {
     var operationStage = 0; // 0-lvalue, 1-rvalue
     var lvalue = 0.0;
     var rvalue = 0.0;
     var lastOperation = -1;
     var memory = 0.0;
-    var input = textInput;
     var clearInputNext = true;
 
-    input.text = lvalue;
+    textInput.text = lvalue;
+    memoryIndicator.visible = false;
 
     function setValue(value) {
         if (operationStage === 0) {
@@ -46,23 +46,26 @@ function Calculator(textInput) {
         operationStage = 1;
         lvalue = rvalue = 0;
         lastOperation = -1;
-        input.text = 0.0;
+        textInput.text = 0.0;
     }
     function memClear() {
         memory = 0;
+        memoryIndicator.visible = false;
     }
     function memRecall() {
         if (memory <= 0)
             return;
-        input.text = setValue(memory);
+        textInput.text = setValue(memory);
     }
     function memAdd() {
         memory += value();
-        input.text = setValue(memory);
+        textInput.text = setValue(memory);
+        memoryIndicator.visible = true;
     }
     function memDec() {
         memory -= value();
-        input.text = setValue(memory);
+        textInput.text = setValue(memory);
+        memoryIndicator.visible = true;
     }
 
     // arythmetic functions
@@ -80,61 +83,61 @@ function Calculator(textInput) {
     }
 
     function sign() {
-        input.text = setValue(-value());
+        textInput.text = setValue(-value());
     }
 
     function invert() {
-        input.text = setValue(1/value());
+        textInput.text = setValue(1/value());
     }
     function percent() {
-        input.text = setValue(value() / 100);
+        textInput.text = setValue(value() / 100);
     }
     function sqr() {
-        input.text = setValue(Math.pow(value(), 2));
+        textInput.text = setValue(Math.pow(value(), 2));
     }
     function cube() {
-        input.text = setValue(Math.pow(value(), 3));
+        textInput.text = setValue(Math.pow(value(), 3));
     }
     function power() {
         lvalue = Math.pow(lvalue, rvalue);
     }
     function powerOf2() {
-        input.text = setValue(Math.pow(2, value()));
+        textInput.text = setValue(Math.pow(2, value()));
     }
     function factorial() {
         var rval = 1;
         for (var i = 2; i <= value(); i++) {
             rval *= i;
         }
-        input.text = setValue(rval);
+        textInput.text = setValue(rval);
     }
     function sqrt() {
-        input.text = setValue(Math.sqrt(value()));
+        textInput.text = setValue(Math.sqrt(value()));
     }
     function ln() {
-        input.text = setValue(Math.log(value()));
+        textInput.text = setValue(Math.log(value()));
     }
     function exp()
     {
-        input.text = setValue(Math.exp(value()));
+        textInput.text = setValue(Math.exp(value()));
     }
     function sin() {
-        input.text = setValue(Math.sin(value()));
+        textInput.text = setValue(Math.sin(value()));
     }
     function cos() {
-        input.text = setValue(Math.cos(value()));
+        textInput.text = setValue(Math.cos(value()));
     }
     function tan() {
-        input.text = setValue(Math.tan(value()));
+        textInput.text = setValue(Math.tan(value()));
     }
     function cot() {
-        input.text = setValue(1/Math.tan(value()));
+        textInput.text = setValue(1/Math.tan(value()));
     }
     function sec() {
-        input.text = setValue(1/Math.cos(value()));
+        textInput.text = setValue(1/Math.cos(value()));
     }
     function csc() {
-        input.text = setValue(1/Math.sin(value()));
+        textInput.text = setValue(1/Math.sin(value()));
     }
 
     var operations = [
@@ -174,7 +177,7 @@ function Calculator(textInput) {
         if (operation === "=") {
             if (lastOperation > -1) {
                 operations[lastOperation].operationFunc();
-                input.text = lvalue;
+                textInput.text = lvalue;
             }
             operationStage = 0;
             clearInputNext = true;
@@ -194,7 +197,7 @@ function Calculator(textInput) {
                         } else if (operationStage === 1) {
                             // evaluate and continue receiving rvalue
                             operations[i].operationFunc(lvalue, rvalue);
-                            input.text = lvalue;
+                            textInput.text = lvalue;
                         }
                     } else if (operations[i].controlFunc) {
                         operations[i].controlFunc();
@@ -208,9 +211,9 @@ function Calculator(textInput) {
             // if no opeartion was performed, add operation to input
             if (clearInputNext) {
                 clearInputNext = false;
-                input.text = "";
+                textInput.text = "";
             }
-            input.text = setValue(input.text + operation);
+            textInput.text = setValue(textInput.text + operation);
         }
     }
 }

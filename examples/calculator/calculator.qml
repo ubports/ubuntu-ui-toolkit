@@ -43,7 +43,7 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
-    property var calculator: new Calculator.Calculator(numericInput);
+    property var calculator: new Calculator.Calculator(numericInput, memoryIndicator);
 
     // default portrait layout
     Page {
@@ -72,6 +72,14 @@ MainView {
                     horizontalAlignment: Text.AlignRight
                     height: layout.currentLayout === "landscape" ?
                                 units.gu(5) : units.gu(7)
+                    primaryItem: Label {
+                        id: memoryIndicator
+                        width: units.gu(3)
+                        height: parent.height
+                        text: "M"
+                        fontSize: "large"
+                        font.bold: true
+                    }
                 }
 
                 Layouts {
