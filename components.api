@@ -33,6 +33,7 @@ StyledItem
 modules/Ubuntu/Components/Button.qml
 AbstractButton
     property color color
+    property Gradient gradient
     property string iconPosition
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton

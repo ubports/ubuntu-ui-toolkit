@@ -33,7 +33,7 @@ import QtQuick 2.0
             }
             Button {
                 iconSource: "icon.png"
-                color: "green"
+                gradient: UbuntuColors.greyGradient
                 onClicked: print("clicked icon-only Button")
             }
             Button {
@@ -56,7 +56,7 @@ import QtQuick 2.0
             Button {
                 anchors.centerIn: parent
                 action: action1
-                color: "green"
+                color: UbuntuColors.warmGrey
             }
        }
     \endqml
@@ -64,13 +64,23 @@ import QtQuick 2.0
 AbstractButton {
     id: button
 
-    implicitWidth: units.gu(9)
-    implicitHeight: units.gu(4)
+    /*!
+       The background color of the button.
+
+       \sa gradient
+    */
+    property color color: __styleInstance.defaultColor
 
     /*!
-       The foreground color of the button in idle state.
+       The gradient used to fill the background of the button.
+
+       Standard Ubuntu gradients are defined in \l UbuntuColors.
+
+       If both a gradient and a color are specified, the gradient will be used.
+
+       \sa color
     */
-    property color color: "#cccccc"
+    property Gradient gradient: __styleInstance.defaultGradient
 
     /*!
        The source URL of the icon to display inside the button.
