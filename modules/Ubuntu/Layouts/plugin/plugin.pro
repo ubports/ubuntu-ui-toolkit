@@ -1,5 +1,3 @@
-include( ../../../../common.pri )
-
 TEMPLATE = lib
 TARGET = ../UbuntuLayouts
 QT += qml quick
