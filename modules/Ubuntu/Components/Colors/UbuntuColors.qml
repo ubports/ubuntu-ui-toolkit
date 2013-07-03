@@ -60,4 +60,23 @@ QtObject {
        Ubuntu neutral color: cool grey
     */
     readonly property color coolGrey: "#333333"
+
+    /*!
+       Ubuntu orange gradient
+
+       \sa Button::gradient
+    */
+    property Gradient orangeGradient: Gradient {
+        GradientStop { position: 0.0; color: "#DD4814" }
+        GradientStop { position: 1.0; color: "#D9722D" }
+    }
+    /*!
+       Ubuntu grey gradient
+
+       \sa Button::gradient
+    */
+    property Gradient greyGradient: Gradient {
+        GradientStop { position: 0.0; color: "#888888" }
+        GradientStop { position: 1.0; color: "#BBBBBB" }
+    }
 }

@@ -33,6 +33,7 @@ StyledItem
 modules/Ubuntu/Components/Button.qml
 AbstractButton
     property color color
+    property Gradient gradient
     property string iconPosition
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
@@ -254,22 +255,40 @@ StyledItem
     property alias secondaryItem
     property bool errorHighlight
     property alias acceptableInput
+    property alias activeFocusOnPress
+    property alias autoScroll
+    property alias canPaste
+    property alias canRedo
+    property alias canUndo
+    property alias color
+    property alias contentHeight
+    property alias contentWidth
+    property alias cursorDelegate
     property alias cursorPosition
+    property alias cursorRectangle
+    property alias cursorVisible
+    property alias displayText
     property alias echoMode
     property alias font
     property alias inputMask
     property alias inputMethodComposing
     property alias inputMethodHints
+    property alias length
     property alias maximumLength
+    property alias mouseSelectionMode
+    property alias persistentSelection
     property alias readOnly
-    property alias selectedText
+    property alias renderType
+    property alias selectByMouse
+    readonly property alias selectedText
     property alias selectionStart
     property alias selectionEnd
     property alias text
     property alias validator
     property alias horizontalAlignment
+    property alias effectiveHorizontalAlignment
+    property alias verticalAlignment
     property alias passwordCharacter
-    property alias color
     property alias selectionColor
     property alias selectedTextColor
     signal accepted()
@@ -277,12 +296,19 @@ StyledItem
     function cut()
     function paste(data)
     function deselect()
+    function insert(position, text)
     function positionAt(x, position)
     function positionToRectangle(pos)
     function select(start, end)
     function selectAll()
     function selectWord()
     function forceActiveFocus()
+    function isRightToLeft(start, end)
+    function moveCursorSelection(position, mode)
+    function redo()
+    function undo()
+    function remove(start, end)
+    function getText(start, end)
     property alias __internal
 modules/Ubuntu/Components/TextInputPopover.qml
 ActionSelectionPopover

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=calculator
+Comment=My project description
+Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/calculator/calculator.qml
+Icon=qmlscene
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
