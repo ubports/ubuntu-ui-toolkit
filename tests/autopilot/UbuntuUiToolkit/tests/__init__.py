@@ -1,18 +1,9 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+# Copyright 2012 Canonical
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; version 3.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License version 3, as published
+# by the Free Software Foundation.
 
 """Ubuntu UI Toolkit autopilot tests."""
 
@@ -27,8 +18,7 @@ from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
 from autopilot.testcase import AutopilotTestCase
 
-from UbuntuUiToolkit import emulators
-
+from UbuntuUiToolkit.emulators.main_window import MainWindow
 
 def get_module_include_path():
     return os.path.abspath(
@@ -39,21 +29,22 @@ def get_module_include_path():
             '..',
             '..',
             'modules')
-    )
+        )
 
 
 class UbuntuUiToolkitTestCase(AutopilotTestCase):
-    """Common test case class for SDK tests."""
+
+    """A common test case class that provides several useful methods for SDK tests."""
 
     if model() == 'Desktop':
         scenarios = [
-            ('with mouse', dict(input_device_class=Mouse))
+        ('with mouse', dict(input_device_class=Mouse))
         ]
     else:
         scenarios = [
-            ('with touch', dict(input_device_class=Touch))
+        ('with touch', dict(input_device_class=Touch))
         ]
-
+ 
     def setUp(self):
         self.pointing_device = Pointer(self.input_device_class.create())
         super(UbuntuUiToolkitTestCase, self).setUp()
@@ -63,8 +54,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         # If the test class has defined a 'test_qml' class attribute then we
         # write it to disk and launch it inside the Qml Viewer. If not, then we
         # silently do nothing (presumably the test has something else planned).
-        arch = subprocess.check_output(
-            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
+        arch = subprocess.check_output(["dpkg-architecture",
+        "-qDEB_HOST_MULTIARCH"]).strip()
         if hasattr(self, 'test_qml') and isinstance(self.test_qml, basestring):
             qml_path = mktemp(suffix='.qml')
             open(qml_path, 'w').write(self.test_qml)
@@ -73,48 +64,39 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+                qml_path)
 
-        if (hasattr(self, 'test_qml_file') and
-                isinstance(self.test_qml_file, basestring)):
+        if hasattr(self, 'test_qml_file') and isinstance(self.test_qml_file, basestring):
             qml_path = self.test_qml_file
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+                qml_path)
 
-        self.assertThat(
-            self.main_view.visible, Eventually(Equals(True)))
+        self.assertThat(self.main_window.get_qml_view().visible,
+                Eventually(Equals(True)))
 
     def checkListItem(self, itemText):
-        item = self.getListItem(itemText)
-        self.assertThat(item, Not(Is(None)))
+        item = self.main_window.get_object_by_text("Standard", itemText)
+        self.assertThat(item, Not(Is(None)));
 
     def getListItem(self, itemText):
-        # XXX We shouldn't access the elements by text, because that's likely
-        # to change often and might be translated. We should always use the
-        # objectName instead. --elopio - 2013-06-26
-        return self.main_view.select_single("Standard", text=itemText)
+        return self.main_window.get_object_by_text("Standard", itemText)
 
     def getWidgetLoaderAndListView(self):
-        contentLoader = self.main_view.select_single(
-            "QQuickLoader", objectName="contentLoader")
-        listView = self.main_view.select_single(
-            "QQuickListView", objectName="widgetList")
-        self.assertThat(listView, Not(Is(None)))
-        self.assertThat(listView.visible, Eventually(Equals(True)))
+        contentLoader = self.main_window.get_object("QQuickLoader", "contentLoader")
+        listView = self.main_window.get_object("QQuickListView", "widgetList")
+        self.assertThat(listView, Not(Is(None)));
+        self.assertThat(listView.visible, Eventually(Equals(True)));
         return (contentLoader, listView)
 
     def loadItem(self, item):
-        contentLoader = self.main_view.select_single(
-            "QQuickLoader", objectName="contentLoader")
+        contentLoader = self.main_window.get_object("QQuickLoader", "contentLoader")
         self.selectItem(item)
-        self.assertThat(contentLoader.progress, Eventually(Equals(1.0)))
-        loadedPage = self.getListItem(item)
-        self.assertThat(loadedPage, Not(Is(None)))
-        self.assertThat(loadedPage.visible, Eventually(Equals(True)))
+        self.assertThat(contentLoader.progress,Eventually(Equals(1.0)))
+        loadedPage = self.main_window.get_object_by_text("Standard", item)
+        self.assertThat(loadedPage, Not(Is(None)));
+        self.assertThat(loadedPage.visible, Eventually(Equals(True)));  
 
     def drag(self, itemText, itemTextTo):
         item = self.getListItem(itemText)
@@ -134,35 +116,39 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
         self.assertThat(item.selected, Eventually(Equals(True)))
 
+    def getMainView(self):
+        mainView = self.app.select_many("MainView")[0]
+        self.assertThat(mainView, Not(Is(None)));
+        return mainView
+
     def getOrientationHelper(self):
-        orientationHelper = self.main_view.select_many(
-            "OrientationHelper")[0]
-        self.assertThat(orientationHelper, Not(Is(None)))
+        orientationHelper = self.getMainView().select_many("OrientationHelper")[0]
+        self.assertThat(orientationHelper, Not(Is(None)));
         return orientationHelper
 
-    def checkPageHeader(self, pageTitle):
-        orientationHelper = self.getOrientationHelper()
-        header = orientationHelper.select_many("Header", title=pageTitle)[0]
-        self.assertThat(header, Not(Is(None)))
+    def checkPageHeader(self,pageTitle):
+        orientationHelper = self.getOrientationHelper();
+        header = orientationHelper.select_many("Header",title=pageTitle)[0]
+        self.assertThat(header, Not(Is(None)));
         return header
 
-    def getObject(self, objectName):
+    def getObject(self,objectName):
         obj = self.app.select_single(objectName=objectName)
-        self.assertThat(obj, Not(Is(None)))
+        self.assertThat(obj, Not(Is(None)));
         return obj
 
-    def tap(self, objectName):
+    def tap(self,objectName):
         obj = self.getObject(objectName)
         self.pointing_device.move_to_object(obj)
         self.pointing_device.click()
 
-    def mousePress(self, objectName):
+    def mousePress(self,objectName):
         obj = self.getObject(objectName)
         self.pointing_device.move_to_object(obj)
         self.pointing_device.press()
 
     def mouseRelease(self):
-        self.pointing_device.release()
+        self.pointing_device.release()     
 
     def type_string(self, string):
         self.keyboard.type(string)
@@ -170,14 +156,14 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
     def type_key(self, key):
         self.keyboard.key(key)
 
-    def tap_clearButton(self, objectName):
+    def tap_clearButton(self,objectName):
         textField = self.getObject(objectName)
-        self.assertThat(textField.hasClearButton, Equals(True))
+        self.assertThat(textField.hasClearButton, Equals(True));
         btn = textField.select_single("AbstractButton")
         self.pointing_device.move_to_object(btn)
         self.pointing_device.click()
 
     @property
-    def main_view(self):
-        """Return the MainView of the application."""
-        return self.app.select_single(emulators.MainView)
+    def main_window(self):
+        return MainWindow(self.app)
+
