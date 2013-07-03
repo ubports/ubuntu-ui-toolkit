@@ -85,7 +85,6 @@ StyledItem {
     property bool highlighted: focus
 
     /*!
-      \preliminary
       Text that appears when there is no focus and no content in the component.
 
       \qmlproperty string placeholderText
@@ -93,7 +92,6 @@ StyledItem {
     property alias placeholderText: hint.text
 
     /*!
-      \preliminary
       Specifies whether the control has a clear button or not.
     */
     property bool hasClearButton: true
@@ -112,7 +110,6 @@ StyledItem {
     property var popover
 
     /*!
-      \preliminary
       Overlaid component that can be set for the fore side of the TextField,
       e.g.showing a magnifier to implement search functionality.
 
@@ -121,7 +118,6 @@ StyledItem {
     property alias primaryItem: leftPane.data
 
     /*!
-      \preliminary
       Overlaid component that can be set for the rear side of the TextField,
       e.g.showing a CAPS LOCK or NUM LOCK indication. The overlaid components
       will be placed right after the clear button.
@@ -131,14 +127,12 @@ StyledItem {
     property alias secondaryItem: rightPane.data
 
     /*!
-      \preliminary
       Allows highlighting errors in the TextField.
     */
     property bool errorHighlight: !acceptableInput
 
     // aliased properties from TextInput
     /*!
-      \preliminary
       This property is always true unless a validator or input mask has been set.
       If a validator or input mask has been set, this property will only be true
       if the current text is acceptable to the validator or input mask as a final
@@ -149,7 +143,84 @@ StyledItem {
     property alias acceptableInput: editor.acceptableInput
 
     /*!
-      \preliminary
+      Whether the TextField should gain active focus on a mouse press. By default
+      this is set to true.
+
+      \qmlproperty bool activeFocusOnPress
+    */
+    property alias activeFocusOnPress: editor.activeFocusOnPress
+
+    /*!
+      Whether the TextField should scroll when the text is longer than the width.
+      By default this is set to true.
+
+      \qmlproperty bool autoScroll
+    */
+    property alias autoScroll: editor.autoScroll
+
+    /*!
+      Returns true if the TextField is writable and the content of the clipboard
+      is suitable for pasting into the TextField.
+
+      \qmlproperty bool canPaste
+    */
+    property alias canPaste: editor.canPaste
+
+    /*!
+      Returns true if the TextField is writable and there are undone operations
+      that can be redone.
+
+      \qmlproperty bool canRedo
+    */
+    property alias canRedo: editor.canRedo
+
+    /*!
+      Returns true if the TextField is writable and there are previous operations
+      that can be undone.
+
+      \qmlproperty bool canUndo
+    */
+    property alias canUndo: editor.canUndo
+
+    /*!
+      The text color.
+      \qmlproperty color color
+    */
+    property alias color: editor.color
+
+    /*!
+      Returns the height of the text, including the height past the height that
+      is covered if the text does not fit within the set height.
+
+      \qmlproperty real contentHeight
+    */
+    property alias contentHeight: editor.contentHeight
+
+    /*!
+      Returns the width of the text, including the width past the width which
+      is covered due to insufficient wrapping if wrapMode is set.
+
+      \qmlproperty real contentWidth
+    */
+    property alias contentWidth: editor.contentWidth
+
+    /*!
+      The delegate for the cursor in the TextField.
+
+      If you set a cursorDelegate for a TextField, this delegate will be used for
+      drawing the cursor instead of the standard cursor. An instance of the delegate
+      will be created and managed by the TextField when a cursor is needed, and
+      the x property of delegate instance will be set so as to be one pixel before
+      the top left of the current character.
+
+      Note that the root item of the delegate component must be a QQuickItem or
+      QQuickItem derived item.
+
+      \qmlproperty Component cursorDelegate
+    */
+    property alias cursorDelegate: editor.cursorDelegate
+
+    /*!
       The position of the cursor in the TextField.
 
       \qmlproperty int cursorPosition
@@ -157,21 +228,70 @@ StyledItem {
     property alias cursorPosition: editor.cursorPosition
 
     /*!
-      \preliminary
+      The rectangle where the standard text cursor is rendered within the text
+      input. Read only.
+
+      The position and height of a custom cursorDelegate are updated to follow
+      the cursorRectangle automatically when it changes. The width of the delegate
+      is unaffected by changes in the cursor rectangle.
+
+      \qmlproperty rectangle cursorRectangle
+    */
+    property alias cursorRectangle: editor.cursorRectangle
+
+    /*!
+      Set to true when the TextField shows a cursor.
+
+      This property is set and unset when the TextField gets active focus, so that
+      other properties can be bound to whether the cursor is currently showing.
+      As it gets set and unset automatically, when you set the value yourself you
+      must keep in mind that your value may be overwritten.
+
+      It can be set directly in script, for example if a KeyProxy might forward keys
+      to it and you desire it to look active when this happens (but without actually
+      giving it active focus).
+
+      It should not be set directly on the item, like in the below QML, as the specified
+      value will be overridden an lost on focus changes.
+      \qml
+      TextField {
+          text: "Text"
+          cursorVisible: false
+      }
+      \endqml
+      In the above snippet the cursor will still become visible when the TextField
+      gains active focus.
+
+      \qmlproperty bool cursorVisible
+    */
+    property alias cursorVisible: editor.cursorVisible
+
+    /*!
+      This is the text displayed in the TextField.
+
+      If echoMode is set to TextInput::Normal, this holds the same value as the
+      \l text property. Otherwise, this property holds the text visible to the
+      user, while the text property holds the actual entered text.
+
+      \qmlproperty string displayText
+    */
+    property alias displayText: editor.displayText
+
+    /*!
       Specifies how the text should be displayed in the TextField.
-
-      - TextInput.Normal - Displays the text as it is. (Default)
-      - TextInput.Password - Displays asterixes instead of characters.
-      - TextInput.NoEcho - Displays nothing.
-      - TextInput.PasswordEchoOnEdit - Displays characters as they are entered while
+      \list
+        \li - TextInput.Normal - Displays the text as it is. (Default)
+        \li - TextInput.Password - Displays asterixes instead of characters.
+        \li - TextInput.NoEcho - Displays nothing.
+        \li - TextInput.PasswordEchoOnEdit - Displays characters as they are entered while
         editing, otherwise displays asterisks.
+      \endlist
 
-        \qmlproperty enumeration echoMode
+      \qmlproperty enumeration echoMode
     */
     property alias echoMode: editor.echoMode
 
     /*!
-      \preliminary
       Font used in the TextField.
 
       \qmlproperty font font
@@ -179,7 +299,6 @@ StyledItem {
     property alias font: editor.font
 
     /*!
-      \preliminary
       Allows you to set an input mask on the TextField, restricting the  text
       inputs. See QLineEdit::inputMask for further details, as the exact same mask strings
       are used by TextField.
@@ -189,7 +308,6 @@ StyledItem {
     property alias inputMask: editor.inputMask
 
     /*!
-      \preliminary
       This property holds whether the TextInput has partial text input from an input method.
 
       While it is composing an input method may rely on mouse or key events from the
@@ -202,7 +320,6 @@ StyledItem {
     property alias inputMethodComposing: editor.inputMethodComposing
 
     /*!
-      \preliminary
       Provides hints to the input method about the expected content of the text input and how it
       should operate.
 
@@ -211,37 +328,37 @@ StyledItem {
       Flags that alter behaviour are:
 
       \list
-      \li Qt.ImhHiddenText - Characters should be hidden, as is typically used when entering passwords.
+      \li - Qt.ImhHiddenText - Characters should be hidden, as is typically used when entering passwords.
               This is automatically set when setting echoMode to \c TextInput.Password.
-      \li Qt.ImhSensitiveData - Typed text should not be stored by the active input method
+      \li - Qt.ImhSensitiveData - Typed text should not be stored by the active input method
               in any persistent storage like predictive user dictionary.
-      \li Qt.ImhNoAutoUppercase - The input method should not try to automatically switch to upper case
+      \li - Qt.ImhNoAutoUppercase - The input method should not try to automatically switch to upper case
               when a sentence ends.
-      \li Qt.ImhPreferNumbers - Numbers are preferred (but not required).
-      \li Qt.ImhPreferUppercase - Upper case letters are preferred (but not required).
-      \li Qt.ImhPreferLowercase - Lower case letters are preferred (but not required).
-      \li Qt.ImhNoPredictiveText - Do not use predictive text (i.e. dictionary lookup) while typing.
+      \li - Qt.ImhPreferNumbers - Numbers are preferred (but not required).
+      \li - Qt.ImhPreferUppercase - Upper case letters are preferred (but not required).
+      \li - Qt.ImhPreferLowercase - Lower case letters are preferred (but not required).
+      \li - Qt.ImhNoPredictiveText - Do not use predictive text (i.e. dictionary lookup) while typing.
 
-      \li Qt.ImhDate - The text editor functions as a date field.
-      \li Qt.ImhTime - The text editor functions as a time field.
+      \li - Qt.ImhDate - The text editor functions as a date field.
+      \li - Qt.ImhTime - The text editor functions as a time field.
       \endlist
 
       Flags that restrict input (exclusive flags) are:
 
       \list
-      \li Qt.ImhDigitsOnly - Only digits are allowed.
-      \li Qt.ImhFormattedNumbersOnly - Only number input is allowed. This includes decimal point and minus sign.
-      \li Qt.ImhUppercaseOnly - Only upper case letter input is allowed.
-      \li Qt.ImhLowercaseOnly - Only lower case letter input is allowed.
-      \li Qt.ImhDialableCharactersOnly - Only characters suitable for phone dialing are allowed.
-      \li Qt.ImhEmailCharactersOnly - Only characters suitable for email addresses are allowed.
-      \li Qt.ImhUrlCharactersOnly - Only characters suitable for URLs are allowed.
+      \li - Qt.ImhDigitsOnly - Only digits are allowed.
+      \li - Qt.ImhFormattedNumbersOnly - Only number input is allowed. This includes decimal point and minus sign.
+      \li - Qt.ImhUppercaseOnly - Only upper case letter input is allowed.
+      \li - Qt.ImhLowercaseOnly - Only lower case letter input is allowed.
+      \li - Qt.ImhDialableCharactersOnly - Only characters suitable for phone dialing are allowed.
+      \li - Qt.ImhEmailCharactersOnly - Only characters suitable for email addresses are allowed.
+      \li - Qt.ImhUrlCharactersOnly - Only characters suitable for URLs are allowed.
       \endlist
 
       Masks:
 
       \list
-      \li Qt.ImhExclusiveInputMask - This mask yields nonzero if any of the exclusive flags are used.
+      \li - Qt.ImhExclusiveInputMask - This mask yields nonzero if any of the exclusive flags are used.
       \endlist
 
       \qmlproperty enumeration inputMethodHints
@@ -249,7 +366,20 @@ StyledItem {
     property alias inputMethodHints: editor.inputMethodHints
 
     /*!
-      \preliminary
+      Returns the total number of characters in the TextField item.
+
+      If the TextField has an inputMask the length will include mask characters
+      and may differ from the length of the string returned by the text property.
+
+      This property can be faster than querying the length the text property as
+      it doesn't require any copying or conversion of the TextField's internal
+      string data.
+
+      \qmlproperty int length
+    */
+    property alias length: editor.length
+
+    /*!
       The maximum permitted length of the text in the TextField.
 
       If the text is too long, it is truncated at the limit.
@@ -261,7 +391,27 @@ StyledItem {
     property alias maximumLength: editor.maximumLength
 
     /*!
-      \preliminary
+      Specifies how text should be selected using a mouse.
+      \list
+        \li -TextInput.SelectCharacters - The selection is updated with individual
+            characters. (Default)
+        \li -TextInput.SelectWords - The selection is updated with whole words.
+      \endlist
+      This property only applies when selectByMouse is true.
+
+      \qmlproperty enumeration mouseSelectionMode
+    */
+    property alias mouseSelectionMode: editor.mouseSelectionMode
+
+    /*!
+      Whether the TextField should keep its selection when it loses active focus
+      to another item in the scene. By default this is set to false.
+
+      \qmlproperty bool persistentSelection
+    */
+    property alias persistentSelection: editor.persistentSelection
+
+    /*!
       Sets whether user input can modify the contents of the TextField.
 
       If readOnly is set to true, then user input will not affect the
@@ -273,15 +423,48 @@ StyledItem {
     property alias readOnly: editor.readOnly
 
     /*!
+      Override the default rendering type for this component.
+
+      Supported render types are:
+      \list
+        \li - Text.QtRendering - (default)
+        \li - Text.NativeRendering
+      \endlist
+
+      Select Text.NativeRendering if you prefer text to look native on the target
+      platform and do not require advanced features such as transformation of the
+      text. Using such features in combination with the NativeRendering render type
+      will lend poor and sometimes pixelated results.
+
+      \qmlproperty enumeration renderType
+    */
+    property alias renderType: editor.renderType
+
+    /*!
+      Defaults to true.
+
+      If false, the user cannot use the mouse to select text, only can use it to
+      focus the input.
+
+      \qmlproperty bool selectByMouse
       \preliminary
+    */
+    property alias selectByMouse: virtualKbdHandler.enabled
+
+    /*!
       This read-only property provides the text currently selected in the text input.
+
+      It is equivalent to the following snippet, but is faster and easier to use.
+      \code
+      myTextInput.text.toString().substring(myTextInput.selectionStart,
+                myTextInput.selectionEnd);
+      \endcode
 
       \qmlproperty string selectedText
     */
-    property alias selectedText: editor.selectedText
+    readonly property alias selectedText: editor.selectedText
 
     /*!
-      \preliminary
       The cursor position before the first character in the current selection.
 
       This property is read-only. To change the selection, use select(start,end),
@@ -292,7 +475,6 @@ StyledItem {
     property alias selectionStart: editor.selectionStart
 
     /*!
-      \preliminary
       The cursor position after the last character in the current selection.
 
       This property is read-only. To change the selection, use select(start,end),
@@ -303,7 +485,6 @@ StyledItem {
     property alias selectionEnd: editor.selectionEnd
 
     /*!
-      \preliminary
       The text in the TextField.
 
       \qmlproperty string text
@@ -311,7 +492,6 @@ StyledItem {
     property alias text: editor.text
 
     /*!
-      \preliminary
       Allows you to set a validator on the TextInput. When a validator is set the
       TextField will only accept input which leaves the text property in an acceptable
       or intermediate state. The accepted signal will only be sent if the text is in
@@ -323,23 +503,25 @@ StyledItem {
 
       \qml
       import QtQuick 2.0
-      TextInput{
+      import Ubuntu.Components 0.1
+      TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
       }
       \endqml
+
+      \sa acceptableInput, inputMask
 
       \qmlproperty Validator validator
     */
     property alias validator: editor.validator
 
     /*!
-      \preliminary
       Sets the horizontal alignment of the text within the item's width and height.
       By default, the text alignment follows the natural alignment of the text, for
       example text that is read from left to right will be aligned to the left.
 
-      TextInput does not have vertical alignment, as the natural height is exactly
+      TextField does not have vertical alignment, as the natural height is exactly
       the height of the single line of text. If you set the height manually to something
       larger, TextInput will always be top aligned vertically. You can use anchors to
       align it however you want within another item.
@@ -347,36 +529,51 @@ StyledItem {
       The valid values for horizontalAlignment are TextInput.AlignLeft,
       TextInput.AlignRight and TextInput.AlignHCenter.
 
+      Valid values for verticalAlignment are TextInput.AlignTop (default), TextInput.AlignBottom
+      TextInput.AlignVCenter.
+
+      When using the attached property LayoutMirroring::enabled to mirror application
+      layouts, the horizontal alignment of text will also be mirrored. However,
+      the property horizontalAlignment will remain unchanged. To query the effective
+      horizontal alignment of TextField, use the read-only property effectiveHorizontalAlignment.
+
       \qmlproperty enumeration horizontalAlignment
+      \qmlproperty enumeration effectiveHorizontalAlignment
+      \qmlproperty enumeration verticalAlignment
     */
     property alias horizontalAlignment: editor.horizontalAlignment
+    /*! \internal */
+    property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
+    /*! \internal */
+    property alias verticalAlignment: editor.verticalAlignment
 
     /*!
-      \internal
-      FIXME: property added for styling purposes
+      This is the character displayed when echoMode is set to Password or
+      PasswordEchoOnEdit. By default it is the unicode character 2022.
+
+      If this property is set to a string with more than one character, the first
+      character is used. If the string is empty, the value is ignored and the property
+      is not set.
+
+      \qmlproperty string passwordCharacter
       */
     property alias passwordCharacter: editor.passwordCharacter
 
     /*!
-      \internal
-      FIXME: property added for styling purposes
-      */
-    property alias color: editor.color
+      The text highlight color, used behind selections.
 
-    /*!
-      \internal
-      FIXME: property added for styling purposes
+      \qmlproperty color selectionColor
       */
     property alias selectionColor: editor.selectionColor
 
     /*!
-      \internal
-      FIXME: property added for styling purposes
+      The highlighted text color, used in selections.
+
+      \qmlproperty color selctedTextColor
       */
     property alias selectedTextColor: editor.selectedTextColor
 
     /*!
-      \preliminary
       This handler is called when the Return or Enter key is pressed. Note that if
       there is a validator or inputMask set on the text input, the handler will only
       be emitted if the input is in an acceptable state.
@@ -385,7 +582,6 @@ StyledItem {
 
 
     /*!
-      \preliminary
       Copies the currently selected text to the system clipboard.
     */
     function copy()
@@ -394,7 +590,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Moves the currently selected text to the system clipboard.
     */
     function cut()
@@ -403,7 +598,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Places the clipboard or the data given as parameter into the text input.
       The selected text will be replaces with the data.
     */
@@ -424,7 +618,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Removes active text selection.
     */
     function deselect()
@@ -433,7 +626,13 @@ StyledItem {
     }
 
     /*!
-      \preliminary
+      Inserts \a text into the TextField at \a position.
+    */
+    function insert(position, text) {
+        editor.insert(position, text);
+    }
+
+    /*!
       This function returns the character position at x pixels from the left of
       the TextField. Position 0 is before the first character, position 1 is after
       the first character but before the second, and so on until position text.length,
@@ -443,11 +642,12 @@ StyledItem {
       and for all x values after the last character this function returns text.length.
 
       The cursor position type specifies how the cursor position should be resolved.
-
-      - TextInput.CursorBetweenCharacters - Returns the position between characters
+      \list
+      \li - TextInput.CursorBetweenCharacters - Returns the position between characters
         that is nearest x.
-      - TextInput.CursorOnCharacter - Returns the position before the character that
+      \li - TextInput.CursorOnCharacter - Returns the position before the character that
         is nearest x.
+      \endlist
     */
     function positionAt(x, position)
     {
@@ -458,7 +658,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       This function takes a character position and returns the rectangle that the
       cursor would occupy, if it was placed at that character position.
 
@@ -471,7 +670,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Causes the text from start to end to be selected.
 
       If either start or end is out of range, the selection is not changed.
@@ -485,7 +683,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Causes all text to be selected.
     */
     function selectAll()
@@ -494,7 +691,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Causes the word closest to the current cursor position to be selected.
     */
     function selectWord()
@@ -503,7 +699,6 @@ StyledItem {
     }
 
     /*!
-      \internal
        Ensure focus propagation
     */
     function forceActiveFocus()
@@ -511,9 +706,86 @@ StyledItem {
         internal.activateEditor();
     }
 
+    /*!
+      Returns true if the natural reading direction of the editor text found between
+      positions start and end is right to left.
+    */
+    function isRightToLeft(start, end) {
+        return editor.isRightToLeft(start, end);
+    }
+
+    /*!
+      Moves the cursor to position and updates the selection according to the
+      optional mode parameter. (To only move the cursor, set the cursorPosition property.)
+
+      When this method is called it additionally sets either the selectionStart
+      or the selectionEnd (whichever was at the previous cursor position) to the
+      specified position. This allows you to easily extend and contract the selected
+      text range.
+
+      The selection mode specifies whether the selection is updated on a per character
+      or a per word basis. If not specified the selection mode will default to
+      TextInput.SelectCharacters.
+      \list
+        \li - TextInput.SelectCharacters - Sets either the selectionStart or selectionEnd
+            (whichever was at the previous cursor position) to the specified position.
+        \li - TextInput.SelectWords - Sets the selectionStart and selectionEnd to
+            include all words between the specified position and the previous cursor
+            position. Words partially in the range are included.
+      \endlist
+
+      For example, take this sequence of calls:
+      \code
+      cursorPosition = 5
+      moveCursorSelection(9, TextInput.SelectCharacters)
+      moveCursorSelection(7, TextInput.SelectCharacters)
+      \endcode
+      This moves the cursor to position 5, extend the selection end from 5 to 9
+      and then retract the selection end from 9 to 7, leaving the text from position
+      5 to 7 selected (the 6th and 7th characters).
+
+      The same sequence with TextInput.SelectWords will extend the selection
+      start to a word boundary before or on position 5 and extend the selection
+      end to a word boundary on or past position 9.
+    */
+    function moveCursorSelection(position, mode) {
+        editor.moveCursorSelection(position, mode)
+    }
+
+    /*!
+      Redoes the last operation if redo is \l {canRedo}{available}.
+    */
+    function redo() {
+        editor.redo();
+    }
+
+    /*!
+      Undoes the last operation if undo is \l {canUndo}{available}. Deselects any current
+      selection, and updates the selection start to the current cursor position.
+    */
+    function undo() {
+        editor.undo();
+    }
+
+    /*!
+      Removes the section of text that is between the start and end positions from the TextField.
+    */
+    function remove(start, end) {
+        editor.remove(start, end);
+    }
+
+    /*!
+      Returns the section of text that is between the start and end positions.
+
+      If the TextField has an inputMask the length will include mask characters.
+    */
+    function getText(start, end) {
+        return editor.getText(start, end);
+    }
+
     // internals
 
-    /*! internal */
+    /*! \internal */
     onVisibleChanged: {
         if (!visible)
             control.focus = false;
