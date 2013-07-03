@@ -29,17 +29,17 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_color_hex"
-                color: "#5da357"
+                color: UbuntuColors.orange
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_color_lightblue"
-                color: "lightblue"
+                color: UbuntuColors.lightAubergine
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_color_darkgray"
-                color: "darkgray"
+                color: UbuntuColors.warmGrey
             }
         }
 

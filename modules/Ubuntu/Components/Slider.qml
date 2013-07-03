@@ -33,11 +33,6 @@
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
 import "sliderUtils.js" as SliderFuncs
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import "." 0.1 as Theming
 
 /*!
     \qmltype Slider
@@ -47,7 +42,7 @@ import "." 0.1 as Theming
      values.
 
     The slider's sensing area is defined by the width and height, therefore
-    delegates should take this into account when defining the visuals, and
+    styles should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
 
     \l {http://design.ubuntu.com/apps/building-blocks/slider}{See also the Design Guidelines on Sliders}.
@@ -68,16 +63,16 @@ import "." 0.1 as Theming
     \section2 Theming
 
     The slider's default style class is \b slider and style properties depend on
-    the actual delegate defined by the theme, except of one property which defines
+    the actual style defined by the theme, except of one property which defines
     the spacing units between the slider's bar and thumb, called \b thumbSpacing.
     The slider uses one single touch sensing area to position the thumb within the
-    bar. Therefore However delegates must define the following properties:
+    bar. Therefore However styles must define the following properties:
     \list
     \li * \b bar - the slider's bar object
     \li * \b thumb - the slider's thumb object
     \endlist
 
-    Beside these, the library provies functions for delegates to update liveValue and
+    Beside these, the library provies functions for styles to update liveValue and
     normalizedValue in SliderUtils module.
 
     \b{This component is under heavy development.}
@@ -87,8 +82,6 @@ AbstractButton {
 
     width: units.gu(38)
     height: units.gu(5)
-
-    Theming.ItemStyle.class: "slider"
 
     // FIXME(loicm) Add Support for the inverted property. There's an ongoing
     //     debate on whether we should use that property (like every other
@@ -157,7 +150,7 @@ AbstractButton {
       default, the value v is rounded to the nearest interger value.
 
       \b Note: this function will be deprecated, and will be solved with particular
-      delegates for the thumb.
+      styles for the thumb.
      */
     function formatValue(v) {
         return v.toFixed(0)
@@ -179,9 +172,9 @@ AbstractButton {
     QtObject {
         id: internals
 
-        property real thumbSpacing: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumbSpacing : 0
-        property Item bar: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.bar : null
-        property Item thumb: slider.Theming.ItemStyle.delegate ? slider.Theming.ItemStyle.delegate.thumb :  null
+        property real thumbSpacing: slider.__styleInstance ? slider.__styleInstance.thumbSpacing : 0
+        property Item bar: slider.__styleInstance ? slider.__styleInstance.bar : null
+        property Item thumb: slider.__styleInstance ? slider.__styleInstance.thumb :  null
 
         property real liveValue: 0.0
         property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
@@ -244,4 +237,6 @@ AbstractButton {
             }
         }
     }
+
+    style: Theme.createStyleComponent("SliderStyle.qml", slider)
 }

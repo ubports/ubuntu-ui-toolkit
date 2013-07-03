@@ -16,11 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype SheetBase
@@ -78,16 +73,13 @@ PopupBase {
     /*! \internal */
     property alias __rightButton: foreground.rightButton
 
-    Theming.ItemStyle.class: "sheet"
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
     __foreground: foreground
     __eventGrabber.enabled: modal
 
-    Item {
+    StyledItem {
         id: foreground
-
-        // FIXME: see above
-        Theming.ItemStyle.class: "foreground"
 
         property string title
         property real contentsWidth: units.gu(64)
@@ -103,21 +95,15 @@ PopupBase {
         property real minHeight: Math.min(units.gu(40), sheet.height)
         property real maxHeight: sheet.height
 
-        // childrenRect includes the delegate which may add decoration
-        // to the sheet (such as a header with title), and thus width and height
-        // can differ from contentsWidth and contentsHeight.
-        // Delegate makes use of minWidth/maxWidth/minHeight/maxHeight properties
-        // which are defined above. Those properties are not moved to the delegate
-        // because here we have easy access to sheet.width and sheet.height.
-        width: childrenRect.width
-        height: childrenRect.height
-
         Item {
             id: containerItem
+            parent: foreground.__styleInstance.contentItem
             anchors {
                 fill: parent
                 margins: units.gu(1)
             }
         }
+
+        style: Theme.createStyleComponent("SheetForegroundStyle.qml", sheet)
     }
 }

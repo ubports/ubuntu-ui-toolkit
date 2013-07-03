@@ -47,7 +47,7 @@ Template {
                 }
                 Button {
                     text: "Delete"
-                    color: "red"
+                    color: UbuntuColors.orange
                     onClicked: PopupUtils.close(dialogue)
                 }
             }

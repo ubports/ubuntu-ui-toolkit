@@ -15,7 +15,7 @@ QtObject
     property bool enabled
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
-Item
+StyledItem
     property Action action
     property string text
     property url iconSource
@@ -28,7 +28,7 @@ modules/Ubuntu/Components/ActivityIndicator.qml
 AnimatedItem
     property bool running
 modules/Ubuntu/Components/AnimatedItem.qml
-Item
+StyledItem
     property bool onScreen
 modules/Ubuntu/Components/Button.qml
 AbstractButton
@@ -55,7 +55,7 @@ MouseArea
     function getEventSpeed(currentTime, event)
     function pushDragEvent(event)
 modules/Ubuntu/Components/Header.qml
-Item
+StyledItem
     function show()
     function hide()
     property string title
@@ -108,7 +108,7 @@ PageTreeNode
     function pop()
     function clear()
 modules/Ubuntu/Components/PageTreeNode.qml
-Item
+StyledItem
     property bool __isPageTreeNode
     property Header header
     property Toolbar toolbar
@@ -139,7 +139,7 @@ AnimatedItem
     property real maximumValue
     property real value
 modules/Ubuntu/Components/Scrollbar.qml
-Item
+StyledItem
     property Flickable flickableItem
     property int align
     property bool __interactive
@@ -153,6 +153,10 @@ AbstractButton
     signal touched(bool onThumb)
     function formatValue(v)
     property alias __internals
+modules/Ubuntu/Components/StyledItem.qml
+FocusScope
+    property Component style
+    readonly property Item __styleInstance
 modules/Ubuntu/Components/Switch.qml
 CheckBox
 modules/Ubuntu/Components/Tab.qml
@@ -160,11 +164,6 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
-modules/Ubuntu/Components/TabButton.qml
-Button
-    property bool selected
-    property bool __isFirst
-    property bool __isLast
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
@@ -177,7 +176,7 @@ PageTreeNode
     default property alias tabChildren
     signal modelChanged()
 modules/Ubuntu/Components/TextArea.qml
-FocusScope
+StyledItem
     property bool highlighted
     property alias placeholderText
     readonly property alias displayText
@@ -239,15 +238,13 @@ FocusScope
     function forceActiveFocus()
     property alias __internal
 modules/Ubuntu/Components/TextCursor.qml
-Item
+StyledItem
     property var editorItem
     property string positionProperty
     property var popover
     function openPopover()
-modules/Ubuntu/Components/TextCustom.qml
-Label
 modules/Ubuntu/Components/TextField.qml
-FocusScope
+StyledItem
     property bool highlighted
     property alias placeholderText
     property bool hasClearButton
@@ -316,14 +313,6 @@ Item
     property bool locked
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
-modules/Ubuntu/Components/UbuntuShape.qml
-Item
-    property string radius
-    property color color
-    property color gradientColor
-    property url maskSource
-    property url borderSource
-    property Image image
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickItem"
@@ -345,14 +334,6 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
-    name: "ItemStyleAttached"
-    prototype: "QObject"
-    exports: ["ItemStyle 0.1"]
-    Property { name: "class"; type: "string" }
-    Property { name: "name"; type: "string" }
-    Property { name: "style"; type: "UCStyle"; isPointer: true }
-    Property { name: "delegate"; type: "QQuickItem"; isPointer: true }
-    Property { name: "path"; type: "string"; isReadonly: true }
     name: "QQmlPropertyMap"
     prototype: "QObject"
     Signal {
@@ -381,10 +362,10 @@ plugins.qmltypes
     Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1"]
+    exports: ["Shape 0.1", "UbuntuShape 0.1"]
     name: "HAlignment"
     name: "VAlignment"
-    Property { name: "baseColor"; type: "QColor" }
+    Property { name: "color"; type: "QColor" }
     Property { name: "gradientColor"; type: "QColor" }
     Property { name: "radius"; type: "string" }
     Property { name: "image"; type: "QVariant" }
@@ -427,9 +408,6 @@ plugins.qmltypes
     Signal {
     name: "sourceChanged"
     Parameter { type: "QUrl" }
-    name: "UCStyle"
-    prototype: "QObject"
-    exports: ["Style 0.1"]
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1"]
