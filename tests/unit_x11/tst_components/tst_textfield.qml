@@ -65,6 +65,8 @@ Item {
         function initTestCase() {
             textField.forceActiveFocus();
             compare(textField.focus, true, "TextField is focused");
+            // clear clipboard
+            Clipboard.clear();
         }
 
         function test_0_popover() {
@@ -79,12 +81,62 @@ Item {
             compare(textField.acceptableInput,true,"acceptableInput true by default")
         }
 
+        function test_0_activeFocusOnPress() {
+            compare(textField.activeFocusOnPress, true,"activeFocusOnPress true by default")
+        }
+
+        function test_0_autoScroll() {
+            compare(textField.autoScroll, true,"autoScroll true by default")
+        }
+
+        function test_0_canPaste() {
+            compare(textField.canPaste, false,"calPaste false when clipboard is empty")
+        }
+
+        function test_0_canRedo() {
+            compare(textField.canRedo, false,"calRedo false when no data was entered")
+        }
+
+        function test_0_canUndo() {
+            compare(textField.canUndo, false,"calUndo false when no data entered")
+        }
+
+        function test_0_color() {
+            compare(textField.color, "#000000","color #000000 by default")
+        }
+
+        function test_0_contentWidth() {
+            compare(textField.contentWidth, 0,"contentWidth by default")
+        }
+
+        function test_0_contentHeight() {
+            // line size is the font pixel size + 3 dp
+            var lineSize = textField.font.pixelSize + units.dp(3)
+            compare(textField.contentHeight, lineSize,"contentHeight by default")
+        }
+
+        function test_0_cursorDelegate() {
+            verify(textField.cursorDelegate, "cursorDelegate set by default")
+        }
+
         function test_0_cursorPosition() {
-            compare(textField.cursorPosition,0,"cursorPosition 0 by default")
+            compare(textField.cursorPosition, 0, "cursorPosition 0 by default")
+        }
+
+        function test_0_cursorRectangle() {
+            compare(textField.cursorRectangle, Qt.rect(0, 0, 0, 0), "cursorRectangle 0 by default")
+        }
+
+        function test_0_cursorVisible() {
+            compare(textField.cursorVisible, true, "cursorVisible true by default")
         }
 
         function test_0_customSoftwareInputPanel() {
             compare(textField.customSoftwareInputPanel,null,"customSoftwareInputPanel is null by default")
+        }
+
+        function test_0_displayText() {
+            compare(textField.displayText, "", "displayText empty by default")
         }
 
         function test_0_echoMode() {
@@ -99,6 +151,12 @@ Item {
 
         function test_0_font() {
             verify((textField.font),"font is set")
+        }
+
+        function test_0_alignments() {
+            compare(textField.horizontalAlignment, TextInput.AlignLeft, "horizontalAlignmen is Left by default")
+            compare(textField.effectiveHorizontalAlignment, TextInput.AlignLeft, "effectiveHorizontalAlignmen is Left by default")
+            compare(textField.verticalAlignment, TextInput.AlignTop, "verticalAlignmen is Top by default")
         }
 
         function test_hasClearButton() {
@@ -119,8 +177,40 @@ Item {
             compare(textField.inputMethodHints, Qt.ImhNone, "inputMethodHints is Qt.ImhNone by default")
         }
 
+        function test_0_length() {
+            compare(textField.length, 0, "length is 0 by default")
+        }
+
         function test_0_maximumLength() {
             compare(textField.maximumLength, 32767, "maximumLength is 32767 by default")
+        }
+
+        function test_0_mouseSelectionMode() {
+            compare(textField.mouseSelectionMode, TextInput.SelectCharacters, "mouseSelectionMode default")
+        }
+
+        function test_0_passwordCharacter() {
+            compare(textField.passwordCharacter, "\u2022", "passwordCharacter default")
+        }
+
+        function test_0_persistentSelection() {
+            compare(textField.persistentSelection, false, "persistentSelection default")
+        }
+
+        function test_0_renderType() {
+            compare(textField.renderType, Text.QtRendering, "renderType default")
+        }
+
+        function test_0_selectByMouse() {
+            compare(textField.selectByMouse, true, "selectByMouse default")
+        }
+
+        function test_0_selectedTextColor() {
+            compare(textField.selectedTextColor, "#f3f3e7", "selectedTextColor default")
+        }
+
+        function test_0_selectionColor() {
+            compare(textField.selectionColor, "#19b6ee", "selectionColor default")
         }
 
         function test_0_placeholderText() {
@@ -195,6 +285,64 @@ Item {
             keyClick(Qt.Key_Control, Qt.NoModifier, 200);
             compare(textField.keyPressData, Qt.Key_Control, "Key press filtered");
             compare(textField.keyReleaseData, Qt.Key_Control, "Key release filtered");
+        }
+
+        function test_1_undo_redo() {
+            textField.readOnly = false;
+            textField.text = "";
+            textField.focus = true;
+            keyClick(Qt.Key_T); keyClick(Qt.Key_E); keyClick(Qt.Key_S); keyClick(Qt.Key_T);
+            compare(textField.text, "test", "new text");
+            if (!textField.canUndo) expectFail("", "undo is not allowed in this input");
+            textField.undo();
+            compare(textField.text, "", "undone");
+            textField.redo();
+            compare(textField.text, "test", "redone");
+        }
+
+        function test_1_getText() {
+            textField.text = "this is a longer text";
+            compare(textField.getText(0, 10), "this is a ", "getText(0, 10)");
+            compare(textField.getText(10, 0), "this is a ", "getText(10, 0)");
+            compare(textField.getText(0), "", "getText(0)");
+            compare(textField.getText(4, 0), "this", "getText(4, 0)");
+        }
+
+        function test_1_removeText() {
+            textField.text = "this is a longer text";
+            textField.remove(0, 10);
+            compare(textField.text, "longer text", "remove(0, 10)");
+
+            textField.text = "this is a longer text";
+            textField.remove(10, 0);
+            compare(textField.text, "longer text", "remove(0, 10)");
+
+            textField.text = "this is a longer text";
+            textField.remove(0);
+            compare(textField.text, "this is a longer text", "remove(0)");
+
+            textField.text = "this is a longer text";
+            textField.remove(4, 0);
+            compare(textField.text, " is a longer text", "remove(4, 0)");
+
+            textField.text = "this is a longer text";
+            textField.select(0, 4);
+            textField.remove();
+            compare(textField.text, "this is a longer text", "select(0, 4) && remove()");
+        }
+
+        function test_1_moveCursorSelection() {
+            textField.text = "this is a longer text";
+            textField.cursorPosition = 5;
+            textField.moveCursorSelection(9, TextInput.SelectCharacters);
+            compare(textField.selectedText, "is a", "moveCursorSelection from 5 to 9, selecting the text");
+        }
+
+        function test_1_isRightToLeft() {
+            textField.text = "this is a longer text";
+            compare(textField.isRightToLeft(0), false, "isRightToLeft(0)");
+            compare(textField.isRightToLeft(0, 0), false, "isRightToLeft(0, 0)");
+            compare(textField.isRightToLeft(5, 10), false, "isRightToLeft(5, 10)");
         }
 
         function test_cut() {
