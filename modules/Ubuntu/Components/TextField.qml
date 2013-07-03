@@ -699,6 +699,7 @@ StyledItem {
     }
 
     /*!
+      \internal
        Ensure focus propagation
     */
     function forceActiveFocus()
