@@ -68,7 +68,12 @@ QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri
     QString pluginPath;
     Q_FOREACH (QString importPath, importPathList) {
         pluginPath = importPath.append(pluginRelativePath);
-        if (QDir(pluginPath).exists()) {
+        /* We verify that the directory ending in Ubuntu/Components contains the
+           file libUbuntuComponents.so therefore proving it's the right directory.
+
+           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197293
+        */
+        if (QFile(pluginPath + "libUbuntuComponents.so").exists()) {
             return QUrl::fromLocalFile(pluginPath);
         }
     }
