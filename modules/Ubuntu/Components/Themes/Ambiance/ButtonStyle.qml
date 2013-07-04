@@ -69,17 +69,11 @@ Item {
         // Color properties in a JS ternary operator don't work as expected in
         // QML because it overwrites alpha values with 1. A workaround is to use
         // Qt.rgba(). For more information, see
-        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802.
-        color: isGradient ?
-            Qt.rgba(gradientProxy.topColor.r, gradientProxy.topColor.g,
-                    gradientProxy.topColor.b, gradientProxy.topColor.a) :
-            Qt.rgba(button.color.r, button.color.g, button.color.b,
-                    button.color.a)
-        gradientColor: isGradient ?
-            Qt.rgba(gradientProxy.bottomColor.r, gradientProxy.bottomColor.g,
-                    gradientProxy.bottomColor.b, gradientProxy.bottomColor.a) :
-            Qt.rgba(button.color.r, button.color.g, button.color.b,
-                    button.color.a)
+        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
+        // https://bugreports.qt-project.org/browse/QTBUG-32238.
+        function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
+        color: isGradient ? colorHack(gradientProxy) : colorHack(button)
+        gradientColor: isGradient ? colorHack(gradientProxy) : colorHack(button.color)
     }
 
     UbuntuShape {
