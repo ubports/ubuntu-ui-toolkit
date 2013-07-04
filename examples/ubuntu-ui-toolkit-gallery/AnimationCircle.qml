@@ -19,7 +19,7 @@ import QtQuick 2.0
 Rectangle {
     id: circle
 
-    color: "#dd4814"
+    color: UbuntuColors.orange
     width: radius
     height: radius
     radius: units.gu(12)

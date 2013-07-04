@@ -84,7 +84,7 @@ SheetBase {
 
     __rightButton: Button {
         text: i18n.dtr("ubuntu-sdk", "confirm")
-        color: "#5da357"
+        color: UbuntuColors.orange
         /*! \internal */ // avoid warning when generating documentation
         onClicked: {
             composer.confirmClicked();

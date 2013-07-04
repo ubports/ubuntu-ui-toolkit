@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-06-17 03:33+0000\n"
+"PO-Revision-Date: 2013-07-03 15:38+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-06-18 06:51+0000\n"
-"X-Generator: Launchpad (build 16673)\n"
+"X-Launchpad-Export-Date: 2013-07-04 05:47+0000\n"
+"X-Generator: Launchpad (build 16692)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -352,6 +352,8 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
+"Esta es una página externa con\n"
+"una barra de herramientas bloqueada."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
@@ -359,15 +361,15 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr ""
+msgstr "Página uno"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr ""
+msgstr "Página externa"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr ""
+msgstr "Primera página"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
@@ -375,7 +377,7 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "Rectángulo rojo"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"

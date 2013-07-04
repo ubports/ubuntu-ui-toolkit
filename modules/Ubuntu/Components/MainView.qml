@@ -15,11 +15,7 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype MainView
@@ -104,20 +100,20 @@ import Ubuntu.Components 0.1 as Theming
                     anchors.centerIn: parent
                     width: units.gu(20)
                     height: units.gu(20)
-                    color: "blue"
+                    color: UbuntuColors.coolGrey
                 }
 
                 tools: ToolbarActions {
                     ToolbarButton {
                         action: Action {
                             text: "red"
-                            onTriggered: rectangle.color = "red"
+                            onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
                             text: "green"
-                            onTriggered: rectangle.color = "green"
+                            onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
                 }
@@ -140,13 +136,13 @@ PageTreeNode {
       */
     property string applicationName
 
-    // FIXME: Make sure that the theming is only in the background, and the delegate
+    // FIXME: Make sure that the theming is only in the background, and the style
     //  should not occlude contents of the MainView. When making changes here, make
     //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
-    Item {
+    StyledItem {
         id: background
-        Theming.ItemStyle.class: "mainview"
         anchors.fill: parent
+        style: Theme.createStyleComponent("MainViewStyle.qml", background)
     }
 
     /*!
@@ -193,6 +189,38 @@ PageTreeNode {
         }
     }
 
+    /*!
+      Global actions. TODO: document
+     */
+    property ActionList actions: null
+
+    Object {
+        id: internal
+        UnityActions.ActionManager {
+            id: unityActionManager
+        }
+
+        function updateActions() {
+            // TODO: clear global context actions
+            if (!mainView.actions) return;
+            print("updating actions" + mainView.actions.actions.length)
+            for (var i=0; i < mainView.actions.actions.length; i++) {
+                // Action is null on first actionsChanged when the list is initialized but the actions not yet.
+                if (mainView.actions.actions[i]) {
+                    print("action "+i+" = "+mainView.actions.actions[i]);
+                    // TODO: unityActionManager.actions.append(mainView.actions.actions[i]) when that works.
+                    unityActionManager.globalContext.addAction(mainView.actions.actions[i]);
+                }
+            }
+        }
+
+        Connections {
+            target: mainView
+            onActionsChanged: internal.updateActions()
+            Component.onCompleted: internal.updateActions()
+        }
+    }
+
     __propagated: QtObject {
         /*!
           \internal
@@ -207,7 +235,15 @@ PageTreeNode {
           It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarItem
+
+        /*!
+          \internal
+          The action manager that has the global context for the MainView's actions,
+          and to which a local context can be added for each Page that has actions.actions.
+         */
+        property var actionManager: unityActionManager
     }
+
 
     /*!
       \deprecated

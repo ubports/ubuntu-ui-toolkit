@@ -31,7 +31,7 @@ import QtQuick 2.0
         See \l ToolbarItems for examples of how to use \l ToolbarButton or other ActionItems
         in a toolbar.
 */
-Item {
+StyledItem {
     id: actionItem
 
     /*!

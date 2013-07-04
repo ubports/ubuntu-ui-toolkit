@@ -31,11 +31,13 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
 UnityActions.Action {
     id: action
 
+    // FIXME: the properties that are not defined here, but only documented using qmlproperty
+    //  do not show up in the documentation.
+
     /*!
       The title of the action.
       \qmlproperty string text
      */
-//    property string text // now in unity action
 
     /*!
       The image associated with the action.
@@ -46,6 +48,7 @@ UnityActions.Action {
 
     /*!
       Called when the action is triggered.
+      \qmlsignal Ubuntu.Components.Action::triggered(var caller)
      */
 //    signal triggered(var caller) // now in unity action. still needs some testing.
 
@@ -68,9 +71,6 @@ UnityActions.Action {
       \deprecated
       \b {itemHint is DEPRECATED. Use \l ActionItem to specify
       the representation of an \l Action.}
-      Proposed Component to use as a representation for this action.
-      Depending on the component that displays the action, the Component
-      given here can replace the default representation of the action.
      */
     property Component itemHint
     /*! \internal */

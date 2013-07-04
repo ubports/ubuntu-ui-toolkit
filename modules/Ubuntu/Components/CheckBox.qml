@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype CheckBox
@@ -45,11 +40,6 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: checkBox
 
-    // FIXME: see FIXME above
-    Theming.ItemStyle.class: "checkbox"
-    implicitWidth: units.gu(4)
-    implicitHeight: units.gu(4)
-
     /*!
       \preliminary
       Specifies whether the checkbox is checked or not. By default the property
@@ -61,4 +51,6 @@ AbstractButton {
       \internal
      */
     onClicked: checked = !checked
+
+    style: Theme.createStyleComponent("CheckBoxStyle.qml", checkBox)
 }

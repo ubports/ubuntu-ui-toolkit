@@ -25,13 +25,15 @@
 #include <QtCore/QAbstractProxyModel>
 #include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlInfo>
+#include <QtQml/QQmlEngine>
 
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0)
+    m_rootView(0),
+    m_engine(new QQmlEngine)
 {
     QGuiApplication::instance()->installEventFilter(this);
     // connect to focusObjectChanged() to get the latest active focus object
@@ -230,4 +232,16 @@ void QuickUtils::lookupQuickView()
             break;
         }
     }
+}
+
+QObject* QuickUtils::createQmlObject(const QUrl &url)
+{
+    /* FIXME: if the directory pointed to by url contains a qmldir file that
+       declares a JavaScript module then QQmlComponent::create() fails with
+       the error "QQmlComponent: Component is not ready".
+    */
+    QQmlComponent *component = new QQmlComponent(m_engine, url, QQmlComponent::PreferSynchronous);
+    QObject* result = component->create();
+    delete component;
+    return result;
 }
