@@ -38,6 +38,4 @@ Palette {
         field: "#FFFFFF"
         fieldText: "#888888"
     }
-    disabled: PaletteValues {
-    }
 }

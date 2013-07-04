@@ -25,5 +25,4 @@ import QtQuick 2.0
 QtObject {
     property PaletteValues normal
     property PaletteValues selected
-    property PaletteValues disabled
 }
