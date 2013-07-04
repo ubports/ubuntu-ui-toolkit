@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Theme.palette.normal.tooltip
+                    color: Theme.palette.normal.overlay
 
                     Button {
                         anchors.centerIn: parent
@@ -110,7 +110,7 @@ import Ubuntu.Components 0.1 as Toolkit
         import Ubuntu.Components 0.1
 
         Rectangle {
-            color: Theme.palette.normal.window
+            color: Theme.palette.normal.background
             width: units.gu(40)
             height: units.gu(40)
 
@@ -124,7 +124,7 @@ import Ubuntu.Components 0.1 as Toolkit
                 height: units.gu(8)
 
                 Rectangle {
-                    color: Theme.palette.normal.tooltip
+                    color: Theme.palette.normal.overlay
                     anchors.fill: parent
                     Rectangle {
                         width: units.gu(8)

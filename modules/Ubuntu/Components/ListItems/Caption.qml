@@ -50,7 +50,7 @@ Item {
 
     Rectangle {
         id: framing
-        color: Theme.palette.normal.background
+        color: Theme.palette.normal.base
         anchors {
             left: parent.left
             right: parent.right
@@ -62,7 +62,7 @@ Item {
             anchors.centerIn: parent
             width: parent.width - units.gu(1)
             wrapMode: Text.Wrap
-            color: Theme.palette.normal.backgroundText
+            color: Theme.palette.normal.baseText
             horizontalAlignment: Text.AlignLeft
             fontSize: "small"
         }

@@ -23,14 +23,14 @@ import QtQuick 2.0
     \brief Palette of standard colors used by the widgets to draw themselves.
 */
 QtObject {
-    property color window
-    property color windowText
     property color background
     property color backgroundText
+    property color base
+    property color baseText
     property color foreground
     property color foregroundText
-    property color tooltip
-    property color tooltipText
+    property color overlay
+    property color overlayText
     property color field
     property color fieldText
 }

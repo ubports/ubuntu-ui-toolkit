@@ -25,6 +25,6 @@ Label {
 
     fontSize: "medium"
     elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : secondary ? Theme.palette.normal.windowText : Theme.palette.selected.windowText
+    color: selected ? UbuntuColors.orange : secondary ? Theme.palette.normal.backgroundText : Theme.palette.selected.backgroundText
     opacity: label.enabled ? 1.0 : 0.5
 }

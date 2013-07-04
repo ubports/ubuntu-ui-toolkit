@@ -89,7 +89,7 @@ MainView {
                 highlight: Rectangle {
                     height: units.gu(2)
                     width: view.width
-                    color: Theme.palette.selected.window
+                    color: Theme.palette.selected.background
                 }
             }
         }
@@ -100,7 +100,7 @@ MainView {
                 leftMargin: units.gu(0.5)
                 bottom: parent.bottom
             }
-            color: Theme.palette.normal.background
+            color: Theme.palette.normal.base
             width: parent.width
             Column {
                 anchors.fill: parent

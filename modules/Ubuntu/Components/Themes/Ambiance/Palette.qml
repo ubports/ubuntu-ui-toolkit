@@ -19,20 +19,20 @@ import Ubuntu.Components.Themes 0.1
 
 Palette {
     normal: PaletteValues {
-        window: "#EEEEEE"
-        windowText: "#7F888888"
-        background: "#1A000000"
-        backgroundText: "#888888"
+        background: "#EEEEEE"
+        backgroundText: "#7F888888"
+        base: "#1A000000"
+        baseText: "#888888"
         foreground: "#888888"
         foregroundText: "#F3F3E7"
-        tooltip: "#FDFDFD"
-        tooltipText: "#888888"
+        overlay: "#FDFDFD"
+        overlayText: "#888888"
         field: "#FFFFFF"
         fieldText: "#888888"
     }
     selected: PaletteValues {
-        window: "#B2E6E6E6" // FIXME: not from design
-        windowText: "#888888"
+        background: "#B2E6E6E6" // FIXME: not from design
+        backgroundText: "#888888"
         foreground: "#DD4814"
         foregroundText: "#F3F3E7"
     }

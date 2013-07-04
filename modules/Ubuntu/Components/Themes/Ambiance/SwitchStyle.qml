@@ -52,7 +52,7 @@ Item {
      */
     property NumberAnimation moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color backgroundColor: Theme.palette.normal.background
+    property color backgroundColor: Theme.palette.normal.base
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
 

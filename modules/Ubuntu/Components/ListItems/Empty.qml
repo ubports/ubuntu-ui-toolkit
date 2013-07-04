@@ -283,7 +283,7 @@ AbstractButton {
             top: parent.top
         }
         height: emptyListItem.height - bottomDividerLine.height
-        color: Theme.palette.selected.window
+        color: Theme.palette.selected.background
     }
 
 

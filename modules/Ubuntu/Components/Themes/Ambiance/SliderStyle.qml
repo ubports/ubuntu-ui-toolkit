@@ -31,7 +31,7 @@ Item {
     id: main
     // styling properties
 
-    property color backgroundColor: Theme.palette.normal.background
+    property color backgroundColor: Theme.palette.normal.base
     property color thumbColor: Theme.palette.selected.foreground
     property real thumbSpacing: units.dp(2)
 

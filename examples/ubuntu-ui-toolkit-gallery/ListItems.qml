@@ -107,7 +107,7 @@ Template {
             removable: true
             backgroundIndicator: Rectangle {
                 anchors.fill: parent
-                color: Theme.palette.normal.background
+                color: Theme.palette.normal.base
             }
         }
     }

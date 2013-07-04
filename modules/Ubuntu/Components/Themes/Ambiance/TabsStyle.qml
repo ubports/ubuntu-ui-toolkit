@@ -38,8 +38,8 @@ Item {
      */
     onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
 
-    property color headerTextColor: Theme.palette.normal.windowText
-    property color headerTextSelectedColor: Theme.palette.selected.windowText
+    property color headerTextColor: Theme.palette.normal.backgroundText
+    property color headerTextSelectedColor: Theme.palette.selected.backgroundText
     property int headerTextFadeDuration: 350
     property string headerFontSize: "x-large"
     property int headerFontWeight: Font.Light

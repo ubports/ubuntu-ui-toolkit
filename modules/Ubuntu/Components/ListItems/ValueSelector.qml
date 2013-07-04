@@ -248,7 +248,7 @@ Empty {
 
             model: selector.values
             Rectangle {
-                color: Qt.lighter(Theme.palette.normal.background)
+                color: Qt.lighter(Theme.palette.normal.base)
                 height: valueRepeater.valueHeight
                 width: parent.width
 
