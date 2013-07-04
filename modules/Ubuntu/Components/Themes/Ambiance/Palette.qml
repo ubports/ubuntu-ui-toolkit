@@ -27,7 +27,7 @@ Palette {
         foregroundText: "#F3F3E7"
         overlay: "#FDFDFD"
         overlayText: "#888888"
-        field: "#FFFFFF"
+        field: "#1A000000"
         fieldText: "#888888"
     }
     selected: PaletteValues {
@@ -35,6 +35,8 @@ Palette {
         backgroundText: "#888888"
         foreground: "#DD4814"
         foregroundText: "#F3F3E7"
+        field: "#FFFFFF"
+        fieldText: "#888888"
     }
     disabled: PaletteValues {
     }
