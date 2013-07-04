@@ -339,6 +339,13 @@ Item
     property bool locked
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
+modules/Ubuntu/Components/UbuntuShape.qml
+Item
+    property alias color
+    property alias gradientColor
+    property alias radius
+    property Item image
+    property alias borderSource
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickItem"
@@ -388,7 +395,7 @@ plugins.qmltypes
     Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1", "UbuntuShape 0.1"]
+    exports: ["Shape 0.1"]
     name: "HAlignment"
     name: "VAlignment"
     Property { name: "color"; type: "QColor" }
