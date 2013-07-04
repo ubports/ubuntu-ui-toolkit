@@ -38,7 +38,7 @@ import Ubuntu.Components 0.1
     \b{This component is under heavy development.}
 */
 Item {
-    height: framing.height
+    height: captionText.height + units.gu(1)
     width: parent ? parent.width : units.gu(31)
 
     /*!
@@ -48,23 +48,13 @@ Item {
      */
     property alias text: captionText.text
 
-    Rectangle {
-        id: framing
-        color: Theme.palette.normal.base
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-        height: captionText.height + units.gu(1)
-
-        Label {
-            id: captionText
-            anchors.centerIn: parent
-            width: parent.width - units.gu(1)
-            wrapMode: Text.Wrap
-            color: Theme.palette.normal.baseText
-            horizontalAlignment: Text.AlignLeft
-            fontSize: "small"
-        }
+    Label {
+        id: captionText
+        anchors.centerIn: parent
+        width: parent.width - units.gu(1)
+        wrapMode: Text.Wrap
+        color: Theme.palette.normal.backgroundText
+        horizontalAlignment: Text.AlignLeft
+        fontSize: "small"
     }
 }
