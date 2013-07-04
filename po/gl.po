@@ -1,4 +1,4 @@
-# Spanish translation for ubuntu-ui-toolkit
+# Galician translation for ubuntu-ui-toolkit
 # Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-07-03 15:38+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"PO-Revision-Date: 2013-07-03 09:41+0000\n"
+"Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
+"Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,40 +36,40 @@ msgstr "Estándar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "Duraciones estándares"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr ""
+msgstr "Axustar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr ""
+msgstr "Rápida"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr ""
+msgstr "Lenta"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr ""
+msgstr "Adurmiñado"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "Llamada"
+msgstr "Chamar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "Color"
+msgstr "Cor"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "Icono"
+msgstr "Icona"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
@@ -83,11 +83,11 @@ msgstr "Desactivado"
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr "Abrir"
+msgstr "Aberto"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
-msgstr ""
+msgstr "Escala"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
@@ -114,7 +114,7 @@ msgstr "Etiqueta secundaria"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
-msgstr ""
+msgstr "Evolución"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
@@ -158,11 +158,11 @@ msgstr "Control"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr ""
+msgstr "Extraíbel"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr "Deslice para eliminar"
+msgstr "Deslice para retirar"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
@@ -202,7 +202,7 @@ msgstr "Infinito"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr "Indicador de actividad"
+msgstr "Indicador de actividade"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -211,7 +211,7 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr "Título"
+msgstr "Titulo"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
@@ -234,7 +234,7 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr "Contraseña"
+msgstr "Contrasinal"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
@@ -246,29 +246,29 @@ msgstr "Predeterminado"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr ""
+msgstr "Expansíbel"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr "Texto enriquecido"
+msgstr "Texto mellorado"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
 msgid "Unchecked"
-msgstr ""
+msgstr "Non seleccionado"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
 msgid "Checked"
-msgstr ""
+msgstr "Seleccionado"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr "Imagen"
+msgstr "Imaxe"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
-msgstr ""
+msgstr "Radio"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
@@ -276,11 +276,11 @@ msgstr "Tamaños"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr "Limpiar"
+msgstr "Limpar"
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr "Longitudes"
+msgstr "Lonxitudes"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
@@ -292,26 +292,26 @@ msgstr "Uso: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "Opciones:"
+msgstr "Opcións:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 está agardando por un argumento adicional: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 está agardando por un valor para o argumento: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 está agardando por argumentos adicionais: %2"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr "Seleccionar todo"
+msgstr "Selecionar todo"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
@@ -331,20 +331,20 @@ msgstr "Pegar"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr "Deshacer"
+msgstr "Desfacer"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr "Rehacer"
+msgstr "Refacer"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr "Atrás"
+msgstr "Atrás"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr "Mi página personalizada"
+msgstr "A miña páxina personalizada"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -352,8 +352,8 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
-"Esta es una página externa con\n"
-"una barra de herramientas bloqueada."
+"Esta é unha páxina externa cunha\n"
+"barra de ferramentas bloqueada."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
@@ -361,15 +361,15 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr "Página uno"
+msgstr "Primeira páxina"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr "Página externa"
+msgstr "Páxina externa"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr "Primera página"
+msgstr "Primeira páxina"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
@@ -377,16 +377,16 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr "Rectángulo rojo"
+msgstr "Rectángulo vermello"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "Páxina única"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
-msgstr ""
+msgstr "Externa"
 
 #: tests/resources/tabs/Tabs.qml:85
 msgid "List view"
-msgstr ""
+msgstr "Vista de lista"
