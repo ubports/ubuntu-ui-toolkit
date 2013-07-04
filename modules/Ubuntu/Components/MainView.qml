@@ -202,16 +202,16 @@ PageTreeNode {
 
         function updateActions() {
             // TODO: clear global context actions
-            if (!mainView.actions) return;
-            print("updating actions" + mainView.actions.actions.length)
-            for (var i=0; i < mainView.actions.actions.length; i++) {
-                // Action is null on first actionsChanged when the list is initialized but the actions not yet.
-                if (mainView.actions.actions[i]) {
-                    print("action "+i+" = "+mainView.actions.actions[i]);
-                    // TODO: unityActionManager.actions.append(mainView.actions.actions[i]) when that works.
-                    unityActionManager.globalContext.addAction(mainView.actions.actions[i]);
-                }
-            }
+//            if (!mainView.actions) return;
+//            print("updating actions" + mainView.actions.actions.length)
+//            for (var i=0; i < mainView.actions.actions.length; i++) {
+//                // Action is null on first actionsChanged when the list is initialized but the actions not yet.
+//                if (mainView.actions.actions[i]) {
+//                    print("action "+i+" = "+mainView.actions.actions[i]);
+//                    // TODO: unityActionManager.actions.append(mainView.actions.actions[i]) when that works.
+//                    unityActionManager.globalContext.addAction(mainView.actions.actions[i]);
+//                }
+//            }
         }
 
         Connections {
@@ -241,7 +241,7 @@ PageTreeNode {
           The action manager that has the global context for the MainView's actions,
           and to which a local context can be added for each Page that has actions.actions.
          */
-        property var actionManager: unityActionManager
+//          property var actionManager: unityActionManager
     }
 
 

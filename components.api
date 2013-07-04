@@ -72,6 +72,7 @@ PageTreeNode
     property string applicationName
     property alias automaticOrientation
     default property alias contentsItem
+    property ActionList actions
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
@@ -95,6 +96,7 @@ modules/Ubuntu/Components/Page.qml
 PageTreeNode
     property string title
     property Flickable flickable
+    property ActionList actions
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
