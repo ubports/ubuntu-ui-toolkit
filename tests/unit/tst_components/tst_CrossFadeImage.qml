@@ -36,62 +36,62 @@ TestCase {
     }
 
     function loadImage(url) {
-        console.log("Loading image...")
-        source = url
+        console.log("Loading image...");
+        source = url;
 
-        signalSpy.signalName = "statusChanged"
-        signalSpy.wait()
+        signalSpy.signalName = "statusChanged";
+        signalSpy.wait();
 
         if (status == Image.Null) {
-            signalSpy.clear()
-            signalSpy.wait()
+            signalSpy.clear();
+            signalSpy.wait();
         }
 
         if (status == Image.Loading) {
-            signalSpy.clear()
-            signalSpy.wait()
+            signalSpy.clear();
+            signalSpy.wait();
         }
 
-        compare(status, Image.Ready, "Image not ready")
-        console.log("Image loaded.")
+        compare(status, Image.Ready, "Image not ready");
+        console.log("Image loaded.");
     }
 
     function waitForAnimation() {
-        signalSpy.signalName = "runningChanged"
+        signalSpy.signalName = "runningChanged";
 
         if (!running) {
-            signalSpy.clear()
-            signalSpy.wait()
-            compare(running, true, "Animation did not start")
+            signalSpy.clear();
+            signalSpy.wait();
+            compare(running, true, "Animation did not start");
         }
 
-        signalSpy.clear()
-        console.log("Waiting for animation to finish...")
-        signalSpy.wait()
-        compare(running, false, "Animation did not stop within 5 seconds.")
+        signalSpy.clear();
+        console.log("Waiting for animation to finish...");
+        signalSpy.wait();
+        compare(running, false, "Animation did not stop within 5 seconds.");
 
     }
 
     function cleanupTest() {
-        fadeDuration = 400 // default
-        compare(running, false, "Animation is running after testcase")
+        fadeDuration = 400; // default
+        compare(running, false, "Animation is running after testcase");
     }
 
 
     function test_fade() {
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png")
-        waitForAnimation()
-        cleanupTest()
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
+        waitForAnimation();
+        cleanupTest();
     }
 
     function test_fadeduration() {
-        fadeDuration = 1000
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png")
-        sleep(500) // < fadeDuration
-        compare(running, true, "Animation stopped before 1000 ms")
-        waitForAnimation()
-        cleanupTest()
+        fadeDuration = 1000;
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
+        sleep(500); // < fadeDuration
+        compare(running, true, "Animation stopped before 1000 ms");
+        waitForAnimation();
+        cleanupTest();
     }
 }
