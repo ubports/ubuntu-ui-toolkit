@@ -22,35 +22,16 @@ import QtQuick 2.0
 
    \qml
         import QtQuick 2.0
-
         import Ubuntu.Components 0.1
 
-        MainView {
-
+        CrossFadeImage {
             width: units.gu(100)
             height: units.gu(75)
-
-            Page {
-                title: "An example"
-
-                CrossFadeImage {
-                    anchors.fill: parent
-                    anchors.margins: units.gu(10)
-
-                    fillMode: Image.PreserveAspectCrop
-
-                    property string url1: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo14.png"
-                    property string url2: "http://design.ubuntu.com/wp-content/uploads/canonical-logo1.png"
-
-                    source: url1
-
-                    fadeDuration: 1000
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: parent.source = parent.url2
-                    }
-                }
+            source: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo14.png"
+            fadeDuration: 1000
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.source = "http://design.ubuntu.com/wp-content/uploads/canonical-logo1.png"
             }
         }
     \endqml
