@@ -45,8 +45,6 @@ Item
     property int fadeDuration
     readonly property size sourceSize
     readonly property var status
-    readonly property internal currentImage
-    readonly property internal nextImage
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
     property int orientation
