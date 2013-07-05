@@ -20,17 +20,47 @@ import QtQuick 2.0
     \qmltype PaletteValues
     \inqmlmodule Ubuntu.Components.Themes 0.1
     \ingroup theming
-    \brief Palette of standard colors used by the widgets to draw themselves.
+    \brief Color values used for a given widget state.
 */
 QtObject {
+    /*!
+       DOCME
+    */
     property color background
+    /*!
+       DOCME
+    */
     property color backgroundText
+    /*!
+       DOCME
+    */
     property color base
+    /*!
+       DOCME
+    */
     property color baseText
+    /*!
+       DOCME
+    */
     property color foreground
+    /*!
+       DOCME
+    */
     property color foregroundText
+    /*!
+       DOCME
+    */
     property color overlay
+    /*!
+       DOCME
+    */
     property color overlayText
+    /*!
+       DOCME
+    */
     property color field
+    /*!
+       DOCME
+    */
     property color fieldText
 }
