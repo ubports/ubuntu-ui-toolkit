@@ -65,7 +65,6 @@ TestCase {
             compare(running, true, "Animation did not start")
         }
 
-
         signalSpy.clear()
         console.log("Waiting for animation to finish...")
         signalSpy.wait()
@@ -76,41 +75,23 @@ TestCase {
     function cleanupTest() {
         fadeDuration = 400 // default
         compare(running, false, "Animation is running after testcase")
-        compare(crossFadeImage.nextImage.source, "", "nextimage source is not reset")
     }
 
 
     function test_fade() {
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
-
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png")
-
-        // Due to the internal implementation, __currentImage and __nextImage are swapped before the animation starts
-        // Make sure z order reflects that too.
-        compare(crossFadeImage.currentImage.z > crossFadeImage.nextImage.z, true, "new image should be above old image")
-        compare(crossFadeImage.currentImage.opacity < 0.5, true)
-        compare(crossFadeImage.nextImage.opacity > 0.5, true)
-
         waitForAnimation()
-
-        compare(crossFadeImage.currentImage.opacity > 0.5, true)
-
         cleanupTest()
     }
 
     function test_fadeduration() {
         fadeDuration = 1000
-
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
-
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png")
-
         sleep(500) // < fadeDuration
-
         compare(running, true, "Animation stopped before 1000 ms")
-
         waitForAnimation()
-
         cleanupTest()
     }
 }
