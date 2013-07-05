@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype ScrollBar
@@ -35,7 +30,7 @@ import Ubuntu.Components 0.1 as Theming
     direction (RTL or LTR).
 
     The content position is driven through the attached Flickable. Therefore every
-    delegate implementation should drive the position through contentX/contentY
+    style implementation should drive the position through contentX/contentY
     properties, depending on whether the orientation is vertical or horizontal.
 
     Example:
@@ -63,7 +58,7 @@ import Ubuntu.Components 0.1 as Theming
     \endqml
   */
 
-Item {
+StyledItem {
     id: scrollbar
 
     /*!
@@ -93,9 +88,6 @@ Item {
       for testing purposes.
     */
     property bool __interactive: false
-
-    // styling
-    Theming.ItemStyle.class: "scrollbar"
 
     implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
     implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
@@ -154,4 +146,6 @@ Item {
             return undefined;
         }
     }
+
+    style: Theme.createStyleComponent("ScrollbarStyle.qml", scrollbar)
 }

@@ -36,7 +36,7 @@ Template {
             Button {
                 objectName: "button_color"
                 text: i18n.tr("Call")
-                color: "#5da357"
+                gradient: UbuntuColors.greyGradient
             }
         }
 
@@ -45,14 +45,22 @@ Template {
 
             Button {
                 objectName: "button_iconsource"
-                iconSource: "call_icon.png"
+                iconSource: "call.png"
             }
 
             Button {
-                objectName: "button_iconsource_text"
-                width: units.gu(11)
+                objectName: "button_iconsource_right_text"
+                width: units.gu(15)
                 text: i18n.tr("Call")
-                iconSource: "call_icon.png"
+                iconSource: "call.png"
+                iconPosition: "right"
+            }
+
+            Button {
+                objectName: "button_iconsource_left_text"
+                width: units.gu(15)
+                text: i18n.tr("Call")
+                iconSource: "call.png"
             }
         }
 

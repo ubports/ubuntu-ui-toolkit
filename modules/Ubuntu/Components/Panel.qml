@@ -86,7 +86,6 @@ import Ubuntu.Components 0.1 as Toolkit
 
                 Item {
                     anchors.fill: parent
-                    ItemStyle.class: "toolbar"
 
                     // two properties used by the toolbar delegate:
                     property bool opened: panel.opened

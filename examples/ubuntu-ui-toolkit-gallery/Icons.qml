@@ -58,7 +58,7 @@ Template {
 
             Icon {
                 name: "computer-symbolic"
-                color: "red"
+                color: UbuntuColors.orange
                 keyColor: "#bebebe"
                 width: 24
                 height: 24
@@ -66,7 +66,7 @@ Template {
 
             Icon {
                 name: "computer-symbolic"
-                color: "lightblue"
+                color: UbuntuColors.lightAubergine
                 keyColor: "#bebebe"
                 width: 24
                 height: 24

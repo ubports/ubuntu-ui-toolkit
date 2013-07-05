@@ -248,11 +248,11 @@ Empty {
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined
+        height: control ? control.height : undefined
         anchors {
             right: listItem.progression ? progressionHelper.left : parent.right
             rightMargin: listItem.__contentsMargins
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
         onControlChanged: {
             if (control) control.parent = controlContainer;

@@ -21,6 +21,8 @@
 #include "ucunits.h"
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
+#include <QtQuick/private/qquickimage_p.h>
+
 
 // Retrieves the size of an array at compile time.
 #define ARRAY_SIZE(a) \
@@ -60,24 +62,15 @@ static const char* const shapeTexturedFragmentShader =
 static const char* const shapeColoredFragmentShader =
     "uniform lowp float opacity;                                                                \n"
     "uniform sampler2D shapeTexture;                                                            \n"
-    "uniform lowp vec4 baseColor;                                                               \n"
+    "uniform lowp vec4 color;                                                               \n"
     "uniform lowp vec4 gradientColor;                                                           \n"
     "varying lowp vec2 shapeCoord;                                                              \n"
     "varying lowp vec2 imageCoord;                                                              \n"
-    "lowp vec3 blendOverlay(lowp vec3 base, lowp vec3 blend)                                    \n"
-    "{                                                                                          \n"
-    "    lowp vec3 comparison = clamp(sign(base.rgb - vec3(0.5)), vec3(0.0), vec3(1.0));        \n"
-    "    return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), comparison);  \n"
-    "}                                                                                          \n"
     "void main(void)                                                                            \n"
     "{                                                                                          \n"
     "    lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);                             \n"
-    "    lowp vec4 gradient = gradientColor * imageCoord.t;                                     \n"
-    "    lowp vec4 result = vec4(blendOverlay(baseColor.rgb / max(1.0/256.0, baseColor.a),      \n"
-    "                                         gradient.rgb / max(1.0/256.0, gradient.a)), 1.0); \n"
-    "    result *= baseColor.a;                                                                 \n"
-    "    lowp vec4 color = mix(baseColor, result, gradient.a) * vec4(shapeData.b);              \n"
-    "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * color;                    \n"
+    "    lowp vec4 result = mix(color, gradientColor, imageCoord.t) * vec4(shapeData.b);        \n"
+    "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * result;                   \n"
     "    gl_FragColor = blend * vec4(opacity);                                                  \n"
     "}";
 
@@ -135,12 +128,13 @@ static int sizeOfType(GLenum type)
 
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
-    , baseColor_(0.0, 0.0, 0.0, 0.0)
+    , color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
+    , gradientColorSet_(false)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
     , borderSource_("")
-    , border_(ShapeItem::RawBorder)
+    , border_(ShapeItem::IdleBorder)
     , image_(NULL)
     , stretched_(true)
     , hAlignment_(ShapeItem::AlignHCenter)
@@ -149,24 +143,33 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , geometry_()
     , dirtyFlags_(ShapeItem::DirtyAll)
 {
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(gridUnitChanged()));
     setFlag(ItemHasContents);
     update();
 }
 
-void ShapeItem::setBaseColor(const QColor& baseColor)
+void ShapeItem::setColor(const QColor& color)
 {
-    if (baseColor_ != baseColor) {
-        baseColor_ = baseColor;
-        dirtyFlags_ |= ShapeItem::DirtyBaseColor;
+    if (color_ != color) {
+        color_ = color;
+        dirtyFlags_ |= ShapeItem::DirtyColor;
+        // gradientColor has the same value as color unless it was manually set
+        if (!gradientColorSet_) {
+            gradientColor_ = color;
+            dirtyFlags_ |= ShapeItem::DirtyGradientColor;
+            Q_EMIT gradientColorChanged();
+        }
         update();
-        Q_EMIT baseColorChanged();
+        Q_EMIT colorChanged();
     }
 }
 
 void ShapeItem::setGradientColor(const QColor& gradientColor)
 {
+    gradientColorSet_ = true;
     if (gradientColor_ != gradientColor) {
         gradientColor_ = gradientColor;
         dirtyFlags_ |= ShapeItem::DirtyGradientColor;
@@ -207,6 +210,14 @@ void ShapeItem::setImage(QVariant image)
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
         image_ = newImage;
+
+        // update values of properties that depend on properties of the image
+        QObject::disconnect(image_);
+        if (newImage != NULL) {
+            updateFromImageProperties(newImage);
+            connectToImageProperties(newImage);
+        }
+
         if (image_ && !image_->parentItem()) {
             // Inlined images need a parent and must not be visible.
             image_->setParentItem(this);
@@ -217,6 +228,52 @@ void ShapeItem::setImage(QVariant image)
         Q_EMIT imageChanged();
     }
 }
+
+void ShapeItem::updateFromImageProperties(QQuickItem* image)
+{
+    // ShapeItem::stretched depends on image::fillMode
+    QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
+    if (fillMode == QQuickImage::PreserveAspectCrop) {
+        setStretched(false);
+    } else {
+        setStretched(true);
+    }
+
+    // ShapeItem::horizontalAlignment depends on image::horizontalAlignment
+    QQuickImage::HAlignment horizontalAlignment = (QQuickImage::HAlignment)image->property("horizontalAlignment").toInt();
+    setHorizontalAlignment((ShapeItem::HAlignment)horizontalAlignment);
+
+    // ShapeItem::verticalAlignment depends on image::verticalAlignment
+    QQuickImage::VAlignment verticalAlignment = (QQuickImage::VAlignment)image->property("verticalAlignment").toInt();
+    setVerticalAlignment((ShapeItem::VAlignment)verticalAlignment);
+}
+
+void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
+                                        QObject* receiver, const char* slot)
+{
+    int propertyIndex = sender->metaObject()->indexOfProperty(property);
+    QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
+
+    int slotIndex = receiver->metaObject()->indexOfSlot(slot);
+    QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
+
+    QObject::connect(sender, changeSignal, receiver, updateSlot);
+
+}
+
+void ShapeItem::connectToImageProperties(QQuickItem* image)
+{
+    connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
+}
+
+void ShapeItem::onImagePropertiesChanged()
+{
+    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
+    updateFromImageProperties(image);
+}
+
 
 void ShapeItem::setStretched(bool stretched)
 {
@@ -251,6 +308,8 @@ void ShapeItem::setVerticalAlignment(VAlignment vAlignment)
 void ShapeItem::gridUnitChanged()
 {
     gridUnit_ = UCUnits::instance().gridUnit();
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
     dirtyFlags_ |= ShapeItem::DirtyGridUnit;
     update();
 }
@@ -324,7 +383,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
 
     // Update the other material properties.
-    coloredMaterial->setBaseColor(baseColor_);
+    coloredMaterial->setColor(color_);
     coloredMaterial->setGradientColor(gradientColor_);
     texturedMaterial->setImage(image_);
 
@@ -634,7 +693,7 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
 // --- Scene graph colored material ---
 
 ShapeColoredMaterial::ShapeColoredMaterial()
-    : baseColor_(0.0, 0.0, 0.0, 0.0)
+    : color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , shapeTexture_(NULL)
     , filtering_(QSGTexture::Nearest)
@@ -653,12 +712,12 @@ QSGMaterialShader* ShapeColoredMaterial::createShader() const
     return new ShapeColoredShader;
 }
 
-void ShapeColoredMaterial::setBaseColor(const QColor& baseColor)
+void ShapeColoredMaterial::setColor(const QColor& color)
 {
     // Premultiply color components by alpha.
-    const float alpha = baseColor.alphaF();
-    baseColor_ = QVector4D(baseColor.redF() * alpha, baseColor.greenF() * alpha,
-                           baseColor.blueF() * alpha, alpha);
+    const float alpha = color.alphaF();
+    color_ = QVector4D(color.redF() * alpha, color.greenF() * alpha,
+                           color.blueF() * alpha, alpha);
 }
 
 void ShapeColoredMaterial::setGradientColor(const QColor& gradientColor)
@@ -702,7 +761,7 @@ void ShapeColoredShader::initialize()
     program()->setUniformValue("shapeTexture", 0);
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
-    baseColorId_ = program()->uniformLocation("baseColor");
+    colorId_ = program()->uniformLocation("color");
     gradientColorId_ = program()->uniformLocation("gradientColor");
 }
 
@@ -728,6 +787,6 @@ void ShapeColoredShader::updateState(const RenderState& state, QSGMaterial* newE
         program()->setUniformValue(matrixId_, state.combinedMatrix());
     if (state.isOpacityDirty())
         program()->setUniformValue(opacityId_, state.opacity());
-    program()->setUniformValue(baseColorId_, material->baseColor());
+    program()->setUniformValue(colorId_, material->color());
     program()->setUniformValue(gradientColorId_, material->gradientColor());
 }

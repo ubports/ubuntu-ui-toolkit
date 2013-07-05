@@ -33,7 +33,7 @@ import Ubuntu.Components 0.1 as Ubuntu
 
     Rectangle {
         width: 100; height: 100
-        color: "red"
+        color: UbuntuColors.orange
 
         UbuntuNumberAnimation on x { to: 50 }
     }

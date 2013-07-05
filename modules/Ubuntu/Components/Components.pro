@@ -1,7 +1,5 @@
-include( ../../../common.pri )
-
 TEMPLATE = subdirs
 
-SUBDIRS += plugin
+SUBDIRS += plugin Themes Colors
 
 include(deployment.pri)

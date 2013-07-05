@@ -22,8 +22,6 @@ TestCase {
     name: "ScrollbarAPI"
 
     function initTestCase() {
-        Theme.loadTheme(Qt.resolvedUrl("../../resources/components.qmltheme"))
-        compare(Theme.error, "", "Theme loading failure");
     }
 
     function test_a()
@@ -96,7 +94,6 @@ TestCase {
         id: scrollbar
         SignalSpy {
             id: signals
-            target: scrollbar.ItemStyle
             signalName: "styleChanged"
         }
     }
