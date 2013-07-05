@@ -91,8 +91,6 @@ Item {
             internals.currentImage = internals.nextImage;
             internals.nextImage = tmpImage;
         }
-
-
     }
 
     Image {
