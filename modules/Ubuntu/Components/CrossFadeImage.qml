@@ -74,7 +74,7 @@ Item {
     property int fadeDuration: 400
 
     /*!
-      The actual width and height of the lodaded image
+      The actual width and height of the loaded image
     */
     readonly property size sourceSize: internals.currentImage.sourceSize
 
