@@ -50,9 +50,10 @@ Item {
     property int fillMode : Image.PreserveAspectFit
 
     /*!
-      The time (in ms) over which to fade between images. Defaults to 400.
+      The time over which to fade between images.
+      \sa UbuntuAnimation
     */
-    property int fadeDuration: 400
+    property alias duration: nextImageFadeIn.duration
 
     /*!
       Whether the animation is running
@@ -149,13 +150,11 @@ Item {
         }
     }
 
-    NumberAnimation {
+    UbuntuNumberAnimation {
         id: nextImageFadeIn
         target: internals.nextImage
         property: "opacity"
-        duration: fadeDuration
         to: 1.0
-        easing.type: Easing.InOutQuad
 
         onRunningChanged: {
             if (!running) {

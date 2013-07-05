@@ -24,7 +24,7 @@ TestCase {
     property alias status: crossFadeImage.status
     property alias source: crossFadeImage.source
     property alias running: crossFadeImage.running
-    property alias fadeDuration: crossFadeImage.fadeDuration
+    property alias duration: crossFadeImage.duration
 
     CrossFadeImage {
         id: crossFadeImage
@@ -73,7 +73,7 @@ TestCase {
     }
 
     function cleanupTest() {
-        fadeDuration = 400; // default
+        duration = UbuntuAnimation.FastDuration ; // default
         compare(running, false, "Animation is running after testcase");
     }
 
@@ -86,10 +86,10 @@ TestCase {
     }
 
     function test_fadeduration() {
-        fadeDuration = 1000;
+        duration = UbuntuAnimation.SleepyDuration;
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
-        sleep(500); // < fadeDuration
+        sleep(UbuntuAnimation.SleepyDuration / 2); // < fadeDuration
         compare(running, true, "Animation stopped before 1000 ms");
         waitForAnimation();
         cleanupTest();
