@@ -64,8 +64,9 @@ Item {
 
     /*!
       Set this property to define what happens when the source image has a different size than the item.
+      Defaults to Image.PreserveAspectFit.
     */
-    property int fillMode
+    property int fillMode : Image.PreserveAspectFit
 
     /*!
       The time (in ms) over which to fade between images. Defaults to 400.
@@ -80,7 +81,7 @@ Item {
     /*!
       The status of image loading
     */
-    readonly property var status: internals.currentImage ? internals.currentImage.status : Image.Null
+    readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
 
     /*! \internal
       The current image
