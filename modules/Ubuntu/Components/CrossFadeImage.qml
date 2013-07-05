@@ -67,7 +67,7 @@ Item {
     /*!
       The status of image loading
     */
-    readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
+    readonly property var status: internals.currentImage ? internals.currentImage.status : Image.Null
 
     QtObject {
         id: internals
