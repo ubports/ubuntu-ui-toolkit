@@ -55,6 +55,11 @@ Item {
     property int fadeDuration: 400
 
     /*!
+      Whether the animation is running
+    */
+    readonly property bool running: nextImageFadeIn.running
+
+    /*!
       The actual width and height of the loaded image
     */
     readonly property size sourceSize: internals.currentImage.sourceSize
