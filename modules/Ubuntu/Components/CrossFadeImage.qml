@@ -68,7 +68,7 @@ Item {
     property int fillMode
 
     /*!
-      The time (in ms) over which to fade between images
+      The time (in ms) over which to fade between images. Defaults to 400.
     */
     property int fadeDuration : 400
 
