@@ -75,7 +75,7 @@ Item {
     /*!
       The actual width and height of the lodaded image
     */
-    readonly property size sourceSize: internals.currentImage.sourceSize
+    readonly property alias sourceSize: internals.currentImage.sourceSize
 
     /*!
       The status of image loading
