@@ -70,7 +70,7 @@ Item {
     /*!
       The time (in ms) over which to fade between images. Defaults to 400.
     */
-    property int fadeDuration : 400
+    property int fadeDuration: 400
 
     /*!
       The actual width and height of the lodaded image
@@ -106,13 +106,13 @@ Item {
         property Image nextImage: image2
 
         function swapImages() {
-            internals.currentImage.z = 0
-            internals.nextImage.z = 1
+            internals.currentImage.z = 0;
+            internals.nextImage.z = 1;
             nextImageFadeIn.start();
 
-            var tmpImage = internals.currentImage
-            internals.currentImage = internals.nextImage
-            internals.nextImage = tmpImage
+            var tmpImage = internals.currentImage;
+            internals.currentImage = internals.nextImage;
+            internals.nextImage = tmpImage;
         }
 
 
@@ -149,7 +149,7 @@ Item {
 
         // Don't fade in initial picture, only fade changes
         if (internals.currentImage.source == "") {
-            internals.currentImage.fillMode = fillMode
+            internals.currentImage.fillMode = fillMode;
             internals.currentImage.source = source;
         } else {
             nextImageFadeIn.stop();
@@ -169,7 +169,7 @@ Item {
       Set the fill on the currently displaying image when it's updated.
     */
     onFillModeChanged: {
-        internals.currentImage.fillMode = fillMode
+        internals.currentImage.fillMode = fillMode;
     }
 
     Connections {
