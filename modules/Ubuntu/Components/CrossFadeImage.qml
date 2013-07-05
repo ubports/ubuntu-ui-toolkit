@@ -18,7 +18,7 @@ import QtQuick 2.0
 /*!
    \qmltype CrossFadeImage
    \ingroup ubuntu
-   \brief An Image like component which smothly fades when its source is updated.
+   \brief An Image like component which smoothly fades when its source is updated.
 
    \qml
         import QtQuick 2.0
