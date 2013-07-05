@@ -83,17 +83,6 @@ Item {
     */
     readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
 
-    /*! \internal
-      The current image
-    */
-    readonly property alias currentImage: internals.currentImage
-
-    /*! \internal
-      The next image
-    */
-    readonly property alias nextImage: internals.nextImage
-
-
     QtObject {
         id: internals
 
