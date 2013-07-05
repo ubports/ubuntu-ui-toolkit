@@ -43,7 +43,6 @@ Item
     property url source
     property int fillMode
     property int fadeDuration
-    readonly property bool running
     readonly property size sourceSize
     readonly property var status
     readonly property internal currentImage

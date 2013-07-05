@@ -65,17 +65,12 @@ Item {
     /*!
       Set this property to define what happens when the source image has a different size than the item.
     */
-    property enumeration fillMode
+    property int fillMode
 
     /*!
       The time (in ms) over which to fade between images. Defaults to 400.
     */
     property int fadeDuration : 400
-
-    /*!
-      Whether the animation is running
-    */
-    readonly property bool running: nextImageFadeIn.running
 
     /*!
       The actual width and height of the lodaded image
