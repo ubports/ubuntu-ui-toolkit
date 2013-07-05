@@ -43,6 +43,7 @@ Item
     property url source
     property int fillMode
     property int fadeDuration
+    readonly property bool running
     readonly property size sourceSize
     readonly property var status
 modules/Ubuntu/Components/DraggingArea.qml
