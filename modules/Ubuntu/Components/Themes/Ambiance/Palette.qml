@@ -31,7 +31,11 @@ Palette {
         fieldText: "#888888"
     }
     selected: PaletteValues {
-        background: "#B2E6E6E6" // FIXME: not from design
+        /* FIXME: 'background' does not come from design
+           it is used solely in the list items for the selection highlight
+           that will go away with the new design.
+        */
+        background: "#B2E6E6E6"
         backgroundText: "#888888"
         foreground: "#DD4814"
         foregroundText: "#F3F3E7"
