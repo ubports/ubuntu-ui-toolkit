@@ -24,43 +24,49 @@ import QtQuick 2.0
 */
 QtObject {
     /*!
-       DOCME
+       Color applied to the background of the application.
     */
     property color background
     /*!
-       DOCME
+       Color applied to elements placed on top of the \l background color.
+       Typically used for labels and images.
     */
     property color backgroundText
     /*!
-       DOCME
+       Color applied to the background of widgets.
     */
     property color base
     /*!
-       DOCME
+       Color applied to elements placed on top of the \l base color.
+       Typically used for labels and images.
     */
     property color baseText
     /*!
-       DOCME
+       Color applied to widgets on top of the base colour.
     */
     property color foreground
     /*!
-       DOCME
+       Color applied to elements placed on top of the \l foreground color.
+       Typically used for labels and images.
     */
     property color foregroundText
     /*!
-       DOCME
+       Color applied to the background of widgets floating over other widgets.
+       For example: popovers, Toolbar.
     */
     property color overlay
     /*!
-       DOCME
+       Color applied to elements placed on top of the \l overlay color.
+       Typically used for labels and images.
     */
     property color overlayText
     /*!
-       DOCME
+       Colour applied to the backgrouhnd of text input fields.
     */
     property color field
     /*!
-       DOCME
+       Color applied to elements placed on top of the \l field color.
+       Typically used for labels and images.
     */
     property color fieldText
 }
