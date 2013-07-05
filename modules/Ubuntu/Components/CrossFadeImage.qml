@@ -38,6 +38,8 @@ import QtQuick 2.0
     */
 
 Item {
+    id: root
+
     /*!
       The image being displayed. Can be a URL to any image format supported by Qt.
      */
@@ -50,10 +52,10 @@ Item {
     property int fillMode : Image.PreserveAspectFit
 
     /*!
-      The time over which to fade between images. Defaults to \l{UbuntuAnimation.FastDuration}.
+      The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
       \sa UbuntuAnimation
     */
-    property alias duration: nextImageFadeIn.duration
+    property int duration: 250 // FIXME: UbuntuAnimation.FastDuration is what we want but it doesn't get set...
 
     /*!
       Whether the animation is running
@@ -153,6 +155,7 @@ Item {
         target: internals.nextImage
         property: "opacity"
         to: 1.0
+        duration: root.duration
 
         onRunningChanged: {
             if (!running) {

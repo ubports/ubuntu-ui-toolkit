@@ -42,7 +42,7 @@ modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source
     property int fillMode
-    property int fadeDuration
+    property int duration
     readonly property bool running
     readonly property size sourceSize
     readonly property var status
