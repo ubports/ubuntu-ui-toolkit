@@ -72,8 +72,8 @@ Item {
         // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
         // https://bugreports.qt-project.org/browse/QTBUG-32238.
         function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-        color: isGradient ? colorHack(gradientProxy) : colorHack(button)
-        gradientColor: isGradient ? colorHack(gradientProxy) : colorHack(button.color)
+        color: isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color)
+        gradientColor: isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color)
     }
 
     UbuntuShape {
