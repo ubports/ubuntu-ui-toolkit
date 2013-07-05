@@ -45,12 +45,12 @@ Item {
 
     /*!
       Set this property to define what happens when the source image has a different size than the item.
-      Defaults to Image.PreserveAspectFit.
+      Defaults to \c Image.PreserveAspectFit.
     */
     property int fillMode : Image.PreserveAspectFit
 
     /*!
-      The time over which to fade between images.
+      The time over which to fade between images. Defaults to \l{UbuntuAnimation.FastDuration}.
       \sa UbuntuAnimation
     */
     property alias duration: nextImageFadeIn.duration
