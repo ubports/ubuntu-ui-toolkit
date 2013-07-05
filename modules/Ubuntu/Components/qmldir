@@ -13,7 +13,6 @@ internal DraggingArea DraggingArea.qml
 Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
 Label 0.1 Label.qml
-TextCustom 0.1 TextCustom.qml
 AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
 ProgressBar 0.1 ProgressBar.qml
@@ -25,7 +24,6 @@ Slider 0.1 Slider.qml
 Scrollbar 0.1 Scrollbar.qml
 internal ModelSectionCounter ModelSectionCounter.qml
 Object 0.1 Object.qml
-TabButton 0.1 TabButton.qml
 Page 0.1 Page.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
@@ -41,6 +39,8 @@ MathUtils 0.1 mathUtils.js
 SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
+StyledItem 0.1 StyledItem.qml
+ColorUtils 0.1 colorUtils.js
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml

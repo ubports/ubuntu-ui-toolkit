@@ -1,8 +1,7 @@
-include( common.pri )
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += themes modules/ubuntu-ui-toolkit.pro tests examples po/po.pro
+SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po/po.pro
 
 tests/unit.depends = modules/ubuntu-ui-toolkit.pro
 
@@ -43,5 +42,6 @@ docs.commands += cat $$DOC_PATH/qdoc.err;
 docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
 docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf;
+docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 

@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype MainView
@@ -104,20 +99,20 @@ import Ubuntu.Components 0.1 as Theming
                     anchors.centerIn: parent
                     width: units.gu(20)
                     height: units.gu(20)
-                    color: "blue"
+                    color: UbuntuColors.coolGrey
                 }
 
                 tools: ToolbarActions {
                     ToolbarButton {
                         action: Action {
                             text: "red"
-                            onTriggered: rectangle.color = "red"
+                            onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
                             text: "green"
-                            onTriggered: rectangle.color = "green"
+                            onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
                 }
@@ -140,13 +135,13 @@ PageTreeNode {
       */
     property string applicationName
 
-    // FIXME: Make sure that the theming is only in the background, and the delegate
+    // FIXME: Make sure that the theming is only in the background, and the style
     //  should not occlude contents of the MainView. When making changes here, make
     //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
-    Item {
+    StyledItem {
         id: background
-        Theming.ItemStyle.class: "mainview"
         anchors.fill: parent
+        style: Theme.createStyleComponent("MainViewStyle.qml", background)
     }
 
     /*!

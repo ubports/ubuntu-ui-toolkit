@@ -24,10 +24,7 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "themeengine.h"
-#include "themeengine_p.h"
 #include "inversemouseareatype.h"
-#include "ucstyle.h"
 
 class tst_InverseMouseAreaTest : public QObject
 {
@@ -41,7 +38,7 @@ private:
     QQmlEngine *quickEngine;
     QObjectCleanupHandler eventCleanup;
 
-    InverseMouseAreaType *testArea(const QString &document, const QUrl &theme = QUrl())
+    InverseMouseAreaType *testArea(const QString &document)
     {
         // delete previous root
         QObject *rootObject = quickView->rootObject();
@@ -49,15 +46,6 @@ private:
             delete rootObject;
         QTest::waitForEvents();
 
-        ThemeEngine::initializeEngine(quickEngine);
-        if (theme.isValid()) {
-            ThemeEngine::instance()->loadTheme(theme);
-            if (!ThemeEngine::instance()->error().isEmpty()) {
-                QWARN("Theme loading failed");
-                return 0;
-            }
-        } else
-            ThemeEngine::instance()->resetError();
         quickView->setSource(QUrl::fromLocalFile(document));
         QCoreApplication::processEvents();
 
@@ -95,11 +83,6 @@ private Q_SLOTS:
         QStringList imports = quickEngine->importPathList();
         imports << QDir(modules).absolutePath();
         quickEngine->setImportPathList(imports);
-
-        bool result = (ThemeEngine::initializeEngine(quickEngine) != 0);
-        QVERIFY(result);
-        // check if theme gets loaded
-        QCOMPARE(ThemeEngine::instance()->error(), QString(""));
     }
 
     void cleanupTestCase()

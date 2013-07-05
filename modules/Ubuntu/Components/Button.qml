@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Button
@@ -38,7 +33,7 @@ import Ubuntu.Components 0.1 as Theming
             }
             Button {
                 iconSource: "icon.png"
-                color: "green"
+                gradient: UbuntuColors.greyGradient
                 onClicked: print("clicked icon-only Button")
             }
             Button {
@@ -61,7 +56,7 @@ import Ubuntu.Components 0.1 as Theming
             Button {
                 anchors.centerIn: parent
                 action: action1
-                color: "green"
+                color: UbuntuColors.warmGrey
             }
        }
     \endqml
@@ -69,15 +64,23 @@ import Ubuntu.Components 0.1 as Theming
 AbstractButton {
     id: button
 
-    // FIXME: see FIXME above
-    Theming.ItemStyle.class: "button"
-    implicitWidth: units.gu(9)
-    implicitHeight: units.gu(4)
+    /*!
+       The background color of the button.
+
+       \sa gradient
+    */
+    property color color: __styleInstance.defaultColor
 
     /*!
-       The foreground color of the button in idle state.
+       The gradient used to fill the background of the button.
+
+       Standard Ubuntu gradients are defined in \l UbuntuColors.
+
+       If both a gradient and a color are specified, the gradient will be used.
+
+       \sa color
     */
-    property color color: "transparent"
+    property Gradient gradient: __styleInstance.defaultGradient
 
     /*!
        The source URL of the icon to display inside the button.
@@ -107,4 +110,6 @@ AbstractButton {
        https://bugreports.qt-project.org/browse/QTBUG-14861
     */
     property string iconPosition: "left"
+
+    style: Theme.createStyleComponent("ButtonStyle.qml", button)
 }

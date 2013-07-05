@@ -4,11 +4,12 @@ SUBDIRS += \
     ubuntu-ui-toolkit-gallery\
     jokes \
     locale \
-    unit-converter
+    unit-converter \
+    calculator
 
 
 #examples = jokes unit-converter
-#filetypes = qml png svg js qmltheme jpg wav
+#filetypes = qml png svg js jpg wav
  
 #OTHER_FILES = ""
 

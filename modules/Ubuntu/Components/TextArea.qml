@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import "." 0.1 as Theming
 
 /*!
     \qmltype TextArea
@@ -76,12 +71,10 @@ import "." 0.1 as Theming
     character or word. The editor leaves the selection mode by pressing/tapping again on it
     or by losing focus.
 
-    The default styling uses \b textarea selector.
-
     \b{This component is under heavy development.}
   */
 
-FocusScope {
+StyledItem {
     id: control
     implicitWidth: units.gu(30)
     implicitHeight: (autoSize) ? internal.minimumSize : internal.linesHeight(4)
@@ -96,19 +89,7 @@ FocusScope {
     property bool highlighted: focus
     /*!
       Text that appears when there is no focus and no content in the component
-      (hint text). The hint style can be customized by defining a style selector which
-      styles a label. For example the default styling defines the hint styling using
-      \b{.textarea .label} selector.
-
-      \code
-      .textarea .label {
-           italic: true;
-           color: "#B6B6B6";
-           fontSize: "small";
-           elide: Text.ElideRight;
-           wrapMode: Text.WordWrap;
-      }
-      \endcode
+      (hint text).
 
       \qmlproperty string placeholderText
       */
@@ -740,8 +721,6 @@ FocusScope {
     // the editor activates automatically when pressed in the editor control,
     // however that one can be slightly spaced to the main control area
 
-    // styling
-    Theming.ItemStyle.class: "textarea"
     //internals
 
     /*!\internal */
@@ -766,7 +745,7 @@ FocusScope {
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
         property real lineSpacing: units.dp(3)
-        property real frameSpacing: 0
+        property real frameSpacing: control.__styleInstance.frameSpacing
         property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
@@ -892,7 +871,6 @@ FocusScope {
         id: leftCursorLoader
         onStatusChanged: {
             if (status == Loader.Ready && item) {
-                item.Theming.ItemStyle.class = "left-pin";
                 item.positionProperty = "selectionStart";
                 item.parent = editor;
             }
@@ -902,7 +880,6 @@ FocusScope {
         id: rightCursorLoader
         onStatusChanged: {
             if (status == Loader.Ready && item) {
-                item.Theming.ItemStyle.class = "right-pin";
                 item.positionProperty = "selectionEnd";
                 item.parent = editor;
             }
@@ -922,6 +899,10 @@ FocusScope {
         }
         // hint is shown till user types something in the field
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
+        color: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+        fontSize: "medium"
+        elide: Text.ElideRight
+        wrapMode: Text.WordWrap
     }
 
     //scrollbars and flickable
@@ -976,6 +957,10 @@ FocusScope {
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             cursorDelegate: cursor
+            color: control.__styleInstance.color
+            selectedTextColor: "#F3F3E7"
+            selectionColor: "#19B6EE"
+            font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
 
@@ -1034,4 +1019,6 @@ FocusScope {
             }
         }
     }
+
+    style: Theme.createStyleComponent("TextAreaStyle.qml", control)
 }

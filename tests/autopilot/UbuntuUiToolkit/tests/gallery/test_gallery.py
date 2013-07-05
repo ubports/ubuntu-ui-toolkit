@@ -131,9 +131,10 @@ class GenericTests(UbuntuUiToolkitTestCase):
         item_data = [
             ["button_text",True,None,None,"Call"],
             ["button_text_disabled",False,None,None,"Call"],
-            ["button_color",True,[93,163,87,255],None,"Call"],
-            ["button_iconsource",True,None,"call_icon.png",None],
-            ["button_iconsource_text",True,None,"call_icon.png","Call"]
+            ["button_color",True,[0,0,0,255],None,"Call"],
+            ["button_iconsource",True,None,"call.png",None],
+            ["button_iconsource_right_text",True,None,"call.png","Call"],
+            ["button_iconsource_left_text",True,None,"call.png","Call"]
         ]
 
         for data in item_data:
