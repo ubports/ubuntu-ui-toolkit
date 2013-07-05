@@ -19,8 +19,8 @@ import Ubuntu.Components.Themes 0.1
 
 Palette {
     normal: PaletteValues {
-        background: "#EEEEEE"
-        backgroundText: "#7F888888"
+        background: "#EDEDED"
+        backgroundText: "#81888888"
         base: "#1A000000"
         baseText: "#888888"
         foreground: "#888888"
