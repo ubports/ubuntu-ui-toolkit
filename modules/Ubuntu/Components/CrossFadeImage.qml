@@ -65,7 +65,7 @@ Item {
     /*!
       Set this property to define what happens when the source image has a different size than the item.
     */
-    property int fillMode
+    property enumeration fillMode
 
     /*!
       The time (in ms) over which to fade between images. Defaults to 400.
@@ -80,26 +80,26 @@ Item {
     /*!
       The actual width and height of the lodaded image
     */
-    readonly property size sourceSize: priv.currentImage.sourceSize
+    readonly property size sourceSize: internals.currentImage.sourceSize
 
     /*!
       The status of image loading
     */
-    readonly property var status: priv.currentImage ? priv.currentImage.status : Image.Null
+    readonly property var status: internals.currentImage ? internals.currentImage.status : Image.Null
 
     /*! \internal
       The current image
     */
-    readonly property alias currentImage: priv.currentImage
+    readonly property alias currentImage: internals.currentImage
 
     /*! \internal
       The next image
     */
-    readonly property alias nextImage: priv.nextImage
+    readonly property alias nextImage: internals.nextImage
 
 
     QtObject {
-        id: priv
+        id: internals
 
         /*! \internal
           Defines the image currently being shown
@@ -111,13 +111,13 @@ Item {
         property Image nextImage: image2
 
         function swapImages() {
-            priv.currentImage.z = 0
-            priv.nextImage.z = 1
+            internals.currentImage.z = 0
+            internals.nextImage.z = 1
             nextImageFadeIn.start();
 
-            var tmpImage = priv.currentImage
-            priv.currentImage = priv.nextImage
-            priv.nextImage = tmpImage
+            var tmpImage = internals.currentImage
+            internals.currentImage = internals.nextImage
+            internals.nextImage = tmpImage
         }
 
 
@@ -145,26 +145,26 @@ Item {
     */
     onSourceChanged: {
         // On creation, the souce handler is called before image pointers are set.
-        if (priv.currentImage === null) {
-            priv.currentImage = image1;
-            priv.nextImage = image2;
+        if (internals.currentImage === null) {
+            internals.currentImage = image1;
+            internals.nextImage = image2;
         }
 
         nextImageFadeIn.stop();
 
         // Don't fade in initial picture, only fade changes
-        if (priv.currentImage.source == "") {
-            priv.currentImage.fillMode = fillMode
-            priv.currentImage.source = source;
+        if (internals.currentImage.source == "") {
+            internals.currentImage.fillMode = fillMode
+            internals.currentImage.source = source;
         } else {
             nextImageFadeIn.stop();
-            priv.nextImage.opacity = 0.0;
-            priv.nextImage.fillMode = fillMode;
-            priv.nextImage.source = source;
+            internals.nextImage.opacity = 0.0;
+            internals.nextImage.fillMode = fillMode;
+            internals.nextImage.source = source;
 
             // If case the image is still in QML's cache, status will be "Ready" immediately
-            if (priv.nextImage.status === Image.Ready || priv.nextImage.source === "") {
-                priv.swapImages();
+            if (internals.nextImage.status === Image.Ready || internals.nextImage.source === "") {
+                internals.swapImages();
             }
         }
     }
@@ -174,21 +174,21 @@ Item {
       Set the fill on the currently displaying image when it's updated.
     */
     onFillModeChanged: {
-        priv.currentImage.fillMode = fillMode
+        internals.currentImage.fillMode = fillMode
     }
 
     Connections {
-        target: priv.nextImage
+        target: internals.nextImage
         onStatusChanged: {
-            if (priv.nextImage.status == Image.Ready) {
-                 priv.swapImages();
+            if (internals.nextImage.status == Image.Ready) {
+                 internals.swapImages();
              }
         }
     }
 
     NumberAnimation {
         id: nextImageFadeIn
-        target: priv.nextImage
+        target: internals.nextImage
         property: "opacity"
         duration: fadeDuration
         to: 1.0
@@ -196,7 +196,7 @@ Item {
 
         onRunningChanged: {
             if (!running) {
-                priv.nextImage.source = "";
+                internals.nextImage.source = "";
             }
         }
     }
