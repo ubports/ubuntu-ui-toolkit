@@ -5,7 +5,7 @@ ActionItem
     property bool pressed
     property bool hovered
     property bool __acceptEvents
-    property alias __mouseArea
+    property internal __mouseArea
 modules/Ubuntu/Components/Action.qml
 QtObject
     property string text
@@ -22,7 +22,7 @@ StyledItem
     signal triggered(var caller)
 modules/Ubuntu/Components/ActionList.qml
 QtObject
-    default property alias children
+    default property list<Action> children
     property list<Action> actions
 modules/Ubuntu/Components/ActivityIndicator.qml
 AnimatedItem
@@ -65,34 +65,34 @@ StyledItem
 modules/Ubuntu/Components/Icon.qml
 Item
     property string name
-    property alias color
-    property alias keyColor
+    property color color
+    property color keyColor
 modules/Ubuntu/Components/Label.qml
 Text
     property string fontSize
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
-    property alias automaticOrientation
-    default property alias contentsItem
+    property bool automaticOrientation
+    default property internal contentsItem
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
 Object
     property var view
     property int count
-    readonly property alias sectionHeight
+    readonly property real sectionHeight
     property bool cacheSections
     property var cache
 modules/Ubuntu/Components/Object.qml
 QtObject
-    default property alias children
+    default property internal children
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
     property bool transitionEnabled
     property alias rotating
-    property alias __orientationAngle
+    property int __orientationAngle
     property int orientationAngle
 modules/Ubuntu/Components/Page.qml
 PageTreeNode
@@ -126,7 +126,7 @@ PageTreeNode
     function destroyObject()
 modules/Ubuntu/Components/Panel.qml
 Item
-    default property alias contents
+    default property list<Object> contents
     property int align
     property bool opened
     property bool locked
@@ -144,7 +144,7 @@ StyledItem
     property Flickable flickableItem
     property int align
     property bool __interactive
-    property alias __private
+    property internal __private
 modules/Ubuntu/Components/Slider.qml
 AbstractButton
     property real minimumValue
@@ -153,7 +153,7 @@ AbstractButton
     property bool live
     signal touched(bool onThumb)
     function formatValue(v)
-    property alias __internals
+    property internal __internals
 modules/Ubuntu/Components/StyledItem.qml
 FocusScope
     property Component style
@@ -173,14 +173,14 @@ PageTreeNode
     property Component __headerContents
     property ToolbarActions tools
     onToolsChanged
-    property alias __tabs
-    default property alias tabChildren
+    property internal __tabs
+    default property list<Item> tabChildren
     signal modelChanged()
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
-    property alias placeholderText
-    readonly property alias displayText
+    property string placeholderText
+    readonly property string displayText
     property bool selectByMouse
     property bool autoExpand
     property bool autoSize
@@ -189,35 +189,35 @@ StyledItem
     property real contentHeight
     property var popover
     property bool activeFocusOnPress
-    property alias baseUrl
-    property alias canPaste
-    property alias canRedo
-    property alias canUndo
-    property alias color
-    property alias cursorDelegate
-    property alias cursorPosition
-    property alias cursorRectangle
-    property alias cursorVisible
-    property alias effectiveHorizontalAlignment
-    property alias font
-    property alias horizontalAlignment
-    property alias inputMethodComposing
-    property alias inputMethodHints
-    property alias length
-    property alias lineCount
-    property alias mouseSelectionMode
-    property alias persistentSelection
-    property alias readOnly
-    property alias renderType
-    property alias selectedText
-    property alias selectedTextColor
-    property alias selectionColor
-    property alias selectionEnd
-    property alias selectionStart
-    property alias text
-    property alias textFormat
-    property alias verticalAlignment
-    property alias wrapMode
+    property url baseUrl
+    property bool canPaste
+    property bool canRedo
+    property bool canUndo
+    property color color
+    property Component cursorDelegate
+    property int cursorPosition
+    property rectangle cursorRectangle
+    property bool cursorVisible
+    property enumeration effectiveHorizontalAlignment
+    property font font
+    property enumeration horizontalAlignment
+    property bool inputMethodComposing
+    property enumeration inputMethodHints
+    property int length
+    property int lineCount
+    property enumeration mouseSelectionMode
+    property enumeration persistentSelection
+    property bool readOnly
+    property enumeration renderType
+    property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    property int selectionEnd
+    property int selectionStart
+    property string text
+    property enumeration textFormat
+    property enumeration verticalAlignment
+    property enumeration wrapMode
     signal linkActivated(string link)
     function copy()
     function cut()
@@ -237,7 +237,7 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property alias __internal
+    property internal __internal
 modules/Ubuntu/Components/TextCursor.qml
 StyledItem
     property var editorItem
@@ -247,50 +247,50 @@ StyledItem
 modules/Ubuntu/Components/TextField.qml
 StyledItem
     property bool highlighted
-    property alias placeholderText
+    property string placeholderText
     property bool hasClearButton
     property Component customSoftwareInputPanel
     property var popover
-    property alias primaryItem
-    property alias secondaryItem
+    property list<Object> primaryItem
+    property list<Object> secondaryItem
     property bool errorHighlight
-    property alias acceptableInput
-    property alias activeFocusOnPress
-    property alias autoScroll
-    property alias canPaste
-    property alias canRedo
-    property alias canUndo
-    property alias color
-    property alias contentHeight
-    property alias contentWidth
-    property alias cursorDelegate
-    property alias cursorPosition
-    property alias cursorRectangle
-    property alias cursorVisible
-    property alias displayText
-    property alias echoMode
-    property alias font
-    property alias inputMask
-    property alias inputMethodComposing
-    property alias inputMethodHints
-    property alias length
-    property alias maximumLength
-    property alias mouseSelectionMode
-    property alias persistentSelection
-    property alias readOnly
-    property alias renderType
-    property alias selectByMouse
-    readonly property alias selectedText
-    property alias selectionStart
-    property alias selectionEnd
-    property alias text
-    property alias validator
-    property alias horizontalAlignment
-    property alias effectiveHorizontalAlignment
-    property alias verticalAlignment
-    property alias passwordCharacter
-    property alias selectionColor
-    property alias selectedTextColor
+    property bool acceptableInput
+    property bool activeFocusOnPress
+    property bool autoScroll
+    property bool canPaste
+    property bool canRedo
+    property bool canUndo
+    property color color
+    property real contentHeight
+    property real contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    property rectangle cursorRectangle
+    property bool cursorVisible
+    property string displayText
+    property enumeration echoMode
+    property font font
+    property string inputMask
+    property bool inputMethodComposing
+    property enumeration inputMethodHints
+    property int length
+    property int maximumLength
+    property enumeration mouseSelectionMode
+    property bool persistentSelection
+    property bool readOnly
+    property enumeration renderType
+    property bool selectByMouse
+    readonly property string selectedText
+    property int selectionStart
+    property int selectionEnd
+    property string text
+    property Validator validator
+    property enumeration horizontalAlignment
+    property internal effectiveHorizontalAlignment
+    property internal verticalAlignment
+    property string passwordCharacter
+    property color selectionColor
+    property color selectedTextColor
     signal accepted()
     function copy()
     function cut()
@@ -309,7 +309,7 @@ StyledItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property alias __internal
+    property internal __internal
 modules/Ubuntu/Components/TextInputPopover.qml
 ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
@@ -319,7 +319,7 @@ Panel
     property Item tools
 modules/Ubuntu/Components/ToolbarActions.qml
 Item
-    default property alias children
+    default property list<Action> children
     property list<Action> actions
     property Action back
     property Item __pageStack
@@ -332,13 +332,20 @@ modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
 Item
-    default property alias contents
+    default property list<Object> contents
     property Item back
     property Item pageStack
     property bool opened
     property bool locked
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
+modules/Ubuntu/Components/UbuntuShape.qml
+Item
+    property color color
+    property color gradientColor
+    property string radius
+    property Item image
+    property url borderSource
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickItem"
@@ -388,7 +395,7 @@ plugins.qmltypes
     Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1", "UbuntuShape 0.1"]
+    exports: ["Shape 0.1"]
     name: "HAlignment"
     name: "VAlignment"
     Property { name: "color"; type: "QColor" }
