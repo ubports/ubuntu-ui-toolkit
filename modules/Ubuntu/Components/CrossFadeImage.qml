@@ -94,6 +94,7 @@ Item {
         anchors.fill: parent
         cache: false
         asynchronous: true
+        fillMode: parent.fillMode
         z: 1
     }
 
@@ -102,6 +103,7 @@ Item {
         anchors.fill: parent
         cache: false
         asynchronous: true
+        fillMode: parent.fillMode
         z: 0
     }
 
@@ -120,12 +122,10 @@ Item {
 
         // Don't fade in initial picture, only fade changes
         if (internals.currentImage.source == "") {
-            internals.currentImage.fillMode = fillMode;
             internals.currentImage.source = source;
         } else {
             nextImageFadeIn.stop();
             internals.nextImage.opacity = 0.0;
-            internals.nextImage.fillMode = fillMode;
             internals.nextImage.source = source;
 
             // If case the image is still in QML's cache, status will be "Ready" immediately
@@ -133,14 +133,6 @@ Item {
                 internals.swapImages();
             }
         }
-    }
-
-    /*!
-      \internal
-      Set the fill on the currently displaying image when it's updated.
-    */
-    onFillModeChanged: {
-        internals.currentImage.fillMode = fillMode;
     }
 
     Connections {
