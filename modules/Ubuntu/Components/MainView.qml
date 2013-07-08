@@ -192,7 +192,8 @@ PageTreeNode {
     /*!
       Global actions. TODO: document
      */
-    property ActionList actions: null
+//    property ActionList actions: null
+    property alias actions: unityActionManager.actions
 
     Object {
         id: internal
@@ -200,8 +201,10 @@ PageTreeNode {
             id: unityActionManager
         }
 
-        function updateActions() {
-            // TODO: clear global context actions
+//        function updateActions() {
+//            // TODO: clear global context actions
+//            unityActionManager.actions = [];
+//            print("updating actions?")
 //            if (!mainView.actions) return;
 //            print("updating actions" + mainView.actions.actions.length)
 //            for (var i=0; i < mainView.actions.actions.length; i++) {
@@ -209,16 +212,17 @@ PageTreeNode {
 //                if (mainView.actions.actions[i]) {
 //                    print("action "+i+" = "+mainView.actions.actions[i]);
 //                    // TODO: unityActionManager.actions.append(mainView.actions.actions[i]) when that works.
+////                    unityActionManager.actions.append(mainView.actions.actions[i]);
 //                    unityActionManager.globalContext.addAction(mainView.actions.actions[i]);
 //                }
 //            }
-        }
+//        }
 
-        Connections {
-            target: mainView
-            onActionsChanged: internal.updateActions()
-            Component.onCompleted: internal.updateActions()
-        }
+//        Connections {
+//            target: mainView
+//            onActionsChanged: internal.updateActions()
+//            Component.onCompleted: internal.updateActions()
+//        }
     }
 
     __propagated: QtObject {
