@@ -72,7 +72,7 @@ Item {
       The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
       \sa UbuntuAnimation
     */
-    property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration // FIXME: UbuntuAnimation.FastDuration is what we want but it doesn't get set...
+    property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
       Whether the animation is running
