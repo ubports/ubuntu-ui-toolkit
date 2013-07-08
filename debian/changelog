@@ -1,3 +1,34 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130705.3-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Latest fix in ButtonStyle had 3 typos. Fixing them. .
+  * ListItem.SingleControl: Ensure that there is always enough vertical
+    padding around the control. (LP: #1198116)
+
+  [ Christian Dywan ]
+  * Include alias types in qmlapicheck. (LP: #1192540)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 589
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 05 Jul 2013 18:09:33 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130705-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Reintroduced QML proxy for ShapeItem C++ class in order to
+    workaround CPU hog when no image was set to ShapeItem. (LP:
+    #1197801)
+
+  [ Loïc Molinari ]
+  * Added workaround for QML buggy support for color props in ternary
+    ops. (LP: #1197802)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 584
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 05 Jul 2013 04:01:41 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130703.1-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]

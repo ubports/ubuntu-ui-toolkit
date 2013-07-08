@@ -63,10 +63,17 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: isGradient ? gradientProxy.topColor : button.color
-        gradientColor: isGradient ? gradientProxy.bottomColor : button.color
         borderSource: "radius_idle.sci"
         visible: color.a != 0.0
+
+        // Color properties in a JS ternary operator don't work as expected in
+        // QML because it overwrites alpha values with 1. A workaround is to use
+        // Qt.rgba(). For more information, see
+        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
+        // https://bugreports.qt-project.org/browse/QTBUG-32238.
+        function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
+        color: isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color)
+        gradientColor: isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color)
     }
 
     UbuntuShape {
