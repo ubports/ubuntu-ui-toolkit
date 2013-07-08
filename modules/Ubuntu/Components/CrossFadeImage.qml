@@ -15,6 +15,12 @@
  */
 
 import QtQuick 2.0
+// FIXME: When a module contains QML, C++ and JavaScript elements exported,
+// we need to use named imports otherwise namespace collision is reported
+// by the QML engine. As workaround, we use Ubuntu named import.
+// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
+import Ubuntu.Components 0.1 as Ubuntu
+
 /*!
    \qmltype CrossFadeImage
    \ingroup ubuntu
@@ -68,7 +74,7 @@ Item {
       The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
       \sa UbuntuAnimation
     */
-    property int duration: 250 // FIXME: UbuntuAnimation.FastDuration is what we want but it doesn't get set...
+    property int duration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
       Whether the animation is running
