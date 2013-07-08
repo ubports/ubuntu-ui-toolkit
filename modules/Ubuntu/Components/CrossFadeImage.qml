@@ -44,7 +44,7 @@ import Ubuntu.Components 0.1 as Ubuntu
     */
 
 Item {
-    id: root
+    id: crossFadeImage
 
     /*!
       The image being displayed. Can be a URL to any image format supported by Qt.
@@ -53,8 +53,6 @@ Item {
 
     /*!
       \qmlproperty enumeration fillMode
-
-      Set this property to define what happens when the source image has a different size than the item.
 
       Defaults to \c Image.PreserveAspectFit.
 
@@ -74,7 +72,7 @@ Item {
       The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
       \sa UbuntuAnimation
     */
-    property int duration: Ubuntu.UbuntuAnimation.FastDuration
+    property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
       Whether the animation is running
@@ -183,7 +181,7 @@ Item {
         target: internals.nextImage
         property: "opacity"
         to: 1.0
-        duration: root.duration
+        duration: crossFadeImage.fadeDuration
 
         onRunningChanged: {
             if (!running) {
