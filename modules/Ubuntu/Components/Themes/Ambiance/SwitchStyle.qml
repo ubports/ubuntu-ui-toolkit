@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,96 +13,61 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    id: visuals
-    // style properties
-    property url crossSource: "artwork/Cross.png"
-    property url checkMarkSource: "artwork/CheckMark.png"
-    /*!
-      The opacity of the "cross" image when the switch is not checked,
-      and opacity of the "checkMark" image when the switch is checked.
-     */
-    property real selectedImageOpacity: 1.0
-    /*!
-      The opacity of the "cross" image when the switch is checked,
-      and the opacity of the "checkMark" image when the switch is not checked.
-     */
-    property real unselectedImageOpacity: 0.4
-    /*!
-      Spacing around the thumb.
-     */
-    property real thumbSpacing: units.dp(2)
-    /*!
-      Color of the thumb when the switch is checked.
-     */
-    property color checkedThumbColor: Theme.palette.selected.foreground
-    /*!
-      Color of the thumb when the switch is not checked.
-     */
-    property color uncheckedThumbColor: Theme.palette.normal.foreground
-    /*!
-      The animation to fade the color from checkedColor to uncheckedColor and vice versa.
-     */
-    property ColorAnimation thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing }
-    /*!
-      The animation on x to move the thumb.
-     */
-    property NumberAnimation moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    id: switchStyle
 
-    property color backgroundColor: Theme.palette.normal.base
-    property real thumbWidth: units.gu(4)
-    property real thumbHeight: units.gu(4)
+    property real thumbPadding: units.gu(0.5)
 
-    // code
-    anchors.fill: parent
-    implicitWidth: 2*thumb.width + 3*thumb.spacing
-    implicitHeight: thumb.height + 2*thumb.spacing
+    /* FIXME: setting the width and height is required because in the case no width
+       is set on the Switch, then even though the width is set eventually to
+       implicitWidth, it still goes through the value 0.0 which triggers an
+       undesired animation if the Switch is checked.
+
+       Example, values of width at instantiation:
+         width = 0.0 (before SwitchStyle is loaded)
+         width = implicitWidth (after SwitchStyle is loaded)
+    */
+    width: implicitWidth
+    height: implicitHeight
+    implicitWidth: units.gu(10)
+    implicitHeight: units.gu(5)
     opacity: styledItem.enabled ? 1.0 : 0.5
-
-    Binding {
-        target: styledItem
-        property: "implicitWidth"
-        value: implicitWidth
-    }
-
-    Binding {
-        target: styledItem
-        property: "implicitHeight"
-        value: implicitHeight
-    }
 
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: backgroundColor
+        color: Theme.palette.normal.base
 
         UbuntuShape {
             id: thumb
 
-            // Thumb spacing is used a lot, so import it here once
-            property real spacing: visuals.thumbSpacing
-
-            width: visuals.thumbHeight
-            height: visuals.thumbWidth
+            width: (background.width - switchStyle.thumbPadding * 3.0) / 2.0
             x: styledItem.checked ? rightThumbPosition.x : leftThumbPosition.x
-            y: leftThumbPosition.y
 
-            color: styledItem.checked ? visuals.checkedThumbColor
-                                : visuals.uncheckedThumbColor
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                topMargin: switchStyle.thumbPadding
+                bottomMargin: switchStyle.thumbPadding
+            }
+
+            color: styledItem.checked ? Theme.palette.selected.foreground
+                                      : Theme.palette.normal.foreground
 
             Behavior on x {
-                NumberAnimation {
-                    duration: visuals.moveThumbAnimation.duration
-                    easing: visuals.moveThumbAnimation.easing
+                UbuntuNumberAnimation {
+                    duration: UbuntuAnimation.SnapDuration
+                    easing: UbuntuAnimation.StandardEasing
                 }
             }
             Behavior on color {
                 ColorAnimation {
-                    duration: visuals.thumbColorAnimation.duration
-                    easing: visuals.thumbColorAnimation.easing
+                    duration: UbuntuAnimation.SnapDuration
+                    easing: UbuntuAnimation.StandardEasing
                 }
             }
         }
@@ -112,17 +77,25 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: thumb.spacing
-                topMargin: thumb.spacing
+                leftMargin: switchStyle.thumbPadding
+                topMargin: switchStyle.thumbPadding
             }
             height: thumb.height
             width: thumb.width
 
-            Image {
+            PartialColorizeImage {
                 anchors.centerIn: parent
-                opacity: styledItem.checked ? visuals.unselectedImageOpacity
-                                      : visuals.selectedImageOpacity
-                source: visuals.crossSource
+                source: Image {
+                    source: "artwork/cross.png"
+                }
+                keyColorOut: styledItem.checked ? Theme.palette.normal.backgroundText
+                                                : Theme.palette.selected.foregroundText
+                Behavior on keyColorOut {
+                    ColorAnimation {
+                        duration: UbuntuAnimation.SnapDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                }
             }
         }
 
@@ -131,17 +104,25 @@ Item {
             anchors {
                 right: parent.right
                 top: parent.top
-                rightMargin: thumb.spacing
-                topMargin: thumb.spacing
+                rightMargin: switchStyle.thumbPadding
+                topMargin: switchStyle.thumbPadding
             }
             height: thumb.height
             width: thumb.width
 
-            Image {
+            PartialColorizeImage {
                 anchors.centerIn: parent
-                opacity: styledItem.checked ? visuals.selectedImageOpacity
-                                      : visuals.unselectedImageOpacity
-                source: visuals.checkMarkSource
+                source: Image {
+                    source: "artwork/tick.png"
+                }
+                keyColorOut: styledItem.checked ? Theme.palette.selected.foregroundText
+                                                : Theme.palette.normal.backgroundText
+                Behavior on keyColorOut {
+                    ColorAnimation {
+                        duration: UbuntuAnimation.SnapDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                }
             }
         }
     }
