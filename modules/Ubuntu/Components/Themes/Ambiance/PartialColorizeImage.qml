@@ -21,20 +21,22 @@ ShaderEffect {
     implicitHeight: source.implicitHeight
 
     property Image source
-    property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
-    property color keyColorIn: "#F3F3E7"
-    property real threshold: 0.5
-    property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0) && source.status == Image.Ready
+    property color leftColor
+    property color rightColor
+    property real progress
+    visible: source.status == Image.Ready
 
     fragmentShader: "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
-            uniform highp vec4 keyColorOut;
-            uniform highp vec4 keyColorIn;
-            uniform lowp float threshold;
+            uniform lowp vec4 leftColor;
+            uniform lowp vec4 rightColor;
+            uniform lowp float progress;
             uniform lowp float qt_Opacity;
+
             void main() {
                 lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
-                gl_FragColor = mix(keyColorOut * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
+                lowp vec4 newColor = mix(leftColor, rightColor, step(progress, qt_TexCoord0.x));
+                gl_FragColor = newColor * sourceColor.a * qt_Opacity;
             }"
 }

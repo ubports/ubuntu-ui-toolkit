@@ -88,14 +88,9 @@ Item {
                 source: Image {
                     source: "artwork/cross.png"
                 }
-                keyColorOut: styledItem.checked ? Theme.palette.normal.backgroundText
-                                                : Theme.palette.selected.foregroundText
-                Behavior on keyColorOut {
-                    ColorAnimation {
-                        duration: UbuntuAnimation.SnapDuration
-                        easing: UbuntuAnimation.StandardEasing
-                    }
-                }
+                progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
+                leftColor: Theme.palette.normal.backgroundText
+                rightColor: Theme.palette.selected.foregroundText
             }
         }
 
@@ -115,14 +110,9 @@ Item {
                 source: Image {
                     source: "artwork/tick.png"
                 }
-                keyColorOut: styledItem.checked ? Theme.palette.selected.foregroundText
-                                                : Theme.palette.normal.backgroundText
-                Behavior on keyColorOut {
-                    ColorAnimation {
-                        duration: UbuntuAnimation.SnapDuration
-                        easing: UbuntuAnimation.StandardEasing
-                    }
-                }
+                progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
+                leftColor: Theme.palette.selected.foregroundText
+                rightColor: Theme.palette.normal.backgroundText
             }
         }
     }
