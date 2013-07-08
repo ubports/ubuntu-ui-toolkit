@@ -46,6 +46,8 @@ Item {
     property url source
 
     /*!
+      \qmlproperty enumeration fillMode
+
       Set this property to define what happens when the source image has a different size than the item.
       Defaults to \c Image.PreserveAspectFit.
     */
@@ -68,6 +70,8 @@ Item {
     readonly property size sourceSize: internals.currentImage.sourceSize
 
     /*!
+      \qmlproperty enumeration status
+
       The status of image loading
     */
     readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
