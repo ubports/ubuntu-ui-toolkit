@@ -38,7 +38,7 @@ import QtQuick 2.0
     */
 
 Item {
-    id: root
+    id: crossFadeImage
 
     /*!
       The image being displayed. Can be a URL to any image format supported by Qt.
@@ -55,7 +55,7 @@ Item {
       The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
       \sa UbuntuAnimation
     */
-    property int duration: 250 // FIXME: UbuntuAnimation.FastDuration is what we want but it doesn't get set...
+    property int fadeDuration: 250 // FIXME: UbuntuAnimation.FastDuration is what we want but it doesn't get set...
 
     /*!
       Whether the animation is running
@@ -155,7 +155,7 @@ Item {
         target: internals.nextImage
         property: "opacity"
         to: 1.0
-        duration: root.duration
+        duration: crossFadeImage.fadeDuration
 
         onRunningChanged: {
             if (!running) {
