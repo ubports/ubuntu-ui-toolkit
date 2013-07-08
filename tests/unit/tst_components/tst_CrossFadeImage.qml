@@ -40,7 +40,6 @@ TestCase {
         source = url;
 
         signalSpy.signalName = "statusChanged";
-        signalSpy.wait();
 
         if (status == Image.Null) {
             signalSpy.clear();
