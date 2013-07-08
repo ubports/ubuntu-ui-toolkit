@@ -49,7 +49,18 @@ Item {
       \qmlproperty enumeration fillMode
 
       Set this property to define what happens when the source image has a different size than the item.
+
       Defaults to \c Image.PreserveAspectFit.
+
+      \list
+        \li Image.Stretch - the image is scaled to fit
+        \li Image.PreserveAspectFit - the image is scaled uniformly to fit without cropping
+        \li Image.PreserveAspectCrop - the image is scaled uniformly to fill, cropping if necessary
+        \li Image.Tile - the image is duplicated horizontally and vertically
+        \li Image.TileVertically - the image is stretched horizontally and tiled vertically
+        \li Image.TileHorizontally - the image is stretched vertically and tiled horizontally
+        \li Image.Pad - the image is not transformed
+      \endlist
     */
     property int fillMode : Image.PreserveAspectFit
 
@@ -72,7 +83,14 @@ Item {
     /*!
       \qmlproperty enumeration status
 
-      The status of image loading
+      This property holds the status of image loading. It can be one of:
+
+      \list
+        \li Image.Null - no image has been set
+        \li Image.Ready - the image has been loaded
+        \li Image.Loading - the image is currently being loaded
+        \li Image.Error - an error occurred while loading the image
+      \endlist
     */
     readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
 
