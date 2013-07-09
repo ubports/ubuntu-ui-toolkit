@@ -450,6 +450,7 @@ plugins.qmltypes
     Property { name: "SlowDuration"; type: "int"; isReadonly: true }
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
+    Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1"]
