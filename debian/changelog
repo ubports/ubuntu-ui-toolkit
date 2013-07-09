@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130709-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Pass import paths from main QQmlEngine to QQuickUtils' QQmlEngine.
+    Fixes case where qmlscene is passed import paths via the -I
+    argument.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 593
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 09 Jul 2013 04:02:55 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130705.3-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
