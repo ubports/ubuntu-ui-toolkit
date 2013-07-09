@@ -245,7 +245,7 @@ PageTreeNode {
           The action manager that has the global context for the MainView's actions,
           and to which a local context can be added for each Page that has actions.actions.
          */
-//          property var actionManager: unityActionManager
+        property var actionManager: unityActionManager
     }
 
 

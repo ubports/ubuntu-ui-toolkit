@@ -138,37 +138,37 @@ PageTreeNode {
       Local actions. These actions will be made available outside the application
       (for example, to HUD) when the Page is active.
       */
-    property ActionList actions: null
+    property alias actions: actionContext
 
     Object {
         id: internal
 
-//        UnityActions.ActionContext {
-//            id: actionContext
+        UnityActions.ActionContext {
+            id: actionContext
 
-//            Component.onCompleted: {
-//                print("page manager = "+page.__propagated.actionManager);
+            Component.onCompleted: {
+                print("page manager = "+page.__propagated.actionManager+". Adding context for page "+page.title);
 
-//                var manager = page.__propagated.actionManager;
-//                manager.addLocalContext(actionContext);
-//            }
-//        }
-
-        function updateActions() {
-//            actionContext.active = page.active;
+                var manager = page.__propagated.actionManager;
+                manager.addLocalContext(actionContext);
+            }
         }
 
-//        Connections {
-//            target: page.__propagated
-//            onActionManagerChanged: print("action manager changed to "+page.__propagated.actionManager)
-//        }
+        function updateActions() {
+            actionContext.active = page.active;
+        }
 
-//        Connections {
-//            target: page.__propagated.actionManager
-//            Component.onCompleted: {
-//                print("ActionManager initialized!")
-//            }
-//        }
+        Connections {
+            target: page.__propagated
+            onActionManagerChanged: print("action manager changed to "+page.__propagated.actionManager)
+        }
+
+        Connections {
+            target: page.__propagated.actionManager
+            Component.onCompleted: {
+                print("ActionManager initialized!")
+            }
+        }
 
 
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
