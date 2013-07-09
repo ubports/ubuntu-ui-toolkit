@@ -102,4 +102,14 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 /*!
  * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingReverse
  *
+ * StandardEasingReverse is mainly be used in combination with StandardEasing.
+ * For example, if animating an object that bounces, you will want the object
+ * to slow down as it reaches the apex of its bounce and slowly speed back up
+ * as it descends.
+ *
+ * StandardEasingReverse should not be used to introduce a new object or screen
+ * to the user.
+ * In general, it should only be used if StandardEasing is visually inappropriate
+ * and even so, will usually be proceeded by StandardEasing.
+ *
  */
