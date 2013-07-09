@@ -45,7 +45,7 @@ Item
     property int fadeDuration
     readonly property bool running
     readonly property size sourceSize
-    readonly property var status
+    readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
     property int orientation
