@@ -96,7 +96,6 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 /*!
  * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasing
  * Used for animations trigerred by user actions.
- *
  */
 
 /*!
@@ -111,5 +110,4 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  * to the user.
  * In general, it should only be used if StandardEasing is visually inappropriate
  * and even so, will usually be proceeded by StandardEasing.
- *
  */
