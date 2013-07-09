@@ -72,7 +72,7 @@ PageTreeNode
     property string applicationName
     property bool automaticOrientation
     default property internal contentsItem
-    property ActionList actions
+    property list<Action> actions
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
@@ -96,7 +96,7 @@ modules/Ubuntu/Components/Page.qml
 PageTreeNode
     property string title
     property Flickable flickable
-    property ActionList actions
+    property list<Action> actions
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
