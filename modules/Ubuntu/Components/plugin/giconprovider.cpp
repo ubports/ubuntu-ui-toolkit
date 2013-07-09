@@ -59,7 +59,7 @@ GIconProvider::GIconProvider()
 
 QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    QPixmap result;
+    QImage result;
     QByteArray utf8Name = QUrl::fromPercentEncoding(id.toUtf8()).toUtf8();
     GError *error = NULL;
     GIcon *icon = g_icon_new_for_string(utf8Name.data(), &error);
@@ -73,9 +73,9 @@ QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &
         QIcon themedIcon = getThemedIcon(reinterpret_cast<GThemedIcon*>(icon));
         if (!themedIcon.isNull()) {
             if (requestedSize.isValid()) {
-                result = themedIcon.pixmap(requestedSize);
+                result = themedIcon.pixmap(requestedSize).toImage();
             } else {
-                result = themedIcon.pixmap(themedIcon.availableSizes().last());
+                result = themedIcon.pixmap(themedIcon.availableSizes().last()).toImage();
             }
         } else {
             qDebug() << "Fail to load themed icon for:" << id;
@@ -83,7 +83,7 @@ QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &
     } else if (G_IS_FILE_ICON(icon)) {
         gchar *iconName = g_icon_to_string(icon);
         if (QFile::exists(iconName)) {
-            result = QPixmap(iconName);
+            result.load(iconName);
             if (requestedSize.isValid()) {
                 result = result.scaled(requestedSize);
             }
@@ -98,5 +98,5 @@ QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &
 
     g_object_unref(icon);
     *size = result.size();
-    return result.toImage();
+    return result;
 }
