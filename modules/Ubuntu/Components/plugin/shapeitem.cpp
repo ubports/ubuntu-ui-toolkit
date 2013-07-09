@@ -231,6 +231,8 @@ void ShapeItem::setImage(QVariant image)
 
 void ShapeItem::updateFromImageProperties(QQuickItem* image)
 {
+    int alignment;
+
     // ShapeItem::stretched depends on image::fillMode
     QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
     if (fillMode == QQuickImage::PreserveAspectCrop) {
@@ -240,12 +242,26 @@ void ShapeItem::updateFromImageProperties(QQuickItem* image)
     }
 
     // ShapeItem::horizontalAlignment depends on image::horizontalAlignment
-    QQuickImage::HAlignment horizontalAlignment = (QQuickImage::HAlignment)image->property("horizontalAlignment").toInt();
-    setHorizontalAlignment((ShapeItem::HAlignment)horizontalAlignment);
+    int imageHorizontalAlignment = image->property("horizontalAlignment").toInt();
+    if (imageHorizontalAlignment == Qt::AlignLeft) {
+        alignment = ShapeItem::AlignLeft;
+    } else if (imageHorizontalAlignment == Qt::AlignRight) {
+        alignment = ShapeItem::AlignRight;
+    } else {
+        alignment = ShapeItem::AlignHCenter;
+    }
+    setHorizontalAlignment(static_cast<ShapeItem::HAlignment>(alignment));
 
     // ShapeItem::verticalAlignment depends on image::verticalAlignment
-    QQuickImage::VAlignment verticalAlignment = (QQuickImage::VAlignment)image->property("verticalAlignment").toInt();
-    setVerticalAlignment((ShapeItem::VAlignment)verticalAlignment);
+    int imageVerticalAlignment = image->property("verticalAlignment").toInt();
+    if (imageVerticalAlignment == Qt::AlignLeft) {
+        alignment = ShapeItem::AlignLeft;
+    } else if (imageVerticalAlignment == Qt::AlignRight) {
+        alignment = ShapeItem::AlignRight;
+    } else {
+        alignment = ShapeItem::AlignVCenter;
+    }
+    setVerticalAlignment(static_cast<ShapeItem::VAlignment>(alignment));
 }
 
 void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
@@ -273,7 +289,6 @@ void ShapeItem::onImagePropertiesChanged()
     QQuickItem* image = qobject_cast<QQuickItem*>(sender());
     updateFromImageProperties(image);
 }
-
 
 void ShapeItem::setStretched(bool stretched)
 {
