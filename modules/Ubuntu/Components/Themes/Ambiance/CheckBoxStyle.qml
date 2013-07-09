@@ -30,7 +30,7 @@ Item {
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
-    property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasingOut }
+    property PropertyAnimation backgroundColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing }
 
     // code
     anchors.fill: parent

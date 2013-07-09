@@ -156,7 +156,7 @@ Item {
                         target: orientationHelper
                         properties: "rotation"
                         duration: UbuntuAnimation.FastDuration
-                        easing: UbuntuAnimation.StandardEasingOut
+                        easing: UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
                     }
                 }

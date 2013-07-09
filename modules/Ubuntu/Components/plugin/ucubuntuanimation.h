@@ -19,7 +19,6 @@
 #define UCUBUNTUANIMATION_H
 
 #include <QObject>
-#include <QtCore/QDebug>
 #include <QtCore/QEasingCurve>
 
 class UCUbuntuAnimation : public QObject
@@ -30,8 +29,7 @@ class UCUbuntuAnimation : public QObject
     Q_PROPERTY(int SlowDuration READ SlowDuration CONSTANT)
     Q_PROPERTY(int SleepyDuration READ SleepyDuration CONSTANT)
     Q_PROPERTY(QEasingCurve StandardEasing READ StandardEasing CONSTANT)
-    Q_PROPERTY(QEasingCurve StandardEasingIn READ StandardEasingIn CONSTANT)
-    Q_PROPERTY(QEasingCurve StandardEasingOut READ StandardEasingOut CONSTANT)
+    Q_PROPERTY(QEasingCurve StandardEasingReverse READ StandardEasingReverse CONSTANT)
 
 public:
     explicit UCUbuntuAnimation(QObject *parent = 0);
@@ -41,19 +39,15 @@ public:
     int SlowDuration() const { return 500; }
     int SleepyDuration() const { return 1000; }
     const QEasingCurve& StandardEasing() const {
-        qWarning() << "Use of UbuntuAnimation.StandardEasing is deprecated. Use UbuntuAnimation.StandardEasingOutOut instead.";
-        return m_standardEasingOut;
+        return m_standardEasing;
     }
-    const QEasingCurve& StandardEasingIn() const {
-        return m_standardEasingIn;
-    }
-    const QEasingCurve& StandardEasingOut() const {
-        return m_standardEasingOut;
+    const QEasingCurve& StandardEasingReverse() const {
+        return m_StandardEasingReverse;
     }
 
 private:
-    QEasingCurve m_standardEasingIn;
-    QEasingCurve m_standardEasingOut;
+    QEasingCurve m_standardEasing;
+    QEasingCurve m_StandardEasingReverse;
 };
 
 /*

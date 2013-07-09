@@ -46,7 +46,7 @@ Item {
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
-    property ColorAnimation thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasingOut }
+    property ColorAnimation thumbColorAnimation: ColorAnimation { duration: UbuntuAnimation.SnapDuration; easing: UbuntuAnimation.StandardEasing }
     /*!
       The animation on x to move the thumb.
      */

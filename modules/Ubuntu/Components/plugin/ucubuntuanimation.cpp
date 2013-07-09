@@ -32,7 +32,7 @@
  * \qml
  * RotationAnimation {
  *    duration: UbuntuAnimation.SlowDuration
- *    easing: UbuntuAnimation.StandardEasingOut
+ *    easing: UbuntuAnimation.StandardEasing
  * }
  * \endqml
  *
@@ -55,12 +55,12 @@
 UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
     QObject(parent)
 {
-    m_standardEasingIn.setType(QEasingCurve::BezierSpline);
-    m_standardEasingIn.addCubicBezierSegment(QPointF(0.6, 0.0), QPointF(0.8, 1.0),
-                                             QPointF(1.0, 1.0));
-    m_standardEasingOut.setType(QEasingCurve::BezierSpline);
-    m_standardEasingOut.addCubicBezierSegment(QPointF(0.2, 0.0), QPointF(0.4, 1.0),
+    m_standardEasing.setType(QEasingCurve::BezierSpline);
+    m_standardEasing.addCubicBezierSegment(QPointF(0.2, 0.0), QPointF(0.4, 1.0),
                                               QPointF(1.0, 1.0));
+    m_StandardEasingReverse.setType(QEasingCurve::BezierSpline);
+    m_StandardEasingReverse.addCubicBezierSegment(QPointF(0.6, 0.0), QPointF(0.8, 1.0),
+                                             QPointF(1.0, 1.0));
 }
 
 /*!
@@ -95,18 +95,11 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 
 /*!
  * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasing
- * \deprecated
  * Used for animations trigerred by user actions.
  *
- * Use UbuntuAnimation::StandardEasingOut instead.
  */
 
 /*!
- * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingIn
- *
- */
-
-/*!
- * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingOut
+ * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingReverse
  *
  */
