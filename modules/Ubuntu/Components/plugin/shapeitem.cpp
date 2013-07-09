@@ -254,10 +254,10 @@ void ShapeItem::updateFromImageProperties(QQuickItem* image)
 
     // ShapeItem::verticalAlignment depends on image::verticalAlignment
     int imageVerticalAlignment = image->property("verticalAlignment").toInt();
-    if (imageVerticalAlignment == Qt::AlignLeft) {
-        alignment = ShapeItem::AlignLeft;
-    } else if (imageVerticalAlignment == Qt::AlignRight) {
-        alignment = ShapeItem::AlignRight;
+    if (imageVerticalAlignment == Qt::AlignTop) {
+        alignment = ShapeItem::AlignTop;
+    } else if (imageVerticalAlignment == Qt::AlignBottom) {
+        alignment = ShapeItem::AlignBottom;
     } else {
         alignment = ShapeItem::AlignVCenter;
     }
