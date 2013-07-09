@@ -82,7 +82,7 @@ Item {
     /*!
       The actual width and height of the loaded image
     */
-    readonly property size sourceSize: internals.currentImage.sourceSize
+    readonly property size sourceSize: internals.loadingImage.sourceSize
 
     /*!
       \qmlproperty enumeration status
@@ -96,7 +96,7 @@ Item {
         \li Image.Error - an error occurred while loading the image
       \endlist
     */
-    readonly property int status: internals.currentImage ? internals.currentImage.status : Image.Null
+    readonly property int status: internals.loadingImage ? internals.loadingImage.status : Image.Null
 
     QtObject {
         id: internals
@@ -109,6 +109,8 @@ Item {
           Defines the image being changed to
         */
         property Image nextImage: image2
+
+        property Image loadingImage: currentImage
 
         function swapImages() {
             internals.currentImage.z = 0;
@@ -155,10 +157,12 @@ Item {
         // Don't fade in initial picture, only fade changes
         if (internals.currentImage.source == "") {
             internals.currentImage.source = source;
+            internals.loadingImage = internals.currentImage;
         } else {
             nextImageFadeIn.stop();
             internals.nextImage.opacity = 0.0;
             internals.nextImage.source = source;
+            internals.loadingImage = internals.nextImage;
 
             // If case the image is still in QML's cache, status will be "Ready" immediately
             if (internals.nextImage.status === Image.Ready || internals.nextImage.source === "") {
