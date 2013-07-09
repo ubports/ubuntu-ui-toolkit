@@ -245,3 +245,8 @@ QObject* QuickUtils::createQmlObject(const QUrl &url)
     delete component;
     return result;
 }
+
+void QuickUtils::setImportPathList(const QStringList &paths)
+{
+    m_engine->setImportPathList(paths);
+}
