@@ -39,7 +39,7 @@ StyledItem {
     Behavior on y {
         enabled: !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: Ubuntu.UbuntuAnimation.FastDuration
+            duration: Ubuntu.UbuntuAnimation.BriskDuration
         }
     }
 

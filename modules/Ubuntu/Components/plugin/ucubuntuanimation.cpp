@@ -68,14 +68,22 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  * Used for very frequent and non-disruptive transitions on small objects.
  * The user would perceive the change as instant but smooth.
  *
- * The value is 125ms.
+ * The value is 100ms.
  */
 
 /*!
  * \qmlproperty int UbuntuAnimation::FastDuration
  * Used for frequent and non-disruptive transitions.
  *
- * The value is 250ms.
+ * The value is 165ms.
+ */
+
+/*!
+ * \qmlproperty int UbuntuAnimation::BriskDuration
+ * Used for frequent and non-disruptive transitions.
+ * Used when objects have more distance to travel or when they are larger in size.
+ *
+ * The value is 333ms.
  */
 
 /*!
