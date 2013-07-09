@@ -27,7 +27,6 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
 
     Examples: See \l Page
 */
-//QtObject {
 UnityActions.Action {
     id: action
 
@@ -36,7 +35,7 @@ UnityActions.Action {
 
     /*!
       The title of the action.
-      \qmlproperty string text
+      \qmlproperty string Ubuntu.Components.Action::text
      */
 
     /*!
@@ -48,9 +47,8 @@ UnityActions.Action {
 
     /*!
       Called when the action is triggered.
-      \qmlsignal Ubuntu.Components.Action::triggered(var caller)
+      \qmlsignal Ubuntu.Components.Action::triggered(var property)
      */
-//    signal triggered(var caller) // now in unity action. still needs some testing.
 
     /*!
       \deprecated
@@ -65,7 +63,6 @@ UnityActions.Action {
       Enable the action. It may be visible, but disabled.
       \qmlproperty bool enabled
      */
-//    property bool enabled: true // moved to unity action
 
     /*!
       \deprecated

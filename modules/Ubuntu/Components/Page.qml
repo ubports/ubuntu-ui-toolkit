@@ -136,9 +136,12 @@ PageTreeNode {
 
     /*!
       Local actions. These actions will be made available outside the application
-      (for example, to HUD) when the Page is active.
+      (for example, to HUD) when the Page is active. For actions that are always available
+      when the application is running, use the actions property of \l MainView.
+
+      \qmlproperty list<Action> actions
       */
-    property alias actions: actionContext
+    property alias actions: actionContext.actions
 
     Object {
         id: internal
@@ -147,29 +150,15 @@ PageTreeNode {
             id: actionContext
 
             Component.onCompleted: {
-                print("page manager = "+page.__propagated.actionManager+". Adding context for page "+page.title);
-
                 var manager = page.__propagated.actionManager;
-                manager.addLocalContext(actionContext);
+                if (manager) manager.addLocalContext(actionContext);
             }
+
         }
 
         function updateActions() {
             actionContext.active = page.active;
         }
-
-        Connections {
-            target: page.__propagated
-            onActionManagerChanged: print("action manager changed to "+page.__propagated.actionManager)
-        }
-
-        Connections {
-            target: page.__propagated.actionManager
-            Component.onCompleted: {
-                print("ActionManager initialized!")
-            }
-        }
-
 
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null

@@ -190,9 +190,12 @@ PageTreeNode {
     }
 
     /*!
-      Global actions. TODO: document
+      A global list of actions that will be available to the system (including HUD)
+      as long as the application is running. For actions that are not always available to the
+      system, but only when a certain \l Page is active, see the actions property of \l Page.
+
+      \qmlproperty list<Action> actions
      */
-//    property ActionList actions: null
     property alias actions: unityActionManager.actions
 
     Object {
@@ -200,29 +203,6 @@ PageTreeNode {
         UnityActions.ActionManager {
             id: unityActionManager
         }
-
-//        function updateActions() {
-//            // TODO: clear global context actions
-//            unityActionManager.actions = [];
-//            print("updating actions?")
-//            if (!mainView.actions) return;
-//            print("updating actions" + mainView.actions.actions.length)
-//            for (var i=0; i < mainView.actions.actions.length; i++) {
-//                // Action is null on first actionsChanged when the list is initialized but the actions not yet.
-//                if (mainView.actions.actions[i]) {
-//                    print("action "+i+" = "+mainView.actions.actions[i]);
-//                    // TODO: unityActionManager.actions.append(mainView.actions.actions[i]) when that works.
-////                    unityActionManager.actions.append(mainView.actions.actions[i]);
-//                    unityActionManager.globalContext.addAction(mainView.actions.actions[i]);
-//                }
-//            }
-//        }
-
-//        Connections {
-//            target: mainView
-//            onActionsChanged: internal.updateActions()
-//            Component.onCompleted: internal.updateActions()
-//        }
     }
 
     __propagated: QtObject {
