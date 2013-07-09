@@ -31,14 +31,8 @@ Item {
     implicitHeight: units.gu(4)
 
     UbuntuShape {
+        id: background
         anchors.fill: parent
-        color: styledItem.checked ? Theme.palette.selected.foreground : Theme.palette.normal.foreground
-        Behavior on color {
-            ColorAnimation {
-                duration: UbuntuAnimation.SnapDuration
-                easing.type: Easing.Linear
-            }
-        }
     }
 
     Image {
@@ -46,12 +40,89 @@ Item {
         anchors.centerIn: parent
         smooth: true
         source: tickSource
-        opacity: styledItem.checked ? 1.0 : 0.0
-        Behavior on opacity {
-            NumberAnimation {
-                duration: UbuntuAnimation.SnapDuration
-                easing.type: Easing.Linear
+        visible: styledItem.checked || transitionToChecked.running || transitionToUnchecked.running
+    }
+
+    state: styledItem.checked ? "checked" : "unchecked"
+    states: [
+        State {
+            name: "checked"
+            PropertyChanges {
+                target: tick
+                anchors.verticalCenterOffset: 0
+            }
+            PropertyChanges {
+                target: background
+                color: Theme.palette.selected.foreground
+            }
+        },
+        State {
+            name: "unchecked"
+            PropertyChanges {
+                target: tick
+                anchors.verticalCenterOffset: checkBoxStyle.height
+            }
+            PropertyChanges {
+                target: background
+                color: Theme.palette.normal.foreground
             }
         }
-    }
+    ]
+
+    transitions: [
+        Transition {
+            id: transitionToUnchecked
+            to: "unchecked"
+            ColorAnimation {
+                target: background
+                duration: UbuntuAnimation.BriskDuration
+                easing: UbuntuAnimation.StandardEasingReverse
+            }
+            SequentialAnimation {
+                PropertyAction {
+                    target: checkBoxStyle
+                    property: "clip"
+                    value: true
+                }
+                NumberAnimation {
+                    target: tick
+                    property: "anchors.verticalCenterOffset"
+                    duration: UbuntuAnimation.BriskDuration
+                    easing: UbuntuAnimation.StandardEasingReverse
+                }
+                PropertyAction {
+                    target: checkBoxStyle
+                    property: "clip"
+                    value: false
+                }
+            }
+        },
+        Transition {
+            id: transitionToChecked
+            to: "checked"
+            ColorAnimation {
+                target: background
+                duration: UbuntuAnimation.BriskDuration
+                easing: UbuntuAnimation.StandardEasing
+            }
+            SequentialAnimation {
+                PropertyAction {
+                    target: checkBoxStyle
+                    property: "clip"
+                    value: true
+                }
+                NumberAnimation {
+                    target: tick
+                    property: "anchors.verticalCenterOffset"
+                    duration: UbuntuAnimation.BriskDuration
+                    easing: UbuntuAnimation.StandardEasing
+                }
+                PropertyAction {
+                    target: checkBoxStyle
+                    property: "clip"
+                    value: false
+                }
+            }
+        }
+    ]
 }
