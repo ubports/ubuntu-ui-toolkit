@@ -454,6 +454,7 @@ plugins.qmltypes
     exports: ["UbuntuAnimation 0.1"]
     Property { name: "SnapDuration"; type: "int"; isReadonly: true }
     Property { name: "FastDuration"; type: "int"; isReadonly: true }
+    Property { name: "BriskDuration"; type: "int"; isReadonly: true }
     Property { name: "SlowDuration"; type: "int"; isReadonly: true }
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
