@@ -41,6 +41,7 @@ Object {
 
     /*!
       \preliminary
+      \qmlproperty real sectionHeight
       The property contains the section Item height.
     */
     readonly property alias sectionHeight: internals.sectionHeight

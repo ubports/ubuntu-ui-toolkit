@@ -36,6 +36,7 @@ for line in fileinput.input():
     if fileinput.isfirstline():
         in_block = 0
         in_comment = False
+        annotated_type = None
         if fileinput.filename()[-3:] == 'qml':
             filetype = 'qml'
             keywords = ['signal', 'property', 'function']
@@ -48,6 +49,12 @@ for line in fileinput.input():
         print('%s' % fileinput.filename())
 
     line = line.split('//')[0]
+    # alias properties only define their type through qdoc comments
+    if '\\qmlproperty' in line:
+        annotated_type = line
+    elif '\\internal' in line:
+        annotated_type = 'internal internal internal'
+
     if '/*' in line and not '*/' in line:
         in_comment = True
         continue
@@ -77,6 +84,14 @@ for line in fileinput.input():
             if word in keywords:
                 if filetype == 'qml':
                     signature = line.split(':')[0].split('{')[0].strip()
+                    if 'alias' in line:
+                        if not annotated_type:
+                            print('    %s' % (signature))
+                            print('Error: Missing \\qmlproperty annotation')
+                            sys.exit (1)
+                        real_type = annotated_type.strip().split(' ')[1]
+                        signature = signature.replace('alias', real_type)
+                    annotated_type = None
                 elif filetype == 'qmltypes':
                     signature = line.strip()
                 print('    %s' % (signature))

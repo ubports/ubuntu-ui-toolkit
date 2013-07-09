@@ -31,6 +31,7 @@ internal Toolbar Toolbar.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
+UbuntuShape 0.1 UbuntuShape.qml
 Icon 0.1 Icon.qml
 OrientationHelper 0.1 OrientationHelper.qml
 MathUtils 0.1 mathUtils.js
@@ -38,6 +39,7 @@ SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
+ColorUtils 0.1 colorUtils.js
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml

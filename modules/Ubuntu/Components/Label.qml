@@ -25,7 +25,7 @@ import QtQuick 2.0
     Example:
     \qml
     Rectangle {
-        color: "grey"
+        color: UbuntuColors.coolGrey
         width: units.gu(30)
         height: units.gu(30)
 
@@ -56,5 +56,5 @@ Text {
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
-    color: "#757373"
+    color: UbuntuColors.coolGrey
 }

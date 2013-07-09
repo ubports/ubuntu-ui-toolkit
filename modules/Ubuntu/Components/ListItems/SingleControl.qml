@@ -60,6 +60,9 @@ Empty {
     /*! \internal */
     onPressedChanged: if (control && control.enabled) control.pressed = singleControlListItem.pressed
 
+    // Ensure that there is always enough vertical padding around the control
+    __height: control.height + __contentsMargins
+
     /*!
       \internal
      */

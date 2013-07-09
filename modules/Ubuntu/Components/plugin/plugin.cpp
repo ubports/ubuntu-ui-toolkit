@@ -58,6 +58,38 @@ static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
     return clipboard;
 }
 
+
+QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
+{
+    /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
+       http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
+    */
+    QString pluginRelativePath = QString::fromUtf8(uri).replace(".", "/").prepend("/").append("/");
+    QString pluginPath;
+    Q_FOREACH (QString importPath, importPathList) {
+        pluginPath = importPath.append(pluginRelativePath);
+        /* We verify that the directory ending in Ubuntu/Components contains the
+           file libUbuntuComponents.so therefore proving it's the right directory.
+
+           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197293
+        */
+        if (QFile(pluginPath + "libUbuntuComponents.so").exists()) {
+            return QUrl::fromLocalFile(pluginPath);
+        }
+    }
+
+    return QUrl();
+}
+
+void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile)
+{
+    QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
+    QObject* object = QuickUtils::instance().createQmlObject(url);
+    if (object != NULL) {
+        engine->rootContext()->setContextProperty(typeName, object);
+    }
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
@@ -65,9 +97,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
-    // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
     qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
-    qmlRegisterType<ShapeItem>(uri, 0, 1, "UbuntuShape");
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
@@ -81,6 +111,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
+
+    QuickUtils::instance().setImportPathList(engine->importPathList());
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
@@ -107,6 +139,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &fontUtilsListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
+
+    // register UbuntuColors
+    registerQmlSingletonType(engine, uri, "UbuntuColors", "Colors/UbuntuColors.qml");
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

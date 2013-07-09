@@ -48,12 +48,12 @@ import "internalPopupUtils.js" as InternalPopupUtils
                      }
                      Button {
                          text: "overwrite previous version"
-                         color: "orange"
+                         color: UbuntuColors.orange
                          onClicked: PopupUtils.close(dialogue)
                      }
                      Button {
                          text: "save a copy"
-                         color: "orange"
+                         color: UbuntuColors.orange
                          onClicked: PopupUtils.close(dialogue)
                      }
                  }
