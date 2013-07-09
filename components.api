@@ -38,6 +38,14 @@ AbstractButton
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
     property bool checked
+modules/Ubuntu/Components/CrossFadeImage.qml
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    readonly property bool running
+    readonly property size sourceSize
+    readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
     property int orientation
