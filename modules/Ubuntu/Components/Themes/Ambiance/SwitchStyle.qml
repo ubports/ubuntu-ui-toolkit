@@ -60,13 +60,13 @@ Item {
 
             Behavior on x {
                 UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.SnapDuration
+                    duration: UbuntuAnimation.BriskDuration
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
             Behavior on color {
                 ColorAnimation {
-                    duration: UbuntuAnimation.SnapDuration
+                    duration: UbuntuAnimation.BriskDuration
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
