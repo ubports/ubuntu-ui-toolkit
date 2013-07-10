@@ -228,7 +228,6 @@ PageTreeNode {
         property var actionManager: unityActionManager
     }
 
-
     /*!
       \deprecated
       This property is DEPRECATED. Pages will now automatically update the toolbar when activated.
