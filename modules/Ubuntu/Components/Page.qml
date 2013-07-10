@@ -153,7 +153,6 @@ PageTreeNode {
                 var manager = page.__propagated.actionManager;
                 if (manager) manager.addLocalContext(actionContext);
             }
-
         }
 
         function updateActions() {
