@@ -1,3 +1,19 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130710.1-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * ListItems Base & Standard: prevent the icon from going taller than
+    5GU. . (LP: #1187128)
+
+  [ Timo Jyrinki ]
+  * Remove qmlrunner. On saucy, the less complicated way is to just use
+    qmlscene with either environment variable set or with a command line
+    parameter.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 605
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 10 Jul 2013 12:48:26 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130710-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
