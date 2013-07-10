@@ -23,7 +23,7 @@ from testtools import skip
 import os
 import time
 from UbuntuUiToolkit.tests import UbuntuUiToolkitTestCase
-from UbuntuUiToolkit.emulators.main_window import MainWindow
+from UbuntuUiToolkit import emulators
 
 
 class GenericTests(UbuntuUiToolkitTestCase):
@@ -47,7 +47,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
 
-        rootItem = self.main_window.get_qml_view()
+        rootItem = self.main_view
         self.assertThat(rootItem, Not(Is(None)))
         self.assertThat(rootItem.visible, Eventually(Equals(True)))
 
