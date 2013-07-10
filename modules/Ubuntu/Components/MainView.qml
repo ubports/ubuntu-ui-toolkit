@@ -135,6 +135,11 @@ PageTreeNode {
       */
     property string applicationName
 
+    // DOCME
+    property alias headerColor: background.headerColor
+    property alias backgroundColor: background.backgroundColor
+    property alias footerColor: background.footerColor
+
     // FIXME: Make sure that the theming is only in the background, and the style
     //  should not occlude contents of the MainView. When making changes here, make
     //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
@@ -142,6 +147,10 @@ PageTreeNode {
         id: background
         anchors.fill: parent
         style: Theme.createStyleComponent("MainViewStyle.qml", background)
+
+        property color headerColor: backgroundColor
+        property color backgroundColor: Theme.palette.normal.background
+        property color footerColor: backgroundColor
     }
 
     /*!

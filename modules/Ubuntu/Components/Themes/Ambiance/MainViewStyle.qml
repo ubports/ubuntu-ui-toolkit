@@ -23,20 +23,25 @@ Item {
     id: mainViewStyle
 
     /*!
-      The background color of the main view.
-     */
-    property color backgroundColor: Theme.palette.normal.background
-
-    /*!
       The background texture of the main view. The image will be drawn over the background color,
       so if it has (semi-)transparent pixels, in those pixels the background color will be visible.
      */
     property url backgroundSource: "artwork/background_paper.png"
 
+    Gradient {
+        id: backgroundGradient
+        GradientStop { position: 0.0; color: styledItem.headerColor }
+        GradientStop { position: 0.83; color: styledItem.backgroundColor }
+        GradientStop { position: 1.0; color: styledItem.footerColor }
+    }
+
     Rectangle {
         id: backgroundColor
         anchors.fill: parent
-        color: mainViewStyle.backgroundColor
+        color: styledItem.backgroundColor
+        property bool isGradient: styledItem.backgroundColor != styledItem.headerColor ||
+                                  styledItem.backgroundColor != styledItem.footerColor
+        gradient: isGradient ? backgroundGradient : null
     }
 
     Image {

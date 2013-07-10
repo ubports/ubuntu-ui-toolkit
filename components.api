@@ -81,6 +81,9 @@ Text
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
+    property color headerColor
+    property color backgroundColor
+    property color footerColor
     property bool automaticOrientation
     default property internal contentsItem
     property ToolbarActions tools
