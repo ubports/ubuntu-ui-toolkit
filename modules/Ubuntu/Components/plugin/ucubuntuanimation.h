@@ -26,21 +26,30 @@ class UCUbuntuAnimation : public QObject
     Q_OBJECT
     Q_PROPERTY(int SnapDuration READ SnapDuration CONSTANT)
     Q_PROPERTY(int FastDuration READ FastDuration CONSTANT)
+    Q_PROPERTY(int BriskDuration READ BriskDuration CONSTANT)
     Q_PROPERTY(int SlowDuration READ SlowDuration CONSTANT)
     Q_PROPERTY(int SleepyDuration READ SleepyDuration CONSTANT)
     Q_PROPERTY(QEasingCurve StandardEasing READ StandardEasing CONSTANT)
+    Q_PROPERTY(QEasingCurve StandardEasingReverse READ StandardEasingReverse CONSTANT)
 
 public:
     explicit UCUbuntuAnimation(QObject *parent = 0);
     
-    int SnapDuration() const { return 125; }
-    int FastDuration() const { return 250; }
+    int SnapDuration() const { return 100; }
+    int FastDuration() const { return 165; }
+    int BriskDuration() const { return 333; }
     int SlowDuration() const { return 500; }
     int SleepyDuration() const { return 1000; }
-    QEasingCurve StandardEasing() const {
-        static QEasingCurve standardEasing(QEasingCurve::OutQuint);
-        return standardEasing;
+    const QEasingCurve& StandardEasing() const {
+        return m_standardEasing;
     }
+    const QEasingCurve& StandardEasingReverse() const {
+        return m_StandardEasingReverse;
+    }
+
+private:
+    QEasingCurve m_standardEasing;
+    QEasingCurve m_StandardEasingReverse;
 };
 
 #endif // UCUBUNTUANIMATION_H

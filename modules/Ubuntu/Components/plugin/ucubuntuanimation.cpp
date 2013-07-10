@@ -16,6 +16,7 @@
  */
 
 #include "ucubuntuanimation.h"
+#include <QtCore/QPointF>
 
 /*!
  * \qmltype UbuntuAnimation
@@ -54,6 +55,12 @@
 UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
     QObject(parent)
 {
+    m_standardEasing.setType(QEasingCurve::BezierSpline);
+    m_standardEasing.addCubicBezierSegment(QPointF(0.2, 0.0), QPointF(0.4, 1.0),
+                                              QPointF(1.0, 1.0));
+    m_StandardEasingReverse.setType(QEasingCurve::BezierSpline);
+    m_StandardEasingReverse.addCubicBezierSegment(QPointF(0.6, 0.0), QPointF(0.8, 1.0),
+                                             QPointF(1.0, 1.0));
 }
 
 /*!
@@ -61,14 +68,22 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  * Used for very frequent and non-disruptive transitions on small objects.
  * The user would perceive the change as instant but smooth.
  *
- * The value is 125ms.
+ * The value is 100ms.
  */
 
 /*!
  * \qmlproperty int UbuntuAnimation::FastDuration
  * Used for frequent and non-disruptive transitions.
  *
- * The value is 250ms.
+ * The value is 165ms.
+ */
+
+/*!
+ * \qmlproperty int UbuntuAnimation::BriskDuration
+ * Used for frequent and non-disruptive transitions.
+ * Used when objects have more distance to travel or when they are larger in size.
+ *
+ * The value is 333ms.
  */
 
 /*!
@@ -89,6 +104,18 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
 /*!
  * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasing
  * Used for animations trigerred by user actions.
+ */
+
+/*!
+ * \qmlproperty QEasingCurve UbuntuAnimation::StandardEasingReverse
  *
- * The type is Easing.OutQuint.
+ * StandardEasingReverse is mainly used in combination with StandardEasing.
+ * For example, if animating an object that bounces, you will want the object
+ * to slow down as it reaches the apex of its bounce and slowly speed back up
+ * as it descends.
+ *
+ * StandardEasingReverse should not be used to introduce a new object or screen
+ * to the user.
+ * In general, it should only be used if StandardEasing is visually inappropriate
+ * and even so, will usually be proceeded by StandardEasing.
  */
