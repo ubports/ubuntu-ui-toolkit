@@ -170,9 +170,29 @@ PageTreeNode {
 
         automaticOrientation: false
 
+        // clip the contents so that it does not overlap the header
         Item {
-            id: contents
-            anchors.fill: parent
+            id: contentsClipper
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: headerItem.bottom
+                bottom: parent.bottom
+            }
+            // only clip when necessary
+            clip: headerItem.bottomY > 0 && activePage && activePage.flickable
+                  && -activePage.flickable.contentY < headerItem.bottomY
+
+            property Page activePage: mainView.activeLeafNode
+
+            Item {
+                id: contents
+                anchors {
+                    fill: parent
+                    // compensate so that the actual y is always 0
+                    topMargin: -parent.y
+                }
+            }
         }
 
         /*!
@@ -181,6 +201,7 @@ PageTreeNode {
          */
         Header {
             id: headerItem
+            property real bottomY: headerItem.y + headerItem.height
         }
 
         Toolbar {
