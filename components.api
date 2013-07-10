@@ -128,6 +128,8 @@ StyledItem
     property bool active
     property Item pageStack
     property Item parentNode
+    property Item activeLeafNode
+    property bool isLeaf
 modules/Ubuntu/Components/PageWrapper.qml
 PageTreeNode
     property var reference
