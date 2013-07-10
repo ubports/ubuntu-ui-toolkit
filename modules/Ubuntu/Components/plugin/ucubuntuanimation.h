@@ -43,19 +43,4 @@ public:
     }
 };
 
-/*
- * Registration function used by qmlRegisterSingletonType
- */
-class QQmlEngine;
-class QJSEngine;
-
-static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCUbuntuAnimation *animation = new UCUbuntuAnimation();
-    return animation;
-}
-
 #endif // UCUBUNTUANIMATION_H

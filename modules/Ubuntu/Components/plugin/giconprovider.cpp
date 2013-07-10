@@ -54,7 +54,9 @@ static QIcon getThemedIcon(GThemedIcon *icon)
 GIconProvider::GIconProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
 {
-    g_type_init();
+#if !GLIB_CHECK_VERSION(2, 36, 0)
+    g_type_init();  // Deprecated starting from GLib 2.36.
+#endif
 }
 
 QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
