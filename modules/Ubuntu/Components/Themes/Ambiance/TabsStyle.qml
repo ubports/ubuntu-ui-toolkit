@@ -70,12 +70,6 @@ Item {
         NewTabBar {
             id: tabBar
             tabs: theTabs
-            anchors {
-                top: parent ? parent.top : undefined
-                left: parent ? parent.left : undefined
-                right: parent ? parent.right : undefined
-            }
-            //height: tabBarHeight
             headerTextColor: tabsStyle.headerTextColor
             headerTextSelectedColor: tabsStyle.headerTextSelectedColor
             headerTextOpacity: tabsStyle.headerTextOpacity
