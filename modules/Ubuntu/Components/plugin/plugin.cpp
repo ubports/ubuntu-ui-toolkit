@@ -47,8 +47,9 @@
 #include <unistd.h>
 
 /*
- * Registration function for the Clipboard type
+ * Type registration functions.
  */
+
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -56,6 +57,15 @@ static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 
     QQuickClipboard *clipboard = new QQuickClipboard;
     return clipboard;
+}
+
+static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    UCUbuntuAnimation *animation = new UCUbuntuAnimation();
+    return animation;
 }
 
 

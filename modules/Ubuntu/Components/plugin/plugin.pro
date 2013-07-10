@@ -8,6 +8,10 @@ TARGET = ../UbuntuComponents
 QT += qml quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
+CONFIG(debug) {
+  QMAKE_CXXFLAGS_DEBUG += -Werror
+}
+
 #needed by ItemStyleAttached
 QT += qml-private core-private v8-private
 
