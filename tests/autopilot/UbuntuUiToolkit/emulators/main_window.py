@@ -5,6 +5,7 @@
 # under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
 
+
 class MainWindow(object):
     """An emulator class that makes it easy to interact with the camera-app."""
 
@@ -17,6 +18,6 @@ class MainWindow(object):
 
     def get_object(self, typeName, name):
         return self.app.select_single(typeName, objectName=name)
-    
+
     def get_object_by_text(self, typeName, itemText):
         return self.app.select_single(typeName, text=itemText)

@@ -1,9 +1,9 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
-# Copyright 2012 Canonical
+# Copyright 2012, 2013 Canonical
 #
 # This program is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License version 3, as published
-# by the Free Software Foundation.
+# under the terms of the GNU Lesser General Public License version 3,
+# as published by the Free Software Foundation.
 
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
@@ -22,40 +22,45 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
     # Support both running from system and in the source directory
     runPath = os.path.dirname(os.path.realpath(__file__))
-    localSourceFile = runPath + "/../../../../../examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
+    localSourceFile = (
+        runPath +
+        "/../../../../../examples/ubuntu-ui-toolkit-gallery/"
+        "ubuntu-ui-toolkit-gallery.qml")
     if (os.path.isfile(localSourceFile)):
         print "Using local source directory"
         test_qml_file = localSourceFile
     else:
         print "Using system QML file"
-        test_qml_file = "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml"
+        test_qml_file = (
+            "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/"
+            "ubuntu-ui-toolkit-gallery.qml")
 
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
 
         rootItem = self.main_window.get_qml_view()
         self.assertThat(rootItem, Not(Is(None)))
-        self.assertThat(rootItem.visible,Eventually(Equals(True)))
+        self.assertThat(rootItem.visible, Eventually(Equals(True)))
 
     def test_can_select_listview(self):
-        """Must be able to select the listview from main"""    
+        """Must be able to select the listview from main"""
 
-        contentLoader,listView = self.getWidgetLoaderAndListView();
+        contentLoader, listView = self.getWidgetLoaderAndListView()
 
-        # Don't have the first, already selected item as the first item to check
+        # Don't have the first, already selected item as the first item to
+        # check.
         items = [
-                    "Navigation",
-                    "Toggles", 
-                    "Buttons", 
-                    "Slider", 
-                    "Text Field", 
-                    "Progress and activity", 
-                    "Ubuntu Shape", 
-                    "Icons", 
-                    "Label",
-                    "List Items", 
-                ]                  
-
+            "Navigation",
+            "Toggles",
+            "Buttons",
+            "Slider",
+            "Text Field",
+            "Progress and activity",
+            "Ubuntu Shape",
+            "Icons",
+            "Label",
+            "List Items",
+        ]
 
         for item in items:
             self.checkListItem(item)
@@ -63,20 +68,20 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.checkPageHeader(item)
 
         # scroll view to expose more items
-        self.drag("Icons","Text Field")
+        self.drag("Icons", "Text Field")
 
-        # Wait for the scrolling to finish, the next click fails on the 
+        # Wait for the scrolling to finish, the next click fails on the
         # slower Intel machine but succeeds on AMD and NVIDIA.
         # (LP: #1180226)
         time.sleep(1)
 
         # now that we have more items, lets continue
         items = [
-                    "Dialog", 
-                    "Popover",
-                    "Sheet",
-                    "Animations"
-                ]
+            "Dialog",
+            "Popover",
+            "Sheet",
+            "Animations"
+        ]
 
         for item in items:
             self.checkListItem(item)
@@ -96,14 +101,14 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         # check default states
         item_data = [
-            ["checkbox_unchecked",False,True],
-            ["checkbox_checked",True,True],
-            ["checkbox_disabled_unchecked",False,False],
-            ["checkbox_disabled_checked",True,False],
-            ["switch_unchecked",False,True],
-            ["switch_checked",True,True],
-            ["switch_disabled_unchecked",False,False],
-            ["switch_disabled_checked",True,False]
+            ["checkbox_unchecked", False, True],
+            ["checkbox_checked", True, True],
+            ["checkbox_disabled_unchecked", False, False],
+            ["checkbox_disabled_checked", True, False],
+            ["switch_unchecked", False, True],
+            ["switch_checked", True, True],
+            ["switch_disabled_unchecked", False, False],
+            ["switch_disabled_checked", True, False]
         ]
 
         for data in item_data:
@@ -114,7 +119,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
             obj = self.getObject(objName)
             self.assertThat(obj.checked, Equals(objChecked))
             self.assertThat(obj.enabled, Equals(objEnabled))
-            
+
             # try to interact with objects
             self.tap(objName)
 
@@ -129,12 +134,12 @@ class GenericTests(UbuntuUiToolkitTestCase):
         self.checkPageHeader(item)
 
         item_data = [
-            ["button_text",True,None,None,"Call"],
-            ["button_text_disabled",False,None,None,"Call"],
-            ["button_color",True,[0,0,0,255],None,"Call"],
-            ["button_iconsource",True,None,"call.png",None],
-            ["button_iconsource_right_text",True,None,"call.png","Call"],
-            ["button_iconsource_left_text",True,None,"call.png","Call"]
+            ["button_text", True, None, None, "Call"],
+            ["button_text_disabled", False, None, None, "Call"],
+            ["button_color", True, [0, 0, 0, 255], None, "Call"],
+            ["button_iconsource", True, None, "call.png", None],
+            ["button_iconsource_right_text", True, None, "call.png", "Call"],
+            ["button_iconsource_left_text", True, None, "call.png", "Call"]
         ]
 
         for data in item_data:
@@ -148,15 +153,15 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.assertThat(obj.enabled, Equals(objEnabled))
 
             print obj.color
-            if (objColor != None):
+            if (objColor is not None):
                 self.assertThat(obj.color, Equals(objColor))
 
-            if (objIcon != None):
+            if (objIcon is not None):
                 self.assertThat(obj.iconSource.endswith(objIcon), Equals(True))
 
-            if (objText != None):
+            if (objText is not None):
                 self.assertThat(obj.text, Equals(objText))
-            
+
             # try to interact with objects
             self.mousePress(objName)
 
@@ -168,16 +173,16 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.mouseRelease()
 
             self.assertThat(obj.pressed, Equals(False))
-    
+
     def test_slider(self):
         item = "Slider"
         self.loadItem(item)
         self.checkPageHeader(item)
 
         item_data = [
-            [ "slider_standard" ],
-            [ "slider_live" ],
-            [ "slider_range" ]
+            ["slider_standard"],
+            ["slider_live"],
+            ["slider_range"]
         ]
 
         for data in item_data:
@@ -186,18 +191,18 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.tap(objName)
 
             # TODO: move slider value
-        
+
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)
 #         self.checkPageHeader(item)
 
 #         template_textinputs = self.getObject("textinputs")
-        
+
 #         item_data = [
-#             [ "textarea_default", True, -1, template_textinputs.longText, None ],
+#         ["textarea_default", True, -1, template_textinputs.longText, None ],
 #             [ "textarea_expanding", True, -1, "", None],
-#             [ "textarea_richtext", True, -1, template_textinputs.richText, None ]
+#         [ "textarea_richtext", True, -1, template_textinputs.richText, None ]
 #         ]
 
 #         for data in item_data:
@@ -211,7 +216,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
 #             self.tap(objName)
 
 #             self.assertThat(obj.enabled, Equals(objEnabled))
-# #            self.assertThat(obj.focus, Equals(obj.enabled)) 
+# #            self.assertThat(obj.focus, Equals(obj.enabled))
 #             self.assertThat(obj.highlighted, Equals(obj.focus))
 #             #self.assertThat(obj.hasClearButton, Equals(True))
 #             self.assertThat(obj.text, Equals(objText))
@@ -225,21 +230,18 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
             # self.assertThat(obj.text,Equals("Hello World!"))
 
-
-
-
     def test_textfield(self):
         item = "Text Field"
         self.loadItem(item)
         self.checkPageHeader(item)
 
         template_textinputs = self.getObject("textinputs")
-        
+
         item_data = [
-            [ "textfield_standard", True, 0, "", None ],
-            [ "textfield_password", True, 2, "password", None ],
-            [ "textfield_numbers", True, 0, "123", True ],
-            [ "textfield_disabled", False, 0, "", None ],
+            ["textfield_standard", True, 0, "", None],
+            ["textfield_password", True, 2, "password", None],
+            ["textfield_numbers", True, 0, "123", True],
+            ["textfield_disabled", False, 0, "", None],
         ]
 
         for data in item_data:
@@ -253,25 +255,26 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.tap(objName)
 
             self.assertThat(obj.enabled, Equals(objEnabled))
-            self.assertThat(obj.focus, Equals(obj.enabled)) 
+            self.assertThat(obj.focus, Equals(obj.enabled))
             self.assertThat(obj.highlighted, Equals(obj.focus))
             self.assertThat(obj.errorHighlight, Equals(False))
             self.assertThat(obj.acceptableInput, Equals(True))
             self.assertThat(obj.hasClearButton, Equals(True))
             self.assertThat(obj.text, Equals(objText))
 
-            if (objEchoMode!=-1):
+            if (objEchoMode != -1):
                 self.assertThat(obj.echoMode, Equals(objEchoMode))
-            
+
             if (objNumbersOnly):
                 self.type_string("abc")
-                self.assertThat(obj.text,Equals(objText))
+                self.assertThat(obj.text, Equals(objText))
                 self.assertThat(obj.errorHighlight, Equals(False))
                 self.assertThat(obj.acceptableInput, Equals(True))
             else:
                 self.type_string("Hello World!")
                 if (objEnabled):
-                    self.assertThat(obj.text, Equals("%sHello World!" % (objText)))
+                    self.assertThat(
+                        obj.text, Equals("%sHello World!" % (objText)))
                     self.assertThat(obj.errorHighlight, Equals(False))
                     self.assertThat(obj.acceptableInput, Equals(True))
                 else:
@@ -279,18 +282,15 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
             self.tap_clearButton(objName)
 
-
-            
-
     def test_progress_and_activity(self):
         item = "Progress and activity"
         self.loadItem(item)
         self.checkPageHeader(item)
 
         item_data = [
-            [ "progressbar_standard" ],
-            [ "progressbar_indeterminate" ],
-            [ "activityindicator_standard" ]
+            ["progressbar_standard"],
+            ["progressbar_indeterminate"],
+            ["activityindicator_standard"]
         ]
 
         for data in item_data:
@@ -299,7 +299,6 @@ class GenericTests(UbuntuUiToolkitTestCase):
             self.tap(objName)
 
             # TODO: check for properties
-        
 
     def test_ubuntushape(self):
         item = "Ubuntu Shape"
@@ -307,18 +306,16 @@ class GenericTests(UbuntuUiToolkitTestCase):
         self.checkPageHeader(item)
 
         item_data = [
-            [ "ubuntushape_color_hex" ],
-            [ "ubuntushape_color_lightblue" ],
-            [ "ubuntushape_color_darkgray" ],
-            [ "ubuntushape_image" ],
-            [ "ubuntushape_radius_small" ],
-            [ "ubuntushape_radius_medium" ],
-            [ "ubuntushape_sizes_15_6" ],
-            [ "ubuntushape_sizes_10_14" ]
+            ["ubuntushape_color_hex"],
+            ["ubuntushape_color_lightblue"],
+            ["ubuntushape_color_darkgray"],
+            ["ubuntushape_image"],
+            ["ubuntushape_radius_small"],
+            ["ubuntushape_radius_medium"],
+            ["ubuntushape_sizes_15_6"],
+            ["ubuntushape_sizes_10_14"]
         ]
 
         for data in item_data:
             objName = data[0]
             obj = self.getObject(objName)
-        
-        
