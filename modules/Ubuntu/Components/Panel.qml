@@ -242,10 +242,13 @@ Item {
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
-    readonly property bool animating: draggingArea.pressed || (state == "" && bar.position != bar.size) || (state == "spread" && bar.position != 0)
+    readonly property bool animating: draggingArea.pressed || transitionToAll.running
+                                                           || transitionToHint.running
+                                                           || transitionToSpread.running
 
     transitions: [
         Transition {
+            id: transitionToAll
             to: ""
             UbuntuNumberAnimation {
                 target: bar
@@ -254,6 +257,7 @@ Item {
             }
         },
         Transition {
+            id: transitionToHint
             to: "hint"
             UbuntuNumberAnimation {
                 target: bar
@@ -262,6 +266,7 @@ Item {
             }
         },
         Transition {
+            id: transitionToSpread
             to: "spread"
             UbuntuNumberAnimation {
                 target: bar

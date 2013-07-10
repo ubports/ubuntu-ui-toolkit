@@ -143,11 +143,11 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , geometry_()
     , dirtyFlags_(ShapeItem::DirtyAll)
 {
-    setImplicitWidth(8 * gridUnit_);
-    setImplicitHeight(8 * gridUnit_);
+    setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(gridUnitChanged()));
-    setFlag(ItemHasContents);
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
     update();
 }
 

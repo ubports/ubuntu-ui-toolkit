@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-07-05 19:10+0000\n"
-"Last-Translator: Phillip Sz <Unknown>\n"
+"PO-Revision-Date: 2013-07-09 17:34+0000\n"
+"Last-Translator: Hendrik Knackstedt <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-07-06 06:17+0000\n"
+"X-Launchpad-Export-Date: 2013-07-10 05:52+0000\n"
 "X-Generator: Launchpad (build 16696)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr ""
+msgstr "NummerAnimation"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -36,11 +36,11 @@ msgstr "Standard"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr ""
+msgstr "Standarddauer"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr ""
+msgstr "Einrasten"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
@@ -91,7 +91,7 @@ msgstr "Skalieren"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
-msgstr ""
+msgstr "Kolorierung"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
@@ -106,11 +106,11 @@ msgstr "Bezeichnung"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr ""
+msgstr "Untertitelt"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr ""
+msgstr "Untergeordnet Bezeichnung"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
@@ -118,7 +118,7 @@ msgstr "Verlauf"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr ""
+msgstr "Einfacher Wert"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
@@ -126,7 +126,7 @@ msgstr "Wert"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
-msgstr ""
+msgstr "Vielfacher Wert"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
@@ -150,11 +150,11 @@ msgstr "Wert 4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr ""
+msgstr "Werteauswahl"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr ""
+msgstr "Steuerung"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
@@ -162,35 +162,35 @@ msgstr "Entfernbar"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr ""
+msgstr "Zu entfernende Folie"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr ""
+msgstr "Gruppierte Liste"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Umschaltbar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Aktion #1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Aktion #2"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Aktion #3"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Aktion #4"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Aktion #5"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
@@ -202,11 +202,13 @@ msgstr "Unendlich"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Aktivitäts-Indikator"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Die Arbeit am visuellen Stil der Seite ist noch nicht abgeschlossen und "
+"sieht daher etwas unförmig aus."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
@@ -222,7 +224,7 @@ msgstr "Wert = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr ""
+msgstr "Echtzeitaktualisierung"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
@@ -230,7 +232,7 @@ msgstr "Bereich"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
-msgstr ""
+msgstr "Geben Sie mich ein …"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
@@ -250,7 +252,7 @@ msgstr "Ausdehnung"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr ""
+msgstr "Rich-Text"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
@@ -288,7 +290,7 @@ msgstr "Gewichtungen"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Aufruf: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
@@ -297,17 +299,17 @@ msgstr "Optionen:"
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 erwartet ein zusätzliches Argument: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 erwartet einen Wert für das Argument: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 erwartet zusätzliche Argumente: %2"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
@@ -344,7 +346,7 @@ msgstr "Zurück"
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr ""
+msgstr "Meine angepasste Seite"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -352,10 +354,12 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
+"Dies ist eine externe Seite\n"
+"mit einer gesperrten Werkzeugleiste."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr ""
+msgstr "Hauptseite"
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
@@ -363,7 +367,7 @@ msgstr "Seite eins"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr ""
+msgstr "Externe Seite"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
@@ -371,15 +375,15 @@ msgstr "Erste Seite"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr ""
+msgstr "Hauptseite (nochmal)"
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "Rotes Rechteck"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "Einfache Seite"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
