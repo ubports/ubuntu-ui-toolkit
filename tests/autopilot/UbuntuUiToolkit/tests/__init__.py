@@ -101,7 +101,7 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         # XXX We shouldn't access the elements by text, because that's likely
         # to change often and might be translated. We should always use the
         # objectName instead. --elopio - 2013-06-26216
-        return self.main_view.select_single("Standard", itemText)
+        return self.main_view.select_single("Standard", text=itemText)
 
     def getWidgetLoaderAndListView(self):
         contentLoader = self.main_view.select_single(
@@ -117,7 +117,7 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             "QQuickLoader", objectName="contentLoader")
         self.selectItem(item)
         self.assertThat(contentLoader.progress, Eventually(Equals(1.0)))
-        loadedPage = self.main_window.get_object_by_text("Standard", item)
+        loadedPage = self.getListItem(item)
         self.assertThat(loadedPage, Not(Is(None)))
         self.assertThat(loadedPage.visible, Eventually(Equals(True)))
 
