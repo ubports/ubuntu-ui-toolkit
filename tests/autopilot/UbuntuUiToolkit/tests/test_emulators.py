@@ -15,7 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from UbuntuUiToolkit import tests, emulators
+from UbuntuUiToolkit import emulators, tests
 
 
 class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
