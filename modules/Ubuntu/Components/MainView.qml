@@ -135,9 +135,29 @@ PageTreeNode {
       */
     property string applicationName
 
-    // DOCME
+    /*!
+      \qmlproperty color headerColor
+      Color of the header's background.
+
+      \sa backgroundColor, footerColor
+     */
     property alias headerColor: background.headerColor
+    /*!
+      \qmlproperty color backgroundColor
+      Color of the background.
+
+      The background is usually a single color. However if \l headerColor
+      or \l footerColor are set then a gradient of colors will be drawn.
+
+      \sa footerColor, headerColor
+     */
     property alias backgroundColor: background.backgroundColor
+    /*!
+      \qmlproperty color footerColor
+      Color of the footer's background.
+
+      \sa backgroundColor, headerColor
+     */
     property alias footerColor: background.footerColor
 
     // FIXME: Make sure that the theming is only in the background, and the style
