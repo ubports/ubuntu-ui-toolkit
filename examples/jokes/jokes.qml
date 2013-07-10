@@ -88,7 +88,7 @@ MainView {
     }
 
     UbuntuShape {
-        color: "#888888"
+        color: Theme.palette.normal.base
         radius: "medium"
         anchors.centerIn: parent
         anchors.margins: units.gu(10)
@@ -106,7 +106,7 @@ MainView {
             anchors.fill: parent
             text: "Tap here!"
             fontSize: "large"
-            color: "#f1f1f1"
+            color: Theme.palette.normal.baseText
             textFormat: Text.RichText
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter

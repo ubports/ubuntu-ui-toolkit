@@ -56,5 +56,5 @@ Text {
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
-    color: UbuntuColors.coolGrey
+    color: Theme.palette.selected.backgroundText
 }

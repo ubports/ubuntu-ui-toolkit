@@ -37,7 +37,7 @@ import Ubuntu.Components 0.1
         import Ubuntu.Components.Popups 0.1
 
         Rectangle {
-            color: "grey"
+            color: Theme.palette.normal.background
             width: units.gu(80)
             height: units.gu(80)
             Component {

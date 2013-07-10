@@ -25,19 +25,15 @@ import Ubuntu.Components 0.1
   - backgroundColor: color for the slider bar
   - thumbColor: color for the thumb
   - thumbSpacing: spacing between the thumb and the bar
-  - backgroundOpacity: transparency for the background
-  - thumbOpacity: transparency for the thumb
   */
 
 Item {
     id: main
     // styling properties
 
-    property color backgroundColor: "#c0c0c0"
-    property color thumbColor: "#bbbbbb"
+    property color backgroundColor: Theme.palette.normal.base
+    property color thumbColor: Theme.palette.selected.foreground
     property real thumbSpacing: units.dp(2)
-    property real backgroundOpacity: 0.1
-    property real thumbOpacity: 1.0
 
     // visuals
     anchors.fill: parent
@@ -58,7 +54,6 @@ Item {
 
         anchors.fill: parent
         color: main.backgroundColor
-        opacity: main.backgroundOpacity
     }
 
     UbuntuShape {
@@ -69,7 +64,6 @@ Item {
         width: thumbWidth
         height: backgroundShape.height - (2.0 * thumbSpacing)
         color: main.thumbColor
-        opacity: main.thumbOpacity
     }
 
     Label {
@@ -82,7 +76,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: styledItem.formatValue(MathUtils.clamp(liveValue, styledItem.minimumValue, styledItem.maximumValue))
         fontSize: "medium"
-        color: "white"
+        color: Theme.palette.selected.foregroundText
         font.weight: Font.Bold
     }
 }

@@ -20,8 +20,8 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color checkedColor: "#DD4814"
-    property color uncheckedColor: Qt.rgba(0.0, 0.0, 0.0, 0.1)
+    property color checkedColor: Theme.palette.selected.foreground
+    property color uncheckedColor: Theme.palette.normal.foreground
 
     /*!
       The image to show inside the checkbox when it is checked.

@@ -205,14 +205,6 @@ Item {
             compare(textField.selectByMouse, true, "selectByMouse default")
         }
 
-        function test_0_selectedTextColor() {
-            compare(textField.selectedTextColor, "#f3f3e7", "selectedTextColor default")
-        }
-
-        function test_0_selectionColor() {
-            compare(textField.selectionColor, "#19b6ee", "selectionColor default")
-        }
-
         function test_0_placeholderText() {
             compare(textField.placeholderText, "", "placeholderText is '' by default")
         }

@@ -22,8 +22,6 @@ Item {
     // styling properties
     property color headerTextColor
     property color headerTextSelectedColor
-    property real headerTextOpacity
-    property real headerTextSelectedOpacity
     property int headerTextFadeDuration
     property url indicatorImageSource
 
@@ -109,7 +107,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-                    opacity: isVisible() ? (selected ? headerTextSelectedOpacity : headerTextOpacity) : 0
+                    opacity: isVisible() ? 1.0 : 0.0
                     function isVisible() {
                         if (selected) return true;
                         if (!tabBar.active) return false;
@@ -158,6 +156,13 @@ Item {
                     Label {
                         id: text
                         color: selected ? headerTextSelectedColor : headerTextColor
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: headerTextFadeDuration
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
 
                         anchors {
                             left: parent.left

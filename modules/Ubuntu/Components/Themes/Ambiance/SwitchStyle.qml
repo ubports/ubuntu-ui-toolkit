@@ -38,11 +38,11 @@ Item {
     /*!
       Color of the thumb when the switch is checked.
      */
-    property color checkedThumbColor: "#DD4814"
+    property color checkedThumbColor: Theme.palette.selected.foreground
     /*!
       Color of the thumb when the switch is not checked.
      */
-    property color uncheckedThumbColor: "#bbbbbb"
+    property color uncheckedThumbColor: Theme.palette.normal.foreground
     /*!
       The animation to fade the color from checkedColor to uncheckedColor and vice versa.
      */
@@ -52,7 +52,7 @@ Item {
      */
     property NumberAnimation moveThumbAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color backgroundColor: Qt.rgba(0.78, 0.78, 0.78, 0.1)
+    property color backgroundColor: Theme.palette.normal.base
     property real thumbWidth: units.gu(4)
     property real thumbHeight: units.gu(4)
 

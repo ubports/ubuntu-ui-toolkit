@@ -21,9 +21,10 @@ import Ubuntu.Components 0.1
 Label {
     id: label
     property bool selected: false
+    property bool secondary: false
 
     fontSize: "medium"
     elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : Qt.rgba(0.4, 0.4, 0.4, 1.0)
+    color: selected ? UbuntuColors.orange : secondary ? Theme.palette.normal.backgroundText : Theme.palette.selected.backgroundText
     opacity: label.enabled ? 1.0 : 0.5
 }
