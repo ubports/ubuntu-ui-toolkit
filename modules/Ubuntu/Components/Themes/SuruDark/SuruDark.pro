@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-uri = Ubuntu.Components.Themes.AmbianceDark
+uri = Ubuntu.Components.Themes.SuruDark
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 QMLDIR_FILE = qmldir
