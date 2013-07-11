@@ -160,8 +160,7 @@ Empty {
             bottom: parent.bottom
             left: parent.left
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     Rectangle {
@@ -174,21 +173,18 @@ Empty {
             bottom: parent.bottom
             right: parent.right
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     IconVisual {
         id: iconHelper
 
         width: height
+        height: Math.min(units.gu(5), parent.height - units.gu(1))
         anchors {
             left: parent.left
             leftMargin: listItem.__contentsMargins
-            top: parent.top
-            topMargin: units.gu(0.5)
-            bottom: parent.bottom
-            bottomMargin: anchors.topMargin
+            verticalCenter: parent.verticalCenter
         }
     }
 

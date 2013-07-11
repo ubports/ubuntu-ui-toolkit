@@ -191,25 +191,18 @@ PageTreeNode {
     }
 
     /*! \internal */
-    onActiveChanged: internal.updateHeader()
-    /*! \internal */
-    onParentNodeChanged: internal.updateHeader()
-    Component.onCompleted: internal.updateHeader()
-
-    /*! \internal */
     onModelChanged: if (tabs.active && internal.header) internal.header.show()
 
     QtObject {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
-        onHeaderChanged: internal.updateHeader()
+    }
 
-        function updateHeader() {
-            if (internal.header) {
-                if (tabs.active) internal.header.contents = __headerContents;
-                else internal.header.contents = null;
-            }
-        }
+    Binding {
+        target: internal.header
+        property: "contents"
+        value: tabs.active ? tabs.__headerContents : null
+        when: internal.header
     }
 
     style: Theme.createStyleComponent("TabsStyle.qml", tabs)

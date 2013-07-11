@@ -22,7 +22,7 @@ Item {
     id: frame
     // styling properties
     property string radius: "medium"
-    property color color: "white"
+    property color color: Theme.palette.normal.overlay
 
     property alias contentItem: body
 

@@ -1,3 +1,84 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130711-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Introduce new theme color palette API centralising the definition of
+    the colors used by the widgets to draw themselves. Adapted most
+    widgets to use the theme color palette. The color palette defined in
+    the Ambiance theme is the one from the new visual design. (LP:
+    #1186968, #1197853)
+  * Switch: refresh to match new visual design.
+  * Tabs: more robust binding of the header component.
+  * CheckBox: refresh to match new visual design.
+
+  [ Loïc Molinari ]
+  * Added support for -Werror flagged debug builds and fixed warnings.
+  * [UbuntuShape] Fixed alignment support.
+
+  [ tpeeters ]
+  * Add API tests for MainView.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 613
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 11 Jul 2013 04:02:09 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130710.1-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * ListItems Base & Standard: prevent the icon from going taller than
+    5GU. . (LP: #1187128)
+
+  [ Timo Jyrinki ]
+  * Remove qmlrunner. On saucy, the less complicated way is to just use
+    qmlscene with either environment variable set or with a command line
+    parameter.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 605
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 10 Jul 2013 12:48:26 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130710-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Add a CrossFadeImage component which crossfades when its source is
+    updated.
+  * Standard animation durations adapted for new design: - SnapDuration
+    goes from 125ms to 100ms - FastDuration goes from 250ms to 165ms -
+    new BriskDuration is introduced at 333ms.
+  * GIconProvider: avoid using QPixmap which is not re-entrant. Fixes
+    crashes. (LP: #1197784)
+  * Fine tuned UbuntuAnimation.StandardEasing to match design.
+    Introduced new standard Ubuntu easing
+    UbuntuAnimation.StandardEasingReverse.
+  * Panel.animating: do not rely on comparing real values that sometimes
+    have rounding errors. (LP: #1199550)
+
+  [ Iain Lane ]
+  * Add a CrossFadeImage component which crossfades when its source is
+    updated.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Moved content flagging before implicit sizing to
+    prevent assertion.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 602
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 10 Jul 2013 06:23:17 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130709-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Pass import paths from main QQmlEngine to QQuickUtils' QQmlEngine.
+    Fixes case where qmlscene is passed import paths via the -I
+    argument.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 593
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 09 Jul 2013 04:02:55 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130705.3-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]

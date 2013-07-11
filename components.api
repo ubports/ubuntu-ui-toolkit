@@ -35,6 +35,14 @@ AbstractButton
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
     property bool checked
+modules/Ubuntu/Components/CrossFadeImage.qml
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    readonly property bool running
+    readonly property size sourceSize
+    readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
     property int orientation
@@ -445,9 +453,11 @@ plugins.qmltypes
     exports: ["UbuntuAnimation 0.1"]
     Property { name: "SnapDuration"; type: "int"; isReadonly: true }
     Property { name: "FastDuration"; type: "int"; isReadonly: true }
+    Property { name: "BriskDuration"; type: "int"; isReadonly: true }
     Property { name: "SlowDuration"; type: "int"; isReadonly: true }
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
+    Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1"]

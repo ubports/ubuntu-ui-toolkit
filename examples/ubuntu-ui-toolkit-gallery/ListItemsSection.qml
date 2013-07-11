@@ -22,21 +22,14 @@ TemplateSection {
     property alias delegate: repeater.delegate
     documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
 
-    Rectangle {
-        color: "#f7f7f7"
+    Column {
+        id: column
         anchors.left: parent.left
         anchors.right: parent.right
-        height: column.height
 
-        Column {
-            id: column
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            Repeater {
-                id: repeater
-                model: 4
-            }
+        Repeater {
+            id: repeater
+            model: 4
         }
     }
 }

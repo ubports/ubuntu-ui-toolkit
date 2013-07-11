@@ -77,6 +77,7 @@ Base {
         LabelVisual {
             id: valueLabel
             selected: multiValueListItem.selected
+            secondary: true
             anchors {
                 top: label.bottom
                 left: parent.left
