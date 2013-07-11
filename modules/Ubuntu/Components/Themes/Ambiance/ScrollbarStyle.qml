@@ -70,7 +70,7 @@ Item {
     property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color sliderColor: Qt.rgba(0.5, 0.5, 0.5, 0.7)
+    property color sliderColor: Theme.palette.normal.base
     property real sliderRadius: units.gu(0.5)
     property color thumbConnectorColor: "white"
     property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomIdle.png" : "artwork/ScrollbarRightIdle.png"
@@ -176,8 +176,6 @@ Item {
     {
         return Qt.point(map.x, map.y)
     }
-
-    SystemPalette { id: systemColors }
 
     SmoothedAnimation {
         id: scrollAnimation

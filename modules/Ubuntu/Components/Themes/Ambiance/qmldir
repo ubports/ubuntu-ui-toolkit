@@ -4,7 +4,7 @@ internal ButtonStyle ButtonStyle.qml
 internal CheckBoxStyle CheckBoxStyle.qml
 internal DialogForegroundStyle DialogForegroundStyle.qml
 internal HeaderStyle HeaderStyle.qml
-internal MainViewStyle MainViewStyle.qml
+MainViewStyle 0.1 MainViewStyle.qml
 internal PointerStyle PointerStyle.qml
 internal PointerStyleShader PointerStyleShader.qml
 internal PopoverForegroundStyle PopoverForegroundStyle.qml

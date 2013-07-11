@@ -38,10 +38,8 @@ Item {
      */
     onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
 
-    property color headerTextColor: "#333333"
-    property color headerTextSelectedColor: "#333333"
-    property real headerTextOpacity: 0.4
-    property real headerTextSelectedOpacity: 0.9
+    property color headerTextColor: Theme.palette.normal.backgroundText
+    property color headerTextSelectedColor: Theme.palette.selected.backgroundText
     property int headerTextFadeDuration: 350
     property string headerFontSize: "x-large"
     property int headerFontWeight: Font.Light
@@ -70,16 +68,8 @@ Item {
         NewTabBar {
             id: tabBar
             tabs: theTabs
-            anchors {
-                top: parent ? parent.top : undefined
-                left: parent ? parent.left : undefined
-                right: parent ? parent.right : undefined
-            }
-            //height: tabBarHeight
             headerTextColor: tabsStyle.headerTextColor
             headerTextSelectedColor: tabsStyle.headerTextSelectedColor
-            headerTextOpacity: tabsStyle.headerTextOpacity
-            headerTextSelectedOpacity: tabsStyle.headerTextSelectedOpacity
             headerTextFadeDuration: tabsStyle.headerTextFadeDuration
             indicatorImageSource: tabsStyle.indicatorImageSource
             headerFontSize: tabsStyle.headerFontSize

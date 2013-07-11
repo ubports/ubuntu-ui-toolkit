@@ -43,11 +43,11 @@ Template {
 
                 Button {
                     text: "Cancel"
+                    gradient: UbuntuColors.greyGradient
                     onClicked: PopupUtils.close(dialogue)
                 }
                 Button {
                     text: "Delete"
-                    color: UbuntuColors.orange
                     onClicked: PopupUtils.close(dialogue)
                 }
             }

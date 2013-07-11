@@ -76,7 +76,7 @@ MainView {
             flickable: widgetList
 
             Rectangle {
-                color: "#e0e0e0"
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
 
                 ListView {

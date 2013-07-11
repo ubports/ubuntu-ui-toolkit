@@ -786,6 +786,8 @@ StyledItem {
 
     // internals
 
+    opacity: enabled ? 1.0 : 0.3
+
     /*! \internal */
     onVisibleChanged: {
         if (!visible)
@@ -801,7 +803,6 @@ StyledItem {
     }
 
     Text { id: fontHolder }
-    SystemPalette { id: systemColors }
 
     //internals
     /*! \internal */
@@ -959,7 +960,7 @@ StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+        color: Theme.palette.normal.backgroundText
         fontSize: "medium"
         elide: Text.ElideRight
     }
@@ -981,8 +982,8 @@ StyledItem {
         onTextChanged: internal.textChanged = true
         cursorDelegate: cursor
         color: control.__styleInstance.color
-        selectedTextColor: "#F3F3E7"
-        selectionColor: "#19B6EE"
+        selectedTextColor: Theme.palette.selected.foregroundText
+        selectionColor: Theme.palette.selected.foreground
         font.pixelSize: FontUtils.sizeToPixels("medium")
         passwordCharacter: "\u2022"
         // forward keys to the root element so it can be captured outside of it

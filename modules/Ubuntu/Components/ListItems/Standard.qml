@@ -160,8 +160,7 @@ Empty {
             bottom: parent.bottom
             left: parent.left
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     Rectangle {
@@ -174,8 +173,7 @@ Empty {
             bottom: parent.bottom
             right: parent.right
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     IconVisual {
