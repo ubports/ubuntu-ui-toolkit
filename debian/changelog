@@ -1,3 +1,27 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130711-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Introduce new theme color palette API centralising the definition of
+    the colors used by the widgets to draw themselves. Adapted most
+    widgets to use the theme color palette. The color palette defined in
+    the Ambiance theme is the one from the new visual design. (LP:
+    #1186968, #1197853)
+  * Switch: refresh to match new visual design.
+  * Tabs: more robust binding of the header component.
+  * CheckBox: refresh to match new visual design.
+
+  [ Loïc Molinari ]
+  * Added support for -Werror flagged debug builds and fixed warnings.
+  * [UbuntuShape] Fixed alignment support.
+
+  [ tpeeters ]
+  * Add API tests for MainView.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 613
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 11 Jul 2013 04:02:09 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130710.1-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
