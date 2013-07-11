@@ -107,7 +107,7 @@ Template {
             removable: true
             backgroundIndicator: Rectangle {
                 anchors.fill: parent
-                color: "gray"
+                color: Theme.palette.normal.base
             }
         }
     }
@@ -117,7 +117,7 @@ Template {
         className: "Header"
 
         Rectangle {
-            color: "#f7f7f7"
+            color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
             anchors.left: parent.left
             anchors.right: parent.right
             height: groupedList.height

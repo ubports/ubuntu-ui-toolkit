@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,16 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components.Themes.Ambiance 0.1
 
-// internal helper class for text inside the list items.
-Label {
-    id: label
-    property bool selected: false
-    property bool secondary: false
-
-    fontSize: "medium"
-    elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : secondary ? Theme.palette.normal.backgroundText : Theme.palette.selected.backgroundText
-    opacity: label.enabled ? 1.0 : 0.5
+MainViewStyle {
+    backgroundSource: ""
 }

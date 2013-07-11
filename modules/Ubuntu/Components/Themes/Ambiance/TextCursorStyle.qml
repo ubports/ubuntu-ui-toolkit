@@ -21,7 +21,7 @@ Item {
     /*!
       Cursor color
       */
-    property color color: Qt.rgba(0.4, 0.4, 0.4, 1.0)
+    property color color: Theme.palette.selected.foreground
 
     /*!
       Properties driving cursor blinking. If either of these values are 0, no
@@ -36,7 +36,7 @@ Item {
       */
     property var pinSize: units.gu(1.2)
     property var pinSensingOffset: units.dp(4)
-    property color pinColor: "blue"
+    property color pinColor: Theme.palette.selected.foreground
 
     anchors.fill: parent
     Rectangle {

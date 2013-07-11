@@ -47,8 +47,8 @@ public:
 
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
-    enum HAlignment { AlignLeft = Qt::AlignLeft, AlignHCenter = Qt::AlignHCenter, AlignRight = Qt::AlignRight };
-    enum VAlignment { AlignTop = Qt::AlignTop, AlignVCenter = Qt::AlignVCenter, AlignBottom = Qt::AlignBottom };
+    enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
+    enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
 
     QColor color() const { return color_; }
     void setColor(const QColor& color);

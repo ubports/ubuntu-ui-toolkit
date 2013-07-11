@@ -19,8 +19,7 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property color color: "white"
-    property real barOpacity: 0.9
+    property color color: Theme.palette.normal.overlay
 
     anchors.fill: parent
 
@@ -28,7 +27,6 @@ Item {
         id: background
         anchors.fill: parent
         color: visuals.color
-        opacity: visuals.barOpacity
     }
 
     Image {

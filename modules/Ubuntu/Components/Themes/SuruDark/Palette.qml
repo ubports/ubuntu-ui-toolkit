@@ -15,21 +15,27 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components.Themes 0.1
 
-TemplateSection {
-    id: section
-    property alias delegate: repeater.delegate
-    documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
-
-    Column {
-        id: column
-        anchors.left: parent.left
-        anchors.right: parent.right
-
-        Repeater {
-            id: repeater
-            model: 4
-        }
+Palette {
+    normal: PaletteValues {
+        background: "#221E1C"
+        backgroundText: "#33F3F3E7"
+        base: "#19000000"
+        baseText: "#F3F3E7"
+        foreground: "#888888"
+        foregroundText: "#F3F3E7"
+        overlay: "#F2F2F2"
+        overlayText: "#888888"
+        field: "#19000000"
+        fieldText: "#7F7F7F7F"
+    }
+    selected: PaletteValues {
+        background: "#88D6D6D6" // FIXME: not from design
+        backgroundText: "#F3F3E7"
+        foreground: "#DD4814"
+        foregroundText: "#F3F3E7"
+        field: "#FFFFFF"
+        fieldText: "#888888"
     }
 }
