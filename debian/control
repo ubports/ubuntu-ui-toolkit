@@ -66,8 +66,7 @@ Section: doc
 Architecture: all
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: unity-action-doc,
-         ${misc:Depends},
+Depends: ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
