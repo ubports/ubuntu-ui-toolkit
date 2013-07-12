@@ -23,7 +23,7 @@ Item {
     height: 200
 
     Flickable {
-        id: flickable2
+        id: testFlickable
     }
 
     MainView {
@@ -97,14 +97,15 @@ Item {
             compare(page.pageStack, null, "is not set by default")
         }
 
-        function test_flickableDetection_bug1200642() {
-            print("column.height = "+column.height)
-            print("pageFlickable.height = "+pageFlickable.height)
-            print("pageFlickable.contentHeight = "+pageFlickable.contentHeight)
-            compare(page.flickable, pageFlickable, "page flickable is correctly detected")
-
-            compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected")
-
+        function test_flickable_bug1200642() {
+            compare(page.flickable, pageFlickable, "page flickable is correctly detected");
+            compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
+            page.flickable = testFlickable;
+            compare(page.flickable, testFlickable, "flickable can be set");
+            compare(page.__propagated.header.flickable, testFlickable, "updating page flickable updates header flickable");
+            page.flickable = null;
+            compare(page.flickable, null, "flickable can be unset");
+            compare(page.__propagated.header.flickable, null, "unsetting page flickable unsets header flickable");
         }
     }
 }
