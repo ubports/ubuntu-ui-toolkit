@@ -86,9 +86,7 @@ PageTreeNode {
     /*!
       Optional flickable that controls the header. This property
       is automatically set to the first child of the page that is Flickable
-      and anchors to the top of the page or fills the page,
-      and which does not have a flickableDirection of Flickable.HorizontalFlick.
-      For example:
+      and anchors to the top of the page or fills the page. For example:
       \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -119,8 +117,6 @@ PageTreeNode {
       This property be set to null to avoid automatic flickable detection, which disables hiding
       of the header by scrolling in the Flickable. In cases where a flickable should control the header,
       but it is not automatically detected, the flickable property can be set.
-      If the flickable's flickableDirection equals Flickable.HorizontalFlick it is not automatically connected
-      to the header.
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
@@ -168,15 +164,6 @@ PageTreeNode {
         Component.onCompleted: internal.updateFlickableMargins()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
-
-//        function isVerticalFlickable(object) {
-//            if (object && object.hasOwnProperty("flickableDirection") &&
-//                    object.flickableDirection !== Flickable.HorizontalFlick) {
-//                    return true;
-//            } else {
-//                return false;
-//            }
-//        }
 
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
