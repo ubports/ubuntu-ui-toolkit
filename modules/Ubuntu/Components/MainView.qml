@@ -139,6 +139,8 @@ PageTreeNode {
       \preliminary
       The property holds if the application should automatically resize the
       contents when the input method appears
+
+      The default value is false.
       */
     property bool anchorToKeyboard: false
 
