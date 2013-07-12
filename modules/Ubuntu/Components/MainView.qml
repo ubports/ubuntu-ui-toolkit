@@ -149,6 +149,22 @@ PageTreeNode {
       The background is usually a single color. However if \l headerColor
       or \l footerColor are set then a gradient of colors will be drawn.
 
+      For example, in order for the MainView to draw a color gradient beneath
+      the content:
+      \qml
+          import QtQuick 2.0
+          import Ubuntu.Components 0.1
+
+          MainView {
+              width: units.gu(40)
+              height: units.gu(60)
+
+              headerColor: "#343C60"
+              backgroundColor: "#6A69A2"
+              footerColor: "#8896D5"
+          }
+      \endqml
+
       \sa footerColor, headerColor
      */
     property alias backgroundColor: background.backgroundColor
