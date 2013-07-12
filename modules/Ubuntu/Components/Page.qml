@@ -137,18 +137,9 @@ PageTreeNode {
         id: internal
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
-        property bool pageControlsHeader: page.active && internal.header !== null
-        property bool pageControlsToolbar: page.active && internal.toolbar !== null
 
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()
-
-//        Binding {
-//            target: internal.header
-//            property: "flickable"
-//            value: page.flickable
-//            when: page.active && internal.header !== null
-//        }
 
         function updateHeaderAndToolbar() {
             if (page.active) {
@@ -184,8 +175,6 @@ PageTreeNode {
                 return false;
             }
         }
-
-        property Flickable pageFlickable: getFlickableChild()
 
         /*!
           Return the first flickable child of this page.
