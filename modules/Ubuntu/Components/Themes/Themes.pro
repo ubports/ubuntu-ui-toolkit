@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS += Ambiance
+SUBDIRS += Ambiance \
+           SuruDark \
+           SuruGradient
 
 uri = Ubuntu.Components.Themes
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
