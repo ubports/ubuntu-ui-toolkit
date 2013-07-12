@@ -83,9 +83,7 @@ StyledItem {
     onFlickableChanged: {
         internal.connectFlickable();
         header.show();
-        print("new flickable = "+flickable);
     }
-    Component.onCompleted: print("flickable = "+flickable)
 
     QtObject {
         id: internal
