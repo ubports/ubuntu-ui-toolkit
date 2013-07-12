@@ -86,7 +86,9 @@ PageTreeNode {
     /*!
       Optional flickable that controls the header. This property
       is automatically set to the first child of the page that is Flickable
-      and anchors to the top of the page or fills the page. For example:
+      and anchors to the top of the page or fills the page,
+      and which does not have a flickableDirection of Flickable.HorizontalFlick.
+      For example:
       \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -117,6 +119,8 @@ PageTreeNode {
       This property be set to null to avoid automatic flickable detection, which disables hiding
       of the header by scrolling in the Flickable. In cases where a flickable should control the header,
       but it is not automatically detected, the flickable property can be set.
+      If the flickable's flickableDirection equals Flickable.HorizontalFlick it is not automatically connected
+      to the header.
      */
     property Flickable flickable: internal.getFlickableChild(page)
 
@@ -128,16 +132,23 @@ PageTreeNode {
     onToolsChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     Item {
         id: internal
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
+        property bool pageControlsHeader: page.active && internal.header !== null
+        property bool pageControlsToolbar: page.active && internal.toolbar !== null
 
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()
+
+//        Binding {
+//            target: internal.header
+//            property: "flickable"
+//            value: page.flickable
+//            when: page.active && internal.header !== null
+//        }
 
         function updateHeaderAndToolbar() {
             if (page.active) {
@@ -166,16 +177,15 @@ PageTreeNode {
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
         function isVerticalFlickable(object) {
-            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
-                var direction = object.flickableDirection;
-                if ( ((direction === Flickable.AutoFlickDirection) && (object.contentHeight !== object.height) )
-                        || direction === Flickable.VerticalFlick
-                        || direction === Flickable.HorizontalAndVerticalFlick) {
+            if (object && object.hasOwnProperty("flickableDirection") &&
+                    object.flickableDirection !== Flickable.HorizontalFlick) {
                     return true;
-                }
+            } else {
+                return false;
             }
-            return false;
         }
+
+        property Flickable pageFlickable: getFlickableChild()
 
         /*!
           Return the first flickable child of this page.

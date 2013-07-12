@@ -27,6 +27,11 @@ Item {
         id: mainView
         Page {
             id: page
+            Flickable {
+                id: pageFlickable
+                anchors.fill: parent
+                contentHeight: 400
+            }
         }
     }
 
@@ -40,6 +45,7 @@ Item {
             compare(page.__propagated.header, mainView.__propagated.header, "page header equals mainView header")
             compare(page.__propagated.header.title, page.title, "header title is same as page title")
             compare(page.__propagated.header.visible, false, "header is not visible initially because there is no title")
+            compare(page.__propagated.header.flickable, pageFlickable, "page flickable is correctly detected")
         }
 
         function test_0_noHeader_bug1162028_bug1161910() {
@@ -76,6 +82,10 @@ Item {
 
         function test_pageStack() {
             compare(page.pageStack, null, "is not set by default")
+        }
+
+        function test_flickable_bug1200642() {
+
         }
     }
 }
