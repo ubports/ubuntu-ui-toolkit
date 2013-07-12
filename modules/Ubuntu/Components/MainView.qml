@@ -214,6 +214,8 @@ PageTreeNode {
         id: canvas
 
         automaticOrientation: false
+        // this will make sure that the keyboard does not obscure the contents
+        anchors.bottomMargin: Qt.inputMethod.visible ?  Qt.inputMethod.keyboardRectangle.height : 0
 
         // clip the contents so that it does not overlap the header
         Item {
@@ -234,6 +236,9 @@ PageTreeNode {
                 id: contents
                 anchors {
                     fill: parent
+                    
+                    // make the hole contents visible is the toolbar is locked otherwise the toolbar will obscure part of the contents
+                    bottomMargin: toolbarItem.locked ? toolbarItem.height + units.gu(2) : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
                 }
