@@ -97,7 +97,7 @@ Item {
             compare(page.pageStack, null, "is not set by default")
         }
 
-        function test_flickable_bug1200642() {
+        function test_flickable_bug1200642_bug1192591() {
             compare(page.flickable, pageFlickable, "page flickable is correctly detected");
             compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
             page.flickable = testFlickable;
