@@ -39,9 +39,7 @@ Item {
         id: backgroundColor
         anchors.fill: parent
         color: styledItem.backgroundColor
-        property bool isGradient: styledItem.backgroundColor != styledItem.headerColor ||
-                                  styledItem.backgroundColor != styledItem.footerColor
-        gradient: isGradient ? backgroundGradient : null
+        gradient: internals.isGradient ? backgroundGradient : null
     }
 
     Image {
@@ -49,5 +47,21 @@ Item {
         anchors.fill: parent
         source: mainViewStyle.backgroundSource
         fillMode: Image.Tile
+    }
+
+    QtObject {
+        id: internals
+        property bool isLight: ColorUtils.luminance(styledItem.backgroundColor) >= 0.85
+        property bool isGradient: styledItem.backgroundColor != styledItem.headerColor ||
+                                  styledItem.backgroundColor != styledItem.footerColor
+        property string theme: isLight ? "Ambiance" :
+                              (isGradient ? "SuruGradient" : "SuruDark")
+    }
+
+    // automatically select the appropriate theme depending on the background colors
+    Binding {
+        target: Theme
+        property: "name"
+        value: "Ubuntu.Components.Themes.%1".arg(internals.theme)
     }
 }
