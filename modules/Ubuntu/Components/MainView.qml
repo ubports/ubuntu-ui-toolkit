@@ -215,7 +215,12 @@ PageTreeNode {
 
         automaticOrientation: false
         // this will make sure that the keyboard does not obscure the contents
-        anchors.bottomMargin: Qt.inputMethod.visible ?  Qt.inputMethod.keyboardRectangle.height : 0
+        anchors {
+            bottomMargin: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
+            Behavior on bottomMargin {
+                NumberAnimation { easing.type: Easing.InOutQuad }
+            }
+        }
 
         // clip the contents so that it does not overlap the header
         Item {
