@@ -31,8 +31,7 @@ Panel {
         right: parent.right
         bottom: parent.bottom
     }
-    // add a extra margin to make easy to click in items close to the toolbar 
-    height: background.height + units.gu(2)
+    height: background.height
 
     /*!
       \deprecated
