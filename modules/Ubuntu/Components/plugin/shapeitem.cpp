@@ -365,6 +365,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     const QSGTexture* texture = provider ? provider->texture() : NULL;
     if (provider && !texture) {
         update();
+        delete old_node;
         return NULL;
     }
 
