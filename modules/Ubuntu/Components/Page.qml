@@ -177,7 +177,6 @@ PageTreeNode {
             return false;
         }
 
-
         /*!
           Return the first flickable child of this page.
          */
