@@ -25,18 +25,6 @@ Item {
     property real contentHeight: units.gu(7.5)
 
     /*!
-      The background color of the header.
-     */
-    property color backgroundColor: Theme.palette.normal.background
-
-    /*!
-      The source of the background image of the header. If the image is has (semi-)transparent
-      pixels, \l backgroundColor can be set to specify the color behind those (semi-)transparent
-      pixels.
-     */
-    property url backgroundSource: "artwork/background_paper.png"
-
-    /*!
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
      */
@@ -55,33 +43,10 @@ Item {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
-    Rectangle {
-        id: backgroundColor
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        color: headerStyle.backgroundColor
-        visible: color != "transparent"
-        height: headerStyle.contentHeight + separator.height
-    }
-    Image {
-        id: background
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        source: headerStyle.backgroundSource
-        visible: source != ""
-        fillMode: Image.Tile
-        height: headerStyle.contentHeight + separator.height
-    }
     BorderImage {
         id: separator
         anchors {
-            bottom: background.bottom
+            bottom: parent.bottom
             left: parent.left
             right: parent.right
         }

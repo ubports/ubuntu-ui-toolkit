@@ -81,6 +81,9 @@ Text
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
+    property color headerColor
+    property color backgroundColor
+    property color footerColor
     property bool automaticOrientation
     default property internal contentsItem
     property ToolbarActions tools
@@ -125,6 +128,8 @@ StyledItem
     property bool active
     property Item pageStack
     property Item parentNode
+    property Item activeLeafNode
+    property bool isLeaf
 modules/Ubuntu/Components/PageWrapper.qml
 PageTreeNode
     property var reference
