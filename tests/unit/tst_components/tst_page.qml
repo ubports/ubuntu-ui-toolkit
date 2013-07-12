@@ -22,6 +22,10 @@ Item {
     width: 200
     height: 200
 
+    Flickable {
+        id: flickable2
+    }
+
     MainView {
         anchors.fill: parent
         id: mainView
@@ -30,7 +34,17 @@ Item {
             Flickable {
                 id: pageFlickable
                 anchors.fill: parent
-                contentHeight: 400
+                contentHeight: column.height
+
+                Column {
+                    id: column
+                    Repeater {
+                        model: 100
+                        Label {
+                            text: "line "+index
+                        }
+                    }
+                }
             }
         }
     }
@@ -45,7 +59,6 @@ Item {
             compare(page.__propagated.header, mainView.__propagated.header, "page header equals mainView header")
             compare(page.__propagated.header.title, page.title, "header title is same as page title")
             compare(page.__propagated.header.visible, false, "header is not visible initially because there is no title")
-            compare(page.__propagated.header.flickable, pageFlickable, "page flickable is correctly detected")
         }
 
         function test_0_noHeader_bug1162028_bug1161910() {
@@ -84,7 +97,13 @@ Item {
             compare(page.pageStack, null, "is not set by default")
         }
 
-        function test_flickable_bug1200642() {
+        function test_flickableDetection_bug1200642() {
+            print("column.height = "+column.height)
+            print("pageFlickable.height = "+pageFlickable.height)
+            print("pageFlickable.contentHeight = "+pageFlickable.contentHeight)
+            compare(page.flickable, pageFlickable, "page flickable is correctly detected")
+
+            compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected")
 
         }
     }

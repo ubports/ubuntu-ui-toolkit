@@ -132,6 +132,8 @@ PageTreeNode {
     onToolsChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
+    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     Item {
         id: internal
@@ -167,14 +169,27 @@ PageTreeNode {
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
+//        function isVerticalFlickable(object) {
+//            if (object && object.hasOwnProperty("flickableDirection") &&
+//                    object.flickableDirection !== Flickable.HorizontalFlick) {
+//                    return true;
+//            } else {
+//                return false;
+//            }
+//        }
+
         function isVerticalFlickable(object) {
-            if (object && object.hasOwnProperty("flickableDirection") &&
-                    object.flickableDirection !== Flickable.HorizontalFlick) {
+            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
+                var direction = object.flickableDirection;
+                if ( ((direction === Flickable.AutoFlickDirection) && (object.contentHeight !== object.height) )
+                        || direction === Flickable.VerticalFlick
+                        || direction === Flickable.HorizontalAndVerticalFlick) {
                     return true;
-            } else {
-                return false;
+                }
             }
+            return false;
         }
+
 
         /*!
           Return the first flickable child of this page.
