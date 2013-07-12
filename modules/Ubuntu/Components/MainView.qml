@@ -136,6 +136,13 @@ PageTreeNode {
     property string applicationName: ""
 
     /*!
+      \preliminary
+      The property holds if the application should automaticaly resize the
+      contents when the input method appears
+      */
+    property bool anchorToKeyboard: false
+
+    /*!
       \qmlproperty color headerColor
       Color of the header's background.
 
@@ -216,7 +223,7 @@ PageTreeNode {
         automaticOrientation: false
         // this will make sure that the keyboard does not obscure the contents
         anchors {
-            bottomMargin: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
+            bottomMargin: Qt.inputMethod.visible && anchorToKeyboard ? Qt.inputMethod.keyboardRectangle.height : 0
             Behavior on bottomMargin {
                 NumberAnimation { easing.type: Easing.InOutQuad }
             }
