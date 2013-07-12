@@ -1,3 +1,21 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130712-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Removed unused artwork.
+  * Added experimental dark & gradient themes.
+  * Reverted standard easings to Quad because it seems
+    QEasingCurve::BezierSpline does not ensure the target value is
+    always reached. (LP: #1199662)
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Prevented dangling nodes in the scene graph. (LP:
+    #1180794)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 618
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 12 Jul 2013 04:02:24 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130711-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
