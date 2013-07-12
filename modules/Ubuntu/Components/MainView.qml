@@ -238,7 +238,7 @@ PageTreeNode {
                     fill: parent
                     
                     // make the hole contents visible is the toolbar is locked otherwise the toolbar will obscure part of the contents
-                    bottomMargin: toolbarItem.locked && toolbarItem.visible ? toolbarItem.height + units.gu(2) : 0
+                    bottomMargin: toolbarItem.locked && toolbarItem.visible ? toolbarItem.height : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
                 }
