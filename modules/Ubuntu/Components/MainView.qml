@@ -137,7 +137,7 @@ PageTreeNode {
 
     /*!
       \preliminary
-      The property holds if the application should automaticaly resize the
+      The property holds if the application should automatically resize the
       contents when the input method appears
       */
     property bool anchorToKeyboard: false
@@ -251,7 +251,7 @@ PageTreeNode {
                 anchors {
                     fill: parent
                     
-                    // make the hole contents visible is the toolbar is locked otherwise the toolbar will obscure part of the contents
+                    // move the whole contents up if the toolbar is locked and opened otherwise the toolbar will obscure part of the contents
                     bottomMargin: toolbarItem.locked && toolbarItem.opened ? toolbarItem.height + toolbarItem.triggerSize : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
