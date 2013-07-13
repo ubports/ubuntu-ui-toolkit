@@ -66,7 +66,8 @@ Item {
         property real minX: 0.0
         property real maxX: background.width - width
         property real pointerSize: units.dp(6)
-        property point globalTarget: Qt.point(thumb.x + thumb.width / 2.0, thumb.y)
+        property real targetMargin: units.dp(2)
+        property point globalTarget: Qt.point(thumb.x + thumb.width / 2.0, -targetMargin)
 
         x: MathUtils.clamp(globalTarget.x - width / 2.0, minX, maxX)
         y: globalTarget.y - height - pointerSize
