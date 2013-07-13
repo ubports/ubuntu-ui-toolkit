@@ -5,7 +5,6 @@ internal CheckBoxStyle CheckBoxStyle.qml
 internal DialogForegroundStyle DialogForegroundStyle.qml
 internal HeaderStyle HeaderStyle.qml
 MainViewStyle 0.1 MainViewStyle.qml
-internal PointerStyle PointerStyle.qml
 internal PointerStyleShader PointerStyleShader.qml
 internal PopoverForegroundStyle PopoverForegroundStyle.qml
 internal ScrollbarStyle ScrollbarStyle.qml
@@ -18,4 +17,5 @@ internal TextCursorStyle TextCursorStyle.qml
 TextFieldStyle 0.1 TextFieldStyle.qml
 internal ToolbarButtonStyle ToolbarButtonStyle.qml
 internal ToolbarStyle ToolbarStyle.qml
+internal BubbleShape BubbleShape.qml
  
