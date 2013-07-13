@@ -73,22 +73,8 @@ Item {
         y: globalTarget.y - height - pointerSize
         target: Qt.point(globalTarget.x - x, globalTarget.y - y)
 
-        opacity: SliderUtils.isPressed(styledItem) ? 1.0 : 0.0
-        Behavior on opacity {
-            NumberAnimation {
-                duration: UbuntuAnimation.SnapDuration
-                easing.type: Easing.Linear
-            }
-        }
-
-        transformOrigin: Item.Bottom
-        scale: SliderUtils.isPressed(styledItem) ? 1.0 : 0.91
-        Behavior on scale {
-            NumberAnimation {
-                duration: UbuntuAnimation.SnapDuration
-                easing.type: Easing.Linear
-            }
-        }
+        property bool pressed: SliderUtils.isPressed(styledItem)
+        visible: pressed
 
         Label {
             anchors.centerIn: parent
