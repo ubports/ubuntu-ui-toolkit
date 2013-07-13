@@ -35,7 +35,7 @@ MainView {
                 }
                 ListItem.Standard { text: "Do something" }
                 ListItem.Standard { text: "Do something else" }
-                ListItem.Subtitled { text: "Title"; subText: "Subtitle"}
+                ListItem.Subtitled { text: "Title"; subText: "Subtitle"; showDivider: false}
             }
         }
     }
