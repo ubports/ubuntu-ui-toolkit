@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,23 +17,20 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-// internal class, used inside subclasses of PopupBase
-StyledItem {
+Item {
     id: pointer
 
-    // Using Item.Rotation does not play well with the
-    //  translation that would be needed after rotating.
-    property real longAxis: units.gu(2)
-    property real shortAxis: units.gu(1)
-
     // up, down, left or right, or none to hide the pointer
-    property string direction: "down"
+    property string direction
 
-    // rotate pointer 90 degrees
-    property bool rotate: (direction === "left" || direction === "right")
+    Loader {
+        visible: (direction !== "none")
 
-    width: rotate ? shortAxis : longAxis
-    height: rotate ? longAxis : shortAxis
-
-    style: Theme.createStyleComponent("PointerStyle.qml", pointer)
+        x: (direction === "up" || direction === "down") ? -width/2.0 :
+           (direction === "right") ? -width : 0
+        y: (direction === "left" || direction === "right") ? -height/2.0 :
+           (direction === "down") ? -height : 0
+        property Item styledItem: pointer
+        sourceComponent: Theme.createStyleComponent("PointerStyle.qml", pointer)
+    }
 }
