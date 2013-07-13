@@ -159,7 +159,7 @@ StyledItem
     property bool __interactive
     property internal __private
 modules/Ubuntu/Components/Slider.qml
-AbstractButton
+StyledItem
     property real minimumValue
     property real maximumValue
     property real value
