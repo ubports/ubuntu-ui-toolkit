@@ -131,7 +131,7 @@ PopupBase {
       The property holds the margin from the popover's caller. The property
       is themed.
       */
-    property real callerMargin: units.gu(1)
+    property real callerMargin: 0
 
     /*!
       The property drives the automatic closing of the Popover when user taps
@@ -151,7 +151,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin, units.dp(2));
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
         }
     }
@@ -185,10 +185,51 @@ PopupBase {
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
 
+        property point target: Qt.point(pointer.x - x, pointer.y - y)
+        property string direction: pointer.direction
+        property bool clipContent: true
+
         style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
-    Pointer { id: pointer }
+    QtObject {
+        id: pointer
+
+        /* Input variables for InternalPopupUtils are the properties:
+            - horizontalMargin
+            - verticalMargin
+            - size
+
+           Output variables of InternalPopupUtils are the properties:
+            - x
+            - y
+            - direction
+        */
+
+        property real arrowSize: units.dp(15)
+        property real cornerSize: units.dp(11)
+
+        /* Minimum distance between the top or bottom of the popup and
+           the tip of the pointer when the direction is left or right.
+        */
+        property real horizontalMargin: arrowSize/2.0 + cornerSize
+        /* Minimum distance between the left or right of the popup and
+           the tip of the pointer when the direction is up or down.
+        */
+        property real verticalMargin: arrowSize/2.0 + cornerSize
+        /* Either:
+            - distance between the left or right of the popup and the tip
+              of the pointer when the direction is left or right.
+            - distance between the top or bottom of the popup and the tip
+              of the pointer when the direction is up or down.
+        */
+        property real size: units.dp(6)
+
+        property real x
+        property real y
+        property string direction
+    }
+
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()
