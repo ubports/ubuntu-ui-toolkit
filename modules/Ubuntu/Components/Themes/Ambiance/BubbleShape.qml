@@ -31,7 +31,7 @@ Item {
     BorderImage {
         id: shadow
         anchors.fill: parent
-        anchors.margins: -units.dp(7)
+        anchors.margins: -units.dp(6)
         source: "artwork/bubble_shadow.sci"
     }
 
