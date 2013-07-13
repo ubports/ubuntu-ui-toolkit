@@ -18,4 +18,5 @@ internal TextCursorStyle TextCursorStyle.qml
 TextFieldStyle 0.1 TextFieldStyle.qml
 internal ToolbarButtonStyle ToolbarButtonStyle.qml
 internal ToolbarStyle ToolbarStyle.qml
+internal BubbleShape BubbleShape.qml
  
