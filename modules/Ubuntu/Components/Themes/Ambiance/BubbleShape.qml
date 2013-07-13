@@ -49,7 +49,7 @@ Item {
         hideSource: true
         // FIXME: visible: false prevents rendering so make it a nearly
         // transparent 1x1 pixel instead
-        opacity: 0.001
+        opacity: 0.01
         width: 1
         height: 1
     }
