@@ -74,9 +74,10 @@ Item {
         target: Qt.point(globalTarget.x - x, globalTarget.y - y)
 
         property bool pressed: SliderUtils.isPressed(styledItem)
-        visible: pressed
+        visible: pressed && label.text != ""
 
         Label {
+            id: label
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
             fontSize: "large"
