@@ -164,6 +164,7 @@ StyledItem
     property real maximumValue
     property real value
     property bool live
+    property bool pressed
     signal touched(bool onThumb)
     function formatValue(v)
     property internal __internals

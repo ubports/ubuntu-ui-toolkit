@@ -86,6 +86,13 @@ StyledItem {
     */
     property bool live: false
 
+    /*!
+       \qmlproperty bool pressed
+
+       \preliminary
+       Whether the Slider is currently being pressed.
+    */
+    property alias pressed: mouseArea.pressed
 
     /*!
        \preliminary
