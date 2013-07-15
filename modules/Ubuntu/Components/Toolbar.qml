@@ -62,6 +62,7 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
+        print("setting tools to "+tools)
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
@@ -69,10 +70,12 @@ Panel {
             internal.updateVisibleTools();
             opened = true;
         } else if (!opened && !animating) {
-            // toolbar is invisible
+            // toolbar is closed
             internal.updateVisibleTools();
+            tools.opened = false;
         } else {
             opened = false;
+            tools.opened = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
@@ -81,10 +84,19 @@ Panel {
     // if tools is not specified, lock the toolbar in closed position
     locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
+    onOpenedChanged: {
+        if (tools && tools.hasOwnProperty("opened")) {
+            tools.opened = toolbar.opened;
+        }
+    }
+
     Connections {
         target: tools
         ignoreUnknownSignals: true
-        onOpenedChanged: toolbar.opened = tools.opened;
+        onOpenedChanged: {
+            print("AAA");
+            toolbar.opened = tools.opened;
+        }
         onLockedChanged: toolbar.locked = tools.locked;
     }
 
