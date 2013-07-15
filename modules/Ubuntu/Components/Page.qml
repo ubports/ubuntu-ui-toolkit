@@ -139,13 +139,6 @@ PageTreeNode {
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()
 
-        Binding {
-            target: toolbar
-            property: "tools"
-            when: toolbar && toolbar.hasOwnProperty("tools")
-            value: page.tools
-        }
-
         function updateHeaderAndToolbar() {
             if (page.active) {
                 if (internal.header) {
@@ -157,9 +150,9 @@ PageTreeNode {
                     if (tools.hasOwnProperty("__pageStack")) tools.__pageStack = page.pageStack;
                     if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
                 }
-//                if (internal.toolbar) {
-//                    internal.toolbar.tools = page.tools;
-//                }
+                if (internal.toolbar) {
+                    internal.toolbar.tools = page.tools;
+                }
             }
         }
 
