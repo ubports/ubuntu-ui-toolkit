@@ -127,6 +127,8 @@ ListItem.Empty {
 
             property bool isExpanded: expanded
             property int itemHeight: units.gu(5)
+            property url chevron: __styleInstance.chevron
+            property url tick: __styleInstance.tick
 
             anchors {
                 left: parent.left
@@ -162,19 +164,21 @@ ListItem.Empty {
 
                 interactive: false
                 clip: true
-                anchors.fill: parent
-
-                model: optionSelector.values
                 currentIndex: 0
+                model: optionSelector.values
+                anchors.fill: parent
 
                 delegate:
                 ListItem.Base {
-                    id: valueBase
+                    id: option
+
+                    property bool currentItem: ListView.isCurrentItem
 
                     width: parent.width + units.gu(4)
                     height: listContainer.itemHeight
                     showDivider: index === list.count - 1 || !listContainer.isExpanded ? false : true
                     highlightWhenPressed: false
+                    selected: ListView.isCurrentItem
                     anchors {
                         left: parent.left
                         leftMargin: units.gu(-2)
@@ -185,31 +189,18 @@ ListItem.Empty {
                     }
 
                     Image {
-                        id: tickIcon
-
-                        property url chevron: listContainer.__styleInstance.chevron
-                        property url tick: listContainer.__styleInstance.tick
+                        id: tick
 
                         width: units.gu(2)
                         height: units.gu(2)
                         opacity: enabled ? 1.0 : 0.5
-                        visible: valueBase.selected
+                        visible: option.selected
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
                             verticalCenter: parent.verticalCenter
                         }
-                        source: {
-                            if (!optionSelector.expanded) {
-                                if (!listContainer.isExpanded) {
-                                    chevron
-                                } else {
-                                    tick
-                                }
-                            } else {
-                                tick
-                            }
-                        }
+                        source: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight ? listContainer.chevron : listContainer.tick
                     }
 
                     ListItem.LabelVisual {

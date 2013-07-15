@@ -30,7 +30,7 @@ Template {
 
            OptionSelector {
                 text: i18n.tr("Label")
-                expanded: false
+                expanded: true
                 values: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
                          i18n.tr("Value 3"),
