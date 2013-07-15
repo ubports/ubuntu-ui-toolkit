@@ -98,6 +98,8 @@ ListItem.Empty {
      */
     property alias selectedIndex: list.currentIndex
 
+    property alias optionList: list
+
     /*!
       \preliminary
       Specifies whether the list is always expanded.
@@ -105,7 +107,6 @@ ListItem.Empty {
     property bool expanded: false
 
     showDivider: false
-    style: Theme.createStyleComponent("OptionSelectorStyle.qml", optionSelector)
 
     Column {
         id: column
@@ -115,35 +116,36 @@ ListItem.Empty {
             right: parent.right
         }
 
-        ListItem.Header {
+        ListItem.LabelVisual {
             text: optionSelector.text
+            height: units.gu(5)
+            fontSize: "medium"
         }
 
-        ListView {
-            id: list
+        StyledItem {
+            id: listContainer
 
             property bool isExpanded: expanded
             property int itemHeight: units.gu(5)
 
-            interactive: false
-            clip: true
             anchors {
                 left: parent.left
                 right: parent.right
             }
+            style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
             states: [ State {
                     name: "expanded"
-                    when: list.isExpanded
+                    when: listContainer.isExpanded
                     PropertyChanges {
-                        target: list
+                        target: listContainer
                         height: list.contentHeight
                     }
                 }, State {
                     name: "closed"
-                    when: !list.isExpanded
+                    when: !listContainer.isExpanded
                     PropertyChanges {
-                        target: list
+                        target: listContainer
                         height: itemHeight
                     }
                 }
@@ -155,62 +157,68 @@ ListItem.Empty {
                 }
             }
 
-            model: optionSelector.values
-            currentIndex: 0
+            ListView {
+                id: list
 
-            delegate:
-            ListItem.Base {
-                id: valueBase
+                interactive: false
+                clip: true
+                anchors.fill: parent
 
-                width: parent.width + units.gu(4)
-                height: list.itemHeight
-                showDivider: true
-                highlightWhenPressed: false
-                anchors {
-                    left: parent.left
-                    leftMargin: units.gu(-2)
-                }
-                onClicked: {
-                    if (list.isExpanded) list.currentIndex = index
-                    if (!optionSelector.expanded) list.isExpanded = !list.isExpanded
-                }
+                model: optionSelector.values
+                currentIndex: 0
 
-                selected: ListView.isCurrentItem
+                delegate:
+                ListItem.Base {
+                    id: valueBase
 
-                Image {
-                    id: tickIcon
-
-                    property url chevron: __styleInstance.chevron
-                    property url tick: __styleInstance.tick
-
-                    width: units.gu(2)
-                    height: units.gu(2)
-                    opacity: enabled ? 1.0 : 0.5
-                    visible: valueBase.selected
+                    width: parent.width + units.gu(4)
+                    height: listContainer.itemHeight
+                    showDivider: index === list.count - 1 || !listContainer.isExpanded ? false : true
+                    highlightWhenPressed: false
                     anchors {
-                        right: parent.right
-                        rightMargin: units.gu(2)
-                        verticalCenter: parent.verticalCenter
+                        left: parent.left
+                        leftMargin: units.gu(-2)
                     }
-                    source: {
-                        if (!optionSelector.expanded) {
-                            if (!list.isExpanded) {
-                                chevron
+                    onClicked: {
+                        if (listContainer.isExpanded) list.currentIndex = index
+                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded
+                    }
+
+                    Image {
+                        id: tickIcon
+
+                        property url chevron: listContainer.__styleInstance.chevron
+                        property url tick: listContainer.__styleInstance.tick
+
+                        width: units.gu(2)
+                        height: units.gu(2)
+                        opacity: enabled ? 1.0 : 0.5
+                        visible: valueBase.selected
+                        anchors {
+                            right: parent.right
+                            rightMargin: units.gu(2)
+                            verticalCenter: parent.verticalCenter
+                        }
+                        source: {
+                            if (!optionSelector.expanded) {
+                                if (!listContainer.isExpanded) {
+                                    chevron
+                                } else {
+                                    tick
+                                }
                             } else {
                                 tick
                             }
-                        } else {
-                            tick
                         }
                     }
-                }
 
-                ListItem.LabelVisual {
-                    text: modelData
-                    anchors {
-                    left: parent.left
-                        leftMargin: units.gu(1)
-                        verticalCenter: parent.verticalCenter
+                    ListItem.LabelVisual {
+                        text: modelData
+                        anchors {
+                        left: parent.left
+                            leftMargin: units.gu(1)
+                            verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
             }

@@ -26,6 +26,9 @@ Item {
 
     UbuntuShape {
         id: background
-        anchors.fill: parent
+
+        width: styledItem.width
+        height: styledItem.height
+        radius: "medium"
     }
 }
