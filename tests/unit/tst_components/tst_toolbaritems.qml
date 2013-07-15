@@ -23,6 +23,7 @@ Item {
     height: 200
 
     MainView {
+        id: mainView
         anchors.fill: parent
         PageStack {
             id: pageStack0
@@ -61,11 +62,15 @@ Item {
         }
 
         function test_opened() {
+            pageStack0.push(page0);
             compare(toolbarItems.opened, false, "Toolbar items initially closed");
             toolbarItems.opened = true;
             compare(toolbarItems.opened, true, "Toolbar items can be made opened");
+            compare(mainView.__propagated.toolbar.opened, toolbarItems.opened, "Can open toolbar by setting ToolbarItems.opened");
             toolbarItems.opened = false;
             compare(toolbarItems.opened, false, "Toolbar items can be made closed");
+            compare(mainView.__propagated.toolbar.opened, toolbarItems.opened, "Can close toolbar by setting ToolbarItems.opened");
+            pageStack0.pop(page0);
         }
 
         function test_locked() {
