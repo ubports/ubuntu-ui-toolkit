@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import "ListItems" as ListItem
 
 /*!
     \qmltype OptionSelector
@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1
     \endqml
 */
 ListItem.Empty {
-    id: selector
+    id: optionSelector
     __height: column.height
 
     /*!
@@ -90,7 +90,7 @@ ListItem.Empty {
       \preliminary
       The list of values that will be shown under the label text
      */
-    property variant values
+    property var values
 
     /*!
       \preliminary
@@ -105,7 +105,7 @@ ListItem.Empty {
     property bool expanded: false
 
     showDivider: false
-    style: Theme.createStyleComponent("OptionSelectorStyle.qml", selector)
+    style: Theme.createStyleComponent("OptionSelectorStyle.qml", optionSelector)
 
     Column {
         id: column
@@ -116,7 +116,7 @@ ListItem.Empty {
         }
 
         ListItem.Header {
-            text: selector.text
+            text: optionSelector.text
         }
 
         ListView {
@@ -155,11 +155,11 @@ ListItem.Empty {
                 }
             }
 
-            model: selector.values
+            model: optionSelector.values
             currentIndex: 0
 
             delegate:
-            Base {
+            ListItem.Base {
                 id: valueBase
 
                 width: parent.width + units.gu(4)
@@ -172,7 +172,7 @@ ListItem.Empty {
                 }
                 onClicked: {
                     if (list.isExpanded) list.currentIndex = index
-                    if (!selector.expanded) list.isExpanded = !list.isExpanded
+                    if (!optionSelector.expanded) list.isExpanded = !list.isExpanded
                 }
 
                 selected: ListView.isCurrentItem
@@ -180,8 +180,8 @@ ListItem.Empty {
                 Image {
                     id: tickIcon
 
-                    property string downChevron: "artwork/chevron_down_gradient@30.png"
-                    property string tick: "artwork/tick_light@30.png"
+                    property url chevron: __styleInstance.chevron
+                    property url tick: __styleInstance.tick
 
                     width: units.gu(2)
                     height: units.gu(2)
@@ -193,9 +193,9 @@ ListItem.Empty {
                         verticalCenter: parent.verticalCenter
                     }
                     source: {
-                        if (!selector.expanded) {
+                        if (!optionSelector.expanded) {
                             if (!list.isExpanded) {
-                                downChevron
+                                chevron
                             } else {
                                 tick
                             }
@@ -205,7 +205,7 @@ ListItem.Empty {
                     }
                 }
 
-                LabelVisual {
+                ListItem.LabelVisual {
                     text: modelData
                     anchors {
                     left: parent.left
