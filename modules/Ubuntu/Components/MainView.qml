@@ -102,16 +102,16 @@ import QtQuick 2.0
                     color: UbuntuColors.coolGrey
                 }
 
-                tools: ToolbarActions {
+                tools: ToolbarItems {
                     ToolbarButton {
                         action: Action {
-                            text: "red"
+                            text: "orange"
                             onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
-                            text: "green"
+                            text: "purple"
                             onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
