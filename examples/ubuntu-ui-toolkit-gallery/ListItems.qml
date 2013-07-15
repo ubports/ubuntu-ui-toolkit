@@ -77,18 +77,6 @@ Template {
     }
 
     ListItemsSection {
-        title: i18n.tr("Value selector")
-        className: "ValueSelector"
-        delegate: ListItem.ValueSelector {
-            text: i18n.tr("Label")
-            values: [i18n.tr("Value 1"),
-                     i18n.tr("Value 2"),
-                     i18n.tr("Value 3"),
-                     i18n.tr("Value 4")]
-        }
-    }
-
-    ListItemsSection {
         title: i18n.tr("Control")
         className: "Standard"
         delegate: ListItem.Standard {
