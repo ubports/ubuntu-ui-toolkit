@@ -63,7 +63,7 @@ Panel {
     /*! \internal */
     onToolsChanged: {
         print("setting tools to "+tools)
-        if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
+//        if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
@@ -82,7 +82,14 @@ Panel {
     }
 
     // if tools is not specified, lock the toolbar in closed position
-    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
+//    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
+    locked: false
+    Binding {
+        target: toolbar
+        property: "locked"
+        value: tools.locked
+        when: tools && tools.hasOwnProperty("locked")
+    }
 
     onOpenedChanged: {
         if (tools && tools.hasOwnProperty("opened")) {
