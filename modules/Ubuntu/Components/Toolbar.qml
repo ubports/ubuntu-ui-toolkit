@@ -72,10 +72,10 @@ Panel {
         } else if (!opened && !animating) {
             // toolbar is closed
             internal.updateVisibleTools();
-            tools.opened = false;
+            //            tools.opened = false;
         } else {
             opened = false;
-            tools.opened = false;
+//            tools.opened = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
