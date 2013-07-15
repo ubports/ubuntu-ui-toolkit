@@ -62,7 +62,6 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
-        print("setting tools to "+tools)
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
@@ -94,10 +93,7 @@ Panel {
     Connections {
         target: tools
         ignoreUnknownSignals: true
-        onOpenedChanged: {
-            print("AAA");
-            toolbar.opened = tools.opened;
-        }
+        onOpenedChanged: toolbar.opened = tools.opened;
         onLockedChanged: toolbar.locked = tools.locked;
     }
 
