@@ -46,7 +46,7 @@ class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
         test_qml_file = (
             "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/"
             "ubuntu-ui-toolkit-gallery.qml")
-    
+
 
 class GenericTests(GalleryTestCase):
     """Generic tests for the Gallery"""
@@ -312,8 +312,7 @@ class ButtonsTestCase(GalleryTestCase):
              color=None, icon="call.png", text="Call")),
          ('disabled button', dict(
              button_name="button_text_disabled", is_enabled=False, color=None,
-             icon=None, text="Call")),
-        ]
+             icon=None, text="Call"))]
     )
 
     def test_buttons(self):
