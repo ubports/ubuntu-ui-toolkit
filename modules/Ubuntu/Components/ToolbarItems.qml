@@ -54,7 +54,7 @@ import QtQuick 2.0
                     ToolbarButton {
                         action: Action {
                             text: "button"
-                            icon: Qt.resolvedUrl("icon.png")
+                            iconSource: Qt.resolvedUrl("icon.png")
                             onTriggered: print("success!")
                         }
                     }
@@ -86,7 +86,7 @@ import QtQuick 2.0
                     ToolbarButton {
                         action: Action {
                             text: "toolbar"
-                            icon: Qt.resolvedUrl("icon.png")
+                            iconSource: Qt.resolvedUrl("icon.png")
                             onTriggered: print("success!")
                         }
                     }

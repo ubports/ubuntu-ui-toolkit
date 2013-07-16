@@ -133,6 +133,8 @@ PageTreeNode {
     onToolsChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
+    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     /*!
       Local actions. These actions will be made available outside the application

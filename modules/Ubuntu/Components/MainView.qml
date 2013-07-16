@@ -103,16 +103,16 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
                     color: UbuntuColors.coolGrey
                 }
 
-                tools: ToolbarActions {
+                tools: ToolbarItems {
                     ToolbarButton {
                         action: Action {
-                            text: "red"
+                            text: "orange"
                             onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
-                            text: "green"
+                            text: "purple"
                             onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
@@ -136,6 +136,47 @@ PageTreeNode {
       */
     property string applicationName: ""
 
+    /*!
+      \qmlproperty color headerColor
+      Color of the header's background.
+
+      \sa backgroundColor, footerColor
+     */
+    property alias headerColor: background.headerColor
+    /*!
+      \qmlproperty color backgroundColor
+      Color of the background.
+
+      The background is usually a single color. However if \l headerColor
+      or \l footerColor are set then a gradient of colors will be drawn.
+
+      For example, in order for the MainView to draw a color gradient beneath
+      the content:
+      \qml
+          import QtQuick 2.0
+          import Ubuntu.Components 0.1
+
+          MainView {
+              width: units.gu(40)
+              height: units.gu(60)
+
+              headerColor: "#343C60"
+              backgroundColor: "#6A69A2"
+              footerColor: "#8896D5"
+          }
+      \endqml
+
+      \sa footerColor, headerColor
+     */
+    property alias backgroundColor: background.backgroundColor
+    /*!
+      \qmlproperty color footerColor
+      Color of the footer's background.
+
+      \sa backgroundColor, headerColor
+     */
+    property alias footerColor: background.footerColor
+
     // FIXME: Make sure that the theming is only in the background, and the style
     //  should not occlude contents of the MainView. When making changes here, make
     //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
@@ -143,6 +184,10 @@ PageTreeNode {
         id: background
         anchors.fill: parent
         style: Theme.createStyleComponent("MainViewStyle.qml", background)
+
+        property color headerColor: backgroundColor
+        property color backgroundColor: Theme.palette.normal.background
+        property color footerColor: backgroundColor
     }
 
     /*!
@@ -171,9 +216,29 @@ PageTreeNode {
 
         automaticOrientation: false
 
+        // clip the contents so that it does not overlap the header
         Item {
-            id: contents
-            anchors.fill: parent
+            id: contentsClipper
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: headerItem.bottom
+                bottom: parent.bottom
+            }
+            // only clip when necessary
+            clip: headerItem.bottomY > 0 && activePage && activePage.flickable
+                  && -activePage.flickable.contentY < headerItem.bottomY
+
+            property Page activePage: mainView.activeLeafNode
+
+            Item {
+                id: contents
+                anchors {
+                    fill: parent
+                    // compensate so that the actual y is always 0
+                    topMargin: -parent.y
+                }
+            }
         }
 
         /*!
@@ -182,6 +247,7 @@ PageTreeNode {
          */
         Header {
             id: headerItem
+            property real bottomY: headerItem.y + headerItem.height
         }
 
         Toolbar {

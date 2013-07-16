@@ -26,11 +26,30 @@ Item {
         id: action0
     }
 
+    Flickable {
+        id: testFlickable
+    }
+
     MainView {
         anchors.fill: parent
         id: mainView
         Page {
             id: page
+            Flickable {
+                id: pageFlickable
+                anchors.fill: parent
+                contentHeight: column.height
+
+                Column {
+                    id: column
+                    Repeater {
+                        model: 100
+                        Label {
+                            text: "line "+index
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -91,6 +110,16 @@ Item {
             compare(page.actions.length, 1, "Actions can be added to page actions");
             page.actions = [];
             compare(page.actions.length, 0, "Page action list can be cleared");
+        }
+        function test_flickable_bug1200642_bug1192591() {
+            compare(page.flickable, pageFlickable, "page flickable is correctly detected");
+            compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
+            page.flickable = testFlickable;
+            compare(page.flickable, testFlickable, "flickable can be set");
+            compare(page.__propagated.header.flickable, testFlickable, "updating page flickable updates header flickable");
+            page.flickable = null;
+            compare(page.flickable, null, "flickable can be unset");
+            compare(page.__propagated.header.flickable, null, "unsetting page flickable unsets header flickable");
         }
     }
 }
