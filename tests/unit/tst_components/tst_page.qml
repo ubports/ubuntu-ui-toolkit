@@ -80,6 +80,8 @@ Item {
             page.title = newTitle
             compare(mainView.__propagated.header.title, newTitle, "header title updated by changing page title")
             compare(mainView.__propagated.header.visible, true, "header is visible when title is set")
+            print("mainview height = "+mainView.height)
+            compare(mainView.__propagated.header.height > 0, true, "header has a height when title is set")
             page.title = ""
             compare(mainView.__propagated.header.title, "", "header title unset by unsetting page title")
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
@@ -106,6 +108,10 @@ Item {
             page.flickable = null;
             compare(page.flickable, null, "flickable can be unset");
             compare(page.__propagated.header.flickable, null, "unsetting page flickable unsets header flickable");
+        }
+
+        function test_flickableY_bug1201452() {
+
         }
     }
 }

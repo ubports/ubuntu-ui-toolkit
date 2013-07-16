@@ -42,6 +42,7 @@ Item {
     property real textLeftMargin: units.gu(2)
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+    onImplicitHeightChanged: print("new implicit height = "+implicitHeight)
 
     BorderImage {
         id: separator

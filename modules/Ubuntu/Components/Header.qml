@@ -44,7 +44,11 @@ StyledItem {
     }
 
     /*! \internal */
-    onHeightChanged: internal.movementEnded()
+    onHeightChanged: {
+        print("new header height = "+height);
+        internal.movementEnded();
+    }
+    height: implicitHeight
 
     visible: title || contents
 
@@ -156,4 +160,6 @@ StyledItem {
     }
 
     style: Theme.createStyleComponent("HeaderStyle.qml", header)
+    onStyleChanged: print("style for header = "+style)
+    Component.onCompleted: print("header style = "+style)
 }
