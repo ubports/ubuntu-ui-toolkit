@@ -78,6 +78,7 @@ Text
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
+    property bool anchorToKeyboard
     property color headerColor
     property color backgroundColor
     property color footerColor
