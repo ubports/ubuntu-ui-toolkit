@@ -156,15 +156,11 @@ PageTreeNode {
             }
         }
 
-//        Connections {
-//            target: page
-//            onFlickableChanged: internal.updateFlickableMargins()
-//        }
-//        onHeaderHeightChanged: {
-//            print("header height changed to "+headerHeight);
-//            internal.updateFlickableMargins()
-//        }
-        Component.onCompleted: internal.updateFlickableMargins()
+        Connections {
+            target: page
+            onFlickableChanged: internal.updateFlickablePosition()
+        }
+        Component.onCompleted: internal.updateFlickablePosition()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
@@ -204,12 +200,11 @@ PageTreeNode {
             when: page.flickable
         }
 
-        function updateFlickableMargins() {
+        function updateFlickablePosition() {
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
                 page.flickable.contentY = -headerHeight;
-                page.flickable.topMargin = headerHeight;
             }
         }
     }
