@@ -128,6 +128,8 @@ PageTreeNode {
     onToolsChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
+    /*! \internal */
+    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     Item {
         id: internal
