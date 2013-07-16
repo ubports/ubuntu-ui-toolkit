@@ -44,11 +44,7 @@ StyledItem {
     }
 
     /*! \internal */
-    onHeightChanged: {
-        print("new header height = "+height);
-        internal.movementEnded();
-    }
-    height: implicitHeight
+    onHeightChanged: internal.movementEnded()
 
     visible: title || contents
 
