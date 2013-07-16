@@ -156,6 +156,4 @@ StyledItem {
     }
 
     style: Theme.createStyleComponent("HeaderStyle.qml", header)
-    onStyleChanged: print("style for header = "+style)
-    Component.onCompleted: print("header style = "+style)
 }

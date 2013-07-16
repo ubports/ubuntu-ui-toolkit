@@ -129,10 +129,7 @@ PageTreeNode {
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
-    onFlickableChanged: {
-        print("flickable changed to "+flickable)
-        internal.updateHeaderAndToolbar()
-    }
+    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     Item {
         id: internal
@@ -187,8 +184,6 @@ PageTreeNode {
           Return the first flickable child of this page.
          */
         function getFlickableChild(item) {
-            print("num children = "+item.children.length)
-
             if (item && item.hasOwnProperty("children")) {
                 for (var i=0; i < item.children.length; i++) {
                     var child = item.children[i];
@@ -210,11 +205,9 @@ PageTreeNode {
         }
 
         function updateFlickableMargins() {
-            print(""+ page+" AAA "+headerHeight +page.flickable)
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
-                print("setting contentY to -"+headerHeight)
                 page.flickable.contentY = -headerHeight;
                 page.flickable.topMargin = headerHeight;
             }

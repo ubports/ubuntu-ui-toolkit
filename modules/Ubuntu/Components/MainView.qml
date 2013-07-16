@@ -205,7 +205,6 @@ PageTreeNode {
      */
     property alias automaticOrientation: canvas.automaticOrientation
 
-    Component.onCompleted: console.log("huh")
     /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
