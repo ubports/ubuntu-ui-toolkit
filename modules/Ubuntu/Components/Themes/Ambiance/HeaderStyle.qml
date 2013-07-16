@@ -41,9 +41,7 @@ Item {
     property color textColor: Theme.palette.selected.backgroundText
     property real textLeftMargin: units.gu(2)
 
-    implicitHeight: foreground.header.visible ?
-                        headerStyle.contentHeight + separator.height + separatorBottom.height
-                      : 0
+    implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
     BorderImage {
         id: separator

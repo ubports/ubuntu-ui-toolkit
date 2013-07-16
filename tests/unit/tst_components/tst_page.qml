@@ -84,7 +84,6 @@ Item {
             page.title = ""
             compare(mainView.__propagated.header.title, "", "header title unset by unsetting page title")
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
-            compare(mainView.__propagated.header.height, 0, "header height is 0 when no title is set")
         }
 
         function test_tools() {
@@ -111,7 +110,15 @@ Item {
         }
 
         function test_flickableY_bug1201452() {
-
+            var pageTitle = "Hello bug!";
+            page.title = pageTitle;
+            var flickableY = 150;
+            page.flickable.contentY = flickableY;
+            compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
+            page.title = "";
+            compare(page.flickable.contentY, flickableY, "Making header invisible does not reset flickable.contentY");
+            page.title = pageTitle;
+            compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
         }
     }
 }
