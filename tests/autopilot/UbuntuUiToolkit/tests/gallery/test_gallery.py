@@ -338,10 +338,10 @@ class ButtonsTestCase(GalleryTestCase):
         self.pointing_device.press()
 
         if button.enabled:
-            self.assertTrue(button.pressed)
+            self.assertThat(button.pressed, Eventually(Equals(True)))
         else:
             self.assertFalse(button.pressed)
 
         self.pointing_device.release()
 
-        self.assertFalse(button.pressed)
+        self.assertThat(button.pressed, Eventually(Equals(False)))
