@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Dialog: removed clipping that not clipping anything.
+  * Removed unused PointerStyleShader.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 626
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 04:01:54 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130714-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
