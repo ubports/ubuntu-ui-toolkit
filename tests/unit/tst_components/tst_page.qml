@@ -80,11 +80,11 @@ Item {
             page.title = newTitle
             compare(mainView.__propagated.header.title, newTitle, "header title updated by changing page title")
             compare(mainView.__propagated.header.visible, true, "header is visible when title is set")
-            print("mainview height = "+mainView.height)
             compare(mainView.__propagated.header.height > 0, true, "header has a height when title is set")
             page.title = ""
             compare(mainView.__propagated.header.title, "", "header title unset by unsetting page title")
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
+            compare(mainView.__propagated.header.height, 0, "header height is 0 when no title is set")
         }
 
         function test_tools() {
