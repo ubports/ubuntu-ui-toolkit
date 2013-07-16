@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype MainView
@@ -254,6 +255,22 @@ PageTreeNode {
         }
     }
 
+    /*!
+      A global list of actions that will be available to the system (including HUD)
+      as long as the application is running. For actions that are not always available to the
+      system, but only when a certain \l Page is active, see the actions property of \l Page.
+
+      \qmlproperty list<Action> actions
+     */
+    property alias actions: unityActionManager.actions
+
+    Object {
+        id: internal
+        UnityActions.ActionManager {
+            id: unityActionManager
+        }
+    }
+
     __propagated: QtObject {
         /*!
           \internal
@@ -268,6 +285,13 @@ PageTreeNode {
           It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarItem
+
+        /*!
+          \internal
+          The action manager that has the global context for the MainView's actions,
+          and to which a local context can be added for each Page that has actions.actions.
+         */
+        property var actionManager: unityActionManager
     }
 
     /*!
