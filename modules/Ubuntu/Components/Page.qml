@@ -129,7 +129,10 @@ PageTreeNode {
     /*! \internal */
     onPageStackChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
+    onFlickableChanged: {
+        print("flickable changed to "+flickable)
+        internal.updateHeaderAndToolbar()
+    }
 
     Item {
         id: internal
@@ -156,11 +159,14 @@ PageTreeNode {
             }
         }
 
-        Connections {
-            target: page
-            onFlickableChanged: internal.updateFlickableMargins()
-        }
-        onHeaderHeightChanged: internal.updateFlickableMargins()
+//        Connections {
+//            target: page
+//            onFlickableChanged: internal.updateFlickableMargins()
+//        }
+//        onHeaderHeightChanged: {
+//            print("header height changed to "+headerHeight);
+//            internal.updateFlickableMargins()
+//        }
         Component.onCompleted: internal.updateFlickableMargins()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
@@ -181,6 +187,8 @@ PageTreeNode {
           Return the first flickable child of this page.
          */
         function getFlickableChild(item) {
+            print("num children = "+item.children.length)
+
             if (item && item.hasOwnProperty("children")) {
                 for (var i=0; i < item.children.length; i++) {
                     var child = item.children[i];
@@ -194,10 +202,19 @@ PageTreeNode {
             return null;
         }
 
+        Binding {
+            target: page.flickable
+            property: "topMargin"
+            value: internal.headerHeight
+            when: page.flickable
+        }
+
         function updateFlickableMargins() {
-            if (flickable) {
+            print(""+ page+" AAA "+headerHeight +page.flickable)
+            if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
+                print("setting contentY to -"+headerHeight)
                 page.flickable.contentY = -headerHeight;
                 page.flickable.topMargin = headerHeight;
             }
