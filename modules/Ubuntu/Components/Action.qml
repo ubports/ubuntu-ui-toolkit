@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype Action
@@ -26,25 +27,29 @@ import QtQuick 2.0
 
     Examples: See \l Page
 */
-QtObject {
+UnityActions.Action {
     id: action
 
-    /*!
-      \preliminary
-      The title of the action.
-     */
-    property string text
+    // FIXME: the properties that are not defined here, but only documented using qmlproperty
+    //  do not show up in the documentation. Best is to replace these docs by a reference
+    //  to UnityActions.Action when they become available online.
 
     /*!
-      \preliminary
-      The image associated with the action.
+      The title of the action.
+      \qmlproperty string Ubuntu.Components.Action::text
      */
+
+    /*!
+      The image associated with the action.
+      \qmlproperty url iconSource
+     */
+    // TODO: Move iconSource to unity action if possible
     property url iconSource
 
     /*!
       Called when the action is triggered.
+      \qmlsignal Ubuntu.Components.Action::triggered(var property)
      */
-    signal triggered(var caller)
 
     /*!
       \deprecated
@@ -57,19 +62,15 @@ QtObject {
 
     /*!
       Enable the action. It may be visible, but disabled.
+      \qmlproperty bool enabled
      */
-    property bool enabled: true
 
     /*!
       \deprecated
       \b {itemHint is DEPRECATED. Use \l ActionItem to specify
       the representation of an \l Action.}
-      Proposed Component to use as a representation for this action.
-      Depending on the component that displays the action, the Component
-      given here can replace the default representation of the action.
      */
     property Component itemHint
-
     /*! \internal */
     onItemHintChanged: print("Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 }
