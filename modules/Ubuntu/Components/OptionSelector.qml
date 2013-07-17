@@ -82,6 +82,7 @@ ListItem.Empty {
     Column {
         id: column
 
+	spacing: units.gu(2)
         anchors {
             left: parent.left
             right: parent.right
@@ -89,7 +90,7 @@ ListItem.Empty {
 
         ListItem.LabelVisual {
             text: optionSelector.text
-            height: units.gu(5)
+            height: units.gu(2)
             fontSize: "medium"
         }
 
