@@ -142,12 +142,12 @@ ListItem.Empty {
                 anchors.fill: parent
 
                 delegate:
-                ListItem.Base {
+                ListItem.Standard {
                     id: option
 
                     property bool currentItem: ListView.isCurrentItem
 
-                    width: parent.width + units.gu(4)
+                    width: parent.width + units.gu(2)
                     height: listContainer.itemHeight
                     showDivider: index === list.count - 1 || !listContainer.isExpanded ? false : true
                     highlightWhenPressed: false
@@ -200,7 +200,7 @@ ListItem.Empty {
                         text: modelData
                         anchors {
                         left: parent.left
-                            leftMargin: units.gu(1)
+                            leftMargin: units.gu(3)
                             verticalCenter: parent.verticalCenter
                         }
                     }
