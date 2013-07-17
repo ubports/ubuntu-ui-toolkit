@@ -16,20 +16,12 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components.Themes.Ambiance 0.1
 
-Item {
-    id: ambianceStyle
+OptionSelectorStyle {
+    id: suruGradientStyle
 
-    property url chevron: "../../artwork/chevron_down@30.png"
-    property url tick: "../../artwork/tick@30.png"
-    property bool colourComponent: true
-
-    UbuntuShape {
-        id: background
-
-        width: styledItem.width
-        height: styledItem.height
-        radius: "medium"
-    }
+    chevron: "artwork/chevron_down@30.png"
+    tick: "artwork/tick@30.png"
+    colourComponent: false
 }

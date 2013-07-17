@@ -22,30 +22,31 @@ import "ListItems" as ListItem
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
-    where expanding it opens a listing of all the possible values for selection.
+    where expanding it opens a listing of all the possible values for selection
+    with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 0.1
         Column {
             width: 250
-            ListItem.OptionSelector {
+            OptionSelector {
                 text: "Standard"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            ListItem.OptionSelector {
+            OptionSelector {
                 text: "Disabled"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            ListItem.OptionSelector {
+            OptionSelector {
                 text: "Expanded"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            ListItem.OptionSelector {
+            OptionSelector {
                 text: "Icon"
                 icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
@@ -59,34 +60,6 @@ ListItem.Empty {
     __height: column.height
 
     /*!
-      \internal
-      \deprecated
-      Width of the icon to be displayed
-    */
-    property real __iconWidth
-
-    /*!
-      \internal
-      \deprecated
-      Height of the icon to be displayed
-    */
-    property real __iconHeight
-
-    /*!
-      \internal
-      \deprecated
-      The margins on the left side of the icon.
-     */
-    property real __leftIconMargin
-
-    /*!
-      \internal
-      \deprecated
-      The margins on the right side of the icon.
-     */
-    property real __rightIconMargin
-
-    /*!
       \preliminary
       The list of values that will be shown under the label text
      */
@@ -97,8 +70,6 @@ ListItem.Empty {
       The index of the currently selected element from the \l values array.
      */
     property alias selectedIndex: list.currentIndex
-
-    property alias optionList: list
 
     /*!
       \preliminary
@@ -129,6 +100,8 @@ ListItem.Empty {
             property int itemHeight: units.gu(5)
             property url chevron: __styleInstance.chevron
             property url tick: __styleInstance.tick
+            property color themeColour: Theme.palette.selected.fieldText
+            property bool colourComponent: __styleInstance.colourComponent
 
             anchors {
                 left: parent.left
@@ -189,7 +162,7 @@ ListItem.Empty {
                     }
 
                     Image {
-                        id: tick
+                        id: rightImage
 
                         width: units.gu(2)
                         height: units.gu(2)
@@ -201,6 +174,26 @@ ListItem.Empty {
                             verticalCenter: parent.verticalCenter
                         }
                         source: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight ? listContainer.chevron : listContainer.tick
+
+                        ShaderEffect {
+                            property color colour: listContainer.themeColour
+                            property var source: rightImage
+
+                            width: source.width
+                            height: source.height
+                            visible: source.status === Image.Ready && listContainer.colourComponent
+
+                            fragmentShader: "
+                                    varying highp vec2 qt_TexCoord0;
+                                    uniform sampler2D source;
+                                    uniform lowp vec4 colour;
+                                    uniform lowp float qt_Opacity;
+
+                                    void main() {
+                                        lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                                        gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                                    }"
+                        }
                     }
 
                     ListItem.LabelVisual {

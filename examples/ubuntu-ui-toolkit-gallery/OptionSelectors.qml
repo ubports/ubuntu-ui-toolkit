@@ -27,6 +27,16 @@ Template {
             id: column
             anchors.left: parent.left
             anchors.right: parent.right
+            spacing: units.gu(3)
+
+           OptionSelector {
+                text: i18n.tr("Label")
+                expanded: false
+                values: [i18n.tr("Value 1"),
+                         i18n.tr("Value 2"),
+                         i18n.tr("Value 3"),
+                         i18n.tr("Value 4")]
+            }
 
            OptionSelector {
                 text: i18n.tr("Label")
