@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testNameSet();
     void testCreateStyleComponent();
     void testCreateStyleComponent_data();
+    void testThemesRelativePath();
 };
 
 void tst_UCTheme::testInstance()
@@ -79,6 +80,19 @@ void tst_UCTheme::testCreateStyleComponent_data() {
     QTest::newRow("No parent") << "TestStyle.qml" << "" << false;
 }
 
+void tst_UCTheme::testThemesRelativePath()
+{
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../tst_theme_engine");
+
+    UCTheme theme;
+    theme.setName("TestModule.TestTheme");
+    QQmlEngine engine;
+    QQmlComponent parentComponent(&engine, "Parent.qml");
+    QObject* parent = parentComponent.create();
+    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
+
+    QCOMPARE(component != NULL, true);
+}
 
 
 QTEST_MAIN(tst_UCTheme)
