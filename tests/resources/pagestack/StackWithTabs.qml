@@ -40,7 +40,10 @@ Rectangle {
                     page: Page {
                         Button {
                             anchors.centerIn: parent
-                            onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                            onClicked: {
+                                pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"));
+//                                tabs.visible = false;
+                            }
                             text: "push"
                         }
                     }
