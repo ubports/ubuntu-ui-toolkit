@@ -31,7 +31,7 @@ Rectangle {
 
         PageStack {
             id: pageStack
-            Component.onCompleted: push(page0)
+            Component.onCompleted: push(tabs)
 
             Tabs {
                 id: tabs
@@ -42,7 +42,6 @@ Rectangle {
                             anchors.centerIn: parent
                             onClicked: {
                                 pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"));
-//                                tabs.visible = false;
                             }
                             text: "push"
                         }

@@ -28,7 +28,6 @@ import QtQuick 2.0
 */
 StyledItem {
     id: node
-//    visible: active
 
     /*!
       \internal
