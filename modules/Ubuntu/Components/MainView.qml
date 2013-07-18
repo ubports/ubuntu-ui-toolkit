@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype MainView
@@ -102,16 +103,16 @@ import QtQuick 2.0
                     color: UbuntuColors.coolGrey
                 }
 
-                tools: ToolbarActions {
+                tools: ToolbarItems {
                     ToolbarButton {
                         action: Action {
-                            text: "red"
+                            text: "orange"
                             onTriggered: rectangle.color = UbuntuColors.orange
                         }
                     }
                     ToolbarButton {
                         action: Action {
-                            text: "green"
+                            text: "purple"
                             onTriggered: rectangle.color = UbuntuColors.lightAubergine
                         }
                     }
@@ -134,6 +135,15 @@ PageTreeNode {
       desktop file's name.
       */
     property string applicationName: ""
+
+    /*!
+      \preliminary
+      The property holds if the application should automatically resize the
+      contents when the input method appears
+
+      The default value is false.
+      */
+    property bool anchorToKeyboard: false
 
     /*!
       \qmlproperty color headerColor
@@ -214,6 +224,15 @@ PageTreeNode {
         id: canvas
 
         automaticOrientation: false
+        // this will make sure that the keyboard does not obscure the contents
+        anchors {
+            bottomMargin: Qt.inputMethod.visible && anchorToKeyboard ? Qt.inputMethod.keyboardRectangle.height : 0
+            //this is an attempt to keep the keyboard animation in sync with the content resize
+            //but this does not work very well because the keyboard animation has different steps
+            Behavior on bottomMargin {
+                NumberAnimation { easing.type: Easing.InOutQuad }
+            }
+        }
 
         // clip the contents so that it does not overlap the header
         Item {
@@ -234,6 +253,9 @@ PageTreeNode {
                 id: contents
                 anchors {
                     fill: parent
+                    
+                    // move the whole contents up if the toolbar is locked and opened otherwise the toolbar will obscure part of the contents
+                    bottomMargin: toolbarItem.locked && toolbarItem.opened ? toolbarItem.height + toolbarItem.triggerSize : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
                 }
@@ -254,6 +276,22 @@ PageTreeNode {
         }
     }
 
+    /*!
+      A global list of actions that will be available to the system (including HUD)
+      as long as the application is running. For actions that are not always available to the
+      system, but only when a certain \l Page is active, see the actions property of \l Page.
+
+      \qmlproperty list<Action> actions
+     */
+    property alias actions: unityActionManager.actions
+
+    Object {
+        id: internal
+        UnityActions.ActionManager {
+            id: unityActionManager
+        }
+    }
+
     __propagated: QtObject {
         /*!
           \internal
@@ -268,6 +306,13 @@ PageTreeNode {
           It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarItem
+
+        /*!
+          \internal
+          The action manager that has the global context for the MainView's actions,
+          and to which a local context can be added for each Page that has actions.actions.
+         */
+        property var actionManager: unityActionManager
     }
 
     /*!
