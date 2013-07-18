@@ -39,6 +39,7 @@ API Changes
 * DEPRECATED IN Action: property bool visible
 * DEPRECATED IN Action: property Item itemHint
 * DEPRECATED: ToolbarActions component (use ToolbarItems instead)
+* ADDED IN MainView: property bool anchorToKeyboard
 
 Compatibility Breaks
 ********************

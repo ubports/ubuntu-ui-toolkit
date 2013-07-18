@@ -42,20 +42,22 @@ def get_module_include_path():
     )
 
 
-class UbuntuUiToolkitTestCase(AutopilotTestCase):
+def get_input_device_scenarios():
+    """Return the scenarios with the right input device for the platform."""
+    if model() == 'Desktop':
+        scenarios = [('with mouse', dict(input_device_class=Mouse))]
+    else:
+        scenarios = [('with touch', dict(input_device_class=Touch))]
+    return scenarios
 
+
+class UbuntuUiToolkitTestCase(AutopilotTestCase):
     """Common test case class for SDK tests."""
 
-    if model() == 'Desktop':
-        scenarios = [
-            ('with mouse', dict(input_device_class=Mouse))
-        ]
-    else:
-        scenarios = [
-            ('with touch', dict(input_device_class=Touch))
-        ]
+    scenarios = get_input_device_scenarios()
 
     def setUp(self):
+        import pdb; pdb.set_trace()
         self.pointing_device = Pointer(self.input_device_class.create())
         super(UbuntuUiToolkitTestCase, self).setUp()
         self.launch_test_qml()
