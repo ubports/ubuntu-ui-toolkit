@@ -57,7 +57,6 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
     scenarios = get_input_device_scenarios()
 
     def setUp(self):
-        import pdb; pdb.set_trace()
         self.pointing_device = Pointer(self.input_device_class.create())
         super(UbuntuUiToolkitTestCase, self).setUp()
         self.launch_test_qml()
