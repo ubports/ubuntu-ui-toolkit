@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130718-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover: added manual test program.
+  * Popover simplifications: - simplified pointer positioning by only
+    computing the position of the tip; it's up to the pointer to
+    rotate/translate adequately. - fixed implementation of
+    Popover.callerMargin and set default value to 0. - removed unused
+    parameter 'pointerMargin' from InternalPopupUtils.CallerPositioning.
+
+  [ tpeeters ]
+  * Fix bug where toolbarActions.opened was not properly updated when
+    the user swipes to show/hide the toolbar. (LP: #1192673)
+  * Improve code examples in documentation.
+  * Use UnityActions to make Actions available to HUD: - Action now
+    inherits UnityActions.Action - Added "actions" property to MainView
+    to contain global actions that are available in HUD as long as the
+    app is running. - Added "actions" property to Page to contain local
+    actions that are available in HUD when the Page is active. (LP:
+    #1187869)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Make sure that the keyboard does not obscure the contents of main
+    window. (LP: #1131249)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 633
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Jul 2013 06:07:54 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130716-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
