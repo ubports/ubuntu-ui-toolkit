@@ -1,3 +1,37 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Dialog: removed clipping that not clipping anything.
+  * Removed unused PointerStyleShader.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 626
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 04:01:54 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130714-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * MainView: new API to choose the background colors. That requires: -
+    HeaderStyle: removed background. - MainView: clip the contents when
+    necessary. - PageTreeNode: new properties 'isLeaf' and
+    'activeLeafNode'.
+
+  [ Leo Arias ]
+  * Fixed the pep8 errors and copyright notices.
+
+  [ Didier Roche ]
+  * fix icon -> iconSource for toolbar doc.
+
+  [ tpeeters ]
+  * Fix bug where Header did not get linked to the new Flickable when
+    Page.flickable is automatically detected. (LP: #1200642, #1192591)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 623
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 14 Jul 2013 04:02:43 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130712-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]

@@ -20,10 +20,6 @@ import Ubuntu.Components 0.1
 Image {
     // FIXME: We may use one image that we rotate and scale, except if that gives wrong
     //  results because of the shading (for example, always shadow on the right side).
-    id: image
-    anchors.fill: parent
-
-    visible: (styledItem.direction !== "none")
     source: (styledItem.direction === "left") ? "artwork/LeftArrow.png" :
             (styledItem.direction === "right") ? "artwork/RightArrow.png" :
             (styledItem.direction === "up") ? "artwork/UpArrow.png" :

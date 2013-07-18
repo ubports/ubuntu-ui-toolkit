@@ -7,12 +7,9 @@ ActionItem
     property bool __acceptEvents
     property internal __mouseArea
 modules/Ubuntu/Components/Action.qml
-QtObject
-    property string text
+UnityActions.Action
     property url iconSource
-    signal triggered(var caller)
     property bool visible
-    property bool enabled
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
 StyledItem
@@ -81,11 +78,13 @@ Text
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
+    property bool anchorToKeyboard
     property color headerColor
     property color backgroundColor
     property color footerColor
     property bool automaticOrientation
     default property internal contentsItem
+    property list<Action> actions
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
@@ -103,3 +102,4 @@ ListItem.Empty
     property var values
     property alias selectedIndex
 Error: Missing \qmlproperty annotation
+    property list<Action> actions
