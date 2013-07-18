@@ -77,9 +77,9 @@ Template {
     }
 
     ListItemsSection {
-        title: i18n.tr("Value selector")
-        className: "ValueSelector"
-        delegate: ListItem.ValueSelector {
+        title: i18n.tr("Option selector")
+        className: "OptionSelector"
+        delegate: ListItem.OptionSelector {
             text: i18n.tr("Label")
             values: [i18n.tr("Value 1"),
                      i18n.tr("Value 2"),
