@@ -96,10 +96,10 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     def __init__(self, *args):
         super(Toolbar, self).__init__(*args)
         self.pointing_device = get_pointing_device()
-        
+
     def click_button(self, object_name):
         """Click a button of the toolbar.
-        
+
         :param object_name: The QML objectName property of the button.
 
         """
