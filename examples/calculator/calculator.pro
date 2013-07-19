@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+SUBDIRS += components
+
 filetypes = qml png svg js qmltheme jpg qmlproject desktop wav
 
 OTHER_FILES = ""
