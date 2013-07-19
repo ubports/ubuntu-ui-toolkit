@@ -15,18 +15,28 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-class MainWindow(object):
-    """An emulator class that makes it easy to interact with the camera-app."""
+from UbuntuUiToolkit import emulators, tests
 
-    def __init__(self, app):
-        self.app = app
 
-    def get_qml_view(self):
-        """Get the main QML view"""
-        return self.app.select_single("QQuickView")
+class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
 
-    def get_object(self, typeName, name):
-        return self.app.select_single(typeName, objectName=name)
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-    def get_object_by_text(self, typeName, itemText):
-        return self.app.select_single(typeName, text=itemText)
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Page {
+        title: "Test title"
+    }
+}
+""")
+
+    def test_main_view_custom_emulator(self):
+        self.assertIsInstance(self.main_view, emulators.MainView)
+
+    def test_get_header(self):
+        header = self.main_view.get_header()
+        self.assertEqual(header.title, "Test title")

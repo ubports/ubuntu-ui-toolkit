@@ -25,8 +25,8 @@ from autopilot.matchers import Eventually
 from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
+
 from UbuntuUiToolkit import tests
-from UbuntuUiToolkit.emulators.main_window import MainWindow
 
 
 class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
@@ -54,7 +54,7 @@ class GenericTests(GalleryTestCase):
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
 
-        rootItem = self.main_window.get_qml_view()
+        rootItem = self.main_view
         self.assertThat(rootItem, Not(Is(None)))
         self.assertThat(rootItem.visible, Eventually(Equals(True)))
 
