@@ -186,10 +186,9 @@ PageTreeNode {
 
         Connections {
             target: page
-            onFlickableChanged: internal.updateFlickableMargins()
+            onFlickableChanged: internal.updateFlickablePosition()
         }
-        onHeaderHeightChanged: internal.updateFlickableMargins()
-        Component.onCompleted: internal.updateFlickableMargins()
+        Component.onCompleted: internal.updateFlickablePosition()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
@@ -222,12 +221,18 @@ PageTreeNode {
             return null;
         }
 
-        function updateFlickableMargins() {
-            if (flickable) {
+        Binding {
+            target: page.flickable
+            property: "topMargin"
+            value: internal.headerHeight
+            when: page.flickable
+        }
+
+        function updateFlickablePosition() {
+            if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
                 page.flickable.contentY = -headerHeight;
-                page.flickable.topMargin = headerHeight;
             }
         }
     }
