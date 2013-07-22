@@ -35,6 +35,7 @@ Rectangle {
 
             Tabs {
                 id: tabs
+                onActiveChanged: console.log("tabs.active = "+tabs.active)
                 Tab {
                     title: "Tab 1"
                     page: Page {

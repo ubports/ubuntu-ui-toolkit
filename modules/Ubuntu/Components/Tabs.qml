@@ -202,7 +202,7 @@ PageTreeNode {
         target: internal.header
         property: "contents"
         value: tabs.active ? tabs.__headerContents : null
-        when: internal.header
+        when: internal.header && tabs.active
     }
 
     style: Theme.createStyleComponent("TabsStyle.qml", tabs)

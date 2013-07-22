@@ -88,6 +88,7 @@ Item {
         Loader {
             id: contentsLoader
             sourceComponent: foreground.header.contents
+            onSourceComponentChanged: print("sourceComponent = "+sourceComponent)
             anchors.fill: parent
         }
     }
