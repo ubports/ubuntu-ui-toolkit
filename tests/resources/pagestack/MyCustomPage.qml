@@ -38,11 +38,9 @@ Page {
     tools: ToolbarItems {
         ToolbarButton {
             text: "action 1"
-//            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
         }
         ToolbarButton {
             text: "action 2"
-//            iconSource: Qt.resolvedUrl("call_icon.png")
         }
         opened: true
         locked: true

@@ -168,7 +168,6 @@ PageTreeNode {
         onToolbarChanged: internal.updateHeaderAndToolbar()
 
         function updateHeaderAndToolbar() {
-            console.log("page:"+page.title+ " active = "+page.active);
             if (page.active) {
                 if (internal.header) {
                     internal.header.title = page.title;
