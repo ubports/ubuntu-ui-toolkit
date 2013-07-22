@@ -30,6 +30,13 @@ import QtQuick 2.0
 
     \l {http://design.ubuntu.com/apps/building-blocks/tabs}{See also the Design Guidelines on Tabs}.
 
+    Tabs can be pushed inside a \l PageStack. When doing so, the Tabs only control the
+    header when the Tabs are on top of the PageStack, so when pushing another \l Page
+    after pushing the Tabs will show the header for the new \l Page until it is popped and the
+    Tabs are active again. Please note that when a \l PageStack exists inside Tabs, the Tabs
+    will remain active and thus control the header, even when a new \l Page is pushed to the
+    internal \l PageStack.
+
     Example:
     \qml
         import QtQuick 2.0
