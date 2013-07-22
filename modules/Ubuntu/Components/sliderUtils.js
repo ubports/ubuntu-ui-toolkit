@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,16 +20,19 @@
   The function returns the live value of the slider.
   */
 function liveValue(item) {
-    if (item && item.__internals && (undefined !== item.__internals["liveValue"]))
-        return item.__internals["liveValue"];
-    return 0.0;
+    return item.__internals.liveValue;
 }
 
 /*!
   The function returns the normalized live value of the slider.
   */
 function normalizedValue(item) {
-    if (item && item.__internals && (undefined !== item.__internals["normalizedValue"]))
-        return item.__internals["normalizedValue"];
-    return 0.0;
+    return item.__internals.normalizedValue;
+}
+
+/*!
+  The function returns whether the slider is being pressed or not.
+  */
+function isPressed(item) {
+    return item.__internals.pressed;
 }

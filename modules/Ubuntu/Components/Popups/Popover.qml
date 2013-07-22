@@ -185,10 +185,14 @@ PopupBase {
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
 
+        property point target: Qt.point(pointer.x - x, pointer.y - y)
+        property string direction: pointer.direction
+        property bool clipContent: true
+
         style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
-    Pointer {
+    QtObject {
         id: pointer
 
         /* Input variables for InternalPopupUtils are the properties:
@@ -202,8 +206,8 @@ PopupBase {
             - direction
         */
 
-        property real arrowSize: units.gu(2)
-        property real cornerSize: units.gu(2)
+        property real arrowSize: units.dp(15)
+        property real cornerSize: units.dp(11)
 
         /* Minimum distance between the top or bottom of the popup and
            the tip of the pointer when the direction is left or right.
@@ -220,6 +224,10 @@ PopupBase {
               of the pointer when the direction is up or down.
         */
         property real size: units.dp(6)
+
+        property real x
+        property real y
+        property string direction
     }
 
 

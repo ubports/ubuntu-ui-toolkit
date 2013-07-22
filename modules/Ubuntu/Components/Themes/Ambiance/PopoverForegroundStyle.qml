@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,64 +15,16 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import QtGraphicalEffects 1.0
 
-Item {
-    id: frame
-    // styling properties
-    property string radius: "medium"
-    property color color: Theme.palette.normal.overlay
+BubbleShape {
+    property alias contentItem: content
 
-    property alias contentItem: body
-
-    anchors.fill: parent ? parent : undefined
+    target: styledItem.target
+    direction: styledItem.direction
+    clipContent: styledItem.clipContent
 
     Item {
         id: content
         anchors.fill: parent
-        Item {
-            id: body
-            anchors.fill: parent
-
-            Rectangle {
-                id: background
-                anchors.fill: parent
-                color: frame.color
-            }
-        }
-
-        clip: true // hide the ShaderEffectSource
-        UbuntuShape {
-            anchors.fill: parent
-            image: effectSource
-            radius: frame.radius
-        }
-
-        ShaderEffectSource {
-            smooth: false // prevent linear interpolation
-            id: effectSource
-            hideSource: true
-            sourceItem: frame.contentItem
-            format: ShaderEffectSource.RGBA
-            live: true
-
-            // Do not set visible to false because it will leave the FBO empty,
-            //  but position the ShaderEffectSource somewhere that it will be clipped
-            //  so it is not visible.
-            x: width
-            width: sourceItem.width
-            height: sourceItem.height
-        }
-    }
-    DropShadow {
-        anchors.fill: content
-        source: content
-        radius: units.gu(1)
-        samples: 3 * radius
-        fast: true
-        spread: 0
-        transparentBorder: true
-        color: Qt.rgba(0, 0, 0, 0.7)
     }
 }

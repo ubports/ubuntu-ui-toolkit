@@ -9,5 +9,3 @@ ComposerSheet 0.1 ComposerSheet.qml
 ActionSelectionPopover 0.1 ActionSelectionPopover.qml
 
 PopupUtils 0.1 popupUtils.js
-
-internal Pointer Pointer.qml
