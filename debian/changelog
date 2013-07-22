@@ -1,3 +1,36 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130722-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover rendering improvements: - created a reusable component used
+    in Popover's style and later in the Slider - replaced dynamic shadow
+    with a 9-patch bitmap - moved pointer rendering inside the
+    BubbleShape - removed now unused Pointer, PointerStyle and
+    associated artwork.
+  * Refreshed Slider: - removed unused commented code - removed
+    deprecated FIXMEs - removed deprecated documentation - do not
+    inherit from AbstractButton anymore - greatly simplified
+    computations by making better use of property bindings - implemented
+    new design of Slider (in SliderStyle.qml) using BubbleShape Improved
+    slider page layout in widgets gallery. (LP: #1202683)
+
+  [ Leo Arias ]
+  * Replaced the MainWindow emulator for autopilot tests with a MainView
+    emulator that the uses the custom emulator features of autopilot.
+  * Added the Toolbar Autopilot emulator.
+  * Added the Tabs autopilot emulator.
+
+  [ tpeeters ]
+  * Fix a bug where contentY of a flickable was reset when the title of
+    the header is unset and set again. (LP: #1201452)
+
+  [ Christian Dywan ]
+  * Ignore test results, executables and mo files.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 645
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Jul 2013 04:03:04 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130719-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
