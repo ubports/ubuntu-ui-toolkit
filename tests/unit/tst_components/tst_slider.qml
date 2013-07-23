@@ -21,14 +21,6 @@ import Ubuntu.Components 0.1
 TestCase {
      name: "SliderAPI"
 
-     function test_pressed() {
-        compare(slider.pressed,false,"Pressed is boolean and false by default")
-     }
-
-     function test_hovered() {
-        compare(slider.hovered,false,"Hovered is boolean and false by default")
-     }
-
      function test_live() {
         compare(slider.live,false,"Live is boolean and false by default")
          var newLive = true

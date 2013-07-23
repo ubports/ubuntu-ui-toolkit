@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,65 +18,70 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 /*
-  The default slider style consists of a bar and a thumb shape, where the thumb
-  is having a label showing the actual value.
+  The default slider style consists of a bar and a thumb shape.
 
-  This style is styled using the following properties:
-  - backgroundColor: color for the slider bar
-  - thumbColor: color for the thumb
+  This style is themed using the following properties:
   - thumbSpacing: spacing between the thumb and the bar
-  */
-
+*/
 Item {
-    id: main
-    // styling properties
+    id: sliderStyle
 
-    property color backgroundColor: Theme.palette.normal.base
-    property color thumbColor: Theme.palette.selected.foreground
-    property real thumbSpacing: units.dp(2)
+    property real thumbSpacing: units.gu(0.5)
+    property Item bar: background
+    property Item thumb: thumb
 
-    // visuals
-    anchors.fill: parent
-
-    // properties to be published:
-    property Item bar: backgroundShape
-    property Item thumb: thumbShape
-
-    // private properties
-
-    property real liveValue: SliderUtils.liveValue(styledItem)
-    property real normalizedValue: SliderUtils.normalizedValue(styledItem)
-    property real thumbSpace: backgroundShape.width - (2.0 * thumbSpacing + thumbWidth)
-    property real thumbWidth: styledItem.height - thumbSpacing
+    implicitWidth: units.gu(38)
+    implicitHeight: units.gu(5)
 
     UbuntuShape {
-        id: backgroundShape
+        id: background
 
         anchors.fill: parent
-        color: main.backgroundColor
+        color: Theme.palette.normal.base
     }
 
     UbuntuShape {
-        id: thumbShape
+        id: thumb
 
-        x: backgroundShape.x + thumbSpacing + normalizedValue * thumbSpace
-        y: backgroundShape.y + thumbSpacing
-        width: thumbWidth
-        height: backgroundShape.height - (2.0 * thumbSpacing)
-        color: main.thumbColor
+        anchors {
+            top: background.top
+            bottom: background.bottom
+            topMargin: thumbSpacing
+            bottomMargin: thumbSpacing
+        }
+
+        property real barMinusThumbWidth: background.width - (thumb.width + 2.0*thumbSpacing)
+        x: thumbSpacing + SliderUtils.normalizedValue(styledItem) * barMinusThumbWidth
+        width: units.gu(4)
+        color: Theme.palette.selected.foreground
     }
 
-    Label {
-        id: thumbValue
-        anchors {
-            verticalCenter: thumbShape.verticalCenter
-            left: thumbShape.left
-            right: thumbShape.right
+    BubbleShape {
+        id: bubbleShape
+
+        width: units.gu(8)
+        height: units.gu(6)
+
+        // FIXME: very temporary implementation
+        property real minX: 0.0
+        property real maxX: background.width - width
+        property real pointerSize: units.dp(6)
+        property real targetMargin: units.dp(2)
+        property point globalTarget: Qt.point(thumb.x + thumb.width / 2.0, -targetMargin)
+
+        x: MathUtils.clamp(globalTarget.x - width / 2.0, minX, maxX)
+        y: globalTarget.y - height - pointerSize
+        target: Qt.point(globalTarget.x - x, globalTarget.y - y)
+
+        property bool pressed: SliderUtils.isPressed(styledItem)
+        visible: pressed && label.text != ""
+
+        Label {
+            id: label
+            anchors.centerIn: parent
+            text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
+            fontSize: "large"
+            color: Theme.palette.normal.overlayText
         }
-        horizontalAlignment: Text.AlignHCenter
-        text: styledItem.formatValue(MathUtils.clamp(liveValue, styledItem.minimumValue, styledItem.maximumValue))
-        fontSize: "medium"
-        color: Theme.palette.selected.foregroundText
-        font.weight: Font.Bold
     }
 }
