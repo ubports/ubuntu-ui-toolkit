@@ -79,7 +79,6 @@ private Q_SLOTS:
 private:
     bool m_ready;
     bool m_pressed;
-    bool m_moved;
     bool m_propagateEvents;
     Qt::MouseButtons m_acceptedButtons;
     QQuickItem *m_sensingArea;

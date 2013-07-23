@@ -85,7 +85,6 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     QQuickItem(parent),
     m_ready(false),
     m_pressed(false),
-    m_moved(false),
     m_propagateEvents(false),
     m_acceptedButtons(Qt::LeftButton),
     m_sensingArea(QuickUtils::instance().rootItem(this)),
@@ -293,7 +292,7 @@ void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
  */
 void InverseMouseAreaType::reset()
 {
-    m_pressed = m_moved = false;
+    m_pressed = false;
     if (m_event)
         delete m_event;
     m_event = 0;
@@ -372,13 +371,11 @@ bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
     bool consume = true;
     if (m_pressed && contains(mapFromScene(event->windowPos()))) {
         // released outside (inside the sensing area)
-        saveEvent(*event, !m_moved);
+        saveEvent(*event, true);
         m_pressed = false;
         asyncEmit(&InverseMouseAreaType::released);
         Q_EMIT pressedChanged();
-        if (!m_moved)
-            asyncEmit(&InverseMouseAreaType::clicked);
-        m_moved = false;
+        asyncEmit(&InverseMouseAreaType::clicked);
     } else {
         // the release happened inside the area, which is outside of the active area
         reset();
@@ -407,14 +404,11 @@ bool InverseMouseAreaType::touchReleased(QTouchEvent *event)
 /*!
   \internal
   Captures mouse move event. Consumes event depending on the propagateEvent state.
-  Depending whether the mouse was moved after being pressed, the clicked composed
-  event will not be emitted.
  */
 bool InverseMouseAreaType::mouseMove(QMouseEvent *event)
 {
     // use localPos as we saved the mapped position as
     if (m_pressed && m_event && (event->windowPos() != QPointF(m_event->x(), m_event->y()))) {
-        m_moved = true;
         event->setAccepted(!m_propagateEvents);
     }
     return false;
