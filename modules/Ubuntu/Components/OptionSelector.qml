@@ -77,12 +77,18 @@ ListItem.Empty {
      */
     property bool expanded: false
 
+    /*!
+      \preliminary
+      Parent container for external scrolling functionality.
+     */
+    property var container: null
+
     showDivider: false
 
     Column {
         id: column
 
-	spacing: units.gu(2)
+        spacing: units.gu(2)
         anchors {
             left: parent.left
             right: parent.right
@@ -110,6 +116,8 @@ ListItem.Empty {
             }
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
+            onStateChanged: if (container) container.scrollContainer(list.contentHeight, state)
+
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -118,7 +126,7 @@ ListItem.Empty {
                         height: list.contentHeight
                     }
                 }, State {
-                    name: "closed"
+                    name: "collapsed"
                     when: !listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
