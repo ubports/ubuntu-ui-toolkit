@@ -102,4 +102,6 @@ ListItem.Empty
     property var values
     property alias selectedIndex
 Error: Missing \qmlproperty annotation
+AbstractButton
+    property bool pressed
     property list<Action> actions

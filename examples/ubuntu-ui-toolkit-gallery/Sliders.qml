@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 Template {
     TemplateSection {
         className: "Slider"
+        spacing: units.gu(5)
 
         TemplateFlow {
             title: i18n.tr("Standard")
@@ -30,7 +31,8 @@ Template {
                 width: parent.width
             }
             Label {
-                text: i18n.tr("value = %1").arg(defaultSlider.value)
+                text: i18n.tr("Actual value: %1").arg(defaultSlider.value)
+                font.weight: Font.Light
             }
         }
 
@@ -44,7 +46,8 @@ Template {
                 live: true
             }
             Label {
-                text: i18n.tr("value = %1").arg(liveSlider.value)
+                text: i18n.tr("Actual value: %1").arg(liveSlider.value)
+                font.weight: Font.Light
             }
         }
 
@@ -60,7 +63,8 @@ Template {
                 function formatValue(v) { return Number(v.toFixed(2)).toLocaleString(Qt.locale()) }
             }
             Label {
-                text: i18n.tr("value = %1").arg(rangeSlider.value)
+                text: i18n.tr("Actual value: %1").arg(rangeSlider.value)
+                font.weight: Font.Light
             }
         }
     }
