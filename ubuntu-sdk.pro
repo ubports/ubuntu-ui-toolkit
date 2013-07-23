@@ -22,7 +22,7 @@ test_api.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
-test_components.commands = cd tests/autopilot; autopilot run UbuntuUiToolkit
+test_components.commands = cd tests/autopilot; autopilot run ubuntuuitoolkit
 test_components.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_components
 

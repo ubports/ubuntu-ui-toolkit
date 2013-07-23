@@ -27,7 +27,7 @@ from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
 from autopilot.testcase import AutopilotTestCase
 
-from UbuntuUiToolkit import emulators
+from ubuntuuitoolkit import emulators
 
 
 def get_module_include_path():

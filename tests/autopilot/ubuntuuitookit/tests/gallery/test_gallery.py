@@ -26,7 +26,7 @@ from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
 from testtools import skip
 
-from UbuntuUiToolkit import tests
+from ubuntuuitoolkit import tests
 
 
 class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
