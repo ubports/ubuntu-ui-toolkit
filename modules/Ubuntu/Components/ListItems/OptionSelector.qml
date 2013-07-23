@@ -78,6 +78,12 @@ ListItem.Empty {
      */
     property bool expanded: false
 
+    /*!
+      \preliminary
+      Parent container for external scrolling functionality.
+     */
+    property var container: null
+
     showDivider: false
 
     Column {
@@ -109,6 +115,8 @@ ListItem.Empty {
                 right: parent.right
             }
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+
+            onStateChanged: if (container) container.scrollContainer(list.contentHeight, state)
 
             states: [ State {
                     name: "expanded"

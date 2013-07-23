@@ -10,6 +10,10 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED: ListItem OptionSelector to Components/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruDark/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruGradient/ListItems
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
