@@ -16,38 +16,45 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Rectangle {
-    color: "white"
-    width: units.gu(50)
-    height: units.gu(70)
+MainView {
+    id: mainView
+    width: units.gu(38)
+    height: units.gu(50)
 
-    MainView {
-        id: mainView
-        width: units.gu(38)
-        height: units.gu(50)
-        anchors.centerIn: parent
+    PageStack {
+        id: pageStack
+        Component.onCompleted: push(tabs)
 
-        PageStack {
-            id: pageStack
-            Component.onCompleted: push(tabs)
-
-            Tabs {
-                id: tabs
-                onActiveChanged: console.log("tabs.active = "+tabs.active)
-                Tab {
-                    title: "Tab 1"
-                    page: Page {
-                        Button {
-                            anchors.centerIn: parent
-                            onClicked: {
-                                pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"));
-                            }
-                            text: "push"
-                        }
+        Tabs {
+            id: tabs
+            Tab {
+                title: "Tab 1"
+                page: Page {
+                    Button {
+                        anchors.centerIn: parent
+                        onClicked: pageStack.push(page3)
+                        text: "Push"
                     }
                 }
+            }
+            Tab {
+                title: "Tab 2"
+                page: Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "Use header to navigate between tabs"
+                    }
+                }
+            }
+        }
+        Page {
+            id: page3
+            visible: false
+            title: "Page on stack"
+            Label {
+                anchors.centerIn: parent
+                text: "Push back to return to the tabs"
             }
         }
     }
