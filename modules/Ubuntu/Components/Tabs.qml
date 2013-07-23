@@ -118,7 +118,7 @@ import QtQuick 2.0
                             Button {
                                 anchors.centerIn: parent
                                 onClicked: pageStack.push(page3)
-                                text: "Push"
+                                text: "Press"
                             }
                         }
                     }
@@ -138,7 +138,7 @@ import QtQuick 2.0
                     title: "Page on stack"
                     Label {
                         anchors.centerIn: parent
-                        text: "Push back to return to the tabs"
+                        text: "Press back to return to the tabs"
                     }
                 }
             }
