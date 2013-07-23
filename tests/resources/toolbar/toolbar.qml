@@ -47,6 +47,7 @@ MainView {
                 iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
                 text: "oh"
                 onTriggered: print("lala")
+                enabled: false
             }
             ToolbarButton {
                 action: action1

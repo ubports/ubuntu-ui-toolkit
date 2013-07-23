@@ -429,7 +429,9 @@ Item {
                 pressedItem.clicked();
             } else if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
-                pressedItem.triggered(pressedItem);
+                if (pressedItem.enabled) {
+                    pressedItem.triggered(pressedItem);
+                }
             }
         }
 
