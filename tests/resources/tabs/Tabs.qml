@@ -37,8 +37,8 @@ MainView {
                     anchors.centerIn: parent
                     text: "A centered label"
                 }
-                tools: ToolbarActions {
-                    Action {
+                tools: ToolbarItems {
+                    ToolbarButton {
                         text: "action"
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
