@@ -61,7 +61,7 @@ ListItem.Empty {
 
     /*!
       \preliminary
-      The list of values that will be shown under the label text
+      The list of values that will be shown under the label text. This is a model.
      */
     property var values
 
