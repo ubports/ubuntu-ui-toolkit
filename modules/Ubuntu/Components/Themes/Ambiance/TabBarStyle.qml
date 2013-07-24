@@ -39,6 +39,8 @@ Item {
       The set of tabs this tab bar belongs to
      */
     property Tabs tabs: styledItem ? styledItem.tabsItem : null
+
+//    property bool active: styledItem ? styledItem.active : false
 //    Binding {
 //        target: tabBarStyle
 //        property: "tabs"
@@ -57,23 +59,22 @@ Item {
      */
 //    property bool active: false
 
-//    Connections {
-//        target: styledItem
+    Connections {
+        target: styledItem
 
-//        onActiveChanged: {
-//            if (styledItem.active) {
-//                activatingTimer.restart();
-//            } else {
-//                buttonView.selectButton(tabs.selectedTabIndex);
-//            }
-//        }
-//    }
+        onActiveChanged: {
+            if (styledItem.active) {
+                activatingTimer.restart();
+            } else {
+                buttonView.selectButton(tabs.selectedTabIndex);
+            }
+        }
+    }
 
-
-//    /*!
-//      \internal
-//      Avoid interpreting a click to activate the tab bar as a button click.
-//     */
+    /*!
+      \internal
+      Avoid interpreting a click to activate the tab bar as a button click.
+     */
     Timer {
         id: activatingTimer
         interval: 800 // same as pressAndHold time
