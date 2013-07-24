@@ -19,7 +19,6 @@ import os
 import subprocess
 from bzrlib import branch
 from bzrlib import errors
-from bzrlib.urlutils import dirname
 from bzrlib.urlutils import local_path_from_url
 
 
