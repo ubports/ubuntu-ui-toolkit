@@ -100,8 +100,411 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var values
-    property alias selectedIndex
-Error: Missing \qmlproperty annotation
-AbstractButton
-    property bool pressed
+    property int selectedIndex
+    property bool expanded
+    signal scroll(real selectorHeight, string currentState)
+modules/Ubuntu/Components/OrientationHelper.qml
+Item
+    property bool automaticOrientation
+    property bool transitionEnabled
+    property alias rotating
+    property int __orientationAngle
+    property int orientationAngle
+modules/Ubuntu/Components/Page.qml
+PageTreeNode
+    property string title
+    property Flickable flickable
     property list<Action> actions
+modules/Ubuntu/Components/PageStack.qml
+PageTreeNode
+    property bool __showHeader
+    property ToolbarActions tools
+    onToolsChanged
+    property int depth
+    property Item currentPage
+    function push(page, properties)
+    function pop()
+    function clear()
+modules/Ubuntu/Components/PageTreeNode.qml
+StyledItem
+    property bool __isPageTreeNode
+    property Header header
+    property Toolbar toolbar
+    property QtObject __propagated
+    property bool active
+    property Item pageStack
+    property Item parentNode
+    property Item activeLeafNode
+    property bool isLeaf
+modules/Ubuntu/Components/PageWrapper.qml
+PageTreeNode
+    property var reference
+    property Item object
+    property bool canDestroy
+    property var properties
+    function destroyObject()
+modules/Ubuntu/Components/Panel.qml
+Item
+    default property list<Object> contents
+    property int align
+    property bool opened
+    property bool locked
+    property real hintSize
+    property real triggerSize
+    readonly property bool animating
+modules/Ubuntu/Components/ProgressBar.qml
+AnimatedItem
+    property bool indeterminate
+    property real minimumValue
+    property real maximumValue
+    property real value
+modules/Ubuntu/Components/Scrollbar.qml
+StyledItem
+    property Flickable flickableItem
+    property int align
+    property bool __interactive
+    property internal __private
+modules/Ubuntu/Components/Slider.qml
+StyledItem
+    property real minimumValue
+    property real maximumValue
+    property real value
+    property bool live
+    property bool pressed
+    signal touched(bool onThumb)
+    function formatValue(v)
+    property internal __internals
+modules/Ubuntu/Components/StyledItem.qml
+FocusScope
+    property Component style
+    readonly property Item __styleInstance
+modules/Ubuntu/Components/Switch.qml
+CheckBox
+modules/Ubuntu/Components/Tab.qml
+PageTreeNode
+    property string title
+    property url iconSource
+    property Item page
+modules/Ubuntu/Components/Tabs.qml
+PageTreeNode
+    property int selectedTabIndex
+    readonly property Tab selectedTab
+    readonly property Item currentPage
+    property Component __headerContents
+    property ToolbarActions tools
+    onToolsChanged
+    property internal __tabs
+    default property list<Item> tabChildren
+    signal modelChanged()
+modules/Ubuntu/Components/TextArea.qml
+StyledItem
+    property bool highlighted
+    property string placeholderText
+    readonly property string displayText
+    property bool selectByMouse
+    property bool autoExpand
+    property bool autoSize
+    property int maximumLineCount
+    property real contentWidth
+    property real contentHeight
+    property var popover
+    property bool activeFocusOnPress
+    property url baseUrl
+    property bool canPaste
+    property bool canRedo
+    property bool canUndo
+    property color color
+    property Component cursorDelegate
+    property int cursorPosition
+    property rectangle cursorRectangle
+    property bool cursorVisible
+    property enumeration effectiveHorizontalAlignment
+    property font font
+    property enumeration horizontalAlignment
+    property bool inputMethodComposing
+    property enumeration inputMethodHints
+    property int length
+    property int lineCount
+    property enumeration mouseSelectionMode
+    property enumeration persistentSelection
+    property bool readOnly
+    property enumeration renderType
+    property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    property int selectionEnd
+    property int selectionStart
+    property string text
+    property enumeration textFormat
+    property enumeration verticalAlignment
+    property enumeration wrapMode
+    signal linkActivated(string link)
+    function copy()
+    function cut()
+    function deselect()
+    function insert(position, text)
+    function positionAt(x, y)
+    function isRightToLeft(start, end)
+    function moveCursorSelection(position, mode)
+    function paste(data)
+    function positionToRectangle(position)
+    function redo()
+    function select(start, end)
+    function selectAll()
+    function selectWord()
+    function getFormattedText(start, end)
+    function getText(start, end)
+    function remove(start, end)
+    function undo()
+    function forceActiveFocus()
+    property internal __internal
+modules/Ubuntu/Components/TextCursor.qml
+StyledItem
+    property var editorItem
+    property string positionProperty
+    property var popover
+    function openPopover()
+modules/Ubuntu/Components/TextField.qml
+StyledItem
+    property bool highlighted
+    property string placeholderText
+    property bool hasClearButton
+    property Component customSoftwareInputPanel
+    property var popover
+    property list<Object> primaryItem
+    property list<Object> secondaryItem
+    property bool errorHighlight
+    property bool acceptableInput
+    property bool activeFocusOnPress
+    property bool autoScroll
+    property bool canPaste
+    property bool canRedo
+    property bool canUndo
+    property color color
+    property real contentHeight
+    property real contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    property rectangle cursorRectangle
+    property bool cursorVisible
+    property string displayText
+    property enumeration echoMode
+    property font font
+    property string inputMask
+    property bool inputMethodComposing
+    property enumeration inputMethodHints
+    property int length
+    property int maximumLength
+    property enumeration mouseSelectionMode
+    property bool persistentSelection
+    property bool readOnly
+    property enumeration renderType
+    property bool selectByMouse
+    readonly property string selectedText
+    property int selectionStart
+    property int selectionEnd
+    property string text
+    property Validator validator
+    property enumeration horizontalAlignment
+    property internal effectiveHorizontalAlignment
+    property internal verticalAlignment
+    property string passwordCharacter
+    property color selectionColor
+    property color selectedTextColor
+    signal accepted()
+    function copy()
+    function cut()
+    function paste(data)
+    function deselect()
+    function insert(position, text)
+    function positionAt(x, position)
+    function positionToRectangle(pos)
+    function select(start, end)
+    function selectAll()
+    function selectWord()
+    function forceActiveFocus()
+    function isRightToLeft(start, end)
+    function moveCursorSelection(position, mode)
+    function redo()
+    function undo()
+    function remove(start, end)
+    function getText(start, end)
+    property internal __internal
+modules/Ubuntu/Components/TextInputPopover.qml
+ActionSelectionPopover
+modules/Ubuntu/Components/Toolbar.qml
+Panel
+    property bool active
+    property bool lock
+    property Item tools
+modules/Ubuntu/Components/ToolbarActions.qml
+Item
+    default property list<Action> children
+    property list<Action> actions
+    property Action back
+    property Item __pageStack
+    property bool opened
+    property bool active
+    property bool lock
+    property bool locked
+    function __hasVisibleActions()
+modules/Ubuntu/Components/ToolbarButton.qml
+ActionItem
+modules/Ubuntu/Components/ToolbarItems.qml
+Item
+    default property list<Object> contents
+    property Item back
+    property Item pageStack
+    property bool opened
+    property bool locked
+modules/Ubuntu/Components/UbuntuNumberAnimation.qml
+NumberAnimation
+modules/Ubuntu/Components/UbuntuShape.qml
+Item
+    property color color
+    property color gradientColor
+    property string radius
+    property Item image
+    property url borderSource
+plugins.qmltypes
+    name: "InverseMouseAreaType"
+    prototype: "QQuickItem"
+    exports: ["InverseMouseArea 0.1"]
+    Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "acceptedButtons"; type: "Qt::MouseButtons" }
+    Property { name: "pressedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
+    Property { name: "propagateComposedEvents"; type: "bool" }
+    Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Signal {
+    name: "pressed"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "released"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "clicked"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Method {
+    name: "contains"
+    Parameter { name: "point"; type: "QPointF" }
+    name: "QQmlPropertyMap"
+    prototype: "QObject"
+    Signal {
+    name: "valueChanged"
+    Parameter { name: "key"; type: "string" }
+    Parameter { name: "value"; type: "QVariant" }
+    Method { name: "keys"; type: "QStringList" }
+    name: "QQuickClipboard"
+    prototype: "QObject"
+    exports: ["Clipboard 0.1"]
+    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
+    Method {
+    name: "push"
+    Parameter { name: "data"; type: "QVariant" }
+    Method { name: "clear" }
+    Method { name: "newData"; type: "QQuickMimeData*" }
+    name: "QQuickMimeData"
+    prototype: "QObject"
+    exports: ["MimeData 0.1"]
+    Property { name: "formats"; type: "QStringList"; isReadonly: true }
+    Property { name: "text"; type: "string" }
+    Property { name: "html"; type: "string" }
+    Property { name: "urls"; type: "QList<QUrl>" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "data"; type: "QVariant" }
+    Signal { name: "typeChanged" }
+    name: "ShapeItem"
+    prototype: "QQuickItem"
+    exports: ["Shape 0.1"]
+    name: "HAlignment"
+    name: "VAlignment"
+    Property { name: "color"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "radius"; type: "string" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Property { name: "borderSource"; type: "string" }
+    Signal { name: "borderChanged" }
+    Method { name: "gridUnitChanged" }
+    name: "UCArgument"
+    prototype: "QObject"
+    exports: ["Argument 0.1"]
+    Property { name: "name"; type: "string" }
+    Property { name: "help"; type: "string" }
+    Property { name: "required"; type: "bool" }
+    Property { name: "valueNames"; type: "QStringList" }
+    Method {
+    name: "at"
+    Parameter { name: "i"; type: "int" }
+    name: "UCArguments"
+    prototype: "QObject"
+    exports: ["Arguments 0.1"]
+    Property { name: "defaultArgument"; type: "UCArgument"; isPointer: true }
+    Property { name: "arguments"; type: "UCArgument"; isList: true; isReadonly: true }
+    Property { name: "values"; type: "QQmlPropertyMap"; isReadonly: true; isPointer: true }
+    Property { name: "error"; type: "bool"; isReadonly: true }
+    Property { name: "errorMessage"; type: "string"; isReadonly: true }
+    Method { name: "printUsage" }
+    Method {
+    name: "quitWithError"
+    Parameter { name: "errorMessage"; type: "string" }
+    Method { name: "quitWithError" }
+    name: "UCQQuickImageExtension"
+    prototype: "QQuickImageBase"
+    exports: ["QQuickImageBase 0.1"]
+    Property { name: "source"; type: "QUrl" }
+    Signal {
+    name: "sourceChanged"
+    Parameter { type: "QUrl" }
+    Signal {
+    name: "sourceChanged"
+    Parameter { type: "QUrl" }
+    name: "UCUbuntuAnimation"
+    prototype: "QObject"
+    exports: ["UbuntuAnimation 0.1"]
+    Property { name: "SnapDuration"; type: "int"; isReadonly: true }
+    Property { name: "FastDuration"; type: "int"; isReadonly: true }
+    Property { name: "BriskDuration"; type: "int"; isReadonly: true }
+    Property { name: "SlowDuration"; type: "int"; isReadonly: true }
+    Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
+    Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
+    Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
+    name: "UCUnits"
+    prototype: "QObject"
+    exports: ["UCUnits 0.1"]
+    Property { name: "gridUnit"; type: "float" }
+    Method {
+    name: "dp"
+    Parameter { name: "value"; type: "float" }
+    Method {
+    name: "gu"
+    Parameter { name: "value"; type: "float" }
+    name: "UbuntuI18n"
+    prototype: "QObject"
+    exports: ["i18n 0.1"]
+    Property { name: "domain"; type: "string" }
+    Property { name: "language"; type: "string" }
+    Method {
+    name: "bindtextdomain"
+    Parameter { name: "domain_name"; type: "string" }
+    Parameter { name: "dir_name"; type: "string" }
+    Method {
+    name: "tr"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tr"
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }
+    Method {
+    name: "dtr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "dtr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }

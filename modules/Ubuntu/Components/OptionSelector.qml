@@ -101,6 +101,7 @@ ListItem.Empty {
 
         StyledItem {
             id: listContainer
+            objectName: "listContainer"
 
             property bool isExpanded: expanded
             property int itemHeight: units.gu(5)
