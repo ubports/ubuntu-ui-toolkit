@@ -179,6 +179,10 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
+modules/Ubuntu/Components/TabBar.qml
+StyledItem
+    property Item tabsItem
+    property bool active
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
