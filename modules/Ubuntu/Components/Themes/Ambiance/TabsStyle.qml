@@ -27,17 +27,6 @@ Item {
      */
     property Item separator
 
-    /*!
-      Enable left/right swiping in the contents area to go to
-      the next/previous tab.
-     */
-    property bool swipeToSwitchTabs
-    /*!
-      \deprecated
-      \internal
-     */
-    onSwipeToSwitchTabsChanged: print("swipeToSwitchTabs property is DEPRECATED.")
-
     property real tabBarHeight: units.gu(7.5)
 
     // visuals
