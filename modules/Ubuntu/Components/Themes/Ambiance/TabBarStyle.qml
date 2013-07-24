@@ -40,25 +40,6 @@ Item {
      */
     property Tabs tabs: styledItem ? styledItem.tabsItem : null
 
-//    property bool active: styledItem ? styledItem.active : false
-//    Binding {
-//        target: tabBarStyle
-//        property: "tabs"
-//        value: styledItem.tabsItem
-//        when: styledItem
-//    }
-
-//    Rectangle {
-//        color: "navy"
-//        anchors.fill: parent
-//    }
-
-    /*!
-      An inactive tab bar only displays the currently selected tab,
-      and an active tab bar can be interacted with to select a tab.
-     */
-//    property bool active: false
-
     Connections {
         target: styledItem
 
@@ -80,11 +61,11 @@ Item {
         interval: 800 // same as pressAndHold time
     }
 
-//    Connections {
-//        target: tabs
-//        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
-//        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
-//    }
+    Connections {
+        target: tabs
+        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
+        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
+    }
 
     Component {
         id: tabButtonRow
