@@ -45,33 +45,4 @@ Item {
     anchors.fill: parent
 
     property Tabs theTabs: styledItem
-//    property Component headerContents: //Component {
-    property Component headerContents:
-        Rectangle {
-            color: "pink"
-            anchors.fill: parent
-            height: 100
-        }
-
-//        TabBarStyle {
-//            id: tabBar
-//            tabs: theTabs
-//            headerTextColor: tabsStyle.headerTextColor
-//            headerTextSelectedColor: tabsStyle.headerTextSelectedColor
-//            headerTextFadeDuration: tabsStyle.headerTextFadeDuration
-//            indicatorImageSource: tabsStyle.indicatorImageSource
-//            headerFontSize: tabsStyle.headerFontSize
-//            headerFontWeight: tabsStyle.headerFontWeight
-//            headerTextLeftMargin: tabsStyle.headerTextLeftMargin
-//            headerTextRightMargin: tabsStyle.headerTextRightMargin
-//            headerTextBottomMargin: tabsStyle.headerTextBottomMargin
-//            buttonPositioningVelocity: tabsStyle.buttonPositioningVelocity
-//            deactivateTime: tabsStyle.deactivateTime
-//        }
-//    }
-
-//    Component.onCompleted: {
-//        print("XXX")
-//        styledItem.__headerContents = headerContents;
-//    }
 }

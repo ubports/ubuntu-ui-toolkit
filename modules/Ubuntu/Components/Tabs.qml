@@ -123,16 +123,6 @@ PageTreeNode {
       and provides scrollable tab buttons.
      */
     property Component __headerContents: TabBar {
-        //Rectangle {
-//    property Component __headerContents:
-//        color: "green"
-//        anchors.fill: parent
-//        width: 100
-//        height: 100
-////        x: 0
-////        y: 0
-////        TabBar {
-//        // TODO: any properties to set?
         tabsItem: tabs
     }
 
@@ -214,15 +204,6 @@ PageTreeNode {
         property: "contents"
         value: tabs.active ? tabs.__headerContents : null
         when: internal.header
-    }
-
-    Connections {
-        target: internal.header
-        onContentsChanged: print("updated contents to "+internal.header.contents)
-    }
-
-    onActiveChanged: {
-        console.log("tabs.active = "+tabs.active+", header contents = "+__tabs.__headerContents);
     }
 
     style: Theme.createStyleComponent("TabsStyle.qml", tabs)
