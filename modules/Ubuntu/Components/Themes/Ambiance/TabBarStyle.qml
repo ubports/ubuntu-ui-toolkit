@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    id: tabBar
+    id: tabBarStyle
     // styling properties
     property color headerTextColor
     property color headerTextSelectedColor
@@ -36,36 +36,52 @@ Item {
     /*!
       The set of tabs this tab bar belongs to
      */
-    property Tabs tabs
+    property Tabs tabs: styledItem ? styledItem.tabsItem : null
+//    Binding {
+//        target: tabBarStyle
+//        property: "tabs"
+//        value: styledItem.tabsItem
+//        when: styledItem
+//    }
+
+//    Rectangle {
+//        color: "navy"
+//        anchors.fill: parent
+//    }
 
     /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool active: false
+//    property bool active: false
 
-    onActiveChanged: {
-        if (active) {
-            activatingTimer.restart();
-        } else {
-            buttonView.selectButton(tabs.selectedTabIndex);
-        }
-    }
+//    Connections {
+//        target: styledItem
 
-    /*!
-      \internal
-      Avoid interpreting a click to activate the tab bar as a button click.
-     */
+//        onActiveChanged: {
+//            if (styledItem.active) {
+//                activatingTimer.restart();
+//            } else {
+//                buttonView.selectButton(tabs.selectedTabIndex);
+//            }
+//        }
+//    }
+
+
+//    /*!
+//      \internal
+//      Avoid interpreting a click to activate the tab bar as a button click.
+//     */
     Timer {
         id: activatingTimer
         interval: 800 // same as pressAndHold time
     }
 
-    Connections {
-        target: tabs
-        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
-        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
-    }
+//    Connections {
+//        target: tabs
+//        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
+//        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
+//    }
 
     Component {
         id: tabButtonRow
@@ -101,7 +117,7 @@ Item {
                     // When the tab bar is active, show both buttons corresponing to the tab index as selected,
                     // but when it is not active only one to avoid seeing fading animations of the unselected
                     // button when switching tabs from outside the tab bar.
-                    property bool selected: (tabBar.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property bool selected: (styledItem.active && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
@@ -110,7 +126,7 @@ Item {
                     opacity: isVisible() ? 1.0 : 0.0
                     function isVisible() {
                         if (selected) return true;
-                        if (!tabBar.active) return false;
+                        if (!styledItem.active) return false;
                         if (buttonView.needsScrolling) return true;
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
@@ -144,7 +160,7 @@ Item {
                         // tab bar is not active, or after the "last" button (starting with the selected one),
                         // when the tab bar is active.
                         property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
-                        opacity: (tabBar.active ? isLastAfterSelected : selected) ? 1 : 0
+                        opacity: (styledItem.active ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation {
                                 duration: headerTextFadeDuration
@@ -179,7 +195,7 @@ Item {
                     onClicked: {
                         if (!activatingTimer.running) {
                             tabs.selectedTabIndex = index;
-                            tabBar.active = false;
+                            styledItem.active = false;
                             button.select();
                         } else {
                             activatingTimer.stop();
@@ -277,8 +293,8 @@ Item {
         Timer {
             id: idleTimer
             interval: tabBar.deactivateTime
-            running: tabBar.active
-            onTriggered: tabBar.active = false
+            running: styledItem.active
+            onTriggered: styledItem.active = false
         }
     }
 
@@ -286,9 +302,9 @@ Item {
         // an inactive tabBar can be pressed to make it active
         id: mouseArea
         anchors.fill: parent
-        enabled: !tabBar.active
+        enabled: !styledItem.active
         onPressed: {
-            tabBar.active = true;
+            styledItem.active = true;
             mouse.accepted = false;
         }
     }

@@ -72,7 +72,11 @@ StyledItem {
       The contents of the header. If this is set, \l title will be ignored.
      */
     property Component contents: null
-    onContentsChanged: header.show()
+    onContentsChanged: {
+
+        header.show()
+        console.log("header contents changed to "+contents);
+    }
 
     /*!
       The flickable that controls the movement of the header.

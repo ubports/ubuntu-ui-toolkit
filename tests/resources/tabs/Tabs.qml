@@ -31,6 +31,7 @@ MainView {
         Tab {
             title: i18n.tr("Simple page")
             page: Page {
+                title: "This title should not be visible"
                 Label {
                     id: label
                     anchors.centerIn: parent
