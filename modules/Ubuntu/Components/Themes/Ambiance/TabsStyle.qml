@@ -16,22 +16,5 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
-Item {
-    // styling properties
-    /*!
-      If this optional property is specified, it will be positioned
-      between the bar with tab buttons, and the tab pages to act
-      as a separator.
-     */
-    property Item separator
-
-    property real tabBarHeight: units.gu(7.5)
-
-    // visuals
-    id: tabsStyle
-    anchors.fill: parent
-
-    property Tabs theTabs: styledItem
-}
+Item {}

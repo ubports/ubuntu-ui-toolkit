@@ -205,6 +205,4 @@ PageTreeNode {
         value: tabs.active ? tabs.__headerContents : null
         when: internal.header
     }
-
-    style: Theme.createStyleComponent("TabsStyle.qml", tabs)
 }
