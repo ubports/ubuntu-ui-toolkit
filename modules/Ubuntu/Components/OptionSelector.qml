@@ -66,7 +66,7 @@ ListItem.Empty {
     property var values
 
     /*!
-      \preliminary
+      \qmlproperty int selectedIndex
       The index of the currently selected element from the \l values array.
      */
     property alias selectedIndex: list.currentIndex
@@ -78,10 +78,9 @@ ListItem.Empty {
     property bool expanded: false
 
     /*!
-      \preliminary
-      Parent container for external scrolling functionality.
+      Called when the optionSelector is either expanded or collapsed.
      */
-    property var container: null
+    signal scroll(real selectorHeight, string currentState)
 
     showDivider: false
 
@@ -116,7 +115,7 @@ ListItem.Empty {
             }
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
-            onStateChanged: if (container) container.scrollContainer(list.contentHeight, state)
+            onStateChanged: scroll(list.contentHeight, state)
 
             states: [ State {
                     name: "expanded"
