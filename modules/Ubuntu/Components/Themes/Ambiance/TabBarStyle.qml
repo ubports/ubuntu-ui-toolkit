@@ -20,19 +20,21 @@ import Ubuntu.Components 0.1
 Item {
     id: tabBarStyle
     // styling properties
-    property color headerTextColor
-    property color headerTextSelectedColor
-    property int headerTextFadeDuration
-    property url indicatorImageSource
+    property color headerTextColor: Theme.palette.normal.backgroundText
+    property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    property string headerFontSize
-    property int headerFontWeight
-    property real headerTextLeftMargin
-    property real headerTextRightMargin
-    property real headerTextBottomMargin
+    property int headerTextFadeDuration: 350
+    property url indicatorImageSource: "artwork/chevron.png"
 
-    property real buttonPositioningVelocity
-    property int deactivateTime: 1000
+    property string headerFontSize: "x-large"
+    property int headerFontWeight: Font.Light
+    property real headerTextLeftMargin: units.gu(2)
+    property real headerTextRightMargin: units.gu(2)
+    property real headerTextBottomMargin: units.gu(2)
+
+    property real buttonPositioningVelocity: 1.0
+    property int deactivateTime: 3000
+
     /*!
       The set of tabs this tab bar belongs to
      */
@@ -292,7 +294,7 @@ Item {
         onMovementEnded: idleTimer.restart()
         Timer {
             id: idleTimer
-            interval: tabBar.deactivateTime
+            interval: tabBarStyle.deactivateTime
             running: styledItem.active
             onTriggered: styledItem.active = false
         }
