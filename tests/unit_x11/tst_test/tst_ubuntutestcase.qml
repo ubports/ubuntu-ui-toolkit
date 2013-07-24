@@ -43,8 +43,8 @@ Rectangle {
     name: "TestTheUbuntuTestCase"
     when: windowShown
 
-    function test_mouseMoveSlow() {
-       mouseMoveSlow(root,0,0,800,600,10,100);
+    function test_mouseMoveSlowly() {
+       mouseMoveSlowly(root,0,0,800,600,10,100);
        compare(mouseArea.testX,800);
        compare(mouseArea.testY,600);
        compare(mouseArea.steps,10);

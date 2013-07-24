@@ -44,9 +44,9 @@ TestCase {
     }
 
 	/*!
-		Move Mouse from x,y to distance of dx, dy divided to steps with an stepdelay (ms).
+		Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms).
 	*/
-	function mouseMoveSlow(item,x,y,dx,dy,steps,stepdelay) {
+	function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay) {
 		mouseMove(item,x,y);
 		var step_dx = dx/steps;
 		var step_dy = dy/steps;
