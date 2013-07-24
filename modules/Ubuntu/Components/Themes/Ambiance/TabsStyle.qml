@@ -65,7 +65,7 @@ Item {
 
     property Tabs theTabs: styledItem
     property Component headerContents: Component {
-        NewTabBar {
+        TabBarStyle {
             id: tabBar
             tabs: theTabs
             headerTextColor: tabsStyle.headerTextColor
