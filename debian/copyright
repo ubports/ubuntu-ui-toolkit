@@ -3,7 +3,7 @@ Upstream-Name: ubuntu-ui-toolkit
 Source: https://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Files: themes/Ambiance/qmltheme/artwork/*
-Copyright: 2004-2012, Canonical Ltd.
+Copyright: 2004-2013, Canonical Ltd.
 License: CC-BY-SA-3.0
  Unless otherwise indicated, artwork is available under the Creative
  Commons Attribution Share-alike license v3.0 or any later version. To
