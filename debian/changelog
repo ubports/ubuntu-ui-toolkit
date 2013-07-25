@@ -1,3 +1,20 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130725-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Juhapekka Piiroinen ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 648
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 25 Jul 2013 06:01:15 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130722-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
