@@ -18,6 +18,7 @@ import QtQuick 2.0
 
 StyledItem {
     id: tabBar
+    anchors.fill: parent
 
     /*!
       The set of tabs this tab bar belongs to

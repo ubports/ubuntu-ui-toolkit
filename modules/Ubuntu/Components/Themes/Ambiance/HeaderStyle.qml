@@ -79,16 +79,16 @@ Item {
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
-            visible: contentsLoader.status != Loader.Ready
+            visible: !styledItem.contents
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
         }
 
-        property Header header: styledItem
-        Loader {
-            id: contentsLoader
-            sourceComponent: foreground.header.contents
-            anchors.fill: parent
+        Binding {
+            target: styledItem.contents
+            property: "parent"
+            value: foreground
+            when: styledItem.contents
         }
     }
 }

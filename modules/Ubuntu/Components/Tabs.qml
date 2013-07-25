@@ -122,7 +122,7 @@ PageTreeNode {
       Header contents that will be used to override the default title inside the header,
       and provides scrollable tab buttons.
      */
-    property Component __headerContents: TabBar {
+    property Item __headerContents: TabBar {
         tabsItem: tabs
     }
 
