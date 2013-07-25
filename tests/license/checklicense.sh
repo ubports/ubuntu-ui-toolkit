@@ -19,14 +19,15 @@ PATTERN='\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|css|vala|qml)$'
 SKIP='(Canonical|GENERATED FILE|Yahoo! Inc. All rights reserved)'
 COMMAND="licensecheck --noconf -r * --copyright -c $PATTERN"
 echo Executing $COMMAND
-RESULTS=$($COMMAND | egrep -v "$SKIP" | grep '*No copyright*')
+RESULTS=$($COMMAND)
 test $? = 0 || exit 1
-COUNT=$(echo "$RESULTS" | sed 's/^ *//g' | wc -l)
-if [ "$RESULTS" = "" ]; then
+ERRORS=$(echo "$RESULTS" | egrep -v "$SKIP" | grep '*No copyright*')
+COUNT=$(echo "$ERRORS" | sed 's/^ *//g' | wc -l)
+if [ "$ERRORS" = "" ]; then
     echo No license problems found.
     exit 0
 else
     echo Found $COUNT license problems:
-    echo "$RESULTS"
+    echo "$ERRORS"
     exit 1
 fi
