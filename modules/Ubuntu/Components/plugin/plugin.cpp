@@ -117,10 +117,8 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
     QQuickView* view = qobject_cast<QQuickView*> (focusWindow);
 
-    if (view) {
-        QQmlEngine* engine = view->engine();
+    if (view)
         view->rootContext()->setContextProperty("window", view);
-    }
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
