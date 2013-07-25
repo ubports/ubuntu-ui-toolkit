@@ -280,8 +280,7 @@ License: CC-BY-SA-3.0
  . 
  Creative Commons may be contacted at http://creativecommons.org/
 
-Files: po/ documentation/ modules/ tests/ examples/ debian/ 
-Files: manual-tests/ scripts/ themes/Ambiance/qmltheme/*qml
+Files: * 
 Copyright: 2012-2013 Canonical Ltd.
 License: LGPL-3.0
 
