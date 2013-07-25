@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-PATTERN='\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$'
-SKIP='(Canonical|GENERATED FILE)'
+PATTERN='\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|css|vala|qml)$'
+SKIP='(Canonical|GENERATED FILE|Yahoo! Inc. All rights reserved)'
 COMMAND="licensecheck --noconf -r * --copyright -m -c $PATTERN"
 echo Executing $COMMAND
 RESULTS=$($COMMAND | egrep -v "$SKIP")
