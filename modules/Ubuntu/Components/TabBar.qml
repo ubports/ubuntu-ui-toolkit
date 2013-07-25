@@ -25,7 +25,8 @@ StyledItem {
     parent: null
 
     /*!
-      The set of tabs this tab bar belongs to
+      The set of tabs this tab bar belongs to.
+      Will be automatically set by \l Tabs.
      */
     // tabsItem is of type Tabs, but using that type would cause an include loop
     property Item tabsItem
