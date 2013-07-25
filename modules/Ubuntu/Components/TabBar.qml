@@ -44,7 +44,20 @@ StyledItem {
       and an active tab bar can be interacted with to select a tab.
      */
     // TODO: make readonly, or ensure the TabBar is updated when this property is updated.
-    property bool active: false
+    property bool active: alwaysActive
+
+    /*!
+      Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
+      Off by default.
+     */
+    property bool alwaysActive: false
+
+    /*!
+      Automatically activate the tab bar when \l alwaysActive is set.
+     */
+    onAlwaysActiveChanged: {
+        if (tabBar.alwaysActive) active = true;
+    }
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 }

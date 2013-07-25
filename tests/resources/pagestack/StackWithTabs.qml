@@ -42,8 +42,22 @@ MainView {
                 title: "Tab 2"
                 page: Page {
                     Label {
+                        id: label
                         anchors.centerIn: parent
-                        text: "Use header to navigate between tabs"
+                        text: "Tab bar always active?"
+                    }
+                    Switch {
+                        id: sweetch
+                        anchors {
+                            top: label.bottom
+                            topMargin: units.gu(1)
+                            horizontalCenter: parent.horizontalCenter
+                        }
+                        Binding {
+                            target: tabs.tabBar
+                            property: "alwaysActive"
+                            value: sweetch.checked
+                        }
                     }
                 }
             }
