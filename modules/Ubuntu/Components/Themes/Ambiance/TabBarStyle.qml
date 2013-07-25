@@ -23,7 +23,7 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    property int headerTextFadeDuration: 350
+    property int headerTextFadeDuration: styledItem.animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
@@ -32,7 +32,7 @@ Item {
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
-    property real buttonPositioningVelocity: 1.0
+    property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
     property int deactivateTime: 3000
 
     /*!

@@ -41,22 +41,36 @@ MainView {
             Tab {
                 title: "Tab 2"
                 page: Page {
-                    Label {
-                        id: label
-                        anchors.centerIn: parent
-                        text: "Tab bar always active?"
-                    }
-                    Switch {
-                        id: sweetch
+                    Column {
                         anchors {
-                            top: label.bottom
-                            topMargin: units.gu(1)
-                            horizontalCenter: parent.horizontalCenter
+                            centerIn: parent
                         }
-                        Binding {
-                            target: tabs.tabBar
-                            property: "alwaysActive"
-                            value: sweetch.checked
+                        width: childrenRect.width
+                        height: childrenRect.height
+                        spacing: units.gu(1)
+
+                        Label {
+                            text: "Tab bar always active?"
+                        }
+                        Switch {
+                            id: alwaysActiveSwitch
+                            Binding {
+                                target: tabs.tabBar
+                                property: "alwaysActive"
+                                value: alwaysActiveSwitch.checked
+                            }
+                        }
+                        Label {
+                            text: "Animate tab bar."
+                        }
+                        Switch {
+                            id: animateSwitch
+                            checked: true
+                            Binding {
+                                target: tabs.tabBar
+                                property: "animate"
+                                value: animateSwitch.checked
+                            }
                         }
                     }
                 }

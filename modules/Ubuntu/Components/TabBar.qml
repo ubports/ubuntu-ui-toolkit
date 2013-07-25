@@ -59,5 +59,10 @@ StyledItem {
         if (tabBar.alwaysActive) active = true;
     }
 
+    /*!
+      Show animations when the state changes. Default: true.
+      */
+    property bool animate: true
+
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 }
