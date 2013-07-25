@@ -15,11 +15,6 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
 
 /*!
     \qmltype Label
@@ -30,7 +25,7 @@ import Ubuntu.Components 0.1 as Theming
     Example:
     \qml
     Rectangle {
-        color: "grey"
+        color: UbuntuColors.coolGrey
         width: units.gu(30)
         height: units.gu(30)
 
@@ -44,8 +39,6 @@ import Ubuntu.Components 0.1 as Theming
 */
 Text {
     id: label
-
-    Theming.ItemStyle.class: "label"
 
     /*!
       The size of the text. One of the following strings (from smallest to largest):
@@ -63,8 +56,5 @@ Text {
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
-    /* FIXME: do not set any font subproperties (e.g. font.family, font.italic, etc.)
-       as setting there default value here will prevent them from being overriden
-       by the theme.
-    */
+    color: Theme.palette.selected.backgroundText
 }

@@ -267,6 +267,40 @@ void ParentChange::apply()
 }
 
 /******************************************************************************
+ * AnchorChange
+ * Low priority change for anchoring
+ */
+AnchorChange::AnchorChange(QQuickItem *item, const QString &anchor, QQuickItem *target, const QString &targetAnchor)
+    : PropertyChange(item, "anchors." + anchor, QVariant())
+    , active(false)
+{
+    QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
+    // check the special cases, like fill, centerIn
+    if (anchor != "fill" || (anchor == "fill" && !anchors->fill())) {
+        active = true;
+        if (targetAnchor.isEmpty()) {
+            action.setValue(qVariantFromValue(target));
+        } else {
+            action.setValue(target->property(QString("anchors." + targetAnchor).toLocal8Bit()));
+        }
+    }
+}
+
+void AnchorChange::apply()
+{
+    if (!active)
+        return;
+    PropertyChange::apply();
+}
+
+void AnchorChange::revert()
+{
+    if (!active)
+        return;
+    PropertyChange::revert();
+}
+
+/******************************************************************************
  * ItemStackBackup
  * High priority change backing up the item's stack position.
  */
@@ -311,22 +345,43 @@ AnchorBackup::AnchorBackup(QQuickItem *item)
     , anchorsObject(action.fromValue.value<QQuickAnchors*>())
     , used(anchorsObject->usedAnchors())
 {
-    actions << PropertyAction(item, "anchors.left")
-            << PropertyAction(item, "anchors.right")
-            << PropertyAction(item, "anchors.top")
-            << PropertyAction(item, "anchors.bottom")
-            << PropertyAction(item, "anchors.horizontalCenter")
-            << PropertyAction(item, "anchors.verticalCenter")
-            << PropertyAction(item, "anchors.baseline")
+    if ((used & QQuickAnchors::LeftAnchor) == QQuickAnchors::LeftAnchor) {
+        actions << PropertyAction(item, "anchors.left")
+                << PropertyAction(item, "anchors.leftMargin", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::RightAnchor) == QQuickAnchors::RightAnchor) {
+        actions << PropertyAction(item, "anchors.right")
+                << PropertyAction(item, "anchors.rightMargin", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::TopAnchor) == QQuickAnchors::TopAnchor) {
+        actions << PropertyAction(item, "anchors.top")
+                << PropertyAction(item, "anchors.topMargin", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::BottomAnchor) == QQuickAnchors::BottomAnchor) {
+        actions << PropertyAction(item, "anchors.bottom")
+                << PropertyAction(item, "anchors.bottomMargin", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::HCenterAnchor) == QQuickAnchors::HCenterAnchor) {
+        actions << PropertyAction(item, "anchors.horizontalCenter")
+                << PropertyAction(item, "anchors.horizontalCenterOffset", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::VCenterAnchor) == QQuickAnchors::VCenterAnchor) {
+        actions << PropertyAction(item, "anchors.verticalCenter")
+                << PropertyAction(item, "anchors.verticalCenterOffset", PropertyAction::Value);
+    }
+    if ((used & QQuickAnchors::BaselineAnchor) == QQuickAnchors::BaselineAnchor) {
+        actions << PropertyAction(item, "anchors.baseline")
+                << PropertyAction(item, "anchors.baselineOffset", PropertyAction::Value);
+    }
 
-            << PropertyAction(item, "anchors.margins", PropertyAction::Value)
-            << PropertyAction(item, "anchors.leftMargin", PropertyAction::Value)
-            << PropertyAction(item, "anchors.rightMargin", PropertyAction::Value)
-            << PropertyAction(item, "anchors.topMargin", PropertyAction::Value)
-            << PropertyAction(item, "anchors.bottomMargin", PropertyAction::Value)
-            << PropertyAction(item, "anchors.horizontalCenterOffset", PropertyAction::Value)
-            << PropertyAction(item, "anchors.verticalCenterOffset", PropertyAction::Value)
-            << PropertyAction(item, "anchors.baselineOffset", PropertyAction::Value);
+    if (anchorsObject->fill()) {
+        actions << PropertyAction(item, "anchors.fill")
+                << PropertyAction(item, "anchors.margins", PropertyAction::Value);
+    }
+    if (anchorsObject->centerIn()) {
+        actions << PropertyAction(item, "anchors.centerIn")
+                << PropertyAction(item, "anchors.alignWhenCentered", PropertyAction::Value);
+    }
 }
 
 void AnchorBackup::saveState()

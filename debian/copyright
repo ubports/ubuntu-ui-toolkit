@@ -2,7 +2,9 @@ Format: http://dep.debian.net/deps/dep5
 Upstream-Name: ubuntu-ui-toolkit
 Source: https://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
-Files: themes/Ambiance/qmltheme/artwork/*
+Files: modules/Ubuntu/Components/Themes/Ambiance/artwork/*
+Files: modules/Ubuntu/Components/artwork/*
+Files: modules/Ubuntu/Components/ListItems/artwork/*
 Copyright: 2004-2013, Canonical Ltd.
 License: CC-BY-SA-3.0
  Unless otherwise indicated, artwork is available under the Creative

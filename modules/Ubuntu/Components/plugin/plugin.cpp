@@ -23,8 +23,7 @@
 #include <QtGui/QScreen>
 
 #include "plugin.h"
-#include "themeengine.h"
-#include "itemstyleattached.h"
+#include "uctheme.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -39,7 +38,6 @@
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
-#include "ucstyle.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
 #include "ucarguments.h"
@@ -49,8 +47,9 @@
 #include <unistd.h>
 
 /*
- * Registration function for the Clipboard type
+ * Type registration functions.
  */
+
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -60,11 +59,51 @@ static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
     return clipboard;
 }
 
+static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    UCUbuntuAnimation *animation = new UCUbuntuAnimation();
+    return animation;
+}
+
+
+QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
+{
+    /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
+       http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
+    */
+    QString pluginRelativePath = QString::fromUtf8(uri).replace(".", "/").prepend("/").append("/");
+    QString pluginPath;
+    Q_FOREACH (QString importPath, importPathList) {
+        pluginPath = importPath.append(pluginRelativePath);
+        /* We verify that the directory ending in Ubuntu/Components contains the
+           file libUbuntuComponents.so therefore proving it's the right directory.
+
+           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197293
+        */
+        if (QFile(pluginPath + "libUbuntuComponents.so").exists()) {
+            return QUrl::fromLocalFile(pluginPath);
+        }
+    }
+
+    return QUrl();
+}
+
+void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile)
+{
+    QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
+    QObject* object = QuickUtils::instance().createQmlObject(url);
+    if (object != NULL) {
+        engine->rootContext()->setContextProperty(typeName, object);
+    }
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterUncreatableType<ItemStyleAttached>(uri, 0, 1, "ItemStyle", "Type is not instantiable.");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
@@ -72,7 +111,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
-    qmlRegisterType<UCStyle>(uri, 0, 1, "Style");
     qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
     qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
@@ -82,14 +120,16 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    // call engine registration method to load the theme
     QQmlContext* context = engine->rootContext();
+
+    QuickUtils::instance().setImportPathList(engine->importPathList());
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    context->setContextProperty("Theme", ThemeEngine::initializeEngine(engine));
+    UCTheme::instance().registerToContext(context);
+
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
@@ -109,6 +149,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &fontUtilsListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
+
+    // register UbuntuColors
+    registerQmlSingletonType(engine, uri, "UbuntuColors", "Colors/UbuntuColors.qml");
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

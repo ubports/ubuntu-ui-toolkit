@@ -62,7 +62,7 @@ TestCase {
     }
 
     function test_callerMargin() {
-        compare(popOver.callerMargin, units.gu(1), "Default callerMargin is 1 GU");
+        compare(popOver.callerMargin, 0, "Default callerMargin is 0");
     }
 
     function test_autoClose() {

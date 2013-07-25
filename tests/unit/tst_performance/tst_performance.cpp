@@ -22,10 +22,7 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "themeengine.h"
-#include "themeengine_p.h"
-#include "itemstyleattached.h"
-#include "ucstyle.h"
+#include "uctheme.h"
 
 class tst_Performance : public QObject
 {
@@ -53,9 +50,6 @@ private Q_SLOTS:
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
-        QString themes("../../../themes/Ambiance");
-        QVERIFY(QDir(themes).exists());
-
         quickView = new QQuickView(0);
         quickEngine = quickView->engine();
 
@@ -63,7 +57,6 @@ private Q_SLOTS:
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
         imports.prepend(QDir(modules).absolutePath());
-        imports.prepend(QDir(themes).absolutePath());
         quickEngine->setImportPathList(imports);
     }
 
@@ -81,26 +74,22 @@ private Q_SLOTS:
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
         QTest::newRow("grid with UbuntuShape") << "UbuntuShapeGrid.qml" << QUrl();
         QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
-        QTest::newRow("grid with ButtonDelegate") << "ButtonDelegateGrid.qml" << QUrl();
+        QTest::newRow("grid with ButtonStyle") << "ButtonStyleGrid.qml" << QUrl();
         QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
-//        QTest::newRow("grid with CheckBoxDelegate") << "CheckBoxDelegateGrid.qml" << QUrl();
+//        QTest::newRow("grid with CheckBoxStyle") << "CheckBoxStyleGrid.qml" << QUrl();
 //        QTest::newRow("grid with CheckBox") << "CheckBoxGrid.qml" << QUrl();
-//        QTest::newRow("grid with SwitchDelegate") << "SwitchDelegateGrid.qml" << QUrl();
+//        QTest::newRow("grid with SwitchStyle") << "SwitchStyleGrid.qml" << QUrl();
 //        QTest::newRow("grid with Switch") << "SwitchGrid.qml" << QUrl();
-//        QTest::newRow("grid with SwitchDelegate") << "SwitchDelegateGrid.qml" << QUrl();
+//        QTest::newRow("grid with SwitchStyle") << "SwitchStyleGrid.qml" << QUrl();
 //        QTest::newRow("grid with Switch") << "SwitchGrid.qml" << QUrl();
-        QTest::newRow("grid with SliderDelegate") << "SliderDelegateGrid.qml" << QUrl();
+        QTest::newRow("grid with SliderStyle") << "SliderStyleGrid.qml" << QUrl();
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
-        QTest::newRow("styled grid with Buttons") << "ButtonsWithStyledGrid.qml" << QUrl::fromLocalFile("CustomTheme.qmltheme");
     }
 
     void benchmark_GridOfComponents()
     {
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
-
-        ThemeEngine::initializeEngine(quickEngine);
-        ThemeEngine::instance()->loadTheme(theme);
 
         QQuickItem *root = 0;
         QBENCHMARK {

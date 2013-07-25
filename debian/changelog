@@ -1,3 +1,370 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130722-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover rendering improvements: - created a reusable component used
+    in Popover's style and later in the Slider - replaced dynamic shadow
+    with a 9-patch bitmap - moved pointer rendering inside the
+    BubbleShape - removed now unused Pointer, PointerStyle and
+    associated artwork.
+  * Refreshed Slider: - removed unused commented code - removed
+    deprecated FIXMEs - removed deprecated documentation - do not
+    inherit from AbstractButton anymore - greatly simplified
+    computations by making better use of property bindings - implemented
+    new design of Slider (in SliderStyle.qml) using BubbleShape Improved
+    slider page layout in widgets gallery. (LP: #1202683)
+
+  [ Leo Arias ]
+  * Replaced the MainWindow emulator for autopilot tests with a MainView
+    emulator that the uses the custom emulator features of autopilot.
+  * Added the Toolbar Autopilot emulator.
+  * Added the Tabs autopilot emulator.
+
+  [ tpeeters ]
+  * Fix a bug where contentY of a flickable was reset when the title of
+    the header is unset and set again. (LP: #1201452)
+
+  [ Christian Dywan ]
+  * Ignore test results, executables and mo files.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 645
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Jul 2013 04:03:04 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130719-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * [Theme] Accept relative paths in UBUNTU_UI_TOOLKIT_THEMES_PATH. (LP:
+    #1201842)
+
+  [ Leo Arias ]
+  * Isolated and cleaned the button tests. (LP: #1201822)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 637
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Jul 2013 05:26:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130718-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover: added manual test program.
+  * Popover simplifications: - simplified pointer positioning by only
+    computing the position of the tip; it's up to the pointer to
+    rotate/translate adequately. - fixed implementation of
+    Popover.callerMargin and set default value to 0. - removed unused
+    parameter 'pointerMargin' from InternalPopupUtils.CallerPositioning.
+
+  [ tpeeters ]
+  * Fix bug where toolbarActions.opened was not properly updated when
+    the user swipes to show/hide the toolbar. (LP: #1192673)
+  * Improve code examples in documentation.
+  * Use UnityActions to make Actions available to HUD: - Action now
+    inherits UnityActions.Action - Added "actions" property to MainView
+    to contain global actions that are available in HUD as long as the
+    app is running. - Added "actions" property to Page to contain local
+    actions that are available in HUD when the Page is active. (LP:
+    #1187869)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Make sure that the keyboard does not obscure the contents of main
+    window. (LP: #1131249)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 633
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Jul 2013 06:07:54 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Dialog: removed clipping that not clipping anything.
+  * Removed unused PointerStyleShader.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 626
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 04:01:54 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130714-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * MainView: new API to choose the background colors. That requires: -
+    HeaderStyle: removed background. - MainView: clip the contents when
+    necessary. - PageTreeNode: new properties 'isLeaf' and
+    'activeLeafNode'.
+
+  [ Leo Arias ]
+  * Fixed the pep8 errors and copyright notices.
+
+  [ Didier Roche ]
+  * fix icon -> iconSource for toolbar doc.
+
+  [ tpeeters ]
+  * Fix bug where Header did not get linked to the new Flickable when
+    Page.flickable is automatically detected. (LP: #1200642, #1192591)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 623
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 14 Jul 2013 04:02:43 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130712-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Removed unused artwork.
+  * Added experimental dark & gradient themes.
+  * Reverted standard easings to Quad because it seems
+    QEasingCurve::BezierSpline does not ensure the target value is
+    always reached. (LP: #1199662)
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Prevented dangling nodes in the scene graph. (LP:
+    #1180794)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 618
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 12 Jul 2013 04:02:24 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130711-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Introduce new theme color palette API centralising the definition of
+    the colors used by the widgets to draw themselves. Adapted most
+    widgets to use the theme color palette. The color palette defined in
+    the Ambiance theme is the one from the new visual design. (LP:
+    #1186968, #1197853)
+  * Switch: refresh to match new visual design.
+  * Tabs: more robust binding of the header component.
+  * CheckBox: refresh to match new visual design.
+
+  [ Loïc Molinari ]
+  * Added support for -Werror flagged debug builds and fixed warnings.
+  * [UbuntuShape] Fixed alignment support.
+
+  [ tpeeters ]
+  * Add API tests for MainView.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 613
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 11 Jul 2013 04:02:09 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130710.1-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * ListItems Base & Standard: prevent the icon from going taller than
+    5GU. . (LP: #1187128)
+
+  [ Timo Jyrinki ]
+  * Remove qmlrunner. On saucy, the less complicated way is to just use
+    qmlscene with either environment variable set or with a command line
+    parameter.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 605
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 10 Jul 2013 12:48:26 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130710-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Add a CrossFadeImage component which crossfades when its source is
+    updated.
+  * Standard animation durations adapted for new design: - SnapDuration
+    goes from 125ms to 100ms - FastDuration goes from 250ms to 165ms -
+    new BriskDuration is introduced at 333ms.
+  * GIconProvider: avoid using QPixmap which is not re-entrant. Fixes
+    crashes. (LP: #1197784)
+  * Fine tuned UbuntuAnimation.StandardEasing to match design.
+    Introduced new standard Ubuntu easing
+    UbuntuAnimation.StandardEasingReverse.
+  * Panel.animating: do not rely on comparing real values that sometimes
+    have rounding errors. (LP: #1199550)
+
+  [ Iain Lane ]
+  * Add a CrossFadeImage component which crossfades when its source is
+    updated.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Moved content flagging before implicit sizing to
+    prevent assertion.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 602
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 10 Jul 2013 06:23:17 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130709-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Pass import paths from main QQmlEngine to QQuickUtils' QQmlEngine.
+    Fixes case where qmlscene is passed import paths via the -I
+    argument.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 593
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 09 Jul 2013 04:02:55 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130705.3-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Latest fix in ButtonStyle had 3 typos. Fixing them. .
+  * ListItem.SingleControl: Ensure that there is always enough vertical
+    padding around the control. (LP: #1198116)
+
+  [ Christian Dywan ]
+  * Include alias types in qmlapicheck. (LP: #1192540)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 589
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 05 Jul 2013 18:09:33 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130705-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Reintroduced QML proxy for ShapeItem C++ class in order to
+    workaround CPU hog when no image was set to ShapeItem. (LP:
+    #1197801)
+
+  [ Loïc Molinari ]
+  * Added workaround for QML buggy support for color props in ternary
+    ops. (LP: #1197802)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 584
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 05 Jul 2013 04:01:41 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130703.1-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Fix for re-parenting items that are anchor filled to an item in
+    default layout.
+  * TextField API extended with API left out from TextInput. wrapMode is
+    not inlcuded as does not make sense to be used in single line input.
+    (LP: #1183265)
+  * Calculator example which turns from simple calculator (phone
+    portrait mode) into scientific one (phone landscape mode) reflecting
+    the use of Ubuntu.Layouts. .
+  * Removing common.pri from Layouts.pro and Layouts\plugin.pro causing
+    qmake warnings when Ubuntu UI toolkit project is opened in
+    QtCreator.
+
+  [ Leo Arias ]
+  * Replaced the MainWindow emulator for autopilot tests with a MainView
+    emulator that the uses the custom emulator features of autopilot.
+  * Added the Toolbar Autopilot emulator. (LP: #1177341)
+
+  [ Juhapekka Piiroinen ]
+  * Fixed broken ubuntu-ui-toolkit-gallery.qmlproject file, which had an
+    invalid value in mainFile field.
+
+  [ tpeeters ]
+  * Update header behavior: - Do not automatically hide the header when
+    scrolling in a flickable that is not anchored to the top of the
+    page. - Automatically show the header when flickable's contentHeight
+    becomes less than flickable.height. - Update documentation for
+    Page.flickable. (LP: #1156573, #1160175)
+
+  [ Kaleo ]
+  * Removed common.pri and coverage.pri files that were cluttering
+    QtCreator making it harder to understand the real structure of the
+    project. coverage.pri has been transformed into a feature file
+    (coverage.prf) which works the same way as before.
+  * Removed antiquated TextCustom class.
+  * Removed unused old-style tabs delegate.
+  * Removed UbuntuShape.qml and transferred code & documentation to
+    shapeitem.cpp ShapeItem: renamed baseColor property into color.
+  * UbuntuShape: simplified gradient implementation; gradientColor is
+    now the same as color by default. .
+  * Simplified theming infrastructure. There are no stylesheets anymore
+    (.qmltheme file), only delegates remain. A theme is a QML module
+    containing delegates whose names are standardized. The default theme
+    is called 'Ambiance' and available from QML through 'import
+    Ubuntu.Components.Themes.Ambiance 0.1'. The name of the current
+    theme is set in ~/.config/ubuntu-ui-toolkit/theme.ini Writing a new
+    theme is done by creating a QML module and adding it in the
+    Ubuntu/Components/Themes folder. A theme inherits from another theme
+    by containing a text file name 'parent_theme' whose first and only
+    line is the name of the parent theme. * Moved themes/ directory to
+    Ubuntu/Components/Themes so that themes are importable. * Simplified
+    ThemeEngine and ThemeSettings class, removed the rest of the theming
+    infrastructure (ItemStyle, Style, QmlThemeLoader, Selector,
+    StyleCache). * Adapted all widgets to use the simplified theming
+    technique: - new StyledItem class that has a 'style' Component
+    property representing the delegate - all widgets that have delegates
+    inherit from StyledItem - all widgets set the 'style' property to
+    the corresponding delegate in the current theme by using
+    Theme.createStyleComponent() - Ambiance's stylesheet property/values
+    have been moved to where they are used (mostly to the delegates) -
+    TextAreaDelegate: exposed background as Component property - Added a
+    delegate specific to TextField: TextFieldDelegate - Renamed
+    delegates so that they match their widget's name (e.g.
+    EditorCursorDelegate.qml renamed to TextCursorDelegate.qml since
+    it's the delegate of TextCursor.qml) * Renamed UITK_THEME_PATH into
+    UBUNTU_UI_TOOLKIT_THEMES_PATH. (LP: #1152160, #1152161, #1152162,
+    #1185950, #1081038, #1167998, #1137210, #1152154, #1152158)
+  * New UbuntuColors singleton defining the standard Ubuntu color
+    palette. (LP: #1098209)
+  * debian/control: specify same architecture for ubuntu-ui-toolkit-
+    theme as for qtdeclarative5-ubuntu-ui-toolkit-plugin so that the
+    files end up in the same folder. (LP: #1197164)
+  * Button: - implementation clean up - updated visual design - new
+    'gradient' property.
+  * When looking up the plugin's directory
+    (UbuntuComponentsPlugin::baseUrl), a case was omitted: if another
+    Ubuntu/Components directory exists and is present in the
+    QML2_IMPORT_PATH then the lookup failed. This fix is temporary until
+    Qt 5.1. (LP: #1197293)
+  * Reverted revisions 562 & 569 that broke the autopilot tests. Fixed
+    button related autopilot test. (LP: #1197355)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 580
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 03 Jul 2013 19:53:27 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130628-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Button: do not display a background when the color set is fully
+    transparent.
+  * TextField: new clear icon imported from the icon theme (lp:ubuntu-
+    themes).
+
+  [ Christian Dywan ]
+  * Implement bread crumbs in API docs. (LP: #1168026)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 560
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 28 Jun 2013 04:01:36 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130627-0ubuntu1) saucy; urgency=low
+
+  [ Sebastien Bacher ]
+  * List.Item.Standard: set the height and verticalCenter of the
+    control. (LP: #1190196)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 555
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 27 Jun 2013 04:01:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130626-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * [layouts] Layout factoring.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 552
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Jun 2013 04:01:25 +0000
+
 ubuntu-ui-toolkit (0.1.46daily13.06.20-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]

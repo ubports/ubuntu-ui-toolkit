@@ -17,7 +17,6 @@
 import QtQuick 2.0
 import "../" 0.1
 import "../ListItems" 0.1
-import "../" 0.1 as Theming
 
 /*!
     \qmltype ActionSelectionPopover
@@ -117,6 +116,7 @@ Popover {
                 horizontalCenter: parent.horizontalCenter
             }
             wrapMode: Text.Wrap
+            color: Theme.palette.normal.overlayText
         }
         /*! \internal */
         onTriggered: popover.hide()

@@ -26,7 +26,7 @@ import QtQuick 2.0
     It is used to propagate properties such as \l header and \l toolbar from a
     \l MainView (the root node) to each \l Page (leaf node) in the tree.
 */
-Item {
+StyledItem {
     id: node
 
     /*!
@@ -88,6 +88,28 @@ Item {
       The parent node of the current node in the page tree.
      */
     property Item parentNode: null
+
+    /*!
+      The leaf node that is active.
+     */
+    property Item activeLeafNode
+    /*!
+      Whether or not this node is a leaf, that is if it has no descendant that are nodes.
+     */
+    property bool isLeaf: true
+
+    Binding {
+        target: node.parentNode
+        property: "activeLeafNode"
+        value: node.isLeaf ? node : node.activeLeafNode
+        when: node.active
+    }
+
+    Binding {
+        target: node.parentNode
+        property: "isLeaf"
+        value: false
+    }
 
     Item {
         id: internal

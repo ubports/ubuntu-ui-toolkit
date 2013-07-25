@@ -104,6 +104,7 @@ Base {
         LabelVisual {
             id: subLabel
             selected: subtitledListItem.selected
+            secondary: true
             anchors {
 
                 left: parent.left

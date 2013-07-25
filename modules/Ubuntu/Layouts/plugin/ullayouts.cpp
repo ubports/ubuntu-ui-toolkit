@@ -178,7 +178,12 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
     // the component fills the parent
     changes.addChange(new ParentChange(item, fragment, true));
     changes.addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem));
-    changes.addChange(new PropertyChange(item, "anchors.fill", qVariantFromValue(fragment)));
+    changes.addChange(new AnchorChange(item, "fill", fragment));
+    changes.addChange(new PropertyChange(item, "anchors.margins", 0));
+    changes.addChange(new PropertyChange(item, "anchors.leftMargin", 0));
+    changes.addChange(new PropertyChange(item, "anchors.topMargin", 0));
+    changes.addChange(new PropertyChange(item, "anchors.rightMargin", 0));
+    changes.addChange(new PropertyChange(item, "anchors.bottomMargin", 0));
            // backup size
     changes.addChange(new PropertyBackup(item, "width"));
     changes.addChange(new PropertyBackup(item, "height"));

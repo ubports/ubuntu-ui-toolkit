@@ -16,11 +16,7 @@
 
 import QtQuick 2.0
 import "internalPopupUtils.js" as InternalPopupUtils
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Theming named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype Popover
@@ -41,7 +37,7 @@ import Ubuntu.Components 0.1 as Theming
         import Ubuntu.Components.Popups 0.1
 
         Rectangle {
-            color: "grey"
+            color: Theme.palette.normal.background
             width: units.gu(80)
             height: units.gu(80)
             Component {
@@ -129,13 +125,13 @@ PopupBase {
       The property holds the margins from the popover's dismissArea. The property
       is themed.
       */
-    property real edgeMargins
+    property real edgeMargins: units.gu(2)
 
     /*!
       The property holds the margin from the popover's caller. The property
       is themed.
       */
-    property real callerMargin
+    property real callerMargin: 0
 
     /*!
       The property drives the automatic closing of the Popover when user taps
@@ -147,7 +143,7 @@ PopupBase {
       */
     property bool autoClose: true
 
-    Theming.ItemStyle.class: "popover"
+    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
     QtObject {
         id: internal
@@ -155,7 +151,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin, units.dp(2));
+            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
         }
     }
@@ -164,13 +160,11 @@ PopupBase {
     __eventGrabber.enabled: autoClose
     __closeOnDismissAreaPress: true
 
-    Item {
+    StyledItem {
         id: foreground
 
-        // FIXME: see above
-        Theming.ItemStyle.class: "foreground"
         //styling properties
-        property real minimumWidth
+        property real minimumWidth: units.gu(40)
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
@@ -179,6 +173,7 @@ PopupBase {
 
         Item {
             id: containerItem
+            parent: foreground.__styleInstance.contentItem
             anchors {
                 left: parent.left
                 top: parent.top
@@ -189,9 +184,52 @@ PopupBase {
 
         onWidthChanged: internal.updatePosition()
         onHeightChanged: internal.updatePosition()
+
+        property point target: Qt.point(pointer.x - x, pointer.y - y)
+        property string direction: pointer.direction
+        property bool clipContent: true
+
+        style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
-    Pointer { id: pointer }
+    QtObject {
+        id: pointer
+
+        /* Input variables for InternalPopupUtils are the properties:
+            - horizontalMargin
+            - verticalMargin
+            - size
+
+           Output variables of InternalPopupUtils are the properties:
+            - x
+            - y
+            - direction
+        */
+
+        property real arrowSize: units.dp(15)
+        property real cornerSize: units.dp(11)
+
+        /* Minimum distance between the top or bottom of the popup and
+           the tip of the pointer when the direction is left or right.
+        */
+        property real horizontalMargin: arrowSize/2.0 + cornerSize
+        /* Minimum distance between the left or right of the popup and
+           the tip of the pointer when the direction is up or down.
+        */
+        property real verticalMargin: arrowSize/2.0 + cornerSize
+        /* Either:
+            - distance between the left or right of the popup and the tip
+              of the pointer when the direction is left or right.
+            - distance between the top or bottom of the popup and the tip
+              of the pointer when the direction is up or down.
+        */
+        property real size: units.dp(6)
+
+        property real x
+        property real y
+        property string direction
+    }
+
 
     /*! \internal */
     onCallerChanged: internal.updatePosition()

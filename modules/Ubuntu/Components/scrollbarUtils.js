@@ -45,7 +45,7 @@ var _obj = {
 /*!
   \internal
   Checks whether the _obj is valid or not. Must be called in every function
-  as those can be invoked prior to the host (delegate) component completion.
+  as those can be invoked prior to the host (style) component completion.
   */
 function __check(sb) {
     if (sb !== null && (_obj.scrollbar !== sb)) {
@@ -78,7 +78,7 @@ function sliderPos(scrollbar, min, max) {
   Calculates the slider size for ListViews based on the visible area's position
   and size ratios, clamping it between min and max.
 
-  The function can be used in Scrollbar delegates to calculate the size of the slider.
+  The function can be used in Scrollbar styles to calculate the size of the slider.
   */
 function sliderSize(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;

@@ -101,7 +101,6 @@ Rectangle {
                     bottom: parent.bottom
                 }
                 height: units.gu(8)
-                ItemStyle.class: "toolbar"
                 property bool opened: bottomLeftPanel.opened
                 property bool animating: bottomLeftPanel.animating
                 Label {

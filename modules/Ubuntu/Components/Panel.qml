@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "black"
+                    color: Theme.palette.normal.overlay
 
                     Button {
                         anchors.centerIn: parent
@@ -86,7 +86,6 @@ import Ubuntu.Components 0.1 as Toolkit
 
                 Item {
                     anchors.fill: parent
-                    ItemStyle.class: "toolbar"
 
                     // two properties used by the toolbar delegate:
                     property bool opened: panel.opened
@@ -111,7 +110,7 @@ import Ubuntu.Components 0.1 as Toolkit
         import Ubuntu.Components 0.1
 
         Rectangle {
-            color: "grey"
+            color: Theme.palette.normal.background
             width: units.gu(40)
             height: units.gu(40)
 
@@ -125,13 +124,13 @@ import Ubuntu.Components 0.1 as Toolkit
                 height: units.gu(8)
 
                 Rectangle {
-                    color: "white"
+                    color: Theme.palette.normal.overlay
                     anchors.fill: parent
                     Rectangle {
                         width: units.gu(8)
                         height: units.gu(4)
                         anchors.centerIn: parent
-                        color: "red"
+                        color: Theme.palette.normal.foreground
                         signal clicked()
                         onClicked: print("The red rectangle was clicked");
                     }
@@ -243,10 +242,13 @@ Item {
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
-    readonly property bool animating: draggingArea.pressed || (state == "" && bar.position != bar.size) || (state == "spread" && bar.position != 0)
+    readonly property bool animating: draggingArea.pressed || transitionToAll.running
+                                                           || transitionToHint.running
+                                                           || transitionToSpread.running
 
     transitions: [
         Transition {
+            id: transitionToAll
             to: ""
             UbuntuNumberAnimation {
                 target: bar
@@ -255,6 +257,7 @@ Item {
             }
         },
         Transition {
+            id: transitionToHint
             to: "hint"
             UbuntuNumberAnimation {
                 target: bar
@@ -263,6 +266,7 @@ Item {
             }
         },
         Transition {
+            id: transitionToSpread
             to: "spread"
             UbuntuNumberAnimation {
                 target: bar

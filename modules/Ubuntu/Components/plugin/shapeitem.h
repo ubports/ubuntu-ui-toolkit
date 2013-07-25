@@ -32,7 +32,7 @@ class ShapeItem : public QQuickItem
     Q_OBJECT
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
-    Q_PROPERTY(QColor baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
                NOTIFY gradientColorChanged)
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
@@ -50,8 +50,8 @@ public:
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
 
-    QColor baseColor() const { return baseColor_; }
-    void setBaseColor(const QColor& baseColor);
+    QColor color() const { return color_; }
+    void setColor(const QColor& color);
     QColor gradientColor() const { return gradientColor_; }
     void setGradientColor(const QColor& gradientColor);
     QString radius() const { return radiusString_; }
@@ -69,7 +69,7 @@ public:
     Q_SLOT void gridUnitChanged();
 
 Q_SIGNALS:
-    void baseColorChanged();
+    void colorChanged();
     void gradientColorChanged();
     void radiusChanged();
     void borderChanged();
@@ -84,9 +84,18 @@ protected:
     virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
 
 private:
+    void updateFromImageProperties(QQuickItem* image);
+    void connectToPropertyChange(QObject* sender, const char* property,
+                                 QObject* receiver, const char* slot);
+    void connectToImageProperties(QQuickItem* image);
+
+private Q_SLOTS:
+    void onImagePropertiesChanged();
+
+private:
     enum DirtyFlags {
         NotDirty           = 0,
-        DirtyBaseColor     = (1 << 0),
+        DirtyColor     = (1 << 0),
         DirtyGradientColor = (1 << 1),
         DirtyRadius        = (1 << 2),
         DirtyBorder        = (1 << 3),
@@ -96,13 +105,14 @@ private:
         DirtyVAlignment    = (1 << 7),
         DirtyGridUnit      = (1 << 8),
         DirtyGeometry      = (1 << 9),
-        DirtyAll           = (DirtyBaseColor | DirtyGradientColor | DirtyRadius | DirtyBorder
+        DirtyAll           = (DirtyColor | DirtyGradientColor | DirtyRadius | DirtyBorder
                               | DirtyImage | DirtyStretched | DirtyHAlignment | DirtyVAlignment
                               | DirtyGridUnit | DirtyGeometry)
     };
 
-    QColor baseColor_;
+    QColor color_;
     QColor gradientColor_;
+    bool gradientColorSet_;
     QString radiusString_;
     Radius radius_;
     QString borderSource_;
@@ -165,8 +175,8 @@ public:
     ShapeColoredMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
-    const QVector4D& baseColor() const { return baseColor_; }
-    void setBaseColor(const QColor& baseColor);
+    const QVector4D& color() const { return color_; }
+    void setColor(const QColor& color);
     const QVector4D& gradientColor() const { return gradientColor_; }
     void setGradientColor(const QColor& gradientColor);
     QSGTexture* shapeTexture() const { return shapeTexture_; }
@@ -174,7 +184,7 @@ public:
     void setShapeTexture(QSGTexture* shapeTexture, bool scaledDown);
 
 private:
-    QVector4D baseColor_;
+    QVector4D color_;
     QVector4D gradientColor_;
     QSGTexture* shapeTexture_;
     QSGTexture::Filtering filtering_;
@@ -196,7 +206,7 @@ private:
 
     int matrixId_;
     int opacityId_;
-    int baseColorId_;
+    int colorId_;
     int gradientColorId_;
 };
 

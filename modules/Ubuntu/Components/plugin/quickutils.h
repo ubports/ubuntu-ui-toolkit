@@ -43,6 +43,8 @@ public:
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
     Q_INVOKABLE QString className(QQuickItem *item);
+    QObject* createQmlObject(const QUrl &url);
+    void setImportPathList(const QStringList &paths);
 
 Q_SIGNALS:
     void rootObjectChanged();
@@ -56,6 +58,7 @@ private Q_SLOTS:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QQuickView *m_rootView;
+    QQmlEngine *m_engine;
 
     void lookupQuickView();
 };

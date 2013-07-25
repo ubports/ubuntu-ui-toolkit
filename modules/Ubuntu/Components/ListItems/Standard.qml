@@ -125,10 +125,7 @@ Empty {
       The width of the control must be specified in order to determine
       the layout of the list item.
 
-      The mouseArea of the control will be set to the full Standard list item if
-      there is no \l progression, or only the part left of the split, if there is a
-      \l progression.
-      \qmlproperty AbstractButton control
+      \qmlproperty Item control
     */
     property alias control: controlContainer.control
 
@@ -160,8 +157,7 @@ Empty {
             bottom: parent.bottom
             left: parent.left
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     Rectangle {
@@ -174,21 +170,18 @@ Empty {
             bottom: parent.bottom
             right: parent.right
         }
-        color: "#E6E6E6"
-        opacity: 0.7
+        color: Theme.palette.selected.background
     }
 
     IconVisual {
         id: iconHelper
 
         width: height
+        height: Math.min(units.gu(5), parent.height - units.gu(1))
         anchors {
             left: parent.left
             leftMargin: listItem.__contentsMargins
-            top: parent.top
-            topMargin: units.gu(0.5)
-            bottom: parent.bottom
-            bottomMargin: anchors.topMargin
+            verticalCenter: parent.verticalCenter
         }
     }
 
@@ -244,15 +237,15 @@ Empty {
 
     Item {
         id: controlContainer
-        property AbstractButton control
+        property Item control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined
+        height: control ? control.height : undefined
         anchors {
             right: listItem.progression ? progressionHelper.left : parent.right
             rightMargin: listItem.__contentsMargins
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
         onControlChanged: {
             if (control) control.parent = controlContainer;
@@ -263,14 +256,14 @@ Empty {
 
             onClicked: {
                 if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    if (control.enabled) control.clicked();
+                    if (control.enabled && control.hasOwnProperty("clicked")) control.clicked();
                 } else {
                     listItem.clicked();
                 }
             }
 
             onPressAndHold: {
-                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
+                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x && control.hasOwnProperty("pressAndHold")) {
                     control.pressAndHold();
                 } else {
                     listItem.pressAndHold();

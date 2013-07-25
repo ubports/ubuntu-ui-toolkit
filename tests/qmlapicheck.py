@@ -17,18 +17,20 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
-import sys, fileinput
+import sys
+import fileinput
 
-if len (sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
+if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
     import os
 
     basename = os.path.basename(sys.argv[0])
-    print ('Usage:\n  %s FILENAME [FILENAME2..N]\n\n'
-           '    Generate a QML API file\n'
-           'Example:\n'
-           '    %s modules/Ubuntu/Components/*.qml plugins.qmltypes > components.api.new\n'
-           '    diff -Fqml -u components.api{,.new}\n'
-           % (basename, basename))
+    print (
+        'Usage:\n  %s FILENAME [FILENAME2..N]\n\n'
+        '  Generate a QML API file\n'
+        'Example:\n'
+        '  %s modules/Ubuntu/Components/*.qml plugins.qmltypes'
+        ' > components.api.new\n'
+        '  diff -Fqml -u components.api{,.new}\n' % (basename, basename))
     sys.exit(1)
 
 for line in fileinput.input():
@@ -36,18 +38,29 @@ for line in fileinput.input():
     if fileinput.isfirstline():
         in_block = 0
         in_comment = False
+        annotated_type = None
         if fileinput.filename()[-3:] == 'qml':
             filetype = 'qml'
             keywords = ['signal', 'property', 'function']
         elif fileinput.filename()[-8:] == 'qmltypes':
             filetype = 'qmltypes'
-            keywords = ['Signal', 'Property', 'Method', 'prototype:', 'exports:']
+            keywords = ['Signal',
+                        'Property',
+                        'Method',
+                        'prototype:',
+                        'exports:']
         else:
             print('Unknown filetype %s' % fileinput.filename())
             sys.exit(1)
         print('%s' % fileinput.filename())
 
     line = line.split('//')[0]
+    # alias properties only define their type through qdoc comments
+    if '\\qmlproperty' in line:
+        annotated_type = line
+    elif '\\internal' in line:
+        annotated_type = 'internal internal internal'
+
     if '/*' in line and not '*/' in line:
         in_comment = True
         continue
@@ -77,6 +90,14 @@ for line in fileinput.input():
             if word in keywords:
                 if filetype == 'qml':
                     signature = line.split(':')[0].split('{')[0].strip()
+                    if 'alias' in line:
+                        if not annotated_type:
+                            print('    %s' % (signature))
+                            print('Error: Missing \\qmlproperty annotation')
+                            sys.exit(1)
+                        real_type = annotated_type.strip().split(' ')[1]
+                        signature = signature.replace('alias', real_type)
+                    annotated_type = None
                 elif filetype == 'qmltypes':
                     signature = line.strip()
                 print('    %s' % (signature))
@@ -88,4 +109,3 @@ for line in fileinput.input():
         # The parent type can affect API
         if in_block == 1 and filetype == 'qml':
             print(line.split('{')[0].strip())
-

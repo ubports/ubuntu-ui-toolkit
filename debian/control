@@ -19,6 +19,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-test-plugin,
                qtdeclarative5-window-plugin,
+               qtdeclarative5-unity-action-plugin,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
@@ -34,6 +35,7 @@ Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
          libqt5svg5,
          qtdeclarative5-qtquick2-plugin,
          qtdeclarative5-window-plugin,
+         qtdeclarative5-unity-action-plugin,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
@@ -47,7 +49,7 @@ Description: Qt Components for Ubuntu - QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 Package: ubuntu-ui-toolkit-theme
-Architecture: all
+Architecture: amd64 i386 armhf
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
@@ -104,24 +106,9 @@ Depends: ${misc:Depends},
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
+         python-autopilot (>= 1.3),
+         python-mock,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
-
-Package: qmlrunner
-Architecture: amd64 i386 armhf
-Depends: qmlscene
-Conflicts: qtchooser
-Description: Simple QML Scene symlink provider
- A simple qmlscene symlink provider. Depend on this package instead of 
- qtchooser/qt5-default/qmlscene in the following way:
- .
- Depends: qmlrunner | qtchooser
- .
- The conditional dependency allows either having just qmlrunner installed, 
- or having for example full ubuntu-sdk (and qt5-default/qtchooser).
- .
- This package will be eventually replaced by  upstream 'qml' tool, so 
- it is encouraged to use the '/usr/bin/qml' symlink already which is also 
- provided by this package.
 

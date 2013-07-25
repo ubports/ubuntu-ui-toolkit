@@ -29,17 +29,17 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_color_hex"
-                color: "#5da357"
+                color: UbuntuColors.orange
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_color_lightblue"
-                color: "lightblue"
+                color: UbuntuColors.lightAubergine
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_color_darkgray"
-                color: "darkgray"
+                color: UbuntuColors.warmGrey
             }
         }
 
@@ -66,27 +66,27 @@ Template {
             UbuntuShape {
                 objectName: "ubuntushape_radius_small"
 
-                color: "#dd4814"
+                color: Theme.palette.normal.foreground
                 radius: "small"
 
                 Label {
                     anchors.centerIn: parent
                     text: "small"
                     fontSize: "x-small"
-                    color: "#f1f1f1"
+                    color: Theme.palette.normal.foregroundText
                 }
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_radius_medium"
-                color: "#dd4814"
+                color: Theme.palette.normal.foreground
                 radius: "medium"
 
                 Label {
                     anchors.centerIn: parent
                     text: "medium"
                     fontSize: "x-small"
-                    color: "#f1f1f1"
+                    color: Theme.palette.normal.foregroundText
                 }
             }
         }
@@ -98,7 +98,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_15_6"
-                color: "#dd4814"
+                color: Theme.palette.normal.foreground
                 width: units.gu(15)
                 height: units.gu(6)
                 anchors.verticalCenter: parent.verticalCenter
@@ -106,7 +106,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_10_14"
-                color: "#dd4814"
+                color: Theme.palette.normal.foreground
                 width: units.gu(10)
                 height: units.gu(14)
             }

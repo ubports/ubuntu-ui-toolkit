@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Theming
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype UbuntuShape
@@ -52,107 +52,68 @@ import Ubuntu.Components 0.1 as Theming
             }
         }
     \endqml
-
-    \qml
-        import Ubuntu.Components 0.1
-
-        UbuntuShape {
-            maskSource: "customMask.sci"
-            borderSource: "customBorder.sci"
-        }
-    \endqml
-
 */
 Item {
-    id: shape
-
-    Theming.ItemStyle.class: "UbuntuShape-radius-" + radius
+    id: shapeProxy
 
     /*!
-      The size of the corners among: "small" (default) and "medium".
+        \qmlproperty color UbuntuShape::color
+
+        The top color of the gradient used to fill the shape. Setting only this
+        one is enough to set the overall color the shape.
     */
-    property string radius: "small"
+    property alias color: shape.color
 
     /*!
-      The top color of the gradient used to fill the shape. Setting only this
-      one is enough to set the overall color the shape.
+        \qmlproperty color UbuntuShape::gradientColor
+
+        The bottom color of the gradient used for the overlay blending of the
+        color that fills the shape. It is optional to set this one as setting
+        \l color is enough to set the overall color of the shape.
     */
-    property color color: Qt.rgba(0, 0, 0, 0)
+    property alias gradientColor: shape.gradientColor
 
     /*!
-      The bottom color of the gradient used for the overlay blending of the
-      color that fills the shape. It is optional to set this one as setting
-      \l color is enough to set the overall color of the shape.
+        \qmlproperty string UbuntuShape::radius
+
+        The size of the corners among: "small" (default) and "medium".
     */
-    property color gradientColor: Qt.rgba(0, 0, 0, 0)
+    property alias radius: shape.radius
 
     /*!
-      \deprecated
-      The image used to mask the \l image.
-      We plan to expose that feature through styling properties.
+        \qmlproperty Image UbuntuShape::image
+
+        The image used to fill the shape.
     */
-    property url maskSource: ""
+    property Item image
 
     /*!
-      \deprecated
-      The image used as a border.
-      We plan to expose that feature through styling properties.
+        \deprecated
+        \qmlproperty url UbuntuShape::borderSource
+
+        The image used as a border.
+        We plan to expose that feature through styling properties.
     */
-    /* FIXME: the theming engine sets the value for the borderSource property
-       declared in the theme. It overwrites the default value set below. However
-       the theming engine tries to be smart and not overwrite the value set when
-       instantiating the class. In the following example the value "mySource" is
-       not going to be overwritten by the theming engine:
+    property alias borderSource: shape.borderSource
 
-       UbuntuShape {
-            borderSource: "mySource"
-       }
 
-       with the theme:
+    implicitWidth: shape.implicitWidth
+    implicitHeight: shape.implicitHeight
 
-       .ubuntushape {
-            borderSource: url("themeSource")
-       }
-
-       However, in order to do so, the theming engine relies on the emission of
-       the 'changed' signal for the property which is emitted when the class
-       is instantiated _if_ the default value is different to the value set when
-       instantiating the class. This leads to a corner case that will have a
-       counter-intuitive result. Consider the following example where the default
-       value is identical to the value set at instantiation:
-
-       UbuntuShape {
-            borderSource: "*"
-       }
-
-       with the theme:
-
-       .ubuntushape {
-            borderSource: url("themeSource")
-       }
-
-       The final value of the 'borderSource' property will be "themeSource" and not "*".
-    */
-    property url borderSource: "*"
-
-    /*!
-      The image used to fill the shape.
-    */
-    property Image image
-
-    implicitWidth: units.gu(8)
-    implicitHeight: units.gu(8)
-
-    Theming.Shape {
+    Ubuntu.Shape {
+        id: shape
         anchors.fill: parent
-        visible: shape.visible
-        image: shape.image && (shape.image.status == Image.Ready) ? shape.image : null
-        baseColor: shape.color
-        gradientColor: shape.gradientColor
-        borderSource: shape.borderSource
-        radius: shape.radius
-        stretched: shape.image && (shape.image.fillMode == Image.PreserveAspectCrop) ? false : true
-        horizontalAlignment: shape.image && (shape.image.horizontalAlignment == Image.AlignLeft) ? Theming.Shape.AlignLeft : shape.image && (shape.image.horizontalAlignment == Image.AlignRight) ? Theming.Shape.AlignRight : Theming.Shape.AlignHCenter
-        verticalAlignment: shape.image && (shape.image.verticalAlignment == Image.AlignTop) ? Theming.Shape.AlignTop : shape.image && (shape.image.verticalAlignment == Image.AlignBottom) ? Theming.Shape.AlignBottom : Theming.Shape.AlignVCenter
+        /* FIXME: only set the ShapeItem::image property when the Image's source is loaded
+           (status == Image.Ready). Otherwise, Image::textureProvider()::texture() is NULL
+           when ShapeItem::updatePaintNode() is called and ShapeItem::updatePaintNode()
+           calls itself recursively forever.
+
+           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197801
+        */
+        property bool isImageReady: shapeProxy.image && ((shapeProxy.image.status == Image.Ready) ||
+                                    QuickUtils.className(shapeProxy.image) == "QQuickShaderEffectSource")
+        image: isImageReady ? shapeProxy.image : null
+        /* FIXME: without this, rendering of the image inside the shape is sometimes garbled. */
+        stretched: isImageReady && (shapeProxy.image.fillMode == Image.PreserveAspectCrop) ? false : true
     }
 }
