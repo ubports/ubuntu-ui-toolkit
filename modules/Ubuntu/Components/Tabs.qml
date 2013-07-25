@@ -171,11 +171,10 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
-      \internal
-      Header contents that will be used to override the default title inside the header,
+      The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
      */
-    property Item __headerContents: TabBar {
+    property TabBar tabBar: TabBar {
         tabsItem: tabs
     }
 
@@ -255,7 +254,7 @@ PageTreeNode {
     Binding {
         target: internal.header
         property: "contents"
-        value: tabs.active ? tabs.__headerContents : null
+        value: tabs.active ? tabs.tabBar: null
         when: internal.header && tabs.active
     }
 }
