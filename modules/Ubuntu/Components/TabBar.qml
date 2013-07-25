@@ -16,6 +16,14 @@
 
 import QtQuick 2.0
 
+/*!
+    \qmltype TabBar
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu
+    \brief Tab bar that will be shown in the header when \l Tabs is active.
+        This component does not need to be instantiated by the developer, it is
+        automatically created by the \l Tabs.
+*/
 StyledItem {
     id: tabBar
     anchors.fill: parent
@@ -25,8 +33,8 @@ StyledItem {
     parent: null
 
     /*!
-      The set of tabs this tab bar belongs to.
-      Will be automatically set by \l Tabs.
+      The \l Tabs item that tab bar belongs to.
+      Will be automatically set by \l Tabs when the TabBar is created.
      */
     // tabsItem is of type Tabs, but using that type would cause an include loop
     property Item tabsItem
@@ -35,6 +43,7 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
+    // TODO: make readonly, or ensure the TabBar is updated when this property is updated.
     property bool active: false
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
