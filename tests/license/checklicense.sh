@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 #
 # Copyright 2013 Canonical Ltd.
 #
@@ -15,12 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-issuescount=`licensecheck --noconf -r * --copyright -m -c "\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$"|egrep -v "(Canonical|GENERATED FILE)"|wc -l`
-if [ $issuescount -eq 0 ]; then
+PATTERN='\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$'
+SKIP='(Canonical|GENERATED FILE)'
+COMMAND="licensecheck --noconf -r * --copyright -m -c $PATTERN"
+echo Executing $COMMAND
+RESULTS=$($COMMAND | egrep -v "$SKIP")
+COUNT=$(echo "$RESULTS" | sed 's/^ *//g' | wc -l)
+if [ "$RESULTS" = "" ]; then
     echo No license problems found.
     exit 0
 else
-    echo Found $issuescount license problems:
-    licensecheck --noconf -r * --copyright -m -c "\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$"|egrep -v "(Canonical|GENERATED FILE)"
+    echo Found $COUNT license problems:
+    echo "$RESULTS"
     exit 1
 fi
