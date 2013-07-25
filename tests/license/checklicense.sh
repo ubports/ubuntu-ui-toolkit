@@ -20,6 +20,7 @@ SKIP='(Canonical|GENERATED FILE|Yahoo! Inc. All rights reserved)'
 COMMAND="licensecheck --noconf -r * --copyright -m -c $PATTERN"
 echo Executing $COMMAND
 RESULTS=$($COMMAND | egrep -v "$SKIP")
+test $? = 0 || exit 1
 COUNT=$(echo "$RESULTS" | sed 's/^ *//g' | wc -l)
 if [ "$RESULTS" = "" ]; then
     echo No license problems found.
