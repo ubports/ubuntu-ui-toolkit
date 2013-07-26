@@ -3,6 +3,7 @@ Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
+               devscripts,
                libgles2-mesa-dev,
                libglib2.0-dev,
                python,
