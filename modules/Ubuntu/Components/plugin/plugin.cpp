@@ -114,7 +114,12 @@ void UbuntuComponentsPlugin::registerWindowContextProperty()
 void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 {
     qDebug() << "setWindowContextProperty" << focusWindow;
-    m_context->setContextProperty("window", focusWindow);
+
+    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
+
+    if (view != NULL) {
+        view->rootContext()->setContextProperty("window", view);
+    }
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -138,7 +143,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
-    m_context = context;
 
     QuickUtils::instance().setImportPathList(engine->importPathList());
 
