@@ -32,14 +32,20 @@ UbuntuTestCase {
          compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
      }
 
-     function test_states() {
+     function test_states_and_signal() {
          var listContainer = findChild(optionSelector, "listContainer");
+
+         signalSpy.signalName = "scroll";
+         compare(signalSpy.count, 0);
 
          optionSelector.expanded = false;
          compare(listContainer.state, "collapsed", "state should be collapsed");
 
          optionSelector.expanded = true;
          compare(listContainer.state, "expanded", "state should be expanded");
+
+         //Check if scroll signal was fired after expansion.
+         compare(signalSpy.count, 2);
      }
 
      function test_text() {
@@ -50,7 +56,7 @@ UbuntuTestCase {
      }
 
      function test_selectedIndex() {
-        compare(optionSelector.selectedIndex,0,"selectedIndex is 0 by default");
+        compare(optionSelector.selectedIndex, 0, "selectedIndex is 0 by default");
      }
 
      function test_values() {
@@ -58,13 +64,6 @@ UbuntuTestCase {
          var newValues = ["value1","value2","value3"];
          optionSelector.values = newValues;
          compare(optionSelector.values, newValues, "set/get");
-     }
-
-     function test_signal_triggered() {
-         signalSpy.signalName = "scroll";
-         compare(signalSpy.count, 0);
-         optionSelector.scroll(0, 0);
-         compare(signalSpy.count, 1);
      }
 
      Rectangle {
