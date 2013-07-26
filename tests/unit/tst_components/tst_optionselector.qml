@@ -19,7 +19,7 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 import Ubuntu.Test 0.1
 
-TestCase {
+UbuntuTestCase {
      name: "OptionSelectorAPI"
 
      function test_expanded() {
@@ -39,7 +39,7 @@ TestCase {
          compare(listContainer.state, "collapsed", "state should be collapsed")
 
          listItemValueSelector.expanded = true
-         compare(listContainer.state, true, "state should be expanded")
+         compare(listContainer.state, "expanded", "state should be expanded")
      }
 
      function test_text() {
