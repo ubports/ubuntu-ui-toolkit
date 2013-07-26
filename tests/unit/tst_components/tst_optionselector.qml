@@ -23,41 +23,48 @@ UbuntuTestCase {
      name: "OptionSelectorAPI"
 
      function test_expanded() {
-         var listContainer = findChild(listItemValueSelector, "listContainer")
+         var listContainer = findChild(optionSelector, "listContainer");
 
-         listItemValueSelector.expanded = false
-         compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one")
+         optionSelector.expanded = false;
+         compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
 
-         listItemValueSelector.expanded = true
-         compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one")
+         optionSelector.expanded = true;
+         compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
      }
 
      function test_states() {
-         var listContainer = findChild(listItemValueSelector, "listContainer")
+         var listContainer = findChild(optionSelector, "listContainer");
 
-         listItemValueSelector.expanded = false
-         compare(listContainer.state, "collapsed", "state should be collapsed")
+         optionSelector.expanded = false;
+         compare(listContainer.state, "collapsed", "state should be collapsed");
 
-         listItemValueSelector.expanded = true
-         compare(listContainer.state, "expanded", "state should be expanded")
+         optionSelector.expanded = true;
+         compare(listContainer.state, "expanded", "state should be expanded");
      }
 
      function test_text() {
-         compare(listItemValueSelector.text,"","text is '' by default")
-         var newText = "Hello World!"
-         listItemValueSelector.text = newText
-         compare(listItemValueSelector.text,newText,"set/get")
+         compare(optionSelector.text,"","text is '' by default")
+         var newText = "Hello World!";
+         optionSelector.text = newText;
+         compare(optionSelector.text, newText, "set/get");
      }
 
      function test_selectedIndex() {
-        compare(listItemValueSelector.selectedIndex,0,"selectedIndex is 0 by default")
+        compare(optionSelector.selectedIndex,0,"selectedIndex is 0 by default");
      }
 
      function test_values() {
-         compare(listItemValueSelector.values,undefined,"values is undefined by default")
-         var newValues = ["value1","value2","value3"]
-         listItemValueSelector.values = newValues
-         compare(listItemValueSelector.values,newValues,"set/get")
+         compare(optionSelector.values,undefined,"values is undefined by default")
+         var newValues = ["value1","value2","value3"];
+         optionSelector.values = newValues;
+         compare(optionSelector.values, newValues, "set/get");
+     }
+
+     function test_signal_triggered() {
+         signalSpy.signalName = "scroll";
+         compare(signalSpy.count, 0);
+         optionSelector.scroll(0, 0);
+         compare(signalSpy.count, 1);
      }
 
      Rectangle {
@@ -65,6 +72,11 @@ UbuntuTestCase {
      }
 
      OptionSelector {
-         id: listItemValueSelector
+         id: optionSelector
+
+         SignalSpy {
+             id: signalSpy
+             target: optionSelector
+         }
      }
 }
