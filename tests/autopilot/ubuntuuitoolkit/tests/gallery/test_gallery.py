@@ -24,7 +24,7 @@ import testscenarios
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
-from UbuntuUiToolkit import tests
+from ubuntuuitoolkit import tests
 
 
 class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
