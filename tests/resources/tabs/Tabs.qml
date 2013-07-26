@@ -32,10 +32,21 @@ MainView {
             title: i18n.tr("Simple page")
             page: Page {
                 title: "This title is not visible"
-                Label {
-                    id: label
+                Row {
                     anchors.centerIn: parent
-                    text: "A centered label"
+                    spacing: units.gu(1)
+                    width: childrenRect.width
+                    height: childrenRect.height
+                    Button {
+                        text: "tab bar on"
+                        enabled: !tabs.tabBar.active
+                        onClicked: tabs.tabBar.active = true;
+                    }
+                    Button {
+                        text: "tab bar off"
+                        enabled: tabs.tabBar.active
+                        onClicked: tabs.tabBar.active = false;
+                    }
                 }
                 tools: ToolbarItems {
                     ToolbarButton {
