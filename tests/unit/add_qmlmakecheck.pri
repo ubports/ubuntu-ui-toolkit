@@ -5,7 +5,6 @@
 check.target = check
 check.commands = "set -e;"
 for(TEST, TESTS) {
-  message(Generating 'make check' for $$TEST)
   check.commands += QML2_IMPORT_PATH=../../../modules:$$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules qmltestrunner -platform minimal -input $${TEST} -import "../../../modules" -o ../../$${TEST}.xml,xunitxml -o -,txt;
 }
 check.commands += cd ../../..;
