@@ -91,14 +91,6 @@ Item {
 
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
-    /*!
-      \internal
-
-      Report the current orientation of the application via QWindow::contentOrientation.
-      http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
-     */
-    onOrientationAngleChanged: window.contentOrientation = Screen.orientation
-
     Item {
         id: stateWrapper
 

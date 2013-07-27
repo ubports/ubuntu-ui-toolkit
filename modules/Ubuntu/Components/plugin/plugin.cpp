@@ -100,26 +100,6 @@ void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const 
     }
 }
 
-void UbuntuComponentsPlugin::registerWindowContextProperty()
-{
-    setWindowContextProperty(QGuiApplication::focusWindow());
-
-    // listen to QGuiApplication::focusWindowChanged
-    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
-    QObject::connect(application, SIGNAL(focusWindowChanged(QWindow*)),
-                     this, SLOT(setWindowContextProperty(QWindow*)));
-
-}
-
-void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
-{
-    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
-
-    if (view != NULL) {
-        view->rootContext()->setContextProperty("window", view);
-    }
-}
-
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
@@ -184,6 +164,4 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::LandscapeOrientation |
             Qt::InvertedPortraitOrientation |
             Qt::InvertedLandscapeOrientation);
-
-    registerWindowContextProperty();
 }
