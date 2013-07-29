@@ -12,27 +12,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
-.pragma library
-
-/*!
-  The function returns the live value of the slider.
-  */
-function liveValue(item) {
-    return item.__internals.liveValue;
-}
-
-/*!
-  The function returns the normalized live value of the slider.
-  */
-function normalizedValue(item) {
-    return item.__internals.normalizedValue;
-}
-
-/*!
-  The function returns whether the slider is being pressed or not.
-  */
-function isPressed(item) {
-    return item.__internals.pressed;
-}
+#include <QtQuickTest/quicktest.h>
+QUICK_TEST_MAIN(test)

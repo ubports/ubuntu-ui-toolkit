@@ -71,5 +71,13 @@ Item {
             page.tools.locked = false;
             compare(mainView.__propagated.toolbar.locked, false, "Toolbar can be unlocked by setting page.tools.locked to false");
         }
+
+        function test_bug1192673() {
+            toolbarActions.opened = false;
+            mainView.__propagated.toolbar.opened = true;
+            compare(toolbarActions.opened, true, "opening the toolbar updates toolbarActions.opened");
+            toolbarActions.opened = false;
+            compare(mainView.__propagated.toolbar.opened, false, "setting toolbarActions.opened to false closes the toolbar");
+        }
     }
 }

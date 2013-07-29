@@ -3,6 +3,7 @@ Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
+               devscripts,
                libgles2-mesa-dev,
                libglib2.0-dev,
                python,
@@ -19,6 +20,8 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-test-plugin,
                qtdeclarative5-window-plugin,
+               qtdeclarative5-unity-action-plugin,
+               devscripts,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
@@ -34,6 +37,7 @@ Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
          libqt5svg5,
          qtdeclarative5-qtquick2-plugin,
          qtdeclarative5-window-plugin,
+         qtdeclarative5-unity-action-plugin,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},
@@ -104,6 +108,8 @@ Depends: ${misc:Depends},
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
+         python-autopilot (>= 1.3),
+         python-mock,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package

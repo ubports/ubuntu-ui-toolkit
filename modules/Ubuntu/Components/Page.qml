@@ -15,6 +15,8 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
+
 /*!
     \qmltype Page
     \inqmlmodule Ubuntu.Components 0.1
@@ -121,7 +123,10 @@ PageTreeNode {
     property Flickable flickable: internal.getFlickableChild(page)
 
     /*! \internal */
-    onActiveChanged: internal.updateHeaderAndToolbar()
+    onActiveChanged: {
+        internal.updateHeaderAndToolbar();
+        internal.updateActions();
+    }
     /*! \internal */
     onTitleChanged: internal.updateHeaderAndToolbar()
     /*! \internal */
@@ -131,8 +136,31 @@ PageTreeNode {
     /*! \internal */
     onFlickableChanged: internal.updateHeaderAndToolbar()
 
-    Item {
+    /*!
+      Local actions. These actions will be made available outside the application
+      (for example, to HUD) when the Page is active. For actions that are always available
+      when the application is running, use the actions property of \l MainView.
+
+      \qmlproperty list<Action> actions
+      */
+    property alias actions: actionContext.actions
+
+    Object {
         id: internal
+
+        UnityActions.ActionContext {
+            id: actionContext
+
+            Component.onCompleted: {
+                var manager = page.__propagated.actionManager;
+                if (manager) manager.addLocalContext(actionContext);
+            }
+        }
+
+        function updateActions() {
+            actionContext.active = page.active;
+        }
+
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
 
@@ -158,10 +186,9 @@ PageTreeNode {
 
         Connections {
             target: page
-            onFlickableChanged: internal.updateFlickableMargins()
+            onFlickableChanged: internal.updateFlickablePosition()
         }
-        onHeaderHeightChanged: internal.updateFlickableMargins()
-        Component.onCompleted: internal.updateFlickableMargins()
+        Component.onCompleted: internal.updateFlickablePosition()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
@@ -194,12 +221,18 @@ PageTreeNode {
             return null;
         }
 
-        function updateFlickableMargins() {
-            if (flickable) {
+        Binding {
+            target: page.flickable
+            property: "topMargin"
+            value: internal.headerHeight
+            when: page.flickable
+        }
+
+        function updateFlickablePosition() {
+            if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header:
                 page.flickable.contentY = -headerHeight;
-                page.flickable.topMargin = headerHeight;
             }
         }
     }

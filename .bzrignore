@@ -5,7 +5,9 @@ modules/Ubuntu/Components/plugin/Makefile.ubuntu-ui-toolkit
 documentation/html/*
 *.moc
 moc_*.cpp
-tests/unit/tst_template/tst_template
-tests/unit/tst_units/tst_units
-tests/unit/tst_scaling_image_provider/tst_scaling_image_provider
 qrc_tst_*.cpp
+tests/test_tst_*.xml
+tests/unit*/tst_*/tst_[^.]*
+tests/unit*/testparser/testparser
+plugins.qmltypes
+examples/ubuntu-ui-toolkit-gallery/po/*.mo

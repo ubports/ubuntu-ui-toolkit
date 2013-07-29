@@ -52,13 +52,13 @@ Empty {
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
      */
-    property AbstractButton control
+    property Item control
 
     /*! \internal */
-    onClicked: if (control && control.enabled) control.clicked()
-    pressed: __mouseArea.pressed || (control && control.__mouseArea.pressed)
+    onClicked: if (control && control.enabled && control.hasOwnProperty("clicked")) control.clicked()
+    pressed: __mouseArea.pressed || (control && control.pressed)
     /*! \internal */
-    onPressedChanged: if (control && control.enabled) control.pressed = singleControlListItem.pressed
+    onPressedChanged: if (control && control.enabled && control.hasOwnProperty("pressed")) control.pressed = singleControlListItem.pressed
 
     // Ensure that there is always enough vertical padding around the control
     __height: control.height + __contentsMargins

@@ -72,8 +72,8 @@ MainView {
                 }
             }
 
-            tools: ToolbarActions {
-                Action {
+            tools: ToolbarItems {
+                ToolbarButton {
                     text: "oh"
                 }
             }

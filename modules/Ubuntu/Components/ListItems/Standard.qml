@@ -125,10 +125,7 @@ Empty {
       The width of the control must be specified in order to determine
       the layout of the list item.
 
-      The mouseArea of the control will be set to the full Standard list item if
-      there is no \l progression, or only the part left of the split, if there is a
-      \l progression.
-      \qmlproperty AbstractButton control
+      \qmlproperty Item control
     */
     property alias control: controlContainer.control
 
@@ -240,7 +237,7 @@ Empty {
 
     Item {
         id: controlContainer
-        property AbstractButton control
+        property Item control
         // use the width of the control if there is (possibly elided) text,
         // or full width available if there is no text.
         width: control ? control.width : undefined
@@ -259,14 +256,14 @@ Empty {
 
             onClicked: {
                 if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    if (control.enabled) control.clicked();
+                    if (control.enabled && control.hasOwnProperty("clicked")) control.clicked();
                 } else {
                     listItem.clicked();
                 }
             }
 
             onPressAndHold: {
-                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x) {
+                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x && control.hasOwnProperty("pressAndHold")) {
                     control.pressAndHold();
                 } else {
                     listItem.pressAndHold();

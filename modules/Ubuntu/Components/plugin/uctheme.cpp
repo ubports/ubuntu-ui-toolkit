@@ -102,7 +102,9 @@ QUrl UCTheme::pathFromThemeName(QString themeName)
     }
 
     QString themeFolder = THEME_FOLDER_FORMAT.arg(themesPath, themeName.replace('.', '/'));
-    return QUrl::fromLocalFile(themeFolder);
+    QString absoluteThemeFolder = QDir(themeFolder).absolutePath();
+    // QUrl needs a trailing slash to understand it's a directory
+    return QUrl::fromLocalFile(absoluteThemeFolder.append("/"));
 }
 
 void UCTheme::updateThemePaths()

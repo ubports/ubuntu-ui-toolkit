@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-07-03 09:41+0000\n"
+"PO-Revision-Date: 2013-07-21 20:10+0000\n"
 "Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-07-04 05:47+0000\n"
-"X-Generator: Launchpad (build 16692)\n"
+"X-Launchpad-Export-Date: 2013-07-22 05:59+0000\n"
+"X-Generator: Launchpad (build 16696)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -36,7 +36,7 @@ msgstr "Estándar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr ""
+msgstr "Duracións estándares"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
@@ -222,7 +222,7 @@ msgstr "valor = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr ""
+msgstr "Actualización en vivo"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
@@ -230,7 +230,7 @@ msgstr "Intervalo"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
-msgstr ""
+msgstr "Escríbame..."
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
@@ -357,7 +357,7 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr ""
+msgstr "Páxina raíz"
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
@@ -373,7 +373,7 @@ msgstr "Primeira páxina"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr ""
+msgstr "Páxina raíz (outra vez)"
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"

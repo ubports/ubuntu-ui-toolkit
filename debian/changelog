@@ -1,3 +1,186 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130729-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+  * Reverted revision 658 introducing reporting of content orientation.
+    Was causing crashes on x86. (LP: #1205615)
+
+  [ Thomas Moenicke ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+
+  [ Michał Sawicz ]
+  * Depend on devscripts for licensecheck.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 661
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 29 Jul 2013 04:02:12 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130726.1-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * The UI Toolkit has theme with artworks what should be under creative
+    common license.
+
+  [ Leo Arias ]
+  * Renamed the UbuntuUiToolkit python package to ubuntuuitoolkit. (LP:
+    #1204281)
+
+  [ Juhapekka Piiroinen ]
+  * Added Ubuntu Test module which contains UbuntuTestCase.
+  * Use qmltestrunner for qml tests.
+  * Adds missing dependency to devscripts which is required for the make
+    license which uses licensecheck. (LP: #1205259)
+
+  [ Luke Yelavich ]
+  * Ship the components required for the calculator example.
+
+  [ tpeeters ]
+  * Allow combination of Tabs and PageStack: - Fix header behavior for
+    Tabs inside PageStack - Add test for Tabs inside PageStack header
+    bug - Replace deprecated components in PageStack tests - Add test
+    program that combines PageStack and Tabs - Update Tabs
+    documentation. (LP: #1187850)
+
+  [ Christian Dywan ]
+  * Refactor checklicense and include CSS files This also makes the test
+    work on precise. (LP: #1195250)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 657
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 26 Jul 2013 12:23:40 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130725-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Juhapekka Piiroinen ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 648
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 25 Jul 2013 06:01:15 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130722-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover rendering improvements: - created a reusable component used
+    in Popover's style and later in the Slider - replaced dynamic shadow
+    with a 9-patch bitmap - moved pointer rendering inside the
+    BubbleShape - removed now unused Pointer, PointerStyle and
+    associated artwork.
+  * Refreshed Slider: - removed unused commented code - removed
+    deprecated FIXMEs - removed deprecated documentation - do not
+    inherit from AbstractButton anymore - greatly simplified
+    computations by making better use of property bindings - implemented
+    new design of Slider (in SliderStyle.qml) using BubbleShape Improved
+    slider page layout in widgets gallery. (LP: #1202683)
+
+  [ Leo Arias ]
+  * Replaced the MainWindow emulator for autopilot tests with a MainView
+    emulator that the uses the custom emulator features of autopilot.
+  * Added the Toolbar Autopilot emulator.
+  * Added the Tabs autopilot emulator.
+
+  [ tpeeters ]
+  * Fix a bug where contentY of a flickable was reset when the title of
+    the header is unset and set again. (LP: #1201452)
+
+  [ Christian Dywan ]
+  * Ignore test results, executables and mo files.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 645
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Jul 2013 04:03:04 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130719-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * [Theme] Accept relative paths in UBUNTU_UI_TOOLKIT_THEMES_PATH. (LP:
+    #1201842)
+
+  [ Leo Arias ]
+  * Isolated and cleaned the button tests. (LP: #1201822)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 637
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Jul 2013 05:26:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130718-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover: added manual test program.
+  * Popover simplifications: - simplified pointer positioning by only
+    computing the position of the tip; it's up to the pointer to
+    rotate/translate adequately. - fixed implementation of
+    Popover.callerMargin and set default value to 0. - removed unused
+    parameter 'pointerMargin' from InternalPopupUtils.CallerPositioning.
+
+  [ tpeeters ]
+  * Fix bug where toolbarActions.opened was not properly updated when
+    the user swipes to show/hide the toolbar. (LP: #1192673)
+  * Improve code examples in documentation.
+  * Use UnityActions to make Actions available to HUD: - Action now
+    inherits UnityActions.Action - Added "actions" property to MainView
+    to contain global actions that are available in HUD as long as the
+    app is running. - Added "actions" property to Page to contain local
+    actions that are available in HUD when the Page is active. (LP:
+    #1187869)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Make sure that the keyboard does not obscure the contents of main
+    window. (LP: #1131249)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 633
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 18 Jul 2013 06:07:54 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Dialog: removed clipping that not clipping anything.
+  * Removed unused PointerStyleShader.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 626
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 04:01:54 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130714-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * MainView: new API to choose the background colors. That requires: -
+    HeaderStyle: removed background. - MainView: clip the contents when
+    necessary. - PageTreeNode: new properties 'isLeaf' and
+    'activeLeafNode'.
+
+  [ Leo Arias ]
+  * Fixed the pep8 errors and copyright notices.
+
+  [ Didier Roche ]
+  * fix icon -> iconSource for toolbar doc.
+
+  [ tpeeters ]
+  * Fix bug where Header did not get linked to the new Flickable when
+    Page.flickable is automatically detected. (LP: #1200642, #1192591)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 623
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 14 Jul 2013 04:02:43 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130712-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]

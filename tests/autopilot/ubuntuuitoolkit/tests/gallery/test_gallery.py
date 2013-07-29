@@ -16,18 +16,19 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
-from autopilot.matchers import Eventually
-from textwrap import dedent
-from testtools.matchers import Is, Not, Equals
-from testtools import skip
 import os
 import time
-from UbuntuUiToolkit.tests import UbuntuUiToolkitTestCase
-from UbuntuUiToolkit.emulators.main_window import MainWindow
+
+import testscenarios
+
+from autopilot.matchers import Eventually
+from testtools.matchers import Is, Not, Equals
+
+from ubuntuuitoolkit import tests
 
 
-class GenericTests(UbuntuUiToolkitTestCase):
-    """Generic tests for the Gallery"""
+class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
+    """Base class for gallery test cases."""
 
     # Support both running from system and in the source directory
     runPath = os.path.dirname(os.path.realpath(__file__))
@@ -44,10 +45,14 @@ class GenericTests(UbuntuUiToolkitTestCase):
             "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/"
             "ubuntu-ui-toolkit-gallery.qml")
 
+
+class GenericTests(GalleryTestCase):
+    """Generic tests for the Gallery"""
+
     def test_0_can_select_mainwindow(self):
         """Must be able to select the main window."""
 
-        rootItem = self.main_window.get_qml_view()
+        rootItem = self.main_view
         self.assertThat(rootItem, Not(Is(None)))
         self.assertThat(rootItem.visible, Eventually(Equals(True)))
 
@@ -137,52 +142,6 @@ class GenericTests(UbuntuUiToolkitTestCase):
             else:
                 self.assertThat(obj.checked, Equals(objChecked))
 
-    def test_buttons(self):
-        item = "Buttons"
-        self.loadItem(item)
-        self.checkPageHeader(item)
-
-        item_data = [
-            ["button_text", True, None, None, "Call"],
-            ["button_text_disabled", False, None, None, "Call"],
-            ["button_color", True, [0, 0, 0, 255], None, "Call"],
-            ["button_iconsource", True, None, "call.png", None],
-            ["button_iconsource_right_text", True, None, "call.png", "Call"],
-            ["button_iconsource_left_text", True, None, "call.png", "Call"]
-        ]
-
-        for data in item_data:
-            objName = data[0]
-            objEnabled = data[1]
-            objColor = data[2]
-            objIcon = data[3]
-            objText = data[4]
-
-            obj = self.getObject(objName)
-            self.assertThat(obj.enabled, Equals(objEnabled))
-
-            print obj.color
-            if (objColor is not None):
-                self.assertThat(obj.color, Equals(objColor))
-
-            if (objIcon is not None):
-                self.assertThat(obj.iconSource.endswith(objIcon), Equals(True))
-
-            if (objText is not None):
-                self.assertThat(obj.text, Equals(objText))
-
-            # try to interact with objects
-            self.mousePress(objName)
-
-            if (obj.enabled):
-                self.assertThat(obj.pressed, Equals(True))
-            else:
-                self.assertThat(obj.pressed, Equals(False))
-
-            self.mouseRelease()
-
-            self.assertThat(obj.pressed, Equals(False))
-
     def test_slider(self):
         item = "Slider"
         self.loadItem(item)
@@ -196,7 +155,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
             self.tap(objName)
 
             # TODO: move slider value
@@ -244,7 +203,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
 
-        template_textinputs = self.getObject("textinputs")
+        self.getObject("textinputs")
 
         item_data = [
             ["textfield_standard", True, 0, "", None],
@@ -304,7 +263,7 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
             self.tap(objName)
 
             # TODO: check for properties
@@ -327,4 +286,60 @@ class GenericTests(UbuntuUiToolkitTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
+
+
+class ButtonsTestCase(GalleryTestCase):
+
+    scenarios = testscenarios.multiply_scenarios(
+        tests.get_input_device_scenarios(),
+        [('standard button', dict(
+            button_name="button_text", is_enabled=True, color=None, icon=None,
+            text="Call")),
+         ('button with color', dict(
+             button_name="button_color", is_enabled=True,
+             color=[0, 0, 0, 255], icon=None, text="Call")),
+         ('button with icon', dict(
+             button_name="button_iconsource", is_enabled=True, color=None,
+             icon="call.png", text=None)),
+         ('button with icon on the right', dict(
+             button_name="button_iconsource_right_text", is_enabled=True,
+             color=None, icon="call.png", text="Call")),
+         ('button with icon on the left', dict(
+             button_name="button_iconsource_left_text", is_enabled=True,
+             color=None, icon="call.png", text="Call")),
+         ('disabled button', dict(
+             button_name="button_text_disabled", is_enabled=False, color=None,
+             icon=None, text="Call"))]
+    )
+
+    def test_buttons(self):
+        item = "Buttons"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+
+        button = self.app.select_single(objectName=self.button_name)
+        self.assertIsNot(button, None)
+        self.assertThat(button.enabled, Equals(self.is_enabled))
+
+        if self.color is not None:
+            self.assertThat(button.color, Equals(self.color))
+
+        if self.icon is not None:
+            self.assertTrue(button.iconSource.endswith(self.icon))
+
+        if self.text is not None:
+            self.assertThat(button.text, Equals(self.text))
+
+        # try to interact with objects
+        self.pointing_device.move_to_object(button)
+        self.pointing_device.press()
+
+        if button.enabled:
+            self.assertThat(button.pressed, Eventually(Equals(True)))
+        else:
+            self.assertFalse(button.pressed)
+
+        self.pointing_device.release()
+
+        self.assertThat(button.pressed, Eventually(Equals(False)))

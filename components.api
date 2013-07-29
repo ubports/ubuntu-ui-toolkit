@@ -7,12 +7,9 @@ ActionItem
     property bool __acceptEvents
     property internal __mouseArea
 modules/Ubuntu/Components/Action.qml
-QtObject
-    property string text
+UnityActions.Action
     property url iconSource
-    signal triggered(var caller)
     property bool visible
-    property bool enabled
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
 StyledItem
@@ -81,11 +78,13 @@ Text
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
+    property bool anchorToKeyboard
     property color headerColor
     property color backgroundColor
     property color footerColor
     property bool automaticOrientation
     default property internal contentsItem
+    property list<Action> actions
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
@@ -109,6 +108,7 @@ modules/Ubuntu/Components/Page.qml
 PageTreeNode
     property string title
     property Flickable flickable
+    property list<Action> actions
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
@@ -159,11 +159,12 @@ StyledItem
     property bool __interactive
     property internal __private
 modules/Ubuntu/Components/Slider.qml
-AbstractButton
+StyledItem
     property real minimumValue
     property real maximumValue
     property real value
     property bool live
+    property bool pressed
     signal touched(bool onThumb)
     function formatValue(v)
     property internal __internals

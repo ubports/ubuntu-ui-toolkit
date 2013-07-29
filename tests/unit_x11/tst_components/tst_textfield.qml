@@ -101,10 +101,6 @@ Item {
             compare(textField.canUndo, false,"calUndo false when no data entered")
         }
 
-        function test_0_color() {
-            compare(textField.color, "#000000","color #000000 by default")
-        }
-
         function test_0_contentWidth() {
             compare(textField.contentWidth, 0,"contentWidth by default")
         }

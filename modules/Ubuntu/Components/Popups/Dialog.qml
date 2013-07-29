@@ -32,10 +32,13 @@ import "internalPopupUtils.js" as InternalPopupUtils
 
     Example:
     \qml
+        import QtQuick 2.0
         import Ubuntu.Components 0.1
         import Ubuntu.Components.Popups 0.1
 
         Item {
+            width: units.gu(80)
+            height: units.gu(80)
             Component {
                  id: dialog
                  Dialog {
@@ -62,7 +65,7 @@ import "internalPopupUtils.js" as InternalPopupUtils
                 anchors.centerIn: parent
                 id: saveButton
                 text: "save"
-                onClicked: PopupUtils.open(dialog, saveButton)
+                onClicked: PopupUtils.open(dialog)
             }
         }
     \endqml

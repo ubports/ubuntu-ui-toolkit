@@ -69,17 +69,26 @@ Panel {
             internal.updateVisibleTools();
             opened = true;
         } else if (!opened && !animating) {
-            // toolbar is invisible
+            // toolbar is closed
             internal.updateVisibleTools();
         } else {
             opened = false;
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
+        if (tools && tools.hasOwnProperty("opened")) {
+            tools.opened = toolbar.opened;
+        }
     }
 
     // if tools is not specified, lock the toolbar in closed position
     locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
+
+    onOpenedChanged: {
+        if (tools && tools.hasOwnProperty("opened")) {
+            tools.opened = toolbar.opened;
+        }
+    }
 
     Connections {
         target: tools

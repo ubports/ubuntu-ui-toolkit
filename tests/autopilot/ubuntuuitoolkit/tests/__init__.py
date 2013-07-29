@@ -27,7 +27,7 @@ from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
 from autopilot.testcase import AutopilotTestCase
 
-from UbuntuUiToolkit.emulators.main_window import MainWindow
+from ubuntuuitoolkit import emulators
 
 
 def get_module_include_path():
@@ -42,18 +42,19 @@ def get_module_include_path():
     )
 
 
-class UbuntuUiToolkitTestCase(AutopilotTestCase):
+def get_input_device_scenarios():
+    """Return the scenarios with the right input device for the platform."""
+    if model() == 'Desktop':
+        scenarios = [('with mouse', dict(input_device_class=Mouse))]
+    else:
+        scenarios = [('with touch', dict(input_device_class=Touch))]
+    return scenarios
 
+
+class UbuntuUiToolkitTestCase(AutopilotTestCase):
     """Common test case class for SDK tests."""
 
-    if model() == 'Desktop':
-        scenarios = [
-            ('with mouse', dict(input_device_class=Mouse))
-        ]
-    else:
-        scenarios = [
-            ('with touch', dict(input_device_class=Touch))
-        ]
+    scenarios = get_input_device_scenarios()
 
     def setUp(self):
         self.pointing_device = Pointer(self.input_device_class.create())
@@ -74,7 +75,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path)
+                qml_path,
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
         if (hasattr(self, 'test_qml_file') and
                 isinstance(self.test_qml_file, basestring)):
@@ -82,32 +84,41 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
-                qml_path)
+                qml_path,
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
         self.assertThat(
-            self.main_window.get_qml_view().visible, Eventually(Equals(True)))
+            self.main_view.visible, Eventually(Equals(True)))
+
+    @property
+    def main_view(self):
+        return self.app.select_single(emulators.MainView)
 
     def checkListItem(self, itemText):
-        item = self.main_window.get_object_by_text("Standard", itemText)
+        item = self.getListItem(itemText)
         self.assertThat(item, Not(Is(None)))
 
     def getListItem(self, itemText):
-        return self.main_window.get_object_by_text("Standard", itemText)
+        # XXX We shouldn't access the elements by text, because that's likely
+        # to change often and might be translated. We should always use the
+        # objectName instead. --elopio - 2013-06-26216
+        return self.main_view.select_single("Standard", text=itemText)
 
     def getWidgetLoaderAndListView(self):
-        contentLoader = self.main_window.get_object(
-            "QQuickLoader", "contentLoader")
-        listView = self.main_window.get_object("QQuickListView", "widgetList")
+        contentLoader = self.main_view.select_single(
+            "QQuickLoader", objectName="contentLoader")
+        listView = self.main_view.select_single(
+            "QQuickListView", objectName="widgetList")
         self.assertThat(listView, Not(Is(None)))
         self.assertThat(listView.visible, Eventually(Equals(True)))
         return (contentLoader, listView)
 
     def loadItem(self, item):
-        contentLoader = self.main_window.get_object(
-            "QQuickLoader", "contentLoader")
+        contentLoader = self.main_view.select_single(
+            "QQuickLoader", objectName="contentLoader")
         self.selectItem(item)
         self.assertThat(contentLoader.progress, Eventually(Equals(1.0)))
-        loadedPage = self.main_window.get_object_by_text("Standard", item)
+        loadedPage = self.getListItem(item)
         self.assertThat(loadedPage, Not(Is(None)))
         self.assertThat(loadedPage.visible, Eventually(Equals(True)))
 
@@ -129,13 +140,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
         self.assertThat(item.selected, Eventually(Equals(True)))
 
-    def getMainView(self):
-        mainView = self.app.select_many("MainView")[0]
-        self.assertThat(mainView, Not(Is(None)))
-        return mainView
-
     def getOrientationHelper(self):
-        orientationHelper = self.getMainView().select_many(
+        orientationHelper = self.main_view.select_many(
             "OrientationHelper")[0]
         self.assertThat(orientationHelper, Not(Is(None)))
         return orientationHelper
@@ -176,7 +182,3 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         btn = textField.select_single("AbstractButton")
         self.pointing_device.move_to_object(btn)
         self.pointing_device.click()
-
-    @property
-    def main_window(self):
-        return MainWindow(self.app)

@@ -22,6 +22,10 @@ Item {
     width: 200
     height: 200
 
+    Action {
+        id: action0
+    }
+
     Flickable {
         id: testFlickable
     }
@@ -59,6 +63,7 @@ Item {
             compare(page.__propagated.header, mainView.__propagated.header, "page header equals mainView header")
             compare(page.__propagated.header.title, page.title, "header title is same as page title")
             compare(page.__propagated.header.visible, false, "header is not visible initially because there is no title")
+            compare(page.actions.length, 0, "page actions list empty by default")
         }
 
         function test_0_noHeader_bug1162028_bug1161910() {
@@ -80,6 +85,7 @@ Item {
             page.title = newTitle
             compare(mainView.__propagated.header.title, newTitle, "header title updated by changing page title")
             compare(mainView.__propagated.header.visible, true, "header is visible when title is set")
+            compare(mainView.__propagated.header.height > 0, true, "header has a height when title is set")
             page.title = ""
             compare(mainView.__propagated.header.title, "", "header title unset by unsetting page title")
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
@@ -97,6 +103,15 @@ Item {
             compare(page.pageStack, null, "is not set by default")
         }
 
+        function test_actions() {
+            // FIXME: Check the contents of page.actions. This is currently not
+            //  possible because UnityActions.ActionContext.actions does not support it,
+            //  so changes to UnityActions are needed.
+            page.actions = [action0];
+            compare(page.actions.length, 1, "Actions can be added to page actions");
+            page.actions = [];
+            compare(page.actions.length, 0, "Page action list can be cleared");
+        }
         function test_flickable_bug1200642_bug1192591() {
             compare(page.flickable, pageFlickable, "page flickable is correctly detected");
             compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
@@ -106,6 +121,21 @@ Item {
             page.flickable = null;
             compare(page.flickable, null, "flickable can be unset");
             compare(page.__propagated.header.flickable, null, "unsetting page flickable unsets header flickable");
+        }
+
+        function test_flickableY_bug1201452() {
+            var pageTitle = "Hello bug!";
+            page.title = pageTitle;
+            compare(page.__propagated.header.visible, true, "header is visible when title is set")
+            compare(page.__propagated.header.height > 0, true, "header has a height when title is set")
+            var flickableY = 150;
+            page.flickable.contentY = flickableY;
+            compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
+            page.title = "";
+            compare(page.__propagated.header.visible, false, "header is hidden when title is unset")
+            compare(page.flickable.contentY, flickableY, "Making header invisible does not reset flickable.contentY");
+            page.title = pageTitle;
+            compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
         }
     }
 }

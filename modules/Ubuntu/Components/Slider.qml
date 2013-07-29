@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,25 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME(loicm) An option should be added to render the value text outside of
-//     the thumb, on top or bottom of the thumb (or left and right once we got
-//     support for vertical orientation). Moreover, having the value text inside
-//     the thumb makes it complicated to fit numbers with high values (or high
-//     number of decimals) or visually awkward since the text is hidden by the
-//     mouse cursor (or the finger) when dragged.
-
-// FIXME(loicm) An animation should be added when the user clicks on an area
-//     outside the thumb to smoothly move it under the mouse.
-
-// FIXME(loicm) Maybe add support for vertical orientation (orientation
-//     property). Don't forget to adapt the inverted property documentation
-//     accordingly. Note that UIKit doesn't have vertical sliders.
-
 // FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
 
 import QtQuick 2.0
 import "mathUtils.js" as MathUtils
-import "sliderUtils.js" as SliderFuncs
 
 /*!
     \qmltype Slider
@@ -59,43 +44,9 @@ import "sliderUtils.js" as SliderFuncs
         }
     }
     \endqml
-
-    \section2 Theming
-
-    The slider's default style class is \b slider and style properties depend on
-    the actual style defined by the theme, except of one property which defines
-    the spacing units between the slider's bar and thumb, called \b thumbSpacing.
-    The slider uses one single touch sensing area to position the thumb within the
-    bar. Therefore However styles must define the following properties:
-    \list
-    \li * \b bar - the slider's bar object
-    \li * \b thumb - the slider's thumb object
-    \endlist
-
-    Beside these, the library provies functions for styles to update liveValue and
-    normalizedValue in SliderUtils module.
-
-    \b{This component is under heavy development.}
 */
-AbstractButton {
+StyledItem {
     id: slider
-
-    width: units.gu(38)
-    height: units.gu(5)
-
-    // FIXME(loicm) Add Support for the inverted property. There's an ongoing
-    //     debate on whether we should use that property (like every other
-    //     toolkits) or add new enumerations to the orientation property and
-    //     get something like LeftToRight, RightToLeft, TopToBottom and
-    //     BottomToTop. The last proposition appears to have the advantage that
-    //     it's not culture centric (ie inverted for LeftToRight and RightToLeft
-    //     isn't natural for everybody).
-
-    // /*!
-    //    \preliminary
-    //    Selects whether or not the minimum value starts from the right.
-    // */
-    // property bool inverted: false
 
     /*!
        \preliminary
@@ -135,6 +86,13 @@ AbstractButton {
     */
     property bool live: false
 
+    /*!
+       \qmlproperty bool pressed
+
+       \preliminary
+       Whether the Slider is currently being pressed.
+    */
+    property alias pressed: mouseArea.pressed
 
     /*!
        \preliminary
@@ -148,10 +106,7 @@ AbstractButton {
       This function is used by the value indicator to show the current value.
       Reimplement this function if you want to show different information. By
       default, the value v is rounded to the nearest interger value.
-
-      \b Note: this function will be deprecated, and will be solved with particular
-      styles for the thumb.
-     */
+    */
     function formatValue(v) {
         return v.toFixed(0)
     }
@@ -159,82 +114,61 @@ AbstractButton {
     // Private symbols.
 
     /*! \internal */
-    onValueChanged: internals.liveValue = slider.value
+    property alias __internals: mouseArea
 
     /*! \internal */
-    Component.onCompleted: internals.updateMouseArea()
+    onValueChanged: mouseArea.liveValue = slider.value
 
-    /*! \internal */
-    onPressedChanged: internals.mouseAreaPressed()
+    Binding {
+        target: slider
+        property: "value"
+        value: mouseArea.liveValue
+        when: slider.live
+    }
 
-    /*! \internal */
-    property alias __internals: internals
-    QtObject {
-        id: internals
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
 
-        property real thumbSpacing: slider.__styleInstance ? slider.__styleInstance.thumbSpacing : 0
         property Item bar: slider.__styleInstance ? slider.__styleInstance.bar : null
         property Item thumb: slider.__styleInstance ? slider.__styleInstance.thumb :  null
+        property real thumbSpacing: slider.__styleInstance ? slider.__styleInstance.thumbSpacing : 0
+        property real barMinusThumb: bar && thumb ? bar.width - (thumb.width + 2.0*thumbSpacing) : 0.0
 
         property real liveValue: 0.0
-        property real normalizedValue: MathUtils.clamp((liveValue - slider.minimumValue) /
-                                                         (slider.maximumValue - slider.minimumValue),
-                                                         0.0, 1.0)
-
+        property real normalizedValue: normalizedValueFromValue(liveValue)
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
-        property real thumbWidth: thumb ? thumb.width - thumbSpacing : 0.0
-        property real thumbSpace: bar ? bar.width - (2.0 * thumbSpacing + thumbWidth) : 0.0
 
-        function updateMouseArea() {
-            slider.__mouseArea.positionChanged.connect(internals.mouseAreaPositionchanged);
+        function normalizedValueFromValue(value) {
+            return MathUtils.clampAndProject(value, slider.minimumValue,
+                                             slider.maximumValue, 0.0, 1.0);
         }
 
-        function mouseAreaPressed() {
-            if (!thumb || !bar)
-                return;
-            if (slider.__mouseArea.pressedButtons == Qt.LeftButton) {
-                // Left button pressed.
-                var mouseX = slider.__mouseArea.mouseX;
-                var mouseY = slider.__mouseArea.mouseY;
-                if (mouseY >= thumb.y && mouseY <= thumb.y + thumb.height) {
-                    if (mouseX >= thumb.x && mouseX <= thumb.x + thumb.width) {
-                        // Button pressed inside the thumb.
-                        dragInitMouseX = mouseX;
-                        dragInitNormalizedValue = normalizedValue;
-                        slider.touched(true);
-                    } else if (mouseX > thumbSpacing &&
-                               mouseX < bar.width - thumbSpacing) {
-                        // Button pressed outside the thumb.
-                        var normalizedPosition = (slider.__mouseArea.mouseX - thumbSpacing - thumbWidth * 0.5) / thumbSpace;
-                        normalizedPosition = MathUtils.clamp(normalizedPosition, 0.0, 1.0);
-                        liveValue = MathUtils.lerp(normalizedPosition, slider.minimumValue, slider.maximumValue);
-                        dragInitMouseX = mouseX;
-                        dragInitNormalizedValue = normalizedValue;
-                        if (slider.live) {
-                            slider.value = liveValue;
-                        }
-                        slider.touched(false);
-                    }
-                }
-            } else {
-                // Button released.
-                if (!slider.live) {
-                    slider.value = liveValue;
-                }
-            }
+        function valueFromNormalizedValue(normalizedValue) {
+            return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
+                                  slider.minimumValue, slider.maximumValue);
         }
 
-        function mouseAreaPositionchanged() {
-            // Left button dragging.
-            if (slider.pressed) {
-                var normalizedOffsetX = (slider.__mouseArea.mouseX - dragInitMouseX) / thumbSpace;
-                var v = MathUtils.clamp(dragInitNormalizedValue + normalizedOffsetX, 0.0, 1.0);
-                liveValue = MathUtils.lerp(v, slider.minimumValue, slider.maximumValue);
-                if (slider.live) {
-                    slider.value = liveValue;
-                }
+        onPressed: {
+            var thumbPressed = mouse.x >= thumb.x && mouse.x <= thumb.x + thumb.width;
+            if (!thumbPressed) {
+                var normalizedX = (mouseX - thumbSpacing - thumb.width * 0.5) / barMinusThumb;
+                liveValue = valueFromNormalizedValue(normalizedX);
             }
+            dragInitMouseX = mouse.x;
+            dragInitNormalizedValue = normalizedValue;
+            slider.touched(thumbPressed);
+        }
+        onReleased: {
+            if (!slider.live) {
+                slider.value = liveValue;
+            }
+        }
+        onPositionChanged: {
+            // Left button dragging
+            var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;
+            liveValue = valueFromNormalizedValue(dragInitNormalizedValue + normalizedOffsetX);
         }
     }
 

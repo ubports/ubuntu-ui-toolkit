@@ -52,28 +52,28 @@ TestCase {
 
     function test_flickable() {
         // ensure that the flickable of the header is set to the flickable of the selected tab.
-        tabsFlick.selectedTabIndex = 0;
-        compare(mainViewFlick.__propagated.header.flickable, flickable1, "Header flickable correctly initialized");
-        tabsFlick.selectedTabIndex = 1;
-        compare(mainViewFlick.__propagated.header.flickable, flickable2, "Header flickable correctly updated");
-        tabsFlick.selectedTabIndex = 0;
+        tabs.selectedTabIndex = 3;
+        compare(mainView.__propagated.header.flickable, flickable1, "Header flickable correctly initialized");
+        tabs.selectedTabIndex = 4;
+        compare(mainView.__propagated.header.flickable, flickable2, "Header flickable correctly updated");
+        tabs.selectedTabIndex = 0;
     }
 
     function test_pageLoader() {
-        tabsFlick.selectedTabIndex = 0;
+        tabs.selectedTabIndex = 0;
         compare(loader.item, null, "Page not loaded when tab is not selected");
-        tabsFlick.selectedTabIndex = 2;
-        compare(tabsFlick.currentPage, loader, "Selected loader for current page");
+        tabs.selectedTabIndex = 5;
+        compare(tabs.currentPage, loader, "Selected loader for current page");
         compare(loader.item.title, "Loaded page", "Loaded item is a page");
-        tabsFlick.selectedTabIndex = 0;
+        tabs.selectedTabIndex = 0;
         compare(loader.item, null, "Loaded page was properly unloaded");
     }
 
     function test_bug1088740() {
-        tabsFlick.selectedTabIndex = 2;
-        compare(mainViewFlick.__propagated.header.flickable, loader.item.flick, "Header flickable correctly updated with Loader");
+        tabs.selectedTabIndex = 5;
+        compare(mainView.__propagated.header.flickable, loader.item.flick, "Header flickable correctly updated with Loader");
         compare(loader.item.flick.contentHeight, 1000, "Header flickable is correct flickable");
-        tabsFlick.selectedTabIndex = 0;
+        tabs.selectedTabIndex = 0;
     }
 
     Tabs {
@@ -101,15 +101,7 @@ TestCase {
                 page: Page {
                     id: page3
                 }
-            }
-        }
-    }
-
-    MainView {
-        id: mainViewFlick
-
-        Tabs {
-            id: tabsFlick
+            } 
             Tab {
                 id: tabFlick1
                 page: Page {
@@ -132,11 +124,10 @@ TestCase {
                 id: tabFlickLoader
                 page: Loader {
                     id: loader
-                    sourceComponent: tabsFlick.selectedTabIndex != 2 ? null : pageComponent
+                    sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
                 }
             }
         }
-
         Component {
             id: pageComponent
             Page {
