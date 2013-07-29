@@ -182,7 +182,7 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
-    property bool active
+    property bool selectionMode
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex

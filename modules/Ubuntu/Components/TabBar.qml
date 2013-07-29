@@ -43,7 +43,7 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool active: false
+    property bool selectionMode: false
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 }
