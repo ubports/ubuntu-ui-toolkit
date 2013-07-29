@@ -65,7 +65,7 @@ StyledItem
     function show()
     function hide()
     property string title
-    property Component contents
+    property Item contents
     property Flickable flickable
 modules/Ubuntu/Components/Icon.qml
 Item
@@ -188,7 +188,7 @@ PageTreeNode
     property int selectedTabIndex
     readonly property Tab selectedTab
     readonly property Item currentPage
-    property Component __headerContents
+    property TabBar tabBar
     property ToolbarActions tools
     onToolsChanged
     property internal __tabs
