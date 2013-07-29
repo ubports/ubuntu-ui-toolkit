@@ -16,8 +16,7 @@
 
 import mock
 
-from UbuntuUiToolkit import tests
-from UbuntuUiToolkit import emulators
+from ubuntuuitoolkit import emulators, tests
 
 
 class MainViewTestCase(tests.UbuntuUiToolkitTestCase):

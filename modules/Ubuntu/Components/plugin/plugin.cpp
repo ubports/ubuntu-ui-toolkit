@@ -100,6 +100,31 @@ void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const 
     }
 }
 
+void UbuntuComponentsPlugin::registerWindowContextProperty()
+{
+    setWindowContextProperty(QGuiApplication::focusWindow());
+
+    // listen to QGuiApplication::focusWindowChanged
+    /* Ensure that setWindowContextProperty is called in the same thread (the
+       main thread) otherwise it segfaults. Reference:
+       https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205556
+    */
+    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
+    QObject::connect(application, SIGNAL(focusWindowChanged(QWindow*)),
+                     this, SLOT(setWindowContextProperty(QWindow*)),
+                     Qt::DirectConnection);
+
+}
+
+void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
+{
+    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
+
+    if (view != NULL) {
+        view->rootContext()->setContextProperty("window", view);
+    }
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
@@ -164,4 +189,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::LandscapeOrientation |
             Qt::InvertedPortraitOrientation |
             Qt::InvertedLandscapeOrientation);
+
+    registerWindowContextProperty();
 }

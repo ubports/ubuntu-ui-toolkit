@@ -1,3 +1,58 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130729-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+  * Reverted revision 658 introducing reporting of content orientation.
+    Was causing crashes on x86. (LP: #1205615)
+
+  [ Thomas Moenicke ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+
+  [ Michał Sawicz ]
+  * Depend on devscripts for licensecheck.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 661
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 29 Jul 2013 04:02:12 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130726.1-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * The UI Toolkit has theme with artworks what should be under creative
+    common license.
+
+  [ Leo Arias ]
+  * Renamed the UbuntuUiToolkit python package to ubuntuuitoolkit. (LP:
+    #1204281)
+
+  [ Juhapekka Piiroinen ]
+  * Added Ubuntu Test module which contains UbuntuTestCase.
+  * Use qmltestrunner for qml tests.
+  * Adds missing dependency to devscripts which is required for the make
+    license which uses licensecheck. (LP: #1205259)
+
+  [ Luke Yelavich ]
+  * Ship the components required for the calculator example.
+
+  [ tpeeters ]
+  * Allow combination of Tabs and PageStack: - Fix header behavior for
+    Tabs inside PageStack - Add test for Tabs inside PageStack header
+    bug - Replace deprecated components in PageStack tests - Add test
+    program that combines PageStack and Tabs - Update Tabs
+    documentation. (LP: #1187850)
+
+  [ Christian Dywan ]
+  * Refactor checklicense and include CSS files This also makes the test
+    work on precise. (LP: #1195250)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 657
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 26 Jul 2013 12:23:40 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130725-0ubuntu1) saucy; urgency=low
 
   [ Leo Arias ]
