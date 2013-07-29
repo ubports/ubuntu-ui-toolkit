@@ -39,13 +39,13 @@ MainView {
                     height: childrenRect.height
                     Button {
                         text: "tab bar on"
-                        enabled: !tabs.tabBar.active
-                        onClicked: tabs.tabBar.active = true;
+                        enabled: !tabs.tabBar.selectionMode
+                        onClicked: tabs.tabBar.selectionMode = true;
                     }
                     Button {
                         text: "tab bar off"
-                        enabled: tabs.tabBar.active
-                        onClicked: tabs.tabBar.active = false;
+                        enabled: tabs.tabBar.selectionMode
+                        onClicked: tabs.tabBar.selectionMode = false;
                     }
                 }
                 tools: ToolbarItems {

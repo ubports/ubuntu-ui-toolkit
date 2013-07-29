@@ -44,7 +44,7 @@ StyledItem {
       and an active tab bar can be interacted with to select a tab.
      */
     // TODO: make readonly, or ensure the TabBar is updated when this property is updated.
-    property bool active: alwaysActive
+    property bool selectionMode: alwaysActive
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
