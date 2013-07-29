@@ -1,3 +1,23 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130729-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+  * Reverted revision 658 introducing reporting of content orientation.
+    Was causing crashes on x86. (LP: #1205615)
+
+  [ Thomas Moenicke ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+
+  [ Michał Sawicz ]
+  * Depend on devscripts for licensecheck.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 661
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 29 Jul 2013 04:02:12 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130726.1-0ubuntu1) saucy; urgency=low
 
   [ Zoltán Balogh ]
