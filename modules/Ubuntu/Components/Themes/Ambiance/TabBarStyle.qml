@@ -106,6 +106,12 @@ Item {
                     // tabs from outside the tab bar.
                     property bool selected: (styledItem.selectionMode && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
+                    onOffsetChanged: {
+                        print("new offset for button = "+offset)
+                        if (selected) {
+                            buttonView.updateOffset(button.offset);
+                        }
+                    }
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
@@ -191,6 +197,7 @@ Item {
 
                     // Select this button
                     function select() {
+                        print("select button "+buttonView.selectedButtonIndex+", set offset to "+button.offset);
                         buttonView.selectedButtonIndex = button.buttonIndex;
                         buttonView.updateOffset(button.offset);
                     }
