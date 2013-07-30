@@ -173,7 +173,11 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click()
 
         # Sleep while the animation finishes.
-        time.sleep(1)
+        #time.sleep(2)
+        tab_bar_style = self.select_single('TabBarStyle')
+        #animating = self.select_single('QQuickSmoothedAnimation', objectName='offsetAnimation')
+        #animating.running.wait_for(False)
+        tab_bar_style.animating.wait_for(False)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):

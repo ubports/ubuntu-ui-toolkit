@@ -205,11 +205,10 @@ Item {
     }
 
     /*!
-      Used by autopilot tests to determine when
-      an animation finishes moving.
+      Used by autopilot tests to determine when an animation finishes moving.
       \internal
      */
-    property alias __animating: offsetAnimation.running
+    readonly property alias animating: offsetAnimation.running
 
     PathView {
         id: buttonView
