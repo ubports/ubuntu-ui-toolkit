@@ -158,6 +158,10 @@ class Header(UbuntuUIToolkitEmulatorBase):
         super(Header, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
+    def _get_animating(self):
+        tab_bar_style = self.select_single('TabBarStyle')
+        return tab_bar_style.animating
+
     def switch_to_next_tab(self):
         """Open the next tab."""
         tab_bar = self.select_single('TabBar')
@@ -173,11 +177,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click()
 
         # Sleep while the animation finishes.
-        #time.sleep(2)
-        tab_bar_style = self.select_single('TabBarStyle')
-        #animating = self.select_single('QQuickSmoothedAnimation', objectName='offsetAnimation')
-        #animating.running.wait_for(False)
-        tab_bar_style.animating.wait_for(False)
+        self._get_animating().wait_for(False)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
