@@ -7,6 +7,7 @@ documentation/html/*
 moc_*.cpp
 qrc_tst_*.cpp
 tests/test_tst_*.xml
+tests/tst_*.qml.xml
 tests/unit*/tst_*/tst_[^.]*
 tests/unit*/testparser/testparser
 plugins.qmltypes
