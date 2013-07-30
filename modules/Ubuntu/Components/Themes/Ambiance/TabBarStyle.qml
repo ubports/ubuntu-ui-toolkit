@@ -134,6 +134,7 @@ Item {
 
                     Behavior on opacity {
                         NumberAnimation {
+                            id: fadeAnimation
                             duration: headerTextFadeDuration
                             easing.type: Easing.InOutQuad
                         }
@@ -204,6 +205,13 @@ Item {
         }
     }
 
+    /*!
+      Used by autopilot tests to determine when
+      an animation finishes moving.
+      \internal
+     */
+    property bool __animating: offsetAnimation.running || fadeAnimation.running
+
     PathView {
         id: buttonView
         anchors {
@@ -268,6 +276,7 @@ Item {
 
         Behavior on offset {
             SmoothedAnimation {
+                id: offsetAnimation
                 velocity: buttonPositioningVelocity
                 easing.type: Easing.InOutQuad
             }
