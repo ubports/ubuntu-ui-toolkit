@@ -170,11 +170,15 @@ MainView {
         id: tabs
         Tab {
             objectName: "tab1"
-            title: "Test tab 1"
+            title: "Tab1"
         }
         Tab {
             objectName: "tab2"
-            title: "Test tab 2"
+            title: "Tab2"
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
         }
     }
 }
@@ -185,29 +189,29 @@ MainView {
 
     def test_get_current_tab(self):
         tabs = self.main_view.get_tabs()
-        self.assertEqual(tabs.get_current_tab().title, 'Test tab 1')
+        self.assertEqual(tabs.get_current_tab().title, 'Tab1')
 
     def test_switch_to_next_tab_from_header(self):
         header = self.main_view.get_header()
         header.switch_to_next_tab()
         current_tab = self.main_view.get_tabs().get_current_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
 
     def test_switch_to_next_tab_from_main_view(self):
         current_tab = self.main_view.switch_to_next_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
 
     def test_switch_to_next_tab_from_last(self):
         last_tab_index = 1
         self.main_view.switch_to_tab_by_index(last_tab_index)
         current_tab = self.main_view.switch_to_next_tab()
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_tab_by_index(self):
         current_tab = self.main_view.switch_to_tab_by_index(1)
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
         current_tab = self.main_view.switch_to_tab_by_index(0)
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_opened_tab_is_not_opened_again(self):
         with mock.patch.object(
@@ -215,7 +219,7 @@ MainView {
             current_tab = self.main_view.switch_to_tab_by_index(0)
 
         self.assertFalse(mock_switch.called)
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_get_number_of_tabs(self):
         tabs = self.main_view.get_tabs()
@@ -230,18 +234,18 @@ MainView {
 
     def test_switch_to_previous_tab_from_first(self):
         current_tab = self.main_view.switch_to_previous_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
 
     def test_switch_to_previous_tab_not_from_first(self):
         self.main_view.switch_to_tab_by_index(1)
         current_tab = self.main_view.switch_to_previous_tab()
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_tab_by_object_name(self):
         current_tab = self.main_view.switch_to_tab('tab2')
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
         current_tab = self.main_view.switch_to_tab('tab1')
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_unexisting_tab(self):
         error = self.assertRaises(
