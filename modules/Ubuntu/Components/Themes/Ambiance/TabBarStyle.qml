@@ -134,7 +134,6 @@ Item {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            id: fadeAnimation
                             duration: headerTextFadeDuration
                             easing.type: Easing.InOutQuad
                         }
@@ -210,7 +209,7 @@ Item {
       an animation finishes moving.
       \internal
      */
-    property bool __animating: offsetAnimation.running || fadeAnimation.running
+    property alias __animating: offsetAnimation.running
 
     PathView {
         id: buttonView
