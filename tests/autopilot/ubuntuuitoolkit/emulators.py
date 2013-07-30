@@ -160,7 +160,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
     def switch_to_next_tab(self):
         """Open the next tab."""
-        tab_bar = self.select_single('NewTabBar')
+        tab_bar = self.select_single('TabBar')
         assert tab_bar is not None, _NO_TABS_ERROR
         tab_bar_x, tab_bar_y, _, _ = tab_bar.globalRect
         line_y = tab_bar_y + tab_bar.height * 0.5
@@ -173,7 +173,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click()
 
         # Sleep while the animation finishes.
-        time.sleep(tab_bar.buttonPositioningVelocity)
+        time.sleep(1)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
