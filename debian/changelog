@@ -1,3 +1,17 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130730-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. This is a remerge of a previous
+    merge that was reverted because of a segfault. The segfault has been
+    fixed by ensuring that setWindowContextProperty is called in the
+    same thread (the main thread). (LP: #1187321, #1205556)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 663
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 30 Jul 2013 04:02:22 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130729-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
