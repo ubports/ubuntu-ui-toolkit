@@ -74,7 +74,12 @@ Item {
         target: Qt.point(globalTarget.x - x, globalTarget.y - y)
 
         property bool pressed: SliderUtils.isPressed(styledItem)
-        visible: pressed && label.text != ""
+        property bool shouldShow: pressed && label.text != ""
+        onShouldShowChanged: if (shouldShow) {
+                                show();
+                             } else {
+                                hide();
+                             }
 
         Label {
             id: label
