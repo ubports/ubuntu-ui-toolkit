@@ -23,8 +23,17 @@ BubbleShape {
     direction: styledItem.direction
     clipContent: styledItem.clipContent
 
+    onShowCompleted: styledItem.showCompleted()
+    onHideCompleted: styledItem.hideCompleted()
+
     Item {
         id: content
         anchors.fill: parent
+
+        Connections {
+            target: styledItem
+            onShow: show()
+            onHide: hide()
+        }
     }
 }

@@ -143,7 +143,25 @@ PopupBase {
       */
     property bool autoClose: true
 
-    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    function show() {
+        /* Cannot call parent's show() however PopupBase::show()
+           does not do anything useful to us.
+
+           https://bugreports.qt-project.org/browse/QTBUG-25942
+           http://qt-project.org/forums/viewthread/19577
+        */
+        visible = true;
+        foreground.show();
+    }
+
+    function hide() {
+        foreground.hide();
+    }
+
+    Component.onCompleted: foreground.hideCompleted.connect(popover.__makeInvisible)
+    function __makeInvisible() {
+        visible = false;
+    }
 
     QtObject {
         id: internal
@@ -188,6 +206,11 @@ PopupBase {
         property point target: Qt.point(pointer.x - x, pointer.y - y)
         property string direction: pointer.direction
         property bool clipContent: true
+
+        signal show()
+        signal hide()
+        signal showCompleted()
+        signal hideCompleted()
 
         style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
