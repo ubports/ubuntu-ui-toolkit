@@ -28,8 +28,8 @@ Item {
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
 
-    signal onShowCompleted
-    signal onHideCompleted
+    signal showCompleted
+    signal hideCompleted
 
     opacity: 0.0
 
@@ -62,7 +62,7 @@ Item {
             duration: UbuntuAnimation.FastDuration
             easing: UbuntuAnimation.StandardEasing
         }
-        onStopped: onShowCompleted()
+        onStopped: showCompleted()
     }
 
     NumberAnimation {
@@ -73,7 +73,7 @@ Item {
         to: 0.0
         duration: UbuntuAnimation.FastDuration
         easing: UbuntuAnimation.StandardEasing
-        onStopped: onHideCompleted()
+        onStopped: hideCompleted()
     }
 
     transform: Scale {
