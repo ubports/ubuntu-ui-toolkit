@@ -28,8 +28,8 @@ Item {
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
 
-    signal showCompleted
-    signal hideCompleted
+    signal showCompleted()
+    signal hideCompleted()
 
     opacity: 0.0
 
