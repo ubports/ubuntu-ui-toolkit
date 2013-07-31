@@ -1,3 +1,22 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130731-0ubuntu1) saucy; urgency=low
+
+  [ Ugo Riboni ]
+  * Make InverseMouseArea and MouseArea behave the same way when the
+    mouse is moved between a click and release event, i.e. they both
+    generate a click. (LP: #1189825)
+
+  [ Timo Jyrinki ]
+  * Add Yahoo copyright on the CSS file, fix the "*" section to be first
+    one (latter ones override).
+
+  [ Christian Dywan ]
+  * Ignore generated qml.xml files.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 668
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 31 Jul 2013 04:02:34 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130730-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
