@@ -31,10 +31,9 @@ Item {
     signal onShowCompleted
     signal onHideCompleted
 
-    visible: false
+    opacity: 0.0
 
     function show() {
-        visible = true;
         hideAnimation.stop();
         showAnimation.start();
     }
