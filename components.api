@@ -183,7 +183,7 @@ modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
     property bool selectionMode
-    property bool alwaysActive
+    property bool alwaysSelectionMode
     property bool animate
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
