@@ -187,7 +187,7 @@ Item {
                     onClicked: {
                         if (!activatingTimer.running) {
                             tabs.selectedTabIndex = index;
-                            if (!styledItem.alwaysActive) {
+                            if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
                             button.select();
@@ -291,14 +291,14 @@ Item {
         // deactivate the tab bar after inactivity
         onMovementStarted: idleTimer.stop()
         onMovementEnded: {
-            if (!styledItem.alwaysActive) {
+            if (!styledItem.alwaysSelectionMode) {
                 idleTimer.restart();
             }
         }
         Timer {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
-            running: styledItem.selectionMode && !styledItem.alwaysActive
+            running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
             onTriggered: styledItem.selectionMode = false
         }
     }

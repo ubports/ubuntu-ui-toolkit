@@ -50,14 +50,14 @@ MainView {
                         spacing: units.gu(1)
 
                         Label {
-                            text: "Tab bar always active?"
+                            text: "Tab bar always in selection mode?"
                         }
                         Switch {
-                            id: alwaysActiveSwitch
+                            id: alwaysSelectionModeSwitch
                             Binding {
                                 target: tabs.tabBar
-                                property: "alwaysActive"
-                                value: alwaysActiveSwitch.checked
+                                property: "alwaysSelectionMode"
+                                value: alwaysSelectionModeSwitch.checked
                             }
                         }
                         Label {

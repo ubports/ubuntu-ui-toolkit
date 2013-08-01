@@ -44,19 +44,20 @@ StyledItem {
       and an active tab bar can be interacted with to select a tab.
      */
     // TODO: make readonly, or ensure the TabBar is updated when this property is updated.
-    property bool selectionMode: alwaysActive
+    property bool selectionMode: alwaysSelectionMode
+    onSelectionModeChanged: console.log("selectionMode changed to "+selectionMode)
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
       Off by default.
      */
-    property bool alwaysActive: false
+    property bool alwaysSelectionMode: false
 
     /*!
-      Automatically activate the tab bar when \l alwaysActive is set.
+      Automatically activate the tab bar when \l alwaysSelectionMode is set.
      */
-    onAlwaysActiveChanged: {
-        if (tabBar.alwaysActive) active = true;
+    onAlwaysSelectionModeChanged: {
+        if (tabBar.alwaysSelectionMode) selectionMode = true;
     }
 
     /*!
