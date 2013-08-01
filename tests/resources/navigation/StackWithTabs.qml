@@ -41,9 +41,37 @@ MainView {
             Tab {
                 title: "Tab 2"
                 page: Page {
-                    Label {
-                        anchors.centerIn: parent
-                        text: "Use header to navigate between tabs"
+                    Column {
+                        anchors {
+                            centerIn: parent
+                        }
+                        width: childrenRect.width
+                        height: childrenRect.height
+                        spacing: units.gu(1)
+
+                        Label {
+                            text: "Tab bar always in selection mode?"
+                        }
+                        Switch {
+                            id: alwaysSelectionModeSwitch
+                            Binding {
+                                target: tabs.tabBar
+                                property: "alwaysSelectionMode"
+                                value: alwaysSelectionModeSwitch.checked
+                            }
+                        }
+                        Label {
+                            text: "Animate tab bar."
+                        }
+                        Switch {
+                            id: animateSwitch
+                            checked: true
+                            Binding {
+                                target: tabs.tabBar
+                                property: "animate"
+                                value: animateSwitch.checked
+                            }
+                        }
                     }
                 }
             }

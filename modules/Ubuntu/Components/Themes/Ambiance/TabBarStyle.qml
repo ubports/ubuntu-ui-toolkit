@@ -23,7 +23,7 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    property int headerTextFadeDuration: 350
+    property int headerTextFadeDuration: styledItem.animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
@@ -32,7 +32,7 @@ Item {
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
-    property real buttonPositioningVelocity: 1.0
+    property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
 
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 3000
@@ -187,7 +187,9 @@ Item {
                     onClicked: {
                         if (!activatingTimer.running) {
                             tabs.selectedTabIndex = index;
-                            styledItem.selectionMode = false;
+                            if (!styledItem.alwaysSelectionMode) {
+                                styledItem.selectionMode = false;
+                            }
                             button.select();
                         } else {
                             activatingTimer.stop();
@@ -288,11 +290,15 @@ Item {
 
         // deactivate the tab bar after inactivity
         onMovementStarted: idleTimer.stop()
-        onMovementEnded: idleTimer.restart()
+        onMovementEnded: {
+            if (!styledItem.alwaysSelectionMode) {
+                idleTimer.restart();
+            }
+        }
         Timer {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
-            running: styledItem.selectionMode
+            running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
             onTriggered: styledItem.selectionMode = false
         }
     }
