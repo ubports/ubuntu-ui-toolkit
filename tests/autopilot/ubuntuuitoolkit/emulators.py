@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import time
-
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
@@ -158,9 +156,13 @@ class Header(UbuntuUIToolkitEmulatorBase):
         super(Header, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
+    def _get_animating(self):
+        tab_bar_style = self.select_single('TabBarStyle')
+        return tab_bar_style.animating
+
     def switch_to_next_tab(self):
         """Open the next tab."""
-        tab_bar = self.select_single('NewTabBar')
+        tab_bar = self.select_single('TabBar')
         assert tab_bar is not None, _NO_TABS_ERROR
         tab_bar_x, tab_bar_y, _, _ = tab_bar.globalRect
         line_y = tab_bar_y + tab_bar.height * 0.5
@@ -173,7 +175,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click()
 
         # Sleep while the animation finishes.
-        time.sleep(tab_bar.buttonPositioningVelocity)
+        self._get_animating().wait_for(False)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
