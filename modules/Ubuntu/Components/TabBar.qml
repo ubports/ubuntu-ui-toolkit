@@ -43,7 +43,6 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    // TODO: make readonly, or ensure the TabBar is updated when this property is updated.
     property bool selectionMode: alwaysSelectionMode
     onSelectionModeChanged: console.log("selectionMode changed to "+selectionMode)
 
