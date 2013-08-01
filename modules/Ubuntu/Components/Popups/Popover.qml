@@ -143,6 +143,12 @@ PopupBase {
       */
     property bool autoClose: true
 
+    /*!
+      \preliminary
+      Make the popover visible. Reparent to the background area object first if needed.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.open() to do it automatically.
+    */
     function show() {
         /* Cannot call parent's show() however PopupBase::show()
            does not do anything useful to us.
@@ -154,11 +160,20 @@ PopupBase {
         foreground.show();
     }
 
+    /*!
+      \preliminary
+      Hide the popover.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.close() to do it automatically.
+    */
     function hide() {
         foreground.hide();
     }
 
     Component.onCompleted: foreground.hideCompleted.connect(popover.__makeInvisible)
+    /*!
+        \internal
+     */
     function __makeInvisible() {
         visible = false;
     }
