@@ -21,11 +21,13 @@ ShaderEffect {
 
     implicitWidth: source.implicitWidth
     implicitHeight: source.implicitHeight
+    visible: source != null && source.visible
 
     property Item sourceItem
     property var source: ShaderEffectSource {
         hideSource: true
         sourceItem: partialColorize.sourceItem
+        visible: sourceItem != null
     }
     property color leftColor
     property color rightColor
