@@ -206,6 +206,12 @@ Item {
         }
     }
 
+    /*!
+      Used by autopilot tests to determine when an animation finishes moving.
+      \internal
+     */
+    readonly property alias animating: offsetAnimation.running
+
     PathView {
         id: buttonView
         anchors {
@@ -270,6 +276,7 @@ Item {
 
         Behavior on offset {
             SmoothedAnimation {
+                id: offsetAnimation
                 velocity: buttonPositioningVelocity
                 easing.type: Easing.InOutQuad
             }
