@@ -42,8 +42,6 @@ API Changes
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
-* ADDED IN TabBar: property bool animate
-* ADDED IN TabBar: property bool alwaysActive
 
 Compatibility Breaks
 ********************
