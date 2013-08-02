@@ -21,6 +21,7 @@ import Ubuntu.Components 0.1
 Item{
     id: root
     property string log: ""
+    onLogChanged: print(log)
 
     Window {
         objectName: "isawindow"
@@ -58,6 +59,7 @@ Item{
             anchors.fill: rect
             onClicked: {
                 root.log = "IMA"
+                print("IMA")
                 rect.color = "green"
             }
         }

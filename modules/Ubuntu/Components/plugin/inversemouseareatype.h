@@ -40,6 +40,10 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
     void componentComplete();
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void touchEvent(QTouchEvent *event);
+
 private: // getter/setter
     bool pressed() const;
     Qt::MouseButtons acceptedButtons() const;

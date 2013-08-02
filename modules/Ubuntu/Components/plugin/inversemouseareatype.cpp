@@ -23,6 +23,8 @@
 #include <QtQuick/private/qquickevents_p_p.h>
 #include "quickutils.h"
 
+#include <QDebug>
+
 /*!
   \internal
   \qmltype InverseMouseArea
@@ -100,8 +102,6 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
         // get sensing area upon parent change
         QObject::connect(this, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(update()));
     }
-
-    QGuiApplication::instance()->installEventFilter(this);
 }
 
 InverseMouseAreaType::~InverseMouseAreaType()
@@ -260,6 +260,7 @@ void InverseMouseAreaType::setPropagateComposedEvents(bool v)
 {
     if (m_propagateEvents != v) {
         m_propagateEvents = v;
+        setKeepMouseGrab(!m_propagateEvents);
         Q_EMIT propagateComposedEventsChanged();
     }
 }
@@ -331,9 +332,7 @@ void InverseMouseAreaType::asyncEmit(SignalType signal)
 bool InverseMouseAreaType::mousePress(QMouseEvent *event)
 {
     // events' positions are all in screen coordinates as we filter App events straight.
-    m_pressed = contains(mapFromScene(event->windowPos()));
-    if (m_pressed && !(event->button() & m_acceptedButtons))
-        m_pressed = false;
+    m_pressed = ((event->button() & m_acceptedButtons) == m_acceptedButtons);
     if (m_pressed) {
         saveEvent(*event, false);
         Q_EMIT pressedChanged();
@@ -368,12 +367,13 @@ bool InverseMouseAreaType::touchPressed(QTouchEvent *event)
  */
 bool InverseMouseAreaType::mouseRelease(QMouseEvent *event)
 {
+    saveEvent(*event, true);
+    asyncEmit(&InverseMouseAreaType::released);
+
     bool consume = true;
-    if (m_pressed && contains(mapFromScene(event->windowPos()))) {
+    if (m_pressed) {// && contains(mapFromScene(event->windowPos()))) {
         // released outside (inside the sensing area)
-        saveEvent(*event, true);
         m_pressed = false;
-        asyncEmit(&InverseMouseAreaType::released);
         Q_EMIT pressedChanged();
         asyncEmit(&InverseMouseAreaType::clicked);
     } else {
@@ -486,4 +486,37 @@ bool InverseMouseAreaType::eventFilter(QObject *obj, QEvent *ev)
     }
 
     return (handled) ? !m_propagateEvents : false;
+}
+
+
+void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
+{
+    QQuickItem::mousePressEvent(event);
+    qDebug() << "press";
+    mousePress(event);
+}
+
+void InverseMouseAreaType::mouseReleaseEvent(QMouseEvent *event)
+{
+    QQuickItem::mouseReleaseEvent(event);
+    qDebug() << "release";
+    mouseRelease(event);
+}
+
+void InverseMouseAreaType::touchEvent(QTouchEvent *event)
+{
+    QQuickItem::touchEvent(event);
+    qDebug() << "touch";
+    switch (event->type()) {
+    case QEvent::TouchBegin: {
+        touchPressed(event);
+        break;
+    }
+    case QEvent::TouchEnd: {
+        touchReleased(event);
+        break;
+    }
+    default:
+        break;
+    }
 }
