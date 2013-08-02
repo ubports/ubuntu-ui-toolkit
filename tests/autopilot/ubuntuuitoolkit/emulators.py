@@ -78,6 +78,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if toolbar.opened:
             self._drag_to_close_toolbar()
             toolbar.opened.wait_for(False)
