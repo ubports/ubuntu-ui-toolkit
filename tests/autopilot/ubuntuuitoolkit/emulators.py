@@ -60,6 +60,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if not toolbar.opened:
             self._drag_to_open_toolbar()
             toolbar.opened.wait_for(True)
