@@ -43,7 +43,25 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool selectionMode: false
+    property bool selectionMode: alwaysSelectionMode
+
+    /*!
+      Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
+      Off by default.
+     */
+    property bool alwaysSelectionMode: false
+
+    /*!
+      Automatically activate the tab bar when \l alwaysSelectionMode is set.
+     */
+    onAlwaysSelectionModeChanged: {
+        if (tabBar.alwaysSelectionMode) selectionMode = true;
+    }
+
+    /*!
+      Show animations when the state changes. Default: true.
+      */
+    property bool animate: true
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 }

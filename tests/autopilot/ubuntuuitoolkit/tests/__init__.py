@@ -65,7 +65,6 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         # If the test class has defined a 'test_qml' class attribute then we
         # write it to disk and launch it inside the Qml Viewer. If not, then we
         # silently do nothing (presumably the test has something else planned).
-        os.environ['UBUNTU_UI_TOOLKIT_THEMES_PATH'] = get_module_include_path()
         arch = subprocess.check_output(
             ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
         if hasattr(self, 'test_qml') and isinstance(self.test_qml, basestring):

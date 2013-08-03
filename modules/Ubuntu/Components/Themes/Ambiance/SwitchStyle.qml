@@ -83,7 +83,7 @@ Item {
             height: thumb.height
             width: thumb.width
 
-            PartialColorizeImage {
+            PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
                     source: "artwork/cross.png"
@@ -105,7 +105,7 @@ Item {
             height: thumb.height
             width: thumb.width
 
-            PartialColorizeImage {
+            PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
                     source: "artwork/tick.png"

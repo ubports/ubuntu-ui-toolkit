@@ -145,7 +145,6 @@ import QtQuick 2.0
         }
     \endqml
 */
-
 PageTreeNode {
     id: tabs
     anchors.fill: parent
