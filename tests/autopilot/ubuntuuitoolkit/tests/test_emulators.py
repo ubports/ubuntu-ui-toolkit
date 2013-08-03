@@ -223,7 +223,7 @@ MainView {
 
     def test_get_number_of_tabs(self):
         tabs = self.main_view.get_tabs()
-        self.assertEqual(tabs.get_number_of_tabs(), 2)
+        self.assertEqual(tabs.get_number_of_tabs(), 3)
 
     def test_swith_to_tab_by_index_out_of_range(self):
         last_tab_index = 1
