@@ -165,7 +165,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         tab_bar = self.select_single(TabBar)
         assert tab_bar is not None, _NO_TABS_ERROR
         tab_bar.switch_to_next_tab()
-        
+
         # Sleep while the animation finishes.
         self._get_animating().wait_for(False)
 
