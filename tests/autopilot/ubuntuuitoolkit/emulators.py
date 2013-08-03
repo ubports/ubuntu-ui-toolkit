@@ -162,18 +162,10 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
     def switch_to_next_tab(self):
         """Open the next tab."""
-        tab_bar = self.select_single('TabBar')
+        tab_bar = self.select_single(TabBar)
         assert tab_bar is not None, _NO_TABS_ERROR
-        tab_bar_x, tab_bar_y, _, _ = tab_bar.globalRect
-        line_y = tab_bar_y + tab_bar.height * 0.5
-        current_tab_x = tab_bar_x + tab_bar.width * 0.35
-        next_tab_x = tab_bar_x + tab_bar.width * 0.65
-
-        self.pointing_device.move(current_tab_x, line_y)
-        self.pointing_device.click()
-        self.pointing_device.move(next_tab_x, line_y)
-        self.pointing_device.click()
-
+        tab_bar.switch_to_next_tab()
+        
         # Sleep while the animation finishes.
         self._get_animating().wait_for(False)
 
@@ -211,3 +203,30 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
     def get_number_of_tabs(self):
         """Return the number of tabs."""
         return len(self.select_many('Tab'))
+
+
+class TabBar(UbuntuUIToolkitEmulatorBase):
+    """TabBar Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(TabBar, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+
+    def switch_to_next_tab(self):
+        """Open the next tab."""
+        self.pointing_device.click_object(self._get_current_tab_button())
+        self.pointing_device.click_object(self._get_next_tab_button())
+
+    def _get_current_tab_button(self):
+        return self.select_single('AbstractButton', selected=True)
+
+    def _get_next_tab_button(self):
+        current_index = self._get_current_tab_button().buttonIndex
+        next_index = (current_index + 1) % self._get_number_of_tab_buttons()
+        return self._get_tab_buttons()[next_index]
+
+    def _get_number_of_tab_buttons(self):
+        return len(self._get_tab_buttons())
+
+    def _get_tab_buttons(self):
+        return self.select_many('AbstractButton')
