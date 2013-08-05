@@ -120,34 +120,13 @@ AbstractButton {
       Set to show or hide the thin bottom divider line (drawn by the \l ThinDivider component).
       This line is shown by default except in cases where this item is the delegate of a ListView.
      */
-    property bool showDivider: __showDivider()
+    property bool showDivider: true
 
     /*!
-      \internal
-      Method to automatically determine if the bottom divider line should be drawn.
-      This always returns true, unless item is a delegate in a ListView. If in a ListView
-      it will return false only when:
-       + if there is a section.delegate below this item (as thin divider line and section
-         delegate should not both appear)
-       + if this is the final item in the list, and ListView.footer is set (again as thin
-         divider line won't look well with footer below it)
+      \preliminary
+      Sets the opacity of our divider.
      */
-    // FIXME: The new design shows dividers everywhere, so if it does not change anymore,
-    //  the __showDivider() function may be removed.
-    function __showDivider() {
-        // if we're not in ListView, always show a thin dividing line at the bottom
-        //if (ListView.view !== null) {
-
-            // if we're last item in ListView, show divider if no footer is defined
-            // and hide it if footer defined
-            //if (index === ListView.view.model.count - 1) return !ListView.footer;
-
-            // if section.delegate is positioned between this item and the next
-            //else if (ListView.section !== ListView.nextSection) return true;
-            //else return false;
-        //}
-        return true;
-    }
+    property alias dividerOpacity: bottomDividerLine.opacity
 
     /*!
       \internal
