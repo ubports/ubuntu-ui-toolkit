@@ -1,3 +1,17 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130805-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover: updated show/hide animations to match design. Slider's
+    bubble: added show/hide animations.
+  * ProgressBar: new visual design. Indeterminate progress bar's design
+    is not worked out yet. Simple placeholder animation for now. (LP:
+    #1195866)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 674
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 05 Aug 2013 04:02:18 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130802-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]
