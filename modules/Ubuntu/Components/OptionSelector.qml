@@ -78,6 +78,11 @@ ListItem.Empty {
     property bool expanded: false
 
     /*!
+      Called when a ListView delegate is clicked.
+     */
+    signal listItemClicked()
+
+    /*!
       Called when the optionSelector is either expanded or collapsed.
      */
     signal scroll(real selectorHeight, string currentState)
@@ -167,8 +172,9 @@ ListItem.Empty {
                         leftMargin: units.gu(-2)
                     }
                     onClicked: {
-                        if (listContainer.isExpanded) list.currentIndex = index
-                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded
+                        listItemClicked();
+                        if (listContainer.isExpanded) list.currentIndex = index;
+                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded;
                     }
 
                     Image {
