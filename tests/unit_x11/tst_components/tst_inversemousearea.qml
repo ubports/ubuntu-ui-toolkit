@@ -39,6 +39,10 @@ Item {
         id: ima
         x: 10; y: 10
         width: 10; height: 10
+        property bool acceptPressEvent: true
+        property bool acceptClickEvent: true
+        onPressed: mouse.accepted = acceptPressEvent
+        onClicked: mouse.accepted = acceptClickEvent
     }
 
     TestCase {
@@ -103,18 +107,18 @@ Item {
 
         function test_signals_data() {
             return [
-                {signal: "onPressed", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
-                {signal: "onPressed", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onPressed", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1, acceptClickEvent: false},
+                {signal: "onPressed", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1, acceptPressEvent: false},
                 {signal: "onPressed", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
                 {signal: "onPressed", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
 
-                {signal: "onReleased", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
-                {signal: "onReleased", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onReleased", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1, acceptClickEvent: false},
+                {signal: "onReleased", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 0, acceptPressEvent: false},
                 {signal: "onReleased", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
                 {signal: "onReleased", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
 
                 {signal: "onClicked", propagate: false, sensing: null, item: testCase, x: 1, y: 1, master: 0, inverse: 1},
-                {signal: "onClicked", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1},
+                {signal: "onClicked", propagate: true, sensing: null, item: testCase, x: 1, y: 1, master: 1, inverse: 1, acceptClickEvent: false},
                 {signal: "onClicked", propagate: false, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
                 {signal: "onClicked", propagate: true, sensing: testSensingArea, item: testCase, x: 1, y: 1, master: 1, inverse: 0},
             ];
@@ -125,12 +129,22 @@ Item {
             signalSpy.clear();
             masterSpy.signalName = data.signal;
             signalSpy.signalName = data.signal;
+            if (data.acceptPressEvent !== undefined) {
+                ima.acceptPressEvent = data.acceptPressEvent;
+            } else {
+                ima.acceptPressEvent = true;
+            }
+            if (data.acceptClickEvent !== undefined) {
+                ima.acceptClickEvent = data.acceptClickEvent;
+            } else {
+                ima.acceptClickEvent = true;
+            }
+
             ima.acceptedButtons = Qt.LeftButton;
             ima.propagateComposedEvents = data.propagate;
             ima.sensingArea = data.sensing;
 
-            mousePress(data.item, data.x, data.y);
-            mouseRelease(data.item, data.x, data.y);
+            mouseClick(testCase, data.x, data.y);
             tryCompare(masterSpy, "count", data.master, 100);
             tryCompare(signalSpy, "count", data.inverse, 100);
         }
