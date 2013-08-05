@@ -15,9 +15,6 @@
  *
  */
 
-#include <QtCore/QString>
-#include <QtTest/QtTest>
-#include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
