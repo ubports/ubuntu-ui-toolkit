@@ -33,7 +33,7 @@ Item {
     InverseMouseArea {
         anchors.fill: nil
         onClicked: {
-            color.color = "blue"
+            color.color = "red"
             root.log = "IMA" // FAIL
         }
     }

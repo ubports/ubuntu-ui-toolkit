@@ -139,7 +139,7 @@ private Q_SLOTS:
         QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
     }
 
-    void testCase_OverlapperMouseArea()
+    void testCase_OverlappedMouseArea()
     {
         InverseMouseAreaType *area = testArea("OverlappedMouseArea.qml");
         QVERIFY(area);
