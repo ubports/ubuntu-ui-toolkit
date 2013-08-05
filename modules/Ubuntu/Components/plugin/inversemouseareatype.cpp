@@ -15,15 +15,8 @@
  */
 
 #include "inversemouseareatype.h"
-#include <QtQuick/QQuickWindow>
-#include <QtCore/QEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QInputMethod>
 #include <QtGui/QGuiApplication>
-#include <QtQuick/private/qquickevents_p_p.h>
 #include "quickutils.h"
-
-#include <QDebug>
 
 /*!
   \internal

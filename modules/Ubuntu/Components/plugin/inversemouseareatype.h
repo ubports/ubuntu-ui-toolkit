@@ -16,11 +16,9 @@
 #ifndef INVERSEMOUSEAREATYPE_H
 #define INVERSEMOUSEAREATYPE_H
 
-#include <QtQuick/QQuickItem>
 #include <private/qquickmousearea_p.h>
 
-//class QQuickMouseEvent;
-//class QMouseEvent;
+class QQuickItem;
 class InverseMouseAreaType : public QQuickMouseArea
 {
     Q_OBJECT
