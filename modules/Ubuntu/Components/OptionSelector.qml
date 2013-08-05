@@ -163,8 +163,7 @@ ListItem.Empty {
 
                     width: parent.width + units.gu(2)
                     height: listContainer.itemHeight
-                    showDivider: index !== list.count - 1 ? true : false
-                    dividerOpacity: listContainer.isExpanded ? 100 : 0
+                    dividerOpacity: listContainer.isExpanded && index !== list.count - 1 ? 100 : 0
                     highlightWhenPressed: false
                     selected: ListView.isCurrentItem
                     anchors {
