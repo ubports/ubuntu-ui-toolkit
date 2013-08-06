@@ -21,7 +21,7 @@ Template {
     TemplateSection {
         id: section
 
-        className: "OptionSelector"
+        className: "Option Selector"
 
         Column {
             id: column
