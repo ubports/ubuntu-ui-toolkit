@@ -213,12 +213,11 @@ ListItem.Empty {
                     ]
 
                     Image {
-                        id: rightImage
+                        id: tickImage
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        opacity: enabled ? 1.0 : 0.5
-                        visible: option.selected
+                        source: listContainer.tick
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -226,25 +225,33 @@ ListItem.Empty {
                         }
 
                         states: [ State {
-                                name: "chevron"
-                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
+                                name: "visible"
+                                when: listContainer.isExpanded && index === list.currentIndex
                                 PropertyChanges {
-                                    target: rightImage
-                                    source: listContainer.chevron
+                                    target: tickImage
+                                    opacity: 1
                                 }
                             }, State {
-                                name: "tick"
-                                when: listContainer.isExpanded && listContainer.height !== listContainer.itemHeight
+                                name: "invisible"
+                                when: !listContainer.isExpanded || index !== list.currentIndex
                                 PropertyChanges {
-                                    target: rightImage
-                                    source: listContainer.tick
+                                    target: tickImage
+                                    opacity: 0
+                                }
+                            }
+                        ]
+
+                        transitions: [ Transition {
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.FastDuration
                                 }
                             }
                         ]
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
-                            property var source: rightImage
+                            property var source: tickImage
 
                             width: source.width
                             height: source.height
