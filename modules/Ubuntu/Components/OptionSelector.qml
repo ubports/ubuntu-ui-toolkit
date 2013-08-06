@@ -188,7 +188,23 @@ ListItem.Empty {
                             rightMargin: units.gu(2)
                             verticalCenter: parent.verticalCenter
                         }
-                        source: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight ? listContainer.chevron : listContainer.tick
+
+                        states: [ State {
+                                name: "chevron"
+                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
+                                PropertyChanges {
+                                    target: rightImage
+                                    source: listContainer.chevron
+                                }
+                            }, State {
+                                name: "tick"
+                                when: listContainer.isExpanded && listContainer.height !== listContainer.itemHeight
+                                PropertyChanges {
+                                    target: rightImage
+                                    source: listContainer.tick
+                                }
+                            }
+                        ]
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
