@@ -16,14 +16,15 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype OptionSelector
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
-    where expanding it opens a listing of all the possible values for selection
-    with an additional option of always being expanded.
+    \where expanding it opens a listing of all the possible values for selection
+    \with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
@@ -55,6 +56,10 @@ import "ListItems" as ListItem
         }
     \endqml
 */
+
+/*FIXME:
+There is a bug with UbuntuShape background which should be fixed once the new UbuntuShape changes land.*/
+
 ListItem.Empty {
     id: optionSelector
     __height: column.height
@@ -123,6 +128,10 @@ ListItem.Empty {
 
             onStateChanged: scroll(list.contentHeight, state)
 
+            UbuntuNumberAnimation {
+                id: opacity
+            }
+
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -140,11 +149,13 @@ ListItem.Empty {
                 }
             ]
 
-            Behavior on height {
-                UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.SnapDuration
-                }
-            }
+            transitions: [ Transition {
+                    UbuntuNumberAnimation {
+                        properties: "height"
+                        duration: Ubuntu.UbuntuAnimation.BriskDuration
+                        }
+                    }
+                ]
 
             ListView {
                 id: list
@@ -175,6 +186,31 @@ ListItem.Empty {
                         if (listContainer.isExpanded) list.currentIndex = index;
                         if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded;
                     }
+
+                    states: [ State {
+                            name: "expanded"
+                            when: listContainer.state === "expanded" && index !== list.currentIndex
+                            PropertyChanges {
+                                target: option
+                                opacity: 100
+                            }
+                        }, State {
+                            name: "collapsed"
+                            when: listContainer.state === "collapsed" && index !== list.currentIndex
+                            PropertyChanges {
+                                target: option
+                                opacity: 0
+                            }
+                        }
+                    ]
+
+                    transitions: [ Transition {
+                            UbuntuNumberAnimation {
+                                properties: "opacity"
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                            }
+                        }
+                    ]
 
                     Image {
                         id: rightImage

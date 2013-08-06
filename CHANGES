@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: UbuntuShape OptionSelector to Components
 * ADDED: OptionSelectorStyle to Components/Ambiance
 * ADDED: OptionSelectorStyle to Components/SuruDark
