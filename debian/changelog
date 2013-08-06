@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130806-0ubuntu1) saucy; urgency=low
+
+  [ Guenter Schwann ]
+  * During tests, make sure the toolbar does not move before opening it.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 676
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 06 Aug 2013 07:38:20 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130805-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]
