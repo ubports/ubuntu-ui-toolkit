@@ -368,22 +368,9 @@ Item
     property url borderSource
 plugins.qmltypes
     name: "InverseMouseAreaType"
-    prototype: "QQuickItem"
+    prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1"]
-    Property { name: "pressed"; type: "bool"; isReadonly: true }
-    Property { name: "acceptedButtons"; type: "Qt::MouseButtons" }
-    Property { name: "pressedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
-    Property { name: "propagateComposedEvents"; type: "bool" }
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "pressed"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Signal {
-    name: "released"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Signal {
-    name: "clicked"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
