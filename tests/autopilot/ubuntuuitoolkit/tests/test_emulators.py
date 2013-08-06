@@ -117,6 +117,7 @@ MainView {
     def test_open_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.assertTrue(toolbar.opened)
+        self.assertFalse(toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
         toolbar = self.main_view.open_toolbar()
@@ -131,6 +132,7 @@ MainView {
         toolbar = self.main_view.open_toolbar()
         self.main_view.close_toolbar()
         self.assertFalse(toolbar.opened)
+        self.assertFalse(toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
