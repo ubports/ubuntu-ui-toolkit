@@ -83,6 +83,11 @@ ListItem.Empty {
      */
     signal scroll(real selectorHeight, string currentState)
 
+    /*!
+      Called when a delegate in the list view is selected.
+     */
+    signal delegateSelected()
+
     showDivider: false
 
     Column {
@@ -165,6 +170,7 @@ ListItem.Empty {
                         leftMargin: units.gu(-2)
                     }
                     onClicked: {
+                        optionSelector.delegateSelected()
                         if (listContainer.isExpanded) list.currentIndex = index
                         if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded
                     }
@@ -181,7 +187,23 @@ ListItem.Empty {
                             rightMargin: units.gu(2)
                             verticalCenter: parent.verticalCenter
                         }
-                        source: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight ? listContainer.chevron : listContainer.tick
+
+                        states: [ State {
+                                name: "chevron"
+                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
+                                PropertyChanges {
+                                    target: rightImage
+                                    source: listContainer.chevron
+                                }
+                            }, State {
+                                name: "tick"
+                                when: listContainer.isExpanded && listContainer.height !== listContainer.itemHeight
+                                PropertyChanges {
+                                    target: rightImage
+                                    source: listContainer.tick
+                                }
+                            }
+                        ]
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
