@@ -41,7 +41,8 @@ HEADERS += plugin.h \
     ucubuntuanimation.h \
     ucfontutils.h \
     ucarguments.h \
-    ucargument.h
+    ucargument.h \
+    unitythemeiconprovider.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -61,7 +62,8 @@ SOURCES += plugin.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
     ucarguments.cpp \
-    ucargument.cpp
+    ucargument.cpp \
+    unitythemeiconprovider.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
