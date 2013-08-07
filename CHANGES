@@ -10,6 +10,8 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED IN: CrossFadeImage: property color colour
+* ADDED IN: CrossFadeImage: property bool colourise
 * ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: UbuntuShape OptionSelector to Components
 * ADDED: OptionSelectorStyle to Components/Ambiance

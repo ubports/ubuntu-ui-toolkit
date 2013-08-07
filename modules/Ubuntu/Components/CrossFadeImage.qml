@@ -75,6 +75,16 @@ Item {
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
+      The colour applied to the fading images.
+    */
+    property color colour
+
+    /*!
+      Should the colour be applied?
+    */
+    property bool colourise: false
+
+    /*!
       Whether the animation is running
     */
     readonly property bool running: nextImageFadeIn.running
@@ -112,6 +122,17 @@ Item {
 
         property Image loadingImage: currentImage
 
+        property string fragmentShader: "
+                varying highp vec2 qt_TexCoord0;
+                uniform sampler2D source;
+                uniform lowp vec4 colour;
+                uniform lowp float qt_Opacity;
+
+                void main() {
+                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                }"
+
         function swapImages() {
             internals.currentImage.z = 0;
             internals.nextImage.z = 1;
@@ -130,6 +151,17 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 1
+
+        ShaderEffect {
+            property color colour: crossFadeImage.colour
+            property var source: parent
+
+            width: source.width
+            height: source.height
+            visible: source.status === Image.Ready && crossFadeImage.colourise
+
+            fragmentShader: internals.fragmentShader
+        }
     }
 
     Image {
@@ -139,6 +171,17 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 0
+
+        ShaderEffect {
+            property color colour: crossFadeImage.colour
+            property var source: parent
+
+            width: source.width
+            height: source.height
+            visible: source.status === Image.Ready && crossFadeImage.colourise
+
+            fragmentShader: internals.fragmentShader
+        }
     }
 
     /*!

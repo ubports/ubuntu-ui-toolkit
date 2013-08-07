@@ -212,62 +212,44 @@ ListItem.Empty {
                         }
                     ]
 
-                    Image {
-                        id: tickImage
+                    CrossFadeImage {
+                        id: image
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        source: listContainer.tick
+                        colour: listContainer.themeColour
+                        colourise: true
+                        opacity: option.selected ? 1.0 : 0.0
+                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
                             verticalCenter: parent.verticalCenter
                         }
 
+                        Behavior on opacity {
+                            UbuntuNumberAnimation {
+                                properties: "opacity"
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                            }
+                        }
+
                         states: [ State {
-                                name: "visible"
-                                when: listContainer.isExpanded && index === list.currentIndex
+                                name: "tick"
+                                when: listContainer.isExpanded && listContainer.height !== listContainer.itemHeight
                                 PropertyChanges {
-                                    target: tickImage
-                                    opacity: 1
+                                    target: image
+                                    source: listContainer.tick
                                 }
                             }, State {
-                                name: "invisible"
-                                when: !listContainer.isExpanded || index !== list.currentIndex
+                                name: "chevron"
+                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
                                 PropertyChanges {
-                                    target: tickImage
-                                    opacity: 0
+                                    target: image
+                                    source: listContainer.chevron
                                 }
                             }
                         ]
-
-                        transitions: [ Transition {
-                                UbuntuNumberAnimation {
-                                    properties: "opacity"
-                                    duration: Ubuntu.UbuntuAnimation.FastDuration
-                                }
-                            }
-                        ]
-
-                        ShaderEffect {
-                            property color colour: listContainer.themeColour
-                            property var source: tickImage
-
-                            width: source.width
-                            height: source.height
-                            visible: source.status === Image.Ready && listContainer.colourComponent
-
-                            fragmentShader: "
-                                    varying highp vec2 qt_TexCoord0;
-                                    uniform sampler2D source;
-                                    uniform lowp vec4 colour;
-                                    uniform lowp float qt_Opacity;
-
-                                    void main() {
-                                        lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                                        gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                                    }"
-                        }
                     }
 
                     ListItem.LabelVisual {
