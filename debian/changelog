@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130807-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * InverseMouseArea derives now from MouseArea being in this way kept
+    in sync with the MouseArea behavior. No API change other than base
+    class and the extra API it brings occured. (LP: #1207426)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 678
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 Aug 2013 04:02:21 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130806-0ubuntu1) saucy; urgency=low
 
   [ Guenter Schwann ]
