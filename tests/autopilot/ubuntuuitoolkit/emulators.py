@@ -60,9 +60,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if not toolbar.opened:
             self._drag_to_open_toolbar()
             toolbar.opened.wait_for(True)
+            toolbar.animating.wait_for(False)
 
         return toolbar
 
@@ -77,9 +79,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if toolbar.opened:
             self._drag_to_close_toolbar()
             toolbar.opened.wait_for(False)
+            toolbar.animating.wait_for(False)
 
     def _drag_to_close_toolbar(self):
         x, y, _, _ = self.globalRect

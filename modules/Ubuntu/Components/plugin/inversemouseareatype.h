@@ -16,73 +16,35 @@
 #ifndef INVERSEMOUSEAREATYPE_H
 #define INVERSEMOUSEAREATYPE_H
 
-#include <QtQuick/QQuickItem>
+#include <private/qquickmousearea_p.h>
 
-class QQuickMouseEvent;
-class QMouseEvent;
-class InverseMouseAreaType : public QQuickItem
+class QQuickItem;
+class InverseMouseAreaType : public QQuickMouseArea
 {
     Q_OBJECT
-    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
-    Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons WRITE setAcceptedButtons NOTIFY acceptedButtonsChanged)
-    Q_PROPERTY(Qt::MouseButtons pressedButtons READ pressedButtons NOTIFY pressedButtonsChanged)
-    Q_PROPERTY(bool propagateComposedEvents READ propagateComposedEvents WRITE setPropagateComposedEvents NOTIFY propagateComposedEventsChanged)
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
 public:
-    typedef void (InverseMouseAreaType::*SignalType)(QQuickMouseEvent*);
-
     explicit InverseMouseAreaType(QQuickItem *parent = 0);
     ~InverseMouseAreaType();
 
     Q_INVOKABLE virtual bool contains(const QPointF &point) const;
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *ev);
     void componentComplete();
 
 private: // getter/setter
-    bool pressed() const;
-    Qt::MouseButtons acceptedButtons() const;
-    void setAcceptedButtons(Qt::MouseButtons buttons);
-    Qt::MouseButtons pressedButtons() const;
-    bool propagateComposedEvents() const;
-    void setPropagateComposedEvents(bool v);
     QQuickItem *sensingArea() const;
     void setSensingArea(QQuickItem *sensing);
 
-private:
-    void reset();
-    void saveEvent(const QMouseEvent &event, bool isClicked);
-    void asyncEmit(SignalType signal);
-    bool mousePress(QMouseEvent *event);
-    bool mouseRelease(QMouseEvent *event);
-    bool mouseMove(QMouseEvent *event);
-    // grab touch events too
-    bool touchPressed(QTouchEvent *event);
-    bool touchMoved(QTouchEvent *event);
-    bool touchReleased(QTouchEvent *event);
-
 Q_SIGNALS:
-    void pressedChanged();
-    void acceptedButtonsChanged();
-    void pressedButtonsChanged();
-    void propagateComposedEventsChanged();
     void sensingAreaChanged();
 
-    void pressed(QQuickMouseEvent *mouse);
-    void released(QQuickMouseEvent *mouse);
-    void clicked(QQuickMouseEvent *mouse);
-    
 private Q_SLOTS:
     void update();
     
 private:
     bool m_ready;
-    bool m_pressed;
-    bool m_propagateEvents;
-    Qt::MouseButtons m_acceptedButtons;
     QQuickItem *m_sensingArea;
-    QQuickMouseEvent *m_event;
 };
 
 #endif // INVERSEMOUSEAREATYPE_H

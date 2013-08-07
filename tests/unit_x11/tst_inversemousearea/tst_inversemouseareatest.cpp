@@ -15,9 +15,6 @@
  *
  */
 
-#include <QtCore/QString>
-#include <QtTest/QtTest>
-#include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
@@ -131,9 +128,23 @@ private Q_SLOTS:
         QVERIFY(area);
         quickView->show();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 10));
+        QList<QQuickWindow *> l = quickView->rootObject()->findChildren<QQuickWindow*>("isawindow");
+        QVERIFY(l.count());
+
+        QTest::mouseClick(l[0], Qt::LeftButton, 0, QPoint(20, 10));
         QTest::waitForEvents();
         QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+    }
+
+    void testCase_OverlappedMouseArea()
+    {
+        InverseMouseAreaType *area = testArea("OverlappedMouseArea.qml");
+        QVERIFY(area);
+        quickView->show();
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 10));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("MA"));
     }
 
 };

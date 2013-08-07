@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 
-SUBDIRS += tst_components tst_test
+SUBDIRS += tst_components tst_test tst_inversemousearea
