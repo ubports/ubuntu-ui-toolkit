@@ -192,7 +192,7 @@ ListItem.Empty {
                             when: listContainer.state === "expanded" && index !== list.currentIndex
                             PropertyChanges {
                                 target: option
-                                opacity: 100
+                                opacity: 1
                             }
                         }, State {
                             name: "collapsed"
@@ -211,6 +211,8 @@ ListItem.Empty {
                             }
                         }
                     ]
+
+                    onOpacityChanged: print("OPACITY: " + opacity)
 
                     CrossFadeImage {
                         id: image
