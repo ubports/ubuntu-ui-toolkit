@@ -21,6 +21,7 @@ Template {
     TemplateSection {
         id: section
 
+        title: i18n.tr("Option Selector")
         className: "Option Selector"
 
         Column {

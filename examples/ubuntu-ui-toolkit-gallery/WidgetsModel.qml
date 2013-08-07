@@ -41,7 +41,7 @@ ListModel {
     }
 
     ListElement {
-        label: "OptionSelector"
+        label: "Option Selector"
         source: "OptionSelectors.qml"
     }
 
