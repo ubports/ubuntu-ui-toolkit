@@ -214,16 +214,17 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def switch_to_next_tab(self):
         """Open the next tab."""
-        self.pointing_device.click_object(self._get_current_tab_button())
+        # Click the tab bar to switch to selection mode.
+        self.pointing_device.click_object(self)
         self.pointing_device.click_object(self._get_next_tab_button())
 
-    def _get_current_tab_button(self):
-        return self.select_single('AbstractButton', selected=True)
-
     def _get_next_tab_button(self):
-        current_index = self._get_current_tab_button().buttonIndex
+        current_index = self._get_selected_button_index()
         next_index = (current_index + 1) % self._get_number_of_tab_buttons()
         return self._get_tab_buttons()[next_index]
+
+    def _get_selected_button_index(self):
+        return self.select_single('QQuickPathView').selectedButtonIndex
 
     def _get_number_of_tab_buttons(self):
         return len(self._get_tab_buttons())
