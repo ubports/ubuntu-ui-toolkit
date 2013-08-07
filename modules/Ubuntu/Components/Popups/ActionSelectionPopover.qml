@@ -120,6 +120,8 @@ Popover {
         }
         /*! \internal */
         onTriggered: popover.hide()
+        visible: enabled
+        height: visible ? implicitHeight : 0
     }
 
     grabDismissAreaEvents: false
