@@ -62,7 +62,14 @@ StyledItem {
     signal triggered(var caller)
 
     /*!
-      If \l action is set, this will call action.trigger(caller).
+      If \l action is set, this will trigger it action.triggered(caller).
     */
-    onTriggered: if (action) action.triggered(caller)
+    onTriggered: if (action) action.trigger(caller)
+
+    /*!
+      Trigger this action item if it is enabled.
+     */
+    function trigger(caller) {
+        if (actionItem.enabled) action.triggered(caller);
+    }
 }
