@@ -280,7 +280,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: Toolkit.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.SnapDuration
             }
         }
     ]
