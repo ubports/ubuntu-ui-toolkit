@@ -237,14 +237,14 @@ ListItem.Empty {
 
                         states: [ State {
                                 name: "tick"
-                                when: listContainer.isExpanded && listContainer.height > listContainer.itemHeight
+                                when: listContainer.isExpanded
                                 PropertyChanges {
                                     target: image
                                     source: listContainer.tick
                                 }
                             }, State {
                                 name: "chevron"
-                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
+                                when: !listContainer.isExpanded
                                 PropertyChanges {
                                     target: image
                                     source: listContainer.chevron
