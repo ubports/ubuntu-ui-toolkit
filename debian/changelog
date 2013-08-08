@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.1-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Fixed the opening of tabs on the autopilot test Emulators. (LP:
+    #1206251)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 681
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 06:05:03 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130807-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]
