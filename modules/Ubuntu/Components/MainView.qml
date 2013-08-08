@@ -267,7 +267,7 @@ PageTreeNode {
           in \l Page to determine the area for the \l Page to fill.
          */
         Header {
-            objectName: "top_header"
+            objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
         }
