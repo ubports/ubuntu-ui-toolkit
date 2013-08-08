@@ -97,7 +97,7 @@ Item {
     /*!
       The actual width and height of the loaded image
     */
-    readonly property size sourceSize: internals.loadingImage.sourceSize
+    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
 
     /*!
       \qmlproperty enumeration status
@@ -208,7 +208,7 @@ Item {
 
         property int intervals: 0
 
-        interval: delayDuration / 2
+        interval: delayDuration
         repeat: true
         onTriggered: {
             internals.timerCompleted();
@@ -239,7 +239,6 @@ Item {
             internals.currentImage.source = source;
             internals.loadingImage = internals.currentImage;
         } else {
-            switchTimer.start();
             nextImageFadeIn.stop();
             internals.nextImage.opacity = 0.0;
             internals.nextImage.source = source;
@@ -256,7 +255,13 @@ Item {
         target: internals.nextImage
         onStatusChanged: {
             if (internals.nextImage.status == Image.Ready) {
-                 internals.imageStatusChanged = true
+                if (switchTimer.interval > 0) {
+                    switchTimer.start();
+                    internals.imageStatusChanged = true;
+                }
+                else {
+                    internals.swapImages();
+                }
              }
         }
     }

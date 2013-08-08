@@ -221,9 +221,9 @@ ListItem.Empty {
                         height: units.gu(2)
                         colour: listContainer.themeColour
                         colourise: true
-                        opacity: option.selected ? 1.0 : 0.0
+                        visible: option.selected ? 1.0 : 0.0
                         delayDuration: Ubuntu.UbuntuAnimation.FastDuration
-                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration * 2
+                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
