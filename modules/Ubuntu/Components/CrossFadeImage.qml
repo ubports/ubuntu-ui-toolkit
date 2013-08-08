@@ -75,6 +75,11 @@ Item {
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
+      The amount of delay between switching images.
+    */
+    property int delayDuration: 0
+
+    /*!
       The colour applied to the fading images.
     */
     property color colour
@@ -122,6 +127,8 @@ Item {
 
         property Image loadingImage: currentImage
 
+        property bool imageStatusChanged: false
+
         property string fragmentShader: "
                 varying highp vec2 qt_TexCoord0;
                 uniform sampler2D source;
@@ -141,6 +148,18 @@ Item {
             var tmpImage = internals.currentImage;
             internals.currentImage = internals.nextImage;
             internals.nextImage = tmpImage;
+        }
+
+        signal timerCompleted()
+
+        onTimerCompleted: {
+            if (switchTimer.intervals === 0) {
+                internals.currentImage.source = "";
+            }
+
+            if (internals.imageStatusChanged && switchTimer.intervals === 1) {
+                internals.swapImages();
+            }
         }
     }
 
@@ -184,6 +203,19 @@ Item {
         }
     }
 
+    Timer {
+        id: switchTimer
+
+        property int intervals: 0
+
+        interval: delayDuration / 2
+        repeat: true
+        onTriggered: {
+            internals.timerCompleted();
+            intervals++;
+        }
+    }
+
     /*!
       \internal
       Do the fading when the source is updated
@@ -196,12 +228,18 @@ Item {
         }
 
         nextImageFadeIn.stop();
+        switchTimer.stop();
+
+        internals.imageStatusChanged = false;
+        switchTimer.intervals = 0;
+
 
         // Don't fade in initial picture, only fade changes
         if (internals.currentImage.source == "") {
             internals.currentImage.source = source;
             internals.loadingImage = internals.currentImage;
         } else {
+            switchTimer.start();
             nextImageFadeIn.stop();
             internals.nextImage.opacity = 0.0;
             internals.nextImage.source = source;
@@ -218,7 +256,7 @@ Item {
         target: internals.nextImage
         onStatusChanged: {
             if (internals.nextImage.status == Image.Ready) {
-                 internals.swapImages();
+                 internals.imageStatusChanged = true
              }
         }
     }

@@ -207,12 +207,10 @@ ListItem.Empty {
                     transitions: [ Transition {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
                     ]
-
-                    onOpacityChanged: print("OPACITY: " + opacity)
 
                     CrossFadeImage {
                         id: image
@@ -222,7 +220,8 @@ ListItem.Empty {
                         colour: listContainer.themeColour
                         colourise: true
                         opacity: option.selected ? 1.0 : 0.0
-                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
+                        delayDuration: Ubuntu.UbuntuAnimation.FastDuration
+                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration * 2
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -232,7 +231,7 @@ ListItem.Empty {
                         Behavior on opacity {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
 

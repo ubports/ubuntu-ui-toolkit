@@ -10,13 +10,10 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED IN: CrossFadeImage: property int delayDuration
 * ADDED IN: CrossFadeImage: property color colour
 * ADDED IN: CrossFadeImage: property bool colourise
 * ADDED IN: OptionSelector: signal delegateSelected()
-* ADDED: UbuntuShape OptionSelector to Components
-* ADDED: OptionSelectorStyle to Components/Ambiance
-* ADDED: OptionSelectorStyle to Components/SuruDark
-* ADDED: OptionSelectorStyle to Components/SuruGradient
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
