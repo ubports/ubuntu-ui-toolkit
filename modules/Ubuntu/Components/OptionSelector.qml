@@ -124,6 +124,7 @@ ListItem.Empty {
                 left: parent.left
                 right: parent.right
             }
+            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
             onStateChanged: scroll(list.contentHeight, state)
@@ -151,6 +152,7 @@ ListItem.Empty {
 
             transitions: [ Transition {
                     UbuntuNumberAnimation {
+                        id: heightBehaviour
                         properties: "height"
                         duration: Ubuntu.UbuntuAnimation.BriskDuration
                         }
@@ -237,14 +239,14 @@ ListItem.Empty {
 
                         states: [ State {
                                 name: "tick"
-                                when: listContainer.isExpanded
+                                when: listContainer.height > listContainer.itemHeight
                                 PropertyChanges {
                                     target: image
                                     source: listContainer.tick
                                 }
                             }, State {
                                 name: "chevron"
-                                when: !listContainer.isExpanded
+                                when: listContainer.height === listContainer.itemHeight
                                 PropertyChanges {
                                     target: image
                                     source: listContainer.chevron
