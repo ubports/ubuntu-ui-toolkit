@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.2-0ubuntu1) saucy; urgency=low
+
+  * New rebuild forced
+  * Automatic snapshot from revision 682
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 10:00:11 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130808.1-0ubuntu1) saucy; urgency=low
 
   [ Leo Arias ]
