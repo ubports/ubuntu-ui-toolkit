@@ -267,6 +267,9 @@ PageTreeNode {
           in \l Page to determine the area for the \l Page to fill.
          */
         Header {
+            // XXX We need to set an object name to this header in order to differentiate it from the ListItem.Header on Autopilot tests.
+            // This is a temporary workaround while we find a better solution for https://bugs.launchpad.net/autopilot/+bug/1210265
+            // --elopio - 2013-08-08
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
