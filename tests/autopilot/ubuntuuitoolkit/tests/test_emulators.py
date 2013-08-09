@@ -308,7 +308,7 @@ MainView {
         self._open_popover()
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
-        popover.click_button('Action one')
+        popover.click_button_by_text('Action one')
         self.assertEqual(label.text, 'Button clicked.')
 
     def _open_popover(self):
@@ -321,7 +321,7 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            ValueError, popover.click_button, 'unexisting')
+            ValueError, popover.click_button_by_text, 'unexisting')
         self.assertEqual(
             error.message, 'Button with text "unexisting" not found.')
 
@@ -329,6 +329,6 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            AssertionError, popover.click_button, 'Action one')
+            AssertionError, popover.click_button_by_text, 'Action one')
         self.assertEqual(
             error.message, 'The popover is not open.')

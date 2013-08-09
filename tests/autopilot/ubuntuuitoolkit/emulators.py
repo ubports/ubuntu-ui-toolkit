@@ -253,7 +253,7 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         super(ActionSelectionPopover, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
-    def click_button(self, text):
+    def click_button_by_text(self, text):
         """Click a button on the popover.
 
         XXX We are receiving the text because there's no way to set the
