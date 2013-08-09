@@ -270,6 +270,8 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
             raise ValueError(
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
+        if self.autoClose:
+            self.visible.wait_for(False)
 
     def _get_button(self, text):
         buttons = self.select_many('Empty')
