@@ -152,6 +152,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         raise ValueError(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
+    def get_action_selection_popover(self, object_name):
+        """Return an ActionSelectionPopover emulator.
+
+        :parameter object_name: The QML objectName property of the popover.
+
+        """
+        return self.select_single(
+            ActionSelectionPopover, objectName=object_name)
+
 
 class Header(UbuntuUIToolkitEmulatorBase):
     """Header Autopilot emulator."""
@@ -235,3 +244,37 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def _get_tab_buttons(self):
         return self.select_many('AbstractButton')
+
+
+class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
+    """ActionSelectionPopover Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(ActionSelectionPopover, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+
+    def click_button_by_text(self, text):
+        """Click a button on the popover.
+
+        XXX We are receiving the text because there's no way to set the
+        objectName on the action. This is reported at
+        https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205144
+        --elopio - 2013-07-25
+
+        :parameter text: The text of the button.
+
+        """
+        assert self.visible, 'The popover is not open.'
+        button = self._get_button(text)
+        if button is None:
+            raise ValueError(
+                'Button with text "{0}" not found.'.format(text))
+        self.pointing_device.click_object(button)
+        if self.autoClose:
+            self.visible.wait_for(False)
+
+    def _get_button(self, text):
+        buttons = self.select_many('Empty')
+        for button in buttons:
+            if button.text == text:
+                return button

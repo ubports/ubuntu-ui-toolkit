@@ -258,3 +258,77 @@ MainView {
             ValueError, self.main_view.switch_to_tab, 'unexisting')
         self.assertEqual(
             error.message, 'Tab with objectName "unexisting" not found.')
+
+
+class ActionSelectionPopoverTestCase(tests.UbuntuUiToolkitTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Button {
+        objectName: "open_popover"
+        text: "Open Popover"
+        onClicked: testActionsPopover.show();
+    }
+
+    Label {
+        id: "label"
+        objectName: "clicked_label"
+        anchors.centerIn: parent
+        text: "Button not clicked."
+    }
+
+    ActionSelectionPopover {
+        objectName: "test_actions_popover"
+        id: testActionsPopover
+        actions: ActionList {
+            Action {
+                text: "Action one"
+                onTriggered: label.text = "Button clicked."
+            }
+        }
+    }
+}
+""")
+
+    def test_action_selection_popover_emulator(self):
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        self.assertIsInstance(popover, emulators.ActionSelectionPopover)
+
+    def test_click_action_select_popover_button(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        popover.click_button_by_text('Action one')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def _open_popover(self):
+        open_button = self.main_view.select_single(
+            'Button', objectName='open_popover')
+        self.pointing_device.click_object(open_button)
+
+    def test_click_unexisting_button(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ValueError, popover.click_button_by_text, 'unexisting')
+        self.assertEqual(
+            error.message, 'Button with text "unexisting" not found.')
+
+    def test_click_button_with_closed_popover(self):
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            AssertionError, popover.click_button_by_text, 'Action one')
+        self.assertEqual(
+            error.message, 'The popover is not open.')
