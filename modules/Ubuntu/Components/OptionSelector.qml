@@ -267,12 +267,9 @@ ListItem.Empty {
                             Transition {
                                 from: "show"
                                 to: "hide"
-                                SequentialAnimation {
-                                    PauseAnimation { duration: 300 }
-                                    UbuntuNumberAnimation {
+                                UbuntuNumberAnimation {
                                         properties: "opacity"
                                         duration: Ubuntu.UbuntuAnimation.FastDuration
-                                    }
                                 }
                             }
                         ]
@@ -311,14 +308,14 @@ ListItem.Empty {
 
                         states: [ State {
                                 name: "show"
-                                when: listContainer.height === list.contentHeight
+                                when: listContainer.height > listContainer.itemHeight
                                 PropertyChanges {
                                     target: tickImage
                                     opacity: 1.0
                                 }
                             }, State {
                                 name: "hide"
-                                when: listContainer.height < list.contentHeight
+                                when: listContainer.height === listContainer.itemHeight
                                 PropertyChanges {
                                     target: tickImage
                                     opacity: 0.0
