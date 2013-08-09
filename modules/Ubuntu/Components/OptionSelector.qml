@@ -120,6 +120,17 @@ ListItem.Empty {
             property color themeColour: Theme.palette.selected.fieldText
             property bool colourComponent: __styleInstance.colourComponent
 
+            readonly property string fragmentShader:
+                "varying highp vec2 qt_TexCoord0;
+                 uniform sampler2D source;
+                 uniform lowp vec4 colour;
+                 uniform lowp float qt_Opacity;
+
+                 void main() {
+                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                }"
+
             anchors {
                 left: parent.left
                 right: parent.right
@@ -209,21 +220,18 @@ ListItem.Empty {
                     transitions: [ Transition {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
                             }
                         }
                     ]
 
-                    CrossFadeImage {
-                        id: image
+                    Image {
+                        id: chevronImage
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        colour: listContainer.themeColour
-                        colourise: true
-                        visible: option.selected ? 1.0 : 0.0
-                        delayDuration: Ubuntu.UbuntuAnimation.FastDuration
-                        fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
+                        visible: option.selected ? true : false
+                        source: listContainer.chevron
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -238,21 +246,103 @@ ListItem.Empty {
                         }
 
                         states: [ State {
-                                name: "tick"
+                                name: "hide"
                                 when: listContainer.height > listContainer.itemHeight
                                 PropertyChanges {
-                                    target: image
-                                    source: listContainer.tick
+                                    target: chevronImage
+                                    opacity: 0.0
                                 }
                             }, State {
-                                name: "chevron"
+                                name: "show"
                                 when: listContainer.height === listContainer.itemHeight
                                 PropertyChanges {
-                                    target: image
-                                    source: listContainer.chevron
+                                    target: chevronImage
+                                    opacity: 1.0
                                 }
                             }
                         ]
+
+                        transitions: [
+                            Transition {
+                                from: "show"
+                                to: "hide"
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.FastDuration
+                                }
+                            }
+                        ]
+
+                        ShaderEffect {
+                            property color colour: listContainer.themeColour
+                            property var source: parent
+
+                            width: source.width
+                            height: source.height
+                            visible: source.status === Image.Ready
+
+                            fragmentShader: fragmentShader
+                        }
+                    }
+
+                    Image {
+                        id: tickImage
+
+                        width: units.gu(2)
+                        height: units.gu(2)
+                        visible: option.selected ? true : false
+                        source: listContainer.tick
+                        anchors {
+                            right: parent.right
+                            rightMargin: units.gu(2)
+                            verticalCenter: parent.verticalCenter
+                        }
+
+                        Behavior on opacity {
+                            UbuntuNumberAnimation {
+                                properties: "opacity"
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                        }
+
+                        states: [ State {
+                                name: "hide"
+                                when: listContainer.height > listContainer.itemHeight
+                                PropertyChanges {
+                                    target: tickImage
+                                    opacity: 1.0
+                                }
+                            }, State {
+                                name: "show"
+                                when: listContainer.height === listContainer.itemHeight
+                                PropertyChanges {
+                                    target: tickImage
+                                    opacity: 0.0
+                                }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: "hide"
+                                to: "show"
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.FastDuration
+                                }
+                            }
+                        ]
+
+                        ShaderEffect {
+                            property color colour: listContainer.themeColour
+                            property var source: parent
+
+                            width: source.width
+                            height: source.height
+                            visible: source.status === Image.Ready
+
+                            fragmentShader: fragmentShader
+                        }
                     }
 
                     ListItem.LabelVisual {

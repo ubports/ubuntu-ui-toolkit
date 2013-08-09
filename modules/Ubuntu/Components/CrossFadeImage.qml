@@ -75,21 +75,6 @@ Item {
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
-      The amount of delay between switching images.
-    */
-    property int delayDuration: 0
-
-    /*!
-      The colour applied to the fading images.
-    */
-    property color colour
-
-    /*!
-      Should the colour be applied?
-    */
-    property bool colourise: false
-
-    /*!
       Whether the animation is running
     */
     readonly property bool running: nextImageFadeIn.running
@@ -97,7 +82,7 @@ Item {
     /*!
       The actual width and height of the loaded image
     */
-    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+    readonly property size sourceSize: internals.loadingImage.sourceSize
 
     /*!
       \qmlproperty enumeration status
@@ -127,19 +112,6 @@ Item {
 
         property Image loadingImage: currentImage
 
-        property bool imageStatusChanged: false
-
-        property string fragmentShader: "
-                varying highp vec2 qt_TexCoord0;
-                uniform sampler2D source;
-                uniform lowp vec4 colour;
-                uniform lowp float qt_Opacity;
-
-                void main() {
-                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                }"
-
         function swapImages() {
             internals.currentImage.z = 0;
             internals.nextImage.z = 1;
@@ -148,18 +120,6 @@ Item {
             var tmpImage = internals.currentImage;
             internals.currentImage = internals.nextImage;
             internals.nextImage = tmpImage;
-        }
-
-        signal timerCompleted()
-
-        onTimerCompleted: {
-            if (switchTimer.intervals === 0) {
-                internals.currentImage.source = "";
-            }
-
-            if (internals.imageStatusChanged && switchTimer.intervals === 1) {
-                internals.swapImages();
-            }
         }
     }
 
@@ -170,17 +130,6 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 1
-
-        ShaderEffect {
-            property color colour: crossFadeImage.colour
-            property var source: parent
-
-            width: source.width
-            height: source.height
-            visible: source.status === Image.Ready && crossFadeImage.colourise
-
-            fragmentShader: internals.fragmentShader
-        }
     }
 
     Image {
@@ -190,30 +139,6 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 0
-
-        ShaderEffect {
-            property color colour: crossFadeImage.colour
-            property var source: parent
-
-            width: source.width
-            height: source.height
-            visible: source.status === Image.Ready && crossFadeImage.colourise
-
-            fragmentShader: internals.fragmentShader
-        }
-    }
-
-    Timer {
-        id: switchTimer
-
-        property int intervals: 0
-
-        interval: delayDuration
-        repeat: true
-        onTriggered: {
-            internals.timerCompleted();
-            intervals++;
-        }
     }
 
     /*!
@@ -228,11 +153,6 @@ Item {
         }
 
         nextImageFadeIn.stop();
-        switchTimer.stop();
-
-        internals.imageStatusChanged = false;
-        switchTimer.intervals = 0;
-
 
         // Don't fade in initial picture, only fade changes
         if (internals.currentImage.source == "") {
@@ -255,13 +175,7 @@ Item {
         target: internals.nextImage
         onStatusChanged: {
             if (internals.nextImage.status == Image.Ready) {
-                if (switchTimer.interval > 0) {
-                    switchTimer.start();
-                    internals.imageStatusChanged = true;
-                }
-                else {
-                    internals.swapImages();
-                }
+                 internals.swapImages();
              }
         }
     }
