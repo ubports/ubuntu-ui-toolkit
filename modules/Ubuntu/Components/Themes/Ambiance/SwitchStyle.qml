@@ -41,6 +41,7 @@ Item {
         id: background
         anchors.fill: parent
         color: Theme.palette.normal.base
+        clip: true
 
         UbuntuShape {
             id: thumb
@@ -70,6 +71,30 @@ Item {
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
+
+            PartialColorize {
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.left
+                    rightMargin: switchStyle.thumbPadding * 3.0
+                }
+                rightColor: Theme.palette.normal.backgroundText
+                source: Image {
+                    source: "artwork/cross.png"
+                }
+            }
+
+            PartialColorize {
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    left: parent.right
+                    leftMargin: switchStyle.thumbPadding * 2.0
+                }
+                rightColor: Theme.palette.normal.backgroundText
+                source: Image {
+                    source: "artwork/tick.png"
+                }
+            }
         }
 
         Item {
@@ -89,7 +114,7 @@ Item {
                     source: "artwork/cross.png"
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
-                leftColor: Theme.palette.normal.backgroundText
+                leftColor: "transparent"
                 rightColor: Theme.palette.selected.foregroundText
             }
         }
@@ -112,7 +137,7 @@ Item {
                 }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
                 leftColor: Theme.palette.selected.foregroundText
-                rightColor: Theme.palette.normal.backgroundText
+                rightColor: "transparent"
             }
         }
     }
