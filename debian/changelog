@@ -1,3 +1,21 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130809.2-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Updated visual design of ActivityIndicator.
+  * Switch: implemented new version of visual design.
+  * Slider: animate thumb movement when pressing the slider.
+  * ProgressBar: design tweaks to indeterminate mode.
+
+  [ Leo Arias ]
+  * Added the objectName property to the top header. (LP: #1209405)
+  * Moved the ActionSelectionPopover autopilot emulator from the
+    filemanager app. Added tests. (LP: #1205205)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 689
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 Aug 2013 15:36:16 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130808.2-0ubuntu1) saucy; urgency=low
 
   * New rebuild forced
