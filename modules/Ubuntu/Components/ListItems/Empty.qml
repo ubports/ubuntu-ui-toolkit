@@ -123,12 +123,6 @@ AbstractButton {
     property bool showDivider: true
 
     /*!
-      \preliminary
-      Sets the opacity of our divider.
-     */
-    property alias dividerOpacity: bottomDividerLine.opacity
-
-    /*!
       \internal
       Reparent so that the visuals of the children does not
       occlude the bottom divider line.
@@ -266,7 +260,7 @@ AbstractButton {
             left: parent.left
             right: parent.right
             top: parent.top
-            bottom: bottomDividerLine.top
+            bottom: parent.bottom
         }
 
         Item {
