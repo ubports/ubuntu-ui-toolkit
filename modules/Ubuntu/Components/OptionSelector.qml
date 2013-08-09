@@ -195,9 +195,10 @@ ListItem.Empty {
                         leftMargin: units.gu(-2)
                     }
                     onClicked: {
-                        listItemClicked();
                         if (listContainer.isExpanded) list.currentIndex = index;
                         if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded;
+
+                        listItemClicked();
                     }
 
                     states: [ State {

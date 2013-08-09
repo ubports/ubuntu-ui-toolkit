@@ -10,7 +10,7 @@ UNRELEASED
 API Changes
 ***********
 
-* ADDED IN: OptionSelector: signal delegateSelected()
+* ADDED IN: OptionSelector: signal listItemClicked()
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
