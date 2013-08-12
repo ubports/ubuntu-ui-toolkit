@@ -174,6 +174,7 @@ ListItem.Empty {
                 currentIndex: 0
                 model: optionSelector.values
                 anchors.fill: parent
+                property bool fullyExpanded: false
 
                 delegate:
                 ListItem.Standard {
@@ -214,21 +215,29 @@ ListItem.Empty {
                         }
                     ]
 
-                    transitions: [ Transition {
-                            UbuntuNumberAnimation {
-                                properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                    transitions: [
+                        Transition {
+                            SequentialAnimation {
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                                }
+                                PropertyAction {
+                                    target: list
+                                    property: "fullyExpanded"
+                                    value: state == "expanded" ? true : false
+                                }
                             }
                         }
                     ]
 
                     Image {
-                        id: chevronImage
+                        id: image
 
                         width: units.gu(2)
                         height: units.gu(2)
                         visible: option.selected ? true : false
-                        source: listContainer.chevron
+                        state: list.fullyExpanded ? "tick" : "chevron"
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -243,89 +252,16 @@ ListItem.Empty {
                         }
 
                         states: [ State {
-                                name: "hide"
-                                when: listContainer.height > listContainer.itemHeight
+                                name: "chevron"
                                 PropertyChanges {
-                                    target: chevronImage
-                                    opacity: 0.0
+                                    target: image
+                                    source: listContainer.chevron
                                 }
                             }, State {
-                                name: "show"
-                                when: listContainer.height === listContainer.itemHeight
+                                name: "tick"
                                 PropertyChanges {
-                                    target: chevronImage
-                                    opacity: 1.0
-                                }
-                            }
-                        ]
-
-                        transitions: [
-                            Transition {
-                                from: "show"
-                                to: "hide"
-                                UbuntuNumberAnimation {
-                                        properties: "opacity"
-                                        duration: Ubuntu.UbuntuAnimation.FastDuration
-                                }
-                            }
-                        ]
-
-                        ShaderEffect {
-                            property color colour: listContainer.themeColour
-                            property var source: parent
-
-                            width: source.width
-                            height: source.height
-                            visible: source.status === Image.Ready
-
-                            fragmentShader: fragmentShader
-                        }
-                    }
-
-                    Image {
-                        id: tickImage
-
-                        width: units.gu(2)
-                        height: units.gu(2)
-                        visible: option.selected ? true : false
-                        source: listContainer.tick
-                        anchors {
-                            right: parent.right
-                            rightMargin: units.gu(2)
-                            verticalCenter: parent.verticalCenter
-                        }
-
-                        Behavior on opacity {
-                            UbuntuNumberAnimation {
-                                properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
-                            }
-                        }
-
-                        states: [ State {
-                                name: "show"
-                                when: listContainer.height > listContainer.itemHeight
-                                PropertyChanges {
-                                    target: tickImage
-                                    opacity: 1.0
-                                }
-                            }, State {
-                                name: "hide"
-                                when: listContainer.height === listContainer.itemHeight
-                                PropertyChanges {
-                                    target: tickImage
-                                    opacity: 0.0
-                                }
-                            }
-                        ]
-
-                        transitions: [
-                            Transition {
-                                from: "hide"
-                                to: "show"
-                                UbuntuNumberAnimation {
-                                        properties: "opacity"
-                                        duration: Ubuntu.UbuntuAnimation.FastDuration
+                                    target: image
+                                    source: listContainer.tick
                                 }
                             }
                         ]
