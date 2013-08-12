@@ -232,12 +232,13 @@ ListItem.Empty {
                     ]
 
                     Image {
-                        id: image
+                        id: chevronImage
 
                         width: units.gu(2)
                         height: units.gu(2)
                         visible: option.selected ? true : false
-                        state: list.fullyExpanded ? "tick" : "chevron"
+                        source: listContainer.chevron
+                        opacity: list.fullyExpanded ? 0 : 1
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -251,20 +252,38 @@ ListItem.Empty {
                             }
                         }
 
-                        states: [ State {
-                                name: "chevron"
-                                PropertyChanges {
-                                    target: image
-                                    source: listContainer.chevron
-                                }
-                            }, State {
-                                name: "tick"
-                                PropertyChanges {
-                                    target: image
-                                    source: listContainer.tick
-                                }
+                        ShaderEffect {
+                            property color colour: listContainer.themeColour
+                            property var source: parent
+
+                            width: source.width
+                            height: source.height
+                            visible: source.status === Image.Ready
+
+                            fragmentShader: fragmentShader
+                        }
+                    }
+
+                    Image {
+                        id: tickImage
+
+                        width: units.gu(2)
+                        height: units.gu(2)
+                        visible: option.selected ? true : false
+                        source: listContainer.tick
+                        opacity: list.fullyExpanded ? 1 : 0
+                        anchors {
+                            right: parent.right
+                            rightMargin: units.gu(2)
+                            verticalCenter: parent.verticalCenter
+                        }
+
+                        Behavior on opacity {
+                            UbuntuNumberAnimation {
+                                properties: "opacity"
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
-                        ]
+                        }
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
