@@ -140,10 +140,6 @@ ListItem.Empty {
 
             onStateChanged: scroll(list.contentHeight, state)
 
-            UbuntuNumberAnimation {
-                id: opacity
-            }
-
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -163,9 +159,9 @@ ListItem.Empty {
 
             transitions: [ Transition {
                     UbuntuNumberAnimation {
-                        id: heightBehaviour
-                        properties: "height"
-                        duration: Ubuntu.UbuntuAnimation.BriskDuration
+                            id: heightBehaviour
+                            properties: "height"
+                            duration: Ubuntu.UbuntuAnimation.BriskDuration
                         }
                     }
                 ]
