@@ -174,7 +174,6 @@ ListItem.Empty {
                 currentIndex: 0
                 model: optionSelector.values
                 anchors.fill: parent
-                property bool fullyExpanded: false
 
                 delegate:
                 ListItem.Standard {
@@ -215,19 +214,76 @@ ListItem.Empty {
                         }
                     ]
 
-                    transitions: [
-                        Transition {
-                            SequentialAnimation {
-                                UbuntuNumberAnimation {
-                                    properties: "opacity"
-                                    duration: Ubuntu.UbuntuAnimation.SleepyDuration
-                                }
-                                PropertyAction {
-                                    target: list
-                                    property: "fullyExpanded"
-                                    value: state == "expanded" ? true : false
+                    resources: [
+                        Connections {
+                            target: listContainer
+                            onIsExpandedChanged: {
+
+                                if (listContainer.isExpanded === true) {
+                                    if (!option.selected) {
+                                        optionExpansion.start();
+                                    } else {
+                                        imageExpansion.start();
+                                    }
+                                } else {
+                                    if (!option.selected) {
+                                        optionCollapse.start();
+                                    } else {
+                                        imageCollapse.start();
+                                    }
                                 }
                             }
+                        }, SequentialAnimation {
+                            id: imageExpansion
+
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
+                            PropertyAnimation {
+                                target: chevronImage
+                                properties: "opacity"
+                                from : 1.0
+                                to: 0.0
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            }
+                            PropertyAnimation {
+                                target: tickImage
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            }
+                        }, PropertyAnimation {
+                            id: optionExpansion
+
+                            target: option
+                            properties: "opacity"
+                            from : 0.0
+                            to: 1.0
+                            duration: Ubuntu.UbuntuAnimation.SlowDuration
+                        }, SequentialAnimation {
+                            id: imageCollapse
+
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
+                            PropertyAnimation {
+                                target: tickImage
+                                properties: "opacity"
+                                from : 1.0
+                                to: 0.0
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            }
+                            PropertyAnimation {
+                                target: chevronImage
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            }
+                        }, PropertyAnimation {
+                                id: optionCollapse
+                                target: option
+                                properties: "opacity"
+                                from : 1.0
+                                to: 0.0
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
                         }
                     ]
 
@@ -237,18 +293,12 @@ ListItem.Empty {
                         width: units.gu(2)
                         height: units.gu(2)
                         source: listContainer.chevron
-                        opacity: !listContainer.isExpanded && option.selected && tickImage.opacity === 0.0 ? 1 : 0
+                        opacity: optionSelector.expanded ? 0.0 : 1.0
+                        visible: option.selected
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
                             verticalCenter: parent.verticalCenter
-                        }
-
-                        Behavior on opacity {
-                            UbuntuNumberAnimation {
-                                properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
-                            }
                         }
 
                         ShaderEffect {
@@ -269,7 +319,7 @@ ListItem.Empty {
                         width: units.gu(2)
                         height: units.gu(2)
                         source: listContainer.tick
-                        opacity: list.fullyExpanded && option.selected && chevronImage.opacity === 0.0 ? 1 : 0
+                        opacity: optionSelector.expanded ? 1.0 : 0.0
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -279,7 +329,7 @@ ListItem.Empty {
                         Behavior on opacity {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
 
