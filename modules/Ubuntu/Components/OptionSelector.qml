@@ -236,9 +236,8 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        visible: option.selected ? true : false
                         source: listContainer.chevron
-                        opacity: list.fullyExpanded ? 0 : 1
+                        opacity: !listContainer.isExpanded && option.selected && tickImage.opacity === 0.0 ? 1 : 0
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -248,7 +247,7 @@ ListItem.Empty {
                         Behavior on opacity {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
                             }
                         }
 
@@ -269,9 +268,8 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        visible: option.selected ? true : false
                         source: listContainer.tick
-                        opacity: list.fullyExpanded ? 1 : 0
+                        opacity: list.fullyExpanded && option.selected && chevronImage.opacity === 0.0 ? 1 : 0
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -281,7 +279,7 @@ ListItem.Empty {
                         Behavior on opacity {
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
                             }
                         }
 
