@@ -178,6 +178,7 @@ ListItem.Empty {
                 currentIndex: 0
                 model: optionSelector.values
                 anchors.fill: parent
+                property bool fullyExpanded: false
 
                 delegate:
                 ListItem.Standard {
@@ -218,10 +219,35 @@ ListItem.Empty {
                         }
                     ]
 
-                    transitions: [ Transition {
-                            UbuntuNumberAnimation {
-                                properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                    transitions: [
+                        Transition {
+                            from: "expanded"
+                            to: "collapsed"
+                            SequentialAnimation {
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                                }
+                                PropertyAction {
+                                    target: list
+                                    property: "fullyExpanded"
+                                    value: false
+                                }
+                            }
+                        },
+                        Transition {
+                            from: "collapsed"
+                            to: "expanded"
+                            SequentialAnimation {
+                                UbuntuNumberAnimation {
+                                    properties: "opacity"
+                                    duration: Ubuntu.UbuntuAnimation.SleepyDuration
+                                }
+                                PropertyAction {
+                                    target: list
+                                    property: "fullyExpanded"
+                                    value: true
+                                }
                             }
                         }
                     ]
@@ -231,8 +257,9 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        visible: option.selected ? true : false
                         source: listContainer.chevron
+                        visible: option.selected ? true : false
+                        opacity: list.fullyExpanded ? 0 : 1
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -245,34 +272,6 @@ ListItem.Empty {
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
-
-                        states: [ State {
-                                name: "hide"
-                                when: listContainer.height > listContainer.itemHeight
-                                PropertyChanges {
-                                    target: chevronImage
-                                    opacity: 0.0
-                                }
-                            }, State {
-                                name: "show"
-                                when: listContainer.height === listContainer.itemHeight
-                                PropertyChanges {
-                                    target: chevronImage
-                                    opacity: 1.0
-                                }
-                            }
-                        ]
-
-                        transitions: [
-                            Transition {
-                                from: "show"
-                                to: "hide"
-                                UbuntuNumberAnimation {
-                                        properties: "opacity"
-                                        duration: Ubuntu.UbuntuAnimation.FastDuration
-                                }
-                            }
-                        ]
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
@@ -291,8 +290,9 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        visible: option.selected ? true : false
                         source: listContainer.tick
+                        opacity: list.fullyExpanded ? 1 : 0
+                        visible: option.selected ? true : false
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -305,34 +305,6 @@ ListItem.Empty {
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
-
-                        states: [ State {
-                                name: "show"
-                                when: listContainer.height > listContainer.itemHeight
-                                PropertyChanges {
-                                    target: tickImage
-                                    opacity: 1.0
-                                }
-                            }, State {
-                                name: "hide"
-                                when: listContainer.height === listContainer.itemHeight
-                                PropertyChanges {
-                                    target: tickImage
-                                    opacity: 0.0
-                                }
-                            }
-                        ]
-
-                        transitions: [
-                            Transition {
-                                from: "hide"
-                                to: "show"
-                                UbuntuNumberAnimation {
-                                        properties: "opacity"
-                                        duration: Ubuntu.UbuntuAnimation.FastDuration
-                                }
-                            }
-                        ]
 
                         ShaderEffect {
                             property color colour: listContainer.themeColour
