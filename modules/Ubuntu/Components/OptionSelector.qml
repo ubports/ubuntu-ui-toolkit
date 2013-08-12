@@ -221,8 +221,6 @@ ListItem.Empty {
 
                     transitions: [
                         Transition {
-                            from: "expanded"
-                            to: "collapsed"
                             SequentialAnimation {
                                 UbuntuNumberAnimation {
                                     properties: "opacity"
@@ -231,22 +229,7 @@ ListItem.Empty {
                                 PropertyAction {
                                     target: list
                                     property: "fullyExpanded"
-                                    value: false
-                                }
-                            }
-                        },
-                        Transition {
-                            from: "collapsed"
-                            to: "expanded"
-                            SequentialAnimation {
-                                UbuntuNumberAnimation {
-                                    properties: "opacity"
-                                    duration: Ubuntu.UbuntuAnimation.SleepyDuration
-                                }
-                                PropertyAction {
-                                    target: list
-                                    property: "fullyExpanded"
-                                    value: true
+                                    value: state == "expanded" ? true : false
                                 }
                             }
                         }
@@ -257,8 +240,8 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        source: listContainer.chevron
                         visible: option.selected ? true : false
+                        source: listContainer.chevron
                         opacity: list.fullyExpanded ? 0 : 1
                         anchors {
                             right: parent.right
@@ -290,9 +273,9 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
+                        visible: option.selected ? true : false
                         source: listContainer.tick
                         opacity: list.fullyExpanded ? 1 : 0
-                        visible: option.selected ? true : false
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
