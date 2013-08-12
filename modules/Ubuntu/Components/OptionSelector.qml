@@ -218,14 +218,19 @@ ListItem.Empty {
                         Connections {
                             target: listContainer
                             onIsExpandedChanged: {
-
                                 if (listContainer.isExpanded === true) {
+                                    optionCollapse.stop();
+                                    imageCollapse.stop();
+
                                     if (!option.selected) {
                                         optionExpansion.start();
                                     } else {
                                         imageExpansion.start();
                                     }
                                 } else {
+                                    optionExpansion.stop();
+                                    imageExpansion.stop();
+
                                     if (!option.selected) {
                                         optionCollapse.start();
                                     } else {
@@ -238,14 +243,19 @@ ListItem.Empty {
 
                             PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
                             PropertyAnimation {
-                                target: chevronImage
+                                target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
                                 duration: Ubuntu.UbuntuAnimation.SlowDuration
                             }
+                            PropertyAction {
+                                target: image
+                                property: "source"
+                                value: listContainer.tick
+                            }
                             PropertyAnimation {
-                                target: tickImage
+                                target: image
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
@@ -264,14 +274,19 @@ ListItem.Empty {
 
                             PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
                             PropertyAnimation {
-                                target: tickImage
+                                target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
                                 duration: Ubuntu.UbuntuAnimation.SlowDuration
                             }
+                            PropertyAction {
+                                target: image
+                                property: "source"
+                                value: listContainer.chevron
+                            }
                             PropertyAnimation {
-                                target: chevronImage
+                                target: image
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
@@ -288,38 +303,12 @@ ListItem.Empty {
                     ]
 
                     Image {
-                        id: chevronImage
+                        id: image
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        source: listContainer.chevron
-                        opacity: optionSelector.expanded ? 0.0 : 1.0
-                        visible: option.selected
-                        anchors {
-                            right: parent.right
-                            rightMargin: units.gu(2)
-                            verticalCenter: parent.verticalCenter
-                        }
-
-                        ShaderEffect {
-                            property color colour: listContainer.themeColour
-                            property var source: parent
-
-                            width: source.width
-                            height: source.height
-                            visible: source.status === Image.Ready
-
-                            fragmentShader: fragmentShader
-                        }
-                    }
-
-                    Image {
-                        id: tickImage
-
-                        width: units.gu(2)
-                        height: units.gu(2)
-                        source: listContainer.tick
-                        opacity: optionSelector.expanded ? 1.0 : 0.0
+                        source: optionSelector.expanded ? listContainer.tick : listContainer.chevron
+                        opacity: option.selected ? 1.0 : 0.0
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
