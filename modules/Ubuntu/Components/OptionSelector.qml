@@ -218,12 +218,12 @@ ListItem.Empty {
                         Connections {
                             target: listContainer
                             onIsExpandedChanged: {
-                                if (listContainer.isExpanded === true) {
-                                    optionExpansion.stop();
-                                    imageExpansion.stop();
-                                    optionCollapse.stop();
-                                    imageCollapse.stop();
+                                optionExpansion.stop();
+                                imageExpansion.stop();
+                                optionCollapse.stop();
+                                imageCollapse.stop();
 
+                                if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
                                         optionExpansion.start();
                                     } else {
