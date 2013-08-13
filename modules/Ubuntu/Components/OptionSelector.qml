@@ -279,9 +279,9 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SnapDuration }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration - Ubuntu.UbuntuAnimation.FastDuration }
                             PropertyAction {
                                 target: image
                                 property: "source"
@@ -305,13 +305,13 @@ ListItem.Empty {
                         }, SequentialAnimation {
                             id: imageCollapse
 
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.FastDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                             PropertyAction {
                                 target: image
