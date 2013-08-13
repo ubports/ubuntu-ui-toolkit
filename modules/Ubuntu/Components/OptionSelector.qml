@@ -114,6 +114,7 @@ ListItem.Empty {
             objectName: "listContainer"
 
             property bool isExpanded: expanded
+            property bool isFullyExpanded: expanded
             property int itemHeight: units.gu(5)
             property url chevron: __styleInstance.chevron
             property url tick: __styleInstance.tick
@@ -158,13 +159,22 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                    UbuntuNumberAnimation {
-                            id: heightBehaviour
+                    SequentialAnimation {
+                        id: heightTransition
+
+                        UbuntuNumberAnimation {
                             properties: "height"
                             duration: Ubuntu.UbuntuAnimation.BriskDuration
                         }
+
+                        PropertyAction {
+                            target: listContainer
+                            property: "isFullyExpanded"
+                            value: state == "expanded" ? true : false
+                        }
                     }
-                ]
+                }
+            ]
 
             ListView {
                 id: list
@@ -241,13 +251,13 @@ ListItem.Empty {
                         }, SequentialAnimation {
                             id: imageExpansion
 
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
                             }
                             PropertyAction {
                                 target: image
@@ -259,7 +269,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
                             }
                         }, PropertyAnimation {
                             id: optionExpansion
@@ -272,13 +282,13 @@ ListItem.Empty {
                         }, SequentialAnimation {
                             id: imageCollapse
 
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SlowDuration }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
                             }
                             PropertyAction {
                                 target: image
@@ -290,7 +300,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.BriskDuration
                             }
                         }, PropertyAnimation {
                                 id: optionCollapse
@@ -307,7 +317,7 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        source: optionSelector.expanded ? listContainer.tick : listContainer.chevron
+                        source: listContainer.isFullyExpanded ? listContainer.tick : listContainer.chevron
                         opacity: option.selected ? 1.0 : 0.0
                         anchors {
                             right: parent.right
