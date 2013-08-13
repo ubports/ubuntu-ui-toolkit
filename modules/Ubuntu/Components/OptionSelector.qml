@@ -159,19 +159,9 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                    SequentialAnimation {
-                        id: heightTransition
-
-                        UbuntuNumberAnimation {
-                            properties: "height"
-                            duration: Ubuntu.UbuntuAnimation.BriskDuration
-                        }
-
-                        PropertyAction {
-                            target: listContainer
-                            property: "isFullyExpanded"
-                            value: state == "expanded" ? true : false
-                        }
+                UbuntuNumberAnimation {
+                        properties: "height"
+                        duration: Ubuntu.UbuntuAnimation.BriskDuration
                     }
                 }
             ]
@@ -229,6 +219,8 @@ ListItem.Empty {
                             target: listContainer
                             onIsExpandedChanged: {
                                 if (listContainer.isExpanded === true) {
+                                    optionExpansion.stop();
+                                    imageExpansion.stop();
                                     optionCollapse.stop();
                                     imageCollapse.stop();
 
@@ -238,9 +230,6 @@ ListItem.Empty {
                                         imageExpansion.start();
                                     }
                                 } else {
-                                    optionExpansion.stop();
-                                    imageExpansion.stop();
-
                                     if (!option.selected) {
                                         optionCollapse.start();
                                     } else {
@@ -317,7 +306,7 @@ ListItem.Empty {
 
                         width: units.gu(2)
                         height: units.gu(2)
-                        source: listContainer.isFullyExpanded ? listContainer.tick : listContainer.chevron
+                        source: optionSelector.expanded ? listContainer.tick : listContainer.chevron
                         opacity: option.selected ? 1.0 : 0.0
                         anchors {
                             right: parent.right
