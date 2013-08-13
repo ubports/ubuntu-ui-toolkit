@@ -254,6 +254,8 @@ ListItem.Empty {
                                 if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
                                         optionExpansion.start();
+
+                                        //Ensure a source change. This solves a bug which happens occasionaly when source is switched correctly. Probably related to the image.source binding.
                                         image.source = listContainer.tick
                                     } else {
                                         imageExpansion.start();
@@ -261,7 +263,9 @@ ListItem.Empty {
                                 } else {
                                     if (!option.selected) {
                                         optionCollapse.start();
-                                        image.source = listContainer.tick
+
+                                        //Ensure a source change. This solves a bug which happens occasionaly when source is switched correctly. Probably related to the image.source binding.
+                                        image.source = listContainer.chevron
                                     } else {
                                         imageCollapse.start();
                                     }
