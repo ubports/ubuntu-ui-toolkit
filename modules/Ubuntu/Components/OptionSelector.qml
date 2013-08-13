@@ -226,12 +226,14 @@ ListItem.Empty {
                                 if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
                                         optionExpansion.start();
+                                        image.source = listContainer.tick
                                     } else {
                                         imageExpansion.start();
                                     }
                                 } else {
                                     if (!option.selected) {
                                         optionCollapse.start();
+                                        image.source = listContainer.tick
                                     } else {
                                         imageCollapse.start();
                                     }
@@ -246,7 +248,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                             PropertyAction {
                                 target: image
@@ -258,7 +260,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }, PropertyAnimation {
                             id: optionExpansion
@@ -277,7 +279,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                             PropertyAction {
                                 target: image
@@ -289,7 +291,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.BriskDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }, PropertyAnimation {
                                 id: optionCollapse
