@@ -20,11 +20,11 @@
 #define UCALARM_P_H
 
 #include "ucalarm.h"
-#include "ucalarms_p.h"
+#include "ucalarmmanager_p.h"
 #include <QtCore/QDateTime>
 #include <QtQml/QQmlListProperty>
 
-class UCAlarms;
+class UCAlarmManager;
 class UCAlarmPrivate
 {
     Q_DECLARE_PUBLIC(UCAlarm)
@@ -34,6 +34,8 @@ public:
     static UCAlarmPrivate *get(UCAlarm *alarm) {
         return alarm->d_func();
     }
+
+    void setDefaults();
 
     UCAlarm* q_ptr;
     RawAlarm rawData;

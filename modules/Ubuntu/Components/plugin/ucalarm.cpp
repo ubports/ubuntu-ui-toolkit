@@ -18,11 +18,16 @@
 
 #include "ucalarm.h"
 #include "ucalarm_p.h"
-#include "ucalarms_p.h"
+#include "ucalarmmanager_p.h"
 #include "i18n.h"
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
+{
+    setDefaults();
+}
+
+void UCAlarmPrivate::setDefaults()
 {
     rawData.date = QDateTime::currentDateTime();
     rawData.message = UbuntuI18n::instance().tr("Alarm");
@@ -60,7 +65,14 @@ UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
     if (!message.isEmpty()) {
         d_ptr->rawData.message = message;
     }
-    d_ptr->rawData.days = UCAlarmsPrivate::dayOfWeek(d_ptr->rawData.date);
+    d_ptr->rawData.days = UCAlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
+}
+
+UCAlarm::UCAlarm(const UCAlarm &other)
+    : QObject(other.parent())
+    , d_ptr(new UCAlarmPrivate(this))
+{
+    d_ptr->rawData = other.d_func()->rawData;
 }
 
 UCAlarm::UCAlarm(const QDateTime &dt, AlarmType type, DaysOfWeek days, const QString &message, QObject *parent)
@@ -74,7 +86,7 @@ UCAlarm::UCAlarm(const QDateTime &dt, AlarmType type, DaysOfWeek days, const QSt
         d_ptr->rawData.message = message;
     }
     if (d_ptr->rawData.days == AutoDetect) {
-        d_ptr->rawData.days = UCAlarmsPrivate::dayOfWeek(d_ptr->rawData.date);
+        d_ptr->rawData.days = UCAlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
     }
 }
 
@@ -209,4 +221,16 @@ void UCAlarm::setTone(const QUrl &tone)
     d->rawData.tone = tone;
     d->rawData.changes |= RawAlarm::Tone;
     Q_EMIT toneChanged();
+}
+
+/*!
+ * \qmlmethod Alarm::reset()
+ * The function resets the alarm obvject to its defaults. After this call the
+ * object can be used to create a new alarm event.
+ */
+void UCAlarm::reset()
+{
+    Q_D(UCAlarm);
+    d->rawData = RawAlarm();
+    d->setDefaults();
 }

@@ -19,7 +19,7 @@
 #ifndef UCALARMSERVICES_P_H
 #define UCALARMSERVICES_P_H
 
-#include "ucalarms.h"
+#include "ucalarmmanager.h"
 #include <QtCore/QUrl>
 
 #include <QDebug>
@@ -37,13 +37,15 @@ public:
     };
 
     RawAlarm()
-        : type(UCAlarm::OneTime)
+        : changes(0)
+        , type(UCAlarm::OneTime)
         , days(UCAlarm::AutoDetect)
         , enabled(true)
     {
     }
     RawAlarm(const RawAlarm &other)
-        : cookie(other.cookie)
+        : changes(0)
+        , cookie(other.cookie)
         , date(other.date)
         , message(other.message)
         , type(other.type)
@@ -98,19 +100,20 @@ public:
     bool enabled;
 };
 
-class UCAlarmsPrivate : public QObject
+class UCAlarmManagerPrivate : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PUBLIC(UCAlarms)
+    Q_DECLARE_PUBLIC(UCAlarmManager)
 public:
-    UCAlarmsPrivate(UCAlarms *qq);
-    virtual ~UCAlarmsPrivate();
+    UCAlarmManagerPrivate(UCAlarmManager *qq);
+    virtual ~UCAlarmManagerPrivate();
 
-    UCAlarms *q_ptr;
+    UCAlarmManager *q_ptr;
     QList<UCAlarm*> alarmList;
     bool completed:1;
 
-    void error(UCAlarms::Error code, const QString &msg);
+    void error(UCAlarmManager::Error code, const QString &msg);
+    void resetError();
 
     virtual QList<RawAlarm> getAlarms() = 0;
     virtual bool addAlarm(RawAlarm &alarm) = 0;
@@ -136,10 +139,10 @@ private:
     // property getter
     QQmlListProperty<UCAlarm> alarms();
 
-    UCAlarms::Error errorCode;
+    UCAlarmManager::Error errorCode;
     QString errorMessage;
 };
 
-UCAlarmsPrivate * createAlarmsAdapter(UCAlarms *alarms);
+UCAlarmManagerPrivate * createAlarmsAdapter(UCAlarmManager *alarms);
 
 #endif // UCALARMSERVICES_P_H

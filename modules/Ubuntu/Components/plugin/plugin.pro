@@ -44,8 +44,8 @@ HEADERS += plugin.h \
     ucargument.h \
     ucalarm.h \
     ucalarm_p.h \
-    ucalarms.h \
-    ucalarms_p.h
+    ucalarmmanager_p.h \
+    ucalarmmanager.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -67,7 +67,7 @@ SOURCES += plugin.cpp \
     ucarguments.cpp \
     ucargument.cpp \
     ucalarm.cpp \
-    ucalarms.cpp
+    ucalarmmanager.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

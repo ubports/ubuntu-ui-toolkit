@@ -16,20 +16,21 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARMS_H
-#define UCALARMS_H
+#ifndef UCALARMMANAGER_H
+#define UCALARMMANAGER_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlListProperty>
 
 #include "ucalarm.h"
 
-class UCAlarmsPrivate;
-class UCAlarms : public QObject
+class UCAlarmManagerPrivate;
+class UCAlarmManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Error error READ error NOTIFY errorChanged)
-    Q_PRIVATE_PROPERTY(UCAlarms::d_func(), QQmlListProperty<UCAlarm> alarms READ alarms NOTIFY alarmsChanged)
+    Q_PROPERTY(QString erroMessage READ errorMessage NOTIFY errorChanged)
+    Q_PRIVATE_PROPERTY(UCAlarmManager::d_func(), QQmlListProperty<UCAlarm> alarms READ alarms NOTIFY alarmsChanged)
 public:
     enum Error {
         NoError = 0,
@@ -41,8 +42,8 @@ public:
         AdaptationError = -100
     };
 
-    explicit UCAlarms(QObject *parent = 0);
-    ~UCAlarms();
+    explicit UCAlarmManager(QObject *parent = 0);
+    ~UCAlarmManager();
 
     QList<UCAlarm*> alarms();
     Error error() const;
@@ -52,8 +53,8 @@ public:
     Q_INVOKABLE bool set(UCAlarm *alarm);
     Q_INVOKABLE bool cancel(UCAlarm *alarm);
 
-    Q_INVOKABLE bool set(const QDateTime &date, const QString &message = QString());
-    Q_INVOKABLE bool setRepeating(const QDateTime &date, UCAlarm::DaysOfWeek days, const QString &message = QString());
+    Q_INVOKABLE bool setOneTime(const QDateTime &date, const QString &message = QString());
+    Q_INVOKABLE bool setRepeating(const QDateTime &date, int days, const QString &message);
 
 
 Q_SIGNALS:
@@ -61,9 +62,9 @@ Q_SIGNALS:
     void errorChanged();
     
 private:
-    Q_DISABLE_COPY(UCAlarms)
-    Q_DECLARE_PRIVATE(UCAlarms)
-    QScopedPointer<UCAlarmsPrivate> d_ptr;
+    Q_DISABLE_COPY(UCAlarmManager)
+    Q_DECLARE_PRIVATE(UCAlarmManager)
+    QScopedPointer<UCAlarmManagerPrivate> d_ptr;
 };
 
-#endif // UCALARMS_H
+#endif // UCALARMMANAGER_H

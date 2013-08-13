@@ -35,7 +35,7 @@ class UCAlarm : public QObject
     Q_PROPERTY(DaysOfWeek daysOfWeek READ daysOfWeek WRITE setDaysOfWeek NOTIFY daysOfWeekChanged)
     Q_PROPERTY(QUrl tone READ tone WRITE setTone NOTIFY toneChanged)
 
-    Q_ENUMS(AlarmType)
+    Q_ENUMS(AlarmType DayOfWeek)
     Q_FLAGS(DaysOfWeek)
 public: // enums
     enum AlarmType {
@@ -58,6 +58,7 @@ public: // enums
 
 public:
     explicit UCAlarm(QObject *parent = 0);
+    UCAlarm(const UCAlarm &other);
     UCAlarm(const QDateTime &dt, const QString &message = QString(), QObject *parent = 0);
     UCAlarm(const QDateTime &dt, AlarmType type, DaysOfWeek days = AutoDetect, const QString &message = QString(), QObject *parent = 0);
     ~UCAlarm();
@@ -85,6 +86,9 @@ Q_SIGNALS:
     void typeChanged();
     void daysOfWeekChanged();
     void toneChanged();
+
+public Q_SLOTS:
+    void reset();
 
 private:
     Q_DECLARE_PRIVATE(UCAlarm)

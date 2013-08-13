@@ -18,8 +18,8 @@
 
 #include "ucalarm.h"
 #include "ucalarm_p.h"
-#include "ucalarms.h"
-#include "ucalarms_p.h"
+#include "ucalarmmanager.h"
+#include "ucalarmmanager_p.h"
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
@@ -37,9 +37,9 @@ QTORGANIZER_USE_NAMESPACE
  * however in case we decide to go with some other approach, this layer is welcome.
  */
 
-class AlarmsAdapter : public UCAlarmsPrivate {
+class AlarmsAdapter : public UCAlarmManagerPrivate {
 public:
-    AlarmsAdapter(UCAlarms *qq);
+    AlarmsAdapter(UCAlarmManager *qq);
     virtual ~AlarmsAdapter();
 
     QOrganizerManager manager;
@@ -63,13 +63,13 @@ private:
  * Adaptation layer for Alarms. QOrganizer implementation may not require this,
  * however in case we decide to go with some other approach, this layer is welcome.
  */
-UCAlarmsPrivate * createAlarmsAdapter(UCAlarms *alarms)
+UCAlarmManagerPrivate * createAlarmsAdapter(UCAlarmManager *alarms)
 {
     return new AlarmsAdapter(alarms);
 }
 
-AlarmsAdapter::AlarmsAdapter(UCAlarms *qq)
-    : UCAlarmsPrivate(qq)
+AlarmsAdapter::AlarmsAdapter(UCAlarmManager *qq)
+    : UCAlarmManagerPrivate(qq)
     , manager("memory")
     , cookieCount(0)
 {
@@ -191,7 +191,7 @@ bool AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, RawAlarm &ala
 {
     if ((item.type() != QOrganizerItemType::TypeTodo) &&
         (item.type() != QOrganizerItemType::TypeTodoOccurrence)){
-        error(UCAlarms::AdaptationError, QString("Error fetching event. Event type is %1, but expected %2")
+        error(UCAlarmManager::AdaptationError, QString("Error fetching event. Event type is %1, but expected %2")
               .arg(item.type())
               .arg(QOrganizerItemType::TypeEvent));
         return false;
@@ -206,7 +206,7 @@ bool AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, RawAlarm &ala
         event = static_cast<QOrganizerTodo>(item);
     }
     if (event.isEmpty()) {
-        error(UCAlarms::AdaptationError, "Fetched alarm event reported to be empty.");
+        error(UCAlarmManager::AdaptationError, "Fetched alarm event reported to be empty.");
         return false;
     }
 
@@ -233,7 +233,7 @@ bool AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, RawAlarm &ala
         break;
     }
     default:
-        error(UCAlarms::AdaptationError, QString("Unhandled recurence: %1. Defaulting to OneTime").arg(rule.frequency()));
+        error(UCAlarmManager::AdaptationError, QString("Unhandled recurence: %1. Defaulting to OneTime").arg(rule.frequency()));
         alarm.type = UCAlarm::OneTime;
         alarm.days = dayOfWeek(alarm.date);
         break;
@@ -292,7 +292,7 @@ bool AlarmsAdapter::addAlarm(RawAlarm &alarm)
         refreshAlarms();
         return true;
     }
-    error(UCAlarms::AdaptationError, QString("Error saving the alarm, code %1").arg(manager.error()));
+    error(UCAlarmManager::AdaptationError, QString("Error saving the alarm, code %1").arg(manager.error()));
     return false;
 }
 
@@ -301,7 +301,7 @@ bool AlarmsAdapter::updateAlarm(RawAlarm &alarm)
     QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
     QOrganizerTodo event = manager.item(itemId);
     if (event.isEmpty()) {
-        error(UCAlarms::AdaptationError, "Empty item given to update.");
+        error(UCAlarmManager::AdaptationError, "Empty item given to update.");
         return false;
     }
 
@@ -311,14 +311,14 @@ bool AlarmsAdapter::updateAlarm(RawAlarm &alarm)
         refreshAlarms();
         return true;
     }
-    error(UCAlarms::AdaptationError, QString("Error updating the alarm, code %1").arg(manager.error()));
+    error(UCAlarmManager::AdaptationError, QString("Error updating the alarm, code %1").arg(manager.error()));
     return false;
 }
 
 bool AlarmsAdapter::removeAlarm(RawAlarm &alarm)
 {
     if (!alarm.cookie.isValid()) {
-        error(UCAlarms::InvalidEvent, "Removing unregistered alarm");
+        error(UCAlarmManager::InvalidEvent, "Removing unregistered alarm");
         return false;
     }
 
@@ -328,6 +328,6 @@ bool AlarmsAdapter::removeAlarm(RawAlarm &alarm)
         refreshAlarms();
         return true;
     }
-    error(UCAlarms::AdaptationError, QString("Error on removing alarm, code %1").arg(manager.error()));
+    error(UCAlarmManager::AdaptationError, QString("Error on removing alarm, code %1").arg(manager.error()));
     return false;
 }

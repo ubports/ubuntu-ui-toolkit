@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarms.h"
-#include "ucalarms_p.h"
+#include "ucalarmmanager.h"
+#include "ucalarmmanager_p.h"
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "i18n.h"
@@ -26,19 +26,19 @@
 
 #define IS_DAY_SET(bit, num)    (((num) & (1 << (bit - 1))) == (1 << (bit - 1)))
 
-UCAlarmsPrivate::UCAlarmsPrivate(UCAlarms *qq)
+UCAlarmManagerPrivate::UCAlarmManagerPrivate(UCAlarmManager *qq)
     : QObject(qq)
     , q_ptr(qq)
     , completed(false)
 {
 }
 
-UCAlarmsPrivate::~UCAlarmsPrivate()
+UCAlarmManagerPrivate::~UCAlarmManagerPrivate()
 {
     clear();
 }
 
-void UCAlarmsPrivate::clear()
+void UCAlarmManagerPrivate::clear()
 {
     if (alarmList.count()) {
         Q_FOREACH(UCAlarm *alarm, alarmList) {
@@ -49,19 +49,25 @@ void UCAlarmsPrivate::clear()
 
 }
 
-void UCAlarmsPrivate::error(UCAlarms::Error code, const QString &msg)
+void UCAlarmManagerPrivate::error(UCAlarmManager::Error code, const QString &msg)
 {
     errorMessage = msg;
     errorCode = code;
     qWarning() << msg;
 }
 
-UCAlarm::DayOfWeek UCAlarmsPrivate::dayOfWeek(const QDateTime &dt)
+void UCAlarmManagerPrivate::resetError()
+{
+    errorCode = UCAlarmManager::NoError;
+    errorMessage.clear();
+}
+
+UCAlarm::DayOfWeek UCAlarmManagerPrivate::dayOfWeek(const QDateTime &dt)
 {
     return (UCAlarm::DayOfWeek)(1 << (dt.date().dayOfWeek() - 1));
 }
 
-int UCAlarmsPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
+int UCAlarmManagerPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
 {
     for (int d = Qt::Monday; d <= Qt::Sunday; d++) {
         if ((1 << (d - 1)) & days) {
@@ -71,7 +77,7 @@ int UCAlarmsPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
     return 0;
 }
 
-int UCAlarmsPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
+int UCAlarmManagerPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
 {
     if (fromDay <= 0) {
         fromDay = Qt::Monday;
@@ -85,7 +91,7 @@ int UCAlarmsPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
 }
 
 // checks whether the given num has more than one bit set
-bool UCAlarmsPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
+bool UCAlarmManagerPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
 {
     unsigned bits;
     int num = static_cast<int>(days);
@@ -97,10 +103,10 @@ bool UCAlarmsPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
 
 
 
-bool UCAlarmsPrivate::checkAlarm(RawAlarm &alarm)
+bool UCAlarmManagerPrivate::checkAlarm(RawAlarm &alarm)
 {
     if (!alarm.date.isValid()) {
-        error(UCAlarms::InvalidDate, "Invalid start date given");
+        error(UCAlarmManager::InvalidDate, "Invalid start date given");
         return false;
     }
 
@@ -113,10 +119,10 @@ bool UCAlarmsPrivate::checkAlarm(RawAlarm &alarm)
     return true;
 }
 
-bool UCAlarmsPrivate::checkDow(RawAlarm &alarm)
+bool UCAlarmManagerPrivate::checkDow(RawAlarm &alarm)
 {
     if (!alarm.days) {
-        error(UCAlarms::NoDaysOfWeek, "Days of week wasn't specified for the recurring alarm.");
+        error(UCAlarmManager::NoDaysOfWeek, "Days of week wasn't specified for the recurring alarm.");
         return false;
     } else if (alarm.days == UCAlarm::AutoDetect) {
         alarm.days = dayOfWeek(alarm.date);
@@ -132,11 +138,11 @@ bool UCAlarmsPrivate::checkDow(RawAlarm &alarm)
     return true;
 }
 
-bool UCAlarmsPrivate::checkOneTime(RawAlarm &alarm)
+bool UCAlarmManagerPrivate::checkOneTime(RawAlarm &alarm)
 {
     // check days, days can be set for only one day in this case
     if (multipleDaysSet(alarm.days)) {
-        error(UCAlarms::OneTimeOnMoreDays, "Multiple alarm days given for a one time alarm");
+        error(UCAlarmManager::OneTimeOnMoreDays, "Multiple alarm days given for a one time alarm");
         return false;
     }
 
@@ -147,13 +153,13 @@ bool UCAlarmsPrivate::checkOneTime(RawAlarm &alarm)
 
     // start date should be later then the current date/time
     if (alarm.date <= QDateTime::currentDateTime()) {
-        error(UCAlarms::EarlyDate, "Start date is earlier than the current time.");
+        error(UCAlarmManager::EarlyDate, "Start date is earlier than the current time.");
         return false;
     }
     return true;
 }
 
-bool UCAlarmsPrivate::checkRepeatingWeekly(RawAlarm &alarm)
+bool UCAlarmManagerPrivate::checkRepeatingWeekly(RawAlarm &alarm)
 {
     // start date is adjusted depending on the days value;
     // start date can be set to be the current time, as scheduling will move
@@ -184,9 +190,9 @@ bool UCAlarmsPrivate::checkRepeatingWeekly(RawAlarm &alarm)
 /*
  * Slot refreshing the clock alarms.
  */
-void UCAlarmsPrivate::refreshAlarms()
+void UCAlarmManagerPrivate::refreshAlarms()
 {
-    Q_Q(UCAlarms);
+    Q_Q(UCAlarmManager);
 
     // clean previous alarms
     clear();
@@ -204,20 +210,20 @@ void UCAlarmsPrivate::refreshAlarms()
     }
 }
 
-QQmlListProperty<UCAlarm> UCAlarmsPrivate::alarms()
+QQmlListProperty<UCAlarm> UCAlarmManagerPrivate::alarms()
 {
-    return QQmlListProperty<UCAlarm>(q_func(), alarmList);;
+    return QQmlListProperty<UCAlarm>(q_func(), alarmList);
 }
 
 /*!
  * \qmltype Alarms
- * \instantiates UCAlarms
+ * \instantiates UCAlarmManager
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu-services
  * \brief Alarms provides alarm scheduling functions.
  */
 
-UCAlarms::UCAlarms(QObject *parent)
+UCAlarmManager::UCAlarmManager(QObject *parent)
     : QObject(parent)
     , d_ptr(createAlarmsAdapter(this))
 {
@@ -225,24 +231,24 @@ UCAlarms::UCAlarms(QObject *parent)
     d_ptr->completed = true;
 }
 
-UCAlarms::~UCAlarms()
+UCAlarmManager::~UCAlarmManager()
 {
 }
 
-QList<UCAlarm*> UCAlarms::alarms()
+QList<UCAlarm*> UCAlarmManager::alarms()
 {
-    Q_D(UCAlarms);
+    Q_D(UCAlarmManager);
     return d->alarmList;
 }
 
-UCAlarms::Error UCAlarms::error() const
+UCAlarmManager::Error UCAlarmManager::error() const
 {
-    Q_D(const UCAlarms);
+    Q_D(const UCAlarmManager);
     return d->errorCode;
 }
-QString UCAlarms::errorMessage() const
+QString UCAlarmManager::errorMessage() const
 {
-    Q_D(const UCAlarms);
+    Q_D(const UCAlarmManager);
     return d->errorMessage;
 }
 
@@ -251,13 +257,14 @@ QString UCAlarms::errorMessage() const
  * \qmlmethod bool Alarms::set(Alarm alarm)
  * Updates or adds an alarm to the alarm collection.
  */
-bool UCAlarms::set(UCAlarm *alarm)
+bool UCAlarmManager::set(UCAlarm *alarm)
 {
     if (!alarm) {
         return false;
     }
 
-    Q_D(UCAlarms);
+    Q_D(UCAlarmManager);
+    d->resetError();
     UCAlarmPrivate *palarm = UCAlarmPrivate::get(alarm);
 
     if (!d->checkAlarm(palarm->rawData)) {
@@ -272,10 +279,12 @@ bool UCAlarms::set(UCAlarm *alarm)
 }
 
 /*!
- * \qmlmethod bool Alarms::set(Date date, string message)
- * The function creates a single shot alarm with the given start \a date.
+ * \qmlmethod bool Alarms::setOneTime(Date date, string message)
+ * The function creates a one time alarm with the given start \a date and \a message.
+ * The alarm created will have the default tone. Returns true on success, and on error
+ * the error code will be reported in \l error and \l errorMessage properties.
  */
-bool UCAlarms::set(const QDateTime &date, const QString &message)
+bool UCAlarmManager::setOneTime(const QDateTime &date, const QString &message)
 {
     RawAlarm alarm;
     alarm.date = date;
@@ -284,7 +293,8 @@ bool UCAlarms::set(const QDateTime &date, const QString &message)
         alarm.message = UbuntuI18n::instance().tr("Alarm");
     }
 
-    Q_D(UCAlarms);
+    Q_D(UCAlarmManager);
+    d->resetError();
     if (!d->checkAlarm(alarm)) {
         return false;
     }
@@ -295,15 +305,16 @@ bool UCAlarms::set(const QDateTime &date, const QString &message)
  * The function creates a recurring alarm to be kicked on the given \a date, with the given
  * \a type and on the specified \a daysOfWeek.
  */
-bool UCAlarms::setRepeating(const QDateTime &date, UCAlarm::DaysOfWeek days, const QString &message)
+bool UCAlarmManager::setRepeating(const QDateTime &date, int days, const QString &message)
 {
-    Q_D(UCAlarms);
+    Q_D(UCAlarmManager);
+    d->resetError();
 
     RawAlarm alarm;
     alarm.date = date;
     alarm.message = message;
     alarm.type = UCAlarm::Repeating;
-    alarm.days = days;
+    alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
     if (!d->checkAlarm(alarm)) {
         return false;
@@ -314,18 +325,21 @@ bool UCAlarms::setRepeating(const QDateTime &date, UCAlarm::DaysOfWeek days, con
 /*!
  * \qmlmethod bool Alarms::cancel(Alarm alarm)
  */
-bool UCAlarms::cancel(UCAlarm *alarm)
+bool UCAlarmManager::cancel(UCAlarm *alarm)
 {
     if (!alarm) {
         return false;
     }
+    Q_D(UCAlarmManager);
+    d->resetError();
+
     UCAlarmPrivate *palarm = UCAlarmPrivate::get(alarm);
 
     if (!palarm->rawData.cookie.isValid()) {
+        d->error(UCAlarmManager::InvalidEvent, "The alarm event is not registered.");
         return false;
     }
-    Q_D(UCAlarms);
     return d->removeAlarm(palarm->rawData);
 }
 
-#include "moc_ucalarms.cpp"
+#include "moc_ucalarmmanager.cpp"
