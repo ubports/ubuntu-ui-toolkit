@@ -305,6 +305,7 @@ ListItem.Empty {
                         }, SequentialAnimation {
                             id: imageCollapse
 
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
@@ -312,7 +313,6 @@ ListItem.Empty {
                                 to: 0.0
                                 duration: Ubuntu.UbuntuAnimation.SlowDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.SnapDuration }
                             PropertyAction {
                                 target: image
                                 property: "source"
@@ -353,7 +353,7 @@ ListItem.Empty {
 
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
                             }
                         }
 
