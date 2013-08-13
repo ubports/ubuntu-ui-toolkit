@@ -415,6 +415,43 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "UCAlarm"
+    prototype: "QObject"
+    exports: ["Alarm 0.1"]
+    name: "AlarmType"
+    name: "DayOfWeek"
+    name: "DaysOfWeek"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "message"; type: "string" }
+    Property { name: "date"; type: "QDateTime" }
+    Property { name: "type"; type: "AlarmType" }
+    Property { name: "daysOfWeek"; type: "DaysOfWeek" }
+    Property { name: "tone"; type: "QUrl" }
+    Method { name: "reset" }
+    name: "UCAlarmManager"
+    prototype: "QObject"
+    exports: ["AlarmManager 0.1"]
+    Property { name: "error"; type: "Error"; isReadonly: true }
+    Property { name: "erroMessage"; type: "string"; isReadonly: true }
+    Property { name: "alarms"; type: "UCAlarm"; isList: true; isReadonly: true }
+    Method {
+    name: "set"
+    Parameter { name: "alarm"; type: "UCAlarm"; isPointer: true }
+    Method {
+    name: "cancel"
+    Parameter { name: "alarm"; type: "UCAlarm"; isPointer: true }
+    Method {
+    name: "setOneTime"
+    Parameter { name: "date"; type: "QDateTime" }
+    Parameter { name: "message"; type: "string" }
+    Method {
+    name: "setOneTime"
+    Parameter { name: "date"; type: "QDateTime" }
+    Method {
+    name: "setRepeating"
+    Parameter { name: "date"; type: "QDateTime" }
+    Parameter { name: "days"; type: "int" }
+    Parameter { name: "message"; type: "string" }
     name: "UCArgument"
     prototype: "QObject"
     exports: ["Argument 0.1"]

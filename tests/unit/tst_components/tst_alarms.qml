@@ -23,7 +23,6 @@ TestCase {
     name: "AlarmAPI"
 
     property Alarm alarm
-    property var alarms: AlarmManager.alarms
 
     SignalSpy {
         id: spy
@@ -35,15 +34,6 @@ TestCase {
         id: testAlarm
     }
 
-    function containsAlarm(alarm) {
-        for (var i = 0; AlarmManager.alarms.length; i++) {
-            if (AlarmManager.alarms[i] === alarm) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     function initTestCase() {
         spy.clear();
     }
@@ -52,9 +42,10 @@ TestCase {
         var loop = true
         while (loop) {
             loop = false;
-            for (var i = 0; testCase.alarms.length; i++) {
-                if (testCase.alarms[i].message === "test") {
-                    AlarmManager.cancel(testCase.alarms[i]);
+            for (var i = 0; AlarmManager.alarms.length; i++) {
+                var alarm = AlarmManager.alarms[i];
+                if (alarm && alarm.message === "test") {
+                    AlarmManager.cancel(alarm);
                     loop = true;
                     break;
                 }

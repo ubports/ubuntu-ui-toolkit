@@ -216,11 +216,79 @@ QQmlListProperty<UCAlarm> UCAlarmManagerPrivate::alarms()
 }
 
 /*!
- * \qmltype Alarms
+ * \qmltype AlarmManager
  * \instantiates UCAlarmManager
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu-services
- * \brief Alarms provides alarm scheduling functions.
+ * \brief AlarmManager provides alarm management functions.
+ *
+ * AlarmManager is a singleton component which provides functions to list, create,
+ * update and cancel alarms. Alarm objects are listed in \l alarms property, where
+ * each alarm object embeds an Alarm element.
+ *
+ * Alarms can be created using the \l set function, where the alarm data is presented
+ * in an Alarm element, or by using one of the helper functions - \l setOneTime or
+ * \l setRepeating. An alarm event can be cancelled using \l cancel function.
+ *
+ * The following code snippet illustrates listing of alarm events.
+ * \qml
+ * import QtQuick 2.0
+ * import Ubuntu.Components 0.1
+ * import Ubuntu.Components.ListItems 0.1 as ListItem
+ * ListView {
+ *     model: AlarmManager.alarms
+ *     delegate: ListItem.Subtitled {
+ *         text: modelData.message
+ *         subText: Qt.formatDateTime(modelData.date);
+ *     }
+ * }
+ * \endqml
+ *
+ * Errors occured during each operation are reported in \l error property, and in a
+ * clear readable text format in \l errorMessage properties.
+ *
+ * \table
+ *   \header
+ *      \li Error code
+ *      \li Value
+ *      \li Description
+ *   \row
+ *      \li NoError
+ *      \li 0
+ *      \li Successful operation completion.
+ *   \row
+ *      \li InvalidDate
+ *      \li -1
+ *      \li The date specified for the alarm was invalid.
+ *   \row
+ *      \li EarlyDate
+ *      \li -2
+ *      \li The date specified for the alarm is an earlier date than the current one.
+ *   \row
+ *      \li NoDaysOfWeek
+ *      \li -3
+ *      \li The daysOfWeek parameter of the alarm was not specified.
+ *   \row
+ *      \li OneTimeOnMoreDays
+ *      \li -4
+ *      \li The one-time alarm was set to be kicked in several days.
+ *   \row
+ *      \li InvalidEvent
+ *      \li -5
+ *      \li The alarm event is invalid.
+ *   \row
+ *      \li AdaptationError
+ *      \li -100
+ *      \li The error occurred in alarm adaptation layer.
+ * \endtable
+ *
+ */
+
+/*!
+ * \qmlproperty list<Alarm> AlarmManager::alarms
+ * The property contains the alarm events registered. The property is updated
+ * whenever a new alarm is added, updated or removed (cancelled). This property
+ * can be bound to list models in QML.
  */
 
 UCAlarmManager::UCAlarmManager(QObject *parent)
@@ -241,11 +309,20 @@ QList<UCAlarm*> UCAlarmManager::alarms()
     return d->alarmList;
 }
 
+/*!
+ * \qmlproperty Error AlarmManager::error
+ * The property holds the error code occurred during the last performed operation.
+ */
 UCAlarmManager::Error UCAlarmManager::error() const
 {
     Q_D(const UCAlarmManager);
     return d->errorCode;
 }
+/*!
+ * \qmlproperty string AlarmManager::errorMessage
+ * The property holds the error occurred iduring the last operation in human readable
+ * form. On no error the property holds an empty string.
+ */
 QString UCAlarmManager::errorMessage() const
 {
     Q_D(const UCAlarmManager);
@@ -254,8 +331,33 @@ QString UCAlarmManager::errorMessage() const
 
 
 /*!
- * \qmlmethod bool Alarms::set(Alarm alarm)
- * Updates or adds an alarm to the alarm collection.
+ * \qmlmethod bool AlarmManager::set(Alarm alarm)
+ * Updates or adds an alarm to the alarm collection. The alarm event can be one
+ * time or repeating type, and is checked agains consistency (alarm type, date
+ * and occurrence days) before it is added or updated to the alarm collection.
+ * For instance a one time alarm (Alarm.type = Alarm.OneTime) alarm cannot have daysOfWeek
+ * set for other value than Alarm.AutoDetect) and cannot have its date set to
+ * an earlier time than the current one.
+ *
+ * The function also aligns alarm fields to match the first occurence. In this
+ * way the \a alarm fields will be altered as follows:
+ * \list
+ *  \li - the alarm daysOfWeek will be set to the alarm day if the daysOfWeek is set
+ *      to Alarm.AutoDetect.
+ *  \li - if the daysOfWeek is set to a day other than the one specified in the date
+ *      field, the date will be moved ahead to match the day from the daysOfWeek.
+ * \endlist
+ *
+ *
+ * The function will fail if
+ * \list
+ *  \li - the date field is invalid
+ *  \li - for one time alarm, the date field is earlier than the current time
+ *  \li - the daysOfWeek is set to multiple days for one time alarm
+ * \endlist
+ *
+ * Returns true if the alarm was successfully saved, and on failure the \a error
+ * property holds the failure code.
  */
 bool UCAlarmManager::set(UCAlarm *alarm)
 {
@@ -279,7 +381,7 @@ bool UCAlarmManager::set(UCAlarm *alarm)
 }
 
 /*!
- * \qmlmethod bool Alarms::setOneTime(Date date, string message)
+ * \qmlmethod bool AlarmManager::setOneTime(Date date, string message)
  * The function creates a one time alarm with the given start \a date and \a message.
  * The alarm created will have the default tone. Returns true on success, and on error
  * the error code will be reported in \l error and \l errorMessage properties.
@@ -301,9 +403,9 @@ bool UCAlarmManager::setOneTime(const QDateTime &date, const QString &message)
     return d->addAlarm(alarm);
 }
 /*!
- * \qmlmethod bool Alarms::setRepeating(Date date, DaysOfWeek days, string message)
- * The function creates a recurring alarm to be kicked on the given \a date, with the given
- * \a type and on the specified \a daysOfWeek.
+ * \qmlmethod bool AlarmManager::setRepeating(Date date, DaysOfWeek days, string message)
+ * The function creates a repeating alarm to be kicked on the given \a date on the
+ * specified \a days. Returns true on success, false on error.
  */
 bool UCAlarmManager::setRepeating(const QDateTime &date, int days, const QString &message)
 {
@@ -323,7 +425,10 @@ bool UCAlarmManager::setRepeating(const QDateTime &date, int days, const QString
 }
 
 /*!
- * \qmlmethod bool Alarms::cancel(Alarm alarm)
+ * \qmlmethod bool AlarmManager::cancel(Alarm alarm)
+ * The function cancels (removes) an alarm event from the alarms register. Returns
+ * true on successful operation, false on error. The \l error presents the code of
+ * the failure.
  */
 bool UCAlarmManager::cancel(UCAlarm *alarm)
 {

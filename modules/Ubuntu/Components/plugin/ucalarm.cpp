@@ -39,16 +39,63 @@ void UCAlarmPrivate::setDefaults()
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu-services
  * \brief Alarm component is a representation of an alarm.
- */
-
-/*!
- * \enum UCAlarm::AlarmType
- * This enum specifies the frequiency of an alarm:
- * \value OneTime
- * \value Repeating
- * \value Monthly
- * \value Yearly
- * \value CustomDays
+ *
+ * The Alarm component unifies the properties of an alarm event. The component
+ * does not check the consistency of the properties, only holds and groups the
+ * values. Both one time and repeating alarm events are supported by the component.
+ *
+ * The component can be used to hold data in alarm editors as shown in the following
+ * code snippet:
+ * \qml
+ * import QtQuick 2.0
+ * import Ubuntu.Components 0.1
+ *
+ * Rectangle {
+ *     width: units.gu(40)
+ *     height: units.gu(20)
+ *
+ *     property Alarm alarm: Alarm{
+ *         date: new Date()
+ *     }
+ *     Column {
+ *         spacing: units.gu(1)
+ *         Row {
+ *             spacing: units.gu(1)
+ *             Label {
+ *                 id: date
+ *                 text: "Date:"
+ *                 anchors.verticalCenter: parent.verticalCenter
+ *             }
+ *             TextField {
+ *                 text: alarm.date.toString()
+ *                 onAccepted: alarm.date = new Date(text)
+ *             }
+ *         }
+ *         Row {
+ *             spacing: units.gu(1)
+ *             Label {
+ *                 id: msg
+ *                 text: "Message:"
+ *                 anchors.verticalCenter: parent.verticalCenter
+ *             }
+ *             TextField {
+ *                 text: alarm.message
+ *                 onAccepted: alarm.message = text
+ *             }
+ *         }
+ *         Button {
+ *             text: "Save"
+ *             onClicked: {
+ *                 if (!AlarmManager.set(alarm)) print(AlarmManager.errorMessage)
+ *                 alarm.reset();
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * The \l reset function clears the properties of the alarm bringing them to the
+ * default values. In this way the same alarm component can be used to save several
+ * alarms at the same time.
  */
 
 UCAlarm::UCAlarm(QObject *parent)
@@ -106,6 +153,7 @@ bool UCAlarm::operator==(const UCAlarm &other)
  * \qmlproperty bool Alarm::enabled
  * The property specifies whether the alarm is enabled or not. Disable dalarms
  * are not scheduled.
+ * The default value is true;
  */
 bool UCAlarm::enabled() const
 {
@@ -125,10 +173,9 @@ void UCAlarm::setEnabled(bool enabled)
 
 /*!
  * \qmlproperty Date Alarm::date
- * The property holds the date the alarm will be triggered. When a recurring alarm
- * is triggered, the date will be set to the next time the alarm will be kicked. For
- * non-requrring alarms (type set to OneTime) the date will not be modified.
- *
+ * The property holds the date the alarm will be triggered. The default
+ * value is the current date and time the alarm object was created. Further
+ * \l reset calls will bring the value back to the time the \l reset was called.
  */
 QDateTime UCAlarm::date() const
 {
@@ -148,6 +195,8 @@ void UCAlarm::setDate(const QDateTime &date)
 
 /*!
  * \qmlproperty string Alarm::message
+ * The property holds the message string which will be displayed when the alarm
+ * is triggered. The default value is the localized "Alarm" text.
  */
 QString UCAlarm::message() const
 {
@@ -167,6 +216,24 @@ void UCAlarm::setMessage(const QString &message)
 
 /*!
  * \qmlproperty AlarmType Alarm::type
+ * The property holds the type of the alarm, which can have one of the
+ * following values:
+ * \table
+ * \header
+ *  \li {2, 1} Alarm.AlarmType enum:
+ * \header
+ *  \li Type
+ *  \li Description
+ * \row
+ *  \li Alarm.OneTime
+ *  \li The alarm occurs only once.
+ * \row
+ *  \li Alarm.Repeating
+ *  \li The alarm is a repeating one, either daily, weekly on a given day or on
+ *      selected days.
+ * \endtable
+ *
+ *The default value is Alarm.OneTime.
  */
 UCAlarm::AlarmType UCAlarm::type() const
 {
@@ -186,6 +253,52 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
 
 /*!
  * \qmlproperty DaysOfWeek Alarm::daysOfWeek
+ * The property holds the days of the week the alarm is scheduled. This property
+ * can have only one day set for one time alarms and multiple days for repeating
+ * alarms.
+ * The following flags can be set:
+ * \table
+ * \header
+ *  \li {3, 1} Alarm.DayOfWeek enum:
+ * \header
+ *  \li Type
+ *  \li Value
+ *  \li Description
+ * \row
+ *  \li Alarm.Monday
+ *  \li 0x01
+ *  \li The alarm will kick on Mondays.
+ * \row
+ *  \li Alarm.Tuesday
+ *  \li 0x02
+ *  \li The alarm will kick on Tuesdays.
+ * \row
+ *  \li Alarm.Wednesday
+ *  \li 0x04
+ *  \li The alarm will kick on Wednesdays.
+ * \row
+ *  \li Alarm.Thursday
+ *  \li 0x08
+ *  \li The alarm will kick on Thursdays.
+ * \row
+ *  \li Alarm.Friday
+ *  \li 0x10
+ *  \li The alarm will kick on Fridays.
+ * \row
+ *  \li Alarm.Saturday
+ *  \li 0x20
+ *  \li The alarm will kick on Saturdays.
+ * \row
+ *  \li Alarm.Sunday
+ *  \li 0x40
+ *  \li The alarm will kick on Sundays.
+ * \row
+ *  \li Alarm.Autodetect
+ *  \li 0x80
+ *  \li The alarm day will be detected from the alarm date.
+ * \endtable
+ *
+ * The default value is Alarm.AutoDetect.
  */
 UCAlarm::DaysOfWeek UCAlarm::daysOfWeek() const
 {
@@ -206,6 +319,9 @@ void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
 /*!
  * \qmlproperty url Alarm::tone
  * The property holds the alarm's tone to be played when the alarm is triggered.
+ * An empty url will mean to play the default tone.
+ *
+ * The defaul tvalue is an empty url.
  */
 QUrl UCAlarm::tone() const
 {
@@ -225,7 +341,7 @@ void UCAlarm::setTone(const QUrl &tone)
 
 /*!
  * \qmlmethod Alarm::reset()
- * The function resets the alarm obvject to its defaults. After this call the
+ * The function resets the alarm object to its defaults. After this call the
  * object can be used to create a new alarm event.
  */
 void UCAlarm::reset()
@@ -233,4 +349,10 @@ void UCAlarm::reset()
     Q_D(UCAlarm);
     d->rawData = RawAlarm();
     d->setDefaults();
+    Q_EMIT enabledChanged();
+    Q_EMIT dateChanged();
+    Q_EMIT messageChanged();
+    Q_EMIT toneChanged();
+    Q_EMIT typeChanged();
+    Q_EMIT daysOfWeekChanged();
 }

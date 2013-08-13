@@ -99,9 +99,7 @@ void AlarmsAdapter::loadAlarms()
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
         QOrganizerTodo event;
-
         rawAlarm2Organizer(alarm, event);
-
         manager.saveItem(&event);
     }
     file.close();
@@ -146,6 +144,9 @@ void AlarmsAdapter::rawAlarm2Organizer(const RawAlarm &alarm, QOrganizerTodo &ev
         audible.setDataUrl(alarm.tone);
         event.saveDetail(&audible);
     }
+
+    // save the tone as description as the audible reminder may be off
+    event.setDescription(alarm.tone.toString());
 
     // set repeating
     switch (alarm.type) {
@@ -213,6 +214,7 @@ bool AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, RawAlarm &ala
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
     alarm.date = event.dueDateTime();
+    alarm.tone = QUrl(event.description());
 
     // repeating
     QOrganizerRecurrenceRule rule = event.recurrenceRule();
@@ -290,6 +292,7 @@ bool AlarmsAdapter::addAlarm(RawAlarm &alarm)
         alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
         alarm.changes = RawAlarm::NoChange;
         refreshAlarms();
+        saveAlarms();
         return true;
     }
     error(UCAlarmManager::AdaptationError, QString("Error saving the alarm, code %1").arg(manager.error()));
@@ -309,6 +312,7 @@ bool AlarmsAdapter::updateAlarm(RawAlarm &alarm)
     if (manager.saveItem(&event)) {
         alarm.changes = RawAlarm::NoChange;
         refreshAlarms();
+        saveAlarms();
         return true;
     }
     error(UCAlarmManager::AdaptationError, QString("Error updating the alarm, code %1").arg(manager.error()));
@@ -326,6 +330,7 @@ bool AlarmsAdapter::removeAlarm(RawAlarm &alarm)
     if (manager.removeItem(itemId)) {
         alarm.cookie = QVariant();
         refreshAlarms();
+        saveAlarms();
         return true;
     }
     error(UCAlarmManager::AdaptationError, QString("Error on removing alarm, code %1").arg(manager.error()));
