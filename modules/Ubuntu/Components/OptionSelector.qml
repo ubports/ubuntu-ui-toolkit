@@ -183,7 +183,7 @@ ListItem.Empty {
 
                     width: parent.width + units.gu(2)
                     height: listContainer.itemHeight
-                    showDivider: listContainer.height !== listContainer.itemHeight && index !== list.count - 1 ? 100 : 0
+                    showDivider: listContainer.height !== listContainer.itemHeight && index !== list.count - 1 ? 1 : 0
                     highlightWhenPressed: false
                     selected: ListView.isCurrentItem
                     anchors {
@@ -317,6 +317,8 @@ ListItem.Empty {
                         }
 
                         Behavior on opacity {
+                            enabled: optionSelector.expanded
+
                             UbuntuNumberAnimation {
                                 properties: "opacity"
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
