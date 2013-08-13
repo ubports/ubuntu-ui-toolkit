@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED IN Empty: property alias divider
 * ADDED IN: OptionSelector: signal listItemClicked()
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
