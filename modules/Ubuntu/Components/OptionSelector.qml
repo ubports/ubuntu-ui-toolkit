@@ -353,7 +353,7 @@ ListItem.Empty {
 
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
 
