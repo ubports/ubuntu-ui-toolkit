@@ -142,6 +142,13 @@ AbstractButton {
      */
     property alias backgroundIndicator: backgroundIndicator.children
 
+    /*!
+      \preliminary
+      \qmlproperty ThinDivider bottomDividerLine
+      Exposes our the bottom line divider.
+     */
+    property alias divider: bottomDividerLine
+
     /*! \internal
       The spacing inside the list item.
      */

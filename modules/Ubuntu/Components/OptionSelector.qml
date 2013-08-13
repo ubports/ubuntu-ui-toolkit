@@ -211,6 +211,34 @@ ListItem.Empty {
                                 target: option
                                 opacity: 0
                             }
+                        },
+                        //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
+                        State {
+                            name: "dividerExpanded"
+                            when: listContainer.state === "expanded" && index === list.currentIndex
+                            PropertyChanges {
+                                target: option.divider
+                                opacity: 1
+                            }
+                        }, State {
+                            name: "dividerCollapsed"
+                            when: listContainer.state === "collapsed" && index === list.currentIndex
+                            PropertyChanges {
+                                target: option.divider
+                                opacity: 0
+                            }
+                        }
+                    ]
+
+                    //As with our states, we apply the transition with our divider as the target.
+                    transitions: [ Transition {
+                            from: "dividerExpanded"
+                            to: "dividerCollapsed"
+                            UbuntuNumberAnimation {
+                                target: option.divider
+                                properties: "opacity"
+                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            }
                         }
                     ]
 
