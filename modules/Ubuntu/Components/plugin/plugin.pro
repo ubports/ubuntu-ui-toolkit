@@ -12,8 +12,8 @@ CONFIG(debug) {
   QMAKE_CXXFLAGS_DEBUG += -Werror
 }
 
-#needed by ItemStyleAttached
-QT += qml-private core-private v8-private
+# QOrganizer
+QT += organizer
 
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
@@ -41,7 +41,11 @@ HEADERS += plugin.h \
     ucubuntuanimation.h \
     ucfontutils.h \
     ucarguments.h \
-    ucargument.h
+    ucargument.h \
+    ucalarm.h \
+    ucalarm_p.h \
+    ucalarms.h \
+    ucalarms_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -61,7 +65,12 @@ SOURCES += plugin.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
     ucarguments.cpp \
-    ucargument.cpp
+    ucargument.cpp \
+    ucalarm.cpp \
+    ucalarms.cpp
+
+# adapters
+SOURCES += adapters/alarmsadapter_organizer.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
