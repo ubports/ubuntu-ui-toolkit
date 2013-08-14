@@ -43,6 +43,7 @@ public:
     virtual ~AlarmsAdapter();
 
     QOrganizerManager manager;
+    QOrganizerCollection collection;
     int cookieCount;
 
     virtual QList<RawAlarm> getAlarms();
@@ -73,6 +74,22 @@ AlarmsAdapter::AlarmsAdapter(UCAlarmManager *qq)
     , manager("memory")
     , cookieCount(0)
 {
+    bool alarmCollectionFound = false;
+    QList<QOrganizerCollection> collections = manager.collections();
+    if (collections.count() > 0) {
+        Q_FOREACH(const QOrganizerCollection &c, collections) {
+            if (c.metaData(QOrganizerCollection::KeyName).toString() == "alarms") {
+                alarmCollectionFound = true;
+                collection = c;
+                break;
+            }
+        }
+    }
+    if (!alarmCollectionFound) {
+        // create alarm collection
+        collection.setMetaData(QOrganizerCollection::KeyName, "alarms");
+        manager.saveCollection(&collection);
+    }
     loadAlarms();
 }
 
@@ -128,6 +145,7 @@ void AlarmsAdapter::saveAlarms()
 
 void AlarmsAdapter::rawAlarm2Organizer(const RawAlarm &alarm, QOrganizerTodo &event)
 {
+    event.setCollectionId(collection.id());
     event.setAllDay(false);
     event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
@@ -253,7 +271,10 @@ QList<RawAlarm> AlarmsAdapter::getAlarms()
     sortOrder.setDirection(Qt::AscendingOrder);
     sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldDueDateTime);
 
-    QList<QOrganizerItem> items = manager.items(QDateTime(), QDateTime(), QOrganizerItemFilter(), 200,
+    QOrganizerItemCollectionFilter filter;
+    filter.setCollectionId(collection.id());
+
+    QList<QOrganizerItem> items = manager.items(QDateTime(), QDateTime(), filter, -1,
                                                 QList<QOrganizerItemSortOrder>() << sortOrder);
     QList<RawAlarm> result;
 
