@@ -121,17 +121,6 @@ ListItem.Empty {
             property color themeColour: Theme.palette.selected.fieldText
             property bool colourComponent: __styleInstance.colourComponent
 
-            readonly property string fragmentShader:
-                "varying highp vec2 qt_TexCoord0;
-                 uniform sampler2D source;
-                 uniform lowp vec4 colour;
-                 uniform lowp float qt_Opacity;
-
-                 void main() {
-                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                }"
-
             anchors {
                 left: parent.left
                 right: parent.right
@@ -393,7 +382,16 @@ ListItem.Empty {
                             height: source.height
                             visible: source.status === Image.Ready
 
-                            fragmentShader: fragmentShader
+                            fragmentShader:
+                                "varying highp vec2 qt_TexCoord0;
+                                 uniform sampler2D source;
+                                 uniform lowp vec4 colour;
+                                 uniform lowp float qt_Opacity;
+
+                                 void main() {
+                                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                                }"
                         }
                     }
 
