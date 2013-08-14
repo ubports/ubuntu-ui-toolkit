@@ -249,7 +249,8 @@ ListItem.Empty {
                                 optionExpansion.stop();
                                 imageExpansion.stop();
                                 optionCollapse.stop();
-                                imageCollapse.stop();
+                                selectedImageCollapse.stop();
+                                deslectedImageCollapse.stop();
 
                                 if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
@@ -263,11 +264,11 @@ ListItem.Empty {
                                 } else {
                                     if (!option.selected) {
                                         optionCollapse.start();
-
-                                        //Ensure a source change. This solves a bug which happens occasionaly when source is switched correctly. Probably related to the image.source binding.
-                                        image.source = listContainer.chevron
                                     } else {
-                                        imageCollapse.start();
+                                        if (list.previousIndex !== list.currentIndex)
+                                            selectedImageCollapse.start();
+                                        else
+                                            deslectedImageCollapse.start();
                                     }
                                 }
                             }
@@ -303,9 +304,40 @@ ListItem.Empty {
                             to: 1.0
                             duration: Ubuntu.UbuntuAnimation.SlowDuration
                         }, SequentialAnimation {
-                            id: imageCollapse
+                            id: selectedImageCollapse
 
                             PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
+                            PropertyAnimation {
+                                target: image
+                                properties: "opacity"
+                                from : 1.0
+                                to: 0.0
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.FastDuration }
+                            PropertyAction {
+                                target: image
+                                property: "source"
+                                value: listContainer.chevron
+                            }
+                            PropertyAnimation {
+                                target: image
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                        }, SequentialAnimation {
+                            id: deslectedImageCollapse
+
+                            PropertyAnimation {
+                                target: image
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration - Ubuntu.UbuntuAnimation.FastDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
