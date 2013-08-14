@@ -205,23 +205,8 @@ ListItem.Empty {
                         listItemClicked();
                     }
 
+                    //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
                     states: [ State {
-                            name: "expanded"
-                            when: listContainer.state === "expanded" && index !== list.currentIndex
-                            PropertyChanges {
-                                target: option
-                                opacity: 1
-                            }
-                        }, State {
-                            name: "collapsed"
-                            when: listContainer.state === "collapsed" && index !== list.currentIndex
-                            PropertyChanges {
-                                target: option
-                                opacity: 0
-                            }
-                        },
-                        //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
-                        State {
                             name: "dividerExpanded"
                             when: listContainer.state === "expanded" && index === list.currentIndex
                             PropertyChanges {
@@ -275,8 +260,9 @@ ListItem.Empty {
                                     } else {
                                         if (list.previousIndex !== list.currentIndex)
                                             selectedImageCollapse.start();
-                                        else
+                                        else {
                                             deselectedImageCollapse.start();
+                                        }
                                     }
                                 }
                             }
