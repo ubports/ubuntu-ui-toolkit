@@ -126,15 +126,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         if index >= number_of_tabs:
             raise IndexError('Tab index out of range.')
         current_tab = tabs.get_current_tab()
-        switches_done = 0
+        number_of_switches = 0
         while not tabs.selectedTabIndex == index:
-            if switches_done >= number_of_tabs - 1:
+            if number_of_switches >= number_of_tabs - 1:
                 # This prevents a loop. But if this error is ever raised, it's
                 # likely there's a bug on the emulator or on the QML Tab.
                 raise ToolkitEmulatorException(
                     'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
-            switches_done += 1
+            number_of_switches += 1
         return current_tab
 
     def switch_to_previous_tab(self):
