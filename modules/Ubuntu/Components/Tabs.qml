@@ -175,6 +175,7 @@ PageTreeNode {
      */
     property TabBar tabBar: TabBar {
         tabsItem: tabs
+        visible: tabs.active
     }
 
     /*!
