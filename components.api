@@ -102,6 +102,7 @@ ListItem.Empty
     property var values
     property int selectedIndex
     property bool expanded
+    signal listItemClicked()
     signal scroll(real selectorHeight, string currentState)
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
