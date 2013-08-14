@@ -169,6 +169,8 @@ ListItem.Empty {
             ListView {
                 id: list
 
+                property int previousIndex
+
                 interactive: false
                 clip: true
                 currentIndex: 0
@@ -191,8 +193,14 @@ ListItem.Empty {
                         leftMargin: units.gu(-2)
                     }
                     onClicked: {
-                        if (listContainer.isExpanded) list.currentIndex = index;
-                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded;
+                        if (listContainer.isExpanded) {
+                            list.previousIndex = list.currentIndex;
+                            list.currentIndex = index;
+                        }
+
+                        if (!optionSelector.expanded) {
+                            listContainer.isExpanded = !listContainer.isExpanded;
+                        }
 
                         listItemClicked();
                     }
@@ -250,7 +258,7 @@ ListItem.Empty {
                                 imageExpansion.stop();
                                 optionCollapse.stop();
                                 selectedImageCollapse.stop();
-                                deslectedImageCollapse.stop();
+                                deselectedImageCollapse.stop();
 
                                 if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
@@ -268,7 +276,7 @@ ListItem.Empty {
                                         if (list.previousIndex !== list.currentIndex)
                                             selectedImageCollapse.start();
                                         else
-                                            deslectedImageCollapse.start();
+                                            deselectedImageCollapse.start();
                                     }
                                 }
                             }
@@ -304,7 +312,7 @@ ListItem.Empty {
                             to: 1.0
                             duration: Ubuntu.UbuntuAnimation.SlowDuration
                         }, SequentialAnimation {
-                            id: selectedImageCollapse
+                            id: deselectedImageCollapse
 
                             PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
@@ -328,7 +336,7 @@ ListItem.Empty {
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }, SequentialAnimation {
-                            id: deslectedImageCollapse
+                            id: selectedImageCollapse
 
                             PropertyAnimation {
                                 target: image
