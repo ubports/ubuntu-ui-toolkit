@@ -369,7 +369,7 @@ ListItem.Empty {
                         }
 
                         Behavior on opacity {
-                            enabled: list.previousIndex !== list.currentIndex || optionSelector.expanded
+                            enabled: optionSelector.expanded
                             UbuntuNumberAnimation {
                                 properties: "opacity"
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
