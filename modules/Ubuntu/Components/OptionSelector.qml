@@ -169,6 +169,8 @@ ListItem.Empty {
             ListView {
                 id: list
 
+                property int previousIndex
+
                 interactive: false
                 clip: true
                 currentIndex: 0
@@ -191,8 +193,14 @@ ListItem.Empty {
                         leftMargin: units.gu(-2)
                     }
                     onClicked: {
-                        if (listContainer.isExpanded) list.currentIndex = index;
-                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded;
+                        if (listContainer.isExpanded) {
+                            list.previousIndex = list.currentIndex;
+                            list.currentIndex = index;
+                        }
+
+                        if (!optionSelector.expanded) {
+                            listContainer.isExpanded = !listContainer.isExpanded;
+                        }
 
                         listItemClicked();
                     }
@@ -237,7 +245,7 @@ ListItem.Empty {
                             UbuntuNumberAnimation {
                                 target: option.divider
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
                         }
                     ]
@@ -246,28 +254,23 @@ ListItem.Empty {
                         Connections {
                             target: listContainer
                             onIsExpandedChanged: {
-                                optionExpansion.stop();
                                 imageExpansion.stop();
-                                optionCollapse.stop();
-                                imageCollapse.stop();
+                                selectedImageCollapse.stop();
+                                deslectedImageCollapse.stop();
 
                                 if (listContainer.isExpanded === true) {
                                     if (!option.selected) {
-                                        optionExpansion.start();
-
                                         //Ensure a source change. This solves a bug which happens occasionaly when source is switched correctly. Probably related to the image.source binding.
                                         image.source = listContainer.tick
                                     } else {
                                         imageExpansion.start();
                                     }
                                 } else {
-                                    if (!option.selected) {
-                                        optionCollapse.start();
-
-                                        //Ensure a source change. This solves a bug which happens occasionaly when source is switched correctly. Probably related to the image.source binding.
-                                        image.source = listContainer.chevron
-                                    } else {
-                                        imageCollapse.start();
+                                    if (option.selected) {
+                                        if (list.previousIndex === list.currentIndex)
+                                            selectedImageCollapse.start();
+                                        else
+                                            deslectedImageCollapse.start();
                                     }
                                 }
                             }
@@ -294,16 +297,8 @@ ListItem.Empty {
                                 to: 1.0
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
-                        }, PropertyAnimation {
-                            id: optionExpansion
-
-                            target: option
-                            properties: "opacity"
-                            from : 0.0
-                            to: 1.0
-                            duration: Ubuntu.UbuntuAnimation.SlowDuration
                         }, SequentialAnimation {
-                            id: imageCollapse
+                            id: selectedImageCollapse
 
                             PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
@@ -326,13 +321,37 @@ ListItem.Empty {
                                 to: 1.0
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
                             }
-                        }, PropertyAnimation {
-                                id: optionCollapse
-                                target: option
+                        }, SequentialAnimation {
+                            id: deslectedImageCollapse
+
+                            PropertyAnimation {
+                                target: image
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration - Ubuntu.UbuntuAnimation.FastDuration }
+                            PropertyAnimation {
+                                target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
+                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.FastDuration }
+                            PropertyAction {
+                                target: image
+                                property: "source"
+                                value: listContainer.chevron
+                            }
+                            PropertyAnimation {
+                                target: image
+                                properties: "opacity"
+                                from : 0.0
+                                to: 1.0
+                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                            }
                         }
                     ]
 
@@ -342,7 +361,7 @@ ListItem.Empty {
                         width: units.gu(2)
                         height: units.gu(2)
                         source: optionSelector.expanded ? listContainer.tick : listContainer.chevron
-                        opacity: option.selected ? 1.0 : 0.0
+                        opacity: option.selected ? 1 : 0
                         anchors {
                             right: parent.right
                             rightMargin: units.gu(2)
@@ -350,8 +369,7 @@ ListItem.Empty {
                         }
 
                         Behavior on opacity {
-                            enabled: optionSelector.expanded
-
+                            enabled: list.previousIndex !== list.currentIndex || optionSelector.expanded
                             UbuntuNumberAnimation {
                                 properties: "opacity"
                                 duration: Ubuntu.UbuntuAnimation.FastDuration
