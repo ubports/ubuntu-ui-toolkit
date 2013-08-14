@@ -375,6 +375,7 @@ ListItem.Empty {
                             verticalCenter: parent.verticalCenter
                         }
 
+                        //Our behaviour is only enabled for our expanded list due to flickering bugs in relation to all this other animations running on the expanding version.
                         Behavior on opacity {
                             enabled: optionSelector.expanded
 
