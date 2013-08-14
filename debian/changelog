@@ -1,3 +1,63 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130812-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Depend on ttf-ubuntu-font-family from the qtdeclarative5-ubuntu-ui-
+    toolkit-plugin (LP: #1181176) qtdeclarative5-ubuntu-ui-toolkit-
+    plugin has Label.qml which uses Ubuntu font directly. (LP: #1181176)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 691
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 Aug 2013 06:46:52 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130809.2-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Updated visual design of ActivityIndicator.
+  * Switch: implemented new version of visual design.
+  * Slider: animate thumb movement when pressing the slider.
+  * ProgressBar: design tweaks to indeterminate mode.
+
+  [ Leo Arias ]
+  * Added the objectName property to the top header. (LP: #1209405)
+  * Moved the ActionSelectionPopover autopilot emulator from the
+    filemanager app. Added tests. (LP: #1205205)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 689
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 Aug 2013 15:36:16 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.2-0ubuntu1) saucy; urgency=low
+
+  * New rebuild forced
+  * Automatic snapshot from revision 682
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 10:00:11 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.1-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Fixed the opening of tabs on the autopilot test Emulators. (LP:
+    #1206251)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 681
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 06:05:03 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130807-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * InverseMouseArea derives now from MouseArea being in this way kept
+    in sync with the MouseArea behavior. No API change other than base
+    class and the extra API it brings occured. (LP: #1207426)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 678
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 Aug 2013 04:02:21 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130806-0ubuntu1) saucy; urgency=low
 
   [ Guenter Schwann ]
