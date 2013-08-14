@@ -20,6 +20,10 @@ from autopilot.introspection import dbus
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
 
 
+class ToolkitEmulatorException(Exception):
+    """Exception raised when there is an error with the emulator."""
+
+
 def get_pointing_device():
     """Return the pointing device depending on the platform.
 
@@ -118,11 +122,19 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         tabs = self.get_tabs()
-        if index >= tabs.get_number_of_tabs():
+        number_of_tabs = tabs.get_number_of_tabs()
+        if index >= number_of_tabs:
             raise IndexError('Tab index out of range.')
         current_tab = tabs.get_current_tab()
+        number_of_switches = 0
         while not tabs.selectedTabIndex == index:
+            if number_of_switches >= number_of_tabs - 1:
+                # This prevents a loop. But if this error is ever raised, it's
+                # likely there's a bug on the emulator or on the QML Tab.
+                raise ToolkitEmulatorException(
+                    'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
+            number_of_switches += 1
         return current_tab
 
     def switch_to_previous_tab(self):
