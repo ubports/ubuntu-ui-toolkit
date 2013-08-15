@@ -16,21 +16,21 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 0.1 as Components
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Components.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
-    \where expanding it opens a listing of all the possible values for selection
-    \with an additional option of always being expanded.
+    where expanding it opens a listing of all the possible values for selection
+    with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
+        import Components.Components 0.1
         Column {
             width: 250
             OptionSelector {
@@ -150,7 +150,7 @@ ListItem.Empty {
             transitions: [ Transition {
                 UbuntuNumberAnimation {
                         properties: "height"
-                        duration: Ubuntu.UbuntuAnimation.BriskDuration
+                        duration: Components.UbuntuAnimation.BriskDuration
                     }
                 }
             ]
@@ -219,7 +219,7 @@ ListItem.Empty {
                             UbuntuNumberAnimation {
                                 target: option.divider
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Components.UbuntuAnimation.SlowDuration
                             }
                         }
                     ]
@@ -263,9 +263,9 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration - Ubuntu.UbuntuAnimation.FastDuration }
+                            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration - Components.UbuntuAnimation.FastDuration }
                             PropertyAction {
                                 target: image
                                 property: "source"
@@ -276,7 +276,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
                         }, PropertyAnimation {
                             id: optionExpansion
@@ -285,19 +285,19 @@ ListItem.Empty {
                             properties: "opacity"
                             from : 0.0
                             to: 1.0
-                            duration: Ubuntu.UbuntuAnimation.SlowDuration
+                            duration: Components.UbuntuAnimation.SlowDuration
                         }, SequentialAnimation {
                             id: deselectedImageCollapse
 
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration }
+                            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.FastDuration }
+                            PauseAnimation { duration: Components.UbuntuAnimation.FastDuration }
                             PropertyAction {
                                 target: image
                                 property: "source"
@@ -308,7 +308,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
                         }, SequentialAnimation {
                             id: selectedImageCollapse
@@ -318,17 +318,17 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.BriskDuration - Ubuntu.UbuntuAnimation.FastDuration }
+                            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration - Components.UbuntuAnimation.FastDuration }
                             PropertyAnimation {
                                 target: image
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
-                            PauseAnimation { duration: Ubuntu.UbuntuAnimation.FastDuration }
+                            PauseAnimation { duration: Components.UbuntuAnimation.FastDuration }
                             PropertyAction {
                                 target: image
                                 property: "source"
@@ -339,7 +339,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 0.0
                                 to: 1.0
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
                         }, PropertyAnimation {
                                 id: optionCollapse
@@ -347,7 +347,7 @@ ListItem.Empty {
                                 properties: "opacity"
                                 from : 1.0
                                 to: 0.0
-                                duration: Ubuntu.UbuntuAnimation.SlowDuration
+                                duration: Components.UbuntuAnimation.SlowDuration
                         }
                     ]
 
@@ -370,7 +370,7 @@ ListItem.Empty {
 
                             UbuntuNumberAnimation {
                                 properties: "opacity"
-                                duration: Ubuntu.UbuntuAnimation.FastDuration
+                                duration: Components.UbuntuAnimation.FastDuration
                             }
                         }
 
