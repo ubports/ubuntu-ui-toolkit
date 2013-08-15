@@ -426,7 +426,7 @@ plugins.qmltypes
     Property { name: "date"; type: "QDateTime" }
     Property { name: "type"; type: "AlarmType" }
     Property { name: "daysOfWeek"; type: "DaysOfWeek" }
-    Property { name: "tone"; type: "QUrl" }
+    Property { name: "sound"; type: "QUrl" }
     Method { name: "reset" }
     name: "UCAlarmManager"
     prototype: "QObject"
@@ -444,9 +444,6 @@ plugins.qmltypes
     name: "setOneTime"
     Parameter { name: "date"; type: "QDateTime" }
     Parameter { name: "message"; type: "string" }
-    Method {
-    name: "setOneTime"
-    Parameter { name: "date"; type: "QDateTime" }
     Method {
     name: "setRepeating"
     Parameter { name: "date"; type: "QDateTime" }

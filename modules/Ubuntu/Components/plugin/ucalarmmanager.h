@@ -53,7 +53,7 @@ public:
     Q_INVOKABLE bool set(UCAlarm *alarm);
     Q_INVOKABLE bool cancel(UCAlarm *alarm);
 
-    Q_INVOKABLE bool setOneTime(const QDateTime &date, const QString &message = QString());
+    Q_INVOKABLE bool setOneTime(const QDateTime &date, const QString &message);
     Q_INVOKABLE bool setRepeating(const QDateTime &date, int days, const QString &message);
 
 
