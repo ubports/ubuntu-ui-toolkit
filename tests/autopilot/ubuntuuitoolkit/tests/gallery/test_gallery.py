@@ -69,6 +69,7 @@ class GenericTests(GalleryTestCase):
             "Buttons",
             "Slider",
             "Text Field",
+            "Option Selector",
             "Progress and activity",
             "Ubuntu Shape",
             "Icons",
