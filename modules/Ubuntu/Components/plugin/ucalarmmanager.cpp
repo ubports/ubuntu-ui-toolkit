@@ -383,7 +383,7 @@ bool UCAlarmManager::set(UCAlarm *alarm)
 /*!
  * \qmlmethod bool AlarmManager::setOneTime(Date date, string message)
  * The function creates a one time alarm with the given start \a date and \a message.
- * The alarm created will have the default tone. Returns true on success, and on error
+ * The alarm created will have the default sound. Returns true on success, and on error
  * the error code will be reported in \l error and \l errorMessage properties.
  */
 bool UCAlarmManager::setOneTime(const QDateTime &date, const QString &message)

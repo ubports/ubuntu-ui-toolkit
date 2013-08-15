@@ -112,7 +112,7 @@ void AlarmsAdapter::loadAlarms()
         RawAlarm alarm;
 
         int type, days;
-        in >> alarm.message >> alarm.date >> alarm.tone >> type >> days >> alarm.enabled;
+        in >> alarm.message >> alarm.date >> alarm.sound >> type >> days >> alarm.enabled;
         alarm.type = static_cast<UCAlarm::AlarmType>(type);
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
@@ -140,7 +140,7 @@ void AlarmsAdapter::saveAlarms()
         UCAlarmPrivate *palarm = UCAlarmPrivate::get(alarm);
         out << palarm->rawData.message
             << palarm->rawData.date
-            << palarm->rawData.tone
+            << palarm->rawData.sound
             << palarm->rawData.type
             << palarm->rawData.days
             << palarm->rawData.enabled;
@@ -164,12 +164,12 @@ void AlarmsAdapter::rawAlarm2Organizer(const RawAlarm &alarm, QOrganizerTodo &ev
 
         QOrganizerItemAudibleReminder audible;
         audible.setSecondsBeforeStart(0);
-        audible.setDataUrl(alarm.tone);
+        audible.setDataUrl(alarm.sound);
         event.saveDetail(&audible);
     }
 
-    // save the tone as description as the audible reminder may be off
-    event.setDescription(alarm.tone.toString());
+    // save the sound as description as the audible reminder may be off
+    event.setDescription(alarm.sound.toString());
 
     // set repeating
     switch (alarm.type) {
@@ -237,7 +237,7 @@ bool AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, RawAlarm &ala
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
     alarm.date = event.dueDateTime();
-    alarm.tone = QUrl(event.description());
+    alarm.sound = QUrl(event.description());
 
     // repeating
     QOrganizerRecurrenceRule rule = event.recurrenceRule();

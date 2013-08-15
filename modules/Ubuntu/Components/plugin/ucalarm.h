@@ -33,7 +33,7 @@ class UCAlarm : public QObject
     Q_PROPERTY(QDateTime date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(AlarmType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(DaysOfWeek daysOfWeek READ daysOfWeek WRITE setDaysOfWeek NOTIFY daysOfWeekChanged)
-    Q_PROPERTY(QUrl tone READ tone WRITE setTone NOTIFY toneChanged)
+    Q_PROPERTY(QUrl sound READ sound WRITE setSound NOTIFY soundChanged)
 
     Q_ENUMS(AlarmType DayOfWeek)
     Q_FLAGS(DaysOfWeek)
@@ -76,8 +76,8 @@ public: // getter/setter
     void setType(AlarmType type);
     DaysOfWeek daysOfWeek() const;
     void setDaysOfWeek(DaysOfWeek days);
-    QUrl tone() const;
-    void setTone(const QUrl &tone);
+    QUrl sound() const;
+    void setSound(const QUrl &sound);
 
 Q_SIGNALS:
     void enabledChanged();
@@ -85,7 +85,7 @@ Q_SIGNALS:
     void dateChanged();
     void typeChanged();
     void daysOfWeekChanged();
-    void toneChanged();
+    void soundChanged();
 
 public Q_SLOTS:
     void reset();

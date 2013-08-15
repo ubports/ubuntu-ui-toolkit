@@ -317,26 +317,26 @@ void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
 }
 
 /*!
- * \qmlproperty url Alarm::tone
- * The property holds the alarm's tone to be played when the alarm is triggered.
- * An empty url will mean to play the default tone.
+ * \qmlproperty url Alarm::sound
+ * The property holds the alarm's sound to be played when the alarm is triggered.
+ * An empty url will mean to play the default sound.
  *
  * The defaul tvalue is an empty url.
  */
-QUrl UCAlarm::tone() const
+QUrl UCAlarm::sound() const
 {
     Q_D(const UCAlarm);
-    return d->rawData.tone;
+    return d->rawData.sound;
 }
-void UCAlarm::setTone(const QUrl &tone)
+void UCAlarm::setSound(const QUrl &sound)
 {
     Q_D(UCAlarm);
-    if (d->rawData.tone == tone) {
+    if (d->rawData.sound == sound) {
         return;
     }
-    d->rawData.tone = tone;
-    d->rawData.changes |= RawAlarm::Tone;
-    Q_EMIT toneChanged();
+    d->rawData.sound = sound;
+    d->rawData.changes |= RawAlarm::Sound;
+    Q_EMIT soundChanged();
 }
 
 /*!
@@ -352,7 +352,7 @@ void UCAlarm::reset()
     Q_EMIT enabledChanged();
     Q_EMIT dateChanged();
     Q_EMIT messageChanged();
-    Q_EMIT toneChanged();
+    Q_EMIT soundChanged();
     Q_EMIT typeChanged();
     Q_EMIT daysOfWeekChanged();
 }

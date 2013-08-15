@@ -31,7 +31,7 @@ public:
         Enabled     = 0x0001,
         Date        = 0x0002,
         Message     = 0x0004,
-        Tone        = 0x0008,
+        Sound       = 0x0008,
         Type        = 0x0010,
         Days        = 0x0020
     };
@@ -56,7 +56,7 @@ public:
 
     inline bool compare(const RawAlarm &other)
     {
-        // cookie, tone, and enabled do not count on alarm equality
+        // cookie, sound, and enabled do not count on alarm equality
         return date == other.date
                 && message == other.message
                 && type == other.type
@@ -94,7 +94,7 @@ public:
     // data members
     QDateTime date;
     QString message;
-    QUrl tone;
+    QUrl sound;
     UCAlarm::AlarmType type;
     UCAlarm::DaysOfWeek days;
     bool enabled;
