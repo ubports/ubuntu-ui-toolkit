@@ -53,17 +53,17 @@ Item {
         anchors.centerIn: background
         fontSize: "medium"
         color: Theme.palette.normal.baseText
-        text: progressBar.indeterminate ? i18n.tr("In Progress...")
+        text: progressBar.indeterminate ? i18n.tr("In Progress")
               : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
 
         SequentialAnimation on opacity {
             loops: Animation.Infinite
             running: progressBar.indeterminate
             UbuntuNumberAnimation {
-                to: 0.5; duration: UbuntuAnimation.SleepyDuration
+                to: 0.2; duration: UbuntuAnimation.BriskDuration
             }
             UbuntuNumberAnimation {
-                to: 1.0; duration: UbuntuAnimation.SleepyDuration
+                to: 1.0; duration: UbuntuAnimation.BriskDuration
             }
         }
     }
