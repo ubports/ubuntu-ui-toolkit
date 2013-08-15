@@ -27,8 +27,9 @@
 // FIXME: remove once we have the Organizer backend ready
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QtCore/QStandardPaths>
 
-#define ALARM_DATABASE      "%1/.config/ubuntu-ui-toolkit/alarms.database"
+#define ALARM_DATABASE      "%1/alarms.database"
 
 QTORGANIZER_USE_NAMESPACE
 
@@ -101,7 +102,7 @@ AlarmsAdapter::~AlarmsAdapter()
 // FIXME: remove once we have the Organizer backend ready
 void AlarmsAdapter::loadAlarms()
 {
-    QFile file(QString(ALARM_DATABASE).arg(QDir::homePath()));
+    QFile file(QString(ALARM_DATABASE).arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)));
     if (!file.open(QFile::ReadOnly)) {
         return;
     }
@@ -125,7 +126,11 @@ void AlarmsAdapter::loadAlarms()
 // FIXME: remove once we have the Organizer backend ready
 void AlarmsAdapter::saveAlarms()
 {
-    QFile file(QString(ALARM_DATABASE).arg(QDir::homePath()));
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    if (!dir.exists()) {
+        dir.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    }
+    QFile file(QString(ALARM_DATABASE).arg(dir.path()));
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
         return;
     }
