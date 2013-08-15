@@ -1,3 +1,19 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130815.1-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Added a safeguard to prevent the tabs autopilot emulator to loop for
+    ever. (LP: #1211619)
+
+  [ tpeeters ]
+  * Fix bug 1209403 where Tabs header does not become invisible when
+    another page is pushed on the PageStack and a gradient background is
+    used. (LP: #1209403)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 695
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 15 Aug 2013 06:33:50 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130812-0ubuntu1) saucy; urgency=low
 
   [ Timo Jyrinki ]
