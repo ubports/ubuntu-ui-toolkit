@@ -429,8 +429,7 @@ Item {
                 pressedItem.clicked();
             } else if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
-                // TODO: remove parameter for trigger()?
-                pressedItem.trigger(pressedItem);
+                pressedItem.trigger();
             }
         }
 
