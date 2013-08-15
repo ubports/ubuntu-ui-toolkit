@@ -469,13 +469,13 @@ Item {
         }
 
         onReleased: {
-            if (panel.state == "moving") {
+            if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
             }
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
-            if (panel.state == "moving") {
+            if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
             }
         }
