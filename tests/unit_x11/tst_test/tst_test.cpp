@@ -12,28 +12,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
-import QtQuick 2.0
-
-BubbleShape {
-    property alias contentItem: content
-
-    target: styledItem.target
-    direction: styledItem.direction
-    clipContent: styledItem.clipContent
-
-    onShowCompleted: styledItem.showCompleted()
-    onHideCompleted: styledItem.hideCompleted()
-
-    Item {
-        id: content
-        anchors.fill: parent
-
-        Connections {
-            target: styledItem
-            onShow: show()
-            onHide: hide()
-        }
-    }
-}
+#include <QtQuickTest/quicktest.h>
+QUICK_TEST_MAIN(test)

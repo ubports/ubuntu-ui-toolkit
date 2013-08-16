@@ -1,3 +1,226 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130815.1-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Added a safeguard to prevent the tabs autopilot emulator to loop for
+    ever. (LP: #1211619)
+
+  [ tpeeters ]
+  * Fix bug 1209403 where Tabs header does not become invisible when
+    another page is pushed on the PageStack and a gradient background is
+    used. (LP: #1209403)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 695
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 15 Aug 2013 06:33:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130812-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Depend on ttf-ubuntu-font-family from the qtdeclarative5-ubuntu-ui-
+    toolkit-plugin (LP: #1181176) qtdeclarative5-ubuntu-ui-toolkit-
+    plugin has Label.qml which uses Ubuntu font directly. (LP: #1181176)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 691
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 Aug 2013 06:46:52 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130809.2-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Updated visual design of ActivityIndicator.
+  * Switch: implemented new version of visual design.
+  * Slider: animate thumb movement when pressing the slider.
+  * ProgressBar: design tweaks to indeterminate mode.
+
+  [ Leo Arias ]
+  * Added the objectName property to the top header. (LP: #1209405)
+  * Moved the ActionSelectionPopover autopilot emulator from the
+    filemanager app. Added tests. (LP: #1205205)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 689
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 Aug 2013 15:36:16 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.2-0ubuntu1) saucy; urgency=low
+
+  * New rebuild forced
+  * Automatic snapshot from revision 682
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 10:00:11 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130808.1-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Fixed the opening of tabs on the autopilot test Emulators. (LP:
+    #1206251)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 681
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 Aug 2013 06:05:03 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130807-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * InverseMouseArea derives now from MouseArea being in this way kept
+    in sync with the MouseArea behavior. No API change other than base
+    class and the extra API it brings occured. (LP: #1207426)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 678
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 Aug 2013 04:02:21 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130806-0ubuntu1) saucy; urgency=low
+
+  [ Guenter Schwann ]
+  * During tests, make sure the toolbar does not move before opening it.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 676
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 06 Aug 2013 07:38:20 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130805-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * Popover: updated show/hide animations to match design. Slider's
+    bubble: added show/hide animations.
+  * ProgressBar: new visual design. Indeterminate progress bar's design
+    is not worked out yet. Simple placeholder animation for now. (LP:
+    #1195866)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 674
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 05 Aug 2013 04:02:18 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130802-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Restructure tab bar code and improve autopilot tests: - Split up
+    NewTabBar into TabBar (Components) and TabBarStyle (Themes). -
+    Expose tabBar property in Tabs - Make Header.contents an Item
+    instead of Component - Improve autopilot tests not to rely on
+    arbitrary sleep times The goal of this change is to prepare for
+    additional properties that will be added to TabBar in a following MR
+    in order to support behavior that is needed for the indicators.
+  * Add bool properties alwaysSelectionMode and animate to TabBar for
+    greater control of its behavior. (LP: #1204121, #1203685)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 671
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 02 Aug 2013 04:02:19 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130731-0ubuntu1) saucy; urgency=low
+
+  [ Ugo Riboni ]
+  * Make InverseMouseArea and MouseArea behave the same way when the
+    mouse is moved between a click and release event, i.e. they both
+    generate a click. (LP: #1189825)
+
+  [ Timo Jyrinki ]
+  * Add Yahoo copyright on the CSS file, fix the "*" section to be first
+    one (latter ones override).
+
+  [ Christian Dywan ]
+  * Ignore generated qml.xml files.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 668
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 31 Jul 2013 04:02:34 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130730-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. This is a remerge of a previous
+    merge that was reverted because of a segfault. The segfault has been
+    fixed by ensuring that setWindowContextProperty is called in the
+    same thread (the main thread). (LP: #1187321, #1205556)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 663
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 30 Jul 2013 04:02:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130729-0ubuntu1) saucy; urgency=low
+
+  [ Kaleo ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+  * Reverted revision 658 introducing reporting of content orientation.
+    Was causing crashes on x86. (LP: #1205615)
+
+  [ Thomas Moenicke ]
+  * OrientationHelper: report the current orientation of the application
+    via QWindow::contentOrientation. (LP: #1187321)
+
+  [ Michał Sawicz ]
+  * Depend on devscripts for licensecheck.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 661
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 29 Jul 2013 04:02:12 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130726.1-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * The UI Toolkit has theme with artworks what should be under creative
+    common license.
+
+  [ Leo Arias ]
+  * Renamed the UbuntuUiToolkit python package to ubuntuuitoolkit. (LP:
+    #1204281)
+
+  [ Juhapekka Piiroinen ]
+  * Added Ubuntu Test module which contains UbuntuTestCase.
+  * Use qmltestrunner for qml tests.
+  * Adds missing dependency to devscripts which is required for the make
+    license which uses licensecheck. (LP: #1205259)
+
+  [ Luke Yelavich ]
+  * Ship the components required for the calculator example.
+
+  [ tpeeters ]
+  * Allow combination of Tabs and PageStack: - Fix header behavior for
+    Tabs inside PageStack - Add test for Tabs inside PageStack header
+    bug - Replace deprecated components in PageStack tests - Add test
+    program that combines PageStack and Tabs - Update Tabs
+    documentation. (LP: #1187850)
+
+  [ Christian Dywan ]
+  * Refactor checklicense and include CSS files This also makes the test
+    work on precise. (LP: #1195250)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 657
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 26 Jul 2013 12:23:40 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130725-0ubuntu1) saucy; urgency=low
+
+  [ Leo Arias ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Juhapekka Piiroinen ]
+  * Added fixes for the static errors detected by pyflakes, to the
+    branch by Juhapekka that fixes the remaining pep8 errors. (LP:
+    #1204674)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 648
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 25 Jul 2013 06:01:15 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130722-0ubuntu1) saucy; urgency=low
 
   [ Kaleo ]

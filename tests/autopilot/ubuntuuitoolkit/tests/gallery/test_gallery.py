@@ -22,11 +22,9 @@ import time
 import testscenarios
 
 from autopilot.matchers import Eventually
-from textwrap import dedent
 from testtools.matchers import Is, Not, Equals
-from testtools import skip
 
-from UbuntuUiToolkit import tests
+from ubuntuuitoolkit import tests
 
 
 class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
@@ -157,7 +155,7 @@ class GenericTests(GalleryTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
             self.tap(objName)
 
             # TODO: move slider value
@@ -205,7 +203,7 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
 
-        template_textinputs = self.getObject("textinputs")
+        self.getObject("textinputs")
 
         item_data = [
             ["textfield_standard", True, 0, "", None],
@@ -265,7 +263,7 @@ class GenericTests(GalleryTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
             self.tap(objName)
 
             # TODO: check for properties
@@ -288,7 +286,7 @@ class GenericTests(GalleryTestCase):
 
         for data in item_data:
             objName = data[0]
-            obj = self.getObject(objName)
+            self.getObject(objName)
 
 
 class ButtonsTestCase(GalleryTestCase):

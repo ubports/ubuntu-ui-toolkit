@@ -22,6 +22,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
 
+class QWindow;
+
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -32,6 +34,10 @@ public:
     void initializeEngine(QQmlEngine *engine, const char *uri);
     QUrl baseUrl(QStringList importPathList, const char* uri);
     void registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile);
+
+private Q_SLOTS:
+    void registerWindowContextProperty();
+    void setWindowContextProperty(QWindow* focusWindow);
 };
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 

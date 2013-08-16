@@ -15,14 +15,19 @@
 #
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 
-import os, subprocess
-from bzrlib import branch, errors
-from bzrlib.urlutils import dirname, local_path_from_url
+import os
+import subprocess
+from bzrlib import branch
+from bzrlib import errors
+from bzrlib.urlutils import local_path_from_url
 
-def execute_makecheck(local_branch, master_branch, old_revision_number, old_revision_id, future_revision_number, future_revision_id, tree_delta, future_tree):
+
+def execute_makecheck(local_branch, master_branch, old_revision_number,
+                      old_revision_id, future_revision_number,
+                      future_revision_id, tree_delta, future_tree):
     if (master_branch.get_parent().find("ubuntu-ui-toolkit") == -1):
         return
-    
+
     print "Set work directory to %s" % local_path_from_url(master_branch.base)
     os.chdir(local_path_from_url(master_branch.base))
 
@@ -30,4 +35,6 @@ def execute_makecheck(local_branch, master_branch, old_revision_number, old_revi
     if (subprocess.call("make check", shell=True) != 0):
         raise errors.BzrError("Tests failed, fix them before commit!")
 
-branch.Branch.hooks.install_named_hook('pre_commit', execute_makecheck, 'make check pre-commit')
+branch.Branch.hooks.install_named_hook('pre_commit',
+                                       execute_makecheck,
+                                       'make check pre-commit')

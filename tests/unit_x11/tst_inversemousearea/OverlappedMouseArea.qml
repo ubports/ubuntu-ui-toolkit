@@ -17,34 +17,37 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Page {
-    title: i18n.tr("My custom page")
+Item {
+    id: root
+    width: units.gu(50)
+    height: units.gu(50)
 
-    Flickable {
-        anchors.fill: parent
-        contentHeight: parent.height + units.gu(10)
-        Label {
-            anchors {
-                top: parent.top
-                topMargin: units.gu(16)
-                horizontalCenter: parent.horizontalCenter
-            }
+    property string log: ""
 
-            text: i18n.tr("This is an external page\nwith a locked toolbar.")
-            color: "#757373"
+    Item {
+        id: nil
+        width: 0
+        height: 0
+    }
+
+    InverseMouseArea {
+        anchors.fill: nil
+        onClicked: {
+            color.color = "red"
+            root.log = "IMA" // FAIL
         }
     }
 
-    tools: ToolbarActions {
-        Action {
-            text: "action 1"
-            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+    Rectangle {
+        id: color
+        anchors.fill: parent
+        color: "blue"
+        MouseArea {
+            onClicked: {
+                parent.color = "green"
+                root.log = "MA" // PASS
+            }
+            anchors.fill: parent
         }
-        Action {
-            text: "action 2"
-            iconSource: Qt.resolvedUrl("call_icon.png")
-        }
-        opened: true
-        locked: true
     }
 }

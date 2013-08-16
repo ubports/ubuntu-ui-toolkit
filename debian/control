@@ -3,6 +3,7 @@ Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9.0.0),
+               devscripts,
                libgles2-mesa-dev,
                libglib2.0-dev,
                python,
@@ -20,6 +21,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-test-plugin,
                qtdeclarative5-window-plugin,
                qtdeclarative5-unity-action-plugin,
+               devscripts,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
@@ -36,6 +38,7 @@ Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
          qtdeclarative5-qtquick2-plugin,
          qtdeclarative5-window-plugin,
          qtdeclarative5-unity-action-plugin,
+         ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
          ${shlibs:Depends},

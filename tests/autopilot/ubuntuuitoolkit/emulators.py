@@ -14,12 +14,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import time
-
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
+
+
+class ToolkitEmulatorException(Exception):
+    """Exception raised when there is an error with the emulator."""
 
 
 def get_pointing_device():
@@ -49,7 +51,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def get_header(self):
         """Return the Header emulator of the MainView."""
-        return self.select_single('Header')
+        return self.select_single('Header', objectName='MainView_Header')
 
     def get_toolbar(self):
         """Return the Toolbar emulator of the MainView."""
@@ -62,9 +64,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if not toolbar.opened:
             self._drag_to_open_toolbar()
             toolbar.opened.wait_for(True)
+            toolbar.animating.wait_for(False)
 
         return toolbar
 
@@ -79,9 +83,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
         toolbar = self.get_toolbar()
+        toolbar.animating.wait_for(False)
         if toolbar.opened:
             self._drag_to_close_toolbar()
             toolbar.opened.wait_for(False)
+            toolbar.animating.wait_for(False)
 
     def _drag_to_close_toolbar(self):
         x, y, _, _ = self.globalRect
@@ -116,11 +122,19 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         tabs = self.get_tabs()
-        if index >= tabs.get_number_of_tabs():
+        number_of_tabs = tabs.get_number_of_tabs()
+        if index >= number_of_tabs:
             raise IndexError('Tab index out of range.')
         current_tab = tabs.get_current_tab()
+        number_of_switches = 0
         while not tabs.selectedTabIndex == index:
+            if number_of_switches >= number_of_tabs - 1:
+                # This prevents a loop. But if this error is ever raised, it's
+                # likely there's a bug on the emulator or on the QML Tab.
+                raise ToolkitEmulatorException(
+                    'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
+            number_of_switches += 1
         return current_tab
 
     def switch_to_previous_tab(self):
@@ -150,6 +164,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         raise ValueError(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
+    def get_action_selection_popover(self, object_name):
+        """Return an ActionSelectionPopover emulator.
+
+        :parameter object_name: The QML objectName property of the popover.
+
+        """
+        return self.select_single(
+            ActionSelectionPopover, objectName=object_name)
+
 
 class Header(UbuntuUIToolkitEmulatorBase):
     """Header Autopilot emulator."""
@@ -158,22 +181,18 @@ class Header(UbuntuUIToolkitEmulatorBase):
         super(Header, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
+    def _get_animating(self):
+        tab_bar_style = self.select_single('TabBarStyle')
+        return tab_bar_style.animating
+
     def switch_to_next_tab(self):
         """Open the next tab."""
-        tab_bar = self.select_single('NewTabBar')
+        tab_bar = self.select_single(TabBar)
         assert tab_bar is not None, _NO_TABS_ERROR
-        tab_bar_x, tab_bar_y, _, _ = tab_bar.globalRect
-        line_y = tab_bar_y + tab_bar.height * 0.5
-        current_tab_x = tab_bar_x + tab_bar.width * 0.35
-        next_tab_x = tab_bar_x + tab_bar.width * 0.65
-
-        self.pointing_device.move(current_tab_x, line_y)
-        self.pointing_device.click()
-        self.pointing_device.move(next_tab_x, line_y)
-        self.pointing_device.click()
+        tab_bar.switch_to_next_tab()
 
         # Sleep while the animation finishes.
-        time.sleep(tab_bar.buttonPositioningVelocity)
+        self._get_animating().wait_for(False)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
@@ -209,3 +228,65 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
     def get_number_of_tabs(self):
         """Return the number of tabs."""
         return len(self.select_many('Tab'))
+
+
+class TabBar(UbuntuUIToolkitEmulatorBase):
+    """TabBar Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(TabBar, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+
+    def switch_to_next_tab(self):
+        """Open the next tab."""
+        # Click the tab bar to switch to selection mode.
+        self.pointing_device.click_object(self)
+        self.pointing_device.click_object(self._get_next_tab_button())
+
+    def _get_next_tab_button(self):
+        current_index = self._get_selected_button_index()
+        next_index = (current_index + 1) % self._get_number_of_tab_buttons()
+        return self._get_tab_buttons()[next_index]
+
+    def _get_selected_button_index(self):
+        return self.select_single('QQuickPathView').selectedButtonIndex
+
+    def _get_number_of_tab_buttons(self):
+        return len(self._get_tab_buttons())
+
+    def _get_tab_buttons(self):
+        return self.select_many('AbstractButton')
+
+
+class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
+    """ActionSelectionPopover Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(ActionSelectionPopover, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+
+    def click_button_by_text(self, text):
+        """Click a button on the popover.
+
+        XXX We are receiving the text because there's no way to set the
+        objectName on the action. This is reported at
+        https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205144
+        --elopio - 2013-07-25
+
+        :parameter text: The text of the button.
+
+        """
+        assert self.visible, 'The popover is not open.'
+        button = self._get_button(text)
+        if button is None:
+            raise ValueError(
+                'Button with text "{0}" not found.'.format(text))
+        self.pointing_device.click_object(button)
+        if self.autoClose:
+            self.visible.wait_for(False)
+
+    def _get_button(self, text):
+        buttons = self.select_many('Empty')
+        for button in buttons:
+            if button.text == text:
+                return button
