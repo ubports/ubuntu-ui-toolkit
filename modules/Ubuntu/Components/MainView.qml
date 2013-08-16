@@ -337,6 +337,7 @@ PageTreeNode {
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
+            i18n.applicationName = applicationName;
         }
     }
 }

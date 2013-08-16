@@ -27,6 +27,7 @@ class QQmlEngine;
 class UbuntuI18n : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName)
     Q_PROPERTY(QString domain READ domain WRITE setDomain NOTIFY domainChanged)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
 
@@ -48,10 +49,12 @@ public:
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
 
     // getter
+    Qstring applicationName();
     QString domain();
     QString language();
 
     // setter
+    void setApplicationName(QString applicationName);
     void setDomain(QString domain);
     void setLanguage(const QString& lang);
 

@@ -57,6 +57,25 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 }
 
 /*!
+ * \qmlproperty string i18n:applicationName
+ * \internal
+ * The name of the application. It must be identical to the package name under
+ * confinement. It defines the folder used by QStandardPaths::writableLocation
+ * with QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
+ *
+ * This is exposed here for the benefit of MainView only.
+ */
+QString UbuntuI18n::applicationName() {
+    return QCoreApplication::applicationName();
+}
+
+void UbuntuI18n::setApplicationName(QString applicationName) {
+    QCoreApplication::setApplicationName(applicationName);
+    // Unsetting the organization name to skip an unneeded folder component
+    QCoreApplication::setOrganizationName("");
+}
+
+/*!
  * \qmlproperty string i18n::domain
  * The gettext domain to be used for the translation. The default domain
  * is the applicationName specified in the application's \l MainView, or the empty string "" if
