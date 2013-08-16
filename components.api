@@ -16,7 +16,8 @@ StyledItem
     property Action action
     property string text
     property url iconSource
-    signal triggered(var caller)
+    signal triggered(var value)
+    function trigger(value)
 modules/Ubuntu/Components/ActionList.qml
 QtObject
     default property list<Action> children
