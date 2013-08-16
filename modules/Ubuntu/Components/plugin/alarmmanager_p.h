@@ -16,15 +16,16 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARMSERVICES_P_H
-#define UCALARMSERVICES_P_H
+#ifndef ALARMMANAGER_H
+#define ALARMMANAGER_H
 
-#include "ucalarmmanager.h"
-#include <QtCore/QUrl>
+#include <QtCore/QObject>
+#include <QtQml/QQmlListProperty>
+#include <QtCore/QSet>
 
-#include <QDebug>
+#include "ucalarm.h"
 
-class RawAlarm {
+class AlarmData {
 public:
     enum Change {
         NoChange    = 0,
@@ -36,14 +37,14 @@ public:
         Days        = 0x0020
     };
 
-    RawAlarm()
+    AlarmData()
         : changes(0)
         , type(UCAlarm::OneTime)
         , days(UCAlarm::AutoDetect)
         , enabled(true)
     {
     }
-    RawAlarm(const RawAlarm &other)
+    AlarmData(const AlarmData &other)
         : changes(0)
         , cookie(other.cookie)
         , date(other.date)
@@ -54,7 +55,7 @@ public:
     {
     }
 
-    inline bool compare(const RawAlarm &other)
+    bool compare(const AlarmData &other)
     {
         // cookie, sound, and enabled do not count on alarm equality
         return date == other.date
@@ -63,12 +64,12 @@ public:
                 && days == other.days;
     }
 
-    inline bool operator==(const RawAlarm &other)
+    bool operator==(const AlarmData &other)
     {
         return compare(other);
     }
 
-    inline QSet<Qt::DayOfWeek> daysToSet() const
+    QSet<Qt::DayOfWeek> daysToSet() const
     {
         QSet<Qt::DayOfWeek> result;
         for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
@@ -78,13 +79,37 @@ public:
         return result;
     }
 
-    inline void daysFromSet(QSet<Qt::DayOfWeek> set)
+    void daysFromSet(QSet<Qt::DayOfWeek> set)
     {
         days = 0;
         QSetIterator<Qt::DayOfWeek> i(set);
         while (i.hasNext()) {
             int day = static_cast<int>(i.next());
             days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
+        }
+    }
+
+    static QHash<int, QByteArray> roles() {
+        QHash<int, QByteArray> hash;
+        int i = 0;
+        hash.insert(i++, QByteArray("message"));
+        hash.insert(i++, QByteArray("date"));
+        hash.insert(i++, QByteArray("type"));
+        hash.insert(i++, QByteArray("daysOfWeek"));
+        hash.insert(i++, QByteArray("sound"));
+        hash.insert(i++, QByteArray("enabled"));
+        return hash;
+    }
+
+    QVariant roleData(int role) const {
+        switch (role) {
+        case 0: return message;
+        case 1: return date;
+        case 2: return type;
+        case 3: return static_cast<int>(days);
+        case 4: return sound;
+        case 5: return enabled;
+        default: return QVariant();
         }
     }
 
@@ -100,49 +125,32 @@ public:
     bool enabled;
 };
 
-class UCAlarmManagerPrivate : public QObject
+class AlarmManagerPrivate;
+class AlarmManager : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PUBLIC(UCAlarmManager)
 public:
-    UCAlarmManagerPrivate(UCAlarmManager *qq);
-    virtual ~UCAlarmManagerPrivate();
+    explicit AlarmManager(QObject *parent = 0);
+    ~AlarmManager();
 
-    UCAlarmManager *q_ptr;
-    QList<UCAlarm*> alarmList;
-    bool completed:1;
+    static AlarmManager &instance() {
+        static AlarmManager instance;
+        return instance;
+    }
 
-    void error(UCAlarmManager::Error code, const QString &msg);
-    void resetError();
+    QList<AlarmData> alarms() const;
 
-    virtual QList<RawAlarm> getAlarms() = 0;
-    virtual bool addAlarm(RawAlarm &alarm) = 0;
-    virtual bool updateAlarm(RawAlarm &alarm) = 0;
-    virtual bool removeAlarm(RawAlarm &alarm) = 0;
+    // invokables to be also accessible from QML
+    int set(AlarmData &alarm, int &changes);
+    int cancel(AlarmData &alarm);
 
-    // utility functions
-    static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
-    static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
-    static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
-    static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
-
-protected Q_SLOTS:
-    void refreshAlarms();
-
+Q_SIGNALS:
+    void alarmsChanged();
+    
 private:
-    void clear();
-    bool checkAlarm(RawAlarm &alarm);
-    bool checkDow(RawAlarm &alarm);
-    bool checkOneTime(RawAlarm &alarm);
-    bool checkRepeatingWeekly(RawAlarm &alarm);
-
-    // property getter
-    QQmlListProperty<UCAlarm> alarms();
-
-    UCAlarmManager::Error errorCode;
-    QString errorMessage;
+    Q_DISABLE_COPY(AlarmManager)
+    Q_DECLARE_PRIVATE(AlarmManager)
+    QScopedPointer<AlarmManagerPrivate> d_ptr;
 };
 
-UCAlarmManagerPrivate * createAlarmsAdapter(UCAlarmManager *alarms);
-
-#endif // UCALARMSERVICES_P_H
+#endif // ALARMMANAGER_H

@@ -418,6 +418,7 @@ plugins.qmltypes
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1"]
+    name: "Error"
     name: "AlarmType"
     name: "DayOfWeek"
     name: "DaysOfWeek"
@@ -427,28 +428,17 @@ plugins.qmltypes
     Property { name: "type"; type: "AlarmType" }
     Property { name: "daysOfWeek"; type: "DaysOfWeek" }
     Property { name: "sound"; type: "QUrl" }
+    Property { name: "error"; type: "int"; isReadonly: true }
+    Method { name: "save" }
+    Method { name: "cancel" }
     Method { name: "reset" }
-    name: "UCAlarmManager"
-    prototype: "QObject"
-    exports: ["AlarmManager 0.1"]
-    Property { name: "error"; type: "Error"; isReadonly: true }
-    Property { name: "erroMessage"; type: "string"; isReadonly: true }
-    Property { name: "alarms"; type: "UCAlarm"; isList: true; isReadonly: true }
+    name: "UCAlarmModel"
+    prototype: "QAbstractListModel"
+    exports: ["AlarmModel 0.1"]
+    Property { name: "count"; type: "int"; isReadonly: true }
     Method {
-    name: "set"
-    Parameter { name: "alarm"; type: "UCAlarm"; isPointer: true }
-    Method {
-    name: "cancel"
-    Parameter { name: "alarm"; type: "UCAlarm"; isPointer: true }
-    Method {
-    name: "setOneTime"
-    Parameter { name: "date"; type: "QDateTime" }
-    Parameter { name: "message"; type: "string" }
-    Method {
-    name: "setRepeating"
-    Parameter { name: "date"; type: "QDateTime" }
-    Parameter { name: "days"; type: "int" }
-    Parameter { name: "message"; type: "string" }
+    name: "get"
+    Parameter { name: "index"; type: "int" }
     name: "UCArgument"
     prototype: "QObject"
     exports: ["Argument 0.1"]

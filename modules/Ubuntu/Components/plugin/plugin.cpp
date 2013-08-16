@@ -43,7 +43,7 @@
 #include "ucarguments.h"
 #include "ucargument.h"
 #include "ucalarm.h"
-#include "ucalarmmanager.h"
+#include "ucalarmmodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -68,15 +68,6 @@ static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptE
 
     UCUbuntuAnimation *animation = new UCUbuntuAnimation();
     return animation;
-}
-
-static QObject *registerUCAlarms(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCAlarmManager *alarms = new UCAlarmManager();
-    return alarms;
 }
 
 
@@ -152,7 +143,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
     qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
-    qmlRegisterSingletonType<UCAlarmManager>(uri, 0, 1, "AlarmManager", registerUCAlarms);
+    qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

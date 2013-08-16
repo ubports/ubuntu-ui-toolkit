@@ -22,30 +22,25 @@ TestCase {
     id: testCase
     name: "AlarmAPI"
 
-    property Alarm alarm
-
-    SignalSpy {
-        id: spy
-        signalName: "alarmsChanged"
-        target: AlarmManager
-    }
-
     Alarm {
         id: testAlarm
     }
 
+    AlarmModel {
+        id: model
+    }
+
     function initTestCase() {
-        spy.clear();
     }
 
     function cleanupTestCase() {
         var loop = true
         while (loop) {
             loop = false;
-            for (var i = 0; AlarmManager.alarms.length; i++) {
-                var alarm = AlarmManager.alarms[i];
+            for (var i = 0; model.count; i++) {
+                var alarm = model.get(i);
                 if (alarm && alarm.message === "test") {
-                    AlarmManager.cancel(alarm);
+                    alarm.cancel();
                     loop = true;
                     break;
                 }
@@ -54,69 +49,62 @@ TestCase {
     }
 
     function test_createOneTimeFail() {
-        var dt = new Date();
+        testAlarm.reset();
+        testAlarm.date = new Date();
 
-        verify(!AlarmManager.setOneTime(dt, "test"), 'alarm date must be greater than the current time');
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.EarlyDate, 'alarm date must be greater than the current time');
     }
 
     function test_createOneTimePass() {
-        var dt = new Date();
-        dt.setMinutes(dt.getMinutes() + 10);
-        spy.clear();
-
-        verify(AlarmManager.setOneTime(dt, "test"), "one time alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_repeating_AutoDetect() {
-        var dt = new Date();
-        spy.clear();
-
-        verify(AlarmManager.setRepeating(dt, Alarm.AutoDetect, "test"), "repating AutoDetect alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_repeating_Daily() {
-        var dt = new Date();
-        spy.clear();
-
-        verify(AlarmManager.setRepeating(dt, Alarm.Daily, "test"), "repating Daily alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_repeating_givenDay() {
-        var dt = new Date();
-        spy.clear();
-
-        verify(AlarmManager.setRepeating(dt, Alarm.Monday, "test"), "repating on given day alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_repeating_moreDays() {
-        var dt = new Date();
-        spy.clear();
-
-        verify(AlarmManager.setRepeating(dt, Alarm.Monday | Alarm.Friday, "test"), "repating on multiple days alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_oneTime_Object_Fail() {
         testAlarm.reset();
-        testAlarm.message = "test";
-
-        verify(!AlarmManager.set(testAlarm), "cannot create one time alarm");
-    }
-
-    function test_oneTime_Object_Pass() {
-        testAlarm.reset();
-        testAlarm.message = "test";
+        testAlarm.message = "test"
         var dt = new Date();
         dt.setMinutes(dt.getMinutes() + 10);
         testAlarm.date = dt;
-        spy.clear();
 
-        verify(AlarmManager.set(testAlarm), "cannot create one time alarm");
-        tryCompare(spy, "count", 2, 100); // ???
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, 'alarm date must be greater than the current time');
+    }
+
+    function test_repeating_AutoDetect() {
+        testAlarm.reset();
+        testAlarm.message = "test"
+        testAlarm.date = new Date();
+        testAlarm.type = Alarm.AutoDetect;
+
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, 'repating AutoDetect alarm');
+    }
+
+    function test_repeating_Daily() {
+        testAlarm.reset();
+        testAlarm.message = "test"
+        testAlarm.date = new Date();
+        testAlarm.type = Alarm.Daily;
+
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, 'repating Daily alarm');
+    }
+
+    function test_repeating_givenDay() {
+        testAlarm.reset();
+        testAlarm.message = "test"
+        testAlarm.date = new Date();
+        testAlarm.type = Alarm.Monday;
+
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, 'repating on a given day alarm');
+    }
+
+    function test_repeating_moreDays() {
+        testAlarm.reset();
+        testAlarm.message = "test"
+        testAlarm.date = new Date();
+        testAlarm.type = Alarm.Monday | Alarm.Friday;
+
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, 'repating on multiple days alarm');
     }
 
     function test_setAlarmObject_WrongRecurence() {
@@ -128,46 +116,15 @@ TestCase {
         testAlarm.type = Alarm.OneTime;
         testAlarm.daysOfWeek = Alarm.Monday | Alarm.Tuesday;
 
-        verify(!AlarmManager.set(testAlarm), "wrong alarm type");
-    }
-
-    function test_setAlarmObject_RepeatingDaily() {
-        testAlarm.reset();
-        testAlarm.message = "test";
-        testAlarm.type = Alarm.Repeating;
-        testAlarm.daysOfWeek = Alarm.Daily;
-        spy.clear();
-
-        verify(AlarmManager.set(testAlarm), "creating daily repeating alarm");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_setAlarmObject_RepeatingOnAGivenDay() {
-        testAlarm.reset();
-        testAlarm.message = "test";
-        testAlarm.type = Alarm.Repeating;
-        testAlarm.daysOfWeek = Alarm.Monday;
-        spy.clear();
-
-        verify(AlarmManager.set(testAlarm), "creating repeating alarm on a given day");
-        tryCompare(spy, "count", 2, 100); // ???
-    }
-
-    function test_setAlarmObject_RepeatingOnMultipleDays() {
-        testAlarm.reset();
-        testAlarm.message = "test";
-        testAlarm.type = Alarm.Repeating;
-        testAlarm.daysOfWeek = Alarm.Monday | Alarm.Tuesday | Alarm.Friday;
-        spy.clear();
-
-        verify(AlarmManager.set(testAlarm), "creating repeating alarm on multiple days");
-        tryCompare(spy, "count", 2, 100); // ???
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.OneTimeOnMoreDays, 'repating on multiple days alarm');
     }
 
     function test_cancel_Fail() {
         testAlarm.reset();
 
-        verify(!AlarmManager.cancel(testAlarm), "cannot cancel an unregistered alarm");
+        testAlarm.cancel();
+        compare(testAlarm.error, Alarm.InvalidEvent, "cannot cancel an unregistered alarm");
     }
 
     function test_cancel_Pass() {
@@ -178,8 +135,11 @@ TestCase {
         dt.setMinutes(dt.getMinutes() + 10);
         testAlarm.date = dt;
 
-        verify(AlarmManager.set(testAlarm), "alarm added to be removed");
-        verify(AlarmManager.cancel(testAlarm), "alarm cancelled");
+        testAlarm.save();
+        wait(100);
+        testAlarm.cancel();
+        wait(100);
+        compare(testAlarm.error, Alarm.NoError, "alarm canceled");
     }
 
     function test_updateAlarm_sameType() {
@@ -190,9 +150,12 @@ TestCase {
         dt.setMinutes(dt.getMinutes() + 10);
         testAlarm.date = dt;
 
-        verify(AlarmManager.set(testAlarm), "fist alarm added");
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, "fist alarm added");
+
         dt.setDate(dt.getDate() + 2);
-        verify(AlarmManager.set(testAlarm), "updated alarm");
+        testAlarm.date = dt;
+        compare(testAlarm.error, Alarm.NoError, "updated alarm");
     }
 
     function test_updateAlarm_differentType() {
@@ -203,8 +166,9 @@ TestCase {
         dt.setMinutes(dt.getMinutes() + 10);
         testAlarm.date = dt;
 
-        verify(AlarmManager.set(testAlarm), "fist alarm added");
+        testAlarm.save();
+        compare(testAlarm.error, Alarm.NoError, "fist alarm added");
         testAlarm.type = Alarm.Repeating;
-        verify(AlarmManager.set(testAlarm), "updated alarm");
+        compare(testAlarm.error, Alarm.NoError, "updated alarm");
     }
 }

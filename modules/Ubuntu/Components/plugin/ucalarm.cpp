@@ -18,11 +18,12 @@
 
 #include "ucalarm.h"
 #include "ucalarm_p.h"
-#include "ucalarmmanager_p.h"
+#include "alarmmanager_p_p.h"
 #include "i18n.h"
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
+    , error(UCAlarm::NoError)
 {
     setDefaults();
 }
@@ -38,14 +39,20 @@ void UCAlarmPrivate::setDefaults()
  * \instantiates UCAlarm
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu-services
- * \brief Alarm component is a representation of an alarm.
+ * \brief Alarm component is a representation of an alarm event.
  *
- * The Alarm component unifies the properties of an alarm event. The component
- * does not check the consistency of the properties, only holds and groups the
- * values. Both one time and repeating alarm events are supported by the component.
+ * The Alarm element encapsulates alarm event data. Supports one time and repeating
+ * alarms, where repeating can be either daily or weekly on one or several selected
+ * days.
  *
- * The component can be used to hold data in alarm editors as shown in the following
- * code snippet:
+ * The alarm data is validated upon \l save operation, which can be used to save
+ * a new alarm or update existing alarm's properties.
+ *
+ * During data validation the alarm properties may suffer changes. These changes
+ * will be reported back to each changed property. See what changes can occurr at
+ * \l save function documentation.
+ *
+ * Example usage:
  * \qml
  * import QtQuick 2.0
  * import Ubuntu.Components 0.1
@@ -54,8 +61,8 @@ void UCAlarmPrivate::setDefaults()
  *     width: units.gu(40)
  *     height: units.gu(20)
  *
- *     property Alarm alarm: Alarm{
- *         date: new Date()
+ *     Alarm{
+ *         id: alarm
  *     }
  *     Column {
  *         spacing: units.gu(1)
@@ -86,13 +93,19 @@ void UCAlarmPrivate::setDefaults()
  *         Button {
  *             text: "Save"
  *             onClicked: {
- *                 if (!AlarmManager.set(alarm)) print(AlarmManager.errorMessage)
- *                 alarm.reset();
+ *                 alarm.save();
+ *                 if (alarm.error != Alarm.NoError)
+ *                     print("Error saving alarm, code: " + alarm.error);
+ *                 else alarm.reset();
  *             }
  *         }
  *     }
  * }
  * \endqml
+ *
+ * An alarm can be cancelled using \l cancel function but only if the event has
+ * previously been stored in the alarm collection.
+ *
  * The \l reset function clears the properties of the alarm bringing them to the
  * default values. In this way the same alarm component can be used to save several
  * alarms at the same time.
@@ -112,42 +125,27 @@ UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
     if (!message.isEmpty()) {
         d_ptr->rawData.message = message;
     }
-    d_ptr->rawData.days = UCAlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
+    d_ptr->rawData.days = AlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
 }
 
-UCAlarm::UCAlarm(const UCAlarm &other)
-    : QObject(other.parent())
-    , d_ptr(new UCAlarmPrivate(this))
-{
-    d_ptr->rawData = other.d_func()->rawData;
-}
-
-UCAlarm::UCAlarm(const QDateTime &dt, AlarmType type, DaysOfWeek days, const QString &message, QObject *parent)
+UCAlarm::UCAlarm(const QDateTime &dt, DaysOfWeek days, const QString &message, QObject *parent)
     : QObject(parent)
     , d_ptr(new UCAlarmPrivate(this))
 {
     d_ptr->rawData.date = dt;
-    d_ptr->rawData.type = type;
+    d_ptr->rawData.type = Repeating;
     d_ptr->rawData.days = days;
     if (!message.isEmpty()) {
         d_ptr->rawData.message = message;
     }
     if (d_ptr->rawData.days == AutoDetect) {
-        d_ptr->rawData.days = UCAlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
+        d_ptr->rawData.days = AlarmManagerPrivate::dayOfWeek(d_ptr->rawData.date);
     }
 }
-
 
 UCAlarm::~UCAlarm()
 {
 }
-
-bool UCAlarm::operator==(const UCAlarm &other)
-{
-    Q_D(UCAlarm);
-    return d->rawData.compare(other.d_func()->rawData);
-}
-
 
 /*!
  * \qmlproperty bool Alarm::enabled
@@ -167,7 +165,7 @@ void UCAlarm::setEnabled(bool enabled)
         return;
     }
     d->rawData.enabled = enabled;
-    d->rawData.changes |= RawAlarm::Enabled;
+    d->rawData.changes |= AlarmData::Enabled;
     Q_EMIT enabledChanged();
 }
 
@@ -189,7 +187,7 @@ void UCAlarm::setDate(const QDateTime &date)
         return;
     }
     d->rawData.date = date;
-    d->rawData.changes |= RawAlarm::Date;
+    d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
 }
 
@@ -210,7 +208,7 @@ void UCAlarm::setMessage(const QString &message)
         return;
     }
     d->rawData.message = message;
-    d->rawData.changes |= RawAlarm::Message;
+    d->rawData.changes |= AlarmData::Message;
     Q_EMIT messageChanged();
 }
 
@@ -247,7 +245,7 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
         return;
     }
     d->rawData.type = type;
-    d->rawData.changes |= RawAlarm::Type;
+    d->rawData.changes |= AlarmData::Type;
     Q_EMIT typeChanged();
 }
 
@@ -293,7 +291,7 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
  *  \li 0x40
  *  \li The alarm will kick on Sundays.
  * \row
- *  \li Alarm.Autodetect
+ *  \li Alarm.AutoDetect
  *  \li 0x80
  *  \li The alarm day will be detected from the alarm date.
  * \endtable
@@ -312,7 +310,7 @@ void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
         return;
     }
     d->rawData.days = days;
-    d->rawData.changes |= RawAlarm::Days;
+    d->rawData.changes |= AlarmData::Days;
     Q_EMIT daysOfWeekChanged();
 }
 
@@ -335,19 +333,125 @@ void UCAlarm::setSound(const QUrl &sound)
         return;
     }
     d->rawData.sound = sound;
-    d->rawData.changes |= RawAlarm::Sound;
+    d->rawData.changes |= AlarmData::Sound;
     Q_EMIT soundChanged();
 }
 
 /*!
+ * \qmlproperty Error Alarm::error
+ * The property holds the error code occurred during the last performed operation.
+ *
+ * \table
+ *   \header
+ *      \li Error code
+ *      \li Value
+ *      \li Description
+ *   \row
+ *      \li NoError
+ *      \li 0
+ *      \li Successful operation completion.
+ *   \row
+ *      \li InvalidDate
+ *      \li 1
+ *      \li The date specified for the alarm was invalid.
+ *   \row
+ *      \li EarlyDate
+ *      \li 2
+ *      \li The date specified for the alarm is an earlier date than the current one.
+ *   \row
+ *      \li NoDaysOfWeek
+ *      \li 3
+ *      \li The daysOfWeek parameter of the alarm was not specified.
+ *   \row
+ *      \li OneTimeOnMoreDays
+ *      \li 4
+ *      \li The one-time alarm was set to be kicked in several days.
+ *   \row
+ *      \li InvalidEvent
+ *      \li 5
+ *      \li The alarm event is invalid.
+ *   \row
+ *      \li AdaptationError
+ *      \li 100
+ *      \li The error occurred in alarm adaptation layer. Adaptations may define
+ *          additional behind this value.
+ * \endtable
+ */
+int UCAlarm::error() const
+{
+    Q_D(const UCAlarm);
+    return d->error;
+}
+
+/*!
+ * \qmlmethod Alarm::save()
+ * Updates or adds an alarm to the alarm collection. The operation aligns properties
+ * according to the following rules:
+ * \list
+ *  \li - the \l daysOfWeek will be set to the alarm day if the daysOfWeek was set
+ *      to Alarm.AutoDetect.
+ *  \li - if the \l daysOfWeek is set to a day other than the one specified in the \l date
+ *      field, the \l date will be moved ahead to match the day from the \l daysOfWeek.
+ * \endlist
+ *
+ * The function will fail if
+ * \list
+ *  \li - the \l date property is invalid
+ *  \li - for one time alarm, the \l date property falue is earlier than the current time
+ *  \li - the \l daysOfWeek property is set to multiple days for one time alarm
+ * \endlist
+ *
+ * The operation result is stored in the \l error property.
+ */
+void UCAlarm::save()
+{
+    Q_D(UCAlarm);
+    int changes = 0;
+    d->error = AlarmManager::instance().set(d->rawData, changes);
+    if (d->error != NoError) {
+        Q_EMIT errorChanged();
+    } else {
+        if (changes & AlarmData::Enabled)
+            Q_EMIT enabledChanged();
+        if (changes & AlarmData::Date)
+            Q_EMIT dateChanged();
+        if (changes & AlarmData::Message)
+            Q_EMIT messageChanged();
+        if (changes & AlarmData::Sound)
+            Q_EMIT soundChanged();
+        if (changes & AlarmData::Type)
+            Q_EMIT typeChanged();
+        if (changes & AlarmData::Days)
+            Q_EMIT daysOfWeekChanged();
+    }
+}
+
+/*!
+ * \qmlmethod Alarm::cancel()
+ * The function removes the alarm from the collection. The function will fail
+ * for alarms which are not yet registered to the collection.
+ *
+ * The operation result is stored in the \l error property.
+ */
+void UCAlarm::cancel()
+{
+    Q_D(UCAlarm);
+    d->error = AlarmManager::instance().cancel(d->rawData);
+    if (d->error != NoError) {
+        Q_EMIT errorChanged();
+    }
+}
+
+/*!
  * \qmlmethod Alarm::reset()
- * The function resets the alarm object to its defaults. After this call the
+ * The function resets the alarm properties to its defaults. After this call the
  * object can be used to create a new alarm event.
  */
 void UCAlarm::reset()
 {
     Q_D(UCAlarm);
-    d->rawData = RawAlarm();
+    d->error = NoError;
+    d->rawData = AlarmData();
     d->setDefaults();
     Q_EMIT enabledChanged();
     Q_EMIT dateChanged();

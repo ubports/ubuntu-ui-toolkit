@@ -34,10 +34,21 @@ class UCAlarm : public QObject
     Q_PROPERTY(AlarmType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(DaysOfWeek daysOfWeek READ daysOfWeek WRITE setDaysOfWeek NOTIFY daysOfWeekChanged)
     Q_PROPERTY(QUrl sound READ sound WRITE setSound NOTIFY soundChanged)
+    Q_PROPERTY(int error READ error NOTIFY errorChanged)
 
-    Q_ENUMS(AlarmType DayOfWeek)
+    Q_ENUMS(Error AlarmType DayOfWeek)
     Q_FLAGS(DaysOfWeek)
 public: // enums
+    enum Error {
+        NoError = 0,
+        InvalidDate = 1,
+        EarlyDate = 2,
+        NoDaysOfWeek = 3,
+        OneTimeOnMoreDays = 4,
+        InvalidEvent = 5,
+        AdaptationError = 100
+    };
+
     enum AlarmType {
         OneTime,
         Repeating // more to be added
@@ -58,12 +69,9 @@ public: // enums
 
 public:
     explicit UCAlarm(QObject *parent = 0);
-    UCAlarm(const UCAlarm &other);
     UCAlarm(const QDateTime &dt, const QString &message = QString(), QObject *parent = 0);
-    UCAlarm(const QDateTime &dt, AlarmType type, DaysOfWeek days = AutoDetect, const QString &message = QString(), QObject *parent = 0);
+    UCAlarm(const QDateTime &dt, DaysOfWeek days = AutoDetect, const QString &message = QString(), QObject *parent = 0);
     ~UCAlarm();
-
-    bool operator==(const UCAlarm &other);
 
 public: // getter/setter
     bool enabled() const;
@@ -79,6 +87,8 @@ public: // getter/setter
     QUrl sound() const;
     void setSound(const QUrl &sound);
 
+    int error() const;
+
 Q_SIGNALS:
     void enabledChanged();
     void messageChanged();
@@ -86,11 +96,15 @@ Q_SIGNALS:
     void typeChanged();
     void daysOfWeekChanged();
     void soundChanged();
+    void errorChanged();
 
 public Q_SLOTS:
+    void save();
+    void cancel();
     void reset();
 
 private:
+    Q_DISABLE_COPY(UCAlarm)
     Q_DECLARE_PRIVATE(UCAlarm)
     QScopedPointer<UCAlarmPrivate> d_ptr;
 };
