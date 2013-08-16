@@ -90,7 +90,7 @@ ListItem.Empty {
     /*!
       Called when the optionSelector is either expanded or collapsed.
      */
-    signal scroll(real selectorHeight, string currentState)
+    signal scroll()
 
     showDivider: false
 
@@ -128,7 +128,7 @@ ListItem.Empty {
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
-            onStateChanged: scroll(list.contentHeight, state)
+            onHeightChanged: scroll()
 
             states: [ State {
                     name: "expanded"
