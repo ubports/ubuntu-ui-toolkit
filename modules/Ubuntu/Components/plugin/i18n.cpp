@@ -63,6 +63,9 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
  * confinement. It defines the folder used by QStandardPaths::writableLocation
  * with QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
  *
+ * Note: The code works by specification and without utilizing platform- or
+ * confinement-specific API or variables like APP_ID to stay cross platform.
+ *
  * This is exposed here for the benefit of MainView only.
  */
 QString UbuntuI18n::applicationName() {

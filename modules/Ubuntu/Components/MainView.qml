@@ -133,6 +133,8 @@ PageTreeNode {
       \preliminary
       The property holds the application's name, which must be the same as the
       desktop file's name.
+      The name also sets the name of the QApplication and defaults for data
+      and cache folders that work on the desktop and under confinement.
       */
     property string applicationName: ""
 
