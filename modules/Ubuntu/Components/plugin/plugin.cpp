@@ -43,6 +43,8 @@
 #include "ucarguments.h"
 #include "ucargument.h"
 #include "ucapplication.h"
+#include "ucalarm.h"
+#include "ucalarmmodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -142,6 +144,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
     qmlRegisterUncreatableType<UCApplication>(uri, 0, 1, "Application", "Singleton object");
+    qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
+    qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
