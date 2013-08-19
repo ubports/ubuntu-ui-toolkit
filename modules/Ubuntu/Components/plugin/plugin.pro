@@ -40,6 +40,7 @@ HEADERS += plugin.h \
     qquickclipboard_p.h \
     ucubuntuanimation.h \
     ucfontutils.h \
+    ucapplication.h \
     ucarguments.h \
     ucargument.h
 
@@ -60,6 +61,7 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
+    ucapplication.cpp \
     ucarguments.cpp \
     ucargument.cpp
 

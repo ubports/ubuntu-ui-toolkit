@@ -133,8 +133,10 @@ PageTreeNode {
       \preliminary
       The property holds the application's name, which must be the same as the
       desktop file's name.
-      The name also sets the name of the QApplication and defaults for data
+      The name also sets the name of the QCoreApplication and defaults for data
       and cache folders that work on the desktop and under confinement.
+      C++ code that writes files may use QStandardPaths::writableLocation with
+      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
       */
     property string applicationName: ""
 
@@ -339,7 +341,15 @@ PageTreeNode {
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
-            i18n.applicationName = applicationName;
+            /* Set name and organization on Application which QStandardPaths
+               honors to construct folders.
+               This works across platforms. For confinement we rely on the fact
+               that the folders are whitelisted based on the app name. Similar
+               to how Unity uses it to distinguish running applications.
+             */
+            Application.applicationName = applicationName
+            // Unset organization to skip an extra folder component
+            Application.organizationName = ""
         }
     }
 }

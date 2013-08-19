@@ -42,6 +42,7 @@
 #include "ucfontutils.h"
 #include "ucarguments.h"
 #include "ucargument.h"
+#include "ucapplication.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -140,6 +141,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
+    qmlRegisterUncreatableType<UCApplication>(uri, 0, 1, "Application", "Singleton object");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
