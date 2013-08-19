@@ -57,7 +57,7 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 }
 
 /*!
- * \qmlproperty string i18n:applicationName
+ * \qmlproperty string i18n::applicationName
  * \internal
  * The name of the application. It must be identical to the package name under
  * confinement. It defines the folder used by QStandardPaths::writableLocation
