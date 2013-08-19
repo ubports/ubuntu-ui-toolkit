@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130819.3-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm management QML API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 699
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 19 Aug 2013 18:37:52 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130819-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]
