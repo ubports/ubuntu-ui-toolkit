@@ -27,10 +27,10 @@ import QtQuick 2.0
 StyledItem {
     id: tabBar
     anchors.fill: parent
-    visible: parent
 
     // HeaderStyle binds parent when the TabBar should be visible
     parent: null
+    // TabBar visibility is set in Tabs depending on whether the Tabs are active.
 
     /*!
       The \l Tabs item that tab bar belongs to.
