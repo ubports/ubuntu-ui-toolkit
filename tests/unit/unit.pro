@@ -20,6 +20,7 @@ SUBDIRS += tst_units \
     tst_qquick_image_extension \
     tst_performance \
     tst_ubuntu_shape \
+    tst_mainview \
     tst_arguments \
     tst_argument \
     tst_layouts

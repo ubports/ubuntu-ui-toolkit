@@ -49,7 +49,7 @@ public:
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
 
     // getter
-    Qstring applicationName();
+    QString applicationName();
     QString domain();
     QString language();
 
