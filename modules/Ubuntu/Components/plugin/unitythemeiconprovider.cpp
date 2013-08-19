@@ -43,11 +43,21 @@ QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *realSize
 
     Q_FOREACH (QString name, id.split(",", QString::SkipEmptyParts)) {
         icon = QIcon::fromTheme(name);
-        if (!icon.isNull())
+        if (!icon.isNull()) {
+            if (requestedSize.isValid()) {
+                *realSize =requestedSize;
+                return icon.pixmap(requestedSize);
+            } else {
+                QList<QSize> sizes = icon.availableSizes();
+                if (sizes.count() > 0 && sizes.last().isValid()) {
+                    *realSize = sizes.last();
+                } else {
+                    *realSize = QSize(32,32);
+                }
+                return icon.pixmap(*realSize);
+            }
             break;
+        }
     }
-
-    QPixmap pixmap = icon.pixmap(requestedSize.isValid() ? requestedSize : QSize(64, 64));
-    *realSize = pixmap.size();
-    return pixmap;
+    return QPixmap();
 }
