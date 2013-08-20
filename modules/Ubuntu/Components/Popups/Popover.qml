@@ -143,6 +143,13 @@ PopupBase {
       */
     property bool autoClose: true
 
+
+    /*!
+      The \l style property exposes the \l style property of the \l StyledItem
+      contained in the Popover. Refer to \StyledItem how to use it.
+      */
+    property alias style: foreground.style
+
     /*!
       \preliminary
       Make the popover visible. Reparent to the background area object first if needed.
