@@ -26,6 +26,8 @@ Item {
     default property alias children: content.children
     property alias bubbleColor: colorRect.color
     property alias bubbleOpacity: colorRect.opacity
+    // FIXME: This should not be necessary. See
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
     property alias arrowSource: arrow.source
 
     implicitWidth: units.gu(10)
