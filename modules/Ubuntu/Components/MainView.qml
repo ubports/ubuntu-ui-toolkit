@@ -290,7 +290,11 @@ PageTreeNode {
     property alias actions: unityActionManager.actions
 
     /*!
-      The current ActionManager that supervises the global and local ActionContexts.
+      The ActionManager that supervises the global and local ActionContexts.
+      The \l actions property should be used preferably since it covers most
+      use cases. The ActionManager is accessible to have a more refined control
+      over the actions, e.g. if one wants to add/remove actions dynamically, create
+      specific action contexts, etc.
 
       \qmlproperty UnityActions.ActionManager actionManager
      */
