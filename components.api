@@ -85,6 +85,7 @@ PageTreeNode
     property bool automaticOrientation
     default property internal contentsItem
     property list<Action> actions
+    property UnityActions.ActionManager actionManager
     property ToolbarActions tools
     onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
