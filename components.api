@@ -416,6 +416,30 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "UCAlarm"
+    prototype: "QObject"
+    exports: ["Alarm 0.1"]
+    name: "Error"
+    name: "AlarmType"
+    name: "DayOfWeek"
+    name: "DaysOfWeek"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "message"; type: "string" }
+    Property { name: "date"; type: "QDateTime" }
+    Property { name: "type"; type: "AlarmType" }
+    Property { name: "daysOfWeek"; type: "DaysOfWeek" }
+    Property { name: "sound"; type: "QUrl" }
+    Property { name: "error"; type: "int"; isReadonly: true }
+    Method { name: "save" }
+    Method { name: "cancel" }
+    Method { name: "reset" }
+    name: "UCAlarmModel"
+    prototype: "QAbstractListModel"
+    exports: ["AlarmModel 0.1"]
+    Property { name: "count"; type: "int"; isReadonly: true }
+    Method {
+    name: "get"
+    Parameter { name: "index"; type: "int" }
     name: "UCArgument"
     prototype: "QObject"
     exports: ["Argument 0.1"]

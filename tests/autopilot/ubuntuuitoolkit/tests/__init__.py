@@ -76,7 +76,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
                 qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+                app_type='qt')
 
         if (hasattr(self, 'test_qml_file') and
                 isinstance(self.test_qml_file, basestring)):
@@ -85,7 +86,8 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
                 "-I", get_module_include_path(),
                 qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+                app_type='qt')
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
