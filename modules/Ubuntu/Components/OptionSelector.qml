@@ -68,7 +68,7 @@ ListItem.Empty {
       \preliminary
       The list of values that will be shown under the label text. This is a model.
      */
-    property var values
+    property var model
 
     /*!
       \qmlproperty int selectedIndex
@@ -81,6 +81,12 @@ ListItem.Empty {
       Specifies whether the list is always expanded.
      */
     property bool expanded: false
+
+    /*!
+      \preliminary
+      ListView delegate.
+     */
+    property Component delegate: OptionSelectorDelegate {}
 
     /*!
       Called when a ListView delegate is clicked.
@@ -168,7 +174,7 @@ ListItem.Empty {
                 model: optionSelector.values
                 anchors.fill: parent
 
-                delegate: OptionSelectorDelegate {}
+                delegate: optionSelector.delegate
             }
         }
     }

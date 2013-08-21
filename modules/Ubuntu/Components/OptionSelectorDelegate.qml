@@ -21,6 +21,7 @@ import Ubuntu.Components 0.1 as Components
 ListItem.Standard {
     id: option
 
+    property string text
     property ListView listView: ListView.view
 
     width: parent.width + units.gu(2)
@@ -41,8 +42,6 @@ ListItem.Standard {
         if (!listView.expanded) {
             listView.container.isExpanded = !listView.container.isExpanded;
         }
-
-        //listItemClicked();
     }
 
     //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
@@ -247,7 +246,7 @@ ListItem.Standard {
     }
 
     ListItem.LabelVisual {
-        text: modelData
+        text: option.text === "" ? modelData : option.text
         anchors {
         left: parent.left
             leftMargin: units.gu(3)
