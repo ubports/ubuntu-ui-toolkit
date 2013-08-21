@@ -289,6 +289,13 @@ PageTreeNode {
      */
     property alias actions: unityActionManager.actions
 
+    /*!
+      The current ActionManager that supervises the global and local ActionContexts.
+
+      \qmlproperty UnityActions.ActionManager actionManager
+     */
+    property alias actionManager: unityActionManager
+
     Object {
         id: internal
         UnityActions.ActionManager {
