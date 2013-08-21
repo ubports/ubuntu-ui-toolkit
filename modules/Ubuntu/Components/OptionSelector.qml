@@ -171,7 +171,7 @@ ListItem.Empty {
                 interactive: false
                 clip: true
                 currentIndex: 0
-                model: optionSelector.values
+                model: optionSelector.model
                 anchors.fill: parent
 
                 delegate: optionSelector.delegate
