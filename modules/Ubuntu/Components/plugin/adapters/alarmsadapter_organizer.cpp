@@ -243,6 +243,11 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     alarm.date = event.dueDateTime();
     alarm.sound = QUrl(event.description());
 
+    // check if the alarm is enabled or not
+    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    alarm.enabled = !visual.isEmpty() && !audible.isEmpty();
+
     // repeating
     QOrganizerRecurrenceRule rule = event.recurrenceRule();
     switch (rule.frequency()) {
@@ -306,7 +311,8 @@ void AlarmsAdapter::fetchAlarms()
         }
     }
     if (completed) {
-        Q_EMIT q_ptr->alarmsChanged();
+        // invoke alarmsChanged asynchronously so models can invalidate lists/repeaters properly
+        q_ptr->metaObject()->invokeMethod(q_ptr, "alarmsChanged", Qt::QueuedConnection);
     }
 }
 

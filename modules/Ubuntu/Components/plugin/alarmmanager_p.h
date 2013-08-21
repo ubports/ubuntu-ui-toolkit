@@ -97,7 +97,7 @@ public:
         hash.insert(i++, QByteArray("type"));
         hash.insert(i++, QByteArray("daysOfWeek"));
         hash.insert(i++, QByteArray("sound"));
-        hash.insert(i++, QByteArray("enabled"));
+        hash.insert(i++, QByteArray("active"));
         return hash;
     }
 
