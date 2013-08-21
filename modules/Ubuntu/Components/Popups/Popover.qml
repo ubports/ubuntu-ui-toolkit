@@ -145,10 +145,10 @@ PopupBase {
 
     /*!
       \qmlproperty Component style
-      The style property exposes the style property of the \l StyledItem
-      contained in the Popover. Refer to \l StyledItem how to use it.
+      Exposes the style property of the \l StyledItem contained in the Popover.
+      Refer to \l StyledItem how to use it.
       */
-    property alias style: foreground.style
+    property alias foregroundStyle: foreground.style
 
     /*!
       \preliminary
