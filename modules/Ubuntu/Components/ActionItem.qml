@@ -70,6 +70,7 @@ StyledItem {
       Trigger this action item if it is enabled.
      */
     function trigger(value) {
-        if (actionItem.enabled && action) action.trigger(value);
+        var passingValue = value ? value : null
+        if (actionItem.enabled) actionItem.triggered(passingValue);
     }
 }
