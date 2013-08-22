@@ -32,6 +32,7 @@ void UCAlarmPrivate::setDefaults()
 {
     rawData.date = QDateTime::currentDateTime();
     rawData.message = UbuntuI18n::instance().tr("Alarm");
+    rawData.days = AlarmManagerPrivate::dayOfWeek(rawData.date);
 }
 
 /*!

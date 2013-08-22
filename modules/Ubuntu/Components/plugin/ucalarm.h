@@ -50,7 +50,7 @@ public: // enums
     };
 
     enum AlarmType {
-        OneTime,
+        OneTime = 1,
         Repeating // more to be added
     };
 
