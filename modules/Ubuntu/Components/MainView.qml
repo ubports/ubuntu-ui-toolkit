@@ -330,20 +330,6 @@ PageTreeNode {
         property var actionManager: unityActionManager
     }
 
-    /*!
-      \deprecated
-      This property is DEPRECATED. Pages will now automatically update the toolbar when activated.
-      See \l ToolbarItems for more information on how to set the tools of a \l Page.
-     */
-    property ToolbarActions tools: null
-    /*!
-      \internal
-      \deprecated
-     */
-    onToolsChanged: print("MainView.tools property was DEPRECATED. "+
-                          "Pages will automatically update the toolbar when activated. "+
-                          "See CHANGES file, and use toolbar.tools instead when needed.");
-
     /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
