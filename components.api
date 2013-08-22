@@ -102,7 +102,6 @@ ListItem.Empty
     property var model
     property bool expanded
     readonly property int selectedIndex
-    readonly property int deselectedIndex
     signal scroll()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
