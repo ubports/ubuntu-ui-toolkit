@@ -401,7 +401,8 @@ Item {
         property Item pressedItem: null
 
         // find the first child with a clicked property:
-        // TODO Remove this function when ToolbarActions is removed.
+        // TODO This function may be no longer needed because ToolbarActions
+        //  was removed.
         function getClickableItem(mouse) {
             var item = bar; // contains the children
             while (item && !item.hasOwnProperty("clicked")) {
@@ -430,7 +431,7 @@ Item {
         // just MouseAreas since MouseAreas would block swiping of the panel.
         // This must also happen when the panel is locked, so the DraggingArea is
         // never disabled, and other signal handlers will return when panel.locked is true.
-        // TODO: Remove clicked() call when ToolbarActions is removed.
+        // TODO: Remove clicked() call after testing that it doesn't break anyhing.
         onClicked: {
             if (pressedItem && pressedItem === getClickableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed

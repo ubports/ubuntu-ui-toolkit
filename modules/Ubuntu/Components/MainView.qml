@@ -124,7 +124,7 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
     hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
     The examples above show how to include a single \l Page inside a MainView, but more advanced application
     structures are possible using \l PageStack and \l Tabs.
-    See \l ToolbarActions for details on how to to control the behavior and contents of the toolbar.
+    See \l ToolbarItems for details on how to to control the behavior and contents of the toolbar.
 */
 PageTreeNode {
     id: mainView
