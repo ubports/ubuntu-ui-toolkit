@@ -51,7 +51,23 @@ Item {
         }
 
         property real barMinusThumbWidth: background.width - (thumb.width + 2.0*thumbSpacing)
-        x: thumbSpacing + SliderUtils.normalizedValue(styledItem) * barMinusThumbWidth
+        property real position: thumbSpacing + SliderUtils.normalizedValue(styledItem) * barMinusThumbWidth
+        property bool pressed: SliderUtils.isPressed(styledItem)
+        property bool positionReached: x == position
+        x: position
+
+        /* Enable the animation on x when pressing the slider.
+           Disable it when x has reached the target position.
+        */
+        onPressedChanged: if (pressed) xBehavior.enabled = true;
+        onPositionReachedChanged: if (positionReached) xBehavior.enabled = false;
+
+        Behavior on x {
+            id: xBehavior
+            SmoothedAnimation {
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
         width: units.gu(4)
         color: Theme.palette.selected.foreground
     }
@@ -74,7 +90,12 @@ Item {
         target: Qt.point(globalTarget.x - x, globalTarget.y - y)
 
         property bool pressed: SliderUtils.isPressed(styledItem)
-        visible: pressed && label.text != ""
+        property bool shouldShow: pressed && label.text != ""
+        onShouldShowChanged: if (shouldShow) {
+                                show();
+                             } else {
+                                hide();
+                             }
 
         Label {
             id: label

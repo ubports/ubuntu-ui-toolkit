@@ -143,7 +143,47 @@ PopupBase {
       */
     property bool autoClose: true
 
-    fadingAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    /*!
+      \qmlproperty Component style
+      Exposes the style property of the \l StyledItem contained in the Popover.
+      Refer to \l StyledItem how to use it.
+      */
+    property alias foregroundStyle: foreground.style
+
+    /*!
+      \preliminary
+      Make the popover visible. Reparent to the background area object first if needed.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.open() to do it automatically.
+    */
+    function show() {
+        /* Cannot call parent's show() however PopupBase::show()
+           does not do anything useful to us.
+
+           https://bugreports.qt-project.org/browse/QTBUG-25942
+           http://qt-project.org/forums/viewthread/19577
+        */
+        visible = true;
+        foreground.show();
+    }
+
+    /*!
+      \preliminary
+      Hide the popover.
+      Only use this function if you handle memory management. Otherwise use
+      PopupUtils.close() to do it automatically.
+    */
+    function hide() {
+        foreground.hide();
+    }
+
+    Component.onCompleted: foreground.hideCompleted.connect(popover.__makeInvisible)
+    /*!
+        \internal
+     */
+    function __makeInvisible() {
+        visible = false;
+    }
 
     QtObject {
         id: internal
@@ -188,6 +228,11 @@ PopupBase {
         property point target: Qt.point(pointer.x - x, pointer.y - y)
         property string direction: pointer.direction
         property bool clipContent: true
+
+        signal show()
+        signal hide()
+        signal showCompleted()
+        signal hideCompleted()
 
         style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }

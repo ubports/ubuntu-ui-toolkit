@@ -31,13 +31,25 @@ MainView {
         Tab {
             title: i18n.tr("Simple page")
             page: Page {
-                Label {
-                    id: label
+                title: "This title is not visible"
+                Row {
                     anchors.centerIn: parent
-                    text: "A centered label"
+                    spacing: units.gu(1)
+                    width: childrenRect.width
+                    height: childrenRect.height
+                    Button {
+                        text: "tab bar on"
+                        enabled: !tabs.tabBar.selectionMode
+                        onClicked: tabs.tabBar.selectionMode = true;
+                    }
+                    Button {
+                        text: "tab bar off"
+                        enabled: tabs.tabBar.selectionMode
+                        onClicked: tabs.tabBar.selectionMode = false;
+                    }
                 }
-                tools: ToolbarActions {
-                    Action {
+                tools: ToolbarItems {
+                    ToolbarButton {
                         text: "action"
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")

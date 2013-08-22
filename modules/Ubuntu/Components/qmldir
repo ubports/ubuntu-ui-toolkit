@@ -10,8 +10,9 @@ MainView 0.1 MainView.qml
 Button 0.1 Button.qml
 Panel 0.1 Panel.qml
 internal DraggingArea DraggingArea.qml
-Tabs 0.1 Tabs.qml
 Tab 0.1 Tab.qml
+TabBar 0.1 TabBar.qml
+Tabs 0.1 Tabs.qml
 Label 0.1 Label.qml
 AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml

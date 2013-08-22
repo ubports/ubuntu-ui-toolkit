@@ -145,7 +145,6 @@ import QtQuick 2.0
         }
     \endqml
 */
-
 PageTreeNode {
     id: tabs
     anchors.fill: parent
@@ -171,12 +170,13 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
-      \internal
-      Header contents that will be used to override the default title inside the header,
+      The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
-      FIXME: headerContents may be specified here directly, not taken from the style.
      */
-    property Component __headerContents
+    property TabBar tabBar: TabBar {
+        tabsItem: tabs
+        visible: tabs.active
+    }
 
     /*!
       \deprecated
@@ -254,9 +254,7 @@ PageTreeNode {
     Binding {
         target: internal.header
         property: "contents"
-        value: tabs.active ? tabs.__headerContents : null
+        value: tabs.active ? tabs.tabBar: null
         when: internal.header && tabs.active
     }
-
-    style: Theme.createStyleComponent("TabsStyle.qml", tabs)
 }

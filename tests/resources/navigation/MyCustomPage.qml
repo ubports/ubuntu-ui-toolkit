@@ -35,12 +35,12 @@ Page {
         }
     }
 
-    tools: ToolbarActions {
-        Action {
+    tools: ToolbarItems {
+        ToolbarButton {
             text: "action 1"
             iconSource: Qt.resolvedUrl("call_icon.png")
         }
-        Action {
+        ToolbarButton {
             text: "action 2"
             iconSource: Qt.resolvedUrl("call_icon.png")
         }

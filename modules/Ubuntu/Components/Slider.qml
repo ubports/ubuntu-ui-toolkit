@@ -150,7 +150,13 @@ StyledItem {
                                   slider.minimumValue, slider.maximumValue);
         }
 
+        /* Mimic the behaviour of the 'pressed' property with one important difference:
+           'pressed' is set to true only after the onPressed handler has been executed.
+           That prevents us from doing interesting animations upon press.
+        */
+        property bool isPressed: false
         onPressed: {
+            isPressed = true;
             var thumbPressed = mouse.x >= thumb.x && mouse.x <= thumb.x + thumb.width;
             if (!thumbPressed) {
                 var normalizedX = (mouseX - thumbSpacing - thumb.width * 0.5) / barMinusThumb;
@@ -161,6 +167,7 @@ StyledItem {
             slider.touched(thumbPressed);
         }
         onReleased: {
+            isPressed = false;
             if (!slider.live) {
                 slider.value = liveValue;
             }

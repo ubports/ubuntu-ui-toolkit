@@ -12,6 +12,7 @@ internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
 internal SliderStyle SliderStyle.qml
 internal SwitchStyle SwitchStyle.qml
+internal TabBarStyle TabBarStyle.qml
 TextAreaStyle 0.1 TextAreaStyle.qml
 internal TextCursorStyle TextCursorStyle.qml
 TextFieldStyle 0.1 TextFieldStyle.qml

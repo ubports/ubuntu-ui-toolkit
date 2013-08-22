@@ -24,9 +24,72 @@ Item {
     property string direction: "down"
     property bool clipContent: false
     default property alias children: content.children
+    property alias bubbleColor: colorRect.color
+    property alias bubbleOpacity: colorRect.opacity
+    // FIXME: This should not be necessary. See
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
+    property alias arrowSource: arrow.source
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
+
+    signal showCompleted()
+    signal hideCompleted()
+
+    opacity: 0.0
+
+    function show() {
+        hideAnimation.stop();
+        showAnimation.start();
+    }
+
+    function hide() {
+        showAnimation.stop();
+        hideAnimation.start();
+    }
+
+    ParallelAnimation {
+        id: showAnimation
+
+        NumberAnimation {
+            target: bubbleShape
+            property: "opacity"
+            from: 0.0
+            to: 1.0
+            duration: UbuntuAnimation.FastDuration
+            easing: UbuntuAnimation.StandardEasing
+        }
+        NumberAnimation {
+            target: scaleTransform
+            property: (direction === "up" || direction === "down") ? "yScale" : "xScale"
+            from: 0.91
+            to: 1.0
+            duration: UbuntuAnimation.FastDuration
+            easing: UbuntuAnimation.StandardEasing
+        }
+        onStopped: showCompleted()
+    }
+
+    NumberAnimation {
+        id: hideAnimation
+        target: bubbleShape
+        property: "opacity"
+        from: 1.0
+        to: 0.0
+        duration: UbuntuAnimation.FastDuration
+        easing: UbuntuAnimation.StandardEasing
+        onStopped: hideCompleted()
+    }
+
+    transform: Scale {
+        id: scaleTransform
+        origin.x: direction === "right" ? bubbleShape.width :
+                  direction === "left" ? 0 :
+                                          bubbleShape.width/2.0
+        origin.y: direction === "up" ? 0 :
+                  direction === "down" ? bubbleShape.height :
+                                         bubbleShape.height/2.0
+    }
 
     BorderImage {
         id: shadow
@@ -59,6 +122,7 @@ Item {
         anchors.fill: parent
 
         Rectangle {
+            id: colorRect
             anchors.fill: parent
             color: Theme.palette.normal.overlay
             visible: bubbleShape.clipContent

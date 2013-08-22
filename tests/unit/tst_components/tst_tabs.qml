@@ -32,7 +32,7 @@ TestCase {
         compare(tabs.selectedTab, tab1, "The default selectedTab is the first tab");
         compare(tabs.currentPage, page1, "The default currentPage is the page of the first tab");
         compare(mainView.__propagated.toolbar.tools, page1.tools, "The default tools are the tools of the first tab");
-        compare(mainView.__propagated.header.contents, tabs.__headerContents, "Tabs updates the Header contents");
+        compare(mainView.__propagated.header.contents, tabs.tabBar, "Tabs updates the Header contents");
     }
 
     function test_tabsSetSelectedTab() {

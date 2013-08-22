@@ -273,6 +273,15 @@ Item {
                 properties: "position"
                 duration: internal.transitionDuration
             }
+        },
+        Transition {
+            id: transitionToMoving
+            to: "moving"
+            UbuntuNumberAnimation {
+                target: bar
+                properties: "position"
+                duration: Toolkit.UbuntuAnimation.SnapDuration
+            }
         }
     ]
 
@@ -284,7 +293,6 @@ Item {
           Default value: 250
          */
         property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
-
 
         property string previousState: ""
         property int movingDelta
@@ -442,25 +450,34 @@ Item {
             if (panel.state == "") panel.state = "hint";
         }
 
+        /*!
+          The minimum amount of movement while pressed before switching to "moving" state.
+          This threshold is needed to avoid detecting unintentional small movements while
+          "clicking" as a drag.
+          */
+        property real dragThreshold: units.gu(1)
+
         onPositionChanged: {
             if (panel.locked) return;
-            if (panel.state == "hint" && mousePosition < initialPosition) {
+            if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
                 panel.state = "moving";
                 pressedItem = null;
-            } else if (panel.state == "spread" && mousePosition > initialPosition) {
+            } else if (panel.state == "spread" && mousePosition > initialPosition + dragThreshold) {
                 panel.state = "moving";
                 pressedItem = null;
             }
         }
 
         onReleased: {
-            if (panel.locked) return;
-            finishMoving();
+            if (panel.state == "moving" || panel.state == "hint") {
+                finishMoving();
+            }
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
-            if (panel.locked) return;
-            finishMoving();
+            if (panel.state == "moving" || panel.state == "hint") {
+                finishMoving();
+            }
         }
 
         // FIXME: Make all parameters below themable and resolution-independent.

@@ -117,6 +117,7 @@ MainView {
     def test_open_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.assertTrue(toolbar.opened)
+        self.assertFalse(toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
         toolbar = self.main_view.open_toolbar()
@@ -131,6 +132,7 @@ MainView {
         toolbar = self.main_view.open_toolbar()
         self.main_view.close_toolbar()
         self.assertFalse(toolbar.opened)
+        self.assertFalse(toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
@@ -170,11 +172,15 @@ MainView {
         id: tabs
         Tab {
             objectName: "tab1"
-            title: "Test tab 1"
+            title: "Tab1"
         }
         Tab {
             objectName: "tab2"
-            title: "Test tab 2"
+            title: "Tab2"
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
         }
     }
 }
@@ -185,29 +191,31 @@ MainView {
 
     def test_get_current_tab(self):
         tabs = self.main_view.get_tabs()
-        self.assertEqual(tabs.get_current_tab().title, 'Test tab 1')
+        self.assertEqual(tabs.get_current_tab().title, 'Tab1')
 
     def test_switch_to_next_tab_from_header(self):
         header = self.main_view.get_header()
         header.switch_to_next_tab()
         current_tab = self.main_view.get_tabs().get_current_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
 
     def test_switch_to_next_tab_from_main_view(self):
         current_tab = self.main_view.switch_to_next_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
 
     def test_switch_to_next_tab_from_last(self):
-        last_tab_index = 1
+        last_tab_index = self.main_view.get_tabs().get_number_of_tabs() - 1
         self.main_view.switch_to_tab_by_index(last_tab_index)
         current_tab = self.main_view.switch_to_next_tab()
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_tab_by_index(self):
+        current_tab = self.main_view.switch_to_tab_by_index(2)
+        self.assertEqual(current_tab.title, 'Tab3')
         current_tab = self.main_view.switch_to_tab_by_index(1)
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
         current_tab = self.main_view.switch_to_tab_by_index(0)
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_opened_tab_is_not_opened_again(self):
         with mock.patch.object(
@@ -215,14 +223,14 @@ MainView {
             current_tab = self.main_view.switch_to_tab_by_index(0)
 
         self.assertFalse(mock_switch.called)
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_get_number_of_tabs(self):
         tabs = self.main_view.get_tabs()
-        self.assertEqual(tabs.get_number_of_tabs(), 2)
+        self.assertEqual(tabs.get_number_of_tabs(), 3)
 
     def test_swith_to_tab_by_index_out_of_range(self):
-        last_tab_index = 1
+        last_tab_index = self.main_view.get_tabs().get_number_of_tabs() - 1
         error = self.assertRaises(
             IndexError, self.main_view.switch_to_tab_by_index,
             last_tab_index + 1)
@@ -230,21 +238,97 @@ MainView {
 
     def test_switch_to_previous_tab_from_first(self):
         current_tab = self.main_view.switch_to_previous_tab()
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab3')
 
     def test_switch_to_previous_tab_not_from_first(self):
         self.main_view.switch_to_tab_by_index(1)
         current_tab = self.main_view.switch_to_previous_tab()
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_tab_by_object_name(self):
+        current_tab = self.main_view.switch_to_tab('tab3')
+        self.assertEqual(current_tab.title, 'Tab3')
         current_tab = self.main_view.switch_to_tab('tab2')
-        self.assertEqual(current_tab.title, 'Test tab 2')
+        self.assertEqual(current_tab.title, 'Tab2')
         current_tab = self.main_view.switch_to_tab('tab1')
-        self.assertEqual(current_tab.title, 'Test tab 1')
+        self.assertEqual(current_tab.title, 'Tab1')
 
     def test_switch_to_unexisting_tab(self):
         error = self.assertRaises(
             ValueError, self.main_view.switch_to_tab, 'unexisting')
         self.assertEqual(
             error.message, 'Tab with objectName "unexisting" not found.')
+
+
+class ActionSelectionPopoverTestCase(tests.UbuntuUiToolkitTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Button {
+        objectName: "open_popover"
+        text: "Open Popover"
+        onClicked: testActionsPopover.show();
+    }
+
+    Label {
+        id: "label"
+        objectName: "clicked_label"
+        anchors.centerIn: parent
+        text: "Button not clicked."
+    }
+
+    ActionSelectionPopover {
+        objectName: "test_actions_popover"
+        id: testActionsPopover
+        actions: ActionList {
+            Action {
+                text: "Action one"
+                onTriggered: label.text = "Button clicked."
+            }
+        }
+    }
+}
+""")
+
+    def test_action_selection_popover_emulator(self):
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        self.assertIsInstance(popover, emulators.ActionSelectionPopover)
+
+    def test_click_action_select_popover_button(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        popover.click_button_by_text('Action one')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def _open_popover(self):
+        open_button = self.main_view.select_single(
+            'Button', objectName='open_popover')
+        self.pointing_device.click_object(open_button)
+
+    def test_click_unexisting_button(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ValueError, popover.click_button_by_text, 'unexisting')
+        self.assertEqual(
+            error.message, 'Button with text "unexisting" not found.')
+
+    def test_click_button_with_closed_popover(self):
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            AssertionError, popover.click_button_by_text, 'Action one')
+        self.assertEqual(
+            error.message, 'The popover is not open.')

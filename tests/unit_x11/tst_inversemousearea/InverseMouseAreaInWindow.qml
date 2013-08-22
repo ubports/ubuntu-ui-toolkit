@@ -21,6 +21,8 @@ import Ubuntu.Components 0.1
 Item{
     id: root
     property string log: ""
+    width: units.gu(100)
+    height: units.gu(100)
 
     Window {
         objectName: "isawindow"
