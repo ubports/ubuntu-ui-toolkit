@@ -12,7 +12,6 @@ API Changes
 * CHANGED IN: OptionSelector: property var values TO property var model
 * ADDED IN: OptionSelector: property Component delegate 
 * ADDED IN: Empty: property alias divider
-* ADDED IN: OptionSelector: signal listItemClicked()
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper

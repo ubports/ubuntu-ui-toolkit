@@ -62,17 +62,16 @@ UbuntuTestCase {
      function test_values() {
          compare(optionSelector.values,undefined,"values is undefined by default")
          var newValues = ["value1","value2","value3"];
-         optionSelector.values = newValues;
-         compare(optionSelector.values, newValues, "set/get");
+         optionSelector.model = newValues;
+         compare(optionSelector.model, newValues, "set/get");
      }
 
      function test_custom_model_delegate() {
          compare(optionSelector.model, undefined, "model is undefined by default");
-         compare(optionSelector.delegate, undefined, "delegate is undefined by default");
          optionSelector.model = customModel;
          optionSelector.delegate = selectorDelegate;
          compare(optionSelector.model, customModel, "Model wasn't set correctly.");
-         compare(optionSelector.selectorDelegate, selectorDelegate, "Delegate hasn't been set correctly");
+         compare(optionSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
      }
 
      Rectangle {

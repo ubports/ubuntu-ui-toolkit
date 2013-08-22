@@ -71,12 +71,6 @@ ListItem.Empty {
     property var model
 
     /*!
-      \qmlproperty int selectedIndex
-      The index of the currently selected element from the \l values array.
-     */
-    property alias selectedIndex: list.currentIndex
-
-    /*!
       \preliminary
       Specifies whether the list is always expanded.
      */
@@ -89,9 +83,16 @@ ListItem.Empty {
     property Component delegate: OptionSelectorDelegate {}
 
     /*!
-      Called when a ListView delegate is clicked.
+      \qmlproperty int selectedIndex
+      The index of the currently selected element in our list.
      */
-    signal listItemClicked()
+    readonly property alias selectedIndex: list.currentIndex
+
+    /*!
+      \qmlproperty int selectedIndex
+      The index of the previously selected element in our list.
+     */
+    readonly property alias deselectedIndex: list.previousIndex
 
     /*!
       Called when the optionSelector is either expanded or collapsed.

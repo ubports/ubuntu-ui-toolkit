@@ -99,11 +99,15 @@ QtObject
     default property internal children
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
-    property var values
-    property int selectedIndex
+    property var model
     property bool expanded
-    signal listItemClicked()
-    signal scroll(real selectorHeight, string currentState)
+    readonly property int selectedIndex
+    readonly property int deselectedIndex
+    signal scroll()
+modules/Ubuntu/Components/OptionSelectorDelegate.qml
+ListItem.Standard
+    property string text
+    property ListView listView
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
