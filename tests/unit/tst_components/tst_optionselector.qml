@@ -66,6 +66,15 @@ UbuntuTestCase {
          compare(optionSelector.values, newValues, "set/get");
      }
 
+     function test_custom_model_delegate() {
+         compare(optionSelector.model, undefined, "model is undefined by default");
+         compare(optionSelector.delegate, undefined, "delegate is undefined by default");
+         optionSelector.model = customModel;
+         optionSelector.delegate = selectorDelegate;
+         compare(optionSelector.model, customModel, "Model wasn't set correctly.");
+         compare(optionSelector.selectorDelegate, selectorDelegate, "Delegate hasn't been set correctly");
+     }
+
      Rectangle {
          id: testItem
      }
@@ -77,5 +86,23 @@ UbuntuTestCase {
              id: signalSpy
              target: optionSelector
          }
+     }
+
+     OptionSelector {
+         id: optionSelectorCustomModel
+     }
+
+     Component {
+         id: selectorDelegate
+
+         OptionSelectorDelegate { text: name }
+     }
+
+     ListModel {
+         id: customModel
+         ListElement { name: "Value 1" }
+         ListElement { name: "Value 2" }
+         ListElement { name: "Value 3" }
+         ListElement { name: "Value 4" }
      }
 }
