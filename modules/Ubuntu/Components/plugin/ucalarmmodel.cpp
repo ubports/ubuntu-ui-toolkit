@@ -127,7 +127,7 @@ UCAlarmModel::UCAlarmModel(QObject *parent) :
     m_roles = AlarmData::roles();
     m_roles.insert(m_roles.count(), "model");
     // keep in sync with alarms collection changes
-    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()));
+    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
     // fetch alarms
     refresh();
 }

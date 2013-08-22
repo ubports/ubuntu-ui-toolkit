@@ -19,6 +19,7 @@
 #ifndef ALARMMANAGER_P_H
 #define ALARMMANAGER_P_H
 
+#include "ucalarm.h"
 #include "alarmmanager_p.h"
 #include <QtCore/QUrl>
 
@@ -30,6 +31,10 @@ public:
     AlarmManagerPrivate(AlarmManager *qq);
     virtual ~AlarmManagerPrivate();
 
+    static AlarmManagerPrivate *get() {
+        return AlarmManager::instance().d_func();
+    }
+
     QList<AlarmData> alarmList;
     bool completed:1;
 
@@ -38,12 +43,12 @@ public:
     static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
+    static void setRequestStatus(AlarmRequest *request, AlarmRequest::Status status, int error = UCAlarm::NoError);
 
     // adaptation methods
-    virtual int addAlarm(AlarmData &alarm) = 0;
-    virtual int updateAlarm(AlarmData &alarm) = 0;
-    virtual int removeAlarm(AlarmData &alarm) = 0;
-protected Q_SLOTS:
+    virtual void addAlarm(AlarmRequest *request, AlarmData &alarm) = 0;
+    virtual void updateAlarm(AlarmRequest *request, AlarmData &alarm) = 0;
+    virtual void removeAlarm(AlarmRequest *request, AlarmData &alarm) = 0;
     virtual void fetchAlarms() = 0;
 
 protected:
@@ -57,5 +62,6 @@ private:
 };
 
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms);
+AlarmRequest * createAlarmRequest(QObject *owner, bool autoDelete);
 
 #endif // ALARMMANAGER_P_H

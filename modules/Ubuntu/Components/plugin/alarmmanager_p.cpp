@@ -74,6 +74,10 @@ bool AlarmManagerPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
     return (bits > 1);
 }
 
+void AlarmManagerPrivate::setRequestStatus(AlarmRequest *request, AlarmRequest::Status status, int error)
+{
+    request->setStatus(status, error);
+}
 
 
 UCAlarm::Error AlarmManagerPrivate::checkAlarm(AlarmData &alarm, int &changes)
@@ -175,7 +179,6 @@ AlarmManager::AlarmManager(QObject *parent)
     , d_ptr(createAlarmsAdapter(this))
 {
     d_ptr->fetchAlarms();
-    d_ptr->completed = true;
 }
 
 AlarmManager::~AlarmManager()
@@ -188,38 +191,66 @@ QList<AlarmData> AlarmManager::alarms() const
     return d->alarmList;
 }
 
+AlarmRequest *AlarmManager::createRequest(QObject *owner, bool autoDelete)
+{
+    return createAlarmRequest(owner, autoDelete);
+}
+
 
 /*
- * Updates or adds an alarm to the alarm collection.
+ * Updates or adds an alarm to the alarm collection. The owner must have
+ * operationResult(status, errorCode) slot,
+ * where the actual status of the operation is reported.
  *
  * Returns the result code of the operation.
  */
-int AlarmManager::set(AlarmData &alarm, int &changes)
+void AlarmManager::set(AlarmRequest *request, AlarmData &alarm, int &changes)
 {
     changes = 0;
+    if (!request) {
+        return;
+    }
+
     Q_D(AlarmManager);
 
     UCAlarm::Error result = d->checkAlarm(alarm, changes);
     if (result != UCAlarm::NoError) {
-        return result;
-    }
-
-    if (!alarm.cookie.isValid()) {
-        return d->addAlarm(alarm);
+        d->setRequestStatus(request, AlarmRequest::Fail, result);
     } else {
-        return d->updateAlarm(alarm);
+        if (!alarm.cookie.isValid()) {
+            d->addAlarm(request, alarm);
+        } else {
+            d->updateAlarm(request, alarm);
+        }
     }
 }
 
 /*
  * Cancels an alarm. Returns the result of the operation;
  */
-int AlarmManager::cancel(AlarmData &alarm)
+void AlarmManager::cancel(AlarmRequest *request, AlarmData &alarm)
 {
+    if (!request) {
+        return;
+    }
+
     Q_D(AlarmManager);
 
     if (!alarm.cookie.isValid()) {
-        return UCAlarm::InvalidEvent;
+        d->setRequestStatus(request, AlarmRequest::Fail, UCAlarm::InvalidEvent);
+    } else {
+        d->removeAlarm(request, alarm);
     }
-    return d->removeAlarm(alarm);
+}
+
+AlarmRequest::AlarmRequest(bool autoDelete, QObject *parent)
+    : QObject(parent)
+    , m_status(Ready)
+    , m_error(UCAlarm::NoError)
+    , m_completed(true)
+    , m_autoDelete(autoDelete)
+{
+}
+AlarmRequest::~AlarmRequest()
+{
 }

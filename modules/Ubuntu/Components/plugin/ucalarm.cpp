@@ -23,9 +23,15 @@
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
+    , request(0)
     , error(UCAlarm::NoError)
+    , status(UCAlarm::Ready)
 {
     setDefaults();
+}
+
+UCAlarmPrivate::~UCAlarmPrivate()
+{
 }
 
 void UCAlarmPrivate::setDefaults()
@@ -34,6 +40,17 @@ void UCAlarmPrivate::setDefaults()
     rawData.message = UbuntuI18n::instance().tr("Alarm");
     rawData.days = AlarmManagerPrivate::dayOfWeek(rawData.date);
 }
+
+void UCAlarmPrivate::createRequest()
+{
+    if (request) {
+        return;
+    }
+    request = AlarmManager::instance().createRequest(q_ptr);
+    QObject::connect(request, SIGNAL(statusChanged(int,int)),
+                     q_ptr, SLOT(_q_syncStatus(int,int)));
+}
+
 
 /*!
  * \qmltype Alarm
@@ -385,6 +402,16 @@ int UCAlarm::error() const
 }
 
 /*!
+ * \qmlproperty Status Alarm::status
+ * The property holds the status of the last performed operation.
+ */
+UCAlarm::Status UCAlarm::status() const
+{
+    Q_D(const UCAlarm);
+    return d->status;
+}
+
+/*!
  * \qmlmethod Alarm::save()
  * Updates or adds an alarm to the alarm collection. The operation aligns properties
  * according to the following rules:
@@ -407,24 +434,31 @@ int UCAlarm::error() const
 void UCAlarm::save()
 {
     Q_D(UCAlarm);
-    int changes = 0;
-    d->error = AlarmManager::instance().set(d->rawData, changes);
-    if (d->error != NoError) {
-        Q_EMIT errorChanged();
-    } else {
-        if (changes & AlarmData::Enabled)
-            Q_EMIT enabledChanged();
-        if (changes & AlarmData::Date)
-            Q_EMIT dateChanged();
-        if (changes & AlarmData::Message)
-            Q_EMIT messageChanged();
-        if (changes & AlarmData::Sound)
-            Q_EMIT soundChanged();
-        if (changes & AlarmData::Type)
-            Q_EMIT typeChanged();
-        if (changes & AlarmData::Days)
-            Q_EMIT daysOfWeekChanged();
+    if (d->status == InProgress) {
+        // TODO: report error that only one request at a time can be processed
+        return;
     }
+
+    int changes = 0;
+
+    d->error = NoError;
+    d->status = Ready;
+    d->createRequest();
+
+    AlarmManager::instance().set(d->request, d->rawData, changes);
+
+    if (changes & AlarmData::Enabled)
+        Q_EMIT enabledChanged();
+    if (changes & AlarmData::Date)
+        Q_EMIT dateChanged();
+    if (changes & AlarmData::Message)
+        Q_EMIT messageChanged();
+    if (changes & AlarmData::Sound)
+        Q_EMIT soundChanged();
+    if (changes & AlarmData::Type)
+        Q_EMIT typeChanged();
+    if (changes & AlarmData::Days)
+        Q_EMIT daysOfWeekChanged();
 }
 
 /*!
@@ -437,10 +471,16 @@ void UCAlarm::save()
 void UCAlarm::cancel()
 {
     Q_D(UCAlarm);
-    d->error = AlarmManager::instance().cancel(d->rawData);
-    if (d->error != NoError) {
-        Q_EMIT errorChanged();
+    if (d->status == InProgress) {
+        // TODO: report error that only one request at a time can be processed
+        return;
     }
+
+    d->error = NoError;
+    d->status = Ready;
+    d->createRequest();
+
+    AlarmManager::instance().cancel(d->request, d->rawData);
 }
 
 /*!
@@ -451,7 +491,10 @@ void UCAlarm::cancel()
 void UCAlarm::reset()
 {
     Q_D(UCAlarm);
+    delete d->request;
+    d->request = 0;
     d->error = NoError;
+    d->status = Ready;
     d->rawData = AlarmData();
     d->setDefaults();
     Q_EMIT enabledChanged();
@@ -461,3 +504,5 @@ void UCAlarm::reset()
     Q_EMIT typeChanged();
     Q_EMIT daysOfWeekChanged();
 }
+
+#include "moc_ucalarm.cpp"
