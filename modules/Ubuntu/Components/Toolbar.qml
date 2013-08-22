@@ -56,7 +56,7 @@ Panel {
 
     /*!
       \preliminary
-      The list of \l Actions to be shown on the toolbar
+      The tools to be shown on the toolbar
      */
     property Item tools: null
 
