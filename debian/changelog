@@ -1,3 +1,17 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130822.1-0ubuntu1) saucy; urgency=low
+
+  [ Alexandre Abreu ]
+  * Add an actionmanager property that let clients be more flexible with
+    their actions at runtime. (LP: #1207804)
+
+  [ tpeeters ]
+  * Do not trigger a ToolbarButton that is not enabled. (LP: #1202245)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 707
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 22 Aug 2013 18:55:49 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130821-0ubuntu1) saucy; urgency=low
 
   [ Michael Zanetti ]
