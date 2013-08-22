@@ -89,12 +89,6 @@ ListItem.Empty {
     readonly property alias selectedIndex: list.currentIndex
 
     /*!
-      \qmlproperty int selectedIndex
-      The index of the previously selected element in our list.
-     */
-    readonly property alias deselectedIndex: list.previousIndex
-
-    /*!
       Called when the optionSelector is either expanded or collapsed.
      */
     signal scroll()
