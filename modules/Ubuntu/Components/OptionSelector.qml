@@ -89,6 +89,12 @@ ListItem.Empty {
     readonly property alias selectedIndex: list.currentIndex
 
     /*!
+      \qmlproperty real containerHeight
+      Custom height for list container which allows scrolling inside the selector.
+     */
+    property real containerHeight: list.contentHeight
+
+    /*!
       Called when the optionSelector is either expanded or collapsed.
      */
     signal scroll()
@@ -134,7 +140,7 @@ ListItem.Empty {
                     when: listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: list.contentHeight
+                        height: containerHeight
                     }
                 }, State {
                     name: "collapsed"
@@ -162,7 +168,8 @@ ListItem.Empty {
                 readonly property alias container: listContainer
                 property real itemHeight
 
-                interactive: false
+                boundsBehavior: Flickable.StopAtBounds
+                interactive: listContainer.height !== list.contentHeight ? true : false
                 clip: true
                 currentIndex: 0
                 model: optionSelector.model
