@@ -35,6 +35,13 @@ AbstractButton
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
     property bool checked
+modules/Ubuntu/Components/ColourisedImage.qml
+Item
+    property url source
+    property color colour
+    property color keyColour
+    property bool active
+    property size sourceSize
 modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source

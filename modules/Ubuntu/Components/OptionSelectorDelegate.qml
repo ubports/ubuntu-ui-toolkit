@@ -236,9 +236,10 @@ ListItem.Standard {
         }
     }
 
-    Image {
+    ColourisedImage {
         id: image
 
+        colour: listView.container.themeColour
         width: units.gu(2)
         height: units.gu(2)
         source: listView.expanded ? listView.container.tick : listView.container.chevron
@@ -257,26 +258,6 @@ ListItem.Standard {
                 properties: "opacity"
                 duration: Components.UbuntuAnimation.FastDuration
             }
-        }
-
-        ShaderEffect {
-            property color colour: listView.container.themeColour
-            property var source: parent
-
-            width: source.width
-            height: source.height
-            visible: source.status === Image.Ready
-
-            fragmentShader:
-                "varying highp vec2 qt_TexCoord0;
-                 uniform sampler2D source;
-                 uniform lowp vec4 colour;
-                 uniform lowp float qt_Opacity;
-
-                 void main() {
-                    lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                    gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                }"
         }
     }
 }

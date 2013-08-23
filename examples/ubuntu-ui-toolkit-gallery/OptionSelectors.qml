@@ -67,6 +67,26 @@ Template {
                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
            }
+
+           ShaderEffect {
+               property color colour: themeColour
+               property var source: parent
+
+               width: source.width
+               height: source.height
+               visible: source.status === Image.Ready
+
+               fragmentShader:
+                   "varying highp vec2 qt_TexCoord0;
+                    uniform sampler2D source;
+                    uniform lowp vec4 colour;
+                    uniform lowp float qt_Opacity;
+
+                    void main() {
+                       lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                       gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                   }"
+            }
         }
     }
 }
