@@ -311,8 +311,7 @@ void AlarmsAdapter::fetchAlarms()
         }
     }
     if (completed) {
-        // invoke alarmsChanged asynchronously so models can invalidate lists/repeaters properly
-        q_ptr->metaObject()->invokeMethod(q_ptr, "alarmsChanged", Qt::QueuedConnection);
+        Q_EMIT q_ptr->alarmsChanged();
     }
 }
 

@@ -126,8 +126,12 @@ UCAlarmModel::UCAlarmModel(QObject *parent) :
 {
     m_roles = AlarmData::roles();
     m_roles.insert(m_roles.count(), "model");
+
     // keep in sync with alarms collection changes
-    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()));
+    // make sure the connection is asynchronous, as changes made in in-place in
+    // the delegates may cause the model data to be invalid (released) as some
+    // backends may do the refresh/element removals synchronously
+    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
     // fetch alarms
     refresh();
 }
