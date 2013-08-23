@@ -104,10 +104,9 @@ ListItem.Empty {
             right: parent.right
         }
 
-        ListItem.LabelVisual {
+        Label {
             text: optionSelector.text
             height: units.gu(2)
-            fontSize: "medium"
         }
 
         StyledItem {
@@ -116,7 +115,6 @@ ListItem.Empty {
 
             property bool isExpanded: expanded
             property bool isFullyExpanded: expanded
-            property int itemHeight: units.gu(5)
             property url chevron: __styleInstance.chevron
             property url tick: __styleInstance.tick
             property color themeColour: Theme.palette.selected.fieldText
@@ -143,7 +141,7 @@ ListItem.Empty {
                     when: !listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: itemHeight
+                        height: list.itemHeight
                     }
                 }
             ]
@@ -162,6 +160,7 @@ ListItem.Empty {
                 property int previousIndex: -1
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
+                property real itemHeight
 
                 interactive: false
                 clip: true

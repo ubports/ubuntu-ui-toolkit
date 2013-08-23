@@ -46,6 +46,8 @@ ListItem.Standard {
         }
     }
 
+    Component.onCompleted: listView.itemHeight = childrenRect.height
+
     //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
     states: [ State {
             name: "dividerExpanded"
@@ -247,12 +249,21 @@ ListItem.Standard {
         }
     }
 
-    Label {
-        text: option.text === "" ? modelData : option.text
+    Column {
         anchors {
-        left: parent.left
+            left: parent.left
             leftMargin: units.gu(3)
             verticalCenter: parent.verticalCenter
+        }
+
+        Label {
+            text: option.text === "" ? modelData : option.text
+        }
+
+        Label {
+            text: option.subText
+            visible: option.subText !== "" ? true : false
+            fontSize: "small"
         }
     }
 }
