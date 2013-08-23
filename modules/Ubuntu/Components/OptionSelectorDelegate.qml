@@ -23,7 +23,7 @@ ListItem.Standard {
 
     property string text
     property string subText
-    property url image
+    property url icon
     property ListView listView: ListView.view
 
     width: parent.width + units.gu(2)
@@ -249,21 +249,29 @@ ListItem.Standard {
         }
     }
 
-    Column {
+    Row {
+        spacing: units.gu(1)
+        Image {
+            source: icon
+        }
         anchors {
             left: parent.left
             leftMargin: units.gu(3)
             verticalCenter: parent.verticalCenter
         }
+        Column {
+            anchors {
+                verticalCenter: parent.verticalCenter
+            }
+            Label {
+                text: option.text === "" ? modelData : option.text
+            }
 
-        Label {
-            text: option.text === "" ? modelData : option.text
-        }
-
-        Label {
-            text: option.subText
-            visible: option.subText !== "" ? true : false
-            fontSize: "small"
+            Label {
+                text: option.subText
+                visible: option.subText !== "" ? true : false
+                fontSize: "small"
+            }
         }
     }
 }
