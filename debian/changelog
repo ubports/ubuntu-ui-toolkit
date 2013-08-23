@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130823-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * AlarmModel got a role named model to solve ambiguous role accessing
+    situations. Test application added.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 710
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 Aug 2013 10:10:02 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130822.1-0ubuntu1) saucy; urgency=low
 
   [ Alexandre Abreu ]
