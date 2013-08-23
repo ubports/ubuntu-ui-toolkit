@@ -70,26 +70,6 @@ public:
         return compare(other);
     }
 
-    QSet<Qt::DayOfWeek> daysToSet() const
-    {
-        QSet<Qt::DayOfWeek> result;
-        for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
-            if (days & (1 << (static_cast<int>(day) - 1)))
-                result << day;
-        }
-        return result;
-    }
-
-    void daysFromSet(QSet<Qt::DayOfWeek> set)
-    {
-        days = 0;
-        QSetIterator<Qt::DayOfWeek> i(set);
-        while (i.hasNext()) {
-            int day = static_cast<int>(i.next());
-            days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
-        }
-    }
-
     static QHash<int, QByteArray> roles() {
         QHash<int, QByteArray> hash;
         int i = 0;

@@ -93,6 +93,8 @@ public:
     void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
     void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
     int organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm);
+    QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
+    void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
 };
 
 /*-----------------------------------------------------------------------------
@@ -214,7 +216,7 @@ void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &e
             rule.setFrequency(QOrganizerRecurrenceRule::Daily);
         } else if (alarm.days) {
             rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
-            rule.setDaysOfWeek(alarm.daysToSet());
+            rule.setDaysOfWeek(daysToSet(alarm));
         }
         event.setRecurrenceRule(rule);
         break;
@@ -287,7 +289,7 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     }
     case QOrganizerRecurrenceRule::Weekly: {
         alarm.type = UCAlarm::Repeating;
-        alarm.daysFromSet(rule.daysOfWeek());
+        daysFromSet(alarm, rule.daysOfWeek());
         break;
     }
     default:
@@ -297,6 +299,27 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
 
     return UCAlarm::NoError;
 }
+
+QSet<Qt::DayOfWeek> AlarmsAdapter::daysToSet(const AlarmData &alarm) const
+{
+    QSet<Qt::DayOfWeek> result;
+    for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
+        if (alarm.days & (1 << (static_cast<int>(day) - 1)))
+            result << day;
+    }
+    return result;
+}
+
+void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
+{
+    alarm.days = 0;
+    QSetIterator<Qt::DayOfWeek> i(set);
+    while (i.hasNext()) {
+        int day = static_cast<int>(i.next());
+        alarm.days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
+    }
+}
+
 
 /*-----------------------------------------------------------------------------
  * Abstract methods
