@@ -47,6 +47,26 @@ Template {
                          i18n.tr("Value 3"),
                          i18n.tr("Value 4")]
            }
+
+           OptionSelector {
+               text: i18n.tr("Label")
+               model: customModel
+               delegate: selectorDelegate
+           }
+
+           Component {
+               id: selectorDelegate
+
+               OptionSelectorDelegate { text: name; subText: description }
+           }
+
+           ListModel {
+               id: customModel
+               ListElement { name: "Name 1"; description: "Description 1" }
+               ListElement { name: "Name 2"; description: "Description 2" }
+               ListElement { name: "Name 3"; description: "Description 3" }
+               ListElement { name: "Name 4"; description: "Description 4" }
+           }
         }
     }
 }

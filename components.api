@@ -106,6 +106,8 @@ ListItem.Empty
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
+    property string subText
+    property url image
     property ListView listView
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
