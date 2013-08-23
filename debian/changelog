@@ -1,3 +1,54 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130822.1-0ubuntu1) saucy; urgency=low
+
+  [ Alexandre Abreu ]
+  * Add an actionmanager property that let clients be more flexible with
+    their actions at runtime. (LP: #1207804)
+
+  [ tpeeters ]
+  * Do not trigger a ToolbarButton that is not enabled. (LP: #1202245)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 707
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 22 Aug 2013 18:55:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130821-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * Make Popover themable and allow inheriting Popover's default style.
+
+  [ Omer Akram ]
+  * make the input device detection logic inside autopilot emulators
+    actually work.
+  * first step for autopilot tests to run on touch devices.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 703
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 21 Aug 2013 16:19:11 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130819.3-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm management QML API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 699
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 19 Aug 2013 18:37:52 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130819-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Add a drag threshold to Panel (and Toolbar) so that unintentional
+    movements while clicking are not detected as a drag to open/close
+    the panel. (LP: #1179569)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 697
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 19 Aug 2013 02:11:54 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130815.1-0ubuntu1) saucy; urgency=low
 
   [ Leo Arias ]

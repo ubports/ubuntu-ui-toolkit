@@ -22,4 +22,5 @@ SUBDIRS += tst_units \
     tst_ubuntu_shape \
     tst_arguments \
     tst_argument \
-    tst_layouts
+    tst_layouts \
+    tst_alarms

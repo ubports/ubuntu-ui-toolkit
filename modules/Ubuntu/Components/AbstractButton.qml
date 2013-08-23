@@ -47,7 +47,7 @@ ActionItem {
     /*!
       If a button is clicked, its triggered() signal will automatically be called.
      */
-    onClicked: button.triggered(button)
+    onClicked: button.trigger()
 
     Keys.onEnterPressed: clicked()
     Keys.onReturnPressed: clicked()

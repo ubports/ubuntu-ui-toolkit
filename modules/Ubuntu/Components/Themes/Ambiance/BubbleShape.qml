@@ -24,6 +24,11 @@ Item {
     property string direction: "down"
     property bool clipContent: false
     default property alias children: content.children
+    property alias bubbleColor: colorRect.color
+    property alias bubbleOpacity: colorRect.opacity
+    // FIXME: This should not be necessary. See
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
+    property alias arrowSource: arrow.source
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
@@ -117,6 +122,7 @@ Item {
         anchors.fill: parent
 
         Rectangle {
+            id: colorRect
             anchors.fill: parent
             color: Theme.palette.normal.overlay
             visible: bubbleShape.clipContent

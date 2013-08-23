@@ -22,6 +22,8 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-window-plugin,
                qtdeclarative5-unity-action-plugin,
                devscripts,
+               libqt5organizer5,
+               qtpim5-dev,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
