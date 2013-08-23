@@ -76,8 +76,8 @@ public:
     AlarmsAdapter(AlarmManager *qq);
     virtual ~AlarmsAdapter();
 
-    static AlarmsAdapter* get() {
-        return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get());
+    static AlarmsAdapter* get(AlarmManager *instance = 0) {
+        return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
     }
 
     QOrganizerManager manager;
@@ -405,7 +405,7 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
 bool AlarmRequestAdapter::fetch()
 {
     AlarmManager *manager = static_cast<AlarmManager*>(q_ptr->parent());
-    AlarmsAdapter *owner = static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(manager));
+    AlarmsAdapter *owner = AlarmsAdapter::get(manager);
 
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
     operation->setManager(&owner->manager);
@@ -547,7 +547,7 @@ void AlarmRequestAdapter::completeRemove()
 void AlarmRequestAdapter::completeFetch()
 {
     AlarmManager *manager = static_cast<AlarmManager*>(q_ptr->parent());
-    AlarmsAdapter *owner = static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(manager));
+    AlarmsAdapter *owner = AlarmsAdapter::get(manager);
     QOrganizerItemFetchRequest *fetch = static_cast<QOrganizerItemFetchRequest *>(m_request);
     owner->completeFetchAlarms(fetch->items());
 }
