@@ -52,7 +52,6 @@ public:
 
     bool start(QOrganizerAbstractRequest *operation);
 
-protected Q_SLOTS:
     void _q_updateProgress();
 
 private:
@@ -94,8 +93,6 @@ public:
     void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
     void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
     int organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm);
-
-//    friend class AlarmRequestAdapter;
 };
 
 /*-----------------------------------------------------------------------------

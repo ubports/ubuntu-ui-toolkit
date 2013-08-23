@@ -54,6 +54,7 @@ public: // enums
         NoDaysOfWeek = 3,
         OneTimeOnMoreDays = 4,
         InvalidEvent = 5,
+        OperationPending = 6,
         AdaptationError = 100
     };
 

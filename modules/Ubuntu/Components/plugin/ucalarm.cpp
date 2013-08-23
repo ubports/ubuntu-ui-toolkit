@@ -21,6 +21,7 @@
 #include "alarmmanager_p.h"
 #include "alarmrequest_p.h"
 #include "i18n.h"
+#include <QtQml/QQmlInfo>
 
 #define IS_DAY_SET(bit, num)    (((num) & (1 << (bit - 1))) == (1 << (bit - 1)))
 
@@ -63,6 +64,23 @@ void UCAlarmPrivate::_q_syncStatus(int status, int error) {
     if (this->status != alarmStatus || this->error != error) {
         this->status = alarmStatus;
         this->error = error;
+
+        if (this->status == UCAlarm::Ready) {
+            // sync field changes occured during operation
+            if (rawData.changes & AlarmData::Enabled)
+                Q_EMIT q_ptr->enabledChanged();
+            if (rawData.changes & AlarmData::Date)
+                Q_EMIT q_ptr->dateChanged();
+            if (rawData.changes & AlarmData::Message)
+                Q_EMIT q_ptr->messageChanged();
+            if (rawData.changes & AlarmData::Sound)
+                Q_EMIT q_ptr->soundChanged();
+            if (rawData.changes & AlarmData::Type)
+                Q_EMIT q_ptr->typeChanged();
+            if (rawData.changes & AlarmData::Days)
+                Q_EMIT q_ptr->daysOfWeekChanged();
+            rawData.changes = 0;
+        }
 
         Q_EMIT q_func()->statusChanged();
         Q_EMIT q_func()->errorChanged();
@@ -108,11 +126,11 @@ bool UCAlarmPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
     return (bits > 1);
 }
 
-UCAlarm::Error UCAlarmPrivate::checkAlarm(int &changes)
+UCAlarm::Error UCAlarmPrivate::checkAlarm()
 {
     if (rawData.message.isEmpty()) {
         rawData.message = UbuntuI18n::instance().tr("Alarm");
-        changes |= AlarmData::Message;
+        rawData.changes |= AlarmData::Message;
     }
 
     if (!rawData.date.isValid()) {
@@ -121,35 +139,36 @@ UCAlarm::Error UCAlarmPrivate::checkAlarm(int &changes)
 
     // check type first as it may alter start day
     if (rawData.type == UCAlarm::OneTime) {
-       return checkOneTime(changes);
+       return checkOneTime();
     } else if (rawData.type == UCAlarm::Repeating) {
-        return checkRepeatingWeekly(changes);
+        return checkRepeatingWeekly();
     }
 
     return UCAlarm::NoError;
 }
 
-UCAlarm::Error UCAlarmPrivate::checkDow(int &changes)
+UCAlarm::Error UCAlarmPrivate::checkDow()
 {
     if (!rawData.days) {
         return UCAlarm::NoDaysOfWeek;
     } else if (rawData.days == UCAlarm::AutoDetect) {
         rawData.days = dayOfWeek(rawData.date);
-        changes |= AlarmData::Days;
+        rawData.changes |= AlarmData::Days;
     } else if (rawData.days != UCAlarm::Daily) {
         int alarmDay = firstDayOfWeek(rawData.days);
         int dayOfWeek = rawData.date.date().dayOfWeek();
         if (alarmDay < dayOfWeek) {
             rawData.date = rawData.date.addDays(7 - dayOfWeek + alarmDay);
+            rawData.changes |= AlarmData::Date;
         } else if (alarmDay > dayOfWeek) {
             rawData.date = rawData.date.addDays(alarmDay - dayOfWeek);
+            rawData.changes |= AlarmData::Date;
         }
-        changes |= AlarmData::Date;
     }
     return UCAlarm::NoError;
 }
 
-UCAlarm::Error UCAlarmPrivate::checkOneTime(int &changes)
+UCAlarm::Error UCAlarmPrivate::checkOneTime()
 {
     // check days, days can be set for only one day in this case
     if (multipleDaysSet(rawData.days)) {
@@ -157,7 +176,7 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime(int &changes)
     }
 
     // adjust start date and/or dayOfWeek according to their values
-    UCAlarm::Error result = checkDow(changes);
+    UCAlarm::Error result = checkDow();
     if (result != UCAlarm::NoError) {
         return result;
     }
@@ -169,12 +188,12 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime(int &changes)
     return UCAlarm::NoError;
 }
 
-UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly(int &changes)
+UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
 {
     // start date is adjusted depending on the days value;
     // start date can be set to be the current time, as scheduling will move
     // it to the first occurence.
-    UCAlarm::Error result = checkDow(changes);
+    UCAlarm::Error result = checkDow();
     if (result != UCAlarm::NoError) {
         return result;
     }
@@ -192,12 +211,11 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly(int &changes)
             // the starting date is still this week
             rawData.date.addDays(nextOccurence - dayOfWeek);
         }
-        changes += AlarmData::Date;
+        rawData.changes |= AlarmData::Date;
     }
 
     return UCAlarm::NoError;
 }
-
 
 
 /*!
@@ -583,31 +601,17 @@ void UCAlarm::save()
 {
     Q_D(UCAlarm);
     if (d->status == InProgress) {
-        // TODO: report error that only one request at a time can be processed
+        qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
-    int changes = 0;
     d->error = NoError;
     d->status = Ready;
 
-    UCAlarm::Error result = d->checkAlarm(changes);
+    UCAlarm::Error result = d->checkAlarm();
     if (result != UCAlarm::NoError) {
         d->_q_syncStatus(Fail, result);
     } else {
-        if (changes & AlarmData::Enabled)
-            Q_EMIT enabledChanged();
-        if (changes & AlarmData::Date)
-            Q_EMIT dateChanged();
-        if (changes & AlarmData::Message)
-            Q_EMIT messageChanged();
-        if (changes & AlarmData::Sound)
-            Q_EMIT soundChanged();
-        if (changes & AlarmData::Type)
-            Q_EMIT typeChanged();
-        if (changes & AlarmData::Days)
-            Q_EMIT daysOfWeekChanged();
-
         if (d->createRequest()) {
             d->request->save(d->rawData);
         }
@@ -625,7 +629,7 @@ void UCAlarm::cancel()
 {
     Q_D(UCAlarm);
     if (d->status == InProgress) {
-        // TODO: report error that only one request at a time can be processed
+        qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
@@ -644,18 +648,15 @@ void UCAlarm::cancel()
 void UCAlarm::reset()
 {
     Q_D(UCAlarm);
+    d->error = NoError;
+    d->status = InProgress;
+
     delete d->request;
     d->request = 0;
-    d->error = NoError;
-    d->status = Ready;
     d->rawData = AlarmData();
     d->setDefaults();
-    Q_EMIT enabledChanged();
-    Q_EMIT dateChanged();
-    Q_EMIT messageChanged();
-    Q_EMIT soundChanged();
-    Q_EMIT typeChanged();
-    Q_EMIT daysOfWeekChanged();
+    d->rawData.changes = AlarmData::AllFields;
+    d->_q_syncStatus(Ready, NoError);
 }
 
 #include "moc_ucalarm.cpp"

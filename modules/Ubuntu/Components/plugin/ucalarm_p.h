@@ -48,10 +48,10 @@ public:
     static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
-    UCAlarm::Error checkAlarm(int &changes);
-    UCAlarm::Error checkDow(int &changes);
-    UCAlarm::Error checkOneTime(int &changes);
-    UCAlarm::Error checkRepeatingWeekly(int &changes);
+    UCAlarm::Error checkAlarm();
+    UCAlarm::Error checkDow();
+    UCAlarm::Error checkOneTime();
+    UCAlarm::Error checkRepeatingWeekly();
 
     bool createRequest();
 

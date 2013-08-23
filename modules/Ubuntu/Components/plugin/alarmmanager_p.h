@@ -34,7 +34,8 @@ public:
         Message     = 0x0004,
         Sound       = 0x0008,
         Type        = 0x0010,
-        Days        = 0x0020
+        Days        = 0x0020,
+        AllFields   = 0x00FF
     };
 
     AlarmData()

@@ -18,8 +18,6 @@
 
 #include "alarmmanager_p.h"
 #include "alarmmanager_p_p.h"
-#include "alarmrequest_p.h"
-#include "alarmrequest_p_p.h"
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 
