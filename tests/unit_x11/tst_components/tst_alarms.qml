@@ -53,17 +53,15 @@ Item {
         when: windowShown
 
         function clean() {
-            var loop = true
-            while (loop) {
-                loop = false;
-                for (var i = 0; testModel.count; i++) {
-                    var alarm = testModel.get(i);
-                    if (alarm && alarm.message === "test") {
-                        alarm.cancel();
-                        wait(100);
-                        loop = true;
-                        break;
-                    }
+            var i = 0;
+            while (i < testModel.count) {
+                var alarm = testModel.get(i);
+                if (alarm.message === "test") {
+                    alarm.cancel();
+                    wait(100);
+                    i = 0;
+                } else {
+                    i++;
                 }
             }
         }

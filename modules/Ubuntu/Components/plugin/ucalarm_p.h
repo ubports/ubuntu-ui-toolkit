@@ -21,7 +21,6 @@
 
 #include "ucalarm.h"
 #include "alarmmanager_p.h"
-//#include "alarmmanager_p_p.h"
 #include <QtCore/QDateTime>
 #include <QtQml/QQmlListProperty>
 
@@ -44,18 +43,20 @@ public:
     int error;
     UCAlarm::Status status;
 
-    void createRequest();
+    // utility functions
+    static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
+    static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
+    static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
+    static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
+    UCAlarm::Error checkAlarm(int &changes);
+    UCAlarm::Error checkDow(int &changes);
+    UCAlarm::Error checkOneTime(int &changes);
+    UCAlarm::Error checkRepeatingWeekly(int &changes);
 
-    void _q_syncStatus(int status, int error) {
-        UCAlarm::Status alarmStatus = static_cast<UCAlarm::Status>(status);
-        if (this->status != alarmStatus || this->error != error) {
-            this->status = alarmStatus;
-            this->error = error;
+    bool createRequest();
 
-            Q_EMIT q_func()->statusChanged();
-            Q_EMIT q_func()->errorChanged();
-        }
-    }
+    // private slots
+    void _q_syncStatus(int status, int error);
 };
 
 #endif // UUALARM_P_H

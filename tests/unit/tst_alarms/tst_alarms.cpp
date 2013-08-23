@@ -69,13 +69,10 @@ private Q_SLOTS:
                 alarm->cancel();
                 QTest::waitForEvents();
                 i = 0;
+            } else {
+                i++;
             }
-            i++;
         }
-    }
-
-    void initTestCase() {
-        QTest::waitForEvents();
     }
 
     void test_singleShotAlarmXFail() {
@@ -87,6 +84,7 @@ private Q_SLOTS:
     void test_singleShotAlarmPass() {
         UCAlarm alarm(QDateTime::currentDateTime().addSecs(10), "test_singleShotAlarmPass");
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));
@@ -97,6 +95,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_repeating_autoDetect");
 
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));
@@ -210,6 +209,7 @@ private Q_SLOTS:
         QVERIFY(!compareAlarms(&alarm, &copy));
 
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));

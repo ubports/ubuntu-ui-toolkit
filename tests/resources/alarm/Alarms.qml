@@ -31,6 +31,7 @@ MainView {
 
     Alarm {
         id: alarm
+        onStatusChanged: print("alarm status= " + status + ", error=" + error)
     }
 
     Column {

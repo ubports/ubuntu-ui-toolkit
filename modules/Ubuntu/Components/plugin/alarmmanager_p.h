@@ -137,7 +137,6 @@ public:
         Error
     };
 
-    explicit AlarmManager(QObject *parent = 0);
     ~AlarmManager();
 
     static AlarmManager &instance() {
@@ -146,64 +145,15 @@ public:
     }
 
     QList<AlarmData> alarms() const;
-    AlarmRequest *createRequest(QObject *owner, bool autoDelete = false);
-
-    void set(AlarmRequest *request, AlarmData &alarm, int &changes);
-    void cancel(AlarmRequest *request, AlarmData &alarm);
 
 Q_SIGNALS:
     void alarmsChanged();
-    
+
 private:
+    explicit AlarmManager(QObject *parent = 0);
     Q_DISABLE_COPY(AlarmManager)
     Q_DECLARE_PRIVATE(AlarmManager)
     QScopedPointer<AlarmManagerPrivate> d_ptr;
-};
-
-class AlarmRequest : public QObject
-{
-    Q_OBJECT
-public:
-    enum Status {
-        Ready = 1,
-        InProgress,
-        Fail
-    };
-
-    explicit AlarmRequest(bool autoDelete = false, QObject *parent = 0);
-    virtual ~AlarmRequest();
-
-    Status status() const {
-        return m_status;
-    }
-    int error() const {
-        return m_error;
-    }
-
-    virtual void start() = 0;
-
-protected Q_SLOTS:
-    virtual void updateProgress() = 0;
-
-Q_SIGNALS:
-    void statusChanged(int status, int error);
-
-
-protected:
-    void setStatus(Status status, int error = UCAlarm::NoError) {
-        if ((m_status != status) || (m_error != error)) {
-            m_status = status;
-            m_error = error;
-            Q_EMIT statusChanged(m_status, m_error);
-        }
-    }
-
-protected:
-    Status m_status;
-    int m_error;
-    bool m_completed:1;
-    bool m_autoDelete:1;
-    friend class AlarmManagerPrivate;
 };
 
 #endif // ALARMMANAGER_H
