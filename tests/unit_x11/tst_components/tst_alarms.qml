@@ -216,13 +216,13 @@ Item {
             verify(testModel.count > 0, "alarm added");
             var item = findChild(roleTest, "roleItem");
             verify(item, "has children");
-            verify(item.roleModel, "model is defined");
-            verify(item.roleEnabled, "enabled is defined");
-            verify(item.roleMessage, "message is defined");
-            verify(item.roleDate, "date is defined");
-            verify(item.roleType, "type is defined");
-            verify(item.roleDaysOfWeek, "daysOfWeek is defined");
-            verify(item.roleSound, "sound is defined");
+            verify(item.roleModel !== undefined, "model is defined");
+            verify(item.roleEnabled !== undefined, "enabled is defined");
+            verify(item.roleMessage !== undefined, "message is defined");
+            verify(item.roleDate !== undefined, "date is defined");
+            verify(item.roleType !== undefined, "type is defined");
+            verify(item.roleDaysOfWeek !== undefined, "daysOfWeek is defined");
+            verify(item.roleSound !== undefined, "sound is defined");
         }
     }
 }
