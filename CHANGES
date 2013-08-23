@@ -9,8 +9,6 @@ UNRELEASED
 
 API Changes
 ***********
-* CHANGED IN: OptionSelector: property var values TO property var model
-* ADDED IN: OptionSelector: property Component delegate 
 * ADDED IN: Empty: property alias divider
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
