@@ -169,7 +169,7 @@ ListItem.Empty {
                 property real itemHeight
 
                 boundsBehavior: Flickable.StopAtBounds
-                interactive: listContainer.height !== list.contentHeight ? true : false
+                interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0
                 model: optionSelector.model

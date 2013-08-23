@@ -205,6 +205,37 @@ ListItem.Standard {
         }
     ]
 
+    Row {
+        spacing: units.gu(1)
+
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(3)
+            verticalCenter: parent.verticalCenter
+        }
+
+        Image {
+            id: leftIcon
+
+            source: icon
+        }
+
+        Column {
+            anchors {
+                verticalCenter: parent.verticalCenter
+            }
+            Label {
+                text: option.text === "" ? modelData : option.text
+            }
+
+            Label {
+                text: option.subText
+                visible: option.subText !== "" ? true : false
+                fontSize: "small"
+            }
+        }
+    }
+
     Image {
         id: image
 
@@ -246,32 +277,6 @@ ListItem.Standard {
                     lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
                     gl_FragColor = colour * sourceColour.a * qt_Opacity;
                 }"
-        }
-    }
-
-    Row {
-        spacing: units.gu(1)
-        Image {
-            source: icon
-        }
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(3)
-            verticalCenter: parent.verticalCenter
-        }
-        Column {
-            anchors {
-                verticalCenter: parent.verticalCenter
-            }
-            Label {
-                text: option.text === "" ? modelData : option.text
-            }
-
-            Label {
-                text: option.subText
-                visible: option.subText !== "" ? true : false
-                fontSize: "small"
-            }
         }
     }
 }
