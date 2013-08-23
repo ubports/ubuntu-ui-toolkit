@@ -38,7 +38,7 @@ API Changes
 * CHANGED IN Toolbar: property ToolbarActions tools TO property Item tools
 * DEPRECATED IN Action: property bool visible
 * DEPRECATED IN Action: property Item itemHint
-* DEPRECATED: ToolbarActions component (use ToolbarItems instead)
+* REMOVED ToolbarActions (use ToolbarItems instead)
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
