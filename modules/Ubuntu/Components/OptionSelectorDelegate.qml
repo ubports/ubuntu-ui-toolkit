@@ -22,6 +22,8 @@ ListItem.Standard {
     id: option
 
     property string text
+    property string subText
+    property url image
     property ListView listView: ListView.view
 
     width: parent.width + units.gu(2)
@@ -245,7 +247,7 @@ ListItem.Standard {
         }
     }
 
-    ListItem.LabelVisual {
+    Label {
         text: option.text === "" ? modelData : option.text
         anchors {
         left: parent.left

@@ -33,7 +33,7 @@ Template {
            OptionSelector {
                 text: i18n.tr("Label")
                 expanded: false
-                values: [i18n.tr("Value 1"),
+                model: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
                          i18n.tr("Value 3"),
                          i18n.tr("Value 4")]
@@ -42,7 +42,7 @@ Template {
            OptionSelector {
                 text: i18n.tr("Label")
                 expanded: true
-                values: [i18n.tr("Value 1"),
+                model: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
                          i18n.tr("Value 3"),
                          i18n.tr("Value 4")]
