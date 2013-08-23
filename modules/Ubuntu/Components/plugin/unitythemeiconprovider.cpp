@@ -23,18 +23,6 @@
 UnityThemeIconProvider::UnityThemeIconProvider():
   QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
-    QStringList paths = QIcon::themeSearchPaths();
-
-    if (!paths.contains(QLatin1String("/usr/share/pixmaps"))) {
-        paths.append(QLatin1String("/usr/share/pixmaps"));
-    }
-
-    if (!paths.contains(QLatin1String("/usr/share/notify-osd/icons"))) {
-        paths.append(QLatin1String("/usr/share/notify-osd/icons"));
-        QIcon::setThemeSearchPaths(paths);
-    }
-
-    QIcon::setThemeSearchPaths(paths);
 }
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *realSize, const QSize &requestedSize)
