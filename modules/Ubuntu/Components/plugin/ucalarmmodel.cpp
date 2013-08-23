@@ -121,8 +121,9 @@
  * \endqml
  */
 
-UCAlarmModel::UCAlarmModel(QObject *parent) :
-    QAbstractListModel(parent)
+UCAlarmModel::UCAlarmModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , m_ready(false)
 {
     m_roles = AlarmData::roles();
     m_roles.insert(m_roles.count(), "model");
@@ -134,6 +135,7 @@ UCAlarmModel::UCAlarmModel(QObject *parent) :
     connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
     // fetch alarms
     refresh();
+    m_ready = true;
 }
 UCAlarmModel::~UCAlarmModel()
 {
@@ -237,7 +239,9 @@ int UCAlarmModel::count() const
  */
 void UCAlarmModel::refresh()
 {
-    beginResetModel();
+    if (m_ready) {
+        beginResetModel();
+    }
 
     clear();
     QList<AlarmData> alarms = AlarmManager::instance().alarms();
@@ -248,5 +252,7 @@ void UCAlarmModel::refresh()
         m_alarms << alarm;
     }
 
-    endResetModel();
+    if (m_ready) {
+        endResetModel();
+    }
 }

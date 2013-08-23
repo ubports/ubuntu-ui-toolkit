@@ -49,6 +49,7 @@ private Q_SLOTS:
     void refresh();
 
 private:
+    bool m_ready;
     QHash<int, QByteArray> m_roles;
     QList<UCAlarm*> m_alarms;
     void clear();
