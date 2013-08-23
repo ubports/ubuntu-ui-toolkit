@@ -32,7 +32,6 @@ Template {
 
            OptionSelector {
                 text: i18n.tr("Label")
-                expanded: false
                 model: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
                          i18n.tr("Value 3"),
@@ -51,6 +50,7 @@ Template {
            OptionSelector {
                text: i18n.tr("Label")
                model: customModel
+               expanded: true
                delegate: selectorDelegate
            }
 
