@@ -511,7 +511,7 @@ void AlarmRequestAdapter::_q_updateProgress()
                 break;
             }
             default:
-                qDebug() << "Unhandled request:" << m_request->type();
+                qWarning() << "Unhandled request:" << m_request->type();
                 setStatus(AlarmRequest::Fail, AlarmsAdapter::UnhandledRequest);
                 break;
             }
@@ -521,7 +521,7 @@ void AlarmRequestAdapter::_q_updateProgress()
         break;
     }
     default: {
-        qDebug() << "Invalid status" << state;
+        qWarning() << "Invalid status" << state;
         setStatus(AlarmRequest::Fail, UCAlarm::InvalidEvent);
         break;
     }
