@@ -23,8 +23,6 @@
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
-#define IS_DAY_SET(bit, num)    (((num) & (1 << (bit - 1))) == (1 << (bit - 1)))
-
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
     , request(0)
@@ -200,7 +198,7 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
 
     // move start time to the first occurence if needed
     int dayOfWeek = rawData.date.date().dayOfWeek();
-    if (!IS_DAY_SET(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
+    if (!isDaySet(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
         // check the next occurence of the alarm
         int nextOccurence = nextDayOfWeek(rawData.days, dayOfWeek);
         if (nextOccurence <= 0) {

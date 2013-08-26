@@ -45,6 +45,7 @@ public:
 
     // utility functions
     static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
+    static inline bool isDaySet(int dayNumber, UCAlarm::DaysOfWeek days);
     static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
@@ -58,5 +59,10 @@ public:
     // private slots
     void _q_syncStatus(int status, int error);
 };
+
+inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)
+{
+    return (days & (1 << (dayNumber - 1))) == (1 << (dayNumber - 1));
+}
 
 #endif // UUALARM_P_H
