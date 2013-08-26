@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130826.1-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm backend turned to asynchronous implementation. Status enum and
+    corresponding property added to Alarm element to reflect the pending
+    operation status.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 712
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 26 Aug 2013 18:34:52 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130823-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]
