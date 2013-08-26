@@ -20,6 +20,7 @@
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
+#include "ucalarmmodel.h"
 #undef protected
 
 #include <QtCore/QString>
@@ -60,23 +61,18 @@ private Q_SLOTS:
 
     void cleanupTestCase() {
         // remove all test alarms
-        bool loop = true;
-        while (loop) {
-            loop = false;
-            QList<AlarmData> alarms = AlarmManager::instance().alarms();
-            Q_FOREACH(AlarmData alarm, alarms) {
-                if (alarm.message.startsWith("test_")) {
-                    AlarmManager::instance().cancel(alarm);
-                    QTest::waitForEvents();
-                    loop = true;
-                    break;
-                }
+        UCAlarmModel model;
+        int i = 0;
+        while (i < model.count()) {
+            UCAlarm *alarm = model.get(i);
+            if (alarm && alarm->message().startsWith("test_")) {
+                alarm->cancel();
+                QTest::waitForEvents();
+                i = 0;
+            } else {
+                i++;
             }
         }
-    }
-
-    void initTestCase() {
-        QTest::waitForEvents();
     }
 
     void test_singleShotAlarmXFail() {
@@ -88,6 +84,7 @@ private Q_SLOTS:
     void test_singleShotAlarmPass() {
         UCAlarm alarm(QDateTime::currentDateTime().addSecs(10), "test_singleShotAlarmPass");
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));
@@ -98,6 +95,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_repeating_autoDetect");
 
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));
@@ -211,6 +209,7 @@ private Q_SLOTS:
         QVERIFY(!compareAlarms(&alarm, &copy));
 
         alarm.save();
+        QTest::waitForEvents();
         QVERIFY(alarm.error() == UCAlarm::NoError);
         QTest::waitForEvents();
         QVERIFY(containsAlarm(&alarm));

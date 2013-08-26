@@ -20,16 +20,16 @@
 #define UCALARM_P_H
 
 #include "ucalarm.h"
-#include "alarmmanager_p_p.h"
+#include "alarmmanager_p.h"
 #include <QtCore/QDateTime>
 #include <QtQml/QQmlListProperty>
 
-class AlarmManager;
 class UCAlarmPrivate
 {
     Q_DECLARE_PUBLIC(UCAlarm)
 public:
     UCAlarmPrivate(UCAlarm *qq);
+    ~UCAlarmPrivate();
 
     static UCAlarmPrivate *get(UCAlarm *alarm) {
         return alarm->d_func();
@@ -38,8 +38,31 @@ public:
     void setDefaults();
 
     UCAlarm* q_ptr;
+    AlarmRequest *request;
     AlarmData rawData;
     int error;
+    UCAlarm::Status status;
+
+    // utility functions
+    static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
+    static inline bool isDaySet(int dayNumber, UCAlarm::DaysOfWeek days);
+    static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
+    static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
+    static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
+    UCAlarm::Error checkAlarm();
+    UCAlarm::Error checkDow();
+    UCAlarm::Error checkOneTime();
+    UCAlarm::Error checkRepeatingWeekly();
+
+    bool createRequest();
+
+    // private slots
+    void _q_syncStatus(int status, int error);
 };
+
+inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)
+{
+    return (days & (1 << (dayNumber - 1))) == (1 << (dayNumber - 1));
+}
 
 #endif // UUALARM_P_H
