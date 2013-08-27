@@ -15,12 +15,12 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
 import "." as ListItem
+import Ubuntu.Components 0.1 as Components
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Components.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection
@@ -30,7 +30,7 @@ import "." as ListItem
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
+        import Components.Components 0.1
         Column {
             width: 250
             OptionSelector {
@@ -56,6 +56,7 @@ import "." as ListItem
         }
     \endqml
 */
+
 ListItem.Empty {
     id: optionSelector
     __height: column.height
@@ -64,13 +65,7 @@ ListItem.Empty {
       \preliminary
       The list of values that will be shown under the label text. This is a model.
      */
-    property var values
-
-    /*!
-      \preliminary
-      The index of the currently selected element from the \l values array.
-     */
-    property alias selectedIndex: list.currentIndex
+    property var model
 
     /*!
       \preliminary
@@ -79,14 +74,33 @@ ListItem.Empty {
     property bool expanded: false
 
     /*!
-      Called when the optionSelector is either expanded or collapsed.
+      \preliminary
+      Colours image according to the fieldText colour of the theme, otherwise source colour is maintained.
      */
-    signal scroll(real selectorHeight, string currentState)
+    property bool colourImage: false
 
     /*!
-      Called when a delegate in the list view is selected.
+      \preliminary
+      ListView delegate.
      */
-    signal delegateSelected()
+    property Component delegate: OptionSelectorDelegate {}
+
+    /*!
+      \qmlproperty int selectedIndex
+      The index of the currently selected element in our list.
+     */
+    readonly property alias selectedIndex: list.currentIndex
+
+    /*!
+      \qmlproperty real containerHeight
+      Custom height for list container which allows scrolling inside the selector.
+     */
+    property real containerHeight: list.contentHeight
+
+    /*!
+      Called when the optionSelector is either expanded or collapsed.
+     */
+    signal scroll()
 
     showDivider: false
 
@@ -99,142 +113,72 @@ ListItem.Empty {
             right: parent.right
         }
 
-        ListItem.LabelVisual {
+        Label {
             text: optionSelector.text
             height: units.gu(2)
         }
 
-        ListItem.Empty {
+        StyledItem {
             id: listContainer
+            objectName: "listContainer"
 
+            readonly property url chevron: __styleInstance.chevron
+            readonly property url tick: __styleInstance.tick
+            readonly property color themeColour: Theme.palette.selected.fieldText
             property bool isExpanded: expanded
-            property int itemHeight: units.gu(5)
-            property url chevron: __styleInstance.chevron
-            property url tick: __styleInstance.tick
-            property color themeColour: Theme.palette.selected.fieldText
-            property bool colourComponent: __styleInstance.colourComponent
+            property bool isFullyExpanded: expanded
+            property bool colourImage: optionSelector.colourImage
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
-            onStateChanged: scroll(list.contentHeight, state)
+            onHeightChanged: scroll()
 
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: list.contentHeight
+                        height: containerHeight
                     }
                 }, State {
-                    name: "closed"
+                    name: "collapsed"
                     when: !listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: itemHeight
+                        height: list.itemHeight
                     }
                 }
             ]
 
-            Behavior on height {
+            transitions: [ Transition {
                 UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.SnapDuration
+                        properties: "height"
+                        duration: Components.UbuntuAnimation.BriskDuration
+                    }
                 }
-            }
+            ]
 
             ListView {
                 id: list
 
-                interactive: false
+                property int previousIndex: -1
+                readonly property alias expanded: optionSelector.expanded
+                readonly property alias container: listContainer
+                property real itemHeight
+
+                boundsBehavior: Flickable.StopAtBounds
+                interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0
-                model: optionSelector.values
+                model: optionSelector.model
                 anchors.fill: parent
 
-                delegate:
-                ListItem.Standard {
-                    id: option
-
-                    property bool currentItem: ListView.isCurrentItem
-
-                    width: parent.width + units.gu(2)
-                    height: listContainer.itemHeight
-                    showDivider: index === list.count - 1 || !listContainer.isExpanded ? false : true
-                    highlightWhenPressed: false
-                    selected: ListView.isCurrentItem
-                    anchors {
-                        left: parent.left
-                        leftMargin: units.gu(-2)
-                    }
-                    onClicked: {
-                        optionSelector.delegateSelected()
-                        if (listContainer.isExpanded) list.currentIndex = index
-                        if (!optionSelector.expanded) listContainer.isExpanded = !listContainer.isExpanded
-                    }
-
-                    Image {
-                        id: rightImage
-
-                        width: units.gu(2)
-                        height: units.gu(2)
-                        opacity: enabled ? 1.0 : 0.5
-                        visible: option.selected
-                        anchors {
-                            right: parent.right
-                            rightMargin: units.gu(2)
-                            verticalCenter: parent.verticalCenter
-                        }
-
-                        states: [ State {
-                                name: "chevron"
-                                when: !listContainer.isExpanded && listContainer.height === listContainer.itemHeight
-                                PropertyChanges {
-                                    target: rightImage
-                                    source: listContainer.chevron
-                                }
-                            }, State {
-                                name: "tick"
-                                when: listContainer.isExpanded && listContainer.height !== listContainer.itemHeight
-                                PropertyChanges {
-                                    target: rightImage
-                                    source: listContainer.tick
-                                }
-                            }
-                        ]
-
-                        ShaderEffect {
-                            property color colour: listContainer.themeColour
-                            property var source: rightImage
-
-                            width: source.width
-                            height: source.height
-                            visible: source.status === Image.Ready && listContainer.colourComponent
-
-                            fragmentShader: "
-                                    varying highp vec2 qt_TexCoord0;
-                                    uniform sampler2D source;
-                                    uniform lowp vec4 colour;
-                                    uniform lowp float qt_Opacity;
-
-                                    void main() {
-                                        lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                                        gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                                    }"
-                        }
-                    }
-
-                    ListItem.LabelVisual {
-                        text: modelData
-                        anchors {
-                        left: parent.left
-                            leftMargin: units.gu(3)
-                            verticalCenter: parent.verticalCenter
-                        }
-                    }
-                }
+                delegate: optionSelector.delegate
             }
         }
     }

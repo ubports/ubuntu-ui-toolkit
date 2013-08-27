@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 0.1 as Component
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
@@ -79,12 +79,51 @@ Template {
     ListItemsSection {
         title: i18n.tr("Option selector")
         className: "OptionSelector"
-        delegate: ListItem.OptionSelector {
-            text: i18n.tr("Label")
-            values: [i18n.tr("Value 1"),
-                     i18n.tr("Value 2"),
-                     i18n.tr("Value 3"),
-                     i18n.tr("Value 4")]
+
+        Column {
+            id: column
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: units.gu(3)
+
+           ListItem.OptionSelector {
+                text: i18n.tr("Label")
+                model: [i18n.tr("Value 1"),
+                         i18n.tr("Value 2"),
+                         i18n.tr("Value 3"),
+                         i18n.tr("Value 4")]
+           }
+
+           ListItem.OptionSelector {
+                text: i18n.tr("Label")
+                expanded: true
+                model: [i18n.tr("Value 1"),
+                         i18n.tr("Value 2"),
+                         i18n.tr("Value 3"),
+                         i18n.tr("Value 4")]
+           }
+
+           ListItem.OptionSelector {
+               text: i18n.tr("Label")
+               model: customModel
+               expanded: true
+               colourImage: true
+               delegate: selectorDelegate
+           }
+
+           Component {
+               id: selectorDelegate
+
+               OptionSelectorDelegate { text: name; subText: description; icon: image }
+           }
+
+           ListModel {
+               id: customModel
+               ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+               ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+               ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+               ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+           }
         }
     }
 

@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 
+* ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: ListItem OptionSelector to Components/ListItems
 * ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems
 * ADDED: ListItemOptionSelectorStyle to Components/SuruDark/ListItems
