@@ -31,7 +31,10 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 
-#define ALARM_DATABASE      "%1/alarms.database"
+#define ALARM_DATABASE          "%1/alarms.database"
+#define ALARM_MANAGER           "eds"
+#define ALARM_MANAGER_FALLBACK  "memory"
+#define ALARM_COLLECTION        "Alarms"
 
 QTORGANIZER_USE_NAMESPACE
 
@@ -80,7 +83,8 @@ public:
         return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
     }
 
-    QOrganizerManager manager;
+    bool usingCollection: 1;
+    QOrganizerManager *manager;
     QOrganizerCollection collection;
 
     virtual bool fetchAlarms();
@@ -108,23 +112,40 @@ AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
 
 AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     : AlarmManagerPrivate(qq)
-    , manager("memory")
+    , usingCollection(false)
+    , manager(0)
 {
-    bool alarmCollectionFound = false;
-    QList<QOrganizerCollection> collections = manager.collections();
+    QOrganizerManager local;
+    bool usingDefaultManager = local.availableManagers().contains(ALARM_MANAGER);
+    manager = (usingDefaultManager) ? new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    manager->setParent(q_ptr);
+
+    QList<QOrganizerCollection> collections = manager->collections();
     if (collections.count() > 0) {
         Q_FOREACH(const QOrganizerCollection &c, collections) {
-            if (c.metaData(QOrganizerCollection::KeyName).toString() == "alarms") {
-                alarmCollectionFound = true;
+            if (c.metaData(QOrganizerCollection::KeyName).toString() == ALARM_COLLECTION) {
+                usingCollection = true;
                 collection = c;
                 break;
             }
         }
     }
-    if (!alarmCollectionFound) {
+    if (!usingCollection) {
         // create alarm collection
-        collection.setMetaData(QOrganizerCollection::KeyName, "alarms");
-        manager.saveCollection(&collection);
+        collection.setMetaData(QOrganizerCollection::KeyName, ALARM_COLLECTION);
+        if (manager->saveCollection(&collection)) {
+            // make sure we have the collection in the list
+            collections = manager->collections();
+            if (collections.count() > 0) {
+                Q_FOREACH(const QOrganizerCollection &c, collections) {
+                    if (c.metaData(QOrganizerCollection::KeyName).toString() == ALARM_COLLECTION) {
+                        usingCollection = true;
+                        collection = c;
+                        break;
+                    }
+                }
+            }
+        }
     }
     loadAlarms();
 }
@@ -134,9 +155,12 @@ AlarmsAdapter::~AlarmsAdapter()
     saveAlarms();
 }
 
-// FIXME: remove once we have the Organizer backend ready
+// load fallback manager data
 void AlarmsAdapter::loadAlarms()
 {
+    if (manager->managerName() == ALARM_MANAGER) {
+        return;
+    }
     QFile file(QString(ALARM_DATABASE).arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)));
     if (!file.open(QFile::ReadOnly)) {
         return;
@@ -153,14 +177,17 @@ void AlarmsAdapter::loadAlarms()
 
         QOrganizerTodo event;
         rawAlarm2Organizer(alarm, event);
-        manager.saveItem(&event);
+        manager->saveItem(&event);
     }
     file.close();
 }
 
-// FIXME: remove once we have the Organizer backend ready
+// save fallback manager data only
 void AlarmsAdapter::saveAlarms()
 {
+    if (manager->managerName() == ALARM_MANAGER) {
+        return;
+    }
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
     if (!dir.exists()) {
         dir.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
@@ -184,7 +211,9 @@ void AlarmsAdapter::saveAlarms()
 
 void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event)
 {
-    event.setCollectionId(collection.id());
+    if (usingCollection) {
+        event.setCollectionId(collection.id());
+    }
     event.setAllDay(false);
     event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
@@ -256,7 +285,7 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
         QOrganizerTodoOccurrence occurence = static_cast<QOrganizerTodoOccurrence>(item);
         QOrganizerItemId eventId = occurence.parentId();
-        event = static_cast<QOrganizerTodo>(manager.item(eventId));
+        event = static_cast<QOrganizerTodo>(manager->item(eventId));
     } else {
         event = static_cast<QOrganizerTodo>(item);
     }
@@ -391,7 +420,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
     } else {
         // update existing event
         QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-        event = AlarmsAdapter::get()->manager.item(itemId);
+        event = AlarmsAdapter::get()->manager->item(itemId);
         if (event.isEmpty()) {
             setStatus(AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
@@ -400,7 +429,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
     }
 
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
-    operation->setManager(&AlarmsAdapter::get()->manager);
+    operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItem(event);
     return start(operation);
 }
@@ -417,7 +446,7 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
 
     QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
     QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
-    operation->setManager(&AlarmsAdapter::get()->manager);
+    operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItemId(itemId);
     return start(operation);
 }
@@ -431,7 +460,7 @@ bool AlarmRequestAdapter::fetch()
     AlarmsAdapter *owner = AlarmsAdapter::get(manager);
 
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
-    operation->setManager(&owner->manager);
+    operation->setManager(owner->manager);
 
     // set sort order
     QOrganizerItemSortOrder sortOrder;
