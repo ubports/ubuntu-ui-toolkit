@@ -69,11 +69,11 @@ class GenericTests(GalleryTestCase):
             "Buttons",
             "Slider",
             "Text Field",
+            "Option Selector",
             "Progress and activity",
             "Ubuntu Shape",
             "Icons",
             "Label",
-            "List Items",
         ]
 
         for item in items:
@@ -91,6 +91,7 @@ class GenericTests(GalleryTestCase):
 
         # now that we have more items, lets continue
         items = [
+            "List Items",
             "Dialog",
             "Popover",
             "Sheet",
