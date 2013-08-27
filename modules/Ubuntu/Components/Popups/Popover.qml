@@ -144,6 +144,13 @@ PopupBase {
     property bool autoClose: true
 
     /*!
+      \qmlproperty Component style
+      Exposes the style property of the \l StyledItem contained in the Popover.
+      Refer to \l StyledItem how to use it.
+      */
+    property alias foregroundStyle: foreground.style
+
+    /*!
       \preliminary
       Make the popover visible. Reparent to the background area object first if needed.
       Only use this function if you handle memory management. Otherwise use

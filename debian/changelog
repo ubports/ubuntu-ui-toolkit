@@ -1,3 +1,65 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130826.1-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm backend turned to asynchronous implementation. Status enum and
+    corresponding property added to Alarm element to reflect the pending
+    operation status.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 712
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 26 Aug 2013 18:34:52 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130823-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * AlarmModel got a role named model to solve ambiguous role accessing
+    situations. Test application added.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 710
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 Aug 2013 10:10:02 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130822.1-0ubuntu1) saucy; urgency=low
+
+  [ Alexandre Abreu ]
+  * Add an actionmanager property that let clients be more flexible with
+    their actions at runtime. (LP: #1207804)
+
+  [ tpeeters ]
+  * Do not trigger a ToolbarButton that is not enabled. (LP: #1202245)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 707
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 22 Aug 2013 18:55:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130821-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * Make Popover themable and allow inheriting Popover's default style.
+
+  [ Omer Akram ]
+  * make the input device detection logic inside autopilot emulators
+    actually work.
+  * first step for autopilot tests to run on touch devices.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 703
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 21 Aug 2013 16:19:11 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130819.3-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm management QML API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 699
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 19 Aug 2013 18:37:52 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130819-0ubuntu1) saucy; urgency=low
 
   [ tpeeters ]

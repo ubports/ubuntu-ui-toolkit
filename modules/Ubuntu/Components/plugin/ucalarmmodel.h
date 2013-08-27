@@ -29,6 +29,7 @@ class UCAlarmModel : public QAbstractListModel
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit UCAlarmModel(QObject *parent = 0);
+    ~UCAlarmModel();
 
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -48,7 +49,10 @@ private Q_SLOTS:
     void refresh();
 
 private:
-    UCAlarm m_alarm;
+    bool m_ready;
+    QHash<int, QByteArray> m_roles;
+    QList<UCAlarm*> m_alarms;
+    void clear();
 };
 
 #endif // UCALARMSMODEL_H

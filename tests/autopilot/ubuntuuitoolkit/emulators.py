@@ -31,7 +31,7 @@ def get_pointing_device():
     If not, the pointing device will be `Touch`.
 
     """
-    if platform.model == 'Desktop':
+    if platform.model() == 'Desktop':
         input_device_class = input.Mouse
     else:
         input_device_class = input.Touch
