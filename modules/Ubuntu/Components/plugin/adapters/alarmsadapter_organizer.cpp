@@ -476,9 +476,11 @@ bool AlarmRequestAdapter::fetch()
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
     // set filter
-    QOrganizerItemCollectionFilter filter;
-    filter.setCollectionId(owner->collection.id());
-    operation->setFilter(filter);
+    if (AlarmsAdapter::get()->usingCollection) {
+        QOrganizerItemCollectionFilter filter;
+        filter.setCollectionId(owner->collection.id());
+        operation->setFilter(filter);
+    }
 
     // start request
     return start(operation);
