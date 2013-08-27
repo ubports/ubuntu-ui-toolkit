@@ -65,29 +65,56 @@ Item {
        The color that all pixels that originally are of color \l keyColor should take.
        \qmlproperty color color
     */
-    property color color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+    property alias color: colorizedImage.keyColorOut
 
     /*!
        The color of the pixels that should be colorized.
        By default it is set to #808080.
        \qmlproperty color keyColor
     */
-    property color keyColor: "#808080"
+    property alias keyColor: colorizedImage.keyColorIn
 
-    ColourisedImage {
+    Image {
         id: image
 
         /* Necessary so that icons are not loaded before a size is set. */
         property bool ready: false
         Component.onCompleted: ready = true
 
-        active: colour != Qt.rgba(0.0, 0.0, 0.0, 0.0)
         anchors.fill: parent
         source: ready && width > 0 && height > 0 && icon.name ? "image://gicon/%1".arg(icon.name) : ""
-        colour: icon.color
         sourceSize {
             width: width
             height: height
         }
+        cache: true
+        visible: !colorizedImage.active
+    }
+
+    ShaderEffect {
+        id: colorizedImage
+
+        anchors.fill: parent
+        visible: active && image.status == Image.Ready
+
+        // Whether or not a color has been set.
+        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+
+        property Image source: visible ? image : null
+        property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        property color keyColorIn: "#808080"
+        property real threshold: 0.1
+
+        fragmentShader: "
+            varying highp vec2 qt_TexCoord0;
+            uniform sampler2D source;
+            uniform highp vec4 keyColorOut;
+            uniform highp vec4 keyColorIn;
+            uniform lowp float threshold;
+            uniform lowp float qt_Opacity;
+            void main() {
+                lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
+                gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
+            }"
     }
 }

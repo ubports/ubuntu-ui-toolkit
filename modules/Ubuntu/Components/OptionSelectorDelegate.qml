@@ -27,8 +27,7 @@ ListItem.Standard {
     property ListView listView: ListView.view
 
     width: parent.width + units.gu(2)
-    height: listView.container.itemHeight
-    showDivider: listView.container.height !== listView.container.itemHeight && index !== listView.count - 1 ? 1 : 0
+    showDivider: index !== listView.count - 1 ? 1 : 0
     highlightWhenPressed: false
     selected: ListView.isCurrentItem
     anchors {
@@ -46,7 +45,9 @@ ListItem.Standard {
         }
     }
 
-    Component.onCompleted: listView.itemHeight = childrenRect.height
+    Component.onCompleted: {
+        height = listView.itemHeight = childrenRect.height;
+    }
 
     //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
     states: [ State {
@@ -218,6 +219,26 @@ ListItem.Standard {
             id: leftIcon
 
             source: icon
+
+            ShaderEffect {
+                property color colour: option.listContainer.themeColour
+                property var source: parent
+
+                width: source.width
+                height: source.height
+                visible: source.status === Image.Ready
+
+                fragmentShader:
+                    "varying highp vec2 qt_TexCoord0;
+                     uniform sampler2D source;
+                     uniform lowp vec4 colour;
+                     uniform lowp float qt_Opacity;
+
+                     void main() {
+                        lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+                        gl_FragColor = colour * sourceColour.a * qt_Opacity;
+                    }"
+             }
         }
 
         Column {
@@ -236,10 +257,9 @@ ListItem.Standard {
         }
     }
 
-    ColourisedImage {
+    Image {
         id: image
 
-        colour: listView.container.themeColour
         width: units.gu(2)
         height: units.gu(2)
         source: listView.expanded ? listView.container.tick : listView.container.chevron
