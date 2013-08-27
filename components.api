@@ -35,13 +35,6 @@ AbstractButton
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
     property bool checked
-modules/Ubuntu/Components/ColourisedImage.qml
-Item
-    property url source
-    property color colour
-    property color keyColour
-    property bool active
-    property size sourceSize
 modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source
@@ -108,6 +101,7 @@ modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
     property bool expanded
+    property bool colourImage
     readonly property int selectedIndex
     property real containerHeight
     signal scroll()
@@ -117,6 +111,9 @@ ListItem.Standard
     property string subText
     property url icon
     property ListView listView
+    property color assetColour
+    property bool colourImage
+    property string fragColourShader
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
