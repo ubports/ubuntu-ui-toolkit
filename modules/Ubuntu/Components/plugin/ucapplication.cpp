@@ -19,6 +19,7 @@
 #include "ucapplication.h"
 
 #include <QtCore/QCoreApplication>
+#include <QDebug>
 
 /*!
  * \qmltype Application
@@ -45,8 +46,7 @@ QString UCApplication::applicationName() {
 
 void UCApplication::setApplicationName(QString applicationName) {
     QCoreApplication::setApplicationName(applicationName);
-    // Unsetting the organization name to skip an unneeded folder component
-    QCoreApplication::setOrganizationName("");
+    Q_EMIT applicationNameChanged();
 }
 
 /*!
@@ -60,6 +60,7 @@ QString UCApplication::organizationName() {
 
 void UCApplication::setOrganizationName(QString organizationName) {
     QCoreApplication::setOrganizationName(organizationName);
+    Q_EMIT organizationNameChanged();
 }
 
 

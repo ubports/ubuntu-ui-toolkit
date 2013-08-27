@@ -91,13 +91,10 @@ private Q_SLOTS:
     {
         QQuickItem *root = loadTest("AppName.qml");
         QVERIFY(root);
-        QQuickItem *mainView = testItem(root, "appName");
-        QVERIFY(mainView);
-        QCOMPARE(root, mainView);
-
-        QString applicationName(mainView->property("applicationName").value());
-        QCOMPARE(applicationName, "org.gnu.wildebeest");
-        QCOMPARE(applicationName, UCApplication::instance().applicationName());
+        QQuickItem *mainView = root;
+        QString applicationName(mainView->property("applicationName").toString());
+        QCOMPARE(applicationName, QString("org.gnu.wildebeest"));
+        QCOMPARE(applicationName, QCoreApplication::applicationName());
     }
 
     void testSetApplicationName() {

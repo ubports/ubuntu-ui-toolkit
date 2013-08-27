@@ -168,6 +168,13 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
 
+    context->setContextProperty("Application", &UCApplication::instance());
+    static ContextPropertyChangeListener applicationChangeListener(context, "Application");
+    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
+                     &applicationChangeListener, SLOT(updateContextProperty()));
+    QObject::connect(&UCApplication::instance(), SIGNAL(organizationNameChanged()),
+                     &applicationChangeListener, SLOT(updateContextProperty()));
+
     context->setContextProperty("units", &UCUnits::instance());
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
