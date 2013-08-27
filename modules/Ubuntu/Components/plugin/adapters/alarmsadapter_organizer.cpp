@@ -119,6 +119,10 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     bool usingDefaultManager = local.availableManagers().contains(ALARM_MANAGER);
     manager = (usingDefaultManager) ? new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
     manager->setParent(q_ptr);
+    if (!usingDefaultManager) {
+        qWarning() << "WARNING: default alarm manager not installed, using" << manager->managerName() << "manager.";
+        qWarning() << "This manager may not provide all the needed features.";
+    }
 
     QList<QOrganizerCollection> collections = manager->collections();
     if (collections.count() > 0) {
@@ -144,6 +148,9 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
                         break;
                     }
                 }
+            }
+            if (!usingCollection) {
+                qWarning() << "WARNING: Creating dedicated collection for alarms was not possible, alarms will be saved into the default collection!";
             }
         }
     }
@@ -489,6 +496,7 @@ bool AlarmRequestAdapter::start(QOrganizerAbstractRequest *operation)
     completed = false;
     // make sure we are in progress state
     setStatus(AlarmRequest::InProgress);
+    QObject::connect(m_request, SIGNAL(resultsAvailable()), q_ptr, SLOT(_q_updateProgress()));
     if (m_request->start()) {
         // check if the request got completed without having the slot called (some engines may do that)
         if (!completed && m_request->state() >= QOrganizerAbstractRequest::CanceledState) {
