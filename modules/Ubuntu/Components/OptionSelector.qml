@@ -78,6 +78,12 @@ ListItem.Empty {
 
     /*!
       \preliminary
+      Colours image according to the fieldText colour of the theme, otherwise source colour is maintained.
+     */
+    property bool colourImage: false
+
+    /*!
+      \preliminary
       ListView delegate.
      */
     property Component delegate: OptionSelectorDelegate {}
@@ -119,12 +125,12 @@ ListItem.Empty {
             id: listContainer
             objectName: "listContainer"
 
+            readonly property url chevron: __styleInstance.chevron
+            readonly property url tick: __styleInstance.tick
+            readonly property color themeColour: Theme.palette.selected.fieldText
             property bool isExpanded: expanded
             property bool isFullyExpanded: expanded
-            property url chevron: __styleInstance.chevron
-            property url tick: __styleInstance.tick
-            property color themeColour: Theme.palette.selected.fieldText
-            property bool colourComponent: __styleInstance.colourComponent
+            property bool colourImage: optionSelector.colourImage
 
             anchors {
                 left: parent.left

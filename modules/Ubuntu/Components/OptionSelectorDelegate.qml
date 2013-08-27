@@ -25,6 +25,18 @@ ListItem.Standard {
     property string subText
     property url icon
     property ListView listView: ListView.view
+    property color assetColour: listView.container.themeColour
+    property bool colourImage: listView.container.colourImage
+    property string fragColourShader:
+        "varying highp vec2 qt_TexCoord0;
+         uniform sampler2D source;
+         uniform lowp vec4 colour;
+         uniform lowp float qt_Opacity;
+
+         void main() {
+            lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
+            gl_FragColor = colour * sourceColour.a * qt_Opacity;
+        }"
 
     width: parent.width + units.gu(2)
     showDivider: index !== listView.count - 1 ? 1 : 0
@@ -221,23 +233,14 @@ ListItem.Standard {
             source: icon
 
             ShaderEffect {
-                property color colour: option.listContainer.themeColour
-                property var source: parent
+                property color colour: assetColour
+                property Image source: parent
 
                 width: source.width
                 height: source.height
-                visible: source.status === Image.Ready
+                visible: colourImage
 
-                fragmentShader:
-                    "varying highp vec2 qt_TexCoord0;
-                     uniform sampler2D source;
-                     uniform lowp vec4 colour;
-                     uniform lowp float qt_Opacity;
-
-                     void main() {
-                        lowp vec4 sourceColour = texture2D(source, qt_TexCoord0);
-                        gl_FragColor = colour * sourceColour.a * qt_Opacity;
-                    }"
+                fragmentShader: fragColourShader
              }
         }
 
@@ -248,7 +251,6 @@ ListItem.Standard {
             Label {
                 text: option.text === "" ? modelData : option.text
             }
-
             Label {
                 text: option.subText
                 visible: option.subText !== "" ? true : false
@@ -279,5 +281,15 @@ ListItem.Standard {
                 duration: Components.UbuntuAnimation.FastDuration
             }
         }
+
+        ShaderEffect {
+            property color colour: assetColour
+            property Image source: parent
+
+            width: source.width
+            height: source.height
+
+            fragmentShader: fragColourShader
+         }
     }
 }

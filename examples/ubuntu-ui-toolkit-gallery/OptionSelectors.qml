@@ -51,6 +51,7 @@ Template {
                text: i18n.tr("Label")
                model: customModel
                expanded: true
+               colourImage: true
                delegate: selectorDelegate
            }
 
