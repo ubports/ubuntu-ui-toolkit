@@ -20,152 +20,16 @@
 #include "alarmmanager_p_p.h"
 #include "ucalarm.h"
 #include "ucalarm_p.h"
-#include "i18n.h"
-
-#define IS_DAY_SET(bit, num)    (((num) & (1 << (bit - 1))) == (1 << (bit - 1)))
 
 AlarmManagerPrivate::AlarmManagerPrivate(AlarmManager *qq)
-    : QObject(qq)
+    : q_ptr(qq)
     , completed(false)
-    , q_ptr(qq)
 {
 }
 
 AlarmManagerPrivate::~AlarmManagerPrivate()
 {
 }
-
-UCAlarm::DayOfWeek AlarmManagerPrivate::dayOfWeek(const QDateTime &dt)
-{
-    return (UCAlarm::DayOfWeek)(1 << (dt.date().dayOfWeek() - 1));
-}
-
-int AlarmManagerPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
-{
-    for (int d = Qt::Monday; d <= Qt::Sunday; d++) {
-        if ((1 << (d - 1)) & days) {
-            return d;
-        }
-    }
-    return 0;
-}
-
-int AlarmManagerPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
-{
-    if (fromDay <= 0) {
-        fromDay = Qt::Monday;
-    }
-    for (int d = fromDay; d <= Qt::Sunday; d++) {
-        if ((1 << (d - 1)) & days) {
-            return d;
-        }
-    }
-    return 0;
-}
-
-// checks whether the given num has more than one bit set
-bool AlarmManagerPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
-{
-    unsigned bits;
-    int num = static_cast<int>(days);
-    for (bits = 0; num; bits++) {
-        num &= num - 1; // clears the least significant bit
-    }
-    return (bits > 1);
-}
-
-
-
-UCAlarm::Error AlarmManagerPrivate::checkAlarm(AlarmData &alarm, int &changes)
-{
-    if (alarm.message.isEmpty()) {
-        alarm.message = UbuntuI18n::instance().tr("Alarm");
-        changes |= AlarmData::Message;
-    }
-
-    if (!alarm.date.isValid()) {
-        return UCAlarm::InvalidDate;
-    }
-
-    // check type first as it may alter start day
-    if (alarm.type == UCAlarm::OneTime) {
-       return checkOneTime(alarm, changes);
-    } else if (alarm.type == UCAlarm::Repeating) {
-        return checkRepeatingWeekly(alarm, changes);
-    }
-
-    return UCAlarm::NoError;
-}
-
-UCAlarm::Error AlarmManagerPrivate::checkDow(AlarmData &alarm, int &changes)
-{
-    if (!alarm.days) {
-        return UCAlarm::NoDaysOfWeek;
-    } else if (alarm.days == UCAlarm::AutoDetect) {
-        alarm.days = dayOfWeek(alarm.date);
-        changes += AlarmData::Days;
-    } else if (alarm.days != UCAlarm::Daily) {
-        int alarmDay = firstDayOfWeek(alarm.days);
-        int dayOfWeek = alarm.date.date().dayOfWeek();
-        if (alarmDay < dayOfWeek) {
-            alarm.date = alarm.date.addDays(7 - dayOfWeek + alarmDay);
-        } else if (alarmDay > dayOfWeek) {
-            alarm.date = alarm.date.addDays(alarmDay - dayOfWeek);
-        }
-        changes = AlarmData::Date;
-    }
-    return UCAlarm::NoError;
-}
-
-UCAlarm::Error AlarmManagerPrivate::checkOneTime(AlarmData &alarm, int &changes)
-{
-    // check days, days can be set for only one day in this case
-    if (multipleDaysSet(alarm.days)) {
-        return UCAlarm::OneTimeOnMoreDays;
-    }
-
-    // adjust start date and/or dayOfWeek according to their values
-    UCAlarm::Error result = checkDow(alarm, changes);
-    if (result != UCAlarm::NoError) {
-        return result;
-    }
-
-    // start date should be later then the current date/time
-    if (alarm.date <= QDateTime::currentDateTime()) {
-        return UCAlarm::EarlyDate;
-    }
-    return UCAlarm::NoError;
-}
-
-UCAlarm::Error AlarmManagerPrivate::checkRepeatingWeekly(AlarmData &alarm, int &changes)
-{
-    // start date is adjusted depending on the days value;
-    // start date can be set to be the current time, as scheduling will move
-    // it to the first occurence.
-    UCAlarm::Error result = checkDow(alarm, changes);
-    if (result != UCAlarm::NoError) {
-        return result;
-    }
-
-    // move start time to the first occurence if needed
-    int dayOfWeek = alarm.date.date().dayOfWeek();
-    if (!IS_DAY_SET(dayOfWeek, alarm.days) || (alarm.date <= QDateTime::currentDateTime())) {
-        // check the next occurence of the alarm
-        int nextOccurence = nextDayOfWeek(alarm.days, dayOfWeek);
-        if (nextOccurence <= 0) {
-             // the starting date should be moved to the next week
-            nextOccurence = firstDayOfWeek(alarm.days);
-            alarm.date.addDays(7 - dayOfWeek + nextOccurence);
-        } else {
-            // the starting date is still this week
-            alarm.date.addDays(nextOccurence - dayOfWeek);
-        }
-        changes += AlarmData::Date;
-    }
-
-    return UCAlarm::NoError;
-}
-
 
 /*-----------------------------------------------------------------------------
  * Alarm Manager public interface
@@ -175,7 +39,6 @@ AlarmManager::AlarmManager(QObject *parent)
     , d_ptr(createAlarmsAdapter(this))
 {
     d_ptr->fetchAlarms();
-    d_ptr->completed = true;
 }
 
 AlarmManager::~AlarmManager()
@@ -188,38 +51,4 @@ QList<AlarmData> AlarmManager::alarms() const
     return d->alarmList;
 }
 
-
-/*
- * Updates or adds an alarm to the alarm collection.
- *
- * Returns the result code of the operation.
- */
-int AlarmManager::set(AlarmData &alarm, int &changes)
-{
-    changes = 0;
-    Q_D(AlarmManager);
-
-    UCAlarm::Error result = d->checkAlarm(alarm, changes);
-    if (result != UCAlarm::NoError) {
-        return result;
-    }
-
-    if (!alarm.cookie.isValid()) {
-        return d->addAlarm(alarm);
-    } else {
-        return d->updateAlarm(alarm);
-    }
-}
-
-/*
- * Cancels an alarm. Returns the result of the operation;
- */
-int AlarmManager::cancel(AlarmData &alarm)
-{
-    Q_D(AlarmManager);
-
-    if (!alarm.cookie.isValid()) {
-        return UCAlarm::InvalidEvent;
-    }
-    return d->removeAlarm(alarm);
-}
+#include "moc_alarmmanager_p.cpp"

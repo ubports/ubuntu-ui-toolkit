@@ -34,11 +34,19 @@ class UCAlarm : public QObject
     Q_PROPERTY(AlarmType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(DaysOfWeek daysOfWeek READ daysOfWeek WRITE setDaysOfWeek NOTIFY daysOfWeekChanged)
     Q_PROPERTY(QUrl sound READ sound WRITE setSound NOTIFY soundChanged)
-    Q_PROPERTY(int error READ error NOTIFY errorChanged)
 
-    Q_ENUMS(Error AlarmType DayOfWeek)
+    Q_PROPERTY(int error READ error NOTIFY errorChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+
+    Q_ENUMS(Status Error AlarmType DayOfWeek)
     Q_FLAGS(DaysOfWeek)
 public: // enums
+    enum Status { // keep values in sync with AlarmRequest::Status
+        Ready = 1,
+        InProgress,
+        Fail
+    };
+
     enum Error {
         NoError = 0,
         InvalidDate = 1,
@@ -46,6 +54,7 @@ public: // enums
         NoDaysOfWeek = 3,
         OneTimeOnMoreDays = 4,
         InvalidEvent = 5,
+        OperationPending = 6,
         AdaptationError = 100
     };
 
@@ -88,6 +97,7 @@ public: // getter/setter
     void setSound(const QUrl &sound);
 
     int error() const;
+    Status status() const;
 
 Q_SIGNALS:
     void enabledChanged();
@@ -96,7 +106,9 @@ Q_SIGNALS:
     void typeChanged();
     void daysOfWeekChanged();
     void soundChanged();
+
     void errorChanged();
+    void statusChanged();
 
 public Q_SLOTS:
     void save();
@@ -107,6 +119,8 @@ private:
     Q_DISABLE_COPY(UCAlarm)
     Q_DECLARE_PRIVATE(UCAlarm)
     QScopedPointer<UCAlarmPrivate> d_ptr;
+
+    Q_PRIVATE_SLOT(d_func(), void _q_syncStatus(int status, int error))
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCAlarm::DaysOfWeek)
