@@ -30,6 +30,7 @@ QtObject {
     /*!
       Default property to allow adding of children.
       \qmlproperty list<Action> children
+      \default
       */
     default property alias children: list.actions
 
