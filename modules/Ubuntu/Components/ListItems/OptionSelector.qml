@@ -22,9 +22,8 @@ import Ubuntu.Components 0.1 as Components
     \qmltype OptionSelector
     \inqmlmodule Components.Components.ListItems 0.1
     \ingroup ubuntu-listitems
-    \brief List item displaying single selected value when not expanded,
-    where expanding it opens a listing of all the possible values for selection
-    with an additional option of always being expanded.
+    \brief ListItem displaying a single selected value with and optional image and subtext when not expanded, where expanding
+    it opens a listing of all the possible values for selection with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
@@ -35,16 +34,16 @@ import Ubuntu.Components 0.1 as Components
             width: 250
             OptionSelector {
                 text: "Standard"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
             OptionSelector {
                 text: "Disabled"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
             OptionSelector {
                 text: "Expanded"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
             OptionSelector {
@@ -52,6 +51,20 @@ import Ubuntu.Components 0.1 as Components
                 icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
+            }
+            OptionSelector {
+                text: i18n.tr("Label")
+                model: customModel
+                expanded: true
+                colourImage: true
+                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
+            ListModel {
+                id: customModel
+                ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+                ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
             }
         }
     \endqml
@@ -83,7 +96,7 @@ ListItem.Empty {
       \preliminary
       ListView delegate.
      */
-    property Component delegate: OptionSelectorDelegate {}
+    property Component delegate: Components.OptionSelectorDelegate {}
 
     /*!
       \qmlproperty int selectedIndex
@@ -113,12 +126,12 @@ ListItem.Empty {
             right: parent.right
         }
 
-        Label {
+        Components.Label {
             text: optionSelector.text
             height: units.gu(2)
         }
 
-        StyledItem {
+        Components.StyledItem {
             id: listContainer
             objectName: "listContainer"
 
@@ -134,7 +147,7 @@ ListItem.Empty {
                 right: parent.right
             }
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
-            style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
+            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             onHeightChanged: scroll()
 
@@ -156,7 +169,7 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                UbuntuNumberAnimation {
+                Components.UbuntuNumberAnimation {
                         properties: "height"
                         duration: Components.UbuntuAnimation.BriskDuration
                     }
