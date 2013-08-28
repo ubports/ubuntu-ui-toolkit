@@ -30,8 +30,6 @@
             OptionSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                expanded: true
-                colourImage: true
                 delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
             }
             ListModel {
