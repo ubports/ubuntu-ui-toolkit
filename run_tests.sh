@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2012 Canonical Ltd.
+# Copyright 2012, 2013 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -20,9 +20,9 @@ cd tests/autopilot
 echo running with arg: $1
 
 if [ "$1" == "" ]; then
-	autopilot run UbuntuUiToolkit
+	autopilot run ubuntuuitoolkit
 else
-	autopilot run -o ../../$1 -f xml -r -rd ../../ UbuntuUiToolkit
+	autopilot run -o ../../$1 -f xml -r -rd ../../ ubuntuuitoolkit
 fi
 
 exit 0

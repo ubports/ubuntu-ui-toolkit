@@ -81,6 +81,21 @@ TestCase {
         pageStack.clear();
     }
 
+    function test_tabs_inside_stack_bug1187850() {
+        pageStack.push(tabs);
+        compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
+        compare(tabs.active, true, "Tabs on top of a PageStack are active");
+        compare(mainView.__propagated.header.contents, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
+        pageStack.push(page1);
+        compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
+        compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+        compare(mainView.__propagated.header.contents, null, "Contents of inactive Tabs is not applied to header");
+        pageStack.pop();
+        compare(tabs.active, true, "Tabs on top of PageStack is active");
+        compare(mainView.__propagated.header.contents, tabs.tabBar, "Active Tabs controls header contents");
+        pageStack.clear();
+    }
+
     MainView {
         id: mainView
         PageStack {
@@ -90,15 +105,19 @@ TestCase {
     Page {
         id: page1
         title: "Title 1"
-        tools: ToolbarActions {
+        tools: ToolbarItems {
             id: tools1
         }
     }
     Page {
         id: page2
         title: "Title 2"
-        tools: ToolbarActions {
+        tools: ToolbarItems {
             id: tools2
         }
+    }
+
+    Tabs {
+        id: tabs
     }
 }

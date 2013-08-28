@@ -120,34 +120,7 @@ AbstractButton {
       Set to show or hide the thin bottom divider line (drawn by the \l ThinDivider component).
       This line is shown by default except in cases where this item is the delegate of a ListView.
      */
-    property bool showDivider: __showDivider()
-
-    /*!
-      \internal
-      Method to automatically determine if the bottom divider line should be drawn.
-      This always returns true, unless item is a delegate in a ListView. If in a ListView
-      it will return false only when:
-       + if there is a section.delegate below this item (as thin divider line and section
-         delegate should not both appear)
-       + if this is the final item in the list, and ListView.footer is set (again as thin
-         divider line won't look well with footer below it)
-     */
-    // FIXME: The new design shows dividers everywhere, so if it does not change anymore,
-    //  the __showDivider() function may be removed.
-    function __showDivider() {
-        // if we're not in ListView, always show a thin dividing line at the bottom
-        //if (ListView.view !== null) {
-
-            // if we're last item in ListView, show divider if no footer is defined
-            // and hide it if footer defined
-            //if (index === ListView.view.model.count - 1) return !ListView.footer;
-
-            // if section.delegate is positioned between this item and the next
-            //else if (ListView.section !== ListView.nextSection) return true;
-            //else return false;
-        //}
-        return true;
-    }
+    property bool showDivider: true
 
     /*!
       \internal
@@ -168,6 +141,13 @@ AbstractButton {
       Defines the item background item to be showed during the item swiping
      */
     property alias backgroundIndicator: backgroundIndicator.children
+
+    /*!
+      \preliminary
+      \qmlproperty ThinDivider bottomDividerLine
+      Exposes our the bottom line divider.
+     */
+    property alias divider: bottomDividerLine
 
     /*! \internal
       The spacing inside the list item.
@@ -272,21 +252,6 @@ AbstractButton {
         }
     }
 
-    Rectangle {
-        id: highlight
-
-        z: -1
-        visible: !priv.removed && emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: emptyListItem.height - bottomDividerLine.height
-        color: Theme.palette.selected.background
-    }
-
-
     ThinDivider {
         id: bottomDividerLine
         anchors.bottom: parent.bottom
@@ -302,7 +267,7 @@ AbstractButton {
             left: parent.left
             right: parent.right
             top: parent.top
-            bottom: bottomDividerLine.top
+            bottom: parent.bottom
         }
 
         Item {

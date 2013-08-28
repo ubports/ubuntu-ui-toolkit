@@ -22,38 +22,38 @@ ActionSelectionPopover {
     actions: ActionList {
         Action {
             text: i18n.tr("Select All")
-            visible: target && target.text !== "" && target.text !== target.selectedText
-            onTriggered: caller.selectAll()
+            enabled: target && target.text !== "" && target.text !== target.selectedText
+            onTriggered: target.selectAll()
         }
         Action {
             text: i18n.tr("Select Word")
-            visible: target && target.text !== "" && target.selectedText === ""
-            onTriggered: caller.selectWord()
+            enabled: target && target.text !== "" && target.selectedText === ""
+            onTriggered: target.selectWord()
         }
         Action {
             text: i18n.tr("Cut")
-            visible: target && target.selectedText !== ""
-            onTriggered: caller.cut()
+            enabled: target && target.selectedText !== ""
+            onTriggered: target.cut()
         }
         Action {
             text: i18n.tr("Copy")
-            visible: target && target.selectedText !== ""
-            onTriggered: caller.copy()
+            enabled: target && target.selectedText !== ""
+            onTriggered: target.copy()
         }
         Action {
             text: i18n.tr("Paste")
-            visible: target && target.canPaste
-            onTriggered: caller.paste()
+            enabled: target && target.canPaste
+            onTriggered: target.paste()
         }
         Action {
             text: i18n.tr("Undo")
-            visible: target && target.canUndo
-            onTriggered: caller.undo()
+            enabled: target && target.canUndo
+            onTriggered: target.undo()
         }
         Action {
             text: i18n.tr("Redo")
-            visible: target && target.canRedo
-            onTriggered: caller.redo()
+            enabled: target && target.canRedo
+            onTriggered: target.redo()
         }
     }
 }

@@ -273,6 +273,15 @@ Item {
                 properties: "position"
                 duration: internal.transitionDuration
             }
+        },
+        Transition {
+            id: transitionToMoving
+            to: "moving"
+            UbuntuNumberAnimation {
+                target: bar
+                properties: "position"
+                duration: Toolkit.UbuntuAnimation.SnapDuration
+            }
         }
     ]
 
@@ -284,7 +293,6 @@ Item {
           Default value: 250
          */
         property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
-
 
         property string previousState: ""
         property int movingDelta
@@ -408,17 +416,17 @@ Item {
         // find the first child with a triggered property:
         function getTriggerableItem(mouse) {
             var item = bar; // contains the children
-            while (item && !item.hasOwnProperty("triggered")) {
+            while (item && !item.hasOwnProperty("trigger")) {
                 var coords = mapToItem(item, mouse.x, mouse.y);
                 // FIXME: When using a ListView the highlight may be
                 //  returned instead of the Item that you are looking for
                 item = item.childAt(coords.x, coords.y);
             }
-            return item; // will be null if no item has triggered() signal.
+            return item; // will be null if no item has trigger() function.
         }
 
-        // forward clicked and triggered events to any child Item with a
-        // clicked() or triggered() signal, not
+        // forward clicked() and trigger() events to any child Item with a
+        // clicked() or trigger() function, not
         // just MouseAreas since MouseAreas would block swiping of the panel.
         // This must also happen when the panel is locked, so the DraggingArea is
         // never disabled, and other signal handlers will return when panel.locked is true.
@@ -429,7 +437,7 @@ Item {
                 pressedItem.clicked();
             } else if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
-                pressedItem.triggered(pressedItem);
+                pressedItem.trigger();
             }
         }
 
@@ -442,25 +450,34 @@ Item {
             if (panel.state == "") panel.state = "hint";
         }
 
+        /*!
+          The minimum amount of movement while pressed before switching to "moving" state.
+          This threshold is needed to avoid detecting unintentional small movements while
+          "clicking" as a drag.
+          */
+        property real dragThreshold: units.gu(1)
+
         onPositionChanged: {
             if (panel.locked) return;
-            if (panel.state == "hint" && mousePosition < initialPosition) {
+            if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
                 panel.state = "moving";
                 pressedItem = null;
-            } else if (panel.state == "spread" && mousePosition > initialPosition) {
+            } else if (panel.state == "spread" && mousePosition > initialPosition + dragThreshold) {
                 panel.state = "moving";
                 pressedItem = null;
             }
         }
 
         onReleased: {
-            if (panel.locked) return;
-            finishMoving();
+            if (panel.state == "moving" || panel.state == "hint") {
+                finishMoving();
+            }
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
-            if (panel.locked) return;
-            finishMoving();
+            if (panel.state == "moving" || panel.state == "hint") {
+                finishMoving();
+            }
         }
 
         // FIXME: Make all parameters below themable and resolution-independent.

@@ -9,7 +9,7 @@ UNRELEASED
 
 API Changes
 ***********
-
+* ADDED IN: Empty: property alias divider
 * ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: ListItem OptionSelector to Components/ListItems
 * ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems
@@ -45,6 +45,8 @@ API Changes
 * DEPRECATED IN Action: property Item itemHint
 * DEPRECATED: ToolbarActions component (use ToolbarItems instead)
 * ADDED IN MainView: property bool anchorToKeyboard
+* CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
+* CHANGED IN Header: property Component contents TO property Item contents
 
 Compatibility Breaks
 ********************

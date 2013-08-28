@@ -75,4 +75,11 @@
          import Ubuntu.Components 0.1
      \endcode
      \annotatedlist ubuntu-commandline
+
+     \part Services
+     Available through:
+     \code
+         import Ubuntu.Components 0.1
+     \endcode
+     \annotatedlist ubuntu-services
  */

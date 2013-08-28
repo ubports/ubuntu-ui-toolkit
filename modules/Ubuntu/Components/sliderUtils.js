@@ -34,5 +34,5 @@ function normalizedValue(item) {
   The function returns whether the slider is being pressed or not.
   */
 function isPressed(item) {
-    return item.__internals.pressed;
+    return item.__internals.isPressed;
 }

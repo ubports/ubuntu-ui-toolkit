@@ -71,7 +71,7 @@ StyledItem {
     /*!
       The contents of the header. If this is set, \l title will be ignored.
      */
-    property Component contents: null
+    property Item contents: null
     onContentsChanged: header.show()
 
     /*!
