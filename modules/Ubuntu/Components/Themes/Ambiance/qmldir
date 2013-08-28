@@ -6,7 +6,7 @@ internal DialogForegroundStyle DialogForegroundStyle.qml
 internal HeaderStyle HeaderStyle.qml
 MainViewStyle 0.1 MainViewStyle.qml
 OptionSelectorStyle 0.1 OptionSelectorStyle.qml
-internal PopoverForegroundStyle PopoverForegroundStyle.qml
+PopoverForegroundStyle 0.1 PopoverForegroundStyle.qml
 internal ScrollbarStyle ScrollbarStyle.qml
 internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
