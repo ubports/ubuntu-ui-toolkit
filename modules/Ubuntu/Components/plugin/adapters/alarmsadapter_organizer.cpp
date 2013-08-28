@@ -476,7 +476,7 @@ bool AlarmRequestAdapter::fetch()
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
     // set filter
-    if (AlarmsAdapter::get()->usingCollection) {
+    if (AlarmsAdapter::get(manager)->usingCollection) {
         QOrganizerItemCollectionFilter filter;
         filter.setCollectionId(owner->collection.id());
         operation->setFilter(filter);
