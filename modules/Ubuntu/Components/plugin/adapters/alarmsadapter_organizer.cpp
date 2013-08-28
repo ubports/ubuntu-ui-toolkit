@@ -20,6 +20,8 @@
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
 #include "alarmmanager_p_p.h"
+#include "alarmrequest_p.h"
+#include "alarmrequest_p_p.h"
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
@@ -38,6 +40,28 @@ QTORGANIZER_USE_NAMESPACE
  * however in case we decide to go with some other approach, this layer is welcome.
  */
 
+class AlarmRequestAdapter : public AlarmRequestPrivate
+{
+public:
+    AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete);
+
+    // adaptation methods
+    bool save(AlarmData &alarm);
+    bool remove(AlarmData &alarm);
+    bool fetch();
+
+    bool start(QOrganizerAbstractRequest *operation);
+
+    void _q_updateProgress();
+
+private:
+    QOrganizerAbstractRequest *m_request;
+
+    void completeUpdate();
+    void completeRemove();
+    void completeFetch();
+};
+
 class AlarmsAdapter : public AlarmManagerPrivate
 {
 public:
@@ -45,29 +69,32 @@ public:
         DifferentTypeExpected = UCAlarm::AdaptationError + 1,
         FetchedEventEmpty,  // 102
         UnhandledEventType, // 103
-        OrganizerError      // 104 onwards
+        UnhandledRequest,   // 104
+        OrganizerError      // 105 onwards
     };
 
     AlarmsAdapter(AlarmManager *qq);
     virtual ~AlarmsAdapter();
 
+    static AlarmsAdapter* get(AlarmManager *instance = 0) {
+        return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
+    }
+
     QOrganizerManager manager;
     QOrganizerCollection collection;
-    int cookieCount;
 
-    virtual int addAlarm(AlarmData &alarm);
-    virtual int updateAlarm(AlarmData &alarm);
-    virtual int removeAlarm(AlarmData &alarm);
-protected Q_SLOTS:
-    virtual void fetchAlarms();
+    virtual bool fetchAlarms();
+    void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
 
-private:
-    void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
-    void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
-    int organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm);
     // FIXME: remove once we have the Organizer backend ready
     void loadAlarms();
     void saveAlarms();
+
+    void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
+    void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
+    int organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm);
+    QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
+    void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
 };
 
 /*-----------------------------------------------------------------------------
@@ -82,7 +109,6 @@ AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
 AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     : AlarmManagerPrivate(qq)
     , manager("memory")
-    , cookieCount(0)
 {
     bool alarmCollectionFound = false;
     QList<QOrganizerCollection> collections = manager.collections();
@@ -190,7 +216,7 @@ void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &e
             rule.setFrequency(QOrganizerRecurrenceRule::Daily);
         } else if (alarm.days) {
             rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
-            rule.setDaysOfWeek(alarm.daysToSet());
+            rule.setDaysOfWeek(daysToSet(alarm));
         }
         event.setRecurrenceRule(rule);
         break;
@@ -243,12 +269,17 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     alarm.date = event.dueDateTime();
     alarm.sound = QUrl(event.description());
 
+    // check if the alarm is enabled or not
+    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    alarm.enabled = !visual.isEmpty() && !audible.isEmpty();
+
     // repeating
     QOrganizerRecurrenceRule rule = event.recurrenceRule();
     switch (rule.frequency()) {
     case QOrganizerRecurrenceRule::Invalid: {
         alarm.type = UCAlarm::OneTime;
-        alarm.days = dayOfWeek(alarm.date);
+        alarm.days = UCAlarmPrivate::dayOfWeek(alarm.date);
         break;
     }
     case QOrganizerRecurrenceRule::Daily: {
@@ -258,7 +289,7 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     }
     case QOrganizerRecurrenceRule::Weekly: {
         alarm.type = UCAlarm::Repeating;
-        alarm.daysFromSet(rule.daysOfWeek());
+        daysFromSet(alarm, rule.daysOfWeek());
         break;
     }
     default:
@@ -269,25 +300,44 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &ala
     return UCAlarm::NoError;
 }
 
+QSet<Qt::DayOfWeek> AlarmsAdapter::daysToSet(const AlarmData &alarm) const
+{
+    QSet<Qt::DayOfWeek> result;
+    for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
+        if (alarm.days & (1 << (static_cast<int>(day) - 1)))
+            result << day;
+    }
+    return result;
+}
+
+void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
+{
+    alarm.days = 0;
+    QSetIterator<Qt::DayOfWeek> i(set);
+    while (i.hasNext()) {
+        int day = static_cast<int>(i.next());
+        alarm.days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
+    }
+}
+
+
 /*-----------------------------------------------------------------------------
  * Abstract methods
  */
-void AlarmsAdapter::fetchAlarms()
+bool AlarmsAdapter::fetchAlarms()
 {
-    // clear previous alarms
+    // create self deleting request
+    AlarmRequest *request = new AlarmRequest(true, q_ptr);
+    AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(request));
+    return adapter->fetch();
+}
+
+void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
+{
     alarmList.clear();
 
-    QOrganizerItemSortOrder sortOrder;
-    sortOrder.setDirection(Qt::AscendingOrder);
-    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldDueDateTime);
-
-    QOrganizerItemCollectionFilter filter;
-    filter.setCollectionId(collection.id());
-
-    QList<QOrganizerItem> items = manager.items(QDateTime(), QDateTime(), filter, -1,
-                                                QList<QOrganizerItemSortOrder>() << sortOrder);
     QSet<QOrganizerItemId> parentId;
-    Q_FOREACH(const QOrganizerItem &item, items) {
+    Q_FOREACH(const QOrganizerItem &item, alarms) {
         // repeating alarms may be fetched as occurences, therefore check their parent event
         if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
             QOrganizerTodoOccurrence occurence = static_cast<QOrganizerTodoOccurrence>(item);
@@ -305,59 +355,222 @@ void AlarmsAdapter::fetchAlarms()
             alarmList << alarm;
         }
     }
+
+    saveAlarms();
     if (completed) {
         Q_EMIT q_ptr->alarmsChanged();
     }
+    completed = true;
 }
 
-int AlarmsAdapter::addAlarm(AlarmData &alarm)
-{
-    Q_ASSERT(!alarm.cookie.isValid());
+/*-----------------------------------------------------------------------------
+ * AlarmRequestAdapter implementation
+ */
 
+AlarmRequestPrivate * createAlarmRequest(AlarmRequest *request, bool autoDelete)
+{
+    return new AlarmRequestAdapter(request, autoDelete);
+}
+
+AlarmRequestAdapter::AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete)
+    : AlarmRequestPrivate(parent, autoDelete)
+    , m_request(0)
+{
+}
+
+/*
+ * Save or update an alarm. Returns false on operation error.
+ */
+bool AlarmRequestAdapter::save(AlarmData &alarm)
+{
     QOrganizerTodo event;
 
-    rawAlarm2Organizer(alarm, event);
-
-    if (manager.saveItem(&event)) {
-        alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
-        alarm.changes = AlarmData::NoChange;
-        fetchAlarms();
-        saveAlarms();
-        return UCAlarm::NoError;
+    if (!alarm.cookie.isValid()) {
+        // new event
+        AlarmsAdapter::get()->rawAlarm2Organizer(alarm, event);
+    } else {
+        // update existing event
+        QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
+        event = AlarmsAdapter::get()->manager.item(itemId);
+        if (event.isEmpty()) {
+            setStatus(AlarmRequest::Fail, UCAlarm::AdaptationError);
+            return false;
+        }
+        AlarmsAdapter::get()->updateOrganizerFromRaw(alarm, event);
     }
-    return OrganizerError + manager.error();
+
+    QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
+    operation->setManager(&AlarmsAdapter::get()->manager);
+    operation->setItem(event);
+    return start(operation);
 }
 
-int AlarmsAdapter::updateAlarm(AlarmData &alarm)
-{
-    QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-    QOrganizerTodo event = manager.item(itemId);
-    if (event.isEmpty()) {
-        return UCAlarm::AdaptationError;
-    }
-
-    updateOrganizerFromRaw(alarm, event);
-    if (manager.saveItem(&event)) {
-        alarm.changes = AlarmData::NoChange;
-        fetchAlarms();
-        saveAlarms();
-        return UCAlarm::NoError;
-    }
-    return OrganizerError + manager.error();
-}
-
-int AlarmsAdapter::removeAlarm(AlarmData &alarm)
+/*
+ * Removes an alarm from the collection. Returns false on failure.
+ */
+bool AlarmRequestAdapter::remove(AlarmData &alarm)
 {
     if (!alarm.cookie.isValid()) {
-        return UCAlarm::InvalidEvent;
+        setStatus(AlarmRequest::Fail, UCAlarm::InvalidEvent);
+        return false;
     }
 
     QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-    if (manager.removeItem(itemId)) {
-        alarm.cookie = QVariant();
-        fetchAlarms();
-        saveAlarms();
-        return UCAlarm::NoError;
+    QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
+    operation->setManager(&AlarmsAdapter::get()->manager);
+    operation->setItemId(itemId);
+    return start(operation);
+}
+
+/*
+ * Initiates alarm fetching.
+ */
+bool AlarmRequestAdapter::fetch()
+{
+    AlarmManager *manager = static_cast<AlarmManager*>(q_ptr->parent());
+    AlarmsAdapter *owner = AlarmsAdapter::get(manager);
+
+    QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
+    operation->setManager(&owner->manager);
+
+    // set sort order
+    QOrganizerItemSortOrder sortOrder;
+    sortOrder.setDirection(Qt::AscendingOrder);
+    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldDueDateTime);
+    operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
+
+    // set filter
+    QOrganizerItemCollectionFilter filter;
+    filter.setCollectionId(owner->collection.id());
+    operation->setFilter(filter);
+
+    // start request
+    return start(operation);
+}
+
+/*
+ * Starts the asynchronous operation.
+ */
+bool AlarmRequestAdapter::start(QOrganizerAbstractRequest *operation)
+{
+    m_request = operation;
+    if (!m_request) {
+        return false;
     }
-    return OrganizerError + manager.error();
+    completed = false;
+    // make sure we are in progress state
+    setStatus(AlarmRequest::InProgress);
+    if (m_request->start()) {
+        // check if the request got completed without having the slot called (some engines may do that)
+        if (!completed && m_request->state() >= QOrganizerAbstractRequest::CanceledState) {
+            _q_updateProgress();
+        }
+        return true;
+    }
+    return false;
+}
+
+/*
+ * Update operation progress.
+ */
+void AlarmRequestAdapter::_q_updateProgress()
+{
+    completed = true;
+
+    QOrganizerAbstractRequest::State state = m_request->state();
+    switch (state) {
+    case QOrganizerAbstractRequest::InactiveState: {
+        setStatus(AlarmRequest::Ready);
+        break;
+    }
+    case QOrganizerAbstractRequest::ActiveState: {
+        setStatus(AlarmRequest::InProgress);
+        completed = false;
+        break;
+    }
+    case QOrganizerAbstractRequest::CanceledState: {
+        setStatus(AlarmRequest::Fail, AlarmsAdapter::OrganizerError + m_request->error());
+        break;
+    }
+    case QOrganizerAbstractRequest::FinishedState: {
+        int code = m_request->error();
+        if (code != QOrganizerManager::NoError) {
+            setStatus(AlarmRequest::Fail, AlarmsAdapter::OrganizerError + code);
+        } else {
+            switch (m_request->type()) {
+            case QOrganizerAbstractRequest::ItemSaveRequest: {
+                completeUpdate();
+                break;
+            }
+            case QOrganizerAbstractRequest::ItemRemoveByIdRequest: {
+                completeRemove();
+                break;
+            }
+            case QOrganizerAbstractRequest::ItemFetchRequest: {
+                completeFetch();
+                break;
+            }
+            default:
+                qWarning() << "Unhandled request:" << m_request->type();
+                setStatus(AlarmRequest::Fail, AlarmsAdapter::UnhandledRequest);
+                break;
+            }
+
+            setStatus(AlarmRequest::Ready);
+        }
+        break;
+    }
+    default: {
+        qWarning() << "Invalid status" << state;
+        setStatus(AlarmRequest::Fail, UCAlarm::InvalidEvent);
+        break;
+    }
+    }
+
+    if (completed) {
+        // cleanup request
+        delete m_request;
+        m_request = 0;
+
+        if (autoDelete) {
+            q_ptr->deleteLater();
+        }
+    }
+}
+
+void AlarmRequestAdapter::completeUpdate()
+{
+    UCAlarm *alarm = qobject_cast<UCAlarm*>(q_ptr->parent());
+    if (!alarm) {
+        return;
+    }
+    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+    QOrganizerItemSaveRequest *save = qobject_cast<QOrganizerItemSaveRequest*>(m_request);
+    pAlarm->rawData.cookie = QVariant::fromValue<QOrganizerItemId>(save->items()[0].id());
+    pAlarm->rawData.changes = AlarmData::NoChange;
+
+    // request for refresh
+    AlarmManagerPrivate::get()->fetchAlarms();
+}
+
+void AlarmRequestAdapter::completeRemove()
+{
+    UCAlarm *alarm = qobject_cast<UCAlarm*>(q_ptr->parent());
+    if (!alarm) {
+        return;
+    }
+    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+    pAlarm->rawData.cookie = QVariant();
+    pAlarm->rawData.changes = AlarmData::NoChange;
+
+    // request for refresh
+    AlarmManagerPrivate::get()->fetchAlarms();
+}
+
+void AlarmRequestAdapter::completeFetch()
+{
+    AlarmManager *manager = static_cast<AlarmManager*>(q_ptr->parent());
+    AlarmsAdapter *owner = AlarmsAdapter::get(manager);
+    QOrganizerItemFetchRequest *fetch = static_cast<QOrganizerItemFetchRequest *>(m_request);
+    owner->completeFetchAlarms(fetch->items());
 }

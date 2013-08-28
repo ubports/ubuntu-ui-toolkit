@@ -16,35 +16,40 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ALARMMANAGER_P_H
-#define ALARMMANAGER_P_H
+#ifndef ALARMREQUEST_P_H
+#define ALARMREQUEST_P_H
 
-#include "ucalarm.h"
+#include <QObject>
 #include "alarmmanager_p.h"
-#include <QtCore/QUrl>
 
-class AlarmManagerPrivate
+class AlarmRequestPrivate;
+class AlarmRequest : public QObject
 {
-    Q_DECLARE_PUBLIC(AlarmManager)
+    Q_OBJECT
 public:
-    AlarmManagerPrivate(AlarmManager *qq);
-    virtual ~AlarmManagerPrivate();
+    enum Status {
+        Ready = 1,
+        InProgress,
+        Fail
+    };
 
-    static AlarmManagerPrivate *get(AlarmManager *instance = 0) {
-        if (!instance) {
-            return AlarmManager::instance().d_func();
-        } else {
-            return instance->d_func();
-        }
-    }
+    explicit AlarmRequest(QObject *parent = 0);
+    AlarmRequest(bool autoDelete, QObject *parent = 0);
+    ~AlarmRequest();
 
-    AlarmManager *q_ptr;
-    QList<AlarmData> alarmList;
-    bool completed:1;
+    Status status() const;
+    int error() const;
 
-    virtual bool fetchAlarms() = 0;
+    bool save(AlarmData &alarm);
+    bool remove(AlarmData &alarm);
+
+Q_SIGNALS:
+    void statusChanged(int status, int error);
+
+private:
+    Q_DECLARE_PRIVATE(AlarmRequest)
+    QScopedPointer<AlarmRequestPrivate> d_ptr;
+    Q_PRIVATE_SLOT(d_func(), void _q_updateProgress())
 };
 
-AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms);
-
-#endif // ALARMMANAGER_P_H
+#endif // ALARMREQUEST_P_H

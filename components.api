@@ -401,6 +401,7 @@ plugins.qmltypes
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1"]
+    name: "Status"
     name: "Error"
     name: "AlarmType"
     name: "DayOfWeek"
@@ -412,6 +413,7 @@ plugins.qmltypes
     Property { name: "daysOfWeek"; type: "DaysOfWeek" }
     Property { name: "sound"; type: "QUrl" }
     Property { name: "error"; type: "int"; isReadonly: true }
+    Property { name: "status"; type: "Status"; isReadonly: true }
     Method { name: "save" }
     Method { name: "cancel" }
     Method { name: "reset" }
