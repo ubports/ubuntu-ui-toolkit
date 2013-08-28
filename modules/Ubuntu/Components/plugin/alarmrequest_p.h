@@ -43,6 +43,10 @@ public:
     bool save(AlarmData &alarm);
     bool remove(AlarmData &alarm);
 
+protected:
+    bool wait(int msec = 0);
+
+
 Q_SIGNALS:
     void statusChanged(int status, int error);
 

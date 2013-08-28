@@ -51,6 +51,7 @@ public:
     // adaptation methods
     bool save(AlarmData &alarm);
     bool remove(AlarmData &alarm);
+    bool wait(int msec);
     bool fetch();
 
     bool start(QOrganizerAbstractRequest *operation);
@@ -456,6 +457,14 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
     operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItemId(itemId);
     return start(operation);
+}
+
+/*
+ * Waits for event completion. msec zero means wait forever.
+ */
+bool AlarmRequestAdapter::wait(int msec)
+{
+    return (m_request) ? m_request->waitForFinished(msec) : true;
 }
 
 /*

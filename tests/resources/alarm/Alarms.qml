@@ -31,7 +31,9 @@ MainView {
 
     Alarm {
         id: alarm
-        onStatusChanged: print("alarm status= " + status + ", error=" + error)
+        onStatusChanged: {
+            print("alarm status= " + status + ", error=" + error)
+        }
     }
 
     Column {
@@ -130,7 +132,14 @@ MainView {
                     alarm.message = message.text
                     alarm.date = new Date(date.text)
                     alarm.save();
-                    if (alarm.error == Alarm.NoError) alarm.reset();
+                }
+            }
+        }
+        Standard {
+            control: Button {
+                text: "Reset"
+                onClicked: {
+                    alarm.reset()
                 }
             }
         }
