@@ -22,15 +22,21 @@ Item {
 
     property real thumbPadding: units.gu(0.5)
 
-    /* FIXME: setting the width and height is required because in the case no width
-       is set on the Switch, then even though the width is set eventually to
-       implicitWidth, it still goes through the value 0.0 which triggers an
-       undesired animation if the Switch is checked.
+    /*  FIXME: setting the width and height is required because in the case no width
+        is set on the Switch, then even though the width is set eventually to
+        implicitWidth, it still goes through the value 0.0 which triggers an
+        undesired animation if the Switch is checked.
 
-       Example, values of width at instantiation:
-         width = 0.0 (before SwitchStyle is loaded)
-         width = implicitWidth (after SwitchStyle is loaded)
+        Example, values of width at instantiation:
+            width = 0.0 (before SwitchStyle is loaded)
+            width = implicitWidth (after SwitchStyle is loaded)
     */
+
+    /*  FIXME: Consider moving cross artwork into ../../artwork/ to avoid  pointless duplication
+        of assets amongst themes. The only style which uses drop shadow is SuruGradient, the rest
+        could use the same asset since it uses PartialColourize.
+    */
+
     width: implicitWidth
     height: implicitHeight
     implicitWidth: units.gu(10)

@@ -73,7 +73,7 @@ ListItem.Standard {
     selected: ListView.isCurrentItem
     anchors {
         left: parent.left
-        leftMargin: units.gu(-2)
+        leftMargin: units.gu(-1)
     }
     onClicked: {
         if (listView.container.isExpanded) {

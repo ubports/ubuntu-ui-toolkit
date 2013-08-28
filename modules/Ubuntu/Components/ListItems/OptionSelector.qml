@@ -120,18 +120,16 @@ ListItem.Empty {
     Column {
         id: column
 
-        spacing: units.gu(2)
         anchors {
             left: parent.left
             right: parent.right
         }
 
-        Components.Label {
+        ListItem.Standard {
             text: optionSelector.text
-            height: units.gu(2)
         }
 
-        Components.StyledItem {
+        ListItem.Standard {
             id: listContainer
             objectName: "listContainer"
 
