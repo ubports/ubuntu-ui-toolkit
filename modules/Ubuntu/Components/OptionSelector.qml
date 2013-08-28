@@ -20,11 +20,10 @@ import Ubuntu.Components 0.1 as Components
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Components.Components.ListItems 0.1
-    \ingroup ubuntu-listitems
-    \brief List item displaying single selected value when not expanded,
-    where expanding it opens a listing of all the possible values for selection
-    with an additional option of always being expanded.
+    \inqmlmodule Components.Components 0.1
+    \ingroup ubuntu-components
+    \brief List item displaying a single selected value with and optional image and subtext when not expanded, where expanding
+    it opens a listing of all the possible values for selection with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
@@ -35,16 +34,16 @@ import Ubuntu.Components 0.1 as Components
             width: 250
             OptionSelector {
                 text: "Standard"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
             OptionSelector {
                 text: "Disabled"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
             OptionSelector {
                 text: "Expanded"
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
             OptionSelector {
@@ -53,12 +52,23 @@ import Ubuntu.Components 0.1 as Components
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
+            OptionSelector {
+                text: i18n.tr("Label")
+                model: customModel
+                expanded: true
+                colourImage: true
+                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
+            ListModel {
+                id: customModel
+                ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+                ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+            }
         }
     \endqml
 */
-
-/*FIXME:
-There is a bug with UbuntuShape background which should be fixed once the new UbuntuShape changes land.*/
 
 ListItem.Empty {
     id: optionSelector

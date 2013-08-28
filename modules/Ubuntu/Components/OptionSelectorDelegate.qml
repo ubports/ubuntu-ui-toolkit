@@ -14,6 +14,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*!
+    \qmltype OptionSelectorDelegate
+    \inqmlmodule Components.Components 0.1
+    \ingroup ubuntu-components
+    \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
+
+    \b{This component is under heavy development.}
+
+    Examples:
+    \qml
+        import Components.Components 0.1
+        Column {
+            width: 250
+            OptionSelector {
+                text: i18n.tr("Label")
+                model: customModel
+                expanded: true
+                colourImage: true
+                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
+            ListModel {
+                id: customModel
+                ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+                ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+            }
+        }
+    \endqml
+*/
+
 import QtQuick 2.0
 import "ListItems" as ListItem
 import Ubuntu.Components 0.1 as Components
