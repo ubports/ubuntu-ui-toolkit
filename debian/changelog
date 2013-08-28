@@ -1,3 +1,9 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130828-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 717
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 08:19:49 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130827-0ubuntu1) saucy; urgency=low
 
   [ Michael Zanetti ]
