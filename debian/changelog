@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130828.1-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * add a test for PopoverForegroundStyle.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 719
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 11:16:47 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130828-0ubuntu1) saucy; urgency=low
 
   * Automatic snapshot from revision 717
