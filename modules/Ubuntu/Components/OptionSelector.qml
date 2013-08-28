@@ -22,7 +22,7 @@ import Ubuntu.Components 0.1 as Components
     \qmltype OptionSelector
     \inqmlmodule Components.Components 0.1
     \ingroup ubuntu-components
-    \brief List item displaying a single selected value with and optional image and subtext when not expanded, where expanding
+    \brief Component displaying a single selected value with and optional image and subtext when not expanded, where expanding
     it opens a listing of all the possible values for selection with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
