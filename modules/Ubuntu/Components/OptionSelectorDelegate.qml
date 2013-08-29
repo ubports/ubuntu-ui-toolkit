@@ -50,13 +50,52 @@ import Ubuntu.Components 0.1 as Components
 ListItem.Standard {
     id: option
 
+    /*!
+      \preliminary
+      Main text.
+     */
     property string text
+
+    /*!
+      \preliminary
+      Subtext which appears below the main text.
+     */
     property string subText
+
+    /*!
+      \preliminary
+      Left icon url.
+     */
     property url icon
-    property ListView listView: ListView.view
-    property color assetColour: listView.container.themeColour
+
+    /*!
+      \preliminary
+      Whether or not left image is coloured by our theme.
+     */
     property bool colourImage: listView.container.colourImage
-    property string fragColourShader:
+
+    /*!
+      \preliminary
+      Colour of left image.
+     */
+    property color assetColour: listView.container.themeColour
+
+    /*!
+      Called when delegate is clicked.
+     */
+    signal delegateClicked()
+
+    /*!
+      \preliminary
+      OptionSelector's ListView.
+     */
+    readonly property ListView listView: ListView.view
+
+    /*!
+      \preliminary
+      Colourising fragment shader.
+     */
+    readonly property string fragColourShader:
         "varying highp vec2 qt_TexCoord0;
          uniform sampler2D source;
          uniform lowp vec4 colour;
@@ -76,6 +115,8 @@ ListItem.Standard {
         leftMargin: units.gu(-1)
     }
     onClicked: {
+        delegateClicked();
+
         if (listView.container.isExpanded) {
             listView.previousIndex = listView.currentIndex;
             listView.currentIndex = index;

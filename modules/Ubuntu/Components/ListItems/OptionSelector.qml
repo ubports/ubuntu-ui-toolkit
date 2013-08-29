@@ -99,16 +99,16 @@ ListItem.Empty {
     property Component delegate: Components.OptionSelectorDelegate {}
 
     /*!
-      \qmlproperty int selectedIndex
-      The index of the currently selected element in our list.
-     */
-    readonly property alias selectedIndex: list.currentIndex
-
-    /*!
-      \qmlproperty real containerHeight
+      \preliminary
       Custom height for list container which allows scrolling inside the selector.
      */
     property real containerHeight: list.contentHeight
+
+    /*!
+      \qmlproperty int selectedIndex
+      The index of the currently selected element in our list.
+     */
+    property alias selectedIndex: list.currentIndex
 
     /*!
       Called when the optionSelector is either expanded or collapsed.

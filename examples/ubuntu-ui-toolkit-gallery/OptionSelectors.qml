@@ -57,7 +57,6 @@ Template {
 
            Component {
                id: selectorDelegate
-
                OptionSelectorDelegate { text: name; subText: description; icon: image }
            }
 

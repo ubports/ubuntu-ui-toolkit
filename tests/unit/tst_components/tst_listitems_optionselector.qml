@@ -17,10 +17,11 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Test 0.1
 
 UbuntuTestCase {
-     name: "OptionSelectorAPI"
+     name: "ListItemOptionSelectorAPI"
 
      function test_expanded() {
          var listContainer = findChild(optionSelector, "listContainer");
@@ -62,20 +63,46 @@ UbuntuTestCase {
      function test_values() {
          compare(optionSelector.values,undefined,"values is undefined by default")
          var newValues = ["value1","value2","value3"];
-         optionSelector.values = newValues;
-         compare(optionSelector.values, newValues, "set/get");
+         optionSelector.model = newValues;
+         compare(optionSelector.model, newValues, "set/get");
+     }
+
+     function test_custom_model_delegate() {
+         compare(optionSelector.model, undefined, "model is undefined by default");
+         optionSelector.model = customModel;
+         optionSelector.delegate = selectorDelegate;
+         compare(optionSelector.model, customModel, "Model wasn't set correctly.");
+         compare(optionSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
      }
 
      Rectangle {
          id: testItem
      }
 
-     OptionSelector {
+     ListItem.OptionSelector {
          id: optionSelector
 
          SignalSpy {
              id: signalSpy
              target: optionSelector
          }
+     }
+
+     ListItem.OptionSelector {
+         id: optionSelectorCustomModel
+     }
+
+     Component {
+         id: selectorDelegate
+
+         OptionSelectorDelegate { text: name; subText: description }
+     }
+
+     ListModel {
+         id: customModel
+         ListElement { name: "Name 1"; description: "Description 1" }
+         ListElement { name: "Name 2"; description: "Description 2" }
+         ListElement { name: "Name 3"; description: "Description 3" }
+         ListElement { name: "Name 4"; description: "Description 4" }
      }
 }
