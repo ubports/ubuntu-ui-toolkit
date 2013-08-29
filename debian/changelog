@@ -1,3 +1,30 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130829.1-0ubuntu1) saucy; urgency=low
+
+  [ Michal Hruby ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Zsombor Egri ]
+  * Tick artwork reverted into Ambiance theme breaking Switch and
+    CheckBox components. .
+
+  [ Antti Kaijanmäki ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Nick Dedekind ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Lars Uebernickel ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 725
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 11:09:48 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130829-0ubuntu1) saucy; urgency=low
 
   [ Nicolas d'Offay ]
