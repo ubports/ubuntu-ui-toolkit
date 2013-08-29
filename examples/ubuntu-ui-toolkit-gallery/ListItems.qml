@@ -86,7 +86,7 @@ Template {
             anchors.right: parent.right
             spacing: units.gu(3)
 
-           ListItem.OptionSelector {
+           ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 model: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
@@ -94,7 +94,7 @@ Template {
                          i18n.tr("Value 4")]
            }
 
-           ListItem.OptionSelector {
+           ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 expanded: true
                 model: [i18n.tr("Value 1"),
@@ -103,7 +103,7 @@ Template {
                          i18n.tr("Value 4")]
            }
 
-           ListItem.OptionSelector {
+           ListItem.ItemSelector {
                text: i18n.tr("Label")
                model: customModel
                expanded: true

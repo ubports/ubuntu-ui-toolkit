@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1
+import Ubuntu.Components 0.1 as Toolkit
 
 /*!
     \qmltype OptionSelector
@@ -174,9 +174,9 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                UbuntuNumberAnimation {
+                Toolkit.UbuntuNumberAnimation {
                         properties: "height"
-                        duration: UbuntuAnimation.BriskDuration
+                        duration: Toolkit.UbuntuAnimation.BriskDuration
                     }
                 }
             ]
