@@ -1,3 +1,59 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130829-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Fixed output issue: CrossFadeImage.qml:39: Unable to assign QSize to
+    QSizeF. (LP: #1217848)
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 722
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 02:45:45 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130828.1-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * add a test for PopoverForegroundStyle.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 719
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 11:16:47 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130828-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 717
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 08:19:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130827-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Omer Akram ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Nicolas d'Offay ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 714
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 27 Aug 2013 19:11:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130826.1-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Alarm backend turned to asynchronous implementation. Status enum and
+    corresponding property added to Alarm element to reflect the pending
+    operation status.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 712
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 26 Aug 2013 18:34:52 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130823-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]

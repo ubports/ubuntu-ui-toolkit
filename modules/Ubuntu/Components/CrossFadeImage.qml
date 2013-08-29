@@ -82,7 +82,7 @@ Item {
     /*!
       The actual width and height of the loaded image
     */
-    readonly property size sourceSize: internals.loadingImage.sourceSize
+    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
 
     /*!
       \qmlproperty enumeration status

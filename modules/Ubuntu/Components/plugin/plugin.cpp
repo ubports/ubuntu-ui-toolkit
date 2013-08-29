@@ -44,6 +44,7 @@
 #include "ucargument.h"
 #include "ucalarm.h"
 #include "ucalarmmodel.h"
+#include "unitythemeiconprovider.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -184,8 +185,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
-    // register gicon provider
+    // register icon providers
     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
+    engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(
