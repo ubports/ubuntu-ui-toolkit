@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130829.2-0ubuntu1) saucy; urgency=low
+
+  [ Olivier Tilloy ]
+  * Fix a typo in Panel.qml. (LP: #1218331)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 727
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 15:22:45 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130829.1-0ubuntu1) saucy; urgency=low
 
   [ Michal Hruby ]
