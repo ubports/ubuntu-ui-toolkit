@@ -22,21 +22,15 @@ Item {
 
     property real thumbPadding: units.gu(0.5)
 
-    /*  FIXME: setting the width and height is required because in the case no width
-        is set on the Switch, then even though the width is set eventually to
-        implicitWidth, it still goes through the value 0.0 which triggers an
-        undesired animation if the Switch is checked.
+    /* FIXME: setting the width and height is required because in the case no width
+       is set on the Switch, then even though the width is set eventually to
+       implicitWidth, it still goes through the value 0.0 which triggers an
+       undesired animation if the Switch is checked.
 
-        Example, values of width at instantiation:
-            width = 0.0 (before SwitchStyle is loaded)
-            width = implicitWidth (after SwitchStyle is loaded)
+       Example, values of width at instantiation:
+         width = 0.0 (before SwitchStyle is loaded)
+         width = implicitWidth (after SwitchStyle is loaded)
     */
-
-    /*  FIXME: Consider moving cross artwork into ../../artwork/ to avoid  pointless duplication
-        of assets amongst themes. The only style which uses drop shadow is SuruGradient, the rest
-        could use the same asset since it uses PartialColourize.
-    */
-
     width: implicitWidth
     height: implicitHeight
     implicitWidth: units.gu(10)
@@ -47,7 +41,6 @@ Item {
         id: background
         anchors.fill: parent
         color: Theme.palette.normal.base
-        clip: true
 
         UbuntuShape {
             id: thumb
@@ -77,30 +70,6 @@ Item {
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
-
-            PartialColorize {
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    right: parent.left
-                    rightMargin: switchStyle.thumbPadding * 3.0
-                }
-                rightColor: Theme.palette.normal.backgroundText
-                source: Image {
-                    source: "artwork/cross.png"
-                }
-            }
-
-            PartialColorize {
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.right
-                    leftMargin: switchStyle.thumbPadding * 2.0
-                }
-                rightColor: Theme.palette.normal.backgroundText
-                source: Image {
-                    source: "../../artwork/tick.png"
-                }
-            }
         }
 
         Item {
@@ -114,13 +83,13 @@ Item {
             height: thumb.height
             width: thumb.width
 
-            PartialColorize {
+            PartialColorizeImage {
                 anchors.centerIn: parent
                 source: Image {
                     source: "artwork/cross.png"
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
-                leftColor: "transparent"
+                leftColor: Theme.palette.normal.backgroundText
                 rightColor: Theme.palette.selected.foregroundText
             }
         }
@@ -136,14 +105,14 @@ Item {
             height: thumb.height
             width: thumb.width
 
-            PartialColorize {
+            PartialColorizeImage {
                 anchors.centerIn: parent
                 source: Image {
-                    source: "../../artwork/tick.png"
+                    source: "artwork/tick.png"
                 }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
                 leftColor: Theme.palette.selected.foregroundText
-                rightColor: "transparent"
+                rightColor: Theme.palette.normal.backgroundText
             }
         }
     }
