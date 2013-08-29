@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130829-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Fixed output issue: CrossFadeImage.qml:39: Unable to assign QSize to
+    QSizeF. (LP: #1217848)
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 722
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 02:45:45 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130828.1-0ubuntu1) saucy; urgency=low
 
   [ Michael Zanetti ]
