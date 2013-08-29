@@ -23,8 +23,16 @@ Label {
     property bool selected: false
     property bool secondary: false
 
+    // FIXME: very ugly hack to detect whether the list item is inside a Popover
+    property bool overlay: isInsideOverlay(label)
+    function isInsideOverlay(item) {
+        if (!item.parent) return false;
+        return item.parent.hasOwnProperty("pointerTarget") || label.isInsideOverlay(item.parent)
+    }
+
     fontSize: "medium"
     elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : secondary ? Theme.palette.normal.backgroundText : Theme.palette.selected.backgroundText
+    color: selected ? UbuntuColors.orange : secondary ? overlay ? Theme.palette.normal.overlayText : Theme.palette.normal.backgroundText
+                                                      : overlay ? Theme.palette.selected.overlayText : Theme.palette.selected.backgroundText
     opacity: label.enabled ? 1.0 : 0.5
 }
