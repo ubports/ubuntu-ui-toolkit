@@ -299,7 +299,7 @@ Item {
 
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedlocked: panel.locked
+        property bool savedLocked: panel.locked
         property bool savedOpened: panel.opened
 
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
@@ -335,8 +335,8 @@ Item {
                 panel.opened = false;
                 panel.locked = true;
             } else { // don't force hidden
-                panel.locked = internal.savedlocked;
-                if (internal.savedlocked) panel.opened = internal.savedOpened;
+                panel.locked = internal.savedLocked;
+                if (internal.savedLocked) panel.opened = internal.savedOpened;
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
             }

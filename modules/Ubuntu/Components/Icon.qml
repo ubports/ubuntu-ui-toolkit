@@ -82,7 +82,7 @@ Item {
         Component.onCompleted: ready = true
 
         anchors.fill: parent
-        source: ready && width > 0 && height > 0 && icon.name ? "image://gicon/%1".arg(icon.name) : ""
+        source: ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name) : ""
         sourceSize {
             width: width
             height: height
