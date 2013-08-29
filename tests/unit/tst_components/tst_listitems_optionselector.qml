@@ -79,7 +79,7 @@ UbuntuTestCase {
          id: testItem
      }
 
-     ListItem.OptionSelector {
+     ListItem.ItemSelector {
          id: optionSelector
 
          SignalSpy {
@@ -88,7 +88,7 @@ UbuntuTestCase {
          }
      }
 
-     ListItem.OptionSelector {
+     ListItem.ItemSelector {
          id: optionSelectorCustomModel
      }
 

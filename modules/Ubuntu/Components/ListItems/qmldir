@@ -7,7 +7,7 @@ internal IconVisual IconVisual.qml
 ItemSeparator 0.1 ItemSeparator.qml
 internal LabelVisual LabelVisual.qml
 MultiValue 0.1 MultiValue.qml
-OptionSelector 0.1 OptionSelector.qml
+ItemSelector 0.1 ItemSelector.qml
 internal ProgressionVisual ProgressionVisual.qml
 ValueSelector 0.1 ValueSelector.qml
 SingleValue 0.1 SingleValue.qml

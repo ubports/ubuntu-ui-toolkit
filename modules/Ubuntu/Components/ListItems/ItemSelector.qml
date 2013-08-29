@@ -19,7 +19,7 @@ import "." as ListItem
 import Ubuntu.Components 0.1
 
 /*!
-    \qmltype OptionSelector
+    \qmltype ItemSelector
     \inqmlmodule Components.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief ListItem displaying a single selected value with and optional image and subtext when not expanded, where expanding
@@ -29,30 +29,30 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Components.Components 0.1
+        import Components.Components.ListItems 0.1 as ListItem
         Column {
             width: 250
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Standard"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Disabled"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Expanded"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Icon"
                 icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 model: customModel
                 expanded: true
