@@ -21,7 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Test 0.1
 
 UbuntuTestCase {
-     name: "ListItemOptionSelectorAPI"
+     name: "ItemSelectorAPI"
 
      function test_expanded() {
          var listContainer = findChild(optionSelector, "listContainer");
