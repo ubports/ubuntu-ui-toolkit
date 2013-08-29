@@ -31,11 +31,12 @@ Template {
             spacing: units.gu(3)
 
            OptionSelector {
-                text: i18n.tr("Label")
-                model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+               id: test
+               text: i18n.tr("Label")
+               model: [i18n.tr("Value 1"),
+                       i18n.tr("Value 2"),
+                       i18n.tr("Value 3"),
+                       i18n.tr("Value 4")]
            }
 
            OptionSelector {

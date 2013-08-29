@@ -81,11 +81,6 @@ ListItem.Standard {
     property color assetColour: listView.container.themeColour
 
     /*!
-      Called when delegate is clicked.
-     */
-    signal delegateClicked()
-
-    /*!
       \preliminary
       OptionSelector's ListView.
      */
@@ -115,7 +110,7 @@ ListItem.Standard {
         leftMargin: units.gu(-1)
     }
     onClicked: {
-        delegateClicked();
+        listView.delegateClicked();
 
         if (listView.container.isExpanded) {
             listView.previousIndex = listView.currentIndex;

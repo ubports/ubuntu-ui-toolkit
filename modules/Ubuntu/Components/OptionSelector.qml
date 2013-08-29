@@ -115,6 +115,11 @@ ListItem.Empty {
      */
     signal scroll()
 
+    /*!
+      Called when delegate is clicked.
+     */
+    signal delegateClicked()
+
     showDivider: false
 
     Column {
@@ -169,7 +174,7 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                UbuntuNumberAnimation {
+                Components.UbuntuNumberAnimation {
                         properties: "height"
                         duration: Components.UbuntuAnimation.BriskDuration
                     }
@@ -183,7 +188,9 @@ ListItem.Empty {
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
+                signal delegateClicked()
 
+                onDelegateClicked: optionSelector.delegateClicked();
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true

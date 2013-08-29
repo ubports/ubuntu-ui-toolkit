@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "." as ListItem
-import Ubuntu.Components 0.1 as Components
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype OptionSelector
@@ -96,7 +96,7 @@ ListItem.Empty {
       \preliminary
       ListView delegate.
      */
-    property Component delegate: Components.OptionSelectorDelegate {}
+    property Component delegate: OptionSelectorDelegate { id: selectorDelegate }
 
     /*!
       \preliminary
@@ -114,6 +114,11 @@ ListItem.Empty {
       Called when the optionSelector is either expanded or collapsed.
      */
     signal scroll()
+
+    /*!
+      Called when delegate is clicked.
+     */
+    signal delegateClicked()
 
     showDivider: false
 
@@ -167,7 +172,7 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                Components.UbuntuNumberAnimation {
+                UbuntuNumberAnimation {
                         properties: "height"
                         duration: Components.UbuntuAnimation.BriskDuration
                     }
@@ -181,6 +186,9 @@ ListItem.Empty {
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
+                signal delegateClicked()
+
+                onDelegateClicked: optionSelector.delegateClicked();
 
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
