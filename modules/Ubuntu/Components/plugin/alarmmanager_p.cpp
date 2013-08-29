@@ -38,11 +38,19 @@ AlarmManager::AlarmManager(QObject *parent)
     : QObject(parent)
     , d_ptr(createAlarmsAdapter(this))
 {
-    d_ptr->fetchAlarms();
 }
 
 AlarmManager::~AlarmManager()
 {
+}
+
+AlarmManager &AlarmManager::instance()
+{
+    static AlarmManager instance;
+    if (!instance.d_func()->completed) {
+        instance.d_func()->fetchAlarms();
+    }
+    return instance;
 }
 
 QList<AlarmData> AlarmManager::alarms() const

@@ -120,10 +120,7 @@ public:
 
     ~AlarmManager();
 
-    static AlarmManager &instance() {
-        static AlarmManager instance;
-        return instance;
-    }
+    static AlarmManager &instance();
 
     QList<AlarmData> alarms() const;
 

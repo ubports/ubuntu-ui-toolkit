@@ -43,6 +43,7 @@ private:
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         pAlarm->request->wait();
+        QTest::waitForEvents();
     }
 
     bool containsAlarm(UCAlarm *alarm)

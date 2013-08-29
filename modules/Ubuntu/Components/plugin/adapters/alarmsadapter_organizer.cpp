@@ -19,14 +19,9 @@
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
-#include "alarmmanager_p_p.h"
 #include "alarmrequest_p.h"
-#include "alarmrequest_p_p.h"
+#include "alarmsadapter_p.h"
 
-#include <qorganizer.h>
-#include <qorganizermanager.h>
-
-// FIXME: remove once we have the Organizer backend ready
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
@@ -42,79 +37,17 @@ QTORGANIZER_USE_NAMESPACE
  * Adaptation layer for Alarms. QOrganizer implementation may not require this,
  * however in case we decide to go with some other approach, this layer is welcome.
  */
-
-class AlarmRequestAdapter : public AlarmRequestPrivate
-{
-public:
-    AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete);
-
-    // adaptation methods
-    bool save(AlarmData &alarm);
-    bool remove(AlarmData &alarm);
-    bool wait(int msec);
-    bool fetch();
-
-    bool start(QOrganizerAbstractRequest *operation);
-
-    void _q_updateProgress();
-
-private:
-    QOrganizerAbstractRequest *m_request;
-
-    void completeUpdate();
-    void completeRemove();
-    void completeFetch();
-};
-
-class AlarmsAdapter : public AlarmManagerPrivate
-{
-public:
-    enum Error {
-        DifferentTypeExpected = UCAlarm::AdaptationError + 1,
-        FetchedEventEmpty,  // 102
-        UnhandledEventType, // 103
-        UnhandledRequest,   // 104
-        OrganizerError      // 105 onwards
-    };
-
-    AlarmsAdapter(AlarmManager *qq);
-    virtual ~AlarmsAdapter();
-
-    static AlarmsAdapter* get(AlarmManager *instance = 0) {
-        return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
-    }
-
-    bool usingCollection: 1;
-    QOrganizerManager *manager;
-    QOrganizerCollection collection;
-
-    virtual bool fetchAlarms();
-    void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
-
-    // FIXME: remove once we have the Organizer backend ready
-    void loadAlarms();
-    void saveAlarms();
-
-    void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
-    void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
-    int organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm);
-    QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
-    void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
-};
-
-/*-----------------------------------------------------------------------------
- * Adaptation layer for Alarms. QOrganizer implementation may not require this,
- * however in case we decide to go with some other approach, this layer is welcome.
- */
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
 {
     return new AlarmsAdapter(alarms);
 }
 
 AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
-    : AlarmManagerPrivate(qq)
-    , usingCollection(false)
+    : QObject(qq)
+    , AlarmManagerPrivate(qq)
+    , listDirty(false)
     , manager(0)
+    , fetchRequest(0)
 {
     QOrganizerManager local;
     bool usingDefaultManager = local.availableManagers().contains(ALARM_MANAGER);
@@ -129,33 +62,41 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     if (collections.count() > 0) {
         Q_FOREACH(const QOrganizerCollection &c, collections) {
             if (c.metaData(QOrganizerCollection::KeyName).toString() == ALARM_COLLECTION) {
-                usingCollection = true;
                 collection = c;
                 break;
             }
         }
     }
-    if (!usingCollection) {
+    if (collection.id().isNull()) {
         // create alarm collection
         collection.setMetaData(QOrganizerCollection::KeyName, ALARM_COLLECTION);
         if (manager->saveCollection(&collection)) {
             // make sure we have the collection in the list
             collections = manager->collections();
+
+            // FIXME remove this check once we are sure saving is successful in EDS manager
+            bool collectionFound = false;
             if (collections.count() > 0) {
                 Q_FOREACH(const QOrganizerCollection &c, collections) {
                     if (c.metaData(QOrganizerCollection::KeyName).toString() == ALARM_COLLECTION) {
-                        usingCollection = true;
-                        collection = c;
+                        collectionFound = true;
                         break;
                     }
                 }
             }
-            if (!usingCollection) {
+            if (!collectionFound) {
                 qWarning() << "WARNING: Creating dedicated collection for alarms was not possible, alarms will be saved into the default collection!";
+                collection = manager->defaultCollection();
             }
         }
     }
     loadAlarms();
+
+    // connect to manager to receive changes
+    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
 }
 
 AlarmsAdapter::~AlarmsAdapter()
@@ -166,7 +107,7 @@ AlarmsAdapter::~AlarmsAdapter()
 // load fallback manager data
 void AlarmsAdapter::loadAlarms()
 {
-    if (manager->managerName() == ALARM_MANAGER) {
+    if (manager->managerName() != ALARM_MANAGER_FALLBACK) {
         return;
     }
     QFile file(QString(ALARM_DATABASE).arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)));
@@ -193,7 +134,7 @@ void AlarmsAdapter::loadAlarms()
 // save fallback manager data only
 void AlarmsAdapter::saveAlarms()
 {
-    if (manager->managerName() == ALARM_MANAGER) {
+    if ((manager->managerName() != ALARM_MANAGER_FALLBACK) && !listDirty) {
         return;
     }
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
@@ -215,14 +156,14 @@ void AlarmsAdapter::saveAlarms()
             << alarm.enabled;
     }
     file.close();
+    listDirty = false;
 }
 
 void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event)
 {
-    if (usingCollection) {
-        event.setCollectionId(collection.id());
-    }
+    event.setCollectionId(collection.id());
     event.setAllDay(false);
+    event.setStartDateTime(alarm.date);
     event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
 
@@ -282,21 +223,8 @@ void AlarmsAdapter::updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTod
     rawAlarm2Organizer(alarm, event);
 }
 
-int AlarmsAdapter::organizer2RawAlarm(const QOrganizerItem &item, AlarmData &alarm)
+int AlarmsAdapter::organizer2RawAlarm(const QOrganizerTodo &event, AlarmData &alarm)
 {
-    if ((item.type() != QOrganizerItemType::TypeTodo) &&
-        (item.type() != QOrganizerItemType::TypeTodoOccurrence)){
-        return DifferentTypeExpected;
-    }
-
-    QOrganizerTodo event;
-    if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
-        QOrganizerTodoOccurrence occurence = static_cast<QOrganizerTodoOccurrence>(item);
-        QOrganizerItemId eventId = occurence.parentId();
-        event = static_cast<QOrganizerTodo>(manager->item(eventId));
-    } else {
-        event = static_cast<QOrganizerTodo>(item);
-    }
     if (event.isEmpty()) {
         return FetchedEventEmpty;
     }
@@ -361,11 +289,16 @@ void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
 /*-----------------------------------------------------------------------------
  * Abstract methods
  */
+
 bool AlarmsAdapter::fetchAlarms()
 {
+    if (fetchRequest) {
+        // there is already a fetch request ongoing, exit
+        return false;
+    }
     // create self deleting request
-    AlarmRequest *request = new AlarmRequest(true, q_ptr);
-    AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(request));
+    fetchRequest = new AlarmRequest(true, q_ptr);
+    AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(fetchRequest));
     return adapter->fetch();
 }
 
@@ -374,21 +307,24 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     alarmList.clear();
 
     QSet<QOrganizerItemId> parentId;
+    QOrganizerTodo event;
     Q_FOREACH(const QOrganizerItem &item, alarms) {
         // repeating alarms may be fetched as occurences, therefore check their parent event
         if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
             QOrganizerTodoOccurrence occurence = static_cast<QOrganizerTodoOccurrence>(item);
-            if (parentId.contains(occurence.parentId())) {
-                // skip this as we only consider parent items
+            QOrganizerItemId eventId = occurence.parentId();
+            if (parentId.contains(eventId)) {
                 continue;
             }
-            parentId << occurence.parentId();
-        } else if (item.type() != QOrganizerItemType::TypeTodo) {
-            // skip any other type than Event
+            parentId << eventId;
+            event = static_cast<QOrganizerTodo>(manager->item(eventId));
+        } else if (item.type() == QOrganizerItemType::TypeTodo){
+            event = static_cast<QOrganizerTodo>(item);
+        } else {
             continue;
         }
         AlarmData alarm;
-        if (organizer2RawAlarm(item, alarm) == UCAlarm::NoError) {
+        if (organizer2RawAlarm(event, alarm) == UCAlarm::NoError) {
             alarmList << alarm;
         }
     }
@@ -398,6 +334,7 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
         Q_EMIT q_ptr->alarmsChanged();
     }
     completed = true;
+    fetchRequest = 0;
 }
 
 /*-----------------------------------------------------------------------------
@@ -439,6 +376,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItem(event);
+    AlarmsAdapter::get()->listDirty = true;
     return start(operation);
 }
 
@@ -456,6 +394,7 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
     QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItemId(itemId);
+    AlarmsAdapter::get()->listDirty = true;
     return start(operation);
 }
 
@@ -485,11 +424,9 @@ bool AlarmRequestAdapter::fetch()
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
     // set filter
-    if (AlarmsAdapter::get(manager)->usingCollection) {
-        QOrganizerItemCollectionFilter filter;
-        filter.setCollectionId(owner->collection.id());
-        operation->setFilter(filter);
-    }
+    QOrganizerItemCollectionFilter filter;
+    filter.setCollectionId(owner->collection.id());
+    operation->setFilter(filter);
 
     // start request
     return start(operation);
@@ -596,9 +533,6 @@ void AlarmRequestAdapter::completeUpdate()
     QOrganizerItemSaveRequest *save = qobject_cast<QOrganizerItemSaveRequest*>(m_request);
     pAlarm->rawData.cookie = QVariant::fromValue<QOrganizerItemId>(save->items()[0].id());
     pAlarm->rawData.changes = AlarmData::NoChange;
-
-    // request for refresh
-    AlarmManagerPrivate::get()->fetchAlarms();
 }
 
 void AlarmRequestAdapter::completeRemove()
@@ -610,9 +544,6 @@ void AlarmRequestAdapter::completeRemove()
     UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
     pAlarm->rawData.cookie = QVariant();
     pAlarm->rawData.changes = AlarmData::NoChange;
-
-    // request for refresh
-    AlarmManagerPrivate::get()->fetchAlarms();
 }
 
 void AlarmRequestAdapter::completeFetch()
