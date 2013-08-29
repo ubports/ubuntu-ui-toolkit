@@ -10,6 +10,7 @@ UNRELEASED
 API Changes
 ***********
 * ADDED IN: Empty: property alias divider
+* ADDED IN: ListItems/OptionSelector: signal delegateSelected()
 * ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: ListItem OptionSelector to Components/ListItems
 * ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems

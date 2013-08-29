@@ -104,18 +104,19 @@ ListItem.Empty
     property var model
     property bool expanded
     property bool colourImage
-    readonly property int selectedIndex
     property real containerHeight
+    property int selectedIndex
     signal scroll()
+    signal delegateClicked()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
     property string subText
     property url icon
-    property ListView listView
-    property color assetColour
     property bool colourImage
-    property string fragColourShader
+    property color assetColour
+    readonly property ListView listView
+    readonly property string fragColourShader
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
