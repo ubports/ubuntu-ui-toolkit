@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Components
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype OptionSelector
@@ -96,7 +96,7 @@ ListItem.Empty {
       \preliminary
       ListView delegate.
      */
-    property Component delegate: Components.OptionSelectorDelegate {}
+    property Component delegate: OptionSelectorDelegate {}
 
     /*!
       \preliminary
@@ -174,9 +174,9 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                Components.UbuntuNumberAnimation {
+                UbuntuNumberAnimation {
                         properties: "height"
-                        duration: Components.UbuntuAnimation.BriskDuration
+                        duration: UbuntuAnimation.BriskDuration
                     }
                 }
             ]

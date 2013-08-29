@@ -174,7 +174,7 @@ ListItem.Empty {
             transitions: [ Transition {
                 UbuntuNumberAnimation {
                         properties: "height"
-                        duration: Components.UbuntuAnimation.BriskDuration
+                        duration: UbuntuAnimation.BriskDuration
                     }
                 }
             ]
