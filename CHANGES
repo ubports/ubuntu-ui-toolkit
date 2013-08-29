@@ -9,7 +9,7 @@ UNRELEASED
 
 API Changes
 ***********
-
+* ADDED IN: Empty: property alias divider
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
