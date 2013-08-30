@@ -184,14 +184,18 @@ Item {
       Open the panel
      */
     function open() {
-        panel.state = "spread";
+        if (panel.state == "") {
+            panel.state = "spread";
+        }
     }
 
     /*!
       Close the panel
      */
     function close() {
-        panel.state = "";
+        if (panel.state == "opened") {
+            panel.state = "";
+        }
     }
 
     onOpenedChanged: {
