@@ -41,15 +41,16 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
+        internal.updateVisibleTools();
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
-            internal.updateVisibleTools();
+//            internal.updateVisibleTools();
             toolbar.open();
         } else if (!opened && !animating) {
             // toolbar is closed
-            internal.updateVisibleTools();
+//            internal.updateVisibleTools();
         } else {
             toolbar.close();
             // internal.visibleTools will be updated
@@ -79,7 +80,7 @@ Panel {
                 } else {
                     toolbar.close();
                 }
-                // TODO: make sure toolbar.opened and tools.opened stay synced.
+                // TODO: make sure toolbar.opened and tools.opened stay synced.`
 //            }
         }
         onLockedChanged: toolbar.locked = tools.locked;
