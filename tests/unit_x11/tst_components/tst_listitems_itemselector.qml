@@ -72,23 +72,9 @@ Item {
         signalName: "delegateClicked"
     }
 
-    SignalSpy {
-        id: scrollSignal
-        target: selector
-        signalName: "scroll"
-    }
-
     UbuntuTestCase {
          name: "ItemSelectorAPI"
          when: windowShown
-
-         function test_signals() {
-             mouseMove(selector, 0, 0);
-             mouseClick(selector, 0, 0, Qt.LeftButton);
-             wait(2000)
-             compare(clickedSignal.count, 1, "Clicked not emitted.");
-             compare(scrollSignal.count, 1, "Scroll not emitted.");
-         }
 
          function test_expanded() {
              var listContainer = findChild(selector, "listContainer");
@@ -127,6 +113,13 @@ Item {
          function test_image_constraint() {
             var image = findChild(testDelegate, "icon");
             compare(image.height, testDelegate.height);
+         }
+
+         function test_signals() {
+             mouseMove(selector, 0, 0);
+             mouseClick(selector, 0, 0, Qt.LeftButton);
+             mouseClick(selector, 20, 60, Qt.LeftButton);
+             compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
     }
 }

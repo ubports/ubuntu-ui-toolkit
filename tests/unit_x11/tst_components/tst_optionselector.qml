@@ -19,104 +19,106 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 import Ubuntu.Test 0.1
 
-TestCase {
-     name: "OptionSelectorAPI"
+Item {
+    width: 400
+    height: 400
 
-     function test_expanded() {
-         var listContainer = findChild(optionSelector, "listContainer");
+    Column {
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+        OptionSelector {
+            id: selector
 
-         optionSelector.expanded = false;
-         compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
+            text: "TEST"
+            delegate: selectorDelegate
+            model: customModel
+        }
 
-         optionSelector.expanded = true;
-         compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
-     }
+        OptionSelectorDelegate {
+            id: testDelegate
 
-     function test_states_and_signal() {
-         var listContainer = findChild(optionSelector, "listContainer");
+            text: "TEST"
+            subText: "test"
+            icon: "../../resources/optionselector/test.png"
+            constrainImage: true
+        }
+    }
 
-         signalSpy.signalName = "scroll";
-         compare(signalSpy.count, 0);
+    Component {
+        id: selectorDelegate
 
-         optionSelector.expanded = false;
-         compare(listContainer.state, "collapsed", "state should be collapsed");
+        OptionSelectorDelegate {
+            text: name
+            subText: description
+            icon: image
+            constrainImage: true
+        }
+    }
 
-         optionSelector.expanded = true;
-         compare(listContainer.state, "expanded", "state should be expanded");
+    ListModel {
+        id: customModel
+        ListElement { name: "Name 1"; description: "Description 1"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 2"; description: "Description 2"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 3"; description: "Description 3"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 4"; description: "Description 4"; image: "../../resources/optionselector/test.png" }
+    }
 
-         //Check if scroll signal was fired after expansion.
-         compare(signalSpy.count, 2);
-     }
+    SignalSpy {
+        id: clickedSignal
+        target: selector
+        signalName: "delegateClicked"
+    }
 
-     function test_text() {
-         compare(optionSelector.text,"","text is '' by default")
-         var newText = "Hello World!";
-         optionSelector.text = newText;
-         compare(optionSelector.text, newText, "set/get");
-     }
+    UbuntuTestCase {
+         name: "ItemSelectorAPI"
+         when: windowShown
 
-     function test_selectedIndex() {
-        compare(optionSelector.selectedIndex, 0, "selectedIndex is 0 by default");
-     }
+         function test_expanded() {
+             var listContainer = findChild(selector, "listContainer");
 
-     function test_model() {
-         optionSelector.model = undefined;
-         compare(optionSelector.test_model,undefined,"values is undefined by default")
-         var newValues = ["value1","value2","value3"];
-         optionSelector.model = newValues;
-         compare(optionSelector.model, newValues, "set/get");
-     }
+             selector.expanded = false;
+             compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
+             compare(listContainer.state, "collapsed", "state should be collapsed");
 
-     function test_custom_model_delegate() {
-         compare(optionSelector.model, undefined, "model is undefined by default");
-         optionSelector.model = customModel;
-         optionSelector.delegate = selectorDelegate;
-         compare(optionSelector.model, customModel, "Model wasn't set correctly.");
-         compare(optionSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
-     }
-
-     /*function test_bug1166982_disabled_control_clicked() {
-         var listItemClickedCount = listItemClickedSpy.count
-         var controlClickedCount = controlClickedSpy.count
-         listItemStandard.control = testControl
-         testControl.enabled = false
-         mouseMove(listItemStandard, 10, 10)
-         mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
-         compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked not triggered with disabled control")
-         compare(controlClickedSpy.count, controlClickedCount, "Control clicked not triggered with disabled control")
-         testControl.enabled = true
-         listItemStandard.control = null
-     }*/
-
-     Rectangle {
-         id: testItem
-     }
-
-     OptionSelector {
-         id: optionSelector
-
-         SignalSpy {
-             id: signalSpy
-             target: optionSelector
+             selector.expanded = true;
+             compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
+             compare(listContainer.state, "expanded", "state should be expanded");
          }
-     }
 
-     OptionSelector {
-         id: optionSelectorCustomModel
-     }
+         function test_text() {
+             var newText = "Hello World!";
+             selector.text = newText;
+             compare(selector.text, newText, "set/get");
+         }
 
-     Component {
-         id: selectorDelegate
+         function test_selectedIndex() {
+            compare(selector.selectedIndex, 0, "selectedIndex is 0 by default");
+         }
 
-         OptionSelectorDelegate { text: name; subText: description }
-     }
+         function test_model() {
+             selector.model = undefined;
+             var newValues = ["value0","value1","value2","value3"];
+             selector.model = newValues;
+             compare(selector.model, newValues, "set/get");
+         }
 
-     ListModel {
-         id: customModel
-         ListElement { name: "Name 1"; description: "Description 1" }
-         ListElement { name: "Name 2"; description: "Description 2" }
-         ListElement { name: "Name 3"; description: "Description 3" }
-         ListElement { name: "Name 4"; description: "Description 4" }
-     }
+         function test_custom_model_delegate() {
+             compare(selector.model, customModel, "Model wasn't set correctly.");
+             compare(selector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
+         }
+
+         function test_image_constraint() {
+            var image = findChild(testDelegate, "icon");
+            compare(image.height, testDelegate.height);
+         }
+
+         function test_signals() {
+             mouseMove(selector, 0, 0);
+             mouseClick(selector, 0, 0, Qt.LeftButton);
+             mouseClick(selector, 20, 60, Qt.LeftButton);
+             compare(clickedSignal.count, 1, "Clicked not emitted.");
+         }
+    }
 }
-

@@ -12,6 +12,7 @@ API Changes
 * ADDED IN: OptionSelectorDelegate: property bool constrainImage
 * ADDED IN: Empty: property alias divider
 * ADDED IN: ListItems/OptionSelector: signal delegateSelected()
+* REMOVED IN: OptionSelector: signal scroll()
 * ADDED IN: OptionSelector: signal delegateSelected()
 * ADDED: ListItem OptionSelector to Components/ListItems
 * ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems

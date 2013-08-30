@@ -111,11 +111,6 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
-      Called when the optionSelector is either expanded or collapsed.
-     */
-    signal scroll()
-
-    /*!
       Called when delegate is clicked.
      */
     signal delegateClicked(int index)
@@ -152,8 +147,6 @@ ListItem.Empty {
             }
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
-
-            onHeightChanged: scroll()
 
             states: [ State {
                     name: "expanded"
