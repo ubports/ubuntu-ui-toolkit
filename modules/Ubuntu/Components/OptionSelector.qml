@@ -190,7 +190,7 @@ ListItem.Empty {
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onDelegateClicked: { optionSelector.delegateClicked(selectedIndex); print(selectedIndex); }
+                onDelegateClicked: optionSelector.delegateClicked(selectedIndex);
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
