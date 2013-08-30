@@ -1,3 +1,22 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130830.1-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Quick fix, completely untested. Might mess up apps with list items
+    that do not use popovers. Have a look to see if you can use this
+    code and it doesn't break anything. (LP: #1205094)
+  * Clean toolbar code by removing deprecated properties and updating
+    tests.
+
+  [ iftikhar.ahmad@canonical.com ]
+  * ajusted the buttons laytout to make it fit to phone screen size.
+    https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1218749 . (LP:
+    #1218749)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 731
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 30 Aug 2013 12:44:49 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130829.2-0ubuntu1) saucy; urgency=low
 
   [ Olivier Tilloy ]
