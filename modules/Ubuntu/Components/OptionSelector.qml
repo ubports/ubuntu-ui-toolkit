@@ -184,7 +184,6 @@ ListItem.Empty {
 
                 onDelegateClicked: optionSelector.delegateClicked(index);
                 boundsBehavior: Flickable.StopAtBounds
-                highlightFollowsCurrentItem: false
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0
