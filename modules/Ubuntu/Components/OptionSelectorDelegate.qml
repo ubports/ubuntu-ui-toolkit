@@ -110,11 +110,11 @@ ListItem.Standard {
         leftMargin: units.gu(-1)
     }
     onClicked: {
-        listView.delegateClicked(index);
-
         if (listView.container.isExpanded) {
             listView.previousIndex = listView.currentIndex;
             listView.currentIndex = index;
+
+            listView.delegateClicked(index);
         }
 
         if (!listView.expanded) {
