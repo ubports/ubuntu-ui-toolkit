@@ -119,6 +119,7 @@ Item {
          function test_signal() {
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
+             wait(100)
              compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
     }
