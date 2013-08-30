@@ -24,108 +24,98 @@ Item {
     width: 400
     height: 400
 
+    Column {
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+        ListItem.ItemSelector {
+            id: selector
+
+            text: "TEST"
+            delegate: selectorDelegate
+            model: customModel
+        }
+
+        ListItem.ItemSelector {
+            id: baseSelector
+        }
+    }
+
+    Component {
+        id: selectorDelegate
+
+        OptionSelectorDelegate { text: name; subText: description }
+    }
+
+    ListModel {
+        id: customModel
+        ListElement { name: "Name 1"; description: "Description 1" }
+        ListElement { name: "Name 2"; description: "Description 2" }
+        ListElement { name: "Name 3"; description: "Description 3" }
+        ListElement { name: "Name 4"; description: "Description 4" }
+    }
+
+    SignalSpy {
+        id: clickedSignal
+        target: selector
+        signalName: "delegateClicked"
+    }
+
+    SignalSpy {
+        id: scrollSignal
+        target: selector
+        signalName: "scroll"
+    }
 
     UbuntuTestCase {
          name: "ItemSelectorAPI"
          when: windowShown
 
-         Item {
-             anchors {
-                 left: parent.left
-                 right: parent.right
-             }
-             ListItem.ItemSelector {
-                 id: optionSelector
-
-                 SignalSpy {
-                     id: signalSpy
-                     target: optionSelector
-                 }
-             }
-         }
-
-         ListItem.ItemSelector {
-             id: optionSelectorCustomModel
-         }
-
-         Component {
-             id: selectorDelegate
-
-             OptionSelectorDelegate { text: name; subText: description }
-         }
-
-         ListModel {
-             id: customModel
-             ListElement { name: "Name 1"; description: "Description 1" }
-             ListElement { name: "Name 2"; description: "Description 2" }
-             ListElement { name: "Name 3"; description: "Description 3" }
-             ListElement { name: "Name 4"; description: "Description 4" }
+         function test_signals() {
+             mouseMove(selector, 0, 0);
+             mouseClick(selector, 0, 0, Qt.LeftButton);
+             wait(2000)
+             compare(clickedSignal.count, 1, "Clicked not emitted.");
+             compare(scrollSignal.count, 1, "Scroll not emitted.");
          }
 
          function test_expanded() {
-             var listContainer = findChild(optionSelector, "listContainer");
+             var listContainer = findChild(baseSelector, "listContainer");
 
-             optionSelector.expanded = false;
+             baseSelector.expanded = false;
              compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
-
-             optionSelector.expanded = true;
-             compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
-         }
-
-         function test_states_and_signal() {
-             var listContainer = findChild(optionSelector, "listContainer");
-
-             signalSpy.signalName = "scroll";
-             compare(signalSpy.count, 0);
-
-             optionSelector.expanded = false;
              compare(listContainer.state, "collapsed", "state should be collapsed");
 
-             optionSelector.expanded = true;
+             baseSelector.expanded = true;
+             compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
              compare(listContainer.state, "expanded", "state should be expanded");
-
-             //Check if scroll signal was fired after expansion.
-             compare(signalSpy.count, 2);
          }
 
          function test_text() {
-             compare(optionSelector.text,"","text is '' by default")
              var newText = "Hello World!";
-             optionSelector.text = newText;
-             compare(optionSelector.text, newText, "set/get");
+             selector.text = newText;
+             compare(selector.text, newText, "set/get");
          }
 
          function test_selectedIndex() {
-            compare(optionSelector.selectedIndex, 0, "selectedIndex is 0 by default");
+            compare(selector.selectedIndex, 0, "selectedIndex is 0 by default");
          }
 
          function test_model() {
-             optionSelector.model = undefined;
-             compare(optionSelector.model,undefined,"values is undefined by default")
-             var newValues = ["value1","value2","value3"];
-             optionSelector.model = newValues;
-             compare(optionSelector.model, newValues, "set/get");
+             baseSelector.model = undefined;
+             compare(baseSelector.model,undefined,"values is undefined by default")
+             var newValues = ["value0","value1","value2","value3"];
+             baseSelector.model = newValues;
+             compare(baseSelector.model, newValues, "set/get");
          }
 
          function test_custom_model_delegate() {
-             compare(optionSelector.model, undefined, "model is undefined by default");
-             optionSelector.model = customModel;
-             optionSelector.delegate = selectorDelegate;
-             compare(optionSelector.model, customModel, "Model wasn't set correctly.");
-             compare(optionSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
-         }
-
-         function test_delegate_clicked_signal() {
-             var listView = findChild(optionSelector, "listView");
-
-             signalSpy.signalName = "delegateClicked";
-             compare(signalSpy.count, 0);
-             var newValues = ["value1","value2","value3"];
-             optionSelector.model = newValues;
-             mouseMove(listView.currentItem, 0, 0)
-             mouseClick(listView.currentItem, 0, 0, Qt.LeftButton);
-             wait(1000);
-             compare(signalSpy.count, 1);
+             compare(baseSelector.model, undefined, "model is undefined by default");
+             baseSelector.model = customModel;
+             baseSelector.delegate = selectorDelegate;
+             compare(baseSelector.model, customModel, "Model wasn't set correctly.");
+             compare(baseSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
          }
     }
 }
