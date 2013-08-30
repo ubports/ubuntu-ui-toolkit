@@ -106,7 +106,6 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    signal scroll()
     signal delegateClicked(int index)
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard

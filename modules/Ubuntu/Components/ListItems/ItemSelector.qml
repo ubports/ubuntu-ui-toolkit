@@ -146,8 +146,6 @@ ListItem.Empty {
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
-            onHeightChanged: scroll()
-
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded

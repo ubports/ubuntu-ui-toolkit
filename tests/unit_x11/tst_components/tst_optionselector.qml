@@ -114,10 +114,9 @@ Item {
             compare(image.height, testDelegate.height);
          }
 
-         function test_signals() {
-             mouseMove(selector, 0, 0);
-             mouseClick(selector, 0, 0, Qt.LeftButton);
-             mouseClick(selector, 20, 60, Qt.LeftButton);
+         function test_signal() {
+             mouseMove(selector, 0, 100);
+             mouseClick(selector, 0, 100, Qt.LeftButton);
              compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
     }
