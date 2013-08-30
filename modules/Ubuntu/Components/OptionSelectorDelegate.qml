@@ -300,6 +300,7 @@ ListItem.Standard {
 
         Image {
             id: leftIcon
+            objectName: "icon"
 
             height: constrainImage ? option.height : sourceSize.height
             source: icon

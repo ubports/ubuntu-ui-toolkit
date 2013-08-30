@@ -37,23 +37,33 @@ Item {
             model: customModel
         }
 
-        ListItem.ItemSelector {
-            id: baseSelector
+        OptionSelectorDelegate {
+            id: testDelegate
+
+            text: "TEST"
+            subText: "test"
+            icon: "../../resources/optionselector/test.png"
+            constrainImage: true
         }
     }
 
     Component {
         id: selectorDelegate
 
-        OptionSelectorDelegate { text: name; subText: description }
+        OptionSelectorDelegate {
+            text: name
+            subText: description
+            icon: image
+            constrainImage: true
+        }
     }
 
     ListModel {
         id: customModel
-        ListElement { name: "Name 1"; description: "Description 1" }
-        ListElement { name: "Name 2"; description: "Description 2" }
-        ListElement { name: "Name 3"; description: "Description 3" }
-        ListElement { name: "Name 4"; description: "Description 4" }
+        ListElement { name: "Name 1"; description: "Description 1"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 2"; description: "Description 2"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 3"; description: "Description 3"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Name 4"; description: "Description 4"; image: "../../resources/optionselector/test.png" }
     }
 
     SignalSpy {
@@ -81,13 +91,13 @@ Item {
          }
 
          function test_expanded() {
-             var listContainer = findChild(baseSelector, "listContainer");
+             var listContainer = findChild(selector, "listContainer");
 
-             baseSelector.expanded = false;
+             selector.expanded = false;
              compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
              compare(listContainer.state, "collapsed", "state should be collapsed");
 
-             baseSelector.expanded = true;
+             selector.expanded = true;
              compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
              compare(listContainer.state, "expanded", "state should be expanded");
          }
@@ -103,19 +113,20 @@ Item {
          }
 
          function test_model() {
-             baseSelector.model = undefined;
-             compare(baseSelector.model,undefined,"values is undefined by default")
+             selector.model = undefined;
              var newValues = ["value0","value1","value2","value3"];
-             baseSelector.model = newValues;
-             compare(baseSelector.model, newValues, "set/get");
+             selector.model = newValues;
+             compare(selector.model, newValues, "set/get");
          }
 
          function test_custom_model_delegate() {
-             compare(baseSelector.model, undefined, "model is undefined by default");
-             baseSelector.model = customModel;
-             baseSelector.delegate = selectorDelegate;
-             compare(baseSelector.model, customModel, "Model wasn't set correctly.");
-             compare(baseSelector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
+             compare(selector.model, customModel, "Model wasn't set correctly.");
+             compare(selector.delegate, selectorDelegate, "Delegate hasn't been set correctly");
+         }
+
+         function test_image_constraint() {
+            var image = findChild(testDelegate, "icon");
+            compare(image.height, testDelegate.height);
          }
     }
 }
