@@ -107,7 +107,7 @@ ListItem.Empty
     property real containerHeight
     property int selectedIndex
     signal scroll()
-    signal delegateClicked()
+    signal delegateClicked(int index)
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text

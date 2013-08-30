@@ -118,7 +118,7 @@ ListItem.Empty {
     /*!
       Called when delegate is clicked.
      */
-    signal delegateClicked()
+    signal delegateClicked(int index)
 
     showDivider: false
 
@@ -188,7 +188,7 @@ ListItem.Empty {
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
-                signal delegateClicked()
+                signal delegateClicked(int index)
 
                 onDelegateClicked: optionSelector.delegateClicked();
                 boundsBehavior: Flickable.StopAtBounds
