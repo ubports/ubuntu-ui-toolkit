@@ -79,6 +79,7 @@ Panel {
                 } else {
                     toolbar.close();
                 }
+                // TODO: make sure toolbar.opened and tools.opened stay synced.
 //            }
         }
         onLockedChanged: toolbar.locked = tools.locked;

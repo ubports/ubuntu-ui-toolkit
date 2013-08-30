@@ -176,8 +176,9 @@ Item {
       The opened property is not updated until the swipe gesture is completed.
      */
     // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
-    readonly property bool opened: (panel.state === "spread")// ||
-//                                   (panel.state !== "" && internal.previousState === "spread")
+    readonly property bool opened: (panel.state === "spread") ||
+//                                   (panel.state != "" && internal.previousState === "spread")
+                                   (panel.state === "moving" && internal.previousState === "spread")
     /*! \internal */
 
     /*!
@@ -326,6 +327,8 @@ Item {
         property string previousState: ""
         property int movingDelta
 
+        onPreviousStateChanged: console.log("previous state changed to "+previousState)
+
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
         property bool savedLocked: panel.locked
@@ -354,29 +357,29 @@ Item {
                                            ? Qt.Horizontal : Qt.Vertical
     }
 
-    Connections {
-        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
-        target: bottomBarVisibilityCommunicator
-        onForceHiddenChanged: {
-            if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLocked = panel.locked;
-                internal.savedOpened = panel.opened;
-                panel.close();
-                panel.locked = true;
-            } else { // don't force hidden
-                panel.locked = internal.savedLocked;
-                if (panel.locked) {
-                    if (internal.savedOpened) {
-                        panel.open();
-                    } else {
-                        panel.close();
-                    }
-                // if the panel was locked, do not slide it back in
-                // until the user performs an edge swipe.
-                }
-            }
-        }
-    }
+//    Connections {
+//        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
+//        target: bottomBarVisibilityCommunicator
+//        onForceHiddenChanged: {
+//            if (bottomBarVisibilityCommunicator.forceHidden) {
+//                internal.savedLocked = panel.locked;
+//                internal.savedOpened = panel.opened;
+//                panel.close();
+//                panel.locked = true;
+//            } else { // don't force hidden
+//                panel.locked = internal.savedLocked;
+//                if (panel.locked) {
+//                    if (internal.savedOpened) {
+//                        panel.open();
+//                    } else {
+//                        panel.close();
+//                    }
+//                // if the panel was locked, do not slide it back in
+//                // until the user performs an edge swipe.
+//                }
+//            }
+//        }
+//    }
 
     /*! \internal */
     onStateChanged: {
@@ -391,7 +394,7 @@ Item {
 //        } else if (state == "") {
 //            panel.opened = false;
         }
-        internal.previousState = state;
+//        internal.previousState = state;
     }
 
 //    Toolkit.InverseMouseArea {
@@ -477,9 +480,11 @@ Item {
         onPositionChanged: {
             if (panel.locked) return;
             if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
+                internal.previousState = "hint";
                 panel.state = "moving";
                 pressedItem = null;
             } else if (panel.state == "spread" && mousePosition > initialPosition + dragThreshold) {
+                internal.previousState = "spread";
                 panel.state = "moving";
                 pressedItem = null;
             }
