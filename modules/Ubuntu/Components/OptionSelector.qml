@@ -143,7 +143,6 @@ ListItem.Empty {
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property bool isFullyExpanded: expanded
             readonly property bool colourImage: optionSelector.colourImage
             property bool isExpanded: expanded
 
@@ -154,7 +153,15 @@ ListItem.Empty {
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
 
-            onHeightChanged: scroll()
+            onHeightChanged: {
+                scroll()
+
+                /*if (containerHeight === listContainer.height
+                        && containerHeight < list.contentHeight
+                        && isExpanded === true) {
+                    list.contentY -= list.itemHeight / 2;
+                }*/
+            }
 
             states: [ State {
                     name: "expanded"
@@ -184,14 +191,15 @@ ListItem.Empty {
             ListView {
                 id: list
 
-                property int previousIndex: -1
+                property int previousIndex: list.currentIndex
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onDelegateClicked: optionSelector.delegateClicked(selectedIndex);
+                onDelegateClicked: optionSelector.delegateClicked(index);
                 boundsBehavior: Flickable.StopAtBounds
+                highlightFollowsCurrentItem: false
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0

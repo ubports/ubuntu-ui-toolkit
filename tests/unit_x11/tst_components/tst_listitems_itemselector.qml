@@ -29,17 +29,18 @@ Item {
          name: "ItemSelectorAPI"
          when: windowShown
 
-         ListItem.ItemSelector {
-             id: optionSelector
-
+         Item {
              anchors {
                  left: parent.left
                  right: parent.right
              }
+             ListItem.ItemSelector {
+                 id: optionSelector
 
-             SignalSpy {
-                 id: signalSpy
-                 target: optionSelector
+                 SignalSpy {
+                     id: signalSpy
+                     target: optionSelector
+                 }
              }
          }
 
@@ -119,8 +120,11 @@ Item {
 
              signalSpy.signalName = "delegateClicked";
              compare(signalSpy.count, 0);
+             var newValues = ["value1","value2","value3"];
+             optionSelector.model = newValues;
              mouseMove(listView.currentItem, 0, 0)
              mouseClick(listView.currentItem, 0, 0, Qt.LeftButton);
+             wait(1000);
              compare(signalSpy.count, 1);
          }
     }

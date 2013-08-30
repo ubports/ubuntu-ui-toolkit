@@ -70,6 +70,12 @@ ListItem.Standard {
 
     /*!
       \preliminary
+      Constrains the size of the image to nothing greater than that of the delegate. Changes fillMode to Image.PreserveAspectFit.
+     */
+    property bool constrainImage: false
+
+    /*!
+      \preliminary
       Whether or not left image is coloured by our theme.
      */
     property bool colourImage: listView.container.colourImage
@@ -111,10 +117,10 @@ ListItem.Standard {
     }
     onClicked: {
         if (listView.container.isExpanded) {
+            listView.delegateClicked(index);
+
             listView.previousIndex = listView.currentIndex;
             listView.currentIndex = index;
-
-            listView.delegateClicked(index);
         }
 
         if (!listView.expanded) {
@@ -295,7 +301,9 @@ ListItem.Standard {
         Image {
             id: leftIcon
 
+            height: constrainImage ? option.height : sourceSize.height
             source: icon
+            fillMode: constrainImage ? Image.PreserveAspectFit : Image.Stretch
 
             ShaderEffect {
                 property color colour: assetColour

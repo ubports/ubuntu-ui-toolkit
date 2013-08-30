@@ -141,7 +141,6 @@ ListItem.Empty {
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property bool isFullyExpanded: expanded
             readonly property bool colourImage: optionSelector.colourImage
             property bool isExpanded: expanded
 
@@ -183,14 +182,13 @@ ListItem.Empty {
                 id: list
                 objectName: "listView"
 
-                property int previousIndex: -1
+                property int previousIndex: list.currentIndex
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onDelegateClicked: optionSelector.delegateClicked();
-
+                onDelegateClicked: optionSelector.delegateClicked(index);
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
