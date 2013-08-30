@@ -50,8 +50,8 @@ import QtQuick 2.0
                             anchors.centerIn: parent
                             text: "A centered label"
                         }
-                        tools: ToolbarActions {
-                            Action {
+                        tools: ToolbarItems {
+                            ToolbarButton {
                                 text: "action"
                                 onTriggered: print("action triggered")
                             }
@@ -177,19 +177,6 @@ PageTreeNode {
         tabsItem: tabs
         visible: tabs.active
     }
-
-    /*!
-      \deprecated
-      This property is deprecated. Pages will now automatically update the toolbar when activated.
-     */
-    property ToolbarActions tools: null
-    /*!
-      \deprecated
-      \internal
-     */
-    onToolsChanged: print("Tabs.tools property was deprecated. "+
-                          "Pages will automatically update the toolbar when activated. "+
-                          "See CHANGES file, and use toolbar.tools instead when needed.");
 
     /*!
       \internal
