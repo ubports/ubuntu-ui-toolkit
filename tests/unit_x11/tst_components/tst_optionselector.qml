@@ -72,7 +72,7 @@ Item {
     }
 
     UbuntuTestCase {
-         name: "ItemSelectorAPI"
+         name: "OptionSelectorAPI"
          when: windowShown
 
          function test_expanded() {
