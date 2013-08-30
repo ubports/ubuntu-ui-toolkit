@@ -175,11 +175,29 @@ Item {
       Use edge swipes to open/close the panel.
       The opened property is not updated until the swipe gesture is completed.
      */
-    property bool opened: false
+    // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
+    readonly property bool opened: (panel.state === "spread")// ||
+//                                   (panel.state !== "" && internal.previousState === "spread")
     /*! \internal */
+
+    /*!
+      Open the panel
+     */
+    function open() {
+        panel.state = "spread";
+    }
+
+    /*!
+      Close the panel
+     */
+    function close() {
+        panel.state = "";
+    }
+
     onOpenedChanged: {
-        if (opened) state = "spread";
-        else state = "";
+//        if (opened) state = "spread";
+//        else state = "";
+        print("panel.opened = "+panel.opened)
     }
 
     /*!
@@ -238,6 +256,13 @@ Item {
             }
         }
     ]
+
+//    Binding {
+//        target: bar
+//        property: "position"
+//        value: MathUtils.clamp(draggingArea.mousePosition - internal.movingDelta, 0, bar.size)
+//        when: state == "moving"
+//    }
 
     /*!
       The toolbar is currently not in a stable hidden or visible state.
@@ -332,42 +357,50 @@ Item {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
-                panel.opened = false;
+                panel.close();
                 panel.locked = true;
             } else { // don't force hidden
                 panel.locked = internal.savedLocked;
-                if (internal.savedLocked) panel.opened = internal.savedOpened;
+                if (panel.locked) {
+                    if (internal.savedOpened) {
+                        panel.open();
+                    } else {
+                        panel.close();
+                    }
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
+                }
             }
         }
     }
 
     /*! \internal */
     onStateChanged: {
+        print("new panel state = "+state)
+
         if (state == "hint") {
             internal.movingDelta = panel.hintSize + draggingArea.initialPosition - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
-        } else if (state == "spread") {
-            panel.opened = true;
-        } else if (state == "") {
-            panel.opened = false;
+//        } else if (state == "spread") {
+//            panel.opened = true;
+//        } else if (state == "") {
+//            panel.opened = false;
         }
         internal.previousState = state;
     }
 
-    Toolkit.InverseMouseArea {
-        anchors.fill: draggingArea
-        onClicked: {
-            mouse.accepted = false;
-            // the mouse click may cause an update
-            //  of locked by the clicked Item behind
-            if (!panel.locked) panel.opened = false;
-        }
-        propagateComposedEvents: true
-        visible: panel.locked == false && panel.state == "spread"
-    }
+//    Toolkit.InverseMouseArea {
+//        anchors.fill: draggingArea
+//        onClicked: {
+//            mouse.accepted = false;
+//            // the mouse click may cause an update
+//            //  of locked by the clicked Item behind
+//            if (!panel.locked) panel.close();
+//        }
+//        propagateComposedEvents: true
+//        visible: panel.locked == false && panel.state == "spread"
+//    }
 
     DraggingArea {
         id: draggingArea
