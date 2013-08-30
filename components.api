@@ -87,8 +87,6 @@ PageTreeNode
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
-    property ToolbarActions tools
-    onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
 Object
     property var view
@@ -132,8 +130,6 @@ PageTreeNode
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
-    property ToolbarActions tools
-    onToolsChanged
     property int depth
     property Item currentPage
     function push(page, properties)
@@ -211,8 +207,6 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property ToolbarActions tools
-    onToolsChanged
     property internal __tabs
     default property list<Item> tabChildren
     signal modelChanged()
@@ -354,20 +348,7 @@ modules/Ubuntu/Components/TextInputPopover.qml
 ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
-    property bool active
-    property bool lock
     property Item tools
-modules/Ubuntu/Components/ToolbarActions.qml
-Item
-    default property list<Action> children
-    property list<Action> actions
-    property Action back
-    property Item __pageStack
-    property bool opened
-    property bool active
-    property bool lock
-    property bool locked
-    function __hasVisibleActions()
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
