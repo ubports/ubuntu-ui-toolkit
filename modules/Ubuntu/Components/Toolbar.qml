@@ -73,10 +73,12 @@ Panel {
         target: tools
         ignoreUnknownSignals: true
         onOpenedChanged: {
-            if (tools.opened) {
-                toolbar.open();
-            } else {
-                toolbar.close();
+            if (toolbar.opened !== tools.opened) {
+                if (tools.opened) {
+                    toolbar.open();
+                } else {
+                    toolbar.close();
+                }
             }
         }
         onLockedChanged: toolbar.locked = tools.locked;
