@@ -113,6 +113,7 @@ ListItem.Standard
     property string text
     property string subText
     property url icon
+    property bool constrainImage
     property bool colourImage
     property color assetColour
     readonly property ListView listView
