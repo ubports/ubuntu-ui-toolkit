@@ -337,29 +337,29 @@ Item {
                                            ? Qt.Horizontal : Qt.Vertical
     }
 
-//    Connections {
-//        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
-//        target: bottomBarVisibilityCommunicator
-//        onForceHiddenChanged: {
-//            if (bottomBarVisibilityCommunicator.forceHidden) {
-//                internal.savedLocked = panel.locked;
-//                internal.savedOpened = panel.opened;
-//                panel.close();
-//                panel.locked = true;
-//            } else { // don't force hidden
-//                panel.locked = internal.savedLocked;
-//                if (panel.locked) {
-//                    if (internal.savedOpened) {
-//                        panel.open();
-//                    } else {
-//                        panel.close();
-//                    }
-//                // if the panel was locked, do not slide it back in
-//                // until the user performs an edge swipe.
-//                }
-//            }
-//        }
-//    }
+    Connections {
+        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
+        target: bottomBarVisibilityCommunicator
+        onForceHiddenChanged: {
+            if (bottomBarVisibilityCommunicator.forceHidden) {
+                internal.savedLocked = panel.locked;
+                internal.savedOpened = panel.opened;
+                panel.close();
+                panel.locked = true;
+            } else { // don't force hidden
+                panel.locked = internal.savedLocked;
+                if (panel.locked) {
+                    if (internal.savedOpened) {
+                        panel.open();
+                    } else {
+                        panel.close();
+                    }
+                // if the panel was locked, do not slide it back in
+                // until the user performs an edge swipe.
+                }
+            }
+        }
+    }
 
     /*! \internal */
     onStateChanged: {
@@ -370,17 +370,17 @@ Item {
         }
     }
 
-//    Toolkit.InverseMouseArea {
-//        anchors.fill: draggingArea
-//        onClicked: {
-//            mouse.accepted = false;
-//            // the mouse click may cause an update
-//            //  of locked by the clicked Item behind
-//            if (!panel.locked) panel.close();
-//        }
-//        propagateComposedEvents: true
-//        visible: panel.locked == false && panel.state == "spread"
-//    }
+    Toolkit.InverseMouseArea {
+        anchors.fill: draggingArea
+        onClicked: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of locked by the clicked Item behind
+            if (!panel.locked) panel.close();
+        }
+        propagateComposedEvents: true
+        visible: panel.locked == false && panel.state == "spread"
+    }
 
     DraggingArea {
         id: draggingArea
