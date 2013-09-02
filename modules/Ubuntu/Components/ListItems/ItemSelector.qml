@@ -175,7 +175,7 @@ ListItem.Empty {
                 id: list
                 objectName: "listView"
 
-                property int previousIndex: list.currentIndex
+                property int previousIndex: -1
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
