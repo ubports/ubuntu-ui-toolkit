@@ -185,18 +185,20 @@ Item {
       Open the panel
      */
     function open() {
-        if (panel.state == "") {
+        print("panel opening!!!")
+//        if (panel.state != "spread") {
             panel.state = "spread";
-        }
+//        }
     }
 
     /*!
       Close the panel
      */
     function close() {
-        if (panel.state == "opened") {
+        print("Panel closing!!!");
+//        if (panel.state !== "") {
             panel.state = "";
-        }
+//        }
     }
 
     onOpenedChanged: {

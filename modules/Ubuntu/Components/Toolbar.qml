@@ -41,6 +41,7 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
+        print("tools updated to "+tools+". tools.opened = "+tools.opened)
         internal.updateVisibleTools();
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
@@ -48,10 +49,13 @@ Panel {
             // toolbar is locked in visible state.
 //            internal.updateVisibleTools();
             toolbar.open();
-        } else if (!opened && !animating) {
+            print("AAA")
+//        } else if (!opened && !animating) {
             // toolbar is closed
 //            internal.updateVisibleTools();
+//            print("BBB")
         } else {
+            print("CCC")
             toolbar.close();
             // internal.visibleTools will be updated
             // when the hide animation is finished
