@@ -50,9 +50,9 @@ Item {
 
         function test_opened() {
             compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar initially closed");
-            mainView.__propagated.toolbar.opened = true;
+            mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-            mainView.__propagated.toolbar.opened = false;
+            mainView.__propagated.toolbar.close();
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed");
             page.tools.opened = true;
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
@@ -74,7 +74,7 @@ Item {
 
         function test_bug1192673() {
             toolbarItems.opened = false;
-            mainView.__propagated.toolbar.opened = true;
+            mainView.__propagated.toolbar.open();
             compare(toolbarItems.opened, true, "opening the toolbar updates toolbarItems.opened");
             toolbarItems.opened = false;
             compare(mainView.__propagated.toolbar.opened, false, "setting toolbarActions.opened to false closes the toolbar");
