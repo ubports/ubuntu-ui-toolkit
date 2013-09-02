@@ -400,19 +400,6 @@ Item {
         // set in onPressed, reset when entering "moving" state
         property Item pressedItem: null
 
-        // find the first child with a clicked property:
-        // TODO Remove this function when ToolbarActions is removed.
-        function getClickableItem(mouse) {
-            var item = bar; // contains the children
-            while (item && !item.hasOwnProperty("clicked")) {
-                var coords = mapToItem(item, mouse.x, mouse.y);
-                // FIXME: When using a ListView the highlight may be
-                //  returned instead of the Item that you are looking for
-                item = item.childAt(coords.x, coords.y);
-            }
-            return item; // will be null if no item has clicked() signal.
-        }
-
         // find the first child with a triggered property:
         function getTriggerableItem(mouse) {
             var item = bar; // contains the children
@@ -425,17 +412,11 @@ Item {
             return item; // will be null if no item has trigger() function.
         }
 
-        // forward clicked() and trigger() events to any child Item with a
-        // clicked() or trigger() function, not
-        // just MouseAreas since MouseAreas would block swiping of the panel.
+        // forward trigger() events to any child Item with trigger() function.
         // This must also happen when the panel is locked, so the DraggingArea is
         // never disabled, and other signal handlers will return when panel.locked is true.
-        // TODO: Remove clicked() call when ToolbarActions is removed.
         onClicked: {
-            if (pressedItem && pressedItem === getClickableItem(mouse)) {
-                // Click event positioned at the Item where the user first pressed
-                pressedItem.clicked();
-            } else if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
+            if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
                 pressedItem.trigger();
             }
@@ -443,8 +424,7 @@ Item {
 
         property int initialPosition
         onPressed: {
-            pressedItem = getClickableItem(mouse);
-            if (null === pressedItem) pressedItem = getTriggerableItem(mouse);
+            pressedItem = getTriggerableItem(mouse);
             if (panel.locked) return;
             initialPosition = getMousePosition();
             if (panel.state == "") panel.state = "hint";

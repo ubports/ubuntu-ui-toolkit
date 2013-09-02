@@ -34,27 +34,6 @@ Panel {
     height: background.height
 
     /*!
-      \deprecated
-      Use property bool opened instead.
-     */
-    property bool active
-    onActiveChanged: {
-        print("Toolbar.active property is DEPRECATED. Use opened instead.");
-        toolbar.opened = active;
-    }
-
-    /*
-      \deprecated
-      Use property locked instead.
-     */
-    property bool lock
-    /*! \internal */
-    onLockChanged: {
-        print("Toolbar.lock property is DEPRECATED. Use locked instead.");
-        toolbar.locked = lock;
-    }
-
-    /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
      */

@@ -174,8 +174,6 @@ PageTreeNode {
                     internal.header.flickable = page.flickable;
                 }
                 if (tools) {
-                    // TODO: remove __pageStack when ToolbarActions becomes deprecated
-                    if (tools.hasOwnProperty("__pageStack")) tools.__pageStack = page.pageStack;
                     if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
                 }
                 if (internal.toolbar) {
