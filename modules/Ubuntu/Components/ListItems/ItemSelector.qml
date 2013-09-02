@@ -164,9 +164,17 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                UbuntuNumberAnimation {
-                        properties: "height"
-                        duration: UbuntuAnimation.BriskDuration
+                    SequentialAnimation {
+                        UbuntuNumberAnimation {
+                            properties: "height"
+                            duration: UbuntuAnimation.BriskDuration
+                        }
+                        ScriptAction {
+                            script: {
+                                if (listContainer.isExpanded && list.contentY > 0)
+                                    list.contentY += list.itemHeight / 2
+                            }
+                        }
                     }
                 }
             ]
@@ -190,6 +198,13 @@ ListItem.Empty {
                 anchors.fill: parent
 
                 delegate: optionSelector.delegate
+
+                Behavior on contentY {
+                    UbuntuNumberAnimation {
+                        properties: "contentY"
+                        duration: UbuntuAnimation.BriskDuration
+                    }
+                }
             }
         }
     }

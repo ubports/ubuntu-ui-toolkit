@@ -147,7 +147,6 @@ ListItem.Empty {
             }
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
-
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -166,9 +165,17 @@ ListItem.Empty {
             ]
 
             transitions: [ Transition {
-                Toolkit.UbuntuNumberAnimation {
-                        properties: "height"
-                        duration: Toolkit.UbuntuAnimation.BriskDuration
+                    SequentialAnimation {
+                        Toolkit.UbuntuNumberAnimation {
+                            properties: "height"
+                            duration: Toolkit.UbuntuAnimation.BriskDuration
+                        }
+                        ScriptAction {
+                            script: {
+                                if (listContainer.isExpanded && list.contentY > 0)
+                                    list.contentY += list.itemHeight / 2
+                            }
+                        }
                     }
                 }
             ]
@@ -191,6 +198,13 @@ ListItem.Empty {
                 anchors.fill: parent
 
                 delegate: optionSelector.delegate
+
+                Behavior on contentY {
+                    UbuntuNumberAnimation {
+                        properties: "contentY"
+                        duration: UbuntuAnimation.BriskDuration
+                    }
+                }
             }
         }
     }
