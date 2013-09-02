@@ -49,18 +49,23 @@ Panel {
     /*! \internal */
     onToolsChanged: {
         internal.updateVisibleTools();
-        if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
-        // open the toolbar, except when it is locked in closed position
-        if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
-                && !tools.opened && tools.locked) {
-            // toolbar is locked in closed state
-            toolbar.close();
-        } else {
-            toolbar.open();
-        }
+        if (tools) {
+            if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
+            // open the toolbar, except when it is locked in closed position
+            if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
+                    && !tools.opened && tools.locked) {
+                // toolbar is locked in closed state
+                toolbar.close();
+            } else {
+                toolbar.open();
+            }
 
-        if (tools && tools.hasOwnProperty("opened")) {
-            tools.opened = toolbar.opened;
+            if (tools && tools.hasOwnProperty("opened")) {
+                tools.opened = toolbar.opened;
+            }
+        } else { // no tools
+            locked = true;
+            toolbar.close();
         }
     }
 
