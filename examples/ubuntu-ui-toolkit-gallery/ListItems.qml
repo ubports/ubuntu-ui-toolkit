@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Components
+import Ubuntu.Components 0.1 as Toolkit
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
@@ -112,7 +112,7 @@ Template {
 
            Component {
                id: selectorDelegate
-               Components.OptionSelectorDelegate { text: name; subText: description; icon: image }
+               Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
            }
 
            ListModel {
@@ -130,7 +130,7 @@ Template {
         className: "Standard"
         delegate: ListItem.Standard {
             text: i18n.tr("Label")
-            control: Components.Switch {
+            control: Toolkit.Switch {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
