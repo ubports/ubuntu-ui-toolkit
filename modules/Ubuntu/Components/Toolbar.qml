@@ -43,12 +43,13 @@ Panel {
     onToolsChanged: {
         internal.updateVisibleTools();
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
+        // open the toolbar, except when it is locked in closed position
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
-                && tools.opened && tools.locked) {
-            // toolbar is locked in visible state.
-            toolbar.open();
-        } else {
+                && !tools.opened && tools.locked) {
+            // toolbar is locked in closed state
             toolbar.close();
+        } else {
+            toolbar.open();
         }
 
         if (tools && tools.hasOwnProperty("opened")) {
