@@ -24,7 +24,7 @@
 
     Examples:
     \qml
-        import Toolkit.Toolkit 0.1
+        import Ubuntu.Components 0.1
         Column {
             width: 250
             OptionSelector {
