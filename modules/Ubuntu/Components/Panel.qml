@@ -198,7 +198,7 @@ Item {
         print("Panel closing!!!");
 //        if (panel.state !== "") {
             panel.state = "";
-//        }
+//           }
     }
 
     onOpenedChanged: {

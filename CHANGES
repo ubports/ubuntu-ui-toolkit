@@ -42,6 +42,9 @@ API Changes
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
+* CHANGED IN Toolbar: property bool opened TO readonly property bool opened
+* ADDED IN Toolbar: function open()
+* ADDED IN Toolbar: function close()
 
 Compatibility Breaks
 ********************

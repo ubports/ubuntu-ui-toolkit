@@ -156,7 +156,9 @@ modules/Ubuntu/Components/Panel.qml
 Item
     default property list<Object> contents
     property int align
-    property bool opened
+    readonly property bool opened
+    function open()
+    function close()
     property bool locked
     property real hintSize
     property real triggerSize
