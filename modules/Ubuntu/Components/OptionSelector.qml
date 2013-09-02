@@ -138,7 +138,7 @@ ListItem.Empty {
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property bool colourImage: optionSelector.colourImage
+            readonly property alias colourImage: optionSelector.colourImage
             property bool isExpanded: expanded
 
             anchors {

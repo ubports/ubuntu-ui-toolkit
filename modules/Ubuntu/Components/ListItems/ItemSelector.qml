@@ -136,7 +136,7 @@ ListItem.Empty {
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property bool colourImage: optionSelector.colourImage
+            readonly property alias colourImage: optionSelector.colourImage
             property bool isExpanded: expanded
 
             anchors {
@@ -175,7 +175,7 @@ ListItem.Empty {
                 id: list
                 objectName: "listView"
 
-                property int previousIndex: -1
+                property int previousIndex: list.currentIndex
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
