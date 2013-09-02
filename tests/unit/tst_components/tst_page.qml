@@ -69,6 +69,7 @@ Item {
         function test_0_noHeader_bug1162028_bug1161910() {
             compare(mainView.__propagated.header.title, "", "no header title by default")
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is not set")
+            mainView.__propagated.toolbar.close(); // close toolbar before checking height.
             compare(page.height, mainView.height, "page uses full height when there is no header")
         }
 

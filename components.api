@@ -156,7 +156,9 @@ modules/Ubuntu/Components/Panel.qml
 Item
     default property list<Object> contents
     property int align
-    property bool opened
+    readonly property bool opened
+    function open()
+    function close()
     property bool locked
     property real hintSize
     property real triggerSize
@@ -348,6 +350,7 @@ ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
     property Item tools
+    property int hideTimeout
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
