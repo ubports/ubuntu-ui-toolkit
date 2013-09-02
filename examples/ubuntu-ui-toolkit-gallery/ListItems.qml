@@ -81,7 +81,6 @@ Template {
         className: "OptionSelector"
 
         Column {
-            id: column
             anchors.left: parent.left
             anchors.right: parent.right
             spacing: units.gu(3)
@@ -113,7 +112,6 @@ Template {
 
            Component {
                id: selectorDelegate
-
                Components.OptionSelectorDelegate { text: name; subText: description; icon: image }
            }
 
