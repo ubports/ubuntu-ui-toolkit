@@ -177,7 +177,6 @@ Item {
      */
     // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
     readonly property bool opened: (panel.state === "spread") ||
-//                                   (panel.state != "" && internal.previousState === "spread")
                                    (panel.state === "moving" && internal.previousState === "spread")
     /*! \internal */
 
@@ -185,26 +184,14 @@ Item {
       Open the panel
      */
     function open() {
-        print("panel opening!!!")
-//        if (panel.state != "spread") {
-            panel.state = "spread";
-//        }
+        panel.state = "spread";
     }
 
     /*!
       Close the panel
      */
     function close() {
-        print("Panel closing!!!");
-//        if (panel.state !== "") {
-            panel.state = "";
-//           }
-    }
-
-    onOpenedChanged: {
-//        if (opened) state = "spread";
-//        else state = "";
-        print("panel.opened = "+panel.opened)
+        panel.state = "";
     }
 
     /*!
@@ -264,13 +251,6 @@ Item {
         }
     ]
 
-//    Binding {
-//        target: bar
-//        property: "position"
-//        value: MathUtils.clamp(draggingArea.mousePosition - internal.movingDelta, 0, bar.size)
-//        when: state == "moving"
-//    }
-
     /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
@@ -329,8 +309,6 @@ Item {
         property string previousState: ""
         property int movingDelta
 
-        onPreviousStateChanged: console.log("previous state changed to "+previousState)
-
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
         property bool savedLocked: panel.locked
@@ -385,18 +363,11 @@ Item {
 
     /*! \internal */
     onStateChanged: {
-        print("new panel state = "+state)
-
         if (state == "hint") {
             internal.movingDelta = panel.hintSize + draggingArea.initialPosition - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
-//        } else if (state == "spread") {
-//            panel.opened = true;
-//        } else if (state == "") {
-//            panel.opened = false;
         }
-//        internal.previousState = state;
     }
 
 //    Toolkit.InverseMouseArea {

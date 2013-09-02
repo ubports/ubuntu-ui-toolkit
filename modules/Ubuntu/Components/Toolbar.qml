@@ -41,25 +41,16 @@ Panel {
 
     /*! \internal */
     onToolsChanged: {
-        print("tools updated to "+tools+". tools.opened = "+tools.opened)
         internal.updateVisibleTools();
         if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
         if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
-//            internal.updateVisibleTools();
             toolbar.open();
-            print("AAA")
-//        } else if (!opened && !animating) {
-            // toolbar is closed
-//            internal.updateVisibleTools();
-//            print("BBB")
         } else {
-            print("CCC")
             toolbar.close();
-            // internal.visibleTools will be updated
-            // when the hide animation is finished
         }
+
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
@@ -78,14 +69,12 @@ Panel {
         target: tools
         ignoreUnknownSignals: true
         onOpenedChanged: {
-//            if (toolbar.opened !== tools.opened) {
-                if (tools.opened) {
-                    toolbar.open();
-                } else {
-                    toolbar.close();
-                }
-                // TODO: make sure toolbar.opened and tools.opened stay synced.`
-//            }
+            if (tools.opened) {
+                toolbar.open();
+            } else {
+                toolbar.close();
+            }
+            // TODO: make sure toolbar.opened and tools.opened stay synced.`
         }
         onLockedChanged: toolbar.locked = tools.locked;
     }
