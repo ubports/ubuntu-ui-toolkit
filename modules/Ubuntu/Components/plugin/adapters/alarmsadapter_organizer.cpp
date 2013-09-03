@@ -70,24 +70,11 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     if (collection.id().isNull()) {
         // create alarm collection
         collection.setMetaData(QOrganizerCollection::KeyName, ALARM_COLLECTION);
-        if (manager->saveCollection(&collection)) {
-            // make sure we have the collection in the list
-            collections = manager->collections();
-
-            // FIXME remove this check once we are sure saving is successful in EDS manager
-            bool collectionFound = false;
-            if (collections.count() > 0) {
-                Q_FOREACH(const QOrganizerCollection &c, collections) {
-                    if (c.metaData(QOrganizerCollection::KeyName).toString() == ALARM_COLLECTION) {
-                        collectionFound = true;
-                        break;
-                    }
-                }
-            }
-            if (!collectionFound) {
-                qWarning() << "WARNING: Creating dedicated collection for alarms was not possible, alarms will be saved into the default collection!";
-                collection = manager->defaultCollection();
-            }
+        // EDS requires extra metadata to be set
+        collection. setExtendedMetaData("collection-type", "Task List");
+        if (!manager->saveCollection(&collection)) {
+            qWarning() << "WARNING: Creating dedicated collection for alarms was not possible, alarms will be saved into the default collection!";
+            collection = manager->defaultCollection();
         }
     }
     loadAlarms();
