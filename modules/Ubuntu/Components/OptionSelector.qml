@@ -128,7 +128,7 @@ ListItem.Empty {
 
         Label {
             text: optionSelector.text
-            height: units.gu(2)
+            visible: optionSelector.text !== "" ? true : false
         }
 
         StyledItem {
@@ -200,9 +200,9 @@ ListItem.Empty {
                 delegate: optionSelector.delegate
 
                 Behavior on contentY {
-                    UbuntuNumberAnimation {
+                    Toolkit.UbuntuNumberAnimation {
                         properties: "contentY"
-                        duration: UbuntuAnimation.BriskDuration
+                        duration: Toolkit.UbuntuAnimation.BriskDuration
                     }
                 }
             }
