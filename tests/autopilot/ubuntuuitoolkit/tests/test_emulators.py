@@ -15,8 +15,35 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import mock
+import testtools
+from autopilot import input
 
 from ubuntuuitoolkit import emulators, tests
+
+
+class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
+
+    def test_pointing_device(self):
+        emulator = emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        self.assertIsInstance(emulator.pointing_device, input.Pointer)
+
+    @mock.patch('autopilot.input.Pointer')
+    @mock.patch('autopilot.platform.model')
+    def test_pointing_device_in_desktop(self, mock_model, mock_pointer):
+        mock_model.return_value = 'Desktop'
+        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        mock_pointer.assert_called_once_with(device=mock.ANY)
+        _, _, keyword_args = mock_pointer.mock_calls[0]
+        self.assertIsInstance(keyword_args['device'], input.Mouse)
+        
+    @mock.patch('autopilot.input.Pointer')
+    @mock.patch('autopilot.platform.model')
+    def test_pointing_device_in_phablet(self, mock_model, mock_pointer):
+        mock_model.return_value = 'not desktop'
+        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        mock_pointer.assert_called_once_with(device=mock.ANY)
+        _, _, keyword_args = mock_pointer.mock_calls[0]
+        self.assertIsInstance(keyword_args['device'], input.Touch)
 
 
 class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
