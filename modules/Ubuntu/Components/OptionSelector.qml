@@ -152,7 +152,7 @@ ListItem.Empty {
                     when: listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: containerHeight
+                        height: list.contentHeight < containerHeight ? list.contentHeight : containerHeight
                     }
                 }, State {
                     name: "collapsed"
