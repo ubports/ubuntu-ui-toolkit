@@ -15,44 +15,44 @@
  */
 
 import QtQuick 2.0
-import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Toolkit
+import "." as ListItem
+import Ubuntu.Components 0.1
 
 /*!
-    \qmltype OptionSelector
-    \inqmlmodule Components.Components 0.1
-    \ingroup ubuntu-components
-    \brief Component displaying a single selected value with and optional image and subtext when not expanded, where expanding
+    \qmltype ItemSelector
+    \inqmlmodule Components.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
+    \brief ListItem displaying a single selected value with and optional image and subtext when not expanded, where expanding
     it opens a listing of all the possible values for selection with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Components.Components 0.1
+        import Components.Components.ListItems 0.1 as ListItem
         Column {
             width: 250
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Standard"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Disabled"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Expanded"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Icon"
                 icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 model: customModel
                 expanded: true
@@ -96,7 +96,7 @@ ListItem.Empty {
       \preliminary
       ListView delegate.
      */
-    property Component delegate: OptionSelectorDelegate {}
+    property Component delegate: OptionSelectorDelegate { id: selectorDelegate }
 
     /*!
       \preliminary
@@ -120,18 +120,16 @@ ListItem.Empty {
     Column {
         id: column
 
-        spacing: units.gu(2)
         anchors {
             left: parent.left
             right: parent.right
         }
 
-        Label {
+        ListItem.Standard {
             text: optionSelector.text
-            height: units.gu(2)
         }
 
-        StyledItem {
+        ListItem.Standard {
             id: listContainer
             objectName: "listContainer"
 
@@ -146,7 +144,8 @@ ListItem.Empty {
                 right: parent.right
             }
             state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
-            style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
+            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -166,9 +165,9 @@ ListItem.Empty {
 
             transitions: [ Transition {
                     SequentialAnimation {
-                        Toolkit.UbuntuNumberAnimation {
+                        UbuntuNumberAnimation {
                             properties: "height"
-                            duration: Toolkit.UbuntuAnimation.BriskDuration
+                            duration: UbuntuAnimation.BriskDuration
                         }
                         ScriptAction {
                             script: {
@@ -182,8 +181,9 @@ ListItem.Empty {
 
             ListView {
                 id: list
+                objectName: "listView"
 
-                property int previousIndex: -1
+                property int previousIndex: list.currentIndex
                 readonly property alias expanded: optionSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight

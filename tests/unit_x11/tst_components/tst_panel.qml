@@ -58,9 +58,9 @@ Item {
         }
 
         function test_opened() {
-            panel.opened = true;
+            panel.open();
             compare(panel.opened, true, "Can set opened");
-            panel.opened = false;
+            panel.close();
             compare(panel.opened, false, "Can unset opened");
         }
 

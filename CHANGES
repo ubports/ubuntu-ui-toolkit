@@ -9,7 +9,15 @@ UNRELEASED
 
 API Changes
 ***********
+* ADDED IN: OptionSelectorDelegate: property bool constrainImage
 * ADDED IN: Empty: property alias divider
+* ADDED IN: ListItems/OptionSelector: signal delegateSelected()
+* REMOVED IN: OptionSelector: signal scroll()
+* ADDED IN: OptionSelector: signal delegateSelected()
+* ADDED: ListItem OptionSelector to Components/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruDark/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruGradient/ListItems
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
@@ -42,6 +50,9 @@ API Changes
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
+* CHANGED IN Panel property bool opened TO readonly property bool opened
+* ADDED IN Panel function open()
+* ADDED IN Panel function close()
 
 Compatibility Breaks
 ********************

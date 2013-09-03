@@ -47,12 +47,6 @@ Base {
 
     /*!
       \preliminary
-      The text that is shown in the list item as a label.
-      \qmlproperty string text
-     */
-
-    /*!
-      \preliminary
       The list of values that will be shown under the label text
      */
     property variant values
