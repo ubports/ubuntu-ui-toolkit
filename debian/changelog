@@ -1,3 +1,21 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130903.4-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Hide header label if no label is input. Fix for:
+    OptionSelector.qml:205: ReferenceError: UbuntuAnimation is not
+    defined Fixed containerHeight affecting the entire Selector's height
+    even if the contentHeight was less. (LP: #1220130)
+
+  [ Guenter Schwann ]
+  * Fixes tab switching with open toolbar fixes
+    https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1220064. (LP:
+    #1220064)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 741
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 15:16:50 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130903.3-0ubuntu1) saucy; urgency=low
 
   [ Zoltán Balogh ]
