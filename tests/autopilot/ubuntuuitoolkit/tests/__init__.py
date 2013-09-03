@@ -74,7 +74,7 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I", get_module_include_path(),
+                "-I" + get_module_include_path(),
                 qml_path,
                 emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
                 app_type='qt')
@@ -84,7 +84,7 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
             qml_path = self.test_qml_file
             self.app = self.launch_test_application(
                 "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I", get_module_include_path(),
+                "-I" + get_module_include_path(),
                 qml_path,
                 emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
                 app_type='qt')
@@ -116,13 +116,17 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         return (contentLoader, listView)
 
     def loadItem(self, item):
+        self.selectItem(item)
         contentLoader = self.main_view.select_single(
             "QQuickLoader", objectName="contentLoader")
-        self.selectItem(item)
         self.assertThat(contentLoader.progress, Eventually(Equals(1.0)))
         loadedPage = self.getListItem(item)
         self.assertThat(loadedPage, Not(Is(None)))
-        self.assertThat(loadedPage.visible, Eventually(Equals(True)))
+        #loadedPage is not a page, it is the list item which goes in
+        #background when the item is selected, which changes the visible
+        #property of item in list itself to False. So followin check
+        #fails on Nexus 4. Commenting it for now.
+        #self.assertThat(loadedPage.visible, Eventually(Equals(True)))
 
     def drag(self, itemText, itemTextTo):
         item = self.getListItem(itemText)
@@ -135,6 +139,15 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
+        x1, y1, w1, h1 = item.globalRect
+        x2, y2, w2, h2 = self.main_view.globalRect
+
+        orientationHelper = self.getOrientationHelper()
+        rot = orientationHelper.rotation
+        scrollTo = h2 / 2 - (y1 - h2 - h1)
+        if rot == 0.0 and y1 > h2:
+            self.pointing_device.drag(w2 / 2, h2 / 2, w2 / 2, scrollTo)
+
         self.assertThat(item.selected, Eventually(Equals(False)))
 
         self.pointing_device.move_to_object(item)

@@ -16,15 +16,15 @@
 
 /*!
     \qmltype OptionSelectorDelegate
-    \inqmlmodule Components.Components 0.1
-    \ingroup ubuntu-components
+    \inqmlmodule Toolkit.Toolkit 0.1
+    \ingroup ubuntu-Toolkit
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Components.Components 0.1
+        import Ubuntu.Components 0.1
         Column {
             width: 250
             OptionSelector {
@@ -45,18 +45,58 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Components
+import Ubuntu.Components 0.1 as Toolkit
 
 ListItem.Standard {
     id: option
 
+    /*!
+      \preliminary
+      Main text.
+     */
     property string text
+
+    /*!
+      \preliminary
+      Subtext which appears below the main text.
+     */
     property string subText
+
+    /*!
+      \preliminary
+      Left icon url.
+     */
     property url icon
-    property ListView listView: ListView.view
-    property color assetColour: listView.container.themeColour
+
+    /*!
+      \preliminary
+      Constrains the size of the image to nothing greater than that of the delegate. Changes fillMode to Image.PreserveAspectFit.
+     */
+    property bool constrainImage: false
+
+    /*!
+      \preliminary
+      Whether or not left image is coloured by our theme.
+     */
     property bool colourImage: listView.container.colourImage
-    property string fragColourShader:
+
+    /*!
+      \preliminary
+      Colour of left image.
+     */
+    property color assetColour: listView.container.themeColour
+
+    /*!
+      \preliminary
+      OptionSelector's ListView.
+     */
+    readonly property ListView listView: ListView.view
+
+    /*!
+      \preliminary
+      Colourising fragment shader.
+     */
+    readonly property string fragColourShader:
         "varying highp vec2 qt_TexCoord0;
          uniform sampler2D source;
          uniform lowp vec4 colour;
@@ -73,10 +113,12 @@ ListItem.Standard {
     selected: ListView.isCurrentItem
     anchors {
         left: parent.left
-        leftMargin: units.gu(-2)
+        leftMargin: units.gu(-1)
     }
     onClicked: {
         if (listView.container.isExpanded) {
+            listView.delegateClicked(index);
+
             listView.previousIndex = listView.currentIndex;
             listView.currentIndex = index;
         }
@@ -112,10 +154,10 @@ ListItem.Standard {
     transitions: [ Transition {
             from: "dividerExpanded"
             to: "dividerCollapsed"
-            UbuntuNumberAnimation {
+            Toolkit.UbuntuNumberAnimation {
                 target: option.divider
                 properties: "opacity"
-                duration: Components.UbuntuAnimation.SlowDuration
+                duration: Toolkit.UbuntuAnimation.SlowDuration
             }
         }
     ]
@@ -159,9 +201,9 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 1.0
                 to: 0.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
-            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration - Components.UbuntuAnimation.FastDuration }
+            PauseAnimation { duration: Toolkit.UbuntuAnimation.BriskDuration - Toolkit.UbuntuAnimation.FastDuration }
             PropertyAction {
                 target: image
                 property: "source"
@@ -172,7 +214,7 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 0.0
                 to: 1.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
         }, PropertyAnimation {
             id: optionExpansion
@@ -181,19 +223,19 @@ ListItem.Standard {
             properties: "opacity"
             from : 0.0
             to: 1.0
-            duration: Components.UbuntuAnimation.SlowDuration
+            duration: Toolkit.UbuntuAnimation.SlowDuration
         }, SequentialAnimation {
             id: deselectedImageCollapse
 
-            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration }
+            PauseAnimation { duration: Toolkit.UbuntuAnimation.BriskDuration }
             PropertyAnimation {
                 target: image
                 properties: "opacity"
                 from : 1.0
                 to: 0.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
-            PauseAnimation { duration: Components.UbuntuAnimation.FastDuration }
+            PauseAnimation { duration: Toolkit.UbuntuAnimation.FastDuration }
             PropertyAction {
                 target: image
                 property: "source"
@@ -204,7 +246,7 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 0.0
                 to: 1.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
         }, SequentialAnimation {
             id: selectedImageCollapse
@@ -214,17 +256,17 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 0.0
                 to: 1.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
-            PauseAnimation { duration: Components.UbuntuAnimation.BriskDuration - Components.UbuntuAnimation.FastDuration }
+            PauseAnimation { duration: Toolkit.UbuntuAnimation.BriskDuration - Toolkit.UbuntuAnimation.FastDuration }
             PropertyAnimation {
                 target: image
                 properties: "opacity"
                 from : 1.0
                 to: 0.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
-            PauseAnimation { duration: Components.UbuntuAnimation.FastDuration }
+            PauseAnimation { duration: Toolkit.UbuntuAnimation.FastDuration }
             PropertyAction {
                 target: image
                 property: "source"
@@ -235,7 +277,7 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 0.0
                 to: 1.0
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
         }, PropertyAnimation {
                 id: optionCollapse
@@ -243,7 +285,7 @@ ListItem.Standard {
                 properties: "opacity"
                 from : 1.0
                 to: 0.0
-                duration: Components.UbuntuAnimation.SlowDuration
+                duration: Toolkit.UbuntuAnimation.SlowDuration
         }
     ]
 
@@ -258,8 +300,11 @@ ListItem.Standard {
 
         Image {
             id: leftIcon
+            objectName: "icon"
 
+            height: constrainImage ? option.height : sourceSize.height
             source: icon
+            fillMode: constrainImage ? Image.PreserveAspectFit : Image.Stretch
 
             ShaderEffect {
                 property color colour: assetColour
@@ -297,7 +342,7 @@ ListItem.Standard {
         opacity: option.selected ? 1.0 : 0.0
         anchors {
             right: parent.right
-            rightMargin: units.gu(2)
+            rightMargin: units.gu(3)
             verticalCenter: parent.verticalCenter
         }
 
@@ -305,9 +350,9 @@ ListItem.Standard {
         Behavior on opacity {
             enabled: listView.expanded
 
-            UbuntuNumberAnimation {
+            Toolkit.UbuntuNumberAnimation {
                 properties: "opacity"
-                duration: Components.UbuntuAnimation.FastDuration
+                duration: Toolkit.UbuntuAnimation.FastDuration
             }
         }
 
