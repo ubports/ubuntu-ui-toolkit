@@ -17,7 +17,6 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
-import time
 
 import testscenarios
 
@@ -55,53 +54,6 @@ class GenericTests(GalleryTestCase):
         rootItem = self.main_view
         self.assertThat(rootItem, Not(Is(None)))
         self.assertThat(rootItem.visible, Eventually(Equals(True)))
-
-    def test_can_select_listview(self):
-        """Must be able to select the listview from main"""
-
-        contentLoader, listView = self.getWidgetLoaderAndListView()
-
-        # Don't have the first, already selected item as the first item to
-        # check.
-        items = [
-            "Navigation",
-            "Toggles",
-            "Buttons",
-            "Slider",
-            "Text Field",
-            "Option Selector",
-            "Progress and activity",
-            "Ubuntu Shape",
-            "Icons",
-            "Label",
-        ]
-
-        for item in items:
-            self.checkListItem(item)
-            self.loadItem(item)
-            self.checkPageHeader(item)
-
-        # scroll view to expose more items
-        self.drag("Icons", "Text Field")
-
-        # Wait for the scrolling to finish, the next click fails on the
-        # slower Intel machine but succeeds on AMD and NVIDIA.
-        # (LP: #1180226)
-        time.sleep(1)
-
-        # now that we have more items, lets continue
-        items = [
-            "List Items",
-            "Dialog",
-            "Popover",
-            "Sheet",
-            "Animations"
-        ]
-
-        for item in items:
-            self.checkListItem(item)
-            self.loadItem(item)
-            self.checkPageHeader(item)
 
     def test_navigation(self):
         item = "Navigation"
@@ -198,58 +150,6 @@ class GenericTests(GalleryTestCase):
             # self.type_string("Hello World!")
 
             # self.assertThat(obj.text,Equals("Hello World!"))
-
-    def test_textfield(self):
-        item = "Text Field"
-        self.loadItem(item)
-        self.checkPageHeader(item)
-
-        self.getObject("textinputs")
-
-        item_data = [
-            ["textfield_standard", True, 0, "", None],
-            ["textfield_password", True, 2, "password", None],
-            ["textfield_numbers", True, 0, "123", True],
-            ["textfield_disabled", False, 0, "", None],
-        ]
-
-        for data in item_data:
-            objName = data[0]
-            objEnabled = data[1]
-            objEchoMode = data[2]
-            objText = data[3]
-            objNumbersOnly = data[4]
-
-            obj = self.getObject(objName)
-            self.tap(objName)
-
-            self.assertThat(obj.enabled, Equals(objEnabled))
-            self.assertThat(obj.focus, Equals(obj.enabled))
-            self.assertThat(obj.highlighted, Equals(obj.focus))
-            self.assertThat(obj.errorHighlight, Equals(False))
-            self.assertThat(obj.acceptableInput, Equals(True))
-            self.assertThat(obj.hasClearButton, Equals(True))
-            self.assertThat(obj.text, Equals(objText))
-
-            if (objEchoMode != -1):
-                self.assertThat(obj.echoMode, Equals(objEchoMode))
-
-            if (objNumbersOnly):
-                self.type_string("abc")
-                self.assertThat(obj.text, Equals(objText))
-                self.assertThat(obj.errorHighlight, Equals(False))
-                self.assertThat(obj.acceptableInput, Equals(True))
-            else:
-                self.type_string("Hello World!")
-                if (objEnabled):
-                    self.assertThat(
-                        obj.text, Equals("%sHello World!" % (objText)))
-                    self.assertThat(obj.errorHighlight, Equals(False))
-                    self.assertThat(obj.acceptableInput, Equals(True))
-                else:
-                    self.assertThat(obj.text, Equals(objText))
-
-            self.tap_clearButton(objName)
 
     def test_progress_and_activity(self):
         item = "Progress and activity"
