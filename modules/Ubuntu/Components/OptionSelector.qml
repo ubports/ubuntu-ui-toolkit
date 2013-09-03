@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Toolkit
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype OptionSelector
@@ -200,9 +200,9 @@ ListItem.Empty {
                 delegate: optionSelector.delegate
 
                 Behavior on contentY {
-                    Toolkit.UbuntuNumberAnimation {
+                    UbuntuNumberAnimation {
                         properties: "contentY"
-                        duration: Toolkit.UbuntuAnimation.BriskDuration
+                        duration: UbuntuAnimation.BriskDuration
                     }
                 }
             }
