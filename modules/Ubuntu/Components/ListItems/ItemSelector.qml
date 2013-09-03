@@ -57,7 +57,7 @@ import Ubuntu.Components 0.1
                 model: customModel
                 expanded: true
                 colourImage: true
-                delegate: itemSelectorDelegate { text: name; subText: description; icon: image }
+                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
             }
             ListModel {
                 id: customModel
