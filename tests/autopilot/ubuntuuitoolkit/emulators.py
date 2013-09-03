@@ -241,6 +241,9 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         """Open the next tab."""
         # Click the tab bar to switch to selection mode.
         self.pointing_device.click_object(self)
+        if not self.selectionMode:
+            # in case someone stole the click, like the open toolbar
+            self.pointing_device.click_object(self)
         self.pointing_device.click_object(self._get_next_tab_button())
 
     def _get_next_tab_button(self):
