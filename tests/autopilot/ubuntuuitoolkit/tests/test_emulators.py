@@ -35,7 +35,7 @@ class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
         mock_pointer.assert_called_once_with(device=mock.ANY)
         _, _, keyword_args = mock_pointer.mock_calls[0]
         self.assertIsInstance(keyword_args['device'], input.Mouse)
-        
+
     @mock.patch('autopilot.input.Pointer')
     @mock.patch('autopilot.platform.model')
     def test_pointing_device_in_phablet(self, mock_model, mock_pointer):
