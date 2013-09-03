@@ -61,11 +61,11 @@ Item {
         }
 
         function test_opened() {
-            compare(toolbarItems.opened, true, "Toolbar items initially opened");
-            toolbarItems.opened = false;
-            compare(toolbarItems.opened, false, "Toolbar items can be made closed");
+            compare(toolbarItems.opened, false, "Toolbar items initially closed");
             toolbarItems.opened = true;
             compare(toolbarItems.opened, true, "Toolbar items can be made opened");
+            toolbarItems.opened = false;
+            compare(toolbarItems.opened, false, "Toolbar items can be made closed");
         }
 
         function test_locked() {
