@@ -14,9 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import unittest
+
 import mock
 import testtools
-from autopilot import input
+from autopilot import input, platform
 
 from ubuntuuitoolkit import emulators, tests
 
@@ -28,16 +30,16 @@ class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
         self.assertIsInstance(emulator.pointing_device, input.Pointer)
 
     @mock.patch('autopilot.input.Pointer')
-    @mock.patch('autopilot.platform.model', return_value='Desktop')
-    def test_pointing_device_in_desktop(self, mock_model, mock_pointer):
+    @unittest.skipIf(platform.model() != 'Desktop', 'Desktop only')
+    def test_pointing_device_in_desktop(self, mock_pointer):
         emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
         mock_pointer.assert_called_once_with(device=mock.ANY)
         _, _, keyword_args = mock_pointer.mock_calls[0]
         self.assertIsInstance(keyword_args['device'], input.Mouse)
 
     @mock.patch('autopilot.input.Pointer')
-    @mock.patch('autopilot.platform.model', return_value='not desktop')
-    def test_pointing_device_in_phablet(self, mock_model, mock_pointer):
+    @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
+    def test_pointing_device_in_phablet(self, mock_pointer):
         emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
         mock_pointer.assert_called_once_with(device=mock.ANY)
         _, _, keyword_args = mock_pointer.mock_calls[0]
