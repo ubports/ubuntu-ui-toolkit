@@ -61,6 +61,15 @@ GIconProvider::GIconProvider()
 
 QImage GIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    static bool warned = false;
+
+    if (!warned) {
+        qWarning("WARNING: The 'gicon' image provider is deprecated and will be removed soon. "
+                 "Please use file:// urls for file icons, and the 'theme' image provider for "
+                 "themed icons (image://theme/iconname,fallback1,fallback2).");
+        warned = true;
+    }
+
     QImage result;
     QByteArray utf8Name = QUrl::fromPercentEncoding(id.toUtf8()).toUtf8();
     GError *error = NULL;
