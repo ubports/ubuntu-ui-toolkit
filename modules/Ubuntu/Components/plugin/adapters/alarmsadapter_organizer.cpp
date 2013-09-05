@@ -121,7 +121,7 @@ void AlarmsAdapter::loadAlarms()
 // save fallback manager data only
 void AlarmsAdapter::saveAlarms()
 {
-    if ((manager->managerName() != ALARM_MANAGER_FALLBACK) && !listDirty) {
+    if ((manager->managerName() != ALARM_MANAGER_FALLBACK) || !listDirty) {
         return;
     }
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
@@ -317,9 +317,7 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     }
 
     saveAlarms();
-    if (completed) {
-        Q_EMIT q_ptr->alarmsChanged();
-    }
+    Q_EMIT q_ptr->alarmsChanged();
     completed = true;
     fetchRequest = 0;
 }
@@ -377,10 +375,16 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
         return false;
     }
 
-    QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-    QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
+//    QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
+//    QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
+//    operation->setItemId(itemId);
+    QOrganizerTodo event;
+    AlarmsAdapter::get()->rawAlarm2Organizer(alarm, event);
+    event.setId(alarm.cookie.value<QOrganizerItemId>());
+
+    QOrganizerItemRemoveRequest *operation = new QOrganizerItemRemoveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
-    operation->setItemId(itemId);
+    operation->setItem(event);
     AlarmsAdapter::get()->listDirty = true;
     return start(operation);
 }
