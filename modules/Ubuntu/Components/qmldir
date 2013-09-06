@@ -43,6 +43,8 @@ ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
+Picker 0.1 Picker.qml
+PickerDelegate 0.1 PickerDelegate.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
