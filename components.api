@@ -162,16 +162,6 @@ Item
     property real hintSize
     property real triggerSize
     readonly property bool animating
-modules/Ubuntu/Components/Picker.qml
-StyledItem
-    property bool circular
-    property var model
-    property Component delegate
-    property int selectedIndex
-    property bool live
-    property int __clickedIndex
-modules/Ubuntu/Components/PickerDelegate.qml
-Ubuntu.AbstractButton
 modules/Ubuntu/Components/ProgressBar.qml
 AnimatedItem
     property bool indeterminate
