@@ -241,7 +241,7 @@ Item {
             }
 
             function test_clickToDeactivate() {
-                panel.opened = true;
+                panel.open();
                 compare(panel.opened && panel.align === Qt.AlignBottom, true, "Panel is opened and bottom-aligned");
                 mouseClick(root, root.width / 2, 5, Qt.LeftButton);
                 compare(panel.opened, false, "Panel is deactivated by clicking in the view outside of the panel");
