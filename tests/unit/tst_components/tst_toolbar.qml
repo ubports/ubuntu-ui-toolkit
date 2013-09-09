@@ -44,12 +44,11 @@ Item {
             compare(page.tools, toolbarItems, "Page tools are set initially");
             compare(page.__propagated, mainView.__propagated, "propagated property is propagated from mainView to page")
             compare(mainView.__propagated.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
-            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar is closed initially");
+            compare(mainView.__propagated.toolbar.tools.opened, true, "Toolbar is opened initially");
             compare(mainView.__propagated.toolbar.tools.locked, false, "Toolbar is initially not locked");
         }
 
         function test_opened() {
-            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar initially closed");
             mainView.__propagated.toolbar.open()
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
             mainView.__propagated.toolbar.close();
