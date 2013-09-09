@@ -363,7 +363,7 @@ Item {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
-                panel.close() = false;
+                panel.close();
                 panel.locked = true;
             } else { // don't force hidden
                 panel.locked = internal.savedLocked;
