@@ -280,8 +280,8 @@ Item {
       The toolbar is currently not in a stable hidden or visible state.
      */
     readonly property bool animating: draggingArea.pressed || transitionToAll.running
-                                      || transitionToHint.running
-                                      || transitionToSpread.running
+                                                           || transitionToHint.running
+                                                           || transitionToSpread.running
 
     transitions: [
         Transition {
