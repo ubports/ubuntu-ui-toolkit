@@ -392,13 +392,7 @@ Item {
             internal.movingDelta = panel.hintSize + draggingArea.initialPosition - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
-            // TODO TIM: remove commented-out code
-            //        } else if (state == "spread") {
-            //            panel.open();
-            //        } else if (state == "") {
-            //            panel.close();
         }
-        //        internal.previousState = state;
     }
 
     Toolkit.InverseMouseArea {
