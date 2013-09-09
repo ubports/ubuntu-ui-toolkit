@@ -176,8 +176,7 @@ Item {
       The opened property is not updated until the swipe gesture is completed.
      */
     // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
-    // TODO TIM: BEFORE MERGING, make this RW
-    readonly property bool opened: (panel.state === "spread") ||
+    property bool opened: (panel.state === "spread") ||
                                    (panel.state === "moving" && internal.previousState === "spread")
     /*! \internal */
     // FIXME: When opened is made read-only, onOpenedChanged can be removed entirely.
@@ -192,7 +191,11 @@ Item {
                 panel.close();
             }
 
-            // TODO TIM: re-establish the previous binding for opened.
+            // re-establish the previous binding for opened.
+            panel.opened = Qt.binding(function() {
+                return (panel.state === "spread") ||
+                        (panel.state === "moving" && internal.previousState === "spread")
+            })
         }
 
         internal.openedChangedWarning = true;
