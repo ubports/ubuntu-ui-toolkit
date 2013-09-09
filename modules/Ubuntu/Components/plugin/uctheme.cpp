@@ -205,9 +205,10 @@ void UCTheme::registerToContext(QQmlContext* context)
     // register Theme
     context->setContextProperty("Theme", this);
 
-    static ContextPropertyChangeListener themeChangeListener(context, "Theme");
+    ContextPropertyChangeListener *themeChangeListener =
+        new ContextPropertyChangeListener(context, "Theme");
     QObject::connect(this, SIGNAL(nameChanged()),
-                     &themeChangeListener, SLOT(updateContextProperty()));
+                     themeChangeListener, SLOT(updateContextProperty()));
 }
 
 void UCTheme::loadPalette()

@@ -18,6 +18,7 @@
 #include <QtQml>
 
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
+    QObject(context),
     m_context(context),
     m_contextProperty(contextProperty)
 {
