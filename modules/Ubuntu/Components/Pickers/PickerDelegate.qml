@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,19 +15,19 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import "../" 0.1
 
 /*!
     \qmltype PickerDelegate
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
+    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \ingroup ubuntu-pickers
     \brief PickerDelegate component serves as base for Picker delegates.
 
     PickerDelegate is a holder component for delegates used in a Picker element.
     Each picker delegate must be derived from this type.
   */
 
-Ubuntu.AbstractButton {
+AbstractButton {
     id: pickerDelegate
 
     implicitHeight: units.gu(4)
