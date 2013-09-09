@@ -19,23 +19,20 @@ import Ubuntu.Components 0.1
 
 Template {
     TemplateSection {
-        id: section
-
         title: i18n.tr("Option Selector")
         className: "Option Selector"
 
         Column {
-            id: column
             anchors.left: parent.left
             anchors.right: parent.right
             spacing: units.gu(3)
 
            OptionSelector {
-                text: i18n.tr("Label")
-                model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+               text: i18n.tr("Label")
+               model: [i18n.tr("Value 1"),
+                       i18n.tr("Value 2"),
+                       i18n.tr("Value 3"),
+                       i18n.tr("Value 4")]
            }
 
            OptionSelector {
@@ -57,7 +54,6 @@ Template {
 
            Component {
                id: selectorDelegate
-
                OptionSelectorDelegate { text: name; subText: description; icon: image }
            }
 

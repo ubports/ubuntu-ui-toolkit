@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-08-22 11:28+0000\n"
+"PO-Revision-Date: 2013-09-07 10:58+0000\n"
 "Last-Translator: Pyae Sone <Unknown>\n"
 "Language-Team: Burmese <my@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-08-23 05:52+0000\n"
-"X-Generator: Launchpad (build 16737)\n"
+"X-Launchpad-Export-Date: 2013-09-08 05:03+0000\n"
+"X-Generator: Launchpad (build 16760)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -102,7 +102,7 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr ""
+msgstr "အဆင့်"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
@@ -110,7 +110,7 @@ msgstr "စာတမ်းထိုး"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr ""
+msgstr "ဒုတိယအဆင့်"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
@@ -162,7 +162,7 @@ msgstr "ဖြုတ်လို့ရသော"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr ""
+msgstr "ဖြုတ်ရန် ဘေးသို့ဆွဲပါ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
@@ -339,12 +339,12 @@ msgstr "ပြန်ပြင်ပါ"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr ""
+msgstr "နောက်သို့"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr ""
+msgstr "ကျွန်ုပ်စိတ်ကြိုက်စာမျက်နှာ"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -359,15 +359,15 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr ""
+msgstr "စာမျက်နှာ တစ်"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr ""
+msgstr "နောက်အပိုစာမျက်နှာ"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr ""
+msgstr "ပထမစာမျက်နှာ"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
@@ -375,11 +375,11 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "အနီရောင်လေးထောင့်"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "ရိုးရိုးစာမျက်နှာ"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"

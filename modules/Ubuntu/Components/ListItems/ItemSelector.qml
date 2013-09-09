@@ -15,44 +15,44 @@
  */
 
 import QtQuick 2.0
-import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Toolkit
+import "." as ListItem
+import Ubuntu.Components 0.1
 
 /*!
-    \qmltype OptionSelector
-    \inqmlmodule Components.Components 0.1
-    \ingroup ubuntu-components
-    \brief Component displaying a single selected value with and optional image and subtext when not expanded, where expanding
+    \qmltype ItemSelector
+    \inqmlmodule Components.Components.ListItems 0.1
+    \ingroup ubuntu-listitems
+    \brief ListItem displaying a single selected value with and optional image and subtext when not expanded, where expanding
     it opens a listing of all the possible values for selection with an additional option of always being expanded.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Components.Components 0.1
+        import Components.Components.ListItems 0.1 as ListItem
         Column {
             width: 250
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Standard"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Disabled"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 enabled: false
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Expanded"
                 model: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 expanded: true
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: "Icon"
                 icon: Qt.resolvedUrl("icon.png")
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 selectedIndex: 2
             }
-            OptionSelector {
+            ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 model: customModel
                 expanded: true
@@ -71,7 +71,7 @@ import Ubuntu.Components 0.1 as Toolkit
 */
 
 ListItem.Empty {
-    id: optionSelector
+    id: itemSelector
     __height: column.height
 
     /*!
@@ -96,7 +96,7 @@ ListItem.Empty {
       \preliminary
       ListView delegate.
      */
-    property Component delegate: Toolkit.OptionSelectorDelegate {}
+    property Component delegate: OptionSelectorDelegate { id: selectorDelegate }
 
     /*!
       \preliminary
@@ -120,33 +120,33 @@ ListItem.Empty {
     Column {
         id: column
 
-        spacing: units.gu(2)
         anchors {
             left: parent.left
             right: parent.right
         }
 
-        Label {
-            text: optionSelector.text
-            visible: optionSelector.text !== "" ? true : false
+        ListItem.Standard {
+            text: itemSelector.text
+            visible: itemSelector.text !== "" ? true : false
         }
 
-        StyledItem {
+        ListItem.Standard {
             id: listContainer
             objectName: "listContainer"
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property alias colourImage: optionSelector.colourImage
+            readonly property alias colourImage: itemSelector.colourImage
             property bool isExpanded: expanded
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
-            style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
+            state: itemSelector.expanded ? state = "expanded" : state = "collapsed"
+            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+
             states: [ State {
                     name: "expanded"
                     when: listContainer.isExpanded
@@ -166,9 +166,9 @@ ListItem.Empty {
 
             transitions: [ Transition {
                     SequentialAnimation {
-                        Toolkit.UbuntuNumberAnimation {
+                        UbuntuNumberAnimation {
                             properties: "height"
-                            duration: Toolkit.UbuntuAnimation.BriskDuration
+                            duration: UbuntuAnimation.BriskDuration
                         }
                         ScriptAction {
                             script: {
@@ -182,27 +182,28 @@ ListItem.Empty {
 
             ListView {
                 id: list
+                objectName: "listView"
 
-                property int previousIndex: -1
-                readonly property alias expanded: optionSelector.expanded
+                property int previousIndex: list.currentIndex
+                readonly property alias expanded: itemSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onDelegateClicked: optionSelector.delegateClicked(index);
+                onDelegateClicked: itemSelector.delegateClicked(index);
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0
-                model: optionSelector.model
+                model: itemSelector.model
                 anchors.fill: parent
 
-                delegate: optionSelector.delegate
+                delegate: itemSelector.delegate
 
                 Behavior on contentY {
-                    Toolkit.UbuntuNumberAnimation {
+                    UbuntuNumberAnimation {
                         properties: "contentY"
-                        duration: Toolkit.UbuntuAnimation.BriskDuration
+                        duration: UbuntuAnimation.BriskDuration
                     }
                 }
             }

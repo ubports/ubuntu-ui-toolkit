@@ -27,9 +27,9 @@ Item {
         id: mainView
         Page {
             id: page
-            tools: ToolbarActions {
-                id: toolbarActions
-                Action {
+            tools: ToolbarItems {
+                id: toolbarItems
+                ToolbarButton {
                     text: "action1"
                 }
             }
@@ -41,7 +41,7 @@ Item {
         when: windowShown
 
         function initTestCase() {
-            compare(page.tools, toolbarActions, "Page tools are set initially");
+            compare(page.tools, toolbarItems, "Page tools are set initially");
             compare(page.__propagated, mainView.__propagated, "propagated property is propagated from mainView to page")
             compare(mainView.__propagated.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
             compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar is closed initially");
@@ -73,10 +73,10 @@ Item {
         }
 
         function test_bug1192673() {
-            toolbarActions.opened = false;
+            toolbarItems.opened = false;
             mainView.__propagated.toolbar.opened = true;
-            compare(toolbarActions.opened, true, "opening the toolbar updates toolbarActions.opened");
-            toolbarActions.opened = false;
+            compare(toolbarItems.opened, true, "opening the toolbar updates toolbarItems.opened");
+            toolbarItems.opened = false;
             compare(mainView.__propagated.toolbar.opened, false, "setting toolbarActions.opened to false closes the toolbar");
         }
     }

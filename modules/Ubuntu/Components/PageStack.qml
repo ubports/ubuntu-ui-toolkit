@@ -105,19 +105,6 @@ PageTreeNode {
     }
 
     /*!
-      \deprecated
-      This property is deprecated. Pages will now automatically update the toolbar when activated.
-     */
-    property ToolbarActions tools: null
-    /*!
-      \deprecated
-      \internal
-     */
-    onToolsChanged: print("MainView.tools property was deprecated. "+
-                          "Pages will automatically update the toolbar when activated. "+
-                          "See CHANGES file, and use toolbar.tools instead when needed.");
-
-    /*!
       \preliminary
       The current size of the stack
      */
