@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,7 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Pickers 0.1
 
 Item {
     id: testSuite

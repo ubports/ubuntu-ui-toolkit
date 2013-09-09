@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,11 +15,12 @@
  */
 
 import QtQuick 2.0
+import "../" 0.1
 
 /*!
     \qmltype Picker
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
+    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \ingroup ubuntu-pickers
     \brief Picker is a slot-machine style value selection component.
 
     The Picker lists the elements specified by the \l model using the \l delegate
@@ -35,7 +36,7 @@ import QtQuick 2.0
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
-    import Ubuntu.Components.ListItems 0.1
+    import Ubuntu.Components.Pickers 0.1
 
     Picker {
         model: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]

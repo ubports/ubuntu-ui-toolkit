@@ -41,6 +41,13 @@
      \endcode
      \annotatedlist ubuntu-listitems
 
+     \part Pickers
+     Available through:
+     \code
+         import Ubuntu.Components.Pickers 0.1
+     \endcode
+     \annotatedlist ubuntu-pickers
+
      \part Popovers, Sheets and Dialogs
      Available through:
      \code
