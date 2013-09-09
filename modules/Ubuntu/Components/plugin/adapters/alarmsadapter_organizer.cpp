@@ -375,9 +375,6 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
         return false;
     }
 
-//    QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-//    QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
-//    operation->setItemId(itemId);
     QOrganizerTodo event;
     AlarmsAdapter::get()->rawAlarm2Organizer(alarm, event);
     event.setId(alarm.cookie.value<QOrganizerItemId>());
