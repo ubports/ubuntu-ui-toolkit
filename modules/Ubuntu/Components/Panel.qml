@@ -511,18 +511,22 @@ Item {
         function finishMoving() {
             if (draggingArea.dragVelocity < -44) {
                 if (internal.align === Qt.AlignBottom || internal.align === Qt.AlignRight) {
-                    panel.state = "spread";
+                    panel.open();
                 } else {
-                    panel.state = "";
+                    panel.close();
                 }
             } else if (draggingArea.dragVelocity > 44) {
                 if (internal.align === Qt.AlignBottom || internal.align === Qt.AlignRight) {
-                    panel.state = "";
+                    panel.close();
                 } else {
-                    panel.state = "spread";
+                    panel.open();
                 }
             } else {
-                panel.state = (bar.position < bar.size / 2) ? "spread" : "";
+                if (bar.position < bar.size / 2) {
+                    panel.open();
+                } else {
+                    panel.close();
+                }
             }
         }
     }
