@@ -71,7 +71,7 @@ import Ubuntu.Components 0.1
 */
 
 ListItem.Empty {
-    id: optionSelector
+    id: itemSelector
     __height: column.height
 
     /*!
@@ -126,7 +126,8 @@ ListItem.Empty {
         }
 
         ListItem.Standard {
-            text: optionSelector.text
+            text: itemSelector.text
+            visible: itemSelector.text !== "" ? true : false
         }
 
         ListItem.Standard {
@@ -136,14 +137,14 @@ ListItem.Empty {
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
-            readonly property alias colourImage: optionSelector.colourImage
+            readonly property alias colourImage: itemSelector.colourImage
             property bool isExpanded: expanded
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: itemSelector.expanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
@@ -151,7 +152,7 @@ ListItem.Empty {
                     when: listContainer.isExpanded
                     PropertyChanges {
                         target: listContainer
-                        height: containerHeight
+                        height: list.contentHeight < containerHeight ? list.contentHeight : containerHeight
                     }
                 }, State {
                     name: "collapsed"
@@ -184,20 +185,20 @@ ListItem.Empty {
                 objectName: "listView"
 
                 property int previousIndex: list.currentIndex
-                readonly property alias expanded: optionSelector.expanded
+                readonly property alias expanded: itemSelector.expanded
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onDelegateClicked: optionSelector.delegateClicked(index);
+                onDelegateClicked: itemSelector.delegateClicked(index);
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
                 clip: true
                 currentIndex: 0
-                model: optionSelector.model
+                model: itemSelector.model
                 anchors.fill: parent
 
-                delegate: optionSelector.delegate
+                delegate: itemSelector.delegate
 
                 Behavior on contentY {
                     UbuntuNumberAnimation {

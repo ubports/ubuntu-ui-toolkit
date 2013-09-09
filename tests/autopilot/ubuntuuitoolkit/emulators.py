@@ -35,19 +35,21 @@ def get_pointing_device():
         input_device_class = input.Mouse
     else:
         input_device_class = input.Touch
-    return input.Pointer(input_device_class.create())
+    return input.Pointer(device=input_device_class.create())
 
 
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
+    def __init__(self, *args):
+        super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
+        self.pointing_device = get_pointing_device()
+        # TODO it would be nice to have access to the screen keyboard if we are
+        # on the touch UI -- elopio - 2013-09-04
+
 
 class MainView(UbuntuUIToolkitEmulatorBase):
     """MainView Autopilot emulator."""
-
-    def __init__(self, *args):
-        super(MainView, self).__init__(*args)
-        self.pointing_device = get_pointing_device()
 
     def get_header(self):
         """Return the Header emulator of the MainView."""
@@ -198,10 +200,6 @@ class Header(UbuntuUIToolkitEmulatorBase):
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
 
-    def __init__(self, *args):
-        super(Toolbar, self).__init__(*args)
-        self.pointing_device = get_pointing_device()
-
     def click_button(self, object_name):
         """Click a button of the toolbar.
 
@@ -233,10 +231,6 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
 class TabBar(UbuntuUIToolkitEmulatorBase):
     """TabBar Autopilot emulator."""
 
-    def __init__(self, *args):
-        super(TabBar, self).__init__(*args)
-        self.pointing_device = get_pointing_device()
-
     def switch_to_next_tab(self):
         """Open the next tab."""
         # Click the tab bar to switch to selection mode.
@@ -263,10 +257,6 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
     """ActionSelectionPopover Autopilot emulator."""
-
-    def __init__(self, *args):
-        super(ActionSelectionPopover, self).__init__(*args)
-        self.pointing_device = get_pointing_device()
 
     def click_button_by_text(self, text):
         """Click a button on the popover.
