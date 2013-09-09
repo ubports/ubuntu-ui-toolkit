@@ -194,7 +194,7 @@ Item {
             // re-establish the previous binding for opened.
             panel.opened = Qt.binding(function() {
                 return (panel.state === "spread") ||
-                        (panel.state === "moving" && internal.previousState === "spread")
+                        (panel.state === "moving" && internal.previousState === "spread");
             })
         }
 
