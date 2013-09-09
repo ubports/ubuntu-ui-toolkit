@@ -177,7 +177,7 @@ Item {
      */
     // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
     property bool opened: (panel.state === "spread") ||
-                                   (panel.state === "moving" && internal.previousState === "spread")
+                          (panel.state === "moving" && internal.previousState === "spread")
     /*! \internal */
     // FIXME: When opened is made read-only, onOpenedChanged can be removed entirely.
     onOpenedChanged: {
