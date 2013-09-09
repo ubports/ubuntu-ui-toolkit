@@ -175,18 +175,24 @@ Item {
       Use edge swipes to open/close the panel.
       The opened property is not updated until the swipe gesture is completed.
      */
-    property bool opened: false
+    // opened is true if state is spread, or if state is moving/hint and the previous state was spread.
+    // TODO TIM: BEFORE MERGING, make this RW
+    readonly property bool opened: (panel.state === "spread") ||
+                                   (panel.state === "moving" && internal.previousState === "spread")
     /*! \internal */
+    // FIXME: When opened is made read-only, onOpenedChanged can be removed entirely.
     onOpenedChanged: {
         if (internal.openedChangedWarning) {
             console.log("DEPRECATED use of Panel.opened property. This property will be made read-only,
                 please use the opened property of the Page tools or use Panel.open() and Panel.close().");
-        }
 
-        if (opened) {
-            panel.open();
-        } else {
-            panel.close();
+            if (opened) {
+                panel.open();
+            } else {
+                panel.close();
+            }
+
+            // TODO TIM: re-establish the previous binding for opened.
         }
 
         internal.openedChangedWarning = true;
@@ -196,18 +202,18 @@ Item {
       Open the panel
      */
     function open() {
+        // FIXME: When opened is made readonly, openedChangedWarning must be removed
         internal.openedChangedWarning = false;
         panel.state = "spread";
-        opened = true;
     }
 
     /*!
       Close the panel
      */
     function close() {
+        // FIXME: When opened is made readonly, openedChangedWarning must be removed.
         internal.openedChangedWarning = false;
         panel.state = "";
-        opened = false;
     }
 
     /*!
@@ -271,8 +277,8 @@ Item {
       The toolbar is currently not in a stable hidden or visible state.
      */
     readonly property bool animating: draggingArea.pressed || transitionToAll.running
-                                                           || transitionToHint.running
-                                                           || transitionToSpread.running
+                                      || transitionToHint.running
+                                      || transitionToSpread.running
 
     transitions: [
         Transition {
@@ -363,12 +369,11 @@ Item {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
-                panel.close() = false;
+                panel.close();
                 panel.locked = true;
             } else { // don't force hidden
                 panel.locked = internal.savedLocked;
-
-                if (internal.savedLocked) {
+                if (panel.locked) {
                     if (internal.savedOpened) {
                         panel.open();
                     } else {
@@ -387,12 +392,13 @@ Item {
             internal.movingDelta = panel.hintSize + draggingArea.initialPosition - bar.size;
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
-        } else if (state == "spread") {
-            panel.open();
-        } else if (state == "") {
-            panel.close();
+            // TODO TIM: remove commented-out code
+            //        } else if (state == "spread") {
+            //            panel.open();
+            //        } else if (state == "") {
+            //            panel.close();
         }
-        internal.previousState = state;
+        //        internal.previousState = state;
     }
 
     Toolkit.InverseMouseArea {
@@ -478,9 +484,11 @@ Item {
         onPositionChanged: {
             if (panel.locked) return;
             if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
+                internal.previousState = "hint";
                 panel.state = "moving";
                 pressedItem = null;
             } else if (panel.state == "spread" && mousePosition > initialPosition + dragThreshold) {
+                internal.previousState = "spread";
                 panel.state = "moving";
                 pressedItem = null;
             }
