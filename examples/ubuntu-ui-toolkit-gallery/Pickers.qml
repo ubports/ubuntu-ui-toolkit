@@ -21,6 +21,7 @@ import Ubuntu.Components.Pickers 0.1
 Template {
     TemplateSection {
         className: "Picker"
+        documentation: "qml-ubuntu-components-pickers0-picker.html"
 
         TemplateRow {
             title: i18n.tr("Linear")
