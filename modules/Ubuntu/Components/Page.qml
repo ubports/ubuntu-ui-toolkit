@@ -151,8 +151,13 @@ PageTreeNode {
         UnityActions.ActionContext {
             id: actionContext
 
-            Component.onCompleted: {
-                var manager = page.__propagated.actionManager;
+            property var actionManager: page.__propagated && page.__propagated.actionManager ?
+                                            page.__propagated.actionManager : null
+
+            onActionManagerChanged: addLocalContext(actionManager)
+            Component.onCompleted: addLocalContext(actionManager)
+
+            function addLocalContext(manager) {
                 if (manager) manager.addLocalContext(actionContext);
             }
         }
