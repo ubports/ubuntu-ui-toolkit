@@ -18,7 +18,7 @@
 import QtQuick 2.0
 import Ubuntu.Components.Themes.Ambiance 0.1
 
-ListItemOptionSelectorStyle {
+OptionSelectorStyle {
     id: suruGradientStyle
 
     chevron: "artwork/chevron_down@30.png"
