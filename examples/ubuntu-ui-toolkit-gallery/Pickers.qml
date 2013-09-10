@@ -89,4 +89,34 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        className: "Dialer"
+        documentation: "qml-ubuntu-components-pickers0-dialer.html"
+
+        TemplateRow {
+            title: i18n.tr("One handed")
+            Dialer {
+                size: units.gu(25)
+                DialerHand {
+                    id: hand
+                    value: 35
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: width / 2
+                        color: UbuntuColors.warmGrey
+                        antialiasing: true
+                        Label {
+                            text: Math.round(hand.value)
+                            color: "white"
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+            }
+            Label {
+                text: hand.value
+            }
+        }
+    }
 }
