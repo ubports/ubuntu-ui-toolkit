@@ -17,9 +17,11 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-MainView {
+Item {
     width: units.gu(48)
     height: units.gu(60)
+
+    Component.onCompleted: i18n.domain = "any"
 
     Page {
         title: "Simple page"
