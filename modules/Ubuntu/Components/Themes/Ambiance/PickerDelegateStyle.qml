@@ -17,12 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-// FIXME: Using Item is a waste of space unless some visuals must be added to the delegate
-// a simple Object {} would be mor elightweight, but StyledItem does not support Objects for
-// __styleInstance property
 Item {
-    id: pickerDelegate
-
     property real minFade: 0.25
     property real maxFade: 0.95
 

@@ -28,6 +28,7 @@ Template {
             Picker {
                 circular: false
                 model: ["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7", "Line8", "Line9", "Line10"]
+
                 delegate: PickerDelegate{
                     Label {
                         text: modelData
@@ -52,9 +53,10 @@ Template {
                 onSelectedIndexChanged: print("index=" + selectedIndex)
 
                 Component.onCompleted: {
-                    var stack = []
-                    for (var i = 0; i < 100; i++)
-                        stack.push("Line " + i)
+                    var stack = [];
+                    for (var i = 0; i < 100; i++) {
+                        stack.push("Line " + i);
+                    }
                     model = stack;
                     selectedIndex = 3;
                 }
@@ -67,6 +69,7 @@ Template {
                 id: picker
                 model: ListModel {}
                 circular: false
+
                 delegate: PickerDelegate{
                     Label {
                         text: modelData
