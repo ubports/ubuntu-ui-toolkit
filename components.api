@@ -351,6 +351,7 @@ ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
     property Item tools
+    property int hideTimeout
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
