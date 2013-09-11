@@ -234,4 +234,45 @@ PageTreeNode {
             }
         }
     }
+
+    default property alias pageContents: contents.data
+
+    Item {
+        id: contents
+        anchors.fill: parent
+    }
+
+    MouseArea {
+        id: contentsArea
+        anchors.fill: contents
+        // This mouse area will be on top of the page contents, but
+        // under the toolbar and header.
+
+        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ?
+                                      page.__propagated.toolbar : null
+
+        property TabBar tabBar: page.__propagated && page.__propagated.header &&
+                                page.__propagated.header.contents &&
+                                page.__propagated.header.contents.hasOwnProperty("selectionMode") &&
+                                page.__propagated.header.contents.hasOwnProperty("alwaysSelectionMode") ?
+                                    page.__propagated.header.contents : null
+
+        onPressed: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of locked by the clicked Item behind
+//            if (!panel.locked) panel.close();
+            console.log ("uh uh uh yeah");
+
+            if (contentsArea.toolbar) {
+                contentsArea.toolbar.close();
+                }
+            if (contentsArea.tabBar && !contentsArea.tabBar.alwaysSelectionMode) {
+                contentsArea.tabBar.selectionMode = false;
+            }
+        }
+
+        propagateComposedEvents: true
+//        visible: panel.locked == false && panel.state == "spread"
+    }
 }

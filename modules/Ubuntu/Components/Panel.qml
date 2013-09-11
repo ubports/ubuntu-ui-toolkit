@@ -398,17 +398,19 @@ Item {
         }
     }
 
-    Toolkit.InverseMouseArea {
-        anchors.fill: draggingArea
-        onClicked: {
-            mouse.accepted = false;
-            // the mouse click may cause an update
-            //  of locked by the clicked Item behind
-            if (!panel.locked) panel.close();
-        }
-        propagateComposedEvents: true
-        visible: panel.locked == false && panel.state == "spread"
-    }
+    // TODO TIM: Move this to the Page,
+    //  But come up with a solution for Panel because it breaks behavior when there is no Toolbar.
+//    Toolkit.InverseMouseArea {
+//        anchors.fill: draggingArea
+//        onClicked: {
+//            mouse.accepted = false;
+//            // the mouse click may cause an update
+//            //  of locked by the clicked Item behind
+//            if (!panel.locked) panel.close();
+//        }
+//        propagateComposedEvents: true
+//        visible: panel.locked == false && panel.state == "spread"
+//    }
 
     DraggingArea {
         id: draggingArea
