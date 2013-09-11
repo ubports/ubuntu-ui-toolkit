@@ -218,7 +218,7 @@ int AlarmsAdapter::organizer2RawAlarm(const QOrganizerTodo &event, AlarmData &al
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = event.dueDateTime();
+    alarm.date = AlarmData::normalizeDate(event.dueDateTime());
     alarm.sound = QUrl(event.description());
 
     // check if the alarm is enabled or not
@@ -475,7 +475,7 @@ void AlarmRequestAdapter::_q_updateProgress()
                 completeUpdate();
                 break;
             }
-            case QOrganizerAbstractRequest::ItemRemoveByIdRequest: {
+            case QOrganizerAbstractRequest::ItemRemoveRequest: {
                 completeRemove();
                 break;
             }
@@ -502,7 +502,7 @@ void AlarmRequestAdapter::_q_updateProgress()
 
     if (completed) {
         // cleanup request
-        delete m_request;
+        m_request->deleteLater();
         m_request = 0;
 
         if (autoDelete) {

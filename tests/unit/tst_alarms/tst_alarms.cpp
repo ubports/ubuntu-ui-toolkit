@@ -22,6 +22,7 @@
 #include "alarmmanager_p.h"
 #include "ucalarmmodel.h"
 #include "alarmrequest_p.h"
+#include "adapters/alarmsadapter_p.h"
 #undef protected
 
 #include <QtCore/QString>
@@ -39,11 +40,28 @@ public:
 
 private:
 
+    void syncFetch()
+    {
+        // initiate fetch
+        AlarmsAdapter *adapter = AlarmsAdapter::get();
+        if (!adapter->fetchRequest) {
+            adapter->fetchAlarms();
+        }
+        if (adapter->fetchRequest) {
+            adapter->fetchRequest->wait();
+        }
+        QTest::waitForEvents();
+    }
+
     void waitForRequest(UCAlarm *alarm)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        pAlarm->request->wait();
+        if (pAlarm->request) {
+            pAlarm->request->wait();
+        }
         QTest::waitForEvents();
+        // also complete any pending fetch!
+        syncFetch();
     }
 
     bool containsAlarm(UCAlarm *alarm)
@@ -67,6 +85,16 @@ private:
 
 private Q_SLOTS:
 
+    void initTestCase()
+    {
+        AlarmManager::instance();
+        // make sure the first fetch is completed
+        AlarmsAdapter *adapter = AlarmsAdapter::get();
+        if (adapter->fetchRequest) {
+            adapter->fetchRequest->wait();
+        }
+    }
+
     void cleanupTestCase() {
         // remove all test alarms
         UCAlarmModel model;
@@ -75,7 +103,7 @@ private Q_SLOTS:
             UCAlarm *alarm = model.get(i);
             if (alarm && alarm->message().startsWith("test_")) {
                 alarm->cancel();
-                QTest::waitForEvents();
+                waitForRequest(alarm);
                 i = 0;
             } else {
                 i++;
@@ -93,7 +121,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime().addSecs(10), "test_singleShotAlarmPass");
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
 
@@ -103,7 +131,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
 
@@ -113,7 +141,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
 
@@ -123,7 +151,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
 
@@ -133,7 +161,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
 
@@ -142,7 +170,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime().addDays(1), UCAlarm::Monday | UCAlarm::Tuesday);
         alarm.setType(UCAlarm::OneTime);
         alarm.save();
-        QVERIFY(alarm.error() == UCAlarm::OneTimeOnMoreDays);
+        QCOMPARE(alarm.error(), (int)UCAlarm::OneTimeOnMoreDays);
     }
 
     void test_setAlarmObjectFail_WrongRecurence2()
@@ -150,7 +178,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime().addDays(1), UCAlarm::Daily);
         alarm.setType(UCAlarm::OneTime);
         alarm.save();
-        QVERIFY(alarm.error() == UCAlarm::OneTimeOnMoreDays);
+        QCOMPARE(alarm.error(), (int)UCAlarm::OneTimeOnMoreDays);
     }
 
     void test_cancelFail()
@@ -158,7 +186,7 @@ private Q_SLOTS:
         UCAlarm alarm(QDateTime::currentDateTime().addDays(1), "test_cancelFail");
 
         alarm.cancel();
-        QVERIFY(alarm.error() == UCAlarm::InvalidEvent);
+        QCOMPARE(alarm.error(), (int)UCAlarm::InvalidEvent);
     }
 
     void test_cancelPass()
@@ -167,12 +195,12 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
         alarm.cancel();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(!containsAlarm(&alarm));
     }
 
@@ -186,8 +214,8 @@ private Q_SLOTS:
         waitForRequest(&alarm1);
         alarm2.save();
         waitForRequest(&alarm2);
-        QVERIFY(alarm1.error() == UCAlarm::NoError);
-        QVERIFY(alarm2.error() == UCAlarm::NoError);
+        QCOMPARE(alarm1.error(), (int)UCAlarm::NoError);
+        QCOMPARE(alarm2.error(), (int)UCAlarm::NoError);
     }
 
     void test_twoAlarmsOnSameTime2()
@@ -200,8 +228,8 @@ private Q_SLOTS:
         waitForRequest(&alarm1);
         alarm2.save();
         waitForRequest(&alarm2);
-        QVERIFY(alarm1.error() == UCAlarm::NoError);
-        QVERIFY(alarm2.error() == UCAlarm::NoError);
+        QCOMPARE(alarm1.error(), (int)UCAlarm::NoError);
+        QCOMPARE(alarm2.error(), (int)UCAlarm::NoError);
     }
 
     void test_updateAlarm_SameType()
@@ -212,7 +240,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(QDateTime::currentDateTime().addDays(10));
@@ -220,7 +248,7 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
         QVERIFY(!containsAlarm(&copy));
     }
@@ -233,14 +261,14 @@ private Q_SLOTS:
 
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setType(UCAlarm::Repeating);
         QVERIFY(!compareAlarms(&alarm, &copy));
         alarm.save();
         waitForRequest(&alarm);
-        QVERIFY(alarm.error() == UCAlarm::NoError);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
         QVERIFY(!containsAlarm(&copy));
     }

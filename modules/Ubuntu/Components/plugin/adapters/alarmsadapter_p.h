@@ -91,7 +91,7 @@ public:
 public Q_SLOTS:
     bool fetchAlarms();
 
-private:
+protected:
     AlarmRequest *fetchRequest;
 };
 

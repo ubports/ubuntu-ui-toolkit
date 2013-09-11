@@ -136,6 +136,7 @@ MainView {
             }
         }
         Standard {
+            text: "Alarm count: " + alarmModel.count
             control: Button {
                 text: "Reset"
                 onClicked: {

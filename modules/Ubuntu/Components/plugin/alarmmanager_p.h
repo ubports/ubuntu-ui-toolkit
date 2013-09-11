@@ -25,6 +25,7 @@
 
 #include "ucalarm.h"
 
+
 class AlarmData {
 public:
     enum Change {
@@ -92,6 +93,12 @@ public:
         case 5: return enabled;
         default: return QVariant();
         }
+    }
+
+    static QDateTime normalizeDate(const QDateTime &dt) {
+        QTime time = dt.time();
+        time.setHMS(time.hour(), time.minute(), time.second());
+        return QDateTime(dt.date(), time, dt.timeSpec());
     }
 
     unsigned int changes;
