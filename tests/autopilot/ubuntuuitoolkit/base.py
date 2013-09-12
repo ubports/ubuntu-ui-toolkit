@@ -24,6 +24,8 @@ from autopilot import (
     testcase
 )
 
+from ubuntuuitoolkit import emulators
+
 
 class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
     """Autopilot test case for applications using the Ubuntu UI Toolkit."""
@@ -62,10 +64,28 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
 class UbuntuUIToolkitSingleQMLAppTestCase(UbuntuUIToolkitAppTestCase):
     """Autopilot test case for single QML apps using the Ubuntu UI Toolkit."""
 
-    app_qml_location = ''
+    app_qml_source_location = ''
+    installed_app_qml_location = ''
+    desktop_file_hint = ''
 
     def application_source_exists(self):
         return os.path.exists(self.app_qml_location)
 
     def launch_application_from_source(self):
-        pass
+        self.app = self.launch_test_application(
+            'qmlscene',
+            self.app_qml_location,
+            app_type='qt',
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+
+    def launch_installed_application(self):
+        self.app = self.launch_test_application(
+            'qmlscene',
+            installed_app_qml_location,
+            '--desktop_file_hint=' + desktop_file_hint,
+            app_type='qt',
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+
+    @property
+    def main_view(self):
+        return self.app.select_single(emulators.MainView)
