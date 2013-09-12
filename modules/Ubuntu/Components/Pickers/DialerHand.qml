@@ -23,10 +23,61 @@ import "../" 0.1
     \ingroup ubuntu-pickers
     \brief DialerHand represents a value selector on a Dialer.
 
-    The DialerHands can be placed inside Dialer components only.
+    DialerHand components have meaning only if those are placed inside Dialer
+    components. The dialer hand presents a value selection from the given dialer's
+    minimum and maximum values.
+
+    By default all hands are placed on the dialer's hand space, on the outer dialer
+    disk. By default all hands have teh same size, 0.5GU width and height same as
+    the handSpace specified in \l Dialer, however themes can specify preset values
+    for each hand.
+
+    Hands can also be placed onto the inner disk by setting \a hand.toCenterItem
+    property to true.
+
+    \qml
+    Dialer {
+        DialerHand {
+            // this dialer hand will take the space as defined by the theme.
+        }
+        DialerHand {
+            hand.height: units.gu(3)
+            // this hand will have its width as defined by the theme
+            // but height as 3 GU
+        }
+    }
+    \endqml
+
+    Items declared as children will be placed over the hands. These items will not
+    be rotated togehther with the hand, these will always be shown horizontally.
+    The hand can be hidden by setting false to \a hand.visible property, but that
+    does not hide the overlay content.
+
+    The following example demonstrates how to create a hidden dialer hand having
+    an overlay component on the hand.
+    \qml
+    Dialer {
+        DialerHand {
+            id: selector
+            hand.visible: false
+            Rectangle {
+                anchors.centerIn: parent
+                width: height
+                height: units.gu(3)
+                radius: width / 2
+                color: Theme.palette.normal.background
+                antialiasing: true
+                Label {
+                    text: Math.round(selector.value)
+                    anchors.centerIn: parent
+                }
+            }
+        }
+    }
+    \endqml
   */
 StyledItem {
-    id: hand
+    id: dialerHand
 
     /*!
       The property holds the selected value the dialer hand points to.
@@ -34,31 +85,33 @@ StyledItem {
     property real value
 
     /*!
-      Specifies whether to show the hand marker or not. Similar to setting
-      size to (0x0), however this does not alter the size.
+      \qmlproperty real hand.width
+      \qmlproperty real hand.height
+      \qmlproperty bool hand.draggable
+      \qmlproperty bool hand.toCenterItem
+      \qmlproperty bool hand.visible
 
-      The default value is true.
+      The \b hand.width and \b hand.height properties define the size of the hand.
+      The height of the hand must be in the [0..dialer.handSpace] range in order
+      to have the hand displayed in the hand area, however there is no restriction
+      applied on the size of the dialer hand. If no value is set, the width and
+      height will be defined by the style.
+
+      \b draggable property specifies whether the hand is draggable or not. When set to not draggable,
+      the hand is used only to indicate the given value. The default value is true.
+
+      \b toCenterItem property specifies whether the hand should be placed on the hand space (on the outer disk
+      - false) or onto the center disk (inner disk - true). The default value is false, meaning the hand will be placed onto the hand space disk.
+
+      \b visible property specifies whether to show the hand marker or not. The default value is true.
       */
-    property bool isHandVisible: true
-
-    /*!
-      The size of the hand. The height of the hand must be in the [0..Dialer.handSpace]
-      range in order to have the hand displayed in the hand area, however there is no
-      restriction applied on the size of the dialer hand.
-
-      The hand can be hidden by setting 0x0 value to the size.
-
-      The default value is (0.5GUxdialer.handSpace / 2).
-      */
-    property size size: Qt.size(units.gu(0.5), dialer.handSpace / 2)
-
-    /*!
-      Specifies whether the hand is draggable or not. When set to not draggable,
-      the hand is used only to indicate the given value.
-
-      The default value is true.
-      */
-    property bool draggable: true
+    property DialerHandGroup hand: DialerHandGroup {
+        width: __styleInstance.presetWidth(index)
+        height: __styleInstance.presetHeight(index)
+        draggable: true
+        visible: true
+        toCenterItem: false
+    }
 
     /*!
       The property holds the dialer instance the hand is assigned to. This is a
@@ -67,17 +120,25 @@ StyledItem {
     readonly property Dialer dialer: parent
 
     /*!
-      \qmlproperty list<var> content
+      \qmlproperty list<QtObject> overlay
       \default
-      The property holds the items that can be added to the hand. Note that these
-      items will not be rotated together with the hand.
+      The property holds the items that can be added on top of the hand. Note that
+      these items will not be rotated together with the hand pointer and pointer
+      visibility does not affect the overlay items visibility.
       */
-    default property alias content: contentItem.data
+    default property alias overlay: contentItem.data
+
+    /*!
+      The property holds the index of the hand. Note that this is not the child
+      index of the dialer children, this represents the index of the DialerHand
+      component added to the \l dialer.
+      */
+    readonly property alias index: grabber.index
 
     anchors.centerIn: parent
     width: parent.width
     height: parent.height
-    style: Theme.createStyleComponent("DialerHandStyle.qml", hand)
+    style: Theme.createStyleComponent("DialerHandStyle.qml", dialerHand)
 
     /*! \internal */
     onParentChanged: {
@@ -87,22 +148,22 @@ StyledItem {
     }
 
     /*! \internal */
-    onValueChanged: {
-        grabber.updateHand();
-    }
+    onValueChanged: grabber.updateHand();
     /*! \internal */
-    Component.onCompleted: {
-        grabber.updateHand();
-    }
+    Component.onCompleted: grabber.updateHand();
 
+    z: __styleInstance.presetZ(index)
+
+    /*! \internal */
+    property alias __grabber: grabber
     Item {
         id: grabber
-        parent: __styleInstance
+        property int index: -1
+        parent: __styleInstance.handPointer
         width: units.gu(4)
-        height: width
+        height: parent.height
         anchors {
             top: parent.top
-            topMargin: units.gu(0.5)
             horizontalCenter: parent.horizontalCenter
         }
         Item {
@@ -112,46 +173,49 @@ StyledItem {
         }
 
         function updateHand() {
-            if (!dialer) return;
-            __styleInstance.rotation = MathUtils.projectValue(value,
-                                                              dialer.minimumValue, dialer.maximumValue,
-                                                              0.0, 360.0);
+            if (!dialer || !__styleInstance) return;
+            __styleInstance.rotation =
+                    MathUtils.projectValue(value,
+                                           dialer.minimumValue, dialer.maximumValue,
+                                           0.0, 360.0);
+            dialer.handUpdated(dialerHand);
         }
 
         MouseArea{
             anchors.fill: parent;
             preventStealing: true;
-            enabled: hand.draggable;
-            property real centerX : hand.width / 2
-            property real centerY : hand.height / 2
+            enabled: dialerHand.hand.draggable;
+            property real centerX : dialerHand.width / 2
+            property real centerY : dialerHand.height / 2
             property bool internalChange: false
 
             onPositionChanged:  {
-                if (internalChange) return;
-                internalChange = true;
-                var point =  mapToItem (hand, mouse.x, mouse.y);
-                var diffX = (point.x - centerX);
-                var diffY = -1 * (point.y - centerY);
-                var rad = Math.atan (diffY / diffX);
-                var deg = (rad * 180 / Math.PI);
+                if (!internalChange) {
+                    internalChange = true;
+                    var point =  mapToItem (dialerHand, mouse.x, mouse.y);
+                    var diffX = (point.x - centerX);
+                    var diffY = -1 * (point.y - centerY);
+                    var rad = Math.atan (diffY / diffX);
+                    var deg = (rad * 180 / Math.PI);
 
-                if (diffX > 0 && diffY > 0) {
-                    __styleInstance.rotation = 90 - Math.abs (deg);
-                }
-                else if (diffX > 0 && diffY < 0) {
-                    __styleInstance.rotation = 90 + Math.abs (deg);
-                }
-                else if (diffX < 0 && diffY > 0) {
-                    __styleInstance.rotation = 270 + Math.abs (deg);
-                }
-                else if (diffX < 0 && diffY < 0) {
-                    __styleInstance.rotation = 270 - Math.abs (deg);
-                }
+                    if (diffX > 0 && diffY > 0) {
+                        __styleInstance.rotation = 90 - Math.abs (deg);
+                    }
+                    else if (diffX > 0 && diffY < 0) {
+                        __styleInstance.rotation = 90 + Math.abs (deg);
+                    }
+                    else if (diffX < 0 && diffY > 0) {
+                        __styleInstance.rotation = 270 + Math.abs (deg);
+                    }
+                    else if (diffX < 0 && diffY < 0) {
+                        __styleInstance.rotation = 270 - Math.abs (deg);
+                    }
 
-                hand.value = MathUtils.projectValue(__styleInstance.rotation,
-                                                    0.0, 360.0,
-                                                    dialer.minimumValue, dialer.maximumValue);
-                internalChange = false;
+                    dialerHand.value = MathUtils.projectValue(__styleInstance.rotation,
+                                                        0.0, 360.0,
+                                                        dialer.minimumValue, dialer.maximumValue);
+                    internalChange = false;
+                }
             }
         }
     }

@@ -13,23 +13,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import "../" 0.1
 
-Rectangle {
-    anchors.fill: parent
-    radius: width / 2
-    color: UbuntuColors.darkAubergine
-    antialiasing: true
-
-    // center item
-    // FIXME: Replace this with UbuntuShape when the widget has landed in the SDK.
-    Rectangle {
-        parent: styledItem.centerItem.parent
-        anchors.fill: parent
-        radius: width / 2;
-        color: UbuntuColors.midAubergine
-        antialiasing: true;
-    }
+QtObject {
+    property real width: units.gu(0.5)
+    property real height: parent.dialer.handSize
+    property bool draggable: true
+    property bool visible: true
+    property bool toCenterItem: false
 }

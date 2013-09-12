@@ -17,28 +17,60 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
-    id: handItem
-    anchors.fill: parent
+Item {
+    // style API
+    property alias handPointer: pointer
 
-    radius: width / 2
-    color: "#00000000"
+//    function pointerPreset(index, property) {
+//        switch (property) {
+//        case "width" :
+//            return (index === 0) ? units.gu(0.8) : units.gu(0.5);
+//        case "height":
+//            return (index === 0) ? dialer.handSpace /2 :
+//                                    (index === 2) ? dialer.handSpace + units.gu(1.5) :
+//                                                    dialer.handSpace - units.gu(1.5);
+//        case "z":
+//            return (index === 2) ? -1 : 0;
+//        case "visible":
+//        case "draggable":
+//            return true;
+//        case "toCenterItem":
+//            return (index === 0);
+//        default:
+//            return undefined;
+//        }
+//    }
+    function presetWidth(index) {
+        return (index === 0) ? units.gu(0.8) : units.gu(0.5);
+    }
+
+    function presetHeight(index) {
+        return (index === 0) ? dialer.handSpace /2 :
+                                (index === 2) ? dialer.handSpace + units.gu(1.5) :
+                                                dialer.handSpace - units.gu(1.5);
+    }
+
+    function presetZ(index) {
+        return (index === 2) ? -1 : 0
+    }
+
+    // style
+    anchors.fill: parent
     transformOrigin: Item.Center
 
     Rectangle {
-        id: hand
+        id: pointer
         x: (parent.width - width) / 2
-        y: (parent.height / 2) -  height
-        width: styledItem.size.width
-        height: styledItem.size.height + (styledItem.dialer.height - styledItem.dialer.handSpace) / 2
-        onHeightChanged: print(height)
+        y: styledItem.dialer.handSpace - (styledItem.hand.toCenterItem ? 0 : styledItem.hand.height)
+        width: styledItem.hand.width
+        height: styledItem.hand.height
         radius: units.gu(1)
-        color: styledItem.isHandVisible ? "white" : "#00000000"
+        color: styledItem.hand.visible ? Theme.palette.normal.baseText : "#00000000"
         antialiasing: true
     }
 
     Behavior on rotation {
-        enabled: !styledItem.draggable
+        enabled: !styledItem.hand.draggable
         RotationAnimation { direction: RotationAnimation.Shortest }
     }
 }
