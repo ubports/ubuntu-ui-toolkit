@@ -16,6 +16,8 @@
 
 """Base classes for Autopilot tests using the Ubuntu UI Toolkit."""
 
+import os
+
 from autopilot import (
     input,
     platform,
@@ -25,8 +27,6 @@ from autopilot import (
 
 class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
     """Autopilot test case for applications using the Ubuntu UI Toolkit."""
-
-    application_qml_path = ''
 
     def setUp(self):
         super(UbuntuUIToolkitAppTestCase, self).setUp()
@@ -40,7 +40,8 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
             return input.Touch
 
     def launch_application(self):
-        if self.application_source_exists():
+        # On the phablet, we can only run the installed application.
+        if platform.model() == 'Desktop' and self.application_source_exists():
             self.launch_application_from_source()
         else:
             self.launch_installed_application()
@@ -53,3 +54,15 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
 
     def launch_installed_application(self):
         raise NotImplementedError('This must be implemented on a subclass')
+
+
+class UbuntuUIToolkitSingleQMLAppTestCase(UbuntuUIToolkitAppTestCase):
+    """Autopilot test case for single QML apps using the Ubuntu UI Toolkit."""
+
+    app_qml_location = ''
+
+    def application_source_exists(self):
+        return os.path.exists(self.app_qml_location)
+
+    def launch_application_from_source(self):
+        pass
