@@ -106,11 +106,11 @@ StyledItem {
       \b visible property specifies whether to show the hand marker or not. The default value is true.
       */
     property DialerHandGroup hand: DialerHandGroup {
-        width: __styleInstance.presetWidth(index)
-        height: __styleInstance.presetHeight(index)
-        draggable: true
-        visible: true
-        toCenterItem: false
+        width: __styleInstance.handPreset(index, "width")
+        height: __styleInstance.handPreset(index, "height")
+        draggable: __styleInstance.handPreset(index, "draggable")
+        visible: __styleInstance.handPreset(index, "visible")
+        toCenterItem: __styleInstance.handPreset(index, "toCenterItem")
     }
 
     /*!
@@ -135,6 +135,7 @@ StyledItem {
       */
     readonly property alias index: grabber.index
 
+    z: __styleInstance.handPreset(index, "z")
     anchors.centerIn: parent
     width: parent.width
     height: parent.height
@@ -151,8 +152,6 @@ StyledItem {
     onValueChanged: grabber.updateHand();
     /*! \internal */
     Component.onCompleted: grabber.updateHand();
-
-    z: __styleInstance.presetZ(index)
 
     /*! \internal */
     property alias __grabber: grabber

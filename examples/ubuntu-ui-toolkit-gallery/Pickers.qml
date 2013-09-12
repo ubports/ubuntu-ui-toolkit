@@ -140,6 +140,7 @@ Template {
                 DialerHand {
                     id: selector
                     hand.visible: false
+                    value: 311
                     Rectangle {
                         anchors.centerIn: parent
                         width: height
@@ -154,16 +155,14 @@ Template {
                     }
                 }
 
-                onHandUpdated: {
-                    handText.text = Math.round(hand.value);
-                }
-
                 centerContent: [
                     Label {
                         id: handText
                         anchors.centerIn: parent
                     }
                 ]
+
+                onHandUpdated: handText.text = Math.round(hand.value);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,22 +15,28 @@
  */
 
 import QtQuick 2.0
+import QtTest 1.0
+import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 
-// FIXME: Replace this with UbuntuShape when the widget has landed in the SDK.
-Rectangle {
-    anchors.fill: parent
-    radius: width / 2
-    color: UbuntuColors.darkAubergine
-    antialiasing: true
+item {
+    id: root
+    width: 200
+    height: 200
 
-    // center item
-    // FIXME: Replace this with UbuntuShape when the widget has landed in the SDK.
-    Rectangle {
-        parent: styledItem.centerItem.parent
-        anchors.fill: parent
-        radius: width / 2;
-        color: UbuntuColors.midAubergine
-        antialiasing: true;
+    Dialer {
+        id: noHands
+    }
+    Dialer {
+        id: oneHand
+        DialerHand {
+            id: hand
+        }
+    }
+
+    TestCase {
+        id: testCase
+        name: "DialerAPI"
+        when: windowShown
     }
 }

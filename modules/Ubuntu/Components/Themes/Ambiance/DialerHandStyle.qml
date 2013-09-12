@@ -21,37 +21,24 @@ Item {
     // style API
     property alias handPointer: pointer
 
-//    function pointerPreset(index, property) {
-//        switch (property) {
-//        case "width" :
-//            return (index === 0) ? units.gu(0.8) : units.gu(0.5);
-//        case "height":
-//            return (index === 0) ? dialer.handSpace /2 :
-//                                    (index === 2) ? dialer.handSpace + units.gu(1.5) :
-//                                                    dialer.handSpace - units.gu(1.5);
-//        case "z":
-//            return (index === 2) ? -1 : 0;
-//        case "visible":
-//        case "draggable":
-//            return true;
-//        case "toCenterItem":
-//            return (index === 0);
-//        default:
-//            return undefined;
-//        }
-//    }
-    function presetWidth(index) {
-        return (index === 0) ? units.gu(0.8) : units.gu(0.5);
-    }
-
-    function presetHeight(index) {
-        return (index === 0) ? dialer.handSpace /2 :
-                                (index === 2) ? dialer.handSpace + units.gu(1.5) :
-                                                dialer.handSpace - units.gu(1.5);
-    }
-
-    function presetZ(index) {
-        return (index === 2) ? -1 : 0
+    function handPreset(index, property) {
+        switch (property) {
+        case "width" :
+            return (index === 0) ? units.gu(0.8) : units.gu(0.5);
+        case "height":
+            return (index === 0) ? dialer.handSpace /2 :
+                                    (index === 2) ? dialer.handSpace + units.gu(1.5) :
+                                                    dialer.handSpace - units.gu(1.5);
+        case "z":
+            return (index === 2) ? -1 : 0;
+        case "visible":
+        case "draggable":
+            return true;
+        case "toCenterItem":
+            return (index === 0);
+        default:
+            return undefined;
+        }
     }
 
     // style
