@@ -40,15 +40,15 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
             return input.Touch
 
     def launch_application(self):
-        if self.local_application_exists():
-            self.launch_local_application()
+        if self.application_source_exists():
+            self.launch_application_from_source()
         else:
             self.launch_installed_application()
 
-    def local_application_exists(self):
+    def application_source_exists(self):
         raise NotImplementedError('This must be implemented on a subclass')
 
-    def launch_installed_application(self):
+    def launch_application_from_source(self):
         raise NotImplementedError('This must be implemented on a subclass')
 
     def launch_installed_application(self):

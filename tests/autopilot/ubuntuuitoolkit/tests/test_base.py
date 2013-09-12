@@ -46,23 +46,23 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test.setUp()
         self.assertIs(test.input_device_class, input.Touch)
 
-    def test_local_application(self):
-        class LocalAppTestCase(base.UbuntuUIToolkitAppTestCase):
-            local_application_launched = False
-            def local_application_exists(self):
+    def test_launch_application_from_source(self):
+        class AppFromSourceTestCase(base.UbuntuUIToolkitAppTestCase):
+            application_launched_from_source = False
+            def application_source_exists(self):
                 return True
-            def launch_local_application(self):
-                self.local_application_launched = True
+            def launch_application_from_source(self):
+                self.application_launched_from_source = True
             def runTest(self):
                 pass
-        test = LocalAppTestCase()
+        test = AppFromSourceTestCase()
         test.setUp()
-        self.assertTrue(test.local_application_launched)
+        self.assertTrue(test.application_launched_from_source)
 
-    def test_installed_application(self):
+    def test_launch_installed_application(self):
         class InstalledAppTestCase(base.UbuntuUIToolkitAppTestCase):
             installed_application_launched = False
-            def local_application_exists(self):
+            def application_source_exists(self):
                 return False
             def launch_installed_application(self):
                 self.installed_application_launched = True
