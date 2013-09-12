@@ -46,12 +46,12 @@ Panel {
                 && tools.opened && tools.locked) {
             // toolbar is locked in visible state.
             internal.updateVisibleTools();
-            opened = true;
+            toolbar.open();
         } else if (!opened && !animating) {
             // toolbar is closed
             internal.updateVisibleTools();
         } else {
-            opened = false;
+            toolbar.close()
             // internal.visibleTools will be updated
             // when the hide animation is finished
         }
@@ -72,7 +72,13 @@ Panel {
     Connections {
         target: tools
         ignoreUnknownSignals: true
-        onOpenedChanged: toolbar.opened = tools.opened;
+        onOpenedChanged: {
+            if (tools.opened) {
+                toolbar.open();
+            } else {
+                toolbar.close();
+            }
+        }
         onLockedChanged: toolbar.locked = tools.locked;
     }
 

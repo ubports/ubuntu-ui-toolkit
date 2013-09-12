@@ -178,8 +178,36 @@ Item {
     property bool opened: false
     /*! \internal */
     onOpenedChanged: {
-        if (opened) state = "spread";
-        else state = "";
+        if (internal.openedChangedWarning) {
+            console.log("DEPRECATED use of Panel.opened property. This property will be made read-only,
+                please use the opened property of the Page tools or use Panel.open() and Panel.close().");
+        }
+
+        if (opened) {
+            panel.open();
+        } else {
+            panel.close();
+        }
+
+        internal.openedChangedWarning = true;
+    }
+
+    /*!
+      Open the panel
+     */
+    function open() {
+        internal.openedChangedWarning = false;
+        panel.state = "spread";
+        opened = true;
+    }
+
+    /*!
+      Close the panel
+     */
+    function close() {
+        internal.openedChangedWarning = false;
+        panel.state = "";
+        opened = false;
     }
 
     /*!
@@ -288,6 +316,9 @@ Item {
     QtObject {
         id: internal
 
+        // FIXME: Remove when opened property is made readonly
+        property bool openedChangedWarning: true
+
         /*!
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
@@ -332,11 +363,18 @@ Item {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
-                panel.opened = false;
+                panel.close();
                 panel.locked = true;
             } else { // don't force hidden
                 panel.locked = internal.savedLocked;
-                if (internal.savedLocked) panel.opened = internal.savedOpened;
+
+                if (internal.savedLocked) {
+                    if (internal.savedOpened) {
+                        panel.open();
+                    } else {
+                        panel.close();
+                    }
+                }
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
             }
@@ -350,9 +388,9 @@ Item {
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
         } else if (state == "spread") {
-            panel.opened = true;
+            panel.open();
         } else if (state == "") {
-            panel.opened = false;
+            panel.close();
         }
         internal.previousState = state;
     }
@@ -363,7 +401,7 @@ Item {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of locked by the clicked Item behind
-            if (!panel.locked) panel.opened = false;
+            if (!panel.locked) panel.close();
         }
         propagateComposedEvents: true
         visible: panel.locked == false && panel.state == "spread"
