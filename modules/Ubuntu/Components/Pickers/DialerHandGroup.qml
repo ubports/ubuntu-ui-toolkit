@@ -16,6 +16,10 @@
 import QtQuick 2.0
 import "../" 0.1
 
+/*!
+  \internal
+  Component serving as group property for DialerHhand.hand property.
+  */
 QtObject {
     property real width: units.gu(0.5)
     property real height: parent.dialer.handSize
