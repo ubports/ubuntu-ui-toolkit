@@ -28,8 +28,7 @@
 QTORGANIZER_USE_NAMESPACE
 
 /*-----------------------------------------------------------------------------
- * Adaptation layer for Alarms. QOrganizer implementation may not require this,
- * however in case we decide to go with some other approach, this layer is welcome.
+ * Adaptation layer for Alarms.
  */
 
 class AlarmRequestAdapter : public AlarmRequestPrivate
@@ -82,9 +81,9 @@ public:
     void loadAlarms();
     void saveAlarms();
 
-    void rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event);
-    void updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event);
-    int organizer2RawAlarm(const QOrganizerTodo &event, AlarmData &alarm);
+    void organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
+    void updateOrganizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
+    int alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm);
     QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
     void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
 

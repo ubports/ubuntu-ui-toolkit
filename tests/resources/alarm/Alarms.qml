@@ -32,7 +32,7 @@ MainView {
     Alarm {
         id: alarm
         onStatusChanged: {
-            print("alarm status= " + status + ", error=" + error)
+            print("alarm status= " + status + ", error=" + error);
         }
     }
 
@@ -68,8 +68,9 @@ MainView {
                 objectName: "alarm_enabled"
                 checked: alarm.enabled
                 onCheckedChanged: {
-                    if (checked != alarm.enabled)
+                    if (checked != alarm.enabled) {
                         alarm.enabled = checked;
+                    }
                 }
             }
         }
@@ -129,8 +130,8 @@ MainView {
             control: Button {
                 text: "Save"
                 onClicked: {
-                    alarm.message = message.text
-                    alarm.date = new Date(date.text)
+                    alarm.message = message.text;
+                    alarm.date = new Date(date.text);
                     alarm.save();
                 }
             }
@@ -140,7 +141,7 @@ MainView {
             control: Button {
                 text: "Reset"
                 onClicked: {
-                    alarm.reset()
+                    alarm.reset();
                 }
             }
         }

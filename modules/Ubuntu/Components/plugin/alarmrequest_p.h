@@ -46,7 +46,6 @@ public:
 protected:
     bool wait(int msec = 0);
 
-
 Q_SIGNALS:
     void statusChanged(int status, int error);
 

@@ -25,7 +25,6 @@
 
 #include "ucalarm.h"
 
-
 class AlarmData {
 public:
     enum Change {

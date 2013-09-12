@@ -27,6 +27,12 @@
 #include <QtCore/QStandardPaths>
 
 #define ALARM_DATABASE          "%1/alarms.database"
+/*
+ * The main alarm manager engine used from Saucy onwards is EDS (Evolution Data
+ * Server) based. Any previous release uses the generic "memory" manager engine
+ * which does not store alarm data, does not schedule organizer events and does
+ * not give visual or audible reminding.
+ */
 #define ALARM_MANAGER           "eds"
 #define ALARM_MANAGER_FALLBACK  "memory"
 #define ALARM_COLLECTION        "Alarms"
@@ -34,8 +40,7 @@
 QTORGANIZER_USE_NAMESPACE
 
 /*-----------------------------------------------------------------------------
- * Adaptation layer for Alarms. QOrganizer implementation may not require this,
- * however in case we decide to go with some other approach, this layer is welcome.
+ * Adaptation layer for Alarms.
  */
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
 {
@@ -112,7 +117,7 @@ void AlarmsAdapter::loadAlarms()
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
         QOrganizerTodo event;
-        rawAlarm2Organizer(alarm, event);
+        organizerEventFromAlarmData(alarm, event);
         manager->saveItem(&event);
     }
     file.close();
@@ -146,7 +151,7 @@ void AlarmsAdapter::saveAlarms()
     listDirty = false;
 }
 
-void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &event)
+void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
 {
     event.setCollectionId(collection.id());
     event.setAllDay(false);
@@ -191,7 +196,7 @@ void AlarmsAdapter::rawAlarm2Organizer(const AlarmData &alarm, QOrganizerTodo &e
     }
 }
 
-void AlarmsAdapter::updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTodo &event)
+void AlarmsAdapter::updateOrganizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
 {
     // remove affected details
     if (!alarm.enabled || (alarm.changes & AlarmData::Enabled)) {
@@ -207,10 +212,10 @@ void AlarmsAdapter::updateOrganizerFromRaw(const AlarmData &alarm, QOrganizerTod
         event.removeDetail(&old);
     }
 
-    rawAlarm2Organizer(alarm, event);
+    organizerEventFromAlarmData(alarm, event);
 }
 
-int AlarmsAdapter::organizer2RawAlarm(const QOrganizerTodo &event, AlarmData &alarm)
+int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm)
 {
     if (event.isEmpty()) {
         return FetchedEventEmpty;
@@ -276,7 +281,6 @@ void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
 /*-----------------------------------------------------------------------------
  * Abstract methods
  */
-
 bool AlarmsAdapter::fetchAlarms()
 {
     if (fetchRequest) {
@@ -311,7 +315,7 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
             continue;
         }
         AlarmData alarm;
-        if (organizer2RawAlarm(event, alarm) == UCAlarm::NoError) {
+        if (alarmDataFromOrganizerEvent(event, alarm) == UCAlarm::NoError) {
             alarmList << alarm;
         }
     }
@@ -346,7 +350,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
 
     if (!alarm.cookie.isValid()) {
         // new event
-        AlarmsAdapter::get()->rawAlarm2Organizer(alarm, event);
+        AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
     } else {
         // update existing event
         QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
@@ -355,7 +359,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
             setStatus(AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
         }
-        AlarmsAdapter::get()->updateOrganizerFromRaw(alarm, event);
+        AlarmsAdapter::get()->updateOrganizerEventFromAlarmData(alarm, event);
     }
 
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
@@ -376,7 +380,7 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
     }
 
     QOrganizerTodo event;
-    AlarmsAdapter::get()->rawAlarm2Organizer(alarm, event);
+    AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
     event.setId(alarm.cookie.value<QOrganizerItemId>());
 
     QOrganizerItemRemoveRequest *operation = new QOrganizerItemRemoveRequest(q_ptr);
