@@ -125,6 +125,14 @@ StyledItem {
     property alias centerContent: centerHolder.data
 
     /*!
+      \qmlproperty list<DialerHands> hands
+      \readonly
+      The property holds the list of DialerHands added to Dialer. This may be the
+      same as the children, however will contain only DialerHand objects.
+      */
+    readonly property alias hands: internal.hands
+
+    /*!
       \qmlmethod void handUpdated(DialerHand hand)
       The signal is emited when the hand value is updated.
       */
@@ -137,6 +145,11 @@ StyledItem {
     style: Theme.createStyleComponent("DialerStyle.qml", dialer)
 
     Item {
+        id: internal
+        // internal property holding only the list of DialerHand components
+        // workaround for readonly public property
+        property var hands: []
+
         height: size - handSpace * 2
         width: size - handSpace * 2
         anchors.centerIn: parent
@@ -152,10 +165,13 @@ StyledItem {
         // apply dialer presets if the hand sizes were not set
         // check dialers only
         var idx = 0;
+        var stack = [];
         for (var i in children) {
             if (children[i].hasOwnProperty("hand")) {
                 children[i].__grabber.index = idx++;
+                stack.push(children[i]);
             }
+            internal.hands = stack;
         }
     }
 }

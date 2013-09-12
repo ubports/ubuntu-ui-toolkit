@@ -35,7 +35,7 @@ Item {
         case "draggable":
             return true;
         case "toCenterItem":
-            return (index === 0);
+            return false;
         default:
             return undefined;
         }

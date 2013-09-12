@@ -143,7 +143,7 @@ StyledItem {
 
     /*! \internal */
     onParentChanged: {
-        if (QuickUtils.className(dialer) !== "Dialer") {
+        if (dialer && !dialer.hasOwnProperty("handSpace")) {
             console.log("WARNING: DialerHand can be a child of Dialer only.");
         }
     }
@@ -189,32 +189,32 @@ StyledItem {
             property bool internalChange: false
 
             onPositionChanged:  {
-                if (!internalChange) {
-                    internalChange = true;
-                    var point =  mapToItem (dialerHand, mouse.x, mouse.y);
-                    var diffX = (point.x - centerX);
-                    var diffY = -1 * (point.y - centerY);
-                    var rad = Math.atan (diffY / diffX);
-                    var deg = (rad * 180 / Math.PI);
+                if (internalChange) return;
+                internalChange = true;
+                var point =  mapToItem (dialerHand, mouse.x, mouse.y);
+                var diffX = (point.x - centerX);
+                var diffY = -1 * (point.y - centerY);
+                print(mouse.x + ":" + mouse.y)
+                var rad = Math.atan (diffY / diffX);
+                var deg = (rad * 180 / Math.PI);
 
-                    if (diffX > 0 && diffY > 0) {
-                        __styleInstance.rotation = 90 - Math.abs (deg);
-                    }
-                    else if (diffX > 0 && diffY < 0) {
-                        __styleInstance.rotation = 90 + Math.abs (deg);
-                    }
-                    else if (diffX < 0 && diffY > 0) {
-                        __styleInstance.rotation = 270 + Math.abs (deg);
-                    }
-                    else if (diffX < 0 && diffY < 0) {
-                        __styleInstance.rotation = 270 - Math.abs (deg);
-                    }
-
-                    dialerHand.value = MathUtils.projectValue(__styleInstance.rotation,
-                                                        0.0, 360.0,
-                                                        dialer.minimumValue, dialer.maximumValue);
-                    internalChange = false;
+                if (diffX > 0 && diffY > 0) {
+                    __styleInstance.rotation = 90 - Math.abs (deg);
                 }
+                else if (diffX > 0 && diffY < 0) {
+                    __styleInstance.rotation = 90 + Math.abs (deg);
+                }
+                else if (diffX < 0 && diffY > 0) {
+                    __styleInstance.rotation = 270 + Math.abs (deg);
+                }
+                else if (diffX < 0 && diffY < 0) {
+                    __styleInstance.rotation = 270 - Math.abs (deg);
+                }
+
+                dialerHand.value = MathUtils.projectValue(__styleInstance.rotation,
+                                                    0.0, 360.0,
+                                                    dialer.minimumValue, dialer.maximumValue);
+                internalChange = false;
             }
         }
     }
