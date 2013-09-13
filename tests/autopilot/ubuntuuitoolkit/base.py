@@ -57,7 +57,7 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
         raise NotImplementedError('This must be implemented on a subclass')
 
 
-class UbuntuUIToolkitSingleQMLAppTestCase(UbuntuUIToolkitAppTestCase):
+class ClickAppTestCase(UbuntuUIToolkitAppTestCase):
     """Autopilot test case for single QML apps using the Ubuntu UI Toolkit."""
 
     app_qml_source_location = ''
@@ -66,7 +66,7 @@ class UbuntuUIToolkitSingleQMLAppTestCase(UbuntuUIToolkitAppTestCase):
     app_name = ''
 
     def application_source_exists(self):
-        return os.path.exists(self.app_qml_location)
+        return os.path.exists(self.app_qml_source_location)
 
     def launch_application_from_source(self):
         self.app = self.launch_test_application(

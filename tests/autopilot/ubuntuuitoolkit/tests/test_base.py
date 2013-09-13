@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import tempfile
 import unittest
 
 import mock
@@ -87,3 +89,24 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test = InstalledAppTestCase()
         test.launch_application()
         self.assertTrue(test.installed_application_launched)
+
+
+class ClickAppTestCase(base.ClickAppTestCase):
+    """Empty test case to be used by other tests."""
+
+    def _runTest(self):
+        pass
+
+
+class TestClickAppTestCase(testtools.TestCase):
+
+   def test_application_source_exists(self):
+       test = ClickAppTestCase('_runTest')
+       app_fake_qml = tempfile.NamedTemporaryFile()
+       test.app_qml_source_location = app_fake_qml.name
+       self.assertTrue(test.application_source_exists())
+
+   def test_application_source_doesnt_exist(self):
+       test = ClickAppTestCase('_runTest')
+       app_fake_qml = 'Not existent'
+       self.assertFalse(test.application_source_exists())
