@@ -250,6 +250,8 @@ PageTreeNode {
         anchors.fill: contentsItem
         // This mouse area will be on top of the page contents, but
         // under the toolbar and header.
+        // It is used for detecting interaction with the page contents
+        // which can close the toolbar take a tab bar out of selection mode.
 
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ?
                                       page.__propagated.toolbar : null
@@ -262,20 +264,13 @@ PageTreeNode {
 
         onPressed: {
             mouse.accepted = false;
-            // the mouse click may cause an update
-            //  of locked by the clicked Item behind
-//            if (!panel.locked) panel.close();
-            console.log ("uh uh uh yeah");
-
-            if (contentsArea.toolbar) {
+            if (contentsArea.toolbar && !toolbar.locked) {
                 contentsArea.toolbar.close();
                 }
             if (contentsArea.tabBar && !contentsArea.tabBar.alwaysSelectionMode) {
                 contentsArea.tabBar.selectionMode = false;
             }
         }
-
         propagateComposedEvents: true
-//        visible: panel.locked == false && panel.state == "spread"
     }
 }
