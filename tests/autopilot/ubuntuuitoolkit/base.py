@@ -63,25 +63,30 @@ class UbuntuUIToolkitSingleQMLAppTestCase(UbuntuUIToolkitAppTestCase):
 
     app_qml_source_location = ''
     installed_app_qml_location = ''
-    desktop_file_hint = ''
+    package_id = ''
+    app_name = ''
 
     def application_source_exists(self):
         return os.path.exists(self.app_qml_location)
 
     def launch_application_from_source(self):
         self.app = self.launch_test_application(
-            'qmlscene',
-            self.app_qml_location,
-            app_type='qt',
+            'qmlscene', self.app_qml_location, app_type='qt',
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
     def launch_installed_application(self):
+        if platform.model() == 'Desktop':
+            self.launch_installed_application_with_qmlscene()
+        else:
+            self.launch_installed_click_application()
+
+    def launch_installed_application_with_qmlscene(self):
         self.app = self.launch_test_application(
-            'qmlscene',
-            installed_app_qml_location,
-            '--desktop_file_hint=' + desktop_file_hint,
-            app_type='qt',
+            'qmlscene', installed_app_qml_location, app_type='qt',
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+
+    def launch_installed_click_application(self):
+        self.app = self.launch_click_package(self.pacakge_id, self.app_name)
 
     @property
     def main_view(self):
