@@ -33,6 +33,9 @@ Panel {
     }
     height: background.height
 
+    // Closing of the toolbar on app contents ineraction is handled by the Page.
+    __closeOnContentsClicks: false
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar

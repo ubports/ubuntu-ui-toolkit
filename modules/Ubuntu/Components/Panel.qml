@@ -398,19 +398,27 @@ Item {
         }
     }
 
-    // TODO TIM: Move this to the Page,
-    //  But come up with a solution for Panel because it breaks behavior when there is no Toolbar.
-//    Toolkit.InverseMouseArea {
-//        anchors.fill: draggingArea
-//        onClicked: {
-//            mouse.accepted = false;
-//            // the mouse click may cause an update
-//            //  of locked by the clicked Item behind
-//            if (!panel.locked) panel.close();
-//        }
-//        propagateComposedEvents: true
-//        visible: panel.locked == false && panel.state == "spread"
-//    }
+    /*!
+      \internal
+      Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
+      This functionality moved to the Toolbar/Page implementation because the mouse area needs to
+      access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
+      compatibility in apps that use it directly. Default value is true, but it is set to false in Toolbar.
+
+      FIXME: Remove __detectContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
+     */
+    property bool __closeOnContentsClicks: true
+    Toolkit.InverseMouseArea {
+        anchors.fill: draggingArea
+        onClicked: {
+            mouse.accepted = false;
+            // the mouse click may cause an update
+            //  of locked by the clicked Item behind
+            if (!panel.locked) panel.close();
+        }
+        propagateComposedEvents: true
+        visible: panel.__closeOnContentsClicks && panel.locked == false && panel.state == "spread"
+    }
 
     DraggingArea {
         id: draggingArea
