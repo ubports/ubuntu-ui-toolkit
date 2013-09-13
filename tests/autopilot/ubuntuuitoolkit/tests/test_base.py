@@ -47,8 +47,7 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test.setUp()
         self.assertIs(test.input_device_class, input.Touch)
 
-    @mock.patch.object(
-        base.UbuntuUIToolkitAppTestCase, 'is_desktop', return_value=True)
+    @mock.patch('autopilot.platform.model', return_value='Desktop')
     def test_launch_application_with_source_on_desktop(self, mock_model):
         class AppFromSourceTestCase(base.UbuntuUIToolkitAppTestCase):
             application_launched_from_source = False
@@ -62,8 +61,7 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test.setUp()
         self.assertTrue(test.application_launched_from_source)
 
-    @mock.patch.object(
-        base.UbuntuUIToolkitAppTestCase, 'is_desktop', return_value=False)
+    @mock.patch('autopilot.platform.model', return_value='not Desktop')
     def test_launch_application_with_source_on_phablet(self, mock_model):
         class AppFromSourceTestCase(base.UbuntuUIToolkitAppTestCase):
             installed_application_launched = False

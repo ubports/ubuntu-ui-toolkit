@@ -36,17 +36,14 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
         self.launch_application()
 
     def _get_input_device_class(self):
-        if self.is_desktop():
+        if platform.model() == 'Desktop':
             return input.Mouse
         else:
             return input.Touch
 
-    def is_desktop(self):
-        return platform.model() == 'Desktop'
-
     def launch_application(self):
         # On the phablet, we can only run the installed application.
-        if self.is_desktop() and self.application_source_exists():
+        if platform.model() == 'Desktop' and self.application_source_exists():
             self.launch_application_from_source()
         else:
             self.launch_installed_application()
