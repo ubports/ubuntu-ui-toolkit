@@ -127,6 +127,7 @@ PageTreeNode
     property string title
     property Flickable flickable
     property list<Action> actions
+    default property internal pageContents
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader

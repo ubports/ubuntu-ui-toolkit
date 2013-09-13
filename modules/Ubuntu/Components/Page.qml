@@ -120,7 +120,7 @@ PageTreeNode {
       of the header by scrolling in the Flickable. In cases where a flickable should control the header,
       but it is not automatically detected, the flickable property can be set.
      */
-    property Flickable flickable: internal.getFlickableChild(page)
+    property Flickable flickable: internal.getFlickableChild(contentsItem)
 
     /*! \internal */
     onActiveChanged: {
@@ -210,7 +210,7 @@ PageTreeNode {
                 for (var i=0; i < item.children.length; i++) {
                     var child = item.children[i];
                     if (internal.isVerticalFlickable(child)) {
-                        if (child.anchors.top === page.top || child.anchors.fill === page) {
+                        if (child.anchors.top === contentsItem.top || child.anchors.fill === contentsItem) {
                             return item.children[i];
                         }
                     }
@@ -235,16 +235,19 @@ PageTreeNode {
         }
     }
 
-    default property alias pageContents: contents.data
-
+    /*!
+      \internal
+      The contents of the page.
+     */
+    default property alias pageContents: contentsItem.data
     Item {
-        id: contents
+        id: contentsItem
         anchors.fill: parent
     }
 
     MouseArea {
         id: contentsArea
-        anchors.fill: contents
+        anchors.fill: contentsItem
         // This mouse area will be on top of the page contents, but
         // under the toolbar and header.
 
