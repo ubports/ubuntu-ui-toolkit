@@ -58,7 +58,7 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
             def runTest(self):
                 pass
         test = AppFromSourceTestCase()
-        test.setUp()
+        test.launch_application()
         self.assertTrue(test.application_launched_from_source)
 
     @mock.patch('autopilot.platform.model', return_value='not Desktop')
@@ -72,7 +72,7 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
             def runTest(self):
                 pass
         test = AppFromSourceTestCase()
-        test.setUp()
+        test.launch_application()
         self.assertTrue(test.installed_application_launched)
 
     def test_launch_installed_application(self):
@@ -85,5 +85,5 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
             def runTest(self):
                 pass
         test = InstalledAppTestCase()
-        test.setUp()
+        test.launch_application()
         self.assertTrue(test.installed_application_launched)

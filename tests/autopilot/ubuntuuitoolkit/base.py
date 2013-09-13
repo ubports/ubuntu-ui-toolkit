@@ -33,7 +33,6 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
     def setUp(self):
         super(UbuntuUIToolkitAppTestCase, self).setUp()
         self.input_device_class = self._get_input_device_class()
-        self.launch_application()
 
     def _get_input_device_class(self):
         if platform.model() == 'Desktop':
