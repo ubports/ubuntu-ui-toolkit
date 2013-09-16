@@ -168,8 +168,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
 
-    context->setContextProperty("Application", &UCApplication::instance());
-    static ContextPropertyChangeListener applicationChangeListener(context, "Application");
+    // We can't use 'Application' because it exists (undocumented)
+    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
+    static ContextPropertyChangeListener applicationChangeListener(context, "UbuntuApplication");
     QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
                      &applicationChangeListener, SLOT(updateContextProperty()));
     QObject::connect(&UCApplication::instance(), SIGNAL(organizationNameChanged()),

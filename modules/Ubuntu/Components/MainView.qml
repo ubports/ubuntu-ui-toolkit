@@ -358,9 +358,9 @@ PageTreeNode {
                that the folders are whitelisted based on the app name. Similar
                to how Unity uses it to distinguish running applications.
              */
-            Application.applicationName = applicationName
+            UbuntuApplication.applicationName = applicationName
             // Unset organization to skip an extra folder component
-            Application.organizationName = ""
+            UbuntuApplication.organizationName = ""
         }
     }
 }
