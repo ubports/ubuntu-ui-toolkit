@@ -173,8 +173,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     static ContextPropertyChangeListener applicationChangeListener(context, "UbuntuApplication");
     QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
                      &applicationChangeListener, SLOT(updateContextProperty()));
-    QObject::connect(&UCApplication::instance(), SIGNAL(organizationNameChanged()),
-                     &applicationChangeListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("units", &UCUnits::instance());
     static ContextPropertyChangeListener unitsChangeListener(context, "units");

@@ -45,22 +45,14 @@ QString UCApplication::applicationName() {
 }
 
 void UCApplication::setApplicationName(QString applicationName) {
+    /* QStandardPaths uses the name to build folder names.
+       This works across platforms. For confinement we rely on the fact
+       that the folders are whitelisted based on the app name. Similar
+       to how Unity uses it to distinguish running applications.
+     */
     QCoreApplication::setApplicationName(applicationName);
+    // Unset organization to skip an extra folder component
+    QCoreApplication::setOrganizationName("");
     Q_EMIT applicationNameChanged();
 }
-
-/*!
- * \qmlproperty string Application::organizationName
- * \internal
- * The name of the organization, see QCoreApplication::organizationName
- */
-QString UCApplication::organizationName() {
-    return QCoreApplication::organizationName();
-}
-
-void UCApplication::setOrganizationName(QString organizationName) {
-    QCoreApplication::setOrganizationName(organizationName);
-    Q_EMIT organizationNameChanged();
-}
-
 

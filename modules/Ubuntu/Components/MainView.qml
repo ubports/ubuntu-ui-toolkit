@@ -352,15 +352,7 @@ PageTreeNode {
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
-            /* Set name and organization on Application which QStandardPaths
-               honors to construct folders.
-               This works across platforms. For confinement we rely on the fact
-               that the folders are whitelisted based on the app name. Similar
-               to how Unity uses it to distinguish running applications.
-             */
             UbuntuApplication.applicationName = applicationName
-            // Unset organization to skip an extra folder component
-            UbuntuApplication.organizationName = ""
         }
     }
 }

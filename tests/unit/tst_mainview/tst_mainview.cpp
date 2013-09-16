@@ -95,6 +95,7 @@ private Q_SLOTS:
         QString applicationName(mainView->property("applicationName").toString());
         QCOMPARE(applicationName, QString("org.gnu.wildebeest"));
         QCOMPARE(applicationName, QCoreApplication::applicationName());
+        QCOMPARE(QString(""), QCoreApplication::organizationName());
     }
 
     void testSetApplicationName() {
@@ -102,6 +103,7 @@ private Q_SLOTS:
         UCApplication::instance().setApplicationName(appName);
         QCOMPARE(UCApplication::instance().applicationName(), appName);
         QCOMPARE(QCoreApplication::applicationName(), appName);
+        QCOMPARE(QString(""), QCoreApplication::organizationName());
     }
 
     void testExpectedDataFolder() {

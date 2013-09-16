@@ -28,7 +28,6 @@ class UCApplication : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)
-    Q_PROPERTY(QString organizationName READ organizationName WRITE setOrganizationName NOTIFY organizationNameChanged)
 
 private:
     Q_DISABLE_COPY(UCApplication)
@@ -43,15 +42,12 @@ public:
 
     // getter
     QString applicationName();
-    QString organizationName();
 
     // setter
     void setApplicationName(QString applicationName);
-    void setOrganizationName(QString organizationName);
 
 Q_SIGNALS:
     void applicationNameChanged();
-    void organizationNameChanged();
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H
