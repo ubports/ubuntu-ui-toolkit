@@ -443,10 +443,6 @@ plugins.qmltypes
     Method {
     name: "get"
     Parameter { name: "index"; type: "int" }
-    name: "UCApplication"
-    prototype: "QObject"
-    exports: ["Application 0.1"]
-    Property { name: "applicationName"; type: "string" }
     name: "UCArgument"
     prototype: "QObject"
     exports: ["Argument 0.1"]

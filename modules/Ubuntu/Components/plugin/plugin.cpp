@@ -143,7 +143,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
     qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
-    qmlRegisterUncreatableType<UCApplication>(uri, 0, 1, "Application", "Singleton object");
     qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
     qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
 }
