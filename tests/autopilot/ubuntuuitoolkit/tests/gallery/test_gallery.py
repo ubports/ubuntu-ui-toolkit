@@ -18,8 +18,6 @@
 
 import os
 
-import testscenarios
-
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
@@ -192,27 +190,26 @@ class GenericTests(GalleryTestCase):
 
 class ButtonsTestCase(GalleryTestCase):
 
-    scenarios = testscenarios.multiply_scenarios(
-        tests.get_input_device_scenarios(),
-        [('standard button', dict(
+    scenarios = [
+        ('standard button', dict(
             button_name="button_text", is_enabled=True, color=None, icon=None,
             text="Call")),
-         ('button with color', dict(
-             button_name="button_color", is_enabled=True,
-             color=[0, 0, 0, 255], icon=None, text="Call")),
-         ('button with icon', dict(
-             button_name="button_iconsource", is_enabled=True, color=None,
-             icon="call.png", text=None)),
-         ('button with icon on the right', dict(
-             button_name="button_iconsource_right_text", is_enabled=True,
-             color=None, icon="call.png", text="Call")),
-         ('button with icon on the left', dict(
-             button_name="button_iconsource_left_text", is_enabled=True,
-             color=None, icon="call.png", text="Call")),
-         ('disabled button', dict(
-             button_name="button_text_disabled", is_enabled=False, color=None,
-             icon=None, text="Call"))]
-    )
+        ('button with color', dict(
+            button_name="button_color", is_enabled=True,
+            color=[0, 0, 0, 255], icon=None, text="Call")),
+        ('button with icon', dict(
+            button_name="button_iconsource", is_enabled=True, color=None,
+            icon="call.png", text=None)),
+        ('button with icon on the right', dict(
+            button_name="button_iconsource_right_text", is_enabled=True,
+            color=None, icon="call.png", text="Call")),
+        ('button with icon on the left', dict(
+            button_name="button_iconsource_left_text", is_enabled=True,
+            color=None, icon="call.png", text="Call")),
+        ('disabled button', dict(
+            button_name="button_text_disabled", is_enabled=False, color=None,
+            icon=None, text="Call"))
+    ]
 
     def test_buttons(self):
         item = "Buttons"

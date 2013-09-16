@@ -14,11 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import tempfile
 import unittest
 
-import mock
 import testtools
 from autopilot import input, platform
 
@@ -27,7 +24,7 @@ from ubuntuuitoolkit import base
 
 class AppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Empty test case to be used by other tests."""
-            
+
     def _runTest(self):
         pass
 

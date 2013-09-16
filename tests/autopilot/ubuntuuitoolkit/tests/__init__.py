@@ -21,13 +21,11 @@ import os.path
 from tempfile import mktemp
 import subprocess
 
-from autopilot.input import Mouse, Touch, Pointer
+from autopilot.input import Pointer
 from autopilot.matchers import Eventually
-from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
-from autopilot.testcase import AutopilotTestCase
 
-from ubuntuuitoolkit import emulators
+from ubuntuuitoolkit import base, emulators
 
 
 def get_module_include_path():
@@ -42,23 +40,12 @@ def get_module_include_path():
     )
 
 
-def get_input_device_scenarios():
-    """Return the scenarios with the right input device for the platform."""
-    if model() == 'Desktop':
-        scenarios = [('with mouse', dict(input_device_class=Mouse))]
-    else:
-        scenarios = [('with touch', dict(input_device_class=Touch))]
-    return scenarios
-
-
-class UbuntuUiToolkitTestCase(AutopilotTestCase):
+class UbuntuUiToolkitTestCase(base.UbuntuUIToolkitAppTestCase):
     """Common test case class for SDK tests."""
 
-    scenarios = get_input_device_scenarios()
-
     def setUp(self):
-        self.pointing_device = Pointer(self.input_device_class.create())
         super(UbuntuUiToolkitTestCase, self).setUp()
+        self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_test_qml()
 
     def launch_test_qml(self):

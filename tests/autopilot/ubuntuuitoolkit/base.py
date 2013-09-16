@@ -16,8 +16,6 @@
 
 """Base classes for Autopilot tests using the Ubuntu UI Toolkit."""
 
-import os
-
 from autopilot import (
     input,
     platform,
