@@ -22,13 +22,13 @@
 #include <QDebug>
 
 /*!
- * \qmltype Application
- * \instantiates Application
+ * \qmltype UbuntuApplication
+ * \instantiates UbuntuApplication
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
- * \brief Application is a QML binding for a subset of QCoreApplication.
+ * \brief UbuntuApplication is a QML binding for a subset of QCoreApplication.
  *
- * Application is a context property in QML.
+ * UbuntuApplication is a context property in QML.
  * \endqml
  */
 UCApplication::UCApplication(QObject* parent) : QObject(parent)
