@@ -151,7 +151,8 @@ PageTreeNode {
         UnityActions.ActionContext {
             id: actionContext
 
-            property var actionManager: page.__propagated && page.__propagated.actionManager ?
+            property var actionManager: page.__propagated &&
+                                        page.__propagated.hasOwnProperty("actionManager") ?
                                             page.__propagated.actionManager : null
 
             onActionManagerChanged: addLocalContext(actionManager)
