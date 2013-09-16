@@ -24,8 +24,6 @@ from autopilot import (
     testcase
 )
 
-from ubuntuuitoolkit import emulators
-
 
 class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
     """Autopilot test case for applications using the Ubuntu UI Toolkit."""
@@ -39,54 +37,3 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
             return input.Mouse
         else:
             return input.Touch
-
-    def launch_application(self):
-        # On the phablet, we can only run the installed application.
-        if platform.model() == 'Desktop' and self.application_source_exists():
-            self.launch_application_from_source()
-        else:
-            self.launch_installed_application()
-
-    def application_source_exists(self):
-        raise NotImplementedError('This must be implemented on a subclass')
-
-    def launch_application_from_source(self):
-        raise NotImplementedError('This must be implemented on a subclass')
-
-    def launch_installed_application(self):
-        raise NotImplementedError('This must be implemented on a subclass')
-
-
-class ClickAppTestCase(UbuntuUIToolkitAppTestCase):
-    """Autopilot test case for single QML apps using the Ubuntu UI Toolkit."""
-
-    app_qml_source_location = ''
-    installed_app_qml_location = ''
-    package_id = ''
-    app_name = ''
-
-    def application_source_exists(self):
-        return os.path.exists(self.app_qml_source_location)
-
-    def launch_application_from_source(self):
-        self.app = self.launch_test_application(
-            'qmlscene', self.app_qml_location, app_type='qt',
-            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
-
-    def launch_installed_application(self):
-        if platform.model() == 'Desktop':
-            self.launch_installed_application_with_qmlscene()
-        else:
-            self.launch_installed_click_application()
-
-    def launch_installed_application_with_qmlscene(self):
-        self.app = self.launch_test_application(
-            'qmlscene', installed_app_qml_location, app_type='qt',
-            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
-
-    def launch_installed_click_application(self):
-        self.app = self.launch_click_package(self.pacakge_id, self.app_name)
-
-    @property
-    def main_view(self):
-        return self.app.select_single(emulators.MainView)

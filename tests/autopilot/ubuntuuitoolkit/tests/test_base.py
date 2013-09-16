@@ -31,9 +31,6 @@ class AppTestCase(base.UbuntuUIToolkitAppTestCase):
     def _runTest(self):
         pass
 
-    def launch_application(self):
-        pass
-
 
 class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
 
@@ -48,65 +45,3 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test = AppTestCase()
         test.setUp()
         self.assertIs(test.input_device_class, input.Touch)
-
-    @mock.patch('autopilot.platform.model', return_value='Desktop')
-    def test_launch_application_with_source_on_desktop(self, mock_model):
-        class AppFromSourceTestCase(base.UbuntuUIToolkitAppTestCase):
-            application_launched_from_source = False
-            def application_source_exists(self):
-                return True
-            def launch_application_from_source(self):
-                self.application_launched_from_source = True
-            def runTest(self):
-                pass
-        test = AppFromSourceTestCase()
-        test.launch_application()
-        self.assertTrue(test.application_launched_from_source)
-
-    @mock.patch('autopilot.platform.model', return_value='not Desktop')
-    def test_launch_application_with_source_on_phablet(self, mock_model):
-        class AppFromSourceTestCase(base.UbuntuUIToolkitAppTestCase):
-            installed_application_launched = False
-            def application_source_exists(self):
-                return True
-            def launch_installed_application(self):
-                self.installed_application_launched = True
-            def runTest(self):
-                pass
-        test = AppFromSourceTestCase()
-        test.launch_application()
-        self.assertTrue(test.installed_application_launched)
-
-    def test_launch_installed_application(self):
-        class InstalledAppTestCase(base.UbuntuUIToolkitAppTestCase):
-            installed_application_launched = False
-            def application_source_exists(self):
-                return False
-            def launch_installed_application(self):
-                self.installed_application_launched = True
-            def runTest(self):
-                pass
-        test = InstalledAppTestCase()
-        test.launch_application()
-        self.assertTrue(test.installed_application_launched)
-
-
-class ClickAppTestCase(base.ClickAppTestCase):
-    """Empty test case to be used by other tests."""
-
-    def _runTest(self):
-        pass
-
-
-class TestClickAppTestCase(testtools.TestCase):
-
-   def test_application_source_exists(self):
-       test = ClickAppTestCase('_runTest')
-       app_fake_qml = tempfile.NamedTemporaryFile()
-       test.app_qml_source_location = app_fake_qml.name
-       self.assertTrue(test.application_source_exists())
-
-   def test_application_source_doesnt_exist(self):
-       test = ClickAppTestCase('_runTest')
-       app_fake_qml = 'Not existent'
-       self.assertFalse(test.application_source_exists())
