@@ -24,23 +24,28 @@ from testtools.matchers import Is, Not, Equals
 from ubuntuuitoolkit import tests
 
 
-class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
+class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
-    # Support both running from system and in the source directory
-    runPath = os.path.dirname(os.path.realpath(__file__))
-    localSourceFile = (
-        runPath +
-        "/../../../../../examples/ubuntu-ui-toolkit-gallery/"
-        "ubuntu-ui-toolkit-gallery.qml")
-    if (os.path.isfile(localSourceFile)):
-        print "Using local source directory"
-        test_qml_file = localSourceFile
-    else:
-        print "Using system QML file"
-        test_qml_file = (
-            "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/"
+    def setUp(self):
+        self.test_qml_file_path = self._get_test_qml_file_path()
+        super(GalleryTestCase, self).setUp()
+
+    def _get_test_qml_file_path(self):
+        # Support both running from system and in the source directory
+        runPath = os.path.dirname(os.path.realpath(__file__))
+        localSourceFile = (
+            runPath +
+            "/../../../../../examples/ubuntu-ui-toolkit-gallery/"
             "ubuntu-ui-toolkit-gallery.qml")
+        if (os.path.isfile(localSourceFile)):
+            print "Using local source directory"
+            return localSourceFile
+        else:
+            print "Using system QML file"
+            return (
+                "/usr/lib/ubuntu-ui-toolkit/examples/"
+                "ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml")
 
 
 class GenericTests(GalleryTestCase):

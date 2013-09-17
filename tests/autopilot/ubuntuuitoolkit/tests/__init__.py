@@ -40,41 +40,87 @@ def get_module_include_path():
     )
 
 
-class UbuntuUiToolkitTestCase(base.UbuntuUIToolkitAppTestCase):
-    """Common test case class for SDK tests."""
+def get_qmlscene_path():
+    arch = subprocess.check_output(
+        ['dpkg-architecture', '-qDEB_HOST_MULTIARCH']).strip()
+    return '/usr/lib/{0}/qt5/bin/qmlscene'.format(arch)
+
+
+class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
+    """Base test case for self tests that define the QML on an string."""
+
+    desktop_file_contents = ("""
+[Desktop Entry]
+Type=Application
+Exec=Not important
+Path=Not important
+Name=Test app
+Icon=Not important
+""")
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+}
+""")
 
     def setUp(self):
-        super(UbuntuUiToolkitTestCase, self).setUp()
+        super(QMLStringAppTestCase, self).setUp()
         self.pointing_device = Pointer(self.input_device_class.create())
-        self.launch_test_qml()
+        self.launch_application()
 
-    def launch_test_qml(self):
-        # If the test class has defined a 'test_qml' class attribute then we
-        # write it to disk and launch it inside the Qml Viewer. If not, then we
-        # silently do nothing (presumably the test has something else planned).
-        arch = subprocess.check_output(
-            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
-        if hasattr(self, 'test_qml') and isinstance(self.test_qml, basestring):
-            qml_path = mktemp(suffix='.qml')
-            open(qml_path, 'w').write(self.test_qml)
-            self.addCleanup(remove, qml_path)
+    def launch_application(self):
+        qml_file_path = self._write_test_qml_file()
+        desktop_file_path = self._write_desktop_file()
+        self.app = self.launch_test_application(
+            get_qmlscene_path(),
+            '-I' + get_module_include_path(),
+            qml_file_path,
+            'desktop_file_hint={0}'.format(desktop_file_path),
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+            app_type='qt')
 
-            self.app = self.launch_test_application(
-                "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I" + get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
-                app_type='qt')
+        self.assertThat(
+            self.main_view.visible, Eventually(Equals(True)))
 
-        if (hasattr(self, 'test_qml_file') and
-                isinstance(self.test_qml_file, basestring)):
-            qml_path = self.test_qml_file
-            self.app = self.launch_test_application(
-                "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I" + get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
-                app_type='qt')
+    def _write_test_qml_file(self):
+        qml_file_path = mktemp(suffix='.qml')
+        open(qml_file_path, 'w').write(self.test_qml)
+        self.addCleanup(remove, qml_file_path)
+        return qml_file_path
+
+    def _write_desktop_file(self):
+        desktop_file_path = mktemp(suffix='.desktop')
+        open(desktop_file_path, 'w').write(self.desktop_file_contents)
+        self.addCleanup(remove, desktop_file_path)
+        return desktop_file_path
+
+    @property
+    def main_view(self):
+        return self.app.select_single(emulators.MainView)
+
+
+class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
+    """Base test case for self tests that launch a QML file."""
+
+    test_qml_file_path = '/path/to/file.qml'
+
+    def setUp(self):
+        super(QMLFileAppTestCase, self).setUp()
+        self.pointing_device = Pointer(self.input_device_class.create())
+        self.launch_application()
+
+    def launch_application(self):
+        self.app = self.launch_test_application(
+            get_qmlscene_path(),
+            "-I" + get_module_include_path(),
+            self.test_qml_file_path,
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+            app_type='qt')
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))

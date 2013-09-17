@@ -46,7 +46,7 @@ class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
         self.assertIsInstance(keyword_args['device'], input.Touch)
 
 
-class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
+class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -84,7 +84,7 @@ MainView {
             error.message, 'The MainView has no Tabs.')
 
 
-class PageTestCase(tests.UbuntuUiToolkitTestCase):
+class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -107,7 +107,7 @@ MainView {
         self.assertEqual(header.title, "Test title")
 
 
-class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -184,7 +184,7 @@ MainView {
             error.message, 'Button with objectName "unexisting" not found.')
 
 
-class TabsTestCase(tests.UbuntuUiToolkitTestCase):
+class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -308,7 +308,7 @@ MainView {
             error.message, 'Tab with objectName "unexisting" not found.')
 
 
-class ActionSelectionPopoverTestCase(tests.UbuntuUiToolkitTestCase):
+class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
