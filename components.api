@@ -165,6 +165,7 @@ Item
     property real hintSize
     property real triggerSize
     readonly property bool animating
+    property bool __closeOnContentsClicks
 modules/Ubuntu/Components/ProgressBar.qml
 AnimatedItem
     property bool indeterminate
