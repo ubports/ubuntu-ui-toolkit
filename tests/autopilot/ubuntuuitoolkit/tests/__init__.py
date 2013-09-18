@@ -42,8 +42,8 @@ def get_module_include_path():
 class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that define the QML on an string."""
 
-    desktop_file_contents = ("""
-[Desktop Entry]
+    desktop_file_contents = (
+"""[Desktop Entry]
 Type=Application
 Exec=Not important
 Path=Not important
