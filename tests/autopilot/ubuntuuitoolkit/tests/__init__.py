@@ -40,12 +40,6 @@ def get_module_include_path():
     )
 
 
-def get_qmlscene_path():
-    arch = subprocess.check_output(
-        ['dpkg-architecture', '-qDEB_HOST_MULTIARCH']).strip()
-    return '/usr/lib/{0}/qt5/bin/qmlscene'.format(arch)
-
-
 class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that define the QML on an string."""
 
@@ -77,7 +71,7 @@ MainView {
         qml_file_path = self._write_test_qml_file()
         desktop_file_path = self._write_desktop_file()
         self.app = self.launch_test_application(
-            get_qmlscene_path(),
+            'qmlscene',
             '-I' + get_module_include_path(),
             qml_file_path,
             'desktop_file_hint={0}'.format(desktop_file_path),
@@ -121,7 +115,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def launch_application(self):
         self.app = self.launch_test_application(
-            get_qmlscene_path(),
+            'qmlscene',
             "-I" + get_module_include_path(),
             self.test_qml_file_path,
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
