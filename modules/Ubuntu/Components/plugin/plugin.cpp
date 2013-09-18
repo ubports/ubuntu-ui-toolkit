@@ -45,6 +45,7 @@
 #include "ucalarm.h"
 #include "ucalarmmodel.h"
 #include "unitythemeiconprovider.h"
+#include "ucstatesaver.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -145,6 +146,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QQmlPropertyMap>();
     qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
     qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
+    qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
+    qmlRegisterType<UCStateSaverAttached>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
