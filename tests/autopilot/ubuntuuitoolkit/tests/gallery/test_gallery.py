@@ -64,6 +64,7 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
                 tests.get_local_desktop_file_directory(),
                 'ubuntu-ui-toolkit-gallery.desktop')
             shutil.copy(source_desktop_file_path, local_desktop_file_path)
+            self.addCleanup(os.remove, local_desktop_file_path)
             return local_desktop_file_path
         else:
             return os.path.join(
