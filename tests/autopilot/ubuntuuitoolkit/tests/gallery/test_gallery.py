@@ -28,24 +28,38 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
     def setUp(self):
+        self.app_qml_source_path = os.path.join(
+            self._get_path_to_gallery_source(),
+            'ubuntu-ui-toolkit-gallery.qml')
         self.test_qml_file_path = self._get_test_qml_file_path()
+        self.desktop_file_path = self._get_desktop_file_path()
         super(GalleryTestCase, self).setUp()
 
+    def _get_path_to_gallery_source(self):
+        return os.path.join(
+            tests.get_path_to_source_root(), 'examples',
+            'ubuntu-ui-toolkit-gallery')
+
+    def _application_source_exists(self):
+        return os.path.exists(self.app_qml_source_path)
+
     def _get_test_qml_file_path(self):
-        # Support both running from system and in the source directory
-        runPath = os.path.dirname(os.path.realpath(__file__))
-        localSourceFile = (
-            runPath +
-            "/../../../../../examples/ubuntu-ui-toolkit-gallery/"
-            "ubuntu-ui-toolkit-gallery.qml")
-        if (os.path.isfile(localSourceFile)):
-            print "Using local source directory"
-            return localSourceFile
+        if self._application_source_exists():
+            return self.app_qml_source_path
         else:
-            print "Using system QML file"
-            return (
-                "/usr/lib/ubuntu-ui-toolkit/examples/"
-                "ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml")
+            return os.path.join(
+                self._get_path_to_installed_gallery(),
+                'ubuntu-ui-toolkit-gallery.qml')
+
+    def _get_path_to_installed_gallery(self):
+        return '/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'
+
+    def _get_desktop_file_path(self):
+        if self._application_source_exists():
+            app_path = self._get_path_to_gallery_source()
+        else:
+            app_path = self._get_path_to_installed_gallery()
+        return os.path.join(app_path, 'ubuntu-ui-toolkit-gallery.desktop')
 
 
 class GenericTests(GalleryTestCase):

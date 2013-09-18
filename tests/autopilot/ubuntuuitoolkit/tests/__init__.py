@@ -16,8 +16,7 @@
 
 """Ubuntu UI Toolkit autopilot tests."""
 
-from os import remove
-import os.path
+import os
 import tempfile
 
 from autopilot.input import Pointer
@@ -27,29 +26,37 @@ from testtools.matchers import Is, Not, Equals
 from ubuntuuitoolkit import base, emulators
 
 
-def get_module_include_path():
-    return os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            '..',
-            '..',
-            '..',
-            '..',
-            'modules')
-    )
-
-
-class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
-    """Base test case for self tests that define the QML on an string."""
-
-    desktop_file_contents = (
-"""[Desktop Entry]
+_DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
 Type=Application
 Exec=Not important
 Path=Not important
 Name=Test app
 Icon=Not important
 """)
+
+
+def _write_test_desktop_file():
+    desktop_file_dir = os.path.join(
+        os.environ['HOME'], '.local', 'share', 'applications')
+    desktop_file = tempfile.NamedTemporaryFile(
+        suffix='.desktop', dir=desktop_file_dir, delete=False)
+    desktop_file.write(_DESKTOP_FILE_CONTENTS)
+    desktop_file.close()
+    return desktop_file.name
+
+
+def _get_module_include_path():
+    return os.path.join(get_path_to_source_root(), 'modules')
+
+
+def get_path_to_source_root():
+    return os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__), '..', '..', '..', '..'))
+
+
+class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
+    """Base test case for self tests that define the QML on an string."""
 
     test_qml = ("""
 import QtQuick 2.0
@@ -68,10 +75,12 @@ MainView {
 
     def launch_application(self):
         qml_file_path = self._write_test_qml_file()
-        desktop_file_path = self._write_desktop_file()
+        self.addCleanup(os.remove, qml_file_path)
+        desktop_file_path = _write_test_desktop_file()
+        self.addCleanup(os.remove, desktop_file_path)
         self.app = self.launch_test_application(
             'qmlscene',
-            '-I' + get_module_include_path(),
+            '-I' + _get_module_include_path(),
             qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
@@ -84,18 +93,7 @@ MainView {
         qml_file = tempfile.NamedTemporaryFile(suffix='.qml', delete=False)
         qml_file.write(self.test_qml)
         qml_file.close()
-        self.addCleanup(remove, qml_file.name)
         return qml_file.name
-
-    def _write_desktop_file(self):
-        desktop_file_dir = os.path.join(
-            os.environ['HOME'], '.local', 'share', 'applications')
-        desktop_file = tempfile.NamedTemporaryFile(
-            suffix='.desktop', dir=desktop_file_dir, delete=False)
-        desktop_file.write(self.desktop_file_contents)
-        desktop_file.close()
-        self.addCleanup(remove, desktop_file.name)
-        return desktop_file.name
 
     @property
     def main_view(self):
@@ -106,6 +104,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that launch a QML file."""
 
     test_qml_file_path = '/path/to/file.qml'
+    desktop_file_path = None
 
     def setUp(self):
         super(QMLFileAppTestCase, self).setUp()
@@ -113,15 +112,25 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.launch_application()
 
     def launch_application(self):
+        desktop_file_path = self._get_desktop_file_path()
         self.app = self.launch_test_application(
             'qmlscene',
-            "-I" + get_module_include_path(),
+            "-I" + _get_module_include_path(),
             self.test_qml_file_path,
+            '--desktop_file_hint={0}'.format(desktop_file_path),
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
             app_type='qt')
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
+
+    def _get_desktop_file_path(self):
+        if self.desktop_file_path is None:
+            desktop_file_path = _write_test_desktop_file()
+            self.addCleanup(os.remove, desktop_file_path)
+            return desktop_file_path
+        else:
+            self.desktop_file_path
 
     @property
     def main_view(self):
