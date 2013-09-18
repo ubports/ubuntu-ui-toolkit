@@ -96,6 +96,12 @@ AbstractButton {
 
     /*!
       \preliminary
+      Defines if the item need confirmation before remove by swiping
+     */
+    property bool confirmRemoval: false
+
+    /*!
+      \preliminary
       \qmlproperty string swipingState
       The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
@@ -210,11 +216,13 @@ AbstractButton {
             Resets the item dragging state
          */
         function resetDrag() {
+            body.x = 0
             pressedPosition = -1
             __mouseArea.drag.target = null
             held = false
             removeItem = false
             backgroundIndicator.state = ""
+            backgroundIndicator.confirmDialogVisible = false
         }
 
         /*! \internal
@@ -222,7 +230,11 @@ AbstractButton {
         */
         function commitDrag() {
             if (removeItem) {
-                removeItemAnimation.start()
+                if (confirmRemoval) {
+                    backgroundIndicator.confirmDialogVisible = true
+                } else {
+                    removeItemAnimation.start()
+                }
             } else {
                 resetDrag()
             }
@@ -305,12 +317,65 @@ AbstractButton {
         Item {
             id: backgroundIndicator
 
+            property alias confirmDialogVisible: confirmDialog.visible
+
             opacity: 0.0
             anchors {
                 left: parent.left
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+            }
+
+            Item {
+                id: confirmDialog
+
+                anchors.fill:  parent
+                visible: false
+
+                Label {
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
+                        bottom: buttons.top
+                    }
+                    horizontalAlignment: Text.AlignHCenter
+                    text: i18n.tr("Delete this item?")
+                }
+
+                Item {
+                    id: buttons
+
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
+                    height: btnCancel.height //units.gu(5)
+
+                    Button {
+                        id: btnCancel
+
+                        anchors {
+                            left: parent.left
+                            bottom: parent.bottom
+                            margins: units.gu(1)
+                        }
+                        text: i18n.tr("Cancel")
+                        onClicked: priv.resetDrag()
+                    }
+
+                    Button {
+                        anchors {
+                            right: parent.right
+                            bottom: parent.bottom
+                            margins: units.gu(1)
+                        }
+                        text: i18n.tr("Remove")
+                        onClicked: removeItemAnimation.start()
+                    }
+                }
             }
 
             states: [
