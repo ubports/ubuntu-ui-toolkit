@@ -28,7 +28,6 @@ UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     , request(0)
     , error(UCAlarm::NoError)
     , status(UCAlarm::Ready)
-    , pendingOperation(UCAlarm::NoOperation)
 {
     setDefaults();
 }
@@ -63,7 +62,6 @@ void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
     if (this->status != alarmStatus || this->error != error) {
         this->status = alarmStatus;
         this->error = error;
-        pendingOperation = static_cast<UCAlarm::Operation>(operation);
 
         if (this->status == UCAlarm::Ready) {
             // sync field changes occured during operation
@@ -82,12 +80,8 @@ void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
             rawData.changes = 0;
         }
 
-        Q_EMIT q_func()->statusChanged(pendingOperation);
+        Q_EMIT q_func()->statusChanged(static_cast<UCAlarm::Operation>(operation));
         Q_EMIT q_func()->errorChanged();
-
-        if (status != UCAlarm::InProgress) {
-            pendingOperation = UCAlarm::NoOperation;
-        }
     }
 }
 

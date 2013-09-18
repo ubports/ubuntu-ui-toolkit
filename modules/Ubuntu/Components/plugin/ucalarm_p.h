@@ -42,7 +42,6 @@ public:
     AlarmData rawData;
     int error;
     UCAlarm::Status status;
-    UCAlarm::Operation pendingOperation;
 
     // utility functions
     static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
