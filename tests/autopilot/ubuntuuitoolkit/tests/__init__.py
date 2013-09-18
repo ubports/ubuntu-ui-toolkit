@@ -19,7 +19,6 @@
 from os import remove
 import os.path
 import tempfile
-import subprocess
 
 from autopilot.input import Pointer
 from autopilot.matchers import Eventually
@@ -74,7 +73,7 @@ MainView {
             'qmlscene',
             '-I' + get_module_include_path(),
             qml_file_path,
-            'desktop_file_hint={0}'.format(desktop_file_path),
+            '--desktop_file_hint={0}'.format(desktop_file_path),
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
             app_type='qt')
 
