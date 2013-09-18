@@ -63,13 +63,23 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
             local_desktop_file_path = os.path.join(
                 tests.get_local_desktop_file_directory(),
                 'ubuntu-ui-toolkit-gallery.desktop')
+            import pdb; pdb.set_trace()
             shutil.copy(source_desktop_file_path, local_desktop_file_path)
-            self.addCleanup(os.remove, local_desktop_file_path)
+            # We can't delete the desktop file before we close the application,
+            # so we save it on an attribute to be deleted on tear down.
+            self.local_desktop_file_path = local_desktop_file_path
             return local_desktop_file_path
         else:
             return os.path.join(
                 self._get_path_to_installed_gallery(),
                 'ubuntu-ui-toolkit-gallery.desktop')
+
+    def tearDown(self):
+        super(GalleryTestCase, self).tearDown()
+        # We can't delete the desktop file before we close the application,
+        # so we save it on an attribute to be deleted on tear down.
+        if self.local_desktop_file_path:
+            os.remove(self.local_desktop_file_path)
 
 
 class GenericTests(GalleryTestCase):
