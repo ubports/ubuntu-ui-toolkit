@@ -133,6 +133,10 @@ PageTreeNode {
       \preliminary
       The property holds the application's name, which must be the same as the
       desktop file's name.
+      The name also sets the name of the QCoreApplication and defaults for data
+      and cache folders that work on the desktop and under confinement.
+      C++ code that writes files may use QStandardPaths::writableLocation with
+      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
       */
     property string applicationName: ""
 
@@ -334,6 +338,7 @@ PageTreeNode {
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
+            UbuntuApplication.applicationName = applicationName
         }
     }
 }

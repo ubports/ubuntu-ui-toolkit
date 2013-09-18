@@ -42,6 +42,7 @@
 #include "ucfontutils.h"
 #include "ucarguments.h"
 #include "ucargument.h"
+#include "ucapplication.h"
 #include "ucalarm.h"
 #include "ucalarmmodel.h"
 #include "unitythemeiconprovider.h"
@@ -169,6 +170,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      &i18nChangeListener, SLOT(updateContextProperty()));
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      &i18nChangeListener, SLOT(updateContextProperty()));
+
+    // We can't use 'Application' because it exists (undocumented)
+    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
+    static ContextPropertyChangeListener applicationChangeListener(context, "UbuntuApplication");
+    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
+                     &applicationChangeListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("units", &UCUnits::instance());
     static ContextPropertyChangeListener unitsChangeListener(context, "units");
