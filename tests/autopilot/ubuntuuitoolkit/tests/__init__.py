@@ -88,19 +88,21 @@ MainView {
             self.main_view.visible, Eventually(Equals(True)))
 
     def _write_test_qml_file(self):
-        qml_file_path = tempfile.mkstemp(suffix='.qml')
-        open(qml_file_path, 'w').write(self.test_qml)
-        self.addCleanup(remove, qml_file_path)
-        return qml_file_path
+        qml_file = tempfile.NamedTemporaryFile(suffix='.qml', delete=False)
+        qml_file.write(self.test_qml)
+        qml_file.close()
+        self.addCleanup(remove, qml_file.name)
+        return qml_file.name
 
     def _write_desktop_file(self):
         desktop_file_dir = os.path.join(
             os.environ['HOME'], '.local', 'share', 'applications')
-        desktop_file_path = tempfile.mkstemp(
-            suffix='.desktop', dir=desktop_file_dir)
-        open(desktop_file_path, 'w').write(self.desktop_file_contents)
-        self.addCleanup(remove, desktop_file_path)
-        return desktop_file_path
+        desktop_file = tempfile.NamedTemporaryFile(
+            suffix='.desktop', dir=desktop_file_dir, delete=False)
+        desktop_file.write(self.desktop_file_contents)
+        desktop_file.close()
+        self.addCleanup(remove, desktop_file.name)
+        return desktop_file.name
 
     @property
     def main_view(self):
