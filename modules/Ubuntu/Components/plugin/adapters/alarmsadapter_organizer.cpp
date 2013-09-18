@@ -356,7 +356,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
         QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
         event = AlarmsAdapter::get()->manager->item(itemId);
         if (event.isEmpty()) {
-            setStatus(AlarmRequest::Fail, UCAlarm::AdaptationError);
+            setStatus(AlarmRequest::Saving, AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
         }
         AlarmsAdapter::get()->updateOrganizerEventFromAlarmData(alarm, event);
@@ -375,7 +375,7 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
 bool AlarmRequestAdapter::remove(AlarmData &alarm)
 {
     if (!alarm.cookie.isValid()) {
-        setStatus(AlarmRequest::Fail, UCAlarm::InvalidEvent);
+        setStatus(AlarmRequest::Canceling, AlarmRequest::Fail, UCAlarm::InvalidEvent);
         return false;
     }
 
@@ -435,7 +435,7 @@ bool AlarmRequestAdapter::start(QOrganizerAbstractRequest *operation)
     }
     completed = false;
     // make sure we are in progress state
-    setStatus(AlarmRequest::InProgress);
+    setStatus(requestTypeToOperation(), AlarmRequest::InProgress);
     QObject::connect(m_request, SIGNAL(resultsAvailable()), q_ptr, SLOT(_q_updateProgress()));
     if (m_request->start()) {
         // check if the request got completed without having the slot called (some engines may do that)
@@ -455,51 +455,52 @@ void AlarmRequestAdapter::_q_updateProgress()
     completed = true;
 
     QOrganizerAbstractRequest::State state = m_request->state();
+    AlarmRequest::Operation opCode = requestTypeToOperation();
     switch (state) {
     case QOrganizerAbstractRequest::InactiveState: {
-        setStatus(AlarmRequest::Ready);
+        setStatus(opCode, AlarmRequest::Ready);
         break;
     }
     case QOrganizerAbstractRequest::ActiveState: {
-        setStatus(AlarmRequest::InProgress);
+        setStatus(opCode, AlarmRequest::InProgress);
         completed = false;
         break;
     }
     case QOrganizerAbstractRequest::CanceledState: {
-        setStatus(AlarmRequest::Fail, AlarmsAdapter::OrganizerError + m_request->error());
+        setStatus(opCode, AlarmRequest::Fail, AlarmsAdapter::OrganizerError + m_request->error());
         break;
     }
     case QOrganizerAbstractRequest::FinishedState: {
         int code = m_request->error();
         if (code != QOrganizerManager::NoError) {
-            setStatus(AlarmRequest::Fail, AlarmsAdapter::OrganizerError + code);
+            setStatus(opCode, AlarmRequest::Fail, AlarmsAdapter::OrganizerError + code);
         } else {
-            switch (m_request->type()) {
-            case QOrganizerAbstractRequest::ItemSaveRequest: {
+            switch (opCode) {
+            case AlarmRequest::Saving: {
                 completeUpdate();
                 break;
             }
-            case QOrganizerAbstractRequest::ItemRemoveRequest: {
+            case AlarmRequest::Canceling: {
                 completeRemove();
                 break;
             }
-            case QOrganizerAbstractRequest::ItemFetchRequest: {
+            case AlarmRequest::Fetching: {
                 completeFetch();
                 break;
             }
             default:
                 qWarning() << "Unhandled request:" << m_request->type();
-                setStatus(AlarmRequest::Fail, AlarmsAdapter::UnhandledRequest);
+                setStatus(opCode, AlarmRequest::Fail, AlarmsAdapter::UnhandledRequest);
                 break;
             }
 
-            setStatus(AlarmRequest::Ready);
+            setStatus(opCode, AlarmRequest::Ready);
         }
         break;
     }
     default: {
         qWarning() << "Invalid status" << state;
-        setStatus(AlarmRequest::Fail, UCAlarm::InvalidEvent);
+        setStatus(opCode, AlarmRequest::Fail, UCAlarm::InvalidEvent);
         break;
     }
     }
@@ -512,6 +513,23 @@ void AlarmRequestAdapter::_q_updateProgress()
         if (autoDelete) {
             q_ptr->deleteLater();
         }
+    }
+}
+
+AlarmRequest::Operation AlarmRequestAdapter::requestTypeToOperation()
+{
+    switch (m_request->type()) {
+    case QOrganizerAbstractRequest::ItemSaveRequest: {
+        return AlarmRequest::Saving;
+    }
+    case QOrganizerAbstractRequest::ItemRemoveRequest: {
+        return AlarmRequest::Canceling;
+    }
+    case QOrganizerAbstractRequest::ItemFetchRequest: {
+        return AlarmRequest::Fetching;
+    }
+    default:
+        return AlarmRequest::NoOperation;
     }
 }
 

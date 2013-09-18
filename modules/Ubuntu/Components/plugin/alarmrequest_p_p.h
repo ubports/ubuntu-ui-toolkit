@@ -37,7 +37,7 @@ public:
         return instance->d_func();
     }
 
-    void setStatus(AlarmRequest::Status status, int error = UCAlarm::NoError);
+    void setStatus(AlarmRequest::Operation operation, AlarmRequest::Status status, int error = UCAlarm::NoError);
 
     virtual bool save(AlarmData &alarm) = 0;
     virtual bool remove(AlarmData &alarm) = 0;

@@ -42,6 +42,7 @@ public:
     AlarmData rawData;
     int error;
     UCAlarm::Status status;
+    UCAlarm::Operation pendingOperation;
 
     // utility functions
     static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
@@ -57,7 +58,7 @@ public:
     bool createRequest();
 
     // private slots
-    void _q_syncStatus(int status, int error);
+    void _q_syncStatus(int operation, int status, int error);
 };
 
 inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)

@@ -28,6 +28,7 @@ UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     , request(0)
     , error(UCAlarm::NoError)
     , status(UCAlarm::Ready)
+    , pendingOperation(UCAlarm::NoOperation)
 {
     setDefaults();
 }
@@ -52,16 +53,17 @@ bool UCAlarmPrivate::createRequest()
     if (!request) {
         return false;
     }
-    QObject::connect(request, SIGNAL(statusChanged(int,int)),
-                     q_ptr, SLOT(_q_syncStatus(int,int)));
+    QObject::connect(request, SIGNAL(statusChanged(int,int,int)),
+                     q_ptr, SLOT(_q_syncStatus(int,int,int)));
     return true;
 }
 
-void UCAlarmPrivate::_q_syncStatus(int status, int error) {
+void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
     UCAlarm::Status alarmStatus = static_cast<UCAlarm::Status>(status);
     if (this->status != alarmStatus || this->error != error) {
         this->status = alarmStatus;
         this->error = error;
+        pendingOperation = static_cast<UCAlarm::Operation>(operation);
 
         if (this->status == UCAlarm::Ready) {
             // sync field changes occured during operation
@@ -80,8 +82,12 @@ void UCAlarmPrivate::_q_syncStatus(int status, int error) {
             rawData.changes = 0;
         }
 
-        Q_EMIT q_func()->statusChanged();
+        Q_EMIT q_func()->statusChanged(pendingOperation);
         Q_EMIT q_func()->errorChanged();
+
+        if (status != UCAlarm::InProgress) {
+            pendingOperation = UCAlarm::NoOperation;
+        }
     }
 }
 
@@ -280,7 +286,6 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  *                 alarm.save();
  *                 if (alarm.error != Alarm.NoError)
  *                     print("Error saving alarm, code: " + alarm.error);
- *                 else alarm.reset();
  *             }
  *         }
  *     }
@@ -569,7 +574,64 @@ int UCAlarm::error() const
 
 /*!
  * \qmlproperty Status Alarm::status
- * The property holds the status of the last performed operation.
+ * The property holds the status of the last performed operation. It can take one
+ * of the following values:
+ * \table
+ *   \header
+ *      \li Status code
+ *      \li Value
+ *      \li Description
+ *   \row
+ *      \li Ready
+ *      \li 1
+ *      \li Specifies either that the Alarm object is ready to perform any operation
+ *          or that the previous operation has been successfully completed.
+ *   \row
+ *      \li InProgress
+ *      \li 2
+ *      \li Specifies that there is an operation pending on Alarm object.
+ *   \row
+ *      \li Fail
+ *      \li 3
+ *      \li Specifies that the last alarm operation has failed. The failure code is
+ *          set in \l error property.
+ * \endtable
+ *
+ * The notification signal has a parameter specifying the \a operation the status
+ * refers to. The operation can take the following values:
+ * \table
+ *   \header
+ *      \li Operation code
+ *      \li Description
+ *   \row
+ *      \li NoOperation
+ *      \li There is no operation pending. This may be set when an error occured
+ *          in the alarm adapters and the operation cannot be determined.
+ *  \row
+ *      \li Saving
+ *      \li The status reported refers to an operation requested through save().
+ *  \row
+ *      \li Canceling
+ *      \li The status reported refers to an operation requested through cancel().
+ *  \row
+ *      \li Reseting
+ *      \li The status reported refers to an operation requested through reset().
+ * \endtable
+ *
+ * For example an implementation which resets the alarm data whenever
+ * the save or cancel operations succeed would look as follows:
+ *
+ * \qml
+ * Alarm {
+ *     onStatusChanged: {
+ *         if (status !== Alarm.Ready)
+ *             return;
+ *         if ((operation > Alarm.NoOperation) && (operation < Alarm.Reseting)) {
+ *             reset();
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 UCAlarm::Status UCAlarm::status() const
 {
@@ -595,6 +657,8 @@ UCAlarm::Status UCAlarm::status() const
  *  \li - the \l daysOfWeek property is set to multiple days for one time alarm
  * \endlist
  *
+ * The operation is asynchronous, and its status is reported through the \l status
+ * property. Further operations should wait till the previous operation is completed.
  * The operation result is stored in the \l error property.
  */
 void UCAlarm::save()
@@ -610,7 +674,7 @@ void UCAlarm::save()
 
     UCAlarm::Error result = d->checkAlarm();
     if (result != UCAlarm::NoError) {
-        d->_q_syncStatus(Fail, result);
+        d->_q_syncStatus(Saving, Fail, result);
     } else {
         if (d->createRequest()) {
             d->request->save(d->rawData);
@@ -623,6 +687,8 @@ void UCAlarm::save()
  * The function removes the alarm from the collection. The function will fail
  * for alarms which are not yet registered to the collection.
  *
+ * The operation is asynchronous, and its status is reported through the \l status
+ * property. Further operations should wait till the previous operation is completed.
  * The operation result is stored in the \l error property.
  */
 void UCAlarm::cancel()
@@ -644,19 +710,19 @@ void UCAlarm::cancel()
  * \qmlmethod Alarm::reset()
  * The function resets the alarm properties to its defaults. After this call the
  * object can be used to create a new alarm event.
+ *
+ * \b Note: do not call this function on alarm objects retrieved from AlarmModel, as
+ * calling it will result in the model being out of sync from the alarm database.
  */
 void UCAlarm::reset()
 {
     Q_D(UCAlarm);
-    d->error = NoError;
-    d->status = InProgress;
+    d->_q_syncStatus(Reseting, InProgress, NoError);
 
-    delete d->request;
-    d->request = 0;
     d->rawData = AlarmData();
     d->setDefaults();
     d->rawData.changes = AlarmData::AllFields;
-    d->_q_syncStatus(Ready, NoError);
+    d->_q_syncStatus(Reseting, Ready, NoError);
 }
 
 #include "moc_ucalarm.cpp"

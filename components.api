@@ -422,6 +422,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["Alarm 0.1"]
     name: "Status"
+    name: "Operation"
     name: "Error"
     name: "AlarmType"
     name: "DayOfWeek"
@@ -434,6 +435,9 @@ plugins.qmltypes
     Property { name: "sound"; type: "QUrl" }
     Property { name: "error"; type: "int"; isReadonly: true }
     Property { name: "status"; type: "Status"; isReadonly: true }
+    Signal {
+    name: "statusChanged"
+    Parameter { name: "operation"; type: "Operation" }
     Method { name: "save" }
     Method { name: "cancel" }
     Method { name: "reset" }
