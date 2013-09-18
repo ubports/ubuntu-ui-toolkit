@@ -39,6 +39,6 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
 
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
     def test_phablet_input_device_class(self):
-        test = AppTestCase()
+        test = AppTestCase('_runTest')
         test.setUp()
         self.assertIs(test.input_device_class, input.Touch)
