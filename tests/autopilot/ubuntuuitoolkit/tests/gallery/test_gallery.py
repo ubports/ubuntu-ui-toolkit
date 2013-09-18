@@ -63,7 +63,6 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
             local_desktop_file_path = os.path.join(
                 tests.get_local_desktop_file_directory(),
                 'ubuntu-ui-toolkit-gallery.desktop')
-            import pdb; pdb.set_trace()
             shutil.copy(source_desktop_file_path, local_desktop_file_path)
             # We can't delete the desktop file before we close the application,
             # so we save it on an attribute to be deleted on tear down.
