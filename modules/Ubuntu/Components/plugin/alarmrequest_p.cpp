@@ -76,4 +76,9 @@ bool AlarmRequest::remove(AlarmData &alarm)
     return d_func()->remove(alarm);
 }
 
+bool AlarmRequest::wait(int msec)
+{
+    return d_func()->wait(msec);
+}
+
 #include "moc_alarmrequest_p.cpp"
