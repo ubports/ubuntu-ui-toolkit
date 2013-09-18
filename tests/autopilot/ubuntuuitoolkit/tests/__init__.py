@@ -36,14 +36,16 @@ Icon=Not important
 
 
 def _write_test_desktop_file():
-    desktop_file_dir = os.path.join(
-        os.environ['HOME'], '.local', 'share', 'applications')
+    desktop_file_dir = get_local_desktop_file_directory()
     desktop_file = tempfile.NamedTemporaryFile(
         suffix='.desktop', dir=desktop_file_dir, delete=False)
     desktop_file.write(_DESKTOP_FILE_CONTENTS)
     desktop_file.close()
     return desktop_file.name
 
+
+def get_local_desktop_file_directory():
+    return os.path.join(os.environ['HOME'], '.local', 'share', 'applications')
 
 def _get_module_include_path():
     return os.path.join(get_path_to_source_root(), 'modules')

@@ -17,6 +17,7 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
+import shutil
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
@@ -56,10 +57,18 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
 
     def _get_desktop_file_path(self):
         if self._application_source_exists():
-            app_path = self._get_path_to_gallery_source()
+            source_desktop_file_path = os.path.join(
+                self._get_path_to_gallery_source(),
+                'ubuntu-ui-toolkit-gallery.desktop')
+            local_desktop_file_path = os.path.join(
+                tests.get_local_desktop_file_directory(),
+                'ubuntu-ui-toolkit-gallery.desktop')
+            shutil.copy(source_desktop_file_path, local_desktop_file_path)
+            return local_desktop_file_path
         else:
-            app_path = self._get_path_to_installed_gallery()
-        return os.path.join(app_path, 'ubuntu-ui-toolkit-gallery.desktop')
+            return os.path.join(
+                self._get_path_to_installed_gallery(),
+                'ubuntu-ui-toolkit-gallery.desktop')
 
 
 class GenericTests(GalleryTestCase):
