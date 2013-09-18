@@ -18,7 +18,7 @@
 
 from os import remove
 import os.path
-from tempfile import mktemp
+import tempfile
 import subprocess
 
 from autopilot.input import Pointer
@@ -88,13 +88,16 @@ MainView {
             self.main_view.visible, Eventually(Equals(True)))
 
     def _write_test_qml_file(self):
-        qml_file_path = mktemp(suffix='.qml')
+        qml_file_path = tempfile.mkstemp(suffix='.qml')
         open(qml_file_path, 'w').write(self.test_qml)
         self.addCleanup(remove, qml_file_path)
         return qml_file_path
 
     def _write_desktop_file(self):
-        desktop_file_path = mktemp(suffix='.desktop')
+        desktop_file_dir = os.path.join(
+            os.environ['HOME'], '.local', 'share', 'applications')
+        desktop_file_path = tempfile.mkstemp(
+            suffix='.desktop', dir=desktop_file_dir)
         open(desktop_file_path, 'w').write(self.desktop_file_contents)
         self.addCleanup(remove, desktop_file_path)
         return desktop_file_path
