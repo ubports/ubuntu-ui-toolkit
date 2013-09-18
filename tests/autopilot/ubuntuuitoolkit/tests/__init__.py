@@ -47,6 +47,7 @@ def _write_test_desktop_file():
 def get_local_desktop_file_directory():
     return os.path.join(os.environ['HOME'], '.local', 'share', 'applications')
 
+
 def _get_module_include_path():
     return os.path.join(get_path_to_source_root(), 'modules')
 
