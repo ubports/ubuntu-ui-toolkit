@@ -121,6 +121,11 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.click()
         self.type_string('Hello World')
         self.assertThat(textfield_standard.text, Equals('Hello World'))
+    
+        textfield_password = self.getObject('textfield_password')
+        self.pointing_device.move_to_object(textfield_password)
+        self.pointing_device.click()
+        self.assertThat(textfield_password.text, Equals('password'))
         
         
   
