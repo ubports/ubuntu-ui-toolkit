@@ -37,6 +37,8 @@ Icon=Not important
 
 def _write_test_desktop_file():
     desktop_file_dir = get_local_desktop_file_directory()
+    if not os.path.exists(desktop_file_dir):
+        os.makedirs(desktop_file_dir)
     desktop_file = tempfile.NamedTemporaryFile(
         suffix='.desktop', dir=desktop_file_dir, delete=False)
     desktop_file.write(_DESKTOP_FILE_CONTENTS)
