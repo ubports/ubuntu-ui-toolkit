@@ -22,6 +22,7 @@
 #include <QtCore/QObject>
 #include <QtQml>
 
+class UCStateSaverAttachedPrivate;
 class UCStateSaverAttached : public QObject
 {
     Q_OBJECT
@@ -41,18 +42,12 @@ Q_SIGNALS:
     void enabledChanged();
     void propertiesChanged();
 
-private Q_SLOTS:
-    void init();
-    void save();
-
 private:
-    QObject *m_attachee;
-    bool m_enabled;
-    QString m_id;
-    QString m_absoluteId;
-    QStringList m_properties;
-
-    QString absoluteId(const QString &id);
+    Q_DECLARE_PRIVATE(UCStateSaverAttached)
+    QScopedPointer<UCStateSaverAttachedPrivate> d_ptr;
+    Q_PRIVATE_SLOT(d_func(), void _q_init())
+    Q_PRIVATE_SLOT(d_func(), void _q_save())
+    Q_PRIVATE_SLOT(d_func(), void _q_propertyChange())
 };
 
 class UCStateSaver : public QObject

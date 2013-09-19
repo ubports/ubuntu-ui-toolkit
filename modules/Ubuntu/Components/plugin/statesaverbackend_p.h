@@ -19,21 +19,46 @@
 #ifndef STATESAVERBACKEND_P_H
 #define STATESAVERBACKEND_P_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QSettings>
+#include <QtCore/QPointer>
+#include <QtCore/QSet>
+#include <QtCore/QTimer>
 
 class StateSaverBackend : public QObject
 {
     Q_OBJECT
 public:
+    ~StateSaverBackend();
 
     static StateSaverBackend &instance() {
         static StateSaverBackend instance;
         return instance;
     }
 
+    static bool registerId(const QString &id);
+    static void removeId(const QString &id);
+
+    int load(const QString &id, QObject *item, const QStringList &properties);
+    int save(const QString &id, QObject *item, const QStringList &properties);
+    bool reset();
+
+Q_SIGNALS:
+    void deactivated();
+    void idle();
+
 protected:
     explicit StateSaverBackend(QObject *parent = 0);
+    bool eventFilter(QObject *, QEvent *);
+    void resetRegister(); // for testing purposes only
 
+private Q_SLOTS:
+    void initialize();
+
+private:
+    QPointer<QSettings> m_archive;
+    QSet<QString> m_register;
+    QTimer m_timer;
 };
 
 #endif // STATESAVERBACKEND_P_H

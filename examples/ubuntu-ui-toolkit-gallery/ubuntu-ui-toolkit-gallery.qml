@@ -114,6 +114,7 @@ MainView {
                 id: contentLoader
                 objectName: "contentLoader"
                 anchors.fill: parent
+                StateSaver.properties: ["source"]
             }
         }
     }

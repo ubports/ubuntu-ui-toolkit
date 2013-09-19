@@ -52,7 +52,8 @@ HEADERS += plugin.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
     ucstatesaver.h \
-    statesaverbackend_p.h
+    statesaverbackend_p.h \
+    ucstatesaver_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
