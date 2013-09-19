@@ -28,6 +28,8 @@ from ubuntuuitoolkit import tests
 class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
+    local_desktop_file_path = None
+
     def setUp(self):
         self.app_qml_source_path = os.path.join(
             self._get_path_to_gallery_source(),
@@ -77,7 +79,7 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
         super(GalleryTestCase, self).tearDown()
         # We can't delete the desktop file before we close the application,
         # so we save it on an attribute to be deleted on tear down.
-        if self.local_desktop_file_path:
+        if self.local_desktop_file_path is not None:
             os.remove(self.local_desktop_file_path)
 
 
