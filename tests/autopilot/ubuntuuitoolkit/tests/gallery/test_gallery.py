@@ -119,8 +119,8 @@ class GenericTests(GalleryTestCase):
         textfield_standard = self.getObject('textfield_standard')
         self.pointing_device.move_to_object(textfield_standard)
         self.pointing_device.click()
-        self.type_string('Hello World!')
-        self.assertThat(textfield_standard.text, Equals('Hello World!'))
+        self.type_string('Hello World')
+        self.assertThat(textfield_standard.text, Equals('Hello World'))
         
         
   
