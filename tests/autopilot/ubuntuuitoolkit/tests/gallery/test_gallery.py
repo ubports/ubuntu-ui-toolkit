@@ -17,7 +17,6 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
-
 import testscenarios
 
 from autopilot.matchers import Eventually
@@ -113,6 +112,18 @@ class GenericTests(GalleryTestCase):
 
             # TODO: move slider value
 
+    def test_textfield(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)        
+        textfield_standard = self.getObject('textfield_standard')
+        self.pointing_device.move_to_object(textfield_standard)
+        self.pointing_device.click()
+        self.type_string('Hello World!')
+        self.assertThat(textfield_standard.text, Equals('Hello World!'))
+        
+        
+  
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)
