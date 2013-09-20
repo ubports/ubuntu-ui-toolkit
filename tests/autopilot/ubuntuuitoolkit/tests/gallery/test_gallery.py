@@ -112,47 +112,58 @@ class GenericTests(GalleryTestCase):
 
             # TODO: move slider value
 
-    def test_textfield(self):
+    def test_textfield_standard(self):
         item = "Text Field"
         self.loadItem(item)
-        self.checkPageHeader(item)        
+        self.checkPageHeader(item)
         textfield_standard = self.getObject('textfield_standard')
         self.pointing_device.move_to_object(textfield_standard)
         self.pointing_device.click()
         self.type_string('Hello World')
         self.assertThat(textfield_standard.text, Equals('Hello World'))
-    
+
+    def test_textfield_password(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
         textfield_password = self.getObject('textfield_password')
         self.pointing_device.move_to_object(textfield_password)
         self.pointing_device.click()
         self.assertThat(textfield_password.text, Equals('password'))
 
-        btn = textfield_password.select_single('AbstractButton')
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+        self.tap_clearButton('textfield_password')
         self.assertEqual(textfield_password.text, '')
- 
+
         self.type_string(u'abcdefgh123')
         self.assertEqual(textfield_password.text, u'abcdefgh123')
-       
-        textfield_numbers =  self.getObject('textfield_numbers')
+
+    def test_textfield_numbers(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        textfield_numbers = self.getObject('textfield_numbers')
         self.pointing_device.move_to_object(textfield_numbers)
         self.pointing_device.click()
         self.assertThat(textfield_numbers.text, Equals('123'))
-        
-        btn = textfield_numbers.select_single('AbstractButton') 
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+
+        self.tap_clearButton('textfield_numbers')
         self.assertEqual(textfield_numbers.text, '')
 
         #try typing decimal value when text filed is int only.
         self.type_string('-100.123')
         self.assertThat(textfield_numbers.text, Equals('-100123'))
 
+    def test_textfield_disabled(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
         textfield_disabled = self.getObject('textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
+        #try tapping a disabled field and verify that focus is false.
+        self.pointing_device.move_to_object(textfield_disabled)
+        self.pointing_device.click()
+        self.assertFalse(textfield_disabled.focus)
 
-        
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)
