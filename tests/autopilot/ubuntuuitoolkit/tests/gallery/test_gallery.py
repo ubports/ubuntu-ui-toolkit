@@ -127,7 +127,12 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.click()
         self.assertThat(textfield_password.text, Equals('password'))
         
-        
+        textfield_numbers =  self.getObject('textfield_numbers')
+        self.pointing_device.move_to_object(textfield_numbers)
+        self.pointing_device.click()
+        self.assertThat(textfield_numbers.text, Equals('123'))
+
+       
   
 #     def test_textarea(self):
 #         item = "Text Field"
