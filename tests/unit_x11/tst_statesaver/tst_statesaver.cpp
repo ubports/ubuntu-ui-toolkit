@@ -65,11 +65,11 @@ private Q_SLOTS:
         m_modulePath = modules.absolutePath();
         // invoke initialization
         StateSaverBackend::instance();
-        StateSaverBackend::instance().reset();
     }
 
     void cleanupTestCase()
     {
+        StateSaverBackend::instance().reset();
     }
 
     void test_SaveArrays()
@@ -164,7 +164,6 @@ private Q_SLOTS:
 
         QQuickItem *obj = new QQuickItem;
         obj->setObjectName("internal");
-        qDebug() << "set" << obj;
         testItem->setProperty("object", QVariant::fromValue(obj));
         delete view;
 
@@ -172,7 +171,6 @@ private Q_SLOTS:
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        qDebug() << testItem->property("object");
         QVERIFY(testItem->property("object").value<QQuickItem*>() != obj);
         delete view;
         delete obj;

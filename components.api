@@ -477,6 +477,13 @@ plugins.qmltypes
     Signal {
     name: "sourceChanged"
     Parameter { type: "QUrl" }
+    name: "UCStateSaver"
+    prototype: "QObject"
+    exports: ["StateSaver 0.1"]
+    name: "UCStateSaverAttached"
+    prototype: "QObject"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "properties"; type: "string" }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1"]
