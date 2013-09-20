@@ -33,12 +33,6 @@ UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *q
     , m_changeDisabled(false)
     , m_propertiesDirty(false)
 {
-//    // connect attachee completed and destroyed to catch state saving points
-//    QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
-//    QObject::connect(componentAttached, SIGNAL(completed()), q_ptr, SLOT(_q_init()));
-//    QObject::connect(componentAttached, SIGNAL(destruction()), q_ptr, SLOT(_q_save()));
-//    // and when forcedSave() is emitted
-//    QObject::connect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), q_ptr, SLOT(_q_save()));
 }
 
 /*
