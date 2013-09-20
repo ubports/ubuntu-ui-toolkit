@@ -132,8 +132,8 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.click()
         self.assertEqual(textfield_password.text, '')
  
-        self.type_string(u'$%=#')
-        self.assertEqual(textfield_password.text, u'$%=#')
+        self.type_string(u'abcdefgh123')
+        self.assertEqual(textfield_password.text, u'abcdefgh123')
        
         textfield_numbers =  self.getObject('textfield_numbers')
         self.pointing_device.move_to_object(textfield_numbers)
