@@ -17,8 +17,7 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
-
-import testscenarios
+import shutil
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
@@ -26,23 +25,64 @@ from testtools.matchers import Is, Not, Equals
 from ubuntuuitoolkit import tests
 
 
-class GalleryTestCase(tests.UbuntuUiToolkitTestCase):
+class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
-    # Support both running from system and in the source directory
-    runPath = os.path.dirname(os.path.realpath(__file__))
-    localSourceFile = (
-        runPath +
-        "/../../../../../examples/ubuntu-ui-toolkit-gallery/"
-        "ubuntu-ui-toolkit-gallery.qml")
-    if (os.path.isfile(localSourceFile)):
-        print "Using local source directory"
-        test_qml_file = localSourceFile
-    else:
-        print "Using system QML file"
-        test_qml_file = (
-            "/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/"
-            "ubuntu-ui-toolkit-gallery.qml")
+    local_desktop_file_path = None
+
+    def setUp(self):
+        self.app_qml_source_path = os.path.join(
+            self._get_path_to_gallery_source(),
+            'ubuntu-ui-toolkit-gallery.qml')
+        self.test_qml_file_path = self._get_test_qml_file_path()
+        self.desktop_file_path = self._get_desktop_file_path()
+        super(GalleryTestCase, self).setUp()
+
+    def _get_path_to_gallery_source(self):
+        return os.path.join(
+            tests.get_path_to_source_root(), 'examples',
+            'ubuntu-ui-toolkit-gallery')
+
+    def _application_source_exists(self):
+        return os.path.exists(self.app_qml_source_path)
+
+    def _get_test_qml_file_path(self):
+        if self._application_source_exists():
+            return self.app_qml_source_path
+        else:
+            return os.path.join(
+                self._get_path_to_installed_gallery(),
+                'ubuntu-ui-toolkit-gallery.qml')
+
+    def _get_path_to_installed_gallery(self):
+        return '/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'
+
+    def _get_desktop_file_path(self):
+        if self._application_source_exists():
+            local_desktop_file_dir = tests.get_local_desktop_file_directory()
+            if not os.path.exists(local_desktop_file_dir):
+                os.makedirs(local_desktop_file_dir)
+            source_desktop_file_path = os.path.join(
+                self._get_path_to_gallery_source(),
+                'ubuntu-ui-toolkit-gallery.desktop')
+            local_desktop_file_path = os.path.join(
+                local_desktop_file_dir, 'ubuntu-ui-toolkit-gallery.desktop')
+            shutil.copy(source_desktop_file_path, local_desktop_file_path)
+            # We can't delete the desktop file before we close the application,
+            # so we save it on an attribute to be deleted on tear down.
+            self.local_desktop_file_path = local_desktop_file_path
+            return local_desktop_file_path
+        else:
+            return os.path.join(
+                self._get_path_to_installed_gallery(),
+                'ubuntu-ui-toolkit-gallery.desktop')
+
+    def tearDown(self):
+        super(GalleryTestCase, self).tearDown()
+        # We can't delete the desktop file before we close the application,
+        # so we save it on an attribute to be deleted on tear down.
+        if self.local_desktop_file_path is not None:
+            os.remove(self.local_desktop_file_path)
 
 
 class GenericTests(GalleryTestCase):
@@ -192,27 +232,26 @@ class GenericTests(GalleryTestCase):
 
 class ButtonsTestCase(GalleryTestCase):
 
-    scenarios = testscenarios.multiply_scenarios(
-        tests.get_input_device_scenarios(),
-        [('standard button', dict(
+    scenarios = [
+        ('standard button', dict(
             button_name="button_text", is_enabled=True, color=None, icon=None,
             text="Call")),
-         ('button with color', dict(
-             button_name="button_color", is_enabled=True,
-             color=[0, 0, 0, 255], icon=None, text="Call")),
-         ('button with icon', dict(
-             button_name="button_iconsource", is_enabled=True, color=None,
-             icon="call.png", text=None)),
-         ('button with icon on the right', dict(
-             button_name="button_iconsource_right_text", is_enabled=True,
-             color=None, icon="call.png", text="Call")),
-         ('button with icon on the left', dict(
-             button_name="button_iconsource_left_text", is_enabled=True,
-             color=None, icon="call.png", text="Call")),
-         ('disabled button', dict(
-             button_name="button_text_disabled", is_enabled=False, color=None,
-             icon=None, text="Call"))]
-    )
+        ('button with color', dict(
+            button_name="button_color", is_enabled=True,
+            color=[0, 0, 0, 255], icon=None, text="Call")),
+        ('button with icon', dict(
+            button_name="button_iconsource", is_enabled=True, color=None,
+            icon="call.png", text=None)),
+        ('button with icon on the right', dict(
+            button_name="button_iconsource_right_text", is_enabled=True,
+            color=None, icon="call.png", text="Call")),
+        ('button with icon on the left', dict(
+            button_name="button_iconsource_left_text", is_enabled=True,
+            color=None, icon="call.png", text="Call")),
+        ('disabled button', dict(
+            button_name="button_text_disabled", is_enabled=False, color=None,
+            icon=None, text="Call"))
+    ]
 
     def test_buttons(self):
         item = "Buttons"
