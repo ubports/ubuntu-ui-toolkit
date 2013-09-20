@@ -81,13 +81,14 @@ void UCStateSaverAttachedPrivate::_q_propertyChange()
 
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
-    QString path = id;
+    QString path = QuickUtils::instance().className(m_attachee) + '-' + id;
     QObject *parent = m_attachee->parent();
 
     while (parent) {
         QString parentId = qmlContext(parent)->nameForObject(parent);
+        QString className = QuickUtils::instance().className(parent);
         if (!parentId.isEmpty()) {
-            path.prepend(parentId + ":");
+            path.prepend(className + '-' + parentId + ":");
         } else {
             qmlInfo(parent) << UbuntuI18n::instance().tr("All the parents must have an id. State saving disabled for %1").arg(path);
             return QString();
