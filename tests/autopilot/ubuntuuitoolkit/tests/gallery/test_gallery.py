@@ -126,7 +126,15 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.move_to_object(textfield_password)
         self.pointing_device.click()
         self.assertThat(textfield_password.text, Equals('password'))
-        
+
+        btn = textfield_password.select_single('AbstractButton')
+        self.pointing_device.move_to_object(btn)
+        self.pointing_device.click()
+        self.assertEqual(textfield_password.text, '')
+ 
+        self.type_string(u'$%=#')
+        self.assertEqual(textfield_password.text, u'$%=#')
+       
         textfield_numbers =  self.getObject('textfield_numbers')
         self.pointing_device.move_to_object(textfield_numbers)
         self.pointing_device.click()
@@ -144,6 +152,7 @@ class GenericTests(GalleryTestCase):
         textfield_disabled = self.getObject('textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
 
+        
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)
