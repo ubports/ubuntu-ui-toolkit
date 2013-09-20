@@ -48,6 +48,7 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void deactivated();
 
 protected:
     bool eventFilter(QObject *, QEvent *);

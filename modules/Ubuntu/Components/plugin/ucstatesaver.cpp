@@ -19,12 +19,13 @@
 #include "ucstatesaver.h"
 #include "ucstatesaver_p.h"
 #include "statesaverbackend_p.h"
-#include <QtQml/QQmlInfo>
 #include "i18n.h"
+#include "quickutils.h"
+#include <QtQml/QQmlInfo>
+#include <QtGui/QGuiApplication>
 #include "private/qqmldata_p.h"
 #include "private/qqmlcontext_p.h"
 #include <private/qqmlcomponentattached_p.h>
-#include <QtGui/QGuiApplication>
 
 UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee)
     : q_ptr(qq)
@@ -165,7 +166,7 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  * \a{id}. Therefore attachee component as well as all its parents must have a
  * valid and possibly unique ID set.
  *
- * The following example will give error fo rthe \a label, as the root component
+ * The following example will give error for the \a input, as the root component
  * has no id specified:
  * \qml
  * Item {
@@ -236,13 +237,13 @@ void UCStateSaverAttached::setEnabled(bool v)
             QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
             QObject::disconnect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
             QObject::disconnect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::disconnect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), this, SLOT(_q_save()));
+            QObject::disconnect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
         } else {
             // re-connect to proceed with saving
             QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
             QObject::connect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
             QObject::connect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::connect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), this, SLOT(_q_save()));
+            QObject::connect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
         }
         Q_EMIT enabledChanged();
     }

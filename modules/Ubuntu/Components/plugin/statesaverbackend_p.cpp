@@ -33,26 +33,12 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
         QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
                          this, &StateSaverBackend::initialize);
     }
-
-    QCoreApplication::instance()->installEventFilter(this);
 }
 
 StateSaverBackend::~StateSaverBackend()
 {
     if (m_archive) {
         delete m_archive;
-    }
-}
-
-bool StateSaverBackend::eventFilter(QObject *object, QEvent *event)
-{
-    switch (event->type()) {
-    case QEvent::ApplicationDeactivate: {
-        Q_EMIT forcedSave();
-        return true;
-    }
-    default:
-        return QObject::eventFilter(object, event);
     }
 }
 

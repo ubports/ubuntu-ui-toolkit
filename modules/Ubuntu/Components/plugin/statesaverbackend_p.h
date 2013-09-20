@@ -43,12 +43,8 @@ public:
     int save(const QString &id, QObject *item, const QStringList &properties);
     bool reset();
 
-Q_SIGNALS:
-    void forcedSave();
-
 protected:
     explicit StateSaverBackend(QObject *parent = 0);
-    bool eventFilter(QObject *, QEvent *);
 
 private Q_SLOTS:
     void initialize();

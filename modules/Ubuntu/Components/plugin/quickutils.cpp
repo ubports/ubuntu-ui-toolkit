@@ -50,6 +50,9 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
     if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
         lookupQuickView();
+    if (event->type() == QEvent::ApplicationDeactivate) {
+        Q_EMIT deactivated();
+    }
 
     return QObject::eventFilter(obj, event);
 }
