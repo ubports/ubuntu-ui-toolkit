@@ -26,8 +26,8 @@ class UCStateSaverAttachedPrivate;
 class UCStateSaverAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool eanbled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QStringList properties READ properties WRITE setProperties NOTIFY propertiesChanged)
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(QString properties READ properties WRITE setProperties NOTIFY propertiesChanged)
 public:
     UCStateSaverAttached(QObject *attachee);
     ~UCStateSaverAttached();
@@ -35,8 +35,8 @@ public:
     // getter/setter
     bool enabled() const;
     void setEnabled(bool v);
-    QStringList properties() const;
-    void setProperties(const QStringList &list);
+    QString properties() const;
+    void setProperties(const QString &list);
 
 Q_SIGNALS:
     void enabledChanged();

@@ -18,8 +18,9 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property real realValue: 543.21
+    property Item object: Item {
+        objectName: "testObject"
+    }
     id: testItem
-    objectName: "testItem"
-    StateSaver.properties: ["realValue"]
+    StateSaver.properties: "object"
 }

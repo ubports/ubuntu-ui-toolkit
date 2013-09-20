@@ -21,6 +21,11 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
+#include <QVector3D>
+#include <QVector4D>
+#include <QQuaternion>
+#include <QMatrix4x4>
+#include <QtQuick/QQuickItem>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -58,89 +63,240 @@ private Q_SLOTS:
         QDir modules ("../../../modules");
         QVERIFY(modules.exists());
         m_modulePath = modules.absolutePath();
+        // invoke initialization
+        StateSaverBackend::instance();
+        StateSaverBackend::instance().reset();
     }
 
     void cleanupTestCase()
     {
-        StateSaverBackend::instance().reset();
     }
 
-    void test_SaveBool()
+    void test_SaveArrays()
     {
-        QQuickView *view = createView("SaveBool.qml");
+        QQuickView *view = createView("SaveArrays.qml");
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
-        testItem->setProperty("boolValue", true);
-        delete view;
-        StateSaverBackend::instance().resetRegister();
 
-        view = createView("SaveBool.qml");
+        QVariantList boolValues;
+        boolValues << true << true;
+        QVariantList intValues;
+        intValues << 100 << 200;
+        QVariantList realValues;
+        realValues << 123.45 << 678.9;
+        QVariantList stringValues;
+        stringValues << "one" << "two";
+        testItem->setProperty("boolArray", boolValues);
+        testItem->setProperty("intArray", intValues);
+        testItem->setProperty("realArray", realValues);
+        testItem->setProperty("stringArray", stringValues);
+        delete view;
+
+        view = createView("SaveArrays.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QCOMPARE(testItem->property("boolValue").toBool(), true);
+        QVERIFY(testItem->property("boolArray") == boolValues);
+        QVERIFY(testItem->property("intArray") == intValues);
+        QVERIFY(testItem->property("realArray") == realValues);
+        QVERIFY(testItem->property("stringArray") == stringValues);
         delete view;
-        StateSaverBackend::instance().resetRegister();
     }
 
-
-    void test_SaveInt()
+    void test_SaveStructures()
     {
-        QQuickView *view = createView("SaveInt.qml");
+        QQuickView *view = createView("SaveSupportedTypes.qml");
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
-        testItem->setProperty("intValue", 100);
-        delete view;
-        StateSaverBackend::instance().resetRegister();
 
-        view = createView("SaveInt.qml");
+        QVariantHash values;
+        values.insert("intValue", 1000);
+        values.insert("boolValue", true);
+        values.insert("realValue", 345.12);
+        values.insert("doubleValue", 65535.33244);
+        values.insert("string", "test string");
+        values.insert("url", QUrl::fromLocalFile("tst_statesaver.cpp"));
+        values.insert("date", QDateTime::currentDateTime().addDays(5));
+        values.insert("point", QPoint(100, 100));
+        values.insert("rect", QRect(100, 100, 200, 200));
+        values.insert("size", QSize(345, 678));
+        values.insert("color", QColor("blue"));
+        values.insert("font", QFont("Ubuntu"));
+        values.insert("vector2d", QVector2D(100.0, 200.0));
+        values.insert("vector3d", QVector3D(100.0, 200.0, 300.0));
+        values.insert("vector4d", QVector4D(100.0, 200.0, 300.0, 400.0));
+        values.insert("quaternion", QQuaternion(1, 100.0, 200.0, 300.0));
+        values.insert("matrix4x4", QMatrix4x4(5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20));
+
+        QHashIterator<QString, QVariant> i(values);
+        while (i.hasNext()) {
+            i.next();
+            QVERIFY2(testItem->setProperty(i.key().toLocal8Bit().constData(), i.value()),
+                                           QString("set %1").arg(i.key()).toLocal8Bit().constData());
+        }
+
+        delete view;
+
+        view = createView("SaveSupportedTypes.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QCOMPARE(testItem->property("intValue").toInt(), 100);
+
+        UCStateSaverAttached *stateSaver = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(testItem, false));
+        QVERIFY(stateSaver);
+
+        QStringList properties = stateSaver->properties().split(',');
+        Q_FOREACH(const QString &property, properties) {
+            QVERIFY2(testItem->property(property.toLocal8Bit().constData()) == values.value(property), QString("verifying %1").arg(property).toLocal8Bit().constData());
+        }
+
         delete view;
-        StateSaverBackend::instance().resetRegister();
     }
 
-    void test_SaveReal()
+    void test_SaveObject()
     {
-        QQuickView *view = createView("SaveReal.qml");
+        QQuickView *view = createView("SaveObject.qml");
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
-        testItem->setProperty("realValue", 123.45);
-        delete view;
-        StateSaverBackend::instance().resetRegister();
 
-        view = createView("SaveReal.qml");
+        QQuickItem *obj = new QQuickItem;
+        obj->setObjectName("internal");
+        qDebug() << "set" << obj;
+        testItem->setProperty("object", QVariant::fromValue(obj));
+        delete view;
+
+        view = createView("SaveObject.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QCOMPARE(testItem->property("realValue").toReal(), 123.45);
+        qDebug() << testItem->property("object");
+        QVERIFY(testItem->property("object").value<QQuickItem*>() != obj);
         delete view;
-        StateSaverBackend::instance().resetRegister();
+        delete obj;
     }
 
-    void test_SaveString()
+    void test_ValidUID()
     {
-        QQuickView *view = createView("SaveString.qml");
+        QQuickView *view = createView("ValidUID.qml");
         QVERIFY(view);
-        QObject *testItem = view->rootObject();
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
-        testItem->setProperty("stringValue", "test string");
-        delete view;
-        StateSaverBackend::instance().resetRegister();
 
-        view = createView("SaveString.qml");
-        QVERIFY(view);
-        testItem = view->rootObject();
-        QVERIFY(testItem);
-        QCOMPARE(testItem->property("stringValue").toString(), QString("test string"));
+        testItem->setObjectName("updated");
         delete view;
-        StateSaverBackend::instance().resetRegister();
+
+        view = createView("ValidUID.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
+        delete view;
     }
+
+    void test_InvalidUID()
+    {
+        QQuickView *view = createView("InvalidUID.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("InvalidUID.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem == 0);
+        delete view;
+    }
+
+    void test_ValidGroupProperty()
+    {
+        QQuickView *view = createView("ValidGroupProperty.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("group");
+        delete view;
+
+        view = createView("ValidGroupProperty.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("group");
+        QVERIFY(testItem);
+        delete view;
+    }
+
+    void test_InvalidGroupProperty()
+    {
+        QQuickView *view = createView("InvalidGroupProperty.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("group");
+        delete view;
+
+        view = createView("InvalidGroupProperty.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("group");
+        QVERIFY(testItem == 0);
+        delete view;
+    }
+
+    void test_Dynamic()
+    {
+        QQuickView *view = createView("Dynamic.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("Dynamic.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
+        delete view;
+    }
+
+    void test_TwoDynamics()
+    {
+        QQuickView *view = createView("TwoDynamics.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("TwoDynamics.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
+        delete view;
+    }
+
+    void test_DisabledStateSaver()
+    {
+        QQuickView *view = createView("DisabledStateSaver.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("DisabledStateSaver.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem == 0);
+        delete view;
+    }
+
 };
 
 QTEST_MAIN(tst_StateSaverTest)

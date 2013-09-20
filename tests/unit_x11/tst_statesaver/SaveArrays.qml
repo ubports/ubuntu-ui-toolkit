@@ -18,8 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property bool boolValue: false
+    property var boolArray: [false, false]
+    property var intArray: [1, 2]
+    property var realArray: [10.1, 20.2]
+    property var stringArray: ["false", "false"]
     id: testItem
     objectName: "testItem"
-    StateSaver.properties: ["boolValue"]
+    StateSaver.properties: "boolArray, intArray, realArray, stringArray"
 }

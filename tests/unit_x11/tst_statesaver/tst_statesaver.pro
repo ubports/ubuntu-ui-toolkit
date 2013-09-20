@@ -5,7 +5,13 @@ SOURCES += \
     tst_statesaver.cpp
 
 OTHER_FILES += \
-    SaveBool.qml \
-    SaveInt.qml \
-    SaveReal.qml \
-    SaveString.qml
+    SaveArrays.qml \
+    SaveSupportedTypes.qml \
+    ValidUID.qml \
+    InvalidUID.qml \
+    ValidGroupProperty.qml \
+    InvalidGroupProperty.qml \
+    Dynamic.qml \
+    TwoDynamics.qml \
+    DisabledStateSaver.qml \
+    SaveObject.qml

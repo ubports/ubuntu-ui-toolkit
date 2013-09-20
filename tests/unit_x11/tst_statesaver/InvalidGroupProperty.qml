@@ -18,8 +18,13 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property string stringValue: "nothing"
-    id: testItem
-    objectName: "testItem"
-    StateSaver.properties: ["stringValue"]
+    id: root
+    Item {
+        id: testItem
+        property var group: QtObject {
+            objectName: "testItem"
+            StateSaver.properties: "objectName"
+        }
+    }
 }
+

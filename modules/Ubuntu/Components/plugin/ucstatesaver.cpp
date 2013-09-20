@@ -26,25 +26,19 @@
 #include <private/qqmlcomponentattached_p.h>
 #include <QtGui/QGuiApplication>
 
-#include <QDebug>
-
 UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee)
     : q_ptr(qq)
     , m_attachee(attachee)
-    , m_enabled(true)
+    , m_enabled(false)
     , m_changeDisabled(false)
     , m_propertiesDirty(false)
 {
-    qDebug() << "CONSTRUCT" << qmlContext(m_attachee)->nameForObject(m_attachee);
-
-    // connect attachee completed and destroyed to catch state saving points
-    QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
-    QObject::connect(componentAttached, SIGNAL(completed()), q_ptr, SLOT(_q_init()));
-    QObject::connect(componentAttached, SIGNAL(destruction()), q_ptr, SLOT(_q_save()));
-    // connect to StateSaverBackend::idle
-    QObject::connect(&StateSaverBackend::instance(), SIGNAL(idle()), q_ptr, SLOT(_q_save()));
-    // and deactivated
-    QObject::connect(&StateSaverBackend::instance(), SIGNAL(deactivated()), q_ptr, SLOT(_q_save()));
+//    // connect attachee completed and destroyed to catch state saving points
+//    QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
+//    QObject::connect(componentAttached, SIGNAL(completed()), q_ptr, SLOT(_q_init()));
+//    QObject::connect(componentAttached, SIGNAL(destruction()), q_ptr, SLOT(_q_save()));
+//    // and when forcedSave() is emitted
+//    QObject::connect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), q_ptr, SLOT(_q_save()));
 }
 
 /*
@@ -53,15 +47,18 @@ UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *q
 void UCStateSaverAttachedPrivate::_q_init()
 {
     QString id = qmlContext(m_attachee)->nameForObject(m_attachee);
-    m_absoluteId = absoluteId(id);
-    qDebug() << "INIT" << m_absoluteId;
-
-    if (m_absoluteId.isEmpty()) {
-        qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attacheee ID or one of its parent IDs are not defined. State will not be saved.");
+    if (id.isEmpty()) {
+        qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee must have an ID. State will not be saved.");
+        return;
     }
-    if (!StateSaverBackend::registerId(m_absoluteId)) {
+    m_absoluteId = absoluteId(id);
+    if (m_absoluteId.isEmpty()) {
+        return;
+    }
+    if (!StateSaverBackend::instance().registerId(m_absoluteId)) {
         qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee's UUID is already registered, state won't be saved: %1").arg(m_absoluteId);
         m_absoluteId.clear();
+        return;
     }
     restore();
 }
@@ -94,12 +91,10 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 
     while (parent) {
         QString parentId = qmlContext(parent)->nameForObject(parent);
-        qDebug() << "^" << parentId;
-
         if (!parentId.isEmpty()) {
             path.prepend(parentId + ":");
         } else {
-            qmlInfo(m_attachee) << "All the parents must have an id.";
+            qmlInfo(parent) << UbuntuI18n::instance().tr("All the parents must have an id. State saving disabled for %1").arg(path);
             return QString();
         }
 
@@ -132,6 +127,9 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
     const QMetaMethod slot = q->metaObject()->method(q->metaObject()->indexOfSlot("_q_propertyChange()"));
     Q_FOREACH(const QString &propertyName, m_properties) {
         const QMetaProperty property = mo->property(mo->indexOfProperty(propertyName.toLocal8Bit().constData()));
+        if (!property.isValid()) {
+            continue;
+        }
         if (connect) {
             QObject::connect(m_attachee, property.notifySignal(), q, slot);
         } else {
@@ -149,10 +147,10 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  * \brief Attached propertyes to save component property states.
  *
  * StateSaver attached object provides the ability to serialize property values
- * between application starts. Th eproperties subject of serialization must be
- * given in the \l properties as list of strings. Th eserialization will happen
- * automatically on component's completion and destruction time, as well as when
- * the application is deactivated or when idling. However, serialization can be
+ * between application starts. The properties subject of serialization must be
+ * given in the \l properties as a string, separated with commas. The serialization
+ * will happen automatically on component's completion and destruction time, as
+ * well as when the application is deactivated. Automatic serialization can be
  * turned off by simply setting false to \l enabled property.
  *
  * Example:
@@ -162,10 +160,12 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  *
  * TextField {
  *     id: input
- *     StateSaver.properties: ["text"]
+ *     StateSaver.properties: "text"
  *     StateSaver.enabled: input.enabled
  * }
  * \endqml
+ *
+ * In this example the state saver is synchronized with the attachee's one.
  *
  * StateSaver computes a unique identifier for the attachee using the component's
  * \a{id}. Therefore attachee component as well as all its parents must have a
@@ -181,27 +181,41 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  *         //[...]
  *         TextField {
  *             id: input
- *             StateSaver.properties: ["text"]
+ *             StateSaver.properties: "text"
  *         }
  *     }
  * }
  * \endqml
  * but the following example will successfully save the text field content
+ * \qml
+ * Item {
+ *     id: root
+ *     //[...]
+ *     Item {
+ *         id: parent
+ *         //[...]
+ *         TextField {
+ *             id: input
+ *             StateSaver.properties: "text"
+ *         }
+ *     }
+ * }
+ * \endqml
  *
- * The StateSaver can save only certain types of properties, which are: bool, int,
- * real, string, list of these types. Objects, list of objects or variants containing
- * any of these cannot be saved.
+ * The StateSaver can save all \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types},
+ * Objects, list of objects or variants containing any of these cannot be saved.
  */
 
 UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
     : QObject(attachee)
     , d_ptr(new UCStateSaverAttachedPrivate(this, attachee))
 {
+    setEnabled(true);
 }
 
 UCStateSaverAttached::~UCStateSaverAttached()
 {
-    qDebug() << "DESTROYING";
+    StateSaverBackend::instance().removeId(d_func()->m_absoluteId);
 }
 
 // getter/setter
@@ -223,25 +237,47 @@ void UCStateSaverAttached::setEnabled(bool v)
         d->m_enabled = v;
         // make sure next time we sync properties
         d->m_propertiesDirty = true;
+        if (!d->m_enabled) {
+            // disconnect to save processing time if no state save is needed
+            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
+            QObject::disconnect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
+            QObject::disconnect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
+            QObject::disconnect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), this, SLOT(_q_save()));
+        } else {
+            // re-connect to proceed with saving
+            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
+            QObject::connect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
+            QObject::connect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
+            QObject::connect(&StateSaverBackend::instance(), SIGNAL(forcedSave()), this, SLOT(_q_save()));
+        }
         Q_EMIT enabledChanged();
     }
 }
 
 /*!
- * \qmlproperty list<string> StateSaver::properties
- * List of properties to be serialized. Properties must be writable and can only
- * have bool, int, real, string or list of one of these types.
+ * \qmlproperty string StateSaver::properties
+ * List of properties to be serialized, separated with commas. Properties must be
+ * writable and can only be \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types}.
+ *
+ * A custom singl eline input which saves the text, polaceholderText, font and color would look as follows:
+ * \qml
+ * TextField {
+ *     id: input
+ *     StateSaver.properties: "text, placeholderText, font, color"
+ * }
+ * \endqml
  */
-QStringList UCStateSaverAttached::properties() const
+QString UCStateSaverAttached::properties() const
 {
-    return d_func()->m_properties;
+    return d_func()->m_properties.join(',');
 }
-void UCStateSaverAttached::setProperties(const QStringList &list)
+void UCStateSaverAttached::setProperties(const QString &list)
 {
+    QStringList propertyList = list.split(QRegularExpression("\\W+"), QString::SkipEmptyParts);
     Q_D(UCStateSaverAttached);
-    if (d->m_properties != list) {
+    if (d->m_properties != propertyList) {
         d->connectChangeSlot(false);
-        d->m_properties = list;
+        d->m_properties = propertyList;
         d->connectChangeSlot(true);
         Q_EMIT propertiesChanged();
         d->restore();

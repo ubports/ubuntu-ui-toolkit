@@ -18,8 +18,12 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property int intValue: 20
-    id: testItem
-    objectName: "testItem"
-    StateSaver.properties: ["intValue"]
+    id: root
+    Item {
+        id: testItem
+        objectName: "testItem"
+        StateSaver.properties: "objectName"
+        StateSaver.enabled: false
+    }
 }
+
