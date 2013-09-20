@@ -131,6 +131,15 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.move_to_object(textfield_numbers)
         self.pointing_device.click()
         self.assertThat(textfield_numbers.text, Equals('123'))
+        
+        btn = textfield_numbers.select_single('AbstractButton') 
+        self.pointing_device.move_to_object(btn)
+        self.pointing_device.click()
+        self.assertEqual(textfield_numbers.text, '')
+
+        #try typing decimal value when text filed is int only.
+        self.type_string('-100.123')
+        self.assertThat(textfield_numbers.text, Equals('-100123'))
 
         textfield_disabled = self.getObject('textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
