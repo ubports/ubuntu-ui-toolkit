@@ -132,8 +132,9 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.click()
         self.assertThat(textfield_numbers.text, Equals('123'))
 
-       
-  
+        textfield_disabled = self.getObject('textfield_disabled')
+        self.assertFalse(textfield_disabled.enabled)
+
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)
