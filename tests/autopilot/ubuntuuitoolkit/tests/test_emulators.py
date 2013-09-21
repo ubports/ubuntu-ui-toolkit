@@ -443,7 +443,7 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
     def test_check_toggle_already_checked(self):
         self.toggle.check()
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
-             self.toggle.check()
+            self.toggle.check()
         self.assertFalse(mock_click.called)
 
     def test_uncheck_toggle(self):
@@ -453,5 +453,5 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
 
     def test_uncheck_toggle_already_unchecked(self):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
-             self.toggle.uncheck()
+            self.toggle.uncheck()
         self.assertFalse(mock_click.called)
