@@ -283,3 +283,23 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         for button in buttons:
             if button.text == text:
                 return button
+
+
+class CheckBox(UbuntuUIToolkitEmulatorBase):
+    """CheckBox Autopilot emulator."""
+
+    def check(self):
+        """Check a CheckBox, if its not already checked."""
+        if not self.checked:
+            self.pointing_device.click_object(self)
+            self.checked.wait_for(True)
+
+    def uncheck(self):
+        """Uncheck a CheckBox, if its not already unchecked."""
+        if self.checked:
+            self.pointing_device.click_object(self)
+            self.checked.wait_for(False)
+
+
+class Switch(CheckBox):
+    """Switch Autopilot emulator."""

@@ -380,3 +380,80 @@ MainView {
             AssertionError, popover.click_button_by_text, 'Action one')
         self.assertEqual(
             error.message, 'The popover is not open.')
+
+
+TEST_QML_WITH_CHECKBOX = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {
+        CheckBox {
+            checked: false
+            objectName: "test_checkbox"
+        }
+    }
+}
+""")
+
+
+TEST_QML_WITH_SWITCH = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {
+        Switch {
+            checked: false
+            objectName: "test_switch"
+        }
+    }
+}
+""")
+
+
+class ToggleTestCase(tests.UbuntuUiToolkitTestCase):
+
+    scenarios = [
+        ('checkbox', dict(
+            test_qml=TEST_QML_WITH_CHECKBOX, emulator=emulators.CheckBox,
+            objectName='test_checkbox')),
+        ('switch', dict(
+            test_qml=TEST_QML_WITH_SWITCH, emulator=emulators.Switch,
+            objectName='test_switch'))
+    ]
+
+    def setUp(self):
+        super(ToggleTestCase, self).setUp()
+        self.toggle = self.main_view.select_single(
+            self.emulator, objectName=self.objectName)
+
+    def test_toggle_emulator(self):
+        self.assertIsInstance(self.toggle, self.emulator)
+
+    def test_check_toggle(self):
+        self.assertFalse(self.toggle.checked)
+        self.toggle.check()
+        self.assertTrue(self.toggle.checked)
+
+    def test_check_toggle_already_checked(self):
+        self.toggle.check()
+        with mock.patch.object(input.Pointer, 'click_object') as mock_click:
+             self.toggle.check()
+        self.assertFalse(mock_click.called)
+
+    def test_uncheck_toggle(self):
+        self.toggle.check()
+        self.toggle.uncheck()
+        self.assertFalse(self.toggle.checked)
+
+    def test_uncheck_toggle_already_unchecked(self):
+        with mock.patch.object(input.Pointer, 'click_object') as mock_click:
+             self.toggle.uncheck()
+        self.assertFalse(mock_click.called)
