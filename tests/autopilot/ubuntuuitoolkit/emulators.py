@@ -299,7 +299,3 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if self.checked:
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
-
-
-class Switch(CheckBox):
-    """Switch Autopilot emulator."""

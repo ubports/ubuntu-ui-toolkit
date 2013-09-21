@@ -418,24 +418,22 @@ MainView {
 """)
 
 
-class ToggleTestCase(tests.UbuntuUiToolkitTestCase):
+class ToggleTestCase(tests.QMLStringAppTestCase):
 
     scenarios = [
         ('checkbox', dict(
-            test_qml=TEST_QML_WITH_CHECKBOX, emulator=emulators.CheckBox,
-            objectName='test_checkbox')),
+            test_qml=TEST_QML_WITH_CHECKBOX, objectName='test_checkbox')),
         ('switch', dict(
-            test_qml=TEST_QML_WITH_SWITCH, emulator=emulators.Switch,
-            objectName='test_switch'))
+            test_qml=TEST_QML_WITH_SWITCH, objectName='test_switch'))
     ]
 
     def setUp(self):
         super(ToggleTestCase, self).setUp()
         self.toggle = self.main_view.select_single(
-            self.emulator, objectName=self.objectName)
+            emulators.CheckBox, objectName=self.objectName)
 
     def test_toggle_emulator(self):
-        self.assertIsInstance(self.toggle, self.emulator)
+        self.assertIsInstance(self.toggle, emulators.CheckBox)
 
     def test_check_toggle(self):
         self.assertFalse(self.toggle.checked)
