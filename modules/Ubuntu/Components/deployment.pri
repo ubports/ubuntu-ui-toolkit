@@ -15,6 +15,9 @@ LISTITEMS_ARTWORK_FILES = $$system(find ListItems/artwork -type f)
 # Components/Popups
 POPUPS_FILES = $$system(find Popups -maxdepth 1 -type f)
 
+#Components/Pickers
+PICKER_FILES = $$system(find Pickers -maxdepth 1 -type f)
+
 # qmldir
 QMLDIR_FILE = qmldir
 
@@ -36,9 +39,11 @@ listitems_artwork_files.path = $$installPath/ListItems/artwork
 listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
 popups_files.path = $$installPath/Popups
 popups_files.files = $$POPUPS_FILES
+pickers_files.path = $$installPath/Pickers
+picker_files.files = $$PICKER_FILES
 
 plugins_qmltypes.path = $$installPath
 plugins_qmltypes.files = plugins.qmltypes
 plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.Components 0.1 ../../ > $(INSTALL_ROOT)/$$installPath/plugins.qmltypes
 
-INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files plugins_qmltypes
+INSTALLS += qmldir_file qml_files js_files artwork_files listitems_files listitems_artwork_files popups_files picker_files plugins_qmltypes
