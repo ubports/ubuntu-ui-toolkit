@@ -117,8 +117,7 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         textfield_standard = self.getObject('textfield_standard')
-        self.pointing_device.move_to_object(textfield_standard)
-        self.pointing_device.click()
+        self.pointing_device.click_object(textfield_standard)
         self.type_string('Hello World')
         self.assertThat(textfield_standard.text, Equals('Hello World'))
 
@@ -127,8 +126,7 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         textfield_password = self.getObject('textfield_password')
-        self.pointing_device.move_to_object(textfield_password)
-        self.pointing_device.click()
+        self.pointing_device.click_object(textfield_password)
         self.assertThat(textfield_password.text, Equals('password'))
 
         self.tap_clearButton('textfield_password')
@@ -142,8 +140,7 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         textfield_numbers = self.getObject('textfield_numbers')
-        self.pointing_device.move_to_object(textfield_numbers)
-        self.pointing_device.click()
+        self.pointing_device.click_object(textfield_numbers)
         self.assertThat(textfield_numbers.text, Equals('123'))
 
         self.tap_clearButton('textfield_numbers')
@@ -160,8 +157,7 @@ class GenericTests(GalleryTestCase):
         textfield_disabled = self.getObject('textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
         #try tapping a disabled field and verify that focus is false.
-        self.pointing_device.move_to_object(textfield_disabled)
-        self.pointing_device.click()
+        self.pointing_device.click_object(textfield_disabled)
         self.assertFalse(textfield_disabled.focus)
 
 #     def test_textarea(self):
