@@ -41,18 +41,19 @@ UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *q
  */
 void UCStateSaverAttachedPrivate::_q_init()
 {
-    QString id = qmlContext(m_attachee)->nameForObject(m_attachee);
-    if (id.isEmpty()) {
+    m_id = qmlContext(m_attachee)->nameForObject(m_attachee);
+    if (m_id.isEmpty()) {
         qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee must have an ID. State will not be saved.");
         return;
     }
-    m_absoluteId = absoluteId(id);
+    m_absoluteId = absoluteId(m_id);
     if (m_absoluteId.isEmpty()) {
         return;
     }
     if (!StateSaverBackend::instance().registerId(m_absoluteId)) {
         qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee's UUID is already registered, state won't be saved: %1").arg(m_absoluteId);
         m_absoluteId.clear();
+        q_func()->setEnabled(false);
         return;
     }
     restore();
@@ -81,7 +82,11 @@ void UCStateSaverAttachedPrivate::_q_propertyChange()
 
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
-    QString path = QuickUtils::instance().className(m_attachee) + '-' + id;
+    QQmlContextData *cdata = QQmlContextData::get(qmlContext(m_attachee));
+    QQmlData *ddata = QQmlData::get(m_attachee);
+    QString path = cdata->url.path().replace('/', '_') + ':'
+            + QString::number(ddata->lineNumber) + ':'
+            + QString::number(ddata->columnNumber) + ':' + id;
     QObject *parent = m_attachee->parent();
 
     while (parent) {

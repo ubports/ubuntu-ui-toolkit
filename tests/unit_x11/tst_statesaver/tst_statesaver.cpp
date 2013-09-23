@@ -295,6 +295,30 @@ private Q_SLOTS:
         delete view;
     }
 
+    void test_SameIdsInDifferentComponents()
+    {
+        QQuickView *view = createView("SameIdsInDifferentComponents.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setProperty("source", "SecondComponent.qml");
+        // check if the SecondComponent state saver is enabled
+        QObject *item = testItem->property("item").value<QObject*>();
+        QVERIFY(item);
+        QObject *innerItem = item->findChild<QObject*>("secondComponent");
+        UCStateSaverAttached *stateSaver = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(innerItem, false));
+        QVERIFY(stateSaver);
+        QVERIFY(stateSaver->enabled());
+        delete view;
+
+        view = createView("SameIdsInDifferentComponents.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("secondComponent");
+        QVERIFY(testItem);
+        delete view;
+    }
+
 };
 
 QTEST_MAIN(tst_StateSaverTest)

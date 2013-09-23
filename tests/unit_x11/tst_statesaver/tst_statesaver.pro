@@ -14,4 +14,7 @@ OTHER_FILES += \
     Dynamic.qml \
     TwoDynamics.qml \
     DisabledStateSaver.qml \
-    SaveObject.qml
+    SaveObject.qml \
+    FirstComponent.qml \
+    SecondComponent.qml \
+    SameIdsInDifferentComponents.qml
