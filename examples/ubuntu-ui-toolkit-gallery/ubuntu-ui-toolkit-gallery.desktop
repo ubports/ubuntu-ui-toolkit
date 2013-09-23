@@ -4,3 +4,7 @@ Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
+# Added Icon and Path as a workaround for http://pad.lv/1227359.
+# TODO remove them once that bug is fixed. --elopio - 2013-09-18
+Icon=Not important
+Path=Not important
