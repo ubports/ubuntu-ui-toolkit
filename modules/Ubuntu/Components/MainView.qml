@@ -251,7 +251,12 @@ PageTreeNode {
             clip: headerItem.bottomY > 0 && activePage && activePage.flickable
                   && -activePage.flickable.contentY < headerItem.bottomY
 
-            property Page activePage: mainView.activeLeafNode
+            property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+
+            function isPage(item) {
+                return item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
+                        item.hasOwnProperty("title") && item.hasOwnProperty("tools");
+            }
 
             Item {
                 id: contents
