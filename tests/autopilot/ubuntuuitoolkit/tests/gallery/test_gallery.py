@@ -17,7 +17,6 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
-
 import testscenarios
 import shutil
 
