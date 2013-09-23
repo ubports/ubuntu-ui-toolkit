@@ -50,6 +50,9 @@ API Changes
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
+* ADDED IN Panel: function open()
+* ADDED IN Panel: function closed()
+* DEPRECATED IN Panel: writable property opened. Will be made read-only.
 
 Compatibility Breaks
 ********************
