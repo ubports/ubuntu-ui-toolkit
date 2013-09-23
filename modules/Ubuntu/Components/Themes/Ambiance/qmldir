@@ -5,6 +5,8 @@ internal CheckBoxStyle CheckBoxStyle.qml
 internal DialogForegroundStyle DialogForegroundStyle.qml
 internal HeaderStyle HeaderStyle.qml
 MainViewStyle 0.1 MainViewStyle.qml
+ListItemOptionSelector 0.1 ListItemOptionSelector.qml
+OptionSelectorStyle 0.1 OptionSelectorStyle.qml
 PopoverForegroundStyle 0.1 PopoverForegroundStyle.qml
 internal ScrollbarStyle ScrollbarStyle.qml
 internal SelectionCursorStyle SelectionCursorStyle.qml
@@ -18,4 +20,5 @@ TextFieldStyle 0.1 TextFieldStyle.qml
 internal ToolbarButtonStyle ToolbarButtonStyle.qml
 internal ToolbarStyle ToolbarStyle.qml
 internal BubbleShape BubbleShape.qml
- 
+PickerStyle 0.1 PickerStyle.qml
+PickerDelegateStyle 0.1 PickerDelegateStyle.qml

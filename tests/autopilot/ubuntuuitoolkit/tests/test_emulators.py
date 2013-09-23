@@ -14,12 +14,39 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import unittest
+
 import mock
+import testtools
+from autopilot import input, platform
 
 from ubuntuuitoolkit import emulators, tests
 
 
-class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
+class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
+
+    def test_pointing_device(self):
+        emulator = emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        self.assertIsInstance(emulator.pointing_device, input.Pointer)
+
+    @mock.patch('autopilot.input.Pointer')
+    @unittest.skipIf(platform.model() != 'Desktop', 'Desktop only')
+    def test_pointing_device_in_desktop(self, mock_pointer):
+        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        mock_pointer.assert_called_once_with(device=mock.ANY)
+        _, _, keyword_args = mock_pointer.mock_calls[0]
+        self.assertIsInstance(keyword_args['device'], input.Mouse)
+
+    @mock.patch('autopilot.input.Pointer')
+    @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
+    def test_pointing_device_in_phablet(self, mock_pointer):
+        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
+        mock_pointer.assert_called_once_with(device=mock.ANY)
+        _, _, keyword_args = mock_pointer.mock_calls[0]
+        self.assertIsInstance(keyword_args['device'], input.Touch)
+
+
+class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -57,7 +84,7 @@ MainView {
             error.message, 'The MainView has no Tabs.')
 
 
-class PageTestCase(tests.UbuntuUiToolkitTestCase):
+class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -80,7 +107,7 @@ MainView {
         self.assertEqual(header.title, "Test title")
 
 
-class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -157,7 +184,7 @@ MainView {
             error.message, 'Button with objectName "unexisting" not found.')
 
 
-class TabsTestCase(tests.UbuntuUiToolkitTestCase):
+class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -173,14 +200,35 @@ MainView {
         Tab {
             objectName: "tab1"
             title: "Tab1"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test1"
+                    }
+                }
+            }
         }
         Tab {
             objectName: "tab2"
             title: "Tab2"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test2"
+                    }
+                }
+            }
         }
         Tab {
             objectName: "tab3"
             title: "Tab3"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test3"
+                    }
+                }
+            }
         }
     }
 }
@@ -260,7 +308,7 @@ MainView {
             error.message, 'Tab with objectName "unexisting" not found.')
 
 
-class ActionSelectionPopoverTestCase(tests.UbuntuUiToolkitTestCase):
+class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0

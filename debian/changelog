@@ -1,3 +1,180 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130916-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Picker component, a tumbler style value selector.
+
+  [ Leo Arias ]
+  * Do not duplicate the pointer instantiation on the autopilot
+    emulators. (LP: #1220346)
+
+  [ Nicolas d'Offay ]
+  * Fixed bug in the selectors that happened with the "nudging"
+    behaviour which occurred when the selector was scrolled. It used to
+    nudge past boundaries and if the same index was selected. This has
+    been fixed. Fixed SuruDark and SuruGradient ListItemSelector themes.
+
+  [ tpeeters ]
+  * Add Panel.open() and Panel.close() functions so that applications
+    can be adapted to use those instead of setting Panel.opened. The
+    behavior of the panel was not changed, this will be done in a
+    following MR. Also note that applications with a Toolbar do not need
+    to use Panel.open()/close()/opened directly, they can use the opened
+    property of the Page.tools, so they should not be affected by the
+    upcoming changes.
+
+  [ Lars Uebernickel ]
+  * giconprovider: warn about image://gicon being deprecated.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 748
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Sep 2013 11:35:05 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130903.4-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Hide header label if no label is input. Fix for:
+    OptionSelector.qml:205: ReferenceError: UbuntuAnimation is not
+    defined Fixed containerHeight affecting the entire Selector's height
+    even if the contentHeight was less. (LP: #1220130)
+
+  [ Guenter Schwann ]
+  * Fixes tab switching with open toolbar fixes
+    https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1220064. (LP:
+    #1220064)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 741
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 15:16:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130903.3-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * Reverse cherrypicking rev734.
+
+  [ Zsombor Egri ]
+  * Branch 734 removed, causing Unity test failures.
+
+  [ Nicolas d'Offay ]
+  * Added ItemSelector. Extend OptionSelector and fixed various bugs.
+    Added tests for both OptionSelector and ItemSelector. (LP: #1169258,
+    #1218250, #1218247)
+
+  [ tpeeters ]
+  * New toolbar reveal/hide behavior, as specified by design. (LP:
+    #1207369)
+
+  [ iftikhar.ahmad@canonical.com ]
+  * This MP contains some fixes to autopilot test cases. Two test cases
+    are commented for now as they were giving inconsistent results on
+    phone. .
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 738
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 11:46:19 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130830.1-0ubuntu1) saucy; urgency=low
+
+  [ tpeeters ]
+  * Quick fix, completely untested. Might mess up apps with list items
+    that do not use popovers. Have a look to see if you can use this
+    code and it doesn't break anything. (LP: #1205094)
+  * Clean toolbar code by removing deprecated properties and updating
+    tests.
+
+  [ iftikhar.ahmad@canonical.com ]
+  * ajusted the buttons laytout to make it fit to phone screen size.
+    https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1218749 . (LP:
+    #1218749)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 731
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 30 Aug 2013 12:44:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130829.2-0ubuntu1) saucy; urgency=low
+
+  [ Olivier Tilloy ]
+  * Fix a typo in Panel.qml. (LP: #1218331)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 727
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 15:22:45 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130829.1-0ubuntu1) saucy; urgency=low
+
+  [ Michal Hruby ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Zsombor Egri ]
+  * Tick artwork reverted into Ambiance theme breaking Switch and
+    CheckBox components. .
+
+  [ Antti Kaijanmäki ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Nick Dedekind ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Lars Uebernickel ]
+  * Add UnityThemeIconProvider - A QQuickImageProvider that loads icons
+    from the current icon theme, following the xdg icon spec.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 725
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 11:09:48 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130829-0ubuntu1) saucy; urgency=low
+
+  [ Nicolas d'Offay ]
+  * Fixed output issue: CrossFadeImage.qml:39: Unable to assign QSize to
+    QSizeF. (LP: #1217848)
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 722
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 29 Aug 2013 02:45:45 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130828.1-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * add a test for PopoverForegroundStyle.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 719
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 11:16:47 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130828-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 717
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 28 Aug 2013 08:19:49 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130827-0ubuntu1) saucy; urgency=low
+
+  [ Michael Zanetti ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Omer Akram ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Nicolas d'Offay ]
+  * Themed UbuntuShape OptionSelector. (LP: #1202170)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 714
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 27 Aug 2013 19:11:59 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130826.1-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]

@@ -40,7 +40,16 @@ ListModel {
         source: "TextInputs.qml"
     }
 
+    ListElement {
+        label: "Option Selector"
+        source: "OptionSelectors.qml"
+    }
+
     // Not in design guidelines yet
+    ListElement {
+        label: "Pickers"
+        source: "Pickers.qml"
+    }
     ListElement {
         label: "Progress and activity"
         source: "ProgressBars.qml"

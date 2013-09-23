@@ -178,8 +178,36 @@ Item {
     property bool opened: false
     /*! \internal */
     onOpenedChanged: {
-        if (opened) state = "spread";
-        else state = "";
+        if (internal.openedChangedWarning) {
+            console.log("DEPRECATED use of Panel.opened property. This property will be made read-only,
+                please use the opened property of the Page tools or use Panel.open() and Panel.close().");
+        }
+
+        if (opened) {
+            panel.open();
+        } else {
+            panel.close();
+        }
+
+        internal.openedChangedWarning = true;
+    }
+
+    /*!
+      Open the panel
+     */
+    function open() {
+        internal.openedChangedWarning = false;
+        panel.state = "spread";
+        opened = true;
+    }
+
+    /*!
+      Close the panel
+     */
+    function close() {
+        internal.openedChangedWarning = false;
+        panel.state = "";
+        opened = false;
     }
 
     /*!
@@ -288,6 +316,9 @@ Item {
     QtObject {
         id: internal
 
+        // FIXME: Remove when opened property is made readonly
+        property bool openedChangedWarning: true
+
         /*!
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
@@ -299,7 +330,7 @@ Item {
 
         // Used for recovering the state from before
         //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedlocked: panel.locked
+        property bool savedLocked: panel.locked
         property bool savedOpened: panel.opened
 
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
@@ -332,11 +363,18 @@ Item {
             if (bottomBarVisibilityCommunicator.forceHidden) {
                 internal.savedLocked = panel.locked;
                 internal.savedOpened = panel.opened;
-                panel.opened = false;
+                panel.close();
                 panel.locked = true;
             } else { // don't force hidden
-                panel.locked = internal.savedlocked;
-                if (internal.savedlocked) panel.opened = internal.savedOpened;
+                panel.locked = internal.savedLocked;
+
+                if (internal.savedLocked) {
+                    if (internal.savedOpened) {
+                        panel.open();
+                    } else {
+                        panel.close();
+                    }
+                }
                 // if the panel was locked, do not slide it back in
                 // until the user performs an edge swipe.
             }
@@ -350,9 +388,9 @@ Item {
         } else if (state == "moving" && internal.previousState == "spread") {
             internal.movingDelta = draggingArea.initialPosition;
         } else if (state == "spread") {
-            panel.opened = true;
+            panel.open();
         } else if (state == "") {
-            panel.opened = false;
+            panel.close();
         }
         internal.previousState = state;
     }
@@ -363,7 +401,7 @@ Item {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of locked by the clicked Item behind
-            if (!panel.locked) panel.opened = false;
+            if (!panel.locked) panel.close();
         }
         propagateComposedEvents: true
         visible: panel.locked == false && panel.state == "spread"
@@ -400,19 +438,6 @@ Item {
         // set in onPressed, reset when entering "moving" state
         property Item pressedItem: null
 
-        // find the first child with a clicked property:
-        // TODO Remove this function when ToolbarActions is removed.
-        function getClickableItem(mouse) {
-            var item = bar; // contains the children
-            while (item && !item.hasOwnProperty("clicked")) {
-                var coords = mapToItem(item, mouse.x, mouse.y);
-                // FIXME: When using a ListView the highlight may be
-                //  returned instead of the Item that you are looking for
-                item = item.childAt(coords.x, coords.y);
-            }
-            return item; // will be null if no item has clicked() signal.
-        }
-
         // find the first child with a triggered property:
         function getTriggerableItem(mouse) {
             var item = bar; // contains the children
@@ -425,17 +450,11 @@ Item {
             return item; // will be null if no item has trigger() function.
         }
 
-        // forward clicked() and trigger() events to any child Item with a
-        // clicked() or trigger() function, not
-        // just MouseAreas since MouseAreas would block swiping of the panel.
+        // forward trigger() events to any child Item with trigger() function.
         // This must also happen when the panel is locked, so the DraggingArea is
         // never disabled, and other signal handlers will return when panel.locked is true.
-        // TODO: Remove clicked() call when ToolbarActions is removed.
         onClicked: {
-            if (pressedItem && pressedItem === getClickableItem(mouse)) {
-                // Click event positioned at the Item where the user first pressed
-                pressedItem.clicked();
-            } else if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
+            if (pressedItem && pressedItem === getTriggerableItem(mouse)) {
                 // Click event positioned at the Item where the user first pressed
                 pressedItem.trigger();
             }
@@ -443,8 +462,7 @@ Item {
 
         property int initialPosition
         onPressed: {
-            pressedItem = getClickableItem(mouse);
-            if (null === pressedItem) pressedItem = getTriggerableItem(mouse);
+            pressedItem = getTriggerableItem(mouse);
             if (panel.locked) return;
             initialPosition = getMousePosition();
             if (panel.state == "") panel.state = "hint";

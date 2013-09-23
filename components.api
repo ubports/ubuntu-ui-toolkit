@@ -87,8 +87,6 @@ PageTreeNode
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
-    property ToolbarActions tools
-    onToolsChanged
 modules/Ubuntu/Components/ModelSectionCounter.qml
 Object
     property var view
@@ -99,6 +97,24 @@ Object
 modules/Ubuntu/Components/Object.qml
 QtObject
     default property internal children
+modules/Ubuntu/Components/OptionSelector.qml
+ListItem.Empty
+    property var model
+    property bool expanded
+    property bool colourImage
+    property real containerHeight
+    property int selectedIndex
+    signal delegateClicked(int index)
+modules/Ubuntu/Components/OptionSelectorDelegate.qml
+ListItem.Standard
+    property string text
+    property string subText
+    property url icon
+    property bool constrainImage
+    property bool colourImage
+    property color assetColour
+    readonly property ListView listView
+    readonly property string fragColourShader
 modules/Ubuntu/Components/OrientationHelper.qml
 Item
     property bool automaticOrientation
@@ -114,8 +130,6 @@ PageTreeNode
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
-    property ToolbarActions tools
-    onToolsChanged
     property int depth
     property Item currentPage
     function push(page, properties)
@@ -144,6 +158,8 @@ Item
     default property list<Object> contents
     property int align
     property bool opened
+    function open()
+    function close()
     property bool locked
     property real hintSize
     property real triggerSize
@@ -193,8 +209,6 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property ToolbarActions tools
-    onToolsChanged
     property internal __tabs
     default property list<Item> tabChildren
     signal modelChanged()
@@ -336,20 +350,7 @@ modules/Ubuntu/Components/TextInputPopover.qml
 ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
-    property bool active
-    property bool lock
     property Item tools
-modules/Ubuntu/Components/ToolbarActions.qml
-Item
-    default property list<Action> children
-    property list<Action> actions
-    property Action back
-    property Item __pageStack
-    property bool opened
-    property bool active
-    property bool lock
-    property bool locked
-    function __hasVisibleActions()
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml

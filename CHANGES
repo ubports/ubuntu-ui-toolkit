@@ -9,7 +9,15 @@ UNRELEASED
 
 API Changes
 ***********
-
+* ADDED IN: OptionSelectorDelegate: property bool constrainImage
+* ADDED IN: Empty: property alias divider
+* ADDED IN: ListItems/OptionSelector: signal delegateSelected()
+* REMOVED IN: OptionSelector: signal scroll()
+* ADDED IN: OptionSelector: signal delegateSelected()
+* ADDED: ListItem OptionSelector to Components/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/Ambiance/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruDark/ListItems
+* ADDED: ListItemOptionSelectorStyle to Components/SuruGradient/ListItems
 * REMOVED IN ALL: attached property ItemStyle
 * ADDED IN OrientationHelper: property alias rotating
 * ADDED IN OrientationHelper: property alias __orientationHelper
@@ -20,10 +28,10 @@ API Changes
 * CHANGED IN Toolbar: property bool lock TO property bool locked
 * CHANGED IN ToolbarActions: property bool active TO property bool opened
 * CHANGED IN ToolbarActions: property bool lock TO property bool locked
-* DEPRECATED IN Toolbar: property bool active
-* DEPRECATED IN Toolbar: property bool lock
-* DEPRECATED IN ToolbarActions: property bool active
-* DEPRECATED IN ToolbarActions: property bool lock
+* REMOVED IN Toolbar: property bool active
+* REMOVED IN Toolbar: property bool lock
+* REMOVED IN ToolbarActions: property bool active
+* REMOVED IN ToolbarActions: property bool lock
 * CHANGED IN Page: property Header header TO property Header __propagated.header
 * CHANGED IN Page: property Toolbar toolbar TO property Toolbar __propagated.toolbar
 * CHANGED IN MainView: property Header header TO property Header __propagated.header
@@ -38,10 +46,13 @@ API Changes
 * CHANGED IN Toolbar: property ToolbarActions tools TO property Item tools
 * DEPRECATED IN Action: property bool visible
 * DEPRECATED IN Action: property Item itemHint
-* DEPRECATED: ToolbarActions component (use ToolbarItems instead)
+* REMOVED ToolbarActions (use ToolbarItems instead)
 * ADDED IN MainView: property bool anchorToKeyboard
 * CHANGED IN Tabs: property Component __headerContents TO property TabBar tabBar
 * CHANGED IN Header: property Component contents TO property Item contents
+* ADDED IN Panel: function open()
+* ADDED IN Panel: function closed()
+* DEPRECATED IN Panel: writable property opened. Will be made read-only.
 
 Compatibility Breaks
 ********************

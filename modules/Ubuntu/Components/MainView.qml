@@ -124,7 +124,7 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
     hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
     The examples above show how to include a single \l Page inside a MainView, but more advanced application
     structures are possible using \l PageStack and \l Tabs.
-    See \l ToolbarActions for details on how to to control the behavior and contents of the toolbar.
+    See \l ToolbarItems for details on how to to control the behavior and contents of the toolbar.
 */
 PageTreeNode {
     id: mainView
@@ -333,20 +333,6 @@ PageTreeNode {
          */
         property var actionManager: unityActionManager
     }
-
-    /*!
-      \deprecated
-      This property is DEPRECATED. Pages will now automatically update the toolbar when activated.
-      See \l ToolbarItems for more information on how to set the tools of a \l Page.
-     */
-    property ToolbarActions tools: null
-    /*!
-      \internal
-      \deprecated
-     */
-    onToolsChanged: print("MainView.tools property was DEPRECATED. "+
-                          "Pages will automatically update the toolbar when activated. "+
-                          "See CHANGES file, and use toolbar.tools instead when needed.");
 
     /*! \internal */
     onApplicationNameChanged: {
