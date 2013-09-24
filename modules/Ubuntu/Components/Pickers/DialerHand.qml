@@ -129,6 +129,8 @@ StyledItem {
     default property alias overlay: contentItem.data
 
     /*!
+      \qmlproperty int index
+      \readonly
       The property holds the index of the hand. Note that this is not the child
       index of the dialer children, this represents the index of the DialerHand
       component added to the \l dialer.

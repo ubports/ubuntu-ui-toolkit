@@ -81,6 +81,7 @@ StyledItem {
     property real handSpace: units.gu(6.5)
 
     /*!
+      \qmlproperty Item centerItem
       The property holds the component from the center of the Dialer. Items wanted
       to be placed into the center of the Dialer must be reparented to this component,
       or listed in the \l centerContent property.
