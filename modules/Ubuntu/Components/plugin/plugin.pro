@@ -51,6 +51,7 @@ HEADERS += plugin.h \
     unitythemeiconprovider.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
+    adapters/alarmsadapter_p.h \
     ucstatesaver.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h
