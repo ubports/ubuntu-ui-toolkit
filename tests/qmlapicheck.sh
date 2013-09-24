@@ -15,17 +15,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML="modules/Ubuntu/Components/*.qml modules/Ubuntu/Components/*/*.qml"
-CPP="plugins.qmltypes"
+QML="modules/Ubuntu/*/*.qml modules/Ubuntu/*/*/*.qml"
+CPP="Ubuntu.Components Ubuntu.Layouts"
 
 echo Dumping QML API of C++ components
-qmlplugindump Ubuntu.Components 0.1 modules > plugins.qmltypes
+echo '' > plugins.qmltypes
+for i in $CPP; do
+    qmlplugindump $i 0.1 modules >> plugins.qmltypes
+done
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
 test $STATUS = 0 || echo $RESULTS
 
 echo Running QML API check
-python tests/qmlapicheck.py $QML $CPP > components.api.new
+python tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
 test $STATUS = 0 || echo $RESULTS

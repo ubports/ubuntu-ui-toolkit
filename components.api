@@ -369,6 +369,10 @@ Item
     property string radius
     property Item image
     property url borderSource
+modules/Ubuntu/Test/UbuntuTestCase.qml
+TestCase
+    function findChild(obj,objectName)
+    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
 modules/Ubuntu/Components/Colors/UbuntuColors.qml
 QtObject
     readonly property color orange
@@ -733,3 +737,21 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    name: "ULConditionalLayout"
+    prototype: "QObject"
+    exports: ["ConditionalLayout 0.1"]
+    Property { name: "name"; type: "string" }
+    Property { name: "when"; type: "QQmlBinding"; isPointer: true }
+    Property { name: "layout"; type: "QQmlComponent"; isPointer: true }
+    name: "ULItemLayout"
+    prototype: "QQuickItem"
+    exports: ["ItemLayout 0.1"]
+    Property { name: "item"; type: "string" }
+    name: "ULLayouts"
+    prototype: "QQuickItem"
+    exports: ["Layouts 0.1"]
+    Property { name: "currentLayout"; type: "string"; isReadonly: true }
+    Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
+    name: "ULLayoutsAttached"
+    prototype: "QObject"
+    Property { name: "item"; type: "string" }
