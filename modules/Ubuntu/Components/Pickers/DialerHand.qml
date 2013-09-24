@@ -196,7 +196,6 @@ StyledItem {
                 var point =  mapToItem (dialerHand, mouse.x, mouse.y);
                 var diffX = (point.x - centerX);
                 var diffY = -1 * (point.y - centerY);
-                print(mouse.x + ":" + mouse.y)
                 var rad = Math.atan (diffY / diffX);
                 var deg = (rad * 180 / Math.PI);
 
