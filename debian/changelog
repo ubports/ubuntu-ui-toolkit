@@ -1,3 +1,35 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130916-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Picker component, a tumbler style value selector.
+
+  [ Leo Arias ]
+  * Do not duplicate the pointer instantiation on the autopilot
+    emulators. (LP: #1220346)
+
+  [ Nicolas d'Offay ]
+  * Fixed bug in the selectors that happened with the "nudging"
+    behaviour which occurred when the selector was scrolled. It used to
+    nudge past boundaries and if the same index was selected. This has
+    been fixed. Fixed SuruDark and SuruGradient ListItemSelector themes.
+
+  [ tpeeters ]
+  * Add Panel.open() and Panel.close() functions so that applications
+    can be adapted to use those instead of setting Panel.opened. The
+    behavior of the panel was not changed, this will be done in a
+    following MR. Also note that applications with a Toolbar do not need
+    to use Panel.open()/close()/opened directly, they can use the opened
+    property of the Page.tools, so they should not be affected by the
+    upcoming changes.
+
+  [ Lars Uebernickel ]
+  * giconprovider: warn about image://gicon being deprecated.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 748
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Sep 2013 11:35:05 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130903.4-0ubuntu1) saucy; urgency=low
 
   [ Nicolas d'Offay ]

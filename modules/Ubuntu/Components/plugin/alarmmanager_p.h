@@ -94,6 +94,12 @@ public:
         }
     }
 
+    static QDateTime normalizeDate(const QDateTime &dt) {
+        QTime time = dt.time();
+        time.setHMS(time.hour(), time.minute(), time.second());
+        return QDateTime(dt.date(), time, dt.timeSpec());
+    }
+
     unsigned int changes;
     QVariant cookie;
 
@@ -120,10 +126,7 @@ public:
 
     ~AlarmManager();
 
-    static AlarmManager &instance() {
-        static AlarmManager instance;
-        return instance;
-    }
+    static AlarmManager &instance();
 
     QList<AlarmData> alarms() const;
 

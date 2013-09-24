@@ -41,6 +41,7 @@ public:
 
     virtual bool save(AlarmData &alarm) = 0;
     virtual bool remove(AlarmData &alarm) = 0;
+    virtual bool wait(int msec) = 0;
     virtual void _q_updateProgress() = 0;
 };
 
