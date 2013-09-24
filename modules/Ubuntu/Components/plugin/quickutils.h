@@ -19,6 +19,7 @@
 #define QUICKUTILS_P_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <QtQuick/QQuickView>
 
 class QQuickItem;
@@ -58,7 +59,7 @@ private Q_SLOTS:
 
 private:
     explicit QuickUtils(QObject *parent = 0);
-    QQuickView *m_rootView;
+    QPointer<QQuickView> m_rootView;
     QQmlEngine *m_engine;
 
     void lookupQuickView();
