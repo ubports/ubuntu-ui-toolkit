@@ -160,7 +160,8 @@ class GenericTests(GalleryTestCase):
         textfield_standard = self.getObject('textfield_standard')
         self.pointing_device.click_object(textfield_standard)
         self.type_string('Hello World')
-        self.assertThat(textfield_standard.text, Eventually(Equals('Hello World')))
+        self.assertThat(textfield_standard.text,
+                        Eventually(Equals('Hello World')))
 
     def test_textfield_password(self):
         item = "Text Field"
@@ -174,7 +175,8 @@ class GenericTests(GalleryTestCase):
         self.assertEqual(textfield_password.text, '')
 
         self.type_string(u'abcdefgh123')
-        self.assertThat(textfield_password.text, Eventually(Equals(u'abcdefgh123')))
+        self.assertThat(textfield_password.text,
+                        Eventually(Equals(u'abcdefgh123')))
 
     def test_textfield_numbers(self):
         item = "Text Field"
