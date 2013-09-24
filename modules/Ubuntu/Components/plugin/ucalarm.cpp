@@ -135,6 +135,8 @@ UCAlarm::Error UCAlarmPrivate::checkAlarm()
         return UCAlarm::InvalidDate;
     }
 
+    rawData.date = rawData.normalizeDate(rawData.date);
+
     // check type first as it may alter start day
     if (rawData.type == UCAlarm::OneTime) {
        return checkOneTime();
@@ -180,7 +182,7 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
     }
 
     // start date should be later then the current date/time
-    if (rawData.date <= QDateTime::currentDateTime()) {
+    if (rawData.date <= AlarmData::normalizeDate(QDateTime::currentDateTime())) {
         return UCAlarm::EarlyDate;
     }
     return UCAlarm::NoError;

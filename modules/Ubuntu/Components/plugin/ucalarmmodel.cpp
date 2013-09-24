@@ -250,6 +250,7 @@ void UCAlarmModel::refresh()
         pAlarm->rawData = data;
         m_alarms << alarm;
     }
+    Q_EMIT countChanged();
 
     if (m_ready) {
         endResetModel();

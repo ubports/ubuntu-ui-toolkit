@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,18 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listener.h"
-#include <QtQml>
+import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context,QString contextProperty) :
-    QObject(context),
-    m_context(context),
-    m_contextProperty(contextProperty)
-{
-}
-
-void ContextPropertyChangeListener::updateContextProperty()
-{
-    QVariant value = m_context->contextProperty(m_contextProperty);
-    m_context->setContextProperty(m_contextProperty, value);
+MainView {
+    objectName: "appName"
+    applicationName: "org.gnu.wildebeest"
 }

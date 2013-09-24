@@ -89,7 +89,6 @@ Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
          ubuntu-ui-toolkit-doc,
-         qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
