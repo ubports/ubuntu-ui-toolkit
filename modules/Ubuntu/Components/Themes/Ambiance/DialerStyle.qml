@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import QtGraphicalEffects 1.0
 
-// FIXME: Replace this with UbuntuShape when the widget has landed in the SDK.
+// FIXME: Replace this once UbuntuShape support for gradients and shading has landed
 Rectangle {
     anchors.fill: parent
     radius: width / 2
@@ -71,7 +71,7 @@ Rectangle {
     }
 
     // center item
-    // FIXME: Replace this with UbuntuShape when the widget has landed in the SDK.
+    // FIXME: Replace this once UbuntuShape support for gradients and shading has landed
     Rectangle {
         parent: styledItem.centerItem.parent
         anchors.fill: parent
