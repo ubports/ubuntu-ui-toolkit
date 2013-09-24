@@ -82,7 +82,8 @@ Item {
     /*!
       The actual width and height of the loaded image
     */
-    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+//    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+    property size sourceSize
 
     /*!
       \qmlproperty enumeration status
@@ -130,6 +131,7 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 1
+        sourceSize: crossFadeImage.sourceSize
     }
 
     Image {
@@ -139,6 +141,7 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 0
+        sourceSize: crossFadeImage.sourceSize
     }
 
     /*!
