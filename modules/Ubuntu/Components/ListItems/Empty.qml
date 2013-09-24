@@ -22,14 +22,15 @@ import Ubuntu.Components 0.1
     \inqmlmodule Ubuntu.Components.ListItems 0.1
     \ingroup ubuntu-listitems
     \brief A list item with no contents.
-    The Empty class can be used for generic list items, containing other
-    components such as buttons. It is selectable, and can take mouse clicks.
+    The Empty class can be used for generic list items containing other
+    components such as buttons. It is selectable and can take mouse clicks.
     It will attempt to detect if a thin dividing line at the bottom of the
-    item is suitable, but this behaviour can be over-ridden (using \l showDivider).
+    item is suitable, but this behaviour can be overridden (using \l showDivider).
     For specific types of list items, see its subclasses.
 
-    After the item removal the item will still alive is up to the application to destroy it,
-    this can be handled by the signal \l itemRemoved that is fired after all animation is done.
+    The item will still remain in memory after being removed from the list so it is up to the
+    application to destroy it.  This can be handled by the signal \l itemRemoved that is fired
+    after all animation is done.
 
     Examples:
     \qml

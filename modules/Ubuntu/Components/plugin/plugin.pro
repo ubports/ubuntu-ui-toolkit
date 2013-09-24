@@ -5,7 +5,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick quick-private dbus
+QT += core-private v8-private qml qml-private quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
 CONFIG(debug) {
@@ -40,6 +40,7 @@ HEADERS += plugin.h \
     qquickclipboard_p.h \
     ucubuntuanimation.h \
     ucfontutils.h \
+    ucapplication.h \
     ucarguments.h \
     ucargument.h \
     ucalarm.h \
@@ -49,7 +50,11 @@ HEADERS += plugin.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
     alarmrequest_p.h \
-    alarmrequest_p_p.h
+    alarmrequest_p_p.h \
+    adapters/alarmsadapter_p.h \
+    ucstatesaver.h \
+    statesaverbackend_p.h \
+    ucstatesaver_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -68,13 +73,16 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
+    ucapplication.cpp \
     ucarguments.cpp \
     ucargument.cpp \
     ucalarm.cpp \
     alarmmanager_p.cpp \
     ucalarmmodel.cpp \
     unitythemeiconprovider.cpp \
-    alarmrequest_p.cpp
+    alarmrequest_p.cpp \
+    ucstatesaver.cpp \
+    statesaverbackend_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

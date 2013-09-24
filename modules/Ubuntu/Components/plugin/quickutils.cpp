@@ -50,6 +50,9 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
     if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
         lookupQuickView();
+    if (event->type() == QEvent::ApplicationDeactivate) {
+        Q_EMIT deactivated();
+    }
 
     return QObject::eventFilter(obj, event);
 }
@@ -204,7 +207,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
  * \internal
  * Returns the class name (type) of a QtQuick item.
  */
-QString QuickUtils::className(QQuickItem *item)
+QString QuickUtils::className(QObject *item)
 {
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));
