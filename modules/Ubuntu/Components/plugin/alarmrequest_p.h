@@ -32,6 +32,12 @@ public:
         InProgress,
         Fail
     };
+    enum Operation {
+        NoOperation,
+        Saving,
+        Canceling,
+        Fetching = 100 // this is an operation which is not reflected to QML Alarm
+    };
 
     explicit AlarmRequest(QObject *parent = 0);
     AlarmRequest(bool autoDelete, QObject *parent = 0);
@@ -47,7 +53,7 @@ protected:
     bool wait(int msec = 0);
 
 Q_SIGNALS:
-    void statusChanged(int status, int error);
+    void statusChanged(int operation, int status, int error);
 
 private:
     Q_DECLARE_PRIVATE(AlarmRequest)

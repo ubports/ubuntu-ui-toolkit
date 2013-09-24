@@ -49,6 +49,7 @@ public:
 private:
     QOrganizerAbstractRequest *m_request;
 
+    AlarmRequest::Operation requestTypeToOperation();
     void completeUpdate();
     void completeRemove();
     void completeFetch();
