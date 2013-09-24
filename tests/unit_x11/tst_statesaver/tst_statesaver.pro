@@ -17,4 +17,5 @@ OTHER_FILES += \
     SaveObject.qml \
     FirstComponent.qml \
     SecondComponent.qml \
-    SameIdsInDifferentComponents.qml
+    SameIdsInDifferentComponents.qml \
+    SavePropertyGroups.qml

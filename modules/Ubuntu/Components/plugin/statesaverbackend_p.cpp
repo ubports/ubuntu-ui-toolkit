@@ -77,7 +77,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             // skip the property
             continue;
         }
-        QQmlProperty qmlProperty(item, propertyName.toLocal8Bit().constData());
+        QQmlProperty qmlProperty(item, propertyName.toLocal8Bit().constData(), qmlContext(item));
         if (qmlProperty.isValid() && qmlProperty.isWritable()) {
             qmlProperty.write(value);
             result++;

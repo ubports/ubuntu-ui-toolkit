@@ -95,7 +95,8 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
         if (!parentId.isEmpty()) {
             path.prepend(className + '-' + parentId + ":");
         } else {
-            qmlInfo(parent) << UbuntuI18n::instance().tr("All the parents must have an id. State saving disabled for %1").arg(path);
+            qmlInfo(parent) << UbuntuI18n::instance().tr("All the parents must have an id.\nState saving disabled for %1, class %2").
+                               arg(path).arg(className);
             return QString();
         }
 
@@ -123,18 +124,29 @@ void UCStateSaverAttachedPrivate::restore()
 void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
 {
     Q_Q(UCStateSaverAttached);
-    const QMetaObject *mo = m_attachee->metaObject();
+    if (!connect) {
+        // disconnect all slots from attachee
+        m_attachee->disconnect(q);
+        return;
+    }
 
-    const QMetaMethod slot = q->metaObject()->method(q->metaObject()->indexOfSlot("_q_propertyChange()"));
+    const QMetaObject *mo = m_attachee->metaObject();
+    int slotIndex = q->metaObject()->indexOfSlot("_q_propertyChange()");
+    const QMetaMethod slot = q->metaObject()->method(slotIndex);
     Q_FOREACH(const QString &propertyName, m_properties) {
-        const QMetaProperty property = mo->property(mo->indexOfProperty(propertyName.toLocal8Bit().constData()));
-        if (!property.isValid()) {
-            continue;
-        }
-        if (connect) {
-            QObject::connect(m_attachee, property.notifySignal(), q, slot);
+        if (propertyName.contains('.')) {
+            // qroup or attached property, needs workaround from QQmlProperty,
+            // which is a bit slower than connecting with QMetaMethod
+            // therefore we use this method only for these types of properties
+            QQmlProperty qmlProperty(m_attachee, propertyName, qmlContext(m_attachee));
+            qmlProperty.connectNotifySignal(q, slotIndex);
         } else {
-            QObject::disconnect(m_attachee, property.notifySignal(), q, slot);
+            // simple property
+            QMetaProperty property = mo->property(mo->indexOfProperty(propertyName.toLocal8Bit().constData()));
+            if (!property.isValid()) {
+                continue;
+            }
+            QObject::connect(m_attachee, property.notifySignal(), q, slot);
         }
     }
 }
@@ -168,9 +180,23 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  *
  * In this example the state saver is synchronized with the attachee's one.
  *
+ * Group properties can also be serialized by specifying the path to their individual
+ * properties.
+ * \qml
+ * Rectangle {
+ *     id: rect
+ *     color: "gray"
+ *     border {
+ *         color: "blue"
+ *         width: units.gu(1)
+ *     }
+ *     StateSaver.properties: "color, border.color, border.width"
+ * }
+ * \endqml
+ *
  * StateSaver computes a unique identifier for the attachee using the component's
- * \a{id}. Therefore attachee component as well as all its parents must have a
- * valid and possibly unique ID set.
+ * and all its parents' \a{id}. Therefore attachee component as well as all its
+ * parents must have a valid ID set.
  *
  * The following example will give error for the \a input, as the root component
  * has no id specified:
@@ -274,7 +300,10 @@ QString UCStateSaverAttached::properties() const
 }
 void UCStateSaverAttached::setProperties(const QString &list)
 {
-    QStringList propertyList = list.split(QRegularExpression("\\W+"), QString::SkipEmptyParts);
+    QStringList propertyList = list.split(',', QString::SkipEmptyParts);
+    for (int i = 0; i < propertyList.count(); i++) {
+        propertyList[i] = propertyList.at(i).trimmed();
+    }
     Q_D(UCStateSaverAttached);
     if (d->m_properties != propertyList) {
         d->connectChangeSlot(false);

@@ -26,6 +26,7 @@
 #include <QQuaternion>
 #include <QMatrix4x4>
 #include <QtQuick/QQuickItem>
+#include <QtQml/QQmlProperty>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -152,6 +153,33 @@ private Q_SLOTS:
             QVERIFY2(testItem->property(property.toLocal8Bit().constData()) == values.value(property), QString("verifying %1").arg(property).toLocal8Bit().constData());
         }
 
+        delete view;
+    }
+
+    void test_SavePropertyGroup()
+    {
+        QQuickView *view = createView("SavePropertyGroups.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject();
+        QVERIFY(testItem);
+        QVERIFY(testItem->setProperty("color", QColor("red")));
+        // set property groups using QQmlProperty
+        QQmlProperty borderColor(testItem, "border.color");
+        borderColor.write(QColor("green"));
+        QQmlProperty propertyGroup(testItem, "propertyGroup.color");
+        propertyGroup.write(QColor("blue"));
+        delete view;
+
+        view = createView("SavePropertyGroups.qml");
+        QVERIFY(view);
+        testItem = view->rootObject();
+        QVERIFY(testItem);
+        QCOMPARE(testItem->property("color"), QVariant(QColor("red")));
+        // read property groups using QQmlProperty
+        QQmlProperty verifyBorderColor(testItem, "border.color");
+        QCOMPARE(verifyBorderColor.read(), QVariant(QColor("green")));
+        QQmlProperty verifyPropertyGroup(testItem, "propertyGroup.color");
+        QCOMPARE(verifyPropertyGroup.read(), QVariant(QColor("blue")));
         delete view;
     }
 
