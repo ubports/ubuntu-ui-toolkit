@@ -43,12 +43,13 @@ public:
     QString inputMethodProvider() const;
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
-    Q_INVOKABLE QString className(QQuickItem *item);
+    Q_INVOKABLE QString className(QObject *item);
     QObject* createQmlObject(const QUrl &url);
     void setImportPathList(const QStringList &paths);
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void deactivated();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
