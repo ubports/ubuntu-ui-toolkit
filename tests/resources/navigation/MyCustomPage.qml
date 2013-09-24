@@ -22,7 +22,7 @@ Page {
 
     Flickable {
         anchors.fill: parent
-        contentHeight: parent.height + units.gu(10)
+        contentHeight: height + units.gu(10)
         Label {
             anchors {
                 top: parent.top

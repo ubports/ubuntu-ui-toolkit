@@ -19,6 +19,7 @@
 #include "shapeitem.h"
 #include "shapeitemtexture.h"
 #include "ucunits.h"
+#include <QtCore/QPointer>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
@@ -343,15 +344,20 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
 
     // FIXME(loicm) Shape textures are stored in the read-only data section of the plugin as it
     //     avoids having to deal with paths for now. It should preferably be loaded from a file.
-    static bool once = false;
-    if (!once) {
+
+    /* Textures created with QWindow::createTextureFromImage() become invalid
+     * when the window is destroyed; therefore, we must keep track of which
+     * window was used to create them and be ready to re-create them if that
+     * window goes away. */
+    static QPointer<QWindow> textureOwner = 0;
+    if (!textureOwner) {
         shapeTextureHigh.texture = window()->createTextureFromImage(
             QImage(shapeTextureHigh.data, shapeTextureHigh.width, shapeTextureHigh.height,
                    QImage::Format_ARGB32_Premultiplied));
         shapeTextureLow.texture = window()->createTextureFromImage(
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
-        once = true;
+        textureOwner = window();
     }
 
     // The image item sets its texture in its updatePaintNode() method when QtQuick iterates through
