@@ -40,6 +40,7 @@ HEADERS += plugin.h \
     qquickclipboard_p.h \
     ucubuntuanimation.h \
     ucfontutils.h \
+    ucapplication.h \
     ucarguments.h \
     ucargument.h \
     ucalarm.h \
@@ -49,7 +50,8 @@ HEADERS += plugin.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
     alarmrequest_p.h \
-    alarmrequest_p_p.h
+    alarmrequest_p_p.h \
+    adapters/alarmsadapter_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -68,6 +70,7 @@ SOURCES += plugin.cpp \
     qquickmimedata.cpp \
     ucubuntuanimation.cpp \
     ucfontutils.cpp \
+    ucapplication.cpp \
     ucarguments.cpp \
     ucargument.cpp \
     ucalarm.cpp \
