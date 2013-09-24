@@ -96,7 +96,7 @@ AbstractButton {
 
     /*!
       \preliminary
-      Defines if the item need confirmation before remove by swiping
+      Defines if the item needs confirmation before removing by swiping.
      */
     property alias confirmRemoval: confirmRemovalDialog.visible
 
