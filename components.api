@@ -369,6 +369,208 @@ Item
     property string radius
     property Item image
     property url borderSource
+modules/Ubuntu/Components/Colors/UbuntuColors.qml
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
+modules/Ubuntu/Components/ListItems/Base.qml
+Empty
+    property variant icon
+    property url fallbackIconSource
+    property bool progression
+    property bool iconFrame
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property bool __iconIsItem
+    property internal children
+modules/Ubuntu/Components/ListItems/Caption.qml
+Item
+    property string text
+modules/Ubuntu/Components/ListItems/Divider.qml
+Image
+modules/Ubuntu/Components/ListItems/Empty.qml
+AbstractButton
+    property bool selected
+    property bool highlightWhenPressed
+    property bool removable
+    readonly property string swipingState
+    signal itemRemoved
+    property int __height
+    property bool showDivider
+    default property internal children
+    property internal __contents
+    property list<Item> backgroundIndicator
+    property ThinDivider divider
+    property real __contentsMargins
+modules/Ubuntu/Components/ListItems/Header.qml
+Item
+    property string text
+    property internal __foregroundColor
+modules/Ubuntu/Components/ListItems/IconVisual.qml
+Item
+    property url source
+    property url fallbackSource
+    property bool hasFrame
+modules/Ubuntu/Components/ListItems/ImageWithFallback.qml
+Image
+    property url fallbackSource
+    property bool fallbackRequired
+    function isSourceDefined(sourceUrl)
+    function tryLoadingFallbackSource()
+    function checkStatus()
+modules/Ubuntu/Components/ListItems/ItemSelector.qml
+ListItem.Empty
+    property var model
+    property bool expanded
+    property bool colourImage
+    property real containerHeight
+    property int selectedIndex
+    signal delegateClicked(int index)
+modules/Ubuntu/Components/ListItems/LabelVisual.qml
+Label
+    property bool selected
+    property bool secondary
+    property bool overlay
+    function isInsideOverlay(item)
+modules/Ubuntu/Components/ListItems/MultiValue.qml
+Base
+    property variant values
+modules/Ubuntu/Components/ListItems/ProgressionVisual.qml
+Item
+    property bool showSplit
+    property real splitMargin
+modules/Ubuntu/Components/ListItems/SingleControl.qml
+Empty
+    property Item control
+    function __updateControl()
+modules/Ubuntu/Components/ListItems/SingleValue.qml
+Base
+    property string value
+modules/Ubuntu/Components/ListItems/Standard.qml
+Empty
+    property variant icon
+    property url fallbackIconSource
+    property bool progression
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property Item control
+    property bool iconFrame
+    property bool __controlAreaPressed
+    property bool __iconIsItem
+    property internal __foregroundColor
+modules/Ubuntu/Components/ListItems/Subtitled.qml
+Base
+    property string text
+    property string subText
+modules/Ubuntu/Components/ListItems/ThinDivider.qml
+Image
+modules/Ubuntu/Components/ListItems/ValueSelector.qml
+Empty
+    property variant icon
+    property url fallbackIconSource
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property bool iconFrame
+    property variant values
+    property int selectedIndex
+    property bool expanded
+modules/Ubuntu/Components/Pickers/Picker.qml
+StyledItem
+    property bool circular
+    property var model
+    property Component delegate
+    property int selectedIndex
+    property bool live
+    property int __clickedIndex
+modules/Ubuntu/Components/Pickers/PickerDelegate.qml
+AbstractButton
+modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
+Popover
+    property Item target
+    property var actions
+    property Component delegate
+modules/Ubuntu/Components/Popups/ComposerSheet.qml
+SheetBase
+    signal cancelClicked
+    signal confirmClicked
+modules/Ubuntu/Components/Popups/DefaultSheet.qml
+SheetBase
+    property bool doneButton
+    signal closeClicked
+    signal doneClicked
+modules/Ubuntu/Components/Popups/Dialog.qml
+PopupBase
+    default property list<Object> contents
+    property string title
+    property string text
+    property Item caller
+    property Item pointerTarget
+    property real edgeMargins
+    property real callerMargin
+    property bool modal
+modules/Ubuntu/Components/Popups/Popover.qml
+PopupBase
+    default property list<Object> container
+    property real contentWidth
+    property internal contentHeight
+    property Item caller
+    property Item pointerTarget
+    property real edgeMargins
+    property real callerMargin
+    property bool autoClose
+    property Component foregroundStyle
+    function show()
+    function hide()
+    function __makeInvisible()
+modules/Ubuntu/Components/Popups/PopupBase.qml
+OrientationHelper
+    property Item dismissArea
+    property bool grabDismissAreaEvents
+    function show()
+    function hide()
+    function __closeIfHidden()
+    function __closePopup()
+    property Item __foreground
+    property bool __closeOnDismissAreaPress
+    property internal __dimBackground
+    property internal __eventGrabber
+modules/Ubuntu/Components/Popups/SheetBase.qml
+PopupBase
+    default property list<Object> container
+    property real contentsWidth
+    property real contentsHeight
+    property string title
+    property bool modal
+    property internal __leftButton
+    property internal __rightButton
+modules/Ubuntu/Components/Themes/Palette.qml
+QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+modules/Ubuntu/Components/Themes/PaletteValues.qml
+QtObject
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color field
+    property color fieldText
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"

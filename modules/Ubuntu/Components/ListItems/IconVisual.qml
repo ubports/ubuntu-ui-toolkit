@@ -22,7 +22,13 @@ import Ubuntu.Components 0.1
 Item {
     id: iconVisual
 
+    /*!
+      \qmlproperty url source
+     */
     property alias source: icon.source
+    /*!
+      \qmlproperty url fallbackSource
+     */
     property alias fallbackSource: icon.fallbackSource
     visible: source != ""
     property bool hasFrame: true
