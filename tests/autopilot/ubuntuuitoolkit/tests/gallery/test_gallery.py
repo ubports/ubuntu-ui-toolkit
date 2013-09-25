@@ -172,7 +172,7 @@ class GenericTests(GalleryTestCase):
         self.assertThat(textfield_password.text, Equals('password'))
 
         self.tap_clearButton('textfield_password')
-        self.assertEqual(textfield_password.text, '')
+        self.assertThat(textfield_password.text, Eventually(Equals('')))
 
         self.type_string(u'abcdefgh123')
         self.assertThat(textfield_password.text,
@@ -187,11 +187,11 @@ class GenericTests(GalleryTestCase):
         self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
 
         self.tap_clearButton('textfield_numbers')
-        self.assertEqual(textfield_numbers.text, '')
+        self.assertThat(textfield_numbers.text, Eventually(Equals('')))
 
         #try typing decimal value when text filed is int only.
         self.type_string('-100.123')
-        self.assertThat(textfield_numbers.text, Equals('-100123'))
+        self.assertThat(textfield_numbers.text, Eventually(Equals('-100123')))
 
     def test_textfield_disabled(self):
         item = "Text Field"
