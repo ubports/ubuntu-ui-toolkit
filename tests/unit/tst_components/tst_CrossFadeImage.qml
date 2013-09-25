@@ -102,7 +102,7 @@ TestCase {
         crossFadeImage.sourceSize.height = 101;
         compare(crossFadeImage.sourceSize.width, 100, "Source width incorrectly updated.");
         compare(crossFadeImage.sourceSize.height, 101, "Source height incorrectly updated.");
-        crossFadeImage.sourceSize = null;
+        crossFadeImage.sourceSize = undefined;
         compare(crossFadeImage.sourceSize.width, 640, "Source width incorrectly reset.");
         compare(crossFadeImage.sourceSize.height, 427, "Source height incorrectly reset.");
         cleanupTest();
