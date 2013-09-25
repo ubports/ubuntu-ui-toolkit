@@ -23,6 +23,9 @@
 
 class ThumbnailProvider: public QQuickImageProvider
 {
+private:
+    Thumbnailer tn;
+
 public:
     ThumbnailProvider();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);

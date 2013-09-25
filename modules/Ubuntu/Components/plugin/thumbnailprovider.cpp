@@ -17,12 +17,28 @@
 */
 
 #include "thumbnailprovider.h"
+#include <stdexcept>
 
 ThumbnailProvider::ThumbnailProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap) {
 
 }
 
 QPixmap ThumbnailProvider::requestPixmap(const QString &id, QSize *realSize,
-        const QSize &requestedSize) {
+        const QSize &/*requestedSize*/) {
+    std::string src_path(id.toUtf8().data());
+    std::string tgt_path;
+    try {
+        tgt_path = tn.get_thumbnail(src_path, TN_SIZE_SMALL);
+        if(!tgt_path.empty()) {
+            QString tgt(tgt_path.c_str());
+            QPixmap image;
+            image.load(tgt);
+            *realSize = image.size();
+            return image;
+        }
+    } catch(std::runtime_error &e) {
+        // thumbnail generation failed for some reason
+        // so just return default image
+    }
     return QPixmap();
 }
