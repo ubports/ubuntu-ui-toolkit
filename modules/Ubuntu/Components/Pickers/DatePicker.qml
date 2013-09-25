@@ -46,13 +46,16 @@ Rectangle {
         return units.gu(20);
     }
 
+    // component to calculate text fitting
+    Label { id: textSizer; visible: false }
+    // tumblers
     Row {
         anchors.fill: parent
         Picker {
             id: yearPicker
             circular: false
             model: ListModel{}
-            width: internals.minimumPickerWidth
+            width: limits.minimumWidth()
             delegate: PickerDelegate {
                 Label {
                     text: modelData
@@ -70,19 +73,21 @@ Rectangle {
         Picker {
             id: monthPicker
             model: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-            width: (parent.width - yearPicker.width - dayPicker.width) > internals.minimumPickerWidth ?
-                       (parent.width - yearPicker.width - dayPicker.width) : internals.minimumPickerWidth
+            width: (parent.width - yearPicker.width - dayPicker.width) > limits.minimumWidth() ?
+                       (parent.width - yearPicker.width - dayPicker.width) : limits.minimumWidth()
             delegate: PickerDelegate {
                 Label {
                     text: {
-                        if (monthPicker.width > units.gu(15)) {
+                        switch (limits.monthPickerFormat()) {
+                        case "long":
                             var thisDate = new Date(date);
                             thisDate.setMonth(modelData);
                             return Qt.formatDate(thisDate, "MM ") + Qt.locale().standaloneMonthName(modelData, Locale.LongFormat);
-                        } else if (monthPicker.width > units.gu(10)) {
+                        case "short":
                             return Qt.locale().standaloneMonthName(modelData, Locale.LongFormat);
+                        default:
+                            return Qt.locale().standaloneMonthName(modelData, Locale.ShortFormat);
                         }
-                        return Qt.locale().standaloneMonthName(modelData, Locale.ShortFormat);
                     }
                     anchors{
                         verticalCenter: parent.verticalCenter
@@ -94,20 +99,22 @@ Rectangle {
         }
         Picker {
             id: dayPicker
-            width: internals.calculateDayPickerWidth()
+            property int limitIndex: limits.dayPickerLimitIndex()
+            width: limits.dayPickerWidth(limitIndex)
             model: ListModel{}
             delegate: PickerDelegate {
                 Label {
                     text: {
                         var thisDate = new Date(date);
                         thisDate.setDate(modelData + 1);
-                        if (dayPicker.width > units.gu(13)) {
+                        switch (limits.dayPickerFormat(dayPicker.limitIndex)) {
+                        case "long":
                             return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.LongFormat);
-                        } else if (dayPicker.width > units.gu(7)) {
+                        case "short":
                             return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.ShortFormat);
+                        default:
+                            return Qt.formatDate(thisDate, "dd");
                         }
-
-                        return Qt.formatDate(thisDate, "dd");
                     }
                     anchors{
                         verticalCenter: parent.verticalCenter
@@ -123,10 +130,75 @@ Rectangle {
     onMinimumYearChanged: internals.updateYearModel(minimumYear, maximumYear)
     /* \internal */
     onMaximumYearChanged: internals.updateYearModel(minimumYear, maximumYear)
+    /*! \internal */
+    onWidthChanged: {
+        // clamp to 3 times the minimum Picker width
+        if (width < 3 * limits.get(0).dayPickerWidth)
+            width = 3 * limits.get(0).dayPickerWidth;
+    }
 
     Component.onCompleted: {
         internals.updateModels();
         internals.completed = true;
+    }
+
+    ListModel {
+        id: limits
+        ListElement {
+            dayPickerWidthLimit: 7.3
+            dayPickerWidth: 6
+            monthPickerLimit: 10
+            textFormat: "narrow"
+        }
+        ListElement {
+            dayPickerWidthLimit: 11.5
+            dayPickerWidth: 8
+            monthPickerLimit: 15
+            textFormat: "short"
+        }
+        ListElement {
+            dayPickerWidthLimit: 13.5
+            dayPickerWidth: 13.5
+            monthPickerLimit: 0
+            textFormat: "long"
+        }
+
+        Component.onCompleted: {
+            get(count - 1).monthPickerLimit = datePicker.width
+        }
+
+        function minimumWidth() {
+            return units.gu(get(0).dayPickerWidth);
+        }
+
+        function dayPickerLimitIndex() {
+            var w = (datePicker.width - yearPicker.width) * 40 / 100;
+            for (var i = 0; i < count; i++) {
+                if (w < units.gu(get(i).dayPickerWidthLimit)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        function dayPickerWidth(index) {
+            if (index < 0) {
+                return (datePicker.width - yearPicker.width) * 40 / 100;
+            }
+            return units.gu(get(index).dayPickerWidth);
+        }
+        function dayPickerFormat(index) {
+            return (index < 0) ? get(count - 1).textFormat : get(index).textFormat;
+
+        }
+
+        function monthPickerFormat() {
+            for (var i = 0; i < count; i++) {
+                if (monthPicker.width < units.gu(get(i).monthPickerLimit)) {
+                    return get(i).textFormat;
+                }
+            }
+            return "";
+        }
     }
 
     QtObject {
@@ -141,14 +213,10 @@ Rectangle {
         property int monthIndex: monthPicker.selectedIndex
         property int dayIndex: dayPicker.selectedIndex
 
-        property real minimumPickerWidth: units.gu(6)
-        property var dayPickerWidthLimits: [units.gu(7.3), units.gu(11.5), units.gu(13.5)]
-        property var dayPickerWidths: [minimumPickerWidth, units.gu(8), units.gu(13.5)]
-
         onYearIndexChanged: {
             if (!completed) return;
             datePicker.date = DateUtils.updateYear(datePicker.date, fromYear + yearPicker.selectedIndex);
-            updateDayModel(year, month);
+            updateDayModel(ear, month);
         }
         onMonthIndexChanged: {
             if (!completed) return;
@@ -194,16 +262,6 @@ Rectangle {
                     }
                 }
             }
-        }
-
-        function calculateDayPickerWidth() {
-            var w = (datePicker.width - yearPicker.width) * 40 / 100;
-            for (var i = 0; i < dayPickerWidthLimits.length; i++) {
-                if (w < dayPickerWidthLimits[i]) {
-                    return dayPickerWidths[i];
-                }
-            }
-            return w;
         }
     }
 }

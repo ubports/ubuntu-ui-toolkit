@@ -20,26 +20,6 @@ import Ubuntu.Components.Pickers 0.1
 
 Template {
     TemplateSection {
-        className: "DatePicker"
-        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
-        TemplateRow {
-            title: "Normal"
-            DatePicker {
-                id: datePicker
-//                width: units.gu(30)
-                minimumYear: 2000
-            }
-            Button {
-                text: "+"
-                onClicked: datePicker.width++
-            }
-            Button {
-                text: "-"
-                onClicked: datePicker.width--
-            }
-        }
-    }
-    TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
 
@@ -188,6 +168,24 @@ Template {
 
                 onHandUpdated: handText.text = Math.round(hand.value);
             }
+        }
+    }
+    TemplateSection {
+        className: "DatePicker"
+        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
+        TemplateRow {
+            title: "Normal"
+            DatePicker {
+                id: datePicker
+                minimumYear: 2000
+            }
+        }
+        Slider {
+            minimumValue: 0
+            maximumValue: units.gu(40);
+            value: datePicker.width
+            live: true
+            onValueChanged: datePicker.width = value
         }
     }
 }
