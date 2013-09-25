@@ -16,14 +16,14 @@
  * Authors: Jussi Pakkanen <jussi.pakkanen@canonical.com>
 */
 
-#include "thumbnailprovider.h"
+#include "thumbnailgenerator.h"
 #include <stdexcept>
 
-ThumbnailProvider::ThumbnailProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap) {
+ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Pixmap) {
 
 }
 
-QPixmap ThumbnailProvider::requestPixmap(const QString &id, QSize *realSize,
+QPixmap ThumbnailGenerator::requestPixmap(const QString &id, QSize *realSize,
         const QSize &/*requestedSize*/) {
     std::string src_path(id.toUtf8().data());
     std::string tgt_path;

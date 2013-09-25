@@ -16,18 +16,18 @@
  * Authors: Jussi Pakkanen <jussi.pakkanen@canonical.com>
 */
 
-#ifndef THUMBNAIL_PROVIDER_H
-#define THUMBNAIL_PROVIDER_H
+#ifndef THUMBNAIL_GENERATOR_H
+#define THUMBNAIL_GENERATOR_H
 
 #include <QQuickImageProvider>
 
-class ThumbnailProvider: public QQuickImageProvider
+class ThumbnailGenerator: public QQuickImageProvider
 {
 private:
     Thumbnailer tn;
 
 public:
-    ThumbnailProvider();
+    ThumbnailGenerator();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
 };
 
