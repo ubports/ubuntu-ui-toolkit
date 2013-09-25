@@ -20,6 +20,26 @@ import Ubuntu.Components.Pickers 0.1
 
 Template {
     TemplateSection {
+        className: "DatePicker"
+        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
+        TemplateRow {
+            title: "Normal"
+            DatePicker {
+                id: datePicker
+//                width: units.gu(30)
+                minimumYear: 2000
+            }
+            Button {
+                text: "+"
+                onClicked: datePicker.width++
+            }
+            Button {
+                text: "-"
+                onClicked: datePicker.width--
+            }
+        }
+    }
+    TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
 

@@ -1,3 +1,5 @@
 module Ubuntu.Components.Pickers
 Picker 0.1 Picker.qml
 PickerDelegate 0.1 PickerDelegate.qml
+DatePicker 0.1 DatePicker.qml
+internal DateUtils dateUtils.js
