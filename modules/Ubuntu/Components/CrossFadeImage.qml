@@ -87,13 +87,10 @@ Item {
       this property sets the actual number of pixels stored for the loaded image so that large
       images do not use more memory than necessary.
 
-      sourceSize can be cleared to the natural size of the image by setting sourceSize to undefined.
-
       Note: Changing this property dynamically causes the image source to be reloaded, potentially
       even from the network, if it is not in the disk cache.
-
-      See documentation of Image for example code.
     */
+    // FIXME: Support resetting sourceSize
     property size sourceSize: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
 
     Binding {
@@ -104,12 +101,12 @@ Item {
     }
 
     onSourceSizeChanged: {
-        if (sourceSize === undefined) {
-            internals.forcedSourceSize = undefined;
-        } else if (internals.loadingImage && (sourceSize != Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height))) {
+        if (internals.loadingImage && (sourceSize != Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height))) {
             internals.forcedSourceSize = sourceSize;
         }
     }
+
+    property alias forced: internals.forcedSourceSize
 
     /*!
       \qmlproperty enumeration status
