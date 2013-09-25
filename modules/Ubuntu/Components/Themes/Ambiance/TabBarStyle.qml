@@ -235,6 +235,7 @@ Item {
         property bool needsScrolling: buttonRowWidth > tabBar.width
         interactive: needsScrolling
         width: needsScrolling ? tabBar.width : buttonRowWidth
+        clip: needsScrolling
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0

@@ -32,7 +32,12 @@ MainView {
     Alarm {
         id: alarm
         onStatusChanged: {
-            print("alarm status= " + status + ", error=" + error);
+            print("operation " + operation + ", status= " + status + ", error=" + error);
+            if (status !== Alarm.Ready)
+                return;
+            if ((operation > Alarm.NoOperation) && (operation < Alarm.Reseting)) {
+                reset();
+            }
         }
     }
 

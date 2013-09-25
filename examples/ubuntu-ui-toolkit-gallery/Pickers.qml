@@ -113,4 +113,81 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        className: "Dialer"
+        documentation: "qml-ubuntu-components-pickers0-dialer.html"
+
+        TemplateRow {
+            title: i18n.tr("Clock")
+            Dialer {
+                size: units.gu(20)
+                handSpace: units.gu(4)
+                minimumValue: 0
+                maximumValue: 60
+
+                DialerHand {
+                    id: hour
+                    hand.toCenterItem: true
+                    value: new Date().getHours() * 5
+                }
+                DialerHand {
+                    id: minute
+                    value: new Date().getMinutes()
+                }
+
+                DialerHand {
+                    id: second
+                    value: new Date().getSeconds()
+                }
+
+                centerContent: [
+                    Label {
+                        id: hourLabel
+                        anchors.centerIn: parent
+                    }
+                ]
+
+                onHandUpdated: {
+                    hourLabel.text = Math.round(hour.value / 5) + ":"
+                            + Math.round(minute.value) + ":"
+                            + Math.round(second.value);
+                }
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Overlay")
+            Dialer {
+                size: units.gu(20)
+                handSpace: units.gu(4)
+
+                DialerHand {
+                    id: selector
+                    hand.visible: false
+                    value: 311
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: height
+                        height: units.gu(3)
+                        radius: width / 2
+                        color: Theme.palette.normal.background
+                        antialiasing: true
+                        Label {
+                            text: Math.round(selector.value)
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+
+                centerContent: [
+                    Label {
+                        id: handText
+                        anchors.centerIn: parent
+                    }
+                ]
+
+                onHandUpdated: handText.text = Math.round(hand.value);
+            }
+        }
+    }
 }

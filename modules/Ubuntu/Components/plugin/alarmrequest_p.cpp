@@ -35,12 +35,12 @@ AlarmRequestPrivate::~AlarmRequestPrivate()
 {
 }
 
-void AlarmRequestPrivate::setStatus(AlarmRequest::Status status, int error)
+void AlarmRequestPrivate::setStatus(AlarmRequest::Operation operation, AlarmRequest::Status status, int error)
 {
     if ((this->status != status) || (this->error != error)) {
         this->status = status;
         this->error = error;
-        Q_EMIT q_func()->statusChanged(status, error);
+        Q_EMIT q_func()->statusChanged(operation, status, error);
     }
 }
 
