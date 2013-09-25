@@ -100,12 +100,12 @@ Item {
         target: crossFadeImage
         property: "sourceSize"
         value: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
-        when: internals.forcedSourceSize === null
+        when: internals.forcedSourceSize === undefined
     }
 
     onSourceSizeChanged: {
         if (sourceSize === undefined) {
-            internals.forcedSourceSize = null;
+            internals.forcedSourceSize = undefined;
         } else if (internals.loadingImage && (sourceSize != Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height))) {
             internals.forcedSourceSize = sourceSize;
         }
@@ -131,7 +131,7 @@ Item {
         /*! \internal
           Source size specified by the setting crossFadeImage.sourceSize.
          */
-        property size forcedSourceSize: null
+        property size forcedSourceSize: undefined
 
         /*! \internal
           Defines the image currently being shown
@@ -166,7 +166,7 @@ Item {
             target: image1
             property: "sourceSize"
             value: internals.forcedSourceSize
-            when: internals.forcedSourceSize !== null
+            when: internals.forcedSourceSize !== undefined
         }
     }
 
@@ -181,7 +181,7 @@ Item {
             target: image2
             property: "sourceSize"
             value: internals.forcedSourceSize
-            when: internals.forcedSourceSize !== null
+            when: internals.forcedSourceSize !== undefined
         }
     }
 
