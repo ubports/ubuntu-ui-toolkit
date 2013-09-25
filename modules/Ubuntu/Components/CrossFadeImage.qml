@@ -94,12 +94,12 @@ Item {
 
       See documentation of Image for example code.
     */
-    property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+    property size sourceSize: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
 
     Binding {
         target: crossFadeImage
         property: "sourceSize"
-        value: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+        value: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
         when: internals.forcedSourceSize === undefined
     }
 
@@ -131,7 +131,7 @@ Item {
         /*! \internal
           Source size specified by the setting crossFadeImage.sourceSize.
          */
-        property size forcedSourceSize: undefined
+        property size forcedSourceSize
 
         /*! \internal
           Defines the image currently being shown
