@@ -93,4 +93,18 @@ TestCase {
         waitForAnimation();
         cleanupTest();
     }
+
+    function test_sourceSize() {
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
+        compare(crossFadeImage.sourceSize.width, 640, "Source width incorrectly initialized.");
+        compare(crossFadeImage.sourceSize.height, 427, "Source height incorrectly initialized.");
+        crossFadeImage.sourceSize.width = 100;
+        crossFadeImage.sourceSize.width = 101;
+        compare(crossFadeImage.sourceSize.width, 100, "Source width incorrectly updated.");
+        compare(crossFadeImage.sourceSize.height, 101, "Source height incorrectly updated.");
+        crossFadeImage.sourceSize = undefined;
+        compare(crossFadeImage.sourceSize.width, 640, "Source width incorrectly reset.");
+        compare(crossFadeImage.sourceSize.height, 427, "Source height incorrectly reset.");
+        cleanupTest();
+    }
 }
