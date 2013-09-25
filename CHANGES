@@ -53,6 +53,7 @@ API Changes
 * ADDED IN Panel: function open()
 * ADDED IN Panel: function close()
 * DEPRECATED IN Panel: writable property opened. Will be made read-only.
+* CHANGED in CrossFadeImage: readonly property size sourceSize TO property size sourceSize
 
 Compatibility Breaks
 ********************
@@ -65,7 +66,7 @@ SDK 0.1.46
 ##########
 
 API Changes
-***********
+***********`
 
 * None
 
