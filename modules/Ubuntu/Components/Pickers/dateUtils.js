@@ -15,6 +15,7 @@
  */
 
 .pragma library
+.import QtQuick 2.0 as Quick
 
 function updateYear(date, year) {
     return new Date(year, date.getMonth(), date.getDate());
@@ -37,6 +38,32 @@ function daysInMonth(year, month) {
         31/*Jan*/, 28/*Feb*/, 31/*Mar*/, 30/*Apr*/, 31/*May*/, 30/*Jun*/,
         31/*Jul*/, 31/*Aug*/, 30/*Sep*/, 31/*Oct*/, 30/*Nov*/, 31/*Dec*/
     ][month] + (month === 1) * leapYear(year);
+}
+
+function monthText(date, day, format) {
+    switch (format) {
+    case "long":
+        var thisDate = new Date(date);
+        thisDate.setMonth(day);
+        return Qt.formatDate(thisDate, "MM ") + Qt.locale().standaloneMonthName(day, Quick.Locale.LongFormat);
+    case "short":
+        return Qt.locale().standaloneMonthName(day, Quick.Locale.LongFormat);
+    default:
+        return Qt.locale().standaloneMonthName(day, Quick.Locale.ShortFormat);
+    }
+}
+
+function dayText(date, month, format) {
+    var thisDate = new Date(date);
+    thisDate.setDate(month);
+    switch (format) {
+    case "long":
+        return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Quick.Locale.LongFormat);
+    case "short":
+        return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Quick.Locale.ShortFormat);
+    default:
+        return Qt.formatDate(thisDate, "dd");
+    }
 }
 
 function weeksInMonth(year, month, weekday) {

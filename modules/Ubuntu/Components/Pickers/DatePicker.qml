@@ -77,18 +77,7 @@ Rectangle {
                        (parent.width - yearPicker.width - dayPicker.width) : limits.minimumWidth()
             delegate: PickerDelegate {
                 Label {
-                    text: {
-                        switch (limits.monthPickerFormat()) {
-                        case "long":
-                            var thisDate = new Date(date);
-                            thisDate.setMonth(modelData);
-                            return Qt.formatDate(thisDate, "MM ") + Qt.locale().standaloneMonthName(modelData, Locale.LongFormat);
-                        case "short":
-                            return Qt.locale().standaloneMonthName(modelData, Locale.LongFormat);
-                        default:
-                            return Qt.locale().standaloneMonthName(modelData, Locale.ShortFormat);
-                        }
-                    }
+                    text: DateUtils.monthText(date, modelData, limits.monthPickerFormat())
                     anchors{
                         verticalCenter: parent.verticalCenter
                         left: parent.left
@@ -104,18 +93,7 @@ Rectangle {
             model: ListModel{}
             delegate: PickerDelegate {
                 Label {
-                    text: {
-                        var thisDate = new Date(date);
-                        thisDate.setDate(modelData + 1);
-                        switch (limits.dayPickerFormat(dayPicker.limitIndex)) {
-                        case "long":
-                            return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.LongFormat);
-                        case "short":
-                            return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.ShortFormat);
-                        default:
-                            return Qt.formatDate(thisDate, "dd");
-                        }
-                    }
+                    text: DateUtils.dayText(date, modelData + 1, limits.dayPickerFormat(dayPicker.limitIndex))
                     anchors{
                         verticalCenter: parent.verticalCenter
                         left: parent.left
