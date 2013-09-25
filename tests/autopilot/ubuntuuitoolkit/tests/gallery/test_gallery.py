@@ -159,9 +159,10 @@ class GenericTests(GalleryTestCase):
         self.checkPageHeader(item)
         textfield_standard = self.getObject('textfield_standard')
         self.pointing_device.click_object(textfield_standard)
-        self.type_string('Hello World')
+        self.assertThat(textfield_standard.focus, Eventually(Equals(True)))
+        self.type_string(u'Hello World')
         self.assertThat(textfield_standard.text,
-                        Eventually(Equals('Hello World')))
+                        Eventually(Equals(u'Hello World')))
 
     def test_textfield_password(self):
         item = "Text Field"
@@ -183,8 +184,10 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         textfield_numbers = self.getObject('textfield_numbers')
-        self.pointing_device.click_object(textfield_numbers)
         self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
+
+        self.pointing_device.click_object(textfield_numbers)
+        self.assertThat(textfield_numbers.focus, Eventually(Equals(True)))
 
         self.tap_clearButton('textfield_numbers')
         self.assertThat(textfield_numbers.text, Eventually(Equals('')))
