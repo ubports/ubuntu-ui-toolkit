@@ -38,6 +38,7 @@
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
+#include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
 #include "ucarguments.h"
@@ -202,6 +203,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register icon providers
     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
+
+    engine->addImageProvider(QLatin1String("thumbnailer"), new ThumbnailGenerator);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(

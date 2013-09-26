@@ -20,6 +20,7 @@
 #define THUMBNAIL_GENERATOR_H
 
 #include <QQuickImageProvider>
+#include <thumbnailer.h>
 
 class ThumbnailGenerator: public QQuickImageProvider
 {
