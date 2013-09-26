@@ -54,13 +54,13 @@ Item {
         font.bold: true
         font.family: "Ubuntu"
         color: "white"
-        text: "Uri[0]: \"\""
+        text: "Uri: \"\""
     }
 
     Component.onCompleted: UriHandler.init();
     Connections {
         target: UriHandler
         onObjectPathChanged: path.text = "Object path: \"" + UriHandler.objectPath + "\""
-        onOpened: uri.text = "Uri[0]: \"" + uris[0] + "\""
+        onOpened: uri.text = "Uri: \"" + uris + "\""
     }
 }
