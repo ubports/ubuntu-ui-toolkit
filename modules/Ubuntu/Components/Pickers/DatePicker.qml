@@ -65,10 +65,10 @@ import "../" 0.1
 
     The default behavior of the year picker in the DatePicker is to list the years
     infinitely starting from the year given in the \l date property. This can be
-    changed through the \l minimumYear and \l maximumYear properties. The minimumYear
-    property is set to the year from the date, and can get less or equal value to
-    the year value. Setting a greater or equal value to maximumYear as the minimumYear
-    will make year selection to be possible from a range only.
+    changed through the \l minimumYear and \l maximumYear properties. In case the
+    \l maximumYear value is greater than the \l minimumValue, the year picker will
+    no longer be infinite.
+
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -114,9 +114,9 @@ Rectangle {
       The \a maximumYear must be greater than the minimumValue, or zero (0). If
       set to zero, the year picker will increase the year values infinitely.
 
-      The default values are \l year for minimumYear and 0 for maximumYear.
+      The default values for both is 0.
       */
-    property int minimumYear: date.getFullYear()
+    property int minimumYear: 0
     /*! \internal */
     property int maximumYear: 0
 
@@ -322,11 +322,8 @@ Rectangle {
 
         onYearIndexChanged: {
             if (!completed) return;
-            print(1)
             datePicker.date = DateUtils.updateYear(datePicker.date, fromYear + yearPicker.selectedIndex);
-            print(2)
             updateDayModel();
-            print(3)
         }
         onMonthIndexChanged: {
             if (!completed) return;
@@ -367,7 +364,6 @@ Rectangle {
         }
 
         function updateYearModel() {
-            print("a");
             fromYear = (minimumYear <= 0) ? datePicker.date.getFullYear() : minimumYear;
             toYear = (maximumYear < minimumYear) ? 0 : maximumYear;
 
