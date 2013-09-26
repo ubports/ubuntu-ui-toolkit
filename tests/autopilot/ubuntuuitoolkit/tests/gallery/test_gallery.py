@@ -280,3 +280,11 @@ class ButtonsTestCase(GalleryTestCase):
         self.pointing_device.release()
 
         self.assertThat(button.pressed, Eventually(Equals(False)))
+
+    def test_all_pages_load(self):
+        # TODO: Iterate items in widgetList
+        for item in ['Navigation', 'Slider', 'Option Selector', 'Pickers', 'Icons']:
+            self.loadItem(item)
+            self.checkPageHeader(item)
+            assert len(self.app.select_many('Template')) > 0, ('%s can be loaded in gallery' % item)
+
