@@ -51,6 +51,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdexcept>
 
 /*
  * Type registration functions.
@@ -204,7 +205,11 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
-    engine->addImageProvider(QLatin1String("thumbnailer"), new ThumbnailGenerator);
+    try {
+        engine->addImageProvider(QLatin1String("thumbnailer"), new ThumbnailGenerator);
+    } catch(std::runtime_error &e) {
+        qDebug() << "Could not create thumbnailer: " << e.what();
+    }
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(
