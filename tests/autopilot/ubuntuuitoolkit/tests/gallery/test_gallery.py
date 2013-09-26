@@ -31,9 +31,11 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
     local_desktop_file_path = None
 
     def setUp(self):
-        self.app_qml_source_path = os.path.join(
-            self._get_path_to_gallery_source(),
-            'ubuntu-ui-toolkit-gallery.qml')
+        if self._application_source_exists():
+            self.test_source_path = self._get_path_to_gallery_source()
+        else:
+            self.test_source_path = self._get_path_to_installed_gallery()
+        assert os.path.exists(self.test_source_path)
         self.test_qml_file_path = self._get_test_qml_file_path()
         self.desktop_file_path = self._get_desktop_file_path()
         super(GalleryTestCase, self).setUp()
@@ -44,38 +46,33 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
             'ubuntu-ui-toolkit-gallery')
 
     def _application_source_exists(self):
-        return os.path.exists(self.app_qml_source_path)
+        return 'UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE' in os.environ
 
     def _get_test_qml_file_path(self):
-        if self._application_source_exists():
-            return self.app_qml_source_path
-        else:
-            return os.path.join(
-                self._get_path_to_installed_gallery(),
-                'ubuntu-ui-toolkit-gallery.qml')
+        return os.path.join(
+            self.test_source_path,
+            'ubuntu-ui-toolkit-gallery.qml')
 
     def _get_path_to_installed_gallery(self):
         return '/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'
 
     def _get_desktop_file_path(self):
+        desktop_file_path = os.path.join(
+            self.test_source_path,
+            'ubuntu-ui-toolkit-gallery.desktop')
         if self._application_source_exists():
             local_desktop_file_dir = tests.get_local_desktop_file_directory()
             if not os.path.exists(local_desktop_file_dir):
                 os.makedirs(local_desktop_file_dir)
-            source_desktop_file_path = os.path.join(
-                self._get_path_to_gallery_source(),
-                'ubuntu-ui-toolkit-gallery.desktop')
             local_desktop_file_path = os.path.join(
                 local_desktop_file_dir, 'ubuntu-ui-toolkit-gallery.desktop')
-            shutil.copy(source_desktop_file_path, local_desktop_file_path)
+            shutil.copy(desktop_file_path, local_desktop_file_path)
             # We can't delete the desktop file before we close the application,
             # so we save it on an attribute to be deleted on tear down.
             self.local_desktop_file_path = local_desktop_file_path
             return local_desktop_file_path
         else:
-            return os.path.join(
-                self._get_path_to_installed_gallery(),
-                'ubuntu-ui-toolkit-gallery.desktop')
+            return desktop_file_path
 
     def tearDown(self):
         super(GalleryTestCase, self).tearDown()
