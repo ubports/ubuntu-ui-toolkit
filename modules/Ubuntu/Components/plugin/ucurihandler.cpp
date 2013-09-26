@@ -16,6 +16,8 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
+// FIXME(loicm): Documentation isn't built correctly.
+
 #include "ucurihandler.h"
 #include <QtDBus/QtDBus>
 // FIXME(loicm) Including <libnih-dbus.h> generates C++ compilation errors.
