@@ -106,8 +106,6 @@ Item {
         }
     }
 
-    property alias forced: internals.forcedSourceSize
-
     /*!
       \qmlproperty enumeration status
 
