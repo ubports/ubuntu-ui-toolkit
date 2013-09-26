@@ -177,7 +177,6 @@ Template {
             title: "Normal"
             DatePicker {
                 id: datePicker
-                minimumYear: 2000
             }
         }
         Slider {
