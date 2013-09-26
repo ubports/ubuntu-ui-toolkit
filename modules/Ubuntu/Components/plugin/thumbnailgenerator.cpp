@@ -40,5 +40,6 @@ QPixmap ThumbnailGenerator::requestPixmap(const QString &id, QSize *realSize,
         // thumbnail generation failed for some reason
         // so just return default image
     }
+    *realSize = QSize(0, 0);
     return QPixmap();
 }
