@@ -40,9 +40,9 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
  * \brief Singleton signalling for opened URIs.
  *
  * UriHandler is a singleton handling opened URIs. The application can be signalled of opened URIs
- * through the \l opened signal. The content of the "APP_ID" environment variable is used to
- * determine the object path. If the D-Bus session bus is not connected or the "APP_ID" variable is
- * not set or empty, the handler stays uninitialized.
+ * through the opened signal. The content of the "APP_ID" environment variable is used to determine
+ * the object path. If the D-Bus session bus is not connected or the "APP_ID" variable is not set or
+ * empty, the handler stays uninitialized.
  *
  * Example of use:
  *
@@ -92,7 +92,6 @@ UCUriHandler::UCUriHandler()
  * successfully.
  */
 
-// FIXME(loicm): make docs blocks on that one.
 /*!
  * \qmlsignal UCUriHandler::onOpened(string[] uris)
  *
