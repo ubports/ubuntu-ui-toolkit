@@ -21,7 +21,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-test-plugin,
                qtdeclarative5-window-plugin,
                qtdeclarative5-unity-action-plugin,
-               qtdeclarative5-localstorage-plugin
+               qtdeclarative5-localstorage-plugin,
                devscripts,
                libqt5organizer5,
                qtpim5-dev,
