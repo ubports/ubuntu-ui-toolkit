@@ -21,17 +21,19 @@
 #include "ucurihandler.h"
 #include <QtDBus/QtDBus>
 // FIXME(loicm) Including <libnih-dbus.h> generates C++ compilation errors.
-#include <nih-dbus/dbus_util.h>
+#include <libnih.h>
+#include <libnih-dbus.h>
+//#include <nih-dbus/dbus_util.h>
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
-    : uriHandler_(uriHandler)
+    : m_uriHandler(uriHandler)
 {
 }
 
 void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVariant>& platformData)
 {
     Q_UNUSED(platformData);
-    Q_EMIT uriHandler_->opened(uris);
+    Q_EMIT m_uriHandler->opened(uris);
 }
 
 /*!
@@ -39,12 +41,12 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
  * \instantiates UCUriHandler
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
- * \brief The opened URIs handler.
+ * \brief Singleton signalling for opened URIs.
  *
- * UriHandler handles opened URIs. The application can be signalled of opened URIs through the \l
- * opened signal. The content of the "APP_ID" environment variable is used to determine the object
- * path. If the D-Bus session bus is not connected or the "APP_ID" variable is not set or empty, the
- * handler stays uninitialized.
+ * UriHandler is a singleton handling opened URIs. The application can be signalled of opened URIs
+ * through the \l opened signal. The content of the "APP_ID" environment variable is used to
+ * determine the object path. If the D-Bus session bus is not connected or the "APP_ID" variable is
+ * not set or empty, the handler stays uninitialized.
  *
  * Example of use:
  *
@@ -56,7 +58,7 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
  * \endqml
  */
 UCUriHandler::UCUriHandler()
-    : uriHandlerObject_(this)
+    : m_uriHandlerObject(this)
 {
     if (!QDBusConnection::sessionBus().isConnected()) {
         qWarning() << "UCUriHandler: D-Bus session bus is not connected, ignoring.";
@@ -64,12 +66,14 @@ UCUriHandler::UCUriHandler()
     }
 
     // Get the object path based on the "APP_ID" environment variable.
-    QString applicationId = qgetenv("APP_ID");
+    QByteArray applicationId = qgetenv("APP_ID");
     if (applicationId.isEmpty()) {
         qWarning() << "UCUriHandler: Empty \"APP_ID\" environment variable, ignoring.";
         return;
     }
-    objectPath_ = QString(nih_dbus_path(NULL, "", applicationId.toLatin1().constData(), NULL));
+    char* path = nih_dbus_path(NULL, "", applicationId.constData(), NULL);
+    m_objectPath = QString(path);
+    nih_free(path);
     Q_EMIT objectPathChanged();
 
     // Ensure handler is running on the main thread.
@@ -81,7 +85,7 @@ UCUriHandler::UCUriHandler()
     }
 
     QDBusConnection::sessionBus().registerObject(
-        objectPath_, &uriHandlerObject_, QDBusConnection::ExportAllSlots);
+        m_objectPath, &m_uriHandlerObject, QDBusConnection::ExportAllSlots);
     QDBusConnection::sessionBus().registerService("org.freedesktop.Application");
 }
 

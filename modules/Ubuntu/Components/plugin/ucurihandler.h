@@ -32,7 +32,7 @@ class UriHandlerObject : public QObject
     void Open(const QStringList& uris, const QHash<QString, QVariant>& platformData);
 
  private:
-    UCUriHandler* uriHandler_;
+    UCUriHandler* m_uriHandler;
 };
 
 class UCUriHandler : public QObject
@@ -42,13 +42,13 @@ class UCUriHandler : public QObject
 
  public:
     UCUriHandler();
-    QString objectPath() const { return objectPath_; }
+    QString objectPath() const { return m_objectPath; }
 
  Q_SIGNALS:
     void opened(const QStringList& uris);
     void objectPathChanged();
 
  private:
-    UriHandlerObject uriHandlerObject_;
-    QString objectPath_;
+    UriHandlerObject m_uriHandlerObject;
+    QString m_objectPath;
 };
