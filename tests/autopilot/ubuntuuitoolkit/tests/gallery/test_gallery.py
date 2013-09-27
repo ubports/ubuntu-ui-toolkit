@@ -282,8 +282,12 @@ class ButtonsTestCase(GalleryTestCase):
         self.assertThat(button.pressed, Eventually(Equals(False)))
 
     def test_all_pages_load(self):
-        # TODO: Iterate items in widgetList
-        for item in ['Navigation', 'Slider', 'Pickers', 'Icons']:
+        contentLoader, listView = self.getWidgetLoaderAndListView()
+        for child in listView.select_many('Standard'):
+            item = child.text
+            # FIXME: Text Field doesn't work
+            if item == 'Text Field':
+                continue
             self.loadItem(item)
             self.checkPageHeader(item)
             assert len(self.app.select_many('Template')) > 0, \
