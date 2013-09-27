@@ -98,6 +98,7 @@ AbstractButton {
     /*!
       \preliminary
       Defines if the item needs confirmation before removing by swiping.
+      \qmlproperty bool confirmRemoval
      */
     property alias confirmRemoval: confirmRemovalDialog.visible
 
