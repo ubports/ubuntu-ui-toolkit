@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML="modules/Ubuntu/*/*.qml modules/Ubuntu/*/*/*.qml"
+QML=$(find modules/Ubuntu -regex "[^T]+\.qml")
 CPP="Ubuntu.Components Ubuntu.Layouts"
 
 echo Dumping QML API of C++ components
@@ -27,7 +27,7 @@ STATUS=$?
 test $STATUS = 0 || ERRORS=1
 test $STATUS = 0 || echo $RESULTS
 
-echo Running QML API check
+echo Running QML API check for $QML
 python tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
