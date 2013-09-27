@@ -16,8 +16,6 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-// FIXME(loicm): Documentation isn't built correctly.
-
 #include "ucurihandler.h"
 #include <QtDBus/QtDBus>
 #include <libnih.h>
@@ -35,7 +33,7 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
 }
 
 /*!
- * \qmltype UCUriHandler
+ * \qmltype UriHandler
  * \instantiates UCUriHandler
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
@@ -88,14 +86,15 @@ UCUriHandler::UCUriHandler()
 }
 
 /*!
- * \qmlproperty string UriHandler::objectPath
+ * \qmlproperty string UCUriHandler::objectPath
  *
  * This property corresponds to the D-Bus object path used by the UriHandler once initialized
  * successfully.
  */
 
+// FIXME(loicm): make docs blocks on that one.
 /*!
- * \qmlsignal UriHandler::opened(string uris[])
+ * \qmlsignal UCUriHandler::onOpened(string[] uris)
  *
  * The signal is triggered when URIs are opened.
  */
