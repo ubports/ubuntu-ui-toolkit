@@ -40,7 +40,7 @@ Item {
         font.bold: true
         font.family: "Ubuntu"
         color: "white"
-        text: "Object path: \"\""
+        text: "Object path: \"" + UriHandler.objectPath + "\""
     }
 
     Text {
@@ -57,10 +57,8 @@ Item {
         text: "Uri: \"\""
     }
 
-    Component.onCompleted: UriHandler.init();
     Connections {
         target: UriHandler
-        onObjectPathChanged: path.text = "Object path: \"" + UriHandler.objectPath + "\""
         onOpened: uri.text = "Uri: \"" + uris + "\""
     }
 }

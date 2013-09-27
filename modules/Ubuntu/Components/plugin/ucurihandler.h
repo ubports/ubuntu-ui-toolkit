@@ -42,8 +42,6 @@ class UCUriHandler : public QObject
 
  public:
     UCUriHandler();
-    static UCUriHandler* instance() { return self_; }
-    Q_INVOKABLE bool init(const QString& applicationId = QString(""));
     QString objectPath() const { return objectPath_; }
 
  Q_SIGNALS:
@@ -51,8 +49,6 @@ class UCUriHandler : public QObject
     void objectPathChanged();
 
  private:
-    static UCUriHandler* self_;
     UriHandlerObject uriHandlerObject_;
     QString objectPath_;
-    Q_DISABLE_COPY(UCUriHandler)
 };
