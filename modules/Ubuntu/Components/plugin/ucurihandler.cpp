@@ -69,7 +69,7 @@ UCUriHandler::UCUriHandler()
         qWarning() << "UCUriHandler: Empty \"APP_ID\" environment variable, ignoring.";
         return;
     }
-    objectPath_ = QString(nih_dbus_path(NULL, "/", applicationId.toLatin1().constData(), NULL));
+    objectPath_ = QString(nih_dbus_path(NULL, "", applicationId.toLatin1().constData(), NULL));
     Q_EMIT objectPathChanged();
 
     // Ensure handler is running on the main thread.
