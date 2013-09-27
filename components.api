@@ -490,6 +490,31 @@ Empty
     property variant values
     property int selectedIndex
     property bool expanded
+modules/Ubuntu/Components/Pickers/Dialer.qml
+StyledItem
+    property real minimumValue
+    property real maximumValue
+    property real size
+    property real handSpace
+    readonly property Item centerItem
+    property list<var> centerContent
+    readonly property list<DialerHands> hands
+    signal handUpdated(var hand)
+modules/Ubuntu/Components/Pickers/DialerHand.qml
+StyledItem
+    property real value
+    property DialerHandGroup hand
+    readonly property Dialer dialer
+    default property list<QtObject> overlay
+    readonly property int index
+    property internal __grabber
+modules/Ubuntu/Components/Pickers/DialerHandGroup.qml
+QtObject
+    property real width
+    property real height
+    property bool draggable
+    property bool visible
+    property bool toCenterItem
 modules/Ubuntu/Components/Pickers/Picker.qml
 StyledItem
     property bool circular
@@ -628,6 +653,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["Alarm 0.1"]
     name: "Status"
+    name: "Operation"
     name: "Error"
     name: "AlarmType"
     name: "DayOfWeek"
@@ -640,6 +666,9 @@ plugins.qmltypes
     Property { name: "sound"; type: "QUrl" }
     Property { name: "error"; type: "int"; isReadonly: true }
     Property { name: "status"; type: "Status"; isReadonly: true }
+    Signal {
+    name: "statusChanged"
+    Parameter { name: "operation"; type: "Operation" }
     Method { name: "save" }
     Method { name: "cancel" }
     Method { name: "reset" }

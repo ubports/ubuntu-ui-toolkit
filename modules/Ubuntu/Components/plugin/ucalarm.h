@@ -38,13 +38,20 @@ class UCAlarm : public QObject
     Q_PROPERTY(int error READ error NOTIFY errorChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
-    Q_ENUMS(Status Error AlarmType DayOfWeek)
+    Q_ENUMS(Status Operation Error AlarmType DayOfWeek)
     Q_FLAGS(DaysOfWeek)
 public: // enums
     enum Status { // keep values in sync with AlarmRequest::Status
         Ready = 1,
         InProgress,
         Fail
+    };
+
+    enum Operation { // keep values in sync with AlarmRequest::Operation
+        NoOperation,
+        Saving,
+        Canceling,
+        Reseting
     };
 
     enum Error {
@@ -108,7 +115,7 @@ Q_SIGNALS:
     void soundChanged();
 
     void errorChanged();
-    void statusChanged();
+    void statusChanged(Operation operation);
 
 public Q_SLOTS:
     void save();
@@ -120,7 +127,7 @@ private:
     Q_DECLARE_PRIVATE(UCAlarm)
     QScopedPointer<UCAlarmPrivate> d_ptr;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_syncStatus(int status, int error))
+    Q_PRIVATE_SLOT(d_func(), void _q_syncStatus(int operation, int status, int error))
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCAlarm::DaysOfWeek)
