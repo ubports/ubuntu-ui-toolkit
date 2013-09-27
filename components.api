@@ -735,6 +735,13 @@ plugins.qmltypes
     Method {
     name: "gu"
     Parameter { name: "value"; type: "float" }
+    name: "UCUriHandler"
+    prototype: "QObject"
+    exports: ["UriHandler 0.1"]
+    Property { name: "objectPath"; type: "string"; isReadonly: true }
+    Signal {
+    name: "opened"
+    Parameter { name: "uris"; type: "QStringList" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1"]
