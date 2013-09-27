@@ -292,4 +292,3 @@ class ButtonsTestCase(GalleryTestCase):
             self.checkPageHeader(item)
             assert len(self.app.select_many('Template')) > 0, \
                 ('%s can be loaded in gallery' % item)
-
