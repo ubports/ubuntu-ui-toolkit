@@ -401,5 +401,365 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
-    property alias confirmRemoval
-Error: Missing \qmlproperty annotation
+    property bool confirmRemoval
+    readonly property string swipingState
+    signal itemRemoved
+    property int __height
+    property bool showDivider
+    default property internal children
+    property internal __contents
+    property list<Item> backgroundIndicator
+    property ThinDivider divider
+    property real __contentsMargins
+modules/Ubuntu/Components/ListItems/Header.qml
+Item
+    property string text
+    property internal __foregroundColor
+modules/Ubuntu/Components/ListItems/IconVisual.qml
+Item
+    property url source
+    property url fallbackSource
+    property bool hasFrame
+modules/Ubuntu/Components/ListItems/ImageWithFallback.qml
+Image
+    property url fallbackSource
+    property bool fallbackRequired
+    function isSourceDefined(sourceUrl)
+    function tryLoadingFallbackSource()
+    function checkStatus()
+modules/Ubuntu/Components/ListItems/ItemSelector.qml
+ListItem.Empty
+    property var model
+    property bool expanded
+    property bool colourImage
+    property real containerHeight
+    property int selectedIndex
+    signal delegateClicked(int index)
+modules/Ubuntu/Components/ListItems/LabelVisual.qml
+Label
+    property bool selected
+    property bool secondary
+    property bool overlay
+    function isInsideOverlay(item)
+modules/Ubuntu/Components/ListItems/MultiValue.qml
+Base
+    property variant values
+modules/Ubuntu/Components/ListItems/ProgressionVisual.qml
+Item
+    property bool showSplit
+    property real splitMargin
+modules/Ubuntu/Components/ListItems/SingleControl.qml
+Empty
+    property Item control
+    function __updateControl()
+modules/Ubuntu/Components/ListItems/SingleValue.qml
+Base
+    property string value
+modules/Ubuntu/Components/ListItems/Standard.qml
+Empty
+    property variant icon
+    property url fallbackIconSource
+    property bool progression
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property Item control
+    property bool iconFrame
+    property bool __controlAreaPressed
+    property bool __iconIsItem
+    property internal __foregroundColor
+modules/Ubuntu/Components/ListItems/Subtitled.qml
+Base
+    property string text
+    property string subText
+modules/Ubuntu/Components/ListItems/ThinDivider.qml
+Image
+modules/Ubuntu/Components/ListItems/ValueSelector.qml
+Empty
+    property variant icon
+    property url fallbackIconSource
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property bool iconFrame
+    property variant values
+    property int selectedIndex
+    property bool expanded
+modules/Ubuntu/Components/Pickers/Dialer.qml
+StyledItem
+    property real minimumValue
+    property real maximumValue
+    property real size
+    property real handSpace
+    readonly property Item centerItem
+    property list<var> centerContent
+    readonly property list<DialerHands> hands
+    signal handUpdated(var hand)
+modules/Ubuntu/Components/Pickers/DialerHand.qml
+StyledItem
+    property real value
+    property DialerHandGroup hand
+    readonly property Dialer dialer
+    default property list<QtObject> overlay
+    readonly property int index
+    property internal __grabber
+modules/Ubuntu/Components/Pickers/DialerHandGroup.qml
+QtObject
+    property real width
+    property real height
+    property bool draggable
+    property bool visible
+    property bool toCenterItem
+modules/Ubuntu/Components/Pickers/Picker.qml
+StyledItem
+    property bool circular
+    property var model
+    property Component delegate
+    property int selectedIndex
+    property bool live
+    property int __clickedIndex
+modules/Ubuntu/Components/Pickers/PickerDelegate.qml
+AbstractButton
+modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
+Popover
+    property Item target
+    property var actions
+    property Component delegate
+modules/Ubuntu/Components/Popups/ComposerSheet.qml
+SheetBase
+    signal cancelClicked
+    signal confirmClicked
+modules/Ubuntu/Components/Popups/DefaultSheet.qml
+SheetBase
+    property bool doneButton
+    signal closeClicked
+    signal doneClicked
+modules/Ubuntu/Components/Popups/Dialog.qml
+PopupBase
+    default property list<Object> contents
+    property string title
+    property string text
+    property Item caller
+    property Item pointerTarget
+    property real edgeMargins
+    property real callerMargin
+    property bool modal
+modules/Ubuntu/Components/Popups/Popover.qml
+PopupBase
+    default property list<Object> container
+    property real contentWidth
+    property internal contentHeight
+    property Item caller
+    property Item pointerTarget
+    property real edgeMargins
+    property real callerMargin
+    property bool autoClose
+    property Component foregroundStyle
+    function show()
+    function hide()
+    function __makeInvisible()
+modules/Ubuntu/Components/Popups/PopupBase.qml
+OrientationHelper
+    property Item dismissArea
+    property bool grabDismissAreaEvents
+    function show()
+    function hide()
+    function __closeIfHidden()
+    function __closePopup()
+    property Item __foreground
+    property bool __closeOnDismissAreaPress
+    property internal __dimBackground
+    property internal __eventGrabber
+modules/Ubuntu/Components/Popups/SheetBase.qml
+PopupBase
+    default property list<Object> container
+    property real contentsWidth
+    property real contentsHeight
+    property string title
+    property bool modal
+    property internal __leftButton
+    property internal __rightButton
+modules/Ubuntu/Components/Themes/Palette.qml
+QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+modules/Ubuntu/Components/Themes/PaletteValues.qml
+QtObject
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color field
+    property color fieldText
+plugins.qmltypes
+    name: "InverseMouseAreaType"
+    prototype: "QQuickMouseArea"
+    exports: ["InverseMouseArea 0.1"]
+    Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Method {
+    name: "contains"
+    Parameter { name: "point"; type: "QPointF" }
+    name: "QQmlPropertyMap"
+    prototype: "QObject"
+    Signal {
+    name: "valueChanged"
+    Parameter { name: "key"; type: "string" }
+    Parameter { name: "value"; type: "QVariant" }
+    Method { name: "keys"; type: "QStringList" }
+    name: "QQuickClipboard"
+    prototype: "QObject"
+    exports: ["Clipboard 0.1"]
+    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
+    Method {
+    name: "push"
+    Parameter { name: "data"; type: "QVariant" }
+    Method { name: "clear" }
+    Method { name: "newData"; type: "QQuickMimeData*" }
+    name: "QQuickMimeData"
+    prototype: "QObject"
+    exports: ["MimeData 0.1"]
+    Property { name: "formats"; type: "QStringList"; isReadonly: true }
+    Property { name: "text"; type: "string" }
+    Property { name: "html"; type: "string" }
+    Property { name: "urls"; type: "QList<QUrl>" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "data"; type: "QVariant" }
+    Signal { name: "typeChanged" }
+    name: "ShapeItem"
+    prototype: "QQuickItem"
+    exports: ["Shape 0.1"]
+    name: "HAlignment"
+    name: "VAlignment"
+    Property { name: "color"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "radius"; type: "string" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Property { name: "borderSource"; type: "string" }
+    Signal { name: "borderChanged" }
+    Method { name: "gridUnitChanged" }
+    name: "UCAlarm"
+    prototype: "QObject"
+    exports: ["Alarm 0.1"]
+    name: "Status"
+    name: "Operation"
+    name: "Error"
+    name: "AlarmType"
+    name: "DayOfWeek"
+    name: "DaysOfWeek"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "message"; type: "string" }
+    Property { name: "date"; type: "QDateTime" }
+    Property { name: "type"; type: "AlarmType" }
+    Property { name: "daysOfWeek"; type: "DaysOfWeek" }
+    Property { name: "sound"; type: "QUrl" }
+    Property { name: "error"; type: "int"; isReadonly: true }
+    Property { name: "status"; type: "Status"; isReadonly: true }
+    Signal {
+    name: "statusChanged"
+    Parameter { name: "operation"; type: "Operation" }
+    Method { name: "save" }
+    Method { name: "cancel" }
+    Method { name: "reset" }
+    name: "UCAlarmModel"
+    prototype: "QAbstractListModel"
+    exports: ["AlarmModel 0.1"]
+    Property { name: "count"; type: "int"; isReadonly: true }
+    Method {
+    name: "get"
+    Parameter { name: "index"; type: "int" }
+    name: "UCArgument"
+    prototype: "QObject"
+    exports: ["Argument 0.1"]
+    Property { name: "name"; type: "string" }
+    Property { name: "help"; type: "string" }
+    Property { name: "required"; type: "bool" }
+    Property { name: "valueNames"; type: "QStringList" }
+    Method {
+    name: "at"
+    Parameter { name: "i"; type: "int" }
+    name: "UCArguments"
+    prototype: "QObject"
+    exports: ["Arguments 0.1"]
+    Property { name: "defaultArgument"; type: "UCArgument"; isPointer: true }
+    Property { name: "arguments"; type: "UCArgument"; isList: true; isReadonly: true }
+    Property { name: "values"; type: "QQmlPropertyMap"; isReadonly: true; isPointer: true }
+    Property { name: "error"; type: "bool"; isReadonly: true }
+    Property { name: "errorMessage"; type: "string"; isReadonly: true }
+    Method { name: "printUsage" }
+    Method {
+    name: "quitWithError"
+    Parameter { name: "errorMessage"; type: "string" }
+    Method { name: "quitWithError" }
+    name: "UCQQuickImageExtension"
+    prototype: "QQuickImageBase"
+    exports: ["QQuickImageBase 0.1"]
+    Property { name: "source"; type: "QUrl" }
+    Signal {
+    name: "sourceChanged"
+    Parameter { type: "QUrl" }
+    Signal {
+    name: "sourceChanged"
+    Parameter { type: "QUrl" }
+    name: "UCStateSaver"
+    prototype: "QObject"
+    exports: ["StateSaver 0.1"]
+    name: "UCStateSaverAttached"
+    prototype: "QObject"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "properties"; type: "string" }
+    name: "UCUbuntuAnimation"
+    prototype: "QObject"
+    exports: ["UbuntuAnimation 0.1"]
+    Property { name: "SnapDuration"; type: "int"; isReadonly: true }
+    Property { name: "FastDuration"; type: "int"; isReadonly: true }
+    Property { name: "BriskDuration"; type: "int"; isReadonly: true }
+    Property { name: "SlowDuration"; type: "int"; isReadonly: true }
+    Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
+    Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
+    Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
+    name: "UCUnits"
+    prototype: "QObject"
+    exports: ["UCUnits 0.1"]
+    Property { name: "gridUnit"; type: "float" }
+    Method {
+    name: "dp"
+    Parameter { name: "value"; type: "float" }
+    Method {
+    name: "gu"
+    Parameter { name: "value"; type: "float" }
+    name: "UbuntuI18n"
+    prototype: "QObject"
+    exports: ["i18n 0.1"]
+    Property { name: "domain"; type: "string" }
+    Property { name: "language"; type: "string" }
+    Method {
+    name: "bindtextdomain"
+    Parameter { name: "domain_name"; type: "string" }
+    Parameter { name: "dir_name"; type: "string" }
+    Method {
+    name: "tr"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tr"
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }
+    Method {
+    name: "dtr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "dtr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "singular"; type: "string" }
+    Parameter { name: "plural"; type: "string" }
+    Parameter { name: "n"; type: "int" }
