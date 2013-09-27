@@ -22,13 +22,16 @@ import "../" 0.1
     \qmltype DatePicker
     \inqmlmodule Ubuntu.Components.Pickers 0.1
     \ingroup ubuntu-pickers
-    \brief DatePicker component is used for full date or month picking purposes.
+    \brief DatePicker component provides full date, month or week number picking
+    functionality.
 
-    DatePicker combines up to three Picker elements providing date selection
-    possibilities. The component can be used to select full date as well as to
-    select year and month only. The selected date as well as the initial one
-    is provided by the \l date property. For convenience the component provides
-    also the year, month and day values as separate properties.
+    DatePicker combines up to three Picker elements providing different date value
+    selection possibilities. It can be used to select full date (year, month, day
+    and weekNumber) as well as to select year and month or year and week number
+    only. The selected date as well as the initial one is provided by the \l date
+    property. For convenience the component provides also the year, month and day
+    values as separate properties, however these properties are not writable, and
+    the initialization can happen only through the \l date property.
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -44,9 +47,11 @@ import "../" 0.1
     }
     \endqml
 
-    The component can be used to select the month only, in which case the day
-    picker can be hidden by setting false to \l showDays. In this case the day
-    property may not provide a valid day value.
+    The \l mode property specifies whether the DatePicker provides full date
+    picking, month picking or week number picking. When \a Month or \a Week modes
+    are set, the component shows only two pickers, one for year and one for the
+    month or week picking.
+    Month picker example:
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -58,15 +63,31 @@ import "../" 0.1
         }
         DatePicker {
             id: datePicker
-            showDays: false
+            mode: "Month"
+        }
+    }
+    \endqml
+    Week picker example:
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+    import Ubuntu.Components.Pickers 0.1
+
+    Column {
+        Label {
+            text: "Selected week: " + datePicker.week
+        }
+        DatePicker {
+            id: datePicker
+            mode: "Week"
         }
     }
     \endqml
 
     The default behavior of the year picker in the DatePicker is to list the years
     infinitely starting from the year given in the \l date property. This can be
-    changed through the \l minimumYear and \l maximumYear properties. In case the
-    \l maximumYear value is greater than the \l minimumValue, the year picker will
+    changed through the \a minimumYear and \a maximumYear properties. In case the
+    \a maximumYear value is greater than the \a minimumYear, the year picker will
     no longer be infinite.
 
     \qml
@@ -85,8 +106,47 @@ import "../" 0.1
         }
     }
     \endqml
+    \b Note: do not use the \l date property when initializing minimumYear and maximumYear
+    as it will cause binding loop.
 
-    \section3 Styling
+    \section2 Layout
+    As mentioned earlier, DatePicker combines up to three Picker tumblers depending
+    on the mode requested. These tumblers will be placed in a row, laid out using
+    different rules.
+
+    \section3 Date mode rules
+    The date picker consist of three pickers: year, month, and date. The exact
+    contents of the month and date pickers depends on the available width:
+    \list A
+        \li number and full name for month, number and full day for date (“08
+            August” “28 Wednesday”)
+        \li otherwise number and full name for month, number and abbreviated day
+            for date (“08 August” “28 Wed”);
+        \li otherwise full name for month, number and abbreviated day for date
+            (“August” “28 Wed”);
+        \li otherwise full name for month, number for date (“August” “28”);
+        \li otherwise abbreviated name for month, number for date (“Aug” “28”).
+    \endlist
+
+    \a{If the currently selected date becomes impossible the year change (from a
+    leap to a non-leap year when the date is set to February 29) or the month
+    (e.g. from a month that has 31 days to one that has fewer when the date is
+    set to 31), the date reduces automatically, but should immediately return
+    to its previous value if that becomes possible again before you next manually
+    change the date.}
+
+    \b Minimum/maximum:
+
+    \list
+        \li If minimum and maximum are within the same year, the year picker
+            will be insensitive.
+        \li If minimum and maximum are within the same month, the month picker
+            will be present
+    \endlist
+    \section3 Month mode rules
+    \section3 Week mode rules
+
+    \section2 Styling
     The component's default height is the same asthe on-screen input's height. If
     the environment does not have on-screen input, the height will be set to 20GUs.
     The width is the full width of the phone, 40 GUs.
@@ -97,6 +157,13 @@ import "../" 0.1
   */
 Rectangle {
     id: datePicker
+
+    /*!
+      Specifies the picker mode, whether it should be used for date ("Date"),
+      month ("Month") or week ("Week") picking.
+      The default value is "Date".
+      */
+    property string mode: "Date"
 
     /*!
       The date chosen by the DatePicker. The default value is the date at the
@@ -110,7 +177,8 @@ Rectangle {
       \qmlproperty int maximumYear
       The minimum and maximum year values (inclusive) to be shown in year picker.
       The \a minimumYear value must be smaller or equal with the \l year value,
-      otherwise will be ignored.
+      otherwise will be ignored, and the year picker will start from the year
+      given in \l date.
       The \a maximumYear must be greater than the minimumValue, or zero (0). If
       set to zero, the year picker will increase the year values infinitely.
 
@@ -121,28 +189,25 @@ Rectangle {
     property int maximumYear: 0
 
     /*!
-      \qmlproperty bool showDays
-      The property is used to hide the day picker from the element. The default
-      value is true. When set to false, the day property value may be undefined
-      and should not be taken into account.
-      */
-    property alias showDays: dayPicker.visible
-
-    /*!
       \qmlproperty int year
       \readonly
       \qmlproperty int month
       \readonly
       \qmlproperty int day
       \readonly
-      Properties declared for convenience, representing the year, month and day
+      \qmlproperty int week
+      \readonly
+      Properties declared for convenience, representing the \b year, \b month and \b day
       values of the \l date property.
+      The \b week property is valid only if the \l mode is set to \a Week.
       */
     readonly property int year: datePicker.date.getFullYear()
     /*! \internal */
     readonly property int month: datePicker.date.getMonth()
     /*! \internal */
     readonly property int day: datePicker.date.getDate()
+    /*! \internal */
+    readonly property int week: DateUtils.weekNumber(datePicker.date)
 
     /*!
       Specifies whether the date update is live. By default the date is not
@@ -198,13 +263,18 @@ Rectangle {
         }
         Picker {
             id: monthPicker
-            model: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+            model: ListModel{}
             width: (parent.width - yearPicker.width - dayPicker.width) > internals.minimumWidth ?
                        (parent.width - yearPicker.width - dayPicker.width) : internals.minimumWidth
             live: datePicker.live
             delegate: PickerDelegate {
                 Label {
-                    text: DateUtils.monthText(date, modelData, limits.monthPickerFormat())
+                    text: {
+                        if (datePicker.mode === "Week")
+                            return DateUtils.weekText(date, modelData, limits.monthPickerFormat());
+                        return DateUtils.monthText(date, modelData, limits.monthPickerFormat());
+                    }
+
                     anchors{
                         verticalCenter: parent.verticalCenter
                         left: parent.left
@@ -221,6 +291,7 @@ Rectangle {
         }
         Picker {
             id: dayPicker
+            visible: (datePicker.mode === "Date")
             property int widthIndex: limits.dayPickerWidthIndex()
             width: limits.dayPickerWidth(widthIndex)
             live: datePicker.live
@@ -250,16 +321,41 @@ Rectangle {
     onMaximumYearChanged: internals.updateYearModel()
     /*! \internal */
     onWidthChanged: {
-        // clamp to 3 times the minimum Picker width
-        width = Math.max(width, (2 + (showDays == true)) * internals.minimumWidth);
+        // clamp to 3 (or 2) times the minimum Picker width
+        width = Math.max(width, (2 + ((mode !== "Date") ? 1 : 0)) * internals.minimumWidth);
     }
+    /*! \internal */
+    onModeChanged: internals.updateModels();
 
-    Component.onCompleted: internals.updateModels();
+    Component.onCompleted: {
+        internals.completed = true;
+        internals.updateModels();
+        limits.reset();
+    }
 
     // component to calculate text fitting
     Label { id: textSizer; visible: false }
     ListModel {
         id: limits
+
+        function reset() {
+            textSizer.text = "9999"
+            internals.minimumWidth = textSizer.paintedWidth + internals.margins;
+
+            limits.clear();
+            // greater then
+            if (datePicker.mode !== "Week") {
+                limits.addElement("99 Wednesday", "long", "99 September", "long");
+                limits.addElement("99 Wed", "short", "99 September", "long");
+                limits.addElement("99 Wed", "short", "September", "short");
+                limits.addElement("99", "narrow", "September", "short");
+                limits.addElement("99", "narrow", "Sep", "narrow");
+            } else {
+                limits.addElement("", "", "W99 September 99 - October 9", "long");
+                limits.addElement("", "", "W99 Sep 99 - Oct 9", "short");
+                limits.addElement("", "", "W99 Sep 99", "narrow");
+            }
+        }
 
         function addElement(dayText, dayFormat, monthText, monthFormat) {
             textSizer.text = dayText;
@@ -327,28 +423,38 @@ Rectangle {
         }
         onMonthIndexChanged: {
             if (!completed) return;
-            datePicker.date = DateUtils.updateMonth(datePicker.date, monthPicker.selectedIndex)
-            updateDayModel();
+            if (datePicker.mode === "Week") {
+                // update date to the first day of the week
+                var newDate = DateUtils.midDateOfWeek(datePicker.date.getFullYear(), monthPicker.selectedIndex + 1);
+                if (fromYear > newDate.getFullYear()) {
+                    yearPicker.model.insert(0, {"year": newDate.getFullYear()});
+                    // move the year to the previous one
+                    yearPicker.selectedIndex--;
+                }
+
+                datePicker.date = newDate;
+            } else {
+                datePicker.date = DateUtils.updateMonth(datePicker.date, monthPicker.selectedIndex)
+                updateDayModel();
+            }
         }
         onDayIndexChanged: {
-            if (!completed) return;
+            if (!completed || !dayPicker.visible) return;
             datePicker.date = DateUtils.updateDay(datePicker.date, dayPicker.selectedIndex + 1);
         }
 
         function updateModels() {
+            print(1 + datePicker.mode)
+            if (!completed) return;
+            // turn off completion for awhile
+            completed = false;
+            yearPicker.model.clear();
+            monthPicker.model.clear();
+            dayPicker.model.clear();
+
             updateYearModel();
-            monthPicker.selectedIndex = month;
+            updateMidPicker();
             updateDayModel();
-
-            textSizer.text = "9999"
-            minimumWidth = textSizer.paintedWidth + margins;
-
-            // greater then
-            limits.addElement("99 Wednesday", "long", "99 September", "long");
-            limits.addElement("99 Wed", "short", "99 September", "long");
-            limits.addElement("99 Wed", "short", "September", "short");
-            limits.addElement("99", "narrow", "September", "short");
-            limits.addElement("99", "narrow", "Sep", "narrow");
 
             completed = true;
         }
@@ -367,9 +473,7 @@ Rectangle {
             fromYear = (minimumYear <= 0) ? datePicker.date.getFullYear() : minimumYear;
             toYear = (maximumYear < minimumYear) ? 0 : maximumYear;
 
-            if (yearPicker.model.count > 0) {
-                yearPicker.model.clear();
-            }
+            yearPicker.model.clear();
             var max = (toYear >= fromYear) ? toYear : fromYear + 50;
             // check if the year from date is between min..max
             if ((year < fromYear) && (year > max)) {
@@ -379,7 +483,22 @@ Rectangle {
             yearPicker.selectedIndex = year - fromYear;
         }
 
+        function updateMidPicker() {
+            if (datePicker.mode === "Week") {
+                for (var i = 0; i < 52; i++) {
+                    monthPicker.model.append({"week": i});
+                }
+                monthPicker.selectedIndex = (DateUtils.weekNumber(datePicker.date) - 1);
+            } else {
+                for (var i = 0; i < 12; i++) {
+                    monthPicker.model.append({"month": i});
+                }
+                monthPicker.selectedIndex = month;
+            }
+        }
+
         function updateDayModel() {
+            if (!dayPicker.visible) return;
             if (!completed) {
                 dayPicker.model.clear();
                 for (var i = 0; i < DateUtils.daysInMonth(year, month); i++) {

@@ -175,16 +175,23 @@ Template {
         documentation: "qml-ubuntu-components-pickers0-datepicker.html"
         TemplateRow {
             title: "Normal"
-            DatePicker {
-                id: datePicker
+            Column {
+                DatePicker {
+                    id: datePicker
+//                    mode: "Week"
+                    onYearChanged: print("picked year= " + year)
+                    onMonthChanged: print("picked month= " + month)
+                    onDayChanged: print("picked day= " + day)
+                    onWeekChanged: print("picked week= " + week)
+                }
+                Slider {
+                    minimumValue: 0
+                    maximumValue: units.gu(40);
+                    value: datePicker.width
+                    live: true
+                    onValueChanged: datePicker.width = value
+                }
             }
-        }
-        Slider {
-            minimumValue: 0
-            maximumValue: units.gu(40);
-            value: datePicker.width
-            live: true
-            onValueChanged: datePicker.width = value
         }
     }
 }
