@@ -86,14 +86,14 @@ UCUriHandler::UCUriHandler()
 }
 
 /*!
- * \qmlproperty string UCUriHandler::objectPath
+ * \qmlproperty string UriHandler::objectPath
  *
  * This property corresponds to the D-Bus object path used by the UriHandler once initialized
  * successfully.
  */
 
 /*!
- * \qmlsignal UCUriHandler::onOpened(string[] uris)
+ * \qmlsignal UriHandler::onOpened(list<string> uris)
  *
  * The signal is triggered when URIs are opened.
  */
