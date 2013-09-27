@@ -31,23 +31,8 @@ Item {
     }
 
     Text {
-        id: path
-        width: parent.width
-        height: parent.height / 2.0
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 20
-        font.bold: true
-        font.family: "Ubuntu"
-        color: "white"
-        text: "Object path: \"" + UriHandler.objectPath + "\""
-    }
-
-    Text {
         id: uri
-        y: parent.height / 2.0
-        width: parent.width
-        height: parent.height / 2.0
+        anchors.fill: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 20

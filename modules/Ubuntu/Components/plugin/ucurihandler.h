@@ -38,17 +38,13 @@ class UriHandlerObject : public QObject
 class UCUriHandler : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString objectPath READ objectPath NOTIFY objectPathChanged)
 
  public:
     UCUriHandler();
-    QString objectPath() const { return m_objectPath; }
 
  Q_SIGNALS:
     void opened(const QStringList& uris);
-    void objectPathChanged();
 
  private:
     UriHandlerObject m_uriHandlerObject;
-    QString m_objectPath;
 };

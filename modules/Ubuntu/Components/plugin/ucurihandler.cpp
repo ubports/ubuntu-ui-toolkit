@@ -56,6 +56,8 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
 UCUriHandler::UCUriHandler()
     : m_uriHandlerObject(this)
 {
+    QString objectPath;
+
     if (!QDBusConnection::sessionBus().isConnected()) {
         qWarning() << "UCUriHandler: D-Bus session bus is not connected, ignoring.";
         return;
@@ -68,9 +70,8 @@ UCUriHandler::UCUriHandler()
         return;
     }
     char* path = nih_dbus_path(NULL, "", applicationId.constData(), NULL);
-    m_objectPath = QString(path);
+    objectPath = QString(path);
     nih_free(path);
-    Q_EMIT objectPathChanged();
 
     // Ensure handler is running on the main thread.
     QCoreApplication* instance = QCoreApplication::instance();
@@ -81,16 +82,9 @@ UCUriHandler::UCUriHandler()
     }
 
     QDBusConnection::sessionBus().registerObject(
-        m_objectPath, &m_uriHandlerObject, QDBusConnection::ExportAllSlots);
+        objectPath, &m_uriHandlerObject, QDBusConnection::ExportAllSlots);
     QDBusConnection::sessionBus().registerService("org.freedesktop.Application");
 }
-
-/*!
- * \qmlproperty string UriHandler::objectPath
- *
- * This property corresponds to the D-Bus object path used by the UriHandler once initialized
- * successfully.
- */
 
 /*!
  * \qmlsignal UriHandler::onOpened(list<string> uris)
