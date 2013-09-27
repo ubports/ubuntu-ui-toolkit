@@ -283,8 +283,9 @@ class ButtonsTestCase(GalleryTestCase):
 
     def test_all_pages_load(self):
         # TODO: Iterate items in widgetList
-        for item in ['Navigation', 'Slider', 'Option Selector', 'Pickers', 'Icons']:
+        for item in ['Navigation', 'Slider', 'Pickers', 'Icons']:
             self.loadItem(item)
             self.checkPageHeader(item)
-            assert len(self.app.select_many('Template')) > 0, ('%s can be loaded in gallery' % item)
+            assert len(self.app.select_many('Template')) > 0, \
+                ('%s can be loaded in gallery' % item)
 
