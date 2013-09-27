@@ -20,10 +20,8 @@
 
 #include "ucurihandler.h"
 #include <QtDBus/QtDBus>
-// FIXME(loicm) Including <libnih-dbus.h> generates C++ compilation errors.
 #include <libnih.h>
 #include <libnih-dbus.h>
-//#include <nih-dbus/dbus_util.h>
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
     : m_uriHandler(uriHandler)
