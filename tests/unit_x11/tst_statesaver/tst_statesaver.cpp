@@ -70,7 +70,7 @@ private Q_SLOTS:
 
     void cleanupTestCase()
     {
-        StateSaverBackend::instance().reset();
+//        StateSaverBackend::instance().reset();
     }
 
     void test_SaveArrays()
@@ -347,6 +347,59 @@ private Q_SLOTS:
         delete view;
     }
 
+    void test_ComponentsWithStateSavers()
+    {
+        QQuickView *view = createView("ComponentsWithStateSavers.qml");
+        QVERIFY(view);
+        QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        QObject *control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled());
+        UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+
+        QVERIFY(control1->setProperty("color", QColor("green")));
+        QVERIFY(control2->setProperty("color", QColor("blue")));
+        delete view;
+
+        view = createView("ComponentsWithStateSavers.qml");
+        control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled());
+        stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+        QVERIFY(view);
+
+        QCOMPARE(control1->property("color"), QVariant(QColor("green")));
+        QCOMPARE(control2->property("color"), QVariant(QColor("blue")));
+        delete view;
+    }
+
+    void test_ComponentsWithStateSaversNoId()
+    {
+        QQuickView *view = createView("ComponentsWithStateSaversNoId.qml");
+        QVERIFY(view);
+        QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        QObject *control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled() == false);
+        UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+        delete view;
+    }
 };
 
 QTEST_MAIN(tst_StateSaverTest)
