@@ -70,7 +70,7 @@ private Q_SLOTS:
 
     void cleanupTestCase()
     {
-//        StateSaverBackend::instance().reset();
+        StateSaverBackend::instance().reset();
     }
 
     void test_SaveArrays()
