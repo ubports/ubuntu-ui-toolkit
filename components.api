@@ -401,6 +401,7 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
+    property bool confirmRemoval
     readonly property string swipingState
     signal itemRemoved
     property int __height
