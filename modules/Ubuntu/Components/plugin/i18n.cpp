@@ -17,6 +17,7 @@
  */
 
 #include "i18n.h"
+#include <QtCore/QStandardPaths>
 
 namespace C {
 #include <libintl.h>
@@ -91,6 +92,14 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
 void UbuntuI18n::setDomain(QString domain) {
     m_domain = domain;
     C::textdomain(domain.toUtf8().constData());
+    /*
+     Look for locale folder as per XDG basedir spec
+     The default is /usr/share/locale if we don't set a folder
+     */
+    QString localePath (QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+        "locale", QStandardPaths::LocateDirectory));
+    if (!localePath.isEmpty())
+        C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
     Q_EMIT domainChanged();
 }
 
