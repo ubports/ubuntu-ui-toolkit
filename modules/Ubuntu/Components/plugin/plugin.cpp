@@ -32,7 +32,6 @@
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
 #include "quickutils.h"
-#include "giconprovider.h"
 #include "shapeitem.h"
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
@@ -209,8 +208,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
-    // register icon providers
-    engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
+    // register icon provider
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
