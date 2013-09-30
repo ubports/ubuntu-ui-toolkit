@@ -47,6 +47,7 @@
 #include "ucalarmmodel.h"
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
+#include "ucurihandler.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -73,6 +74,14 @@ static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptE
     return animation;
 }
 
+static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    UCUriHandler *uriHandler = new UCUriHandler();
+    return uriHandler;
+}
 
 QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
 {
@@ -149,6 +158,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
     qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
+    qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -1,6 +1,6 @@
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0
+    PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
 TEMPLATE = lib
@@ -54,7 +54,8 @@ HEADERS += plugin.h \
     adapters/alarmsadapter_p.h \
     ucstatesaver.h \
     statesaverbackend_p.h \
-    ucstatesaver_p.h
+    ucstatesaver_p.h \
+    ucurihandler.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -82,7 +83,8 @@ SOURCES += plugin.cpp \
     unitythemeiconprovider.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
-    statesaverbackend_p.cpp
+    statesaverbackend_p.cpp \
+    ucurihandler.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
