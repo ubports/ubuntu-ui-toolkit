@@ -14,10 +14,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
+
+logger = logging.getLogger(__name__)
 
 
 class ToolkitEmulatorException(Exception):
@@ -111,7 +115,9 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The newly opened tab.
 
         """
+        logger.debug('Switch to next tab.')
         self.get_header().switch_to_next_tab()
+        import pdb; pdb.set_trace()
         current_tab = self.get_tabs().get_current_tab()
         current_tab.visible.wait_for(True)
         return current_tab
@@ -123,6 +129,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The newly opened tab.
 
         """
+        logger.debug('Switch to tab with index {0}.'.format(index))
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
@@ -130,6 +137,8 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
+            logger.debug(
+                'Current tab index: {0}.'.format(tabs.selectedTabIndex))
             if number_of_switches >= number_of_tabs - 1:
                 # This prevents a loop. But if this error is ever raised, it's
                 # likely there's a bug on the emulator or on the QML Tab.
@@ -234,16 +243,19 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
     def switch_to_next_tab(self):
         """Open the next tab."""
         # Click the tab bar to switch to selection mode.
+        logger.debug('Click the tab bar to enable selection mode.')
         self.pointing_device.click_object(self)
         if not self.selectionMode:
+            logger.debug('Selection mode not enabled, try again.')
             # in case someone stole the click, like the open toolbar
             self.pointing_device.click_object(self)
+        logger.debug('Click the next tab bar button.')
         self.pointing_device.click_object(self._get_next_tab_button())
 
     def _get_next_tab_button(self):
         current_index = self._get_selected_button_index()
         next_index = (current_index + 1) % self._get_number_of_tab_buttons()
-        return self._get_tab_buttons()[next_index]
+        return self._get_tab_button(next_index)
 
     def _get_selected_button_index(self):
         return self.select_single('QQuickPathView').selectedButtonIndex
@@ -253,6 +265,15 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def _get_tab_buttons(self):
         return self.select_many('AbstractButton')
+
+    def _get_tab_button(self, index):
+        buttons = self._get_tab_buttons()
+        for button in buttons:
+            if button.buttonIndex == index:
+                return button
+        else:
+            raise ToolkitEmulatorException(
+                'No tab button with index {0}.'.format(index))
 
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
