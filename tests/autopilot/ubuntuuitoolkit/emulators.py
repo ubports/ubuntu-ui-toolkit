@@ -230,6 +230,9 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
 
     def get_current_tab(self):
         """Return the currently selected tab."""
+        # TODO now we can't rely on the order of the Tabs on the QML tree.
+        # But we have no way to know the index of the tabs.
+        # http://pad.lv/1233402 --elopio - 2013-09-30
         return self.select_many('Tab')[self.selectedTabIndex]
 
     def get_number_of_tabs(self):
