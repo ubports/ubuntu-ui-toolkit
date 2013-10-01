@@ -19,11 +19,12 @@
 #include "thumbnailgenerator.h"
 #include <stdexcept>
 
-ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Pixmap) {
+ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Image,
+        QQmlImageProviderBase::ForceAsynchronousImageLoading) {
 
 }
 
-QPixmap ThumbnailGenerator::requestPixmap(const QString &id, QSize *realSize,
+QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
         const QSize &/*requestedSize*/) {
     std::string src_path(id.toUtf8().data());
     std::string tgt_path;
@@ -31,7 +32,7 @@ QPixmap ThumbnailGenerator::requestPixmap(const QString &id, QSize *realSize,
         tgt_path = tn.get_thumbnail(src_path, TN_SIZE_SMALL);
         if(!tgt_path.empty()) {
             QString tgt(tgt_path.c_str());
-            QPixmap image;
+            QImage image;
             image.load(tgt);
             *realSize = image.size();
             return image;
@@ -41,5 +42,5 @@ QPixmap ThumbnailGenerator::requestPixmap(const QString &id, QSize *realSize,
         // so just return default image
     }
     *realSize = QSize(0, 0);
-    return QPixmap();
+    return QImage();
 }
