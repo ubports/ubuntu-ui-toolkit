@@ -243,7 +243,9 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def tap_clearButton(self, objectName):
         textField = self.getObject(objectName)
-        self.assertThat(textField.hasClearButton, Equals(True))
+        self.assertIsNotNone(textField)
+        self.pointing_device.click_object(textField)
+        self.assertThat(textField.hasClearButton, Eventually(Equals(True)))
         btn = textField.select_single("AbstractButton")
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+        self.assertIsNotNone(btn)
+        self.pointing_device.click_object(btn)

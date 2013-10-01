@@ -188,6 +188,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
         new ContextPropertyChangeListener(context, "UbuntuApplication");
     QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
                      applicationChangeListener, SLOT(updateContextProperty()));
+    // Give the application object access to the engine
+    UCApplication::instance().setContext(context);
 
     context->setContextProperty("units", &UCUnits::instance());
     ContextPropertyChangeListener *unitsChangeListener =
