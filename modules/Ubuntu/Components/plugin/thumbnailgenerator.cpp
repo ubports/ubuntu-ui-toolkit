@@ -25,11 +25,16 @@ ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvid
 }
 
 QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
-        const QSize &/*requestedSize*/) {
+        const QSize &requestedSize) {
     std::string src_path(id.toUtf8().data());
     std::string tgt_path;
     try {
-        tgt_path = tn.get_thumbnail(src_path, TN_SIZE_SMALL);
+        ThumbnailSize desiredSize = TN_SIZE_SMALL;
+        const int cutoff = 256;
+        if(requestedSize.width() >= cutoff || requestedSize.height() >= cutoff) {
+            desiredSize = TN_SIZE_LARGE;
+        }
+        tgt_path = tn.get_thumbnail(src_path, desiredSize);
         if(!tgt_path.empty()) {
             QString tgt(tgt_path.c_str());
             QImage image;
