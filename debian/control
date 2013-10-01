@@ -21,10 +21,14 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-test-plugin,
                qtdeclarative5-window-plugin,
                qtdeclarative5-unity-action-plugin,
+               qtdeclarative5-localstorage-plugin,
                devscripts,
                libqt5organizer5,
                qtpim5-dev,
                libthumbnailer-dev,
+               libdbus-1-dev,
+               libnih-dbus-dev,
+>>>>>>> MERGE-SOURCE
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 

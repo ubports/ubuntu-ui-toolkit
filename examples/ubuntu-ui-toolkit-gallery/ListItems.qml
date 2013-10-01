@@ -142,6 +142,7 @@ Template {
         delegate: ListItem.Standard {
             text: i18n.tr("Slide to remove")
             removable: true
+            confirmRemoval: (index % 2)
             backgroundIndicator: Rectangle {
                 anchors.fill: parent
                 color: Theme.palette.normal.base
