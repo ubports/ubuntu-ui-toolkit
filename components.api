@@ -197,6 +197,8 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
+    readonly property int index
+    property internal __protected
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
@@ -401,6 +403,7 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
+    property bool confirmRemoval
     readonly property string swipingState
     signal itemRemoved
     property int __height

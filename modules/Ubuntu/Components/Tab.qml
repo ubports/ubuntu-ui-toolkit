@@ -49,6 +49,13 @@ PageTreeNode {
     property Item page: null
 
     /*!
+      \qmlproperty int index
+      \readonly
+      The property holds the index of the tab within the Tabs.
+      */
+    readonly property alias index: internal.index
+
+    /*!
       When page is updated, set its parent to be tab.
      */
     onPageChanged: if (page) page.parent = tab
@@ -72,5 +79,14 @@ PageTreeNode {
                 parentNode.modelChanged();
             }
         }
+    }
+
+    /*!
+      \internal
+      */
+    property alias __protected: internal
+    QtObject {
+        id: internal
+        property int index: -1
     }
 }
