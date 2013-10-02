@@ -117,7 +117,6 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         """
         logger.debug('Switch to next tab.')
         self.get_header().switch_to_next_tab()
-        import pdb; pdb.set_trace()
         current_tab = self.get_tabs().get_current_tab()
         current_tab.visible.wait_for(True)
         return current_tab
