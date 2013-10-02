@@ -20,6 +20,9 @@
 
 #include <QtCore/QCoreApplication>
 #include <QDebug>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtCore/QStandardPaths>
 
 /*!
  * \qmltype UbuntuApplication
@@ -30,8 +33,12 @@
  *
  * UbuntuApplication is a context property in QML.
  */
-UCApplication::UCApplication(QObject* parent) : QObject(parent)
+UCApplication::UCApplication(QObject* parent) : QObject(parent), m_context(0)
 {
+}
+
+void UCApplication::setContext(QQmlContext* context) {
+    m_context = context;
 }
 
 /*!
@@ -52,6 +59,14 @@ void UCApplication::setApplicationName(QString applicationName) {
     QCoreApplication::setApplicationName(applicationName);
     // Unset organization to skip an extra folder component
     QCoreApplication::setOrganizationName("");
+    /*
+       Ensure that LocalStorage and WebKit use the same location
+       Docs are ambiguous: in practise applicationName is ignored by default
+     */
+    QQmlEngine* engine(m_context->engine());
+    QString dataFolder(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    engine->setOfflineStoragePath(dataFolder);
+
     Q_EMIT applicationNameChanged();
 }
 

@@ -150,6 +150,49 @@ class GenericTests(GalleryTestCase):
 
             # TODO: move slider value
 
+    def test_textfield_standard(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        textfield_standard = self.getObject('textfield_standard')
+        self.pointing_device.click_object(textfield_standard)
+        self.assertThat(textfield_standard.focus, Eventually(Equals(True)))
+        self.type_string(u'Hello World')
+        self.assertThat(textfield_standard.text,
+                        Eventually(Equals(u'Hello World')))
+
+    def test_textfield_password(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        textfield_password = self.getObject('textfield_password')
+        self.pointing_device.click_object(textfield_password)
+        self.assertThat(textfield_password.text, Equals('password'))
+
+        self.tap_clearButton('textfield_password')
+        self.assertThat(textfield_password.text, Eventually(Equals('')))
+
+        self.type_string(u'abcdefgh123')
+        self.assertThat(textfield_password.text,
+                        Eventually(Equals(u'abcdefgh123')))
+
+    def test_textfield_numbers(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        textfield_numbers = self.getObject('textfield_numbers')
+        self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
+
+    def test_textfield_disabled(self):
+        item = "Text Field"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        textfield_disabled = self.getObject('textfield_disabled')
+        self.assertFalse(textfield_disabled.enabled)
+        #try tapping a disabled field and verify that focus is false.
+        self.pointing_device.click_object(textfield_disabled)
+        self.assertFalse(textfield_disabled.focus)
+
 #     def test_textarea(self):
 #         item = "Text Field"
 #         self.loadItem(item)

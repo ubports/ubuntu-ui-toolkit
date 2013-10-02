@@ -281,7 +281,7 @@ StyledItem
     property var popover
     function openPopover()
 modules/Ubuntu/Components/TextField.qml
-StyledItem
+ActionItem
     property bool highlighted
     property string placeholderText
     property bool hasClearButton
@@ -401,6 +401,7 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
+    property bool confirmRemoval
     readonly property string swipingState
     signal itemRemoved
     property int __height
@@ -735,6 +736,12 @@ plugins.qmltypes
     Method {
     name: "gu"
     Parameter { name: "value"; type: "float" }
+    name: "UCUriHandler"
+    prototype: "QObject"
+    exports: ["UriHandler 0.1"]
+    Signal {
+    name: "opened"
+    Parameter { name: "uris"; type: "QStringList" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1"]

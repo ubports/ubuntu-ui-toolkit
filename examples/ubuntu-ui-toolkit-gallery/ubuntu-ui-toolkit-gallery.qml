@@ -106,8 +106,8 @@ MainView {
             visible: false
             property alias source: contentLoader.source
             onActiveChanged: if (!active) source = ""
-
-            tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : null
+            ToolbarItems{ id: defTools}
+            tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : defTools
             flickable: contentLoader.item && !wideAspect ? contentLoader.item.flickable : null
 
             Loader {
