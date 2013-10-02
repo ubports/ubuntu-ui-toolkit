@@ -9,6 +9,7 @@ UNRELEASED
 
 API Changes
 ***********
+* ADDED IN: ListItem.Empty: property bool confirmRemoval
 * ADDED IN: OptionSelectorDelegate: property bool constrainImage
 * ADDED IN: Empty: property alias divider
 * ADDED IN: ListItems/OptionSelector: signal delegateSelected()
