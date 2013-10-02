@@ -29,10 +29,15 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
     std::string src_path(id.toUtf8().data());
     std::string tgt_path;
     try {
-        ThumbnailSize desiredSize = TN_SIZE_SMALL;
-        const int cutoff = 256;
-        if(requestedSize.width() >= cutoff || requestedSize.height() >= cutoff) {
+        ThumbnailSize desiredSize;
+        const int large_cutoff = 256;
+        const int small_cutoff = 128;
+        if(requestedSize.width() > large_cutoff || requestedSize.height() > large_cutoff) {
+            desiredSize = TN_SIZE_ORIGINAL;
+        } else if(requestedSize.width() > small_cutoff || requestedSize.height() > small_cutoff) {
             desiredSize = TN_SIZE_LARGE;
+        } else {
+            desiredSize = TN_SIZE_SMALL;
         }
         tgt_path = tn.get_thumbnail(src_path, desiredSize);
         if(!tgt_path.empty()) {
