@@ -170,7 +170,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         tabs = self.get_tabs()
         for index, tab in enumerate(tabs.select_many('Tab')):
             if tab.objectName == object_name:
-                return self.switch_to_tab_by_index(index)
+                return self.switch_to_tab_by_index(tab.index)
         raise ValueError(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
@@ -229,14 +229,23 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
 
     def get_current_tab(self):
         """Return the currently selected tab."""
-        # TODO now we can't rely on the order of the Tabs on the QML tree.
-        # But we have no way to know the index of the tabs.
-        # http://pad.lv/1233402 --elopio - 2013-09-30
-        return self.select_many('Tab')[self.selectedTabIndex]
+        return self._get_tab(self.selectedTabIndex)
+
+    def _get_tab(self, index):
+        tabs = self._get_tabs()
+        for tab in tabs:
+            if tab.index == index:
+                return tab
+        else:
+            raise ToolkitEmulatorException(
+                'There is no tab with index {0}.'.format(index))
+
+    def _get_tabs(self):
+        return self.select_many('Tab')
 
     def get_number_of_tabs(self):
         """Return the number of tabs."""
-        return len(self.select_many('Tab'))
+        return len(self._get_tabs())
 
 
 class TabBar(UbuntuUIToolkitEmulatorBase):
@@ -275,7 +284,7 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
                 return button
         else:
             raise ToolkitEmulatorException(
-                'No tab button with index {0}.'.format(index))
+                'There is no tab button with index {0}.'.format(index))
 
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
