@@ -39,6 +39,10 @@ TestCase {
          compare(tab.title,newTitle,"can set/get")
      }
 
+     function test_index() {
+         compare(tab.index, -1, "is -1 by default")
+     }
+
      Tab {
          id: tab
      }
