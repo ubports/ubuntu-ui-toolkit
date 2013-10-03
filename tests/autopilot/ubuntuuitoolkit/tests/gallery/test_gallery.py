@@ -282,11 +282,13 @@ class GenericTests(GalleryTestCase):
         page = self.main_view.select_single('Page', objectName='contentPage')
         self.assertIsNotNone(page)
         custommodel = self.getObject("optionselector_custommodel")
+        flickable = self.main_view.select_single('QQuickFlickable')
+        self.assertIsNotNone(flickable)
+        #Flick upward to reveal the hidden ui element.
         self.scrollPageVertically(page, 'UP')
-        import pdb; pdb.set_trace()
-        time.sleep(1.0)
-        self.assertThat(custommodel.selectedIndex, Equals(0))
+        self.assertThat(flickable.flicking, Eventually(Equals(False)))
 
+        self.assertThat(custommodel.selectedIndex, Equals(0))
         selectedValue = custommodel.select_single('Label', text='Name 4')
         self.assertIsNotNone(selectedValue)
         self.pointing_device.click_object(selectedValue)
