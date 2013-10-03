@@ -279,8 +279,12 @@ class GenericTests(GalleryTestCase):
         item = "Option Selector"
         self.loadItem(item)
         self.checkPageHeader(item)
-
+        page = self.main_view.select_single('Page', objectName='contentPage')
+        self.assertIsNotNone(page)
         custommodel = self.getObject("optionselector_custommodel")
+        self.scrollPageVertically(page, 'UP')
+        import pdb; pdb.set_trace()
+        time.sleep(1.0)
         self.assertThat(custommodel.selectedIndex, Equals(0))
 
         selectedValue = custommodel.select_single('Label', text='Name 4')

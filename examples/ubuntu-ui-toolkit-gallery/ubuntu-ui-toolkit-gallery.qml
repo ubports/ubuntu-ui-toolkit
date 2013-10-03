@@ -103,6 +103,7 @@ MainView {
 
         Page {
             id: contentPage
+            objectName: "contentPage"
             visible: false
             property alias source: contentLoader.source
             onActiveChanged: if (!active) source = ""

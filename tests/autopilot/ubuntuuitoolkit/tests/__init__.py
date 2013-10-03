@@ -187,6 +187,15 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
+    def scrollPageVertically(self, page, direction, delta=20):
+        x, y, w, h = page.globalRect
+        if direction == 'UP':
+            self.pointing_device.drag(x+w/2, y+delta, x+w/2, y)
+        elif direction == 'DOWN':
+            self.pointing_device.drag(x+w/2, y-delta, x+w/2, y)
+        else:
+            print('invalid direction')
+
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         x1, y1, w1, h1 = item.globalRect
