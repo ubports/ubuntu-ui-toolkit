@@ -18,6 +18,7 @@
 
 import os
 import shutil
+import time
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
@@ -233,6 +234,64 @@ class GenericTests(GalleryTestCase):
             # self.type_string("Hello World!")
 
             # self.assertThat(obj.text,Equals("Hello World!"))
+
+    def test_optionselector_collapsed(self):
+        item = "Option Selector"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        collapsed = self.getObject("optionselector_collapsed")
+
+        self.assertThat(collapsed.selectedIndex, Equals(0))
+        self.pointing_device.click_object(collapsed)
+        self.assertThat(collapsed.expanded, Eventually(Equals(False)))
+        selectedValue = collapsed.select_single('Label', text='Value 4')
+        self.assertIsNotNone(selectedValue)
+        self.pointing_device.click_object(selectedValue)
+        self.assertThat(collapsed.selectedIndex, Eventually(Equals(3)))
+        #sleep is a bad idea, actively looking other way to avoid it?
+        time.sleep(2.0)
+        self.pointing_device.click_object(collapsed)
+        selectedValue = collapsed.select_single('Label', text='Value 1')
+        self.assertIsNotNone(selectedValue)
+        time.sleep(2.0)
+        self.pointing_device.click_object(selectedValue)
+        time.sleep(2.0)
+        self.assertThat(collapsed.selectedIndex, Eventually(Equals(0)))
+
+    def test_optionselector_expanded(self):
+        item = "Option Selector"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+        expanded = self.getObject("optionselector_expanded")
+        self.assertThat(expanded.selectedIndex, Equals(0))
+
+        selectedValue = expanded.select_single('Label', text='Value 4')
+        self.assertIsNotNone(selectedValue)
+        self.pointing_device.click_object(selectedValue)
+        self.assertThat(expanded.selectedIndex, Eventually(Equals(3)))
+
+        selectedValue = expanded.select_single('Label', text='Value 1')
+        self.assertIsNotNone(selectedValue)
+        self.pointing_device.click_object(selectedValue)
+        self.assertThat(expanded.selectedIndex, Eventually(Equals(0)))
+
+    def test_optionselector_custommodel(self):
+        item = "Option Selector"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+
+        custommodel = self.getObject("optionselector_custommodel")
+        self.assertThat(custommodel.selectedIndex, Equals(0))
+
+        selectedValue = custommodel.select_single('Label', text='Name 4')
+        self.assertIsNotNone(selectedValue)
+        self.pointing_device.click_object(selectedValue)
+        self.assertThat(custommodel.selectedIndex, Eventually(Equals(3)))
+
+        selectedValue = custommodel.select_single('Label', text='Name 1')
+        self.assertIsNotNone(selectedValue)
+        self.pointing_device.click_object(selectedValue)
+        self.assertThat(custommodel.selectedIndex, Eventually(Equals(0)))
 
     def test_progress_and_activity(self):
         item = "Progress and activity"

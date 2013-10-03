@@ -215,6 +215,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         orientationHelper = self.getOrientationHelper()
         header = orientationHelper.select_many("Header", title=pageTitle)[0]
         self.assertThat(header, Not(Is(None)))
+        self.assertThat(header.visible, Eventually(Equals(True)))
         return header
 
     def getObject(self, objectName):
