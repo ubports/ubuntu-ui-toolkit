@@ -115,6 +115,15 @@ ListItem.Empty {
      */
     signal delegateClicked(int index)
 
+    /*!
+      \internal
+      Trigger the action, passing the current index.
+     */
+    onDelegateClicked: {
+        if (action)
+            action.triggered(index)
+    }
+
     showDivider: false
 
     Column {
