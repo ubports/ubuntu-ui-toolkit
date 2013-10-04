@@ -299,6 +299,11 @@ class GenericTests(GalleryTestCase):
         self.pointing_device.click_object(selectedValue)
         self.assertThat(custommodel.selectedIndex, Eventually(Equals(0)))
 
+        #scroll the page downward now.
+        collapsed = self.getObject("optionselector_collapsed")
+        self.revealItemThroughFlick(collapsed, flickable, FlickDirection.DOWN)
+        self.assertThat(flickable.flicking, Eventually(Equals(False)))
+
     def test_progress_and_activity(self):
         item = "Progress and activity"
         self.loadItem(item)

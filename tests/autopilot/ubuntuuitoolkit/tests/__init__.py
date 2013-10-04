@@ -193,20 +193,26 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     def revealItemThroughFlick(self, item, flickable, direction):
         x1, y1, w1, h1 = item.globalRect
         x2, y2, w2, h2 = flickable.globalRect
-        while y1+h1 > y2+h2:
-            x1, y1, w1, h1 = item.globalRect
-            self.flickPage(flickable, direction)
+        if direction is FlickDirection.UP:
+            while y1+h1 > y2+h2:
+                self.flickPage(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+        elif direction is FlickDirection.DOWN:
+            while y1 < y2:
+                self.flickPage(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
 
-
-    def flickPage(self, flickable, direction, delta=20):
+    def flickPage(self, flickable, direction, delta=40):
         """This funcito flicks the page from middle to the given direction."""
         x, y, w, h = flickable.globalRect
         if direction == FlickDirection.UP:
             self.pointing_device.drag(x+w/2, y+h/2, x+w/2, y+h/2-delta)
+            flickable.flicking.wait_for(False)
         elif direction == FlickDirection.DOWN:
             self.pointing_device.drag(x+w/2, y+h/2, x+w/2, y+h/2+delta)
+            flickable.flicking.wait_for(False)
         else:
-            print('invalid direction')
+            raise ValueError("Invalid direction or not implementd yet")
 
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
