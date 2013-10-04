@@ -18,13 +18,13 @@
 
 import os
 import shutil
-import time
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
 from ubuntuuitoolkit import tests
 from ubuntuuitoolkit.tests import FlickDirection
+
 
 class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
@@ -241,10 +241,9 @@ class GenericTests(GalleryTestCase):
         self.checkPageHeader(item)
         collapsed = self.getObject("optionselector_collapsed")
         styleditem = collapsed.select_single('StyledItem',
-                     objectName='listContainer')
+                                             objectName='listContainer')
 
         self.assertThat(collapsed.selectedIndex, Equals(0))
-
         self.pointing_device.click_object(collapsed)
         self.assertThat(styleditem.isExpanded, Eventually(Equals(True)))
         selectedValue = collapsed.select_single('Label', text='Value 4')
@@ -258,8 +257,8 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         expanded = self.getObject("optionselector_expanded")
-        self.assertThat(expanded.selectedIndex, Equals(0))
 
+        self.assertThat(expanded.selectedIndex, Equals(0))
         selectedValue = expanded.select_single('Label', text='Value 4')
         self.assertIsNotNone(selectedValue)
         self.pointing_device.click_object(selectedValue)
@@ -274,13 +273,13 @@ class GenericTests(GalleryTestCase):
         item = "Option Selector"
         self.loadItem(item)
         self.checkPageHeader(item)
-        page = self.main_view.select_single('Page', objectName='contentPage')
-        self.assertIsNotNone(page)
+
         custommodel = self.getObject("optionselector_custommodel")
         flickable = self.main_view.select_single('QQuickFlickable')
         self.assertIsNotNone(flickable)
+
         #Flick upward to reveal the hidden ui element.
-        self.revealItemThroughFlick(custommodel, flickable, FlickDirection.UP)
+        self.reveal_item_by_flick(custommodel, flickable, FlickDirection.UP)
         self.assertThat(flickable.flicking, Eventually(Equals(False)))
 
         self.assertThat(custommodel.selectedIndex, Equals(0))
@@ -296,7 +295,7 @@ class GenericTests(GalleryTestCase):
 
         #scroll the page downward now.
         collapsed = self.getObject("optionselector_collapsed")
-        self.revealItemThroughFlick(collapsed, flickable, FlickDirection.DOWN)
+        self.reveal_item_by_flick(collapsed, flickable, FlickDirection.DOWN)
         self.assertThat(flickable.flicking, Eventually(Equals(False)))
 
     def test_progress_and_activity(self):
