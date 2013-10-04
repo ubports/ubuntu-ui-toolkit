@@ -35,7 +35,8 @@ static const char* DBUS_SERVICE = "com.canonical.Shell.BottomBarVisibilityCommun
 
 BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
  : m_shellDbusIface(NULL),
-   m_forceHidden(false)
+   m_forceHidden(false),
+   m_position(0)
 {
     m_shellDbusIface = new QDBusInterface(DBUS_SERVICE, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE, QDBusConnection::sessionBus(), this);
     if (m_shellDbusIface->isValid()) {
@@ -49,6 +50,20 @@ BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
 bool BottomBarVisibilityCommunicator::forceHidden() const
 {
     return m_forceHidden;
+}
+
+double BottomBarVisibilityCommunicator::position() const
+{
+    return m_position;
+}
+
+void BottomBarVisibilityCommunicator::setPosition(double position)
+{
+    if (position != m_position) {
+        m_position = position;
+        m_shellDbusIface->setProperty("position", position);
+        Q_EMIT positionChanged(position);
+    }
 }
 
 void BottomBarVisibilityCommunicator::onShellForceHiddenChanged(bool forceHidden)

@@ -26,6 +26,7 @@ class BottomBarVisibilityCommunicator : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool forceHidden READ forceHidden NOTIFY forceHiddenChanged)
+    Q_PROPERTY(double position READ position WRITE setPosition NOTIFY positionChanged)
 
 public:
     static BottomBarVisibilityCommunicator& instance() {
@@ -34,9 +35,12 @@ public:
     }
 
     bool forceHidden() const;
+    double position() const;
+    void setPosition(double position);
 
 Q_SIGNALS:
     void forceHiddenChanged(bool forceHidden);
+    void positionChanged(double position);
 
 private Q_SLOTS:
     void onShellForceHiddenChanged(bool forceHidden);
@@ -45,6 +49,8 @@ private:
     BottomBarVisibilityCommunicator();
 
     QDBusInterface* m_shellDbusIface;
+
+    double m_position;
 
     // This is cached from dbus
     bool m_forceHidden;

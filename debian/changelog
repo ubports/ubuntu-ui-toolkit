@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu2) saucy; urgency=low
+
+  * Cherry pick changes from the ap-test-fixes-for-updated-autopilot branch
+    to fix working with the newer autopilot
+
+ -- Łukasz 'sil2100' Zemczak <lukasz.zemczak@canonical.com>  Thu, 03 Oct 2013 11:38:44 +0200
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu1) saucy; urgency=low
 
   [ Timo Jyrinki ]
