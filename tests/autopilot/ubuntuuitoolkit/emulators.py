@@ -82,7 +82,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         x, y, _, _ = self.globalRect
         line_x = x + self.width * 0.50
         start_y = y + self.height - 1
-        stop_y = y + self.height * 0.95
+        stop_y = y + self.height - self.get_toolbar().height
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
@@ -98,7 +98,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def _drag_to_close_toolbar(self):
         x, y, _, _ = self.globalRect
         line_x = x + self.width * 0.50
-        start_y = y + self.height * 0.95
+        start_y = y + self.height - self.get_toolbar().height
         stop_y = y + self.height - 1
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
