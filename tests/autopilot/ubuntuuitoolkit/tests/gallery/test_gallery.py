@@ -240,23 +240,18 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         collapsed = self.getObject("optionselector_collapsed")
+        styleditem = collapsed.select_single('StyledItem',
+                     objectName='listContainer')
 
         self.assertThat(collapsed.selectedIndex, Equals(0))
+
         self.pointing_device.click_object(collapsed)
-        self.assertThat(collapsed.expanded, Eventually(Equals(False)))
+        self.assertThat(styleditem.isExpanded, Eventually(Equals(True)))
         selectedValue = collapsed.select_single('Label', text='Value 4')
         self.assertIsNotNone(selectedValue)
         self.pointing_device.click_object(selectedValue)
         self.assertThat(collapsed.selectedIndex, Eventually(Equals(3)))
-        #sleep is a bad idea, actively looking other way to avoid it?
-        time.sleep(2.0)
-        self.pointing_device.click_object(collapsed)
-        selectedValue = collapsed.select_single('Label', text='Value 1')
-        self.assertIsNotNone(selectedValue)
-        time.sleep(2.0)
-        self.pointing_device.click_object(selectedValue)
-        time.sleep(2.0)
-        self.assertThat(collapsed.selectedIndex, Eventually(Equals(0)))
+        self.assertThat(styleditem.isExpanded, Eventually(Equals(False)))
 
     def test_optionselector_expanded(self):
         item = "Option Selector"
