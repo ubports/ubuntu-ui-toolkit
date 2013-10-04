@@ -285,7 +285,7 @@ class GenericTests(GalleryTestCase):
         flickable = self.main_view.select_single('QQuickFlickable')
         self.assertIsNotNone(flickable)
         #Flick upward to reveal the hidden ui element.
-        self.flickPage(flickable, FlickDirection.UP)
+        self.revealItemThroughFlick(custommodel, flickable, FlickDirection.UP)
         self.assertThat(flickable.flicking, Eventually(Equals(False)))
 
         self.assertThat(custommodel.selectedIndex, Equals(0))

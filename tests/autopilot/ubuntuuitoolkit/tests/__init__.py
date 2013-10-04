@@ -190,6 +190,14 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
+    def revealItemThroughFlick(self, item, flickable, direction):
+        x1, y1, w1, h1 = item.globalRect
+        x2, y2, w2, h2 = flickable.globalRect
+        while y1+h1 > y2+h2:
+            x1, y1, w1, h1 = item.globalRect
+            self.flickPage(flickable, direction)
+
+
     def flickPage(self, flickable, direction, delta=20):
         """This funcito flicks the page from middle to the given direction."""
         x, y, w, h = flickable.globalRect
