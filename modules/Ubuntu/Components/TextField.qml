@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 /*!
     \qmltype TextField
@@ -71,7 +72,7 @@ import QtQuick 2.0
     \endqml
 */
 
-StyledItem {
+ActionItem {
     id: control
 
     implicitWidth: units.gu(25)
@@ -580,6 +581,14 @@ StyledItem {
     */
     signal accepted()
 
+    /*!
+      \internal
+      If used with an action or Option accepting propagates the new text.
+    */
+    onAccepted: {
+        control.triggered(control.text)
+    }
+
 
     /*!
       Copies the currently selected text to the system clipboard.
@@ -821,9 +830,20 @@ StyledItem {
 
         signal popupTriggered()
 
+        property int type: action ? action.parameterType : 0
+        onTypeChanged: {
+            // Don't undo explicitly specified hints
+            if (inputMethodHints != Qt.ImhNone)
+                return
+
+            if (type == UnityActions.Action.Type.Integer
+             || type == UnityActions.Action.Type.Real)
+                inputMethodHints = Qt.ImhDigitsOnly
+        }
+
         function activateEditor()
         {
-            if (!control.activeFocus)
+            if (!editor.activeFocus)
                 editor.forceActiveFocus();
             else
                 showInputPanel();
