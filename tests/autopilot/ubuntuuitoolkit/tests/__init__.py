@@ -107,6 +107,9 @@ MainView {
     def main_view(self):
         return self.app.select_single(emulators.MainView)
 
+class FlickDirection:
+    """Enum for flick or scroll direction."""
+    UP, DOWN, LEFT, RIGHT = range(1,5)
 
 class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that launch a QML file."""
@@ -187,12 +190,13 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
-    def scrollPageVertically(self, page, direction, delta=20):
-        x, y, w, h = page.globalRect
-        if direction == 'UP':
-            self.pointing_device.drag(x+w/2, y+delta, x+w/2, y)
-        elif direction == 'DOWN':
-            self.pointing_device.drag(x+w/2, y-delta, x+w/2, y)
+    def flickPage(self, flickable, direction, delta=20):
+        """This funcito flicks the page from middle to the given direction."""
+        x, y, w, h = flickable.globalRect
+        if direction == FlickDirection.UP:
+            self.pointing_device.drag(x+w/2, y+h/2, x+w/2, y+h/2-delta)
+        elif direction == FlickDirection.DOWN:
+            self.pointing_device.drag(x+w/2, y+h/2, x+w/2, y+h/2+delta)
         else:
             print('invalid direction')
 

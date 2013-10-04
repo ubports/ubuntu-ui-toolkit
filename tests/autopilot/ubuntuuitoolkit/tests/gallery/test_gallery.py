@@ -24,7 +24,7 @@ from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
 from ubuntuuitoolkit import tests
-
+from ubuntuuitoolkit.tests import FlickDirection
 
 class GalleryTestCase(tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
@@ -285,7 +285,7 @@ class GenericTests(GalleryTestCase):
         flickable = self.main_view.select_single('QQuickFlickable')
         self.assertIsNotNone(flickable)
         #Flick upward to reveal the hidden ui element.
-        self.scrollPageVertically(page, 'UP')
+        self.flickPage(flickable, FlickDirection.UP)
         self.assertThat(flickable.flicking, Eventually(Equals(False)))
 
         self.assertThat(custommodel.selectedIndex, Equals(0))
