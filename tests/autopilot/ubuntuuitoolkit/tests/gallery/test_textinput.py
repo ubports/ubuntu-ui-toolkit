@@ -60,6 +60,12 @@ class TextInputTests(GalleryTestCase):
         textfield_numbers = self.getObject('textfield_numbers')
         self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
 
+        self.tap_clearButton('textfield_numbers')
+        self.assertEqual(textfield_numbers.text, '')
+        #try typing decimal value when text filed is int only.
+        self.type_string('-100.123')
+        self.assertThat(textfield_numbers.text, Eventually(Equals('-100123')))
+
     def test_textfield_disabled(self):
         item = "Text Field"
         self.loadItem(item)
