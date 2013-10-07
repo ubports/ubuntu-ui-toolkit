@@ -16,11 +16,8 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - OptionSelector component"""
 
-import os
-import shutil
-
 from autopilot.matchers import Eventually
-from testtools.matchers import Is, Not, Equals
+from testtools.matchers import Equals
 from ubuntuuitoolkit.tests import FlickDirection
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 

@@ -16,11 +16,8 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - TextInput components"""
 
-import os
-import shutil
-
 from autopilot.matchers import Eventually
-from testtools.matchers import Is, Not, Equals
+from testtools.matchers import Equals
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
