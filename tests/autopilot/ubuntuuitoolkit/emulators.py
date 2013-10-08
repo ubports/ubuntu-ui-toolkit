@@ -337,7 +337,40 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 class TextField(UbuntuUIToolkitEmulatorBase):
     """TextField Autopilot emulator."""
 
-    def write_text(self, text):
+    def write(self, text, clear=True):
+        """Write into the text field.
+
+        :parameter text: The text to write.
+
+        """
         self.pointing_device.click_object(self)
+        if clear:
+            self.clear()
+        else:
+            if not self.is_empty():
+                self.keyboard.press_and_release('End')
         self.keyboard.type(text)
 
+    def clear(self):
+        """Clear the text field."""
+        if not self.is_empty():
+            if self.hasClearButton:
+                self._click_clear_button()
+            else:
+                self._clear_with_keys()
+        self.text.wait_for('')
+
+    def is_empty(self):
+        """Return True if the text field is empty. False otherwise."""
+        return self.text == ''
+
+    def _click_clear_button(self):
+        clear_button = self.select_single(
+            'AbstractButton', objectName='clear_button')
+        if not clear_button.visible:
+            self.pointing_device.click_object(self)
+        self.pointing_device.click_object(clear_button)
+
+    def _clear_with_keys(self):
+        self.keyboard.press_and_release('Ctrl+a')
+        self.keyboard.press_and_release('Delete')
