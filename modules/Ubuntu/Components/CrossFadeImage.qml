@@ -100,6 +100,9 @@ Item {
         when: internals.forcedSourceSize === undefined
     }
 
+    /*!
+      \internal
+     */
     onSourceSizeChanged: {
         if (internals.loadingImage && (sourceSize != Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height))) {
             internals.forcedSourceSize = sourceSize;
