@@ -361,7 +361,7 @@ class TextField(UbuntuUIToolkitEmulatorBase):
                 self._click_clear_button()
             else:
                 self._clear_with_keys()
-        self.text.wait_for('')
+            self.text.wait_for('')
 
     def is_empty(self):
         """Return True if the text field is empty. False otherwise."""
