@@ -18,4 +18,7 @@ OTHER_FILES += \
     FirstComponent.qml \
     SecondComponent.qml \
     SameIdsInDifferentComponents.qml \
-    SavePropertyGroups.qml
+    SavePropertyGroups.qml \
+    ComponentsWithStateSavers.qml \
+    CustomControl.qml \
+    ComponentsWithStateSaversNoId.qml

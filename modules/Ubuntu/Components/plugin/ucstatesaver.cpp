@@ -44,10 +44,12 @@ void UCStateSaverAttachedPrivate::_q_init()
     m_id = qmlContext(m_attachee)->nameForObject(m_attachee);
     if (m_id.isEmpty()) {
         qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee must have an ID. State will not be saved.");
+        q_func()->setEnabled(false);
         return;
     }
     m_absoluteId = absoluteId(m_id);
     if (m_absoluteId.isEmpty()) {
+        q_func()->setEnabled(false);
         return;
     }
     if (!StateSaverBackend::instance().registerId(m_absoluteId)) {
