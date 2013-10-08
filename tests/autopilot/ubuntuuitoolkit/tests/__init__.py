@@ -84,7 +84,7 @@ MainView {
         desktop_file_path = _write_test_desktop_file()
         self.addCleanup(os.remove, desktop_file_path)
         self.app = self.launch_test_application(
-            'qmlscene',
+            base.get_qmlscene_launch_command(),
             '-I' + _get_module_include_path(),
             qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
@@ -119,7 +119,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     def launch_application(self):
         desktop_file_path = self._get_desktop_file_path()
         self.app = self.launch_test_application(
-            'qmlscene',
+            base.get_qmlscene_launch_command(),
             "-I" + _get_module_include_path(),
             self.test_qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
@@ -238,7 +238,9 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def tap_clearButton(self, objectName):
         textField = self.getObject(objectName)
-        self.assertThat(textField.hasClearButton, Equals(True))
+        self.assertIsNotNone(textField)
+        self.pointing_device.click_object(textField)
+        self.assertThat(textField.hasClearButton, Eventually(Equals(True)))
         btn = textField.select_single("AbstractButton")
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+        self.assertIsNotNone(btn)
+        self.pointing_device.click_object(btn)

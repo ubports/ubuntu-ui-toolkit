@@ -17,33 +17,23 @@
 import unittest
 
 import mock
-import testtools
 from autopilot import input, platform
 
 from ubuntuuitoolkit import emulators, tests
 
 
-class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
+class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
 
     def test_pointing_device(self):
-        emulator = emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        self.assertIsInstance(emulator.pointing_device, input.Pointer)
+        self.assertIsInstance(self.app.pointing_device, input.Pointer)
 
-    @mock.patch('autopilot.input.Pointer')
     @unittest.skipIf(platform.model() != 'Desktop', 'Desktop only')
-    def test_pointing_device_in_desktop(self, mock_pointer):
-        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        mock_pointer.assert_called_once_with(device=mock.ANY)
-        _, _, keyword_args = mock_pointer.mock_calls[0]
-        self.assertIsInstance(keyword_args['device'], input.Mouse)
+    def test_pointing_device_in_desktop(self):
+        self.assertIsInstance(self.app.pointing_device._device, input.Mouse)
 
-    @mock.patch('autopilot.input.Pointer')
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
-    def test_pointing_device_in_phablet(self, mock_pointer):
-        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        mock_pointer.assert_called_once_with(device=mock.ANY)
-        _, _, keyword_args = mock_pointer.mock_calls[0]
-        self.assertIsInstance(keyword_args['device'], input.Touch)
+    def test_pointing_device_in_phablet(self):
+        self.assertIsInstance(self.app.pointing_device._device, input.Touch)
 
 
 class MainViewTestCase(tests.QMLStringAppTestCase):

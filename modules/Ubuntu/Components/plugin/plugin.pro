@@ -1,11 +1,11 @@
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0
+    PKGCONFIG += gio-2.0 thumbnailer dbus-1 libnih-dbus
 }
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += qml quick quick-private dbus
+QT += core-private v8-private qml qml-private quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
 CONFIG(debug) {
@@ -49,9 +49,14 @@ HEADERS += plugin.h \
     alarmmanager_p.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
+    thumbnailgenerator.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
-    adapters/alarmsadapter_p.h
+    adapters/alarmsadapter_p.h \
+    ucstatesaver.h \
+    statesaverbackend_p.h \
+    ucstatesaver_p.h \
+    ucurihandler.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -77,7 +82,11 @@ SOURCES += plugin.cpp \
     alarmmanager_p.cpp \
     ucalarmmodel.cpp \
     unitythemeiconprovider.cpp \
-    alarmrequest_p.cpp
+    thumbnailgenerator.cpp \
+    alarmrequest_p.cpp \
+    ucstatesaver.cpp \
+    statesaverbackend_p.cpp \
+    ucurihandler.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

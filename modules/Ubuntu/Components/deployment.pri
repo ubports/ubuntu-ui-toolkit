@@ -39,7 +39,7 @@ listitems_artwork_files.path = $$installPath/ListItems/artwork
 listitems_artwork_files.files = $$LISTITEMS_ARTWORK_FILES
 popups_files.path = $$installPath/Popups
 popups_files.files = $$POPUPS_FILES
-pickers_files.path = $$installPath/Pickers
+picker_files.path = $$installPath/Pickers
 picker_files.files = $$PICKER_FILES
 
 plugins_qmltypes.path = $$installPath

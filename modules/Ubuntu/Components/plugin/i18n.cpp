@@ -85,6 +85,7 @@ QString UbuntuI18n::language() {
  */
 void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_name) {
     C::bindtextdomain(domain_name.toUtf8(), dir_name.toUtf8());
+    Q_EMIT domainChanged();
 }
 
 void UbuntuI18n::setDomain(QString domain) {
