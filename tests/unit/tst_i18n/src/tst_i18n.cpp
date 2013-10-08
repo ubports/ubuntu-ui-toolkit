@@ -103,6 +103,9 @@ private Q_SLOTS:
 
     void testCase_LocalizedApp()
     {
+        UbuntuI18n* i18n = &UbuntuI18n::instance();
+        // Start out with no localization
+        i18n->setLanguage("C");
         // Load the app which should pick up the locale we prepared
         QQuickItem *root = loadTest("src/LocalizedApp.qml");
         QVERIFY(root);
@@ -111,10 +114,10 @@ private Q_SLOTS:
         QString applicationName(mainView->property("applicationName").toString());
         QCOMPARE(applicationName, QString("localizedApp"));
         QCOMPARE(applicationName, QCoreApplication::applicationName());
-        QCOMPARE(applicationName, UbuntuI18n::instance().domain());
+        QCOMPARE(applicationName, i18n->domain());
 
         // Was the locale folder detected and set?
-        QString boundDomain(C::bindtextdomain(UbuntuI18n::instance().domain().toUtf8().constData(), ((const char*)0)));
+        QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8().constData(), ((const char*)0)));
         QString expectedLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
             "locale", QStandardPaths::LocateDirectory));
         QCOMPARE(boundDomain, expectedLocalePath);
@@ -123,11 +126,21 @@ private Q_SLOTS:
             env LANGUAGE=en_US TEXTDOMAINDIR=./tests/unit/tst_i18n/locale/ gettext localizedApp 'Welcome'
         */
 
-        UbuntuI18n::instance().setLanguage("en_US");
-        // Try to translate for real
-        QCOMPARE(UbuntuI18n::instance().dtr(UbuntuI18n::instance().domain(), "Welcome"), QString("Greets"));
-        QCOMPARE(UbuntuI18n::instance().tr("Count the kilometres"), QString("Count the clicks"));
-        // TODO: Inspect translated strings in the QML view
+        i18n->setLanguage("en_US");
+        QSignalSpy spy(i18n, SIGNAL(languageChanged()));
+        spy.wait();
+
+        // Inspect translated strings in QML
+        QQuickItem* page(testItem(mainView, "page"));
+        QVERIFY(page);
+        QCOMPARE(page->property("title").toString(), QString("Greets"));
+        QQuickItem* button(testItem(page, "button"));
+        QVERIFY(button);
+        QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
+
+        // Translate in C++
+        QCOMPARE(i18n->dtr(i18n->domain(), "Welcome"), QString("Greets"));
+        QCOMPARE(i18n->tr("Count the kilometres"), QString("Count the clicks"));
     }
 };
 

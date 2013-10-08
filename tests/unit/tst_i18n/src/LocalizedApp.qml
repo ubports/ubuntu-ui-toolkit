@@ -23,8 +23,10 @@ MainView {
     applicationName: 'localizedApp'
 
     Page {
-        title: i18n.tr('Welcome')
+        objectName: 'page'
+        title: i18n.dtr('localizedApp', 'Welcome')
         Button {
+            objectName: 'button'
             anchors.centerIn: parent
             text: i18n.tr('Count the kilometres')
             width: units.gu(15)

@@ -52,8 +52,6 @@ TestCase {
      }
 
      function test_0_dtr() {
-         expectFail("","a directory structure change is required in the project tree")
-//TODO: add call to bindtextdomain
          var testENValue = "Call";
          i18n.language = "nl";
          var readValue = i18n.dtr("gallery",testENValue);
