@@ -445,3 +445,33 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+
+class TextFieldTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {    
+        TextField {
+            objectName: "simple_text_field"
+        }
+    }
+}
+""")
+
+    def test_text_field_emulator(self):
+        text_field = self.main_view.select_single(
+            emulators.TextField, objectName='simple_text_field')
+        self.assertIsInstance(text_field, emulators.TextField)
+
+    def test_enter_text(self):
+        text_field = self.main_view.select_single(
+            emulators.TextField, objectName='simple_text_field')
+        text_field.write_text('test')
+        self.assertEqual(text_field.text, 'test')

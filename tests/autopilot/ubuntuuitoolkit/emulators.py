@@ -48,6 +48,7 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     def __init__(self, *args):
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
+        self.keyboard = input.Keyboard.create()
         # TODO it would be nice to have access to the screen keyboard if we are
         # on the touch UI -- elopio - 2013-09-04
 
@@ -331,3 +332,12 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if self.checked:
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
+
+
+class TextField(UbuntuUIToolkitEmulatorBase):
+    """TextField Autopilot emulator."""
+
+    def write_text(self, text):
+        self.pointing_device.click_object(self)
+        self.keyboard.type(text)
+
