@@ -341,6 +341,9 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         """Write into the text field.
 
         :parameter text: The text to write.
+        :parameter clear: If True, the text field will be cleared before
+            writing the text. If False, the text will be appended at the end
+            of the text field. Default is True.
 
         """
         self.pointing_device.click_object(self)
