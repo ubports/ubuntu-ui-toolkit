@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <QDebug>
 
-const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/album_missing.png";
+const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/video_missing.png";
 
 ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Image,
         QQmlImageProviderBase::ForceAsynchronousImageLoading) {
