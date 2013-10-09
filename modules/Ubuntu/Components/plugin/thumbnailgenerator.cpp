@@ -18,6 +18,9 @@
 
 #include "thumbnailgenerator.h"
 #include <stdexcept>
+#include <QDebug>
+
+const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/album_missing.png";
 
 ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Image,
         QQmlImageProviderBase::ForceAsynchronousImageLoading) {
@@ -48,9 +51,24 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
             return image;
         }
     } catch(std::runtime_error &e) {
-        // thumbnail generation failed for some reason
-        // so just return default image
+        qDebug() << "Thumbnail generator failed: " << e.what();
     }
-    *realSize = QSize(0, 0);
-    return QImage();
+    // Thumbnail generation failed for some reason.
+    //
+    // This can be caused by one of these issues:
+    //
+    // Image loading failed -> only possible with corrupted files, very rare
+    // Audio thumbnail extraction failed -> this is currently disabled due to a GStreamer issue
+    //                                      and downloading over the net is done elsewhere
+    //                                      so currently this can't happen
+    // Video screenshotting failed -> the most probable cause
+    // Requested preview for invalid file type -> incorrect usage on part of the caller
+    //
+    // In a perfect world we would return an error image based on
+    // input file type. However currently 99.9% percent of all cases
+    // are caused by video files so just return the default video
+    // icon.
+    QImage fallback(DEFAULT_VIDEO_ART);
+    *realSize = fallback.size();
+    return fallback;
 }
