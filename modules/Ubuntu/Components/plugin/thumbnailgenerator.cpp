@@ -64,7 +64,7 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
     // Video screenshotting failed -> the most probable cause
     // Requested preview for invalid file type -> incorrect usage on part of the caller
     //
-    // In a perfect world we would return an error image based on
+    // In a perfect world we would return a default image based on
     // input file type. However currently 99.9% percent of all cases
     // are caused by video files so just return the default video
     // icon.
