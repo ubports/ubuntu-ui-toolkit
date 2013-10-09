@@ -47,6 +47,11 @@ Item {
         property int keyReleaseData
         Keys.onPressed: keyPressData = event.key
         Keys.onReleased: keyReleaseData = event.key
+        action: Action {
+            enabled: true
+            name: 'spam'
+            text: 'Spam'
+        }
     }
 
     Item {
@@ -410,6 +415,35 @@ Item {
             if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
             compare(Qt.inputMethod.visible, true, "OSK shown");
+        }
+
+        function test_zz_Trigger() {
+            signalSpy.signalName = 'accepted'
+            textField.enabled = true
+            textField.text = 'eggs'
+            textField.accepted()
+            signalSpy.wait()
+        }
+
+        function test_zz_ActionInputMethodHints() {
+            // Preset digit only for numbers
+            textField.inputMethodHints = Qt.ImhNone
+            textField.parameterType = UnityActions.Action.Type.Integer
+            compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
+
+            textField.inputMethodHints = Qt.ImhNone
+            textField.parameterType = UnityActions.Action.Type.Real
+            compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
+
+            // No preset for strings
+            textField.inputMethodHints = Qt.ImhNone
+            textField.parameterType = UnityActions.Action.Type.String
+            compare(textField.inputMethodHints, Qt.ImhNone)
+
+            // Never interfere with a manual setting
+            textField.inputMethodHints = Qt.ImhDate
+            textField.parameterType = UnityActions.Action.Type.Integer
+            compare(textField.inputMethodHints, Qt.ImhDate)
         }
 
         RegExpValidator {

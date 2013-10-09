@@ -17,36 +17,26 @@
 import unittest
 
 import mock
-import testtools
 from autopilot import input, platform
 
 from ubuntuuitoolkit import emulators, tests
 
 
-class UbuntuUIToolkitEmulatorBaseTestCase(testtools.TestCase):
+class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
 
     def test_pointing_device(self):
-        emulator = emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        self.assertIsInstance(emulator.pointing_device, input.Pointer)
+        self.assertIsInstance(self.app.pointing_device, input.Pointer)
 
-    @mock.patch('autopilot.input.Pointer')
     @unittest.skipIf(platform.model() != 'Desktop', 'Desktop only')
-    def test_pointing_device_in_desktop(self, mock_pointer):
-        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        mock_pointer.assert_called_once_with(device=mock.ANY)
-        _, _, keyword_args = mock_pointer.mock_calls[0]
-        self.assertIsInstance(keyword_args['device'], input.Mouse)
+    def test_pointing_device_in_desktop(self):
+        self.assertIsInstance(self.app.pointing_device._device, input.Mouse)
 
-    @mock.patch('autopilot.input.Pointer')
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
-    def test_pointing_device_in_phablet(self, mock_pointer):
-        emulators.UbuntuUIToolkitEmulatorBase({}, 'dummy_path')
-        mock_pointer.assert_called_once_with(device=mock.ANY)
-        _, _, keyword_args = mock_pointer.mock_calls[0]
-        self.assertIsInstance(keyword_args['device'], input.Touch)
+    def test_pointing_device_in_phablet(self):
+        self.assertIsInstance(self.app.pointing_device._device, input.Touch)
 
 
-class MainViewTestCase(tests.UbuntuUiToolkitTestCase):
+class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -84,7 +74,7 @@ MainView {
             error.message, 'The MainView has no Tabs.')
 
 
-class PageTestCase(tests.UbuntuUiToolkitTestCase):
+class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -107,7 +97,7 @@ MainView {
         self.assertEqual(header.title, "Test title")
 
 
-class ToolbarTestCase(tests.UbuntuUiToolkitTestCase):
+class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -184,7 +174,7 @@ MainView {
             error.message, 'Button with objectName "unexisting" not found.')
 
 
-class TabsTestCase(tests.UbuntuUiToolkitTestCase):
+class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -308,7 +298,7 @@ MainView {
             error.message, 'Tab with objectName "unexisting" not found.')
 
 
-class ActionSelectionPopoverTestCase(tests.UbuntuUiToolkitTestCase):
+class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -380,3 +370,78 @@ MainView {
             AssertionError, popover.click_button_by_text, 'Action one')
         self.assertEqual(
             error.message, 'The popover is not open.')
+
+
+TEST_QML_WITH_CHECKBOX = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {
+        CheckBox {
+            checked: false
+            objectName: "test_checkbox"
+        }
+    }
+}
+""")
+
+
+TEST_QML_WITH_SWITCH = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {
+        Switch {
+            checked: false
+            objectName: "test_switch"
+        }
+    }
+}
+""")
+
+
+class ToggleTestCase(tests.QMLStringAppTestCase):
+
+    scenarios = [
+        ('checkbox', dict(
+            test_qml=TEST_QML_WITH_CHECKBOX, objectName='test_checkbox')),
+        ('switch', dict(
+            test_qml=TEST_QML_WITH_SWITCH, objectName='test_switch'))
+    ]
+
+    def setUp(self):
+        super(ToggleTestCase, self).setUp()
+        self.toggle = self.main_view.select_single(
+            emulators.CheckBox, objectName=self.objectName)
+
+    def test_toggle_emulator(self):
+        self.assertIsInstance(self.toggle, emulators.CheckBox)
+
+    def test_check_toggle(self):
+        self.assertFalse(self.toggle.checked)
+        self.toggle.check()
+        self.assertTrue(self.toggle.checked)
+
+    def test_check_toggle_already_checked(self):
+        self.toggle.check()
+        with mock.patch.object(input.Pointer, 'click_object') as mock_click:
+            self.toggle.check()
+        self.assertFalse(mock_click.called)
+
+    def test_uncheck_toggle(self):
+        self.toggle.check()
+        self.toggle.uncheck()
+        self.assertFalse(self.toggle.checked)
+
+    def test_uncheck_toggle_already_unchecked(self):
+        with mock.patch.object(input.Pointer, 'click_object') as mock_click:
+            self.toggle.uncheck()
+        self.assertFalse(mock_click.called)

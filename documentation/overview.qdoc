@@ -25,6 +25,7 @@
      \li \l {Resolution Independence} describes the facilities that should be
      used when setting the size of UI elements (widgets, fonts, etc.) in order
      for them to behave well on a variety of devices.
+     \li \l{Automatic State Saving} provides automatic property saving for components.
      \endlist
 
      \part Basic QML Types
@@ -40,6 +41,13 @@
          import Ubuntu.Components.ListItems 0.1
      \endcode
      \annotatedlist ubuntu-listitems
+
+     \part Pickers
+     Available through:
+     \code
+         import Ubuntu.Components.Pickers 0.1
+     \endcode
+     \annotatedlist ubuntu-pickers
 
      \part Popovers, Sheets and Dialogs
      Available through:

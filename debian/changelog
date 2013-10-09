@@ -1,3 +1,153 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20131007-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * Add default tools (LP: #1233709). (LP: #1233709)
+
+  [ Loïc Molinari ]
+  * Added URI handler support.
+  * Fixed UbuntuShape warnings when using a ShaderEffectSource as an
+    image.
+
+  [ iftikhar.ahmad@canonical.com ]
+  * Added test cases for text field testing.
+  * Minor change to make the OptionSelector more testable by adding
+    objectName property to uniquely identify the object. (LP: #1234020)
+
+  [ Christian Dywan ]
+  * Set offline storage path and add a unit test. (LP: #1231863)
+  * Emit domainChanged from bindtextdomain to trigger updates. (LP:
+    #1220395)
+  * Support TextArea used with an action.
+  * Support option selector used with an action.
+  * Add haptic feedback to AbstractButton. (LP: #1189537)
+
+  [ Zsombor Egri ]
+  * Fix Picker module deployment.
+  * index property added to Tab to be able to reference the Tab number.
+    Fixes bug #1233402. (LP: #1233402)
+
+  [ Jussi Pakkanen ]
+  * Adds thumbnailer image provider.
+
+  [ Christopher Lee ]
+  * Preparing autopilot tests for an upcoming update in autopilot 1.3.
+
+  [ Andrea Cimitan ]
+  * Export a position value of the toolbar through dbus, setting the
+    value of the dbus service created by the shell. (LP: #1224480)
+
+  [ Guenter Schwann ]
+  * Better handle the case of dismissing the OSK and focusing the text
+    again fixes LP: #1228155. (LP: #1228155)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Added "confirmRemoval" in ListItem.Empty This will ask for
+    confirmation before remove the item. (LP: #1213046)
+  * Disabled confirmation on swipe to delete as default.
+
+  [ Leo Arias ]
+  * index property added to Tab to be able to reference the Tab number.
+    Fixes bug #1233402. (LP: #1233402)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 786
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 07 Oct 2013 04:36:33 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu2) saucy; urgency=low
+
+  * Cherry pick changes from the ap-test-fixes-for-updated-autopilot branch
+    to fix working with the newer autopilot
+
+ -- Łukasz 'sil2100' Zemczak <lukasz.zemczak@canonical.com>  Thu, 03 Oct 2013 11:38:44 +0200
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Temporarily disable the jokes example in order to not have
+    qtmultimedia dependency from examples that is not used otherwise.
+    This lessens the dependency chains of packages. It can be added back
+    after Ubuntu 13.10.
+  * Fix regression in qmlscene usage (LP: #1229541). (LP: #1229541)
+
+  [ Christian Dywan ]
+  * Set QCoreApplication::applicationName based on MainView. (LP:
+    #1197056, #1197051, #1224126)
+  * Include subfolders of Components in api check.
+
+  [ Zsombor Egri ]
+  * Organizer EDS (Evolution Data Server) integration.
+  * StateSaver attached component.
+  * Fix alarm status reporting, updating documentation on asynchronous
+    behavior of save and cancel operations. Alarm status notification
+    reports the operation the status refers to. (LP: #1226516)
+  * Dialer + DialerHand components required for TimePicker. .
+
+  [ Leo Arias ]
+  * Added UbuntuUIToolkitAppTestCase as a base test case for the
+    autopilot tests. (LP: #1227355)
+  * Added the autopilot emulator for toggles.
+
+  [ Nick Dedekind ]
+  * Added clipping to tab bar. (LP: #1226104)
+
+  [ Alberto Mardegan ]
+  * Support re-attaching to a different QQuickView Make the plugin
+    correctly handle the case when the QQuickView is destroyed and a new
+    one is created: this is done by avoiding using static variables, and
+    instead binding the data to the QQmlEngine, QQmlContext or QWindow
+    as appropriate. . (LP: #1221707)
+
+  [ Dennis O'Flaherty ]
+  * Reword the description for easier reading.
+
+  [ tpeeters ]
+  * Fix warnings when running gallery-app autopilot tests. (LP:
+    #1223329, #1223326)
+  * Smarter automatic updating of Panel's opened property. Panel.open()
+    and Panel.close() should be used to open/close a Panel, or when
+    using a toolbar with ToolbarItems from a Page, set Page.tools.opened
+    to open/close the toolbar. No API or behavior changes since the
+    panel-open-close branch. Toolbar behavior changes will be done in a
+    following MR.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 765
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 25 Sep 2013 07:08:56 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130916-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Picker component, a tumbler style value selector.
+
+  [ Leo Arias ]
+  * Do not duplicate the pointer instantiation on the autopilot
+    emulators. (LP: #1220346)
+
+  [ Nicolas d'Offay ]
+  * Fixed bug in the selectors that happened with the "nudging"
+    behaviour which occurred when the selector was scrolled. It used to
+    nudge past boundaries and if the same index was selected. This has
+    been fixed. Fixed SuruDark and SuruGradient ListItemSelector themes.
+
+  [ tpeeters ]
+  * Add Panel.open() and Panel.close() functions so that applications
+    can be adapted to use those instead of setting Panel.opened. The
+    behavior of the panel was not changed, this will be done in a
+    following MR. Also note that applications with a Toolbar do not need
+    to use Panel.open()/close()/opened directly, they can use the opened
+    property of the Page.tools, so they should not be affected by the
+    upcoming changes.
+
+  [ Lars Uebernickel ]
+  * giconprovider: warn about image://gicon being deprecated.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 748
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Sep 2013 11:35:05 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130903.4-0ubuntu1) saucy; urgency=low
 
   [ Nicolas d'Offay ]

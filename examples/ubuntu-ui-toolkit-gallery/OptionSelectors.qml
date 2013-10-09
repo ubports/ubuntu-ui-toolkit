@@ -28,7 +28,8 @@ Template {
             spacing: units.gu(3)
 
            OptionSelector {
-               text: i18n.tr("Label")
+               objectName: "optionselector_collapsed"
+               text: i18n.tr("Collapsed")
                model: [i18n.tr("Value 1"),
                        i18n.tr("Value 2"),
                        i18n.tr("Value 3"),
@@ -36,7 +37,8 @@ Template {
            }
 
            OptionSelector {
-                text: i18n.tr("Label")
+                objectName: "optionselector_expanded"
+                text: i18n.tr("Epanded")
                 expanded: true
                 model: [i18n.tr("Value 1"),
                          i18n.tr("Value 2"),
@@ -45,7 +47,8 @@ Template {
            }
 
            OptionSelector {
-               text: i18n.tr("Label")
+               objectName: "optionselector_custommodel"
+               text: i18n.tr("Custom Model")
                model: customModel
                expanded: true
                colourImage: true

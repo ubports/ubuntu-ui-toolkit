@@ -115,6 +115,15 @@ ListItem.Empty {
      */
     signal delegateClicked(int index)
 
+    /*!
+      \internal
+      Trigger the action, passing the current index.
+     */
+    onDelegateClicked: {
+        if (action)
+            action.triggered(index)
+    }
+
     showDivider: false
 
     Column {
@@ -172,8 +181,14 @@ ListItem.Empty {
                         }
                         ScriptAction {
                             script: {
-                                if (listContainer.isExpanded && list.contentY > 0)
+                                //Nudge the list up if we're able to scroll.
+                                if (listContainer.isExpanded && !list.atYBeginning && !list.atYBeginning && !list.atYEnd) {
                                     list.contentY += list.itemHeight / 2
+                                }
+                                //On collapse if we've selected the same index nudge it back down again.
+                                else if (!listContainer.isExpanded && list.previousIndex === list.currentIndex && !list.atYBeginning && !list.atYEnd) {
+                                    list.contentY -= list.itemHeight / 2
+                                }
                             }
                         }
                     }

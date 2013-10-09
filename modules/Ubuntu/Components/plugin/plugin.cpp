@@ -38,16 +38,21 @@
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
 #include "bottombarvisibilitycommunicator.h"
+#include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
 #include "ucarguments.h"
 #include "ucargument.h"
+#include "ucapplication.h"
 #include "ucalarm.h"
 #include "ucalarmmodel.h"
 #include "unitythemeiconprovider.h"
+#include "ucstatesaver.h"
+#include "ucurihandler.h"
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdexcept>
 
 /*
  * Type registration functions.
@@ -71,6 +76,14 @@ static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptE
     return animation;
 }
 
+static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    UCUriHandler *uriHandler = new UCUriHandler();
+    return uriHandler;
+}
 
 QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
 {
@@ -115,7 +128,7 @@ void UbuntuComponentsPlugin::registerWindowContextProperty()
     QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
     QObject::connect(application, SIGNAL(focusWindowChanged(QWindow*)),
                      this, SLOT(setWindowContextProperty(QWindow*)),
-                     Qt::DirectConnection);
+                     Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection));
 
 }
 
@@ -145,6 +158,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QQmlPropertyMap>();
     qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
     qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
+    qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
+    qmlRegisterType<UCStateSaverAttached>();
+    qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -161,22 +177,34 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     UCTheme::instance().registerToContext(context);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
-    static ContextPropertyChangeListener i18nChangeListener(context, "i18n");
+    ContextPropertyChangeListener *i18nChangeListener =
+        new ContextPropertyChangeListener(context, "i18n");
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
-                     &i18nChangeListener, SLOT(updateContextProperty()));
+                     i18nChangeListener, SLOT(updateContextProperty()));
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
-                     &i18nChangeListener, SLOT(updateContextProperty()));
+                     i18nChangeListener, SLOT(updateContextProperty()));
+
+    // We can't use 'Application' because it exists (undocumented)
+    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
+    ContextPropertyChangeListener *applicationChangeListener =
+        new ContextPropertyChangeListener(context, "UbuntuApplication");
+    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
+                     applicationChangeListener, SLOT(updateContextProperty()));
+    // Give the application object access to the engine
+    UCApplication::instance().setContext(context);
 
     context->setContextProperty("units", &UCUnits::instance());
-    static ContextPropertyChangeListener unitsChangeListener(context, "units");
+    ContextPropertyChangeListener *unitsChangeListener =
+        new ContextPropertyChangeListener(context, "units");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     &unitsChangeListener, SLOT(updateContextProperty()));
+                     unitsChangeListener, SLOT(updateContextProperty()));
 
     // register FontUtils
     context->setContextProperty("FontUtils", &UCFontUtils::instance());
-    static ContextPropertyChangeListener fontUtilsListener(context, "FontUtils");
+    ContextPropertyChangeListener *fontUtilsListener =
+        new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     &fontUtilsListener, SLOT(updateContextProperty()));
+                     fontUtilsListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
@@ -188,6 +216,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register icon providers
     engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
+
+    try {
+        engine->addImageProvider(QLatin1String("thumbnailer"), new ThumbnailGenerator);
+    } catch(std::runtime_error &e) {
+        qDebug() << "Could not create thumbnailer: " << e.what();
+    }
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(

@@ -20,4 +20,7 @@ TextFieldStyle 0.1 TextFieldStyle.qml
 internal ToolbarButtonStyle ToolbarButtonStyle.qml
 internal ToolbarStyle ToolbarStyle.qml
 internal BubbleShape BubbleShape.qml
- 
+PickerStyle 0.1 PickerStyle.qml
+PickerDelegateStyle 0.1 PickerDelegateStyle.qml
+DialerStyle 0.1 DialerStyle.qml
+DialerHandStyle 0.1 DialerHandStyle.qml
