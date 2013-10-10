@@ -19,8 +19,10 @@
 #include "thumbnailgenerator.h"
 #include <stdexcept>
 #include <QDebug>
+#include <QMimeDatabase>
 
 const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/video_missing.png";
+const char *DEFAULT_ALBUM_ART = "/usr/share/unity/icons/album_missing.png";
 
 ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Image,
         QQmlImageProviderBase::ForceAsynchronousImageLoading) {
@@ -53,22 +55,19 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
     } catch(std::runtime_error &e) {
         qDebug() << "Thumbnail generator failed: " << e.what();
     }
-    // Thumbnail generation failed for some reason.
-    //
-    // This can be caused by one of these issues:
-    //
-    // Image loading failed -> only possible with corrupted files, very rare
-    // Audio thumbnail extraction failed -> this is currently disabled due to a GStreamer issue
-    //                                      and downloading over the net is done elsewhere
-    //                                      so currently this can't happen
-    // Video screenshotting failed -> the most probable cause
-    // Requested preview for invalid file type -> incorrect usage on part of the caller
-    //
-    // In a perfect world we would return a default image based on
-    // input file type. However currently 99.9% percent of all cases
-    // are caused by video files so just return the default video
-    // icon.
-    QImage fallback(DEFAULT_VIDEO_ART);
-    *realSize = fallback.size();
-    return fallback;
+    return getFallbackImage(id, realSize, requestedSize);
+}
+
+QImage ThumbnailGenerator::getFallbackImage(const QString &id, QSize *size,
+        const QSize &requestedSize) {
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForFile(id);
+    QImage result;
+    if(mime.name().contains("video")) {
+        result.load(DEFAULT_ALBUM_ART);
+    } else if(mime.name().contains("video")) {
+        result.load(DEFAULT_VIDEO_ART);
+    }
+    *size = result.size();
+    return result;
 }
