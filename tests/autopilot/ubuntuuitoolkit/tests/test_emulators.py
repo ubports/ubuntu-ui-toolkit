@@ -110,6 +110,11 @@ MainView {
     width: units.gu(50)
     height: units.gu(50)
 
+    // Make sure that for these tests the toolbar starts closed.
+    Component.onCompleted: {
+        __propagated.toolbar.hideTimeout = 0;
+    }
+
     Page {
 
         Label {
@@ -130,7 +135,6 @@ MainView {
             // Make sure that for these tests the toolbar starts closed.
             locked: false
             opened: false
-            hideTimeout: 0
         }
     }
 }
