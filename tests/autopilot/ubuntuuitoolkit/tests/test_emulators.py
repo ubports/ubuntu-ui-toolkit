@@ -59,6 +59,10 @@ MainView {
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
 
+    def test_open_toolbar_returns_the_toolbar(self):
+        toolbar = self.main_view.open_toolbar()
+        self.assertIsInstance(toolbar, emulators.Toolbar)
+
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
             AssertionError, self.main_view.get_tabs)
