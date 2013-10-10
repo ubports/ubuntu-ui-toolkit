@@ -486,46 +486,39 @@ MainView {
         self.assertTrue(issubclass(emulators.Standard, emulators.SupportsSwipeToDelete))
         self.assertTrue(issubclass(emulators.Subtitled, emulators.SupportsSwipeToDelete))
 
-    def test_standard_emulator(self):
-        item = self.main_view.select_single(
+    def setUp(self):
+        super(SwipeToDeleteTestCase, self).setUp()
+        self._item = self.main_view.select_single(
             emulators.Standard, objectName='listitem_standard')
-        self.assertIsInstance(item, emulators.Standard)
+
+    def test_standard_emulator(self):
+        self.assertIsInstance(self._item, emulators.Standard)
 
     def test_swipe_item(self):
-        item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
-        item.swipe_to_delete()
-        self.assertTrue(item.waitingConfirmationForRemoval)
+        self._item.swipe_to_delete()
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_right(self):
-        item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
-        item.swipe_to_delete("right")
-        self.assertTrue(item.waitingConfirmationForRemoval)
+        self._item.swipe_to_delete("right")
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_left(self):
-        item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
-        item.swipe_to_delete("left")
-        self.assertTrue(item.waitingConfirmationForRemoval)
+        self._item.swipe_to_delete("left")
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_delete_item(self):
-        item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
-        item.swipe_to_delete("right")
-        item.confirm_removal()
-        self.assertEqual(item.implicitHeight, 0)
+        self._item.swipe_to_delete("right")
+        self._item.confirm_removal()
+        self.assertEqual(self._item.implicitHeight, 0)
 
     def test_delete_non_removable_item(self):
-        item = self.main_view.select_single(
+        self._item = self.main_view.select_single(
             emulators.Empty, objectName='listitem_empty')
         error = self.assertRaises(
-            emulators.ToolkitEmulatorException, item.swipe_to_delete)
+            emulators.ToolkitEmulatorException, self._item.swipe_to_delete)
 
     def test_confirm_removal_when_item_was_not_swiped(self):
-        item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
         error = self.assertRaises(
-            emulators.ToolkitEmulatorException, item.confirm_removal)
+            emulators.ToolkitEmulatorException, self._item.confirm_removal)
         
 
