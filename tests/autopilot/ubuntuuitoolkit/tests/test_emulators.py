@@ -476,6 +476,11 @@ MainView {
 }
 """)
 
+    def setUp(self):
+        super(SwipeToDeleteTestCase, self).setUp()
+        self._item = self.main_view.select_single(
+            emulators.Standard, objectName='listitem_standard')
+
     def test_supported_class(self):
         self.assertTrue(issubclass(emulators.Empty, emulators.SupportsSwipeToDelete))
         self.assertTrue(issubclass(emulators.Base, emulators.SupportsSwipeToDelete))
@@ -485,11 +490,6 @@ MainView {
         self.assertTrue(issubclass(emulators.SingleValue, emulators.SupportsSwipeToDelete))
         self.assertTrue(issubclass(emulators.Standard, emulators.SupportsSwipeToDelete))
         self.assertTrue(issubclass(emulators.Subtitled, emulators.SupportsSwipeToDelete))
-
-    def setUp(self):
-        super(SwipeToDeleteTestCase, self).setUp()
-        self._item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard')
 
     def test_standard_emulator(self):
         self.assertIsInstance(self._item, emulators.Standard)
