@@ -142,8 +142,8 @@ private Q_SLOTS:
         QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
 
         // Translate in C++
-        QCOMPARE(i18n->dtr(i18n->domain(), "Welcome"), QString("Greets"));
-        QCOMPARE(i18n->tr("Count the kilometres"), QString("Count the clicks"));
+        QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Greets"));
+        QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the clicks"));
     }
 };
 
