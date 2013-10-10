@@ -63,7 +63,7 @@ QImage ThumbnailGenerator::getFallbackImage(const QString &id, QSize *size,
     QMimeDatabase db;
     QMimeType mime = db.mimeTypeForFile(id);
     QImage result;
-    if(mime.name().contains("video")) {
+    if(mime.name().contains("audio")) {
         result.load(DEFAULT_ALBUM_ART);
     } else if(mime.name().contains("video")) {
         result.load(DEFAULT_VIDEO_ART);
