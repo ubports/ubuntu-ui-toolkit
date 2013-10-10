@@ -76,6 +76,7 @@ MainView {
                 ToolbarButton {
                     text: "oh"
                 }
+                opened: false
             }
         }
 
