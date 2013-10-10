@@ -58,7 +58,6 @@ MainView {
     def test_toolbar_custom_emulator(self):
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
-        self.assertFalse(toolbar.opened)
 
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
@@ -124,12 +123,19 @@ MainView {
                     onTriggered: label.text = "Button clicked."
                 }
             }
+            // Make sure that for these tests the toolbar starts closed.
             locked: false
             opened: false
+            hideTimeout: 0
         }
     }
 }
 """)
+
+    def setUp(self):
+        super(ToolbarTestCase, self).setUp()
+        self.toolbar = self.main_view.get_toolbar()
+        self.assertFalse(self.toolbar.opened)
 
     def test_open_toolbar(self):
         toolbar = self.main_view.open_toolbar()
