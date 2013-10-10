@@ -520,5 +520,4 @@ MainView {
     def test_confirm_removal_when_item_was_not_swiped(self):
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, self._item.confirm_removal)
-        
 
