@@ -75,7 +75,7 @@ private Q_SLOTS:
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
         QString testDataFolder(QCoreApplication::applicationDirPath());
-        setenv("XDG_DATA_HOME", testDataFolder.toUtf8().constData(), 1);
+        setenv("XDG_DATA_HOME", testDataFolder.toUtf8(), 1);
 
         // Verify that we set it correctly
         QString doubleCheckLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
@@ -117,7 +117,7 @@ private Q_SLOTS:
         QCOMPARE(applicationName, i18n->domain());
 
         // Was the locale folder detected and set?
-        QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8().constData(), ((const char*)0)));
+        QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
         QString expectedLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
             "locale", QStandardPaths::LocateDirectory));
         QCOMPARE(boundDomain, expectedLocalePath);

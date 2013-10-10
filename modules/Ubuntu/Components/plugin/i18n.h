@@ -52,7 +52,7 @@ public:
     QString language();
 
     // setter
-    void setDomain(QString domain);
+    void setDomain(const QString& domain);
     void setLanguage(const QString& lang);
 
 Q_SIGNALS:

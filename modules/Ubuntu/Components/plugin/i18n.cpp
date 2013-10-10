@@ -89,9 +89,9 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
     Q_EMIT domainChanged();
 }
 
-void UbuntuI18n::setDomain(QString domain) {
+void UbuntuI18n::setDomain(const QString& domain) {
     m_domain = domain;
-    C::textdomain(domain.toUtf8().constData());
+    C::textdomain(domain.toUtf8());
     /*
      Look for locale folder as per XDG basedir spec
      The default is /usr/share/locale if we don't set a folder
@@ -105,7 +105,7 @@ void UbuntuI18n::setDomain(QString domain) {
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
-    setenv("LANGUAGE",lang.toUtf8().constData(),1);
+    setenv("LANGUAGE",lang.toUtf8() ,1);
     Q_EMIT languageChanged();
 }
 
