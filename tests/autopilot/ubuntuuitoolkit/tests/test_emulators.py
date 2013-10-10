@@ -112,7 +112,7 @@ MainView {
 
     // Make sure that for these tests the toolbar starts closed.
     Component.onCompleted: {
-        __propagated.toolbar.hideTimeout = 0;
+        __propagated.toolbar.close();
     }
 
     Page {
@@ -132,9 +132,6 @@ MainView {
                     onTriggered: label.text = "Button clicked."
                 }
             }
-            // Make sure that for these tests the toolbar starts closed.
-            locked: false
-            opened: false
         }
     }
 }
