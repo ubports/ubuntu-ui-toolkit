@@ -121,6 +121,9 @@ private Q_SLOTS:
         QString expectedLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
             "locale", QStandardPaths::LocateDirectory));
         QCOMPARE(boundDomain, expectedLocalePath);
+        // Is the domain gettext uses correct?
+        QString gettextDomain(C::textdomain(((const char*)0)));
+        QCOMPARE(gettextDomain, i18n->domain());
 
         /* For manual testing one can do something like
             env LANGUAGE=en_US TEXTDOMAINDIR=./tests/unit/tst_i18n/locale/ gettext localizedApp 'Welcome'
