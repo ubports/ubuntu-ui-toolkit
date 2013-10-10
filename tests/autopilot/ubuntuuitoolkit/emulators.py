@@ -332,13 +332,13 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
 
-class ListItemEmpty(UbuntuUIToolkitEmulatorBase):
-    """ListItem.Empty Autopilot emulator."""
+class SupportsSwipeToDelete(object):
+    """Help class to emulate swipe to delete"""
 
-    def _getConfirmButtton(self):
-        return self.select_single('QQuickItem', 'confirmRemovalDialog')
+    def _get_confirm_buttton(self):
+        return self.select_single('QQuickItem', objectName='confirmRemovalDialog')
 
-    def swipeToDelete(self, direction):
+    def swipe_to_delete(self, direction="right"):
         """ Swipe the item in a specific direction """
         if (self.removable):
             x, y, w, h = self.globalRect
@@ -351,10 +351,43 @@ class ListItemEmpty(UbuntuUIToolkitEmulatorBase):
 
             self.pointing_device.drag(tx, ty, w, ty)
             self.waitingConfirmationForRemoval.wait_for(True)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not removable'.format(self.objectName))
 
-    def confirmRemoval(self):
+
+    def confirm_removal(self):
         """ Comfirm item removal if this was already swiped """
         if (self.waitingConfirmationForRemoval):
-            deleteButton = self.getConfirmButtton()
+            deleteButton = self._get_confirm_buttton()
             self.pointing_device.click_object(deleteButton)
+            self.implicitHeight.wait_for(0)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not waiting for removal confirmation'.format(self.objectName))
+
+
+class Empty(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class Base(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class ItemSelector(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class MultiValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class SingleControl(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class SingleValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class Standard(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
+
+class Subtitled(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+    pass
 

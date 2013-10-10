@@ -275,7 +275,6 @@ AbstractButton {
                 var finalX = body.width
                 if (emptyListItem.confirmRemoval) {
                     finalX = itemMoveOffset
-                    confirmRemovalDialog.waitingForConfirmation = true
                 }
                 if (body.x > 0) {
                     body.x = finalX
@@ -321,6 +320,7 @@ AbstractButton {
                     }
                     ScriptAction {
                          script: {
+                             confirmRemovalDialog.waitingForConfirmation = true
                              priv.commitDrag()
                         }
                     }
@@ -356,6 +356,7 @@ AbstractButton {
 
                 visible: false
                 width: units.gu(15)
+                x: body.x - width - units.gu(2)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
@@ -394,6 +395,7 @@ AbstractButton {
                 }
 
                 MouseArea {
+                    visible: confirmRemovalDialog.waitingForConfirmation
                     anchors.fill: parent
                     onClicked: removeItemAnimation.start()
                 }

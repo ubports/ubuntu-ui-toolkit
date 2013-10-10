@@ -463,30 +463,53 @@ MainView {
             width: parent.width
 
             Repeater {
-                model: 10
-                width: parent.width                
+                model: 3
+                width: parent.width
                 Standard {
-                    objectName: "listitem_" + index
+                    objectName: "listitem_standard_" + index
 
                     confirmRemoval: true
                     removable: true
-                    width: parent.width                    
+                    width: parent.width
                     text: 'Slide to remove'
                 }
             }
-        }       
+
+            Repeater {
+                model: 3
+                width: parent.width
+                Empty {
+                    objectName: "listitem_empty_" + index
+
+                    confirmRemoval: true
+                    removable: true
+                    width: parent.width
+                }
+            }
+        }
     }
 }
 """)
 
-    def test_list_item_popover_emulator(self):
-        item5 = self.main_view.select_single(emulators.ListItemEmpty,
-                                             objectName='listitem_5')
-        self.assertIsInstance(item5, emulators.ListItemEmpty)
+    def test_empty_emulator(self):
+        item = self.main_view.select_single(emulators.Empty,
+                                             objectName='listitem_empty_1')
+        self.assertIsInstance(item, emulators.Empty)
 
-    def test_delete_a_item(self):
-        item5 = self.main_view.select_single(emulators.ListItemEmpty,
-                                             objectName='listitem_5')
-        item5.swipeToDelete("right")
-        self.assertTrue(item5.waitingConfirmationForRemoval)
-    
+    def test_standard_emulator(self):
+        item = self.main_view.select_single(emulators.Standard,
+                                             objectName='listitem_standard_2')
+        self.assertIsInstance(item, emulators.Standard)
+
+    def test_swipe_item(self):
+        item = self.main_view.select_single(emulators.Standard,
+                                             objectName='listitem_standard_0')
+        item.swipe_to_delete("right")
+        self.assertTrue(item.waitingConfirmationForRemoval)
+
+    def test_delete_item(self):
+        item = self.main_view.select_single(emulators.Standard,
+                                             objectName='listitem_standard_0')
+        item.swipe_to_delete("right")
+        item.confirm_removal()
+        self.assertEqual(item.implicitHeight, 0)
