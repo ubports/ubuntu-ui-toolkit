@@ -54,7 +54,6 @@ Panel {
             // open the toolbar, except when it is locked in closed position
             if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
                     && !tools.opened && tools.locked) {
-//            if (tools && tools.hasOwnProperty("opened") && !tools.opened) {
                 // toolbar is locked in closed state
                 toolbar.close();
             } else {
