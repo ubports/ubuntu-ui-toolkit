@@ -20,7 +20,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Test 0.1
 import Ubuntu.Unity.Action 1.0 as UnityActions
 
-Item {
+MainView {
     width: 400
     height: 400
 
@@ -132,8 +132,7 @@ Item {
          function test_signal() {
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             wait(100)
-             compare(clickedSignal.count, 1, "Clicked not emitted.");
+             clickedSignal.wait()
          }
 
          function test_triggered() {
