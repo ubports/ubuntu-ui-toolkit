@@ -457,33 +457,20 @@ import Ubuntu.Components.ListItems 0.1
 MainView {
     width: units.gu(48)
     height: units.gu(300)
-    Flickable {
-        anchors.fill: parent
-        Column {
+
+    Column {
+        width: parent.width
+
+        Standard {
+            objectName: "listitem_standard"
+            confirmRemoval: true
+            removable: true
             width: parent.width
-
-            Repeater {
-                model: 3
-                width: parent.width
-                Standard {
-                    objectName: "listitem_standard_" + index
-
-                    confirmRemoval: true
-                    removable: true
-                    width: parent.width
-                    text: 'Slide to remove'
-                }
-            }
-
-            Repeater {
-                model: 3
-                width: parent.width
-                Empty {
-                    objectName: "listitem_empty_" + index
-
-                    width: parent.width
-                }
-            }
+            text: 'Slide to remove'
+        }
+        Empty {
+            objectName: "listitem_empty"
+            width: parent.width
         }
     }
 }
@@ -501,43 +488,43 @@ MainView {
 
     def test_standard_emulator(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_2')
+            emulators.Standard, objectName='listitem_standard')
         self.assertIsInstance(item, emulators.Standard)
 
     def test_swipe_item(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_0')
+            emulators.Standard, objectName='listitem_standard')
         item.swipe_to_delete()
         self.assertTrue(item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_right(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_0')
+            emulators.Standard, objectName='listitem_standard')
         item.swipe_to_delete("right")
         self.assertTrue(item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_left(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_0')
+            emulators.Standard, objectName='listitem_standard')
         item.swipe_to_delete("left")
         self.assertTrue(item.waitingConfirmationForRemoval)
 
     def test_delete_item(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_0')
+            emulators.Standard, objectName='listitem_standard')
         item.swipe_to_delete("right")
         item.confirm_removal()
         self.assertEqual(item.implicitHeight, 0)
 
     def test_delete_non_removable_item(self):
         item = self.main_view.select_single(
-            emulators.Empty, objectName='listitem_empty_0')
+            emulators.Empty, objectName='listitem_empty')
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, item.swipe_to_delete)
 
     def test_confirm_removal_when_item_was_not_swiped(self):
         item = self.main_view.select_single(
-            emulators.Standard, objectName='listitem_standard_0')
+            emulators.Standard, objectName='listitem_standard')
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, item.confirm_removal)
         
