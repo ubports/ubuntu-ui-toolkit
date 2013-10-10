@@ -338,7 +338,7 @@ class SupportsSwipeToDelete(object):
     def _get_confirm_buttton(self):
         return self.select_single('QQuickItem', objectName='confirmRemovalDialog')
 
-    def swipe_to_delete(self, direction="right"):
+    def swipe_to_delete(self, direction='right'):
         """ Swipe the item in a specific direction """
         if (self.removable):
             x, y, w, h = self.globalRect

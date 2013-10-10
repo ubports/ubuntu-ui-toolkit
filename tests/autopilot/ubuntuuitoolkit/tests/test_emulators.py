@@ -499,15 +499,15 @@ MainView {
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_right(self):
-        self._item.swipe_to_delete("right")
+        self._item.swipe_to_delete('right')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_left(self):
-        self._item.swipe_to_delete("left")
+        self._item.swipe_to_delete('left')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_delete_item(self):
-        self._item.swipe_to_delete("right")
+        self._item.swipe_to_delete('right')
         self._item.confirm_removal()
         self.assertEqual(self._item.implicitHeight, 0)
 
