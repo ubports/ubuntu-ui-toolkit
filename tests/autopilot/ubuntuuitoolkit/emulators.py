@@ -331,3 +331,30 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if self.checked:
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
+
+class ListItemEmpty(UbuntuUIToolkitEmulatorBase):
+    """ListItem.Empty Autopilot emulator."""
+
+    def _getConfirmButtton(self):
+        return self.select_single('QQuickItem', 'confirmRemovalDialog')
+
+    def swipeToDelete(self, direction):
+        """ Swipe the item in a specific direction """
+        if (self.removable):
+            x, y, w, h = self.globalRect
+            if (direction == 'right'):
+                tx = x + (w / 8)
+                ty = y + (h / 2)
+            else:
+                tx = x - (w / 8)
+                ty = y - (h / 2)
+
+            self.pointing_device.drag(tx, ty, w, ty)
+            self.waitingConfirmationForRemoval.wait_for(True)
+
+    def confirmRemoval(self):
+        """ Comfirm item removal if this was already swiped """
+        if (self.waitingConfirmationForRemoval):
+            deleteButton = self.getConfirmButtton()
+            self.pointing_device.click_object(deleteButton)
+

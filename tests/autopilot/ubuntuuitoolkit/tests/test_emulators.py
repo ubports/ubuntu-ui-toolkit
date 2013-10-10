@@ -445,3 +445,48 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
+
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(300)
+    Flickable {
+        anchors.fill: parent
+        Column {
+            width: parent.width
+
+            Repeater {
+                model: 10
+                width: parent.width                
+                Standard {
+                    objectName: "listitem_" + index
+
+                    confirmRemoval: true
+                    removable: true
+                    width: parent.width                    
+                    text: 'Slide to remove'
+                }
+            }
+        }       
+    }
+}
+""")
+
+    def test_list_item_popover_emulator(self):
+        item5 = self.main_view.select_single(emulators.ListItemEmpty,
+                                             objectName='listitem_5')
+        self.assertIsInstance(item5, emulators.ListItemEmpty)
+
+    def test_delete_a_item(self):
+        item5 = self.main_view.select_single(emulators.ListItemEmpty,
+                                             objectName='listitem_5')
+        item5.swipeToDelete("right")
+        self.assertTrue(item5.waitingConfirmationForRemoval)
+    
