@@ -138,24 +138,24 @@ MainView {
         self.assertFalse(self.toolbar.opened)
 
     def test_open_toolbar(self):
-        toolbar = self.main_view.open_toolbar()
-        self.assertTrue(toolbar.opened)
-        self.assertFalse(toolbar.animating)
+        self.main_view.open_toolbar()
+        self.assertTrue(self.toolbar.opened)
+        self.assertFalse(self.toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
             self.main_view.open_toolbar()
 
         self.assertFalse(mock_drag.called)
-        self.assertTrue(toolbar.opened)
+        self.assertTrue(self.toolbar.opened)
 
     def test_close_toolbar(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         self.main_view.close_toolbar()
-        self.assertFalse(toolbar.opened)
-        self.assertFalse(toolbar.animating)
+        self.assertFalse(self.toolbar.opened)
+        self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
@@ -163,19 +163,19 @@ MainView {
             self.main_view.close_toolbar()
 
         self.assertFalse(mock_drag.called)
-        self.assertFalse(self.main_view.get_toolbar().opened)
+        self.assertFalse(self.toolbar.opened)
 
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
-        toolbar = self.main_view.open_toolbar()
-        toolbar.click_button('buttonName')
+        self.main_view.open_toolbar()
+        self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
     def test_click_unexisting_button(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         error = self.assertRaises(
-            ValueError, toolbar.click_button, 'unexisting')
+            ValueError, self.toolbar.click_button, 'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
 
