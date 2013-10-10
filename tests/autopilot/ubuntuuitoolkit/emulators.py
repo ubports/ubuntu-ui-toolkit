@@ -342,14 +342,14 @@ class SupportsSwipeToDelete(object):
         """ Swipe the item in a specific direction """
         if (self.removable):
             x, y, w, h = self.globalRect
-            if (direction == 'right'):
-                tx = x + (w / 8)
-                ty = y + (h / 2)
-            else:
-                tx = x - (w / 8)
-                ty = y - (h / 2)
+            tx = x + (w / 8)
+            ty = y + (h / 2)
 
-            self.pointing_device.drag(tx, ty, w, ty)
+            if (direction == 'right'):
+                self.pointing_device.drag(tx, ty, w, ty)
+            else:
+                self.pointing_device.drag(w, ty, x, ty)
+
             self.waitingConfirmationForRemoval.wait_for(True)
         else:
             raise ToolkitEmulatorException(
