@@ -104,9 +104,7 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    property bool waitingConfirmationForRemoval
     signal delegateClicked(int index)
-    funtion cancelItemRemoval()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
@@ -407,6 +405,7 @@ AbstractButton
     property bool removable
     property bool confirmRemoval
     readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
     signal itemRemoved
     property int __height
     property bool showDivider
@@ -415,6 +414,7 @@ AbstractButton
     property list<Item> backgroundIndicator
     property ThinDivider divider
     property real __contentsMargins
+    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
