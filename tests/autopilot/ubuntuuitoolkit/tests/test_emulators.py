@@ -446,6 +446,7 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
 
+
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
@@ -482,14 +483,22 @@ MainView {
             emulators.Standard, objectName='listitem_standard')
 
     def test_supported_class(self):
-        self.assertTrue(issubclass(emulators.Empty, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.Base, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.ItemSelector, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.MultiValue, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.SingleControl, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.SingleValue, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.Standard, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(emulators.Subtitled, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.Empty, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.Base, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.ItemSelector, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.MultiValue, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.SingleControl, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.SingleValue, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.Standard, emulators.SupportsSwipeToDelete))
+        self.assertTrue(issubclass(
+            emulators.Subtitled, emulators.SupportsSwipeToDelete))
 
     def test_standard_emulator(self):
         self.assertIsInstance(self._item, emulators.Standard)
@@ -520,4 +529,3 @@ MainView {
     def test_confirm_removal_when_item_was_not_swiped(self):
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, self._item.confirm_removal)
-

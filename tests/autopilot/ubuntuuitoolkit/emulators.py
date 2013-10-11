@@ -332,11 +332,13 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
 
+
 class SupportsSwipeToDelete(object):
     """Help class to emulate swipe to delete"""
 
     def _get_confirm_buttton(self):
-        return self.select_single('QQuickItem', objectName='confirmRemovalDialog')
+        return self.select_single(
+            'QQuickItem', objectName='confirmRemovalDialog')
 
     def swipe_to_delete(self, direction='right'):
         """ Swipe the item in a specific direction """
@@ -355,7 +357,6 @@ class SupportsSwipeToDelete(object):
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
-
     def confirm_removal(self):
         """ Comfirm item removal if this was already swiped """
         if (self.waitingConfirmationForRemoval):
@@ -364,30 +365,37 @@ class SupportsSwipeToDelete(object):
             self.implicitHeight.wait_for(0)
         else:
             raise ToolkitEmulatorException(
-                'The item "{0}" is not waiting for removal confirmation'.format(self.objectName))
+                'The item "{0}" is not waiting for removal confirmation'.
+                format(self.objectName))
 
 
 class Empty(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
 
+
 class Base(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
+
 
 class ItemSelector(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
 
+
 class MultiValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
+
 
 class SingleControl(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
 
+
 class SingleValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
+
 
 class Standard(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
 
+
 class Subtitled(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
     pass
-
