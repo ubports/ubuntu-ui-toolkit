@@ -104,6 +104,9 @@ private Q_SLOTS:
     void testCase_LocalizedApp()
     {
         UbuntuI18n* i18n = &UbuntuI18n::instance();
+        // By default no domain is set
+        QCOMPARE(i18n->domain(), QString(""));
+
         // Start out with no localization
         i18n->setLanguage("C");
         // Load the app which should pick up the locale we prepared
