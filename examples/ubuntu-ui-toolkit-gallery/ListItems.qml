@@ -77,51 +77,89 @@ Template {
     }
 
     ListItemsSection {
-        title: i18n.tr("Option selector")
-        className: "OptionSelector"
+        title: i18n.tr("Item selector")
+        className: "ItemSelector"
 
         Column {
             anchors.left: parent.left
             anchors.right: parent.right
             spacing: units.gu(3)
 
-           ListItem.ItemSelector {
-                text: i18n.tr("Label")
+            ListItem.ItemSelector {
+                text: i18n.tr("Expanding")
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
-           }
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
 
-           ListItem.ItemSelector {
-                text: i18n.tr("Label")
+            ListItem.ItemSelector {
+                text: i18n.tr("Expanded")
                 expanded: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
-           }
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
 
-           ListItem.ItemSelector {
-               text: i18n.tr("Label")
-               model: customModel
-               expanded: true
-               colourImage: true
-               delegate: selectorDelegate
-           }
+            ListItem.ItemSelector {
+                text: i18n.tr("Multiple Selection")
+                expanded: false
+                multiSelection: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
 
-           Component {
-               id: selectorDelegate
-               Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
-           }
+            ListItem.ItemSelector {
+                text: i18n.tr("Custom Model")
+                model: customModel
+                expanded: true
+                colourImage: true
+                delegate: selectorDelegate
+            }
 
-           ListModel {
-               id: customModel
-               ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
-               ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
-               ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
-               ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
-           }
+            Component {
+                id: selectorDelegate
+                Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
+
+            ListModel {
+                id: customModel
+                ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+                ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+            }
+
+            ListItem.ItemSelector {
+                text: i18n.tr("Label")
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
+            }
+
+            ListItem.ItemSelector {
+                text: i18n.tr("Label")
+                expanded: true
+                selectedIndex: -1
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
+            }
         }
     }
 

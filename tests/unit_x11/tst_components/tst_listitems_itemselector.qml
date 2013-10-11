@@ -73,6 +73,12 @@ Item {
         signalName: "delegateClicked"
     }
 
+    SignalSpy {
+        id: expansionSignal
+        target: selector
+        signalName: "expansionCompleted"
+    }
+
     UbuntuTestCase {
          name: "ItemSelectorAPI"
          when: windowShown
@@ -117,9 +123,10 @@ Item {
          }
 
          function test_signal() {
+             var listContainer = findChild(selector, "listContainer");
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             wait(100)
+             tryCompare(expansionSignal, "count", 1);
              compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
     }

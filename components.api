@@ -101,10 +101,14 @@ modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
     property bool expanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool currentlyExpanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
@@ -433,10 +437,14 @@ modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
     property bool expanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool currentlyExpanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/ListItems/LabelVisual.qml
 Label
     property bool selected

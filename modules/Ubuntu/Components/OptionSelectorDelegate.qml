@@ -16,8 +16,8 @@
 
 /*!
     \qmltype OptionSelectorDelegate
-    \inqmlmodule Toolkit.Toolkit 0.1
-    \ingroup ubuntu-Toolkit
+    \inqmlmodule Ubuntu.Components 0.1
+    \ingroup ubuntu-components
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 
     \b{This component is under heavy development.}
@@ -107,23 +107,26 @@ ListItem.Standard {
             gl_FragColor = colour * sourceColour.a * qt_Opacity;
         }"
 
-    width: parent.width + units.gu(2)
     showDivider: index !== listView.count - 1 ? 1 : 0
     highlightWhenPressed: false
     selected: ListView.isCurrentItem
     anchors {
         left: parent.left
-        leftMargin: units.gu(-1)
+        right: parent.right
     }
     onClicked: {
         if (listView.container.isExpanded) {
             listView.delegateClicked(index);
 
-            listView.previousIndex = listView.currentIndex;
-            listView.currentIndex = index;
+            if (!listView.multiSelection) {
+                listView.previousIndex = listView.currentIndex;
+                listView.currentIndex = index;
+            } else {
+                selected = !selected;
+            }
         }
 
-        if (!listView.expanded) {
+        if (!listView.expanded && !listView.multiSelection) {
             listView.container.isExpanded = !listView.container.isExpanded;
         }
     }
@@ -294,7 +297,7 @@ ListItem.Standard {
 
         anchors {
             left: parent.left
-            leftMargin: units.gu(3)
+            leftMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
 
@@ -338,11 +341,11 @@ ListItem.Standard {
 
         width: units.gu(2)
         height: units.gu(2)
-        source: listView.expanded ? listView.container.tick : listView.container.chevron
+        source: listView.expanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
         opacity: option.selected ? 1.0 : 0.0
         anchors {
             right: parent.right
-            rightMargin: units.gu(3)
+            rightMargin: units.gu(2)
             verticalCenter: parent.verticalCenter
         }
 

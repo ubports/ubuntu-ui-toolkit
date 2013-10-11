@@ -130,9 +130,10 @@ Item {
          }
 
          function test_signal() {
+             var listContainer = findChild(selector, "listContainer");
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             wait(100)
+             tryCompare(listContainer, "isExpanded", true);
              compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
 

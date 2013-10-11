@@ -11,6 +11,14 @@ API Changes
 ***********
 * ADDED IN: Tab: readonly property int index
 * ADDED IN: ListItem.Empty: property bool confirmRemoval
+* ADDED IN: OptionSelector: property bool multiSelection
+* ADDED IN: ItemSelector: property bool multiSelection
+* ADDED IN: OptionSelector: readonly property alias itemHeight
+* ADDED IN: ItemSelector: readonly property alias itemHeight
+* ADDED IN: OptionSelector: signal expansionCompleted()
+* ADDED IN: ItemSelector: signal expansionCompleted()
+* ADDED IN: OptionSelector: readonly property alias currentlyExpanded
+* ADDED IN: ItemSelector: readonly property alias currentlyExpanded
 * ADDED IN: OptionSelectorDelegate: property bool constrainImage
 * ADDED IN: Empty: property alias divider
 * ADDED IN: ListItems/OptionSelector: signal delegateSelected()
