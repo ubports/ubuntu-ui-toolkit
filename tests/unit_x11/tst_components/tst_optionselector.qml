@@ -132,13 +132,13 @@ MainView {
          function test_signal() {
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             clickedSignal.wait()
+             clickedSignal.wait();
          }
 
          function test_triggered() {
              mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             triggeredSignal.wait()
+             triggeredSignal.wait();
          }
     }
 }
