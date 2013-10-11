@@ -18,6 +18,7 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
 import Ubuntu.Test 0.1
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 Item {
     width: 400
@@ -35,6 +36,13 @@ Item {
             delegate: selectorDelegate
             model: customModel
             expanded: true
+
+            action: {
+                enabled: true
+                name: 'selector'
+                text: 'Selector'
+                parameterType: UnityActions.Action.Type.Integer
+            }
         }
 
         OptionSelectorDelegate {
@@ -70,6 +78,12 @@ Item {
         id: clickedSignal
         target: selector
         signalName: "delegateClicked"
+    }
+
+    SignalSpy {
+        id: triggeredSignal
+        target: selector
+        signalName: "triggered"
     }
 
     UbuntuTestCase {
@@ -120,6 +134,12 @@ Item {
              mouseClick(selector, 100, 100, Qt.LeftButton);
              wait(100)
              compare(clickedSignal.count, 1, "Clicked not emitted.");
+         }
+
+         function test_triggered() {
+             mouseMove(selector, 100, 100);
+             mouseClick(selector, 100, 100, Qt.LeftButton);
+             triggeredSignal.wait()
          }
     }
 }
