@@ -104,7 +104,9 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    property bool waitingConfirmationForRemoval
     signal delegateClicked(int index)
+    funtion cancelItemRemoval()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text

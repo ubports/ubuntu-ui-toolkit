@@ -55,6 +55,8 @@ API Changes
 * ADDED IN Panel: function open()
 * ADDED IN Panel: function close()
 * DEPRECATED IN Panel: writable property opened. Will be made read-only.
+* ADDED IN: Empty: property bool waitingConfirmationForRemoval
+* ADDED IN: Empty: function cancelItemRemoval()
 
 Compatibility Breaks
 ********************
