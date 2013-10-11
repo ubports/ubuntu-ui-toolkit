@@ -349,8 +349,12 @@ class SupportsSwipeToDelete(object):
 
             if (direction == 'right'):
                 self.pointing_device.drag(tx, ty, w, ty)
-            else:
+            elif (direction == 'left'):
                 self.pointing_device.drag(w, ty, x, ty)
+            else:
+                raise ToolkitEmulatorException(
+                    'Invalid direction "{0}" used on swipe to delete function'
+                    .format(direction))
 
             self.waitingConfirmationForRemoval.wait_for(True)
         else:

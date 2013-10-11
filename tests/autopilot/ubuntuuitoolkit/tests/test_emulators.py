@@ -515,8 +515,18 @@ MainView {
         self._item.swipe_to_delete('left')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
-    def test_delete_item(self):
+    def test_swipe_item_to_wrong_direction(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self._item.swipe_to_delete, 'up')
+
+    def test_delete_item_moving_right(self):
         self._item.swipe_to_delete('right')
+        self._item.confirm_removal()
+        self.assertEqual(self._item.implicitHeight, 0)
+
+    def test_delete_item_moving_left(self):
+        self._item.swipe_to_delete('left')
         self._item.confirm_removal()
         self.assertEqual(self._item.implicitHeight, 0)
 
