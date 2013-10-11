@@ -488,15 +488,15 @@ MainView {
         self.assertTrue(issubclass(
             emulators.ItemSelector, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.MultiValue, emulators.Empty))
+            emulators.Standard, emulators.Empty))
         self.assertTrue(issubclass(
             emulators.SingleControl, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.SingleValue, emulators.Empty))
+            emulators.MultiValue, emulators.Base))
         self.assertTrue(issubclass(
-            emulators.Standard, emulators.Empty))
+            emulators.SingleValue, emulators.Base))
         self.assertTrue(issubclass(
-            emulators.Subtitled, emulators.Empty))
+            emulators.Subtitled, emulators.Base))
 
     def test_standard_emulator(self):
         self.assertIsInstance(self._item, emulators.Standard)
