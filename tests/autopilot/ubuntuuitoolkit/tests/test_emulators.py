@@ -516,7 +516,7 @@ MainView {
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_wrong_direction(self):
-        error = self.assertRaises(
+        self.assertRaises(
             emulators.ToolkitEmulatorException,
             self._item.swipe_to_delete, 'up')
 
@@ -533,9 +533,9 @@ MainView {
     def test_delete_non_removable_item(self):
         self._item = self.main_view.select_single(
             emulators.Empty, objectName='listitem_empty')
-        error = self.assertRaises(
+        self.assertRaises(
             emulators.ToolkitEmulatorException, self._item.swipe_to_delete)
 
     def test_confirm_removal_when_item_was_not_swiped(self):
-        error = self.assertRaises(
+        self.assertRaises(
             emulators.ToolkitEmulatorException, self._item.confirm_removal)
