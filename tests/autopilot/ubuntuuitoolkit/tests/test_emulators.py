@@ -484,21 +484,19 @@ MainView {
 
     def test_supported_class(self):
         self.assertTrue(issubclass(
-            emulators.Empty, emulators.SupportsSwipeToDelete))
+            emulators.Base, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.Base, emulators.SupportsSwipeToDelete))
+            emulators.ItemSelector, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.ItemSelector, emulators.SupportsSwipeToDelete))
+            emulators.MultiValue, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.MultiValue, emulators.SupportsSwipeToDelete))
+            emulators.SingleControl, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.SingleControl, emulators.SupportsSwipeToDelete))
+            emulators.SingleValue, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.SingleValue, emulators.SupportsSwipeToDelete))
+            emulators.Standard, emulators.Empty))
         self.assertTrue(issubclass(
-            emulators.Standard, emulators.SupportsSwipeToDelete))
-        self.assertTrue(issubclass(
-            emulators.Subtitled, emulators.SupportsSwipeToDelete))
+            emulators.Subtitled, emulators.Empty))
 
     def test_standard_emulator(self):
         self.assertIsInstance(self._item, emulators.Standard)

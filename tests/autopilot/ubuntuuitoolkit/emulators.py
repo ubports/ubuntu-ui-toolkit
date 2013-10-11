@@ -333,8 +333,8 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
             self.checked.wait_for(False)
 
 
-class SupportsSwipeToDelete(object):
-    """Help class to emulate swipe to delete"""
+class Empty(UbuntuUIToolkitEmulatorBase):
+    """Base class to emulate swipe to delete"""
 
     def _get_confirm_button(self):
         return self.select_single(
@@ -373,33 +373,29 @@ class SupportsSwipeToDelete(object):
                 format(self.objectName))
 
 
-class Empty(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class Base(Empty):
     pass
 
 
-class Base(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class ItemSelector(Empty):
     pass
 
 
-class ItemSelector(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class MultiValue(Empty):
     pass
 
 
-class MultiValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class SingleControl(Empty):
     pass
 
 
-class SingleControl(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class SingleValue(Empty):
     pass
 
 
-class SingleValue(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class Standard(Empty):
     pass
 
 
-class Standard(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
-    pass
-
-
-class Subtitled(UbuntuUIToolkitEmulatorBase, SupportsSwipeToDelete):
+class Subtitled(Empty):
     pass
