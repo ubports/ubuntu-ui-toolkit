@@ -377,11 +377,11 @@ class Base(Empty):
     pass
 
 
-class ItemSelector(Empty):
+class Standard(Empty):
     pass
 
 
-class MultiValue(Empty):
+class ItemSelector(Empty):
     pass
 
 
@@ -389,13 +389,13 @@ class SingleControl(Empty):
     pass
 
 
-class SingleValue(Empty):
+class MultiValue(Base):
     pass
 
 
-class Standard(Empty):
+class SingleValue(Base):
     pass
 
 
-class Subtitled(Empty):
+class Subtitled(Base):
     pass
