@@ -20,6 +20,7 @@
 #include "uctheme.h"
 #include "listener.h"
 #include "quickutils.h"
+#include "i18n.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/QQmlEngine>
@@ -69,11 +70,34 @@
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
+const char *ENV_PATH = "UBUNTU_UI_TOOLKIT_THEMES_PATH";
+
+QStringList themeSearchPath() {
+    QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
+    QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
+    if (pathList.isEmpty()) {
+        // get the default path list from generic data location, which contains
+        // ~/.local/share and XDG_DATA_DIRS
+        pathList << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+    }
+    // fix folders
+    QStringList result;
+    Q_FOREACH(const QString &path, pathList) {
+        if (QDir(path).exists()) {
+            result << path + '/';
+        }
+    }
+    // append standard QML2_IMPORT_PATH value
+    result << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
+    return result;
+}
 
 UCTheme::UCTheme(QObject *parent) :
     QObject(parent),
     m_name(""),
-    m_palette(NULL)
+    m_palette(NULL),
+    m_engine(NULL),
+    m_engineUpdated(false)
 {
     m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
@@ -83,6 +107,21 @@ UCTheme::UCTheme(QObject *parent) :
     loadPalette();
     QObject::connect(this, &UCTheme::nameChanged,
                      this, &UCTheme::loadPalette, Qt::UniqueConnection);
+}
+
+void UCTheme::updateEnginePaths()
+{
+    if (!m_engine || m_engineUpdated) {
+        return;
+    }
+
+    QStringList paths = themeSearchPath();
+    Q_FOREACH(const QString &path, paths) {
+        if (QDir(path).exists()) {
+            m_engine->addImportPath(path);
+        }
+    }
+    m_engineUpdated = true;
 }
 
 void UCTheme::onThemeNameChanged()
@@ -96,15 +135,17 @@ void UCTheme::onThemeNameChanged()
 
 QUrl UCTheme::pathFromThemeName(QString themeName)
 {
-    QString themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
-    if (themesPath.isEmpty()) {
-        themesPath = QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
+    themeName.replace('.', '/');
+    QStringList pathList = themeSearchPath();
+    Q_FOREACH(const QString &path, pathList) {
+        QString themeFolder = THEME_FOLDER_FORMAT.arg(path, themeName);
+        // QUrl needs a trailing slash to understand it's a directory
+        QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
+        if (QDir(absoluteThemeFolder).exists()) {
+            return QUrl::fromLocalFile(absoluteThemeFolder);
+        }
     }
-
-    QString themeFolder = THEME_FOLDER_FORMAT.arg(themesPath, themeName.replace('.', '/'));
-    QString absoluteThemeFolder = QDir(themeFolder).absolutePath();
-    // QUrl needs a trailing slash to understand it's a directory
-    return QUrl::fromLocalFile(absoluteThemeFolder.append("/"));
+    return QUrl();
 }
 
 void UCTheme::updateThemePaths()
@@ -114,7 +155,9 @@ void UCTheme::updateThemePaths()
     QString themeName = m_name;
     while (!themeName.isEmpty()) {
         QUrl themePath = pathFromThemeName(themeName);
-        m_themePaths.append(themePath);
+        if (themePath.isValid()) {
+            m_themePaths.append(themePath);
+        }
         themeName = parentThemeName(themeName);
     }
 }
@@ -152,26 +195,28 @@ QObject* UCTheme::palette() const
 
 QUrl UCTheme::styleUrl(QString styleName)
 {
-    QUrl styleUrl;
-
     Q_FOREACH (QUrl themePath, m_themePaths) {
-        styleUrl = themePath.resolved(styleName);
-        if (QFile::exists(styleUrl.toLocalFile())) {
-            break;
+        QUrl styleUrl = themePath.resolved(styleName);
+        if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+            return styleUrl;
         }
     }
 
-    return styleUrl;
+    return QUrl();
 }
 
 QString UCTheme::parentThemeName(QString themeName)
 {
     QString parentTheme;
     QUrl themePath = pathFromThemeName(themeName);
-    QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
-        parentTheme = in.readLine();
+    if (!themePath.isValid()) {
+        qWarning() << UbuntuI18n::instance().tr("Theme not found: ") << themeName;
+    } else {
+        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            parentTheme = in.readLine();
+        }
     }
     return parentTheme;
 }
@@ -187,12 +232,22 @@ QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
+        if (engine != m_engine && !m_engine) {
+            m_engine = engine;
+            updateEnginePaths();
+        }
+        // make sure we have the paths
         if (engine != NULL) {
             QUrl url = styleUrl(styleName);
-            component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
-            if (component->isError()) {
-                delete component;
-                component = NULL;
+            if (url.isValid()) {
+                component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
+                if (component->isError()) {
+                    delete component;
+                    component = NULL;
+                }
+            } else {
+                qmlInfo(parent) <<
+                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(m_name));
             }
         }
     }
@@ -202,6 +257,10 @@ QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
 
 void UCTheme::registerToContext(QQmlContext* context)
 {
+    // add paths to engine search folder
+    m_engine = context->engine();
+    updateEnginePaths();
+
     // register Theme
     context->setContextProperty("Theme", this);
 
@@ -209,6 +268,7 @@ void UCTheme::registerToContext(QQmlContext* context)
         new ContextPropertyChangeListener(context, "Theme");
     QObject::connect(this, SIGNAL(nameChanged()),
                      themeChangeListener, SLOT(updateContextProperty()));
+
 }
 
 void UCTheme::loadPalette()
