@@ -120,8 +120,7 @@ ListItem.Empty {
       Trigger the action, passing the current index.
      */
     onDelegateClicked: {
-        if (action)
-            action.triggered(index)
+        trigger(index)
     }
 
     showDivider: false
