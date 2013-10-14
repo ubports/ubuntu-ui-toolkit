@@ -183,6 +183,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         return self.select_single(
             ActionSelectionPopover, objectName=object_name)
 
+    def go_back(self):
+        """Go to the previous page."""
+        toolbar = self.open_toolbar()
+        toolbar.click_back_button()
+
 
 class Header(UbuntuUIToolkitEmulatorBase):
     """Header Autopilot emulator."""
@@ -222,6 +227,10 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
 
     def _get_button(self, object_name):
         return self.select_single('ActionItem', objectName=object_name)
+
+    def click_back_button(self):
+        """Click the back button of the toolbar."""
+        self.click_button('back_toolbar_button')
 
 
 class Tabs(UbuntuUIToolkitEmulatorBase):
