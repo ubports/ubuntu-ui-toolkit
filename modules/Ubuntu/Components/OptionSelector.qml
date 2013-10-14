@@ -43,28 +43,28 @@ import Ubuntu.Components 0.1 as Toolkit
 
             OptionSelector {
                 text: i18n.tr("Label")
-                expanded: true
+                alwaysExpanded: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
 
             OptionSelector {
                 objectName: "optionselector_multipleselection"
                 text: i18n.tr("Multiple Selection")
-                expanded: false
+                alwaysExpanded: false
                 multiSelection: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
 
             OptionSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                expanded: true
+                alwaysExpanded: true
                 colourImage: true
                 delegate: selectorDelegate
             }
@@ -97,7 +97,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
             OptionSelector {
                 text: i18n.tr("Label")
-                expanded: true
+                alwaysExpanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -126,7 +126,7 @@ ListItem.Empty {
       \preliminary
       Specifies whether the list is always expanded.
      */
-    property bool expanded: false
+    property bool alwaysExpanded: false
 
     /*!
       \preliminary
@@ -159,14 +159,14 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
-      \qmlproperty bool currentlyExpanded
+      \qmlproperty bool expanded
       Is our list currently expanded?
      */
-    readonly property alias currentlyExpanded: listContainer.isExpanded
+    readonly property alias expanded: listContainer.expanded
 
     /*!
       \qmlproperty real itemHeight
-      Is our list currently expanded?
+      Height of an individual list item.
      */
     readonly property alias itemHeight: list.itemHeight
 
@@ -215,24 +215,24 @@ ListItem.Empty {
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
             readonly property alias colourImage: optionSelector.colourImage
-            property bool isExpanded: expanded || multiSelection
+            property bool expanded: alwaysExpanded || multiSelection
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: optionSelector.alwaysExpanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
             states: [ State {
                     name: "expanded"
-                    when: listContainer.isExpanded
+                    when: listContainer.expanded
                     PropertyChanges {
                         target: listContainer
                         height: list.contentHeight < containerHeight ? list.contentHeight : containerHeight
                     }
                 }, State {
                     name: "collapsed"
-                    when: !listContainer.isExpanded
+                    when: !listContainer.expanded
                     PropertyChanges {
                         target: listContainer
                         height: list.itemHeight
@@ -248,7 +248,7 @@ ListItem.Empty {
                         }
                         ScriptAction {
                             script: {
-                                if (listContainer.isExpanded) {
+                                if (listContainer.expanded) {
                                     expansionCompleted();
                                 }
                             }
@@ -261,14 +261,14 @@ ListItem.Empty {
                 id: list
 
                 property int previousIndex: -1
-                readonly property alias expanded: optionSelector.expanded
+                readonly property alias alwaysExpanded: optionSelector.alwaysExpanded
                 readonly property alias multiSelection: optionSelector.multiSelection
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
                 onDelegateClicked: optionSelector.delegateClicked(index);
-                interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
+                interactive: listContainer.height !== list.contentHeight && listContainer.expanded ? true : false
                 clip: true
                 currentIndex: 0
                 model: optionSelector.model

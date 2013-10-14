@@ -39,29 +39,29 @@ Template {
             OptionSelector {
                 objectName: "optionselector_expanded"
                 text: i18n.tr("Epanded")
-                expanded: true
+                alwaysExpanded: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
 
             OptionSelector {
                 objectName: "optionselector_multipleselection"
                 text: i18n.tr("Multiple Selection")
-                expanded: false
+                alwaysExpanded: false
                 multiSelection: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
 
             OptionSelector {
                objectName: "optionselector_custommodel"
                text: i18n.tr("Custom Model")
                 model: customModel
-                expanded: true
+                alwaysExpanded: true
                 colourImage: true
                 delegate: selectorDelegate
             }
@@ -94,7 +94,7 @@ Template {
 
             OptionSelector {
                 text: i18n.tr("Label")
-                expanded: true
+                alwaysExpanded: true
                 selectedIndex: -1
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
