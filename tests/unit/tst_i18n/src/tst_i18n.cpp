@@ -127,10 +127,19 @@ private Q_SLOTS:
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));
         QCOMPARE(gettextDomain, i18n->domain());
+        // Is the compiled en_US message catalog in the right location?
+        QString messageCatalog(boundDomain + "/en/LC_MESSAGES/localizedApp.mo");
+        QVERIFY(QFileInfo(messageCatalog).exists());
 
         /* For manual testing one can do something like
             env LANGUAGE=en_US TEXTDOMAINDIR=./tests/unit/tst_i18n/locale/ gettext localizedApp 'Welcome'
         */
+
+        // Check if system has en_US locale, otherwise gettext won't work
+        QProcess localeA;
+        localeA.start("locale -a");
+        QVERIFY(localeA.waitForFinished());
+        QVERIFY(QString(localeA.readAll()).split("\n").contains("en_US.utf8"));
 
         i18n->setLanguage("en_US");
         QSignalSpy spy(i18n, SIGNAL(languageChanged()));
