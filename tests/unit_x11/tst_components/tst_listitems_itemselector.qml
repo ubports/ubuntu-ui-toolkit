@@ -66,18 +66,6 @@ Item {
         ListElement { name: "Name 4"; description: "Description 4"; image: "../../resources/optionselector/test.png" }
     }
 
-    SignalSpy {
-        id: clickedSignal
-        target: selector
-        signalName: "delegateClicked"
-    }
-
-    SignalSpy {
-        id: expansionSignal
-        target: selector
-        signalName: "expansionCompleted"
-    }
-
     UbuntuTestCase {
          name: "ItemSelectorAPI"
          when: windowShown
