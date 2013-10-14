@@ -472,7 +472,7 @@ MainView {
                 onClicked: pageStack.push(page1)
             }
         }
-            
+
         Page {
             id: page1
             title: "Page 1"
@@ -495,7 +495,7 @@ MainView {
         button = self.main_view.select_single(
             'Button', objectName='go_to_page1')
         self.pointing_device.click_object(button)
-    
+
     def test_go_back(self):
         self._go_to_page1()
         self.main_view.go_back()
