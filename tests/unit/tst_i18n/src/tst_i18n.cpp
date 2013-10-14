@@ -29,6 +29,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtTest/qtest_gui.h>
 
 namespace C {
 #include <libintl.h>
@@ -159,6 +160,16 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_I18n)
+// The C++ equivalent of QTEST_MAIN(tst_I18n) with added initialization
+int main(int argc, char *argv[])
+{
+    // LC_ALL would fail the test case; it must be unset before execution
+    unsetenv("LC_ALL");
+
+    QGuiApplication app(argc, argv);
+    app.setAttribute(Qt::AA_Use96Dpi, true);
+    tst_I18n* testObject = new tst_I18n();
+    return QTest::qExec(static_cast<QObject*>(testObject), argc, argv);
+}
 
 #include "tst_i18n.moc"
