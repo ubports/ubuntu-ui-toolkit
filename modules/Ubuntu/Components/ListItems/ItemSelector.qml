@@ -214,7 +214,7 @@ ListItem.Empty {
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
-                    name: "alwaysExpanded"
+                    name: "expanded"
                     when: listContainer.expanded
                     PropertyChanges {
                         target: listContainer
