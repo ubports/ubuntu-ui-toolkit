@@ -26,17 +26,10 @@ QMAKE_EXTRA_TARGETS += mofiles
 ## Installation steps for mo files. 'make install'
 MO_FILES = $$system(ls locale/*/LC_MESSAGES/*.mo)
 
-install_mo_commands =
+mo_files.path= /usr/share/locale/
 for(mo_file, MO_FILES) {
   mo_name = $$replace(mo_file,.mo,)
-  mo_targetpath_prefix = $(INSTALL_ROOT)/usr/share
-  mo_target = $${mo_targetpath_prefix}/$${mo_file}
-  !isEmpty(install_mo_commands): install_mo_commands += &&
-  install_mo_commands += test -d $$mo_targetpath || mkdir -p $$mo_targetpath
-  install_mo_commands += && cp $$mo_file $$mo_target
+  mo_files.files += $${mo_name}/LC_MESSAGES/ubuntu-ui-toolkit.mo
 }
-
-install.commands = $$install_mo_commands
-
-QMAKE_EXTRA_TARGETS += install
+INSTALLS += mo_files
 
