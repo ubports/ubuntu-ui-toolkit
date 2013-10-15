@@ -1,3 +1,26 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Tests proving component state saving added, minor fix disabling
+    state saving when attachee ID is not specified or absolute ID cannot
+    be computed.
+  * Member initialization order fixed. This causes build error when
+    built with QtCreator 2.8.1, as that one builds with -Werror
+    parameter. It is highly recommended to all to use QtCreator when
+    developing for Touch.
+
+  [ Jussi Pakkanen ]
+  * Return a default image if thumbnailing does not work.
+
+  [ Leo Arias ]
+  * Added a public function to get the command to launch qmlscene from
+    autopilot tests.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 792
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 11 Oct 2013 17:18:50 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20131007-0ubuntu1) saucy; urgency=low
 
   [ Zoltán Balogh ]
