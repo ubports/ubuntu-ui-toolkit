@@ -9,8 +9,18 @@ UNRELEASED
 
 API Changes
 ***********
+* CHANGED IN: OptionSelector: property bool expanded TO bool alwaysExpanded
+* CHANGED IN: ItemSelector: property bool expanded TO bool alwaysExpanded
+* ADDED IN: OptionSelector: readonly property bool expanded
+* ADDED IN: ItemSelector: readonly property bool expanded
 * ADDED IN: Tab: readonly property int index
 * ADDED IN: ListItem.Empty: property bool confirmRemoval
+* ADDED IN: OptionSelector: property bool multiSelection
+* ADDED IN: ItemSelector: property bool multiSelection
+* ADDED IN: OptionSelector: readonly property real itemHeight
+* ADDED IN: ItemSelector: readonly property real itemHeight
+* ADDED IN: OptionSelector: signal expansionCompleted()
+* ADDED IN: ItemSelector: signal expansionCompleted()
 * ADDED IN: OptionSelectorDelegate: property bool constrainImage
 * ADDED IN: Empty: property alias divider
 * ADDED IN: ListItems/OptionSelector: signal delegateSelected()
