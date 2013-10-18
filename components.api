@@ -42,7 +42,7 @@ Item
     property int fillMode
     property int fadeDuration
     readonly property bool running
-    readonly property size sourceSize
+    property size sourceSize
     readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
