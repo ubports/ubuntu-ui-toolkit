@@ -35,7 +35,7 @@ Item {
             text: "TEST"
             delegate: selectorDelegate
             model: customModel
-            expanded: true
+            alwaysExpanded: true
 
             action: {
                 enabled: true
@@ -81,9 +81,9 @@ Item {
     }
 
     SignalSpy {
-        id: triggeredSignal
+        id: expansionSignal
         target: selector
-        signalName: "triggered"
+        signalName: "expansionCompleted"
     }
 
     UbuntuTestCase {
@@ -93,12 +93,12 @@ Item {
          function test_expanded() {
              var listContainer = findChild(selector, "listContainer");
 
-             selector.expanded = false;
-             compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
+             selector.alwaysExpanded = false;
+             compare(listContainer.expanded, false, "expanded should be true if list is an expanded one");
              compare(listContainer.state, "collapsed", "state should be collapsed");
 
-             selector.expanded = true;
-             compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
+             selector.alwaysExpanded = true;
+             compare(listContainer.expanded, true, "expanded should be false if list is an expanded one");
              compare(listContainer.state, "expanded", "state should be expanded");
          }
 
@@ -130,16 +130,9 @@ Item {
          }
 
          function test_signal() {
-             mouseMove(selector, 100, 100);
              mouseClick(selector, 100, 100, Qt.LeftButton);
-             wait(100)
-             compare(clickedSignal.count, 1, "Clicked not emitted.");
-         }
-
-         function test_triggered() {
-             mouseMove(selector, 100, 100);
-             mouseClick(selector, 100, 100, Qt.LeftButton);
-             triggeredSignal.wait()
+             tryCompare(clickedSignal, "count", 1);
+             tryCompare(expansionSignal, "count", 1);
          }
     }
 }
