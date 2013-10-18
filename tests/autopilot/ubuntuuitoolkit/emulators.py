@@ -380,8 +380,12 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         self.keyboard.press_and_release('BackSpace')
 
     def _select_all(self):
-        # TODO change this to a long press to open the popover and click the
-        # Select All option item, once we are using autopilot 1.4. We can't
-        # currently do it because we need to select the parent object.
-        # --elopio - 2013-10-18
-        self.keyboard.press_and_release('Ctrl+a')
+        self.pointing_device.click_object(self, press_duration=1)
+        root = self.get_root_instance()
+        main_view = root.select_single(MainView)
+        popover = main_view.get_action_selection_popover('text_input_popover')
+        try:
+            popover.click_button_by_text('Select All')
+        except dbus.StateNotFoundError:
+            # TODO do not merge without fixing this!!!
+            pass
