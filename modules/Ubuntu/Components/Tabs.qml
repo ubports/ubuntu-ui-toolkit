@@ -212,8 +212,12 @@ PageTreeNode {
 
         function updateTabList() {
             var list = [];
+            var index = 0;
             for (var i=0; i < children.length; i++) {
-                if (isTab(tabsModel.children[i])) list.push(tabsModel.children[i]);
+                if (isTab(tabsModel.children[i])) {
+                    tabsModel.children[i].__protected.index = index++;
+                    list.push(tabsModel.children[i]);
+                }
             }
             tabList = list;
             tabs.modelChanged();

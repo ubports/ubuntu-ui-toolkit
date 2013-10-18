@@ -35,6 +35,15 @@ TestCase {
         target: crossFadeImage
     }
 
+    CrossFadeImage {
+        id: crossFadeImagePreset
+        sourceSize {
+            width: 123
+            height: 321
+        }
+        source: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
+    }
+
     function loadImage(url) {
         console.log("Loading image...");
         source = url;
@@ -92,5 +101,22 @@ TestCase {
         compare(running, true, "Animation stopped before 1000 ms");
         waitForAnimation();
         cleanupTest();
+    }
+
+    function test_sourceSize() {
+        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
+        compare(crossFadeImage.sourceSize.width, 640, "Source width incorrectly initialized.");
+        compare(crossFadeImage.sourceSize.height, 427, "Source height incorrectly initialized.");
+        crossFadeImage.sourceSize.width = 100;
+        crossFadeImage.sourceSize.height = 101;
+        compare(crossFadeImage.sourceSize.width, 100, "Source width incorrectly updated.");
+        compare(crossFadeImage.sourceSize.height, 101, "Source height incorrectly updated.");
+        waitForAnimation();
+        cleanupTest();
+    }
+
+    function test_sourcePreset() {
+        compare(crossFadeImagePreset.sourceSize.width, 123, "Source width incorrectly taken from preset.");
+        compare(crossFadeImagePreset.sourceSize.height, 321, "Source height incorrectly take from preset.");
     }
 }

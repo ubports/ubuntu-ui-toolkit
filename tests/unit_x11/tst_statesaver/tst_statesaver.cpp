@@ -17,6 +17,7 @@
  */
 
 #include <QtTest/QtTest>
+#include <QtTest/QSignalSpy>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
@@ -42,9 +43,13 @@ public:
 private:
     QString m_modulePath;
 
-    QQuickView *createView(const QString &file)
+    QQuickView *createView(const QString &file, QSignalSpy **spy = 0)
     {
         QQuickView *view = new QQuickView(0);
+        if (spy) {
+            *spy = new QSignalSpy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
+            (*spy)->setParent(view);
+        }
         view->engine()->addImportPath(m_modulePath);
         view->setSource(QUrl::fromLocalFile(file));
         if (!view->rootObject()) {
@@ -223,16 +228,19 @@ private Q_SLOTS:
 
     void test_InvalidUID()
     {
-        QQuickView *view = createView("InvalidUID.qml");
+        QSignalSpy *spy;
+        QQuickView *view = createView("InvalidUID.qml", &spy);
         QVERIFY(view);
+        QCOMPARE(spy->count(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
         delete view;
 
-        view = createView("InvalidUID.qml");
+        view = createView("InvalidUID.qml", &spy);
         QVERIFY(view);
+        QCOMPARE(spy->count(), 1);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem == 0);
         delete view;
@@ -257,16 +265,19 @@ private Q_SLOTS:
 
     void test_InvalidGroupProperty()
     {
-        QQuickView *view = createView("InvalidGroupProperty.qml");
+        QSignalSpy *spy;
+        QQuickView *view = createView("InvalidGroupProperty.qml", &spy);
         QVERIFY(view);
+        QCOMPARE(spy->count(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("group");
         delete view;
 
-        view = createView("InvalidGroupProperty.qml");
+        view = createView("InvalidGroupProperty.qml", &spy);
         QVERIFY(view);
+        QCOMPARE(spy->count(), 1);
         testItem = view->rootObject()->findChild<QObject*>("group");
         QVERIFY(testItem == 0);
         delete view;
@@ -347,6 +358,61 @@ private Q_SLOTS:
         delete view;
     }
 
+    void test_ComponentsWithStateSavers()
+    {
+        QQuickView *view = createView("ComponentsWithStateSavers.qml");
+        QVERIFY(view);
+        QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        QObject *control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled());
+        UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+
+        QVERIFY(control1->setProperty("color", QColor("green")));
+        QVERIFY(control2->setProperty("color", QColor("blue")));
+        delete view;
+
+        view = createView("ComponentsWithStateSavers.qml");
+        control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled());
+        stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+        QVERIFY(view);
+
+        QCOMPARE(control1->property("color"), QVariant(QColor("green")));
+        QCOMPARE(control2->property("color"), QVariant(QColor("blue")));
+        delete view;
+    }
+
+    void test_ComponentsWithStateSaversNoId()
+    {
+        QSignalSpy *spy;
+        QQuickView *view = createView("ComponentsWithStateSaversNoId.qml", &spy);
+        QVERIFY(view);
+        QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
+        QVERIFY(control1);
+        QObject *control2 = view->rootObject()->findChild<QObject*>("control2");
+        QVERIFY(control2);
+        UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
+        QVERIFY(stateSaver1);
+        QVERIFY(stateSaver1->enabled() == false);
+        QCOMPARE(spy->count(), 1);
+        UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
+        QVERIFY(stateSaver2);
+        QVERIFY(stateSaver2->enabled());
+        delete view;
+    }
 };
 
 QTEST_MAIN(tst_StateSaverTest)

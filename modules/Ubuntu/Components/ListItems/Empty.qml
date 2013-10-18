@@ -334,6 +334,7 @@ AbstractButton {
             Item {
                 id: confirmRemovalDialog
 
+                visible: false
                 width: units.gu(15)
                 anchors {
                     top: parent.top

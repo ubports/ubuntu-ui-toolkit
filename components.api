@@ -228,11 +228,15 @@ Item
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/ListItems/SingleControl.qml
 Empty
     property Item control
@@ -375,11 +379,15 @@ StyledItem
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/Action.qml
 UnityActions.Action
     property url iconSource
@@ -393,7 +401,7 @@ Item
     property int fillMode
     property int fadeDuration
     readonly property bool running
-    readonly property size sourceSize
+    property size sourceSize
     readonly property int status
 modules/Ubuntu/Components/Page.qml
 PageTreeNode
