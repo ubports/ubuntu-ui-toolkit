@@ -137,6 +137,7 @@ Item {
         \endqml
      */
     property Item back: ToolbarButton {
+        objectName: "back_toolbar_button"
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
         visible: toolbarItems.pageStack && toolbarItems.pageStack.depth > 1
