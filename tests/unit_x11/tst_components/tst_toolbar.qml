@@ -47,7 +47,6 @@ Item {
             compare(mainView.__propagated.toolbar.tools, toolbarItems, "Toolbar tools are set to page tools initially");
             compare(toolbarItems.opened, true, "Toolbar is opened initially");
             compare(toolbarItems.locked, false, "Toolbar is initially not locked");
-            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
         }
 
         function test_opened() {
@@ -62,9 +61,10 @@ Item {
         }
 
         function test_hideTimeout() {
+            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
             mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-            sleep(mainView.__propagated.toolbar.hideTimeout + 500);
+            sleep(mainView.__propagated.toolbar.hideTimeout + 5000);
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
         }
 
