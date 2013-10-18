@@ -368,7 +368,7 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         self.keyboard.type(text)
         if platform.model() != 'Desktop':
             # TODO this is a bad name. Ask veebers before merge.
-            self.keyboard.on_test_end()        
+            self.keyboard.on_test_end()
 
     def clear(self):
         """Clear the text field."""
