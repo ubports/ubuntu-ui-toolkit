@@ -376,4 +376,4 @@ class TextField(UbuntuUIToolkitEmulatorBase):
 
     def _clear_with_keys(self):
         self.keyboard.press_and_release('Ctrl+a')
-        self.keyboard.press_and_release('Delete')
+        self.keyboard.press_and_release('BackSpace')
