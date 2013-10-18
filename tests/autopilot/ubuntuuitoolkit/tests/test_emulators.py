@@ -527,7 +527,6 @@ MainView {
 }
 """)
 
-    
     def setUp(self):
         super(TextFieldTestCase, self).setUp()
         self.simple_text_field = self.main_view.select_single(
@@ -574,4 +573,3 @@ MainView {
         self.assertTrue(self.simple_text_field.is_empty())
         self.simple_text_field.write('test')
         self.assertFalse(self.simple_text_field.is_empty())
-
