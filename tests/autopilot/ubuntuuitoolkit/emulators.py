@@ -53,7 +53,7 @@ def get_keyboard():
     if platform.model() == 'Desktop':
         keyboard = input.Keyboard.create()
     else:
-        keyboard = input.Keyboard.get_osk_kb()
+        keyboard = input.Keyboard.create(preferred_backend='OSK')
     return keyboard
 
 
