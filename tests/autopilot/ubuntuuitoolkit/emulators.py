@@ -375,5 +375,13 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(clear_button)
 
     def _clear_with_keys(self):
-        self.keyboard.press_and_release('Ctrl+a')
+        self._select_all()
+        # We delete with backspace because the on-screen keyboard has that key.
         self.keyboard.press_and_release('BackSpace')
+
+    def _select_all(self):
+        # TODO change this to a long press to open the popover and click the
+        # Select All option item, once we are using autopilot 1.4. We can't
+        # currently do it because we need to select the parent object.
+        # --elopio - 2013-10-18
+        self.keyboard.press_and_release('Ctrl+a')
