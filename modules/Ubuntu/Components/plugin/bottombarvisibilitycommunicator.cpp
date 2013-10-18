@@ -35,8 +35,8 @@ static const char* DBUS_SERVICE = "com.canonical.Shell.BottomBarVisibilityCommun
 
 BottomBarVisibilityCommunicator::BottomBarVisibilityCommunicator()
  : m_shellDbusIface(NULL),
-   m_forceHidden(false),
-   m_position(0)
+   m_position(0),
+   m_forceHidden(false)
 {
     m_shellDbusIface = new QDBusInterface(DBUS_SERVICE, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_PATH, BOTTOM_BAR_VISIBILITY_COMMUNICATOR_DBUS_INTERFACE, QDBusConnection::sessionBus(), this);
     if (m_shellDbusIface->isValid()) {
