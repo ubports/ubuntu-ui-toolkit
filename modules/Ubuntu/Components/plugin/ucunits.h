@@ -50,7 +50,7 @@ Q_SIGNALS:
 
 protected:
     QString suffixForGridUnit(float gridUnit);
-    float gridUnitSuffixFromFileName(QString fileName);
+    float gridUnitSuffixFromFileName(const QString &fileName);
 
 private:
     float m_gridUnit;

@@ -49,7 +49,7 @@ public:
     bool error() const;
     QString errorMessage() const;
     Q_INVOKABLE void printUsage();
-    Q_INVOKABLE void quitWithError(QString errorMessage = QString());
+    Q_INVOKABLE void quitWithError(const QString& errorMessage = QString());
 
     // inherited from QQmlParserStatus
     void classBegin();
@@ -69,16 +69,16 @@ Q_SIGNALS:
 
 protected:
     void parseAndExposeArguments();
-    void setValuesOnArguments(QHash<QString, QStringList> argumentsValues);
-    QHash<QString, QStringList> buildExpectedArguments(QList<UCArgument*> declaredArguments);
-    QHash<QString, QStringList> parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments);
+    void setValuesOnArguments(const QHash<QString, QStringList>& argumentsValues);
+    QHash<QString, QStringList> buildExpectedArguments(const QList<UCArgument*>& declaredArguments);
+    QHash<QString, QStringList> parseRawArguments(const QStringList& rawArguments, const QHash<QString, QStringList>& expectedArguments);
     QStringList collectArgumentValues(QStringList::const_iterator& i, QStringList::const_iterator end, int nValues);
-    bool usageRequested(QStringList argumentNames);
-    bool requiredArgumentsProvided(QHash<QString, QStringList> argumentsValues, QString& error);
-    bool requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error);
-    void exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues);
+    bool usageRequested(const QStringList& argumentNames);
+    bool requiredArgumentsProvided(const QHash<QString, QStringList>& argumentsValues, QString& error);
+    bool requiredDefaultArgumentProvided(const QHash<QString, QStringList>& argumentsValues, QString& error);
+    void exposeArgumentsAsProperties(const QHash<QString, QStringList>& argumentsValues);
     QString usage();
-    void setErrorMessage(QString errorMessage);
+    void setErrorMessage(const QString& errorMessage);
     void quitApplication();
 
 protected Q_SLOTS:

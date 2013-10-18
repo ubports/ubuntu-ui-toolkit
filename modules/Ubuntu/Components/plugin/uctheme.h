@@ -43,10 +43,10 @@ public:
 
     // getter/setters
     QString name() const;
-    void setName(QString name);
+    void setName(const QString& name);
     QObject* palette() const;
 
-    Q_INVOKABLE QQmlComponent* createStyleComponent(QString styleName, QObject* parent);
+    Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
@@ -57,8 +57,8 @@ private Q_SLOTS:
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
     void updateThemePaths();
-    QUrl styleUrl(QString styleName);
-    QString parentThemeName(QString themeName);
+    QUrl styleUrl(const QString& styleName);
+    QString parentThemeName(const QString& themeName);
     void loadPalette();
 
 private:
