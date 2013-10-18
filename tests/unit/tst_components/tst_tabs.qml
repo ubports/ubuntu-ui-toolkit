@@ -76,6 +76,15 @@ TestCase {
         tabs.selectedTabIndex = 0;
     }
 
+    function test_index() {
+        compare(tab1.index, 0, "tab1 is at 0");
+        compare(tab2.index, 1, "tab2 is at 1");
+        compare(tab3.index, 2, "tab3 is at 2");
+        compare(tabFlick1.index, 3, "tabFlick1 is at 3");
+        compare(tabFlick2.index, 4, "tabFlick2 is at 4");
+        compare(tabFlickLoader.index, 5, "tabFlickLoader is at 5");
+    }
+
     Tabs {
         id: emptyTabs
     }
