@@ -42,15 +42,26 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def get_keyboard():
+    """Return the keyboard depending on the platform.
+
+    If the platform is `Desktop`, the keyboard will be the default created by
+    autopilot. If not, it will be the on-screen keyboard.
+
+    """
+    if platform.model() == 'Desktop':
+        keyboard = input.Keyboard.create()
+    else:
+        keyboard = input.Keyboard.get_osk_kb()
+    return keyboard
+
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
     def __init__(self, *args):
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
-        self.keyboard = input.Keyboard.create()
-        # TODO it would be nice to have access to the screen keyboard if we are
-        # on the touch UI -- elopio - 2013-09-04
+        self.keyboard = get_keyboard()
 
 
 class MainView(UbuntuUIToolkitEmulatorBase):
