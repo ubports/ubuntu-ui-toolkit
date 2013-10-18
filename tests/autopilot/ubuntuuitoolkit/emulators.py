@@ -19,6 +19,7 @@ import logging
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
+
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
 
 logger = logging.getLogger(__name__)
@@ -54,6 +55,7 @@ def get_keyboard():
     else:
         keyboard = input.Keyboard.get_osk_kb()
     return keyboard
+
 
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
@@ -364,6 +366,9 @@ class TextField(UbuntuUIToolkitEmulatorBase):
             if not self.is_empty():
                 self.keyboard.press_and_release('End')
         self.keyboard.type(text)
+        if platform.model() != 'Desktop':
+            # TODO this is a bad name. Ask veebers before merge.
+            self.keyboard.on_test_end()        
 
     def clear(self):
         """Clear the text field."""
@@ -373,6 +378,9 @@ class TextField(UbuntuUIToolkitEmulatorBase):
             else:
                 self._clear_with_keys()
             self.text.wait_for('')
+            if platform.model() != 'Desktop':
+                # TODO this is a bad name. Ask veebers before merge.
+                self.keyboard.on_test_end()
 
     def is_empty(self):
         """Return True if the text field is empty. False otherwise."""
