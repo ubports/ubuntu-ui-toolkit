@@ -54,6 +54,7 @@ Q_SIGNALS:
     void paletteChanged();
 
 private Q_SLOTS:
+    void updateEnginePaths();
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
     void updateThemePaths();
@@ -64,8 +65,10 @@ private Q_SLOTS:
 private:
     QString m_name;
     QObject* m_palette;
+    QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;
+    bool m_engineUpdated;
 };
 
 #endif // UCTHEME_H
