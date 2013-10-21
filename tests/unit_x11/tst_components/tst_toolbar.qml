@@ -28,6 +28,10 @@ Item {
         Page {
             id: page
             title: "test page"
+            Label {
+                anchors.centerIn: parent
+                text: "testing the toolbar"
+            }
             tools: ToolbarItems {
                 id: toolbarItems
                 ToolbarButton {
@@ -61,11 +65,14 @@ Item {
         }
 
         function test_hideTimeout() {
+            console.log("starting hide test")
             compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
             mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-//            sleep(mainView.__propagated.toolbar.hideTimeout + 500);
-//            compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
+            sleep(mainView.__propagated.toolbar.hideTimeout + 500);
+//            mainView.__propagated.toolbar.close();
+            compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
+            console.log("done.")
         }
 
         function test_locked() {

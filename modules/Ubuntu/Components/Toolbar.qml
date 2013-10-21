@@ -72,14 +72,21 @@ Panel {
     // if tools is not specified, lock the toolbar in closed position
     locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
+    onLockedChanged: print("locked = "+locked)
     Timer {
         id: hideTimer
         interval: toolbar.hideTimeout
         running: toolbar.opened && !toolbar.locked
-        onTriggered: toolbar.close()
+        onRunningChanged: print("timer running = "+running+ " with interval ")
+        onTriggered: {
+            console.log("triggered hide timer")
+            toolbar.close()
+        }
     }
 
     onOpenedChanged: {
+        print("opened = "+opened)
+
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
