@@ -30,6 +30,7 @@ private:
 public:
     ThumbnailGenerator();
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+    QImage getFallbackImage(const QString &id, QSize *size, const QSize &requestedSize);
 };
 
 #endif
