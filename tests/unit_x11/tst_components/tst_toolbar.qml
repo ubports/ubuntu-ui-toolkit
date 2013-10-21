@@ -68,13 +68,11 @@ Item {
 
         function test_hideTimeout() {
             mainView.__propagated.toolbar.locked = false;
-            console.log("starting hide test")
-            //            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
+            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
             mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
             wait(mainView.__propagated.toolbar.hideTimeout + 500);
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
-            console.log("done.")
         }
 
         function test_locked() {

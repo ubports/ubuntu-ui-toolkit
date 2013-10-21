@@ -181,7 +181,6 @@ Item {
     /*! \internal */
     // FIXME: When opened is made read-only, onOpenedChanged can be removed entirely.
     onOpenedChanged: {
-        print("panel.opened = "+opened);
         if (internal.openedChangedWarning) {
             console.log("DEPRECATED use of Panel.opened property. This property will be made read-only,
                 please use the opened property of the Page tools or use Panel.open() and Panel.close().");
