@@ -15,52 +15,32 @@
  */
 
 .pragma library
-.import QtQuick 2.0 as Quick
 
+/*
+  Extending Date with few prototypes
+  */
 Date.msPerDay = 86400e3
 Date.msPerWeek = Date.msPerDay * 7
 
-function updateYear(date, year) {
-    return new Date(year, date.getMonth(), date.getDate());
+Date.prototype.isValid = function() {
+    return (this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0);
 }
 
-function updateMonth(date, month) {
-    return new Date(date.getFullYear(), month, date.getDate());
+Date.prototype.monthsTo = function(target) {
+    return target.getMonth() - this.getMonth() + (12 * (target.getFullYear() - this.getFullYear()));
 }
 
-function updateDay(date, day) {
-    return new Date(date.getFullYear(), date.getMonth(), day);
+Date.prototype.daysTo = function(target) {
+    return !target.isValid() ? 0 : Math.ceil((target - this) / Date.msPerDay);
 }
 
-function leapYear(year) {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+Date.prototype.weeksTo = function(target) {
+    return Math.ceil(this.daysTo(target) / 7);
 }
 
-function daysInMonth(year, month) {
-    return [
-        31/*Jan*/, 28/*Feb*/, 31/*Mar*/, 30/*Apr*/, 31/*May*/, 30/*Jun*/,
-        31/*Jul*/, 31/*Aug*/, 30/*Sep*/, 31/*Oct*/, 30/*Nov*/, 31/*Dec*/
-    ][month] + (month === 1) * leapYear(year);
-}
-
-function weeksInMonth(year, month, weekday) {
-    var y = year, m = month;
-    var date0 = new Date(y, m, 1);
-    var date1 = new Date(y + (m == 11), m < 11 ? m + 1 : 0, 1);
-    var day = date0.getDay();
-    var m = (date1.getTime() - date0.getTime()) / Date.msPerDay;
-    var n = 0;
-    while (m > 0) {
-        if (day == weekday) n = n + 1;
-        day = day < 6 ? day + 1 : 0;
-        m = m - 1;
-    }
-    return n;
-}
-
-function weekNumber(date) {
+Date.prototype.getWeek = function() {
     // Copy date so don't modify original
-    date = new Date(date);
+    var date = new Date(this);
     date.setHours(0, 0, 0, 0);
     // Set to nearest Thursday: current date + 4 - current day number
     // Make Sunday's day number 7
@@ -73,7 +53,20 @@ function weekNumber(date) {
     return weekNo;
 }
 
-function startDateOfWeek(year, week) {
+Date.prototype.daysInMonth = function() {
+    return [
+        31/*an*/, 28/*Feb*/, 31/*Mar*/, 30/*Apr*/, 31/*May*/, 30/*Jun*/,
+        31/*Jul*/, 31/*Aug*/, 30/*Sep*/, 31/*Oct*/, 30/*Nov*/, 31/*Dec*/
+    ][this.getMonth()] + (this.getMonth() === 1) * this.leapYear();
+}
+
+Date.prototype.leapYear = function() {
+    var year = this.getFullYear();
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+}
+
+Date.prototype.startDateOfWeek = function(week) {
+    var year = this.getFullYear();
     var simple = new Date(year, 0, 1 + (week - 1) * 7);
     var dow = simple.getDay();
     var ISOweekStart = simple;
@@ -84,56 +77,72 @@ function startDateOfWeek(year, week) {
     return ISOweekStart;
 }
 
-function midDateOfWeek(year, week) {
-    var date = startDateOfWeek(year, week);
+Date.prototype.midDateOfWeek = function(week) {
+    var date = this.startDateOfWeek(week);
     date.setDate(date.getDate() + 3);
     return date;
 }
 
-function monthText(date, day, format) {
-    switch (format) {
-    case "long":
-        var thisDate = new Date(date);
-        thisDate.setMonth(day);
-        return Qt.formatDate(thisDate, "MM ") + Qt.locale().standaloneMonthName(day, Quick.Locale.LongFormat);
-    case "short":
-        return Qt.locale().standaloneMonthName(day, Quick.Locale.LongFormat);
-    default:
-        return Qt.locale().standaloneMonthName(day, Quick.Locale.ShortFormat);
+// Calculate text format based on width fitting into the tumbler
+// the contentType parameter can be "Months", "Weeks" or "Days"
+function PickerLimits(label, contentType, margin, minimumWidth) {
+    var stack = new Array(0);
+
+    this.getTextSize = function(text) {
+        label.text = text;
+        return Math.max(label.paintedWidth + 2 * margin, minimumWidth);
     }
-}
 
-function dayText(date, month, format) {
-    var thisDate = new Date(date);
-    thisDate.setDate(month);
-    switch (format) {
-    case "long":
-        return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Quick.Locale.LongFormat);
-    case "short":
-        return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Quick.Locale.ShortFormat);
-    default:
-        return Qt.formatDate(thisDate, "dd");
+    this.index = function(width) {
+        for (var i = 0; i < stack.length; i++) {
+            if (width >= stack[i].width) {
+                return i;
+            }
+        }
+        return stack.length - 1;
     }
-}
 
-function weekText(date, weekNo, format) {
-    weekNo++;
-    var startDate = startDateOfWeek(date.getFullYear(), weekNo);
-    var endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + 6);
+    this.format = function(width) {
+        if (!stack.length) {
+            return "narrow";
+        }
 
-    var text = "W" + (Math.pow(10, 2) + ~~weekNo).toString().substring(1);
-    var differentMonth = startDate.getMonth() !== endDate.getMonth();
+        for (var i = 0; i < stack.length; i++) {
+            if (width >= stack[i].width) {
+                return stack[i].format;
+            }
+        }
+        return "";
+    }
 
-    print("weekTumbler.format=" + format)
-    switch (format) {
-    case "long":
-        return text + Qt.formatDate(startDate, " MMMM d - ") +
-                (differentMonth ? Qt.formatDate(endDate, "MMMM d") : Qt.formatDate(endDate, "d"));
-    case "short":
-        return text + Qt.formatDate(startDate, " MMM dd - ") +
-                (differentMonth ? Qt.formatDate(endDate, "MMM d") : Qt.formatDate(endDate, "d"));
-    default:
-        return text + Qt.formatDate(startDate, " MMM d");
+    this.clampWidth = function (width) {
+        if (!stack.length) {
+            return width;
+        }
+
+        for (var i = 0; i < stack.length; i++) {
+            if (width >= stack[i].width) {
+                return stack[i].width;
+            }
+        }
+        return stack[stack.length - 1].width;
+    }
+
+    switch (contentType) {
+    case "Months":
+        stack.push({width: this.getTextSize("99 September"), format: "long"})
+        stack.push({width: this.getTextSize("September"), format: "short"})
+        stack.push({width: this.getTextSize("Sep"), format: "narrow"})
+        break;
+    case "Weeks":
+        stack.push({width: this.getTextSize("W99 September 99 - October 9"), format: "long"})
+        stack.push({width: this.getTextSize("W99 Sep 99 - Oct 9"), format: "short"})
+        stack.push({width: this.getTextSize("W99 Sep 99"), format: "narrow"})
+        break;
+    case "Days":
+        stack.push({width: this.getTextSize("99 Wednesday"), format: "long"})
+        stack.push({width: this.getTextSize("99 Wed"), format: "short"})
+        stack.push({width: this.getTextSize("99"), format: "narrow"})
+        break;
     }
 }

@@ -5,3 +5,8 @@ Dialer 0.1 Dialer.qml
 DialerHand 0.1 DialerHand.qml
 DatePicker 0.1 DatePicker.qml
 internal DateUtils dateUtils.js
+internal YearModel YearModel.qml
+internal MonthModel MonthModel.qml
+internal WeekModel WeekModel.qml
+internal DayModel DayModel.qml
+internal DatePickerTemplate DatePickerTemplate.qml

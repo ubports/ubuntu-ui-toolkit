@@ -173,20 +173,26 @@ Rectangle {
     property date date: new Date()
 
     /*!
-      \qmlproperty int minimumYear
-      \qmlproperty int maximumYear
-      The minimum and maximum year values (inclusive) to be shown in year picker.
-      The \a minimumYear value must be smaller or equal with the \l year value,
-      otherwise will be ignored, and the year picker will start from the year
-      given in \l date.
-      The \a maximumYear must be greater than the minimumValue, or zero (0). If
-      set to zero, the year picker will increase the year values infinitely.
+      \qmlproperty int minimum
+      \qmlproperty int maximum
+      The minimum and maximum dates (inclusive) to be shown in the picker.
+      Both year and month values will be considered from the properties.
 
-      The default values for both is 0.
+      The year and month picker values are filled based on these values. The
+      year picker will be infinite (extending infinitely) if the maximum has
+      zero year value set. If the distance between maximum and minimum is zero
+      years, the year picker will be shown disabled.
+
+      The mid picker (for month and week value picking) will be circular if the
+      distance between maximum and minimum is at least one year, or if the maximum
+      date value is zero.
+
+      The default values are the current date for the minimum, and zero value
+      for maximum.
       */
-    property int minimumYear: 0
+    property date minimum: new Date()
     /*! \internal */
-    property int maximumYear: 0
+    property date maximum: new Date(-1, -1)
 
     /*!
       \qmlproperty int year
@@ -197,9 +203,8 @@ Rectangle {
       \readonly
       \qmlproperty int week
       \readonly
-      Properties declared for convenience, representing the \b year, \b month and \b day
-      values of the \l date property.
-      The \b week property is valid only if the \l mode is set to \a Week.
+      Properties declared for convenience, representing the \b year, \b month, \b day
+      and \b week number values of the \l date property.
       */
     readonly property int year: datePicker.date.getFullYear()
     /*! \internal */
@@ -207,7 +212,7 @@ Rectangle {
     /*! \internal */
     readonly property int day: datePicker.date.getDate()
     /*! \internal */
-    readonly property int week: DateUtils.weekNumber(datePicker.date)
+    readonly property int week: datePicker.date.getWeek()
 
     /*!
       Specifies whether the date update is live. By default the date is not
@@ -229,294 +234,278 @@ Rectangle {
         return units.gu(20);
     }
 
-    // tumblers
-    Row {
-        anchors.fill: parent
-        Picker {
-            id: yearPicker
-            property bool autoExtending: internals.toYear <= 0
-            circular: false
-            live: datePicker.live
-            model: ListModel{}
-            width: internals.minimumWidth
-            delegate: PickerDelegate {
-                Label {
-                    text: modelData
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                }
-
-                Component.onCompleted: {
-                    if (yearPicker.autoExtending && (index === (yearPicker.model.count - 1))) {
-                        internals.extendYearModel(modelData + 1);
-                    }
-                }
-            }
-            Binding {
-                target: parent
-                property: "style"
-                value: datePicker.pickerStyle
-                when: (datePicker.pickerStyle !== null)
-            }
-        }
-        Picker {
-            id: monthPicker
-            model: ListModel{}
-            width: (parent.width - yearPicker.width - dayPicker.width) > internals.minimumWidth ?
-                       (parent.width - yearPicker.width - dayPicker.width) : internals.minimumWidth
-            live: datePicker.live
-            delegate: PickerDelegate {
-                Label {
-                    text: {
-                        if (datePicker.mode === "Week")
-                            return DateUtils.weekText(date, modelData, limits.monthPickerFormat());
-                        return DateUtils.monthText(date, modelData, limits.monthPickerFormat());
-                    }
-
-                    anchors{
-                        verticalCenter: parent.verticalCenter
-                        left: parent.left
-                        leftMargin: units.gu(0.5)
-                    }
-                }
-            }
-            Binding {
-                target: parent
-                property: "style"
-                value: datePicker.pickerStyle
-                when: (datePicker.pickerStyle !== null)
-            }
-        }
-        Picker {
-            id: dayPicker
-            visible: (datePicker.mode === "Date")
-            property int widthIndex: limits.dayPickerWidthIndex()
-            width: limits.dayPickerWidth(widthIndex)
-            live: datePicker.live
-            model: ListModel{}
-            delegate: PickerDelegate {
-                Label {
-                    text: DateUtils.dayText(date, modelData + 1, limits.dayPickerFormat(dayPicker.widthIndex))
-                    anchors{
-                        verticalCenter: parent.verticalCenter
-                        left: parent.left
-                        leftMargin: units.gu(0.5)
-                    }
-                }
-            }
-            Binding {
-                target: parent
-                property: "style"
-                value: datePicker.pickerStyle
-                when: (datePicker.pickerStyle !== null)
-            }
-        }
-    }
 
     /*! \internal */
-    onMinimumYearChanged: internals.updateYearModel()
+    onMinimumChanged: { print("x"); internals.updateModels() }
     /*! \internal */
-    onMaximumYearChanged: internals.updateYearModel()
+    onMaximumChanged: { print("x"); internals.updateModels() }
     /*! \internal */
     onWidthChanged: {
         // clamp to 3 (or 2) times the minimum Picker width
         width = Math.max(width, (2 + ((mode !== "Date") ? 1 : 0)) * internals.minimumWidth);
+//        width = Math.max(width, (2 + ((mode !== "Date") ? 1 : 0)) * (internals.minimumWidth + 2 * internals.margin));
     }
     /*! \internal */
     onModeChanged: internals.updateModels();
 
     Component.onCompleted: {
+        if (minimum === undefined) minimum = date;
         internals.completed = true;
         internals.updateModels();
-        limits.reset();
+//        limits.reset();
+        internals.initializeLimits();
+    }
+
+    // tumblers
+    Row {
+        anchors.fill: parent
+//        Picker {
+//            id: yearPicker
+//            enabled: model.count > 1
+//            circular: false
+//            live: datePicker.live
+//            model: YearModel{}
+//            width: internals.minimumWidth
+//            delegate: PickerDelegate {
+//                Label {
+//                    text: yearPicker.model.text(datePicker.date, modelData)
+//                    anchors{
+//                        verticalCenter: parent.verticalCenter
+//                        left: parent.left
+//                        leftMargin: units.gu(0.5)
+//                    }
+//                }
+
+//                Component.onCompleted: {
+//                    if (model.autoExtend && (index === (model.count - 1))) {
+//                        model.extend(modelData + 1);
+//                    }
+//                }
+//            }
+//            Binding {
+//                target: parent
+//                property: "style"
+//                value: datePicker.pickerStyle
+//                when: (datePicker.pickerStyle !== null)
+//            }
+
+//            onSelectedIndexChanged: {
+//                if (!internals.completed) return;
+//                datePicker.date = model.dateFromModel(datePicker.date, selectedIndex);
+//                dayPicker.updateModel();
+//            }
+//            function updateModel() {
+//                model.reset(datePicker.date, datePicker.minimum, datePicker.maximum);
+//                // check if the year from date is between min..max
+////                if (!model.inModel(year)) {
+////                    date = model.dateFromModel(model.from);
+////                }
+//                selectedIndex = model.indexOf(year);
+//            }
+//        }
+        DatePickerTemplate {
+            id: yearPicker
+            picker: datePicker
+            completed: internals.completed
+            model: YearModel{}
+            updatePickerWhenChanged: dayPicker
+            width: internals.minimumWidth
+        }
+
+//        Picker {
+//            id: monthPicker
+//            model: MonthModel{ mode: datePicker.mode }
+//            enabled: model.count > 1
+//            live: datePicker.live
+//            width: Math.max(parent.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
+//            property string format: limits.monthPickerFormat()
+//            delegate: PickerDelegate {
+//                Label {
+//                    text: monthPicker.model.text(date, modelData, monthPicker.format)
+//                    anchors{
+//                        verticalCenter: parent.verticalCenter
+//                        left: parent.left
+//                        leftMargin: units.gu(0.5)
+//                    }
+//                }
+//            }
+//            Binding {
+//                target: parent
+//                property: "style"
+//                value: datePicker.pickerStyle
+//                when: (datePicker.pickerStyle !== null)
+//            }
+
+//            onSelectedIndexChanged: {
+//                if (!internals.completed) return;
+//                datePicker.date = model.dateFromModel(datePicker.date, selectedIndex);
+//                dayPicker.updateModel();
+//            }
+//            function updateModel() {
+//                model.reset(datePicker.date, datePicker.minimum, datePicker.maximum);
+//                circular = model.circularModel();
+//                selectedIndex = model.indexOf(date);
+//            }
+//        }
+        DatePickerTemplate {
+            id: monthPicker
+            picker: datePicker
+            completed: internals.completed
+            updatePickerWhenChanged: dayPicker
+            model: MonthModel {
+                mode: datePicker.mode
+            }
+//            format: limits.monthPickerFormat()
+            width: Math.max(parent.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
+        }
+
+//        Picker {
+//            id: dayPicker
+//            model: DayModel{}
+//            live: datePicker.live
+//            visible: (datePicker.mode === "Date")
+//            enabled: model.count > 1
+//            property int widthIndex: limits.dayPickerWidthIndex()
+//            width: limits.dayPickerWidth(widthIndex)
+//            delegate: PickerDelegate {
+//                Label {
+//                    text: dayPicker.model.text(date, modelData + 1, limits.dayPickerFormat(dayPicker.widthIndex))
+//                    anchors{
+//                        verticalCenter: parent.verticalCenter
+//                        left: parent.left
+//                        leftMargin: units.gu(0.5)
+//                    }
+//                }
+//            }
+//            Binding {
+//                target: parent
+//                property: "style"
+//                value: datePicker.pickerStyle
+//                when: (datePicker.pickerStyle !== null)
+//            }
+
+//            onSelectedIndexChanged: {
+//                if (!internals.completed || !visible) return;
+//                datePicker.date = model.dateFromModel(datePicker.date, selectedIndex);
+//            }
+//            function updateModel() {
+//                if (!visible) return;
+//                if (!internals.completed) {
+//                    model.reset(date);
+//                    selectedIndex = model.indexOf(day);
+//                } else {
+//                    model.update(date);
+//                }
+//            }
+//        }
+        DatePickerTemplate {
+            id: dayPicker
+            picker: datePicker
+            visible: datePicker.mode !== "Week"
+            completed: internals.completed
+            model: DayModel{}
+//            property int widthIndex: limits.dayPickerWidthIndex()
+//            format: limits.dayPickerFormat(widthIndex)
+//            width: limits.dayPickerWidth(widthIndex)
+            width: (visible && limits && (desiredWidth > 0.0)) ? limits.clampWidth(desiredWidth) : 0
+            property real desiredWidth: (datePicker.width - yearPicker.width) * 40 / 100
+        }
     }
 
     // component to calculate text fitting
     Label { id: textSizer; visible: false }
-    ListModel {
-        id: limits
+//    ListModel {
+//        id: limits
 
-        function reset() {
-            textSizer.text = "9999"
-            internals.minimumWidth = textSizer.paintedWidth + internals.margins;
+//        function reset() {
+//            textSizer.text = "9999"
+//            internals.minimumWidth = textSizer.paintedWidth + internals.margins;
 
-            limits.clear();
-            // greater then
-            if (datePicker.mode !== "Week") {
-                limits.addElement("99 Wednesday", "long", "99 September", "long");
-                limits.addElement("99 Wed", "short", "99 September", "long");
-                limits.addElement("99 Wed", "short", "September", "short");
-                limits.addElement("99", "narrow", "September", "short");
-                limits.addElement("99", "narrow", "Sep", "narrow");
-            } else {
-                limits.addElement("", "", "W99 September 99 - October 9", "long");
-                limits.addElement("", "", "W99 Sep 99 - Oct 9", "short");
-                limits.addElement("", "", "W99 Sep 99", "narrow");
-            }
-        }
+//            limits.clear();
+//            // greater then
+//            if (datePicker.mode !== "Week") {
+//                limits.addElement("99 Wednesday", "long", "99 September", "long");
+//                limits.addElement("99 Wed", "short", "99 September", "long");
+//                limits.addElement("99 Wed", "short", "September", "short");
+//                limits.addElement("99", "narrow", "September", "short");
+//                limits.addElement("99", "narrow", "Sep", "narrow");
+//            } else {
+//                limits.addElement("", "", "W99 September 99 - October 9", "long");
+//                limits.addElement("", "", "W99 Sep 99 - Oct 9", "short");
+//                limits.addElement("", "", "W99 Sep 99", "narrow");
+//            }
+//        }
 
-        function addElement(dayText, dayFormat, monthText, monthFormat) {
-            textSizer.text = dayText;
-            var dayWidth = Math.max(textSizer.paintedWidth + internals.margins, internals.minimumWidth);
-            textSizer.text = monthText;
-            var monthWidth = Math.max(textSizer.paintedWidth + internals.margins, internals.minimumWidth);
-            append({"dayWidth": dayWidth,
-                    "dayFormat": dayFormat,
-                    "monthWidth": monthWidth,
-                    "monthFormat": monthFormat
-                   });
-        }
+//        function addElement(dayText, dayFormat, monthText, monthFormat) {
+//            textSizer.text = dayText;
+//            var dayWidth = Math.max(textSizer.paintedWidth + internals.margins, internals.minimumWidth);
+//            textSizer.text = monthText;
+//            var monthWidth = Math.max(textSizer.paintedWidth + internals.margins, internals.minimumWidth);
+//            append({"dayWidth": dayWidth,
+//                    "dayFormat": dayFormat,
+//                    "monthWidth": monthWidth,
+//                    "monthFormat": monthFormat
+//                   });
+//        }
 
-        function dayPickerWidthIndex() {
-            var w = (datePicker.width - yearPicker.width) * 40 / 100;
-            for (var i = 0; i < count; i++) {
-                if (w >= get(i).dayWidth) {
-                    return i;
-                }
-            }
-            return count - 1;
-        }
-        function dayPickerWidth(index) {
-            if (!dayPicker.visible) {
-                return 0;
-            }
+//        function dayPickerWidthIndex() {
+//            var w = (datePicker.width - yearPicker.width) * 40 / 100;
+//            for (var i = 0; i < count; i++) {
+//                if (w >= get(i).dayWidth) {
+//                    return i;
+//                }
+//            }
+//            return count - 1;
+//        }
+//        function dayPickerWidth(index) {
+//            if (!dayPicker.visible) {
+//                return 0;
+//            }
 
-            if (index < 0) {
-                return (datePicker.width - yearPicker.width) * 40 / 100;
-            }
-            return get(index).dayWidth;
-        }
-        function dayPickerFormat(index) {
-            if (!count) return "narrow";
-            return (index < 0) ? get(count - 1).dayFormat : get(index).dayFormat;
+//            if (index < 0) {
+//                return (datePicker.width - yearPicker.width) * 40 / 100;
+//            }
+//            return get(index).dayWidth;
+//        }
+//        function dayPickerFormat(index) {
+//            if (!count) return "narrow";
+//            return (index < 0) ? get(count - 1).dayFormat : get(index).dayFormat;
 
-        }
+//        }
 
-        function monthPickerFormat() {
-            for (var i = 0; i < count; i++) {
-                if (monthPicker.width >= get(i).monthWidth) {
-                    return get(i).monthFormat;
-                }
-            }
-            return "";
-        }
-    }
+//        function monthPickerFormat() {
+//            for (var i = 0; i < count; i++) {
+//                if (monthPicker.width >= get(i).monthWidth) {
+//                    return get(i).monthFormat;
+//                }
+//            }
+//            return "";
+//        }
+//    }
 
     QtObject {
         id: internals
         property bool completed: false
-        property int fromYear
-        property int toYear
-        property int yearIndex: yearPicker.selectedIndex
-        property int monthIndex: monthPicker.selectedIndex
-        property int dayIndex: dayPicker.selectedIndex
-        property real margins: units.gu(1.5)
+        property real margin: units.gu(0.5)
 
         property int minimumWidth
-
-        onYearIndexChanged: {
-            if (!completed) return;
-            datePicker.date = DateUtils.updateYear(datePicker.date, fromYear + yearPicker.selectedIndex);
-            updateDayModel();
-        }
-        onMonthIndexChanged: {
-            if (!completed) return;
-            if (datePicker.mode === "Week") {
-                // update date to the first day of the week
-                var newDate = DateUtils.midDateOfWeek(datePicker.date.getFullYear(), monthPicker.selectedIndex + 1);
-                if (fromYear > newDate.getFullYear()) {
-                    yearPicker.model.insert(0, {"year": newDate.getFullYear()});
-                    // move the year to the previous one
-                    yearPicker.selectedIndex--;
-                }
-
-                datePicker.date = newDate;
-            } else {
-                datePicker.date = DateUtils.updateMonth(datePicker.date, monthPicker.selectedIndex)
-                updateDayModel();
-            }
-        }
-        onDayIndexChanged: {
-            if (!completed || !dayPicker.visible) return;
-            datePicker.date = DateUtils.updateDay(datePicker.date, dayPicker.selectedIndex + 1);
-        }
+        property int minimumTextWidth
 
         function updateModels() {
-            print(1 + datePicker.mode)
             if (!completed) return;
-            // turn off completion for awhile
+            // turn off completion for a while
             completed = false;
-            yearPicker.model.clear();
-            monthPicker.model.clear();
-            dayPicker.model.clear();
-
-            updateYearModel();
-            updateMidPicker();
-            updateDayModel();
-
+            print("x")
+            yearPicker.resetModel();
+            monthPicker.resetModel();
+            dayPicker.resetModel();
             completed = true;
         }
-
-        function extendYearModel(baseData, count) {
-            if (count === undefined) {
-                count = baseData + 50;
-            }
-
-            for (var i = baseData; i <= count; i++) {
-                yearPicker.model.append({"year": i});
-            }
-        }
-
-        function updateYearModel() {
-            fromYear = (minimumYear <= 0) ? datePicker.date.getFullYear() : minimumYear;
-            toYear = (maximumYear < minimumYear) ? 0 : maximumYear;
-
-            yearPicker.model.clear();
-            var max = (toYear >= fromYear) ? toYear : fromYear + 50;
-            // check if the year from date is between min..max
-            if ((year < fromYear) && (year > max)) {
-                date = DateUtils.updateYear(date, fromYear);
-            }
-            extendYearModel(fromYear, max);
-            yearPicker.selectedIndex = year - fromYear;
-        }
-
-        function updateMidPicker() {
-            if (datePicker.mode === "Week") {
-                for (var i = 0; i < 52; i++) {
-                    monthPicker.model.append({"week": i});
-                }
-                monthPicker.selectedIndex = (DateUtils.weekNumber(datePicker.date) - 1);
-            } else {
-                for (var i = 0; i < 12; i++) {
-                    monthPicker.model.append({"month": i});
-                }
-                monthPicker.selectedIndex = month;
-            }
-        }
-
-        function updateDayModel() {
-            if (!dayPicker.visible) return;
-            if (!completed) {
-                dayPicker.model.clear();
-                for (var i = 0; i < DateUtils.daysInMonth(year, month); i++) {
-                    dayPicker.model.append({"day": i});
-                }
-                dayPicker.selectedIndex = day - 1;
-            } else {
-                var newDaysCount = DateUtils.daysInMonth(year, month);
-                var modelCount = dayPicker.model.count;
-                var daysDiff = newDaysCount - modelCount;
-                if (daysDiff < 0) {
-                    dayPicker.model.remove(modelCount + daysDiff, -daysDiff);
-                } else if (daysDiff > 0) {
-                    for (var d = modelCount; d < modelCount + daysDiff; d++) {
-                        dayPicker.model.append({"day": d});
-                    }
-                }
-            }
+        function initializeLimits() {
+            textSizer.text = "9999"
+            minimumWidth = textSizer.paintedWidth + 2 * margin;
+            monthPicker.limits = new DateUtils.PickerLimits(textSizer, (mode == "Week" ? "Weeks" : "Months"), margin, minimumWidth);
+            dayPicker.limits = new DateUtils.PickerLimits(textSizer, "Days", margin, minimumWidth);
         }
     }
 }

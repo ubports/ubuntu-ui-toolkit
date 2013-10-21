@@ -178,11 +178,11 @@ Template {
             Column {
                 DatePicker {
                     id: datePicker
+                    minimum: new Date(2013, 8)
+                    maximum: new Date(2014, 0)
+                    date: new Date(2013, 9, 1)
 //                    mode: "Week"
-                    onYearChanged: print("picked year= " + year)
-                    onMonthChanged: print("picked month= " + month)
-                    onDayChanged: print("picked day= " + day)
-                    onWeekChanged: print("picked week= " + week)
+                    onDateChanged: print("picked date="+date)
                 }
                 Slider {
                     minimumValue: 0
