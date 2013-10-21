@@ -15,7 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Tests for the Ubuntu UI Toolkit Gallery - OptionSelector component"""
-
+import time
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
 from ubuntuuitoolkit.tests import FlickDirection
@@ -36,8 +36,16 @@ class OptionSelectorTests(GalleryTestCase):
         self.assertThat(collapsed.selectedIndex, Equals(0))
         self.pointing_device.click_object(collapsed)
         self.assertThat(styleditem.expanded, Eventually(Equals(True)))
-        selectedValue = collapsed.select_single('Label', text='Value 4')
-        self.assertIsNotNone(selectedValue)
+        #try to search the following list entry few times
+        #as it may not be available immediately.
+        for t in range(0, 9):
+            try:
+                selectedValue = collapsed.select_single('Label',
+                                                        text='Value 4')
+                self.assertIsNotNone(selectedValue)
+            except:
+                time.sleep(1)
+
         self.pointing_device.click_object(selectedValue)
         self.assertThat(collapsed.selectedIndex, Eventually(Equals(3)))
         self.assertThat(styleditem.expanded, Eventually(Equals(False)))
