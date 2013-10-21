@@ -44,7 +44,7 @@ Panel {
       The time in milliseconds before the toolbar automatically hides after inactivity
       when it is not locked.
      */
-    property int hideTimeout: 5000
+    property int hideTimeout: 500 //0
 
     /*! \internal */
     onToolsChanged: {
@@ -76,11 +76,11 @@ Panel {
     Timer {
         id: hideTimer
         interval: toolbar.hideTimeout
-        running: toolbar.opened && !toolbar.locked
-        onRunningChanged: print("timer running = "+running+ " with interval ")
+//        running: toolbar.opened && !toolbar.locked
+        onRunningChanged: print("timer running = "+running+ " with interval "+interval)
         onTriggered: {
-            console.log("triggered hide timer")
-            toolbar.close()
+            print("triggered hide timer");
+            toolbar.close();
         }
     }
 
