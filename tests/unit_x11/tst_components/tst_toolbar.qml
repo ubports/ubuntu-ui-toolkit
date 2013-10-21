@@ -67,11 +67,10 @@ Item {
         }
 
         function test_hideTimeout() {
-            mainView.__propagated.toolbar.locked = false;
             compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
             mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-            wait(mainView.__propagated.toolbar.hideTimeout + 500);
+            wait(mainView.__propagated.toolbar.hideTimeout + 500); // add 500 ms margin
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
         }
 
