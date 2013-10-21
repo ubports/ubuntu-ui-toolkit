@@ -81,8 +81,33 @@ Item {
 
     /*!
       The actual width and height of the loaded image
+      This property holds the actual width and height of the loaded image.
+
+      Unlike the width and height properties, which scale the painting of the image,
+      this property sets the actual number of pixels stored for the loaded image so that large
+      images do not use more memory than necessary.
+
+      Note: Changing this property dynamically causes the image source to be reloaded, potentially
+      even from the network, if it is not in the disk cache.
     */
-    readonly property size sourceSize: Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height)
+    // FIXME: Support resetting sourceSize
+    property size sourceSize: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
+
+    Binding {
+        target: crossFadeImage
+        property: "sourceSize"
+        value: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
+        when: internals.forcedSourceSize === undefined
+    }
+
+    /*!
+      \internal
+     */
+    onSourceSizeChanged: {
+        if (internals.loadingImage && (sourceSize != Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height))) {
+            internals.forcedSourceSize = sourceSize;
+        }
+    }
 
     /*!
       \qmlproperty enumeration status
@@ -100,6 +125,11 @@ Item {
 
     QtObject {
         id: internals
+
+        /*! \internal
+          Source size specified by the setting crossFadeImage.sourceSize.
+         */
+        property size forcedSourceSize
 
         /*! \internal
           Defines the image currently being shown
@@ -130,6 +160,12 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 1
+        Binding {
+            target: image1
+            property: "sourceSize"
+            value: internals.forcedSourceSize
+            when: internals.forcedSourceSize !== undefined
+        }
     }
 
     Image {
@@ -139,6 +175,12 @@ Item {
         asynchronous: true
         fillMode: parent.fillMode
         z: 0
+        Binding {
+            target: image2
+            property: "sourceSize"
+            value: internals.forcedSourceSize
+            when: internals.forcedSourceSize !== undefined
+        }
     }
 
     /*!

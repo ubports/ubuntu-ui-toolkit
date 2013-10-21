@@ -18,6 +18,11 @@
 
 #include "thumbnailgenerator.h"
 #include <stdexcept>
+#include <QDebug>
+#include <QMimeDatabase>
+
+const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/video_missing.png";
+const char *DEFAULT_ALBUM_ART = "/usr/share/unity/icons/album_missing.png";
 
 ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvider::Image,
         QQmlImageProviderBase::ForceAsynchronousImageLoading) {
@@ -48,9 +53,21 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
             return image;
         }
     } catch(std::runtime_error &e) {
-        // thumbnail generation failed for some reason
-        // so just return default image
+        qDebug() << "Thumbnail generator failed: " << e.what();
     }
-    *realSize = QSize(0, 0);
-    return QImage();
+    return getFallbackImage(id, realSize, requestedSize);
+}
+
+QImage ThumbnailGenerator::getFallbackImage(const QString &id, QSize *size,
+        const QSize &requestedSize) {
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForFile(id);
+    QImage result;
+    if(mime.name().contains("audio")) {
+        result.load(DEFAULT_ALBUM_ART);
+    } else if(mime.name().contains("video")) {
+        result.load(DEFAULT_VIDEO_ART);
+    }
+    *size = result.size();
+    return result;
 }

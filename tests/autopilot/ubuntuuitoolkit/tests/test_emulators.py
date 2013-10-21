@@ -445,3 +445,58 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+
+class PageStackTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    PageStack {
+        id: pageStack
+        Component.onCompleted: push(page0)
+
+        Page {
+            id: page0
+            title: "Page 0"
+            visible: false
+
+            Button {
+                objectName: "go_to_page1"
+                text: "Go to page 1"
+                onClicked: pageStack.push(page1)
+            }
+        }
+
+        Page {
+            id: page1
+            title: "Page 1"
+            visible: false
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(PageStackTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+        self.assertEqual(self.header.title, 'Page 0')
+
+    def test_open_page(self):
+        self._go_to_page1()
+        self.assertEqual(self.header.title, 'Page 1')
+
+    def _go_to_page1(self):
+        button = self.main_view.select_single(
+            'Button', objectName='go_to_page1')
+        self.pointing_device.click_object(button)
+
+    def test_go_back(self):
+        self._go_to_page1()
+        self.main_view.go_back()
+        self.assertEqual(self.header.title, 'Page 0')

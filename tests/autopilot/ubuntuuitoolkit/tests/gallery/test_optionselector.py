@@ -35,12 +35,12 @@ class OptionSelectorTests(GalleryTestCase):
 
         self.assertThat(collapsed.selectedIndex, Equals(0))
         self.pointing_device.click_object(collapsed)
-        self.assertThat(styleditem.isExpanded, Eventually(Equals(True)))
+        self.assertThat(styleditem.expanded, Eventually(Equals(True)))
         selectedValue = collapsed.select_single('Label', text='Value 4')
         self.assertIsNotNone(selectedValue)
         self.pointing_device.click_object(selectedValue)
         self.assertThat(collapsed.selectedIndex, Eventually(Equals(3)))
-        self.assertThat(styleditem.isExpanded, Eventually(Equals(False)))
+        self.assertThat(styleditem.expanded, Eventually(Equals(False)))
 
     def test_optionselector_expanded(self):
         item = "Option Selector"

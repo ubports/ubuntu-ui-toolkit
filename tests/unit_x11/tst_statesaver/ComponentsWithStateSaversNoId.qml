@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,20 +12,21 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Renato Araujo Oliveira Filho <renato.filho@canonical.com>
  */
 
-#ifndef GICONPROVIDER_H
-#define GICONPROVIDER_H
+import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-#include <QtQuick/QQuickImageProvider>
+Item {
+    id: user
+    width: 100
+    height: 100
 
-class GIconProvider : public QQuickImageProvider
-{
-public:
-    GIconProvider();
-    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
-};
-
-#endif
+    CustomControl {
+        objectName: "control1"
+    }
+    CustomControl {
+        id: customControl2
+        objectName: "control2"
+    }
+}
