@@ -81,6 +81,12 @@ MainView {
     }
 
     SignalSpy {
+        id: triggeredSignal
+        target: selector
+        signalName: "triggered"
+    }
+
+    SignalSpy {
         id: expansionSignal
         target: selector
         signalName: "expansionCompleted"
@@ -132,7 +138,7 @@ MainView {
          function test_signal() {
              mouseClick(selector, 100, 100, Qt.LeftButton);
              clickedSignal.wait();
-             tryCompare(expansionSignal, "count", 1);
+             expansionSignal.wait();
          }
 
          function test_triggered() {
