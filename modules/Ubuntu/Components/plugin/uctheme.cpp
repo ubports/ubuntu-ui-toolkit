@@ -94,7 +94,7 @@ QStringList themeSearchPath() {
 
 UCTheme::UCTheme(QObject *parent) :
     QObject(parent),
-    m_palette(NULL)
+    m_palette(NULL),
     m_engine(NULL),
     m_engineUpdated(false)
 {
