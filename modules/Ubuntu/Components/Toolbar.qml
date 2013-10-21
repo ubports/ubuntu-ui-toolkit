@@ -44,7 +44,7 @@ Panel {
       The time in milliseconds before the toolbar automatically hides after inactivity
       when it is not locked.
      */
-    property int hideTimeout: 500 //0
+    property int hideTimeout: 5000
 
     /*! \internal */
     onToolsChanged: {
