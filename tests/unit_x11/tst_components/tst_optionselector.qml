@@ -41,7 +41,7 @@ MainView {
                 enabled: true
                 name: 'selector'
                 text: 'Selector'
-                parameterType: UnityActions.Action.Type.Integer
+                parameterType: UnityActions.Action.Integer
             }
         }
 

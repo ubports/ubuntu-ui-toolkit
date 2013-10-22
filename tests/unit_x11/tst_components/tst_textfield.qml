@@ -17,7 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
-import Ubuntu.Unity.Action 1.0
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 Item {
     id: textItem
@@ -429,21 +429,21 @@ Item {
         function test_zz_ActionInputMethodHints() {
             // Preset digit only for numbers
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.Integer
+            textField.action.parameterType = UnityActions.Action.Integer
             compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
 
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.Real
+            textField.action.parameterType = UnityActions.Action.Real
             compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
 
             // No preset for strings
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.String
+            textField.action.parameterType = UnityActions.Action.String
             compare(textField.inputMethodHints, Qt.ImhNone)
 
             // Never interfere with a manual setting
             textField.inputMethodHints = Qt.ImhDate
-            textField.parameterType = UnityActions.Action.Type.Integer
+            textField.action.parameterType = UnityActions.Action.Integer
             compare(textField.inputMethodHints, Qt.ImhDate)
         }
 
