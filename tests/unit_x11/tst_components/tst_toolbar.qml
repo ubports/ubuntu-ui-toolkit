@@ -19,14 +19,21 @@ import QtTest 1.0
 import Ubuntu.Components 0.1
 
 Item {
-    width: 200
-    height: 200
+    width: units.gu(50)
+    height: units.gu(80)
 
     MainView {
         anchors.fill: parent
+        width: units.gu(50)
+        height: units.gu(80)
         id: mainView
         Page {
             id: page
+            title: "test page"
+            Label {
+                anchors.centerIn: parent
+                text: "testing the toolbar"
+            }
             tools: ToolbarItems {
                 id: toolbarItems
                 ToolbarButton {
@@ -43,13 +50,12 @@ Item {
         function initTestCase() {
             compare(page.tools, toolbarItems, "Page tools are set initially");
             compare(page.__propagated, mainView.__propagated, "propagated property is propagated from mainView to page")
-            compare(mainView.__propagated.toolbar.tools, page.tools, "Toolbar tools are set to page tools initially");
-            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar is closed initially");
-            compare(mainView.__propagated.toolbar.tools.locked, false, "Toolbar is initially not locked");
+            compare(mainView.__propagated.toolbar.tools, toolbarItems, "Toolbar tools are set to page tools initially");
+            compare(toolbarItems.opened, true, "Toolbar is opened initially");
+            compare(toolbarItems.locked, false, "Toolbar is initially not locked");
         }
 
         function test_opened() {
-            compare(mainView.__propagated.toolbar.tools.opened, false, "Toolbar initially closed");
             mainView.__propagated.toolbar.open()
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
             mainView.__propagated.toolbar.close();
@@ -58,6 +64,14 @@ Item {
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
             page.tools.opened = false;
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
+        }
+
+        function test_hideTimeout() {
+            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
+            mainView.__propagated.toolbar.open();
+            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
+            wait(mainView.__propagated.toolbar.hideTimeout + 500); // add 500 ms margin
+            compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
         }
 
         function test_locked() {
