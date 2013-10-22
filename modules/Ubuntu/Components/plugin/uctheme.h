@@ -43,10 +43,10 @@ public:
 
     // getter/setters
     QString name() const;
-    void setName(QString name);
+    void setName(const QString& name);
     QObject* palette() const;
 
-    Q_INVOKABLE QQmlComponent* createStyleComponent(QString styleName, QObject* parent);
+    Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
@@ -54,18 +54,21 @@ Q_SIGNALS:
     void paletteChanged();
 
 private Q_SLOTS:
+    void updateEnginePaths();
     void onThemeNameChanged();
     QUrl pathFromThemeName(QString themeName);
     void updateThemePaths();
-    QUrl styleUrl(QString styleName);
-    QString parentThemeName(QString themeName);
+    QUrl styleUrl(const QString& styleName);
+    QString parentThemeName(const QString& themeName);
     void loadPalette();
 
 private:
     QString m_name;
     QObject* m_palette;
+    QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;
+    bool m_engineUpdated;
 };
 
 #endif // UCTHEME_H

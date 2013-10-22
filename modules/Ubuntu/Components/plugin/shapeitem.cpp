@@ -134,7 +134,6 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , gradientColorSet_(false)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
-    , borderSource_("")
     , border_(ShapeItem::IdleBorder)
     , image_(NULL)
     , stretched_(true)
@@ -206,7 +205,7 @@ void ShapeItem::setBorderSource(const QString& borderSource)
     }
 }
 
-void ShapeItem::setImage(QVariant image)
+void ShapeItem::setImage(const QVariant& image)
 {
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
