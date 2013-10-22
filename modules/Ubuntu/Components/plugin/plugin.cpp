@@ -84,7 +84,7 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
+QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
 {
     /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
        http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl

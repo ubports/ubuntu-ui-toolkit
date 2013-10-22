@@ -94,7 +94,6 @@ QStringList themeSearchPath() {
 
 UCTheme::UCTheme(QObject *parent) :
     QObject(parent),
-    m_name(""),
     m_palette(NULL),
     m_engine(NULL),
     m_engineUpdated(false)
@@ -172,7 +171,7 @@ QString UCTheme::name() const
     return m_name;
 }
 
-void UCTheme::setName(QString name)
+void UCTheme::setName(const QString& name)
 {
     if (name != m_name) {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
@@ -193,9 +192,9 @@ QObject* UCTheme::palette() const
     return m_palette;
 }
 
-QUrl UCTheme::styleUrl(QString styleName)
+QUrl UCTheme::styleUrl(const QString& styleName)
 {
-    Q_FOREACH (QUrl themePath, m_themePaths) {
+    Q_FOREACH (const QUrl& themePath, m_themePaths) {
         QUrl styleUrl = themePath.resolved(styleName);
         if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
             return styleUrl;
@@ -205,7 +204,7 @@ QUrl UCTheme::styleUrl(QString styleName)
     return QUrl();
 }
 
-QString UCTheme::parentThemeName(QString themeName)
+QString UCTheme::parentThemeName(const QString& themeName)
 {
     QString parentTheme;
     QUrl themePath = pathFromThemeName(themeName);
@@ -226,7 +225,7 @@ QString UCTheme::parentThemeName(QString themeName)
 
     Returns an instance of the style component named \a styleName.
 */
-QQmlComponent* UCTheme::createStyleComponent(QString styleName, QObject* parent)
+QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     QQmlComponent *component = NULL;
 

@@ -69,7 +69,7 @@ QString UCArgument::name() const
     return m_name;
 }
 
-void UCArgument::setName(QString name)
+void UCArgument::setName(const QString &name)
 {
     m_name = name;
     Q_EMIT(nameChanged());
@@ -86,7 +86,7 @@ QString UCArgument::help() const
     return m_help;
 }
 
-void UCArgument::setHelp(QString help)
+void UCArgument::setHelp(const QString &help)
 {
     m_help = help;
     Q_EMIT(helpChanged());
@@ -124,7 +124,7 @@ QStringList UCArgument::valueNames() const
     return m_valueNames;
 }
 
-void UCArgument::setValueNames(QStringList valueNames)
+void UCArgument::setValueNames(const QStringList &valueNames)
 {
     m_valueNames = valueNames;
     Q_EMIT(valueNamesChanged());
@@ -141,7 +141,7 @@ QString UCArgument::syntax() const
 
         if (!m_valueNames.empty()) {
             syntax.append('=');
-            Q_FOREACH (QString valueName, m_valueNames) {
+            Q_FOREACH (const QString &valueName, m_valueNames) {
                 syntax.append(valueName);
                 if (valueName != m_valueNames.last()) {
                     syntax.append(' ');
@@ -152,7 +152,7 @@ QString UCArgument::syntax() const
         // for unnamed required argument: value1 value2
         // for unnamed optional argument: [value1] [value2]
         if (!m_valueNames.empty()) {
-            Q_FOREACH (QString valueName, m_valueNames) {
+            Q_FOREACH (const QString &valueName, m_valueNames) {
                 QString outputName = valueName;
                 if (!m_required) {
                     outputName.prepend('[').append(']');
@@ -181,7 +181,7 @@ QStringList UCArgument::values() const
     return m_values;
 }
 
-void UCArgument::setValues(QStringList values)
+void UCArgument::setValues(const QStringList &values)
 {
     m_values = values;
 }

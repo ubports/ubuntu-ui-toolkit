@@ -219,7 +219,7 @@ QString UCArguments::usage() {
     return usage;
 }
 
-void UCArguments::setErrorMessage(QString errorMessage)
+void UCArguments::setErrorMessage(const QString& errorMessage)
 {
     m_error = true;
     m_errorMessage = errorMessage;
@@ -262,7 +262,7 @@ void UCArguments::printUsage()
  * Exits the application outputting \a errorMessage to the console.
  *
  */
-void UCArguments::quitWithError(QString errorMessage)
+void UCArguments::quitWithError(const QString& errorMessage)
 {
     setErrorMessage(errorMessage);
 
@@ -390,7 +390,7 @@ void UCArguments::parseAndExposeArguments()
     exposeArgumentsAsProperties(argumentsValues);
 }
 
-void UCArguments::setValuesOnArguments(QHash<QString, QStringList> argumentsValues)
+void UCArguments::setValuesOnArguments(const QHash<QString, QStringList>& argumentsValues)
 {
     // pass the values to the arguments
     Q_FOREACH (UCArgument* argument, m_arguments) {
@@ -413,7 +413,7 @@ void UCArguments::setValuesOnArguments(QHash<QString, QStringList> argumentsValu
     }
 }
 
-QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument*> declaredArguments)
+QHash<QString, QStringList> UCArguments::buildExpectedArguments(const QList<UCArgument*>& declaredArguments)
 {
     QHash<QString, QStringList> expectedArguments;
 
@@ -424,7 +424,7 @@ QHash<QString, QStringList> UCArguments::buildExpectedArguments(QList<UCArgument
     return expectedArguments;
 }
 
-QHash<QString, QStringList> UCArguments::parseRawArguments(QStringList rawArguments, QHash<QString, QStringList> expectedArguments)
+QHash<QString, QStringList> UCArguments::parseRawArguments(const QStringList& rawArguments, const QHash<QString, QStringList>& expectedArguments)
 {
     QHash<QString, QStringList> argumentsValues;
     QString name;
@@ -482,13 +482,13 @@ QStringList UCArguments::collectArgumentValues(QStringList::const_iterator& i, Q
     return values;
 }
 
-bool UCArguments::usageRequested(QStringList argumentNames) {
+bool UCArguments::usageRequested(const QStringList& argumentNames) {
     return argumentNames.contains("help") ||
            argumentNames.contains("h") ||
            argumentNames.contains("usage");
 }
 
-bool UCArguments::requiredArgumentsProvided(QHash<QString, QStringList> argumentsValues, QString& error)
+bool UCArguments::requiredArgumentsProvided(const QHash<QString, QStringList>& argumentsValues, QString& error)
 {
     // check if all required named arguments were passed along with their values
     Q_FOREACH (UCArgument* argument, m_arguments) {
@@ -510,7 +510,7 @@ bool UCArguments::requiredArgumentsProvided(QHash<QString, QStringList> argument
     return true;
 }
 
-bool UCArguments::requiredDefaultArgumentProvided(QHash<QString, QStringList> argumentsValues, QString& error)
+bool UCArguments::requiredDefaultArgumentProvided(const QHash<QString, QStringList>& argumentsValues, QString& error)
 {
     // check if the required default argument was passed
     if (m_defaultArgument != NULL && m_defaultArgument->required() &&
@@ -524,7 +524,7 @@ bool UCArguments::requiredDefaultArgumentProvided(QHash<QString, QStringList> ar
     }
 }
 
-void UCArguments::exposeArgumentsAsProperties(QHash<QString, QStringList> argumentsValues)
+void UCArguments::exposeArgumentsAsProperties(const QHash<QString, QStringList>& argumentsValues)
 {
     Q_FOREACH (UCArgument* argument, m_arguments) {
         QString name = argument->name();

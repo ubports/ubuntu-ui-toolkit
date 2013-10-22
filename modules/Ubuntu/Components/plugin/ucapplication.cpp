@@ -50,7 +50,7 @@ QString UCApplication::applicationName() {
     return QCoreApplication::applicationName();
 }
 
-void UCApplication::setApplicationName(QString applicationName) {
+void UCApplication::setApplicationName(const QString& applicationName) {
     /* QStandardPaths uses the name to build folder names.
        This works across platforms. For confinement we rely on the fact
        that the folders are whitelisted based on the app name. Similar
@@ -58,7 +58,7 @@ void UCApplication::setApplicationName(QString applicationName) {
      */
     QCoreApplication::setApplicationName(applicationName);
     // Unset organization to skip an extra folder component
-    QCoreApplication::setOrganizationName("");
+    QCoreApplication::setOrganizationName(QString());
     /*
        Ensure that LocalStorage and WebKit use the same location
        Docs are ambiguous: in practise applicationName is ignored by default
