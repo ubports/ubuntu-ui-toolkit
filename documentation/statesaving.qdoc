@@ -1,0 +1,150 @@
+/*
+ * Copyright (C) 2013 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*!
+    \page statesaving.html
+    \title Automatic State Saving
+    \nextpage Application name, IDs
+
+    During application development it is often required to start an application
+    from a view which depends on the previous application runs. Like a web browser
+    should remember the number of opened tabs, their content or the browsing
+    history, or a news reader application should continue from the last news the
+    application was opened on, preferably from the same position.
+
+    Ubuntu UI toolkit provides a simple way to save the state of any component
+    within an application, by using the attached component \l StateSaver. By simply
+    attaching this component to any QtQuick component and specifying the
+    \l{StateSaver::properties}{properties} to be saved, applications can be restored
+    to any previous state they were before being closed.
+
+    Consider the following simple QtQuick application, which on button press
+    randomly changes its background.
+    \snippet statesaver/ColorChanger.qml color-saver
+
+    But let's see what else is neded to properly save an application's components
+    proeprties.
+*/
+
+/*!
+    \page statesaving1.html
+    \title Application name, IDs
+    \section1 Application name
+    First of all, the application must have a proper application name set. If you
+    use Qt Creator's Ubuntu project wizards, you will have the application name
+    set by default, name which is in sync with the name from the application's
+    desktop file.
+
+    The application name plays an essential role in storing the state archive. By
+    specifying different application names, different state archives can be serialized
+    for the application. However runtime application name change would require
+    application restart.
+
+    Having these preconditions, we can deduct that \l {MainView::applicationName}{MainView.applicationName}
+    property is one of the properties which cannot be serialized.
+
+    \section1 IDs
+    Components for which property saving is wanted should define an ID, even though
+    it is otherwise not justified. For example the following code snippet would give
+    runtime error:
+    \qml
+    Rectangle {
+        color: "green"
+        StateSaver.properties: "color"
+    }
+    \endqml
+    but giving an ID would make it serializable:
+    \qml
+    Rectangle {
+        id: rectangle
+        color: "green"
+        StateSaver.properties: "color"
+    }
+    \endqml
+    This rule must also be applied on component parents in the object hierarchy.
+    \qml
+    Item {
+        id: root
+        Rectangle {
+            id: rectangle
+            color: "green"
+            StateSaver.properties: "color"
+        }
+    }
+    \endqml
+    \nextpage Saving multiple properties
+  */
+
+/*!
+    \page statesaving2.html
+    \title Saving multiple properties
+    \section1 Specifying more properties
+    So far we have saved one single property, but as the \{StateSaver::properties}
+    property name suggests, there can be more properties serialized at the same time.
+    For example, to serialize both color and opacity of a Rectangle, the code would
+    look as follows:
+    \qml
+    Rectangle {
+        id: rectangle
+        color: "green"
+        opacity: 0.9
+        StateSaver.properties: "color, opacity"
+    }
+    \endqml
+    \b Note that not all types of properties can be saved. Object types or list
+    models for example are excluded from the types that can be saved, but all
+    properties listed as \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types}
+    can be serialized.
+    \section1 Grouped properties
+    Grouped properties, which have serializable types can also be saved. It simply
+    needs to be specified together with the group identifier.
+    \snippet statesaver/MultiplePropertySaver.qml group-saver
+    \section1 Property groups
+    Using the same logic, custom property groups can also be saved.
+    \snippet statesaver/PropertyGroupSaver.qml property-group-saver
+    Alternatively, individual properties of the property group can be saved in
+    the following way:
+    \snippet statesaver/PropertyGroupSaver2.qml alt-group-saver
+    \nextpage Recap on state saving
+  */
+/*!
+    \page statesaving3.html
+    \title Recap on state saving
+    The following issues must be considered when deciding on state saving:
+    \list
+        \li - don't try to save MainView.applicationName, as its change will take
+            effect next time the application is launched
+        \li - specify IDs for all components as well as for parents even if their
+            presence is not justified in the document
+        \li types other than the ones listed in \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types}
+            will not be serialized
+        \li - grouped properties can be saved by specifying the complete path to
+            the property i.e. \a border.width, \a border.color, etc.
+    \endlist
+  \raw HTML
+    <br>
+  \endraw
+    When chosing the IDs, try to use as unique identifiers as possible. In most
+    of the cases applications load content (document) dynamically using Loaders.
+    Usually elements in these documents use different IDs for their elements,
+    but there can be cases when the same IDs will be used with the same hierarchy
+    (i.e. root->item can occur in several documents). UID computation takes into
+    account the file name and line number the property's owner (attachee) is declared,
+    therefore the property saving will be successful in these cases too.
+
+    See documentation on \l StateSaver properties under \l{Services} section.
+    \nextpage {Ubuntu User Interface Toolkit}
+  */

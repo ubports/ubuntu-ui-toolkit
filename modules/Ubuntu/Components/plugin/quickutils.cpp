@@ -50,6 +50,9 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
     if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
         lookupQuickView();
+    if (event->type() == QEvent::ApplicationDeactivate) {
+        Q_EMIT deactivated();
+    }
 
     return QObject::eventFilter(obj, event);
 }
@@ -157,7 +160,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
                 QHashIterator<int,QByteArray> i(roles);
                 while (i.hasNext()) {
                     i.next();
-                    context->setContextProperty(i.value(), "");
+                    context->setContextProperty(i.value(), QString());
                 }
             }
         }
@@ -167,7 +170,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
             context = new QQmlContext(creationContext);
             if (vModel[0].type() == QVariant::String) {
                 // the only role name we have is modelData
-                context->setContextProperty("modelData", "");
+                context->setContextProperty("modelData", QString());
 
             } else if (vModel[0].type() == QVariant::Map) {
                 // we need only the keys, attached to an object named "modelData"
@@ -177,7 +180,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
                 QStringList roles = map.uniqueKeys();
 
                 Q_FOREACH(const QString &role, roles)
-                    modelData->insert(role, "");
+                    modelData->insert(role, QString());
 
                 context->setContextProperty("modelData", modelData);
             }
@@ -190,7 +193,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
     if (context) {
         // add index and section too
         context->setContextProperty("index", 0);
-        context->setContextProperty("section", "");
+        context->setContextProperty("section", QString());
         // create item from component
         QObject * obj = delegate->create(context);
         QQuickItem *item = qobject_cast<QQuickItem*>(obj);
@@ -204,7 +207,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
  * \internal
  * Returns the class name (type) of a QtQuick item.
  */
-QString QuickUtils::className(QQuickItem *item)
+QString QuickUtils::className(QObject *item)
 {
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));

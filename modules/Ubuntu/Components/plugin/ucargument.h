@@ -36,13 +36,13 @@ public:
     explicit UCArgument(QObject *parent = 0);
 
     QString name() const;
-    void setName(QString name);
+    void setName(const QString &name);
     QString help() const;
-    void setHelp(QString help);
+    void setHelp(const QString &help);
     bool required() const;
     void setRequired(bool required);
     QStringList valueNames() const;
-    void setValueNames(QStringList valueNames);
+    void setValueNames(const QStringList &valueNames);
 
     // FIXME: maybe define UCArgument as a QQmlListProperty instead so that
     // operator[] is available from QML
@@ -52,7 +52,7 @@ protected:
     QString syntax() const;
     QString usage() const;
     QStringList values() const;
-    void setValues(QStringList values);
+    void setValues(const QStringList &values);
 
 Q_SIGNALS:
     void nameChanged();

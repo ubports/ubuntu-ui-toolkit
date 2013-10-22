@@ -134,7 +134,6 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , gradientColorSet_(false)
     , radiusString_("small")
     , radius_(ShapeItem::SmallRadius)
-    , borderSource_("")
     , border_(ShapeItem::IdleBorder)
     , image_(NULL)
     , stretched_(true)
@@ -206,7 +205,7 @@ void ShapeItem::setBorderSource(const QString& borderSource)
     }
 }
 
-void ShapeItem::setImage(QVariant image)
+void ShapeItem::setImage(const QVariant& image)
 {
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
@@ -269,13 +268,14 @@ void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
                                         QObject* receiver, const char* slot)
 {
     int propertyIndex = sender->metaObject()->indexOfProperty(property);
-    QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
+    if (propertyIndex != -1) {
+        QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
 
-    int slotIndex = receiver->metaObject()->indexOfSlot(slot);
-    QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
+        int slotIndex = receiver->metaObject()->indexOfSlot(slot);
+        QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
 
-    QObject::connect(sender, changeSignal, receiver, updateSlot);
-
+        QObject::connect(sender, changeSignal, receiver, updateSlot);
+    }
 }
 
 void ShapeItem::connectToImageProperties(QQuickItem* image)

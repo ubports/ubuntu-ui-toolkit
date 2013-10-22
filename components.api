@@ -42,7 +42,7 @@ Item
     property int fillMode
     property int fadeDuration
     readonly property bool running
-    readonly property size sourceSize
+    property size sourceSize
     readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
@@ -100,11 +100,15 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
@@ -197,6 +201,8 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
+    readonly property int index
+    property internal __protected
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
@@ -281,7 +287,7 @@ StyledItem
     property var popover
     function openPopover()
 modules/Ubuntu/Components/TextField.qml
-StyledItem
+ActionItem
     property bool highlighted
     property string placeholderText
     property bool hasClearButton
@@ -401,6 +407,7 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
+    property bool confirmRemoval
     readonly property string swipingState
     signal itemRemoved
     property int __height
@@ -429,11 +436,15 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/ListItems/LabelVisual.qml
 Label
     property bool selected
@@ -486,6 +497,31 @@ Empty
     property variant values
     property int selectedIndex
     property bool expanded
+modules/Ubuntu/Components/Pickers/Dialer.qml
+StyledItem
+    property real minimumValue
+    property real maximumValue
+    property real size
+    property real handSpace
+    readonly property Item centerItem
+    property list<var> centerContent
+    readonly property list<DialerHands> hands
+    signal handUpdated(var hand)
+modules/Ubuntu/Components/Pickers/DialerHand.qml
+StyledItem
+    property real value
+    property DialerHandGroup hand
+    readonly property Dialer dialer
+    default property list<QtObject> overlay
+    readonly property int index
+    property internal __grabber
+modules/Ubuntu/Components/Pickers/DialerHandGroup.qml
+QtObject
+    property real width
+    property real height
+    property bool draggable
+    property bool visible
+    property bool toCenterItem
 modules/Ubuntu/Components/Pickers/Picker.qml
 StyledItem
     property bool circular
@@ -624,6 +660,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["Alarm 0.1"]
     name: "Status"
+    name: "Operation"
     name: "Error"
     name: "AlarmType"
     name: "DayOfWeek"
@@ -636,6 +673,9 @@ plugins.qmltypes
     Property { name: "sound"; type: "QUrl" }
     Property { name: "error"; type: "int"; isReadonly: true }
     Property { name: "status"; type: "Status"; isReadonly: true }
+    Signal {
+    name: "statusChanged"
+    Parameter { name: "operation"; type: "Operation" }
     Method { name: "save" }
     Method { name: "cancel" }
     Method { name: "reset" }
@@ -679,6 +719,13 @@ plugins.qmltypes
     Signal {
     name: "sourceChanged"
     Parameter { type: "QUrl" }
+    name: "UCStateSaver"
+    prototype: "QObject"
+    exports: ["StateSaver 0.1"]
+    name: "UCStateSaverAttached"
+    prototype: "QObject"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "properties"; type: "string" }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1"]
@@ -699,6 +746,12 @@ plugins.qmltypes
     Method {
     name: "gu"
     Parameter { name: "value"; type: "float" }
+    name: "UCUriHandler"
+    prototype: "QObject"
+    exports: ["UriHandler 0.1"]
+    Signal {
+    name: "opened"
+    Parameter { name: "uris"; type: "QStringList" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1"]

@@ -23,7 +23,7 @@ class ContextPropertyChangeListener : public QObject
 {
     Q_OBJECT
 public:
-    explicit ContextPropertyChangeListener(QQmlContext* context, QString contextProperty);
+    explicit ContextPropertyChangeListener(QQmlContext* context, const QString& contextProperty);
     Q_SLOT void updateContextProperty();
     QQmlContext* m_context;
     QString m_contextProperty;

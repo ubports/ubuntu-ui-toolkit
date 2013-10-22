@@ -11,6 +11,5 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 override_dh_install:
 	dh_auto_build -- docs
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 
-	rm -rf debian/tmp/usr/share/locale
 	dh_install --fail-missing
 

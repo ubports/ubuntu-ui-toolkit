@@ -1,3 +1,65 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu2) saucy; urgency=low
+
+  * Cherry pick changes from the ap-test-fixes-for-updated-autopilot branch
+    to fix working with the newer autopilot
+
+ -- Łukasz 'sil2100' Zemczak <lukasz.zemczak@canonical.com>  Thu, 03 Oct 2013 11:38:44 +0200
+
+ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Temporarily disable the jokes example in order to not have
+    qtmultimedia dependency from examples that is not used otherwise.
+    This lessens the dependency chains of packages. It can be added back
+    after Ubuntu 13.10.
+  * Fix regression in qmlscene usage (LP: #1229541). (LP: #1229541)
+
+  [ Christian Dywan ]
+  * Set QCoreApplication::applicationName based on MainView. (LP:
+    #1197056, #1197051, #1224126)
+  * Include subfolders of Components in api check.
+
+  [ Zsombor Egri ]
+  * Organizer EDS (Evolution Data Server) integration.
+  * StateSaver attached component.
+  * Fix alarm status reporting, updating documentation on asynchronous
+    behavior of save and cancel operations. Alarm status notification
+    reports the operation the status refers to. (LP: #1226516)
+  * Dialer + DialerHand components required for TimePicker. .
+
+  [ Leo Arias ]
+  * Added UbuntuUIToolkitAppTestCase as a base test case for the
+    autopilot tests. (LP: #1227355)
+  * Added the autopilot emulator for toggles.
+
+  [ Nick Dedekind ]
+  * Added clipping to tab bar. (LP: #1226104)
+
+  [ Alberto Mardegan ]
+  * Support re-attaching to a different QQuickView Make the plugin
+    correctly handle the case when the QQuickView is destroyed and a new
+    one is created: this is done by avoiding using static variables, and
+    instead binding the data to the QQmlEngine, QQmlContext or QWindow
+    as appropriate. . (LP: #1221707)
+
+  [ Dennis O'Flaherty ]
+  * Reword the description for easier reading.
+
+  [ tpeeters ]
+  * Fix warnings when running gallery-app autopilot tests. (LP:
+    #1223329, #1223326)
+  * Smarter automatic updating of Panel's opened property. Panel.open()
+    and Panel.close() should be used to open/close a Panel, or when
+    using a toolbar with ToolbarItems from a Page, set Page.tools.opened
+    to open/close the toolbar. No API or behavior changes since the
+    panel-open-close branch. Toolbar behavior changes will be done in a
+    following MR.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 765
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 25 Sep 2013 07:08:56 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130916-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]
