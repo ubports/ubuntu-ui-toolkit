@@ -1,3 +1,82 @@
+ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
+
+  [ Zsombor Egri ]
+  * Tests proving component state saving added, minor fix disabling
+    state saving when attachee ID is not specified or absolute ID cannot
+    be computed.
+  * Member initialization order fixed. This causes build error when
+    built with QtCreator 2.8.1, as that one builds with -Werror
+    parameter. It is highly recommended to all to use QtCreator when
+    developing for Touch.
+
+  [ Jussi Pakkanen ]
+  * Return a default image if thumbnailing does not work.
+
+  [ Leo Arias ]
+  * Added a public function to get the command to launch qmlscene from
+    autopilot tests.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 792
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 11 Oct 2013 17:18:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20131007-0ubuntu1) saucy; urgency=low
+
+  [ Zoltán Balogh ]
+  * Add default tools (LP: #1233709). (LP: #1233709)
+
+  [ Loïc Molinari ]
+  * Added URI handler support.
+  * Fixed UbuntuShape warnings when using a ShaderEffectSource as an
+    image.
+
+  [ iftikhar.ahmad@canonical.com ]
+  * Added test cases for text field testing.
+  * Minor change to make the OptionSelector more testable by adding
+    objectName property to uniquely identify the object. (LP: #1234020)
+
+  [ Christian Dywan ]
+  * Set offline storage path and add a unit test. (LP: #1231863)
+  * Emit domainChanged from bindtextdomain to trigger updates. (LP:
+    #1220395)
+  * Support TextArea used with an action.
+  * Support option selector used with an action.
+  * Add haptic feedback to AbstractButton. (LP: #1189537)
+
+  [ Zsombor Egri ]
+  * Fix Picker module deployment.
+  * index property added to Tab to be able to reference the Tab number.
+    Fixes bug #1233402. (LP: #1233402)
+
+  [ Jussi Pakkanen ]
+  * Adds thumbnailer image provider.
+
+  [ Christopher Lee ]
+  * Preparing autopilot tests for an upcoming update in autopilot 1.3.
+
+  [ Andrea Cimitan ]
+  * Export a position value of the toolbar through dbus, setting the
+    value of the dbus service created by the shell. (LP: #1224480)
+
+  [ Guenter Schwann ]
+  * Better handle the case of dismissing the OSK and focusing the text
+    again fixes LP: #1228155. (LP: #1228155)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Added "confirmRemoval" in ListItem.Empty This will ask for
+    confirmation before remove the item. (LP: #1213046)
+  * Disabled confirmation on swipe to delete as default.
+
+  [ Leo Arias ]
+  * index property added to Tab to be able to reference the Tab number.
+    Fixes bug #1233402. (LP: #1233402)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 786
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 07 Oct 2013 04:36:33 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20130925.1-0ubuntu2) saucy; urgency=low
 
   * Cherry pick changes from the ap-test-fixes-for-updated-autopilot branch

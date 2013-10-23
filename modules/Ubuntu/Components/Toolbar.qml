@@ -39,34 +39,51 @@ Panel {
      */
     property Item tools: null
 
+    /*!
+      \preliminary
+      The time in milliseconds before the toolbar automatically hides after inactivity
+      when it is not locked.
+     */
+    property int hideTimeout: 5000
+
     /*! \internal */
     onToolsChanged: {
-        if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
-        if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
-                && tools.opened && tools.locked) {
-            // toolbar is locked in visible state.
-            internal.updateVisibleTools();
-            toolbar.open();
-        } else if (!opened && !animating) {
-            // toolbar is closed
-            internal.updateVisibleTools();
-        } else {
-            toolbar.close()
-            // internal.visibleTools will be updated
-            // when the hide animation is finished
-        }
-        if (tools && tools.hasOwnProperty("opened")) {
-            tools.opened = toolbar.opened;
+        internal.updateVisibleTools();
+        if (tools) {
+            if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
+            // open the toolbar, except when it is locked in closed position
+            if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
+                    && !tools.opened && tools.locked) {
+                // toolbar is locked in closed state
+                toolbar.close();
+            } else {
+                toolbar.open();
+            }
+
+            if (tools && tools.hasOwnProperty("opened")) {
+                tools.opened = toolbar.opened;
+            }
+        } else { // no tools
+            locked = true;
+            toolbar.close();
         }
     }
 
     // if tools is not specified, lock the toolbar in closed position
     locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
+    Timer {
+        id: hideTimer
+        interval: toolbar.hideTimeout
+        running: toolbar.opened && !toolbar.locked
+        onTriggered: toolbar.close()
+    }
+
     onOpenedChanged: {
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
+        if (!toolbar.locked) hideTimer.restart()
     }
 
     Connections {
