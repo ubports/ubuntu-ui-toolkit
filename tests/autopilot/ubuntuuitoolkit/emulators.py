@@ -63,7 +63,6 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     def __init__(self, *args):
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
-        self.keyboard = get_keyboard()
 
 
 class MainView(UbuntuUIToolkitEmulatorBase):
@@ -358,6 +357,10 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 
 class TextField(UbuntuUIToolkitEmulatorBase):
     """TextField Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(TextField, self).__init__(*args)
+        self.keyboard = get_keyboard()
 
     def write(self, text, clear=True):
         """Write into the text field.
