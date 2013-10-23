@@ -82,7 +82,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         x, y, _, _ = self.globalRect
         line_x = x + self.width * 0.50
         start_y = y + self.height - 1
-        stop_y = y + self.height * 0.95
+        stop_y = y + self.height - self.get_toolbar().height
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
@@ -98,7 +98,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def _drag_to_close_toolbar(self):
         x, y, _, _ = self.globalRect
         line_x = x + self.width * 0.50
-        start_y = y + self.height * 0.95
+        start_y = y + self.height - self.get_toolbar().height
         stop_y = y + self.height - 1
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
@@ -183,6 +183,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         return self.select_single(
             ActionSelectionPopover, objectName=object_name)
 
+    def go_back(self):
+        """Go to the previous page."""
+        toolbar = self.open_toolbar()
+        toolbar.click_back_button()
+
 
 class Header(UbuntuUIToolkitEmulatorBase):
     """Header Autopilot emulator."""
@@ -222,6 +227,10 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
 
     def _get_button(self, object_name):
         return self.select_single('ActionItem', objectName=object_name)
+
+    def click_back_button(self):
+        """Click the back button of the toolbar."""
+        self.click_button('back_toolbar_button')
 
 
 class Tabs(UbuntuUIToolkitEmulatorBase):

@@ -42,7 +42,7 @@ Item
     property int fillMode
     property int fadeDuration
     readonly property bool running
-    readonly property size sourceSize
+    property size sourceSize
     readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
@@ -100,11 +100,15 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
@@ -353,6 +357,7 @@ ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
     property Item tools
+    property int hideTimeout
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
@@ -434,11 +439,15 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool expanded
+    property bool alwaysExpanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool expanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/ListItems/LabelVisual.qml
 Label
     property bool selected
