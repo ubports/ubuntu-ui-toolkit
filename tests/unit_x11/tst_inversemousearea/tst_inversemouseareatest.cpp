@@ -147,6 +147,25 @@ private Q_SLOTS:
         QCOMPARE(quickView->rootObject()->property("log").toString(), QString("MA"));
     }
 
+    void testCase_InverseMouseAreaOnTop()
+    {
+        InverseMouseAreaType *area = testArea("InverseMouseAreaOnTop.qml");
+        QVERIFY(area);
+        quickView->show();
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 75));
+        QTest::waitForEvents();
+        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("MA2"));
+    }
+
 };
 
 QTEST_MAIN(tst_InverseMouseAreaTest)

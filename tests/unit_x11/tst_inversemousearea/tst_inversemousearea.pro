@@ -8,4 +8,5 @@ OTHER_FILES += \
     InverseMouseAreaDoNotPropagateEvents.qml \
     SensingAreaError.qml \
     InverseMouseAreaInWindow.qml \
-    OverlappedMouseArea.qml
+    OverlappedMouseArea.qml \
+    InverseMouseAreaOnTop.qml
