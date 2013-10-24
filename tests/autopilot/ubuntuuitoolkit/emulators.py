@@ -106,7 +106,8 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     def get_tabs(self):
         """Return the Tabs emulator of the MainView."""
         tabs = self.select_single(Tabs)
-        assert tabs is not None, _NO_TABS_ERROR
+        if tabs is None:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
         return tabs
 
     def switch_to_next_tab(self):
@@ -132,7 +133,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
-            raise IndexError('Tab index out of range.')
+            raise ToolkitEmulatorException('Tab index out of range.')
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
@@ -171,7 +172,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         for index, tab in enumerate(tabs.select_many('Tab')):
             if tab.objectName == object_name:
                 return self.switch_to_tab_by_index(tab.index)
-        raise ValueError(
+        raise ToolkitEmulatorException(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
     def get_action_selection_popover(self, object_name):
@@ -203,7 +204,8 @@ class Header(UbuntuUIToolkitEmulatorBase):
     def switch_to_next_tab(self):
         """Open the next tab."""
         tab_bar = self.select_single(TabBar)
-        assert tab_bar is not None, _NO_TABS_ERROR
+        if tab_bar is None:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
         tab_bar.switch_to_next_tab()
 
         # Sleep while the animation finishes.
@@ -221,7 +223,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         """
         button = self._get_button(object_name)
         if button is None:
-            raise ValueError(
+            raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
         self.pointing_device.click_object(button)
 
@@ -310,10 +312,11 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         :parameter text: The text of the button.
 
         """
-        assert self.visible, 'The popover is not open.'
+        if not self.visible:
+            raise ToolkitEmulatorException('The popover is not open.')
         button = self._get_button(text)
         if button is None:
-            raise ValueError(
+            raise ToolkitEmulatorException(
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:

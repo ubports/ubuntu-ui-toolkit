@@ -65,14 +65,14 @@ MainView {
 
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
-            AssertionError, self.main_view.get_tabs)
+            emulators.ToolkitEmulatorException, self.main_view.get_tabs)
         self.assertEqual(
             error.message, 'The MainView has no Tabs.')
 
     def test_switch_to_next_tab_without_tabs(self):
         header = self.main_view.get_header()
         error = self.assertRaises(
-            AssertionError, header.switch_to_next_tab)
+            emulators.ToolkitEmulatorException, header.switch_to_next_tab)
         self.assertEqual(
             error.message, 'The MainView has no Tabs.')
 
@@ -180,7 +180,8 @@ MainView {
     def test_click_unexisting_button(self):
         self.main_view.open_toolbar()
         error = self.assertRaises(
-            ValueError, self.toolbar.click_button, 'unexisting')
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
 
@@ -281,7 +282,8 @@ MainView {
     def test_swith_to_tab_by_index_out_of_range(self):
         last_tab_index = self.main_view.get_tabs().get_number_of_tabs() - 1
         error = self.assertRaises(
-            IndexError, self.main_view.switch_to_tab_by_index,
+            emulators.ToolkitEmulatorException,
+            self.main_view.switch_to_tab_by_index,
             last_tab_index + 1)
         self.assertEqual(error.message, 'Tab index out of range.')
 
@@ -304,7 +306,8 @@ MainView {
 
     def test_switch_to_unexisting_tab(self):
         error = self.assertRaises(
-            ValueError, self.main_view.switch_to_tab, 'unexisting')
+            emulators.ToolkitEmulatorException, self.main_view.switch_to_tab,
+            'unexisting')
         self.assertEqual(
             error.message, 'Tab with objectName "unexisting" not found.')
 
@@ -370,7 +373,8 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            ValueError, popover.click_button_by_text, 'unexisting')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'unexisting')
         self.assertEqual(
             error.message, 'Button with text "unexisting" not found.')
 
@@ -378,7 +382,8 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            AssertionError, popover.click_button_by_text, 'Action one')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'Action one')
         self.assertEqual(
             error.message, 'The popover is not open.')
 
