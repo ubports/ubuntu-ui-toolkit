@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+#import time
 
 from autopilot import input, platform
 from autopilot.introspection import dbus
@@ -271,12 +272,19 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 #            # in case someone stole the click, like the open toolbar
 #            self._activate_tab_bar()
         logger.debug('Click the next tab bar button.')
+        # Fails if I click_object only once. As if the click is eaten by something.
         self.pointing_device.click_object(self._get_next_tab_button())
+#        time.sleep(1)
+#        self.pointing_device.click_object(self._get_next_tab_button())
+
+        print("supposedly clicked tab button..")
 
     def _activate_tab_bar(self):
         if self.selectionMode:
+            print("yeah")
             logger.debug('Already in selection mode.')
         else:
+            print("oh oh")
             # Click the tab bar to switch to selection mode.
             logger.debug('Click the tab bar to enable selection mode.')
             self.pointing_device.click_object(self)
